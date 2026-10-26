@@ -1,0 +1,474 @@
+{
+  "schema": "PR_AWARE_DF_B2_EXECUTION_SUMMARY_V1",
+  "status": "B2_FINITE_BIT_NATIVE_CALIBRATION_COMPLETE",
+  "original_scientific_SOURCE": "e74226a817e65918c0e00a735498e5bada77146d",
+  "repaired_scientific_SOURCE": "a1cf0046967c206f414dbad568a75884ee076ebf",
+  "repaired_implementation_SOURCE": "3e1e8d1446de04b9ebec5c0bcf455e7e7a47d17a",
+  "compat_SOURCE_sha256": "e6facbf59838f93dcdd61258c0589da7b3dadb2116a041209d7a08fb8f471d28",
+  "sampling_SOURCE_sha256": "cdf79ed569127f5cb6c7ee017b76bce6422166a656bb3ae866de6e86917c45bf",
+  "compat_contract_sha256": "23763d603c242f59001239e132c604f3f4f3b3cb7c71efc520bd30a65e09f7ce",
+  "policy": {
+    "norb": 4,
+    "rank": 8,
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "system_qubits": 8,
+    "ancilla_qubits": 1,
+    "controlled_dimension": 512,
+    "ld": 2,
+    "delta": "1/10",
+    "s": 4,
+    "h": "1/40",
+    "r": 16,
+    "K": 0,
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "original_g_kappa": true,
+    "scalar": "nuclear once",
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "calibration_samples_per_arm": 32,
+    "sample_unit": "one complete h-step controlled PR kernel",
+    "quantum_occurrence_policy": "fresh independent trajectory at every coherent occurrence; not executed",
+    "measured_cost_scope": "kernel only; head/X/Y shell costs recorded separately, no cross-segment fusion",
+    "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1",
+    "head_tail_cross_fusion": false,
+    "law": "existing PCG64 binary64 finite-RTE implementation; ideal-law distance unqualified",
+    "retry": 0,
+    "resume": 0,
+    "new_fit": 0,
+    "optimizer": 0,
+    "DF_PF_recalculation": 0,
+    "quantum_shots": 0,
+    "total_resources": 0
+  },
+  "run01": {
+    "status": "TECHNICAL_STOP_ALREADY_BORROWED",
+    "scientific_units": 429,
+    "COMPLETE": 428,
+    "technical_FAIL": 1,
+    "numerical_correctness_FAIL": 0
+  },
+  "run02": {
+    "scientific_units": 652,
+    "COMPLETE": 652,
+    "FAIL": 0,
+    "call_counts": {
+      "input_load": 1,
+      "evidence_load": 1,
+      "car_context": 1,
+      "shell_build": 3,
+      "compile": 67,
+      "shell_assessment": 3,
+      "shell_metrics": 3,
+      "fit_load": 2,
+      "native_model": 2,
+      "law_prepare": 2,
+      "raw_factor": 18,
+      "sector_reference_gate": 2,
+      "ground_load": 2,
+      "reference_context": 2,
+      "law_gate": 2,
+      "gaussian_build": 18,
+      "relative_gaussian": 8,
+      "trajectory_sample": 64,
+      "kernel_build": 64,
+      "trajectory_reference": 64,
+      "raw_operator_gate": 64,
+      "compiled_operator_gate": 64,
+      "adjoint_pair_gate": 64,
+      "XY_gate": 64,
+      "kernel_metrics": 64,
+      "calibration_summary": 2,
+      "comparison": 1
+    },
+    "retry_within_run": 0,
+    "resume": 0
+  },
+  "technical_relaunch": 1,
+  "cumulative_scientific_units": 1081,
+  "old_trajectory_records_matched": 50,
+  "new_fit": 0,
+  "optimizer": 0,
+  "DF_PF_recalculation": 0,
+  "quantum_shots": 0,
+  "arms": {
+    "baseline": {
+      "status": "FINITE_BIT_POINT_ESTIMATE_ONLY",
+      "samples": 32,
+      "sample_mean": {
+        "rz_count": 5198.3125,
+        "rz_depth": 2064.53125,
+        "cx_count": 2605.5625,
+        "cx_depth": 2019.03125,
+        "total_depth": 4505.28125,
+        "circuit_size": 10105.8125
+      },
+      "sample_mean_standard_error": {
+        "rz_count": 66.7145979198319,
+        "rz_depth": 19.679999691382683,
+        "cx_count": 20.640692344094187,
+        "cx_depth": 10.24286576809172,
+        "total_depth": 42.8003672913233,
+        "circuit_size": 135.06423529658028
+      },
+      "ideal_law_expectation": null,
+      "cost_support": null,
+      "lower": null,
+      "upper": null,
+      "simultaneous_interval_qualified": false,
+      "guaranteed_resource_superiority": null,
+      "sample_variance": {
+        "rz_count": 142426.80241935485,
+        "rz_depth": 12393.676411290322,
+        "cx_count": 13633.22177419355,
+        "cx_depth": 3357.3215725806454,
+        "total_depth": 58619.886088709674,
+        "circuit_size": 583755.125
+      },
+      "observed_min": {
+        "rz_count": 4462,
+        "rz_depth": 1856,
+        "cx_count": 2386,
+        "cx_depth": 1912,
+        "total_depth": 4057,
+        "circuit_size": 8626
+      },
+      "observed_max": {
+        "rz_count": 5990,
+        "rz_depth": 2260,
+        "cx_count": 2846,
+        "cx_depth": 2123,
+        "total_depth": 4922,
+        "circuit_size": 11712
+      },
+      "uncertainty": "descriptive SE only; rare trajectories can be missed; observed extrema are not support bounds",
+      "finite_bit_law_error": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null
+    },
+    "proposed": {
+      "status": "FINITE_BIT_POINT_ESTIMATE_ONLY",
+      "samples": 32,
+      "sample_mean": {
+        "rz_count": 4765.875,
+        "rz_depth": 1935.78125,
+        "cx_count": 2472.875,
+        "cx_depth": 1951.90625,
+        "total_depth": 4224.03125,
+        "circuit_size": 9226.25
+      },
+      "sample_mean_standard_error": {
+        "rz_count": 80.3845062857666,
+        "rz_depth": 21.918320440155508,
+        "cx_count": 24.719545861132747,
+        "cx_depth": 11.465442412208143,
+        "total_depth": 47.82858514745823,
+        "circuit_size": 162.25756729706413
+      },
+      "ideal_law_expectation": null,
+      "cost_support": null,
+      "lower": null,
+      "upper": null,
+      "simultaneous_interval_qualified": false,
+      "guaranteed_resource_superiority": null,
+      "sample_variance": {
+        "rz_count": 206773.40322580645,
+        "rz_depth": 15373.208669354839,
+        "cx_count": 19553.790322580644,
+        "cx_depth": 4206.603830645161,
+        "total_depth": 73202.35383064517,
+        "circuit_size": 842480.5806451613
+      },
+      "observed_min": {
+        "rz_count": 3860,
+        "rz_depth": 1688,
+        "cx_count": 2194,
+        "cx_depth": 1819,
+        "total_depth": 3682,
+        "circuit_size": 7398
+      },
+      "observed_max": {
+        "rz_count": 5677,
+        "rz_depth": 2204,
+        "cx_count": 2754,
+        "cx_depth": 2088,
+        "total_depth": 4810,
+        "circuit_size": 11075
+      },
+      "uncertainty": "descriptive SE only; rare trajectories can be missed; observed extrema are not support bounds",
+      "finite_bit_law_error": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null
+    }
+  },
+  "audits": {
+    "baseline": {
+      "samples": 32,
+      "full_controlled_dimension": 512,
+      "status": "SAMPLED_TRAJECTORY_NUMERICAL_PASS",
+      "diagnostics": {
+        "raw_reference": {
+          "max_entry": 4.552554299706639e-15,
+          "frobenius": 4.842638494288328e-14
+        },
+        "raw_unitarity": {
+          "max_entry": 8.881784197001252e-15,
+          "frobenius": 7.853049290877737e-14
+        },
+        "compiled_reference": {
+          "max_entry": 7.42160755615097e-13,
+          "frobenius": 8.695154935083078e-12
+        },
+        "compiled_raw": {
+          "max_entry": 7.409390323156486e-13,
+          "frobenius": 8.690251815687767e-12
+        },
+        "compiled_unitarity": {
+          "max_entry": 1.1313172620930345e-13,
+          "frobenius": 2.234371423858881e-12
+        },
+        "raw_adjoint_reference": {
+          "max_entry": 4.4506723726884535e-15,
+          "frobenius": 5.046660196320631e-14
+        },
+        "raw_adjoint_return": {
+          "max_entry": 8.548717310560528e-15,
+          "frobenius": 8.056788577755841e-14
+        },
+        "compiled_adjoint_reference": {
+          "max_entry": 7.434542809939867e-13,
+          "frobenius": 8.695725404319016e-12
+        },
+        "compiled_adjoint_return": {
+          "max_entry": 1.0628315548454437e-13,
+          "frobenius": 2.226302337839002e-12
+        }
+      },
+      "max_complex_XY_error": {
+        "raw": 3.783479225911143e-15,
+        "compiled": 1.0124494798013129e-13
+      },
+      "interpretation": "observed maxima over the32 registered samples within this arm;not whole-law operator bounds or rounding enclosures"
+    },
+    "proposed": {
+      "samples": 32,
+      "full_controlled_dimension": 512,
+      "status": "SAMPLED_TRAJECTORY_NUMERICAL_PASS",
+      "diagnostics": {
+        "raw_reference": {
+          "max_entry": 6.781600081267633e-15,
+          "frobenius": 8.497466211772829e-14
+        },
+        "raw_unitarity": {
+          "max_entry": 1.2656542480726785e-14,
+          "frobenius": 1.3889167072889202e-13
+        },
+        "compiled_reference": {
+          "max_entry": 6.621530327248895e-13,
+          "frobenius": 7.353777126614212e-12
+        },
+        "compiled_raw": {
+          "max_entry": 6.609315417955293e-13,
+          "frobenius": 7.358343145656388e-12
+        },
+        "compiled_unitarity": {
+          "max_entry": 1.006972283335017e-13,
+          "frobenius": 2.0659933594054653e-12
+        },
+        "raw_adjoint_reference": {
+          "max_entry": 6.944973181337252e-15,
+          "frobenius": 8.43489348147015e-14
+        },
+        "raw_adjoint_return": {
+          "max_entry": 1.1546696715548248e-14,
+          "frobenius": 1.375012880106926e-13
+        },
+        "compiled_adjoint_reference": {
+          "max_entry": 6.634242843257968e-13,
+          "frobenius": 7.357721327120479e-12
+        },
+        "compiled_adjoint_return": {
+          "max_entry": 9.804118852925374e-14,
+          "frobenius": 2.0500256283008103e-12
+        }
+      },
+      "max_complex_XY_error": {
+        "raw": 8.776318386096036e-15,
+        "compiled": 9.248157899252612e-14
+      },
+      "interpretation": "observed maxima over the32 registered samples within this arm;not whole-law operator bounds or rounding enclosures"
+    }
+  },
+  "shells": {
+    "head": {
+      "structure": {
+        "raw": {
+          "label": "raw ancilla-only shell:head",
+          "max_entry": 0.0,
+          "frobenius": 0.0,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiled": {
+          "label": "compiled ancilla-only shell:head",
+          "max_entry": 1.6653345369377348e-16,
+          "frobenius": 1.9229626863835638e-16,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "compiled_raw": {
+        "label": "shell compiled/raw:head",
+        "max_entry": 1.6653345369377348e-16,
+        "frobenius": 3.076740298213702e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "metrics": {
+        "rz_count": 2,
+        "cx_count": 0,
+        "rz_depth": 2,
+        "cx_depth": 0,
+        "total_depth": 3,
+        "circuit_size": 3,
+        "measurement_count": 0,
+        "quantum_only_depth": 3
+      }
+    },
+    "X": {
+      "structure": {
+        "raw": {
+          "label": "raw ancilla-only shell:X",
+          "max_entry": 0.0,
+          "frobenius": 0.0,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiled": {
+          "label": "compiled ancilla-only shell:X",
+          "max_entry": 1.6653345369377348e-16,
+          "frobenius": 1.9229626863835638e-16,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "compiled_raw": {
+        "label": "shell compiled/raw:X",
+        "max_entry": 1.6653345369377348e-16,
+        "frobenius": 3.076740298213702e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "metrics": {
+        "rz_count": 2,
+        "cx_count": 0,
+        "rz_depth": 2,
+        "cx_depth": 0,
+        "total_depth": 4,
+        "circuit_size": 4,
+        "measurement_count": 1,
+        "quantum_only_depth": 3
+      }
+    },
+    "Y": {
+      "structure": {
+        "raw": {
+          "label": "raw ancilla-only shell:Y",
+          "max_entry": 0.0,
+          "frobenius": 0.0,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiled": {
+          "label": "compiled ancilla-only shell:Y",
+          "max_entry": 5.551115123125783e-17,
+          "frobenius": 1.1102230246251565e-16,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "compiled_raw": {
+        "label": "shell compiled/raw:Y",
+        "max_entry": 5.551115123125783e-17,
+        "frobenius": 1.7763568394002505e-15,
+        "tolerance": 1e-10,
+        "rtol": 0
+      },
+      "metrics": {
+        "rz_count": 1,
+        "cx_count": 0,
+        "rz_depth": 1,
+        "cx_depth": 0,
+        "total_depth": 3,
+        "circuit_size": 3,
+        "measurement_count": 1,
+        "quantum_only_depth": 2
+      }
+    }
+  },
+  "comparison": {
+    "proposed_minus_baseline": {
+      "rz_count": -432.4375,
+      "rz_depth": -128.75,
+      "cx_count": -132.6875,
+      "cx_depth": -67.125,
+      "total_depth": -281.25,
+      "circuit_size": -879.5625
+    },
+    "proposed_over_baseline": {
+      "rz_count": 0.9168119461844589,
+      "rz_depth": 0.9376371755089684,
+      "cx_count": 0.9490752956415361,
+      "cx_depth": 0.9667538578216657,
+      "total_depth": 0.9375732647101666,
+      "circuit_size": 0.9129646923490813
+    }
+  },
+  "resources": {
+    "wall_seconds": 613.5521040512249,
+    "CPU_seconds": 10783.154116208,
+    "peak_RSS_KiB": 2616404
+  },
+  "files": 728,
+  "QPY_files": 262,
+  "reference_files": 64,
+  "raw_bytes": 154539767,
+  "cost_support": null,
+  "ideal_law_mean": null,
+  "whole_law_synthesis_bound": null,
+  "implemented_law_error": null,
+  "CA_achieved": null,
+  "shots": null,
+  "total_resources": null,
+  "guaranteed_advantage": null,
+  "mandatory_stop": true
+}
