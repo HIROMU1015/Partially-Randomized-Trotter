@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "9a4cda44a45675c2518b2252a98e78eeeb320942",
+      "role": "c1_h4_saved_XDF9_representation_ground_PF_scientific_SOURCE",
+      "description": "Frozen95-call SOURCE executed once unchanged;sector36 raw/K10 and own-ground-alias/PF26 pass. No new fit,DF norm,circuit,CA,shots or cost."
+    },
+    {
       "sha": "18045333a1438740160d7b9e44e78139ad59f2b5",
       "role": "c1_h4_CDF8_XDF8_saved_CA_RPE_serial_resources_scientific_SOURCE",
       "description": "Frozen119-call SOURCE executed once without change;52round and4 numerical CA PASS;conditional same-s serial totalRZ comparison,not rigorous or unconditional resource guarantee."
@@ -112,6 +117,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_c1_h4_xdf9_pf/2026-10-26/run01",
+        "kind": "directory",
+        "supports": [
+          "c1_h4_saved_XDF9_representation_ground_PF_pilot"
+        ],
+        "reason": "45 raw files,95 COMPLETE,correctness FAIL/retry/resume0;raw/K10 factors and sum/own-ground/alias PASS;26 PF cells/both candidates potentially feasible. No fit,DF norm,native,synthesis,CA,shots or costs. Source/input preserved,consumed mandatory STOP."
+      },
       {
         "path": "artifacts/research_c_c1_integration_update/2026-10-26",
         "kind": "directory",
@@ -6233,6 +6246,137 @@
           }
         }
       }
+    },
+    {
+      "id": "research_c_c1_h4_saved_XDF9_representation_ground_PF_20261026",
+      "status": "XDF9_STAGE1_COMPLETE",
+      "scientific_SOURCE": "9a4cda44a45675c2518b2252a98e78eeeb320942",
+      "SOURCE_tree": "35e4bbeff0d095c628a8c116f881c7ff734eaaf7",
+      "contract": "docs/research/research_c_c1_h4_xdf9_pf_contract_unapproved_20261026.json",
+      "contract_sha256": "189f4fa9f8a9d34d7a268857e78ec7459fba4e0ec05e99679fa2b30934535310",
+      "source_manifest_sha256": "a3fd7d17f7059240ba70d003b4dee7ad8e3f36358cf8bd64cbbed03fb1bc373d",
+      "conditions": {
+        "atoms": 4,
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "rank": 9,
+        "source_order": "saved OpenFermion1.6.1 eigh prefix9",
+        "number_representation": true,
+        "original_g_kappa": true,
+        "scalar": "original nuclear once",
+        "product_formula": "all original frames ordered symmetric S2",
+        "substeps": [
+          1,
+          4
+        ],
+        "base_time": "1/10",
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "CA_Ha": 0.00159,
+        "DF_budget_Ha": 0.00019875,
+        "target": "own XDF9 sector ground-state oracle",
+        "state_preparation": "EXCLUDED",
+        "PR_split": null
+      },
+      "scientific_calls": 95,
+      "correctness_FAIL": 0,
+      "inflight": 0,
+      "retry": 0,
+      "resume": 0,
+      "representation": "PASS",
+      "ground": {
+        "status": "PASS",
+        "energy": -2.1663875300259736,
+        "residual": 1.907144528367971e-15,
+        "normalization_error": 1.1102230246251565e-15,
+        "sector_dimension": 36,
+        "base_alias_margin": 1.6179938779914944,
+        "alias_energy_window_Ha": [
+          -10.0,
+          10.0
+        ],
+        "rule": "H4 registered [-10,10] energy window and max(abs(window))*0.1+pi/6 < pi",
+        "state_model": "own XDF9 sector ground-state oracle",
+        "physical_ground_overlap": null
+      },
+      "saved_DF": {
+        "status": "PASS",
+        "rank": 9,
+        "saved_norm_Ha": 2.0799049651854478e-07,
+        "saved_allowance_Ha": 1.4808500737431315e-09,
+        "saved_norm_plus_allowance_Ha": 2.0947134659228792e-07,
+        "DF_budget_Ha": 0.00019875,
+        "recomputed": false
+      },
+      "candidates": {
+        "1": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "unresolved_rounds": [],
+          "insufficient_rounds": [],
+          "native_candidate_eligible": true,
+          "interpretation": "DF reserve and registered PF sufficient condition only; not final CA or physical impossibility",
+          "synthesis_error": null,
+          "CA_achieved": null,
+          "shots": null,
+          "total_cost": null,
+          "maximum_PF_operator_error": 0.06843041535127227,
+          "maximum_at_m": 12,
+          "PF_passed": 13
+        },
+        "4": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "unresolved_rounds": [],
+          "insufficient_rounds": [],
+          "native_candidate_eligible": true,
+          "interpretation": "DF reserve and registered PF sufficient condition only; not final CA or physical impossibility",
+          "synthesis_error": null,
+          "CA_achieved": null,
+          "shots": null,
+          "total_cost": null,
+          "maximum_PF_operator_error": 0.004277093283650178,
+          "maximum_at_m": 12,
+          "PF_passed": 13
+        }
+      },
+      "scientific_exclusions": {
+        "new_fit": 0,
+        "optimizer": 0,
+        "new_decomposition": 0,
+        "DF_norm": 0,
+        "CDF8_evaluation": 0,
+        "XDF8_evaluation": 0,
+        "XDF10_evaluation": 0,
+        "native_build_compile": 0,
+        "synthesis": 0,
+        "CA_evaluation": 0,
+        "shots": 0,
+        "total_cost": 0
+      },
+      "CA_achieved": null,
+      "rigorous_enclosure": null,
+      "mandatory_stop": true,
+      "raw": "artifacts/research_c_c1_h4_xdf9_pf/2026-10-26/run01",
+      "raw_files": 45,
+      "report": "docs/research/research_c_c1_h4_xdf9_pf_execution_20261026.md",
+      "summary": "artifacts/research_c_c1_h4_xdf9_pf/2026-10-26/execution_summary.json",
+      "pf_rounds": "artifacts/research_c_c1_h4_xdf9_pf/2026-10-26/pf_rounds.csv",
+      "qualification": "Sector36 numerical representation/ground/PF sufficient-condition pilot only;not CA or resource comparison;old XDF8 maxima quoted without reevaluation"
     }
   ],
   "repository_completion_criteria": [
