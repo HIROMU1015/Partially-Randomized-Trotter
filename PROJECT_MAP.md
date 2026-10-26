@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## C1：H4 CDF8/XDF8共通precision・full512の技術準備（2026-10-26）
+
+[再利用・人工156 PASS・数値資格の限界](docs/research/research_c_c1_h4_native_fair_preparation_20261026.md)／[未承認305-call契約](docs/research/research_c_c1_h4_native_fair_contract_unapproved_20261026.json)。新SOURCE `c1_h4_native_fair.py`／`c1_h4_full_synthesis.py`、同名runner/test、[technical証拠](artifacts/research_c_c1_h4_native_fair/2026-10-26/technical/)。両arm共通H6 Gaussian/P0、4 kernel+3 shell、full512 Frobeniusと52roundへの接続を準備。実H4 decode/build/compile/新科学0、旧CDF8/XDF10結果不変・mandatory STOP。
+
 ## C1：H4 XDF8・表現/ground/alias/PF26セルがPASS（2026-10-26）
 
 [結果・全26値・資格の限界](docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md)／[原本45・93 calls・STOP](artifacts/research_c_c1_h4_xdf8_pf/2026-10-26/)。固定SOURCE328f31007…無変更、93/93 COMPLETE・correctness FAIL/retry0。元順XDF8、S2 s1/s4とも13/13 PASS・POTENTIALLY_FEASIBLE。新fit・DF norm再計算・CDF8/XDF10新評価・native/合成/CA/shots/費用0。旧結果保全・mandatory STOP。以下は準備時点の履歴。

@@ -1,5 +1,9 @@
 # 文書索引
 
+## C1：H4 CDF8/XDF8の公平なnative/full512再資格付け準備
+
+[共通precision/P0・full512/52round・人工156 PASS・制約](research/research_c_c1_h4_native_fair_preparation_20261026.md)／[未承認305-call契約](research/research_c_c1_h4_native_fair_contract_unapproved_20261026.json)。SOURCE/入力/環境byte preflight PASS。旧CDF metricsを流用せず、4 kernel+3 shellを共通条件で再資格付けする計画。実H4の新decode/build/compile/合成/CA/shots/費用0・mandatory STOP。
+
 ## C1：H4 XDF8の表現・own-ground/alias・PF限定結果
 
 [全gate・26 PF値・call・次の判断](research/research_c_c1_h4_xdf8_pf_execution_20261026.md)。固定SOURCE328f31007…無変更、93/93 COMPLETE・correctness FAIL0・retry/resume0。s1/s4とも13round PASS、最大PF誤差.06842795/.004276939。native/合成/CA/shots/総費用は未評価、旧CDF8/XDF10結果を保全してmandatory STOP。

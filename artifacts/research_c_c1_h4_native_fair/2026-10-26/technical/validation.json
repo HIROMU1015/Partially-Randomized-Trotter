@@ -1,0 +1,95 @@
+{
+  "status": "TECHNICAL_PREPARATION_PASS_NO_MOLECULAR_EXECUTION",
+  "scope": "C1_H4_CDF8_XDF8_FAIR_NATIVE_FULL512_V1",
+  "source_manifest_sha256": "fc00dfef12de6e642ae3a5f52b7b495ad161fb2c2bc6c70f187af7802d74a464",
+  "contract_sha256": "4a99e76ea879226e077376dd69f12b529f9eb1a48e98dd048143892a59b0e578",
+  "original_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "passive_CLI": {
+    "status": "BYTE_PREFLIGHT_PASS",
+    "science_calls": 0,
+    "maximum_calls": 305
+  },
+  "numpy_imported": false,
+  "qiskit_imported": false,
+  "molecular_numeric_decode": false,
+  "molecular_science_calls": 0,
+  "tests": {
+    "artificial_final": {
+      "tests": 19,
+      "failures": 0,
+      "errors": 0
+    },
+    "artificial_connection_final": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    "cache_connection_final": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    "regression_core": {
+      "tests": 109,
+      "failures": 0,
+      "errors": 0
+    },
+    "regression_stage2_isolated": {
+      "tests": 27,
+      "failures": 0,
+      "errors": 0
+    },
+    "regression": {
+      "tests": 136,
+      "failures": 1,
+      "errors": 0
+    },
+    "native_basis_final": {
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "unique_new_tests": 20,
+  "unique_existing_tests": 136,
+  "existing_mock_isolation": "Stage2 mock fixture captures fake RZZGate only if ops imports under stub;real-precision tests preload real ops.Mixed batch135PASS/1FAIL preserved;isolated Stage2 27PASS and core109PASS.No old SOURCE edits.",
+  "environment": {
+    "executable": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "prefix": "/tmp/prt-c1-stage2-preparation-20261025/.venv",
+    "python": "3.11.1",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "symengine": "0.13.0",
+      "threadpoolctl": "3.6.0"
+    }
+  },
+  "source_files": 29,
+  "saved_input_files": 33,
+  "resource_snapshot": {
+    "local": {
+      "workers": 18,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56679018496,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    },
+    "candidates": {
+      "workers": 4,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56679018496,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    }
+  },
+  "mandatory_stop": true
+}

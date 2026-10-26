@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## C1：H4 CDF8/XDF8共通precision・full512準備
+
+[技術実装・既存再利用・156 unique人工/回帰PASS・数値資格の限界](research_c_c1_h4_native_fair_preparation_20261026.md)／[未承認305-call科学契約](research_c_c1_h4_native_fair_contract_unapproved_20261026.json)。両armへ同じH6 precision/P0、4 kernel+3 shell、full512 Frobenius、52伝播を固定。実H4新科学0、旧CDF8/XDF10結果とSOURCE不変・mandatory STOP。
+
 ## C1：H4保存順XDF8・PF2候補が潜在適格
 
 [限定科学実行・全26セル・SOURCE・資格](research_c_c1_h4_xdf8_pf_execution_20261026.md)。SOURCE328f31007…で93 calls COMPLETE、表現／own-ground/alias／PF26全PASS、s1/s4ともPOTENTIALLY_FEASIBLE。保存DF誤差を再利用、新fit・DF norm再計算・CDF8/XDF10評価・native/合成/CA/shots/費用0。公平な次段階条件は別判断・mandatory STOP。

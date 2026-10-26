@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## C1：H4共通precision・全Fock Frobeniusの最小接続
+
+`../trottertracks/c1_h4_native_fair.py`は既存NativeBuilder/prepare_cdf/prepare_xdf、H6 Gaussian・MPFR P0、full CAR/Operator/QPY/metricsを無変更再利用。`c1_h4_full_synthesis.py`は既存Frobenius/reference_info/repeat_boundへ両行列・shell norm growthを接続。[技術報告・156 unique人工/回帰PASS](../../docs/research/research_c_c1_h4_native_fair_preparation_20261026.md)。未承認305-call scope、実H4新科学0、厳密enclosure/CA/総資源は未資格・mandatory STOP。
+
 ## C1：H4保存XDF8・sector表現/ground/alias/S2 PF実行完了
 
 SOURCE328f31007…のadapterから既存matvec／CAR／一般K／H4 eigensolver／PFを無変更再利用。[結果・93 COMPLETE・全26 PF PASS](../../docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md)。元順prefix8のs1/s4とも潜在適格。新DF分解／fit／DF norm／回路／CA／shots／総費用なし。旧SOURCE/raw/STOP不変、mandatory STOP。

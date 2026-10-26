@@ -1,5 +1,9 @@
 # scripts 索引
 
+## C1：H4 CDF8/XDF8・共通precision/full512（科学未承認）
+
+`run_research_c_c1_h4_native_fair.py`はdefaultでbyte/version preflightのみ。別科学許可後に保存CDF8/XDF8、共通H6 Gaussian/P0、4 kernel+3 shell・局所18・actual adjoint・full512 Frobenius・52 profile・native metricsへ接続する。[技術報告・156 unique PASS・fixture分離条件](../docs/research/research_c_c1_h4_native_fair_preparation_20261026.md)／[未承認305-call契約](../docs/research/research_c_c1_h4_native_fair_contract_unapproved_20261026.json)。新fit/DF-PF誤差再計算/CA/shots/総費用なし、今回新科学0・mandatory STOP。
+
 ## C1：H4 XDF8・固定SOURCEの限定科学実行完了
 
 `run_research_c_c1_h4_xdf8_pf.py`をSOURCE328f31007…のまま一度実行。[結果・全26 PFセル・保全](../docs/research/research_c_c1_h4_xdf8_pf_execution_20261026.md)。93 calls COMPLETE、表現／own-ground・alias PASS、s1/s4ともPOTENTIALLY_FEASIBLE、correctness FAIL/retry/resume0。2026-10-26/run01は消費済み、再起動しない。DF norm／CDF8/XDF10／native／CA／shots／総費用の新評価なし・mandatory STOP。
