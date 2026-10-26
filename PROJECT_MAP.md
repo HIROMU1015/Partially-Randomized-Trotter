@@ -419,3 +419,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [C4終了・成果引継ぎ](docs/research/research_c_c4_closeout_handoff_20261024.md)でユーザー採択済みの一時終了を追記した。上記の未採択状態は当時の履歴。B2等のSOURCE・検証資産・旧科学結果・STOPは維持する。
 [C1圧縮DFの静的接口調査](docs/research/research_c_compressed_df_interface_survey_20261024.md)は、X-DF／通常C-DF／RC-DF／SCDF、外部実装と既存DF下流の再利用、general diagonal・scalar/sector/phase、強いbaselineと別承認の最小案を整理する。C1の方式未採択、新実装・科学計算なし、公開照合後mandatory STOP。
+
+## 2026-10-26：H4強baselineの技術準備
+
+[技術報告](docs/research/research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call案](docs/research/research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。`src/trottertracks/c1_h4_strong_baseline.py`、同名runner・人工testを対応させる。XDFのexact spin対応basisと、両armの位相保持relative Gaussianをopt-in接続。新25＋回帰76＝101 tests PASS、実H4新評価0。B0保存値と新3routeのs1比較を準備、B3／s4／CA・shots・総費用は契約外。別明示許可までmandatory STOP。

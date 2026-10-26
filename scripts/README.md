@@ -318,3 +318,7 @@ PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_executio
 ## 研究C・C4：B2角度結合baseline限定科学比較（2026-10-24）
 
 [結果・固定SOURCE・契約・証拠](../docs/research/research_c_angle_fusion_b2_execution_20261024.md)。既存 `rustiq_adapter.py`／`rustiq_execution.py` と `scripts/run_research_c_rustiq_limited.py --scope C4_B2_SAVED_COMPARISON_V1` を使用。testは `tests/management/test_research_c_rustiq_*.py`、artifactは `artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/`。全登録gateがPASSし、全8wrapper・全8compiled指標でB2=保存R1。単純融合がこのfixtureの改善を再現した。旧route再実行・新reference・Rustiq/R2・retryは0。独立研究を区切るかはユーザー／研究C／統括の次判断であり未採択、mandatory STOP。
+
+## H4強baseline：basis／relative Gaussian（2026-10-26）
+
+`run_research_c_c1_h4_strong_baseline.py` はデフォルトでbyte preflightだけを行う。[技術報告](../docs/research/research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call案](../docs/research/research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。別途許可された場合だけ`--execute --output <fresh run01>`でB1 XDF spin／B2 CDF・XDF relativeのs1三routeを評価する。旧one-shot runnerは再起動しない。科学実行は未実施。

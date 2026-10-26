@@ -328,3 +328,7 @@
 ## 研究C：C4一時終了・C1圧縮DF調査（2026-10-24）
 
 [C4終了・成果引継ぎ](research/research_c_c4_closeout_handoff_20261024.md)にユーザー採択済みの一時終了、限定的成果とB2等の資産、再開条件を追加した。[C1接口調査](research/research_c_compressed_df_interface_survey_20261024.md)は外部fitterと既存DF下流・general diagonal・誤差/位相の再利用条件、候補1～2件と未承認の次案を整理する。上記の未採択は履歴として維持し、旧科学結果・SOURCE・grant・STOPを変更しない。C1方式の採択・新実装・科学実行なし、公開照合後mandatory STOP。
+
+## H4強baseline：技術準備（2026-10-26）
+
+[基底自由度・相対Gaussian融合・再利用・101 tests](research/research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call案](research/research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。B0保存nativeとB1 XDF spin／B2両armのs1を比較する経路を準備。実H4の新規数値評価は0、別明示許可までmandatory STOP。

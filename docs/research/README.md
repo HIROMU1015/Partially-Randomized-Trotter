@@ -177,3 +177,7 @@ Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design
 - [H-chain系サイズ・実行可能delta窓におけるPF係数検証](../pf_c_system_size_validation.md)
 - [RPE resource accounting](../rpe_resource_accounting.md)
 - [RTE一次資料の版管理](../rte_source_versions.md)
+
+## C1 H4強baseline：技術準備（2026-10-26）
+
+[技術報告・合法なbasis自由度・位相補正・人工101 PASS](research_c_c1_h4_strong_baseline_preparation_20261026.md)／[未承認227-call契約案](research_c_c1_h4_strong_baseline_science_contract_draft_20261026.json)。保存CDF8/XDF8 baseline、XDF spin基底単独、両armのrelative Gaussian単独をs1で切り分ける。B3・s4・13round総資源は未登録、実H4新科学call0。別途の明示的な科学実行許可までmandatory STOP。

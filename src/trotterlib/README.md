@@ -306,3 +306,7 @@ DF部分ランダム化研究と混同しない。
 ## 研究C・C4：B2角度結合baseline限定科学比較（2026-10-24）
 
 [結果・固定SOURCE・契約・証拠](../../docs/research/research_c_angle_fusion_b2_execution_20261024.md)。既存 `rustiq_adapter.py`／`rustiq_execution.py` と `scripts/run_research_c_rustiq_limited.py --scope C4_B2_SAVED_COMPARISON_V1` を使用。testは `tests/management/test_research_c_rustiq_*.py`、artifactは `artifacts/research_c_rustiq_angle_fusion/2026-10-24/attempt01/`。全登録gateがPASSし、全8wrapper・全8compiled指標でB2=保存R1。単純融合がこのfixtureの改善を再現した。旧route再実行・新reference・Rustiq/R2・retryは0。独立研究を区切るかはユーザー／研究C／統括の次判断であり未採択、mandatory STOP。
+
+## H4強baselineのtask-local adapter（2026-10-26）
+
+既存DF primitive／precision Gaussian／P0を再利用する`src/trottertracks/c1_h4_strong_baseline.py`を追加した。[技術報告](../../docs/research/research_c_c1_h4_strong_baseline_preparation_20261026.md)。exact spin XDF basisとanalytic vacuum phase付きrelative boundaryをopt-inで接続し、既存library/defaultは無変更。人工／回帰101 PASS、実H4科学実行0。s1三route・最大227-callの未承認案で、B3・shots・総費用へ自動進行しない。
