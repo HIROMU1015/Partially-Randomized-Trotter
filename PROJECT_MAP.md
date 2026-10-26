@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 2026-10-27：PR-aware DF C1・仮定付きshots／serial総資源評価完了
+
+[164-call結果・全78round・資格の限界](docs/research/research_c_pr_aware_df_stage_c1_execution_20261027.md)。固定SOURCE b1c735da3…を無変更で一度実行し164/164 COMPLETE、correctness FAIL/retry/resume0。保存H4・1Å/STO-3G、通常CDF8 Baseline/Proposed、sector36、元順LD2、partial S2 δ.1/s4/r16/K0/m0..12、own-DF oracle／状態準備除外、共通precision/P0／CA.00159／serial model。証拠経路26roundはUNRESOLVED・shots/total null。2つの明示仮定scenarioでは両armが条件付き十分条件内。Idealのshots53136/19574、総RZ点推定3,194,333,274,946/540,290,160,109（Proposed約83.086%低い）。.001Aをsynthesis/law各項へ仮定するscenarioも約83.089%低い。全law誤差・費用support・actual CA・保証shots/優位は未資格/null。SOURCE60/input408・既存1644ファイル不変、新fit/sampling/build-compile/量子shots0。C2は未実行・次指示待ち、公開照合後mandatory STOP。以下は以前のscopeの履歴。
+
+
 ## 2026-10-27：PR-aware DF Stage C・保存証拠からshots／serial資源への技術準備
 
 [2経路・資格不足・人工73 PASS・C1/C2設計](docs/research/research_c_pr_aware_df_stage_c_readiness_20261027.md)／[未承認C1・164-call案](docs/research/research_c_pr_aware_df_stage_c1_contract_draft_20261027.json)。新`c_pr_aware_df_stage_c.py`／専用runner／人工test。Evidence laneは全law合成・実装law不足でnull、2明示scenarioで既存accuracy/Hoeffding/serial-costへ接続する案。SOURCE60/saved408のpassive照合PASS、旧1361ファイル不変。実H4新shots/総費用/再解析・新科学call0。C2はC1後の選択を要する非実行草案。公開照合後mandatory STOP。
