@@ -15,7 +15,7 @@ from . import c_pr_aware_df as objective
 from . import c1_h6_initialization as old
 
 io, molecule = old.io, old.molecule
-SCOPE = 'C_PR_AWARE_DF_PAIRED_STAGE_A_V1'
+SCOPE = 'C_PR_AWARE_DF_PAIRED_STAGE_A_X0_V2'
 FAMILY = 'artifacts/research_c_pr_aware_df'
 PREPARE = dict(original_input_load=1, saved_initial_load=1, corrected_codec=1,
                tensor_assessment=2, objective_setup=1)
@@ -41,7 +41,9 @@ def preflight(root, path, input_path, *, fit=False):
     if (c['scope'] != SCOPE or c['status'] != 'UNAPPROVED_PROPOSAL'
             or c['conditions'] != CONDITIONS or c['call_limits'] != LIMITS
             or c['maximum_logical_units'] != MAX_CALLS or c['stages_B_C_authorized']
-            or c['objective'] != objective.VERSION): raise ValueError('PILOT_SCOPE')
+            or c['objective'] != objective.VERSION
+            or c['initialization'] != objective.INITIALIZATION
+            or c['fresh_output'] != FAMILY+'/2026-10-27/run01'): raise ValueError('PILOT_SCOPE')
     if io.sha(input_path) != c['original_input']['sha256']: raise ValueError('ORIGINAL_INPUT')
     if io.sha(root/c['source_manifest']) != c['source_manifest_sha256']: raise ValueError('SOURCE_MANIFEST')
     for group in (io.read(root/c['source_manifest'])['files'], c['saved_inputs']):

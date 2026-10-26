@@ -82,7 +82,8 @@ def test_byte_only_preflight_rejects_changed_source_or_input(tmp_path):
     m.io.save(tmp_path/'SOURCE.json',dict(files={'source.py':m.io.sha(source)}))
     c=dict(scope=m.SCOPE,status='UNAPPROVED_PROPOSAL',conditions=m.CONDITIONS,
         call_limits=m.LIMITS,maximum_logical_units=30,stages_B_C_authorized=False,
-        objective=m.objective.VERSION,original_input=dict(sha256=m.io.sha(original)),
+        objective=m.objective.VERSION,initialization=m.objective.INITIALIZATION,
+        fresh_output=m.FAMILY+'/2026-10-27/run01',original_input=dict(sha256=m.io.sha(original)),
         source_manifest='SOURCE.json',source_manifest_sha256=m.io.sha(tmp_path/'SOURCE.json'),
         initial_export='initial.npz',saved_inputs={'initial.npz':m.io.sha(initial)},evaluation_packages={})
     path=tmp_path/'contract.json';m.io.save(path,c)

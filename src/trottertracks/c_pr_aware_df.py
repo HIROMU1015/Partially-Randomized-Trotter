@@ -11,6 +11,7 @@ import math
 from . import c1_ffsim_corrected_codec as corrected
 
 VERSION = 'cdf_fixed_prefix_smooth_pauli_tail_mass_v1'
+INITIALIZATION = 'qualified_real_schur_snapshot_x0_v2'
 
 
 @dataclass(frozen=True)
@@ -137,12 +138,12 @@ def objective_context(spec):
 
 
 def fit(g, J, U, x0, spec, *, before_optimizer, after_optimizer):
-    """The old fixed ffsim fitter/codec/minimizer path; only loss is replaced."""
+    """Existing fitter/loss hook; forward the single qualified initial x0."""
     if (len(J), J.shape[-1]) != (spec.rank, spec.norb): raise ValueError('FIT_RANK_SHAPE')
     import numpy as np
     with objective_context(spec):
         a,u,result = corrected.fit(g, J, U, x0, before_optimizer=before_optimizer,
-                                  after_optimizer=after_optimizer)
+                                  after_optimizer=after_optimizer,prepared_initial=True)
     if (a.shape != (spec.rank,spec.norb,spec.norb) or u.shape != a.shape
             or not np.isfinite(a).all() or not np.isfinite(u).all()
             or not np.array_equal(a,a.transpose(0,2,1))

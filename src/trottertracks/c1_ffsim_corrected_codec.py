@@ -14,12 +14,16 @@ SETTINGS = dict(tol=1e-8, optimize=True, cholesky=True, method='L-BFGS-B',
                 return_optimize_result=True)
 
 
-def fit(g, J, U, expected_x0, *, before_optimizer, after_optimizer):
+def fit(g, J, U, expected_x0, *, before_optimizer, after_optimizer,
+        prepared_initial=False):
     """One actual ffsim fitter invocation; hooks observe, never replace the loss.
 
 The saved initial tensors must already have input/SOURCE identity and sector
-qualification. Their exact packed x0 must equal that qualified snapshot before
-the original optimizer can be entered. There is no legacy-codec fallback.
+qualification. By default their exact packed x0 must equal the snapshot.
+For a prepared snapshot, validate it by unpacking its existing x0 and pass
+that same vector onward without taking another matrix logarithm. The caller
+must have qualified this snapshot's physical/tensor fidelity before this call.
+There is no legacy-codec fallback.
 """
     import numpy as np
     import scipy.optimize
@@ -28,6 +32,7 @@ the original optimizer can be entered. There is no legacy-codec fallback.
     if not jax.config.jax_enable_x64:raise ValueError('JAX_X64_REQUIRED')
     if not callable(before_optimizer) or not callable(after_optimizer):
         raise ValueError('DIAGNOSTIC_HOOKS_REQUIRED')
+    if type(prepared_initial) is not bool:raise ValueError('PREPARED_INITIAL_BOOL_REQUIRED')
     d=importlib.import_module('ffsim.linalg.double_factorized_decomposition')
     J,U,g=np.array(J,copy=True),np.array(U,copy=True),np.asarray(g)
     rank=len(J);seen=dict(initializer=0,pack=0,optimizer=0);state={}
@@ -49,7 +54,24 @@ the original optimizer can be entered. There is no legacy-codec fallback.
             raise ValueError('CORRECTED_CODEC_SCOPE')
         if not np.array_equal(a,J) or not np.array_equal(b,U):
             raise ValueError('SAVED_INITIALIZER_CHANGED')
-        J2,U2,x,report,_=codec.roundtrip(a,b)
+        if prepared_initial:
+            from ffsim.linalg.util import df_tensors_from_params
+            x=np.array(expected_x0,copy=True)
+            if (x.dtype!=np.float64 or x.shape!=(rank*J.shape[-1]**2,)
+                    or not np.isfinite(x).all()):raise ValueError('QUALIFIED_X0_SCHEMA')
+            J2,U2=df_tensors_from_params(x,rank,J.shape[-1],None,real=True)
+            rotation_error=float(np.max(abs(U2-b)))
+            if (a.dtype!=np.float64 or b.dtype!=np.float64
+                    or not np.isfinite(a).all() or not np.isfinite(b).all()
+                    or not np.array_equal(a,a.transpose(0,2,1))
+                    or not np.array_equal(J2,a) or not np.isfinite(U2).all()
+                    or not np.isfinite(rotation_error) or rotation_error>codec.ATOL
+                    or np.max(abs(b.transpose(0,2,1)@b-np.eye(b.shape[-1])))>codec.ATOL):
+                raise ValueError('QUALIFIED_X0_TENSORS_MISMATCH')
+            report=dict(version=codec.VERSION,parameter_source='qualified_snapshot',
+                restored_rotation_maxabs=rotation_error,component_allowance=codec.ATOL)
+        else:
+            J2,U2,x,report,_=codec.roundtrip(a,b)
         if not np.array_equal(x,expected_x0):raise ValueError('QUALIFIED_X0_CHANGED')
         state.update(x0=x.copy(),J=J2,U=U2,codec=report)
         return x
