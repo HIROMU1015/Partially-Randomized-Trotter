@@ -3190,6 +3190,8 @@
   "confidence_guaranteed": false,
   "confirmation_topup": false,
   "environment_policy": "reuse_existing_environment_read_only; minor nonsemantic runtime differences accepted; no global installation",
+  "execution_memos": "per_worker_schedule_memo_and_one_exact_previous_evolution; original_sampler_and_correctness_checks_unchanged",
+  "fixed_scientific_plan_unchanged_from_previous_SOURCE": true,
   "independent_confirmation": "ALL_SEVEN_UNCONDITIONAL_AFTER_EXPLORATION_SUCCESS",
   "known_seed_sources": [
     {
@@ -3213,12 +3215,13 @@
   "nominal_familywise_alpha": 0.05,
   "normal_bonferroni_z": 2.8375969129437872,
   "original_results_commit": "155529e20a8fac39e00786c40b57830b71203c4f",
-  "parallel_policy": "idle_CPU_admission; outer_process_parallel; nested_compiler_BLAS_threads_1; representative_RSS_based_memory_admission; periodic_load_observation",
+  "parallel_policy": "heavy_work_first; shared_contexts_and_bulk_pool_across_cohorts; adaptive_inflight_idle_plus_owned_CPU; nested_compiler_BLAS_threads_1; representative_RSS_memory_admission",
+  "previous_execution_SOURCE": "1255f6e60656494a45aebceeefe5224313e4355f",
   "primary_comparisons": 11,
-  "private_output_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/h46-seven-cost-readiness-20261027/run01",
+  "private_output_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/h46-seven-cost-speedup-20261027/run01",
   "provider_commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
-  "provider_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/h46-seven-cost-readiness-20261027/provider",
-  "public_results_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-readiness-20261027/analysis/h46_seven_cost_readiness_20261027/results",
+  "provider_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/h46-seven-cost-speedup-20261027/provider",
+  "public_results_root": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-speedup-20261027/analysis/h46_seven_cost_readiness_20261027/results",
   "python": "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/bin/python",
   "saved_data_hashes": {
     "analysis/h46_unpriced_screening_20261026/promising_candidates.csv": "52655daf42f89ed7a91f02e2d3481635af330b2b7c22d606301bff6fee618ef0",
@@ -3258,8 +3261,9 @@
     "original_long_time_trials_identified": 4022
   },
   "source_hashes": {
-    "analysis/h46_seven_cost_readiness_20261027/execute.py": "da1aaefe5afe753ef6cb6b777c4a11488ccdfec936f38a53084348927c0c57d6",
-    "analysis/h46_seven_cost_readiness_20261027/prepare.py": "8b7fd9f1bec767e08e18dcc8155c689df342ad60841bd635f966a4b652e7f2ab",
+    "analysis/h46_seven_cost_readiness_20261027/execute.py": "268f20c78cc306c2ac3ea77e7ead326fea91c1472ae093c08b854052f3d3d187",
+    "analysis/h46_seven_cost_readiness_20261027/performance.py": "a92a6e074d031842988a6ba8715ea25bc944d50bc9b3be3c0f684b772854a551",
+    "analysis/h46_seven_cost_readiness_20261027/prepare.py": "a5ceaf7a2225d7e5b8a22f36229dd6fa6f1a552678e282914eff4d7b18ef4e17",
     "scripts/d0_frozen_shot_rule_v1.py": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f",
     "scripts/h246_saved_cost_evaluation.py": "f66bb36dbac5f94927ce67fc104e2c6eaceb4d235e4f4486a699e0c5a88d2fce",
     "scripts/h46_long_time_extension.py": "163738a01eac66b887f6d0fc522b2d6190948e0634353c9c8292f6a34ae1f635",
@@ -3312,11 +3316,11 @@
       "equivalence": "SAVED_20261022_RECONSTRUCTION; all seven scientific array hashes equal original; NPZ container differs",
       "inputs": {
         "H4_tol_receipt.json": {
-          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-readiness-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H4/tol_only_receipt.json",
+          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-speedup-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H4/tol_only_receipt.json",
           "sha256": "623ac3c34fbb22ab364f8c637377b70cdd475abb73d2969f3a9acd86293c817b"
         },
         "H4_tol_snapshot.npz": {
-          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-readiness-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H4/tol_only_snapshot.npz",
+          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-speedup-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H4/tol_only_snapshot.npz",
           "sha256": "ed9b5a136e54a47047b6458ebb7ccb6c9b9ef699cdd534ae1f9f18da5310a520"
         }
       }
@@ -3342,15 +3346,15 @@
       "equivalence": "ORIGINAL_SNAPSHOT_AND_RECEIPTS_BYTE_IDENTICAL; saved weighted-Hermitian completion",
       "inputs": {
         "H6_df_receipt.json": {
-          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-readiness-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H6/df_receipt.json",
+          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-speedup-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H6/df_receipt.json",
           "sha256": "89cc00ab1c1b6ff65804781b5904b127e5d2e81acd15d66b0c87a86adb4c5f55"
         },
         "H6_snapshot.npz": {
-          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-readiness-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H6/h6_input_snapshot.npz",
+          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-speedup-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H6/h6_input_snapshot.npz",
           "sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005"
         },
         "H6_snapshot_receipt.json": {
-          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-readiness-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H6/snapshot_receipt.json",
+          "path": "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/h46-seven-cost-speedup-20261027/artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/published_inputs/H6/snapshot_receipt.json",
           "sha256": "3dc5b1c695f1a042ee0c2b5e3762ae0032af90f03017667541ea470577f35e3f"
         }
       }

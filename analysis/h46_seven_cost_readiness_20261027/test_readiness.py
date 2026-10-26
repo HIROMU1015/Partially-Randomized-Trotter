@@ -66,7 +66,7 @@ class Readiness(unittest.TestCase):
         futures=[Future(),Future()];futures[0].set_exception(ValueError('synthetic correctness failure'))
         pool=MagicMock();pool.submit.side_effect=futures
         context=MagicMock();context.__enter__.return_value=pool
-        with patch.object(x,'ProcessPoolExecutor',return_value=context),patch.object(x,'wait',return_value=({futures[0]}, {futures[1]})):
+        with patch.object(x.performance,'order_jobs',side_effect=lambda jobs,proxy:list(jobs)),patch.object(x,'ProcessPoolExecutor',return_value=context),patch.object(x,'wait',return_value=({futures[0]}, {futures[1]})):
             with self.assertRaises(ValueError):
                 x.process_jobs([('a',),('b',),('c',)],2)
         self.assertEqual(pool.submit.call_count,2);self.assertTrue(futures[1].cancelled())

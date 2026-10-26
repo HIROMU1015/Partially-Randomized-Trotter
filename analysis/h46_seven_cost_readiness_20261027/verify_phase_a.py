@@ -11,6 +11,7 @@ sys.path.insert(0,str(HERE))
 import prepare
 import execute
 import test_readiness
+import test_performance
 
 
 def audit(event,args):
@@ -26,6 +27,7 @@ def main():
     sys.addaudithook(audit)
     with patch.object(prepare.native,'compose',forbidden),patch.object(prepare.native,'sample_requests',forbidden),patch.object(prepare.native,'compile_cached',forbidden):
         suite=unittest.defaultTestLoader.loadTestsFromModule(test_readiness)
+        suite.addTests(unittest.defaultTestLoader.loadTestsFromModule(test_performance))
         result=unittest.TextTestRunner(verbosity=2).run(suite)
     if not result.wasSuccessful():
         raise SystemExit(1)

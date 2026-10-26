@@ -25,7 +25,7 @@ from h46_m5_contract import core
 
 BASE = '2e518b86e7c052dafb20dece0de7ffa6c7c85f8f'
 PROVIDER = 'c31ef424175c02379eafebe8fc6c7548c1d9aabe'
-TASK = ROOT.parents[1] / 'h46-seven-cost-readiness-20261027'
+TASK = ROOT.parents[1] / 'h46-seven-cost-speedup-20261027'
 # ROOT is .../.server-preparation/worktrees/<worktree>; TASK is a sibling
 # private task under .server-preparation, outside the versioned worktree.
 PYTHON = Path('/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/bin/python')
@@ -258,6 +258,7 @@ def main():
     provider = materialize_provider();systems = input_info();seed_files = historical_seed_files()
     plan = dict(status='PHASE_A_FIXED_AWAITING_USER_EXECUTION_PERMISSION', base_commit=BASE,
         original_results_commit='155529e20a8fac39e00786c40b57830b71203c4f',
+        previous_execution_SOURCE='1255f6e60656494a45aebceeefe5224313e4355f',
         provider_commit=PROVIDER, provider_root=str(provider), python=str(PYTHON),
         private_output_root=str(TASK / 'run01'), public_results_root=str(HERE / 'results'),
         cohorts=list(COHORTS), independent_confirmation='ALL_SEVEN_UNCONDITIONAL_AFTER_EXPLORATION_SUCCESS',
@@ -269,7 +270,8 @@ def main():
         compiler=dict(qiskit='1.3.0', numpy='1.26.4', basis=['rz','sx','x','cx'], optimization_level=1,
                       seed_transpiler=17, settings_hash=native.COMPILER_HASH),
         environment_policy='reuse_existing_environment_read_only; minor nonsemantic runtime differences accepted; no global installation',
-        parallel_policy='idle_CPU_admission; outer_process_parallel; nested_compiler_BLAS_threads_1; representative_RSS_based_memory_admission; periodic_load_observation',
+        parallel_policy='heavy_work_first; shared_contexts_and_bulk_pool_across_cohorts; adaptive_inflight_idle_plus_owned_CPU; nested_compiler_BLAS_threads_1; representative_RSS_memory_admission',
+        execution_memos='per_worker_schedule_memo_and_one_exact_previous_evolution; original_sampler_and_correctness_checks_unchanged',
         scientific_calls=dict(trajectories_exploration=sum(x['n_exploration'] for x in rows),
             trajectories_confirmation=sum(x['n_confirmation'] for x in rows),
             trajectories_total=sum(x['n_exploration'] + x['n_confirmation'] for x in rows),
@@ -289,7 +291,13 @@ def main():
         source_hashes={str(p.relative_to(ROOT)): sha(p) for p in {
             *(ROOT / name for name in study.read(study.PUBLIC / 'completion_provenance.json')['source_files']),
             ROOT / 'scripts/h46_m5_contract.py', ROOT / 'scripts/h46_pr_pilot_repair.py',
-            HERE / 'prepare.py', HERE / 'execute.py'} if p.exists()})
+            HERE / 'prepare.py', HERE / 'execute.py', HERE / 'performance.py'} if p.exists()})
+    previous = json.loads(subprocess.check_output(['git','show',
+        '1255f6e60656494a45aebceeefe5224313e4355f:analysis/h46_seven_cost_readiness_20261027/PLAN.json'],cwd=ROOT))
+    for name in ('candidates','cohorts','seed_audit','compiler','scientific_calls','R_unit_price_contrasts',
+                 'normal_bonferroni_z','independent_confirmation','confirmation_topup'):
+        assert plan[name] == previous[name], 'Optimization changed fixed scientific plan: ' + name
+    plan['fixed_scientific_plan_unchanged_from_previous_SOURCE'] = True
     write('PLAN.json', plan)
     csv_write('sample_plan.csv', [dict(order=i + 1, id=x['candidate']['id'], **{k:v for k,v in x['candidate'].items() if k!='id'},
         primary_epsilon=x['primary_epsilon'], n_exploration=x['n_exploration'], n_confirmation=x['n_confirmation'],

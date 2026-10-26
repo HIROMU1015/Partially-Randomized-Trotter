@@ -2,6 +2,8 @@
 
 2026-10-27 JST。**Phase Aのみ完了。新しい分子計算・sampling・回路build/compileは0。Phase Bはユーザーの別途実行許可待ちでmandatory STOP。**
 
+準備SOURCE `1255f6e60656494a45aebceeefe5224313e4355f` を保全し、別branch `codex/h46-seven-cost-speedup-20261027` で並列化・高速化を追加した。固定標本計画は不変。[高速化の内容・検証](PERFORMANCE.md)を参照する。
+
 基準はスクリーニングcommit `2e518b86e7c052dafb20dece0de7ffa6c7c85f8f` と元研究commit `155529e20a8fac39e00786c40b57830b71203c4f`。7 ID・全科学条件・primary εの保存Nは両方の固定資料と一致した。実行SOURCEは本ディレクトリのPLAN.jsonとexecute.pyを含む固定commit（最終報告のSHA）。既存科学SOURCE・結果・33/40・grant/ledger/marker/STOP、B3と他研究worktreeは変更しない。
 
 ## 固定条件・利用可能な入力と環境
@@ -66,15 +68,15 @@ K6等の未観測rare orderの費用を0にせず、未取得条件付き費用�
 
 cohortは `SEVEN_20261027_EXPLORATION` と `SEVEN_20261027_CONFIRMATION`。元の `trial_seed(candidate,cohort,index,outer,piece)` を使用する。今回はhash由来のseed識別子を列挙するだけでrandom samplingは0。既知識別子74,851個（元長時間研究4,022試行のcohort/index由来を含む）と新しい91,760 piece-seedとの衝突0、新cohort内/間重複0。seed列のdigestをPLAN.jsonに固定した。全歴史的seedを回収した保証や、PCG64の独立性証明ではない。旧grant・markerを起動に流用せず、新しい承認証明・grant基盤も作っていない。
 
-private結果：`.server-preparation/h46-seven-cost-readiness-20261027/run01/`。公開結果：本ディレクトリの `results/`（Phase Aでは未作成）。旧cacheパスは不在なので持ち込まず、新しい数値回路fingerprint cacheを専用private領域で使用する。cache再利用はコンパイル結果の再利用であって、同じrandom drawの重複標本計上ではない。
+private結果：`.server-preparation/h46-seven-cost-speedup-20261027/run01/`。公開結果：本ディレクトリの `results/`（Phase Aでは未作成）。旧cacheパスは不在なので持ち込まず、新しい数値回路fingerprint cacheを専用private領域で使用する。cache再利用はコンパイル結果の再利用であって、同じrandom drawの重複標本計上ではない。
 
 完成PASSはcandidate/cohort/index・event総数・保存log_B・scalar/preparation binding・検査結果で照合し、再sampling/再compileしない。partial/STOPは保全して自動再実行しない。controller lockと元のatomic trial-directory作成で同時二重取得を防ぐ。科学/入力不一致、seed衝突、実際の資源不足・他利用への干渉は安全停止。固定n取得後もmandatory STOPで、追加候補やtop-upへ進まない。
 
-並列度は起動時と代表検査後の実idle CPU/RAM、代表実測RSSで決める。固定CPU affinity・RSS/AS上限・少数worker上限を追加しない。外側trajectory processを並列化し、内部compiler/BLASは1 thread/processとして多重並列を避ける。30秒ごとに資源を読み取り観測し、RAMが代表footprint未満なら自己投入を止める。共有venv/cache・system設定・他ユーザーjobを変更しない。実性能・所要時間は今回測定していない。
+並列度は実idle CPU/RAMと代表RSSで決め、30秒ごとに自分のworkerのCPU使用も分けて読み取り、処理中の投入数を増減する。pool容量の上限は実CPU affinity/cgroup quota・利用可能RAMから定め、固定CPU affinity・RSS/AS上限・少数worker上限は追加しない。共通contextは各系1回構築してfork共有し、bulk poolも探索・独立確認で再利用する。重い構造workを先に投入する。内部compiler/BLASは1 thread/processとして多重並列を避ける。RAMが代表footprint未満なら自己投入を止める。共有venv/cache・system設定・他ユーザーjobを変更しない。実分子の性能・所要時間は今回測定していない。
 
 ## 検証・次の承認
 
-prepare.pyは保存値解析と入力byte照合だけ。execute.pyの `check` もmetadataのみ。人工/mock 10件で、paired共分散、分散倍率、7候補/N/n一致、seed分離、partial/STOP再利用拒否、代表FAIL後の残りsampling抑止、pending取消、静的SOURCE/input照合、探索・確認を混ぜないexact会計を確認した。科学runtime importと新しいcompose/sample/compileを禁止した検査結果をverification.jsonに保存する。元の保存endpoint・価格等11ファイルのhashも固定した。これは実分子native correctness・実compiler性能の新証拠ではない。元のcorrectness検査はPhase Bの計上済み代表trialで実施する。
+prepare.pyは保存値解析と入力byte照合だけ。execute.pyの `check` もmetadataのみ。元の人工/mock 10件と高速化11件の計21件で、paired共分散、7候補/N/n/seed不変、partial/STOP拒否、代表FAIL後のsampling抑止、exact会計に加え、投入数の増減、全trialの欠落・重複なし、context/pool再利用、回路cache入力の分離を確認した。科学runtime importと新しいcompose/sample/compileを禁止した検査結果をverification.jsonに保存する。元の保存endpoint・価格等11ファイルのhashも固定した。これは実分子native correctness・実compiler性能の新証拠ではない。元のcorrectness検査はPhase Bの計上済み代表trialで実施する。
 
 ```bash
 python3 -B analysis/h46_seven_cost_readiness_20261027/verify_phase_a.py

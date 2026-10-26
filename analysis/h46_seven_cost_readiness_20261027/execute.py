@@ -4,10 +4,13 @@ Use `run` only after the user permits the fixed Phase B scope. There is no
 approval certificate/grant system. `check` reads metadata only.
 """
 import argparse
+from collections import deque
 from concurrent.futures import FIRST_COMPLETED, ProcessPoolExecutor, wait
+from contextlib import ExitStack
 from datetime import datetime, timezone
 from fractions import Fraction
 import fcntl
+import io
 import json
 import math
 import multiprocessing as mp
@@ -15,13 +18,18 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import tarfile
 import time
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
 import prepare
+import performance
 native, study, report = prepare.native, prepare.study, prepare.report
+_CONTEXT_SIGNATURES = {}
+_CONTROLLER_PID = os.getpid()
+_WORKER_MEMOS = None
 
 
 def read_plan():
@@ -47,10 +55,13 @@ def verify_static(plan):
     # Verify the private provider copy against the original Git tree. No import
     # of its numerical modules, and no circuit construction, occurs here.
     provider = Path(plan['provider_root'])
-    files = subprocess.check_output(['git', 'ls-tree', '-r', '--name-only', plan['provider_commit'], 'src'], cwd=ROOT, text=True).splitlines()
-    for name in files:
-        expected = subprocess.check_output(['git', 'show', plan['provider_commit'] + ':' + name], cwd=ROOT)
-        assert (provider / name).read_bytes() == expected, 'Provider SOURCE mismatch: ' + name
+    source_archive = subprocess.check_output(['git', 'archive', plan['provider_commit'], 'src'], cwd=ROOT)
+    with tarfile.open(fileobj=io.BytesIO(source_archive)) as archive:
+        files = [member for member in archive.getmembers() if member.isfile()]
+        for member in files:
+            path = (provider/member.name).resolve()
+            assert path.is_relative_to(provider.resolve())
+            assert path.read_bytes() == archive.extractfile(member).read(), 'Provider SOURCE mismatch: ' + member.name
     return dict(status='STATIC_READY', input_regeneration=0, scientific_calls=0,
                 execution_permission='REQUIRES_SEPARATE_USER_INSTRUCTION', provider_files=len(files))
 
@@ -87,25 +98,70 @@ def accepted_trial(row, cohort, index, root, expected_log_B=None):
     return v
 
 
-def process_jobs(jobs, workers, monitor=None, collect=True):
-    """Bounded outstanding work; cancel unstarted tasks after first failure."""
+def worker_trial(job):
+    """Keep the original disk record; send only a small receipt through IPC."""
+    global _WORKER_MEMOS
+    assert os.getpid() != _CONTROLLER_PID, 'Scientific trial belongs in an owned worker'
+    if _WORKER_MEMOS is None:
+        compose = performance.ComposeMemo(native.compose)
+        schedule = performance.ScheduleMemo(prepare.core.schedule)
+        native.compose, prepare.core.schedule = compose, schedule
+        _WORKER_MEMOS = compose, schedule
+    compose, schedule = _WORKER_MEMOS
+    before = compose.hits, compose.misses, schedule.hits
+    result = native.cost_trial(job)
+    return dict(candidate=result['candidate'], cohort=result['cohort'], index=result['index'],
+        peak_RSS_bytes=result['peak_RSS_bytes'], wall_seconds=result['wall_seconds'],
+        worker_pid=os.getpid(), compose_cache_hits=compose.hits-before[0],
+        compose_cache_misses=compose.misses-before[1], schedule_cache_hits=schedule.hits-before[2])
+
+
+class PoolOwner:
+    """Reuse the bulk pool across exploration and independent confirmation."""
+    def __init__(self):
+        self.pool, self.capacity = None, 0
+
+    def __enter__(self):
+        return self
+
+    def get(self, capacity):
+        if self.pool is None:
+            self.capacity = capacity
+            self.pool = ProcessPoolExecutor(max_workers=capacity, mp_context=mp.get_context('fork'))
+        return self.pool
+
+    def __exit__(self, *exc):
+        if self.pool is not None:
+            self.pool.shutdown(wait=True, cancel_futures=True)
+
+
+def process_jobs(jobs, workers, monitor=None, collect=True, executor=None, capacity=None, telemetry=None):
+    """Longest work first; dynamic bounded submission; no change to draw IDs."""
     if not jobs:
         return []
-    results = []
-    with ProcessPoolExecutor(max_workers=workers, mp_context=mp.get_context('fork')) as pool:
-        queue = iter(jobs);pending = {}
+    results = [];capacity = workers if capacity is None else capacity
+    with ExitStack() as stack:
+        pool = executor if executor is not None else stack.enter_context(
+            ProcessPoolExecutor(max_workers=capacity, mp_context=mp.get_context('fork')))
+        queue = deque(performance.order_jobs(jobs, native.cost_proxy));pending = {}
         last_observation = time.monotonic()
-        def submit_one():
-            job = next(queue, None)
-            if job is not None:
-                pending[pool.submit(native.cost_trial, job)] = job
-        for _ in range(min(workers, len(jobs))):
-            submit_one()
+        desired = min(workers, capacity)
+        def refill():
+            while queue and len(pending) < desired:
+                job = queue.popleft()
+                pending[pool.submit(worker_trial, job)] = job
+            if telemetry is not None:
+                telemetry['maximum_inflight'] = max(telemetry.get('maximum_inflight', 0), len(pending))
+        refill()
         try:
-            while pending:
+            while pending or queue:
+                if not pending:
+                    # Other users may occupy all CPUs temporarily. Retain the
+                    # fixed task list and wait without sampling or killing jobs.
+                    time.sleep(30)
+                    desired = monitor(0, capacity) if monitor is not None else workers
+                    last_observation = time.monotonic();refill();continue
                 complete, _ = wait(pending, timeout=30, return_when=FIRST_COMPLETED)
-                if monitor is not None and time.monotonic() - last_observation >= 30:
-                    monitor();last_observation = time.monotonic()
                 # Check every completed future before refilling, so an already
                 # completed failure cannot be hidden behind a successful job.
                 values = [future.result() for future in complete]
@@ -113,13 +169,37 @@ def process_jobs(jobs, workers, monitor=None, collect=True):
                     pending.pop(future)
                 if collect:
                     results.extend(values)
-                for _ in complete:
-                    submit_one()
+                if monitor is not None and hasattr(monitor, 'note_result'):
+                    for value in values:
+                        monitor.note_result(value)
+                if telemetry is not None:
+                    for value in values:
+                        telemetry['new_completed_trials'] = telemetry.get('new_completed_trials', 0) + 1
+                        for name in ('compose_cache_hits','compose_cache_misses','schedule_cache_hits'):
+                            telemetry[name] = telemetry.get(name, 0) + value.get(name, 0)
+                if monitor is not None and time.monotonic() - last_observation >= 30:
+                    desired = monitor(len(pending), capacity);last_observation = time.monotonic()
+                refill()
         except BaseException:
             for future in pending:
                 future.cancel()
             raise
     return results
+
+
+def ensure_contexts(plan):
+    """Restore each saved system once, then share it read-only through fork."""
+    rebuilt = 0
+    for system in ('H4','H6'):
+        prefixes = sorted({v['candidate']['prefix'] for v in plan['candidates'] if v['candidate']['system']==system})
+        if not prefixes:
+            continue
+        signature = json.dumps(dict(provider=plan['provider_commit'], system=plan['systems'][system], prefixes=prefixes), sort_keys=True)
+        if _CONTEXT_SIGNATURES.get(system) != signature:
+            native.CONTEXT[system] = native.native_context(system, prefixes)
+            _CONTEXT_SIGNATURES[system] = signature
+            rebuilt += 1
+    return rebuilt
 
 
 def resource_workers(pending, representative_peak=None):
@@ -138,7 +218,7 @@ def resource_workers(pending, representative_peak=None):
     return workers, observation
 
 
-def acquire(plan, cohort, private, public):
+def acquire(plan, cohort, private, public, pools=None):
     count_field = 'n_exploration' if cohort == plan['cohorts'][0] else 'n_confirmation'
     existing, first, remaining = {}, [], []
     for item in plan['candidates']:
@@ -151,11 +231,12 @@ def acquire(plan, cohort, private, public):
                 (first if index == 0 else remaining).append((row, cohort, index))
     # Context preparation restores saved H/state and constructs existing native
     # preparations only. No signal/reference/shot function is invoked.
-    for system in ('H4', 'H6'):
-        prefixes = sorted({v['candidate']['prefix'] for v in plan['candidates'] if v['candidate']['system'] == system})
-        native.CONTEXT[system] = native.native_context(system, prefixes)
+    rebuilt = ensure_contexts(plan)
+    telemetry = dict(new_completed_trials=0, maximum_inflight=0, context_rebuilds_in_this_cohort=rebuilt)
     workers, observation = resource_workers(max(1, len(first)))
-    representatives = process_jobs(first, workers)
+    executor = pools.pool if pools is not None else None
+    representatives = process_jobs(first, workers, executor=executor,
+        capacity=pools.capacity if executor is not None else workers, telemetry=telemetry)
     for trial in representatives:
         existing[trial['candidate']['id']].append(trial)
     assert all(any(x['index'] == 0 for x in ts) for ts in existing.values())
@@ -168,16 +249,18 @@ def acquire(plan, cohort, private, public):
         assert first_trial['preparation_hash'] == prep.preparation_hash and abs(first_trial['scalar']-scalar)<1e-12
     peak = max(v['peak_RSS_bytes'] for ts in existing.values() for v in ts)
     workers, observation = resource_workers(max(1, len(remaining)), peak)
-    study.save(private / (cohort + '_resources.json'), dict(workers=workers, observation=observation,
+    capacity = min(len(remaining) or 1, performance.cpu_capacity(),
+                   max(1, int(observation['available_ram'] // (2 * peak))))
+    executor = pools.get(capacity) if pools is not None and remaining else None
+    capacity = pools.capacity if executor is not None else capacity
+    study.save(private / (cohort + '_resources.json'), dict(workers=workers, pool_capacity=capacity, observation=observation,
         representative_peak_RSS=peak, per_process_hard_memory_cap=None, compiler_processes=1))
-    def monitor():
-        from pf_common_run_contract import resources
-        observed = resources()
-        with (private / (cohort + '_resource_observations.jsonl')).open('a') as stream:
-            stream.write(json.dumps(dict(monotonic=time.monotonic(), observation=observed)) + '\n')
-        if observed['available_ram'] < peak:
-            raise RuntimeError('Available memory below observed representative footprint; stop own submissions')
-    process_jobs(remaining, workers, monitor, collect=False)
+    from pf_common_run_contract import resources
+    monitor = performance.AdaptiveAdmission(resources, private/(cohort+'_resource_observations.jsonl'), peak)
+    workers = min(workers, capacity)
+    process_jobs(remaining, workers, monitor, collect=False, executor=executor, capacity=capacity, telemetry=telemetry)
+    telemetry['resource_observations'] = monitor.observations
+    study.save(public / (cohort + '_performance.json'), telemetry)
     # Read accepted complete results, including those already present; never
     # count a cached price as a new independent random draw.
     prices = {}
@@ -295,7 +378,9 @@ def run(plan):
             study.save(public / 'execution_provenance.json', dict(SOURCE=commit,
                 plan_sha256=prepare.sha(HERE / 'PLAN.json'), provider_SOURCE=plan['provider_commit'],
                 started_at=datetime.now(timezone.utc).isoformat(), input_regeneration=0))
-            values = {cohort: acquire(plan, cohort, private, public) for cohort in plan['cohorts']}
+            ensure_contexts(plan)
+            with PoolOwner() as pools:
+                values = {cohort: acquire(plan, cohort, private, public, pools) for cohort in plan['cohorts']}
             account(plan, values, public)
             study.save(public / 'COMPLETION.json', dict(status='FIXED_COUNTS_COMPLETE_MANDATORY_STOP',
                 actual_trajectories=sum(v['n'] for c in values.values() for v in c.values()),
