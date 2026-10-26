@@ -61,6 +61,12 @@ def main():
             raise ValueError('TRACED_RECOVERY_SOURCE_CHANGED')
         for name,expected in resumed.get('runtime_optimization_sources',{}).items():
             if b.signal.sha(b.ROOT/name)!=expected:raise ValueError('ACCELERATION_SOURCE_CHANGED:'+name)
+        if 'handoff_source' in resumed:
+            if b.signal.sha(b.ROOT/resumed['handoff_source'])!=resumed['handoff_source_sha256']:
+                raise ValueError('HANDOFF_SOURCE_CHANGED')
+            handoff=resumed['graceful_acceleration_handoff']
+            if handoff['healthy_workers_signalled'] or not handoff['all_workers_finished_before_controller_interrupt']:
+                raise ValueError('HANDOFF_WORKERS_NOT_PRESERVED')
     acceleration=b.PUBLIC/'acceleration_validation.json'
     if acceleration.exists():complete['matched_input_acceleration_validation']=b.read(acceleration)
     replays=list((b.PRIVATE/'cost').glob('*/*/*/event_replay_check.json'))
@@ -110,6 +116,10 @@ def main():
             stream.write('\n個別fork復旧では3件のSIGBUSを記録し、その後controllerとworkerが不在となった。完了記録134件のうち1件のresult JSONと2件のevent archiveが空であり、空の原本を保全した。有効な133 resultを再利用し、欠損result1件は同じ固定seedの未完了分として復旧した。resultが有効な1件のevent記録だけを固定seedから再構成し、保存済み両軸native回路fingerprint・compiled価格・log_B・event次数との一致を確認した。元resultのSHAは不変、新規価格観測・compile・signal再取得は0。この再構成で失われた元byteとの同一性は主張しない。以降はfresh Python spawn、自分専用transient user service、atomic fsync保存、fsync後の可逆archiveへ移行した。科学kernel・入力・候補・n・cohort・seedは維持し、旧STOPと欠損原本は保持した。SIGBUSとcontroller消失の根本原因は未確定。[中断](interruption_run02.json) / [欠損](data_damage_run02.json) / [event再構成](event_log_reconstruction.json)。\n')
         if (b.PUBLIC/'interruption_run03.json').exists():
             stream.write(f"\nfresh Pythonのrun03でも{len(resumed['previous_errors'])}件のSIGBUSを記録した。正常workerは自然終了まで継続し、完成済みtrialと元の失敗記録を保全した。小さい固定seedの診断再実行から{len(resumed['adopted_diagnostic_trials'])}件を同じcohort/indexの唯一の受理標本として転用し、他の未完了分のみ1回の復旧passで実行した。科学kernel・入力・compiler・候補・n・seedは不変。追加の独立標本や探索/確認のpoolingは行っていない。再発時のsiginfoをstraceで記録し、新たな異常の自動反復は行わない。復旧したこと自体は元SIGBUSの原因解明を意味しない。[run03と復旧の記録](interruption_run03.json)。\n")
+            if 'graceful_acceleration_handoff' in resumed:
+                handoff=resumed['graceful_acceleration_handoff']
+                drain_failures=sum(code!=0 for code in handoff['worker_exitcodes'].values())
+                stream.write(f"\n高速版への引継ぎでは、投入controllerだけをSIGSTOPで一時停止し、その時点の科学worker {len(handoff['worker_exitcodes'])}件が全て終了してからcontrollerだけにSIGINT/SIGCONTを送った。科学workerへのsignal送信は0、待機中の非正常終了は{drain_failures}件。完了した{resumed['completed_before_recovery']} trialを保持し、元の固定計画の残りを同じcanonical byte列を生成する高速実装へ引き継いだ。停止中の元controllerの進捗counterは凍結値として保全し、完了数は実際の保存結果から取得した。\n")
     print(json.dumps(complete,ensure_ascii=False))
 
 

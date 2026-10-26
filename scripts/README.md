@@ -4,13 +4,15 @@
 
 `h46_b3_accelerated_run.py`で保存済み代表入力を旧実装と比較した。linear1Å/STO-3G/DF10・19、B3 L_D=0、T=.8/q8/S2、H4 R4/K2・H6 R8/K6。両軸を毎回同じcompilerで新規compileし、価格6指標・event byte・canonical SHAと全作用検査が一致した。H4 23.79→12.36秒、H6 103.55→63.34秒。この2入力の実装比較を統計標本へ加えず、全研究の短縮率とは区別する。公開記録は`artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/acceleration_validation.json`。対応する人工テストは`test_h46_b3_fast_fingerprint.py`。
 
-高速版は、現行run03をそのまま完了させた後の復旧・独立確認用として起動する。未着手分を途中で引き継ぐための現行controller制御は、自動承認審査が既存の非中断条件と再開整合性へのリスクを理由に拒否したため実施していない。
+`h46_b3_handoff.py`は、今回に限るcontroller制御の明示許可に基づき、投入controllerだけをSIGSTOPで一時停止し、実行中の科学workerが全て終了してからcontrollerだけにSIGINT/SIGCONTを送る。完成済み結果は保持し、元の固定計画の未完了分を検証済み高速版へ引き継ぐ。科学workerやprocess groupへsignalは送らない。途中引継ぎは当初、自動承認審査が非中断条件への例外許可不足を理由に拒否していたが、利用者が上記の制御を今回に限り明示許可した。人工processで全workerの完走と結果保持を確認済み。
+
+切替serviceは`prt-h46-b3-20261026-switch-fast.service`、終了確認は`prt-h46-b3-20261026-complete-switch-fast.service`。引継ぎ中は元controllerの進捗counterが凍結されるため、専用private `acceleration/handoff_status.json`の実worker数と保存済み結果数を参照する。全worker終了後の旧controller退場とlock解放を確認してから、同じcohort・n・seed・compilerで残りの探索、技術的欠損の1回の復旧、独立確認、会計・図表へ進む。完成済み科学SOURCEと高速版の検証対象SOURCEは書き換えない。
 
 ## 2026-10-26 B3 run03のSIGBUS診断と未完了分の復旧
 
 `h46_b3_trace_recovery.py`は、run03の正常workerを自然終了まで保ち、技術的SIGBUSの未完了分を固定seedで1回だけ復旧する。小さい2件の診断は別private directoryへ保存し、元controller終了後にPASSとevent再現・result SHAを確認して同じcohort/indexへ転用する。完成済みtrialは再取得しない。SOURCE・入力・compiler・候補・n・seedは維持し、科学STOPやSIGBUS以外の異常は自動で再開しない。
 
-`strace`のsignal記録で再発時のsi_code等を取得する。人工SIGBUSの実動作、tracee PID/RSSの参照、終了signal伝達を含む人工7件と既存B3/復旧6件の計13件PASS。SIGBUSの原因は現時点では未確定で、fresh spawnだけで解消したとはしない。自分専用service `prt-h46-b3-20261026-run04.service`はrun03の自然終了を待ってから既存scheduler・会計・独立確認・図表作成を継続する。対応する`complete-run04.service`が最終確認とlocal commitを行う。新たな失敗を再帰的にretryせず記録して停止する。
+`strace`のsignal記録で再発時のsi_code等を取得する。人工SIGBUSの実動作、tracee PID/RSSの参照、終了signal伝達を含む人工7件と既存B3/復旧6件の計13件PASS。SIGBUSの原因は現時点では未確定で、fresh spawnだけで解消したとはしない。当初のrun03全体の自然終了を待つserviceは、上記の明示許可された高速版への途中引継ぎへ置き換える。既存scheduler・会計・独立確認・図表作成、最終確認とlocal commitを再利用する。新たな失敗を再帰的にretryせず記録して停止する。
 
 ## 2026-10-26 実行中B3探索の並列化補助
 
