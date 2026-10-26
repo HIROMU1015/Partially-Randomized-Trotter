@@ -10,6 +10,7 @@ from pathlib import Path
 import shutil
 import time
 import h46_b3 as b
+from h46_b3_durable import sync_file,sync_directory
 
 
 def digest(stream):
@@ -21,6 +22,7 @@ def digest(stream):
 def compress_completed():
     count=0;original=0;compressed=0
     for p in (b.PRIVATE/'cost').glob('*/*/*/events_PRIVATE.json'):
+        if not p.parent.name.isdecimal(): continue
         if not (p.parent/'result.json').exists() or (p.parent/'STOP.json').exists(): continue
         result=b.read(p.parent/'result.json')
         if result['status']!='PASS': continue
@@ -30,7 +32,8 @@ def compress_completed():
         with p.open('rb') as source,gzip.open(temp,'rb') as restored:
             if digest(source)!=digest(restored): raise ValueError('EVENT_ARCHIVE_BYTE_MISMATCH')
         original+=p.stat().st_size;compressed+=temp.stat().st_size
-        temp.replace(archive);p.unlink();count+=1
+        sync_file(temp);temp.replace(archive);sync_directory(archive.parent)
+        p.unlink();sync_directory(p.parent);count+=1
     return dict(files=count,original_bytes=original,compressed_bytes=compressed)
 
 
@@ -38,13 +41,23 @@ def inventory():
     """Recover counts even if a previous controller vanished between saves."""
     files=0;original=0;compressed=0
     for p in (b.PRIVATE/'cost').glob('*/*/*/events_PRIVATE.json.gz'):
+        if not p.parent.name.isdecimal(): continue
         if not (p.parent/'result.json').exists() or (p.parent/'STOP.json').exists(): continue
         if b.read(p.parent/'result.json')['status']!='PASS': continue
-        with p.open('rb') as stream:
+        selected=p
+        if p.stat().st_size==0:
+            selected=p.with_name('events_PRIVATE.reconstructed.json.gz')
+            evidence=p.with_name('event_reconstruction.json')
+            if not selected.exists() or not evidence.exists() or b.read(evidence)['status']!='PASS':
+                raise ValueError('EMPTY_EVENT_ARCHIVE_REQUIRES_RECONSTRUCTION:'+str(p))
+        with selected.open('rb') as stream:
             stream.seek(-4,2);original+=int.from_bytes(stream.read(4),'little')
-        files+=1;compressed+=p.stat().st_size
+        files+=1;compressed+=selected.stat().st_size
+    reconstructed=len(list((b.PRIVATE/'cost').glob('*/*/*/event_reconstruction.json')))
     return dict(files=files,original_bytes=original,compressed_bytes=compressed,
         gzip_ISIZE_is_modulo_2pow32_per_file=True,roundtrip_verified=True,
+        reconstructed_missing_original_event_logs=reconstructed,
+        original_byte_identity_claimed_for_reconstructions=False,
         active_trials_modified=False,scientific_bytes_changed=False)
 
 

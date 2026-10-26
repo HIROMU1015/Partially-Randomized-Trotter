@@ -15,13 +15,16 @@ import time
 from types import SimpleNamespace
 import h46_b3 as b
 import h46_b3_recover as recovery
+import h46_b3_durable as durable
 
 original_context=b.native_context
 
 
 def fresh_trial(job):
     faulthandler.enable(all_threads=True)
+    b.save=durable.save
     recovery.NATIVE=b.setup()
+    recovery.NATIVE.save=durable.save
     recovery.ORIGINAL_COMPILE=recovery.NATIVE.compile_cached
     recovery.NATIVE.compile_cached=recovery.compiled_with_representative_action
     system=job[0]['system']
@@ -35,6 +38,7 @@ def fresh_trial(job):
     if diagnostic.exists(): preserved.append(diagnostic)
     matched=[]
     for old in preserved:
+        if old.stat().st_size==0: continue
         try: actual=recovery.event_digest(directory/'events_PRIVATE.json')
         except FileNotFoundError: actual=recovery.event_digest(directory/'events_PRIVATE.json')
         if recovery.event_digest(old)!=actual:
@@ -75,7 +79,11 @@ def main(recover_lost=False):
         for directory in parent.glob('*'):
             if not directory.is_dir() or not directory.name.isdecimal(): continue
             if (directory/'STOP.json').exists(): raise ValueError('PRESERVED_SCIENTIFIC_STOP')
-            if (directory/'result.json').exists(): continue
+            if (directory/'result.json').exists():
+                if (directory/'result.json').stat().st_size:
+                    continue
+                directory.rename(directory.with_name(directory.name+'_damaged_external_loss'));renamed+=1
+                continue
             directory.rename(directory.with_name(directory.name+'_unfinished_recovery02'));renamed+=1
     b.save(b.PUBLIC/'interruption_run02.json',dict(status='PRESERVED_CONTROLLER_AND_WORKERS_ABSENT',
         completed_trials=progress['complete'],recorded_active_but_no_process=progress.get('active'),
@@ -87,6 +95,7 @@ def main(recover_lost=False):
     recovery.mp=SimpleNamespace(get_context=lambda _:real_mp.get_context('spawn'))
     recovery.trial=fresh_trial
     recovery.cached_context=original_context
+    b.save=durable.save
     b.run_cost=recovery.run_cost
     with (b.PRIVATE/'archive_run03.log').open('a') as output:
         archive=subprocess.Popen([sys.executable,'-B',str(b.ROOT/'scripts/h46_b3_archive.py')],stdout=output,stderr=output)
