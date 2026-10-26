@@ -185,3 +185,7 @@ Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design
 ## 2026-10-26：H4強baseline s1科学実行完了
 
 [227-call結果・full512検証・5比較](research_c_c1_h4_strong_baseline_execution_20261026.md)。9 local／3 kernel／6 adjoint／9 complex X/Y gate PASS。B1 XDF RZ11821、B2 CDF11062/XDF11307、保存B0は再buildなし。単一kernelの数値pilotで、B3・s4・CA/shots/総費用は未評価。旧結果・SOURCE・STOPを保全し、公開照合後mandatory STOP。
+
+## C1 H4 B3：技術準備（2026-10-26）
+
+[技術報告](research_c_c1_h4_b3_preparation_20261026.md)／[未承認65-call案](research_c_c1_h4_b3_science_contract_draft_20261026.json)。保存e0c89f61結果・元reference・shell・own-groundを再利用し、B3 XDF8／s1/h.1の一件だけを新規検証する。新21＋旧101＝122 unique tests PASS、SOURCE35／直接input19・旧binding byte preflight PASS。実H4新評価0、旧SOURCE/結果/STOPと研究状態を保全、別明示許可までmandatory STOP。

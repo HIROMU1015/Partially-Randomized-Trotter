@@ -1,0 +1,209 @@
+.................FFFF................................................... [ 75%]
+.......................                                                  [100%]
+=================================== FAILURES ===================================
+____________ test_byte_preflight_never_decodes_saved_science[none] _____________
+
+tmp_path = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a8cab8cae50>
+defect = 'none'
+
+    @pytest.mark.parametrize('defect',['none','route','source','reference'])
+    def test_byte_preflight_never_decodes_saved_science(tmp_path,monkeypatch,defect):
+        root=tmp_path/'ARTIFICIAL';root.mkdir()
+        names=['prev.json','ref.npz','shell.npz','ground.npz']+[k+'.json' for k in m.RECORDS]
+        for p in names:(root/p).write_bytes(b'ARTIFICIAL_NONNUMERIC_BYTES')
+        (root/'module.py').write_text('ARTIFICIAL_SOURCE')
+        m.io.save(root/'manifest.json',dict(files={'module.py':m.io.sha(root/'module.py')}))
+        shells={a:{k:'shell.npz' for k in ('raw','compiled')} for a in m.fair.SHELLS}
+        previous=dict(original_input=dict(sha256='ARTIFICIAL'),references=dict(XDF='ref.npz'),shells=shells)
+        c=dict(scope=m.SCOPE,status='UNAPPROVED_SCIENCE_CONTRACT_DRAFT',route=m.ROUTE,comparators=list(m.COMPARATORS),
+            conditions=copy.deepcopy(m.CONDITIONS),allowances=m.strong.ALLOWANCES,call_limits=m.LIMITS,maximum_logical_units=m.MAX_CALLS,
+            previous_scientific_SOURCE=m.PREVIOUS_SOURCE,previous_publication=m.PREVIOUS_PUBLICATION,
+            compiler=m.fair.profile_dict(),gaussian=m.fair.GAUSSIAN,compiler_phase=m.fair.PHASE,
+            fresh_output=m.FAMILY+'/<execution-date>/run01',source_manifest='manifest.json',source_manifest_sha256=m.io.sha(root/'manifest.json'),
+            saved_inputs={p:m.io.sha(root/p) for p in names},previous_contract='prev.json',reference='ref.npz',ground='ground.npz',shells=shells,
+            records={k:k+'.json' for k in m.RECORDS},original_input=previous['original_input'],**{k:0 for k in m.FORBIDDEN})
+        if defect=='route':c['route']='B2_CDF_relative'
+        if defect=='source':(root/'module.py').write_text('CHANGED')
+        if defect=='reference':c['reference']='ground.npz'
+>       m.io.save(root/'contract.json',c)
+
+tests/management/test_research_c_c1_h4_b3.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco0/ARTIFICIAL/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco0/ARTIFICIAL/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+____________ test_byte_preflight_never_decodes_saved_science[route] ____________
+
+tmp_path = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a8cabba2e90>
+defect = 'route'
+
+    @pytest.mark.parametrize('defect',['none','route','source','reference'])
+    def test_byte_preflight_never_decodes_saved_science(tmp_path,monkeypatch,defect):
+        root=tmp_path/'ARTIFICIAL';root.mkdir()
+        names=['prev.json','ref.npz','shell.npz','ground.npz']+[k+'.json' for k in m.RECORDS]
+        for p in names:(root/p).write_bytes(b'ARTIFICIAL_NONNUMERIC_BYTES')
+        (root/'module.py').write_text('ARTIFICIAL_SOURCE')
+        m.io.save(root/'manifest.json',dict(files={'module.py':m.io.sha(root/'module.py')}))
+        shells={a:{k:'shell.npz' for k in ('raw','compiled')} for a in m.fair.SHELLS}
+        previous=dict(original_input=dict(sha256='ARTIFICIAL'),references=dict(XDF='ref.npz'),shells=shells)
+        c=dict(scope=m.SCOPE,status='UNAPPROVED_SCIENCE_CONTRACT_DRAFT',route=m.ROUTE,comparators=list(m.COMPARATORS),
+            conditions=copy.deepcopy(m.CONDITIONS),allowances=m.strong.ALLOWANCES,call_limits=m.LIMITS,maximum_logical_units=m.MAX_CALLS,
+            previous_scientific_SOURCE=m.PREVIOUS_SOURCE,previous_publication=m.PREVIOUS_PUBLICATION,
+            compiler=m.fair.profile_dict(),gaussian=m.fair.GAUSSIAN,compiler_phase=m.fair.PHASE,
+            fresh_output=m.FAMILY+'/<execution-date>/run01',source_manifest='manifest.json',source_manifest_sha256=m.io.sha(root/'manifest.json'),
+            saved_inputs={p:m.io.sha(root/p) for p in names},previous_contract='prev.json',reference='ref.npz',ground='ground.npz',shells=shells,
+            records={k:k+'.json' for k in m.RECORDS},original_input=previous['original_input'],**{k:0 for k in m.FORBIDDEN})
+        if defect=='route':c['route']='B2_CDF_relative'
+        if defect=='source':(root/'module.py').write_text('CHANGED')
+        if defect=='reference':c['reference']='ground.npz'
+>       m.io.save(root/'contract.json',c)
+
+tests/management/test_research_c_c1_h4_b3.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco1/ARTIFICIAL/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco1/ARTIFICIAL/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+___________ test_byte_preflight_never_decodes_saved_science[source] ____________
+
+tmp_path = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a8cabcd6d10>
+defect = 'source'
+
+    @pytest.mark.parametrize('defect',['none','route','source','reference'])
+    def test_byte_preflight_never_decodes_saved_science(tmp_path,monkeypatch,defect):
+        root=tmp_path/'ARTIFICIAL';root.mkdir()
+        names=['prev.json','ref.npz','shell.npz','ground.npz']+[k+'.json' for k in m.RECORDS]
+        for p in names:(root/p).write_bytes(b'ARTIFICIAL_NONNUMERIC_BYTES')
+        (root/'module.py').write_text('ARTIFICIAL_SOURCE')
+        m.io.save(root/'manifest.json',dict(files={'module.py':m.io.sha(root/'module.py')}))
+        shells={a:{k:'shell.npz' for k in ('raw','compiled')} for a in m.fair.SHELLS}
+        previous=dict(original_input=dict(sha256='ARTIFICIAL'),references=dict(XDF='ref.npz'),shells=shells)
+        c=dict(scope=m.SCOPE,status='UNAPPROVED_SCIENCE_CONTRACT_DRAFT',route=m.ROUTE,comparators=list(m.COMPARATORS),
+            conditions=copy.deepcopy(m.CONDITIONS),allowances=m.strong.ALLOWANCES,call_limits=m.LIMITS,maximum_logical_units=m.MAX_CALLS,
+            previous_scientific_SOURCE=m.PREVIOUS_SOURCE,previous_publication=m.PREVIOUS_PUBLICATION,
+            compiler=m.fair.profile_dict(),gaussian=m.fair.GAUSSIAN,compiler_phase=m.fair.PHASE,
+            fresh_output=m.FAMILY+'/<execution-date>/run01',source_manifest='manifest.json',source_manifest_sha256=m.io.sha(root/'manifest.json'),
+            saved_inputs={p:m.io.sha(root/p) for p in names},previous_contract='prev.json',reference='ref.npz',ground='ground.npz',shells=shells,
+            records={k:k+'.json' for k in m.RECORDS},original_input=previous['original_input'],**{k:0 for k in m.FORBIDDEN})
+        if defect=='route':c['route']='B2_CDF_relative'
+        if defect=='source':(root/'module.py').write_text('CHANGED')
+        if defect=='reference':c['reference']='ground.npz'
+>       m.io.save(root/'contract.json',c)
+
+tests/management/test_research_c_c1_h4_b3.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco2/ARTIFICIAL/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco2/ARTIFICIAL/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+__________ test_byte_preflight_never_decodes_saved_science[reference] __________
+
+tmp_path = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7a8cabbec390>
+defect = 'reference'
+
+    @pytest.mark.parametrize('defect',['none','route','source','reference'])
+    def test_byte_preflight_never_decodes_saved_science(tmp_path,monkeypatch,defect):
+        root=tmp_path/'ARTIFICIAL';root.mkdir()
+        names=['prev.json','ref.npz','shell.npz','ground.npz']+[k+'.json' for k in m.RECORDS]
+        for p in names:(root/p).write_bytes(b'ARTIFICIAL_NONNUMERIC_BYTES')
+        (root/'module.py').write_text('ARTIFICIAL_SOURCE')
+        m.io.save(root/'manifest.json',dict(files={'module.py':m.io.sha(root/'module.py')}))
+        shells={a:{k:'shell.npz' for k in ('raw','compiled')} for a in m.fair.SHELLS}
+        previous=dict(original_input=dict(sha256='ARTIFICIAL'),references=dict(XDF='ref.npz'),shells=shells)
+        c=dict(scope=m.SCOPE,status='UNAPPROVED_SCIENCE_CONTRACT_DRAFT',route=m.ROUTE,comparators=list(m.COMPARATORS),
+            conditions=copy.deepcopy(m.CONDITIONS),allowances=m.strong.ALLOWANCES,call_limits=m.LIMITS,maximum_logical_units=m.MAX_CALLS,
+            previous_scientific_SOURCE=m.PREVIOUS_SOURCE,previous_publication=m.PREVIOUS_PUBLICATION,
+            compiler=m.fair.profile_dict(),gaussian=m.fair.GAUSSIAN,compiler_phase=m.fair.PHASE,
+            fresh_output=m.FAMILY+'/<execution-date>/run01',source_manifest='manifest.json',source_manifest_sha256=m.io.sha(root/'manifest.json'),
+            saved_inputs={p:m.io.sha(root/p) for p in names},previous_contract='prev.json',reference='ref.npz',ground='ground.npz',shells=shells,
+            records={k:k+'.json' for k in m.RECORDS},original_input=previous['original_input'],**{k:0 for k in m.FORBIDDEN})
+        if defect=='route':c['route']='B2_CDF_relative'
+        if defect=='source':(root/'module.py').write_text('CHANGED')
+        if defect=='reference':c['reference']='ground.npz'
+>       m.io.save(root/'contract.json',c)
+
+tests/management/test_research_c_c1_h4_b3.py:185: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco3/ARTIFICIAL/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/prt-c1-h4-b3-preparation-20261026/.cache/h4-b3/tmp/pytest-of-abe/pytest-3/test_byte_preflight_never_deco3/ARTIFICIAL/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h4_b3.py::test_byte_preflight_never_decodes_saved_science[none]
+FAILED tests/management/test_research_c_c1_h4_b3.py::test_byte_preflight_never_decodes_saved_science[route]
+FAILED tests/management/test_research_c_c1_h4_b3.py::test_byte_preflight_never_decodes_saved_science[source]
+FAILED tests/management/test_research_c_c1_h4_b3.py::test_byte_preflight_never_decodes_saved_science[reference]
+4 failed, 91 passed in 45.57s

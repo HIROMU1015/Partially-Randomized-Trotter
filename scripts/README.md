@@ -326,3 +326,7 @@ PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_executio
 ## 2026-10-26：H4強baseline s1科学実行完了
 
 [227-call結果・full512検証・5比較](../docs/research/research_c_c1_h4_strong_baseline_execution_20261026.md)。9 local／3 kernel／6 adjoint／9 complex X/Y gate PASS。B1 XDF RZ11821、B2 CDF11062/XDF11307、保存B0は再buildなし。単一kernelの数値pilotで、B3・s4・CA/shots/総費用は未評価。旧結果・SOURCE・STOPを保全し、公開照合後mandatory STOP。
+
+## H4 B3：spin＋relative（2026-10-26）
+
+`run_research_c_c1_h4_b3.py` は[B3技術報告](../docs/research/research_c_c1_h4_b3_preparation_20261026.md)の専用entry。デフォルトはbyte preflightだけで、別明示許可後のみ`--execute --output <fresh run01>`を用いる。[未承認65-call契約案](../docs/research/research_c_c1_h4_b3_science_contract_draft_20261026.json)はB3 XDF8／s1/h.1の1 kernel・1 compileだけ。旧B0/B1/B2は再実行せず、保存値との3比較を準備。今回科学実行なし。
