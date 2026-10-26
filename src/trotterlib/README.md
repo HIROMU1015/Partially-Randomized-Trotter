@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：PR-aware DF Stage Bの接続・人工検証準備
+
+[2 CDF arm／law／sector reference／共通native接続・人工56 PASS](../../docs/research/research_c_pr_aware_df_stage_b_readiness_20261027.md)／[未承認B1-only141-call案](../../docs/research/research_c_pr_aware_df_stage_b_contract_draft_20261027.json)。新`c_pr_aware_df_stage_b.py`／`stage_b_runner.py`／同名runner・management test。保存Stage A J/Uの新評価は0、hash/header/JSON preflightのみPASS、旧97ファイル不変。B1は2arm×13roundのPF/RTE/A/signalをsector36で検証し、build/compile/sampling/shots/costは0の案。B2は人工native部品まで、実行範囲は別固定。科学call0、公開照合後mandatory STOP。
+
 ## 2026-10-27：PR-aware DFのx0接続を技術修正
 
 [単一qualified x0引渡し・人工61 tests＋29 subtests](../../docs/research/research_c_pr_aware_df_x0_repair_20261027.md)／[新V2・未承認30-call契約](../../docs/research/research_c_pr_aware_df_pilot_contract_x0_v2_unapproved_20261027.json)。既存corrected-codecへopt-in prepared初期値を接続し、fit内の再logを除去。旧default・目的／gradient／optimizer条件は維持。実分子decode・新科学call0、旧18-call STOPを保全、新2026-10-27/run01未作成。別明示許可までmandatory STOP。
