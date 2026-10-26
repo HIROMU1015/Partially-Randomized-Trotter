@@ -59,6 +59,10 @@ def main():
         resumed=b.read(b.PUBLIC/'interruption_run03.json')
         if b.signal.sha(b.ROOT/resumed['helper_source'])!=resumed['helper_source_sha256']:
             raise ValueError('TRACED_RECOVERY_SOURCE_CHANGED')
+        for name,expected in resumed.get('runtime_optimization_sources',{}).items():
+            if b.signal.sha(b.ROOT/name)!=expected:raise ValueError('ACCELERATION_SOURCE_CHANGED:'+name)
+    acceleration=b.PUBLIC/'acceleration_validation.json'
+    if acceleration.exists():complete['matched_input_acceleration_validation']=b.read(acceleration)
     replays=list((b.PRIVATE/'cost').glob('*/*/*/event_replay_check.json'))
     complete['unfinished_event_replay_checks']=len(replays)
     complete['original_event_log_reconstructions']=archive.get('reconstructed_missing_original_event_logs',0)
@@ -93,6 +97,10 @@ def main():
         content+='\n'+heading+'\n\n'+text.replace('{prefix}','../../../').split('\n\n',1)[1]
         note.write_text(content)
     with (b.PUBLIC/'REPORT.md').open('a') as stream:
+        if acceleration.exists():
+            values=b.read(acceleration)['rows']
+            timing_summary='、'.join(f"{v['system']} {v['original']['wall_seconds']:.2f}→{v['fast']['wall_seconds']:.2f}秒（{v['time_speedup']:.2f}倍）" for v in values)
+            stream.write(f"\n実装高速化の別検証：保存済みH4/H6・B3 L_D=0、linear1Å/STO-3G/DF10・19、T=.8/q8/S2、H4 R4/K2・H6 R8/K6の各代表seedを元実装・高速版で再実行した。各実行で両軸を同じQiskit1.3.0/opt1/seed17で新規compileし、価格6指標、event byte、canonical fingerprint、全native/compiled作用検査が一致した。時間は{timing_summary}。統計標本には追加せず、全研究の加速率を示すものではない。同じcanonical byte列を得る検査実装を復旧・独立確認で使用した。[対応入力の検証](acceleration_validation.json)。\n")
         if prefetch.exists():
             stream.write(f"\n空きCPUで同一の固定探索seed・native builder・compilerを用い、未着手trialのcompiled cacheを先行作成した。先行cache完成{cache['cache_ready_trials']} trial相当、新規compile {cache['new_compiled_axes']}軸、既存cache hit {cache['already_cached_axes']}軸。fingerprintごとの既存排他lockにより同じ回路の重複compileを防止。本体のnative/compiled作用検証とtrial受理は省略せず、先行処理を追加の統計標本として数えていない。本体の将来メモリ増加も予約し、比較可能な大きさのfresh full trialがPASSしてから25%の余裕を付けて補助側の予測を更新した。実行中の科学SOURCE・controllerは変更しなかった。[先行compile記録](parallel_prefetch.json)。\n")
         stream.write(f"\n## 終了時の技術確認\n\n人工・必要回帰13件と復旧cache/byte照合の人工2件PASS。atomic永続化writerの人工入出力も確認した。両cohortの全{trials}標本はPASS・worker回収済み。重複標本0、cohort内/間の新seed衝突0。最大native vector差{native_error:.5g}、compiled差{compiled_error:.5g}、mean/native log_B差{log_error:.5g}。元baselineと記録した実行SOURCEの使用fileは不変。eventは取得byteへの復元一致を確認したgzipで保存した。ただし、以下の欠損event再構成について元byteとの同一性は主張しない。これらは実装整合性の確認であり、母平均優位の証拠とは区別する。\n")

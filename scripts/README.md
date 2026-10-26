@@ -1,3 +1,11 @@
+## 2026-10-26 B3 canonical fingerprintの高速化
+
+`h46_b3_fast_fingerprint.py`は、同じcanonical v2 byteを生成する処理で、標準gateの定義とbit位置の反復処理を削減する。毎回、現在のparameter・phase・custom definitionを確認し、callをまたぐobject ID/digestの再利用は行わない。compiler・回路生成・標本数・seedは変更しない。
+
+`h46_b3_accelerated_run.py`で保存済み代表入力を旧実装と比較した。linear1Å/STO-3G/DF10・19、B3 L_D=0、T=.8/q8/S2、H4 R4/K2・H6 R8/K6。両軸を毎回同じcompilerで新規compileし、価格6指標・event byte・canonical SHAと全作用検査が一致した。H4 23.79→12.36秒、H6 103.55→63.34秒。この2入力の実装比較を統計標本へ加えず、全研究の短縮率とは区別する。公開記録は`artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/acceleration_validation.json`。対応する人工テストは`test_h46_b3_fast_fingerprint.py`。
+
+高速版は、現行run03をそのまま完了させた後の復旧・独立確認用として起動する。未着手分を途中で引き継ぐための現行controller制御は、自動承認審査が既存の非中断条件と再開整合性へのリスクを理由に拒否したため実施していない。
+
 ## 2026-10-26 B3 run03のSIGBUS診断と未完了分の復旧
 
 `h46_b3_trace_recovery.py`は、run03の正常workerを自然終了まで保ち、技術的SIGBUSの未完了分を固定seedで1回だけ復旧する。小さい2件の診断は別private directoryへ保存し、元controller終了後にPASSとevent再現・result SHAを確認して同じcohort/indexへ転用する。完成済みtrialは再取得しない。SOURCE・入力・compiler・候補・n・seedは維持し、科学STOPやSIGBUS以外の異常は自動で再開しない。
