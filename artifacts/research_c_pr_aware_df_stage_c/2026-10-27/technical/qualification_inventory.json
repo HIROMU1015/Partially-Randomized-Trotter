@@ -1,0 +1,74 @@
+{
+  "schema": "PR_AWARE_DF_STAGE_C_QUALIFICATION_INVENTORY_V1",
+  "items": [
+    {
+      "item": "all-law synthesis raw complex signal",
+      "current": "UNQUALIFIED",
+      "evidence": "B2 per-sampled-trajectory full512 residuals only",
+      "priority": 1,
+      "blocks": "evidence-qualified shots",
+      "existing_sources": [
+        "c1_stage3_qualification.synthesis_envelope",
+        "c1_stage3_deterministic_accuracy.round_synthesis",
+        "c1_subspace_synthesis_bound.repeat_bound",
+        "c1_h6_native_precision.gaussian",
+        "c1_h6_compiler_precision.compiled_wrapper"
+      ],
+      "structural_route": "uniform primitive/emitter/P0/reference error enclosure plus shell-aware telescoping for each independently sampled occurrence",
+      "additional_molecular_numerics": "likely for finite rotation/emitter/reference bounds;not performed",
+      "exhaustive_trajectory_enumeration_required": false,
+      "qualification_gap": "whole-kernel P0 optimizer and floating-point/CAR/expm references lack all-word enclosures",
+      "useful_bound": null
+    },
+    {
+      "item": "finite-bit implemented-law discrepancy",
+      "current": "UNQUALIFIED",
+      "priority": 1,
+      "blocks": "implemented-law shots",
+      "existing_sources": [
+        "trotterlib.rte.iter_sample_rte_events",
+        "c1_stage3_connection.trajectory_seed",
+        "c_pr_aware_df_stage_b.independent_occurrence"
+      ],
+      "source_findings": "weights normalized in binary64,passed to Generator(PCG64).choice for Taylor order and component indices;K0 still one atom/event",
+      "structural_route": "pin random-grid choice semantics,probability/normalization rounding and explicit IID random-bit model;couple per-event law errors across r*s*2^m events",
+      "additional_molecular_numerics": "saved atom/probability table reanalysis only after separate permission",
+      "exhaustive_trajectory_enumeration_required": false,
+      "qualification_gap": "PRNG stream separation is not ideal IID/TV proof;no current rigorous eta",
+      "useful_bound": null
+    },
+    {
+      "item": "cost support and ideal-law expected cost",
+      "current": "UNQUALIFIED",
+      "priority": 2,
+      "blocks": "guaranteed expected-cost comparison only",
+      "existing_sources": [
+        "c1_stage3_accuracy.bounded_cost_intervals",
+        "c1_stage3_qualification.support_cost_envelope",
+        "c1_stage3_connection.compose_serial_cost"
+      ],
+      "structural_route": "prove all-word final P0 metric range using input alphabet and fixed passes;then apply same32 cohort with simultaneous failure allocation",
+      "additional_molecular_numerics": "not needed for C1 mean proxy;local IR/cost checks may be needed for C2",
+      "exhaustive_trajectory_enumeration_required": false,
+      "qualification_gap": "observed min/max and per-event separately compiled sum are not whole-kernel support;range might be loose",
+      "support": null,
+      "ideal_cost_transfer": null
+    },
+    {
+      "item": "strict PF/DF/reference rounding,strict final CA",
+      "current": "UNQUALIFIED",
+      "priority": 3,
+      "blocks": "strict mathematical guarantees/publication claim",
+      "existing_sources": [
+        "c1_stage3_accuracy.assess_energy",
+        "c1_stage1.ALLOWANCE_VERSION"
+      ],
+      "qualification_gap": "saved PF operator residuals and Stage A DF engineering guard are numerical pilots;no automatic promotion",
+      "additional_molecular_numerics": "only after decision that strict enclosures are needed",
+      "strict_CA": null
+    }
+  ],
+  "scientific_calls": 0,
+  "unknowns_are_not_zero": true,
+  "mandatory_stop": true
+}
