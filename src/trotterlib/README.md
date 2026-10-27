@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
+
+`trottertracks.c_pr_aware_df_zsxx_uniform`は旧Arb192 evaluatorとmonotone_budgetを再利用し、source domain、run長依存式、partial translation規則、true-period phase項、条件付きwhole-P0 composerを追加する。Captured/ideal boxを実Rust imageとして拒否する。[技術報告](../../docs/research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[実行不可契約](../../docs/research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。新規32＋旧161 PASS、実H4科学call0、旧SOURCE保全。
+
 ## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
 
 Opt-in `trottertracks.c_pr_aware_df_zsxx_enclosure`はactual Rust入力・output bitsをArb192で独立検証し、phase-sensitive spectral距離のoutward Frobenius上界を返す。人工fixture／passive契約helperも追加。[技術報告](../../docs/research/research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[実行不可契約](../../docs/research/research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。固定pairとheld-V reference領域のみで、全law・初期translationの一様上界は未資格。旧SOURCE不変、実H4科学call0。

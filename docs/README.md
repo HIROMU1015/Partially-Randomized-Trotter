@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
+
+[技術報告](research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[未承認・実行不可契約](research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。SOURCE由来det4 coset・条件付きnode上限／run長・phase/composer、部分translation保証を記録。実Rust全入力imageは未完成、科学call上限null。新規32＋旧161 PASS、旧不安定1件deselect、実H4科学call0・mandatory STOP。
+
 ## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
 
 [技術報告・Q1〜Q5](research/research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[未承認・実行不可契約](research/research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。Arb192で位相込みの人工captured-pair上界を構成。全branchのSOURCE調査と有限境界試験は、全入力domain保証と分ける。新規52＋回帰109 PASS、旧不安定1件deselect。全law未資格、実H4科学call0、mandatory STOP。

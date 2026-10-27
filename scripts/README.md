@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
+
+`check_research_c_pr_aware_df_zsxx_uniform.py`は`--contract`のpassive hash/package照合か`--artificial-output`の固定人工例のみ。Science execute optionなし。[技術報告](../docs/research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[実行不可契約](../docs/research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。新規32＋旧161 PASS、旧順序依存1件deselect。Uniform Rust image／all-law未資格、実H4科学call0。
+
 ## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
 
 `check_research_c_pr_aware_df_zsxx.py`は`--contract`によるpassive照合、または`--artificial-output`による固定人工2×2例のみ。Science execute optionなし。[技術報告](../docs/research/research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[実行不可契約](../docs/research/research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。Arb192のcaptured-pair保証は全law保証にしない。人工/回帰161 PASS＋既知の旧1件deselect、実H4科学call0。

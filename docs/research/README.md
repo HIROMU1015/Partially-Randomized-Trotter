@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
+
+[技術報告・Q1〜Q5](research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[新しい実行不可契約](research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。RZ/SX/Xのdet4 coset、固定kernel grammarの条件付きN≤67731、逐次run積／true-period phase／whole-P0式、CRZ等の部分規則を準備。Rust uniform imageと全translationは未資格。新規32＋旧161 PASS、旧順序依存1件deselect。実H4科学call0、公開照合後mandatory STOP。
+
 ## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
 
 [技術報告・Q1〜Q5](research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[未承認・実行不可契約](research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。固定Rust出力をArb192で囲う部分的成果。人工41例＋whole-P0/adjoint各2例、新規52＋回帰109 PASS、旧順序依存1件deselect。全law／一様initial translation／Rust数学関数モデルは未資格。科学call上限null・実H4科学call0。旧SOURCE・証拠保全、公開照合後mandatory STOP。

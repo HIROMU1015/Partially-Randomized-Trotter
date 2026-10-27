@@ -1,0 +1,70 @@
+{
+  "sources": [
+    {
+      "repository": "Qiskit/qiskit",
+      "ref": "1.3.0",
+      "path": "crates/circuit/src/gate_matrix.rs",
+      "git_blob": "c6eabf1064fe7a8ec9fe36a75cb67ac5e2b5190f",
+      "url": "https://github.com/Qiskit/qiskit/blob/1.3.0/crates/circuit/src/gate_matrix.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "ref": "1.3.0",
+      "path": "crates/circuit/src/operations.rs",
+      "git_blob": "a7b147c7e3715b464543c00c06ba91ce23593801",
+      "url": "https://github.com/Qiskit/qiskit/blob/1.3.0/crates/circuit/src/operations.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "ref": "1.3.0",
+      "path": "crates/circuit/src/circuit_data.rs",
+      "git_blob": "63368f240e5ffbc1f5c92809e7c74bcf2711f120",
+      "url": "https://github.com/Qiskit/qiskit/blob/1.3.0/crates/circuit/src/circuit_data.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "ref": "1.3.0",
+      "path": "crates/circuit/src/dag_circuit.rs",
+      "git_blob": "eb49130fcd378c7579ebceb6d79c6fef56b731b2",
+      "url": "https://github.com/Qiskit/qiskit/blob/1.3.0/crates/circuit/src/dag_circuit.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "ref": "1.3.0",
+      "path": "crates/accelerate/src/basis/basis_translator/basis_search.rs",
+      "git_blob": "4686ba9c4c3fac587a6228dabd1c1fed418b494b",
+      "url": "https://github.com/Qiskit/qiskit/blob/1.3.0/crates/accelerate/src/basis/basis_translator/basis_search.rs"
+    },
+    {
+      "repository": "Qiskit/qiskit",
+      "ref": "1.3.0",
+      "path": "Cargo.lock",
+      "git_blob": "81ed6660fbf0a9696b02f407c89b1eba292e6cae",
+      "url": "https://github.com/Qiskit/qiskit/blob/1.3.0/Cargo.lock"
+    },
+    {
+      "repository": "rust-num/num-complex",
+      "ref": "num-complex-0.4.6",
+      "path": "src/lib.rs",
+      "git_blob": "661b67b722ee3e9a8f6efdc1e89caa1e9a4a2370",
+      "url": "https://github.com/rust-num/num-complex/blob/num-complex-0.4.6/src/lib.rs"
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "manual/math.texi",
+      "git_blob": "477a18b6d1626a32ee01c4db80fa0d11f5ae5043",
+      "url": "https://github.com/bminor/glibc/blob/glibc-2.35/manual/math.texi"
+    }
+  ],
+  "source_not_wheel_toolchain_equivalence": true,
+  "claims": [
+    "GateMatrix RZ builds complex exp at imaginary theta/2;SX/X entries are exact dyadics.",
+    "num-complex0.4.6 multiplication uses four real products and two component sums;Rust matmul_1q has two complex terms per matrix entry.",
+    "num-complex exp calls exp(re) and from_polar cos/sin;matrix evaluation requires a separate uniform bound.",
+    "DAG/CircuitData float phases apply rem_euclid(2*binary64PI);ParameterExpression phases bypass float normalization until cast.",
+    "BasisTranslator search assigns native gate cost1 and uses additive rule costs;U->U3->3RZ+2SX provides a five-node witness.",
+    "glibc2.35 manual distinguishes accuracy goals from guarantees and acknowledges failures;no invented uniform ULP budget is adopted."
+  ],
+  "uniform_Rust_ULP_model": null
+}

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
+
+[技術報告・Q1〜Q5](docs/research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[新しい実行不可契約](docs/research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。`c_pr_aware_df_zsxx_uniform.py`・固定人工fixture・passive/artifical-only entry・management test。RZ/SX/Xのdet4 coset、固定kernel grammarの条件付きN≤67731、run長／phase／whole-P0 proof-input式を接続。実Rust uniform imageは未資格。新規32＋旧回帰161 PASS、旧不安定1件deselect、実H4科学call0・mandatory STOP。証拠は`artifacts/research_c_pr_aware_df_zsxx_uniform/2026-10-27/technical/`。
+
 ## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
 
 [技術報告](docs/research/research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[実行不可の新契約](docs/research/research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。`c_pr_aware_df_zsxx_enclosure.py`・人工fixture・passive契約helper、`check_research_c_pr_aware_df_zsxx.py`、同名management test。Arb192で固定Rust出力との位相込み距離を囲う。新規52＋回帰109 PASS、旧順序依存1件deselect。全law/translation未資格、科学call上限null、実H4科学call0。証拠は`artifacts/research_c_pr_aware_df_zsxx/2026-10-27/technical/`。公開照合後mandatory STOP。

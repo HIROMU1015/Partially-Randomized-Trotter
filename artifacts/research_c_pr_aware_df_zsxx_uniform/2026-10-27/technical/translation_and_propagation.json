@@ -1,0 +1,81 @@
+{
+  "status": "PARTIAL_RULES_AND_CONDITIONAL_WHOLE_COMPOSER",
+  "rules": [
+    {
+      "status": "ANALYTIC_RULE_ENCLOSURE_UNDER_IEEE",
+      "rule": "CRZ_definition",
+      "operator_upper_exact": "1/404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374155728633623822779617474771586953734026799881477019843034848553132722728933815484186432682479535356945490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568",
+      "definition_nodes": 4,
+      "domain": "every finite binary64 angle;closed control for CRZ;ideal gate semantics",
+      "phase_sensitive": true,
+      "whole_translation_coverage": false,
+      "whole_law_bound": null
+    },
+    {
+      "status": "ANALYTIC_RULE_ENCLOSURE_UNDER_IEEE",
+      "rule": "RZZ_definition",
+      "operator_upper_exact": "0",
+      "definition_nodes": 3,
+      "domain": "every finite binary64 angle;closed control for CRZ;ideal gate semantics",
+      "phase_sensitive": true,
+      "whole_translation_coverage": false,
+      "whole_law_bound": null
+    },
+    {
+      "status": "ANALYTIC_RULE_ENCLOSURE_UNDER_IEEE",
+      "rule": "RZ_inverse",
+      "operator_upper_exact": "0",
+      "definition_nodes": 1,
+      "domain": "every finite binary64 angle;closed control for CRZ;ideal gate semantics",
+      "phase_sensitive": true,
+      "whole_translation_coverage": false,
+      "whole_law_bound": null
+    }
+  ],
+  "CRZ_proof": "For every finite binary64 theta,halving error<=h. Closed control0 cancels;control1 is RZ(2fl(theta/2)). Operator distance<=|fl(theta/2)-theta/2|<=h.",
+  "RZZ_proof": "CX RZ(theta) CX copies the exact stored parameter and is an exact ideal operator identity.",
+  "inverse_proof": "RZ(-theta) exact finite binary64 negation;parent phase/SXdg/recompile wrappers are separate.",
+  "global_translation_missing": [
+    "XXPlusYY constants true-pi vs binary64-pi",
+    "generic controlled RZZ numerical parameter path",
+    "u/U3 equivalence numerical expressions",
+    "phase corrections and every intermediate phase normalization",
+    "actual inverse and fixed X/Y shells"
+  ],
+  "phase_formula": "gamma_n,p A + u64(A+gamma_n,p A)+h + epsilon_rem + Q*|T_f64-2pi|,capped2 for unitary phase distance",
+  "phase_conditions": [
+    "A bounds sum of absolute exact phase atoms including initial phase and bind/cancel constants",
+    "all accumulator operations have stated correctly rounded precision and finite exponent",
+    "final binary64 cast finite",
+    "all modulo calls separately accounted;formula covers one normalization",
+    "exact-fmod conditional model gives epsilon_rem<=u64*T_f64+h for the negative-remainder addition"
+  ],
+  "period_gap_exact": "103176288722216822733096597143511957866043194474497/421249166674228746791672110734681729275580381602196445017243910144",
+  "installed_phase_model_verified": false,
+  "whole_formula": "epsilon_translation + 6N*p/(1-N*p) + N*zeta_D_N + epsilon_phase",
+  "meanings": {
+    "zeta_D_N": "uniform phase-sensitive M->actualRustV error over every reachable D_N and every branch",
+    "run_term": "sum L_j<=6N and L_j<=N;no6N times a sample maximum",
+    "phase_term": "only additional unaccounted phase accumulation/normalizations;sequence output phase already in zeta"
+  },
+  "requirements": [
+    "same operator2 norm",
+    "exact unitary targets",
+    "same SOURCE and reachable domain",
+    "whole initial-translation coverage",
+    "all accepted paths;rejected rewrites unchanged",
+    "direct G->V OR product+ZSXX,not both"
+  ],
+  "schema_is_proof_checker": false,
+  "actual_compiler_interval_image": null,
+  "whole_P0_bound": null,
+  "whole_law_bound": null,
+  "separate": [
+    "raw Gaussian/relative vacuum phase",
+    "CAR/expm numerical reference",
+    "head/X/Y shell",
+    "actual adjoint",
+    "conditional C2B law and PCG64 IID",
+    "CA/shots/cost support/resources"
+  ]
+}
