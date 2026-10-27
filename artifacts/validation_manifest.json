@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "e7d22a404442234662ef6d117c55dd9868217c9e",
+      "role": "fixed_proposed_F1_scientific_SOURCE",
+      "description": "保存H4・直鎖1Å/STO-3G、通常number CDF8 proposed_00、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0、system8+last ancilla/full512、own-DF oracle/状態準備除外。SOURCE `e7d22a404442234662ef6d117c55dd9868217c9e` を無変更で一度実行し7/7 calls、PASS3/correctness FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全512基底・位相込みの有限固定回路保証。共通shell6 certificateはidentity一致で再利用。Raw/CAR・全law・CA/保証shots/総資源は未資格、F2 executable=falseを維持。"
+    },
+    {
       "sha": "518a730510a57d0cafa1575a91f5f1979c203be3",
       "role": "C2A_B1_fixed_saved_circuits_scientific_SOURCE",
       "description": "固定SOURCE `518a730510a57d0cafa1575a91f5f1979c203be3`を無変更で一度実行。保存H4・1Å/STO-3G、通常CDF8 baseline_00、元順LD2、partial S2 δ.1/s4/r16/K0、full512、own-oracle/状態準備除外。19/19 units、9判定はPASS9/FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全基底・位相保持の固定gate列証拠であり、raw-Hamiltonian/reference・全law・CA/保証shots/総資源は未資格/null。新fit/build-compile/sampling/C1再解析0、旧SOURCE/raw/STOPとC1資格は不変。公開照合後mandatory STOP。"
@@ -1466,6 +1471,14 @@
           "research_c_pr_aware_df_C2A_B1_fixed_saved_circuits_20261027"
         ],
         "reason": "Fixed finite10QPY decode/9registered certificates;no all-law or molecular-reference claim."
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F1-run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_fixed_proposed_F1_20261027"
+        ],
+        "reason": "Four saved QPY,three complete-basis fixed-circuit certificates;shared6shell guarantees reused;no CAR/law/CA claim"
       }
     ],
     "quarantined": [
@@ -9121,6 +9134,116 @@
       "CA_achieved": null,
       "shots": null,
       "total_resources": null,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_fixed_proposed_F1_20261027",
+      "status": "FIXED_F1_ALL3_VALIDATED_PASS",
+      "source_commit": "e7d22a404442234662ef6d117c55dd9868217c9e",
+      "execution_base_commit": "fb5cfa01a98ecad63c004ec11d7b95d0e22f8592",
+      "source_manifest": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/technical/SOURCE.json",
+      "source_manifest_sha256": "0b10324fd59835dc371a65290dbd52e8909d9d85fbb44120421907f107f77701",
+      "contract": "docs/research/research_c_pr_aware_df_fixed_proposed_contract_draft_20261027.json",
+      "raw": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F1-run01",
+      "report": "docs/research/research_c_pr_aware_df_fixed_proposed_f1_execution_20261027.md",
+      "scope": "C_PR_AWARE_DF_FIXED_F1_V1",
+      "conditions": {
+        "molecule": "linear H4",
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "representation": "normal number CDF",
+        "rank": 8,
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "frame_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "ld": 2,
+        "delta": "1/10",
+        "s": 4,
+        "r": 16,
+        "K": 0,
+        "rounds": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "oracle": "own_DF_ground_state_oracle",
+        "state_preparation": "EXCLUDED",
+        "atoms_per_arm": 216,
+        "CA_Ha": 0.00159,
+        "DF_reserve_Ha": 0.00019875,
+        "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1",
+        "h": "1/40",
+        "spin_order": "interleaved_2i_plus_sigma",
+        "reference_coverage": "complete sector36 factors;not native full512",
+        "system_qubits": 8,
+        "ancilla_qubits": 1,
+        "global_phase_fit": false
+      },
+      "selected_instance": "proposed_00",
+      "logical_units": 7,
+      "call_counts": {
+        "qpy_decode": 4,
+        "fixed_pair_certificate": 3
+      },
+      "gates": [
+        {
+          "label": "compiled_raw",
+          "status": "VALIDATED_WITHIN_FIXED_ALLOWANCE",
+          "dimension": 512,
+          "columns": 512,
+          "lower_exact": "150258015103411864874409596199600115891557748751319529206817267657185736021092403905262693916317673898605654488209071379/354901720847464302026037015570314714039863945648104521621821386318671527399120079749116723981329865996466075003059657194108692201472",
+          "upper_exact": "2768695464009102933825365238623883955621718347438096580095/862718293348820473429344482784628181556388621521298319395315527974912",
+          "upper_approx": "3.2092694515E-12"
+        },
+        {
+          "label": "raw_actual_adjoint",
+          "status": "VALIDATED_WITHIN_FIXED_ALLOWANCE",
+          "dimension": 512,
+          "columns": 512,
+          "lower_exact": "0",
+          "upper_exact": "549407917147717384446503525211955333955099978202024550465/37576681324381331646231689548629392438010920782533117931316655544515344401833735095419183974156299248510959616",
+          "upper_approx": "1.4620980294E-53"
+        },
+        {
+          "label": "compiled_actual_adjoint",
+          "status": "VALIDATED_WITHIN_FIXED_ALLOWANCE",
+          "dimension": 512,
+          "columns": 512,
+          "lower_exact": "339554106599792672588146587050266552861773719694775628480471708399077390180277934223942264586076125589434304397559/1386334847060407429789207092071541851718218537687908287585239790307310653902812811519987203052069789048695605480701785914487078912",
+          "upper_exact": "4896038131797589810971942281653061981268432864729325533111/883423532389192164791648750371459257913741948437809479060803100646309888",
+          "upper_approx": "5.5421187600E-15"
+        }
+      ],
+      "shared_shell_certificates_reused": 6,
+      "qualification": "validated finite ideal-gate circuit pairs;all512 columns;no CAR or all-law claim",
+      "raw_CAR_bound": null,
+      "whole_law_bound": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null,
+      "F2_executable": false,
       "retry": 0,
       "resume": 0,
       "mandatory_stop": true

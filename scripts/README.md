@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-27：固定Proposed F1・全基底validated評価
+
+[結果・資格](../docs/research/research_c_pr_aware_df_fixed_proposed_f1_execution_20261027.md)。保存H4・直鎖1Å/STO-3G、通常number CDF8 proposed_00、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0、system8+last ancilla/full512、own-DF oracle/状態準備除外。SOURCE `e7d22a404442234662ef6d117c55dd9868217c9e` を無変更で一度実行し7/7 calls、PASS3/correctness FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全512基底・位相込みの有限固定回路保証。共通shell6 certificateはidentity一致で再利用。Raw/CAR・全law・CA/保証shots/総資源は未資格、F2 executable=falseを維持。
+
 ## 2026-10-27：固定CAR reference・Proposed検証の技術準備
 
 `run_research_c_pr_aware_df_fixed_car.py --contract PATH` はbyte/JSON/version preflightのみ。`--execute` は別途明示許可後の未承認F1・7-call専用に使用可能。F2 draftはtarget未採択のため実行不可。新fit/build/compile/samplingなし。[技術報告](../docs/research/research_c_pr_aware_df_fixed_car_reference_readiness_20261027.md)。

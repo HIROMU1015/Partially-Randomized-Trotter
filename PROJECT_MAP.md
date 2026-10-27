@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：固定Proposed F1・全基底validated評価
+
+[結果・資格](docs/research/research_c_pr_aware_df_fixed_proposed_f1_execution_20261027.md)。保存H4・直鎖1Å/STO-3G、通常number CDF8 proposed_00、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0、system8+last ancilla/full512、own-DF oracle/状態準備除外。SOURCE `e7d22a404442234662ef6d117c55dd9868217c9e` を無変更で一度実行し7/7 calls、PASS3/correctness FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全512基底・位相込みの有限固定回路保証。共通shell6 certificateはidentity一致で再利用。Raw/CAR・全law・CA/保証shots/総資源は未資格、F2 executable=falseを維持。
+
 ## 2026-10-27：固定CAR reference・Proposed検証の技術準備
 
 [CAR接続・両arm準備／人工210 PASS](docs/research/research_c_pr_aware_df_fixed_car_reference_readiness_20261027.md)。新`c_pr_aware_df_fixed_car`／`fixed_car_execution`と専用runner・test。保存Proposed固定回路F1は未承認7 calls、独立CARのF2はliteral dyadic mapとpolar理想targetの選択が未採択のためexecutable=false。共通shell6保証再利用、新実H4科学call0、旧B1証拠不変、公開照合後mandatory STOP。
