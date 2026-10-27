@@ -77,10 +77,11 @@ artifacts, old runners, initializers, numerical kernels, SOURCE/result/raw,
 grant/ledger/marker/STOP and scientific status were not edited. H6 adapter blob
 `0f09c36f1b191abba75e39f56746a1828f4419f8` is unchanged.
 The original dirty checkout's HEAD, branch, working status and index remain as
-observed at entry. Worktree registration membership is unchanged. A concurrent
-Research C ref/worktree-HEAD update was observed in root metadata; this task did
-not update or inspect that research checkout and does not claim globally frozen
-refs in the presence of another task. Fixed final-pause, G6/M1, main, DF and
+observed at entry. Concurrent Research C ref/worktree-HEAD changes, a new Research C
+worktree registration and remote-tracking refreshes were observed in root metadata.
+This task used independent Git checkouts and did not add/remove root registrations,
+update Research C refs or inspect its checkout. Global ref/registration immutability
+is not claimed in the presence of another task. Fixed final-pause, G6/M1, main, DF and
 evidence remote tips were separately checked unchanged.
 
 No B3 runtime, protected checkout HEAD/status/index, SOURCE/input/raw/checkpoint,
