@@ -204,6 +204,10 @@
     {
       "commit": "a6ffc23d94f6488a4769596f089a91c895d49214",
       "role": "M2 same-JU deterministic S2 two-arm scientific SOURCE,253calls"
+    },
+    {
+      "commit": "9752f28cf5863e5caab815004a21d65b53c122d4",
+      "role": "M3 Proposed s1-r64 scientific SOURCE;19-call technicalSTOP;noPF/B/C"
     }
   ],
   "artifact_inventory": {
@@ -1570,6 +1574,14 @@
           "research_c_pr_aware_df_M2_same_JU_deterministic_20261028"
         ],
         "reason": "253complete;2 native kernels and8QPY,full512/adjoint/XY,PF26,accuracy/shots/serial resources,7conditional point comparisons,no strict CA claim"
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_M3/2026-10-28",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_M3_s1_r64_20261028"
+        ],
+        "reason": "Fixed preparation plus one-run technicalSTOP partialevidence,not completed feasibility/native/resources"
       }
     ],
     "quarantined": [
@@ -9899,6 +9911,38 @@
       "population_mean_advantage": null,
       "guaranteed_resource_superiority": false,
       "important_scientific_review": false,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_M3_s1_r64_20261028",
+      "status": "M3_TECHNICAL_STOP_AT_A_ATOM_CATALOG_COMPARISON",
+      "source_commit": "9752f28cf5863e5caab815004a21d65b53c122d4",
+      "report": "docs/research/research_c_pr_aware_df_M3_s1_r64_execution_20261028.md",
+      "raw": "artifacts/research_c_pr_aware_df_M3/2026-10-28/run01",
+      "contract": "docs/research/research_c_pr_aware_df_M3_s1_r64_contract_20261028.json",
+      "contract_sha256": "faec54edc960414df750ffaa9478985102fafae565b5b84208db4fc9b0cfeb88",
+      "source_manifest": "artifacts/research_c_pr_aware_df_M3/2026-10-28/technical/SOURCE.json",
+      "source_manifest_sha256": "3fe877a1a8913ba98d5d75d2488dc2b3abcd4ca6b477f748a4104653fbda48be",
+      "maximum_units": 471,
+      "attempted_units": 19,
+      "completed_units": 18,
+      "failed_units": 1,
+      "FAIL_type": "schema/container identity comparison",
+      "stages": {
+        "A": "PARTIAL_TECHNICAL_STOP",
+        "B": "NOT_RUN_DEPENDENCY",
+        "C": "NOT_RUN_DEPENDENCY"
+      },
+      "PF_RTE_rounds_completed": 0,
+      "native_trajectories": 0,
+      "shots": null,
+      "total_resources": null,
+      "scientific_infeasible": "NOT_EVALUATED",
+      "retry": 0,
+      "resume": 0,
+      "artificial_tests": 92,
+      "cause": "atom_record returns tuple origins/word; saved JSON decodes as lists. Direct dict comparison is false even for identical content. Synthetic fixture retained tuples and missed JSON boundary.",
+      "qualifications": "No M3feasibility/performance/CA conclusion;all-law/mean/supportremainunqualified",
       "mandatory_stop": true
     }
   ],
