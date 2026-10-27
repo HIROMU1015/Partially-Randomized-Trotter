@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：固定回路のArb全基底事後検証
+
+`trottertracks.c_pr_aware_df_fixed_certificate`は既存Arb gate意味論を再利用し、固定gate列の全計算基底columnをrecentered local actionで囲う。`c_pr_aware_df_guarantee_strategy`はuniformとcaptured・統計scopeを区別、`guarantee_execution`は未承認の保存QPY19-call案。[技術報告](../../docs/research/research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[契約](../../docs/research/research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。新37＋旧193 PASS。Raw physical/reference・全law・CA/総資源は未資格、実H4科学call0。
+
 ## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
 
 `trottertracks.c_pr_aware_df_zsxx_uniform`は旧Arb192 evaluatorとmonotone_budgetを再利用し、source domain、run長依存式、partial translation規則、true-period phase項、条件付きwhole-P0 composerを追加する。Captured/ideal boxを実Rust imageとして拒否する。[技術報告](../../docs/research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[実行不可契約](../../docs/research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。新規32＋旧161 PASS、実H4科学call0、旧SOURCE保全。

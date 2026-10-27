@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## 2026-10-27：C2-A全lawの成立可能性・保証方針比較
+
+[A/B比較・技術報告](research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[保存1kernel＋3shell・未承認19-call B1契約](research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。RZ/ZSXX全入力保証は未取得、現証拠でA-3。B1の有限全基底Arb検証を人工実装。旧all-law blocked契約・C1約83%仮定付き点推定は変更しない。新37＋旧193 PASS、旧不安定1件deselect、実H4科学call0。公開照合後mandatory STOP。
+
 ## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
 
 [技術報告・Q1〜Q5](research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[新しい実行不可契約](research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。RZ/SX/Xのdet4 coset、固定kernel grammarの条件付きN≤67731、逐次run積／true-period phase／whole-P0式、CRZ等の部分規則を準備。Rust uniform imageと全translationは未資格。新規32＋旧161 PASS、旧順序依存1件deselect。実H4科学call0、公開照合後mandatory STOP。

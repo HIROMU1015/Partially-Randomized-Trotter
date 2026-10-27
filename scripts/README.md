@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-27：C2-A保証方式・保存固定回路B1案
+
+`run_research_c_pr_aware_df_guarantee_pilot.py --contract PATH`はpassive照合のみ。`--execute`は別途明示科学許可後だけの新B1固定19-call経路。[技術報告](../docs/research/research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[未承認契約](../docs/research/research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。保存10QPYのdecode＋9比較、fit/build/compile/samplingなし。全law保証・C1再解析へ接続しない。今回実H4科学call0、mandatory STOP。
+
 ## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
 
 `check_research_c_pr_aware_df_zsxx_uniform.py`は`--contract`のpassive hash/package照合か`--artificial-output`の固定人工例のみ。Science execute optionなし。[技術報告](../docs/research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[実行不可契約](../docs/research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。新規32＋旧161 PASS、旧順序依存1件deselect。Uniform Rust image／all-law未資格、実H4科学call0。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：C2-A保証方式の判定・固定回路B1案
+
+[技術報告・A/B比較](docs/research/research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[未承認19-call B1契約](docs/research/research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。Stock P0全lawは現証拠では困難（A-3、数学的不可能性ではない）。Arb192全基底・recentered local actionで固定raw/compiledの事後検証を人工実装。保存baseline_00＋actual adjoints＋3shellだけの新有限scopeを準備。新37＋旧193 PASS、旧不安定1件deselect。実H4科学call0、旧A blocked契約・C1資格は不変。公開照合後mandatory STOP。
+
 ## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
 
 [技術報告・Q1〜Q5](docs/research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[新しい実行不可契約](docs/research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。`c_pr_aware_df_zsxx_uniform.py`・固定人工fixture・passive/artifical-only entry・management test。RZ/SX/Xのdet4 coset、固定kernel grammarの条件付きN≤67731、run長／phase／whole-P0 proof-input式を接続。実Rust uniform imageは未資格。新規32＋旧回帰161 PASS、旧不安定1件deselect、実H4科学call0・mandatory STOP。証拠は`artifacts/research_c_pr_aware_df_zsxx_uniform/2026-10-27/technical/`。

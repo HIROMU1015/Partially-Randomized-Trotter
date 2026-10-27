@@ -1,0 +1,126 @@
+......................FF...F..                                           [100%]
+=================================== FAILURES ===================================
+_ test_independent_exact_local_meaning_matches_artificial_Qiskit_diagnostic[xx_plus_yy-params7] _
+
+name = 'xx_plus_yy', params = [0.31, -0.17]
+
+    @pytest.mark.parametrize('name,params',[('h',[]),('s',[]),('sdg',[]),('cx',[]),('rzz',[.31]),
+        ('crz',[.31]),('crzz',[.31]),('xx_plus_yy',[.31,-.17])])
+    def test_independent_exact_local_meaning_matches_artificial_Qiskit_diagnostic(name,params):
+        from flint import ctx
+        from qiskit import QuantumCircuit
+        from qiskit.quantum_info import Operator
+        from qiskit.circuit.library import RZZGate
+        from trottertracks.c_pr_aware_df_stage_b2_compat import SharedQiskitCalls
+        lock=SharedQiskitCalls(lambda k,l,f:f())
+        def build():
+            q=QuantumCircuit(v.ARITY[name])
+            if name=='crzz':q.append(RZZGate(params[0]).control(1,annotated=False),[0,1,2])
+            else:getattr(q,name)(*params,*range(v.ARITY[name]))
+            return q
+>       q=lock('kernel_build','artificial local',build)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_pr_aware_df_stage_b2_compat.py:37: in __call__
+    value = self.call(kind,label,function); self.completed += 1; return value
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:39: in <lambda>
+    lock=SharedQiskitCalls(lambda k,l,f:f())
+                                        ^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def build():
+        q=QuantumCircuit(v.ARITY[name])
+        if name=='crzz':q.append(RZZGate(params[0]).control(1,annotated=False),[0,1,2])
+>       else:getattr(q,name)(*params,*range(v.ARITY[name]))
+             ^^^^^^^^^^^^^^^
+E       AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:43: AttributeError
+_________ test_artificial_whole_P0_full_basis_phase_and_actual_adjoint _________
+
+    def test_artificial_whole_P0_full_basis_phase_and_actual_adjoint():
+        from trottertracks.c_pr_aware_df_c2a import trace_artificial
+        from trottertracks.c_pr_aware_df_stage_b2_compat import SharedQiskitCalls
+        from trottertracks import c1_stage2_native as native
+>       lock=SharedQiskitCalls(lambda k,l,f:f());q=lock('kernel_build','artificial whole',invented)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_pr_aware_df_stage_b2_compat.py:37: in __call__
+    value = self.call(kind,label,function); self.completed += 1; return value
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:67: in <lambda>
+    lock=SharedQiskitCalls(lambda k,l,f:f());q=lock('kernel_build','artificial whole',invented)
+                                        ^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def invented():
+        from qiskit import QuantumCircuit
+        from qiskit.circuit.library import RZZGate
+        q=QuantumCircuit(3);q.global_phase=.271
+>       q.ry(.31,0);q.h(2);q.cx(2,0);q.xx_plus_yy(.7,-.19,0,1)
+                                     ^^^^^^^^^^^^
+E       AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:57: AttributeError
+__________ test_unknown_gate_open_control_nonfinite_and_phasefit_fail __________
+
+    def test_unknown_gate_open_control_nonfinite_and_phasefit_fail():
+        from qiskit import QuantumCircuit
+        from qiskit.circuit import Gate
+        from qiskit.circuit.library import CRZGate
+        q=QuantumCircuit(2);q.append(CRZGate(.1,ctrl_state=0),[0,1])
+>       with pytest.raises(ValueError,match='OPEN_CONTROL'):v.record(q)
+                                                            ^^^^^^^^^^^
+
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:114: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+circuit = <qiskit.circuit.quantumcircuit.QuantumCircuit object at 0x7078305c5010>
+
+    def record(circuit,*,reduce_ancilla=False):
+        """Decode bound circuit metadata only when called in an allowed scope.
+    
+        Gate class and all arities/parameters are checked. Unknown gates are not
+        expanded through unverified Qiskit definitions. Reduce only an explicitly
+        proven ancilla-only shell;its embedded operator distance is unchanged.
+        """
+        from qiskit.circuit.library import (IGate,XGate,ZGate,SXGate,SXdgGate,RZGate,
+            RYGate,PhaseGate,HGate,SGate,SdgGate,CXGate,RZZGate,CRZGate,XXPlusYYGate)
+        from qiskit.circuit import ControlledGate
+        classes=dict(zip(['id','x','z','sx','sxdg','rz','ry','p','h','s','sdg','cx','rzz','crz','xx_plus_yy'],
+            [IGate,XGate,ZGate,SXGate,SXdgGate,RZGate,RYGate,PhaseGate,HGate,SGate,SdgGate,CXGate,RZZGate,CRZGate,XXPlusYYGate]))
+        if circuit.num_clbits or circuit.parameters:raise ValueError('BOUND_UNITARY_CIRCUIT_REQUIRED')
+        n=circuit.num_qubits
+        if n<1:raise ValueError('QUBITS_REQUIRED')
+        rows=[]
+        for item in circuit.data:
+            op=item.operation;name=op.name
+>           if name not in ARITY:raise ValueError('UNSUPPORTED_FIXED_GATE:'+name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           ValueError: UNSUPPORTED_FIXED_GATE:crz_o0
+
+src/trottertracks/c_pr_aware_df_fixed_certificate.py:38: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_unknown_gate_open_control_nonfinite_and_phasefit_fail():
+        from qiskit import QuantumCircuit
+        from qiskit.circuit import Gate
+        from qiskit.circuit.library import CRZGate
+        q=QuantumCircuit(2);q.append(CRZGate(.1,ctrl_state=0),[0,1])
+>       with pytest.raises(ValueError,match='OPEN_CONTROL'):v.record(q)
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'OPEN_CONTROL'
+E         Actual message: 'UNSUPPORTED_FIXED_GATE:crz_o0'
+
+tests/management/test_research_c_pr_aware_df_guarantee_strategy.py:114: AssertionError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_pr_aware_df_guarantee_strategy.py::test_independent_exact_local_meaning_matches_artificial_Qiskit_diagnostic[xx_plus_yy-params7]
+FAILED tests/management/test_research_c_pr_aware_df_guarantee_strategy.py::test_artificial_whole_P0_full_basis_phase_and_actual_adjoint
+FAILED tests/management/test_research_c_pr_aware_df_guarantee_strategy.py::test_unknown_gate_open_control_nonfinite_and_phasefit_fail
+3 failed, 27 passed in 0.41s

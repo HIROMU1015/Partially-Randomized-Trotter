@@ -1,5 +1,9 @@
 # 文書索引
 
+## 2026-10-27：C2-A全lawの成立可能性・代替保証B1
+
+[技術報告・Q1〜Q5](research/research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[未承認19-call有限B1契約](research/research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。Aは現stock環境証拠で困難。B1全基底事後検証を人工実装し、B2確率モデル／B3新policyと比較した。研究方針採択・実行は未許可。新37＋旧193 PASS、旧不安定1件deselect、実H4科学call0・mandatory STOP。
+
 ## 2026-10-27：ZSXX全到達domain・条件付きwhole-P0
 
 [技術報告](research/research_c_pr_aware_df_zsxx_uniform_domain_readiness_20261027.md)／[未承認・実行不可契約](research/research_c_pr_aware_df_zsxx_uniform_contract_draft_20261027.json)。SOURCE由来det4 coset・条件付きnode上限／run長・phase/composer、部分translation保証を記録。実Rust全入力imageは未完成、科学call上限null。新規32＋旧161 PASS、旧不安定1件deselect、実H4科学call0・mandatory STOP。
