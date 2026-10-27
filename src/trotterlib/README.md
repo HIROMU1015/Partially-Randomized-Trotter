@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：F2 κ限定診断（2026-10-27）
+
+`../trottertracks/c_pr_aware_df_kappa_diagnostic.py` は既存corrected_kappa・allowance・Callsを再利用するopt-in診断。保存値のexact有理数縮約で入力由来／演算由来を区別し、入力・CAR targetは変更しない。[SOURCE・契約・人工検証](../../docs/research/research_c_pr_aware_df_F2_kappa_hermiticity_diagnostic_readiness_20261027.md)。新規実H4科学call0、別科学許可までmandatory STOP。
+
 ## 2026-10-27：固定F2 polar・κの厳密Hermiticity条件でSTOP
 
 [結果・partial evidence](../../docs/research/research_c_pr_aware_df_fixed_F2_polar_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline baseline_00、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0、sector36/full512、own-DF oracle/状態準備除外。Right-polar CAR targetを今回限定採択し、SOURCE45ae98943492e921c22a0f527d5587cd1e06462f／新契約を固定して実行。4/最大7 attempts＝3 COMPLETE＋1 FAIL、残3 NOT_RUN。CAR_reference入口の元g補正κがEXACT_HERMITIAN_INPUT_REQUIREDでSTOP。Raw/CAR・bridge・triangleは未評価/nullで、raw回路の測定correctness FAILではない。追加診断・κ変更・retry/resume・F3なし。旧B1/F1/C1の資格とraw/STOP不変、公開照合後mandatory STOP。
