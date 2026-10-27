@@ -1,5 +1,9 @@
 # tests の役割
 
+## 2026-10-27：固定CAR reference・Proposed検証の技術準備
+
+`management/test_research_c_pr_aware_df_fixed_car.py` は人工J/U・event・QPYだけの27試験。既存関連143と隔離旧general-K/native40もPASS（計210、別に29 subtests）。旧general-Kのsys.modules隔離前提のため新Qiskit試験とは別processで実行する。[記録](../docs/research/research_c_pr_aware_df_fixed_car_reference_readiness_20261027.md)。旧C2並列STOPの非決定性は未修正。
+
 `management/test_research_c_c1_stage2_native.py` は[C1 Stage2接続準備](../docs/research/research_c_c1_stage2_native_preparation_20261025.md)の新規27人工test。実QuantumCircuit／Operator／Statevector／compileをmockまたは禁止し、係数・phase・spin・順序・API dispatch・call／fresh output／STOPを確認する。既存一般K／CAR／frame修正／評価専用testsを含む80件＋29 subtests PASS、分子回路の科学的PASSではない。証拠 `artifacts/research_c_c1_stage2_technical/2026-10-25/`。
 
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。

@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：固定CAR reference・Proposed検証の技術準備
+
+`trottertracks.c_pr_aware_df_fixed_car` は既存CAR/atom/event/head関数へopt-in Arb演算を接続する。`fixed_car_execution` は既存full-basis verifierのProposed拡張とCAR adapter。旧B1 runner不変。[技術報告](../../docs/research/research_c_pr_aware_df_fixed_car_reference_readiness_20261027.md)。F1未承認7 calls、F2 target未採択・実行不可、実H4科学call0。
+
 ## 2026-10-27：固定回路のArb全基底事後検証
 
 `trottertracks.c_pr_aware_df_fixed_certificate`は既存Arb gate意味論を再利用し、固定gate列の全計算基底columnをrecentered local actionで囲う。`c_pr_aware_df_guarantee_strategy`はuniformとcaptured・統計scopeを区別、`guarantee_execution`は未承認の保存QPY19-call案。[技術報告](../../docs/research/research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[契約](../../docs/research/research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。新37＋旧193 PASS。Raw physical/reference・全law・CA/総資源は未資格、実H4科学call0。

@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 2026-10-27：固定CAR reference・Proposed検証の技術準備
+
+`run_research_c_pr_aware_df_fixed_car.py --contract PATH` はbyte/JSON/version preflightのみ。`--execute` は別途明示許可後の未承認F1・7-call専用に使用可能。F2 draftはtarget未採択のため実行不可。新fit/build/compile/samplingなし。[技術報告](../docs/research/research_c_pr_aware_df_fixed_car_reference_readiness_20261027.md)。
+
 ## 2026-10-27：C2-A B1・保存固定回路の事後validated評価
 
 [実行報告](../docs/research/research_c_pr_aware_df_c2a_fixed_b1_execution_20261027.md)。固定SOURCE `518a730510a57d0cafa1575a91f5f1979c203be3`を無変更で一度実行。保存H4・1Å/STO-3G、通常CDF8 baseline_00、元順LD2、partial S2 δ.1/s4/r16/K0、full512、own-oracle/状態準備除外。19/19 units、9判定はPASS9/FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全基底・位相保持の固定gate列証拠であり、raw-Hamiltonian/reference・全law・CA/保証shots/総資源は未資格/null。新fit/build-compile/sampling/C1再解析0、旧SOURCE/raw/STOPとC1資格は不変。公開照合後mandatory STOP。
