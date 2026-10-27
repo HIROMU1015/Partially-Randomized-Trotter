@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：PR-aware DF C2-A・whole-P0構造と未資格上界の技術準備
+
+[固定ZSXX graph・条件付き回数制限・人工/回帰110 PASS](../../docs/research/research_c_pr_aware_df_c2a_synthesis_readiness_20261027.md)／[実行不可の未承認草案](../../docs/research/research_c_pr_aware_df_c2a_contract_draft_20261027.json)。新`c_pr_aware_df_c2a.py`／passive-only `check_research_c_pr_aware_df_c2a.py`／同名management test。Basis閉包等の前提下で採用rewrite≤N・採用matrix入力≤6Nを構成。Uniform ZSXX/initial translation/reference enclosureは未資格、科学call上限null・executable=false。SOURCE93/input23と固定Qiskit14SOURCEをpassive確認、新実H4科学call0、旧証拠保全、公開照合後mandatory STOP。
+
+
 ## 2026-10-27：PR-aware DF C2・Reference Bridge統合準備
 
 新`trottertracks.c_pr_aware_df_c2_bridge`は既存CAR/general-K/K0 eventと保存B1 referenceを接続し、条件付きcategorical・Bridge・synthesis・reference誤差のraw単位schemaを用意する。[技術報告・人工/回帰85 PASS](../../docs/research/research_c_pr_aware_df_stage_c2_bridge_synthesis_readiness_20261027.md)／[未承認47-call契約](../../docs/research/research_c_pr_aware_df_stage_c2_bridge_contract_draft_20261027.json)。旧library/科学SOURCE不変、新実H4科学call0、native/C1再解析なし。全law P0・reference enclosure・PCG64 IIDは未資格、保証shots/totalはnull、mandatory STOP。

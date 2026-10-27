@@ -1,5 +1,10 @@
 # 研究計画資料
 
+## 2026-10-27：PR-aware DF C2-A・whole-P0構造と未資格上界の技術準備
+
+[固定ZSXX graph・条件付き回数制限・人工/回帰110 PASS](research_c_pr_aware_df_c2a_synthesis_readiness_20261027.md)／[実行不可の未承認草案](research_c_pr_aware_df_c2a_contract_draft_20261027.json)。新`c_pr_aware_df_c2a.py`／passive-only `check_research_c_pr_aware_df_c2a.py`／同名management test。Basis閉包等の前提下で採用rewrite≤N・採用matrix入力≤6Nを構成。Uniform ZSXX/initial translation/reference enclosureは未資格、科学call上限null・executable=false。SOURCE93/input23と固定Qiskit14SOURCEをpassive確認、新実H4科学call0、旧証拠保全、公開照合後mandatory STOP。
+
+
 ## 2026-10-27：PR-aware DF C2-Bridge・47-call数値対応評価完了
 
 [全gate・26round・未資格事項](research_c_pr_aware_df_stage_c2_bridge_execution_20261027.md)。固定SOURCE3f64842d69d54a70a5b736486b5faefa398903b8を無変更で一度実行し47/47 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline/Proposed、Nα=Nβ2/sector36、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0/m0..12、own-DF oracle/状態準備除外。両216 atom/K0 mean/保存CAR kernel gateと26round replayを確認。観測operator2差の最大はBaseline6.53148e-11（m11）/Proposed9.46816e-11（m12）、signal差の最大は5.98984e-11/8.10860e-11。数値対応pilotであり、厳密Bridge/reference enclosure・全law P0・PCG64 IID・CA/保証shots/totalは未資格/null。C1の約83%点推定不変、新fit/sampling/build-compile/DF-PF再計算/shots/総費用/C1再解析0。SOURCE82/input20・旧1799件不変、raw44と全26round CSVを保存、公開照合後mandatory STOP。
