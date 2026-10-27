@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：F2 κ限定診断実行（2026-10-27）
+
+[6/6 COMPLETE・exact/数値条件の区別・原因分解](research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。固定SOURCE無変更、correctness FAIL/retry/resume0。保存h/gの厳密縮約と演算丸めの両方に非対称成分。元生成原因は未解決、κやCAR targetは変更せず旧F2 STOP不変。公開照合後mandatory STOP。
+
 ## 研究C：F2 κ Hermiticity診断準備（2026-10-27）
 
 [技術報告・Q1〜Q6](research/research_c_pr_aware_df_F2_kappa_hermiticity_diagnostic_readiness_20261027.md)／[未承認6-call契約](research/research_c_pr_aware_df_F2_kappa_diagnostic_contract_draft_20261027.json)。SOURCE監査・Stage 1数値allowanceとF2 exact条件の比較・K0/K1設計・人工回帰のみ。新規実H4科学call0、κ原因未確定・target未採択、旧F2 STOPを保全しmandatory STOP。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：F2 κ限定診断が6/6完了・exact条件は不成立
+
+[結果・原因分解・未資格事項](docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、Baseline通常number CDF8文脈、元h/g/scalarのみ。SOURCE802b2b0a16…無変更、6 COMPLETE/correctness FAIL0/retry-resume0。κ residual F=8.66047e-17はStage 1 allowance内だがexact Hermiticityなし。保存hとgの厳密縮約に継承非対称性、縮約・減算にも丸め寄与。元生成原因は未解決。CAR/target変更/F2再実行/F3なし、旧STOP不変、公開照合後mandatory STOP。
+
 ## 2026-10-27：F2 κ Hermiticity限定診断の技術準備
 
 [SOURCE監査・Stage 1比較・K0/K1・未承認6-call契約](docs/research/research_c_pr_aware_df_F2_kappa_hermiticity_diagnostic_readiness_20261027.md)。`c_pr_aware_df_kappa_diagnostic.py`／専用runner／人工testが元補正式と独立exact dyadic縮約を接続。新規実H4科学call0、元snapshotは歴史blobのbyte同一回収のみ。旧F2の4-call STOPとSOURCE/raw不変、κ原因・targetは未確定、別明示科学許可までmandatory STOP。

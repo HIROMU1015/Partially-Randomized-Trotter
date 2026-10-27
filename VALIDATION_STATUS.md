@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-27：F2 κ限定診断・数値allowance PASSとexact不成立を分離
+
+[実行結果・原本・scope](docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、Baseline通常number CDF8／元h/g/c、Nα=Nβ2文脈。診断には時間・splitを適用せず、SOURCE802b2b0a16d3bd26ae2554e96a41c1bf8155a2e2を無変更で6/6 COMPLETE、correctness FAIL/retry/resume0。κのΔ Frobenius8.660473972585522e-17、Stage 1絶対allowance3.518379690624931e-11で数値PASS。Exact dyadic入力hとgの縮約に既に非対称性、縮約・減算の丸めにも寄与を確認。元積分生成/reduction tree原因はUNRESOLVED。κ exact HermiticityはNOT_MET、旧F2 STOPを解除せず、CAR/bridge/target/CA/shots/資源は未評価・未採択/null。SOURCE138/input2・旧証拠不変、公開照合後mandatory STOP。
+
 ## 2026-10-27：固定F2 polar・κの厳密Hermiticity条件でSTOP
 
 [結果・partial evidence](docs/research/research_c_pr_aware_df_fixed_F2_polar_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline baseline_00、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0、sector36/full512、own-DF oracle/状態準備除外。Right-polar CAR targetを今回限定採択し、SOURCE45ae98943492e921c22a0f527d5587cd1e06462f／新契約を固定して実行。4/最大7 attempts＝3 COMPLETE＋1 FAIL、残3 NOT_RUN。CAR_reference入口の元g補正κがEXACT_HERMITIAN_INPUT_REQUIREDでSTOP。Raw/CAR・bridge・triangleは未評価/nullで、raw回路の測定correctness FAILではない。追加診断・κ変更・retry/resume・F3なし。旧B1/F1/C1の資格とraw/STOP不変、公開照合後mandatory STOP。

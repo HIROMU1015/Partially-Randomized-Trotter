@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：F2 κ限定診断完了（2026-10-27）
+
+[実行結果](../../docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)：SOURCE無変更で6/6 COMPLETE、correctness FAIL/retry/resume0。κはStage 1数値allowance内だがexact Hermitianではなく、入力と演算の両方に寄与。CAR target/旧F2 STOPを変更せずmandatory STOP。
+
 ## 関連track：F2 κ限定診断（2026-10-27）
 
 `../trottertracks/c_pr_aware_df_kappa_diagnostic.py` は既存corrected_kappa・allowance・Callsを再利用するopt-in診断。保存値のexact有理数縮約で入力由来／演算由来を区別し、入力・CAR targetは変更しない。[SOURCE・契約・人工検証](../../docs/research/research_c_pr_aware_df_F2_kappa_hermiticity_diagnostic_readiness_20261027.md)。新規実H4科学call0、別科学許可までmandatory STOP。

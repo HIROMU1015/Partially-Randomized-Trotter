@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "802b2b0a16d3bd26ae2554e96a41c1bf8155a2e2",
+      "role": "F2_kappa_limited_diagnostic_scientific_SOURCE",
+      "description": "Unchanged6-call saved H4 h/g diagnostic;A/B and rounding contributions observed;exact kappa Hermiticity not met;no F2 retry/target adoption"
+    },
+    {
       "sha": "45ae98943492e921c22a0f527d5587cd1e06462f",
       "role": "fixed_F2_polar_scientific_SOURCE",
       "description": "保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline baseline_00、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0、sector36/full512、own-DF oracle/状態準備除外。Right-polar CAR targetを今回限定採択し、SOURCE45ae98943492e921c22a0f527d5587cd1e06462f／新契約を固定して実行。4/最大7 attempts＝3 COMPLETE＋1 FAIL、残3 NOT_RUN。CAR_reference入口の元g補正κがEXACT_HERMITIAN_INPUT_REQUIREDでSTOP。Raw/CAR・bridge・triangleは未評価/nullで、raw回路の測定correctness FAILではない。追加診断・κ変更・retry/resume・F3なし。旧B1/F1/C1の資格とraw/STOP不変、公開照合後mandatory STOP。"
@@ -186,6 +191,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/diagnostic-run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_F2_kappa_diagnostic_20261027"
+        ],
+        "reason": "9 raw records;6 COMPLETE,correctness FAIL/retry/resume0;exact dyadic decomposition plus binary64 observations;no operator/circuit/target adoption"
+      },
       {
         "path": "artifacts/research_c_c1_h4_xdf9_cost_screen/2026-10-26/run01",
         "kind": "directory",
@@ -9297,6 +9310,60 @@
       "total_resources": null,
       "retry": 0,
       "resume": 0,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_F2_kappa_diagnostic_20261027",
+      "status": "DIAGNOSTIC_COMPLETE",
+      "source_commit": "802b2b0a16d3bd26ae2554e96a41c1bf8155a2e2",
+      "scope": "C_PR_AWARE_DF_KAPPA_HERMITICITY_DIAGNOSTIC_V1",
+      "source_manifest": "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/technical/SOURCE.json",
+      "source_manifest_sha256": "408fe5114bd32deef82279aae7d9c14461e5e4de097d6473846a29d0b84b178c",
+      "contract": "docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_contract_draft_20261027.json",
+      "contract_sha256": "ffeda0e5ffaf5e0b08d3a94818e824218a6570429e590117176fcbb63242e7ae",
+      "raw": "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/diagnostic-run01",
+      "report": "docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md",
+      "attempted_units": 6,
+      "completed_units": 6,
+      "failed_units": 0,
+      "retry": 0,
+      "resume": 0,
+      "kappa_Hermiticity_residual": {
+        "max_abs_entry": 5.198544862934386e-17,
+        "Frobenius": 8.660473972585522e-17,
+        "spectral2_numerical_pilot": 6.070658533574577e-17,
+        "rigorous_spectral_bound": null
+      },
+      "stage1_allowance": {
+        "version": "binary64_operation_scale_guard8_v1",
+        "error": 8.660473972585522e-17,
+        "stable_Frobenius_observation": 8.660473972585522e-17,
+        "allowance": 3.518379690624931e-11,
+        "passed": true,
+        "base_scale": 18.204702968342605,
+        "operations": 544,
+        "absolute": true,
+        "rtol": null,
+        "applicability": "kappa only; not reused for h/T or an operator certificate"
+      },
+      "exact_observations": {
+        "A_stored_h_asymmetry": true,
+        "B_exact_contraction_of_stored_g_asymmetry": true,
+        "C_arithmetic_alone_breaks_exact_formula_symmetry": false,
+        "contraction_antiHermitian_rounding": true,
+        "subtraction_antiHermitian_rounding": true,
+        "D_SOURCE_input_convention": "NO_MISMATCH_OBSERVED_BY_PINNED_PROVENANCE_CHECKS"
+      },
+      "generation_root_cause": "UNRESOLVED",
+      "F2_exact_Hermiticity": "NOT_MET",
+      "old_F2_STOP_preserved": true,
+      "new_target_adopted": false,
+      "raw_CAR_bound": null,
+      "model_bridge": null,
+      "whole_law_bound": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null,
       "mandatory_stop": true
     }
   ],

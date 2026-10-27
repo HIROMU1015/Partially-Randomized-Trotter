@@ -1,5 +1,9 @@
 # scripts 索引
 
+## F2 κ限定診断の実行結果（2026-10-27）
+
+[6-call結果・STOP](../docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。固定runner無変更で6 COMPLETE/correctness FAIL0/retry-resume0。実行済み診断の再起動・旧F2の残枠再利用はしない。κのexact条件は不成立のまま、CAR targetは未採択。
+
 ## F2 κ Hermiticity限定診断（2026-10-27）
 
 `run_research_c_pr_aware_df_kappa_diagnostic.py --contract docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_contract_draft_20261027.json` はpassiveが既定。実H4のdecode・診断は別明示許可後の`--execute`のみ、最大6 calls・fresh output・retry/resume0・STOP。[技術報告](../docs/research/research_c_pr_aware_df_F2_kappa_hermiticity_diagnostic_readiness_20261027.md)。旧F2 runnerは再起動しない。
