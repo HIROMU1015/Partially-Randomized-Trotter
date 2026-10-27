@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：Proposed F3-K1科学実行完了（2026-10-28）
+
+[結果・証拠・資格範囲](../../docs/research/research_c_pr_aware_df_F3_K1_execution_20261028.md)。既存CAR/Arb/bridge/executorを無変更で使用し、7/7 COMPLETE、全512基底のraw/K1≤3.42202E-14、compiled/K1≤3.24349E-12（上向き表示）。新fit/build-compile/sampling0。固定一trajectoryのみ、全law/CA/資源未資格・mandatory STOP。
+
 ## 関連track：Proposed F3-K1 binding（2026-10-28）
 
 `../trottertracks/c_pr_aware_df_fixed_f3_k1.py` は既存K1 CAR/Arb/bridge/executorを再利用するProposed専用adapter。[F1 reuse条件・人工193 tests＋29 subtests・7-call案](../../docs/research/research_c_pr_aware_df_F3_K1_readiness_20261027.md)。新実H4科学call0、F3未実行・mandatory STOP。

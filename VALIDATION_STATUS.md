@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-28：F3-K1・Proposed固定trajectoryのCAR接続がvalidated PASS
+
+[結果・原本・保証scope](docs/research/research_c_pr_aware_df_F3_K1_execution_20261028.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 Proposed proposed_00、Nα=Nβ2を含むfull256/controlled512、元順LD2/partial S2 δ.1/s4/h1/40/r16/K0。SOURCE 9b0f4d2b40159b77f28caf3f215ad22d0d075879を無変更で7/7 COMPLETE、correctness FAIL/retry/resume0。Arb192全512基底・位相込みでraw/B0≤3.33805E-14、κ bridge≤2.07978E-17、U bridge≤8.18918E-16、raw/K1≤3.42202E-14、compiled/K1≤3.24349E-12（上向き表示）。両方allowance1e-8内。Proposed F1の同一raw certificateを再利用し、Baseline値は転用していない。 SOURCE145/input41/旧保護227件不変。保証はexact κH＋Proposed polar Qへの固定一trajectoryのみ。両armは非pairedで、全law/IID/物理Hamiltonian新保証/CA/保証shots/cost support/母平均・総資源優位は未資格。C1約83%は元の仮定付き点推定のまま。旧SOURCE/raw/STOPを保全し、追加計算せず公開照合後mandatory STOP。以下は各段階の履歴。
+
 ## 2026-10-27：F2-K1・固定Baselineの独立CAR referenceへvalidated接続
 
 [結果・原本・保証scope](docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 baseline_00、Nα=Nβ2を含むfull256/controlled512、元順LD2/partial S2 δ.1/s4/h1/40/r16/K0。SOURCE3742ec10ddc0df5faaaa2a6856a9cc60ea013eb9を無変更で7/7 COMPLETE、correctness FAIL/retry/resume0。25 CAR blocks／全512基底／位相込みArb192で、raw/B0≤2.57295e-14、κ bridge≤2.07978e-17、U bridge≤9.53720e-16、raw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示、exact fractionsを保存）。Rawとcompiledの新K1 target上界はallowance1e-8内。元κ/元U・旧target/旧STOPを変更せず、新targetはexact κH＋right-polar Q。物理積分/DF新保証/Proposed CAR/全trajectory/全law/PCG64 IID/CA/保証shots/cost support/総資源は未資格。SOURCE142/input42・旧証拠不変、公開照合後mandatory STOP。

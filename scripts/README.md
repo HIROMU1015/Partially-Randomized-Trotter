@@ -1,5 +1,9 @@
 # scripts 索引
 
+## Proposed F3-K1専用entry実行完了（2026-10-28）
+
+[結果・証拠・資格範囲](../docs/research/research_c_pr_aware_df_F3_K1_execution_20261028.md)。固定SOURCE無変更で7/7 COMPLETE、correctness FAIL/retry/resume0。Proposed raw/K1≤3.42202E-14、compiled/K1≤3.24349E-12（上向き表示）。消費済みF3-K1-run01を再起動しない。全law/CA/shots/総資源へ進まずmandatory STOP。
+
 ## Proposed F3-K1専用entry（2026-10-28）
 
 `run_research_c_pr_aware_df_fixed_F3_K1.py --contract docs/research/research_c_pr_aware_df_F3_K1_contract_draft_20261027.json` はpassive既定。別明示科学許可後だけ`--execute`、独立最大7 calls・2026-10-28/F3-K1-run01・retry/resume0。[技術報告](../docs/research/research_c_pr_aware_df_F3_K1_readiness_20261027.md)。F1/F2の再起動・残枠再利用なし。

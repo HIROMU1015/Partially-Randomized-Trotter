@@ -192,6 +192,10 @@
     {
       "commit": "a1cf0046967c206f414dbad568a75884ee076ebf",
       "role": "PR-aware DF B2 shared-Qiskit compatibility scientific SOURCE;original sampling identity preserved"
+    },
+    {
+      "commit": "9b0f4d2b40159b77f28caf3f215ad22d0d075879",
+      "role": "F3-K1 Proposed fixed-trajectory scientific SOURCE;unchanged existing K1 CAR/Arb/bridge mathematics"
     }
   ],
   "artifact_inventory": {
@@ -1526,6 +1530,14 @@
           "research_c_pr_aware_df_fixed_F2_polar_20261027"
         ],
         "reason": "Partial4-call evidence;input kappa exact-Hermiticity STOP;no raw/CAR certificate generated"
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-28/F3-K1-run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_F3_K1_execution_20261028"
+        ],
+        "reason": "Seven complete calls;independent CAR25blocks/full512 validated raw and compiled K1 certificates;fixed proposed_00 only;no whole-law/CA/resources qualification"
       }
     ],
     "quarantined": [
@@ -9460,6 +9472,125 @@
       "shots": null,
       "total_resources": null,
       "mandatory_stop": true
+    },
+    {
+      "status": "COMPLETE_VALIDATED_FIXED_PROPOSED_K1",
+      "date_JST": "2026-10-28",
+      "scientific_SOURCE_commit": "9b0f4d2b40159b77f28caf3f215ad22d0d075879",
+      "branch": "codex/research-c-F3-K1-execution-20261028",
+      "scope": "C_PR_AWARE_DF_FIXED_F3_K1_V1",
+      "target": "CAR_exact_kappa_H_polar_U_fixed_trajectory_v1",
+      "source_manifest": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-28/F3-K1-preparation/SOURCE.json",
+      "source_manifest_sha256": "4711be5f75cb3e6965e87d51d443cf181f5fc5533859c7314790b02421ed95ce",
+      "contract": "docs/research/research_c_pr_aware_df_F3_K1_contract_draft_20261027.json",
+      "contract_sha256": "7c9d7abb3445de1941f68e05444545fa553b2887e6a48a25017dc83c3229a23a",
+      "raw": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-28/F3-K1-run01",
+      "scientific_conditions": {
+        "molecule": "linear H4",
+        "adjacent_distance_A": 1.0,
+        "basis": "STO-3G",
+        "DF": "normal number CDF",
+        "rank": 8,
+        "arm": "proposed",
+        "trajectory": "proposed_00",
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "sector_dimension": 36,
+        "system_modes": 8,
+        "system_dimension": 256,
+        "ancilla": "last",
+        "controlled_dimension": 512,
+        "frame_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "L_D": 2,
+        "PF": "partial ordered symmetric S2",
+        "delta_exact": "1/10",
+        "s": 4,
+        "h_exact": "1/40",
+        "half_head_exact": "1/80",
+        "r": 16,
+        "K": 0,
+        "events": 16,
+        "own_DF_ground_oracle": true,
+        "state_preparation_cost_excluded": true,
+        "paired_trajectory": false,
+        "seed": 12704117278500360798
+      },
+      "attempted_units": 7,
+      "completed_units": 7,
+      "failed_units": 0,
+      "not_run_units": 0,
+      "calls": {
+        "input_arrays": 1,
+        "arm_replay": 1,
+        "trajectory_load": 1,
+        "CAR_reference": 1,
+        "qpy_decode": 1,
+        "raw_CAR_certificate": 1,
+        "triangle_composition": 1
+      },
+      "new_fit": 0,
+      "new_optimizer": 0,
+      "new_sampling": 0,
+      "build_compile": 0,
+      "retry": 0,
+      "resume": 0,
+      "F1_reexecuted": false,
+      "F2_reexecuted": false,
+      "common_kappa_diagnostic_reexecuted": false,
+      "precision_bits": 192,
+      "dimension": 512,
+      "columns_evaluated": 512,
+      "CAR_blocks": 25,
+      "phase_fit": false,
+      "allowance_exact": "1/100000000",
+      "upper_exact": {
+        "raw_B0": "921533650602179974658952952148657563886179742688012725451/27606985387162255149739023449108101809804435888681546220650096895197184",
+        "kappa_bridge": "2351776687589238563290103203787667248301843713966451375645/113078212145816597093331040047546785012958969400039613319782796882727665664",
+        "U_bridge": "43121058593254870216127292865242928510382158905395/52656145834278593348959013841835216159447547700274555627155488768",
+        "raw_K1": "3869555377767583131651856982519305305449772754244339916303901/113078212145816597093331040047546785012958969400039613319782796882727665664",
+        "prior_compiled_raw": "2768695464009102933825365238623883955621718347438096580095/862718293348820473429344482784628181556388621521298319395315527974912",
+        "compiled_K1": "366768007236368722874010129539429023136699639989650534862515741/113078212145816597093331040047546785012958969400039613319782796882727665664"
+      },
+      "upper_display_ceiling_6sig": {
+        "raw_B0": "3.33805E-14",
+        "kappa_bridge": "2.07978E-17",
+        "U_bridge": "8.18918E-16",
+        "raw_K1": "3.42202E-14",
+        "prior_compiled_raw": "3.20927E-12",
+        "compiled_K1": "3.24349E-12"
+      },
+      "raw_gate": "VALIDATED_WITHIN_FIXED_ALLOWANCE",
+      "compiled_upper_within_same_allowance": true,
+      "SOURCE_input_preservation": {
+        "source_files": 145,
+        "saved_inputs": 41,
+        "protected_files": 227
+      },
+      "old_evidence_unchanged": true,
+      "old_kappa_modified": false,
+      "Baseline_bound_values_reused": false,
+      "whole_law_bound": null,
+      "physical_Hamiltonian_bound": null,
+      "IID_qualified": null,
+      "CA_achieved": null,
+      "shots": null,
+      "cost_support": null,
+      "population_mean_superiority": null,
+      "total_resources": null,
+      "C1_reanalysis": 0,
+      "mandatory_stop": true,
+      "id": "research_c_pr_aware_df_F3_K1_execution_20261028",
+      "report": "docs/research/research_c_pr_aware_df_F3_K1_execution_20261028.md",
+      "source_commit": "9b0f4d2b40159b77f28caf3f215ad22d0d075879"
     }
   ],
   "repository_completion_criteria": [

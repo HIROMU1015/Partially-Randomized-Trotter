@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：F3-K1限定科学実行完了（2026-10-28）
+
+[結果・証拠・資格範囲](research/research_c_pr_aware_df_F3_K1_execution_20261028.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 Proposed proposed_00、Nα=Nβ2を含むfull256/controlled512、元順LD2/partial S2 δ.1/s4/h1/40/r16/K0。SOURCE 9b0f4d2b40159b77f28caf3f215ad22d0d075879を無変更で7/7 COMPLETE、correctness FAIL/retry/resume0。Arb192全512基底・位相込みでraw/B0≤3.33805E-14、κ bridge≤2.07978E-17、U bridge≤8.18918E-16、raw/K1≤3.42202E-14、compiled/K1≤3.24349E-12（上向き表示）。両方allowance1e-8内。Proposed F1の同一raw certificateを再利用し、Baseline値は転用していない。 保証はexact κH＋Proposed polar Qへの固定一trajectoryのみ。両armは非pairedで、全law/IID/物理Hamiltonian新保証/CA/保証shots/cost support/母平均・総資源優位は未資格。C1約83%は元の仮定付き点推定のまま。旧SOURCE/raw/STOPを保全し、追加計算せず公開照合後mandatory STOP。以下は各段階の履歴。
+
 ## 研究C：Proposed F3-K1技術準備（2026-10-28）
 
 [再利用・差分・193 tests＋29 subtests・未資格事項](research/research_c_pr_aware_df_F3_K1_readiness_20261027.md)／[未承認7-call契約](research/research_c_pr_aware_df_F3_K1_contract_draft_20261027.json)。保存proposed_00のF1 pairを固定し、K1数学を無変更で接続。実H4科学call0、旧F2/F1/raw/STOP保全、別明示許可までmandatory STOP。
