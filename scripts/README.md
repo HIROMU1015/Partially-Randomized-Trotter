@@ -165,3 +165,8 @@ Default `--mode plan` prints an artificial plan; explicit `--mode synthetic` run
 Optional `--output-dir` requires a NEW directory and the legacy core dependency stack.
 Missing dependencies are explained without creating that directory or installing packages.
 See [current scope, tests and commands](../src/trottertracks/resource_applicability/README.md).
+
+
+## P1/P2 dependency, writer and H4 qualification validation (2026-10-28)
+
+See `docs/integration/p1_p2_validation_and_h4_equivalence_20261028/REPORT.md`, `scripts/integration/run_p1_p2_technical_validation.py`, `tests/test_pipeline_real_writer_validation.py` and `tests/test_pipeline_eager_import_validation.py`. Real normal-import/writer tests pass; H4 numerical comparison is SOURCE_OR_INPUT_UNQUALIFIED. No scientific launch mode or old evidence is changed.

@@ -52,3 +52,8 @@ No root package bypass or scientific dependency installation was used.
 See [scope/reproduction](../src/trottertracks/resource_applicability/README.md).
 Historical [P1 62 PASS](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/af54aeb7ebac042a3ca02379d61516ac635feef9/docs/integration/p1_df_pipeline_h4_20261027) and [adoption-review 19 PASS](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/76fec27f45b64879cdf5a86a32772ba78bd0a038/inventory/integration/p1_adoption_review_20261027) are distinct code-version records and are not added to this run.
 Do not run scientific suites, old runners, sampling or build/compile under this technical integration scope.
+
+
+## P1/P2 dependency, writer and H4 qualification validation (2026-10-28)
+
+See `docs/integration/p1_p2_validation_and_h4_equivalence_20261028/REPORT.md`, `scripts/integration/run_p1_p2_technical_validation.py`, `tests/test_pipeline_real_writer_validation.py` and `tests/test_pipeline_eager_import_validation.py`. Real normal-import/writer tests pass; H4 numerical comparison is SOURCE_OR_INPUT_UNQUALIFIED. No scientific launch mode or old evidence is changed.

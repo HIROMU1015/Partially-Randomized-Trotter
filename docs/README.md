@@ -140,3 +140,8 @@ Scientific execution remains disabled. Current limited regression: 78 PASS / 0 F
 - [Selective adoption review and P2 handoff](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/76fec27f45b64879cdf5a86a32772ba78bd0a038/inventory/integration/p1_adoption_review_20261027) — fixed planning record.
 
 The current README records this integration's actual checks. No scientific synthesis, CEM, validation manifest or SOURCE status is amended.
+
+
+## P1/P2 dependency, writer and H4 qualification validation (2026-10-28)
+
+See `docs/integration/p1_p2_validation_and_h4_equivalence_20261028/REPORT.md`, `scripts/integration/run_p1_p2_technical_validation.py`, `tests/test_pipeline_real_writer_validation.py` and `tests/test_pipeline_eager_import_validation.py`. Real normal-import/writer tests pass; H4 numerical comparison is SOURCE_OR_INPUT_UNQUALIFIED. No scientific launch mode or old evidence is changed.
