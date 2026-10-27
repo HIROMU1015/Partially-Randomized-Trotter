@@ -45,3 +45,5 @@ python -B -m pytest -q tests/test_h4_one_case_equivalence_harness.py
 ```
 
 この文書は新しい再実行許可ではない。再現する場合も対象・入力・固定source・resource/STOPの範囲を維持する。old runner/worker/controller、SCF/state再生成、sampling、回路build/transpile/compile、RZ/N/G/SE、full RPE/QPE・新候補・別分子の実行は含めない。
+
+保存参照分類の補足：旧corrected_signalは決定論的finite-RTE平均を計算し、trajectory samplingはcompiled-cost側である。旧実装のこの静的区別を反映する説明修正を行った。実数値はd7589d504922de98306daa1e75959a7eac830a96のharnessで1回だけ実行し、修正後の人工11testを確認する。実数値の再実行・閾値変更は0。

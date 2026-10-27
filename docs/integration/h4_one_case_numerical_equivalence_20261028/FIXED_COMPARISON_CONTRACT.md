@@ -34,7 +34,7 @@ Full P1 preparation calls build_one_body_gaussian_block/build_df_blocks -> U_to_
 
 K=4 paired finite-law/r=4 short-step meanings are identified statically. The candidate's exact tail components/lambda are not available without the unpermitted preparation or a qualified saved config. Do not substitute the partition proxy, infer lambda from saved normalization, invent a tail/config or evaluate an unrelated tau. Finite-law numerical equivalence is INCONCLUSIVE.
 
-No qualified explicit stored event sequence exists in verified SERVER_A paths/public projection. No new random trajectory/seed is generated; event request remains INCONCLUSIVE. Finite-trajectory saved signals/costs/SE are provenance only and never an exact deterministic oracle.
+No qualified explicit stored event sequence exists in verified SERVER_A paths/public projection. No new random trajectory/seed is generated; event request remains INCONCLUSIVE. The original finite-RTE complex signal and its normalization are deterministic saved quantities;32 trajectory cost/SE samples are a separate reference class. The public projection gives deterministic bias/normalization but not the full complex signal/events. No candidate-signal comparison is performed without its qualified tail/config.
 
 ## Call/resource ceiling and stop
 
@@ -45,3 +45,5 @@ Task-only limits: 16GiB address space,300 CPU seconds,600 wall seconds, largest 
 Input/SOURCE/identity failure or forbidden-call attempt stops the numeric process. Numerical mismatch stops dependent evaluations, records MISMATCH and leaves data unchanged. Independent qualified checks may finish. No real-API retry or kernel edit to force MATCH. Partial results are preserved and published if safe.
 
 MATCH_INDEPENDENT requires original saved numerical data or a separate mathematical reference. Forwarding to the same API is MATCH_WIRING_ONLY. Metadata equality is MATCH_METADATA_ONLY. This contract is a validation plan, not an approval certificate or a new grant.
+
+Reference-class clarification after execution: the original private pre-execution contract and its digest remain unchanged. This public wording distinguishes deterministic finite-RTE signal from sampled compile costs. Numerical comparisons, tolerances, call caps and the three unperformed items were not changed or rerun.

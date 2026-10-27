@@ -31,6 +31,6 @@ inputs.py同一blobという事実をsignal/circuits/identity全体の同一版�
 
 scalarはnuclearを一回、oneはhspin+保存DF correction。元sector N=4/Nalpha=Nbeta=2/dimension36、full state256、sector state36、bit reverseしたQiskit state、最大振幅pivotの正位相規約を固定した。今回norm/bit/phase/energy/residualだけを既存保存stateで検証し、基底状態を再計算していない。
 
-後続旧公開結果のMAP_COMPLETE_STOP・mandatory_stop=true・next_stage_authorized=falseを読み取った。Aに後続raw runtime/STOP原本が存在すると推測せず、公開固定結果の停止記録と、Aのrun05保全原本を区別した。旧候補signalの投影は32 trajectoryの保存量であり、独立deterministic oracleではない。raw original signal SHAを公開投影に照合したことと、そのraw本文をAで取得したことも区別する。
+後続旧公開結果のMAP_COMPLETE_STOP・mandatory_stop=true・next_stage_authorized=falseを読み取った。Aに後続raw runtime/STOP原本が存在すると推測せず、公開固定結果の停止記録と、Aのrun05保全原本を区別した。旧SOURCEのsignal corrected/rawとnormalizationはfinite-RTE多項式による決定論的平均の保存量であり、32 trajectoryはpaired compiled-cost/SE側である。公開投影には決定論的bias・normalizationがあるが、完全な符号付き複素signalとevent列は含まれない。今回はexact tail/config不足のため旧候補signalとの数値比較を行わない。raw original signal SHAを公開投影に照合したことと、そのraw本文をAで取得したことも区別する。
 
 公開[旧入力provenance](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/821cc0f6ced57168293ea166644024867b064ffb/artifacts/resource_applicability/track_a_h4_geometry_scalar_diagnostic/2026-10-13/source_input_provenance_v1.json)、[旧固定計画](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/821cc0f6ced57168293ea166644024867b064ffb/artifacts/resource_applicability/track_a_h4_production_resume02/2026-10-11/plan_authorized_v1.json)を実際に取得した。LOCALの2917843…技術検証とfa99868…追加探索は歴史資料として保持し、書換えない。

@@ -284,7 +284,7 @@ def run(locations_path, contract_path, qualification_path, output):
                       and residual <= 1e-9 and energy_error <= 1e-9 and pivot.real > 0
                       and checks["sector_order_exact"] and sector_matrix_check["passed"])
             item("SAVED_NUMERICAL_REFERENCE", match_class(passed=passed, independent=True), checks,
-                 "Independent saved H/sector/state/energy only; sampled finite-trajectory signal/cost/N/G/SE are not compared")
+                 "Independent saved H/sector/state/energy only; original candidate complex signal is not compared; deterministic finite-RTE signal is distinct from sampled trajectory costs/N/G/SE")
         coefficient = float(arrays["nuclear"])
         rawU = call("uncontrolled_identity_evolution_operator", uncontrolled_identity_evolution_operator,
                     coefficient, .8, 256)

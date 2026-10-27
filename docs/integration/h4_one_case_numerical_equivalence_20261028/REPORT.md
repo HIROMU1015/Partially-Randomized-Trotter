@@ -15,7 +15,7 @@
 | EXPLICIT_EVENT_REQUEST | INCONCLUSIVE | A確認範囲で適格な保存明示event列なし |
 | PHASE_SIGN_CONTROL | MATCH_INDEPENDENT | nuclear identity scalarの負符号位相・diag(I,U)だけ |
 | REAL_INPUT_CONTEXT_PROPAGATION | MATCH_WIRING_ONLY | 実adapter→同一coreへの入力/文脈配線だけ |
-| SAVED_NUMERICAL_REFERENCE | MATCH_INDEPENDENT | 保存H/state/energy/sector/bit/phase。保存確率signalは対象外 |
+| SAVED_NUMERICAL_REFERENCE | MATCH_INDEPENDENT | 保存H/state/energy/sector/bit/phase。旧候補複素signalは対象外 |
 
 ## 実測誤差と実行
 
@@ -34,7 +34,7 @@ P1 prepare_df_partial_s2はGaussian block構築からBogoliubovTransformを作�
 
 旧r=4はq=1の中の4 short steps、K=4はeven paired Taylor order。P1の意味は静的確認したが、同一候補のexact RTE tail/normalizationを回路なしで適格に渡す経路または保存configが不足した。partition proxyをlambda_Rに置き換えたり、保存normalizationから逆算して比較を成立させたりしていない。
 
-Aの既知旧5runと後続固定locatorでは、この候補のraw signal/event列は取得できなかった。公開posthoc保存投影・candidate fingerprint・MAP_COMPLETE_STOPは照合できるが、有限trajectoryのsignal/cost/SEを決定論的oracleとはしない。SERVER_B報告だけでA上の実体やeventを適格と認定していない。
+Aの既知旧5runと後続固定locatorでは、この候補のraw signal/event列は取得できなかった。公開posthoc保存投影・candidate fingerprint・MAP_COMPLETE_STOPは照合できた。旧SOURCEではsignal corrected/raw・normalizationはfinite-RTEの決定論的平均で、32 trajectoryのcost/SEとは区別する。公開投影のbias/normalizationは決定論的な保存参照だが、完全な複素signal・event列は未取得で、候補exact tail/configが不足するためその数値比較は行わない。SERVER_B報告だけでA上の実体やeventを適格と認定していない。
 
 ## 資料と結論の範囲
 
@@ -43,3 +43,5 @@ Aの既知旧5runと後続固定locatorでは、この候補のraw signal/event�
 入力NPZ/freezeと32配列の完全manifestは適格になった。今回の一致はHamiltonian表現・補正・保存stateとnuclear identity phase/controlという限定範囲。完全なS2/finite-RTE event経路、Qiskit price、N/G/SE/RPE、別距離/分子/rankの正しさは未認定。P1のpublic scientific/real/resumeとStageResultのUNQUALIFIEDは保持する。
 
 旧SOURCE/input/raw/result/grant/ledger/marker/STOPを変更せず、B3・SERVER_B・Research C・他研究job・共有環境へ操作しない。結果の通常fast-forward公開・local/remote一致・公開bytes読戻しまで完了したらmandatory STOP。P3/P4、H6/H8、新候補、旧再開には進まない。
+
+保存参照の分類について、公開後の旧SOURCE静的確認でsignalとsampling costの記述を明確化した。実数値実行版はcommit `d7589d504922de98306daa1e75959a7eac830a96` のharnessで、修正は説明文字列のみ。実測誤差・10判定・許容差・call数は不変で、科学APIを再実行していない。

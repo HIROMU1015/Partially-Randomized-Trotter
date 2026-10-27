@@ -116,7 +116,7 @@
           ]
         }
       },
-      "limitations": "Independent saved H/sector/state/energy only; sampled finite-trajectory signal/cost/N/G/SE are not compared"
+      "limitations": "Independent saved H/sector/state/energy only; original candidate complex signal is not compared; deterministic finite-RTE signal is distinct from sampled trajectory costs/N/G/SE"
     },
     {
       "item": "PHASE_SIGN_CONTROL",
@@ -215,5 +215,16 @@
   "input_identity": "7ec5d653bf47f78e3406736db819fcaaad3b046fcc316a533f52462738a5984d",
   "P1_commit": "2c865c66171fc9d1972b67c1257c57e5684fe26c",
   "public_contract_file": "FIXED_COMPARISON_CONTRACT.md",
-  "private_contract_reference_note": "Exact private pre-execution contract digest binds the executed record; private locations are not serialized."
+  "private_contract_reference_note": "Exact private pre-execution contract digest binds the executed record; private locations are not serialized.",
+  "reference_class_clarification": {
+    "reason": "Old SOURCE execution.signal_stage uses corrected_signal(det,tail,constant,state,template) before compile_candidates. corrected_signal evaluates deterministic finite polynomial/expm mean. The32 trajectory samples enter paired compile costs, not this signal.",
+    "source": "d0726e946f89f8c30a08d383fb8ff48b363629ec",
+    "execution_lines": "execution.py:304-305,324-331; signal.py:56-82",
+    "executed_harness_sha256": "abc4c39f5434fd9be22ae4126ef51030c04d315081e2b0010dac908982c6e393",
+    "clarified_harness_sha256": "598c4758ace59bf04216d0d42c6c2c5b9e2a305bd6121682dc3c7ddebaa7fd88",
+    "only_python_change": "One human-readable limitation string; numeric expressions/calls/budgets unchanged",
+    "real_scientific_calls_rerun": false,
+    "result_classes_or_errors_changed": false,
+    "actual_numeric_execution_code_commit": "d7589d504922de98306daa1e75959a7eac830a96"
+  }
 }
