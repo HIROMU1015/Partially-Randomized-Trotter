@@ -1,0 +1,219 @@
+{
+  "contract_sha256": "c1318e6bd001403c8c656d028a1d4036244e369d520a54cca798c1a14d588c10",
+  "items": [
+    {
+      "item": "REAL_INPUT_CONTEXT_PROPAGATION",
+      "status": "MATCH_WIRING_ONLY",
+      "evidence": {
+        "actual_adapter_status": "UNQUALIFIED",
+        "binding_exact": true,
+        "constructor_forwarding_exact": true
+      },
+      "limitations": "No independent scientific provider; public composer scientific/real/resume modes stay disabled"
+    },
+    {
+      "item": "FRAGMENT_ORDER",
+      "status": "MATCH_METADATA_ONLY",
+      "evidence": {
+        "stored_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "permutation_prefix_matches": true,
+        "P1_lambdas_G_byte_positions_exact": true
+      },
+      "limitations": "No reranking; metadata/input equality is not a numerical S2 operator result"
+    },
+    {
+      "item": "FIXED_PARTITION",
+      "status": "MATCH_METADATA_ONLY",
+      "evidence": {
+        "deterministic_stored_indices": [
+          0,
+          1,
+          2
+        ],
+        "randomized_stored_indices": [
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      "limitations": "Explicit partition accepted by input adapter; abs_lambda proxy not used as exact RTE norm; no prepare call"
+    },
+    {
+      "item": "SCALAR_ONE_BODY",
+      "status": "MATCH_INDEPENDENT",
+      "evidence": {
+        "one_body_vs_original_hspin_plus_correction": {
+          "passed": true,
+          "max_abs_error": 0.0,
+          "atol": 1e-12,
+          "rtol": 1e-12,
+          "shape": [
+            8,
+            8
+          ]
+        },
+        "nuclear_exactly_forwarded": true
+      },
+      "limitations": "Once-only nuclear application also tested by full original stored H comparison"
+    },
+    {
+      "item": "DF_HAMILTONIAN",
+      "status": "MATCH_INDEPENDENT",
+      "evidence": {
+        "full_fock_256_matrix_vs_original_saved_H": {
+          "passed": true,
+          "max_abs_error": 7.105427357601002e-15,
+          "atol": 1e-12,
+          "rtol": 1e-12,
+          "shape": [
+            256,
+            256
+          ]
+        }
+      },
+      "limitations": "Independent historical stored matrix vs existing Python fermion-action core; one molecule/candidate only"
+    },
+    {
+      "item": "SAVED_NUMERICAL_REFERENCE",
+      "status": "MATCH_INDEPENDENT",
+      "evidence": {
+        "norm_abs_error": 6.661338147750939e-16,
+        "sector_embedding_abs_error": 0.0,
+        "outside_sector_abs_error": 0.0,
+        "bit_reversal_abs_error": 0.0,
+        "stored_energy_abs_error": 4.440892098500626e-16,
+        "H_state_residual_L2": 2.1300460134223203e-15,
+        "phase_pivot_imag_abs_error": 0.0,
+        "phase_pivot_positive": true,
+        "sector_order_exact": true,
+        "sector_H": {
+          "passed": true,
+          "max_abs_error": 2.615963001773025e-15,
+          "atol": 1e-12,
+          "rtol": 1e-12,
+          "shape": [
+            36,
+            36
+          ]
+        }
+      },
+      "limitations": "Independent saved H/sector/state/energy only; sampled finite-trajectory signal/cost/N/G/SE are not compared"
+    },
+    {
+      "item": "PHASE_SIGN_CONTROL",
+      "status": "MATCH_INDEPENDENT",
+      "evidence": {
+        "nuclear_identity_global_phase": {
+          "passed": true,
+          "max_abs_error": 0.0,
+          "atol": 1e-14,
+          "rtol": 1e-14,
+          "shape": [
+            256,
+            256
+          ]
+        },
+        "nuclear_controlled_diag_I_U": {
+          "passed": true,
+          "max_abs_error": 0.0,
+          "atol": 1e-14,
+          "rtol": 1e-14,
+          "shape": [
+            512,
+            512
+          ]
+        }
+      },
+      "limitations": "Only identity scalar negative phase and ancilla-major diag(I,U); full S2/event control not executed"
+    },
+    {
+      "item": "S2_PREPARATION",
+      "status": "INCONCLUSIVE",
+      "evidence": {
+        "actual_API_calls": 0
+      },
+      "limitations": "existing preparation builds BogoliubovTransform/circuit, prohibited; static order/policy only"
+    },
+    {
+      "item": "FINITE_RTE_LAW",
+      "status": "INCONCLUSIVE",
+      "evidence": {
+        "actual_API_calls": 0
+      },
+      "limitations": "K4/r4 semantics recorded but candidate tail lambda not verified without prohibited preparation; no fabricated SymbolicRTETail/config"
+    },
+    {
+      "item": "EXPLICIT_EVENT_REQUEST",
+      "status": "INCONCLUSIVE",
+      "evidence": {
+        "actual_API_calls": 0
+      },
+      "limitations": "no qualified saved explicit events in verified SERVER_A scope; no sampling fallback"
+    }
+  ],
+  "calls": {
+    "H4GeometryAdapter.bind_core": 1,
+    "DFFragmentPartition_record": 1,
+    "H4GeometryAdapter.input": 1,
+    "DFHamiltonian": 1,
+    "df_linear_operator_python": 1,
+    "LinearOperator.matmat_identity256": 1,
+    "internal_python_matvec": 256,
+    "state_scalar_checks_batch": 1,
+    "uncontrolled_identity_evolution_operator": 1,
+    "controlled_identity_evolution_operator": 1
+  },
+  "forbidden_calls": 0,
+  "status": "COMPLETED_WITH_ITEM_LIMITS",
+  "scientific_API_retries": 0,
+  "runtime32_header_checks": true,
+  "real_arrays_readonly": true,
+  "classification_counts": {
+    "INCONCLUSIVE": 3,
+    "MATCH_INDEPENDENT": 4,
+    "MATCH_METADATA_ONLY": 2,
+    "MATCH_WIRING_ONLY": 1
+  },
+  "elapsed_wall_seconds": 14.41455969773233,
+  "peak_RSS_KiB": 591528,
+  "test_results": {
+    "tests": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "candidate": {
+    "K": 4,
+    "L_D": 3,
+    "T": 0.8,
+    "delta": 0.8,
+    "method": "B2",
+    "new_candidate_fingerprint": null,
+    "q": 1,
+    "r": 4,
+    "template_id": "B2-rank3-q1-r4-K4"
+  },
+  "input_identity": "7ec5d653bf47f78e3406736db819fcaaad3b046fcc316a533f52462738a5984d",
+  "P1_commit": "2c865c66171fc9d1972b67c1257c57e5684fe26c",
+  "public_contract_file": "FIXED_COMPARISON_CONTRACT.md",
+  "private_contract_reference_note": "Exact private pre-execution contract digest binds the executed record; private locations are not serialized."
+}

@@ -2850,6 +2850,14 @@
           "pr2_pr3_minimal_pilot"
         ],
         "reason": "Machine-readable local dirty-worktree result with fingerprint 0ee2c3b9bcb7ef433d429336d84c116eace3df150c2e6bd5747eb6850998b725 and file SHA-256 65d5c12a129cd50f521b069b63be140f7bbee1eddf7ea8b859b18737dbb8d302; it records GO_PR2, STOP_PR3_VARIANCE_BACKBONE_DOMINATES, and the mandatory stop."
+      },
+      {
+        "path": "docs/integration/h4_one_case_numerical_equivalence_20261028/VERIFIED_RESULTS.json",
+        "kind": "file",
+        "supports": [
+          "server_a_h4_one_case_numerical_equivalence_20261028"
+        ],
+        "reason": "Separate local saved-input consistency audit: errors and scoped classifications only; original NPZ/state/matrices remain private."
       }
     ],
     "quarantined": [
@@ -5046,6 +5054,62 @@
         "Require separate result-prior authorization before V4/S1-prime. Do not automatically start expected-cost Monte Carlo, resource selection, S2/S3, additional ranks/geometries, H12, long RPE, or final total-cost evaluation.",
         "Classify the result as dirty-worktree local validation, not immutable CI or independent external reproduction."
       ]
+    },
+    {
+      "id": "server_a_h4_one_case_numerical_equivalence_20261028",
+      "status": "limited_local_saved_input_consistency_verified_full_S2_finite_RTE_unverified",
+      "summary": "Linear H4/0.90 Å/STO-3G/保存DF rank12/generated order/B2/S2/L_D=3/q=1/r=4/K=4/T=delta=0.8の一件だけを対象に、保存Hamiltonian・one-body補正・state/sectorと核scalar位相/controlを独立検証した。独立数値一致4、metadata一致2、配線一致1、未確定3。不一致0。full H最大差7.105427357601002e-15、H-state残差2.1300460134223203e-15。完全S2準備・候補固有finite-RTE数値則・明示event列は未検証で、科学provider/CLI有効化・価格/N/G/SE・他条件へ拡張しない。旧SOURCE/STOPと科学採択は維持する。",
+      "scope": {
+        "system": "Linear H4",
+        "distance_angstrom": 0.9,
+        "basis": "STO-3G",
+        "representation": "DF",
+        "rank": 12,
+        "order": "frozen_generated",
+        "method": "B2",
+        "product_formula": "S2",
+        "L_D": 3,
+        "q": 1,
+        "r": 4,
+        "K": 4,
+        "T": 0.8,
+        "delta": 0.8,
+        "candidate_id": "B2-rank3-q1-r4-K4",
+        "P1_commit": "2c865c66171fc9d1972b67c1257c57e5684fe26c",
+        "original_generation_source": "049e69919af16ad29a67a217dc7a407d6b1754a6",
+        "dataset_identity_source": "5aa6c3685afb9c3afcfbdc36f80244da0a7fe525",
+        "later_result_source": "d0726e946f89f8c30a08d383fb8ff48b363629ec"
+      },
+      "counts": {
+        "MATCH_INDEPENDENT": 4,
+        "MATCH_METADATA_ONLY": 2,
+        "MATCH_WIRING_ONLY": 1,
+        "INCONCLUSIVE": 3,
+        "MISMATCH": 0,
+        "artificial_regression_pass": 11,
+        "artificial_regression_fail": 0,
+        "artificial_regression_skip": 0,
+        "scientific_attempts": 1,
+        "full_matrix_matmat": 1,
+        "internal_python_matvec": 256,
+        "sampling": 0,
+        "circuit_build_compile": 0,
+        "new_ground_state_solve": 0
+      },
+      "artifacts": [
+        "docs/integration/h4_one_case_numerical_equivalence_20261028/NUMERICAL_EQUIVALENCE_RESULTS.csv",
+        "docs/integration/h4_one_case_numerical_equivalence_20261028/VERIFIED_RESULTS.json",
+        "docs/integration/h4_one_case_numerical_equivalence_20261028/FIXED_COMPARISON_CONTRACT.md"
+      ],
+      "generator": "scripts/integration/validate_h4_one_case_equivalence.py",
+      "tests": "tests/test_h4_one_case_equivalence_harness.py",
+      "completion_criteria": [
+        "Retain original input/source/result/STOP and distinguish independent numerical from wiring/metadata matches.",
+        "Full S2 preparation, candidate finite-RTE numerical law and explicit-event path remain unverified; no automatic scientific provider or CLI enablement.",
+        "No final performance/price/N/G/SE/RPE conclusion or H6/H8 extrapolation."
+      ],
+      "external_CI_reproduction": false,
+      "private_payload_published": false
     }
   ],
   "repository_completion_criteria": [

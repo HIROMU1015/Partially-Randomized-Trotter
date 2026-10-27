@@ -415,3 +415,8 @@ CLI→composer→H4 B2 adapter→既存core APIを、plan/人工mock用途で接
 ## P1/P2 dependency, writer and H4 qualification validation (2026-10-28)
 
 See `docs/integration/p1_p2_validation_and_h4_equivalence_20261028/REPORT.md`, `scripts/integration/run_p1_p2_technical_validation.py`, `tests/test_pipeline_real_writer_validation.py` and `tests/test_pipeline_eager_import_validation.py`. Real normal-import/writer tests pass; H4 numerical comparison is SOURCE_OR_INPUT_UNQUALIFIED. No scientific launch mode or old evidence is changed.
+
+
+## SERVER_A saved H4 one-case validation (2026-10-28)
+
+See [the separately scoped result](docs/integration/h4_one_case_numerical_equivalence_20261028/REPORT.md): four independent numerical matches, two metadata matches, one wiring match, three inconclusive items; 11 artificial regression tests pass. Fixed Linear H4/0.90 Å/STO-3G/DF12/B2/S2/L_D3/q1/r4/K4/T0.8. Full S2/finite-RTE event equivalence remains unverified; public scientific modes and old SOURCE/STOP remain unchanged. Harness: `scripts/integration/validate_h4_one_case_equivalence.py`; test: `tests/test_h4_one_case_equivalence_harness.py`.
