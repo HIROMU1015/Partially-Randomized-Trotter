@@ -1,5 +1,9 @@
 # 研究C：PR-aware DF最適化の初期設計・技術検証
 
+## 2026-10-28の次期方針
+
+Stage A/B/C1と固定F2/F3の結果を保全したまま、追加厳密保証より性能・機構・一般化を当面優先する。[現行の技術整理とM1案](research_c_pr_aware_df_performance_mechanism_readiness_20261028.md)はPR内部改善と強決定論baselineへの競争力を分離し、次の一実験として保存shots/価格の記述的寄与分解を推奨する。新しい科学結果・詳細科学レビューはない。M1の独立20-callは未承認、既存fit/保証契約は変更しない。以下は初期設計時点の記録。
+
 対象repository：HIROMU1015/Partially-Randomized-Trotter。調査起点：`54ceff9981d9bc53210db97c743a7d1cf694f362`。本書は依頼の20261026識別子を使用する。
 
 **推奨は、通常CDFのテンソル目的に、固定PR tailの実際の非identity I/Z/ZZ係数massを滑らかに抑える項を追加し、物理sector誤差は独立に判定する方式である。** 実ffsim fitterへの人工接続を確認した。科学的有効性・新規性の採択はしていない。実分子decode、新fit、実optimizer iteration、保存結果の新規再解析、PF/RTE/shot/cost評価、回路build/compileはすべて0。
