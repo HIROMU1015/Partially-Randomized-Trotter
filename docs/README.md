@@ -1,5 +1,8 @@
 # 文書の現在の入口
 
+[H6 Hybrid公平性補完・Phase B結果](../artifacts/h6_hybrid_fairness_extension/2026-10-27/REPORT.md)：固定4候補、mean4作用、探索512＋確認256本。旧14/15とは別集合、実ρ・母平均tailは未保証。
+
+
 H6 Hybrid固定4候補の[Phase A実装・人工検証・非実行計画](../analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)。実H6科学計算は未実行。
 
 

@@ -1,5 +1,8 @@
 # リポジトリの現在の入口
 
+H6 Hybridの大r固定4候補は[Phase B結果](artifacts/h6_hybrid_fairness_extension/2026-10-27/REPORT.md)を参照。全5精度で新Hybrid最良はr32、保存純RTE低Gを維持。有限候補・ρ=0・有限標本の別集合で、旧14/15を上書きしない。
+
+
 H6 Hybridの固定4候補は[Phase A準備](analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)を参照。人工27件PASS、実H6新計算・標本数算出0。Phase Bは別承認待ち。
 
 

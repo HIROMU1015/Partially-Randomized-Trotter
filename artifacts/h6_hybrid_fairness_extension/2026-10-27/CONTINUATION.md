@@ -1,3 +1,5 @@
+完了追記：探索512本・確認256本、計768本の科学計算と保存監査は完了。現在の正本はREPORT.md、EXECUTION_SUMMARY.json、STUDY_STOP.json。以下は計算中に保存した引継ぎsnapshotで、未完了記述は当時の状態。
+
 # H6 Hybrid Phase B — 計算継続中の引継ぎ
 
 固定4候補のみ。科学SOURCE887b69e449cb3c378286f09d0d7626599850fb67、解析SOURCEaf891fd45805454c6592bbee5441266f14235ffd。旧SOURCE・STOPは無変更。実行branchはcodex/h6-hybrid-fairness-extension-execution-20261027。

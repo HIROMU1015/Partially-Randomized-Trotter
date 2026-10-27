@@ -1,5 +1,8 @@
 ## 2026-10-26 H2 純RTE追加検証
 
+H6固定4候補の実行・比較・保存は `run_h6_hybrid_fairness_extension.py` / `analyze_h6_hybrid_fairness_extension.py`。[終了結果とSTOP](../artifacts/h6_hybrid_fairness_extension/2026-10-27/REPORT.md)。成功runの再実行・resumeは禁止。
+
+
 `prepare_h6_hybrid_fairness_extension.py` は固定Git入力と保存文字列だけを照合するPhase A準備用。[計画と境界](../analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)。実H6実行CLIではない。
 
 
