@@ -1,5 +1,10 @@
 # 研究計画資料
 
+## 2026-10-27：PR-aware DF C2・全law資格の技術調査／未承認C2-B準備
+
+[NumPy/P0 SOURCE・資格の限界・人工99 PASS](research_c_pr_aware_df_stage_c2_qualification_readiness_20261027.md)／[未承認35-call表解析契約](research_c_pr_aware_df_stage_c2_contract_draft_20261027.json)。`c_pr_aware_df_stage_c2.py`／静的`c_pr_aware_df_stage_c2_audit.py`／`run_research_c_pr_aware_df_stage_c2.py`／同名management test。Exact finite-grid TVと条件付きraw-law伝播、scoped synthesis／support入力、null C1-previewを人工検証。現whole-P0合成・PCG64 IID／CAR-atom-reference bridge・費用supportは未資格。SOURCE76/input12 passive PASS、新規実分子科学call0、C1再解析0。保存H4・CDF8二arm・元順LD2・δ.1/s4/r16/K0/m0..12・own-oracle/状態準備除外を維持。別科学許可後のみC2-B実行、公開照合後mandatory STOP。
+
+
 ## 2026-10-27：PR-aware DF C1・仮定付きshots／serial総資源評価完了
 
 [164-call結果・全78round・資格の限界](research_c_pr_aware_df_stage_c1_execution_20261027.md)。固定SOURCE b1c735da3…を無変更で一度実行し164/164 COMPLETE、correctness FAIL/retry/resume0。保存H4・1Å/STO-3G、通常CDF8 Baseline/Proposed、sector36、元順LD2、partial S2 δ.1/s4/r16/K0/m0..12、own-DF oracle／状態準備除外、共通precision/P0／CA.00159／serial model。証拠経路26roundはUNRESOLVED・shots/total null。2つの明示仮定scenarioでは両armが条件付き十分条件内。Idealのshots53136/19574、総RZ点推定3,194,333,274,946/540,290,160,109（Proposed約83.086%低い）。.001Aをsynthesis/law各項へ仮定するscenarioも約83.089%低い。全law誤差・費用support・actual CA・保証shots/優位は未資格/null。SOURCE60/input408・既存1644ファイル不変、新fit/sampling/build-compile/量子shots0。C2は未実行・次指示待ち、公開照合後mandatory STOP。以下は以前のscopeの履歴。
