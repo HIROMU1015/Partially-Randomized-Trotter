@@ -1178,3 +1178,11 @@ cosine1件・新3作用を完了。経験値だけを保存し、rho_upper=null�
 
 `h4_r1_sine.py`：R0数値経路・保存C-target cacheを使う固定3 sine接続。
 6作用を完了、C-target新作用・cosine再評価0。経験値のみでrho_upper=null。Arb/R2へ自動移行しない。
+
+## P2 Pauli research consumer
+
+The [Pauli-JW study composer](../../docs/integration/p2_pauli_jw_pipeline_20261027/API_AND_STUDY_BOUNDARIES.md)
+delegates to existing Pauli Hamiltonian, study law/trajectory/mean/accounting and compiled-cost APIs.
+Study adapters explicitly select callbacks; kernels, original import paths and eager initialization are unchanged.
+Existing trajectory functions own their wrapper/control/seed semantics. No new numerical kernel or reverse core-to-study import is added.
+All P2 stage tests use mocks; real optional dependency binding and numerical equivalence remain unverified.

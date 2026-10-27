@@ -1407,3 +1407,13 @@ PR1 cosine1論理・状態作用成功3／総試行3、d=4.3771e-16の経験値�
 
 [R1 sine経験的診断](non_df_h4_central_r1_sine_20261024.md)。
 PF/PR0/PR1 sine3論理・成功6／総試行6、19人工PASS、保存検証・native exit0・mandatory STOP。局所上界null。
+
+## P2 Pauli-JW technical integration
+
+- [Implementation](integration/p2_pauli_jw_pipeline_20261027/IMPLEMENTATION_REPORT.md)
+- [API/study boundaries](integration/p2_pauli_jw_pipeline_20261027/API_AND_STUDY_BOUNDARIES.md)
+- [Actual technical tests](integration/p2_pauli_jw_pipeline_20261027/TEST_RESULTS.md)
+- [SOURCE/result/STOP preservation](integration/p2_pauli_jw_pipeline_20261027/SOURCE_AND_RESULT_PRESERVATION.md)
+- [Adoption readiness](integration/p2_pauli_jw_pipeline_20261027/NEXT_PHASE_READINESS.md)
+
+These are non-frozen technical records, not new scientific results or amended SOURCE/validation status.

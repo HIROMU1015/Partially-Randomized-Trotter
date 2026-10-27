@@ -108,3 +108,12 @@ compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-
 `test_pr2_matched_accuracy_m2_transfer_contract.py`では、M1-B1からの5構成固定、future seed衝突0、
 196-wrapper上限、primary予測と10%重大underestimate、4 terminal status、held-out/transfer未認可、schemaを
 検査する。held-out signalまたはcompileを実行するtestではない。
+
+## P2 Pauli-JW technical-only slice
+
+`test_pauli_jw_research_pipeline.py`: 109 PASS / 0 FAIL / 1 SKIP in the current P2 run.
+H4/H6 artificial contexts exercise existing API call boundaries with mocks, not real law/state/RNG/Qiskit operations.
+The real writer test is skipped for missing legacy dependencies; artificial collision checks are separate.
+Old Pauli suites containing numerical work or alias loading were inspected but not run.
+See [test scope and exclusions](../docs/integration/p2_pauli_jw_pipeline_20261027/TEST_RESULTS.md).
+Prior P1 results are not added to P2 counts. Do not run science/old runners under technical permission.
