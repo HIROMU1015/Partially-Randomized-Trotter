@@ -30,3 +30,7 @@ LOCAL固定監査`5ee9dcff7976e8c353792b8e79fa750d47c6ad82`の全2,268 commitと
 SERVER_A/Bの最新固定監査結果を再利用したが、両hostの全private原本やruntimeをLOCALから新規検証していない。B3はユーザー申告の実行中を前提に放置し、本体・sealed catalogue・稼働資産へアクセスしなかった。科学SOURCE/raw/input/result/STOP/契約の編集や新規科学計算は0。
 
 **削除後監査・結果公開後mandatory STOP。**
+
+## 公開直前の並行追加
+
+削除直後のremoteは481本だった。その後、公開準備中に削除対象外のbranchが1本追加され、公開直前snapshotは482本となった。実削除330・保留0・失敗0は変わらない。新しい1本を削除集合へ追加せず、削除前から残した追加2本とともに保持した。これは削除transaction中の並行追加0と区別する。最新値は公開後にも再観測して最終通知・PUBLICATION_RESULTへ記録する。
