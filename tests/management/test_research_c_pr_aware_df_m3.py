@@ -94,7 +94,34 @@ def a_fixture(root):
         proposed_ground=dict(energy_Ha=float(ev[0]),alias_margin=1.6),
         proposed_tail=dict(identity=arm.plan.extracted_identity,lambda_R=tail.lambda_r,atoms=216,
             atoms_catalog=[atom_record(x) for x in arm.plan.atoms],components=[dict(probability=x.probability) for x in tail.components]))
-    return c,saved
+    # Model the actual evidence boundary: tuples serialize to JSON arrays and
+    # are read back as lists. The old in-memory fixture missed this boundary.
+    m.io.save(root/'artificial_saved_evidence.json',saved)
+    return c,m.io.read(root/'artificial_saved_evidence.json')
+
+
+@pytest.mark.parametrize('fault',['coefficient','basis_key','word','origins','frame_id','atom_id','order','length'])
+def test_JSON_catalog_preserves_semantics_and_detects_changes(fault):
+    from trottertracks.pr_dictionary_validation.prototype import atom_record
+    arm,_=artificial();original=[atom_record(x) for x in arm.plan.atoms]
+    saved=json.loads(json.dumps(original))
+    assert original!=saved and m.catalog_gate(arm.plan.atoms,saved)['status']=='PASS'
+    if fault=='coefficient':saved[0]['coefficient']='-999/100'
+    elif fault=='basis_key':saved[0]['basis_key']='wrong basis'
+    elif fault=='word':saved[0]['word'][0]='X'
+    elif fault=='origins':saved[0]['origins'][0]='wrong provenance'
+    elif fault=='frame_id':saved[0]['frame_id']='wrong frame'
+    elif fault=='atom_id':saved[0]['atom_id']='wrong atom'
+    elif fault=='order':saved[0],saved[1]=saved[1],saved[0]
+    else:saved.pop()
+    with pytest.raises(ValueError,match='ATOM_ID_SIGN_BASIS_ORDER'):m.catalog_gate(arm.plan.atoms,saved)
+
+
+def test_JSON_catalog_rejects_nonsequence_schema():
+    from trottertracks.pr_dictionary_validation.prototype import atom_record
+    arm,_=artificial();saved=json.loads(json.dumps([atom_record(x) for x in arm.plan.atoms]))
+    saved[0]['origins']='not a sequence container'
+    with pytest.raises(ValueError,match='SEQUENCE_SCHEMA'):m.catalog_gate(arm.plan.atoms,saved)
 
 
 def test_artificial_sector_A_all13_and_saved_identity(tmp_path,monkeypatch):

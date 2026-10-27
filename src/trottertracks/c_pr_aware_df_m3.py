@@ -17,11 +17,11 @@ from . import c1_stage1_execution as io
 from . import c1_stage3_accuracy as accuracy
 from . import c1_stage3_integrated as integrated
 
-VERSION='Proposed_PR_macrostep_s1_r64_gated_v1'
-SCOPE='C_PR_AWARE_DF_M3_S1_R64_V1'
-BASE='a977adda5a9fa5a882ef8b79acb8c68cff8f0bb1'
+VERSION='Proposed_PR_macrostep_s1_r64_JSON_catalog_v2'
+SCOPE='C_PR_AWARE_DF_M3_S1_R64_REPAIR_V2'
+BASE='def3748fc33f923f1a684a5d3ee0608fd7818a44'
 FAMILY='artifacts/research_c_pr_aware_df_M3/2026-10-28'
-FRESH=FAMILY+'/run01'
+FRESH=FAMILY+'/run02'
 TARGET=dict(energy_ha=.00159,df_reserve_fraction=1/8,base_time=.1,
     beta_total=math.pi/6,beta_stat=math.pi/12,alpha_axis=.01/26,alpha_total=.01)
 POLICY=dict(atoms=4,distance_A=1.,basis='STO-3G',rank=8,Nalpha=2,Nbeta=2,
@@ -115,6 +115,23 @@ def algebra_gate(arm,tail,config,old_rows):
         PF_RTE_errors_assumed_equal=False)
 
 
+def catalog_gate(atoms,saved):
+    """Normalize only JSON sequence containers; preserve every value/order."""
+    from .pr_dictionary_validation.prototype import atom_record
+    def normalized(row):
+        row=dict(row)
+        for key in ('origins','word'):
+            value=row[key]
+            if not isinstance(value,(tuple,list)):
+                raise ValueError('ATOM_CATALOG_SEQUENCE_SCHEMA')
+            row[key]=tuple(value)
+        return row
+    current=[normalized(atom_record(x)) for x in atoms]
+    if current!=[normalized(x) for x in saved]:raise ValueError('ATOM_ID_SIGN_BASIS_ORDER')
+    return dict(status='PASS',atoms=len(current),JSON_sequence_normalization_only=True,
+        coefficient_sign_basis_frame_and_order_preserved=True)
+
+
 def stage_a(root,c,out,call):
     import numpy as np
     from scipy.linalg import expm
@@ -165,9 +182,7 @@ def stage_a(root,c,out,call):
                 or [x.probability for x in tail.components]!=[x['probability'] for x in old['components']]
                 or not math.isclose(tail.lambda_r,old['lambda_R'],rel_tol=1e-12,abs_tol=1e-14)):
             raise ValueError('SAVED_216_ATOM_LAW')
-        from .pr_dictionary_validation.prototype import atom_record
-        if [atom_record(x) for x in arm.plan.atoms]!=old['atoms_catalog']:raise ValueError('ATOM_ID_SIGN_BASIS_ORDER')
-        return report
+        return dict(report,catalog_identity=catalog_gate(arm.plan.atoms,old['atoms_catalog']))
     io.save(out/'tail_gate.json',call('tail_gate','216 signed atoms/identity/mass/probabilities',law_gate))
     old_rows=saved['B1']['arms']['proposed']['rounds']
     algebra=call('algebra_gate','exact sr64 relation and all13 runtime attenuations',lambda:algebra_gate(arm,tail,config,old_rows))
