@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-27：F2-K1・固定Baselineの独立CAR referenceへvalidated接続
+
+[結果・原本・保証scope](docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 baseline_00、Nα=Nβ2を含むfull256/controlled512、元順LD2/partial S2 δ.1/s4/h1/40/r16/K0。SOURCE3742ec10ddc0df5faaaa2a6856a9cc60ea013eb9を無変更で7/7 COMPLETE、correctness FAIL/retry/resume0。25 CAR blocks／全512基底／位相込みArb192で、raw/B0≤2.57295e-14、κ bridge≤2.07978e-17、U bridge≤9.53720e-16、raw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示、exact fractionsを保存）。Rawとcompiledの新K1 target上界はallowance1e-8内。元κ/元U・旧target/旧STOPを変更せず、新targetはexact κH＋right-polar Q。物理積分/DF新保証/Proposed CAR/全trajectory/全law/PCG64 IID/CA/保証shots/cost support/総資源は未資格。SOURCE142/input42・旧証拠不変、公開照合後mandatory STOP。
+
 ## 2026-10-27：F2 κ限定診断・数値allowance PASSとexact不成立を分離
 
 [実行結果・原本・scope](docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、Baseline通常number CDF8／元h/g/c、Nα=Nβ2文脈。診断には時間・splitを適用せず、SOURCE802b2b0a16d3bd26ae2554e96a41c1bf8155a2e2を無変更で6/6 COMPLETE、correctness FAIL/retry/resume0。κのΔ Frobenius8.660473972585522e-17、Stage 1絶対allowance3.518379690624931e-11で数値PASS。Exact dyadic入力hとgの縮約に既に非対称性、縮約・減算の丸めにも寄与を確認。元積分生成/reduction tree原因はUNRESOLVED。κ exact HermiticityはNOT_MET、旧F2 STOPを解除せず、CAR/bridge/target/CA/shots/資源は未評価・未採択/null。SOURCE138/input2・旧証拠不変、公開照合後mandatory STOP。

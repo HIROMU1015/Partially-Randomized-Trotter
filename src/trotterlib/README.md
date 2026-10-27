@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：F2-K1科学実行完了（2026-10-27）
+
+[固定Baseline・全512基底・validated CAR結果](../../docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。SOURCE無変更、7 COMPLETE/correctness FAIL0/retry-resume0。Exact κH/polar Qへのraw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示）。旧SOURCE/raw/STOP不変。全law/CA/保証shots/総資源は未資格、公開照合後mandatory STOP。
+
 ## 関連track：F2-K1技術準備（2026-10-27）
 
 `../trottertracks/c_pr_aware_df_fixed_k1.py`／`fixed_k1_execution.py` は[exact κH・polar Q・2 bridgeと独立CARの新target adapter](../../docs/research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)。既存CAR/Arb/全基底backendとCallsを再利用。人工153 tests＋29 subtests PASS、実H4科学call0、旧F2厳密gate不変、未承認7-call契約・mandatory STOP。

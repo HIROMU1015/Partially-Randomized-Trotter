@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：F2-K1 Baseline固定trajectoryのCAR接続がvalidated PASS
+
+[7-call結果・exact上界・資格の限界](docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline baseline_00、元順LD2/partial S2 δ.1/s4/h1/40/r16/K0、full512・位相込み。SOURCE3742ec10dd…無変更、7 COMPLETE/correctness FAIL0/retry-resume0。Raw/B0≤2.57295e-14、κ bridge≤2.07978e-17、U bridge≤9.53720e-16、raw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示）。Exact κH＋polar Qの新target一trajectoryのみ。旧F2 STOP・元κ/旧SOURCE/raw不変、F3/全law/CA/shots/総資源は未資格、公開照合後mandatory STOP。
+
 ## 2026-10-27：F2-K1 exact κH＋polar U・技術準備
 
 [target定義・κ/U bridge証明・153 tests＋29 subtests・未承認7-call契約](docs/research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)。新opt-in adapter/runnerは元κ/UのB0を全25 CAR blocks・full512で囲い、exact κHとright-polar Qへの2 bridgeを各1回計上する。既存SOURCE・旧κ gate不変、新実H4科学call0、実入力J/eta等は将来の登録gate、公開照合後mandatory STOP。

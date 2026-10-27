@@ -1,5 +1,9 @@
 # scripts 索引
 
+## F2-K1専用runner実行完了（2026-10-27）
+
+[固定SOURCE3742ec10…の7/7 COMPLETE・STOP](../docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。Raw/K1とcompiled/K1のvalidated上界を取得。科学SOURCE変更0、retry/resume0、消費済みrun01を再起動しない。Proposed/F3やsamplingをこの枠で追加実行しない。
+
 ## F2-K1専用runner準備（2026-10-27）
 
 `run_research_c_pr_aware_df_fixed_F2_K1.py --contract docs/research/research_c_pr_aware_df_F2_K1_contract_draft_20261027.json` はpassive既定。別明示許可後だけ`--execute`で新7-call枠、F2-K1-run01、retry/resume0。旧F2 runner/残枠は再利用しない。[target・限界・人工結果](../docs/research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)。

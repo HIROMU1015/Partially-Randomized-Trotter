@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "3742ec10ddc0df5faaaa2a6856a9cc60ea013eb9",
+      "role": "fixed_F2_K1_scientific_SOURCE",
+      "description": "Executed unchanged once;7 COMPLETE;full512 phase-sensitive Baseline raw/compiled to exact-kappa-H/polar-Q CAR;no other trajectory/law/CA/resources qualification"
+    },
+    {
       "sha": "802b2b0a16d3bd26ae2554e96a41c1bf8155a2e2",
       "role": "F2_kappa_limited_diagnostic_scientific_SOURCE",
       "description": "Unchanged6-call saved H4 h/g diagnostic;A/B and rounding contributions observed;exact kappa Hermiticity not met;no F2 retry/target adoption"
@@ -191,6 +196,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-K1-run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_F2_K1_execution_20261027"
+        ],
+        "reason": "12 raw records;25 CAR blocks/all512 columns;separate kappa/U bridges;7 COMPLETE;no correctness FAIL/retry/resume;old evidence preserved"
+      },
       {
         "path": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-K1-preparation",
         "kind": "directory",
@@ -9399,6 +9412,54 @@
       "total_resources": null,
       "mandatory_stop": true,
       "report": "docs/research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md"
+    },
+    {
+      "id": "research_c_pr_aware_df_F2_K1_execution_20261027",
+      "status": "COMPLETE_VALIDATED_FIXED_BASELINE_K1",
+      "source_commit": "3742ec10ddc0df5faaaa2a6856a9cc60ea013eb9",
+      "scope": "C_PR_AWARE_DF_FIXED_F2_K1_V1",
+      "target": "CAR_exact_kappa_H_polar_U_fixed_trajectory_v1",
+      "source_manifest": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-K1-preparation/SOURCE.json",
+      "source_manifest_sha256": "de1fcf1b9bcaf227301687b921ced582c906658ad866370c5c9a362379cf6fd6",
+      "contract": "docs/research/research_c_pr_aware_df_F2_K1_contract_draft_20261027.json",
+      "contract_sha256": "bc7a63d6ba0dd3355c9ea8b4aa3231d6187a1cd5ee97f1c8e76d44d3185c4b63",
+      "raw": "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-K1-run01",
+      "report": "docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md",
+      "attempted_units": 7,
+      "completed_units": 7,
+      "failed_units": 0,
+      "retry": 0,
+      "resume": 0,
+      "precision_bits": 192,
+      "dimension": 512,
+      "columns_evaluated": 512,
+      "phase_fit": false,
+      "upper_exact": {
+        "raw_B0": "5682501294528079121779206097684855801368966213343087110705/220855883097298041197912187592864814478435487109452369765200775161577472",
+        "kappa_bridge": "4703553375178477760625158668069032222129538107481628594585/226156424291633194186662080095093570025917938800079226639565593765455331328",
+        "U_bridge": "50219173743367297919889887651923251838647258841139/52656145834278593348959013841835216159447547700274555627155488768",
+        "raw_K1": "6039274587831835939944348098083485970972912786173541694346649/226156424291633194186662080095093570025917938800079226639565593765455331328",
+        "prior_compiled_raw": "748293287876883425657458777652926332782120157270403072207/215679573337205118357336120696157045389097155380324579848828881993728",
+        "compiled_K1": "790681657216622750882139843334278368294317338816143713536873881/226156424291633194186662080095093570025917938800079226639565593765455331328"
+      },
+      "upper_display_ceiling_6sig": {
+        "raw_B0": "2.57295E-14",
+        "kappa_bridge": "2.07978E-17",
+        "U_bridge": "9.53720E-16",
+        "raw_K1": "2.67040E-14",
+        "prior_compiled_raw": "3.46947E-12",
+        "compiled_K1": "3.49618E-12"
+      },
+      "raw_gate": "VALIDATED_WITHIN_FIXED_ALLOWANCE",
+      "compiled_upper_within_same_allowance": true,
+      "old_kappa_modified": false,
+      "old_F2_STOP_preserved": true,
+      "Proposed_CAR_bound": null,
+      "whole_law_bound": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null,
+      "mandatory_stop": true
     }
   ],
   "repository_completion_criteria": [

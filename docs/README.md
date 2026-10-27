@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：F2-K1限定科学実行完了（2026-10-27）
+
+[7/7 COMPLETE・validated上界・保証scope](research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。固定Baseline raw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示）、correctness FAIL/retry-resume0。Exact κH＋polar Qへの固定一trajectory保証。旧κ/旧F2 STOP不変、F3/全law/CA/shots/総資源へ進まずmandatory STOP。
+
 ## 研究C：F2-K1 target技術準備（2026-10-27）
 
 [数学定義・bridge証明・人工/回帰153＋29 subtests](research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)／[未承認7-call契約](research/research_c_pr_aware_df_F2_K1_contract_draft_20261027.json)。Exact κH＋polar Qを新targetとして採用し、非unitary B0からκ/Uを別計上。実H4科学call0、旧F2 STOP・SOURCE保全、別科学許可までmandatory STOP。
