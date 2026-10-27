@@ -95,7 +95,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 scripts/integrate_pr_boundary_documents.py --c
 
 保存値・candidate/cohort・15証拠行・元43行の完全保持・7追加ID・公開15資料のGit blob対応・固定参照・文書リンク・元採択/結果/図表の保全・公開差分の内部情報非混入を確認する。旧データ体系の機械可読表は再生成しない。検査結果は[STATIC_VALIDATION.json](STATIC_VALIDATION.json)を参照する。技術PASSを独立科学レビューや新しい科学的保証と呼ばない。
 
-公開対象は今回の文書差分だけとし、既存の科学結果は固定リンクから参照する。公開結果や完全SOURCEを再pushしない。専用branchの公開とremote SHA/bytes照合後、**mandatory STOP**。次にユーザー判断が必要なのは掲載配置と中心claimの採否であり、今回の文書統合のための追加科学計算は不要。
+公開対象は今回の文書差分だけとし、既存の科学結果は固定リンクから参照する。公開結果や完全SOURCEを再pushしない。初回の一括公開用読込は内部metadata混入のおそれを理由に自動審査で停止したため、既存入口・manifest9ファイルもGitHubの固定公開blobへ戻って追加照合した。原文を公開済みbyteとして区別し、新規差分の内部情報非混入を確認する。専用branchの公開とremote SHA/bytes照合後、**mandatory STOP**。次にユーザー判断が必要なのは掲載配置と中心claimの採否であり、今回の文書統合のための追加科学計算は不要。
 
 [RESULTS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/RESULTS.csv
 [SUMMARY]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/EXECUTION_SUMMARY.json

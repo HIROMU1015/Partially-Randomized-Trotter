@@ -206,9 +206,9 @@ def check(writing_receipt=False):
                   "R32", "探索n9", "33/40", "E8/10", "C8/10", "未成立", "完全SOURCE/rawを再監査・公開していない"]:
         require(token in report, "report loses declared scope: " + token)
     manifest = json.loads((ROOT / OUT / "INTEGRATION_MANIFEST.json").read_text())
-    for r in manifest["public_reads"]:
+    for r in manifest["public_reads"] + manifest["existing_public_file_reads"]:
         got = subprocess.check_output(["git", "rev-parse", r["ref"] + ":" + r["path"]], cwd=ROOT, text=True).strip()
-        require(got == r["git_blob_sha"], "remote/local public blob mismatch: " + r["label"])
+        require(got == r["git_blob_sha"], "remote/local public blob mismatch: " + r.get("label", r["path"]))
     require(manifest["new_scientific_calls"] == 0 and manifest["new_numerical_reanalysis"] is False and manifest["new_formal_adoption"] is False, "scope")
     require(manifest["mandatory_STOP"] is True and manifest["full_private_SOURCE_reaudited"] is False, "STOP/private scope")
     # All inherited tracked bytes outside the documented allowlist remain intact.
@@ -280,6 +280,7 @@ def check(writing_receipt=False):
     return dict(status="PASS_STATIC_DOCUMENT_CHECKS_ONLY", evidence_rows=len(evidence),
         original_matrix_rows=43, added_matrix_rows=7, adopted_CEM_rows_preserved=23,
         protected_inherited_files=count, public_files_read=len(manifest["public_reads"]),
+        existing_public_discovery_files_verified=len(manifest["existing_public_file_reads"]),
         pinned_markdown_references_checked=link_count, original_result_bytes_changed=0,
         new_scientific_calls=0, new_numerical_reanalysis=False, new_formal_adoption=False,
         full_private_SOURCE_reaudited=False, independent_external_review=False, mandatory_STOP=True)
