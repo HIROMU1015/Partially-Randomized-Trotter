@@ -1,3 +1,8 @@
+## 2026-10-27 PR境界拡張：公開結果の資料統合
+
+[追加証拠・静的検査・論文配置案](docs/data_collection/2026-10-27_pr_boundary_addendum/REPORT.md)。既存43証拠行を保全して7項目を追加。linear1Å/STO-3G/tol-only DF10/19、H6保存completion、T2/δ2、m5/11 signed piece、H4 p3/q1/K2・H6 p7/q1/K6/P0。H4 R16/R128はR64より高G、H6 R11/R16はINCONCLUSIVE。H8 .001の新n48会計未成立。旧採択・元33/40・図表不変、新科学計算/再解析0、掲載案未採択、mandatory STOP。
+
+
 ## 2026-10-24 H4/H6標準Yoshida4：条件付き独立費用方向を正式採用
 
 [採用記録・現行索引・検査・保全](docs/research/track_a_h46_standard_y4_adoption_20261024.md)。H4/H6・ε=.001、固定PR S2/q8対標準Y4/q4の独立費用方向再現をユーザー指示で正式採用。旧S2 n25/23・新Y4 n45/32、保存判定REPRODUCED_APPROXIMATEを保持。保存FullはS2低費用、同一q対照はq4で双方Y4・q8で双方S2が低費用で逆転なし。CEM旧21行＋2主張、台帳旧391行＋14参照、paper manifest・3環境差分を接続。主表/Figure2・旧SOURCE/結果/STOP不変、新科学計算/数値再解析/grant0。母平均/tail・次数因果効果・一般化・独立新規性・論文中心主張の最終採択は未認定。旧strict BLOCKED、mandatory STOP。

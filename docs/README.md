@@ -1,3 +1,8 @@
+## 2026-10-27 境界結果の追加証拠と論文配置案
+
+[境界addendum](data_collection/2026-10-27_pr_boundary_addendum/REPORT.md)、[追加証拠CSV](data_collection/2026-10-27_pr_boundary_addendum/EVIDENCE_ADDENDUM.csv)。既存CEM/ledger/paper manifestの正式採択は不変。統合4文書へ追記し、Supplementary境界比較表を提案。新科学計算/再解析/作図なし、mandatory STOP。
+
+
 ## 2026-10-24 H4/H6標準Yoshida4：条件付き独立費用方向を正式採用
 
 [採用記録・現行索引・検査・保全](research/track_a_h46_standard_y4_adoption_20261024.md)。H4/H6・ε=.001、固定PR S2/q8対標準Y4/q4の独立費用方向再現をユーザー指示で正式採用。旧S2 n25/23・新Y4 n45/32、保存判定REPRODUCED_APPROXIMATEを保持。保存FullはS2低費用、同一q対照はq4で双方Y4・q8で双方S2が低費用で逆転なし。CEM旧21行＋2主張、台帳旧391行＋14参照、paper manifest・3環境差分を接続。主表/Figure2・旧SOURCE/結果/STOP不変、新科学計算/数値再解析/grant0。母平均/tail・次数因果効果・一般化・独立新規性・論文中心主張の最終採択は未認定。旧strict BLOCKED、mandatory STOP。

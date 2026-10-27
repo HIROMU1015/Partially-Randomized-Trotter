@@ -1,3 +1,8 @@
+## 2026-10-27 境界拡張結果の追加
+
+[境界結果addendum](2026-10-27_pr_boundary_addendum/REPORT.md)、[保存15証拠行](2026-10-27_pr_boundary_addendum/EVIDENCE_ADDENDUM.csv)。[統合EVIDENCE_MATRIX](../../EVIDENCE_MATRIX.csv)へ別ID7項目を追加。旧23主張のCEM、ledger v5、paper manifest、58行study索引、原主表・図表はそのまま保持。掲載案と正式採択を区別する。新計算・数値再解析なし。
+
+
 # Track A 研究データの入口
 
 現在の利用入口は [2026-10-24 データ体系化](2026-10-24_track_a_research_data/README.md)。研究系列、科学条件、比較可能性、主張、既存図表データ、論文利用上の制限から固定原結果を探すための参照ビューです。新しい科学結果や採択版ではありません。

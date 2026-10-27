@@ -1,3 +1,8 @@
+## 2026-10-27追加への入口
+
+[境界拡張addendum](../2026-10-27_pr_boundary_addendum/REPORT.md)と[追加証拠CSV](../2026-10-27_pr_boundary_addendum/EVIDENCE_ADDENDUM.csv)を参照。H4/H6の固定境界比較、H8未成立会計、公開実行来歴を別区分で接続する。この2026-10-24索引の機械可読表・元CEM/ledger/paper manifest・旧STOPは再生成せず、正式採択を変更しない。
+
+
 # Track A：PRリソース評価研究のデータ体系
 
 2026-10-24 JST。保存結果を探し、科学条件を確かめて利用するための索引です。新科学計算・保存値の数値再解析・図表生成・原稿執筆・主張の再採択は行っていません。**mandatory STOP**。

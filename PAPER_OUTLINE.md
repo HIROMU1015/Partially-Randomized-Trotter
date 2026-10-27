@@ -141,3 +141,16 @@
 ## 5. 次の判断
 
 現行の限定claimを記述するための必須新規科学計算はない。ユーザーが中心課題と構成・図表scopeを判断した後、必要なら本文作成を別途依頼できる。Figure2を新cohortへ数値更新する、全域最適や実compiled精度へclaimを強める場合は、具体的な追加数値作業を別に検討する。今回のCodex作業は文書保存・静的確認・専用branch公開後mandatory STOP。
+
+## 2026-10-27追加：境界検証の配置案
+
+既存Section4と7の構成を維持し、[境界追加証拠](docs/data_collection/2026-10-27_pr_boundary_addendum/REPORT.md)を次の位置から参照する。新章追加・中心claim変更・一論文／二論文の方針変更は採択しない。
+
+|既存の位置|追加する限定内容|証拠ID・掲載案|
+|---|---|---|
+|4.3 C/N/Gとr/K・prefix|linear H4/1Å/STO-3G/tol-only DF10、T2/δ2、m5_best、prefix3/q1/K2/P0。R16/R128の独立確認は固定R64よりGが+19.98337%/+11.19767%、ともにHIGHER。CとNの競合があり、R64大域最適性は示さない。|BND_H4_R16_R64、BND_H4_R128_R64。Mainは短い言及、Supplementary表が第一案。|
+|4.3／4.4 下限検証と不確かさ|linear H6/1Å/STO-3G/tol-only DF19、保存weighted-Hermitian completion、T2/δ2、m5_best、11 signed piece、prefix7/q1/K6/P0。R11はR16より点G−0.17209%だがINCONCLUSIVE。R11は現allocationの最小値。|BND_H6_R11_R16。表とcaptionにINCONCLUSIVE、旧対照SEを明記。|
+|4.4 比較集合・cohort|R32は探索n9だけ。元33/40、7候補追加後33/40、今回T2限定E8/10・C8/10を別記し、全40セルの新順位としない。|BND_H4_R32_EXPLORATION_ONLY、BND_COHORT_CELL_SCOPE。旧独立59比較も保全。|
+|2.6／7／Data availability|H8 q16の.001 E8と.0005 C48は既存証拠。.001の正確なA_signal不足で新n48会計・q8比較は未成立。固定実行完了・公開要約と非公開完全SOURCEを区別する。|BND_H8_Q16_REUSE_GAP、BND_EXECUTION_PROVENANCE。欠測と不適格を区別。|
+
+H4の非改善とH6の不確定を、既存探索の境界外を検証しても一般最適性を保証できない実例としてDiscussionへ接続する。Pauli-JWの順位や未採択B3結果には移さない。新図の計算・再集計・renderは行わず、既存図captionとSupplementary表への参照で十分とする案である。掲載位置・中心claimの正式採択はユーザー判断。新計算や詳細科学レビューは開始せずmandatory STOP。
