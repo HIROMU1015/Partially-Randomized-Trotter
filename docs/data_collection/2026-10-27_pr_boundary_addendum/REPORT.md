@@ -2,7 +2,7 @@
 
 2026-10-27 JST。公開済み結果の転記、証拠対応付け、文書の静的検査を実施した。新規科学計算、sampling、compile、signal/shot再計算、数値再解析、再ランキング、fit、作図、詳細科学レビューは実施していない。
 
-**公開状態：ローカル文書統合・commit完了、今回の統合版の公開は自動承認審査により保留。** 19文書全体の一括payload読込が、内部metadata混入リスクを理由に2回拒否された。2回目は公開原文9件の追加照合後も拒否が維持されたため、別経路による迂回送信を行っていない。今回の統合結果のremote SHAは未作成・未確認。固定4文書を既存公開blobだけで継承するGitHub tree/commit objectは作成できたが、それは今回の追加結果の公開ではなく、branchも更新していない。具体的な公開対象はINTEGRATION_MANIFEST.jsonのpublication_paths（19件）であり、その公開範囲の確認をユーザーへ求める。科学計算のSTOPは継続する。
+**公開状態：科学資料8文書の限定版を公開・remote照合済み。完全19文書版はローカル保全。** ユーザーは19文書の公開を明示承認したが、自動審査は承認後の分割読込も拒否した。この制約を迂回せず、既存運用文書9件の本文・追加checker・研究ノートを公開差分から除いた科学資料8文書版を別に公開した。remote SHAは `fbf701356cbc4da6ca8e3b7ef53533e1763243f9`、branchは `codex/pr-boundary-evidence-integration-20261027`。GitHubから8件を実取得し、全content・Git blobが公開用科学資料および取得checkoutと一致した。公開側でも元43行・15証拠行の転記、全基点6,228ファイル不変、固定55リンクを静的確認した。以下の索引・状態表への追記は完全ローカル版での変更であり、公開branchの対応9ファイルは基点のまま。完全ローカル版は別branch `codex/pr-boundary-evidence-integration-local-full-20261027` に保全する。新科学計算0、mandatory STOP。
 
 ## 追加先と採択状態
 
