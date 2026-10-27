@@ -1,0 +1,368 @@
+{
+  "status": "STATIC_SOURCE_AND_PASS_SCHEDULE_ONLY",
+  "profile": {
+    "optimization_level": 1,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "seed_transpiler": 17,
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "stages": {
+    "init": [
+      {
+        "name": "InverseCancellation",
+        "module": "qiskit.transpiler.passes.optimization.inverse_cancellation",
+        "nested": []
+      }
+    ],
+    "layout": [],
+    "routing": [],
+    "translation": [
+      {
+        "name": "UnitarySynthesis",
+        "module": "qiskit.transpiler.passes.synthesis.unitary_synthesis",
+        "nested": []
+      },
+      {
+        "name": "HighLevelSynthesis",
+        "module": "qiskit.transpiler.passes.synthesis.high_level_synthesis",
+        "nested": []
+      },
+      {
+        "name": "BasisTranslator",
+        "module": "qiskit.transpiler.passes.basis.basis_translator",
+        "nested": []
+      }
+    ],
+    "optimization": [
+      {
+        "name": "Depth",
+        "module": "qiskit.transpiler.passes.analysis.depth",
+        "nested": []
+      },
+      {
+        "name": "FixedPoint",
+        "module": "qiskit.transpiler.passes.utils.fixed_point",
+        "nested": []
+      },
+      {
+        "name": "Size",
+        "module": "qiskit.transpiler.passes.analysis.size",
+        "nested": []
+      },
+      {
+        "name": "FixedPoint",
+        "module": "qiskit.transpiler.passes.utils.fixed_point",
+        "nested": []
+      },
+      {
+        "name": "DoWhileController",
+        "module": "qiskit.passmanager.flow_controllers",
+        "nested": [
+          {
+            "name": "Optimize1qGatesDecomposition",
+            "module": "qiskit.transpiler.passes.optimization.optimize_1q_decomposition",
+            "nested": []
+          },
+          {
+            "name": "InverseCancellation",
+            "module": "qiskit.transpiler.passes.optimization.inverse_cancellation",
+            "nested": []
+          },
+          {
+            "name": "GatesInBasis",
+            "module": "qiskit.transpiler.passes.utils.gates_basis",
+            "nested": []
+          },
+          {
+            "name": "ConditionalController",
+            "module": "qiskit.passmanager.flow_controllers",
+            "nested": [
+              {
+                "name": "FlowControllerLinear",
+                "module": "qiskit.passmanager.flow_controllers",
+                "nested": [
+                  {
+                    "name": "UnitarySynthesis",
+                    "module": "qiskit.transpiler.passes.synthesis.unitary_synthesis",
+                    "nested": []
+                  },
+                  {
+                    "name": "HighLevelSynthesis",
+                    "module": "qiskit.transpiler.passes.synthesis.high_level_synthesis",
+                    "nested": []
+                  },
+                  {
+                    "name": "BasisTranslator",
+                    "module": "qiskit.transpiler.passes.basis.basis_translator",
+                    "nested": []
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Depth",
+            "module": "qiskit.transpiler.passes.analysis.depth",
+            "nested": []
+          },
+          {
+            "name": "FixedPoint",
+            "module": "qiskit.transpiler.passes.utils.fixed_point",
+            "nested": []
+          },
+          {
+            "name": "Size",
+            "module": "qiskit.transpiler.passes.analysis.size",
+            "nested": []
+          },
+          {
+            "name": "FixedPoint",
+            "module": "qiskit.transpiler.passes.utils.fixed_point",
+            "nested": []
+          }
+        ]
+      }
+    ],
+    "scheduling": [
+      {
+        "name": "ContainsInstruction",
+        "module": "qiskit.transpiler.passes.utils.contains_instruction",
+        "nested": []
+      },
+      {
+        "name": "ConditionalController",
+        "module": "qiskit.passmanager.flow_controllers",
+        "nested": [
+          {
+            "name": "TimeUnitConversion",
+            "module": "qiskit.transpiler.passes.scheduling.time_unit_conversion",
+            "nested": []
+          }
+        ]
+      }
+    ]
+  },
+  "local_python_sources": {
+    "InverseCancellation": {
+      "path": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/optimization/inverse_cancellation.py",
+      "sha256": "57d8e3f41425b7929f9307cfc23c44c5396999edd42345c3f8091bc2349f333c"
+    },
+    "Optimize1qGatesDecomposition": {
+      "path": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py",
+      "sha256": "50cae371407971b1c2bae493a7a900f3aeb820157547b5b02c159a2a3fcf8c7b"
+    },
+    "BasisTranslator": {
+      "path": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/basis/basis_translator.py",
+      "sha256": "b749142df3d94ab5c3a232a4bc265b0ae3ffde4782d4ef2e8f226fcfb0121843"
+    },
+    "UnitarySynthesis": {
+      "path": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/unitary_synthesis.py",
+      "sha256": "d18f7b06522f5e0475f8fa10b1cc061c58980d1f1fc93d92d51f4330b41afb7d"
+    },
+    "HighLevelSynthesis": {
+      "path": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py",
+      "sha256": "ad339173bda075086dcbfd1713c54c112ce7b916cd883740a763b841f09997be"
+    },
+    "UnrollCustomDefinitions": {
+      "path": "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/basis/unroll_custom_definitions.py",
+      "sha256": "5f9624c55c9c3060dbce06f9f2ca12563b8d637ca8899ac2f6b7040b51ba5642"
+    }
+  },
+  "pass_manager_executed": false,
+  "preprocessing": "UnrollCustomDefinitions(empty EquivalenceLibrary,basis+u)",
+  "phase_wrapper": "task-local symbolic MPFR160 declared phase;not a whole-operator enclosure",
+  "whole_kernel_cross_event_1q_runs": true,
+  "synthesis_classification": "UNRESOLVED_UNIFORM_P0_ROUNDING_AND_REFERENCE_ENCLOSURE",
+  "mathematical_route": "local analytic unitary proofs plus all-path compiler proof and shell-aware telescoping",
+  "useful_global_synthesis_bound": null,
+  "cost_support": null,
+  "blockers": [
+    "Rust Optimize1qGatesDecomposition multiplies matrices in f64 and resynthesizes runs",
+    "Rust default ANGLE_ZERO_EPSILON=1e-12 is a simplification threshold,not an operator error certificate",
+    "basis translation/global phase/ref numerical errors need their own enclosures",
+    "whole-P0 path and optimization-loop output ranges lack a derived uniform resource proof"
+  ],
+  "actual_H4_analysis": false,
+  "scientific_calls": 0,
+  "primitive_requirements": {
+    "status": "STRUCTURAL_REQUIREMENTS_NOT_A_BOUND",
+    "per_arm": {
+      "Gaussian_bases": 9,
+      "head_relative_transitions": 4,
+      "tail_frames": 6,
+      "supports_per_frame": 36,
+      "signed_atoms": 216,
+      "events_per_kernel": 16,
+      "tail_basis_runs": "1..16;sharing exact basis keys only",
+      "head_basis_transitions": "two independent3-factor halves;no head-tail fusion",
+      "scalar_phase": "nuclear scalar once plus extracted tail identity",
+      "shells": [
+        "ancilla H",
+        "X H",
+        "Y Sdg then H"
+      ],
+      "actual_inverse": "reverse sequence and actual gate inverses"
+    },
+    "finite_inputs": [
+      "9 basis U matrices and4 directed relative products per arm",
+      "216 atom supports/signs and K0 common unsigned angle per arm",
+      "2 deterministic half-heads,scalar/identity phase and3 common shells",
+      "all generated primitive gate definitions and full P0 numerical transformations"
+    ],
+    "raw_route": "local operator error enclosures plus unitary telescoping could cover all words",
+    "P0_obstacle": "finite primitive alphabet does not bound numeric1q run resynthesis across variable event boundaries",
+    "needed_proofs": [
+      "uniform Gaussian/relative phase/operator enclosures",
+      "whole-P0 translation/resynthesis/mod2pi/declared-phase arithmetic coverage",
+      "reference errors and shell error in same raw complex norm",
+      "actual-adjoint proof with identical shared-state handling"
+    ],
+    "all_law_synthesis_bound": null,
+    "cost_support": null,
+    "sampled_residual_is_bound": false,
+    "event_P0_sum_is_whole_P0_bound": false
+  },
+  "inverse_cancellation_schedules": [
+    {
+      "path": "init",
+      "gates": [
+        {
+          "name": "cx",
+          "parameters": []
+        },
+        {
+          "name": "ecr",
+          "parameters": []
+        },
+        {
+          "name": "cz",
+          "parameters": []
+        },
+        {
+          "name": "cy",
+          "parameters": []
+        },
+        {
+          "name": "x",
+          "parameters": []
+        },
+        {
+          "name": "y",
+          "parameters": []
+        },
+        {
+          "name": "z",
+          "parameters": []
+        },
+        {
+          "name": "h",
+          "parameters": []
+        },
+        {
+          "name": "swap",
+          "parameters": []
+        },
+        {
+          "name": "t",
+          "parameters": []
+        },
+        {
+          "name": "tdg",
+          "parameters": []
+        },
+        {
+          "name": "s",
+          "parameters": []
+        },
+        {
+          "name": "sdg",
+          "parameters": []
+        },
+        {
+          "name": "sx",
+          "parameters": []
+        },
+        {
+          "name": "sxdg",
+          "parameters": []
+        }
+      ],
+      "all_parameter_free": true
+    },
+    {
+      "path": "optimization/DoWhileController",
+      "gates": [
+        {
+          "name": "cx",
+          "parameters": []
+        },
+        {
+          "name": "ecr",
+          "parameters": []
+        },
+        {
+          "name": "cz",
+          "parameters": []
+        },
+        {
+          "name": "cy",
+          "parameters": []
+        },
+        {
+          "name": "x",
+          "parameters": []
+        },
+        {
+          "name": "y",
+          "parameters": []
+        },
+        {
+          "name": "z",
+          "parameters": []
+        },
+        {
+          "name": "h",
+          "parameters": []
+        },
+        {
+          "name": "swap",
+          "parameters": []
+        },
+        {
+          "name": "t",
+          "parameters": []
+        },
+        {
+          "name": "tdg",
+          "parameters": []
+        },
+        {
+          "name": "s",
+          "parameters": []
+        },
+        {
+          "name": "sdg",
+          "parameters": []
+        },
+        {
+          "name": "sx",
+          "parameters": []
+        },
+        {
+          "name": "sxdg",
+          "parameters": []
+        }
+      ],
+      "all_parameter_free": true
+    }
+  ],
+  "inverse_cancellation_source_note": "Rust gate_eq has1e-10 param comparison;actual fixed schedules here have no parameters,so do not treat it as a new numerical cancellation error for arbitrary RZ gates",
+  "actual_inverse": "ControlledGate.inverse delegates base_gate.inverse().control(...);reuse B2 process-local mutex if called",
+  "all_law_bound_classification": "UNRESOLVED_UNIFORM_COMPILER_AND_REFERENCE_ERROR;finite primitive input list is available in saved SOURCE/arrays after separate science permission"
+}

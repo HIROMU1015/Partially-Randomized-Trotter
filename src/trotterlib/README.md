@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：PR-aware DF C2・Reference Bridge統合準備
+
+新`trottertracks.c_pr_aware_df_c2_bridge`は既存CAR/general-K/K0 eventと保存B1 referenceを接続し、条件付きcategorical・Bridge・synthesis・reference誤差のraw単位schemaを用意する。[技術報告・人工/回帰85 PASS](../../docs/research/research_c_pr_aware_df_stage_c2_bridge_synthesis_readiness_20261027.md)／[未承認47-call契約](../../docs/research/research_c_pr_aware_df_stage_c2_bridge_contract_draft_20261027.json)。旧library/科学SOURCE不変、新実H4科学call0、native/C1再解析なし。全law P0・reference enclosure・PCG64 IIDは未資格、保証shots/totalはnull、mandatory STOP。
+
 ## 2026-10-27：PR-aware DF C2・全law資格の技術調査／未承認C2-B準備
 
 [NumPy/P0 SOURCE・資格の限界・人工99 PASS](../../docs/research/research_c_pr_aware_df_stage_c2_qualification_readiness_20261027.md)／[未承認35-call表解析契約](../../docs/research/research_c_pr_aware_df_stage_c2_contract_draft_20261027.json)。`c_pr_aware_df_stage_c2.py`／静的`c_pr_aware_df_stage_c2_audit.py`／`run_research_c_pr_aware_df_stage_c2.py`／同名management test。Exact finite-grid TVと条件付きraw-law伝播、scoped synthesis／support入力、null C1-previewを人工検証。現whole-P0合成・PCG64 IID／CAR-atom-reference bridge・費用supportは未資格。SOURCE76/input12 passive PASS、新規実分子科学call0、C1再解析0。保存H4・CDF8二arm・元順LD2・δ.1/s4/r16/K0/m0..12・own-oracle/状態準備除外を維持。別科学許可後のみC2-B実行、公開照合後mandatory STOP。

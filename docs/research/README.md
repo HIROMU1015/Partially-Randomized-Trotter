@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## 2026-10-27：PR-aware DF C2・Reference Bridge統合準備
+
+[Reference対応・P0 coverage・人工/回帰85 PASS](research_c_pr_aware_df_stage_c2_bridge_synthesis_readiness_20261027.md)／[未承認47-call Bridge契約](research_c_pr_aware_df_stage_c2_bridge_contract_draft_20261027.json)。SOURCE82/input20のpassive確認、実H4科学call0。全law synthesis/reference enclosureは未資格、C1保証shots/totalはnullのまま。旧証拠保全、別途明示科学許可までmandatory STOP。
+
 ## 2026-10-27：PR-aware DF C2-B・35-call確率表解析完了
 
 [全gate・2表／26round・資格の限界](research_c_pr_aware_df_stage_c2b_execution_20261027.md)。固定SOURCE3c1bb2d9c…を無変更で一度実行し35/35 COMPLETE、correctness FAIL/retry/resume0。保存H4・1Å/STO-3G、通常CDF8二arm、sector36、元順LD2、partial S2 δ.1/s4/r16/K0/m0..12、own-DF oracle／状態準備除外、共通Gaussian/P0。各216 atomの既存make_tail再生PASS。IID一様53-bit格子モデルのTVはBaseline3.6470735282e-15／Proposed3.2261762373e-15、m12条件付きraw信号上界1.9121168860e-9／1.6914454871e-9。PCG64 IID、CAR/atom/angle/normalization bridge、全law P0 synthesis、support、actual CA／保証shots／totalは未資格/null。新fit/sampling/build-compile/operator/shots・総費用・C1再解析0、SOURCE76/input12・旧1768ファイル保全。公開照合後mandatory STOP。以下は当時のscopeの履歴。
