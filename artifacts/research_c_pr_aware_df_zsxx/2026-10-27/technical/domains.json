@@ -1,0 +1,54 @@
+{
+  "status": "PARTIAL_VALIDATED_CAPTURED_PAIRS",
+  "angle_tuples": 28,
+  "matrix_points": 9,
+  "held_output_reference_regions": 2,
+  "artificial_long_runs": 2,
+  "total_main_cases": 41,
+  "whole_P0_one_qubit_captures": 2,
+  "actual_adjoint_captures": 2,
+  "inputs": "invented binary64 constants only;no saved molecular data",
+  "angle_domain": "chosen finite tuples with abs(theta,phi,lambda,beta)<=32;not the full box",
+  "matrix_domain": "chosen binary64 2x2 matrices with validated center unitarity-defect Frobenius upper<=1/4;this is a verifier admission guard,not a tight Rust reachable-domain theorem",
+  "exact_unitary": [
+    "identity",
+    "PauliX",
+    "PauliZ",
+    "SX",
+    "phase_i_identity"
+  ],
+  "floating_unitary_and_near_unitary": [
+    "signed_zero_matrix",
+    "subnormal_entry",
+    "near_unitary",
+    "element_perturbation"
+  ],
+  "reference_regions": "all reference matrices/angles in the specified outward box against one HELD captured V;not compiler(X) for every X in that box",
+  "boundary_tests": "seven cut families,three adjacent/boundary inputs each;actual output patterns asserted;full continuum coverage absent",
+  "long_runs": [
+    {
+      "label": "near_cancel_run",
+      "length": 1024,
+      "matrix_product": "chosen NumPy bit-values;not private Rust fold identity"
+    },
+    {
+      "label": "long_run",
+      "length": 768,
+      "matrix_product": "chosen NumPy bit-values;not private Rust fold identity"
+    }
+  ],
+  "full_P0": "two actual artificial1q circuits,including initial translation and MPFR160 phase wrapper;no molecule/full native pipeline coverage",
+  "rejected": "shape/nonfinite rejected before Rust;singular/outside near-unitary guard UNRESOLVED",
+  "signed_zero": "input bits retained,exact mathematical zero sign has no operator effect;no untested branch behavior inferred",
+  "subnormal": "exact dyadic and sub-binary64 rational bound export tested;no silent zero-clipping",
+  "not_covered": [
+    "all finite binary64 near-unitary matrices",
+    "all continuous branch boundaries",
+    "Rust run fold on arbitrary words",
+    "initial multi-qubit/control translation",
+    "Gaussian/raw/CAR reference numerical enclosure",
+    "arbitrary libm/FMA/rounding modes"
+  ],
+  "complete_Rust_branch_region_coverage": false,
+  "all_law_bound": null
+}

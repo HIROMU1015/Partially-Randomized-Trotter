@@ -1,5 +1,9 @@
 # 研究計画資料
 
+## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
+
+[技術報告・Q1〜Q5](research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[未承認・実行不可契約](research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。固定Rust出力をArb192で囲う部分的成果。人工41例＋whole-P0/adjoint各2例、新規52＋回帰109 PASS、旧順序依存1件deselect。全law／一様initial translation／Rust数学関数モデルは未資格。科学call上限null・実H4科学call0。旧SOURCE・証拠保全、公開照合後mandatory STOP。
+
 ## 2026-10-27：PR-aware DF C2-A・whole-P0構造と未資格上界の技術準備
 
 [固定ZSXX graph・条件付き回数制限・人工/回帰110 PASS](research_c_pr_aware_df_c2a_synthesis_readiness_20261027.md)／[実行不可の未承認草案](research_c_pr_aware_df_c2a_contract_draft_20261027.json)。新`c_pr_aware_df_c2a.py`／passive-only `check_research_c_pr_aware_df_c2a.py`／同名management test。Basis閉包等の前提下で採用rewrite≤N・採用matrix入力≤6Nを構成。Uniform ZSXX/initial translation/reference enclosureは未資格、科学call上限null・executable=false。SOURCE93/input23と固定Qiskit14SOURCEをpassive確認、新実H4科学call0、旧証拠保全、公開照合後mandatory STOP。

@@ -1,0 +1,74 @@
+{
+  "implementation": "ZSXX_captured_pair_Arb_enclosure_v1",
+  "precision_bits": 192,
+  "runtime": {
+    "basic_model": "finite binary64 bit values;process FE_TONEAREST observed",
+    "FMA_build_policy": "UNRESOLVED;not needed for captured-pair residual",
+    "gradual_underflow": "probe only,not a universal libm accuracy proof",
+    "Rust_atan2_arg_accuracy": null,
+    "Rust_trig_accuracy": null,
+    "Rust_remainder_accuracy": null,
+    "recorded_output_evaluated_by": "FLINT3.3.1 validated ball arithmetic",
+    "arbitrary_Rust_reexecution_covered": false
+  },
+  "A": {
+    "status": "CONDITIONAL_BASIC_OPERATION_MODEL",
+    "model": "IEEE754 binary64,round-to-nearest;relative u=2^-53 for normal finite basic results,absolute terms needed at subnormal/underflow;overflow excluded",
+    "proof_use": "captured finite binary64 values are exact dyadics;no gamma_k/fold/FMA theorem is claimed",
+    "operation_coverage": [
+      "add",
+      "subtract",
+      "multiply",
+      "divide",
+      "complex add/multiply",
+      "2x2 products",
+      "sqrt under stated implementation assumptions"
+    ],
+    "unverified": [
+      "Rust wheel build flags/toolchain",
+      "fused contraction",
+      "subnormal policy in all hidden routines",
+      "exact operation ordering in all platform dependencies"
+    ]
+  },
+  "B": {
+    "status": "UNRESOLVED",
+    "uniform_ULP_bounds": null,
+    "functions": [
+      "atan2",
+      "arg",
+      "sin",
+      "cos",
+      "complex abs/hypot",
+      "sqrt platform mapping",
+      "rem_euclid",
+      "phase reduction/cast"
+    ],
+    "libm": "glibc2.35/libm.so.6 observed link,not a uniform accuracy certificate",
+    "Rust_wheel_toolchain": null,
+    "primary_reference": "https://doc.rust-lang.org/std/primitive.f64.html#method.atan2",
+    "note": "Current Rust std documentation gives unspecified precision;its version is not the build identity of the installed Qiskit wheel."
+  },
+  "C": {
+    "status": "NUMERICAL_DIAGNOSTIC_ONLY",
+    "backend": "mpmath1.3.0,150 decimal digits",
+    "coverage": "nine finite matrix-to-Rust outputs crosschecked by independent numerical SVD",
+    "all_input_proof": false
+  },
+  "captured_pair_proof": {
+    "status": "VALIDATED_REGION_ENCLOSURE",
+    "library": "python-flint0.8.0 / FLINT3.3.1",
+    "exact_input": "float.hex and Fraction;no decimal reconstruction of input/phase",
+    "reference": "Arb/acb validated exp/sin/cos and exact SX/X;acb_mat_mul (not approximate routines)",
+    "norm": "max-entry absolute lower <= spectral norm <= Frobenius upper;outward ball operations",
+    "export": "upper() exact point -> man_exp -> rational string;no float cast of a bound",
+    "basis": "documented validated-library semantics,reviewed version0.8 API source;not independently formal-verified FLINT/GMP/hardware",
+    "eliminates_B_assumption": "For a frozen observed Rust output,mathematical output distance does not assume global atan2/trig accuracy.",
+    "does_not_eliminate_B_for": "a priori uniform guarantees on unseen compiler executions"
+  },
+  "output_interpretation": "exact ideal unitary gates at stored dyadic angles/phase;physical gate noise/simulator floating arithmetic excluded",
+  "elementary_functions_source": "upstream/python_flint_api_sources.json",
+  "phase_fit": false,
+  "whole_law_bound": null,
+  "actual_H4_bound": null
+}

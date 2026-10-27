@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-10-27：C2-A・ZSXX captured-pair validated enclosure
+
+Opt-in `trottertracks.c_pr_aware_df_zsxx_enclosure`はactual Rust入力・output bitsをArb192で独立検証し、phase-sensitive spectral距離のoutward Frobenius上界を返す。人工fixture／passive契約helperも追加。[技術報告](../../docs/research/research_c_pr_aware_df_c2a_zsxx_enclosure_readiness_20261027.md)／[実行不可契約](../../docs/research/research_c_pr_aware_df_c2a_zsxx_contract_draft_20261027.json)。固定pairとheld-V reference領域のみで、全law・初期translationの一様上界は未資格。旧SOURCE不変、実H4科学call0。
+
 ## 2026-10-27：PR-aware DF C2-A・whole-P0構造と未資格上界の技術準備
 
 [固定ZSXX graph・条件付き回数制限・人工/回帰110 PASS](../../docs/research/research_c_pr_aware_df_c2a_synthesis_readiness_20261027.md)／[実行不可の未承認草案](../../docs/research/research_c_pr_aware_df_c2a_contract_draft_20261027.json)。新`c_pr_aware_df_c2a.py`／passive-only `check_research_c_pr_aware_df_c2a.py`／同名management test。Basis閉包等の前提下で採用rewrite≤N・採用matrix入力≤6Nを構成。Uniform ZSXX/initial translation/reference enclosureは未資格、科学call上限null・executable=false。SOURCE93/input23と固定Qiskit14SOURCEをpassive確認、新実H4科学call0、旧証拠保全、公開照合後mandatory STOP。
