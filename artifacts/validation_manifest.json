@@ -208,6 +208,10 @@
     {
       "commit": "9752f28cf5863e5caab815004a21d65b53c122d4",
       "role": "M3 Proposed s1-r64 scientific SOURCE;19-call technicalSTOP;noPF/B/C"
+    },
+    {
+      "commit": "5354edecc6aa995082440dd14be0310bdd9902e1",
+      "role": "M3 same-scope JSON-boundary repair;fresh run02 471calls;old19callSTOP preserved"
     }
   ],
   "artifact_inventory": {
@@ -1582,6 +1586,14 @@
           "research_c_pr_aware_df_M3_s1_r64_20261028"
         ],
         "reason": "Fixed preparation plus one-run technicalSTOP partialevidence,not completed feasibility/native/resources"
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_M3/2026-10-28/run02",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_M3_s1_r64_repair_20261028"
+        ],
+        "reason": "471complete;13roundPF/RTE,32full512native/adjoint/XY,128QPY,2conditionalresourcescenarios;evidenceerrorboundsnull"
       }
     ],
     "quarantined": [
@@ -9943,6 +9955,146 @@
       "artificial_tests": 92,
       "cause": "atom_record returns tuple origins/word; saved JSON decodes as lists. Direct dict comparison is false even for identical content. Synthetic fixture retained tuples and missed JSON boundary.",
       "qualifications": "No M3feasibility/performance/CA conclusion;all-law/mean/supportremainunqualified",
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_M3_s1_r64_repair_20261028",
+      "status": "M3_A_B_C_COMPLETE",
+      "source_commit": "5354edecc6aa995082440dd14be0310bdd9902e1",
+      "report": "docs/research/research_c_pr_aware_df_M3_s1_r64_repair_execution_20261028.md",
+      "raw": "artifacts/research_c_pr_aware_df_M3/2026-10-28/run02",
+      "contract": "docs/research/research_c_pr_aware_df_M3_s1_r64_repair_contract_20261028.json",
+      "contract_sha256": "8c836c81aad38588ff2a87bc1ed2b89ab143445d96ca4e0ce231db5bc2daa73e",
+      "source_manifest": "artifacts/research_c_pr_aware_df_M3/2026-10-28/technical_repair/SOURCE.json",
+      "source_manifest_sha256": "b375bb1f9f979a70de7577729a28f3d7755a66e6643e7b46366d74acc830d857",
+      "stages": {
+        "A": "POTENTIALLY_FEASIBLE",
+        "B": "M3_NATIVE_32_COMPLETE",
+        "C": "M3_CONDITIONAL_RESOURCES_COMPLETE"
+      },
+      "attempted_units": 471,
+      "completed_units": 471,
+      "failed_units": 0,
+      "technical_relaunch": 1,
+      "retry_within_run": 0,
+      "resume": 0,
+      "previous_run01_attempts": 19,
+      "cumulative_attempts": 490,
+      "artificial_tests": 101,
+      "PF_RTE_cells": 13,
+      "native_calibration_samples": 32,
+      "events_per_sample": 64,
+      "ideal_shots": 20734,
+      "conditional_ideal_totals": {
+        "rz_count": 295179018952.75,
+        "rz_depth": 99054232952.75,
+        "cx_count": 126824660170.0,
+        "cx_depth": 85278825466.25,
+        "total_depth": 217575056198.5,
+        "circuit_size": 583026648012.25
+      },
+      "comparisons": {
+        "ideal_exact_native:M3/old_PR_s4_r16": {
+          "label": "ideal_exact_native:M3/old_PR_s4_r16",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": -245111141156.25,
+            "rz_depth": -120398387056.25,
+            "cx_count": -153516276230.0,
+            "cx_depth": -136001759233.75,
+            "total_depth": -261288287332.5,
+            "circuit_size": -462920227218.75
+          },
+          "ratio": {
+            "rz_count": 0.546334249161968,
+            "rz_depth": 0.4513695619067463,
+            "cx_count": 0.4523943659410563,
+            "cx_depth": 0.38538774462235953,
+            "total_depth": 0.4543573007575906,
+            "circuit_size": 0.5574151630631212
+          },
+          "lower_RZ": "left",
+          "qualification": "independent finite calibrations;scenario assumptions vs numerical deterministic pilot;not certified CA or mean advantage",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "ideal_exact_native:M3/deterministic_s1": {
+          "label": "ideal_exact_native:M3/deterministic_s1",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 193353089497.75,
+            "rz_depth": 47633315557.75,
+            "cx_count": 62179170170.0,
+            "cx_depth": 27319526146.25,
+            "total_depth": 105849090873.5,
+            "circuit_size": 389838130217.25
+          },
+          "ratio": {
+            "rz_count": 2.8988590679469186,
+            "rz_depth": 1.9263412239778845,
+            "cx_count": 1.9618485399368153,
+            "cx_depth": 1.471357081033981,
+            "total_depth": 1.9473992063133692,
+            "circuit_size": 3.0179156332206176
+          },
+          "lower_RZ": "right",
+          "qualification": "independent finite calibrations;scenario assumptions vs numerical deterministic pilot;not certified CA or mean advantage",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "assumed_raw_signal_budget:M3/old_PR_s4_r16": {
+          "label": "assumed_raw_signal_budget:M3/old_PR_s4_r16",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": -246124204717.625,
+            "rz_depth": -120913384208.125,
+            "cx_count": -154172735093.0,
+            "cx_depth": -136593568210.875,
+            "total_depth": -262404946194.75,
+            "circuit_size": -464823846481.875
+          },
+          "ratio": {
+            "rz_count": 0.5465400192472607,
+            "rz_depth": 0.4515395646388347,
+            "cx_count": 0.45256475475403823,
+            "cx_depth": 0.3855328962097525,
+            "total_depth": 0.4545284288002995,
+            "circuit_size": 0.5576251066412296
+          },
+          "lower_RZ": "left",
+          "qualification": "independent finite calibrations;scenario assumptions vs numerical deterministic pilot;not certified CA or mean advantage",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "assumed_raw_signal_budget:M3/deterministic_s1": {
+          "label": "assumed_raw_signal_budget:M3/deterministic_s1",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 194819272532.375,
+            "rz_depth": 48125327592.375,
+            "cx_count": 62809120665.0,
+            "cx_depth": 27743114415.625,
+            "total_depth": 106929807405.75,
+            "circuit_size": 392734080560.125
+          },
+          "ratio": {
+            "rz_count": 2.913257984239384,
+            "rz_depth": 1.9359095486898985,
+            "cx_count": 1.9715932335728292,
+            "cx_depth": 1.4786654556062186,
+            "total_depth": 1.9570721281727266,
+            "circuit_size": 3.032905915127268
+          },
+          "lower_RZ": "right",
+          "qualification": "independent finite calibrations;scenario assumptions vs numerical deterministic pilot;not certified CA or mean advantage",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        }
+      },
+      "all_law_synthesis": null,
+      "actual_CA_achieved": null,
+      "ideal_law_mean": null,
+      "cost_support": null,
       "mandatory_stop": true
     }
   ],
