@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：F2-K1 target技術準備（2026-10-27）
+
+[数学定義・bridge証明・人工/回帰153＋29 subtests](research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)／[未承認7-call契約](research/research_c_pr_aware_df_F2_K1_contract_draft_20261027.json)。Exact κH＋polar Qを新targetとして採用し、非unitary B0からκ/Uを別計上。実H4科学call0、旧F2 STOP・SOURCE保全、別科学許可までmandatory STOP。
+
 ## 研究C：F2 κ限定診断実行（2026-10-27）
 
 [6/6 COMPLETE・exact/数値条件の区別・原因分解](research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。固定SOURCE無変更、correctness FAIL/retry/resume0。保存h/gの厳密縮約と演算丸めの両方に非対称成分。元生成原因は未解決、κやCAR targetは変更せず旧F2 STOP不変。公開照合後mandatory STOP。

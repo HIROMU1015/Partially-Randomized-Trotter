@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：F2-K1技術準備（2026-10-27）
+
+`../trottertracks/c_pr_aware_df_fixed_k1.py`／`fixed_k1_execution.py` は[exact κH・polar Q・2 bridgeと独立CARの新target adapter](../../docs/research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)。既存CAR/Arb/全基底backendとCallsを再利用。人工153 tests＋29 subtests PASS、実H4科学call0、旧F2厳密gate不変、未承認7-call契約・mandatory STOP。
+
 ## 関連track：F2 κ限定診断完了（2026-10-27）
 
 [実行結果](../../docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)：SOURCE無変更で6/6 COMPLETE、correctness FAIL/retry/resume0。κはStage 1数値allowance内だがexact Hermitianではなく、入力と演算の両方に寄与。CAR target/旧F2 STOPを変更せずmandatory STOP。

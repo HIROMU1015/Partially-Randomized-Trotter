@@ -1,5 +1,9 @@
 # scripts 索引
 
+## F2-K1専用runner準備（2026-10-27）
+
+`run_research_c_pr_aware_df_fixed_F2_K1.py --contract docs/research/research_c_pr_aware_df_F2_K1_contract_draft_20261027.json` はpassive既定。別明示許可後だけ`--execute`で新7-call枠、F2-K1-run01、retry/resume0。旧F2 runner/残枠は再利用しない。[target・限界・人工結果](../docs/research/research_c_pr_aware_df_F2_K1_target_readiness_20261027.md)。
+
 ## F2 κ限定診断の実行結果（2026-10-27）
 
 [6-call結果・STOP](../docs/research/research_c_pr_aware_df_F2_kappa_diagnostic_execution_20261027.md)。固定runner無変更で6 COMPLETE/correctness FAIL0/retry-resume0。実行済み診断の再起動・旧F2の残枠再利用はしない。κのexact条件は不成立のまま、CAR targetは未採択。
