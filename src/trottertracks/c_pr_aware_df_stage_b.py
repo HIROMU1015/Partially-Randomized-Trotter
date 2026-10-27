@@ -58,13 +58,15 @@ def candidate_factor(ctx,arm,index):
     return ctx.candidate(view)
 
 
-def atom_operators(ctx,arm):
+def atom_operators(ctx,arm,*,arithmetic=None):
     """Independent signed rotated-Z products from raw sector CAR bilinears."""
     import numpy as np
-    identity=np.eye(ctx.d,dtype=complex);densities={};out={}
+    identity=np.eye(ctx.d,dtype=complex) if arithmetic is None else arithmetic.eye(ctx.d)
+    densities={};out={}
     for atom in arm.plan.atoms:
         if atom.frame_id not in densities:
-            V=np.asarray(arm.plan.frames[atom.frame_id]);zs=[]
+            V=(np.asarray(arm.plan.frames[atom.frame_id]) if arithmetic is None
+               else arithmetic.array(arm.plan.frames[atom.frame_id]));zs=[]
             for a in range(arm.model.modes):
                 d=sum((V[p,a]*V[q,a].conjugate()*E for (p,q),E in ctx.bilinears.items())).toarray()
                 zs.append(identity-2*d)

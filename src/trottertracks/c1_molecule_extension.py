@@ -165,17 +165,20 @@ class SectorCAR:
                     (table.target_positions[take],table.source_positions[take])),shape=(self.d,self.d))
         self.E=[[self.bilinears[2*p,2*q]+self.bilinears[2*p+1,2*q+1] for q in range(n)] for p in range(n)]
 
-    def one(self,h):
+    def one(self,h,*,arithmetic=None):
         import numpy as np
-        h=np.asarray(h)
-        return sum((h[p,q]*self.E[p][q] for p in range(self.n) for q in range(self.n))).toarray()
+        h=np.asarray(h) if arithmetic is None else arithmetic.array(h)
+        result=sum((h[p,q]*self.E[p][q] for p in range(self.n) for q in range(self.n)))
+        return result.toarray()
 
-    def raw_frame(self,J,U):
+    def raw_frame(self,J,U,*,arithmetic=None):
         import numpy as np
         from scipy.sparse import csr_matrix
+        if arithmetic is not None:
+            J,U=arithmetic.array(J),arithmetic.array(U)
         densities=[sum((U[p,i]*U[q,i].conjugate()*self.E[p][q]
                     for p in range(self.n) for q in range(self.n))) for i in range(self.n)]
-        out=csr_matrix((self.d,self.d),dtype=complex)
+        out=csr_matrix((self.d,self.d),dtype=complex) if arithmetic is None else arithmetic.zeros(self.d)
         for i in range(self.n):
             weighted=sum((J[i,j]*densities[j] for j in range(self.n)))
             out+=.5*(densities[i]@weighted)

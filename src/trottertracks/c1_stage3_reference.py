@@ -9,16 +9,20 @@ from .c1_stage3_accuracy import _legacy
 from . import c1_stage2_native as native
 
 
-def _ordered_exponentials(generators, schedule, cache=None):
+def _ordered_exponentials(generators, schedule, cache=None,*,arithmetic=None):
     import numpy as np
     from scipy.linalg import expm
-    result = np.eye(len(generators[0]), dtype=complex)
+    result = (np.eye(len(generators[0]), dtype=complex) if arithmetic is None
+              else arithmetic.eye(len(generators[0])))
+    def evaluate(index,time):
+        return (expm(-1j*float(time)*generators[index]) if arithmetic is None
+                else arithmetic.exponential(time,generators[index]))
     for index, time in schedule:
         key = (index,Fraction(time))
         if cache is None:
-            factor=expm(-1j*float(time)*generators[index])
+            factor=evaluate(index,time)
         else:
-            if key not in cache:cache[key]=expm(-1j*float(time)*generators[index])
+            if key not in cache:cache[key]=evaluate(index,time)
             factor=cache[key]
         result = factor @ result
     return result

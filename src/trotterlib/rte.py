@@ -1751,18 +1751,25 @@ def sample_rte_events(
 def event_unitary(
     event: RTEEvent,
     operators: Mapping[str, np.ndarray],
+    *, arithmetic=None,
 ) -> np.ndarray:
     """Materialize ``(-1)^(n/2) V_l(phi_n) P_ln ... P_l1``."""
-    rotation_operator = np.asarray(
-        operators[event.rotation_component_id], dtype=np.complex128
-    )
-    identity = np.eye(rotation_operator.shape[0], dtype=np.complex128)
+    rotation_operator = (np.asarray(operators[event.rotation_component_id], dtype=np.complex128)
+                         if arithmetic is None else operators[event.rotation_component_id])
+    identity = (np.eye(rotation_operator.shape[0], dtype=np.complex128)
+                if arithmetic is None else arithmetic.eye(len(rotation_operator)))
     product = identity
     for component_id in event.product_component_ids:
-        product = np.asarray(operators[component_id], dtype=np.complex128) @ product
+        factor=(np.asarray(operators[component_id], dtype=np.complex128)
+                if arithmetic is None else operators[component_id])
+        product = factor @ product
+    cosine=(math.cos(event.rotation_angle) if arithmetic is None
+            else arithmetic.cos(event.rotation_angle))
+    sine=(math.sin(event.rotation_angle) if arithmetic is None
+          else arithmetic.sin(event.rotation_angle))
     rotation = (
-        math.cos(event.rotation_angle) * identity
-        - 1j * math.sin(event.rotation_angle) * rotation_operator
+        cosine * identity
+        - 1j * sine * rotation_operator
     )
     return event.phase * rotation @ product
 
