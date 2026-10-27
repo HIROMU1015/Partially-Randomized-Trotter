@@ -196,6 +196,10 @@
     {
       "commit": "9b0f4d2b40159b77f28caf3f215ad22d0d075879",
       "role": "F3-K1 Proposed fixed-trajectory scientific SOURCE;unchanged existing K1 CAR/Arb/bridge mathematics"
+    },
+    {
+      "commit": "47e0d406226be365951bd8666d5acae61106f500",
+      "role": "M1 saved-scalar mechanism execution SOURCE;no fitter/PF/RTE/circuit/shot solver"
     }
   ],
   "artifact_inventory": {
@@ -1546,6 +1550,14 @@
           "research_c_pr_aware_df_mechanism_M1_preparation_20261028"
         ],
         "reason": "Technical SOURCE,synthetic regression log,passive identity/preservation checks and technical STOP;no real M1 data reanalysis"
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_mechanism/2026-10-28/M1-run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_mechanism_M1_execution_20261028"
+        ],
+        "reason": "20 complete calls,8 corners,2 scenario decompositions,2 copied tradeoffs,call journal and STOP;conditional descriptive only"
       }
     ],
     "quarantined": [
@@ -9622,6 +9634,56 @@
       "actual_CA_achieved": null,
       "guaranteed_advantage": null,
       "old_F2_F3_preserved": true,
+      "important_scientific_review_performed": false,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_mechanism_M1_execution_20261028",
+      "status": "M1_DESCRIPTIVE_SAVED_ANALYSIS_COMPLETE",
+      "source_commit": "47e0d406226be365951bd8666d5acae61106f500",
+      "scope": "C_PR_AWARE_DF_SAVED_MECHANISM_M1_V1",
+      "report": "docs/research/research_c_pr_aware_df_mechanism_execution_20261028.md",
+      "raw": "artifacts/research_c_pr_aware_df_mechanism/2026-10-28/M1-run01",
+      "contract": "docs/research/research_c_pr_aware_df_mechanism_contract_unapproved_20261028.json",
+      "contract_sha256": "bf357a9e145a2179976759e5b3716dd433a85b515e138c4234b03b91e03cb729",
+      "source_manifest": "artifacts/research_c_pr_aware_df_mechanism/2026-10-28/technical/SOURCE.json",
+      "source_manifest_sha256": "9b1adf3659ebd0cba1e940edefd4338046f9ef05e59d76d54dd2f7f86a85e1cf",
+      "attempted_units": 20,
+      "completed_units": 20,
+      "failed_units": 0,
+      "retry": 0,
+      "resume": 0,
+      "rz_components": {
+        "ideal_exact_native": {
+          "net_saving": 2654043114837.0,
+          "price_first": 265730352910.0,
+          "shots_after_price": 2388312761927.0,
+          "shots_first": 2605019232237.0,
+          "price_after_shots": 49023882600.0,
+          "interaction": 216706470310.0,
+          "symmetric_price": 157377117755.0,
+          "symmetric_shots": 2496665997082.0
+        },
+        "assumed_raw_signal_budget": {
+          "net_saving": 2666873190513.0,
+          "price_first": 267003905564.0,
+          "shots_after_price": 2399869284949.0,
+          "shots_first": 2617624350466.0,
+          "price_after_shots": 49248840047.0,
+          "interaction": 217755065517.0,
+          "symmetric_price": 158126372805.5,
+          "symmetric_shots": 2508746817707.5
+        }
+      },
+      "interpretation": "conditional descriptive accounting,not causal effects or matched deterministic comparison",
+      "CA_achieved": null,
+      "shots_guaranteed": null,
+      "cost_support": null,
+      "population_mean_advantage": null,
+      "strong_deterministic_baseline_ranking": null,
+      "new_fit": 0,
+      "sampling": 0,
+      "build_compile": 0,
       "important_scientific_review_performed": false,
       "mandatory_stop": true
     }

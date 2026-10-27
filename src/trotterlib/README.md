@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：M1保存値adapterの限定実行完了（2026-10-28）
+
+[全結果・20-call・未資格事項](../../docs/research/research_c_pr_aware_df_mechanism_execution_20261028.md)。20 COMPLETE、correctness FAIL/retry/resume0、科学SOURCE変更0。旧2仮定でshots側項が価格側より大きい記述的分解。消費済みM1-run01を再起動せず、因果/CA/強baseline順位を認定しない。公開照合後mandatory STOP。
+
 ## 関連track：保存値M1の記述的機構adapter（2026-10-28）
 
 [技術報告・SOURCE・未承認契約](../../docs/research/research_c_pr_aware_df_performance_mechanism_readiness_20261028.md)。`c_pr_aware_df_mechanism.py`／`run_research_c_pr_aware_df_mechanism.py`、passive既定・科学許可後だけ`--execute`。次の一実験には保存shots×保存whole-kernel価格の4corner・記述的寄与分解M1を推奨。新adapter/CLI/testの3ファイル、人工新30＋回帰23＝53 PASS、SOURCE7/input9・未承認20-call契約を固定した。因果効果/actual CA/保証shots/母平均優位への昇格なし。新科学call0、M1-run01未作成。公開照合後mandatory STOP、別明示許可まで再解析・新fit・PF/RTE・build/compile・sampling・移送・詳細レビューを開始しない。

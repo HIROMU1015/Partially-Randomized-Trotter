@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-28：研究C M1・保存値の記述的分解完了
+
+[結果・CSV・原本・scope](docs/research/research_c_pr_aware_df_mechanism_execution_20261028.md)。固定SOURCE `47e0d406226be365951bd8666d5acae61106f500`を変更せず20/20 COMPLETE、correctness FAIL/retry/resume0。保存H4・1Å/STO-3G、通常CDF8 Baseline/Proposed、元順LD2、partial S2 δ.1/s4/r16/K0・13round、own-DF oracle/状態準備除外、保存P0/fenced serialの旧2仮定scenarioだけを評価した。主scenarioのRZ点推定差D=2,654,043,114,837、対称価格項P=157,377,117,755、shots項S=2,496,665,997,082。両scenarioでshots側の記述的寄与が大きく、高mの費用差も保存した。 因果効果、強決定論対照への順位、全law/actual CA/保証shots/cost support/母平均優位は未資格。新fit/PF-RTE/sampling/build-compile/shot式/追加保証0、SOURCE7/input9/旧F2-F3 raw24不変。次の技術設計・科学計算へ進まず公開照合後mandatory STOP。
+
 ## 2026-10-28：研究C・M1保存値機構解析の技術準備（科学未実行）
 
 [条件・再利用・人工53 tests・20-call契約](docs/research/research_c_pr_aware_df_performance_mechanism_readiness_20261028.md)。次の一実験には保存shots×保存whole-kernel価格の4corner・記述的寄与分解M1を推奨。新adapter/CLI/testの3ファイル、人工新30＋回帰23＝53 PASS、SOURCE7/input9・未承認20-call契約を固定した。因果効果/actual CA/保証shots/母平均優位への昇格なし。新科学call0、M1-run01未作成。公開照合後mandatory STOP、別明示許可まで再解析・新fit・PF/RTE・build/compile・sampling・移送・詳細レビューを開始しない。 旧科学結果・資格は変更しない。

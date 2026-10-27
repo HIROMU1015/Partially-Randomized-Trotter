@@ -1,0 +1,201 @@
+{
+  "schema": 1,
+  "scope": "C_PR_AWARE_DF_SAVED_MECHANISM_M1_V1",
+  "implementation": "saved_PR_shots_price_descriptive_decomposition_v1",
+  "base_commit": "0075f660b1e3eaa3ca93347e6249d3c8c5ffe987",
+  "status": "UNAPPROVED",
+  "executable": true,
+  "conditions": {
+    "molecule": "linear H4",
+    "adjacent_distance_A": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "DF": "normal number CDF",
+    "rank": 8,
+    "original_frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "L_D": 2,
+    "PF": "partial ordered symmetric S2",
+    "delta": 0.1,
+    "s": 4,
+    "h_exact": "1/40",
+    "r": 16,
+    "K": 0,
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "beta_total": "pi/6",
+    "beta_stat": "pi/12",
+    "failure_per_candidate": 0.01,
+    "failure_per_axis": ".01/26",
+    "state": "own_DF_ground_state_oracle",
+    "state_preparation_cost_excluded": true,
+    "native_policy": "saved B2 run02 complete kernels;head-internal relative fusion;equal-tail-basis sharing",
+    "compiler": "saved P0 Qiskit1.3.0 opt1 seed17 rz,sx,x,cx MPFR160 declared phase",
+    "coherent_occurrences": "fresh independent trajectory per occurrence in the assumed cost model",
+    "depth_semantics": "scheduled_serial_sum",
+    "paired_calibration_cohorts": false
+  },
+  "lanes": [
+    "ideal_exact_native",
+    "assumed_raw_signal_budget"
+  ],
+  "scenario_assumptions": [
+    {
+      "id": "ideal_exact_native",
+      "synthesis_fraction_of_A": 0.0,
+      "law_fraction_of_A": 0.0,
+      "law_model": "ideal_finite_RTE_law",
+      "assumptions": [
+        "exact native synthesis",
+        "ideal finite-RTE IID law",
+        "finite-bit B2 sample mean is a proxy for ideal-law kernel cost"
+      ]
+    },
+    {
+      "id": "assumed_raw_signal_budget",
+      "synthesis_fraction_of_A": 0.001,
+      "law_fraction_of_A": 0.001,
+      "law_model": "actual_implemented_law",
+      "assumptions": [
+        "all-law synthesis raw-signal error <= .001*A_m",
+        "implemented-vs-ideal raw-signal law error <= .001*A_m",
+        "B2 finite-bit sample mean is a descriptive cost proxy for fresh independent occurrences"
+      ]
+    }
+  ],
+  "source_manifest": "artifacts/research_c_pr_aware_df_mechanism/2026-10-28/technical/SOURCE.json",
+  "source_manifest_sha256": "9b1adf3659ebd0cba1e940edefd4338046f9ef05e59d76d54dd2f7f86a85e1cf",
+  "records": {
+    "A_result": "artifacts/research_c_pr_aware_df/2026-10-27/run01/result.json",
+    "B1_result": "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/result.json",
+    "B2_result": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/result.json",
+    "C1_result": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/result.json",
+    "C1_SOURCE": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/SOURCE.json",
+    "C1_STOP": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/STOP.json",
+    "C1_contract": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/contract.json",
+    "baseline_costs": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/baseline_serial_costs26.json",
+    "proposed_costs": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/proposed_serial_costs26.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/result.json": "804f0a0bb943959febf8af607fab09a2923ab089f4f9b200e65622ad361060f9",
+    "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/result.json": "b7c4b693e7e9b8496f4430fdd640b7b3281ac46c6dcdf4d65d2dbedfc458a823",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/result.json": "a335fee92d513ee4bd174a42e5d3c3b70f6952a08d9df12e967305a768dfc3d0",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/result.json": "a8268020dcf6ed40d9325b049b0df64167009492c9b6c879907fdfb9a3132c71",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/SOURCE.json": "c54cdb26f9d3090a3caed6a61a2e12dc88f828d9fa1fdf1aafa33f4cfc39d99b",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/STOP.json": "4c46fcaadb682fca68504e2c1f48c405dea1258b4105b9f4299521fa38bb0300",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/contract.json": "d2256190c1b0e5c5daf4a51e90e13d727e5836f7a0218321356f2eab85fd08ee",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/baseline_serial_costs26.json": "1fa6bbcd5b465095502a10fef6a84363fa75f0255874be7624da93fb1604af71",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/proposed_serial_costs26.json": "79b1ddae5b439a6cdfeec695624e2112afc2ced01cfefe372205e74c30e36036"
+  },
+  "maximum_logical_units": 20,
+  "call_limits": {
+    "saved_bundle_load": 1,
+    "identity_gate": 1,
+    "scenario_attachment": 2,
+    "counterfactual_corner": 8,
+    "descriptive_decomposition": 2,
+    "tradeoff_table": 2,
+    "calibration_uncertainty": 2,
+    "reconciliation": 1,
+    "result_summary": 1
+  },
+  "reconciliation": {
+    "rel_tol": 1e-12,
+    "abs_tol": 1e-06,
+    "meaning": "scalar accounting closure only;not a physical/norm/phase allowance"
+  },
+  "fresh_output": "artifacts/research_c_pr_aware_df_mechanism/2026-10-28/M1-run01",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "question": "How do saved shots,whole-kernel prices,and high-m weights contribute descriptively to the conditional PR point-estimate difference?",
+  "scientific_processing": [
+    "Load saved JSON scalar evidence only",
+    "Cross saved shots and saved per-axis complete serial prices in four corners for each existing scenario",
+    "Ordered paths,interaction,and symmetric descriptive allocation",
+    "13 round contributions,cumulative sums,and fixed groups m0..9,m10..12,m12",
+    "Conditional shared-calibration SE with independent arm cohorts and component covariance",
+    "Copy saved DF/PF/RTE/attenuation/optimizer diagnostics and reconcile original self endpoints"
+  ],
+  "formulae": {
+    "corner": "C[a,b,k]=sum[m,axis] N[a,m]*(n_m*mu[b,k]+shell[axis,k]);reuse saved complete axis prices",
+    "saving": "Cbb-Cpp",
+    "interaction": "Cpp-Cbp-Cpb+Cbb",
+    "price_symmetric": "((Cbb-Cbp)+(Cpb-Cpp))/2",
+    "shots_symmetric": "((Cbb-Cpb)+(Cbp-Cpp))/2",
+    "closure": "saving=price_symmetric+shots_symmetric=price_first+shots_first-interaction"
+  },
+  "forbidden": [
+    "new fit or optimizer",
+    "NPZ/QPY numeric decode",
+    "new operator/DF/PF/RTE/ground calculation",
+    "sampling or real circuit build/compile",
+    "new shots formula or CA reassessment",
+    "strong deterministic baseline numerical ranking",
+    "additional validated or all-law guarantee",
+    "causal or population-superiority claim",
+    "important scientific review",
+    "candidate/lane expansion or retry/resume"
+  ],
+  "outputs": [
+    "identity.json",
+    "8 lane/corner JSON,each13 round x6 metrics",
+    "2 lane analysis JSON,round groups/cumulative/6metric components and calibration SE",
+    "2 arm tradeoff JSON,copied saved diagnostics and shots",
+    "reconciliation.json",
+    "result.json",
+    "SOURCE.json",
+    "contract.json",
+    "science_calls.jsonl",
+    "resources.json",
+    "STOP.json",
+    "failure.json only on error"
+  ],
+  "decision_rules": {
+    "correctness": "SOURCE/input/provenance/policy/accounting closure FAIL stops dependent work;preserve partial evidence",
+    "insufficient_saved_accuracy": "UNRESOLVED;never fill missing shots/errors/costs with zero",
+    "negative_or_zero_gain": "Informative signed result,not correctness FAIL;never add candidates",
+    "research_GO": "No automatic research GO;return descriptive findings for user/Research C to choose next experiment",
+    "qualification": "All-law/actual CA/guaranteed shots/cost support/population mean superiority remain null"
+  },
+  "runtime": {
+    "science_dependencies": "Python standard library and pinned existing scalar modules only",
+    "tested_python": "3.11.1",
+    "numeric_model": "saved binary64 scalar points,math.fsum;accounting reconciliation only",
+    "external_package_required": false
+  },
+  "resources": {
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "wall_cap": null,
+    "execution_plan": "Tiny dependent scalar steps and file I/O;process spawning dominates,no heavy kernel;check actual free resources before execution",
+    "shared_environment_changes": false
+  },
+  "permission": "Separate explicit chat permission is required for this saved-result numerical reanalysis.No proof,approval record,grant or saved permission text is required."
+}
