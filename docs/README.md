@@ -1,5 +1,10 @@
 # 文書索引
 
+## 2026-10-27：PR-aware DF C2-Bridge・47-call数値対応評価完了
+
+[全gate・26round・未資格事項](research/research_c_pr_aware_df_stage_c2_bridge_execution_20261027.md)。固定SOURCE3f64842d69d54a70a5b736486b5faefa398903b8を無変更で一度実行し47/47 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline/Proposed、Nα=Nβ2/sector36、元順LD2、partial S2 δ.1/s4/h1/40/r16/K0/m0..12、own-DF oracle/状態準備除外。両216 atom/K0 mean/保存CAR kernel gateと26round replayを確認。観測operator2差の最大はBaseline6.53148e-11（m11）/Proposed9.46816e-11（m12）、signal差の最大は5.98984e-11/8.10860e-11。数値対応pilotであり、厳密Bridge/reference enclosure・全law P0・PCG64 IID・CA/保証shots/totalは未資格/null。C1の約83%点推定不変、新fit/sampling/build-compile/DF-PF再計算/shots/総費用/C1再解析0。SOURCE82/input20・旧1799件不変、raw44と全26round CSVを保存、公開照合後mandatory STOP。
+
+
 ## 2026-10-27：PR-aware DF C2・Reference Bridge統合準備
 
 [Reference対応・P0 coverage・人工/回帰85 PASS](research/research_c_pr_aware_df_stage_c2_bridge_synthesis_readiness_20261027.md)／[未承認47-call Bridge契約](research/research_c_pr_aware_df_stage_c2_bridge_contract_draft_20261027.json)。SOURCE82/input20のpassive確認、実H4科学call0。全law synthesis/reference enclosureは未資格、C1保証shots/totalはnullのまま。旧証拠保全、別途明示科学許可までmandatory STOP。
