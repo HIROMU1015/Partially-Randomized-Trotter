@@ -151,3 +151,23 @@ GitHub連携で[A]、[B]、[C]、[INDEX]、[D-Cmean]の指定commit/pathとblob 
 [D]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/03efd057a7e77c40ae7e90b9c77885d6606e793b/docs/non_df_h4_comparison_synthesis_20261025.md
 [D-Cmean]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/07d4f6ff7f1df085f292d36c36e460354df8a740/docs/non_df_h4_pr_mean_cost_scalar_execution_20261025.md
 [INDEX]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/731b3d6f3572c6aa7950a579b68251fec9a5218b/docs/data_collection/2026-10-24_track_a_research_data/README.md
+
+## 2026-10-27追加：DF-nativeのR_outer境界比較
+
+この節は元の4証拠ブロックへの追加であり、上の歴史的記述・正式採択・論文方針を置換しない。[追加証拠15行と報告](docs/data_collection/2026-10-27_pr_boundary_addendum/REPORT.md)、[EVIDENCE_ADDENDUM.csv](docs/data_collection/2026-10-27_pr_boundary_addendum/EVIDENCE_ADDENDUM.csv)に保存行を対応付け、EVIDENCE_MATRIXの別ID `BND_*` 7項目から参照する。既存43行、CEM v3、ledger v5、paper manifest、主表・原稿・原図は保持する。追加項目の正式claim採択は行っていない。
+
+境界結果は[公開固定結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/REPORT.md)による。linear H4/H6、隣接1Å、STO-3G、tol-only1e-8 DF rank10/19、H6保存weighted-Hermitian completion、T2/δ2、m5_bestの11 signed piece、ABS_TIME_PER_OUTER。H4 prefix3/q1/K2、H6 prefix7/q1/K6、P0、元finite-RTE・full Hadamard wrapper・compiler・経験的allowanceに条件付く。
+
+主ε=.0005の独立確認では、H4 R16は固定R64よりGが+19.98337%、R128も+11.19767%で、保存±2 combined-SE診断はいずれもHIGHER。R16はC低下でN増を補えず、R128はnormalization/Nの低下でC増を補えなかった。Nは保存bias/u/headroomも含むため、normalizationだけの効果や単価の外挿とはしない。この条件ではRの増減がともに非改善となったが、R64の大域最適性やR32との母平均順位は未確定。R32は探索n9だけで、R64 C800と同じ独立確認水準へ昇格させない。
+
+H6 R11は固定R16より確認点Gが−0.17209%だが、旧R16のSEも含む診断は **INCONCLUSIVE**。母平均優位や確定的改善を主張しない。R11は11-piece allocationでの実装上の下限であり、R8を同一契約で実行可能とはしない。小さな点差を統計的不確かさが制限した下限方向の検証として位置付ける。
+
+元長時間探索33/40、追加7候補の拡張探索集合33/40、今回のT2限定E8/10・C8/10を別証拠として保持する。今回は保存結果の転記のみであり、40セル再ランキングやcohort poolingを行っていない。境界外の固定候補を検証しても全探索域最適性は保証されない。
+
+H8はlinear1Å/STO-3G/tol-only DF28、T.8、S2/prefix7/q16/r4/K4、δ.05/P0の別系列。ε=.001の探索n8とε=.0005の独立n48価格は存在する一方、.001の正確なA_signal原記録は未回収である。n48価格による.001の新G/SEと新しいq8対q16独立比較は成立していない。欠測を費用0・不適格・旧結果の誤りと解釈せず、旧希少RTE研究の正式終了・STOPを維持する。
+
+Pauli-JWのevent数・control比較は既存の別区分を維持し、今回のDF-native数値をその順位へ移さない。未採択B3結果は含めない。Section4のパラメータ感度とDiscussionへ短く参照し、保存C/N/GのSupplementary境界比較表を配置する案に留める。新しい中心claim、章立て、一論文／二論文方針を採択しない。
+
+今回の資料統合では新規科学計算・数値再解析・fit・再描画・詳細科学レビューを実施していない。完全SOURCE/rawはローカル保全という公開記録を引用し、原本の再照合済みとはしない。公開結果を参照する文書差分だけを公開し、静的検査とremote照合後mandatory STOP。
+
+公開範囲の注記：このbranchは統合4資料と境界追加証拠4資料だけの限定公開版。既存の大きな運用索引・状態表・validation manifestへの追記は完全ローカル版に保全し、公開branchでは固定基点の内容を維持する。完全SOURCE/raw/seedは公開しない。詳細は境界addendumの公開範囲を参照。

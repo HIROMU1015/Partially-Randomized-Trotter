@@ -135,3 +135,20 @@ Figure2を新H4/H6 P cohortの機構分解へ置換する、旧図の数値を�
 [COST6]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/03efd057a7e77c40ae7e90b9c77885d6606e793b/artifacts/non_df_h4_comparison_synthesis/2026-10-25/circuit_costs_QUOTED.csv
 [CNG30]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/03efd057a7e77c40ae7e90b9c77885d6606e793b/artifacts/non_df_h4_comparison_synthesis/2026-10-25/conditional_resources_QUOTED.csv
 [MEANC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/07d4f6ff7f1df085f292d36c36e460354df8a740/docs/non_df_h4_pr_mean_cost_scalar_execution_20261025.md
+
+## 2026-10-27追加：R_outer境界比較の補足配置
+
+[境界結果addendum](docs/data_collection/2026-10-27_pr_boundary_addendum/REPORT.md)の保存表を既存Section4へ接続する。既存Figure3・Table3、元S4/S6/S7、正式Figure2や原稿図番号を差し替えない。以下は掲載案であり、図表採択ではない。
+
+|配置先|追加内容と固定出所|Captionに残す制約|作業区分|
+|---|---|---|---|
+|Figure3／Table3のcaption・証拠索引|元長時間探索33/40を保持。追加7候補の33/40と今回T2限定E8/10・C8/10は別集合。|40セルを新たに再ランキングした図ではない。探索・独立確認・取得subsetを区別。|参照とcaption案だけ。原図・主表不変。|
+|Supplementary R_outer境界比較表（第一案）|[公開RESULTS.csv](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/RESULTS.csv)、line31/56/26のH4 R16/R64/R128、line21/46のH6 R11/R16。|linear1Å/STO-3G/tol-only DF10/19、H6 weighted-Hermitian completion、T2/δ2、m5_best/11 signed piece、H4 p3/q1/K2・H6 p7/q1/K6、P0、経験的allowance。H4両新候補はHIGHER、H6 INCONCLUSIVE。|保存N/C/G/SEのliteral転記で可能。新集計・作図不要。|
+|既存S4 r/K、S6 C/N/Gへの参照|同じprefix/q/KでRを変えたH4の非改善。R16はC減がN増を補えず、R128はN減がC増を補えない。|normalizationだけでNを決めた説明やR64大域最適性を避ける。R32 line36はE9のみ、独立Cと同列にしない。|元図は保持。Supplementary表への参照を足すだけでよい。|
+|既存S7／S12 不確かさ・データ可用性|[公開summary](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/EXECUTION_SUMMARY.json)、paired_statistics_and_rare、signal_endpoints。H8 .001 A_signal未回収。|±2 combined-SEは正規近似診断で母平均保証なし。H8 E8/.001とC48/.0005を分離し、新C48/.001会計・新q8比較を表示しない。|状態・証拠参照の追記のみ。旧H8 STOP維持。|
+
+Supplementary表のcaption案：「固定DF-native H4/H6、上記物理条件における主ε=.0005のR_outer境界比較。H4 R16/R128は固定R64より保存確認Gが高い。H6 R11の確認点Gは固定R16より低いが、新旧両側SEを含む診断はINCONCLUSIVE。各行のnはpaired trajectory数、Nは解析shot数。旧参照を再測定せず、探索と確認をpoolしていない。経験的allowanceと有限標本に条件付きで、R64大域最適性、R11母平均優位、全域順位、全QPE/RPE費用を保証しない。」
+
+今回、数値グラフの計算・再集計・renderは0。保存表の転記と文書captionだけで掲載案を作れる。将来R32/EとR64/C等を共通図へ再集計・新error bar付きで描く場合は、新しい数値処理の範囲を別途明示する。Pauli-JWへ数値を転用せず、未採択B3結果を含めない。掲載配置は未採択、公開照合後mandatory STOP。
+
+公開範囲の注記：このbranchは統合4資料と境界追加証拠4資料だけの限定公開版。既存の大きな運用索引・状態表・validation manifestへの追記は完全ローカル版に保全し、公開branchでは固定基点の内容を維持する。完全SOURCE/raw/seedは公開しない。詳細は境界addendumの公開範囲を参照。
