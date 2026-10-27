@@ -1,5 +1,8 @@
 ## 2026-10-26 既存kernelのH2追加検証への再利用
 
+`h6_hybrid_fairness_extension.py` は固定4候補専用のlaw/mean/control接続。[Phase A報告](../../analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)。人工検証済み、実H6の新評価は別承認待ち。
+
+
 [H2純RTEの独立確認・event数拡張](../../docs/h2_pauli_rte_validation_20261026.md)。pauli_signal_adapter/rte、D2 control、tight L2、既存shot/paired統計を無変更で使用。追加接続はH2専用runnerに限定し、新アルゴリズム・全lawρ保証・正式certificateは追加しない。
 
 ## 2026-10-26 純RTE拡張kernelの承認済み適用

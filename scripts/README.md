@@ -1,5 +1,8 @@
 ## 2026-10-26 H2 純RTE追加検証
 
+`prepare_h6_hybrid_fairness_extension.py` は固定Git入力と保存文字列だけを照合するPhase A準備用。[計画と境界](../analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)。実H6実行CLIではない。
+
+
 `run_h2_pauli_rte_validation.py`：元H2 price_job/seed、target/shot会計、event-extension dispatchを再利用。H2専用SOURCE・Phase A保存N・Phase B限定law/target、96→192→384固定確認。完了STOPを再開しない。
 `finalize_h2_pauli_rte_validation.py`：保存cohortのG比較・図・native/QPY/shot検査。
 `pack_h2_pauli_rte_evidence.py`：旧QPY-aware archive形式、復元は既存 `restore_pauli_h2_h6_evidence.py`。

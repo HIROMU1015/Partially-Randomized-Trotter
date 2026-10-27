@@ -1,5 +1,8 @@
 # リポジトリの現在の入口
 
+H6 Hybridの固定4候補は[Phase A準備](analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)を参照。人工27件PASS、実H6新計算・標本数算出0。Phase Bは別承認待ち。
+
+
 Pauli-JWの最新研究成果は[H2・H4・H6の総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)から読む。目的・手法・最新15条件・限界を体系化し、以下の実験履歴とは分離する。
 
 <details>

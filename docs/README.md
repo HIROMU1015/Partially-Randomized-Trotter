@@ -1,5 +1,8 @@
 # 文書の現在の入口
 
+H6 Hybrid固定4候補の[Phase A実装・人工検証・非実行計画](../analysis/h6_hybrid_fairness_readiness_20261027/READINESS_REPORT.md)。実H6科学計算は未実行。
+
+
 Pauli-JW研究は[科学的成果の総合資料](research/pauli_jw_resource_evaluation_summary.md)へ。個別報告・SOURCE・保存値の出典もそこから辿れる。
 
 <details>
