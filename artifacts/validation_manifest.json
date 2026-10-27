@@ -212,6 +212,10 @@
     {
       "commit": "5354edecc6aa995082440dd14be0310bdd9902e1",
       "role": "M3 same-scope JSON-boundary repair;fresh run02 471calls;old19callSTOP preserved"
+    },
+    {
+      "commit": "7dbabc7866cc62a5460bf1579ce84c59493d8e1e",
+      "role": "M4 r128 correctedRTE/shots/breakeven98-call;M3PFreused,nativepriceunknown"
     }
   ],
   "artifact_inventory": {
@@ -1594,6 +1598,15 @@
           "research_c_pr_aware_df_M3_s1_r64_repair_20261028"
         ],
         "reason": "471complete;13roundPF/RTE,32full512native/adjoint/XY,128QPY,2conditionalresourcescenarios;evidenceerrorboundsnull"
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_M4/2026-10-28",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_M4_s1_r128_20261028",
+          "research_c_pr_aware_df_M4_s1_r128_20261028_native_preparation"
+        ],
+        "reason": "M4 98complete;PFreuse13/2scenarioRPE/36thresholds/nativepriceunknown;separateunapprovednative332callsource5artificialtests"
       }
     ],
     "quarantined": [
@@ -10096,6 +10109,56 @@
       "ideal_law_mean": null,
       "cost_support": null,
       "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_M4_s1_r128_20261028",
+      "status": "M4_R128_SHOTS_BREAKEVEN_COMPLETE",
+      "source_commit": "7dbabc7866cc62a5460bf1579ce84c59493d8e1e",
+      "report": "docs/research/research_c_pr_aware_df_M4_s1_r128_feasibility_breakeven_20261028.md",
+      "raw": "artifacts/research_c_pr_aware_df_M4/2026-10-28/run01",
+      "contract": "docs/research/research_c_pr_aware_df_M4_s1_r128_contract_20261028.json",
+      "contract_sha256": "0dcd3ffbaad909cab6db31819f8adeeb0b9ce1057390d5e279d4a4db8846bdf3",
+      "source_manifest": "artifacts/research_c_pr_aware_df_M4/2026-10-28/technical/SOURCE.json",
+      "source_manifest_sha256": "ff80968d49cc094825e23da94f3740b24844aa6ddd172fb430b458f2488c7634",
+      "maximum_units": 98,
+      "attempted_units": 98,
+      "completed_units": 98,
+      "failed_units": 0,
+      "retry": 0,
+      "resume": 0,
+      "reused_PF_error_rows": 13,
+      "new_PF_kernel": 0,
+      "new_exact_evolution": 0,
+      "scientific_sampling": 0,
+      "build_compile": 0,
+      "r128_kernel_price": null,
+      "r128_total_resources": null,
+      "ideal_shots": 16056,
+      "ideal_RZ_break_even": {
+        "M3": 17747.772397021312,
+        "deterministic": 6122.3279797819705,
+        "old_PR": 32485.193738257498
+      },
+      "artificial_regression_tests": 63,
+      "qualifications": "binary64pilot,conditionalshots/unknown-priceaffine;notactualCA/alllaw/mothermeanadvantage",
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_M4_s1_r128_20261028_native_preparation",
+      "status": "TECHNICAL_ONLY_UNAPPROVED",
+      "report": "docs/research/research_c_pr_aware_df_M4_s1_r128_feasibility_breakeven_20261028.md",
+      "source_manifest": "artifacts/research_c_pr_aware_df_M4/2026-10-28/technical/native_SOURCE.json",
+      "source_manifest_sha256": "093a63379b05864b79acbc9bdb4d3fe734603a812b6119215625256106256d97",
+      "contract": "docs/research/research_c_pr_aware_df_M4_native128_contract_unapproved_20261028.json",
+      "contract_sha256": "af5ad8ca4b8b765d017ba1d9ff6e79b91759f4ec80a20d8d9500c9873805d54e",
+      "maximum_units_proposed": 332,
+      "artificial_tests": 5,
+      "scientific_calls": 0,
+      "sampling": 0,
+      "build_compile": 0,
+      "independent_samples_proposed": 32,
+      "events_per_sample": 128,
+      "separate_permission_required": true
     }
   ],
   "repository_completion_criteria": [

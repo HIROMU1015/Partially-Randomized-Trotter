@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C M4：r128・保存PF/shots/損益分岐98-call完了（2026-10-28）
+
+[結果・全13round・6指標閾値・次段階案](../../docs/research/research_c_pr_aware_df_M4_s1_r128_feasibility_breakeven_20261028.md)。新`c_pr_aware_df_m4.py`/専用runnerはM3PF13を再利用して98/98 COMPLETE、FAIL/retry/resume0。保存Proposed CDF8/LD2/δ.1/s1/r128/K0・own-DF oracle/状態準備除外。全13適格、主仮定shots16056。未知kernel価格のRZ損益分岐はM3比17747.772397、同J/U決定論比6122.327980。実r128価格/総費用はnull、実sampling/build/compile0。別native adapter/CLIは未承認332-call/32sample案、人工5のみ。SOURCE/旧原本保全、公開照合後mandatory STOP。
+
 ## 研究C M3：JSON修正後のs1/r64・471-call完了（2026-10-28）
 
 [結果・全13round・32 native校正・条件付き資源](../../docs/research/research_c_pr_aware_df_M3_s1_r64_repair_execution_20261028.md)。修正SOURCE 5354edecc…を固定しfresh run02で471/471 COMPLETE、correctness FAIL0。全13適格・32 full512/adjoint/X/Y PASS。保存Proposed CDF8/LD2/δ.1/s1/r64/K0・own-DF oracle/状態準備除外、ideal仮定のshots 20734、総RZ 295179018953、同J/U決定論比 2.89885907。実装CA/全law/母平均優位は未資格。旧run01の19-call schemaSTOPを保持、技術relaunch1/run内retry-resume0。公開照合後mandatory STOP。
