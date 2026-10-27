@@ -128,3 +128,15 @@ amendment v4、authorization manifestとともに追跡できる。
 個別文書に数値があっても、それだけで現在利用可能とは判断しない。
 再現可能性、失効、成果物の有無は[`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)と
 [`../artifacts/validation_manifest.json`](../artifacts/validation_manifest.json)で確認する。
+
+## P1 DF/H4 selective integration (technical only)
+
+The representative DF line now includes the [pipeline entry and current technical test record](../src/trottertracks/resource_applicability/README.md).
+H4 callbacks and preparation policy belong to the study adapter; fixed-signal binding does not explicitly request phase-RPE.
+The legacy eager package initializer is byte-preserved, including its transitive dependency behavior.
+Scientific execution remains disabled. Current limited regression: 78 PASS / 0 FAIL / 1 SKIP; legacy 13 cases not run because dependencies are unavailable.
+
+- [Fixed P1 implementation/test history](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/af54aeb7ebac042a3ca02379d61516ac635feef9/docs/integration/p1_df_pipeline_h4_20261027) — previous code version; not copied here.
+- [Selective adoption review and P2 handoff](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/76fec27f45b64879cdf5a86a32772ba78bd0a038/inventory/integration/p1_adoption_review_20261027) — fixed planning record.
+
+The current README records this integration's actual checks. No scientific synthesis, CEM, validation manifest or SOURCE status is amended.

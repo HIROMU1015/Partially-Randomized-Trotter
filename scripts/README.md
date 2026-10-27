@@ -156,3 +156,12 @@ artifacts/<validation_name>/
 
 結果を研究上の証拠へ加える場合は、`VALIDATION_STATUS.md`、研究概要、研究ノート、
 `artifacts/validation_manifest.json`も更新する。
+
+## P1 DF/H4 pipeline (plan/mock only)
+
+`run_df_research_pipeline.py` adds a separate entry; it does not replace an old scientific runner.
+Default `--mode plan` prints an artificial plan; explicit `--mode synthetic` runs mock API wiring.
+`scientific`, `real` and `resume` are refused before imports/input/output.
+Optional `--output-dir` requires a NEW directory and the legacy core dependency stack.
+Missing dependencies are explained without creating that directory or installing packages.
+See [current scope, tests and commands](../src/trottertracks/resource_applicability/README.md).

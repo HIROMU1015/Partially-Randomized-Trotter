@@ -146,3 +146,13 @@ DF部分ランダム化研究と混同しない。
 - `eig_error.py`、`qpe_beta.py`：固有値誤差・位相推定の旧来支援
 
 新しい機能は、runnerへ直接大きな処理を書くのではなく、ここへテスト可能な関数として置く。
+
+## P1 study consumer boundary
+
+The [DF/H4 composer](../trottertracks/resource_applicability/README.md) calls existing DF/S2/RTE/event/circuit/accounting/compiler APIs.
+H4 shots/wrapper callbacks and the five preparation policy fields are selected explicitly by the study adapter.
+No new study import or scientific condition is added to the numerical core.
+The original eager `trotterlib/__init__.py` and all existing Python module bodies are unchanged.
+Its transitive imports remain in force, even when the new binding itself does not explicitly request phase-RPE.
+The existing executor's atomic writer is reused only if those dependencies are available; missing imports are reported before directory creation.
+Technical mock success does not establish numerical or scientific equivalence.

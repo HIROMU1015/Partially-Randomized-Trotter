@@ -401,3 +401,12 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 
 新しい検証を追加するときは、可能な限り同じ語幹で
 `src/trotterlib/`、`scripts/`、`tests/`、`docs/`、`artifacts/`を対応させる。
+
+## P1 DF/H4：代表ラインへの選択統合（2026-10-27）
+
+新しい非凍結入口は [DF/H4 pipeline README](src/trottertracks/resource_applicability/README.md)。
+CLI→composer→H4 B2 adapter→既存core APIを、plan/人工mock用途で接続した。
+`python scripts/run_df_research_pipeline.py` はplan、`--mode synthetic` は人工配線確認。
+実科学/real/resume modeは拒否する。旧eager initializer、科学SOURCE/runner/raw/result/STOP/CEM/validation manifestは不変。
+新統合の限定testは78 PASS/1 SKIP（実atomic writerの依存不足）、旧13件は未実施。数値同等性や科学的性能の検証ではない。
+[採用判定](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/76fec27f45b64879cdf5a86a32772ba78bd0a038/inventory/integration/p1_adoption_review_20261027)と[固定P1の旧記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/af54aeb7ebac042a3ca02379d61516ac635feef9/docs/integration/p1_df_pipeline_h4_20261027)を新統合の実測結果と分けて参照する。

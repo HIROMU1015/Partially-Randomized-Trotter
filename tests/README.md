@@ -39,3 +39,16 @@ mean、$\mathcal B^2$ shot式、q=1/8 controlled wrapperのRe/Im規約、stage g
 `test_pr2_new_series_validation.py`では、固定amendment/input hash、development二回load、held-out非開封、
 raw/internal tamper、rank 3/6/9のpartition・sampling sign・確率和・再構成、counter、fingerprint、
 非上書き、V4非承認guardを検査する。
+
+## P1 selected integration regression
+
+`test_df_research_pipeline.py` keeps the original 46 study-wiring/boundary case topics and adapts the three global-facade/output assumptions to the preserved eager initializer.
+It adds only callback/policy/estimand/CLI-output failure coverage.
+Actual current run: **78 PASS / 0 FAIL / 1 SKIP** (79 collected).
+The SKIP is real legacy atomic publication because the eager initializer requires unavailable `matplotlib`.
+Artificial-writer directory/collision tests passed separately and do not prove real atomic publication.
+The old integer6/executor7 cases were not run: normal imports for both modules fail on that dependency.
+No root package bypass or scientific dependency installation was used.
+See [scope/reproduction](../src/trottertracks/resource_applicability/README.md).
+Historical [P1 62 PASS](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/af54aeb7ebac042a3ca02379d61516ac635feef9/docs/integration/p1_df_pipeline_h4_20261027) and [adoption-review 19 PASS](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/76fec27f45b64879cdf5a86a32772ba78bd0a038/inventory/integration/p1_adoption_review_20261027) are distinct code-version records and are not added to this run.
+Do not run scientific suites, old runners, sampling or build/compile under this technical integration scope.
