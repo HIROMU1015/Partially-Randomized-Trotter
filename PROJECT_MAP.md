@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-27：C2-A B1・保存固定回路の事後validated評価
+
+[実行報告](docs/research/research_c_pr_aware_df_c2a_fixed_b1_execution_20261027.md)。固定SOURCE `518a730510a57d0cafa1575a91f5f1979c203be3`を無変更で一度実行。保存H4・1Å/STO-3G、通常CDF8 baseline_00、元順LD2、partial S2 δ.1/s4/r16/K0、full512、own-oracle/状態準備除外。19/19 units、9判定はPASS9/FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全基底・位相保持の固定gate列証拠であり、raw-Hamiltonian/reference・全law・CA/保証shots/総資源は未資格/null。新fit/build-compile/sampling/C1再解析0、旧SOURCE/raw/STOPとC1資格は不変。公開照合後mandatory STOP。
+
 ## 2026-10-27：C2-A保証方式の判定・固定回路B1案
 
 [技術報告・A/B比較](docs/research/research_c_pr_aware_df_c2a_guarantee_strategy_readiness_20261027.md)／[未承認19-call B1契約](docs/research/research_c_pr_aware_df_c2a_guarantee_contract_draft_20261027.json)。Stock P0全lawは現証拠では困難（A-3、数学的不可能性ではない）。Arb192全基底・recentered local actionで固定raw/compiledの事後検証を人工実装。保存baseline_00＋actual adjoints＋3shellだけの新有限scopeを準備。新37＋旧193 PASS、旧不安定1件deselect。実H4科学call0、旧A blocked契約・C1資格は不変。公開照合後mandatory STOP。

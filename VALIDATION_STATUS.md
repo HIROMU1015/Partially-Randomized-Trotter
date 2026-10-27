@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-27：C2-A B1・保存固定回路の事後validated評価
+
+[Execution and qualification](docs/research/research_c_pr_aware_df_c2a_fixed_b1_execution_20261027.md)。固定SOURCE `518a730510a57d0cafa1575a91f5f1979c203be3`を無変更で一度実行。保存H4・1Å/STO-3G、通常CDF8 baseline_00、元順LD2、partial S2 δ.1/s4/r16/K0、full512、own-oracle/状態準備除外。19/19 units、9判定はPASS9/FAIL0/UNRESOLVED0/NOT_RUN0、retry/resume0。Arb192全基底・位相保持の固定gate列証拠であり、raw-Hamiltonian/reference・全law・CA/保証shots/総資源は未資格/null。新fit/build-compile/sampling/C1再解析0、旧SOURCE/raw/STOPとC1資格は不変。公開照合後mandatory STOP。
+
 ## 2026-10-27 PR-aware DF C2-Bridge: sector36 numerical reference correspondence
 
 [47-call execution and limitations](docs/research/research_c_pr_aware_df_stage_c2_bridge_execution_20261027.md), [raw44/SOURCE/STOP](artifacts/research_c_pr_aware_df_c2_bridge/2026-10-27/Bridge-run01/). Frozen SOURCE3f64842d69d54a70a5b736486b5faefa398903b8 executed unchanged once;47/47 COMPLETE,correctness FAIL/retry/resume0. Saved linear H4 1Angstrom/STO-3G,normal CDF8 baseline/proposed,Nalpha=Nbeta2/sector36,original LD2,partial S2 delta.1/s4/r16/K0/m0..12,own-DF oracle/preparation excluded. Both216-atom K0 averages,raw CAR kernels and26round normalization/signal replays passed registered gates. Max observed operator2 distance6.53148e-11/9.46816e-11;max raw signal distance5.98984e-11/8.10860e-11. These are numerical observations,not rigorous enclosures. C2B conditional IID-table law retained;whole-P0 synthesis,reference uncertainty,PCG64 IID,cost support/actual CA/guaranteed shots/resources remain unqualified/null. C1 unchanged;newfit/sampling/build-compile/DF-PF error/shot/resource/C1 reanalysis0. SOURCE82/input20/old1799 unchanged;mandatory STOP after publication.
