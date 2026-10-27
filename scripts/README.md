@@ -1,3 +1,7 @@
+## 2026-10-27 B3のユーザーmanager終了からの継続
+
+`h46_b3_session_resume.py`は、09:36のユーザー用systemd全体の終了をjournalで確認し、完成済み1,691件を再利用する。中断17件の原本を保全し、未着手20件とともに同じ固定計画を検証済み高速workerで継続する。新しいtrace保存先を使い、旧SOURCE・STOP・記録は保持する。既存の`KillUserProcesses=false`を確認した上で、端末から切り離した自分のlogin-session processで取得と既存の終了検証を実行する。`Linger`・logind・systemd・共有設定は変更しない。新たな科学/worker異常は自動retryしない。人工checkpointと実際の小さい子processによる検証は`tests/test_h46_b3_session_resume.py`。進捗は従来のprivate `B3_EXPLORATION_progress.json`、終了状態は`final_status.json`、新しい実行logはprivate `interruptions/user_manager_exit_20261027/`。
+
 ## 2026-10-26 B3 canonical fingerprintの高速化
 
 `h46_b3_fast_fingerprint.py`は、同じcanonical v2 byteを生成する処理で、標準gateの定義とbit位置の反復処理を削減する。毎回、現在のparameter・phase・custom definitionを確認し、callをまたぐobject ID/digestの再利用は行わない。compiler・回路生成・標本数・seedは変更しない。

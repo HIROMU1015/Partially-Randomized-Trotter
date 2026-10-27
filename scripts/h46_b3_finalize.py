@@ -69,6 +69,12 @@ def main():
                 raise ValueError('HANDOFF_WORKERS_NOT_PRESERVED')
     acceleration=b.PUBLIC/'acceleration_validation.json'
     if acceleration.exists():complete['matched_input_acceleration_validation']=b.read(acceleration)
+    external=b.PUBLIC/'interruption_user_manager_20261027.json'
+    if external.exists():
+        record=b.read(external)
+        if b.signal.sha(b.ROOT/record['source'])!=record['source_sha256']:
+            raise ValueError('EXTERNAL_SHUTDOWN_CONTINUATION_SOURCE_CHANGED')
+        complete['external_user_manager_shutdown_continuation']=record
     replays=list((b.PRIVATE/'cost').glob('*/*/*/event_replay_check.json'))
     complete['unfinished_event_replay_checks']=len(replays)
     complete['original_event_log_reconstructions']=archive.get('reconstructed_missing_original_event_logs',0)
@@ -103,6 +109,8 @@ def main():
         content+='\n'+heading+'\n\n'+text.replace('{prefix}','../../../').split('\n\n',1)[1]
         note.write_text(content)
     with (b.PUBLIC/'REPORT.md').open('a') as stream:
+        if external.exists():
+            stream.write('\n2026-10-27 09:36 JSTにユーザー用systemd管理プロセス全体がexit.targetへ移行し、B3と終了確認serviceを停止した。停止要求者は読取可能なjournalからは特定できない。完成1,691件を保持し、中断17件のdirectoryを元のまま保全して、未着手20件とともに同一固定計画の続きを実行した。検証済み高速worker・入力・cohort・n・seed・compilerは維持。ホストの既存KillUserProcesses=falseの下で端末から切り離した自分のprocessへ移し、ユーザーmanagerや共有設定は変更していない。科学的STOPの再開や新たな失敗の自動retryは行わない。[中断と継続](interruption_user_manager_20261027.json)。\n')
         if acceleration.exists():
             values=b.read(acceleration)['rows']
             timing_summary='、'.join(f"{v['system']} {v['original']['wall_seconds']:.2f}→{v['fast']['wall_seconds']:.2f}秒（{v['time_speedup']:.2f}倍）" for v in values)
