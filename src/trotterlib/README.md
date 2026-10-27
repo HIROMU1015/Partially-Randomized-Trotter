@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 関連track：Proposed F3-K1 binding（2026-10-28）
+
+`../trottertracks/c_pr_aware_df_fixed_f3_k1.py` は既存K1 CAR/Arb/bridge/executorを再利用するProposed専用adapter。[F1 reuse条件・人工193 tests＋29 subtests・7-call案](../../docs/research/research_c_pr_aware_df_F3_K1_readiness_20261027.md)。新実H4科学call0、F3未実行・mandatory STOP。
+
 ## 関連track：F2-K1科学実行完了（2026-10-27）
 
 [固定Baseline・全512基底・validated CAR結果](../../docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。SOURCE無変更、7 COMPLETE/correctness FAIL0/retry-resume0。Exact κH/polar Qへのraw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示）。旧SOURCE/raw/STOP不変。全law/CA/保証shots/総資源は未資格、公開照合後mandatory STOP。

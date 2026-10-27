@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-10-28：Proposed F3-K1の独立7-call技術準備
+
+[Proposed固有binding・F1 reuse・193 tests＋29 subtests](docs/research/research_c_pr_aware_df_F3_K1_readiness_20261027.md)／[未承認7-call契約](docs/research/research_c_pr_aware_df_F3_K1_contract_draft_20261027.json)。新F3 adapter/CLI/testの3ファイルのみ追加、旧K1数学/全512列verifier不変。Proposed F1の同一raw certificateだけを使用し、Baselineの値は転用しない。SOURCE145・入力・seed固定、実H4科学call0・別科学許可までmandatory STOP。
+
 ## 2026-10-27：F2-K1 Baseline固定trajectoryのCAR接続がvalidated PASS
 
 [7-call結果・exact上界・資格の限界](docs/research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。保存直鎖H4・1Å/STO-3G、通常number CDF8 Baseline baseline_00、元順LD2/partial S2 δ.1/s4/h1/40/r16/K0、full512・位相込み。SOURCE3742ec10dd…無変更、7 COMPLETE/correctness FAIL0/retry-resume0。Raw/B0≤2.57295e-14、κ bridge≤2.07978e-17、U bridge≤9.53720e-16、raw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示）。Exact κH＋polar Qの新target一trajectoryのみ。旧F2 STOP・元κ/旧SOURCE/raw不変、F3/全law/CA/shots/総資源は未資格、公開照合後mandatory STOP。

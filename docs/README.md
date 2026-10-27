@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：Proposed F3-K1技術準備（2026-10-28）
+
+[再利用・差分・193 tests＋29 subtests・未資格事項](research/research_c_pr_aware_df_F3_K1_readiness_20261027.md)／[未承認7-call契約](research/research_c_pr_aware_df_F3_K1_contract_draft_20261027.json)。保存proposed_00のF1 pairを固定し、K1数学を無変更で接続。実H4科学call0、旧F2/F1/raw/STOP保全、別明示許可までmandatory STOP。
+
 ## 研究C：F2-K1限定科学実行完了（2026-10-27）
 
 [7/7 COMPLETE・validated上界・保証scope](research/research_c_pr_aware_df_F2_K1_execution_20261027.md)。固定Baseline raw/K1≤2.67040e-14、compiled/K1≤3.49618e-12（上向き表示）、correctness FAIL/retry-resume0。Exact κH＋polar Qへの固定一trajectory保証。旧κ/旧F2 STOP不変、F3/全law/CA/shots/総資源へ進まずmandatory STOP。
