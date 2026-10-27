@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-10-28：M2同J/Uの決定論s1・数値pilot完了
+
+[結果・SOURCE・raw・比較条件](docs/research/research_c_pr_aware_df_M2_same_JU_deterministic_execution_20261028.md)。保存直鎖H4・1Å/STO-3G、通常CDF8 Baseline/Proposed、Nα=Nβ2/sector36、元順全frame ordered S2 s1/δ.1/m0..12、own-DF oracle/状態準備除外。SOURCEa6ffc23d…を無変更で253/253 COMPLETE、correctness FAIL/UNRESOLVED候補/retry/resume0。両full512・adjoint・X/Yと共通CA数値十分条件PASS。Native RZ11026/CX7000は両arm一致、shots13606/13610、条件付き総RZ101,724,313,825/101,825,929,455。保存PR ideal s4/D s1のRZ比はBaseline31.401866/Proposed5.306017で、今回の登録条件では決定論が低費用。 PRの仮定付き資格と決定論level Bは区別し、s1対s4・融合scope差を純粋ablationとは呼ばない。Proposedは決定論でも僅かに高費用、外部強XDF8の保存点値も低い。Actual CA/全law/母平均優位/因果効果/新規性は未資格。新fit/sampling/決定論s4/追加保証0、旧raw/STOP保全、公開照合後mandatory STOP。
+
 ## 2026-10-28：研究C M1・保存値の記述的分解完了
 
 [結果・CSV・原本・scope](docs/research/research_c_pr_aware_df_mechanism_execution_20261028.md)。固定SOURCE `47e0d406226be365951bd8666d5acae61106f500`を変更せず20/20 COMPLETE、correctness FAIL/retry/resume0。保存H4・1Å/STO-3G、通常CDF8 Baseline/Proposed、元順LD2、partial S2 δ.1/s4/r16/K0・13round、own-DF oracle/状態準備除外、保存P0/fenced serialの旧2仮定scenarioだけを評価した。主scenarioのRZ点推定差D=2,654,043,114,837、対称価格項P=157,377,117,755、shots項S=2,496,665,997,082。両scenarioでshots側の記述的寄与が大きく、高mの費用差も保存した。 因果効果、強決定論対照への順位、全law/actual CA/保証shots/cost support/母平均優位は未資格。新fit/PF-RTE/sampling/build-compile/shot式/追加保証0、SOURCE7/input9/旧F2-F3 raw24不変。次の技術設計・科学計算へ進まず公開照合後mandatory STOP。

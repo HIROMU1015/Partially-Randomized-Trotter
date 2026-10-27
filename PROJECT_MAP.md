@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C M2：同J/U決定論s1の253-call完了（2026-10-28）
+
+[結果・再利用・68人工/回帰・253-call契約](docs/research/research_c_pr_aware_df_M2_same_JU_deterministic_execution_20261028.md)。新`c_pr_aware_df_m2.py`／`run_research_c_pr_aware_df_M2.py`／同名人工test。両full512/CA数値条件PASS、旧PR仮定に対し今回決定論s1が低費用。SOURCE無変更、retry/resume0、消費済みrun01を再起動せずmandatory STOP。
+
 ## 研究C M1・20-call保存値機構分解完了（2026-10-28）
 
 [全結果・20-call・未資格事項](docs/research/research_c_pr_aware_df_mechanism_execution_20261028.md)。20 COMPLETE、correctness FAIL/retry/resume0、科学SOURCE変更0。旧2仮定でshots側項が価格側より大きい記述的分解。消費済みM1-run01を再起動せず、因果/CA/強baseline順位を認定しない。公開照合後mandatory STOP。

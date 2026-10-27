@@ -1,0 +1,711 @@
+{
+  "status": "M2_SAME_JU_DETERMINISTIC_COMPLETE",
+  "scientific_SOURCE_commit": "a6ffc23d94f6488a4769596f089a91c895d49214",
+  "branch": "codex/research-c-M2-same-JU-deterministic-20261028",
+  "contract": "docs/research/research_c_pr_aware_df_M2_same_JU_deterministic_contract_20261028.json",
+  "contract_sha256": "b36f61f77060b04237eb970d140765b51f1f5f4091645644c56a28b93bc68f24",
+  "source_manifest": "artifacts/research_c_pr_aware_df_M2/2026-10-28/technical/SOURCE.json",
+  "source_manifest_sha256": "c0fca9ff024329a384af1edf3b9dba52f95dbd2e95a840a06a8118b57def5a7b",
+  "conditions": {
+    "atoms": 4,
+    "distance_A": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector": 36,
+    "modes": 8,
+    "controlled_dimension": 512,
+    "rank": 8,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "original_g_kappa": true,
+    "scalar": "nuclear once",
+    "PF": "all-frame ordered symmetric S2",
+    "s": 1,
+    "delta": "1/10",
+    "h": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "PR_split": null,
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "native": "StrongBuilder relative_fusion=True,exact-spin-lift kappa,original full-frame U",
+    "serial": "separate head/kernel/readout,all-wire fences,scheduled depth sum",
+    "saved_PR": "partial S2 LD2 s4 h1/40 r16 K0;two saved C1 assumed scenarios"
+  },
+  "raw": "artifacts/research_c_pr_aware_df_M2/2026-10-28/run01",
+  "science_calls": 253,
+  "complete": 253,
+  "correctness_FAIL": 0,
+  "retry": 0,
+  "resume": 0,
+  "candidates": {
+    "baseline": {
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "DF_error_with_guard": 1.0297636237465247e-08,
+      "PF_m12": {
+        "m": 12,
+        "pf_operator_error": 0.06913777600000931,
+        "rte_corrected_operator_error": 0.0,
+        "attenuation": 1.0,
+        "evidence_kind": "numerical_sector_operator_norm",
+        "known_part_status": "POTENTIALLY_FEASIBLE",
+        "CA_achieved": null,
+        "synthesis_error": null
+      },
+      "synthesis_m12": {
+        "s": 1,
+        "m": 12,
+        "occurrences": 4096,
+        "status": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "alpha": 1.0000000000039555,
+        "norm_growth_pilot": 1.0000000162017388,
+        "kernel_repeat_bound_pilot": 2.238438687514452e-08,
+        "axis_state_distance_pilot": {
+          "X": 2.23843930288023e-08,
+          "Y": 2.2384391728418817e-08
+        },
+        "complex_signal_bound_pilot": 6.331262360089947e-08,
+        "saved_PF_operator_error": 0.06913777600000931,
+        "combined_complex_error_pilot": 0.06913783931263291,
+        "phase_bias_bound_pilot": 0.06919303841194478,
+        "registered_phase_room": 0.2617993877991494,
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "rigorous_signal_error_bound": null,
+        "floating_point_rounding_enclosed": false,
+        "CA_achieved": null,
+        "shots": null,
+        "total_cost": null
+      },
+      "metrics": {
+        "rz_count": 11026,
+        "cx_count": 7000,
+        "rz_depth": 5568,
+        "cx_depth": 6276,
+        "total_depth": 12098,
+        "circuit_size": 20919,
+        "measurement_count": 0,
+        "quantum_only_depth": 12098
+      },
+      "energy": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0012783276208742716,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 101724313825.0,
+          "rz_depth": 51369602693.0,
+          "cx_count": 64580978000.0,
+          "cx_depth": 57901459704.0,
+          "total_depth": 111614470131.0,
+          "circuit_size": 192995728265.0
+        },
+        "intervals": {
+          "rz_count": [
+            101724313825.0,
+            101724313825.0
+          ],
+          "rz_depth": [
+            51369602693.0,
+            51369602693.0
+          ],
+          "cx_count": [
+            64580978000.0,
+            64580978000.0
+          ],
+          "cx_depth": [
+            57901459704.0,
+            57901459704.0
+          ],
+          "total_depth": [
+            111614470131.0,
+            111614470131.0
+          ],
+          "circuit_size": [
+            192995728265.0,
+            192995728265.0
+          ]
+        },
+        "shots": 13606,
+        "executions": 13606,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13606
+      },
+      "segment": {
+        "label": "baseline",
+        "raw_reference": {
+          "label": "raw:baseline",
+          "max_entry": 6.39324847192266e-15,
+          "frobenius": 7.663560787151722e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiler": {
+          "label": "P0:baseline",
+          "max_entry": 6.259360921543259e-13,
+          "frobenius": 5.466453535254501e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "unitarity": [
+          {
+            "label": "raw-unitarity:baseline",
+            "max_entry": 1.1102230246251565e-14,
+            "frobenius": 9.675963027307451e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          {
+            "label": "P0-unitarity:baseline",
+            "max_entry": 3.665956427312267e-13,
+            "frobenius": 7.910289588543026e-12,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        ],
+        "unitary_distance_pilot": 5.543089143126018e-12,
+        "evidence_kind": "numerically_qualified_pilot",
+        "rigorous_enclosure": null,
+        "missing_enclosures": [
+          "CAR/expm reference rounding",
+          "Operator reconstruction rounding",
+          "norm evaluation rounding"
+        ],
+        "compiled_reference": {
+          "label": "compiled/ref:baseline",
+          "max_entry": 6.301723026648361e-13,
+          "frobenius": 5.464938113419696e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiled_reference_frobenius": 5.464938113419696e-12,
+        "operator_bound_pilot": 5.4649381134196965e-12,
+        "norm_upper_pilot": 1.0000000000039555,
+        "norm_guards": {
+          "raw": {
+            "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+            "reference_invariance": "embedded square W maps S into S by construction",
+            "unitarity_defect_max_entry": 1.1102230246251565e-14,
+            "unitarity_defect_frobenius": 9.675963027307451e-14,
+            "reference_norm_upper_pilot": 1.0000000000000486,
+            "reference_exactly_unitary_certified": false,
+            "rigorous_enclosure": null
+          },
+          "compiled": {
+            "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+            "reference_invariance": "embedded square W maps S into S by construction",
+            "unitarity_defect_max_entry": 3.665956427312267e-13,
+            "unitarity_defect_frobenius": 7.910289588543044e-12,
+            "reference_norm_upper_pilot": 1.0000000000039555,
+            "reference_exactly_unitary_certified": false,
+            "rigorous_enclosure": null
+          },
+          "reference": {
+            "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+            "reference_invariance": "embedded square W maps S into S by construction",
+            "unitarity_defect_max_entry": 2.6645352591003757e-15,
+            "unitarity_defect_frobenius": 1.4091467289810431e-14,
+            "reference_norm_upper_pilot": 1.0000000000000073,
+            "reference_exactly_unitary_certified": false,
+            "rigorous_enclosure": null
+          }
+        },
+        "input_dimension": 512,
+        "output_dimension": 512,
+        "coverage": "all full-Fock controlled input columns and all output components",
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "floating_point_rounding_enclosed": false,
+        "rigorous_operator_bound": null,
+        "global_phase_fit": false
+      },
+      "XY": {
+        "status": "PASS",
+        "signals": {
+          "raw": {
+            "error": 2.0206364052201327e-15,
+            "tolerance": 2e-10,
+            "actual_real": 0.9766284530291177,
+            "actual_imag": 0.21493455587356253,
+            "complex_parts": [
+              0.9766284530291177,
+              0.21493455587356253
+            ]
+          },
+          "compiled": {
+            "error": 3.471797563620362e-13,
+            "tolerance": 2e-10,
+            "actual_real": 0.9766284530287734,
+            "actual_imag": 0.21493455587350435,
+            "complex_parts": [
+              0.9766284530287734,
+              0.21493455587350435
+            ]
+          }
+        },
+        "norm_errors": {
+          "raw": [
+            3.3306690738754696e-16,
+            6.661338147750939e-16
+          ],
+          "compiled": [
+            3.488320743372242e-13,
+            3.4927616354707425e-13
+          ]
+        },
+        "reference_parts": [
+          0.9766284530291158,
+          0.2149345558735618
+        ],
+        "state": "saved own-DF ground oracle; preparation excluded",
+        "attenuation_applied": false,
+        "interpretation": "single unitary trajectory signal, not the B1 mean signal or CA test"
+      }
+    },
+    "proposed": {
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "DF_error_with_guard": 1.229561498918692e-08,
+      "PF_m12": {
+        "m": 12,
+        "pf_operator_error": 0.06988804953189413,
+        "rte_corrected_operator_error": 0.0,
+        "attenuation": 1.0,
+        "evidence_kind": "numerical_sector_operator_norm",
+        "known_part_status": "POTENTIALLY_FEASIBLE",
+        "CA_achieved": null,
+        "synthesis_error": null
+      },
+      "synthesis_m12": {
+        "s": 1,
+        "m": 12,
+        "occurrences": 4096,
+        "status": "POTENTIALLY_PHASE_ELIGIBLE_NUMERICAL",
+        "alpha": 1.000000000004018,
+        "norm_growth_pilot": 1.0000000164573069,
+        "kernel_repeat_bound_pilot": 2.24494433979962e-08,
+        "axis_state_distance_pilot": {
+          "X": 2.2449449551657294e-08,
+          "Y": 2.2449448251273815e-08
+        },
+        "complex_signal_bound_pilot": 6.349663125400254e-08,
+        "saved_PF_operator_error": 0.06988804953189413,
+        "combined_complex_error_pilot": 0.06988811302852539,
+        "phase_bias_bound_pilot": 0.06994513142311787,
+        "registered_phase_room": 0.2617993877991494,
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "rigorous_signal_error_bound": null,
+        "floating_point_rounding_enclosed": false,
+        "CA_achieved": null,
+        "shots": null,
+        "total_cost": null
+      },
+      "metrics": {
+        "rz_count": 11026,
+        "cx_count": 7000,
+        "rz_depth": 5568,
+        "cx_depth": 6276,
+        "total_depth": 12098,
+        "circuit_size": 20919,
+        "measurement_count": 0,
+        "quantum_only_depth": 12098
+      },
+      "energy": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0012783296188530234,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 101825929455.0,
+          "rz_depth": 51420917395.0,
+          "cx_count": 64645490000.0,
+          "cx_depth": 57959299320.0,
+          "total_depth": 111725965325.0,
+          "circuit_size": 193188517795.0
+        },
+        "intervals": {
+          "rz_count": [
+            101825929455.0,
+            101825929455.0
+          ],
+          "rz_depth": [
+            51420917395.0,
+            51420917395.0
+          ],
+          "cx_count": [
+            64645490000.0,
+            64645490000.0
+          ],
+          "cx_depth": [
+            57959299320.0,
+            57959299320.0
+          ],
+          "total_depth": [
+            111725965325.0,
+            111725965325.0
+          ],
+          "circuit_size": [
+            193188517795.0,
+            193188517795.0
+          ]
+        },
+        "shots": 13610,
+        "executions": 13610,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13610
+      },
+      "segment": {
+        "label": "proposed",
+        "raw_reference": {
+          "label": "raw:proposed",
+          "max_entry": 5.783025877366924e-15,
+          "frobenius": 7.090560067536671e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiler": {
+          "label": "P0:proposed",
+          "max_entry": 6.195474542594897e-13,
+          "frobenius": 5.474954727359336e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "unitarity": [
+          {
+            "label": "raw-unitarity:proposed",
+            "max_entry": 9.769962616701378e-15,
+            "frobenius": 7.296306949242459e-14,
+            "tolerance": 1e-10,
+            "rtol": 0
+          },
+          {
+            "label": "P0-unitarity:proposed",
+            "max_entry": 3.7070346792233977e-13,
+            "frobenius": 8.035414172219976e-12,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        ],
+        "unitary_distance_pilot": 5.545860328034703e-12,
+        "evidence_kind": "numerically_qualified_pilot",
+        "rigorous_enclosure": null,
+        "missing_enclosures": [
+          "CAR/expm reference rounding",
+          "Operator reconstruction rounding",
+          "norm evaluation rounding"
+        ],
+        "compiled_reference": {
+          "label": "compiled/ref:proposed",
+          "max_entry": 6.237733006945274e-13,
+          "frobenius": 5.4808210519113824e-12,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "compiled_reference_frobenius": 5.4808210519113824e-12,
+        "operator_bound_pilot": 5.480821051911383e-12,
+        "norm_upper_pilot": 1.000000000004018,
+        "norm_guards": {
+          "raw": {
+            "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+            "reference_invariance": "embedded square W maps S into S by construction",
+            "unitarity_defect_max_entry": 9.769962616701378e-15,
+            "unitarity_defect_frobenius": 7.296306949242459e-14,
+            "reference_norm_upper_pilot": 1.0000000000000369,
+            "reference_exactly_unitary_certified": false,
+            "rigorous_enclosure": null
+          },
+          "compiled": {
+            "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+            "reference_invariance": "embedded square W maps S into S by construction",
+            "unitarity_defect_max_entry": 3.7070346792233977e-13,
+            "unitarity_defect_frobenius": 8.035414172219987e-12,
+            "reference_norm_upper_pilot": 1.000000000004018,
+            "reference_exactly_unitary_certified": false,
+            "rigorous_enclosure": null
+          },
+          "reference": {
+            "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+            "reference_invariance": "embedded square W maps S into S by construction",
+            "unitarity_defect_max_entry": 2.4424906541753444e-15,
+            "unitarity_defect_frobenius": 1.2243918446831589e-14,
+            "reference_norm_upper_pilot": 1.0000000000000064,
+            "reference_exactly_unitary_certified": false,
+            "rigorous_enclosure": null
+          }
+        },
+        "input_dimension": 512,
+        "output_dimension": 512,
+        "coverage": "all full-Fock controlled input columns and all output components",
+        "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+        "floating_point_rounding_enclosed": false,
+        "rigorous_operator_bound": null,
+        "global_phase_fit": false
+      },
+      "XY": {
+        "status": "PASS",
+        "signals": {
+          "raw": {
+            "error": 3.2368285245694686e-15,
+            "tolerance": 2e-10,
+            "actual_real": 0.976628413587684,
+            "actual_imag": 0.21493473510562056,
+            "complex_parts": [
+              0.976628413587684,
+              0.21493473510562056
+            ]
+          },
+          "compiled": {
+            "error": 3.549627305948099e-13,
+            "tolerance": 2e-10,
+            "actual_real": 0.9766284135873315,
+            "actual_imag": 0.21493473510555694,
+            "complex_parts": [
+              0.9766284135873315,
+              0.21493473510555694
+            ]
+          }
+        },
+        "norm_errors": {
+          "raw": [
+            3.9968028886505635e-15,
+            4.6629367034256575e-15
+          ],
+          "compiled": [
+            3.5416114485542494e-13,
+            3.5282887722587475e-13
+          ]
+        },
+        "reference_parts": [
+          0.9766284135876808,
+          0.21493473510562022
+        ],
+        "state": "saved own-DF ground oracle; preparation excluded",
+        "attenuation_applied": false,
+        "interpretation": "single unitary trajectory signal, not the B1 mean signal or CA test"
+      }
+    }
+  },
+  "comparisons": {
+    "baseline:PR_ideal_exact_native/D_s1": {
+      "label": "baseline:PR_ideal_exact_native/D_s1",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 3092608961121.0,
+        "rz_depth": 1217273144708.0,
+        "cx_count": 1536522170210.0,
+        "cx_depth": 1182781613801.0,
+        "total_depth": 2656855252958.0,
+        "circuit_size": 6016968188889.0
+      },
+      "ratio": {
+        "rz_count": 31.401866032159496,
+        "rz_depth": 24.696370633481163,
+        "cx_count": 24.792178715689317,
+        "cx_depth": 21.42749215386862,
+        "total_depth": 24.803860286571215,
+        "circuit_size": 32.176691023063356
+      },
+      "lower_RZ": "right",
+      "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    },
+    "baseline:PR_assumed_raw_signal_budget/D_s1": {
+      "label": "baseline:PR_assumed_raw_signal_budget/D_s1",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 3107918283393.0,
+        "rz_depth": 1223353305707.0,
+        "cx_count": 1544195697684.0,
+        "cx_depth": 1188727773898.0,
+        "total_depth": 2670123560121.0,
+        "circuit_size": 6046730374213.0
+      },
+      "ratio": {
+        "rz_count": 31.552364194263955,
+        "rz_depth": 24.814731700732096,
+        "cx_count": 24.910998958300073,
+        "cx_depth": 21.530186630439633,
+        "total_depth": 24.922736514245166,
+        "circuit_size": 32.33090265039603
+      },
+      "lower_RZ": "right",
+      "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    },
+    "proposed:PR_ideal_exact_native/D_s1": {
+      "label": "proposed:PR_ideal_exact_native/D_s1",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 438464230654.0,
+        "rz_depth": 168031702614.0,
+        "cx_count": 215695446400.0,
+        "cx_depth": 163321285380.0,
+        "total_depth": 367137378206.0,
+        "circuit_size": 852758357436.0
+      },
+      "ratio": {
+        "rz_count": 5.306017465303578,
+        "rz_depth": 4.267769443381009,
+        "cx_count": 4.336589240796226,
+        "cx_depth": 3.8178616252464384,
+        "total_depth": 4.286052415282634,
+        "circuit_size": 5.41412547272036
+      },
+      "lower_RZ": "right",
+      "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    },
+    "proposed:PR_assumed_raw_signal_budget/D_s1": {
+      "label": "proposed:PR_assumed_raw_signal_budget/D_s1",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 440943477250.0,
+        "rz_depth": 169038711800.5,
+        "cx_count": 216981855758.0,
+        "cx_depth": 164336682626.5,
+        "total_depth": 369334753600.5,
+        "circuit_size": 857557927042.0
+      },
+      "ratio": {
+        "rz_count": 5.330365355956475,
+        "rz_depth": 4.287353092166667,
+        "cx_count": 4.356488685568011,
+        "cx_depth": 3.835380768134862,
+        "total_depth": 4.305719959779636,
+        "circuit_size": 5.438969442024441
+      },
+      "lower_RZ": "right",
+      "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    },
+    "D_proposed/D_baseline": {
+      "label": "D_proposed/D_baseline",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 101615630.0,
+        "rz_depth": 51314702.0,
+        "cx_count": 64512000.0,
+        "cx_depth": 57839616.0,
+        "total_depth": 111495194.0,
+        "circuit_size": 192789530.0
+      },
+      "ratio": {
+        "rz_count": 1.0009989315845846,
+        "rz_depth": 1.0009989312610936,
+        "cx_count": 1.0009989319145955,
+        "cx_depth": 1.0009989319145955,
+        "total_depth": 1.0009989313560252,
+        "circuit_size": 1.0009989315915597
+      },
+      "lower_RZ": "right",
+      "qualification": "two numerical deterministic s1 pilots;different saved J/U,not optimizer causal identification",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    },
+    "D_baseline/external_XDF8_B3": {
+      "label": "D_baseline/external_XDF8_B3",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 1456892795.0,
+        "rz_depth": 485129661.0,
+        "cx_count": 1095195944.0,
+        "cx_depth": 863740248.0,
+        "total_depth": 1324876717.0,
+        "circuit_size": 3183099957.0
+      },
+      "ratio": {
+        "rz_count": 1.01453007148318,
+        "rz_depth": 1.0095339429121122,
+        "cx_count": 1.0172510428088284,
+        "cx_depth": 1.0151433166725101,
+        "total_depth": 1.0120127083253154,
+        "circuit_size": 1.016769695385256
+      },
+      "lower_RZ": "right",
+      "qualification": "external saved XDF8 spin+relative numerical pilot;same CA/model/serial policy,different DF representation and errors",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    },
+    "D_proposed/external_XDF8_B3": {
+      "label": "D_proposed/external_XDF8_B3",
+      "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+      "difference": {
+        "rz_count": 1558508425.0,
+        "rz_depth": 536444363.0,
+        "cx_count": 1159707944.0,
+        "cx_depth": 921579864.0,
+        "total_depth": 1436371911.0,
+        "circuit_size": 3375889487.0
+      },
+      "ratio": {
+        "rz_count": 1.0155435176150955,
+        "rz_depth": 1.0105423979268222,
+        "cx_count": 1.0182672073406458,
+        "cx_depth": 1.0161573757294229,
+        "total_depth": 1.0130236395523575,
+        "circuit_size": 1.017785378755317
+      },
+      "lower_RZ": "right",
+      "qualification": "external saved XDF8 spin+relative numerical pilot;same CA/model/serial policy,different DF representation and errors",
+      "actual_CA_achieved": null,
+      "guaranteed_superiority": null
+    }
+  },
+  "resources": {
+    "wall_seconds": 81.25501689128578,
+    "parent_peak_RSS_KiB": 679332
+  },
+  "new_fit": 0,
+  "optimizer": 0,
+  "sampling": 0,
+  "deterministic_s4": 0,
+  "additional_guarantees": 0,
+  "CA_achieved": null,
+  "rigorous_enclosure": null,
+  "PR_all_law_bound": null,
+  "population_mean_advantage": null,
+  "guaranteed_resource_superiority": false,
+  "important_scientific_review": false,
+  "mandatory_stop": true
+}

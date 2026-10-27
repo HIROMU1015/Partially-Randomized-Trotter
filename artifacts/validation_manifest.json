@@ -200,6 +200,10 @@
     {
       "commit": "47e0d406226be365951bd8666d5acae61106f500",
       "role": "M1 saved-scalar mechanism execution SOURCE;no fitter/PF/RTE/circuit/shot solver"
+    },
+    {
+      "commit": "a6ffc23d94f6488a4769596f089a91c895d49214",
+      "role": "M2 same-JU deterministic S2 two-arm scientific SOURCE,253calls"
     }
   ],
   "artifact_inventory": {
@@ -1558,6 +1562,14 @@
           "research_c_pr_aware_df_mechanism_M1_execution_20261028"
         ],
         "reason": "20 complete calls,8 corners,2 scenario decompositions,2 copied tradeoffs,call journal and STOP;conditional descriptive only"
+      },
+      {
+        "path": "artifacts/research_c_pr_aware_df_M2/2026-10-28/run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_pr_aware_df_M2_same_JU_deterministic_20261028"
+        ],
+        "reason": "253complete;2 native kernels and8QPY,full512/adjoint/XY,PF26,accuracy/shots/serial resources,7conditional point comparisons,no strict CA claim"
       }
     ],
     "quarantined": [
@@ -9685,6 +9697,208 @@
       "sampling": 0,
       "build_compile": 0,
       "important_scientific_review_performed": false,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_pr_aware_df_M2_same_JU_deterministic_20261028",
+      "status": "M2_SAME_JU_DETERMINISTIC_COMPLETE",
+      "source_commit": "a6ffc23d94f6488a4769596f089a91c895d49214",
+      "report": "docs/research/research_c_pr_aware_df_M2_same_JU_deterministic_execution_20261028.md",
+      "raw": "artifacts/research_c_pr_aware_df_M2/2026-10-28/run01",
+      "contract": "docs/research/research_c_pr_aware_df_M2_same_JU_deterministic_contract_20261028.json",
+      "contract_sha256": "b36f61f77060b04237eb970d140765b51f1f5f4091645644c56a28b93bc68f24",
+      "source_manifest": "artifacts/research_c_pr_aware_df_M2/2026-10-28/technical/SOURCE.json",
+      "source_manifest_sha256": "c0fca9ff024329a384af1edf3b9dba52f95dbd2e95a840a06a8118b57def5a7b",
+      "attempted_units": 253,
+      "completed_units": 253,
+      "failed_units": 0,
+      "retry": 0,
+      "resume": 0,
+      "artificial_tests": 68,
+      "candidate_status": {
+        "baseline": "NUMERICAL_PILOT_CA_PASS",
+        "proposed": "NUMERICAL_PILOT_CA_PASS"
+      },
+      "conditional_total_RZ": {
+        "baseline": 101724313825.0,
+        "proposed": 101825929455.0
+      },
+      "comparisons": {
+        "baseline:PR_ideal_exact_native/D_s1": {
+          "label": "baseline:PR_ideal_exact_native/D_s1",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 3092608961121.0,
+            "rz_depth": 1217273144708.0,
+            "cx_count": 1536522170210.0,
+            "cx_depth": 1182781613801.0,
+            "total_depth": 2656855252958.0,
+            "circuit_size": 6016968188889.0
+          },
+          "ratio": {
+            "rz_count": 31.401866032159496,
+            "rz_depth": 24.696370633481163,
+            "cx_count": 24.792178715689317,
+            "cx_depth": 21.42749215386862,
+            "total_depth": 24.803860286571215,
+            "circuit_size": 32.176691023063356
+          },
+          "lower_RZ": "right",
+          "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "baseline:PR_assumed_raw_signal_budget/D_s1": {
+          "label": "baseline:PR_assumed_raw_signal_budget/D_s1",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 3107918283393.0,
+            "rz_depth": 1223353305707.0,
+            "cx_count": 1544195697684.0,
+            "cx_depth": 1188727773898.0,
+            "total_depth": 2670123560121.0,
+            "circuit_size": 6046730374213.0
+          },
+          "ratio": {
+            "rz_count": 31.552364194263955,
+            "rz_depth": 24.814731700732096,
+            "cx_count": 24.910998958300073,
+            "cx_depth": 21.530186630439633,
+            "total_depth": 24.922736514245166,
+            "circuit_size": 32.33090265039603
+          },
+          "lower_RZ": "right",
+          "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "proposed:PR_ideal_exact_native/D_s1": {
+          "label": "proposed:PR_ideal_exact_native/D_s1",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 438464230654.0,
+            "rz_depth": 168031702614.0,
+            "cx_count": 215695446400.0,
+            "cx_depth": 163321285380.0,
+            "total_depth": 367137378206.0,
+            "circuit_size": 852758357436.0
+          },
+          "ratio": {
+            "rz_count": 5.306017465303578,
+            "rz_depth": 4.267769443381009,
+            "cx_count": 4.336589240796226,
+            "cx_depth": 3.8178616252464384,
+            "total_depth": 4.286052415282634,
+            "circuit_size": 5.41412547272036
+          },
+          "lower_RZ": "right",
+          "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "proposed:PR_assumed_raw_signal_budget/D_s1": {
+          "label": "proposed:PR_assumed_raw_signal_budget/D_s1",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 440943477250.0,
+            "rz_depth": 169038711800.5,
+            "cx_count": 216981855758.0,
+            "cx_depth": 164336682626.5,
+            "total_depth": 369334753600.5,
+            "circuit_size": 857557927042.0
+          },
+          "ratio": {
+            "rz_count": 5.330365355956475,
+            "rz_depth": 4.287353092166667,
+            "cx_count": 4.356488685568011,
+            "cx_depth": 3.835380768134862,
+            "total_depth": 4.305719959779636,
+            "circuit_size": 5.438969442024441
+          },
+          "lower_RZ": "right",
+          "qualification": "saved PR assumed scenario s4 versus deterministic numerical synthesis pilot s1;same JU,not pure PF-only ablation",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "D_proposed/D_baseline": {
+          "label": "D_proposed/D_baseline",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 101615630.0,
+            "rz_depth": 51314702.0,
+            "cx_count": 64512000.0,
+            "cx_depth": 57839616.0,
+            "total_depth": 111495194.0,
+            "circuit_size": 192789530.0
+          },
+          "ratio": {
+            "rz_count": 1.0009989315845846,
+            "rz_depth": 1.0009989312610936,
+            "cx_count": 1.0009989319145955,
+            "cx_depth": 1.0009989319145955,
+            "total_depth": 1.0009989313560252,
+            "circuit_size": 1.0009989315915597
+          },
+          "lower_RZ": "right",
+          "qualification": "two numerical deterministic s1 pilots;different saved J/U,not optimizer causal identification",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "D_baseline/external_XDF8_B3": {
+          "label": "D_baseline/external_XDF8_B3",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 1456892795.0,
+            "rz_depth": 485129661.0,
+            "cx_count": 1095195944.0,
+            "cx_depth": 863740248.0,
+            "total_depth": 1324876717.0,
+            "circuit_size": 3183099957.0
+          },
+          "ratio": {
+            "rz_count": 1.01453007148318,
+            "rz_depth": 1.0095339429121122,
+            "cx_count": 1.0172510428088284,
+            "cx_depth": 1.0151433166725101,
+            "total_depth": 1.0120127083253154,
+            "circuit_size": 1.016769695385256
+          },
+          "lower_RZ": "right",
+          "qualification": "external saved XDF8 spin+relative numerical pilot;same CA/model/serial policy,different DF representation and errors",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        },
+        "D_proposed/external_XDF8_B3": {
+          "label": "D_proposed/external_XDF8_B3",
+          "status": "CONDITIONAL_NUMERICAL_POINT_COMPARISON",
+          "difference": {
+            "rz_count": 1558508425.0,
+            "rz_depth": 536444363.0,
+            "cx_count": 1159707944.0,
+            "cx_depth": 921579864.0,
+            "total_depth": 1436371911.0,
+            "circuit_size": 3375889487.0
+          },
+          "ratio": {
+            "rz_count": 1.0155435176150955,
+            "rz_depth": 1.0105423979268222,
+            "cx_count": 1.0182672073406458,
+            "cx_depth": 1.0161573757294229,
+            "total_depth": 1.0130236395523575,
+            "circuit_size": 1.017785378755317
+          },
+          "lower_RZ": "right",
+          "qualification": "external saved XDF8 spin+relative numerical pilot;same CA/model/serial policy,different DF representation and errors",
+          "actual_CA_achieved": null,
+          "guaranteed_superiority": null
+        }
+      },
+      "CA_achieved": null,
+      "rigorous_enclosure": null,
+      "PR_all_law_bound": null,
+      "population_mean_advantage": null,
+      "guaranteed_resource_superiority": false,
+      "important_scientific_review": false,
       "mandatory_stop": true
     }
   ],
