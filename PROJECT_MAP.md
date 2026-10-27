@@ -1976,3 +1976,7 @@ H4 ε=.001 S2選択を確定。現行理論Gは元入力不足で0/20、compiled
 ## 2026-10-24 H4 D1：採用SOURCE基準・保存QPY実行
 
 [新接続・人工27件・有限実行](docs/non_df_h4_d1_source_execution_20261024.md)。`h4_d1_source_control.py`／`run_h4_d1_source.py`／`test_h4_d1_source_control.py`を一組で読む。9/9完了・full4旧RZ全一致。PR保持/eventはPauli6524/3110、DF13483/5773、RZ非加法性+18/+3765。旧hashとSOURCE対応を分離し、full再生成0、旧grant/STOPと元native UNKNOWNを保持してmandatory STOP。
+
+## Pauli-JW common development entry (P2, 2026-10-28)
+
+The non-frozen CLI is `scripts/run_pauli_jw_research_pipeline.py` (plan/synthetic only). H4 Hybrid, H6 fixed-four Hybrid and H6 pure-RTE use existing kernels; H2 is locator-only. Current code and old scientific results are different versions. See [current integration scope](docs/README.md#p2-selective-integration-2026-10-28).

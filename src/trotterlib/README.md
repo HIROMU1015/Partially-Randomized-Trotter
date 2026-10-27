@@ -1175,3 +1175,7 @@ cosine1件・新3作用を完了。経験値だけを保存し、rho_upper=null�
 
 `h4_r1_sine.py`：R0数値経路・保存C-target cacheを使う固定3 sine接続。
 6作用を完了、C-target新作用・cosine再評価0。経験値のみでrho_upper=null。Arb/R2へ自動移行しない。
+
+## Pauli-JW pipeline consumer
+
+The non-frozen `trottertracks.pauli_jw` path delegates to existing kernel APIs. H6 adapter is reused unchanged; global eager initialization and all other numerical modules are preserved. Study conditions remain in adapters, real providers remain disabled. See [scope and tests](../../docs/README.md#p2-selective-integration-2026-10-28).

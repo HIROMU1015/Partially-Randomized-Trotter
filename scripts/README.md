@@ -1220,3 +1220,7 @@ H8 selected-six handover: `h8_key_compile_handover.py` binds old validated QPY a
 
 `run_h4_r1_sine.py`：3論理・最大6作用、R0 controllerを再利用する新one-shot。
 保存run01は消費済み・STOP済み。artifactの`verify_saved.py`は保存SHAとscalar恒等式だけを照合し追加科学callなし。
+
+## Pauli-JW common pipeline entry
+
+`run_pauli_jw_research_pipeline.py` adds plan/synthetic study selection; it never replaces the fixed runners. Scientific/real/resume are refused before input/output. `--output-dir` requires a NEW directory and normal legacy dependencies. See [current technical scope](../docs/README.md#p2-selective-integration-2026-10-28).

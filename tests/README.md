@@ -108,3 +108,7 @@ compile-plan生成拒否、clear時の最大16+16 cell plan、source hash、non-
 `test_pr2_matched_accuracy_m2_transfer_contract.py`では、M1-B1からの5構成固定、future seed衝突0、
 196-wrapper上限、primary予測と10%重大underestimate、4 terminal status、held-out/transfer未認可、schemaを
 検査する。held-out signalまたはcompileを実行するtestではない。
+
+## Selected P2 integration regression
+
+`test_pauli_jw_research_pipeline.py`: current run **120 PASS / 0 FAIL / 1 SKIP**. The SKIP is the real legacy writer (matplotlib unavailable). It preserves previous mock topics and adds method/PF/K/candidate mismatch stop-before-next-call, missing core/callback and binding diagnostics. No scientific suite, alias loader or sampling/build/compile was used. Old109 PASS and17 observation PASS are not new-code results.

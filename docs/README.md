@@ -1401,3 +1401,18 @@ PR1 cosine1論理・状態作用成功3／総試行3、d=4.3771e-16の経験値�
 
 [R1 sine経験的診断](non_df_h4_central_r1_sine_20261024.md)。
 PF/PR0/PR1 sine3論理・成功6／総試行6、19人工PASS、保存検証・native exit0・mandatory STOP。局所上界null。
+
+## P2 selective integration (2026-10-28)
+
+Pauli development now uses this branch's new `trottertracks.pauli_jw` composer, study adapters and explicit CLI.
+H4 Hybrid/H6 fixed-four Hybrid/H6 pure-RTE are mock connections; H2 is locator-only; PF/B0 and real providers remain unconnected.
+The only reused dependency newly added is `src/trotterlib/h6_hybrid_fairness_extension.py`, byte-identical to donor 00958ae1945c780718b2deef07d5dab1096a5cd8 (blob 0f09c36f1b191abba75e39f56746a1828f4419f8).
+The other 56 selected dependencies and old initializers/runners/scientific records remain unchanged.
+Stage method/K/PF_order (and candidate/prefix/q/r) mismatch now fails before the next callback. Missing core/callback and missing module attributes have explicit PipelineError diagnostics, preserving the dependency cause.
+Current limited regression: **120 PASS / 0 FAIL / 1 SKIP** (real writer unavailable: matplotlib missing). Old109/17 are separate historical records, not added to this count.
+Use `python scripts/run_pauli_jw_research_pipeline.py --study h4-hybrid|h6-hybrid|h6-rte|h2-index`; synthetic is explicit. Scientific/real/resume are disabled before inputs/output.
+Optional output needs legacy dependencies and a NEW directory; dependency failure creates none. Artificial-writer collision tests do not verify the real writer.
+No science, numerical equivalence, sampling, build/compile, N/G or saved-result reanalysis was performed.
+Fixed P2 history: https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/04f4cd9cdc8e348a9f0a182ead9cd07f1ee69696/docs/integration/p2_pauli_jw_pipeline_20261027
+Adoption plan: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8e41bb0063d1061645fec323210c104525e20992/inventory/integration/p2_adoption_review_20261028/SELECTIVE_INTEGRATION_PLAN.md
+Original summary b6c899698645a4ccdaa65c0c5e8d706fd9d1cc2b and H6 handoff 00958ae1945c780718b2deef07d5dab1096a5cd8 retain their scientific scope. New code did not generate those results.
