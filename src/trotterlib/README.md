@@ -146,3 +146,11 @@ DF部分ランダム化研究と混同しない。
 - `eig_error.py`、`qpe_beta.py`：固有値誤差・位相推定の旧来支援
 
 新しい機能は、runnerへ直接大きな処理を書くのではなく、ここへテスト可能な関数として置く。
+
+## P1 consumer boundary
+
+The [DF/H4 study composer](../trottertracks/resource_applicability/README.md) reuses
+existing DF/S2/RTE/circuit/accounting/compiled APIs with explicit study adapters.
+No H4 condition or reverse dependency is added to these core modules. Package
+exports are loaded lazily; original names/targets/order remain available. P1
+technical tests do not establish scientific or numerical equivalence.

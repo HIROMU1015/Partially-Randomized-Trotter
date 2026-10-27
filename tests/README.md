@@ -39,3 +39,11 @@ mean、$\mathcal B^2$ shot式、q=1/8 controlled wrapperのRe/Im規約、stage g
 `test_pr2_new_series_validation.py`では、固定amendment/input hash、development二回load、held-out非開封、
 raw/internal tamper、rank 3/6/9のpartition・sampling sign・確率和・再構成、counter、fingerprint、
 非上書き、V4非承認guardを検査する。
+
+## P1 non-scientific integration slice
+
+`test_df_research_pipeline.py` uses artificial H4 tokens and mock existing APIs;
+no chemistry, operator evaluation, sampling, build or compile. The exact selected
+legacy pure/mock tests and exclusions are in
+[TEST_RESULTS](../docs/integration/p1_df_pipeline_h4_20261027/TEST_RESULTS.md).
+Do not run the full scientific suite under P1 permission.

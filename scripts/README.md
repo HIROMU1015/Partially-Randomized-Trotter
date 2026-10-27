@@ -156,3 +156,10 @@ artifacts/<validation_name>/
 
 結果を研究上の証拠へ加える場合は、`VALIDATION_STATUS.md`、研究概要、研究ノート、
 `artifacts/validation_manifest.json`も更新する。
+
+## P1 DF/H4 pipeline (plan/mock only)
+
+`run_df_research_pipeline.py` is a new explicit plan/synthetic entry, not a fixed
+scientific runner replacement. Default: plan; `--mode synthetic`: artificial
+end-to-end wiring; `--mode scientific`: refused. Optional `--output-dir` requires a
+new directory. See [P1 README](../src/trottertracks/resource_applicability/README.md).

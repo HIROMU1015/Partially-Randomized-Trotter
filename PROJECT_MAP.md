@@ -401,3 +401,12 @@ resource designを条件付きC3として分離する。新規性とT1--T4の証
 
 新しい検証を追加するときは、可能な限り同じ語幹で
 `src/trotterlib/`、`scripts/`、`tests/`、`docs/`、`artifacts/`を対応させる。
+
+## P1：DF/H4の非科学的パイプライン入口（2026-10-27）
+
+新しい非凍結入口は [P1 README](src/trottertracks/resource_applicability/README.md)。
+composer/H4 adapter/明示CLIと人工・mockテストを接続した。
+`python scripts/run_df_research_pipeline.py` はplanのみ、`--mode synthetic` はmock配線確認。
+実科学モードは拒否する。旧SOURCE・runner・CEM・validation manifestは変更せず、
+実分子/数値同値性/compiled資源/RPE性能を検証した結果ではない。
+[実装・検証範囲](docs/integration/p1_df_pipeline_h4_20261027/IMPLEMENTATION_REPORT.md)を参照。

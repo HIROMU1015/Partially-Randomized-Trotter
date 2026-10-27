@@ -128,3 +128,14 @@ amendment v4、authorization manifestとともに追跡できる。
 個別文書に数値があっても、それだけで現在利用可能とは判断しない。
 再現可能性、失効、成果物の有無は[`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)と
 [`../artifacts/validation_manifest.json`](../artifacts/validation_manifest.json)で確認する。
+
+## P1 DF/H4 pipeline technical integration
+
+- [Implementation](integration/p1_df_pipeline_h4_20261027/IMPLEMENTATION_REPORT.md)
+- [API boundaries](integration/p1_df_pipeline_h4_20261027/API_COMPATIBILITY.md)
+- [Technical tests](integration/p1_df_pipeline_h4_20261027/TEST_RESULTS.md)
+- [SOURCE/result preservation](integration/p1_df_pipeline_h4_20261027/SOURCE_AND_RESULT_PRESERVATION.md)
+- [Next-phase readiness](integration/p1_df_pipeline_h4_20261027/NEXT_PHASE_READINESS.md)
+
+These are technical implementation records, not new scientific results or a change
+to current study decisions/CEM/validation manifest.
