@@ -637,3 +637,8 @@ Core科学load・科学bits・実512・実permission発行消費0、run_ready=fa
 
 
 > 2026-10-20 Track B：限定Pilotを明示採択し、実G7/F3の6phase/48pair/16896件を新scopeで一回実行。accepted16280/ZERO_R324/coin292、coverage・保存値照合PASS、CPU1258.033384573秒/wall792.156549420秒（parent+reaped child hierarchy、Git helper含む）。claim spent/retry0/resumeなし/mandatory STOP。一般保証・方式順位・Full-Nは未認定。 [SOURCE・結果・Q1–Q10](../../docs/research/track_b_g6_w2c_b3_limited_pilot_16896_authorized_20261020/handoff.md)。SOURCE `src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/`、runner `authorized_runner`、tests `test_g6_w2c_b3_limited_pilot_live_v1.py`、原本 `artifacts/track_b_g6_w2c_b3_limited_pilot_16896/`。次担当：ユーザー・GPT。
+
+
+## P4 Track B development entry (2026-10-28)
+
+See `src/trottertracks/algorithm_codesign/research_entry.py`, `scripts/tracks/algorithm_codesign/research_entry.py`, `tests/tracks/algorithm_codesign/test_research_entry.py`, and `docs/research/track_b_research_entry_20261028.md`. G6, M1-S gamma and M1-S pi/3 keep independent mathematical and execution conditions. Reference/descriptor/mock only.

@@ -792,3 +792,8 @@ Core科学load・科学bits・実512・実permission発行消費0、run_ready=fa
 ## 2026-10-20 Track B方法ノートv1.1：既存成果の原稿化
 
 [本文v1.1](manuscripts/track_b_return_aggregation_native_resource_note_v1_1.md)／[変更・証拠対応・未確立事項・handoff](research/track_b_return_aggregation_method_note_v1_1_20261020/README.md)。G6を中心にF1/F2/F3・G7〜G10・D1〜D3・W2b/W2c・限定Pilotの既存証拠を接続。v1.0/科学SOURCE/原結果/既存STOPは保持、新科学計算・再解析・証明・科学レビューなし。独立新規性・一般資源優位・投稿GOは未認定。次の科学判断はユーザー・GPT、公開照合後mandatory STOP。
+
+
+## P4 Track B development entry (2026-10-28)
+
+See `src/trottertracks/algorithm_codesign/research_entry.py`, `scripts/tracks/algorithm_codesign/research_entry.py`, `tests/tracks/algorithm_codesign/test_research_entry.py`, and `docs/research/track_b_research_entry_20261028.md`. G6, M1-S gamma and M1-S pi/3 keep independent mathematical and execution conditions. Reference/descriptor/mock only.

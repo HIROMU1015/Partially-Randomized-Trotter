@@ -127,3 +127,8 @@ source固定前の最終確認：profiler context違反のtechnical STOPを追�
 ## E-r3 identity-only observer修正 v2（2026-10-12）
 
 [限定修正・技術検証](../docs/tracks/algorithm_codesign/e_r3_identity_observer_repair_preparation_20261012.md)：observer設置／復元失敗をtechnical STOPへ伝播。77 focused PASS、contract全bytes・expected・capsは不変。新sourceとv2 namespaceを固定し、READY_FOR_SEPARATE_ONE_SHOT_AUTHORIZATION。旧S/科学結果/marker/authorization/STOP保持、登録診断/A作成0。追加GPT詳細研究レビューは不要、別明示one-shot承認までmandatory STOP。
+
+
+## P4 Track B development entry (2026-10-28)
+
+See `src/trottertracks/algorithm_codesign/research_entry.py`, `scripts/tracks/algorithm_codesign/research_entry.py`, `tests/tracks/algorithm_codesign/test_research_entry.py`, and `docs/research/track_b_research_entry_20261028.md`. G6, M1-S gamma and M1-S pi/3 keep independent mathematical and execution conditions. Reference/descriptor/mock only.
