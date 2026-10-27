@@ -189,3 +189,8 @@ DF部分ランダム化研究と混同しない。
 ## B2-D Stage 1承認管理撤去・実行簡素化（2026-10-25）
 
 最新の[科学実行契約・単一command・技術報告](../../docs/research/b2d_stage1_simple_execution_20261025.md)。新科学SOURCE `54008c697e686a42ec48941d25219d523bafd454`。入口は `scripts/run_b2d_stage1.py --execute --source-commit … --output …`。承認packet／grant／receipt・発行／準備scriptを撤去し、科学SOURCE・input identity・scope・correctness・fresh output・失敗保存・STOPを維持した。実装 `src/trottertracks/b2d_evaluator/`、人工test `tests/management/test_b2d_simple_execution.py` と既存5ファイル、計70件PASS。科学計算は未実行。予定artifact `artifacts/research_b_b2d_stage1/20261025/simple-once/` は未生成。旧方式は過去の未採択提案として保全し、今後のB2-D実行要件にはしない。
+
+
+## P3 B2-D development entry (2026-10-28)
+
+The independent B2-D development entry is `src/trottertracks/b2d_evaluator/research_entry.py`, with `scripts/run_b2d_research_entry.py`, `tests/tracks/test_b2d_research_entry.py`, and `docs/research/b2d_research_entry_20261028.md`. Plan/mock only; final-pause and old scientific stages are preserved.

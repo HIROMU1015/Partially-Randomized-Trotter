@@ -24,3 +24,8 @@
 Hadamard 1 shot全体や最終総コストの検証ではない。
 
 `management/test_pr_dictionary_f2_attribution.py` は、保存F2寄与分析の分類保存則・共有metadata・joint origin・欠落／重複拒否・非零の記述分解を人工recordだけで検査する。新しい科学回路は生成しない。[結果とSOURCE対応](../docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)。
+
+
+## P3 B2-D development entry (2026-10-28)
+
+The independent B2-D development entry is `src/trottertracks/b2d_evaluator/research_entry.py`, with `scripts/run_b2d_research_entry.py`, `tests/tracks/test_b2d_research_entry.py`, and `docs/research/b2d_research_entry_20261028.md`. Plan/mock only; final-pause and old scientific stages are preserved.

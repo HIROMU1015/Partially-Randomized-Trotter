@@ -240,3 +240,8 @@ PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_executio
 ## B2-D Stage 1実行結果と保存値集計（2026-10-25）
 
 [結果・2attemptの技術履歴・STOP](../docs/research/b2d_stage1_execution_20261025.md)。既存 `run_b2d_stage1.py` の科学実行は完了し、追加起動しない。`artifacts/research_b_b2d_stage1/20261025/summarize_saved.py --output-dir <fresh-dir>` は保存JSONだけから36行CSVと要約を作るstdlib補助で、新しいoperator／signal／科学backendを実行しない。
+
+
+## P3 B2-D development entry (2026-10-28)
+
+The independent B2-D development entry is `src/trottertracks/b2d_evaluator/research_entry.py`, with `scripts/run_b2d_research_entry.py`, `tests/tracks/test_b2d_research_entry.py`, and `docs/research/b2d_research_entry_20261028.md`. Plan/mock only; final-pause and old scientific stages are preserved.

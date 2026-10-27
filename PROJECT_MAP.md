@@ -282,3 +282,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## B2-D Stage 1限定科学検証の完了（2026-10-25）
 
 [実行結果・技術復旧・比較表・STOP](docs/research/b2d_stage1_execution_20261025.md)。科学SOURCE758a05ed、入力／A4数学／published列gate全PASS、36行・941 dispatch・448 key完了。A4のA0／D-S2からのfull signal改善は観測したが、A3との差は丸め誤差水準でINCONCLUSIVE。原本2attempt・全比較・環境・CSV・保存値集計は `artifacts/research_b_b2d_stage1/20261025/`。ローカル結果でCI／外部再現ではない。追加科学計算・Stage2へ進まずmandatory STOP。
+
+
+## P3 B2-D development entry (2026-10-28)
+
+The independent B2-D development entry is `src/trottertracks/b2d_evaluator/research_entry.py`, with `scripts/run_b2d_research_entry.py`, `tests/tracks/test_b2d_research_entry.py`, and `docs/research/b2d_research_entry_20261028.md`. Plan/mock only; final-pause and old scientific stages are preserved.
