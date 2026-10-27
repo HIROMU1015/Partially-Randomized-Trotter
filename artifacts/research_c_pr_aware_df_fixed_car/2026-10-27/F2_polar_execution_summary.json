@@ -1,0 +1,104 @@
+{
+  "status": "F2_STOP_KAPPA_EXACT_HERMITICITY_NOT_MET",
+  "scope": "C_PR_AWARE_DF_FIXED_F2_POLAR_V1",
+  "target": "CAR_polar_of_exact_saved_U_exact_J_kappa_phase_v1",
+  "science_SOURCE_commit": "45ae98943492e921c22a0f527d5587cd1e06462f",
+  "execution_commit": "b93a621fb3e154d1e9556fcabfd284976f6561da",
+  "source_manifest_sha256": "9d077123674137b23a9d050f013eb5984f2d57f3ea2e29c4d23f02b16225ca34",
+  "contract_sha256": "c310f95ad6f25500284c46edbd82fb31dad1a1b82c7cd5c4980a8c9991716da3",
+  "maximum_logical_units": 7,
+  "attempted_units": 4,
+  "completed_units": 3,
+  "failed_units": 1,
+  "not_run_units": 3,
+  "call_counts": {
+    "input_arrays": 1,
+    "arm_replay": 1,
+    "trajectory_load": 1,
+    "CAR_reference": 1
+  },
+  "calls": [
+    {
+      "call": "input_arrays",
+      "maximum": 1,
+      "attempted": 1,
+      "state": "COMPLETE"
+    },
+    {
+      "call": "arm_replay",
+      "maximum": 1,
+      "attempted": 1,
+      "state": "COMPLETE"
+    },
+    {
+      "call": "trajectory_load",
+      "maximum": 1,
+      "attempted": 1,
+      "state": "COMPLETE"
+    },
+    {
+      "call": "CAR_reference",
+      "maximum": 1,
+      "attempted": 1,
+      "state": "FAIL"
+    },
+    {
+      "call": "qpy_decode",
+      "maximum": 1,
+      "attempted": 0,
+      "state": "NOT_RUN"
+    },
+    {
+      "call": "raw_CAR_certificate",
+      "maximum": 1,
+      "attempted": 0,
+      "state": "NOT_RUN"
+    },
+    {
+      "call": "triangle_composition",
+      "maximum": 1,
+      "attempted": 0,
+      "state": "NOT_RUN"
+    }
+  ],
+  "preflight": "PASS",
+  "necessary_CAR_input_Hermiticity": "FAIL",
+  "raw_CAR_gate": "NOT_RUN",
+  "triangle_gate": "NOT_RUN",
+  "raw_CAR_correctness_fail_measured": false,
+  "literal_CAR_upper": null,
+  "polar_bridge_upper": null,
+  "raw_ideal_CAR_upper": null,
+  "compiled_ideal_CAR_upper": null,
+  "U_nonunitarity_effect": null,
+  "kappa_nonhermiticity_size": null,
+  "kappa_failure_cause": "NOT_DIAGNOSED_NO_ADDITIONAL_NUMERICAL_ANALYSIS",
+  "failure": {
+    "error": "EXACT_HERMITIAN_INPUT_REQUIRED",
+    "first_failure": {
+      "kind": "CAR_reference",
+      "label": "baseline",
+      "error_type": "ValueError",
+      "error": "EXACT_HERMITIAN_INPUT_REQUIRED",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py\", line 159, in <lambda>\n    return call('CAR_reference',c['arm'],lambda:car.build_reference(arm,\n                                                ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py\", line 187, in build_reference\n    _hermitian_input(kappa)\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py\", line 98, in _hermitian_input\n    raise ValueError('EXACT_HERMITIAN_INPUT_REQUIRED')\nValueError: EXACT_HERMITIAN_INPUT_REQUIRED\n"
+    }
+  },
+  "resources": {
+    "wall_seconds": 1.0595824290066957,
+    "peak_RSS_KiB": 370624
+  },
+  "new_fit": 0,
+  "optimizer": 0,
+  "new_sampling": 0,
+  "build_compile": 0,
+  "PF_RTE_recalculation": 0,
+  "C1_reanalysis": 0,
+  "shots": null,
+  "total_resources": null,
+  "retry": 0,
+  "resume": 0,
+  "F3_started": false,
+  "whole_law_bound": null,
+  "CA_achieved": null,
+  "mandatory_stop": true
+}

@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/scripts/run_research_c_pr_aware_df_fixed_F2_polar.py", line 17, in <module>
+    print(json.dumps(run(ROOT, a.contract) if a.execute else preflight(ROOT, a.contract)))
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_f2.py", line 90, in run
+    return execution.run(root, path)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py", line 191, in run
+    return execute_CAR(root,c,out,call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py", line 164, in execute_CAR
+    reference=reference_loader(root,c,call);io.save(Path(out)/'CAR_reference.json',reference)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py", line 159, in prepare_reference
+    return call('CAR_reference',c['arm'],lambda:car.build_reference(arm,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py", line 159, in <lambda>
+    return call('CAR_reference',c['arm'],lambda:car.build_reference(arm,
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py", line 187, in build_reference
+    _hermitian_input(kappa)
+  File "/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py", line 98, in _hermitian_input
+    raise ValueError('EXACT_HERMITIAN_INPUT_REQUIRED')
+ValueError: EXACT_HERMITIAN_INPUT_REQUIRED
