@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：basis-aware native surrogateの技術設計（2026-10-29）
+
+[3案・実装対応・2cohort schema・未承認148-call案](research/research_c_df_basis_native_cost_surrogate_design_20261029.md)。切替/overlap/複合run-atomを比較し、複合特徴ベクトルを推奨。新12＋回帰31＝43人工PASS。保存H4の新特徴量・相関・NPZ/QPY数値decode・fit/sampling/build/compileは0。η/scale/新目的は未採択。2静的DFを64標本扱いせず、次は保存各32件の独立cohort内記述検証だけを別許可で実行。旧原本保全、公開照合後mandatory STOP。
+
 ## 研究C：tail-P4 PRの449-call完了・総資源改善なし（2026-10-28）
 
 [PF/RTE・shots・損益分岐・native・総資源](research/research_c_df_structural_pr_performance_20261028.md)。保存直鎖H4・1Å/STO-3G、tail-P4 CDF8/LD2、partial S2 δ.1/s1/r128/K0/m0..12、own-DF oracle/状態準備除外。SOURCE4ac0e5f96無変更、449/449 COMPLETE、correctness FAIL/retry/resume0。全13round適格、主仮定shots16,568、fixed32/full512/adjoint/X/Y PASS。Kernel平均RZ15,047.46875、M4-r128比1.068983。条件付き総RZ275,422,425,481.5/旧234,117,788,135=1.176427。疎化による価格/総資源改善は今回の点比較では観測なし。全law/actual CA/母平均優位は未資格。旧1054件保全、公開照合後mandatory STOP。
