@@ -1,0 +1,275 @@
+FFFF............                                                         [100%]
+=================================== FAILURES ===================================
+________ test_artificial_full256_CAR_general_K_scalar_spin_and_sector36 ________
+
+    def test_artificial_full256_CAR_general_K_scalar_spin_and_sector36():
+        from trottertracks import c1_stage1 as s
+        from trottertracks.c1_general_k_adapter import from_ffsim_number_arrays
+        p,a=synthetic();model=from_ffsim_number_arrays(one_body_tensor=s.corrected_kappa(p['h'],p['g']),diag_coulomb_mats=a['J'],orbital_rotations=a['U'],constant=.31,z_representation=False,frame_ids=[f'F{i}' for i in range(8)],group_ids=[f'F{i}' for i in range(8)],source_identity='ARTIFICIAL',input_identity='ARTIFICIAL',one_body_role='ffsim_corrected_kappa',enable_general_k=True)
+        with threadpool_limits(limits=1):
+            car=s.car_bilinears(8);raw=s.raw_base(s.corrected_kappa(p['h'],p['g']),.31,car);other=s.candidate_base(model)
+            for J,U,frame in zip(a['J'],a['U'],model.frames,strict=True):
+                raw+=s.raw_frame(J,U,car)[0];other+=s.candidate_frame(frame)[0]
+            np.testing.assert_allclose(raw,other,atol=1e-12,rtol=0)
+            assert raw[0,0]==pytest.approx(.31) # scalar retained exactly once incl vacuum phase
+            ctx=e.old.molecule.SectorCAR(4);G=ctx.generators(**p,**a)
+            e.old.molecule.representation_gate(ctx,p,a['J'],a['U'],G)
+>           np.testing.assert_allclose(sum(G),raw[np.ix_(ctx.sector.basis_indices,ctx.sector.basis_indices)],atol=1e-12,rtol=0)
+
+tests/management/test_research_c_df_structural_execution.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x78fcfe8da160>, array([[-0.02934737+0.j,  0.        +0.j,  0.        +... [ 0.        +0.j,  0.        +0.j,  0.        +0.j, ...,
+         0.        +0.j,  0.        +0.j, -0.02934737+0.j]]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=1e-12', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=1e-12
+E           
+E           Mismatched elements: 28 / 1296 (2.16%)
+E           Max absolute difference: 2.04430472
+E           Max relative difference: 13.34121171
+E            x: array([[-0.029347+0.j,  0.      +0.j,  0.      +0.j, ...,  0.      +0.j,
+E                    0.      +0.j,  0.      +0.j],
+E                  [ 0.      +0.j, -0.517849+0.j,  0.      +0.j, ...,  0.      +0.j,...
+E            y: array([[ 0.307207+0.j,  0.      +0.j,  0.      +0.j, ...,  0.      +0.j,
+E                    0.      +0.j,  0.      +0.j],
+E                  [ 0.      +0.j,  0.67258 +0.j,  0.      +0.j, ...,  0.      +0.j,...
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+____________ test_mock_stage_DF_end_to_end_21_calls_and_STOP[None] _____________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-599/test_mock_stage_DF_end_to_end_0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78fc433ae310>
+fault = None
+
+    @pytest.mark.parametrize('fault',[None,'budget','optimizer','representation'])
+    def test_mock_stage_DF_end_to_end_21_calls_and_STOP(tmp_path,monkeypatch,fault):
+        p,a=synthetic();np.savez(tmp_path/'input.npz',**p);e.io.save(tmp_path/'controls.json',dict(status='STAGE_A_PROXY_AND_DF_PASS'))
+        e.io.save(tmp_path/'source.json',dict(files={}))
+        c=dict(input='input.npz',controls='controls.json',entry='entry.py',source_manifest='source.json')
+        monkeypatch.setattr(e,'preflight',lambda *args,**kw:c);monkeypatch.setattr(e.subprocess,'check_output',lambda *args,**kw:'ARTIFICIAL_SOURCE\n')
+        def launch(args,**kwargs):
+            role=args[args.index('--worker')+1];out=tmp_path/e.FRESH/role;out.mkdir();limits=e.PREPARE if role=='prepare' else e.FIT
+            name='initial.npz' if role=='prepare' else 'final.npz';data={k:v.copy() for k,v in a.items()}
+            if role=='fit' and fault=='budget':data['J']*=100
+            np.savez(out/name,**data)
+            e.io.save(out/'STOP.json',dict(failed=False,scientific_units=sum(limits.values()),call_counts=limits,retry=0,resume=0,mandatory_stop=True))
+            if role=='fit':
+                e.io.save(out/'optimizer.json',dict(success=fault!='optimizer'));e.io.save(out/'initial_diagnostic.json',dict());e.io.save(out/'final_diagnostic.json',dict())
+        monkeypatch.setattr(e.subprocess,'run',launch)
+        if fault=='representation':
+            def fail(*args,**kwargs):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(e.old.molecule,'representation_gate',fail)
+        with threadpool_limits(limits=1):
+            if fault=='representation':
+                with pytest.raises(ValueError,match='REPRESENTATION'):e.run(tmp_path,tmp_path/'c.json','PY')
+            else:
+>               r=e.run(tmp_path,tmp_path/'c.json','PY');assert r['PF_RTE_shots_native']==0
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_df_structural_execution.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_df_structural_execution.py:109: in run
+    io.save(out/'result.json',result);return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:29: in save
+    json.dump(payload,f,ensure_ascii=False,allow_nan=False,indent=2)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/__init__.py:179: in dump
+    for chunk in iterable:
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:432: in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:406: in _iterencode_dict
+    yield from chunks
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:439: in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x78fc437b3290>, o = True
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return JSONEncoder.default(self, o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bool_ is not JSON serializable
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:180: TypeError
+___________ test_mock_stage_DF_end_to_end_21_calls_and_STOP[budget] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-599/test_mock_stage_DF_end_to_end_1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78fc3c9f4d10>
+fault = 'budget'
+
+    @pytest.mark.parametrize('fault',[None,'budget','optimizer','representation'])
+    def test_mock_stage_DF_end_to_end_21_calls_and_STOP(tmp_path,monkeypatch,fault):
+        p,a=synthetic();np.savez(tmp_path/'input.npz',**p);e.io.save(tmp_path/'controls.json',dict(status='STAGE_A_PROXY_AND_DF_PASS'))
+        e.io.save(tmp_path/'source.json',dict(files={}))
+        c=dict(input='input.npz',controls='controls.json',entry='entry.py',source_manifest='source.json')
+        monkeypatch.setattr(e,'preflight',lambda *args,**kw:c);monkeypatch.setattr(e.subprocess,'check_output',lambda *args,**kw:'ARTIFICIAL_SOURCE\n')
+        def launch(args,**kwargs):
+            role=args[args.index('--worker')+1];out=tmp_path/e.FRESH/role;out.mkdir();limits=e.PREPARE if role=='prepare' else e.FIT
+            name='initial.npz' if role=='prepare' else 'final.npz';data={k:v.copy() for k,v in a.items()}
+            if role=='fit' and fault=='budget':data['J']*=100
+            np.savez(out/name,**data)
+            e.io.save(out/'STOP.json',dict(failed=False,scientific_units=sum(limits.values()),call_counts=limits,retry=0,resume=0,mandatory_stop=True))
+            if role=='fit':
+                e.io.save(out/'optimizer.json',dict(success=fault!='optimizer'));e.io.save(out/'initial_diagnostic.json',dict());e.io.save(out/'final_diagnostic.json',dict())
+        monkeypatch.setattr(e.subprocess,'run',launch)
+        if fault=='representation':
+            def fail(*args,**kwargs):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(e.old.molecule,'representation_gate',fail)
+        with threadpool_limits(limits=1):
+            if fault=='representation':
+                with pytest.raises(ValueError,match='REPRESENTATION'):e.run(tmp_path,tmp_path/'c.json','PY')
+            else:
+>               r=e.run(tmp_path,tmp_path/'c.json','PY');assert r['PF_RTE_shots_native']==0
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_df_structural_execution.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_df_structural_execution.py:109: in run
+    io.save(out/'result.json',result);return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:29: in save
+    json.dump(payload,f,ensure_ascii=False,allow_nan=False,indent=2)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/__init__.py:179: in dump
+    for chunk in iterable:
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:432: in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:406: in _iterencode_dict
+    yield from chunks
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:439: in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x78fc437b25d0>, o = False
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return JSONEncoder.default(self, o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bool_ is not JSON serializable
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:180: TypeError
+__________ test_mock_stage_DF_end_to_end_21_calls_and_STOP[optimizer] __________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-599/test_mock_stage_DF_end_to_end_2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x78fc3c917550>
+fault = 'optimizer'
+
+    @pytest.mark.parametrize('fault',[None,'budget','optimizer','representation'])
+    def test_mock_stage_DF_end_to_end_21_calls_and_STOP(tmp_path,monkeypatch,fault):
+        p,a=synthetic();np.savez(tmp_path/'input.npz',**p);e.io.save(tmp_path/'controls.json',dict(status='STAGE_A_PROXY_AND_DF_PASS'))
+        e.io.save(tmp_path/'source.json',dict(files={}))
+        c=dict(input='input.npz',controls='controls.json',entry='entry.py',source_manifest='source.json')
+        monkeypatch.setattr(e,'preflight',lambda *args,**kw:c);monkeypatch.setattr(e.subprocess,'check_output',lambda *args,**kw:'ARTIFICIAL_SOURCE\n')
+        def launch(args,**kwargs):
+            role=args[args.index('--worker')+1];out=tmp_path/e.FRESH/role;out.mkdir();limits=e.PREPARE if role=='prepare' else e.FIT
+            name='initial.npz' if role=='prepare' else 'final.npz';data={k:v.copy() for k,v in a.items()}
+            if role=='fit' and fault=='budget':data['J']*=100
+            np.savez(out/name,**data)
+            e.io.save(out/'STOP.json',dict(failed=False,scientific_units=sum(limits.values()),call_counts=limits,retry=0,resume=0,mandatory_stop=True))
+            if role=='fit':
+                e.io.save(out/'optimizer.json',dict(success=fault!='optimizer'));e.io.save(out/'initial_diagnostic.json',dict());e.io.save(out/'final_diagnostic.json',dict())
+        monkeypatch.setattr(e.subprocess,'run',launch)
+        if fault=='representation':
+            def fail(*args,**kwargs):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(e.old.molecule,'representation_gate',fail)
+        with threadpool_limits(limits=1):
+            if fault=='representation':
+                with pytest.raises(ValueError,match='REPRESENTATION'):e.run(tmp_path,tmp_path/'c.json','PY')
+            else:
+>               r=e.run(tmp_path,tmp_path/'c.json','PY');assert r['PF_RTE_shots_native']==0
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_df_structural_execution.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_df_structural_execution.py:109: in run
+    io.save(out/'result.json',result);return result
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:29: in save
+    json.dump(payload,f,ensure_ascii=False,allow_nan=False,indent=2)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/__init__.py:179: in dump
+    for chunk in iterable:
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:432: in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:406: in _iterencode_dict
+    yield from chunks
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:439: in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <json.encoder.JSONEncoder object at 0x78fc4379fad0>, o = True
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return JSONEncoder.default(self, o)
+    
+        """
+>       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type bool_ is not JSON serializable
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:180: TypeError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_df_structural_execution.py::test_artificial_full256_CAR_general_K_scalar_spin_and_sector36
+FAILED tests/management/test_research_c_df_structural_execution.py::test_mock_stage_DF_end_to_end_21_calls_and_STOP[None]
+FAILED tests/management/test_research_c_df_structural_execution.py::test_mock_stage_DF_end_to_end_21_calls_and_STOP[budget]
+FAILED tests/management/test_research_c_df_structural_execution.py::test_mock_stage_DF_end_to_end_21_calls_and_STOP[optimizer]
+4 failed, 12 passed in 5.35s
