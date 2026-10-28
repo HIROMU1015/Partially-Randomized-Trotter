@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：basis-key修正後148-call完了・複合surrogate未資格（2026-10-29）
+
+[結果・モデル比較・旧STOP保全](docs/research/research_c_df_basis_surrogate_repair_execution_20261029.md)。保存直鎖H4・1Å/STO-3G、CDF8/LD2、partial S2 δ=h=.1/s1/r128/K0、M4 Proposed/tail-P4各32件。既存spin_liftによる厳密key修正、新7＋回帰43＝50 PASS、SOURCE030128649…を固定しfresh run02で148/148 COMPLETE、correctness FAIL0。RZ MAEはM4でA221.41<C227.80、P4でB261.54<C273.58のため両cohortともSURROGATE_NOT_QUALIFIED。全192 fold full rank・負予測0。静的DFは2個、因果/新DF汎化/η採択は未資格。新fit/sampling/build/compile0、旧SOURCE99/run01/保護1570件不変。技術relaunch1、run内retry/resume0、公開照合後mandatory STOP。以下の未実施/旧STOP表記は履歴。
+
 ## 研究C：basis-aware saved64・3-callで技術STOP（2026-10-29）
 
 [部分証拠・原因候補・残る修正](docs/research/research_c_df_basis_surrogate_execution_20261029.md)。保存直鎖H4・1Å/STO-3G、CDF8/LD2、PR s1/r128/K0の2候補各32件を対象に固定SOURCEb1985ff01で開始。3 attempts=2 COMPLETE+1 FAIL、M4_Proposed/static_featuresのEXACT_SAVED_BASIS_KEYでSTOP。Trajectory/QPY/model未実施、性能未判定。既存spin_liftと新np.kron経路のsigned-zero repr差を人工2×2だけで再現。SOURCE/契約変更・retry/resume0、旧1458件保全、公開照合後mandatory STOP。

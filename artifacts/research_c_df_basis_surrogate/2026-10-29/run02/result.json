@@ -1,0 +1,3124 @@
+{
+  "status": "SAVED64_DESCRIPTOR_STUDY_COMPLETE",
+  "qualification": {
+    "status": "SURROGATE_NOT_QUALIFIED",
+    "primary_checks": {
+      "M4_Proposed": false,
+      "tail_P4": false
+    },
+    "new_DF_fit_GO": false,
+    "optimizer_objective_adopted": false,
+    "reason": "two DF clusters cannot validate static-U prediction or causal improvement"
+  },
+  "cohorts": {
+    "M4_Proposed": {
+      "rz_count": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                13813.250000000004
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                14239.208333333336
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                14349.750000000005
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                13903.541666666668
+              ]
+            }
+          ],
+          "MAE": 1248.5546875,
+          "RMSE": 1539.0268928481153,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4183.838077910962,
+                177.77375856164386
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4400.612482084693,
+                172.7332117263842
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4741.967732633582,
+                167.69947230312292
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4119.697799170715,
+                178.02293617884962
+              ]
+            }
+          ],
+          "MAE": 221.40729179109445,
+          "RMSE": 274.7401206301572,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9844352452047648,
+              "Spearman": 0.9851407556564136
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4651.597772053576,
+                81.42423438287406
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4958.900667737748,
+                78.15710665129444
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                5189.286358352167,
+                76.53450024505567
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4680.371122158689,
+                80.35183428494081
+              ]
+            }
+          ],
+          "MAE": 305.6084798228006,
+          "RMSE": 377.78584951950273,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9682408997930961,
+              "Spearman": 0.966642228739003
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3657.7806117014693,
+                169.3594393698334,
+                14.798570702925048,
+                -62.099060724938134
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                4138.14584413285,
+                169.72605068821693,
+                6.099678395260042,
+                -15.201182479547654
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3553.460755673409,
+                164.4109991684298,
+                17.743602500364318,
+                -14.193158486410434
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2870.923075888185,
+                171.35646837031828,
+                20.80425430724145,
+                -10.459020449245418
+              ]
+            }
+          ],
+          "MAE": 227.79802025920202,
+          "RMSE": 273.1523973334023,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9844352452047648,
+              "Spearman": 0.9851407556564136
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.4512152970645865,
+              "Spearman": 0.49779603338832357
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.25106999600505775,
+              "Spearman": -0.24356464796092023
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "rz_depth": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4268.000000000001
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4392.916666666669
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4410.166666666668
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4298.041666666669
+              ]
+            }
+          ],
+          "MAE": 336.7786458333333,
+          "RMSE": 408.23602209945096,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1733.180864726029,
+                46.79666095890412
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1758.8397654723103,
+                46.24568078175899
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1759.3363130424739,
+                46.269038899622245
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1708.8423463913928,
+                47.11204221880711
+              ]
+            }
+          ],
+          "MAE": 23.757010737614024,
+          "RMSE": 29.816195051572723,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9972147914830608,
+              "Spearman": 0.99651482024686
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1862.7109553685252,
+                21.377019565447068
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1901.1473379718036,
+                20.98523973458487
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1883.1696787375156,
+                21.112736118794114
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1865.2907952966384,
+                21.194012832091445
+              ]
+            }
+          ],
+          "MAE": 61.06704059510359,
+          "RMSE": 77.06642711975957,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9799778023876736,
+              "Spearman": 0.9805718475073312
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1704.7842745055825,
+                46.14337986066114,
+                1.0533067841114274,
+                -6.1424862261962785
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1744.556629781623,
+                45.19979428429173,
+                1.334816561214545,
+                -9.49161402276499
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1673.4089915630416,
+                45.91555132241534,
+                1.5774678047601824,
+                -6.3213885999048
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1617.0543263182553,
+                45.98834995740745,
+                2.2263285418549827,
+                -6.323284082223171
+              ]
+            }
+          ],
+          "MAE": 20.931906013232506,
+          "RMSE": 26.763745639651773,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9972147914830608,
+              "Spearman": 0.99651482024686
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.4223427979245757,
+              "Spearman": 0.45035186027632235
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.25717269952322624,
+              "Spearman": -0.2526750813579317
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "cx_count": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5500.666666666669
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5627.91666666667
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5663.083333333336
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5526.083333333334
+              ]
+            }
+          ],
+          "MAE": 382.9895833333334,
+          "RMSE": 473.6799548775292,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2514.961044520551,
+                55.12071917808217
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2587.3554136807807,
+                53.38220195439743
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2702.4494362582514,
+                51.676518930765056
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2500.4921854611907,
+                55.052454548090495
+              ]
+            }
+          ],
+          "MAE": 65.95830705730114,
+          "RMSE": 83.71294713190382,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9856684982949518,
+              "Spearman": 0.9864249242392059
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2653.728013693845,
+                25.30218287987588
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2757.903982369847,
+                24.170738249199943
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2837.730892304217,
+                23.60545770927962
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2674.408872586042,
+                24.84365572541712
+              ]
+            }
+          ],
+          "MAE": 94.76232697855897,
+          "RMSE": 114.81305689181173,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9703041276300218,
+              "Spearman": 0.9673753665689149
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2273.6505242935827,
+                52.04319656804837,
+                5.788371117784173,
+                -17.52121682435632
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2431.7089522066876,
+                51.81496509959194,
+                3.3716004402940314,
+                -6.892690067128207
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2269.5056842612908,
+                50.48087210573301,
+                6.457796013331041,
+                -5.06668957536025
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2032.6042127025676,
+                52.64275692659169,
+                7.697987686146675,
+                -3.146719058471404
+              ]
+            }
+          ],
+          "MAE": 63.712339783348654,
+          "RMSE": 77.22926707754081,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9856684982949518,
+              "Spearman": 0.9864249242392059
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.4657018821828627,
+              "Spearman": 0.4891531026276102
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.25210747776713355,
+              "Spearman": -0.24170537583908114
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "cx_depth": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3386.708333333334
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3449.8333333333344
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3460.5416666666674
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3402.416666666668
+              ]
+            }
+          ],
+          "MAE": 175.7473958333333,
+          "RMSE": 214.89831453568402,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2033.1039704623306,
+                24.989619006849306
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2060.967270358305,
+                24.383895765472328
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2066.0655728250513,
+                24.339946365235445
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2036.0518166265538,
+                24.86183199466465
+              ]
+            }
+          ],
+          "MAE": 15.019727377313103,
+          "RMSE": 18.551203837458818,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9964992294092192,
+              "Spearman": 0.9952306516640677
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2095.5812665454423,
+                11.474898881615207
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2131.588365892159,
+                11.102025517407235
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2127.0955239213454,
+                11.140771704471518
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2114.2105647549406,
+                11.22279185082362
+              ]
+            }
+          ],
+          "MAE": 30.478169778950274,
+          "RMSE": 38.51030489588403,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9828909667112461,
+              "Spearman": 0.9827712609970674
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1923.573547834784,
+                24.154487707449082,
+                1.909243082021245,
+                -0.0789874656238031
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1964.1226600185828,
+                23.582992716741174,
+                1.8997674950734904,
+                -2.577445942885155
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1931.7529997785373,
+                23.9784377444509,
+                1.97943266611761,
+                -1.1409395183784858
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1913.099270316711,
+                24.10839743765947,
+                2.155142967880984,
+                -1.8805785459644202
+              ]
+            }
+          ],
+          "MAE": 11.35190439249422,
+          "RMSE": 14.049524216222714,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9964992294092192,
+              "Spearman": 0.9952306516640677
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.4513981931590725,
+              "Spearman": 0.4742578389761679
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.23662764936669034,
+              "Spearman": -0.2519313725091961
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "total_depth": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                9413.750000000004
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                9684.333333333334
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                9721.333333333336
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                9478.708333333336
+              ]
+            }
+          ],
+          "MAE": 730.6119791666658,
+          "RMSE": 885.8880688737804,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3896.401969178087,
+                101.85873287671231
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3960.696912052116,
+                100.48813029315954
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3971.3573632457674,
+                100.36321693243744
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3863.9338011424607,
+                102.16420680256316
+              ]
+            }
+          ],
+          "MAE": 51.85008440642852,
+          "RMSE": 61.37773772443363,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9975534254326675,
+              "Spearman": 0.9976155361749678
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4177.66968860727,
+                46.535692461877964
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4272.2124467517515,
+                45.579923056905294
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4243.171718881142,
+                45.769338520984014
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4199.801939881241,
+                45.98958781966282
+              ]
+            }
+          ],
+          "MAE": 131.4905751801183,
+          "RMSE": 166.5997474616788,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9802461695419816,
+              "Spearman": 0.9813049853372433
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3771.201169932813,
+                100.11283649122052,
+                3.19389759120574,
+                -11.181434379225575
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3852.1381941372097,
+                98.05226675261098,
+                3.8779641235734914,
+                -17.994570125137187
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3725.9209264948217,
+                99.50491249237584,
+                4.12041279180329,
+                -11.13027434184438
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3596.29025215079,
+                99.65705220564128,
+                5.64524988765649,
+                -11.693872994475877
+              ]
+            }
+          ],
+          "MAE": 43.286850116621565,
+          "RMSE": 53.40837749111266,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9975534254326675,
+              "Spearman": 0.9976155361749678
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.42777619895317753,
+              "Spearman": 0.4512713209955472
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.25234878107460723,
+              "Spearman": -0.2528610085701156
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "circuit_size": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                27486.250000000004
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                28341.708333333343
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                28566.083333333347
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                27663.708333333336
+              ]
+            }
+          ],
+          "MAE": 2515.815104166668,
+          "RMSE": 3101.3900063284823,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                8040.544199486305,
+                358.99764554794524
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                8488.568442996737,
+                348.5554918566776
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9181.576198852325,
+                338.34776089275937
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                7931.231652506762,
+                359.04430655029364
+              ]
+            }
+          ],
+          "MAE": 428.1653063642468,
+          "RMSE": 535.9857405047538,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9857331742544513,
+              "Spearman": 0.986791829548575
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                8973.200954265547,
+                164.5348248477894
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9605.600996820707,
+                157.79217587350757
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                10074.412279710563,
+                154.49554281844163
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9065.167193141573,
+                162.02962836117266
+              ]
+            }
+          ],
+          "MAE": 607.7539753138975,
+          "RMSE": 745.9130621621572,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9698678980000541,
+              "Spearman": 0.9681085043988268
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                6970.960973270729,
+                342.15181645531806,
+                29.75335221598891,
+                -122.58480258086472
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                7947.9967357448895,
+                341.63268614450266,
+                13.391827292698906,
+                -38.470555777555546
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                6802.3865316666615,
+                331.67998837096576,
+                35.735580243837006,
+                -32.29243063922114
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                5441.72513223748,
+                345.43741332792933,
+                41.82315157546873,
+                -23.628365834072675
+              ]
+            }
+          ],
+          "MAE": 435.1121796032204,
+          "RMSE": 523.8141234237347,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9857331742544513,
+              "Spearman": 0.986791829548575
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.4521335625740794,
+              "Spearman": 0.48988867120299007
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.2530996367043251,
+              "Spearman": -0.24988617317517312
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      }
+    },
+    "tail_P4": {
+      "rz_count": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                14936.625000000004
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                14952.541666666672
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                15145.875000000005
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                15154.833333333338
+              ]
+            }
+          ],
+          "MAE": 1082.2265624999993,
+          "RMSE": 1433.1541280596116,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4892.69619524744,
+                152.3731297813283
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4593.40124918354,
+                156.56131613324627
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4854.006520285329,
+                152.84953187695052
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                5579.088167582226,
+                142.47853935401517
+              ]
+            }
+          ],
+          "MAE": 287.42421155786997,
+          "RMSE": 348.6427752478304,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9733110940452145,
+              "Spearman": 0.9695941633730527
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4783.74659549089,
+                74.75345930386864
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4822.4630975311775,
+                74.24672566546214
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4778.569963881294,
+                74.90649768345394
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                5319.10815474051,
+                71.08853406794998
+              ]
+            }
+          ],
+          "MAE": 261.53804954583165,
+          "RMSE": 345.6792288438657,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.971778101781988,
+              "Spearman": 0.9501466275659823
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                4609.206246622307,
+                149.6830130655785,
+                13.279049330391828,
+                -27.95982531393665
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                4217.808533197412,
+                153.93890011391161,
+                13.268708668867092,
+                -11.406428894124153
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                4581.635751214793,
+                148.8529525016853,
+                14.010273373977853,
+                -22.15074956731145
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                5182.816144993862,
+                141.25886233899107,
+                10.080612170520325,
+                -1.5513852550292775
+              ]
+            }
+          ],
+          "MAE": 273.57921928853705,
+          "RMSE": 339.1421189730299,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9733110940452145,
+              "Spearman": 0.9695941633730527
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.3524262780971366,
+              "Spearman": 0.3205535794493127
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.03636376799376289,
+              "Spearman": 0.09005561459515946
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "rz_depth": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4736.291666666668
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4744.291666666668
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4796.583333333335
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                4796.333333333334
+              ]
+            }
+          ],
+          "MAE": 327.5703124999998,
+          "RMSE": 419.9529043122309,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1718.2021867172152,
+                45.786439645250816
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1761.8053967994772,
+                45.075359242325284
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1729.1042131074462,
+                45.55662059741415
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1753.677531854755,
+                45.272002005880864
+              ]
+            }
+          ],
+          "MAE": 32.28917358761211,
+          "RMSE": 41.99822653422549,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9950650721411282,
+              "Spearman": 0.9931128393085749
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1706.7331388777432,
+                22.305987631564395
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1840.6741406889028,
+                21.28158162025954
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1754.1425293469094,
+                21.982432680612543
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1708.2402096111111,
+                22.31945375095735
+              ]
+            }
+          ],
+          "MAE": 64.4344612083928,
+          "RMSE": 76.91529633212392,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9841650327048346,
+              "Spearman": 0.9640762463343108
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1668.2830653918309,
+                45.51901937020222,
+                1.394560790395385,
+                0.49389929586044845
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1778.175457005689,
+                44.97616942900282,
+                0.08921235331922972,
+                -2.326515417017577
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1705.0964660894651,
+                45.186170629212896,
+                1.321732799833537,
+                -2.4686225745571573
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1736.3342011178281,
+                45.202276209936244,
+                0.4062707020120655,
+                0.41319159863947963
+              ]
+            }
+          ],
+          "MAE": 32.92513509895289,
+          "RMSE": 43.57309905286437,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9950650721411282,
+              "Spearman": 0.9931128393085749
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.3147606832015838,
+              "Spearman": 0.3308524896324231
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.0005313094124201195,
+              "Spearman": 0.10869417417325598
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "cx_count": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5804.083333333335
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5809.916666666668
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5868.833333333335
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                5871.166666666668
+              ]
+            }
+          ],
+          "MAE": 337.2343749999997,
+          "RMSE": 445.3431690218729,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2669.692505585268,
+                47.55080901766975
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2599.158638145003,
+                48.525310254735466
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2663.610566205974,
+                47.60231832367363
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2878.8508581978977,
+                44.52298785074421
+              ]
+            }
+          ],
+          "MAE": 85.90182267527007,
+          "RMSE": 104.36638343359262,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9749770341958524,
+              "Spearman": 0.9747388737339482
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2637.885347317925,
+                23.31203456455041
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2667.8787591386495,
+                23.0290441439907
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2641.4284442046064,
+                23.318846702093005
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2799.5872868040547,
+                22.200099273108744
+              ]
+            }
+          ],
+          "MAE": 79.56026235152493,
+          "RMSE": 104.46462624826894,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9731788957494361,
+              "Spearman": 0.9534457478005866
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2541.88202023219,
+                46.51134013402998,
+                5.19368475541847,
+                -8.052739402235723
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2453.8453975994744,
+                47.61207582454596,
+                4.816628469325135,
+                -3.0724996666838194
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2556.3812066396836,
+                46.14099126858323,
+                4.9803655530508415,
+                -5.537688484546981
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2712.074669344692,
+                44.00640049230819,
+                4.235568363435842,
+                -0.5566572658370941
+              ]
+            }
+          ],
+          "MAE": 80.79924830470515,
+          "RMSE": 99.59582523996835,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9749770341958524,
+              "Spearman": 0.9747388737339482
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.36286665459230183,
+              "Spearman": 0.3420709453675969
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.03518898904067999,
+              "Spearman": 0.11367675940700457
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "cx_depth": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3594.958333333335
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3600.7916666666683
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3628.250000000002
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                3628.0000000000014
+              ]
+            }
+          ],
+          "MAE": 168.88281249999972,
+          "RMSE": 218.46910735400454,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2032.5601854986126,
+                23.702626768668328
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2044.076053233181,
+                23.52718811234488
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1996.3547703967897,
+                24.236067766384316
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2086.695425223952,
+                22.933236078502876
+              ]
+            }
+          ],
+          "MAE": 21.302787174504644,
+          "RMSE": 25.836923024783346,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9941280360155891,
+              "Spearman": 0.9927453599970825
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2023.9650829896436,
+                11.566885303586721
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2078.6837908976368,
+                11.156036462519468
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                1998.6350509009371,
+                11.77439536932067
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                2060.5143659993373,
+                11.329134748112239
+              ]
+            }
+          ],
+          "MAE": 30.850190947364865,
+          "RMSE": 37.16305222750174,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9867108363606557,
+              "Spearman": 0.972873900293255
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1975.3905988689592,
+                23.335461369695096,
+                1.8757487994647022,
+                -1.0338370978790652
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1983.0182386978656,
+                23.231120343129394,
+                1.7497751205010559,
+                -0.13163641137390192
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                1945.1781202441516,
+                23.593593289003206,
+                2.114430828887519,
+                -1.0821275307365166
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                2022.4610175755595,
+                22.714142512845804,
+                1.5883415516890462,
+                0.3780396043668097
+              ]
+            }
+          ],
+          "MAE": 18.286190099670065,
+          "RMSE": 22.953963239737785,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9941280360155891,
+              "Spearman": 0.9927453599970825
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.35067654382432567,
+              "Spearman": 0.3755424034627059
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.008611882265592827,
+              "Spearman": 0.09909808409344391
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "total_depth": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                10415.750000000002
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                10433.125000000004
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                10550.04166666667
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                10547.083333333338
+              ]
+            }
+          ],
+          "MAE": 714.7968749999997,
+          "RMSE": 917.0674195007269,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3836.5562250355397,
+                99.810777875567
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3922.0559683213573,
+                98.40406596995432
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3810.6594404814973,
+                100.08983504235395
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3917.6249002758072,
+                98.64042305851241
+              ]
+            }
+          ],
+          "MAE": 67.24850785106167,
+          "RMSE": 87.76842646583783,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9955309436249455,
+              "Spearman": 0.9931128393085749
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3811.031276804786,
+                48.629122955771706
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                4089.1006989275515,
+                46.49747074340302
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3861.524173789243,
+                48.32629293152663
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                3819.287336700069,
+                48.62571353150661
+              ]
+            }
+          ],
+          "MAE": 134.38186948462618,
+          "RMSE": 163.93461177684475,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9849404898566168,
+              "Spearman": 0.9629765395894426
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3701.5674000845365,
+                99.0188638140027,
+                4.085723247739672,
+                -0.4704595299317269
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3930.434912207676,
+                98.07505353380586,
+                0.915663090150737,
+                -4.870962335876657
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3729.8729719702806,
+                98.93173165941741,
+                4.025118821146705,
+                -5.794742695063
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                3830.7033342610994,
+                98.35337846800458,
+                2.1694821015665227,
+                0.23396597859679336
+              ]
+            }
+          ],
+          "MAE": 68.38093211942356,
+          "RMSE": 89.29059635287969,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.9955309436249455,
+              "Spearman": 0.9931128393085749
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.3217773724108781,
+              "Spearman": 0.3398640360426447
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.0037790790424217097,
+              "Spearman": 0.099467164481129
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      },
+      "circuit_size": {
+        "mean_only": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                29746.791666666675
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                29784.791666666675
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                30171.541666666675
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 1,
+              "coefficients": [
+                30185.500000000015
+              ]
+            }
+          ],
+          "MAE": 2197.132812499998,
+          "RMSE": 2898.660596086076,
+          "negative_predictions": 0,
+          "correlations": {},
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "A_switch": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9387.884063367403,
+                308.8582695822897
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                8840.616059764854,
+                316.5366590463751
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9324.670363352645,
+                309.6069995541685
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                10717.747053862458,
+                289.66278407148224
+              ]
+            }
+          ],
+          "MAE": 558.3272744922599,
+          "RMSE": 681.0594968739314,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.974939908333716,
+              "Spearman": 0.9732689564879781
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "B_overlap": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "overlap_path"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9170.553324803634,
+                151.49841594005863
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9299.833831118613,
+                150.1410906445017
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                9172.951428060318,
+                151.72032129700273
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 2,
+              "coefficients": [
+                10191.134804544212,
+                144.51096239022257
+              ]
+            }
+          ],
+          "MAE": 512.2557954318024,
+          "RMSE": 677.6962354597849,
+          "negative_predictions": 0,
+          "correlations": {
+            "overlap_path": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.973352941021689,
+              "Spearman": 0.9516129032258064
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        },
+        "C_composite": {
+          "status": "DESCRIPTIVE_HELDOUT",
+          "features": [
+            "basis_switches",
+            "ZZ_count",
+            "same_basis_support_pairs"
+          ],
+          "folds": [
+            {
+              "fold": 0,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                8810.45783600879,
+                303.54347243162897,
+                26.294533901863105,
+                -52.62811008675597
+              ]
+            },
+            {
+              "fold": 1,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                8124.618090281447,
+                311.5666426923752,
+                25.203240291235147,
+                -21.35890394135966
+              ]
+            },
+            {
+              "fold": 2,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                8815.389357660006,
+                302.24030881523123,
+                25.68955253607473,
+                -38.40343016973884
+              ]
+            },
+            {
+              "fold": 3,
+              "train": 24,
+              "test": 8,
+              "rank": 4,
+              "coefficients": [
+                9924.08297783522,
+                287.1790846677604,
+                20.102342035400483,
+                -1.9033942317098855
+              ]
+            }
+          ],
+          "MAE": 534.1284315594474,
+          "RMSE": 662.9025636801344,
+          "negative_predictions": 0,
+          "correlations": {
+            "basis_switches": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.974939908333716,
+              "Spearman": 0.9732689564879781
+            },
+            "ZZ_count": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": 0.35005706389729624,
+              "Spearman": 0.3236800343263283
+            },
+            "same_basis_support_pairs": {
+              "status": "DESCRIPTIVE_ONLY",
+              "Pearson": -0.03269644111153789,
+              "Spearman": 0.1046342899087201
+            }
+          },
+          "causal_effect": null,
+          "new_DF_prediction_validated": false
+        }
+      }
+    }
+  },
+  "static": {
+    "M4_Proposed": {
+      "law": {
+        "status": "IDEAL_IID_LAW_DESCRIPTOR",
+        "lambda_R": 1.4424298855756241,
+        "q_basis": {
+          "b8b8575b671be8fe444cc43e26a7c221b34d6846edb21ce6c39528417f33f1d1": 0.7238926645434969,
+          "1addc928424a787d72cc3638c585c03b97e16a664a2edf5b10912442fe264ad4": 0.0681333889034734,
+          "06eb1f2f64abf89fdb7474b96fbadbb6bde1723d373319c4cdfdc38e8634d43e": 0.04904265798853451,
+          "f7a883440966a8698fb76be55a3589456b11786196e17ae22f13c4a6051f735c": 0.04673385914091409,
+          "5973b8f90a356192ab8214b8754bef7bb7529ac8195e28a6fdf731eccef53922": 0.07474557684102362,
+          "50ea4e4a9b0ae35b016e1acbce1bd0726575b60baedd42935ceb8ae6c7d11929": 0.0374518525825575
+        },
+        "q_frame": {
+          "CDF_proposed:F2": 0.7238926645434969,
+          "CDF_proposed:F3": 0.0681333889034734,
+          "CDF_proposed:F4": 0.04904265798853451,
+          "CDF_proposed:F5": 0.04673385914091409,
+          "CDF_proposed:F6": 0.07474557684102362,
+          "CDF_proposed:F7": 0.0374518525825575
+        },
+        "P_same": 0.5402415268753018,
+        "expected_switches": 58.38932608683667,
+        "expected_runs": 59.38932608683667,
+        "expected_runs_by_basis": {
+          "b8b8575b671be8fe444cc43e26a7c221b34d6846edb21ce6c39528417f33f1d1": 26.107646159522368,
+          "1addc928424a787d72cc3638c585c03b97e16a664a2edf5b10912442fe264ad4": 8.131519626843657,
+          "06eb1f2f64abf89fdb7474b96fbadbb6bde1723d373319c4cdfdc38e8634d43e": 5.97200207010471,
+          "f7a883440966a8698fb76be55a3589456b11786196e17ae22f13c4a6051f735c": 5.704559164081248,
+          "5973b8f90a356192ab8214b8754bef7bb7529ac8195e28a6fdf731eccef53922": 8.857897375974257,
+          "50ea4e4a9b0ae35b016e1acbce1bd0726575b60baedd42935ceb8ae6c7d11929": 4.615701690310427
+        },
+        "expected_Z": 48.24562639927471,
+        "expected_ZZ": 79.75437360072529,
+        "raw_central_RZ": 256,
+        "raw_central_CX": 415.50874720145055,
+        "compiled_price": null,
+        "head_price": null,
+        "basis_pair_prices": null
+      },
+      "expected_overlap": 121.85666607861124,
+      "head_F0_F1_overlap": 2.0434587629058307,
+      "head_onebody_basis_descriptor": null,
+      "head_price": null,
+      "static_sample_count": 1,
+      "caveat": "two static DF vectors,never64 independent static observations"
+    },
+    "tail_P4": {
+      "law": {
+        "status": "IDEAL_IID_LAW_DESCRIPTOR",
+        "lambda_R": 1.516165932377233,
+        "q_basis": {
+          "f2118b5ee9185fc2cfff253d79926c05880b13b50e39ab5ac58d0494d3de18a1": 0.6813871268092597,
+          "d79e025fea7838fc153abdd37fe41b37ad51190b686fe684bdab812ecbe398f3": 0.0657659479537565,
+          "92c4749118b655f12401e54d611c5134d39ab105db6f51bd9879553624ac95a8": 0.04626959661037643,
+          "13b82a20b9b3ef2ddbd4fa1d442cda3f75bae0fa0c2ca00e149e8f57b79f83f3": 0.04175436475738344,
+          "ef8ecf42091e379eb19944c40fd7050bca7696eab73092062db54529ef1c3e5e": 0.09317336055759455,
+          "1e75606fde04feb0b202fdbf7b08113159d3437ac132a7cc06d73f29e709e59e": 0.07164960331162935
+        },
+        "q_frame": {
+          "CDF_tail_p4:F2": 0.6813871268092597,
+          "CDF_tail_p4:F3": 0.0657659479537565,
+          "CDF_tail_p4:F4": 0.04626959661037643,
+          "CDF_tail_p4:F5": 0.04175436475738344,
+          "CDF_tail_p4:F6": 0.09317336055759455,
+          "CDF_tail_p4:F7": 0.07164960331162935
+        },
+        "P_same": 0.4863128198107234,
+        "expected_switches": 65.23827188403813,
+        "expected_runs": 66.23827188403813,
+        "expected_runs_by_basis": {
+          "f2118b5ee9185fc2cfff253d79926c05880b13b50e39ab5ac58d0494d3de18a1": 28.252923325750213,
+          "d79e025fea7838fc153abdd37fe41b37ad51190b686fe684bdab812ecbe398f3": 7.8687460294782925,
+          "92c4749118b655f12401e54d611c5134d39ab105db6f51bd9879553624ac95a8": 5.65061716867634,
+          "13b82a20b9b3ef2ddbd4fa1d442cda3f75bae0fa0c2ca00e149e8f57b79f83f3": 5.123143462955917,
+          "ef8ecf42091e379eb19944c40fd7050bca7696eab73092062db54529ef1c3e5e": 10.823668211437472,
+          "1e75606fde04feb0b202fdbf7b08113159d3437ac132a7cc06d73f29e709e59e": 8.519173685739899
+        },
+        "expected_Z": 82.10026034740196,
+        "expected_ZZ": 45.89973965259804,
+        "raw_central_RZ": 256,
+        "raw_central_CX": 347.7994793051961,
+        "compiled_price": null,
+        "head_price": null,
+        "basis_pair_prices": null
+      },
+      "expected_overlap": 135.09044461293848,
+      "head_F0_F1_overlap": 2.0396159956192017,
+      "head_onebody_basis_descriptor": null,
+      "head_price": null,
+      "static_sample_count": 1,
+      "caveat": "two static DF vectors,never64 independent static observations"
+    }
+  },
+  "DF_clusters": 2,
+  "samples": 64,
+  "paired": false,
+  "all_law_synthesis": null,
+  "cost_support": null,
+  "actual_CA_achieved": null,
+  "new_DF_fit": 0,
+  "new_build_compile": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true
+}
