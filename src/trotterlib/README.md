@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：tail-P4のPR・条件付きnative32経路（2026-10-28）
+
+[再利用・40人工PASS・449-call段階付き契約](../../docs/research/research_c_df_structural_pr_preparation_20261028.md)。候補固有role、保存J/U固定、new13round/ground/law、登録GO時だけnative32。科学開始前SOURCE固定、旧gate/source不変、未知全law誤差はnull。
+
 ## 研究C：tail J固定support CDFの1 fit・DF予算PASS（2026-10-28）
 
 [結果・SOURCE・call・STOP](../../docs/research/research_c_df_structural_support_execution_20261028.md)。保存直鎖H4・1Å/STO-3G、CDF8/LD2、head-full/tail-P4、γ.1。SOURCE59e186ad無変更、21/21 COMPLETE、1 fit、retry/resume0、correctness FAIL0。終了sector誤差7.45156e-9Ha＋guard3.26388e-9HaでCA/8 PASS。Tail係数位置144だがλ1.51617Haは旧PR-aware1.44243Haより大きく、性能GOではない。PF/RTE/shots/native/総費用0、旧1006件保全、公開照合後mandatory STOP。
