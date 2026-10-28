@@ -1,3 +1,9 @@
+## 2026-10-26 H4/H6 長時間DF-native B3追加
+
+B3実装：`h46_b3.py`（既存signal/native APIの設定と最小拡張）、`h46_b3_probe.py`（条件付き正しさ）、`h46_b3_report.py`（会計・固定確認n）、`h46_b3_finish.py`（図表/REPORT）、`h46_b3_archive.py`（完成eventの可逆保存）。`h46_b3_continue.py`は同一number-operator cacheのfork共有、`h46_b3_recover.py`は元pool異常終了後の未完了trialだけを個別processで復旧する。人工テストは`tests/test_h46_b3.py`と`tests/test_h46_b3_recover.py`。完成済み科学取得を再実行せず保存結果を参照する。
+
+[B3 REPORT](../artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/REPORT.md) / [結果・図表](../artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/)。linear1Å/STO-3G/tol-only DF10/19、保存H6 completion、L_D=0（one-body保持）、T=.8〜2、P=0。signal 3432構成、価格192候補、探索1728・独立確認1553標本。取得集合でB3の探索点費用がB2より低い条件0/40、PF envelopeより低い条件0/40、四方式最良0/40。有限標本・経験的精度会計であり、全域最適性・母平均優位・厳密bias保証ではない。旧33/40は旧集合内の結果として保持。旧SOURCE/raw/grant/STOP・他worktree不変。今回の取得・公開後mandatory STOP。
+
 ## 2026-10-27 B3のユーザーmanager終了からの継続
 
 `h46_b3_session_resume.py`は、09:36のユーザー用systemd全体の終了をjournalで確認し、完成済み1,691件を再利用する。中断17件の原本を保全し、未着手20件とともに同じ固定計画を検証済み高速workerで継続する。新しいtrace保存先を使い、旧SOURCE・STOP・記録は保持する。既存の`KillUserProcesses=false`を確認した上で、端末から切り離した自分のlogin-session processで取得と既存の終了検証を実行する。`Linger`・logind・systemd・共有設定は変更しない。新たな科学/worker異常は自動retryしない。人工checkpointと実際の小さい子processによる検証は`tests/test_h46_b3_session_resume.py`。進捗は従来のprivate `B3_EXPLORATION_progress.json`、終了状態は`final_status.json`、新しい実行logはprivate `interruptions/user_manager_exit_20261027/`。

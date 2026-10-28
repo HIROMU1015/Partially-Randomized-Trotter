@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 長時間DF-native B3追加
+
+[B3 REPORT](artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/REPORT.md) / [結果・図表](artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/)。linear1Å/STO-3G/tol-only DF10/19、保存H6 completion、L_D=0（one-body保持）、T=.8〜2、P=0。signal 3432構成、価格192候補、探索1728・独立確認1553標本。取得集合でB3の探索点費用がB2より低い条件0/40、PF envelopeより低い条件0/40、四方式最良0/40。有限標本・経験的精度会計であり、全域最適性・母平均優位・厳密bias保証ではない。旧33/40は旧集合内の結果として保持。旧SOURCE/raw/grant/STOP・他worktree不変。今回の取得・公開後mandatory STOP。
+
 ## 2026-10-26 H4/H6 長時間PF・PR比較
 
 [主要REPORT](REPORT.md) / [保存結果・図表](artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/)。T=.8〜2、11,632 signal候補、642価格候補、独立確認39候補1,295標本。取得済み域の経験的比較で、全域最適性・母平均優位・厳密保証とは区別する。実行入口と復旧方法は[scripts/README.md](scripts/README.md)冒頭。旧結果・STOPは保全。

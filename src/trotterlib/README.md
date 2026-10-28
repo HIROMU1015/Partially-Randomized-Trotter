@@ -1,3 +1,7 @@
+## 2026-10-26 H4/H6 長時間DF-native B3追加
+
+[B3 REPORT](../../artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/REPORT.md) / [結果・図表](../../artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/)。linear1Å/STO-3G/tol-only DF10/19、保存H6 completion、L_D=0（one-body保持）、T=.8〜2、P=0。signal 3432構成、価格192候補、探索1728・独立確認1553標本。取得集合でB3の探索点費用がB2より低い条件0/40、PF envelopeより低い条件0/40、四方式最良0/40。有限標本・経験的精度会計であり、全域最適性・母平均優位・厳密bias保証ではない。旧33/40は旧集合内の結果として保持。旧SOURCE/raw/grant/STOP・他worktree不変。今回の取得・公開後mandatory STOP。
+
 ## 2026-10-22 H246共通決定論PF：588候補の固定比較完了
 
 [全結果・契約・監査](../../docs/research/track_a_h246_pf_common_final_20261022.md)。588候補の評価が全て完了。H2/H4は再計算せず参照結合。H6不足63metadata・新102signal・1380 endpoint・固有新価格209候補418軸を取得し終了監査PASS。旧187価格は保存値受入監査、新22価格は新grant取得。中断予約を含むcompile実呼出438軸、旧parentのexit/reapは不明のまま保全。linear1Å/STO-3G/tol-only rank3/10/19、固定L_D/q≤8・δ=.8/.4/.2/.1/T=.8/P=0。ε=.0005の全公式PF対保存PR削減率：H2 -25.14%、H4 +37.37%、H6 +40.96%。経験的allowance・有限探索条件付きで母平均保証なし。旧SOURCE/raw/grant/STOP不変、local commit後mandatory STOP・push0。以下は履歴。
