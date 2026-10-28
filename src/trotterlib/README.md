@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：tail-P4 PRの449-call完了・総資源改善なし（2026-10-28）
+
+[PF/RTE・shots・損益分岐・native・総資源](../../docs/research/research_c_df_structural_pr_performance_20261028.md)。保存直鎖H4・1Å/STO-3G、tail-P4 CDF8/LD2、partial S2 δ.1/s1/r128/K0/m0..12、own-DF oracle/状態準備除外。SOURCE4ac0e5f96無変更、449/449 COMPLETE、correctness FAIL/retry/resume0。全13round適格、主仮定shots16,568、fixed32/full512/adjoint/X/Y PASS。Kernel平均RZ15,047.46875、M4-r128比1.068983。条件付き総RZ275,422,425,481.5/旧234,117,788,135=1.176427。疎化による価格/総資源改善は今回の点比較では観測なし。全law/actual CA/母平均優位は未資格。旧1054件保全、公開照合後mandatory STOP。
+
 ## 研究C：tail-P4のPR・条件付きnative32経路（2026-10-28）
 
 [再利用・40人工PASS・449-call段階付き契約](../../docs/research/research_c_df_structural_pr_preparation_20261028.md)。候補固有role、保存J/U固定、new13round/ground/law、登録GO時だけnative32。科学開始前SOURCE固定、旧gate/source不変、未知全law誤差はnull。
