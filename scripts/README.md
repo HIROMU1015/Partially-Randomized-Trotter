@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：tail J固定support CDFの1 fit・DF予算PASS（2026-10-28）
+
+[結果・SOURCE・call・STOP](../docs/research/research_c_df_structural_support_execution_20261028.md)。保存直鎖H4・1Å/STO-3G、CDF8/LD2、head-full/tail-P4、γ.1。SOURCE59e186ad無変更、21/21 COMPLETE、1 fit、retry/resume0、correctness FAIL0。終了sector誤差7.45156e-9Ha＋guard3.26388e-9HaでCA/8 PASS。Tail係数位置144だがλ1.51617Haは旧PR-aware1.44243Haより大きく、性能GOではない。PF/RTE/shots/native/総費用0、旧1006件保全、公開照合後mandatory STOP。
+
 ## 研究C：DF構造改良の技術提案・科学実行未承認（2026-10-28）
 
 [横断調査・3案・再利用地図・最小契約](../docs/research/research_c_df_structural_design_20261028.md)。保存H4・1Å/STO-3G、CDF8/LD2を維持し、既存γ/r探索を拡張せずtail Jの固定support制約を最初の検証案とした。既知support制約CDFの限定拡張で独立新規性/資源優位は未認定。旧loss/AD/codec/SciPyを再利用するcompact adapter、1-fit限定runner、人工60 tests＋29 subtests PASS。未承認21-callはDF評価だけで、実H4decode/fit/PF-RTE/shots/native0。後続は新J/U固有の別契約が必要。旧SOURCE/raw/STOP保全、remote照合後mandatory STOP。
