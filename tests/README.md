@@ -1,5 +1,10 @@
 # tests の役割
 
+## 研究C：Shared-basisは通常低rank CDFと同値（2026-10-29）
+
+[定義・証明・native対応・61人工PASS](../docs/research/research_c_shared_basis_df_design_20261029.md)。一般対称Jの共有G groupは通常CDF≤Gと同じ表現集合で、CDF8のtail F2/F3共有はCDF≤7に対応。冗長Jと通常rank削減を新DF方式と呼ばず、専用fitter/重複fitはNO-GO提案。固定H_D/H_R・h/r/Kで現partial PF/補正RTEは不変だが、atom相殺でλ/law/減衰は変化し得る。Signed-zeroのtail keyと決定論tuple判定、head相対融合とtail共有を区別した。新21＋回帰40＝61 PASS＋29 subtests、旧SOURCE/原本2140件照合、実H4 decode/fit/新再解析/build/compile/科学call0。非実行の未承認案はcall0/executable=false。通常CDF7の物理予算は未評価、次方向は未採択。公開照合後mandatory STOP。
+
+
 ## 2026-10-27：固定CAR reference・Proposed検証の技術準備
 
 `management/test_research_c_pr_aware_df_fixed_car.py` は人工J/U・event・QPYだけの27試験。既存関連143と隔離旧general-K/native40もPASS（計210、別に29 subtests）。旧general-Kのsys.modules隔離前提のため新Qiskit試験とは別processで実行する。[記録](../docs/research/research_c_pr_aware_df_fixed_car_reference_readiness_20261027.md)。旧C2並列STOPの非決定性は未修正。
