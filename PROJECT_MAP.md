@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：第三γ0 DF・141-callでnative metadata技術STOP（2026-10-29）
+
+[部分結果・全13round・STOP原因](docs/research/research_c_df_basis_third_execution_20261029.md)。保存H4/1Å/STO-3G、γ0 CDF8/LD2、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外。SOURCE14270239a無変更で141 attempts=140 COMPLETE+1 technical FAIL。表現/ground/alias・13/13 PF-RTE十分条件PASS、ideal仮定shots21754。Native full_law_gateへ渡すmetadataのcomponents欠損でSTOPし、sampling/build/compile/DF holdout0。第三DF価格/予測誤差/総費用はnull、旧C不適格不変。SOURCE112/input93/旧保護1667件照合、新fit/retry/resume0、旧原本保全。公開照合後mandatory STOP。以下の未実行表記は当時の履歴。
+
 ## 研究C：basis-switch-aware設計・保存γ0第三DFの準備（2026-10-29）
 
 [数式・再利用・人工検証・未承認493-call案](docs/research/research_c_df_basis_switch_optimization_design_20261029.md)。固定exact-key partitionのswitch項はJのmass比に依存し、自由Uの幾何を直接最適化しない。Exact/smooth零tail・ε bias・非凸性・gaugeを分離し、η/新目的は未採択。保存H4/1Å/STO-3G、γ0 CDF8/LD2を第三候補としてown h=.1/s1/r128/K0の13round、条件付きRPE、GO時native32、DF holdoutへ接続。旧2cohortの共通interceptを第三価格前に固定し、Cは復活させない。新21＋回帰110＝131 PASS、科学call0、SOURCE112/input93/旧原本1667件照合、旧103 SOURCE/STOP不変。別科学許可までmandatory STOP。
