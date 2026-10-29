@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 研究C：通常CDF7の限定1-fit準備（2026-10-30）
+
+[実装・人工45 PASS・固定25-call](docs/research/research_c_cdf7_onefit_preparation_20261030.md)。新専用module/CLIは既存ffsim Cholesky initializer・γ0 loss・修正codec・SectorCARを再利用。初期予算は診断のみ、表現correctness後に1-fit。保存H4/1Å/STO-3G、sector36、rank7/LD2、options=None、最終CA/8、fresh run01/retry-resume0。SOURCE35/input8/旧保護2153件固定、後続PRは技術案のみ。Shared-basisのexecutable=false契約は保全。
+
+
 ## 研究C：Shared-basisは通常低rank CDFと同値（2026-10-29）
 
 [定義・証明・native対応・61人工PASS](docs/research/research_c_shared_basis_df_design_20261029.md)。一般対称Jの共有G groupは通常CDF≤Gと同じ表現集合で、CDF8のtail F2/F3共有はCDF≤7に対応。冗長Jと通常rank削減を新DF方式と呼ばず、専用fitter/重複fitはNO-GO提案。固定H_D/H_R・h/r/Kで現partial PF/補正RTEは不変だが、atom相殺でλ/law/減衰は変化し得る。Signed-zeroのtail keyと決定論tuple判定、head相対融合とtail共有を区別した。新21＋回帰40＝61 PASS＋29 subtests、旧SOURCE/原本2140件照合、実H4 decode/fit/新再解析/build/compile/科学call0。非実行の未承認案はcall0/executable=false。通常CDF7の物理予算は未評価、次方向は未採択。公開照合後mandatory STOP。
