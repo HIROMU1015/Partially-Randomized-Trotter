@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：第三DF metadata修正v2（2026-10-29）
+
+[差分・実B2 gate回帰・fresh run02](../docs/research/research_c_df_basis_third_repair_preparation_20261029.md)。`c_df_basis_third_v2.py`／`run_research_c_df_basis_third_v2.py`／人工testを追加し、旧SOURCE112不変で既存component-recordを接続。新4＋回帰42＝46 PASS。科学条件・493-call・sampling/P0/gate不変。旧141-call STOPを保全し、チャット許可に基づく新SOURCE115/fresh run02の準備を完了。以下の未修正表記は履歴。
+
 ## 研究C：第三γ0 DF・141-callでnative metadata技術STOP（2026-10-29）
 
 [部分結果・全13round・STOP原因](../docs/research/research_c_df_basis_third_execution_20261029.md)。保存H4/1Å/STO-3G、γ0 CDF8/LD2、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外。SOURCE14270239a無変更で141 attempts=140 COMPLETE+1 technical FAIL。表現/ground/alias・13/13 PF-RTE十分条件PASS、ideal仮定shots21754。Native full_law_gateへ渡すmetadataのcomponents欠損でSTOPし、sampling/build/compile/DF holdout0。第三DF価格/予測誤差/総費用はnull、旧C不適格不変。SOURCE112/input93/旧保護1667件照合、新fit/retry/resume0、旧原本保全。公開照合後mandatory STOP。以下の未実行表記は当時の履歴。
