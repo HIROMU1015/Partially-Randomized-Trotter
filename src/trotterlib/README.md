@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+## 研究C：通常CDF7・限定1-fitでDF予算PASS（2026-10-30）
+
+[結果・初期/終了誤差・CDF8比較・後続案](../../docs/research/research_c_cdf7_onefit_execution_20261030.md)。保存直鎖H4/1Å/STO-3G、Nα=Nβ2/sector36、通常number CDF7/元順LD2、γ0 normalized tensor loss、ffsim0.0.83/修正codec/L-BFGS-B options=None。SOURCEc13d6f82a無変更で25/25 COMPLETE、correctness FAIL0、rank7 Cholesky初期化1/fit1/retry-resume0。初期sector+guard9.0647035e-4Haは予算未達の診断としてfitを許容し、終了3.02264175e-7HaでCA/8=.00019875Ha PASS。Optimizerは215iterの相対目的減少停止、正規化gradient∞=.05556で停留/大域保証なし。人工45 PASS＋29 subtests、旧保護2153件不変。PR/PF-RTE/ground/native/shots/総資源0。後続119-call案はrank7 adapter/SOURCE未固定でexecutable=false、native32は別案。公開照合後mandatory STOP。
+
+
 ## 研究C：通常CDF7の限定1-fit準備（2026-10-30）
 
 [実装・人工45 PASS・固定25-call](../../docs/research/research_c_cdf7_onefit_preparation_20261030.md)。新専用module/CLIは既存ffsim Cholesky initializer・γ0 loss・修正codec・SectorCARを再利用。初期予算は診断のみ、表現correctness後に1-fit。保存H4/1Å/STO-3G、sector36、rank7/LD2、options=None、最終CA/8、fresh run01/retry-resume0。SOURCE35/input8/旧保護2153件固定、後続PRは技術案のみ。Shared-basisのexecutable=false契約は保全。
