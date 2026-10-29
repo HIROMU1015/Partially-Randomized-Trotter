@@ -1,5 +1,10 @@
 # 研究計画資料
 
+## 研究C：第三γ0 DF・修正後493-call完了、switch転移判定不成立（2026-10-29）
+
+[結果・32 full512・holdout・条件付き費用](research_c_df_basis_third_repair_execution_20261029.md)。保存直鎖H4/1Å/STO-3G、通常γ0 CDF8/元順LD2、partial S2 δ=h=.1/s1/r128/K0・13round、own-ground/状態準備除外。Components metadataだけを修正し人工46 PASS、SOURCE30436b142を固定してfresh run02で493/493 COMPLETE、correctness FAIL0。Raw/compiled/actual adjoint/X/Yは各32 PASS、QPY128。RZ holdout MAEはA369.78698、B303.32856、mean2892.23438のためSWITCH_TRANSFER_NOT_SUPPORTED。Kernel平均RZ17454.1875、ideal仮定shots21754/総RZ627057959562.5（M4比2.678387、P4比2.276714）。有限数値pilotで全law/actual CA/cost support/因果・汎化/η採択は未資格。旧SOURCE112/run01/保護1725件不変、新fit0、技術relaunch1/run内retry-resume0。公開照合後mandatory STOP。以下の未完了/旧STOP表記は各時点の履歴。
+
+
 ## 研究C：第三γ0 DF・141-callでnative metadata技術STOP（2026-10-29）
 
 [部分結果・全13round・STOP原因](research_c_df_basis_third_execution_20261029.md)。保存H4/1Å/STO-3G、γ0 CDF8/LD2、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外。SOURCE14270239a無変更で141 attempts=140 COMPLETE+1 technical FAIL。表現/ground/alias・13/13 PF-RTE十分条件PASS、ideal仮定shots21754。Native full_law_gateへ渡すmetadataのcomponents欠損でSTOPし、sampling/build/compile/DF holdout0。第三DF価格/予測誤差/総費用はnull、旧C不適格不変。SOURCE112/input93/旧保護1667件照合、新fit/retry/resume0、旧原本保全。公開照合後mandatory STOP。以下の未実行表記は当時の履歴。

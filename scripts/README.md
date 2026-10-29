@@ -1,5 +1,10 @@
 # scripts 索引
 
+## 研究C：第三γ0 DF・修正後493-call完了、switch転移判定不成立（2026-10-29）
+
+[結果・32 full512・holdout・条件付き費用](../docs/research/research_c_df_basis_third_repair_execution_20261029.md)。保存直鎖H4/1Å/STO-3G、通常γ0 CDF8/元順LD2、partial S2 δ=h=.1/s1/r128/K0・13round、own-ground/状態準備除外。Components metadataだけを修正し人工46 PASS、SOURCE30436b142を固定してfresh run02で493/493 COMPLETE、correctness FAIL0。Raw/compiled/actual adjoint/X/Yは各32 PASS、QPY128。RZ holdout MAEはA369.78698、B303.32856、mean2892.23438のためSWITCH_TRANSFER_NOT_SUPPORTED。Kernel平均RZ17454.1875、ideal仮定shots21754/総RZ627057959562.5（M4比2.678387、P4比2.276714）。有限数値pilotで全law/actual CA/cost support/因果・汎化/η採択は未資格。旧SOURCE112/run01/保護1725件不変、新fit0、技術relaunch1/run内retry-resume0。公開照合後mandatory STOP。以下の未完了/旧STOP表記は各時点の履歴。
+
+
 ## 研究C：第三DF metadata修正v2（2026-10-29）
 
 [差分・実B2 gate回帰・fresh run02](../docs/research/research_c_df_basis_third_repair_preparation_20261029.md)。`c_df_basis_third_v2.py`／`run_research_c_df_basis_third_v2.py`／人工testを追加し、旧SOURCE112不変で既存component-recordを接続。新4＋回帰42＝46 PASS。科学条件・493-call・sampling/P0/gate不変。旧141-call STOPを保全し、チャット許可に基づく新SOURCE115/fresh run02の準備を完了。以下の未修正表記は履歴。
