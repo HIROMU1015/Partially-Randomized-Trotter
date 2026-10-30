@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：CDF7 PRの人工end-to-end・回帰（2026-10-30）
+
+[新人工11件](management/test_research_c_cdf7_PR.py)＋既存回帰28件＝39 PASS。[技術報告](../docs/research/research_c_cdf7_PR_preparation_20261030.md)。Invented rank7 J/Uで既存CAR/PF/RTE/RPEを用い119 dispatch、63終了、correctness STOP、未資格null、component consumer、input/SOURCE/fresh不一致、native/sample遮断を検証。旧rank8 gateも回帰。実H4の科学的性能やCA達成を示すものではなく、今回実科学call0。
+
 ## 研究C：通常CDF7・限定1-fitでDF予算PASS（2026-10-30）
 
 [結果・初期/終了誤差・CDF8比較・後続案](../docs/research/research_c_cdf7_onefit_execution_20261030.md)。保存直鎖H4/1Å/STO-3G、Nα=Nβ2/sector36、通常number CDF7/元順LD2、γ0 normalized tensor loss、ffsim0.0.83/修正codec/L-BFGS-B options=None。SOURCEc13d6f82a無変更で25/25 COMPLETE、correctness FAIL0、rank7 Cholesky初期化1/fit1/retry-resume0。初期sector+guard9.0647035e-4Haは予算未達の診断としてfitを許容し、終了3.02264175e-7HaでCA/8=.00019875Ha PASS。Optimizerは215iterの相対目的減少停止、正規化gradient∞=.05556で停留/大域保証なし。人工45 PASS＋29 subtests、旧保護2153件不変。PR/PF-RTE/ground/native/shots/総資源0。後続119-call案はrank7 adapter/SOURCE未固定でexecutable=false、native32は別案。公開照合後mandatory STOP。

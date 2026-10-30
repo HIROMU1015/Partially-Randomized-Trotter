@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：保存CDF7のPR reference・RPE・損益分岐（2026-10-30）
+
+[c_cdf7_pr.py](../trottertracks/c_cdf7_pr.py)／[技術報告](../../docs/research/research_c_cdf7_PR_preparation_20261030.md)。既存一般K・SectorCAR・PF/RTE・RPEを再利用するrank7専用8因子adapter。旧rank8 SOURCEを変更せず、最大119／早期63 unitsを固定。人工39 PASS、実H4科学call0。Native／fitを実行せず、実科学計算は別途明示許可後。
+
 ## 研究C：通常CDF7・限定1-fitでDF予算PASS（2026-10-30）
 
 [結果・初期/終了誤差・CDF8比較・後続案](../../docs/research/research_c_cdf7_onefit_execution_20261030.md)。保存直鎖H4/1Å/STO-3G、Nα=Nβ2/sector36、通常number CDF7/元順LD2、γ0 normalized tensor loss、ffsim0.0.83/修正codec/L-BFGS-B options=None。SOURCEc13d6f82a無変更で25/25 COMPLETE、correctness FAIL0、rank7 Cholesky初期化1/fit1/retry-resume0。初期sector+guard9.0647035e-4Haは予算未達の診断としてfitを許容し、終了3.02264175e-7HaでCA/8=.00019875Ha PASS。Optimizerは215iterの相対目的減少停止、正規化gradient∞=.05556で停留/大域保証なし。人工45 PASS＋29 subtests、旧保護2153件不変。PR/PF-RTE/ground/native/shots/総資源0。後続119-call案はrank7 adapter/SOURCE未固定でexecutable=false、native32は別案。公開照合後mandatory STOP。
