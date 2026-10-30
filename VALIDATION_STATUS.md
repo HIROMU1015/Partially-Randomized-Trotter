@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：Round別D/PRの条件付きbridge・技術準備（2026-10-30）
+
+[十分条件・人工検証](docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。同一DF energyに対するraw-signal/alias条件とβ<π/3のnearest-branchを確認。新42＋回帰75＝117 PASS、SOURCE118/input23のpassive preflight PASS。実H4のround費用・混合優位・dominanceは未判定、科学call0。保存189-callは別途実行許可が必要。
+
 ## 研究C：PR native構造の人工検証とNO-GO提案（2026-10-30）
 
 [技術報告](docs/research/research_c_pr_native_structure_optimization_design_20261030.md)。人工11＋既存回帰57＝68 distinct PASS（最終11再確認）。全32/128次元のcontrolled CAR、P0、actual adjoint、X/Yとexact-basis foldを確認。Aの人工RZ増加・Cのcomplete費用不変は実H4の一般negativeへ移送しない。NATIVE_STRUCTURE_NO_GOは追加実験の優先順位提案。実H4 decode/科学call0、実行可能な新科学契約なし、旧結果保全。

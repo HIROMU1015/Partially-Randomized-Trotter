@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：Round別D/PR・人工117 PASS（2026-10-30）
+
+[新42 test](management/test_research_c_roundwise_det_pr.py)／[技術報告](../docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。共通target/異method、phase/time/alias、DF一回、failure配分、未知価格/資格、支配/混合/同値、実decoder13round、人工189-call/partial STOPを確認。既存accuracy/Stage C/phase/short-round回帰75もPASS。実H4の割当や価格を算定しない。
+
 ## 研究C：PR native構造の人工PoC（2026-10-30）
 
 [新11 test](management/test_research_c_pr_native_structure.py)／[報告・人工P0 metrics](../docs/research/research_c_pr_native_structure_optimization_design_20261030.md)。2/3人工軌道、全32/128次元controlled CAR、符号/identity/π/near basis、P0/actual inverse/X-Y、中央foldと既存簡約の重複を検証。新11＋既存57＝68 distinct PASS、最終新11再確認。実H4や保存QPYをdecodeしない。

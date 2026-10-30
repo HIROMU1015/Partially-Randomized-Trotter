@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：Round別D/PRの保存値限定entry（2026-10-30）
+
+[run_research_c_roundwise_det_pr.py](run_research_c_roundwise_det_pr.py)／[未承認契約](../docs/research/research_c_roundwise_det_pr_contract_unapproved_20261030.json)／[報告](../docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。既定はhash-only passive preflight。別のチャット実行許可後だけ `--execute` で最大189 units、fresh run01/retry-resume0。M2/M4の固定JSON scalarだけを再解析し、分子NPZ/QPY decode・sampling・build/compile・fit0。
+
 ## 研究C：CDF7 native32・332-call（2026-10-30）
 
 [run_research_c_cdf7_native32.py](run_research_c_cdf7_native32.py)／[技術報告](../docs/research/research_c_cdf7_native32_preparation_20261030.md)。`--contract docs/research/research_c_cdf7_native32_contract_20261030.json`はpassive byte/version/fresh検査、`--execute`は固定332-callをfresh run01で一度実行する。今回はユーザーの一括指示が許可範囲。保存119-call runnerは再起動しない。新fit/PF-RTE/shots再計算0、32 compile/QPY128、終了後mandatory STOP。

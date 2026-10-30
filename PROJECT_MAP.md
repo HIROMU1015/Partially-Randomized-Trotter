@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Round別D/PRの共通energy接続・保存189-call準備（2026-10-30）
+
+[数学的十分条件・SOURCE・人工117 PASS](docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)／[未承認契約](docs/research/research_c_roundwise_det_pr_contract_unapproved_20261030.json)。同じ保存CDF8γ.1/LD2のM2全frame S2 s1とM4 PR s1/r128/K0、δ.1/m0..12・own-oracle/準備除外。既存nearest-branch/accuracy/serial会計を再利用し、固定β/α下でO(13×2)選択。実H4の価格順位・混合結果は未判定、科学call0。別実行許可までmandatory STOP。
+
 ## 研究C：PR native構造の技術調査・追加実験はNO-GO提案（2026-10-30）
 
 [構造・A/B/C・人工68 PASS・判断](docs/research/research_c_pr_native_structure_optimization_design_20261030.md)。Head相対融合／tail exact-key共有は既済。人工complete kernelでAはP0後RZ増加、Cは不変（局所削減例あり）。実H4効果はUNKNOWN。候補採択0、非実行判断call0、実H4 decode/build/compile/再解析0。Round別決定論/PR割当の共通energy接続を次の技術課題として提案し、公開照合後mandatory STOP。

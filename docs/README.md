@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：Round別・決定論/PR割当の技術設計（2026-10-30）
+
+[共通energy証明・Q1～Q10](research/research_c_roundwise_det_pr_allocation_design_20261030.md)／[未承認189-call](research/research_c_roundwise_det_pr_contract_unapproved_20261030.json)。同一targetとround別method/evidenceを分離し、旧SOURCE/検査を維持。人工42＋回帰75＝117 PASS、passive preflight PASS、実H4再解析0。新方式の性能GOや新規性は認定せず、公開後mandatory STOP。
+
 ## 研究C：PR native構造と優先順位判断（2026-10-30）
 
 [技術報告・Q1～Q10](research/research_c_pr_native_structure_optimization_design_20261030.md)／[非実行判断](research/research_c_pr_native_structure_decision_unapproved_20261030.json)。既存StrongBuilderを用いたtail相対Gaussianと中央foldの人工PoC、68 distinct PASS。追加実H4 native32はNATIVE_STRUCTURE_NO_GO提案。数学的な改善不可能性の証明ではなく、実H4効果UNKNOWN。科学call0、mandatory STOP。

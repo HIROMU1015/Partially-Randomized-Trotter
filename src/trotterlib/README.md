@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Round別D/PRの保存scalar adapter（2026-10-30）
+
+[c_roundwise_det_pr.py](../trottertracks/c_roundwise_det_pr.py)／[saved entry](../trottertracks/c_roundwise_det_pr_saved.py)／[設計](../../docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。既存AccuracyTarget/RoundEvidence/Hoeffding/energy/serial会計を再利用し、共通H/ground identityとmethod別証拠を接続する。PF/RTE・回路・fitterを呼ばず、全D支配/潜在有用/未資格を区分。未承認189-call、今回科学call0。
+
 ## 研究C：PR native構造・人工専用adapter（2026-10-30）
 
 [c_pr_native_structure.py](../trottertracks/c_pr_native_structure.py)／[技術判断](../../docs/research/research_c_pr_native_structure_optimization_design_20261030.md)。既存StrongBuilder.transitionとappend_centralを呼ぶtail相対Gaussian／同basis中央foldの人工PoC。分子loader、sampler、科学runner/CLIなし。旧SOURCE無変更、人工68 PASS、実H4効果UNKNOWN、追加科学実験はNO-GO提案。
