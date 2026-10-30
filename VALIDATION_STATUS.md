@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：PR native構造の人工検証とNO-GO提案（2026-10-30）
+
+[技術報告](docs/research/research_c_pr_native_structure_optimization_design_20261030.md)。人工11＋既存回帰57＝68 distinct PASS（最終11再確認）。全32/128次元のcontrolled CAR、P0、actual adjoint、X/Yとexact-basis foldを確認。Aの人工RZ増加・Cのcomplete費用不変は実H4の一般negativeへ移送しない。NATIVE_STRUCTURE_NO_GOは追加実験の優先順位提案。実H4 decode/科学call0、実行可能な新科学契約なし、旧結果保全。
+
 ## 研究C：CDF7 native32・correctness PASS、RZ点改善なし（2026-10-30）
 
 [実行結果](docs/research/research_c_cdf7_native32_execution_20261030.md)／[raw369・QPY128・journal・STOP](artifacts/research_c_cdf7_native32/2026-10-30/run01/)／[summary・postflight・CSV](artifacts/research_c_cdf7_native32/2026-10-30/)。固定SOURCE173ba2fd83172f41f08900fcba7e2a977565f57f、332/332 COMPLETE、correctness FAIL/inflight/retry/resume0。保存直鎖H4/1Å/STO-3G、通常number CDF7、Nα=Nβ2/sector36、元順LD2/tail F2..6、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外、P0同条件。8 full/sector因子・full-law・3shell PASS、32 raw/compiled/actual-adjoint/X-Y PASS。最大compiled-reference3.7017600382e-12、compiledXY1.9483311933e-13。Kernel mean RZ17754.9375／SE169.1912269。保存shots21768（再計算0）のideal総RZ638880821593.5、CDF8γ0比1.0188544964／M4比2.7288862870。登録主指標の有限cohort点改善なし。小差の母平均判定・rank因果効果・全law・support・actual CA・保証付き優位は未資格null。新fit/PF-RTE/RPE再計算/量子shots0。SOURCE107/input33/旧保護2292不変、人工新9＋回帰17＝26 distinct PASS、local published numerical pilot（CI/外部独立再現ではない）。公開照合後mandatory STOP。以下は各時点の履歴。

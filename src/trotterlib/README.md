@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：PR native構造・人工専用adapter（2026-10-30）
+
+[c_pr_native_structure.py](../trottertracks/c_pr_native_structure.py)／[技術判断](../../docs/research/research_c_pr_native_structure_optimization_design_20261030.md)。既存StrongBuilder.transitionとappend_centralを呼ぶtail相対Gaussian／同basis中央foldの人工PoC。分子loader、sampler、科学runner/CLIなし。旧SOURCE無変更、人工68 PASS、実H4効果UNKNOWN、追加科学実験はNO-GO提案。
+
 ## 研究C：CDF7 native32専用接続（2026-10-30）
 
 [c_cdf7_native32.py](../trottertracks/c_cdf7_native32.py)／[報告・固定条件](../../docs/research/research_c_cdf7_native32_preparation_20261030.md)。旧rank8 SOURCEを変更せず8因子／saved119 evidenceへ接続し、既存CAR・precision Gaussian・P0・actual adjoint・X/Y・calibrationを再利用。332 units（native323＋load9）、新fit/旧PF-RTE/RPE再計算0、全law保証は未資格。

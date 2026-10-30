@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：PR native構造と優先順位判断（2026-10-30）
+
+[技術報告・Q1～Q10](research/research_c_pr_native_structure_optimization_design_20261030.md)／[非実行判断](research/research_c_pr_native_structure_decision_unapproved_20261030.json)。既存StrongBuilderを用いたtail相対Gaussianと中央foldの人工PoC、68 distinct PASS。追加実H4 native32はNATIVE_STRUCTURE_NO_GO提案。数学的な改善不可能性の証明ではなく、実H4効果UNKNOWN。科学call0、mandatory STOP。
+
 ## 研究C：CDF7 native32・332-call科学実行結果（2026-10-30）
 
 [全gate・QPY・kernel費用・条件付き総資源](research/research_c_cdf7_native32_execution_20261030.md)。保存H4/1Å/STO-3G、CDF7/LD2/sector36、δ.1/s1/r128/K0。332 COMPLETE／FAIL0、32本のfull512/adjoint/X-Y PASS。Ideal条件付き総RZはCDF8γ0比1.0188545、M4比2.7288863で主RZ点改善なし。全law/実CA/母平均優位未資格、retry/resume0、公開照合後mandatory STOP。
