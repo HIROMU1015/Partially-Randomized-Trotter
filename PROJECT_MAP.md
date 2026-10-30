@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：CDF7 native32完了・主指標RZの点改善なし（2026-10-30）
+
+[結果・full512・費用6指標・条件付き比較](docs/research/research_c_cdf7_native32_execution_20261030.md)。SOURCE173ba2fd8無変更、332/332 COMPLETE、correctness FAIL/retry/resume0、QPY128。保存直鎖H4/1Å/STO-3G、通常CDF7/sector36/LD2、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外。Raw/compiled/actual adjoint/X-Y各32 PASS。Kernel RZ mean±SE17754.9375±169.1912、ideal仮定総RZ638880821593.5（通常CDF8γ0比1.0188545／M4比2.7288863）。主RZの記述的点改善なし、母平均の優劣・全law・実CA・保証付き優位は未資格。旧PF/RTE/shots再計算・新fit0、SOURCE107/input33/旧保護2292不変、raw369件。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：CDF7 native32・332-call独立entry（2026-10-30）
 
 [技術接続・SOURCE・科学契約](docs/research/research_c_cdf7_native32_preparation_20261030.md)。旧native本体323＋保存入力接続9＝332 units。保存H4/1Å/STO-3G、CDF7/sector36/LD2、partial S2 δ.1/s1/r128/K0、32独立trajectory／full512／P0／QPY128。保存PF/RTE・ground・shotsを再利用し再計算0、fit0。ユーザーの一括指示により人工検証・SOURCE固定後に一度実行し、有限cohortの条件付き比較まで保存してmandatory STOPする。

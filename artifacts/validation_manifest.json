@@ -225,6 +225,11 @@
       "commit": "3e75b16901f0f4a9966d2bd5b9ff6bde8e75f472",
       "role": "saved_CDF7_PR_reference_RPE_price_scientific_SOURCE",
       "description": "unchanged119-call execution;13 potentially feasible;conditional shots/break-even only;no fit/native/sample or actual CA/resources"
+    },
+    {
+      "commit": "173ba2fd83172f41f08900fcba7e2a977565f57f",
+      "role": "CDF7_native32_fullCAR_P0_scientific_SOURCE",
+      "description": "unchanged332-call scope;full512 raw/compiled/actual-adjoint/XY32 PASS;conditional RZ point improvement not observed;no fit/PF-RTE/shots recalculation"
     }
   ],
   "artifact_inventory": {
@@ -10738,6 +10743,81 @@
       "execution": "current bundled user instruction;publish/freeze before one execution",
       "actual_CA": null,
       "cost_support": null
+    },
+    {
+      "id": "research_c_cdf7_native32_execution_20261030",
+      "status": "CDF7_NATIVE32_CONDITIONAL_COMPARISON_COMPLETE",
+      "report": "docs/research/research_c_cdf7_native32_execution_20261030.md",
+      "execution_SOURCE_commit": "173ba2fd83172f41f08900fcba7e2a977565f57f",
+      "source_manifest": "artifacts/research_c_cdf7_native32/2026-10-30/technical/SOURCE.json",
+      "source_manifest_sha256": "e90e04f4ebc9a957cd6089eb224fd70e01a34e851e83d61fe7a1c58ada5d7a13",
+      "contract": "docs/research/research_c_cdf7_native32_contract_20261030.json",
+      "contract_sha256": "8922f3ef93f5a226d0ea6527e147c4eedeb4c3fe112549d0715acb872bb6a8ee",
+      "raw": "artifacts/research_c_cdf7_native32/2026-10-30/run01",
+      "summary": "artifacts/research_c_cdf7_native32/2026-10-30/execution_summary.json",
+      "postflight": "artifacts/research_c_cdf7_native32/2026-10-30/execution_postflight.json",
+      "model": "saved linear H4/1.00Angstrom/STO-3G;CDF7;sector36/LD2;partial S2 delta=h.1/s1/r128/K0;own-ground oracle;preparation excluded",
+      "attempts": 332,
+      "complete": 332,
+      "FAIL": 0,
+      "retry": 0,
+      "resume": 0,
+      "raw_operator_PASS": 32,
+      "compiled_operator_PASS": 32,
+      "actual_adjoint_pair_PASS": 32,
+      "XY_PASS": 32,
+      "QPY": 128,
+      "calibration_samples": 32,
+      "kernel_mean_RZ": 17754.9375,
+      "kernel_SE_RZ": 169.19122685576718,
+      "conditional_RZ": {
+        "ideal_exact_native": {
+          "total": 638880821593.5,
+          "ratios": {
+            "CDF8_gamma0": 1.0188544963837933,
+            "M4_r128": 2.7288862870389856
+          }
+        },
+        "assumed_raw_signal_budget": {
+          "total": 641880625142.75,
+          "ratios": {
+            "CDF8_gamma0": 1.0189625266680766,
+            "M4_r128": 2.72960004064081
+          }
+        }
+      },
+      "primary_RZ_point_improvement": {
+        "ideal_exact_native": {
+          "CDF8_gamma0": false,
+          "M4_r128": false
+        },
+        "assumed_raw_signal_budget": {
+          "CDF8_gamma0": false,
+          "M4_r128": false
+        }
+      },
+      "point_conclusion": "NO_RZ_POINT_IMPROVEMENT_VS_EITHER_REGISTERED_TARGET",
+      "actual_CA": null,
+      "cost_support": null,
+      "guaranteed_advantage": null,
+      "ideal_law_population_advantage": null,
+      "new_fit": 0,
+      "PF_RTE_shots_recomputed": false,
+      "quantum_shots": 0,
+      "SOURCE_files": 107,
+      "saved_inputs": 33,
+      "old_protected_files": 2292,
+      "old_results_unchanged": true,
+      "raw_files": 369,
+      "new_tests_PASS": 9,
+      "regression_distinct_PASS": 17,
+      "CI_or_external_reproduction": false,
+      "resources": {
+        "wall_seconds": 1203.7128743147478,
+        "CPU_seconds": 14564.856104421,
+        "peak_RSS_KiB": 3407732
+      },
+      "mandatory_stop": true
     }
   ],
   "repository_completion_criteria": [

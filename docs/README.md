@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：CDF7 native32・332-call科学実行結果（2026-10-30）
+
+[全gate・QPY・kernel費用・条件付き総資源](research/research_c_cdf7_native32_execution_20261030.md)。保存H4/1Å/STO-3G、CDF7/LD2/sector36、δ.1/s1/r128/K0。332 COMPLETE／FAIL0、32本のfull512/adjoint/X-Y PASS。Ideal条件付き総RZはCDF8γ0比1.0188545、M4比2.7288863で主RZ点改善なし。全law/実CA/母平均優位未資格、retry/resume0、公開照合後mandatory STOP。
+
 ## 研究C：CDF7 native32の接続と限定332-call（2026-10-30）
 
 [技術報告](research/research_c_cdf7_native32_preparation_20261030.md)／[固定科学契約](research/research_c_cdf7_native32_contract_20261030.json)。Rank7の8因子、保存oracle/law/RPE、32本のfull512 raw/compiled/adjoint/X-Y、P0費用と条件付き総資源へ接続。Native本体323に独立入力接続9を明示計上。全law/実CA/母平均優位は未資格のまま。ユーザーの一括指示に基づき固定後一度実行しSTOP。
