@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：Round別D/PRの保存189-call結果（2026-10-30）
+
+[実行結果](research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE79fa01076無変更、189/189 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、同じCDF8γ.1/sector36、D全frame S2 s1／PR LD2 partial S2 s1/r128/K0、δ=h=.1/m0..12、own-ground/準備除外。主RZの両仮定laneで全13roundがDを選びMIXED_ROUND_DOMINATED、evidenceはPR誤差未資格でUNQUALIFIED。Ideal総RZは全D＝選択101825929455、全PR234117788135。固定点モデル内のNO-GOであり、全指標支配/母平均/実CA/全law保証ではない。原本保全・公開後mandatory STOP。
+
 ## 研究C：Round別・決定論/PR割当の技術設計（2026-10-30）
 
 [共通energy証明・Q1～Q10](research/research_c_roundwise_det_pr_allocation_design_20261030.md)／[未承認189-call](research/research_c_roundwise_det_pr_contract_unapproved_20261030.json)。同一targetとround別method/evidenceを分離し、旧SOURCE/検査を維持。人工42＋回帰75＝117 PASS、passive preflight PASS、実H4再解析0。新方式の性能GOや新規性は認定せず、公開後mandatory STOP。

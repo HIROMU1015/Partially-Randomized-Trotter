@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Round別D/PR・189-call完了、主RZは全Dを選択（2026-10-30）
+
+[全13round・3lane・6指標・証拠](docs/research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE79fa01076無変更、189/189 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、同じCDF8γ.1/sector36、D全frame S2 s1／PR LD2 partial S2 s1/r128/K0、δ=h=.1/m0..12、own-ground/準備除外。主RZの両仮定laneで全13roundがDを選びMIXED_ROUND_DOMINATED、evidenceはPR誤差未資格でUNQUALIFIED。Ideal総RZは全D＝選択101825929455、全PR234117788135。固定点モデル内のNO-GOであり、全指標支配/母平均/実CA/全law保証ではない。原本保全・公開後mandatory STOP。
+
 ## 研究C：Round別D/PRの共通energy接続・保存189-call準備（2026-10-30）
 
 [数学的十分条件・SOURCE・人工117 PASS](docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)／[未承認契約](docs/research/research_c_roundwise_det_pr_contract_unapproved_20261030.json)。同じ保存CDF8γ.1/LD2のM2全frame S2 s1とM4 PR s1/r128/K0、δ.1/m0..12・own-oracle/準備除外。既存nearest-branch/accuracy/serial会計を再利用し、固定β/α下でO(13×2)選択。実H4の価格順位・混合結果は未判定、科学call0。別実行許可までmandatory STOP。

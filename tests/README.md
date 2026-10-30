@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：Round別D/PRの実行前回帰・科学実行（2026-10-30）
+
+[結果と実行時117 PASS](../docs/research/research_c_roundwise_det_pr_execution_20261030.md)。新42＋回帰75を独立実行worktreeで再確認。固定SOURCEの実保存値189-callはCOMPLETE/FAIL0、retry-resume0。人工PASSと、条件付きRZの全D選択/全law未資格を区別する。
+
 ## 研究C：Round別D/PR・人工117 PASS（2026-10-30）
 
 [新42 test](management/test_research_c_roundwise_det_pr.py)／[技術報告](../docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。共通target/異method、phase/time/alias、DF一回、failure配分、未知価格/資格、支配/混合/同値、実decoder13round、人工189-call/partial STOPを確認。既存accuracy/Stage C/phase/short-round回帰75もPASS。実H4の割当や価格を算定しない。

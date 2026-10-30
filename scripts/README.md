@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：Round別D/PR runnerの189-call実行完了（2026-10-30）
+
+[結果・SOURCE・STOP](../docs/research/research_c_roundwise_det_pr_execution_20261030.md)。準備済みentryをSOURCE79fa01076無変更で一度実行し189 COMPLETE。主RZは両仮定とも全13Dを選択、evidence未資格。Retry/resume0、旧run再起動なし。追加実行へ自動進行せずmandatory STOP。
+
 ## 研究C：Round別D/PRの保存値限定entry（2026-10-30）
 
 [run_research_c_roundwise_det_pr.py](run_research_c_roundwise_det_pr.py)／[未承認契約](../docs/research/research_c_roundwise_det_pr_contract_unapproved_20261030.json)／[報告](../docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。既定はhash-only passive preflight。別のチャット実行許可後だけ `--execute` で最大189 units、fresh run01/retry-resume0。M2/M4の固定JSON scalarだけを再解析し、分子NPZ/QPY decode・sampling・build/compile・fit0。

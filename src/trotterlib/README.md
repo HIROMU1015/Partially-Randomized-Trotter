@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：共通energy scalar接続の科学実行結果（2026-10-30）
+
+[Round別D/PR結果](../../docs/research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE118無変更で既存accuracy/Hoeffding/serial会計を接続し189 COMPLETE、FAIL0。両仮定の主RZ選択は全13D、PR evidenceは未資格。新しいoperator/PF/RTE/native/fitなし、公開後mandatory STOP。
+
 ## 研究C：Round別D/PRの保存scalar adapter（2026-10-30）
 
 [c_roundwise_det_pr.py](../trottertracks/c_roundwise_det_pr.py)／[saved entry](../trottertracks/c_roundwise_det_pr_saved.py)／[設計](../../docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。既存AccuracyTarget/RoundEvidence/Hoeffding/energy/serial会計を再利用し、共通H/ground identityとmethod別証拠を接続する。PF/RTE・回路・fitterを呼ばず、全D支配/潜在有用/未資格を区分。未承認189-call、今回科学call0。

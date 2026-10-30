@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：Round別D/PR・科学実行完了（2026-10-30）
+
+[Gate/全round/条件付き費用](docs/research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE79fa01076無変更、189/189 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、同じCDF8γ.1/sector36、D全frame S2 s1／PR LD2 partial S2 s1/r128/K0、δ=h=.1/m0..12、own-ground/準備除外。主RZの両仮定laneで全13roundがDを選びMIXED_ROUND_DOMINATED、evidenceはPR誤差未資格でUNQUALIFIED。Ideal総RZは全D＝選択101825929455、全PR234117788135。固定点モデル内のNO-GOであり、全指標支配/母平均/実CA/全law保証ではない。原本保全・公開後mandatory STOP。 実行環境でも人工・回帰117 PASS。SOURCE118/input23/旧保護2728件不変、raw91件。Local published numerical/scalar evidenceで、CI/外部独立再現ではない。
+
 ## 研究C：Round別D/PRの条件付きbridge・技術準備（2026-10-30）
 
 [十分条件・人工検証](docs/research/research_c_roundwise_det_pr_allocation_design_20261030.md)。同一DF energyに対するraw-signal/alias条件とβ<π/3のnearest-branchを確認。新42＋回帰75＝117 PASS、SOURCE118/input23のpassive preflight PASS。実H4のround費用・混合優位・dominanceは未判定、科学call0。保存189-callは別途実行許可が必要。
