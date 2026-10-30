@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：CDF7 native32の人工検証（2026-10-30）
+
+[新test](management/test_research_c_cdf7_native32.py)／[技術報告](../docs/research/research_c_cdf7_native32_preparation_20261030.md)。人工rank7保存119相当→332 mock/QPY128、実人工128-event full512 raw/compiled/adjoint/X-Y、SOURCE/sector/law/phase不一致、seed分離、fresh STOP、shared-SEを検証。既存CDF7 PR・Qiskit shared-lock・rank8 gateも回帰する。実H4の性能・CA保証を人工PASSから推定しない。
+
 ## 研究C：CDF7 PRの人工end-to-end・回帰（2026-10-30）
 
 [新人工11件](management/test_research_c_cdf7_PR.py)＋既存回帰28件＝39 PASS。[技術報告](../docs/research/research_c_cdf7_PR_preparation_20261030.md)。Invented rank7 J/Uで既存CAR/PF/RTE/RPEを用い119 dispatch、63終了、correctness STOP、未資格null、component consumer、input/SOURCE/fresh不一致、native/sample遮断を検証。旧rank8 gateも回帰。実H4の科学的性能やCA達成を示すものではなく、今回実科学call0。

@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：CDF7 native32・332-call（2026-10-30）
+
+[run_research_c_cdf7_native32.py](run_research_c_cdf7_native32.py)／[技術報告](../docs/research/research_c_cdf7_native32_preparation_20261030.md)。`--contract docs/research/research_c_cdf7_native32_contract_20261030.json`はpassive byte/version/fresh検査、`--execute`は固定332-callをfresh run01で一度実行する。今回はユーザーの一括指示が許可範囲。保存119-call runnerは再起動しない。新fit/PF-RTE/shots再計算0、32 compile/QPY128、終了後mandatory STOP。
+
 ## 研究C：保存CDF7 PR・専用119-call entry（2026-10-30）
 
 [run_research_c_cdf7_PR.py](run_research_c_cdf7_PR.py)は`--contract docs/research/research_c_cdf7_PR_contract_ready_unapproved_20261030.json`のみならbytes・版・fresh確認だけを行う。[技術報告](../docs/research/research_c_cdf7_PR_preparation_20261030.md)。`--execute`による実H4評価には別途明示許可が必要。新fit／native／samplingへの分岐なし。人工39 PASS、今回科学call0。

@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：CDF7 native32の接続と限定332-call（2026-10-30）
+
+[技術報告](research/research_c_cdf7_native32_preparation_20261030.md)／[固定科学契約](research/research_c_cdf7_native32_contract_20261030.json)。Rank7の8因子、保存oracle/law/RPE、32本のfull512 raw/compiled/adjoint/X-Y、P0費用と条件付き総資源へ接続。Native本体323に独立入力接続9を明示計上。全law/実CA/母平均優位は未資格のまま。ユーザーの一括指示に基づき固定後一度実行しSTOP。
+
 ## 研究C：CDF7 PR119-call実行完了（2026-10-30）
 
 [科学結果・13 round・3 lane・4損益分岐](research/research_c_cdf7_PR_execution_20261030.md)。保存H4/1Å/STO-3G、CDF7/LD2/sector36、partial S2 δ.1/s1/r128/K0、own-oracle／状態準備除外。119 COMPLETE／FAIL0、13/13潜在適格、ideal仮定shots21768。M4へのRZ kernel損益分岐6506.293、価格未測定で優位未認定。Evidence lane未資格／実CA・総資源null、新fit/native/sampling0。公開照合後mandatory STOP。

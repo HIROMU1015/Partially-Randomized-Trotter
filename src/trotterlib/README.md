@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：CDF7 native32専用接続（2026-10-30）
+
+[c_cdf7_native32.py](../trottertracks/c_cdf7_native32.py)／[報告・固定条件](../../docs/research/research_c_cdf7_native32_preparation_20261030.md)。旧rank8 SOURCEを変更せず8因子／saved119 evidenceへ接続し、既存CAR・precision Gaussian・P0・actual adjoint・X/Y・calibrationを再利用。332 units（native323＋load9）、新fit/旧PF-RTE/RPE再計算0、全law保証は未資格。
+
 ## 研究C：保存CDF7のPR reference・RPE・損益分岐（2026-10-30）
 
 [c_cdf7_pr.py](../trottertracks/c_cdf7_pr.py)／[技術報告](../../docs/research/research_c_cdf7_PR_preparation_20261030.md)。既存一般K・SectorCAR・PF/RTE・RPEを再利用するrank7専用8因子adapter。旧rank8 SOURCEを変更せず、最大119／早期63 unitsを固定。人工39 PASS、実H4科学call0。Native／fitを実行せず、実科学計算は別途明示許可後。

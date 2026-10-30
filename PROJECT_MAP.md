@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：CDF7 native32・332-call独立entry（2026-10-30）
+
+[技術接続・SOURCE・科学契約](docs/research/research_c_cdf7_native32_preparation_20261030.md)。旧native本体323＋保存入力接続9＝332 units。保存H4/1Å/STO-3G、CDF7/sector36/LD2、partial S2 δ.1/s1/r128/K0、32独立trajectory／full512／P0／QPY128。保存PF/RTE・ground・shotsを再利用し再計算0、fit0。ユーザーの一括指示により人工検証・SOURCE固定後に一度実行し、有限cohortの条件付き比較まで保存してmandatory STOPする。
+
 ## 研究C：保存CDF7 PR119-call完了・native価格は未測定（2026-10-30）
 
 [結果・全13 round・RPE・損益分岐](docs/research/research_c_cdf7_PR_execution_20261030.md)。SOURCE3e75b1690無変更、119/119 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、通常CDF7/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外。8因子・ground/alias・13/13 PF-RTE十分条件PASS。Ideal仮定shots21768、W35983272、RZ kernel損益分岐は通常CDF8γ0に17426.372／M4に6506.293。Evidence laneはUNQUALIFIED、実CA／新native価格／総資源はnull。Nativeの別提案対象となったが今回build/compile/sampling/fit0。SOURCE102/input20/旧保護2214不変、公開照合後mandatory STOP。以下は各時点の履歴。

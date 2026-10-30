@@ -1,0 +1,78 @@
+.F..FFFF.                                                                [100%]
+=================================== FAILURES ===================================
+_________________ test_artificial_saved119_to_native332_QPY128 _________________
+tests/management/test_research_c_cdf7_native32.py:61: in test_artificial_saved119_to_native332_QPY128
+    c,p,d,_=saved_fixture(tmp_path);mock_native(monkeypatch)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_cdf7_native32.py:28: in saved_fixture
+    m.io.save(root/c['records']['shell_reports'],records['shell_reports'])
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/tmp/prt-c-cdf7-native32-20261030/.cache/tmp/pytest-of-abe/pytest-0/test_artificial_saved119_to_na0/shell_reports.json'
+________________ test_saved_fault_stops_before_sampling[SOURCE] ________________
+tests/management/test_research_c_cdf7_native32.py:114: in test_saved_fault_stops_before_sampling
+    c,_,_,_=saved_fixture(tmp_path);mock_native(monkeypatch)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_cdf7_native32.py:28: in saved_fixture
+    (root/c['records']['shell_reports']).write_text(json.dumps(records['shell_reports']))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/tmp/prt-c-cdf7-native32-20261030/.cache/tmp/pytest-of-abe/pytest-0/test_saved_fault_stops_before_0/shell_reports.json'
+________________ test_saved_fault_stops_before_sampling[sector] ________________
+tests/management/test_research_c_cdf7_native32.py:114: in test_saved_fault_stops_before_sampling
+    c,_,_,_=saved_fixture(tmp_path);mock_native(monkeypatch)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_cdf7_native32.py:28: in saved_fixture
+    (root/c['records']['shell_reports']).write_text(json.dumps(records['shell_reports']))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/tmp/prt-c-cdf7-native32-20261030/.cache/tmp/pytest-of-abe/pytest-0/test_saved_fault_stops_before_1/shell_reports.json'
+_________________ test_saved_fault_stops_before_sampling[law] __________________
+tests/management/test_research_c_cdf7_native32.py:114: in test_saved_fault_stops_before_sampling
+    c,_,_,_=saved_fixture(tmp_path);mock_native(monkeypatch)
+            ^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_cdf7_native32.py:28: in saved_fixture
+    (root/c['records']['shell_reports']).write_text(json.dumps(records['shell_reports']))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/tmp/prt-c-cdf7-native32-20261030/.cache/tmp/pytest-of-abe/pytest-0/test_saved_fault_stops_before_2/shell_reports.json'
+__________________ test_shared_calibration_SE_and_shell_once ___________________
+tests/management/test_research_c_cdf7_native32.py:129: in test_shared_calibration_SE_and_shell_once
+    c,_,_,_=saved_fixture(tmp_path);v=m.evidence(tmp_path,c);pr=v['PR']
+            ^^^^^^^^^^^^^^^^^^^^^^^
+tests/management/test_research_c_cdf7_native32.py:28: in saved_fixture
+    (root/c['records']['shell_reports']).write_text(json.dumps(records['shell_reports']))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/tmp/prt-c-cdf7-native32-20261030/.cache/tmp/pytest-of-abe/pytest-0/test_shared_calibration_SE_and0/shell_reports.json'
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_cdf7_native32.py::test_artificial_saved119_to_native332_QPY128
+FAILED tests/management/test_research_c_cdf7_native32.py::test_saved_fault_stops_before_sampling[SOURCE]
+FAILED tests/management/test_research_c_cdf7_native32.py::test_saved_fault_stops_before_sampling[sector]
+FAILED tests/management/test_research_c_cdf7_native32.py::test_saved_fault_stops_before_sampling[law]
+FAILED tests/management/test_research_c_cdf7_native32.py::test_shared_calibration_SE_and_shell_once
+5 failed, 4 passed in 177.34s (0:02:57)
