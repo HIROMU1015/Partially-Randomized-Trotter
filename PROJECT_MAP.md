@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：保存CDF7 PR119-call完了・native価格は未測定（2026-10-30）
+
+[結果・全13 round・RPE・損益分岐](docs/research/research_c_cdf7_PR_execution_20261030.md)。SOURCE3e75b1690無変更、119/119 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、通常CDF7/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0、own-ground/状態準備除外。8因子・ground/alias・13/13 PF-RTE十分条件PASS。Ideal仮定shots21768、W35983272、RZ kernel損益分岐は通常CDF8γ0に17426.372／M4に6506.293。Evidence laneはUNQUALIFIED、実CA／新native価格／総資源はnull。Nativeの別提案対象となったが今回build/compile/sampling/fit0。SOURCE102/input20/旧保護2214不変、公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：保存CDF7のPR119-call経路・技術準備完了（2026-10-30）
 
 [技術報告・SOURCE・新ready契約](docs/research/research_c_cdf7_PR_preparation_20261030.md)。Rank7専用adapterでbase＋7 frame、sector36の独立CAR／PF-RTE／RPE／2比較先の損益分岐を接続。新11＋回帰28＝39人工PASS、passive preflight PASS。最大119 units、登録十分条件不適格なら63で終了。今回の実H4科学call0、native／sampling／fit0、未知合成・law誤差と価格はnull。旧非実行draft・1-fit結果は保全。科学実行は別途明示許可後、公開照合後mandatory STOP。

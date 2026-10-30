@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：CDF7 PR119-call・数値reference完了、CAは仮定付き（2026-10-30）
+
+[実行報告](docs/research/research_c_cdf7_PR_execution_20261030.md)／[raw・SOURCE・journal・STOP](artifacts/research_c_cdf7_PR/2026-10-30/run01/)／[summary・postflight・CSV](artifacts/research_c_cdf7_PR/2026-10-30/)。固定SOURCE3e75b16901f0f4a9966d2bd5b9ff6bde8e75f472、119/119 COMPLETE、correctness FAIL/inflight/retry/resume0。保存直鎖H4/1Å/STO-3G、通常number CDF7、sector36、元順LD2/tail F2..6、partial S2 δ=h=.1/s1/r128/K0/m0..12、own-DF oracle/状態準備除外。8因子のgeneral-K/raw CAR、own-ground/alias、13/13登録PF-RTE十分条件PASS。m12 PF .0750945046863688／corrected RTE .08215433344623652／attenuation .46092862292087694。Evidence13roundは未資格null。Ideal／.001A各budgetの2仮定では条件付きenergy bound .0012786195874127638Ha、shots21768/21862、W35983272/36152228。RZ kernel損益分岐idealは通常CDF8γ0 17426.37199236634／M4 6506.293033801929。新native価格・全law/actual CA/support/総資源優位は未資格null。新fit/optimizer/DF norm再計算/native/sampling0。SOURCE102/input20/旧保護2214不変、raw32、環境で人工11再確認PASS（準備39 PASS）。Local published numerical pilot、CI/外部独立再現ではない。Native別提案の判定は実行許可ではなく、公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：通常CDF7・限定1-fitでDF予算PASS（2026-10-30）
 
 [結果・初期/終了誤差・CDF8比較・後続案](docs/research/research_c_cdf7_onefit_execution_20261030.md)。保存直鎖H4/1Å/STO-3G、Nα=Nβ2/sector36、通常number CDF7/元順LD2、γ0 normalized tensor loss、ffsim0.0.83/修正codec/L-BFGS-B options=None。SOURCEc13d6f82a無変更で25/25 COMPLETE、correctness FAIL0、rank7 Cholesky初期化1/fit1/retry-resume0。初期sector+guard9.0647035e-4Haは予算未達の診断としてfitを許容し、終了3.02264175e-7HaでCA/8=.00019875Ha PASS。Optimizerは215iterの相対目的減少停止、正規化gradient∞=.05556で停留/大域保証なし。人工45 PASS＋29 subtests、旧保護2153件不変。PR/PF-RTE/ground/native/shots/総資源0。後続119-call案はrank7 adapter/SOURCE未固定でexecutable=false、native32は別案。公開照合後mandatory STOP。

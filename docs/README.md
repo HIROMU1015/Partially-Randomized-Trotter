@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：CDF7 PR119-call実行完了（2026-10-30）
+
+[科学結果・13 round・3 lane・4損益分岐](research/research_c_cdf7_PR_execution_20261030.md)。保存H4/1Å/STO-3G、CDF7/LD2/sector36、partial S2 δ.1/s1/r128/K0、own-oracle／状態準備除外。119 COMPLETE／FAIL0、13/13潜在適格、ideal仮定shots21768。M4へのRZ kernel損益分岐6506.293、価格未測定で優位未認定。Evidence lane未資格／実CA・総資源null、新fit/native/sampling0。公開照合後mandatory STOP。
+
 ## 研究C：保存CDF7のPR119-call経路・技術準備完了（2026-10-30）
 
 [技術報告](research/research_c_cdf7_PR_preparation_20261030.md)／[未承認ready契約](research/research_c_cdf7_PR_contract_ready_unapproved_20261030.json)。Rank7専用の8因子／13 round／3精度lane／2価格比較を接続し、人工39 PASS。119 units（十分条件不適格なら63）、今回の実H4科学call0、native・fit0。旧draft／結果と未知誤差nullを維持。科学実行は別途明示許可が必要。

@@ -220,6 +220,11 @@
     {
       "commit": "dcf7ab6da2ea540ae54357b82ac3ea7a02df99ad",
       "role": "M4-Native128 revision2;fixed32full512/adjoint/XY andsavedM4conditional accounting332calls"
+    },
+    {
+      "commit": "3e75b16901f0f4a9966d2bd5b9ff6bde8e75f472",
+      "role": "saved_CDF7_PR_reference_RPE_price_scientific_SOURCE",
+      "description": "unchanged119-call execution;13 potentially feasible;conditional shots/break-even only;no fit/native/sample or actual CA/resources"
     }
   ],
   "artifact_inventory": {
@@ -10591,6 +10596,120 @@
       "legacy_design_preserved": true,
       "separate_scientific_permission_required": true,
       "verification": "artifacts/research_c_cdf7_PR/2026-10-30/technical/verification.json",
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_cdf7_PR_execution_20261030",
+      "status": "CDF7_PR_REFERENCE_RPE_PRICE_COMPLETE",
+      "report": "docs/research/research_c_cdf7_PR_execution_20261030.md",
+      "execution_SOURCE_commit": "3e75b16901f0f4a9966d2bd5b9ff6bde8e75f472",
+      "source_manifest": "artifacts/research_c_cdf7_PR/2026-10-30/technical/SOURCE.json",
+      "source_manifest_sha256": "e79781e8d63acb60f993aeb1d13ee8d9132d38d24f8905f4c8ac3ca086c85d16",
+      "contract": "docs/research/research_c_cdf7_PR_contract_ready_unapproved_20261030.json",
+      "contract_sha256": "55032e96e745095611b52aebe300056f0ce12231742dce2f6007ee5d0e427c81",
+      "raw": "artifacts/research_c_cdf7_PR/2026-10-30/run01",
+      "summary": "artifacts/research_c_cdf7_PR/2026-10-30/execution_summary.json",
+      "postflight": "artifacts/research_c_cdf7_PR/2026-10-30/execution_postflight.json",
+      "model": "saved linear H4/1.00Angstrom/STO-3G;number CDF7;sector36 Nalpha=Nbeta2;LD2;partial ordered S2 delta=h.1/s1/r128/K0/m0..12;own-ground oracle;preparation excluded",
+      "attempts": 119,
+      "complete": 119,
+      "FAIL": 0,
+      "retry": 0,
+      "resume": 0,
+      "source_changed": false,
+      "representation_factors_PASS": 8,
+      "ground_alias_PASS": true,
+      "PF_RTE_potentially_feasible_rounds": 13,
+      "evidence_lane": "UNQUALIFIED",
+      "conditional_lanes": {
+        "evidence": {
+          "qualification": "UNQUALIFIED",
+          "round_states": {
+            "UNRESOLVED_SIGNAL_ERROR": 13
+          },
+          "energy": {
+            "status": "UNQUALIFIED_ROUNDS",
+            "same_accuracy": false
+          },
+          "total_shots": null,
+          "W": null
+        },
+        "ideal_exact_native": {
+          "qualification": "ASSUMED_SCENARIO",
+          "round_states": {
+            "CONDITIONAL_ROUND_PASS": 13
+          },
+          "energy": {
+            "status": "CONDITIONAL_CA_PASS",
+            "same_accuracy": true,
+            "energy_error_bound_ha": 0.0012786195874127638,
+            "statistical_failure_upper": 0.01,
+            "state_preparation": "ORACLE_COST_EXCLUDED",
+            "guarantee": "conditional_on_declared_deterministic_error_evidence",
+            "numerical_pilot": true
+          },
+          "total_shots": 21768,
+          "W": 35983272
+        },
+        "assumed_raw_signal_budget": {
+          "qualification": "ASSUMED_SCENARIO",
+          "round_states": {
+            "CONDITIONAL_ROUND_PASS": 13
+          },
+          "energy": {
+            "status": "CONDITIONAL_CA_PASS",
+            "same_accuracy": true,
+            "energy_error_bound_ha": 0.0012786195874127638,
+            "statistical_failure_upper": 0.01,
+            "state_preparation": "ORACLE_COST_EXCLUDED",
+            "guarantee": "conditional_on_declared_deterministic_error_evidence",
+            "numerical_pilot": true
+          },
+          "total_shots": 21862,
+          "W": 36152228
+        }
+      },
+      "RZ_break_even": {
+        "ideal_exact_native:CDF8_gamma0": {
+          "mu_break_even": 17426.37199236634,
+          "positive": true,
+          "equality_means_tie": true
+        },
+        "ideal_exact_native:M4_r128": {
+          "mu_break_even": 6506.293033801929,
+          "positive": true,
+          "equality_means_tie": true
+        },
+        "assumed_raw_signal_budget:CDF8_gamma0": {
+          "mu_break_even": 17424.524450298057,
+          "positive": true,
+          "equality_means_tie": true
+        },
+        "assumed_raw_signal_budget:M4_r128": {
+          "mu_break_even": 6504.591725861266,
+          "positive": true,
+          "equality_means_tie": true
+        }
+      },
+      "native_recommendation": "ELIGIBLE_FOR_SEPARATE_NATIVE_PROPOSAL",
+      "new_fit": 0,
+      "optimizer": 0,
+      "DF_error_recalculation": false,
+      "native_build_compile": 0,
+      "sampling": 0,
+      "actual_CA": null,
+      "own_native_price": null,
+      "total_resources": null,
+      "cost_support": null,
+      "source_files": 102,
+      "saved_inputs": 20,
+      "old_protected_files": 2214,
+      "old_results_unchanged": true,
+      "raw_file_count": 32,
+      "preparation_tests_PASS": 39,
+      "execution_artificial_tests_PASS": 11,
+      "CI_or_external_reproduction": false,
+      "resources": "artifacts/research_c_cdf7_PR/2026-10-30/run01/resources.json",
       "mandatory_stop": true
     }
   ],
