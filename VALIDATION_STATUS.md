@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：共通optimizerのRC-DF型L2対照・技術準備（2026-11-01）
+
+[数理対応・人工171 PASS＋29 subtests](docs/research/research_c_regularization_comparator_design_20261101.md)。現在のsmooth tail目的とfull uniform L2をCOMPARABLE_DISTINCT_OBJECTIVEと分類。非平滑/符号制約下のweighted L1二乗帰着は条件付きで示した。保存J/Uを数値decodeせず、両環境のpassive SOURCE/input/version preflight PASS。旧SOURCE/原本不変、新科学call0。将来Stage Aは新規1 fit/17 units、初期penalty寄与一致で最終誤差一致ではない。科学性能/新規性は未判定、B/C未承認、mandatory STOP。
+
 ## 研究C：既存証拠の統合資料（2026-10-31）
 
 [Evidence Map・資格辞書・SOURCE](docs/research/research_c_evidence_synthesis_and_decision_readiness_20261031.md)。既存23項目の主張と根拠を整理した文書成果物。新しい数値検証・科学call・保存値再解析・テスト再実行0。Claim A〜Cの限定的/条件付き支持と、同じJ/Uの強Dへの主RZ優位が未支持であることを分離。既存のUNQUALIFIED/UNKNOWN/null、固定回路validated保証の範囲、全law未資格を変更していない。論文化GO/新規性/正式終了は未判断、公開照合後mandatory STOP。

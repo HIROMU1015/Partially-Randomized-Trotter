@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：RC-DF型目的のStage A専用entry（2026-11-01）
+
+[run_research_c_regularization_comparator.py](run_research_c_regularization_comparator.py)／[仕様・人工検証](../docs/research/research_c_regularization_comparator_design_20261101.md)。Defaultはbyte/env preflightで数値decode0。明示許可後のみ、固定fresh outputで共通初期値からfull ordered Z=J L2の1 fit・sector診断17 callsを実施する準備。旧paired runnerを再起動しない。B/C、PF/RTE/native/shotsは契約外、mandatory STOP。
+
 ## 研究C：Round別D/PR runnerの189-call実行完了（2026-10-30）
 
 [結果・SOURCE・STOP](../docs/research/research_c_roundwise_det_pr_execution_20261030.md)。準備済みentryをSOURCE79fa01076無変更で一度実行し189 COMPLETE。主RZは両仮定とも全13Dを選択、evidence未資格。Retry/resume0、旧run再起動なし。追加実行へ自動進行せずmandatory STOP。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：既存正則化との目的比較・Stage A準備（2026-11-01）
+
+[数理対応・強度規則・人工171 PASS＋29 subtests](docs/research/research_c_regularization_comparator_design_20261101.md)／[未承認17-call契約](docs/research/research_c_regularization_comparator_contract_unapproved_20261101.json)。Z_RCDF=空間J、spin K=J/2。一般signed J・現在のsmooth tail目的は固定entry L1/L2と一般に非同値、非平滑/符号制約下のL1二乗帰着は別記。共通optimizer下の全frame uniform L2を初期penalty寄与一致で比較するCOMPARABLE_DISTINCT_OBJECTIVE。新penalty/専用entryのみ、既存SOURCE/runner不変。新H4 fit/再解析/科学call0、将来Stage Aは1 fit/17 units、B/C未承認、公開照合後mandatory STOP。
+
 ## 研究C：既存成果のEvidence Mapと研究判断資料（2026-10-31）
 
 [中心資料・23項目の証拠対応・Q1〜Q10](docs/research/research_c_evidence_synthesis_and_decision_readiness_20261031.md)。PR-aware DFのtail mass/DF予算、特定条件のA/shots、PR内部条件付き資源改善をClaim A〜Cとして分離。同じJ/Uの強決定論への主RZ優位は未支持。P4・CDF7・surrogate・round割当の限定負結果、shared-basisの数学的帰着、lawの方法差未特定を区別する。既存値の引用とSOURCE/原本照合のみで新科学call・保存数値再解析0。論文化GO/独立新規性/正式終了は未判断、選択肢A/B/Cはユーザー／研究Cの判断材料。公開照合後mandatory STOP。

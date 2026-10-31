@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：正則化比較の人工・回帰試験（2026-11-01）
+
+[penalty/実ffsim接続](management/test_research_c_regularization_comparator.py)／[Stage A mock runner](management/test_research_c_regularization_comparator_pilot.py)。新22 PASS、既存fit/codec88・評価48・独立一般K13＋29 subtests PASS。Z=J/K=J/2、ordered対称重み、loss/gradient、同x0、γ0、det/π、異常値、17-call/STOPを確認。実optimizerはmockでiteration0、実分子decode0。Qiskit未ロードを要求する旧一般K試験は独立processで実施する。[記録](../artifacts/research_c_regularization_comparator/2026-11-01/technical/verification.json)。
+
 ## 研究C：Sampling lawの人工代数確認（2026-10-31）
 
 [新9 test](management/test_research_c_sampling_law_freedom.py)／[報告](../docs/research/research_c_sampling_law_freedom_survey_20261030.md)。既存rte APIのsigned K0/K2・正負τ、q/weight・実測second moment、affine辞書依存、Parent恒等式、相関pathとcontrolled phaseを人工2×2で確認。既存paired Taylor/identity/signed product/異種normalizerの4testもPASS、計13件。RNG・分子配列・回路・shots・新科学計算を呼ばない。

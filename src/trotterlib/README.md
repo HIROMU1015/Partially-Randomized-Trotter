@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：既存ffsim・CARを使う正則化比較adapter（2026-11-01）
+
+研究固有の[penalty adapter](../trottertracks/c_rcdf_comparator.py)と[Stage A接続](../trottertracks/c_rcdf_comparator_pilot.py)はtrottertracksに置く。共通libraryや旧SOURCEを変更せず、既存loss/codec/fit、SectorCAR/general-K/guardを呼ぶ。[数式・非同値条件・検証](../../docs/research/research_c_regularization_comparator_design_20261101.md)。人工171 PASS＋29 subtests、実H4科学call0、未承認1-fit/17-call準備、B/Cなし。
+
 ## 研究C：共通energy scalar接続の科学実行結果（2026-10-30）
 
 [Round別D/PR結果](../../docs/research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE118無変更で既存accuracy/Hoeffding/serial会計を接続し189 COMPLETE、FAIL0。両仮定の主RZ選択は全13D、PR evidenceは未資格。新しいoperator/PF/RTE/native/fitなし、公開後mandatory STOP。

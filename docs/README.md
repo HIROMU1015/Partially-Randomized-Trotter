@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：PR-tail対RC-DF型uniform L2の公平比較準備（2026-11-01）
+
+[技術報告・Q1〜Q10](research/research_c_regularization_comparator_design_20261101.md)／[Stage A未承認契約](research/research_c_regularization_comparator_contract_unapproved_20261101.json)。同一class・x0・loss/solverで目的比較を準備。符号/smoothing/行和の同値条件、SCDFの別model、初期寄与一致と誤差一致の区別、人工171 PASS＋29 subtestsを記録。今回は科学call0。将来の1-fit/17-callのみを固定しB/C・重要レビューへ自動進行しない。
+
 ## 研究C：成果統合・科学的主張と証拠の対応（2026-10-31）
 
 [中心技術資料](research/research_c_evidence_synthesis_and_decision_readiness_20261031.md)。Stage A〜M4、構造/rank/basis、native/round、sampling lawとTrack Bを23項目のEvidence Mapへ統合。誤差・価格・統計の資格、論文化の主張候補と不足証拠、選択肢A/B/C、Q1〜Q10を収録。既存値の転記のみ、新科学計算・再解析・重要GPTレビュー0。正式採択は行わず、公開照合後mandatory STOP。
