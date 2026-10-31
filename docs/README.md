@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：成果統合・科学的主張と証拠の対応（2026-10-31）
+
+[中心技術資料](research/research_c_evidence_synthesis_and_decision_readiness_20261031.md)。Stage A〜M4、構造/rank/basis、native/round、sampling lawとTrack Bを23項目のEvidence Mapへ統合。誤差・価格・統計の資格、論文化の主張候補と不足証拠、選択肢A/B/C、Q1〜Q10を収録。既存値の転記のみ、新科学計算・再解析・重要GPTレビュー0。正式採択は行わず、公開照合後mandatory STOP。
+
 ## 研究C：PR sampling lawの自由度・既知法対応（2026-10-31）
 
 [技術報告](research/research_c_sampling_law_freedom_survey_20261030.md)／[固定Track B取得索引](../artifacts/research_c_sampling_law_freedom/2026-10-30/technical/reference_index.json)。Euler／IS／Parent／return／相関／情報取得を分類し、独立機構は未特定（NO_DISTINCT_FREEDOM）。一般的不可能性の証明ではない。13人工PASS、実H4科学処理0、実験候補・科学契約0。D＋E保全、正式採否はユーザー／研究C、mandatory STOP。

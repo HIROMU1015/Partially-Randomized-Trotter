@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：既存証拠の統合資料（2026-10-31）
+
+[Evidence Map・資格辞書・SOURCE](docs/research/research_c_evidence_synthesis_and_decision_readiness_20261031.md)。既存23項目の主張と根拠を整理した文書成果物。新しい数値検証・科学call・保存値再解析・テスト再実行0。Claim A〜Cの限定的/条件付き支持と、同じJ/Uの強Dへの主RZ優位が未支持であることを分離。既存のUNQUALIFIED/UNKNOWN/null、固定回路validated保証の範囲、全law未資格を変更していない。論文化GO/新規性/正式終了は未判断、公開照合後mandatory STOP。
+
 ## 研究C：Sampling lawの技術調査・人工13 PASS（2026-10-31）
 
 [仕様・同値性・適用限界](docs/research/research_c_sampling_law_freedom_survey_20261030.md)。新9＋既存rte回帰4＝13 PASS。人工signed-X/Zと固定確率の決定論的列挙だけで、RNG・分子decode・価格／shots再解析・科学runner0。NO_DISTINCT_FREEDOMは調査集合での方法差未特定、H4性能negative・全samplerの不存在・新規性確定ではない。原本・既存STOP維持、実行可能科学契約なし、公開照合後mandatory STOP。

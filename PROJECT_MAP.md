@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：既存成果のEvidence Mapと研究判断資料（2026-10-31）
+
+[中心資料・23項目の証拠対応・Q1〜Q10](docs/research/research_c_evidence_synthesis_and_decision_readiness_20261031.md)。PR-aware DFのtail mass/DF予算、特定条件のA/shots、PR内部条件付き資源改善をClaim A〜Cとして分離。同じJ/Uの強決定論への主RZ優位は未支持。P4・CDF7・surrogate・round割当の限定負結果、shared-basisの数学的帰着、lawの方法差未特定を区別する。既存値の引用とSOURCE/原本照合のみで新科学call・保存数値再解析0。論文化GO/独立新規性/正式終了は未判断、選択肢A/B/Cはユーザー／研究Cの判断材料。公開照合後mandatory STOP。
+
 ## 研究C：PR sampling lawの同値性調査・追加実験なしの提案（2026-10-31）
 
 [数学仕様・6分類・Q1〜Q9](docs/research/research_c_sampling_law_freedom_survey_20261030.md)。SOURCE fb0c803f1から独立調査。NO_DISTINCT_FREEDOMは確認範囲で独立した実装可能機構を特定できなかったという技術判断で、全law不可能性や正式な研究終了ではない。K0 common-parentのL1最小性、affine辞書依存の例外、全path IS、±1測定とcontrolled位相を区別。Track B D＋E維持、新9＋既存4＝13人工PASS、実H4再解析・sampling・build/compile・科学call0。実行可能科学契約なし、公開照合後mandatory STOP。
