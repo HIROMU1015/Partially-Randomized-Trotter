@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：RC-DF型L2対照Stage A結果（2026-11-01）
+
+[17-call結果・初期/終了診断・比較](research/research_c_regularization_comparator_execution_20261101.md)／[raw・SOURCE・journal・STOP](../artifacts/research_c_regularization_comparator/2026-11-01/run01/)。Optimizer successとDF予算はPASS、PR-tail保存候補よりtail λは大きい。相対目的減少停止でL2/global最適性は未保証。追加fit/retry/条件変更0、PF/RTE/native/shots/総費用0、mandatory STOP。
+
 ## 研究C：PR-tail対RC-DF型uniform L2の公平比較準備（2026-11-01）
 
 [技術報告・Q1〜Q10](research/research_c_regularization_comparator_design_20261101.md)／[Stage A未承認契約](research/research_c_regularization_comparator_contract_unapproved_20261101.json)。同一class・x0・loss/solverで目的比較を準備。符号/smoothing/行和の同値条件、SCDFの別model、初期寄与一致と誤差一致の区別、人工171 PASS＋29 subtestsを記録。今回は科学call0。将来の1-fit/17-callのみを固定しB/C・重要レビューへ自動進行しない。

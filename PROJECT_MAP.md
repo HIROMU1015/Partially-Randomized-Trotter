@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：RC2対照の1-fit/17-call完了（2026-11-01）
+
+[結果・optimizer・物理予算・旧候補比較](docs/research/research_c_regularization_comparator_execution_20261101.md)。科学SOURCE150f904f6無変更、新fit1・17/17 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、通常CDF8/sector36/元順LD2の同x0、共通optimizer/full ordered Z=J L2・初期寄与.1。終了sector norm5.8389057e-9Ha＋guard3.2787812e-9Haで予算PASS、optimizer success/nit97。Tail λ2.20976187195Haは保存PR-tail γ.1の1.44242988558Haより大きい。固定pilotのproxy差で、最適RC-DF/資源/CA/新規性の優位ではない。PF/RTE/native/shots0、B/C未承認、公開照合後mandatory STOP。
+
 ## 研究C：既存正則化との目的比較・Stage A準備（2026-11-01）
 
 [数理対応・強度規則・人工171 PASS＋29 subtests](docs/research/research_c_regularization_comparator_design_20261101.md)／[未承認17-call契約](docs/research/research_c_regularization_comparator_contract_unapproved_20261101.json)。Z_RCDF=空間J、spin K=J/2。一般signed J・現在のsmooth tail目的は固定entry L1/L2と一般に非同値、非平滑/符号制約下のL1二乗帰着は別記。共通optimizer下の全frame uniform L2を初期penalty寄与一致で比較するCOMPARABLE_DISTINCT_OBJECTIVE。新penalty/専用entryのみ、既存SOURCE/runner不変。新H4 fit/再解析/科学call0、将来Stage Aは1 fit/17 units、B/C未承認、公開照合後mandatory STOP。

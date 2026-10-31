@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：RC2 Stage A・DF適格、tail proxy差あり（2026-11-01）
+
+[結果・gate・精度資格](docs/research/research_c_regularization_comparator_execution_20261101.md)／[raw22件](artifacts/research_c_regularization_comparator/2026-11-01/run01/)。科学SOURCE150f904f6無変更、fit1/17 COMPLETE/FAIL0/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36/LD2、全frame uniform L2・同qualified x0・初期penalty寄与一致。Optimizer success/97iter、初期/終了一般K-CAR PASS、終了sector norm5.8389057e-9Ha＋guard3.2787812e-9HaでCA/8 PASS。λ2.20976187195Haは保存PR-tail γ.1の1.44242988558Haより大きい固定点結果。相対目的減少停止で最適L2/最適ρ/大域性は未確立。PF/RTE/A/shots/native/総費用/CA/null資格を変更しない。Local published numerical pilotでCI/外部独立再現ではない。B/Cへ自動進行せずmandatory STOP。
+
 ## 研究C：共通optimizerのRC-DF型L2対照・技術準備（2026-11-01）
 
 [数理対応・人工171 PASS＋29 subtests](docs/research/research_c_regularization_comparator_design_20261101.md)。現在のsmooth tail目的とfull uniform L2をCOMPARABLE_DISTINCT_OBJECTIVEと分類。非平滑/符号制約下のweighted L1二乗帰着は条件付きで示した。保存J/Uを数値decodeせず、両環境のpassive SOURCE/input/version preflight PASS。旧SOURCE/原本不変、新科学call0。将来Stage Aは新規1 fit/17 units、初期penalty寄与一致で最終誤差一致ではない。科学性能/新規性は未判定、B/C未承認、mandatory STOP。

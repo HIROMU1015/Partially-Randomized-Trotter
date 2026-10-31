@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：固定RC2 entryの1-fit実行完了（2026-11-01）
+
+[結果と実行履歴](../docs/research/research_c_regularization_comparator_execution_20261101.md)。科学SOURCE150f904f6の専用entryを無変更で一度実行し17 COMPLETE/fit1/FAIL0/retry-resume0。消費済みrun01を再起動しない。B/C、PF/RTE/native/shotsは未実行、公開照合後mandatory STOP。
+
 ## 研究C：RC-DF型目的のStage A専用entry（2026-11-01）
 
 [run_research_c_regularization_comparator.py](run_research_c_regularization_comparator.py)／[仕様・人工検証](../docs/research/research_c_regularization_comparator_design_20261101.md)。Defaultはbyte/env preflightで数値decode0。明示許可後のみ、固定fresh outputで共通初期値からfull ordered Z=J L2の1 fit・sector診断17 callsを実施する準備。旧paired runnerを再起動しない。B/C、PF/RTE/native/shotsは契約外、mandatory STOP。

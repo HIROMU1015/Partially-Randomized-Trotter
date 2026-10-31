@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：RC2科学実行環境の人工再確認（2026-11-01）
+
+[実行報告](../docs/research/research_c_regularization_comparator_execution_20261101.md)。固定SOURCEの新人工22件を実行worktreeで再確認PASS。準備時171件＋29 subtestsの全再実行ではない。その後に別途許可された実H4の1 fit/17 callsを一度実行し、科学correctness FAIL0。人工PASSとDF/proxy数値結果を分離して記録した。
+
 ## 研究C：正則化比較の人工・回帰試験（2026-11-01）
 
 [penalty/実ffsim接続](management/test_research_c_regularization_comparator.py)／[Stage A mock runner](management/test_research_c_regularization_comparator_pilot.py)。新22 PASS、既存fit/codec88・評価48・独立一般K13＋29 subtests PASS。Z=J/K=J/2、ordered対称重み、loss/gradient、同x0、γ0、det/π、異常値、17-call/STOPを確認。実optimizerはmockでiteration0、実分子decode0。Qiskit未ロードを要求する旧一般K試験は独立processで実施する。[記録](../artifacts/research_c_regularization_comparator/2026-11-01/technical/verification.json)。
