@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：保存一次診断・両終点のengineering gradient基準未達（2026-11-01）
+
+[結果と資格](docs/research/research_c_regularization_first_order_execution_20261101.md)／[raw27件・14 calls・STOP](artifacts/research_c_regularization_first_order/2026-11-01/run01/)。SOURCE0996a5abb無変更、14 COMPLETE/FAIL0、fit/optimizer/retry/resume0。保存直鎖H4/1Å/STO-3G、CDF8/sector36・元順LD2・同x0とRC2/PR保存終点、固定α=γ=.1。3点のJ exact/U maxabs差0、9 value-gradientと解析L2係数・直接U penalty0のgate PASS。自己終点gradient∞ .4222446601/1.4825504139は登録gtol1e-5未達、RC2終点で既知tensor-null方向のL2下降成分を観測。これは数値一次診断であり、厳密enclosure/大域最適/最適強度/歴史的停止原因/CA/資源優位ではない。旧DF予算・結果・STOP不変、実行時人工13 PASS、公開照合後mandatory STOP。
+
 ## 研究C：RC2 Stage A・DF適格、tail proxy差あり（2026-11-01）
 
 [結果・gate・精度資格](docs/research/research_c_regularization_comparator_execution_20261101.md)／[raw22件](artifacts/research_c_regularization_comparator/2026-11-01/run01/)。科学SOURCE150f904f6無変更、fit1/17 COMPLETE/FAIL0/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36/LD2、全frame uniform L2・同qualified x0・初期penalty寄与一致。Optimizer success/97iter、初期/終了一般K-CAR PASS、終了sector norm5.8389057e-9Ha＋guard3.2787812e-9HaでCA/8 PASS。λ2.20976187195Haは保存PR-tail γ.1の1.44242988558Haより大きい固定点結果。相対目的減少停止で最適L2/最適ρ/大域性は未確立。PF/RTE/A/shots/native/総費用/CA/null資格を変更しない。Local published numerical pilotでCI/外部独立再現ではない。B/Cへ自動進行せずmandatory STOP。

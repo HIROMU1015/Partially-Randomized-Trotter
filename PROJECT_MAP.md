@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：保存3点・一次診断14-call実行完了（2026-11-01）
+
+[結果・全gate・9 value-gradient・次の判断](docs/research/research_c_regularization_first_order_execution_20261101.md)。固定SOURCE0996a5abb、14 COMPLETE/FAIL0、fit/optimizer/retry-resume0。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、α=γ=.1の初期寄与一致と勾配影響の差を確認。両自己終点はgtol未達、RC2の既知tensor-null方向にL2下降成分が残る。最適ρ/旧停止原因は未確定。旧SOURCE/raw/STOP不変、追加fit/B-Cへ進まずmandatory STOP。以下の準備表示は履歴。
+
 ## 研究C：RC2強度・停止条件の診断と0-fit準備（2026-11-01）
 
 [技術診断・Q1〜Q10](docs/research/research_c_regularization_strength_stopping_diagnostic_20261101.md)／[未承認14-call契約](docs/research/research_c_regularization_first_order_contract_unapproved_20261101.json)。固定pilotは有効、強い最適化済み対照の資格は未確立。B4共通物理予算を優先する提案と、3保存点の既存loss/penalty一次診断を準備。人工123 PASS、SOURCE39/input9のpassive preflight PASS、実H4科学call/decode/fit0。旧SOURCE・run01・STOP不変、別許可までmandatory STOP。

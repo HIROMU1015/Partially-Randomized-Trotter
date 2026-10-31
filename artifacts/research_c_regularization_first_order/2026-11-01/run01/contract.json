@@ -1,0 +1,135 @@
+{
+  "schema": "C_RC2_PR_FIRST_ORDER_CONTRACT_V1",
+  "scope": "C_RC2_PR_SAVED_FIRST_ORDER_V1",
+  "status": "UNAPPROVED_PROPOSAL",
+  "permission": "Separate explicit user permission is required for the 14-call saved-H4 reanalysis. No approval proof, grant or approval-text storage.",
+  "base_commit": "335a7e04951e009bd6910afaecd1a3107e0d61a4",
+  "numerical_module_commit": "a41329d7e860415ddfc21df5b02728804846d16d",
+  "source_manifest": "artifacts/research_c_regularization_first_order/2026-11-01/technical/SOURCE.json",
+  "source_manifest_sha256": "328a84c93b89e1cf02fd23784fa53f0435b857ce490c6996713b5fd7416c47fd",
+  "entry": "scripts/run_research_c_regularization_first_order.py",
+  "policy": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "l2_scale": 4.410884790420646,
+    "mass_scale": 2.2093719370722074,
+    "strength": 0.1,
+    "gamma": 0.1,
+    "epsilon": 1e-08,
+    "rotation_atol": 1e-10,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "first_order_gtol": 1e-05,
+    "DF_budget_Ha": 0.00019875,
+    "new_fits": 0,
+    "optimizer_iterations": 0,
+    "retry": 0,
+    "resume": 0
+  },
+  "call_limits": {
+    "snapshots_load": 1,
+    "parameter_fidelity": 3,
+    "objective_gradient": 9,
+    "component_diagnostic": 1
+  },
+  "maximum_logical_units": 14,
+  "fresh_output": "artifacts/research_c_regularization_first_order/2026-11-01/run01",
+  "points": {
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "rc2_final": "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/final.npz",
+    "pr_final": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final.npz"
+  },
+  "input_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/final.npz": "4972174836a3fe33897a1bcdb922645596f45c8e28141ddafcdf1ba5a4a96ee6",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final.npz": "f47a9fbf86918458ea0db6549468f2041b3b87bba6649ff70234467a442cd227",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/objective.json": "279ac32549cfe82b3d6330237fd0653097784ef98d4ace15624719858001ed02",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/initial_sector.json": "b4c57148b9735c7bec98b07b88a49a5e81890ac7074c66e3e41f9e54d5bc0f1f",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/final_sector.json": "2815aafa180132cdda9eea4d025df8ae9e5331f1a15ccca92d23f1edeb51d426",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed_sector.json": "f885b9e36d02129e88e9ea047c54d4feb31bc52661b468a4d97c2a298f991eba"
+  },
+  "fit_provenance": {
+    "rc2_science_source": "150f904f6975868abe09966dda8ab41722e2a7cc",
+    "pr_science_source": "e1085c95f5c01b68566e17d543ace5832cb94061",
+    "original_P_H4_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+  },
+  "physical_context": {
+    "atoms": "linear H4",
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "ld": 2,
+    "representation": "number",
+    "frame_order": "original",
+    "kappa": "original_g_corrected_fixed",
+    "scalar": "original_once",
+    "PF_time_window": "not applicable: no evolution",
+    "DF_budget": "Reuse saved PASS; do not recompute physical errors, change guard or infer actual CA"
+  },
+  "strengths": "Do not select new alpha/gamma/rho. Fixed saved scales: alpha=gamma=.1. Cross-evaluate both objectives at all three points.",
+  "solver": {
+    "invocations": 0,
+    "iterations": 0,
+    "old_method": "L-BFGS-B",
+    "old_options": null,
+    "change_stop_policy": false
+  },
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "ffsim": "0.0.83",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "call_order": [
+    "snapshots_load",
+    "parameter_fidelity initial/rc2_final/pr_final",
+    "for each point: base, rc2, pr value_and_gradient",
+    "component_diagnostic all three points"
+  ],
+  "numeric_rules": {
+    "dtype": "float64/JAX x64",
+    "fidelity": "J exact; U/orthogonality maxabs <= rotation_atol",
+    "penalty_gradient": "Compare to 2/4 alpha J/P0 in upper coordinates; atol+rtol*abs(expected)",
+    "first_order": "Infinity gradient <= default gtol with declared engineering margin; border UNRESOLVED; not rigorous stationarity",
+    "zero_norm": "Cosine/ratio null when undefined; zero identity-null direction does not qualify all null directions"
+  },
+  "purpose": "Separate initial gradient influence, local loss/penalty competition and first-order qualification in common coordinates; no causal reconstruction of historical iterations.",
+  "research_decision": "Use findings to decide whether common stopping-accuracy verification or strength-policy work is needed. No automatic refit or new strength.",
+  "allowed": [
+    "four fixed NPZ snapshots decode",
+    "saved-point parameter fidelity via existing unpack",
+    "9 existing objective/value-gradient evaluations, including internal tensor reconstructions",
+    "gradient subtraction/block norms/inner products/cosines and analytic identity-transfer direction slopes",
+    "read existing DF PASS scalars without recomputation"
+  ],
+  "forbidden": [
+    "new fitting/initialization/optimizer iterations/restart",
+    "Hessian/eigenspectrum/SVD/finite-perturbation/trajectory reconstruction",
+    "independent tensor norm or physical Hamiltonian/sector/ground recomputation",
+    "PF/RTE/sampling/circuit build/compile/shots/native/total cost",
+    "rank/strength search",
+    "reuse consumed17-call run01 or extend to Stage B/C"
+  ],
+  "stop": {
+    "correctness": "SOURCE/input/environment/schema/fidelity/nonfinite/analytic gradient mismatch: STOP dependents, preserve partial completed outputs",
+    "classification": "Do not force cause identification or strength tuning; unresolved stays unresolved",
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true
+  },
+  "resources": "No artificial CPU/RAM/worker/wall limits. Reuse cached JAX CPU value/gradient on tiny arrays; coordinate task-local BLAS, no shared venv/cache/settings/other-job changes.",
+  "preservation": "Old scientific SOURCE, input, raw, QPY, contracts, grants, ledgers, markers and STOPs stay byte-identical."
+}
