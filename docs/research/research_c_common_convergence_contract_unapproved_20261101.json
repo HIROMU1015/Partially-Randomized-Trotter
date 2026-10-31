@@ -1,0 +1,207 @@
+{
+  "schema": "C_COMMON_CONVERGENCE_CONTRACT_V1",
+  "scope": "C_RC2_PR_COMMON_CONVERGENCE_PAIRED_V1",
+  "status": "UNAPPROVED_PROPOSAL",
+  "permission": "Separate explicit user scientific execution permission required. Chat permission suffices; no proof, stored approval text or new grant.",
+  "base_commit": "5fdcd81addf83e893d76c89e64f733433a4e76b3",
+  "implementation_commit": "38c2bc02b9578ab6ab7734bb61899b6cbc1733e2",
+  "source_manifest": "artifacts/research_c_common_convergence/2026-11-01/technical/SOURCE.json",
+  "source_manifest_sha256": "358df00f1390e23866abc7f78355e95ec061a6feb5173278cfcd5aec7e3e1927",
+  "entry": "scripts/run_research_c_common_convergence.py",
+  "conditions": {
+    "atoms": 4,
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "strength": 0.1,
+    "gamma": 0.1,
+    "epsilon": 1e-08,
+    "loss_scale": 2.1839632053132894e-09,
+    "l2_scale": 4.410884790420646,
+    "mass_scale": 2.2093719370722074,
+    "DF_budget_Ha": 0.00019875,
+    "kappa": "original_g_corrected_fixed",
+    "scalar": "original_once",
+    "original_frame_order": true,
+    "new_fit_maximum_per_arm": 1,
+    "new_fits_maximum": 2,
+    "warm_start": false,
+    "retry": 0,
+    "resume": 0,
+    "mass_comparison_allowance_Ha": 1e-10
+  },
+  "options": {
+    "ftol": 1e-15,
+    "gtol": 1e-06,
+    "maxcor": 10,
+    "maxls": 20,
+    "maxiter": 15000,
+    "maxfun": 15000
+  },
+  "criteria": {
+    "parameter_gradient_infinity": 1e-05,
+    "identity_tangent_frobenius": 1e-05,
+    "atol": 1e-08,
+    "rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08
+  },
+  "call_limits": {
+    "saved_snapshots_load": 1,
+    "initial_qualification_gate": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "final_snapshot_load": 2,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "comparison": 1,
+    "fit_input_load": 2,
+    "objective_setup": 2,
+    "optimized_fitter": 2,
+    "fit_initial_diagnostic": 2,
+    "optimizer_terminal_export": 2,
+    "independent_terminal_diagnostic": 2,
+    "final_tensor_assessment": 2
+  },
+  "maximum_logical_units": 25,
+  "input_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "initial_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+  "initial_scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json",
+  "initial_sector": "artifacts/research_c_regularization_comparator/2026-11-01/run01/initial_sector.json",
+  "old_rc2_objective": "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/objective.json",
+  "comparators": {
+    "old_gamma0": {
+      "diagnostic": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final_diagnostic.json",
+      "optimizer": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/optimizer.json",
+      "sector": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline_sector.json"
+    },
+    "old_rc2": {
+      "diagnostic": "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/final_diagnostic.json",
+      "optimizer": "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/optimizer.json",
+      "sector": "artifacts/research_c_regularization_comparator/2026-11-01/run01/final_sector.json"
+    },
+    "old_pr": {
+      "diagnostic": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final_diagnostic.json",
+      "optimizer": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/optimizer.json",
+      "sector": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed_sector.json"
+    }
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/initial_sector.json": "b4c57148b9735c7bec98b07b88a49a5e81890ac7074c66e3e41f9e54d5bc0f1f",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/objective.json": "279ac32549cfe82b3d6330237fd0653097784ef98d4ace15624719858001ed02",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final_diagnostic.json": "6a06967a6b02a4084677de0721fe67ce1fe9f83c43eb3b0a1f4431dec9b7c434",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/optimizer.json": "bf134fdb475bf9f0d802e7d7caf564dc76f5eb2d4ecb337b99c219591d31bf96",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline_sector.json": "95aea3565fe157aeaa8912c28e5a02f7e5bda36c1d618c3795633ace2ac2f0cf",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/final_diagnostic.json": "6675058d7dab7cd6b3f46a9d051bc0dc0a5f3e186764175793cda3c96e269cf9",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/fit/optimizer.json": "8082785f85834f21fafeca8ea09e133db73e1a08c1391f3248eb311b74d53448",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/final_sector.json": "2815aafa180132cdda9eea4d025df8ae9e5331f1a15ccca92d23f1edeb51d426",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final_diagnostic.json": "650021f8ef64d7bd73eb11f3ee1a0ef7d151eb63c0ad07901f0a99a1b7f010ad",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/optimizer.json": "c975d3ebeedf1e7787088e2363034dc5e006efa4ceea7dac300f7ba8449c371f",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed_sector.json": "f885b9e36d02129e88e9ea047c54d4feb31bc52661b468a4d97c2a298f991eba"
+  },
+  "source_provenance": {
+    "diagnostic_science": "0996a5abb4876c2e450439044c26e7df61dfd04c",
+    "rc2_fit": "150f904f6975868abe09966dda8ab41722e2a7cc",
+    "pr_fit": "e1085c95f5c01b68566e17d543ace5832cb94061",
+    "original_P_H4_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+  },
+  "initialization": "Both new independent fits use the same original qualified J/U/x0 unchanged. No warm-start, new Cholesky/logm, resuming consumed fits, gauge change or parameter rescaling.",
+  "solver": "Existing ffsim0.0.83 L-BFGS-B objective/AD. New process-local last-hop options, no bounds, callback=None. Defaults maxcor/maxls/maxiter/maxfun retained explicitly. Positive ftol is not gradient convergence proof.",
+  "first_order_definition": "Native 128-coordinate gradient infinity plus restricted identity-tensor-transfer projected derivative in Frobenius-normalized symmetric-J metric. Both with declared engineering margin. No full Riemannian U/gauge quotient stationarity or global optimum certificate.",
+  "identity_projection": "For independent upper-J derivatives b_tij: c_t=sum_upper(b_tij)/norb, z_t=c_t-mean(c). norm2(z) is the derivative norm on dJ_t=a_t*11^T/norb with sum(a)=0, sum(a^2)=1. No coordinate or gauge transformation is applied.",
+  "qualification": "Post-fit criteria and solver success reported separately. qualified requires both criteria MET plus normal solver success; physical DF budget admission remains separate.",
+  "statuses": [
+    "BOTH_CONVERGENCE_CRITERIA_MET",
+    "ONE_OR_BOTH_UNQUALIFIED",
+    "DF_BUDGET_NOT_MET",
+    "TECHNICAL_FAILURE"
+  ],
+  "decision": "Budget NOT_MET takes priority; otherwise unqualified solver/first-order => ONE_OR_BOTH_UNQUALIFIED. Qualified comparison only if both arms qualify and both DF budgets PASS. Descriptive lambda is retained regardless, no resource/scientific superiority claim.",
+  "physical": "Saved linear H4/1Angstrom/STO-3G, Nalpha=Nbeta=2 sector36, number general symmetric J, rank8, original frame order/LD2, original-g corrected kappa and scalar once. No PF time evolution.",
+  "DF_budget": "sector_error + inherited sector_operation_scale_guard8_proposal_v1 <= .00019875Ha; preserve representation gate component_atol1e-10 and old physical reference implementation. No rigorous enclosure/CA claim.",
+  "call_order": [
+    "passive source/input/environment preflight",
+    "saved_snapshots_load",
+    "initial_qualification_gate using saved initial sector PASS, qualified x0 bytes",
+    "sector_context and physical_sector once",
+    "independent rc2/pr dedicated fit processes: load, setup, optimized_fitter containing initial diagnostic and one SciPy invocation then raw terminal export and independent terminal diagnostic; final tensor assessment",
+    "after all workers finish without correctness FAIL: final_snapshot_load, sector_assessment, representation_assessment for each role",
+    "comparison of convergence/budget/tail and old saved scalars only",
+    "save source/raw/calls/resources/STOP; publish and mandatory STOP"
+  ],
+  "parent_limits": {
+    "saved_snapshots_load": 1,
+    "initial_qualification_gate": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "final_snapshot_load": 2,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "comparison": 1
+  },
+  "per_arm_fit_limits": {
+    "fit_input_load": 1,
+    "objective_setup": 1,
+    "optimized_fitter": 1,
+    "fit_initial_diagnostic": 1,
+    "optimizer_terminal_export": 1,
+    "independent_terminal_diagnostic": 1,
+    "final_tensor_assessment": 1
+  },
+  "new_fit_maximum": 2,
+  "optimizer_invocation_maximum_per_arm": 1,
+  "fresh_output": "artifacts/research_c_common_convergence/2026-11-01/run01",
+  "retry": 0,
+  "resume": 0,
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "permitted_future_science": [
+    "two independent new CDF fits from original x0",
+    "before/independent terminal diagnostics including internal objective and gradient evaluations",
+    "two independent terminal tensor assessments",
+    "physical sector once, two terminal sector errors/general-K vs raw CAR",
+    "saved scalar comparison only for old gamma0/RC2/PR; old final arrays not decoded"
+  ],
+  "excluded": [
+    "new strength/rank/initialization search",
+    "warm-start/retry/resume/additional fits",
+    "preconditioner/bounds/gauge fixing/parameter rescaling",
+    "Hessian/SVD/full U tangent numerical investigation",
+    "Stage B/C/PF/RTE/ground/native circuits/shots/total cost",
+    "important scientific review, novelty or publication qualification"
+  ],
+  "unqualified_exit": "Finite solver failure (line-search/iteration/evaluation limit) still exports/diagnoses terminal and DF budget; no additional optimizer attempt. Neither relative success nor budget alone qualifies convergence.",
+  "correctness_STOP": "Source/input/schema/representation/nonfinite/independent-gradient mismatch or worker exception => TECHNICAL_FAILURE; prevent dependent launches/evaluation. Collect already-started independent worker diagnostics/STOPs safely. No retry.",
+  "preservation": "All old SOURCE, inputs, scientific contracts, fits/raw/QPY/grants/ledgers/markers/STOP/Git history untouched.",
+  "resources": "Choose up to two independent fit processes from actual CPU/quota/RAM using existing resource_plan plus saved-peak memory estimate; no artificial CPU/RAM/worker/wall caps. Per-process tiny BLAS=1 coordinates JAX CPU pools. Separate role caches/tmp; no shared settings/venv/other-user changes.",
+  "release": "Fixed SOURCE and this contract remain unchanged during science; publish results/raw/calls/STOP, verify remote SHA/tree and mandatory STOP."
+}

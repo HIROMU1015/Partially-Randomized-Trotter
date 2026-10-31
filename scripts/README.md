@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：共通収束のpaired-fit独立entry（2026-11-01）
+
+[run_research_c_common_convergence.py](run_research_c_common_convergence.py)／[政策・SOURCE・未承認25-call](../docs/research/research_c_common_convergence_policy_design_20261101.md)。既定はevaluation byte/env preflight、fit環境確認は--check-fit-environmentでpassive。別明示科学許可後だけ、同じ元x0からRC2/PR各新1 fitと独立終点／物理DF予算／λを評価しSTOPする。旧runner再起動やwarm-startはしない。今回科学call0、人工148 PASS。
+
 ## 研究C：0-fit一次診断の14-call実行完了（2026-11-01）
 
 [実行結果・SOURCE・履歴](../docs/research/research_c_regularization_first_order_execution_20261101.md)。run_research_c_regularization_first_order.pyを固定SOURCE0996a5abbから一度実行、14 COMPLETE/fit0/FAIL0/retry-resume0。保存3点の9評価・成分診断を完了し、raw27件・STOPを保存。消費済みrun01を再起動せず、公開照合後mandatory STOP。以下の未実行表示は準備時の履歴。

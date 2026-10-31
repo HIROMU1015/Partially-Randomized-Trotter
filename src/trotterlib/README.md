@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：共通収束政策の最小adapter（2026-11-01）
+
+共通libraryは変更せず、[task-local options／一次診断](../trottertracks/c_common_convergence.py)と[paired接続](../trottertracks/c_common_convergence_pilot.py)をtrottertracksに追加した。旧ffsim loss/AD/fitter/codec、SectorCAR／一般K／guardを再利用する。[数理・人工148 PASS・未承認25-call](../../docs/research/research_c_common_convergence_policy_design_20261101.md)。実H4の新fit／再解析0、mandatory STOP。
+
 ## 研究C：共通optimizerのL2対照を限定実行（2026-11-01）
 
 [RC2 Stage A結果](../../docs/research/research_c_regularization_comparator_execution_20261101.md)。既存ffsim/codec、SectorCAR/general-K/guardを無変更で呼び、新規1 fit/17 calls完了。物理予算PASS、tail λは保存PR-tail候補より大きい。新しいfitter/referenceやPF/native評価を追加せず、資源優位は未評価、mandatory STOP。

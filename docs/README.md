@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：共通停止・独立再fit比較の技術準備（2026-11-01）
+
+[技術報告・二つの一次基準・公平性・148人工PASS](research/research_c_common_convergence_policy_design_20261101.md)／[未承認最大2-fit・25-call契約](research/research_c_common_convergence_contract_unapproved_20261101.json)。固定strengthと元x0を維持し、solver success／事後基準／物理DF予算を分ける。実H4の新計算・再解析は0、旧SOURCE/raw/STOPを保全しmandatory STOP。
+
 ## 研究C：RC2／PR一次診断・14-call結果（2026-11-01）
 
 [保存3点・全9評価・勾配内訳・tensor-null方向](research/research_c_regularization_first_order_execution_20261101.md)／[原本27件](../artifacts/research_c_regularization_first_order/2026-11-01/run01/)。14 COMPLETE、correctness FAIL/fit/retry-resume0。初期寄与一致と勾配一致の差、両保存終点のengineering gtol未達を確認。強い最適化済み対照・最適ρ・CA/資源は未資格、公開照合後mandatory STOP。
