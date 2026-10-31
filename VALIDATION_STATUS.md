@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：Sampling lawの技術調査・人工13 PASS（2026-10-31）
+
+[仕様・同値性・適用限界](docs/research/research_c_sampling_law_freedom_survey_20261030.md)。新9＋既存rte回帰4＝13 PASS。人工signed-X/Zと固定確率の決定論的列挙だけで、RNG・分子decode・価格／shots再解析・科学runner0。NO_DISTINCT_FREEDOMは調査集合での方法差未特定、H4性能negative・全samplerの不存在・新規性確定ではない。原本・既存STOP維持、実行可能科学契約なし、公開照合後mandatory STOP。
+
 ## 研究C：Round別D/PR・科学実行完了（2026-10-30）
 
 [Gate/全round/条件付き費用](docs/research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE79fa01076無変更、189/189 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、同じCDF8γ.1/sector36、D全frame S2 s1／PR LD2 partial S2 s1/r128/K0、δ=h=.1/m0..12、own-ground/準備除外。主RZの両仮定laneで全13roundがDを選びMIXED_ROUND_DOMINATED、evidenceはPR誤差未資格でUNQUALIFIED。Ideal総RZは全D＝選択101825929455、全PR234117788135。固定点モデル内のNO-GOであり、全指標支配/母平均/実CA/全law保証ではない。原本保全・公開後mandatory STOP。 実行環境でも人工・回帰117 PASS。SOURCE118/input23/旧保護2728件不変、raw91件。Local published numerical/scalar evidenceで、CI/外部独立再現ではない。

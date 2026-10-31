@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：PR sampling lawの自由度・既知法対応（2026-10-31）
+
+[技術報告](research/research_c_sampling_law_freedom_survey_20261030.md)／[固定Track B取得索引](../artifacts/research_c_sampling_law_freedom/2026-10-30/technical/reference_index.json)。Euler／IS／Parent／return／相関／情報取得を分類し、独立機構は未特定（NO_DISTINCT_FREEDOM）。一般的不可能性の証明ではない。13人工PASS、実H4科学処理0、実験候補・科学契約0。D＋E保全、正式採否はユーザー／研究C、mandatory STOP。
+
 ## 研究C：Round別D/PRの保存189-call結果（2026-10-30）
 
 [実行結果](research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE79fa01076無変更、189/189 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、同じCDF8γ.1/sector36、D全frame S2 s1／PR LD2 partial S2 s1/r128/K0、δ=h=.1/m0..12、own-ground/準備除外。主RZの両仮定laneで全13roundがDを選びMIXED_ROUND_DOMINATED、evidenceはPR誤差未資格でUNQUALIFIED。Ideal総RZは全D＝選択101825929455、全PR234117788135。固定点モデル内のNO-GOであり、全指標支配/母平均/実CA/全law保証ではない。原本保全・公開後mandatory STOP。

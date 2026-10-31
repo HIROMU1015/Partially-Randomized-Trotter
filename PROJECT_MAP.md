@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：PR sampling lawの同値性調査・追加実験なしの提案（2026-10-31）
+
+[数学仕様・6分類・Q1〜Q9](docs/research/research_c_sampling_law_freedom_survey_20261030.md)。SOURCE fb0c803f1から独立調査。NO_DISTINCT_FREEDOMは確認範囲で独立した実装可能機構を特定できなかったという技術判断で、全law不可能性や正式な研究終了ではない。K0 common-parentのL1最小性、affine辞書依存の例外、全path IS、±1測定とcontrolled位相を区別。Track B D＋E維持、新9＋既存4＝13人工PASS、実H4再解析・sampling・build/compile・科学call0。実行可能科学契約なし、公開照合後mandatory STOP。
+
 ## 研究C：Round別D/PR・189-call完了、主RZは全Dを選択（2026-10-30）
 
 [全13round・3lane・6指標・証拠](docs/research/research_c_roundwise_det_pr_execution_20261030.md)。SOURCE79fa01076無変更、189/189 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、同じCDF8γ.1/sector36、D全frame S2 s1／PR LD2 partial S2 s1/r128/K0、δ=h=.1/m0..12、own-ground/準備除外。主RZの両仮定laneで全13roundがDを選びMIXED_ROUND_DOMINATED、evidenceはPR誤差未資格でUNQUALIFIED。Ideal総RZは全D＝選択101825929455、全PR234117788135。固定点モデル内のNO-GOであり、全指標支配/母平均/実CA/全law保証ではない。原本保全・公開後mandatory STOP。

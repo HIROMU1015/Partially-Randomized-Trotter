@@ -1,5 +1,9 @@
 # tests の役割
 
+## 研究C：Sampling lawの人工代数確認（2026-10-31）
+
+[新9 test](management/test_research_c_sampling_law_freedom.py)／[報告](../docs/research/research_c_sampling_law_freedom_survey_20261030.md)。既存rte APIのsigned K0/K2・正負τ、q/weight・実測second moment、affine辞書依存、Parent恒等式、相関pathとcontrolled phaseを人工2×2で確認。既存paired Taylor/identity/signed product/異種normalizerの4testもPASS、計13件。RNG・分子配列・回路・shots・新科学計算を呼ばない。
+
 ## 研究C：Round別D/PRの実行前回帰・科学実行（2026-10-30）
 
 [結果と実行時117 PASS](../docs/research/research_c_roundwise_det_pr_execution_20261030.md)。新42＋回帰75を独立実行worktreeで再確認。固定SOURCEの実保存値189-callはCOMPLETE/FAIL0、retry-resume0。人工PASSと、条件付きRZの全D選択/全law未資格を区別する。
