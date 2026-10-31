@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：RC2強度・停止条件の診断と0-fit準備（2026-11-01）
+
+[技術診断・Q1〜Q10](docs/research/research_c_regularization_strength_stopping_diagnostic_20261101.md)／[未承認14-call契約](docs/research/research_c_regularization_first_order_contract_unapproved_20261101.json)。固定pilotは有効、強い最適化済み対照の資格は未確立。B4共通物理予算を優先する提案と、3保存点の既存loss/penalty一次診断を準備。人工123 PASS、SOURCE39/input9のpassive preflight PASS、実H4科学call/decode/fit0。旧SOURCE・run01・STOP不変、別許可までmandatory STOP。
+
 ## 研究C：RC2対照の1-fit/17-call完了（2026-11-01）
 
 [結果・optimizer・物理予算・旧候補比較](docs/research/research_c_regularization_comparator_execution_20261101.md)。科学SOURCE150f904f6無変更、新fit1・17/17 COMPLETE、correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、通常CDF8/sector36/元順LD2の同x0、共通optimizer/full ordered Z=J L2・初期寄与.1。終了sector norm5.8389057e-9Ha＋guard3.2787812e-9Haで予算PASS、optimizer success/nit97。Tail λ2.20976187195Haは保存PR-tail γ.1の1.44242988558Haより大きい。固定pilotのproxy差で、最適RC-DF/資源/CA/新規性の優位ではない。PF/RTE/native/shots0、B/C未承認、公開照合後mandatory STOP。

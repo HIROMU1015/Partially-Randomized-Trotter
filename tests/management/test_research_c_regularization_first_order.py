@@ -196,4 +196,3 @@ def test_artificial_end_to_end_fresh_stop_no_optimizer(tmp_path,failure):
     assert stop["scientific_units"]==(2 if failure=="schema" else 14)
     assert stop["failed"] == bool(failure)
     if failure=="gradient": assert (output/"pr_final_pr.npz").exists()
-

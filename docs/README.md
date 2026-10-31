@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：L2強度・停止の切り分け（2026-11-01）
+
+[数学・SciPy停止・政策B1〜B4・次の判断](research/research_c_regularization_strength_stopping_diagnostic_20261101.md)／[未承認0-fit・14-call](research/research_c_regularization_first_order_contract_unapproved_20261101.json)。初期寄与一致とgradient/最終精度を分離。実H4再解析は未実施、人工123 PASS。追加fitやStage B/Cへ自動進行しない。
+
 ## 研究C：RC-DF型L2対照Stage A結果（2026-11-01）
 
 [17-call結果・初期/終了診断・比較](research/research_c_regularization_comparator_execution_20261101.md)／[raw・SOURCE・journal・STOP](../artifacts/research_c_regularization_comparator/2026-11-01/run01/)。Optimizer successとDF予算はPASS、PR-tail保存候補よりtail λは大きい。相対目的減少停止でL2/global最適性は未保証。追加fit/retry/条件変更0、PF/RTE/native/shots/総費用0、mandatory STOP。

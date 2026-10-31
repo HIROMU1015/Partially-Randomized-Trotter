@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：保存3点の一次診断・fit0（2026-11-01）
+
+[run_research_c_regularization_first_order.py](run_research_c_regularization_first_order.py)はdefaultがbyte/env preflight。[技術診断・SOURCE・未承認14-call](../docs/research/research_c_regularization_strength_stopping_diagnostic_20261101.md)。別科学実行許可後のみfresh run01で既存base/RC2/PR value-gradientを評価しSTOPする。Fitter/optimizerは呼ばない。今回実H4科学call0、人工123 PASS。
+
 ## 研究C：固定RC2 entryの1-fit実行完了（2026-11-01）
 
 [結果と実行履歴](../docs/research/research_c_regularization_comparator_execution_20261101.md)。科学SOURCE150f904f6の専用entryを無変更で一度実行し17 COMPLETE/fit1/FAIL0/retry-resume0。消費済みrun01を再起動しない。B/C、PF/RTE/native/shotsは未実行、公開照合後mandatory STOP。
