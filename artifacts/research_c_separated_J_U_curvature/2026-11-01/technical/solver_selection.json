@@ -1,0 +1,35 @@
+{
+  "artificial_only": true,
+  "molecular_arrays_decoded": 0,
+  "selected": {
+    "J": "Affine residual/full-direction whitened Newton-CG with analytic Hessian;RC2 augmented gelsd unchanged",
+    "U": "Exact residualJacobian/full-direction SVD TRF fixed-J step"
+  },
+  "mechanisms": [
+    "small loss_scale magnifies tensor curvature and cancellation",
+    "smoothL1 epsilon curvature varies sharply",
+    "flat head directions invalidate strong-convexity/unicity assumptions",
+    "fixed-J optimality does not imply post-refit joint stationarity"
+  ],
+  "rejected_technical_controls": [
+    {
+      "method": "whitened trust-exact",
+      "observation": "Single-block tests could qualify;one outer artificial run was manually interrupted after prolonged no emitted progress. No infinite-loop claim or scientific wall cap;not selected."
+    },
+    {
+      "method": "whitened trust-ncg",
+      "observation": "First-J original gradients0.0621561 atscale1 and4.81356 atscale2.1839632e-9 in controlled seed41 fixture;failed stationarity."
+    },
+    {
+      "method": "explicit-coordinate BFGS",
+      "observation": "Soft example progressed;stiff8-cycle probe stoppedatcycle3 withJ gradient1.2626945e-5. Still uses quasi-Newton update/Wolfe;not selected."
+    }
+  ],
+  "selection_limits": "Controlled method/formulation comparisons,not real-data option search. Newton-CG may still warn;chosen for analytic curvature and measured coefficient residual improvement,not universal dominance.",
+  "sources": [
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/optimize.minimize-newtoncg.html",
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/generated/scipy.optimize.least_squares.html",
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/optimize.minimize-bfgs.html",
+    "https://docs.jax.dev/en/latest/_autosummary/jax.jacfwd.html"
+  ]
+}
