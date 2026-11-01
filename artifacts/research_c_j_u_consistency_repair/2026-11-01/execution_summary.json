@@ -1,0 +1,443 @@
+{
+  "status": "ONE_OR_BOTH_FIRST_ORDER_UNQUALIFIED",
+  "classifications": {
+    "rc2": "U_UNQUALIFIED",
+    "pr": "BOTH_UNQUALIFIED"
+  },
+  "scientific_SOURCE": "24a7268359506abd171686132f12b4876f9e62bf",
+  "diagnostic_units": 15,
+  "fit_STOP": {
+    "failed": false,
+    "scientific_units": 328,
+    "call_counts": {
+      "saved_snapshots_load": 1,
+      "initial_qualification_gate": 1,
+      "sector_context": 1,
+      "physical_sector": 1,
+      "final_snapshot_load": 2,
+      "sector_assessment": 2,
+      "representation_assessment": 2,
+      "comparison": 1,
+      "fit_input_load": 2,
+      "objective_setup": 2,
+      "initial_identity_gate": 2,
+      "saved_history_load": 2,
+      "state_diagnostic": 103,
+      "J_solve": 101,
+      "U_solve": 99,
+      "terminal_independent": 2,
+      "final_tensor": 2,
+      "final_export": 2
+    },
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true
+  },
+  "current_repair_units": 343,
+  "maximum_current_repair_units": 430,
+  "DF_budget": {
+    "rc2": true,
+    "pr": true
+  },
+  "qualified_tail_comparison": null,
+  "thresholds_changed": false,
+  "original_J_U_preserved": true,
+  "resources": {
+    "wall_seconds": 5.420161692425609,
+    "process_CPU_seconds": 1.603068204,
+    "peak_RSS_KiB": 288212
+  },
+  "arms": {
+    "pr": {
+      "status": "J_STATIONARITY_UNQUALIFIED",
+      "classification": "BOTH_UNQUALIFIED",
+      "cycles": 35,
+      "terminal": {
+        "components": {
+          "objective": 0.012265732322593252,
+          "tensor_objective": 6.267001809523242e-17,
+          "normalized_tensor_objective": 2.869554667531242e-08,
+          "penalty": 0.012265703627046577,
+          "smooth_tail_mass_Ha": 0.7737756642731276,
+          "exact_tail_mass_Ha": 0.7737752701910898,
+          "full_ordered_Z_l2_Ha_squared": 4.533524325633962
+        },
+        "J_stationarity": {
+          "value": 1.8076888090146325e-05,
+          "threshold": 1e-05,
+          "engineering_margin": 1.0001807688809015e-08,
+          "status": "NOT_MET"
+        },
+        "U_stationarity": {
+          "value": 2.9548379202741915,
+          "threshold": 1e-05,
+          "engineering_margin": 3.0548379202741914e-07,
+          "status": "NOT_MET"
+        },
+        "first_order_met": false,
+        "orthogonality_maxabs": 7.438494264988549e-15,
+        "rigorous_stationarity": false,
+        "classification": "BOTH_UNQUALIFIED",
+        "cycle_progress": {
+          "before": 0.012265786951033425,
+          "after": 0.012265732322593252,
+          "decrease": 5.4628440172496684e-08,
+          "allowance": 2.2265786951033426e-10,
+          "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+        },
+        "U_gradient_before_J_refit": 1.3761166171287127e-06
+      },
+      "tensor": {
+        "tensor_maxabs": 1.8076481700379787e-09,
+        "tensor_frobenius": 1.1195536440495597e-08,
+        "objective_from_tensor": 6.267001809523242e-17,
+        "actual_rank": 8
+      },
+      "sector": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "CONVERGED",
+        "sector_error": 1.1062937832849585e-08,
+        "numerical_guard": 3.227166763586631e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 5.773159728050814e-15,
+          "frobenius": 2.6262846725285657e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "old_joint": {
+        "components": {
+          "objective": 0.01866610400735166,
+          "tensor_objective": 8.101630497396113e-18,
+          "normalized_tensor_objective": 3.7096002705933568e-09,
+          "penalty": 0.01866610029775139,
+          "smooth_tail_mass_Ha": 0.9545432940467755,
+          "exact_tail_mass_Ha": 0.9545432846581517,
+          "full_ordered_Z_l2_Ha_squared": 4.469473293095136
+        },
+        "J_stationarity": {
+          "value": 0.3657774990353996,
+          "threshold": 1e-05,
+          "engineering_margin": 4.6577749903539956e-08,
+          "status": "NOT_MET"
+        },
+        "U_stationarity": {
+          "value": 0.5798615865167405,
+          "threshold": 1e-05,
+          "engineering_margin": 6.798615865167405e-08,
+          "status": "NOT_MET"
+        },
+        "first_order_met": false,
+        "orthogonality_maxabs": 4.440892098500626e-16,
+        "rigorous_stationarity": false,
+        "source": "saved joint endpoint; fresh metric evaluation only",
+        "old_endpoint_optimized_again": false
+      },
+      "old_separated": {
+        "components": {
+          "objective": 0.012267174651913371,
+          "tensor_objective": 6.267431149438025e-17,
+          "normalized_tensor_objective": 2.8697512550532932e-08,
+          "penalty": 0.01226714595440082,
+          "smooth_tail_mass_Ha": 0.7738211571789442,
+          "exact_tail_mass_Ha": 0.7738207630625358,
+          "full_ordered_Z_l2_Ha_squared": 4.533566854972079
+        },
+        "J_stationarity": {
+          "value": 1.1024387737069985e-05,
+          "threshold": 1e-05,
+          "engineering_margin": 1.0001102438773707e-08,
+          "status": "NOT_MET"
+        },
+        "U_stationarity": {
+          "value": 2.9548644591684345,
+          "threshold": 1e-05,
+          "engineering_margin": 3.0548644591684343e-07,
+          "status": "NOT_MET"
+        },
+        "first_order_met": false,
+        "orthogonality_maxabs": 2.220446049250313e-15,
+        "rigorous_stationarity": false,
+        "cycle_progress": {
+          "before": 0.012267217357383786,
+          "after": 0.012267174651913371,
+          "decrease": 4.2705470415169144e-08,
+          "allowance": 2.2267217357383789e-10,
+          "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+        }
+      },
+      "terminal_checks": {
+        "value_same_point": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 6.938893903907228e-18,
+          "maximum_allowance_ratio": 3.116400486350426e-08,
+          "atol": 1e-10,
+          "rtol": 1e-08
+        },
+        "original_value": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 1.8457457784393227e-15,
+          "maximum_allowance_ratio": 8.289625293691449e-06,
+          "atol": 1e-10,
+          "rtol": 1e-08
+        },
+        "J_gradient_same_point": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 1.6161192995622464e-07,
+          "maximum_allowance_ratio": 0.1616118065031663,
+          "atol": 1e-06,
+          "rtol": 1e-07
+        },
+        "original_point_gradient_observation": {
+          "PASS": false,
+          "finite_shape": true,
+          "maxabs": 4.674597305052166e-06,
+          "maximum_allowance_ratio": 4.674588854850207,
+          "atol": 1e-06,
+          "rtol": 1e-07
+        },
+        "J_decode_identical": true,
+        "decoded_projector_maxabs": 5.88418203051333e-15,
+        "decoded_tensor_frobenius": 1.8442326161479277e-14,
+        "decoded_tensor_maxabs": 5.6066262743570405e-15,
+        "numpy_vs_jax_rotation_maxabs": 4.440892098500626e-16
+      },
+      "solver_counts": {
+        "J": {
+          "calls": 36,
+          "status_counts": {
+            "0": 34,
+            "2": 2
+          },
+          "nfev": 1025,
+          "njev": 1001,
+          "nhev": 585,
+          "inclusive_wall_seconds": 0.38261334877461195
+        },
+        "U": {
+          "calls": 35,
+          "status_counts": {
+            "0": 6,
+            "3": 29
+          },
+          "nfev": 742,
+          "njev": 225,
+          "nhev": 0,
+          "inclusive_wall_seconds": 1.0847881706431508
+        }
+      },
+      "resources": {
+        "wall_seconds": 3.332216553390026,
+        "process_CPU_seconds": 6.093248955,
+        "peak_RSS_KiB": 494004
+      }
+    },
+    "rc2": {
+      "status": "OUTER_LIMIT_UNQUALIFIED",
+      "classification": "U_UNQUALIFIED",
+      "cycles": 64,
+      "terminal": {
+        "components": {
+          "objective": 0.029193402354005357,
+          "tensor_objective": 7.854745602838067e-18,
+          "normalized_tensor_objective": 3.5965558319519875e-09,
+          "penalty": 0.029193398757449526,
+          "smooth_tail_mass_Ha": 8.285810103455802,
+          "exact_tail_mass_Ha": 8.285810103455127,
+          "full_ordered_Z_l2_Ha_squared": 1.2876871855991907
+        },
+        "J_stationarity": {
+          "value": 6.03709704720401e-07,
+          "threshold": 1e-05,
+          "engineering_margin": 1.0001e-08,
+          "status": "MET"
+        },
+        "U_stationarity": {
+          "value": 0.8667167192797767,
+          "threshold": 1e-05,
+          "engineering_margin": 9.667167192797766e-08,
+          "status": "NOT_MET"
+        },
+        "first_order_met": false,
+        "orthogonality_maxabs": 1.5432100042289676e-14,
+        "rigorous_stationarity": false,
+        "classification": "U_UNQUALIFIED",
+        "cycle_progress": {
+          "before": 0.02919340901428315,
+          "after": 0.029193402354005357,
+          "decrease": 6.6602777945568015e-09,
+          "allowance": 3.9193409014283153e-10,
+          "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+        },
+        "U_gradient_before_J_refit": 6.480206477792986e-08
+      },
+      "tensor": {
+        "tensor_maxabs": 6.418298115207222e-10,
+        "tensor_frobenius": 3.963520052387289e-09,
+        "objective_from_tensor": 7.854745602838068e-18,
+        "actual_rank": 8
+      },
+      "sector": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "CONVERGED",
+        "sector_error": 5.01799692881779e-09,
+        "numerical_guard": 3.1755765243192366e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 2.220446049250313e-15,
+          "frobenius": 7.887355436377386e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "old_joint": {
+        "components": {
+          "objective": 0.02232445369551521,
+          "tensor_objective": 1.0729917767272633e-19,
+          "normalized_tensor_objective": 4.913048782675543e-11,
+          "penalty": 0.02232445364638472,
+          "smooth_tail_mass_Ha": 8.545687128231016,
+          "exact_tail_mass_Ha": 8.545687128230103,
+          "full_ordered_Z_l2_Ha_squared": 0.9847059304328908
+        },
+        "J_stationarity": {
+          "value": 0.03199867979959081,
+          "threshold": 1e-05,
+          "engineering_margin": 1.3199867979959081e-08,
+          "status": "NOT_MET"
+        },
+        "U_stationarity": {
+          "value": 0.05936398048975205,
+          "threshold": 1e-05,
+          "engineering_margin": 1.5936398048975206e-08,
+          "status": "NOT_MET"
+        },
+        "first_order_met": false,
+        "orthogonality_maxabs": 6.661338147750939e-16,
+        "rigorous_stationarity": false,
+        "source": "saved joint endpoint; fresh metric evaluation only",
+        "old_endpoint_optimized_again": false
+      },
+      "old_separated": {
+        "components": {
+          "objective": 0.02919345065645284,
+          "tensor_objective": 7.855331842760702e-18,
+          "normalized_tensor_objective": 3.596824261347322e-09,
+          "penalty": 0.029193447059628577,
+          "smooth_tail_mass_Ha": 8.285809759592556,
+          "exact_tail_mass_Ha": 8.285809759591881,
+          "full_ordered_Z_l2_Ha_squared": 1.28768931615266
+        },
+        "J_stationarity": {
+          "value": 3.3619800963351557e-07,
+          "threshold": 1e-05,
+          "engineering_margin": 1.0001e-08,
+          "status": "MET"
+        },
+        "U_stationarity": {
+          "value": 0.866763842696288,
+          "threshold": 1e-05,
+          "engineering_margin": 9.66763842696288e-08,
+          "status": "NOT_MET"
+        },
+        "first_order_met": false,
+        "orthogonality_maxabs": 1.0436096431476471e-14,
+        "rigorous_stationarity": false,
+        "cycle_progress": {
+          "before": 0.02919345656452891,
+          "after": 0.02919345065645284,
+          "decrease": 5.908076070038071e-09,
+          "allowance": 3.919345656452891e-10,
+          "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+        }
+      },
+      "terminal_checks": {
+        "value_same_point": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 1.0061396160665481e-16,
+          "maximum_allowance_ratio": 2.5671147581901874e-07,
+          "atol": 1e-10,
+          "rtol": 1e-08
+        },
+        "original_value": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 7.28583859910259e-16,
+          "maximum_allowance_ratio": 1.8589451697239588e-06,
+          "atol": 1e-10,
+          "rtol": 1e-08
+        },
+        "J_gradient_same_point": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 4.951385795858368e-08,
+          "maximum_allowance_ratio": 0.04951385533617798,
+          "atol": 1e-06,
+          "rtol": 1e-07
+        },
+        "original_point_gradient_observation": {
+          "PASS": false,
+          "finite_shape": true,
+          "maxabs": 1.3985046539871433e-06,
+          "maximum_allowance_ratio": 1.3985045798254663,
+          "atol": 1e-06,
+          "rtol": 1e-07
+        },
+        "J_decode_identical": true,
+        "decoded_projector_maxabs": 9.2148511043888e-15,
+        "decoded_tensor_frobenius": 6.949632605265151e-15,
+        "decoded_tensor_maxabs": 1.7208456881689926e-15,
+        "numpy_vs_jax_rotation_maxabs": 4.996003610813204e-16
+      },
+      "solver_counts": {
+        "J": {
+          "calls": 65,
+          "status_counts": {
+            "0": 65
+          },
+          "nfev": 0,
+          "njev": 0,
+          "nhev": 0,
+          "inclusive_wall_seconds": 0.1491693528369069
+        },
+        "U": {
+          "calls": 64,
+          "status_counts": {
+            "3": 62,
+            "0": 2
+          },
+          "nfev": 1288,
+          "njev": 350,
+          "nhev": 0,
+          "inclusive_wall_seconds": 1.534350029192865
+        }
+      },
+      "resources": {
+        "wall_seconds": 3.617865183390677,
+        "process_CPU_seconds": 6.387784216,
+        "peak_RSS_KiB": 492376
+      }
+    }
+  },
+  "PF_RTE_ground_native_shots_total_resources": null,
+  "actual_CA": null,
+  "paired_reexecution_count": 1,
+  "new_optimization_trajectories": 2,
+  "new_run_internal_retry": 0,
+  "resume": 0,
+  "old_source_results_modified": false,
+  "mandatory_stop": true
+}

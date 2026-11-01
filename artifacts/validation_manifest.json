@@ -240,6 +240,16 @@
       "commit": "ecb2e7dc0ebfebe15246dfd3c290bcae72eeb246",
       "role": "curvature_separated_J_U_H4_scientific_SOURCE",
       "description": "Fixed415-unit contract;210 attempts208 COMPLETE2 correctnessFAIL;PR chart/gradient andRC2 terminal independent ffSim gate STOP;new DF not evaluated"
+    },
+    {
+      "commit": "a6a2c55aa8400428329165578d54e2f65bff4636",
+      "role": "saved_J_U_consistency_diagnosis_SOURCE",
+      "description": "15 units no optimizer;pre-step Newton jac and decoded-point derivative mismatch localized"
+    },
+    {
+      "commit": "24a7268359506abd171686132f12b4876f9e62bf",
+      "role": "point_consistent_J_U_paired_reexecution_SOURCE",
+      "description": "Same science/allowances;328 units;terminal andDF PASS;both first-order unqualified"
     }
   ],
   "artifact_inventory": {
@@ -11920,6 +11930,77 @@
       "PF_RTE_ground_native_shots_total_resources": null,
       "actual_CA": null,
       "raw_files": 226,
+      "old_results_unchanged": true,
+      "CI_or_external_reproduction": false,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_j_u_consistency_diagnosis_20261101",
+      "status": "SAVED_POINT_CONSISTENCY_CAUSES_LOCALIZED",
+      "report": "docs/research/research_c_j_u_consistency_repair_execution_20261101.md",
+      "execution_SOURCE_commit": "a6a2c55aa8400428329165578d54e2f65bff4636",
+      "source_manifest": "artifacts/research_c_j_u_consistency_repair/2026-11-01/technical/diagnostic_SOURCE.json",
+      "contract": "docs/research/research_c_j_u_consistency_diagnostic_contract_20261101.json",
+      "raw": "artifacts/research_c_j_u_consistency_repair/2026-11-01/diagnostic01",
+      "maximum_units": 15,
+      "attempts": 15,
+      "complete": 15,
+      "FAIL": 0,
+      "optimizer_calls": 0,
+      "retry": 0,
+      "resume": 0,
+      "raw_files": 9,
+      "old_results_unchanged": true
+    },
+    {
+      "id": "research_c_j_u_point_consistent_reexecution_20261101",
+      "status": "ONE_OR_BOTH_FIRST_ORDER_UNQUALIFIED",
+      "report": "docs/research/research_c_j_u_consistency_repair_execution_20261101.md",
+      "execution_SOURCE_commit": "24a7268359506abd171686132f12b4876f9e62bf",
+      "implementation_commit": "b0dc86e61e29469bf9d19f8709e3c68a613f9aeb",
+      "source_manifest": "artifacts/research_c_j_u_consistency_repair/2026-11-01/technical/fit_SOURCE.json",
+      "source_manifest_sha256": "fbc00f50f0deae0cbeadbdc4b914dd024504df75a60c18ba292f5de357d8456a",
+      "contract": "docs/research/research_c_j_u_point_consistent_reexecution_contract_20261101.json",
+      "contract_sha256": "22657253e7478cdf4db5bcc2e5590e42a8574e9185af5e88e3b5b2b6ff2e34f5",
+      "raw": "artifacts/research_c_j_u_consistency_repair/2026-11-01/fit_run01",
+      "summary": "artifacts/research_c_j_u_consistency_repair/2026-11-01/execution_summary.json",
+      "postflight": "artifacts/research_c_j_u_consistency_repair/2026-11-01/execution_postflight.json",
+      "model": "saved linear H4/1.00Angstrom/STO-3G;number CDF8;Nalpha=Nbeta2;sector36;original frame orderLD2;original g-corrected kappa/scalar",
+      "maximum_units": 415,
+      "attempts": 328,
+      "complete": 328,
+      "FAIL": 0,
+      "current_repair_total_units": 343,
+      "paired_reexecution_count": 1,
+      "new_optimization_trajectories": 2,
+      "retry": 0,
+      "resume": 0,
+      "first_order_qualified": {
+        "pr": false,
+        "rc2": false
+      },
+      "DF_budget": {
+        "rc2": true,
+        "pr": true
+      },
+      "classifications": {
+        "rc2": "U_UNQUALIFIED",
+        "pr": "BOTH_UNQUALIFIED"
+      },
+      "exact_tail_mass_Ha": {
+        "pr": 0.7737752701910898,
+        "rc2": 8.285810103455127
+      },
+      "sector_error_Ha": {
+        "pr": 1.1062937832849585e-08,
+        "rc2": 5.01799692881779e-09
+      },
+      "qualified_tail_comparison": null,
+      "thresholds_changed": false,
+      "original_J_U_preserved": true,
+      "PF_RTE_ground_native_shots_total_resources": null,
+      "actual_CA": null,
+      "raw_files": 345,
       "old_results_unchanged": true,
       "CI_or_external_reproduction": false,
       "mandatory_stop": true

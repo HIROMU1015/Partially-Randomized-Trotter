@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：評価点修正・再実行完了、DF両PASS・一次未収束（2026-11-02公開）
+
+[原因証拠・修正・新結果](docs/research/research_c_j_u_consistency_repair_execution_20261101.md)。保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0/α=γ=.1。保存診断15＋修正版paired328＝343 units COMPLETE/FAIL0、修正版再実行1回・各新run内retry/resume0。SciPy Newton-CGのpre-step jacと終点を取り違えた検証、およびcodec前後の異点gradient比較を修正。数値allowance/一次閾値/DF予算は不変。新DF normはPR1.10629e-8/RC2 5.01800e-9Haで両PASS、終端同一点微分・sector表現PASS。PRは35cyclesでJ/U未資格、RC2は64cyclesでU未資格。Qualified比較null/下流0、旧FAILと旧raw1471保全、公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：曲率利用J/U・2整合gate FAILで部分STOP（2026-11-01）
 
 [実行・partial・未実施範囲](docs/research/research_c_separated_J_U_curvature_execution_20261101.md)。固定SOURCEecb2e7dc0無変更、保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0/α=γ=.1の両arm各1 trajectory。210/最大415 attempts、208 COMPLETE/2 FAIL、retry-resume0。PRはJ0後のchart/gradient整合FAIL、開始済みRC2は64 cycles後U未資格を記録した後、独立ffsim目的/J-gradient整合FAIL。両final export・新DF norm/表現/比較はNOT_RUN/null。複合gate内訳の保存不足で原因は未確定、追加再評価や閾値変更をせずraw226/旧原本を保全。公開照合後mandatory STOP。以下は各時点の履歴。
