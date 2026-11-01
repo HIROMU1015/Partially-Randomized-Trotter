@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：保存scalarの条件付きshots-only entry（2026-11-01）
+
+[run_research_c_rc2_pr_conditional_shots.py](run_research_c_rc2_pr_conditional_shots.py)は既定でpassive preflightのみ。[技術報告・未承認105-call](../docs/research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)。別科学許可後の--executeだけ、保存RC2/PRの3 lane×13roundを評価し、十分shots／Wを保存する。Native/fit/sampling/総費用のentryはなく、価格を旧候補から転用しない。今回実H4数値算定0、mandatory STOP。
+
 ## 研究C：保存2終点のStage B entryを一度実行（2026-11-01）
 
 [run_research_c_rc2_pr_stage_b.py](run_research_c_rc2_pr_stage_b.py)をSOURCEd6b17b794から無変更で実行し143/143 COMPLETE、FAIL/retry/resume0。[全26セル・結果・STOP](../docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)。消費済みrun01を再起動せず、shots/native/Stage Cへ自動進行しない。公開照合後mandatory STOP。

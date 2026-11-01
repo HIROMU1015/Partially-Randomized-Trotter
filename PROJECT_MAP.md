@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：保存RC2／PR-tailの条件付きshots／W準備（2026-11-01）
+
+[Three lanes・数値域・125人工PASS・科学契約](docs/research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)／[未承認105-call](docs/research/research_c_rc2_pr_conditional_shots_contract_unapproved_20261101.json)。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、partial S2 δ.1/s1/r128/K0・13roundのStage B26セルを、既存C1 accuracy/energy/Hoeffdingと大整数ceilへ接続。Evidenceはnull、ideal/assumedは明示仮定、NとWは十進文字列、rをWへ重ねない。新entryはscripts/run_research_c_rc2_pr_conditional_shots.py、moduleはsrc/trottertracks/c_rc2_pr_conditional_shots.py、testはtests/management/test_research_c_rc2_pr_conditional_shots.py。SOURCE101/input14のpassiveのみ、実H4 shots/W/energy・科学call0。Native価格／総資源は未知、旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：保存RC2／PR-tail Stage B・143-call完了（2026-11-01）
 
 [結果・26セル・gate・未資格](docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)。固定SOURCEd6b17b794無変更、143/143 COMPLETE・correctness FAIL/retry-resume0。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、partial S2 s1/r128/K0・δ.1・13round、own-ground/準備除外。両候補13/13 POTENTIALLY_FEASIBLE、m12のAはRC2 8.42470113e-6／PR .864344018。PRはPF誤差も大きく、RTE改善はm6..12。固定未収束終点の観測で、最適RC-DF／CA／shots／総資源の資格へ昇格しない。旧SOURCE/raw/failed STOP保全、公開照合後mandatory STOP。以下の準備表示は履歴。

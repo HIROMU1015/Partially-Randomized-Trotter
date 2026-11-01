@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：RC2／PR-tailの条件付きshots・反復重み準備（2026-11-01）
+
+[技術報告・Three lanes・大整数・125人工PASS](research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)／[未承認105-call契約](research/research_c_rc2_pr_conditional_shots_contract_unapproved_20261101.json)。保存26セルを再評価する専用経路を準備。実H4 shots/W/energyは未算定、μ/S/CA/総資源はnull、公開照合後mandatory STOP。
+
 ## 研究C：保存RC2／PR-tailのStage B実行結果（2026-11-01）
 
 [143-call・26セル・全gate・比較の限界](research/research_c_rc2_pr_stage_b_execution_20261101.md)。両13roundが潜在適格。PRの大きいA、増えるPF誤差、round依存の補正RTE誤差を分離。未収束・全law/law/CA/総資源の未資格を維持し、公開照合後mandatory STOP。

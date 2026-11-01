@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：RC2／PR scalar shots adapter（2026-11-01）
+
+[c_rc2_pr_conditional_shots.py](../trottertracks/c_rc2_pr_conditional_shots.py)は既存C1 qualification/accuracy/energy、Hoeffding、shots_screenのinteger range拡張を再利用する研究固有接続。Library無変更、新RPE式なし、X/Yと2^mの整数会計のみ追加。[125人工PASS・SOURCE・未承認105-call](../../docs/research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)。実H4算定前でmandatory STOP。
+
 ## 研究C：保存DF adapterのStage B限定検証完了（2026-11-01）
 
 [固定SOURCE・実行結果](../../docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)。Libraryとadapter無変更でCAR／general-K／ground／既存PF-RTEを再利用し、143-call・26セルを完了。新fit/native/shots0、両未収束という資格は不変。公開照合後mandatory STOP。
