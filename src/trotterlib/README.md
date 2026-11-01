@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：保存PR trial2・旧FAIL再現／新数値整合PASS（2026-11-02）
+
+[10-call結果・点identity・数値的限界](../../docs/research/research_c_pr_coefficient_point_execution_20261102.md)。固定SOURCE565de95fc/10-call契約を無変更で実行し10/10 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1・同元qualified x0から保存PR trial2の点をdry replayで復元し、保存η/U/W/x identity PASS。旧経路の差2.37552e-7で不一致を再現、新同一配列・拡張精度経路は差9.18462e-18で元allowance内、objective差7.10543e-15もPASS。単一保存点の数値整合のみで厳密gradient上界/optimizer収束/DF予算/PR性能は未認定。新J solve/fit/最適化trajectory0、RC2継続・paired再実行なし。旧raw2378/SOURCE/旧480-call STOPを保全、新raw10を保存し公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：PR inner勾配整合の人工切分け・10-call準備（2026-11-02）
 
 [人工再現・最小修正候補・239 unique PASS・RC2ログ診断](../../docs/research/research_c_pr_gradient_consistency_investigation_20261102.md)／[未承認10-call契約](../../docs/research/research_c_pr_coefficient_point_contract_unapproved_20261102.json)。`c_pr_coefficient_point.py`と専用diagnostic/runner/testsが、同じdecoded J配列の残差/係数/chain評価へ揃える。既存inner/paired経路は無変更、実H4での原因確定・修正成功は未検証。RC2は保存JSONのみ、反復延長の成功は未判定。失敗trialUは直接未保存のため保存2点のdry BFGS replayと厳密な点identity確認を用意。実分子decode/新科学call0、旧raw2378/SOURCE/480-call STOPと131科学recordsを保全。別許可・fresh runまでmandatory STOP。以下は各時点の履歴。
