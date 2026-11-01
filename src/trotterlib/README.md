@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 1：案Aのoperator一致
+
+[固定H4共通入力、独立T/V構成、kernel/runner/tests・数値政策](../../docs/research/h4_p3_stage1_operator_validation_20261102.md)。full256次元のoperator検証のみ。時間発展・law・回路compile・N/C/Gは範囲外。
+
 ## 2026-11-01 H6 Pauli P2：保存回路の部品価格
 
 [固定3候補index0000、kernel/runner/tests、最大12compileの条件](../../docs/research/h6_pauli_p2_cost_20261101.md)。Fullを再利用しR/E/Emptyのみ新規実行。新N/G・samplingは範囲外。
