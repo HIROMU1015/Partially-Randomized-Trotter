@@ -2,6 +2,8 @@
 
 [固定3候補index0000、kernel/runner/tests、最大12compileの条件](research/h6_pauli_p2_cost_20261101.md)。Fullを再利用しR/E/Emptyのみ新規実行。新N/G・samplingは範囲外。
 
+[P2結果・QPY・SOURCE・STOP](../artifacts/pauli_pure_rte_mechanism_validation/2026-11-01/cost/REPORT.md)：12/12 compile成功、保存Full6軸再利用。固定index0000の非加法性を記録し、公開照合後停止。
+
 ## 2026-11-01 H6 Pauli P1：限定bias分離
 
 [固定4候補・6主要信号＋2整合検査の条件、code/tests、結果保存先](research/h6_pauli_p1_bias_20261101.md)。P1のみ。新N/G・sampling・回路compileは範囲外。
