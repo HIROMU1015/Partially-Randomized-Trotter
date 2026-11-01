@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：固定U tail LP専用entry（2026-11-01）
+
+[run_research_c_fixed_u_tail_lp.py](run_research_c_fixed_u_tail_lp.py)は既定でbyte/header/env preflightのみ。[仕様・93人工PASS＋29 subtests・未承認50-call](../docs/research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)。別科学許可後の--executeだけ、保存PR1候補のHiGHS-ds LP1回と独立tensor/CAR/PF-K0保持gateを評価する。既存one-fit/native runnerを再起動しない。実H4評価0、retry/resume0、公開後mandatory STOP。
+
 ## 研究C：保存RC2／PR native-onlyを一度実行（2026-11-01）
 
 [run_research_c_rc2_pr_native.py](run_research_c_rc2_pr_native.py)をSOURCE14843a28fから無変更で実行し、655/655 COMPLETE・FAIL/retry/resume0。[全gate・価格・STOP](../docs/research/research_c_rc2_pr_native_execution_20261101.md)。64 trajectory/67 P0/262 QPY、raw729を保存。消費済みrun01は再起動しない。全law/CA/総資源の未資格を維持し、公開後mandatory STOP。

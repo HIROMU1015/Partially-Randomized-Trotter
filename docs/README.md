@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：固定U・tail演算子保存LP準備（2026-11-01）
+
+[数式・dual・保持gate・Q1〜Q10](research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)／[未承認50-call契約](research/research_c_fixed_u_tail_preserving_lp_contract_unapproved_20261101.json)。Signed tail Jのみを最適化しU/head/full tensorを固定する候補Aを実装。93人工PASS＋29 subtests、SOURCE105/input9をpassive確認。実H4 LP/再解析0、strict改善や新規性は未認定、公開後mandatory STOP。
+
 ## 研究C：保存RC2／PR native校正・実行結果（2026-11-01）
 
 [655/655 COMPLETE・全gate・6指標](research/research_c_rc2_pr_native_execution_20261101.md)。保存H4/直鎖1Å/STO-3G、未収束CDF8/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0、own-oracle/準備除外・P0。64 kernelと共通shell3の数値gate PASS、FAIL/retry/resume0。各32件の完全h-step平均RZはRC2 20487／PR13246.375。有限cohortで全law/CA/support/総資源は未資格。Raw729/QPY262/STOPを保全し、公開照合後mandatory STOP。

@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：固定U tail係数LP adapter（2026-11-01）
+
+[c_fixed_u_tail_lp.py](../trottertracks/c_fixed_u_tail_lp.py)／[runner](../trottertracks/c_fixed_u_tail_lp_runner.py)は既存contraction・Pauli map・CAR・PF/RTE・SciPy linprogを再利用し、作用/随伴・exact L1 LP・数値primal/dual診断と研究固有dispatchのみ追加する。[技術報告・未承認50-call](../../docs/research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)。Shared library/旧SOURCE無変更、新fitter/rotation codec/simulatorなし、93人工PASS＋29 subtests、実H4評価0。公開後mandatory STOP。
+
 ## 研究C：既存native/CAR/P0で655-call校正完了（2026-11-01）
 
 [SOURCE無変更・結果と資格](../../docs/research/research_c_rc2_pr_native_execution_20261101.md)。新RC2/PR adapterから既存kernel・独立CAR・actual adjoint・X/Y・P0・metricsを再利用し、64件とshell3 PASS。Library/旧SOURCE無変更、価格は有限cohortのみ、全law/actual CA/総資源は未資格。旧raw/STOP保全、公開照合後mandatory STOP。
