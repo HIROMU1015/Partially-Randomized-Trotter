@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：改善reduced pilot・PR inner整合FAILで部分STOP（2026-11-02）
+
+[480-call部分結果・新admission・未実施範囲](../docs/research/research_c_j_u_stable_execution_20261102.md)。SOURCE12e0079a2/1563-call契約を無変更で実行し、480 attempts・478 COMPLETE・2 FAIL（PR inner例外と包むouter driver）、retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1・元scales。PR初期と未受理trial1の新stabilityはPASSしたが、trial2のchart対physical-chain gradient差2.39695e-7でcorrectness STOP、受理U更新0。開始済みRC2は75点admission PASS/64受理更新、F .01742887277/J∞3.67648e-8/U₂ .0047620784でU未資格。親の新DF norm/一般K-CAR/比較はNOT_RUN/null、旧/初期DF PASSを終端へ転用しない。旧raw1879/SOURCE/STOP・旧閾値を保全、新raw499を保存し公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：Reduced勾配の数値安定性・次pilot準備（2026-11-02）
 
 [原因切分け・人工比較・220 items PASS・限界](../docs/research/research_c_j_u_gradient_stability_investigation_20261102.md)／[未承認1563-call案](../docs/research/research_c_j_u_stable_contract_unapproved_20261102.json)。新entry `scripts/run_research_c_j_u_stable.py`、core `c_j_u_precision.py`/`c_j_u_stable.py`、専用pilot/tests、証拠 `artifacts/research_c_j_u_stability/2026-11-02/technical/`。既存solver/目的/PR gaugeを維持し、拡張精度残差と2回のrefinementを接続。最後のpairを元1e-6で判定する新しい数値pilotで、厳密gradient上界ではない。人工改善・未解決例/joint対照を保全、実H4 decode/新評価/最適化0、旧raw1879/SOURCE/旧STOP不変。別明示許可・fresh runまでmandatory STOP。以下は各時点の履歴。

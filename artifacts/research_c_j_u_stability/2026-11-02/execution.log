@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-j-u-stable-execution-20261102/scripts/run_research_c_j_u_stable.py", line 55, in <module>
+    main()
+  File "/tmp/prt-c-j-u-stable-execution-20261102/scripts/run_research_c_j_u_stable.py", line 51, in main
+    m.run(ROOT, args.contract, args.output, args.fit_python)
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_stable_pilot.py", line 211, in run
+    common.launch_workers(root, path, output, c, fit_python, plan['workers'], calls)
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_common_convergence_pilot.py", line 168, in launch_workers
+    if failures:raise RuntimeError("TECHNICAL_WORKER_FAILURE: "+repr(failures))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: TECHNICAL_WORKER_FAILURE: ["Command '['/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python', '/tmp/prt-c-j-u-stable-execution-20261102/scripts/run_research_c_j_u_stable.py', '--contract', '/tmp/prt-c-j-u-stable-execution-20261102/docs/research/research_c_j_u_stable_contract_unapproved_20261102.json', '--fit-worker', 'pr', '--output', '/tmp/prt-c-j-u-stable-execution-20261102/artifacts/research_c_j_u_stability/2026-11-02/run01/pr']' returned non-zero exit status 1."]
