@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：曲率利用J/U・2整合gate FAILで部分STOP（2026-11-01）
+
+[実行・partial・未実施範囲](../../docs/research/research_c_separated_J_U_curvature_execution_20261101.md)。固定SOURCEecb2e7dc0無変更、保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0/α=γ=.1の両arm各1 trajectory。210/最大415 attempts、208 COMPLETE/2 FAIL、retry-resume0。PRはJ0後のchart/gradient整合FAIL、開始済みRC2は64 cycles後U未資格を記録した後、独立ffsim目的/J-gradient整合FAIL。両final export・新DF norm/表現/比較はNOT_RUN/null。複合gate内訳の保存不足で原因は未確定、追加再評価や閾値変更をせずraw226/旧原本を保全。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：J/U停滞の人工切り分け・曲率利用版を準備（2026-11-01）
 
 [原因候補・実装・257人工/回帰PASS](../../docs/research/research_c_separated_J_U_stagnation_diagnostic_preparation_20261101.md)。PR Jはaffine residual＋解析Hessian/Newton-CG、Uは固定J residual/Jacobian＋TRF/exactへ変更し、RC2 augmented gelsdは維持。元の目的/rank/一次閾値/64 cyclesを保持。人工の固定J U残差は改善例があるが、J refit後のU勾配reboundと強いconditioningの同時未収束は残る。新415-call案は保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0の両arm各1 trajectory。SOURCE119/input17のpassiveのみ、実H4 decode/trace数値再解析/最適化/科学call0。旧258-call原本は保全し、残り159 unitsを使わない。公開照合後mandatory STOP。以下は旧結果・準備の履歴。

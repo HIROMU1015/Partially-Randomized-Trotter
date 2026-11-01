@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：曲率利用J/U・2整合gate FAILで部分STOP（2026-11-01）
+
+[実行・partial・未実施範囲](docs/research/research_c_separated_J_U_curvature_execution_20261101.md)。固定SOURCEecb2e7dc0無変更、保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0/α=γ=.1の両arm各1 trajectory。210/最大415 attempts、208 COMPLETE/2 FAIL、retry-resume0。PRはJ0後のchart/gradient整合FAIL、開始済みRC2は64 cycles後U未資格を記録した後、独立ffsim目的/J-gradient整合FAIL。両final export・新DF norm/表現/比較はNOT_RUN/null。複合gate内訳の保存不足で原因は未確定、追加再評価や閾値変更をせずraw226/旧原本を保全。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：J/U分離pilot・DF両PASS、一次収束は両未資格（2026-11-01）
 
 [全結果・一次診断・限界](docs/research/research_c_separated_J_U_execution_20261101.md)。科学SOURCEcbbb11e7e無変更で新規交互最適化2 trajectory、258/最大417 COMPLETE・correctness FAIL/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1。PRは11 cycles後J勾配未達、RC2はJ基準METだがU未達で64 cycles上限。両DF予算PASS、PR λ .954543284658→.773820763063Ha（約18.93%減）は未収束終点の記述値。RC2自己目的は旧jointより高く、両U残差も旧より大きい。QualifiedなPR/RC2比較はnull、PF/RTE/native/shots/CA/総資源0、旧SOURCE/raw/STOP保全。公開照合後mandatory STOP。以下は各時点の履歴。

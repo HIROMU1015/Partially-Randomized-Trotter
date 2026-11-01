@@ -235,6 +235,11 @@
       "commit": "cbbb11e7e4f2a133bd53c1efdf59b1e02c4d5287",
       "role": "separated_J_U_PR_RC2_H4_scientific_SOURCE",
       "description": "Unchanged417-unit contract;258 COMPLETE;DF bothPASS;first-order bothUNQUALIFIED;no downstream PF/RTE/native/shots"
+    },
+    {
+      "commit": "ecb2e7dc0ebfebe15246dfd3c290bcae72eeb246",
+      "role": "curvature_separated_J_U_H4_scientific_SOURCE",
+      "description": "Fixed415-unit contract;210 attempts208 COMPLETE2 correctnessFAIL;PR chart/gradient andRC2 terminal independent ffSim gate STOP;new DF not evaluated"
     }
   ],
   "artifact_inventory": {
@@ -11862,6 +11867,59 @@
       "actual_CA": null,
       "PF_RTE_native_shots_total_resources": null,
       "raw_files": 269,
+      "old_results_unchanged": true,
+      "CI_or_external_reproduction": false,
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_separated_J_U_curvature_execution_20261101",
+      "status": "TECHNICAL_CORRECTNESS_STOP_PARTIAL",
+      "report": "docs/research/research_c_separated_J_U_curvature_execution_20261101.md",
+      "execution_SOURCE_commit": "ecb2e7dc0ebfebe15246dfd3c290bcae72eeb246",
+      "implementation_commit": "d1b37cd8e1cc9916a5d2948133d769be1d6119da",
+      "source_manifest": "artifacts/research_c_separated_J_U_curvature/2026-11-01/technical/SOURCE.json",
+      "source_manifest_sha256": "6170207a0b86badd26bda1a0c46a5748d32045ddc8cfdd2edbbc6af5fb6d7f8e",
+      "contract": "docs/research/research_c_separated_J_U_curvature_contract_unapproved_20261101.json",
+      "contract_sha256": "4c631022c08b2d2a88f67ffbcc8ce960119bc228035c861ee79ce0933d7a9796",
+      "raw": "artifacts/research_c_separated_J_U_curvature/2026-11-01/run01",
+      "summary": "artifacts/research_c_separated_J_U_curvature/2026-11-01/execution_summary.json",
+      "postflight": "artifacts/research_c_separated_J_U_curvature/2026-11-01/execution_postflight.json",
+      "model": "saved linear H4/1.00Angstrom/STO-3G;number CDF8;Nalpha=Nbeta2;sector36;original frame orderLD2;original g-corrected kappa/scalar",
+      "initialization": "same original qualified J/U/x0 independent roles",
+      "maximum_units": 415,
+      "attempts": 210,
+      "complete": 208,
+      "FAIL": 2,
+      "optimization_trajectories": 2,
+      "ffsim_joint_fitter_calls": 0,
+      "J_solves": 66,
+      "U_solves": 64,
+      "retry": 0,
+      "resume": 0,
+      "failure_gates": {
+        "pr": "J_CHART_OR_GRADIENT_MISMATCH",
+        "rc2": "INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH"
+      },
+      "terminal_independent_PASS": false,
+      "final_exported": {
+        "pr": false,
+        "rc2": false
+      },
+      "DF_budget": {
+        "pr": null,
+        "rc2": null
+      },
+      "qualified_tail_comparison": null,
+      "partial_rc2": {
+        "status": "OUTER_LIMIT_UNQUALIFIED",
+        "classification": "U_UNQUALIFIED",
+        "cycles": 64
+      },
+      "new_sector_DF_evaluations": 0,
+      "post_STOP_diagnostic_evaluations": 0,
+      "PF_RTE_ground_native_shots_total_resources": null,
+      "actual_CA": null,
+      "raw_files": 226,
       "old_results_unchanged": true,
       "CI_or_external_reproduction": false,
       "mandatory_stop": true
