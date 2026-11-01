@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：105-call shots-only entryを限定実行（2026-11-01）
+
+[run_research_c_rc2_pr_conditional_shots.py](run_research_c_rc2_pr_conditional_shots.py)を固定SOURCEe88fa599aから一度実行し105/105 COMPLETE、FAIL/retry-resume0。[結果・156axis・STOP](../docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。消費済みrun01は再起動しない。Native価格・sampling・総費用は未実行、公開後mandatory STOP。
+
 ## 研究C：保存scalarの条件付きshots-only entry（2026-11-01）
 
 [run_research_c_rc2_pr_conditional_shots.py](run_research_c_rc2_pr_conditional_shots.py)は既定でpassive preflightのみ。[技術報告・未承認105-call](../docs/research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)。別科学許可後の--executeだけ、保存RC2/PRの3 lane×13roundを評価し、十分shots／Wを保存する。Native/fit/sampling/総費用のentryはなく、価格を旧候補から転用しない。今回実H4数値算定0、mandatory STOP。

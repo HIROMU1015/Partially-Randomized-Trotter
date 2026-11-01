@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：条件付き十分shotsとWを取得、evidence資格は未解決（2026-11-01）
+
+[実行結果・資格](docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)／[raw92・STOP](artifacts/research_c_rc2_pr_conditional_shots/2026-11-01/run01/)。固定SOURCEe88fa599aで105 COMPLETE、correctness FAIL/retry/resume0、実行時人工39 PASS。保存H4/1Å/STO-3G、通常number CDF8/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0・m0..12・own-oracle/準備除外。2候補×3lane×13round、evidence26は未資格、ideal/assumed52はconditional round/energy PASS。Ideal N RC2=18200774092602、PR=14504；W=74550091248614488／11822240。Assumed N=18282907461654／14562、W=74886508341850424／11875484。Canonical decimal文字列で保存。両optimizer未収束、全law誤差/actual CA/guaranteed shots/native μ・S/総資源は未資格・null。Local numerical pilotでCI/外部独立再現/厳密保証ではない。旧原本不変、公開後mandatory STOP。
+
 ## 研究C：保存RC2／PR-tail・全26 PF/RTEセルが潜在適格（2026-11-01）
 
 [実行結果](docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)／[raw69件・STOP](artifacts/research_c_rc2_pr_stage_b/2026-11-01/run01/)。SOURCEd6b17b794固定、143/143 COMPLETE・FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、通常number CDF8/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0・m0..12、own-DF ground oracle/準備除外。18 CAR／general-K、両tail/law/mass、3 ground/alias PASS。両arm全13round POTENTIALLY_FEASIBLE。m12のPF/RTE/AはRC2 .058425543/.052175025/8.42470113e-6、PR .067081099/.030054590/.864344018。両optimizer未収束を維持し、全law synthesis/implemented-law/CA/shots/総資源は未資格・null。Local numerical pilotでCI／外部独立再現や厳密enclosureではない。旧SOURCE/input/raw/failed STOP不変、公開照合後mandatory STOP。

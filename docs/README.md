@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：保存RC2／PRの条件付きshots・W実行結果（2026-11-01）
+
+[105-call・全3lane・156axis・Q1〜Q10](research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。Ideal/assumedでPRのN/Wが小さく、evidenceは未資格。正確な十進文字列・raw92・旧原本を保存し、価格・actual CA・総資源へ自動進行せずmandatory STOP。
+
 ## 研究C：RC2／PR-tailの条件付きshots・反復重み準備（2026-11-01）
 
 [技術報告・Three lanes・大整数・125人工PASS](research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)／[未承認105-call契約](research/research_c_rc2_pr_conditional_shots_contract_unapproved_20261101.json)。保存26セルを再評価する専用経路を準備。実H4 shots/W/energyは未算定、μ/S/CA/総資源はnull、公開照合後mandatory STOP。

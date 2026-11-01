@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：条件付きshots／W・105-call完了（2026-11-01）
+
+[全3 lane・156 axis・結果と限界](docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。SOURCEe88fa599a無変更、105/105 COMPLETE・FAIL/retry/resume0。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、partial S2 δ.1/s1/r128/K0・13round、own-DF oracle/準備除外。Ideal NはRC2 18200774092602／PR14504、Wは74550091248614488／11822240。AssumedでもPRが小さく、evidenceはUNQUALIFIED。未収束候補の条件付き値で、μ/S/actual CA/総資源はnull。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。以下の準備表示は履歴。
+
 ## 研究C：保存RC2／PR-tailの条件付きshots／W準備（2026-11-01）
 
 [Three lanes・数値域・125人工PASS・科学契約](docs/research/research_c_rc2_pr_conditional_shots_preparation_20261101.md)／[未承認105-call](docs/research/research_c_rc2_pr_conditional_shots_contract_unapproved_20261101.json)。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、partial S2 δ.1/s1/r128/K0・13roundのStage B26セルを、既存C1 accuracy/energy/Hoeffdingと大整数ceilへ接続。Evidenceはnull、ideal/assumedは明示仮定、NとWは十進文字列、rをWへ重ねない。新entryはscripts/run_research_c_rc2_pr_conditional_shots.py、moduleはsrc/trottertracks/c_rc2_pr_conditional_shots.py、testはtests/management/test_research_c_rc2_pr_conditional_shots.py。SOURCE101/input14のpassiveのみ、実H4 shots/W/energy・科学call0。Native価格／総資源は未知、旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
