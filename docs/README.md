@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：固定U tail LP・限定実行の未解決結果（2026-11-01）
+
+[LP1回・primal/dual・9/50 STOP](research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。Solver Optimal表示に対し独立dual/gap/相殺guardが不適格でUNRESOLVED_LP。新candidateも保持/PF-RTE評価も未実行。改善余地の有無は保留、原本保全・公開照合後mandatory STOP。
+
 ## 研究C：固定U・tail演算子保存LP準備（2026-11-01）
 
 [数式・dual・保持gate・Q1〜Q10](research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)／[未承認50-call契約](research/research_c_fixed_u_tail_preserving_lp_contract_unapproved_20261101.json)。Signed tail Jのみを最適化しU/head/full tensorを固定する候補Aを実装。93人工PASS＋29 subtests、SOURCE105/input9をpassive確認。実H4 LP/再解析0、strict改善や新規性は未認定、公開後mandatory STOP。

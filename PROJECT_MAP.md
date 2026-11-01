@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：固定U LP・数値最適性未資格でSTOP（2026-11-01）
+
+[LP1回・独立診断・9/50結果](docs/research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。SOURCE56a6acb8f無変更、9 COMPLETE/例外FAIL0、retry/resume0。保存H4/直鎖1Å/STO-3G、PR通常CDF8/sector36/元順LD2、head0/1・tail2..7、h.1/s1/r128/K0。HiGHS Optimalだがdual等式残差7.8707>1e-9、gap/相殺guardも不適格でUNRESOLVED_LP。新candidate・保持/CAR/PF-RTE/DF/AはNOT_RUN。改善不能とは認定せず、raw11/旧原本を保全して公開後mandatory STOP。以下は準備時の履歴。
+
 ## 研究C：固定U・tail保存係数LPの技術準備（2026-11-01）
 
 [数学仕様・Q1〜Q10・93人工PASS＋29 subtests](docs/research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)／[未承認50-call](docs/research/research_c_fixed_u_tail_preserving_lp_contract_unapproved_20261101.json)。研究優先方向はユーザー指定の候補A。Entryはscripts/run_research_c_fixed_u_tail_lp.py、線形作用/LPはsrc/trottertracks/c_fixed_u_tail_lp.py、接続は同c_fixed_u_tail_lp_runner.py、testはtests/management/test_research_c_fixed_u_tail_lp.py。固定U/head/full tail tensorとexact Pauli L1、full-row primal/dual/conditioning、既存CAR/PF-K0へ接続。SOURCE105/input9のpassiveのみ、実H4 decode/LP/科学call0、実改善は未評価。公開照合後mandatory STOP、候補Bや総資源へ自動進行しない。

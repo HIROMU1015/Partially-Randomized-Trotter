@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：固定U LP entryを一度実行、未解決分岐で停止（2026-11-01）
+
+[run_research_c_fixed_u_tail_lp.py](run_research_c_fixed_u_tail_lp.py)をSOURCE56a6acb8fから無変更で実行し、LP1回・9/最大50 COMPLETE、retry/resume0。[独立診断・raw・STOP](../docs/research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。HiGHS Optimalだが数値最適性未資格で候補exportと後続41 unitsはNOT_RUN。消費済みLP枠／run01は再起動せず、公開後mandatory STOP。
+
 ## 研究C：固定U tail LP専用entry（2026-11-01）
 
 [run_research_c_fixed_u_tail_lp.py](run_research_c_fixed_u_tail_lp.py)は既定でbyte/header/env preflightのみ。[仕様・93人工PASS＋29 subtests・未承認50-call](../docs/research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)。別科学許可後の--executeだけ、保存PR1候補のHiGHS-ds LP1回と独立tensor/CAR/PF-K0保持gateを評価する。既存one-fit/native runnerを再起動しない。実H4評価0、retry/resume0、公開後mandatory STOP。

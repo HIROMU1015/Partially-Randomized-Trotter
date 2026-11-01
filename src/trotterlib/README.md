@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：固定U LPの数値診断が後続採用を停止（2026-11-01）
+
+[無変更SOURCE・9/50結果](../../docs/research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。既存SciPy HiGHS-dsを一度呼び、独立primal/dual診断がUNRESOLVEDを返した。Library/adapter/契約の修正や追加LPは行わず、候補・CAR/PF-RTE/DF評価へ進まない。旧成果保全、公開後mandatory STOP。
+
 ## 研究C：固定U tail係数LP adapter（2026-11-01）
 
 [c_fixed_u_tail_lp.py](../trottertracks/c_fixed_u_tail_lp.py)／[runner](../trottertracks/c_fixed_u_tail_lp_runner.py)は既存contraction・Pauli map・CAR・PF/RTE・SciPy linprogを再利用し、作用/随伴・exact L1 LP・数値primal/dual診断と研究固有dispatchのみ追加する。[技術報告・未承認50-call](../../docs/research/research_c_fixed_u_tail_preserving_lp_preparation_20261101.md)。Shared library/旧SOURCE無変更、新fitter/rotation codec/simulatorなし、93人工PASS＋29 subtests、実H4評価0。公開後mandatory STOP。
