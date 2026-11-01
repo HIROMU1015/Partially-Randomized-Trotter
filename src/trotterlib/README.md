@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：J/U結合を扱うreduced objectiveの技術準備（2026-11-02）
+
+[数学・再利用・人工186 items PASS・限界](../../docs/research/research_c_j_u_coupled_reduced_objective_preparation_20261102.md)／[未承認1051-call](../../docs/research/research_c_j_u_reduced_contract_unapproved_20261102.json)。新entry `scripts/run_research_c_j_u_reduced.py`、core/pilot `src/trottertracks/c_j_u_reduced*.py`、人工tests `tests/management/test_research_c_j_u_reduced*.py`、証拠 `artifacts/research_c_j_u_reduced/2026-11-02/technical/`。RC2一意な内側解とPRの共通head gauge条件を使い、全trialでJをsolve・再精密化する。追加null/inner未達は未資格STOP、refinement一致は厳密gradient上界ではない。実H4 decode/再解析/最適化/科学call0、旧raw1825保全、別明示許可までmandatory STOP。以下は各時点の履歴。
+
 ## 研究C：評価点修正・再実行完了、DF両PASS・一次未収束（2026-11-02公開）
 
 [原因証拠・修正・新結果](../../docs/research/research_c_j_u_consistency_repair_execution_20261101.md)。保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0/α=γ=.1。保存診断15＋修正版paired328＝343 units COMPLETE/FAIL0、修正版再実行1回・各新run内retry/resume0。SciPy Newton-CGのpre-step jacと終点を取り違えた検証、およびcodec前後の異点gradient比較を修正。数値allowance/一次閾値/DF予算は不変。新DF normはPR1.10629e-8/RC2 5.01800e-9Haで両PASS、終端同一点微分・sector表現PASS。PRは35cyclesでJ/U未資格、RC2は64cyclesでU未資格。Qualified比較null/下流0、旧FAILと旧raw1471保全、公開照合後mandatory STOP。以下は各時点の履歴。
