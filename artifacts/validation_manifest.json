@@ -230,6 +230,11 @@
       "commit": "173ba2fd83172f41f08900fcba7e2a977565f57f",
       "role": "CDF7_native32_fullCAR_P0_scientific_SOURCE",
       "description": "unchanged332-call scope;full512 raw/compiled/actual-adjoint/XY32 PASS;conditional RZ point improvement not observed;no fit/PF-RTE/shots recalculation"
+    },
+    {
+      "commit": "cbbb11e7e4f2a133bd53c1efdf59b1e02c4d5287",
+      "role": "separated_J_U_PR_RC2_H4_scientific_SOURCE",
+      "description": "Unchanged417-unit contract;258 COMPLETE;DF bothPASS;first-order bothUNQUALIFIED;no downstream PF/RTE/native/shots"
     }
   ],
   "artifact_inventory": {
@@ -11805,6 +11810,60 @@
         "CPU_seconds": 14564.856104421,
         "peak_RSS_KiB": 3407732
       },
+      "mandatory_stop": true
+    },
+    {
+      "id": "research_c_separated_J_U_execution_20261101",
+      "status": "ONE_OR_BOTH_FIRST_ORDER_UNQUALIFIED",
+      "report": "docs/research/research_c_separated_J_U_execution_20261101.md",
+      "execution_SOURCE_commit": "cbbb11e7e4f2a133bd53c1efdf59b1e02c4d5287",
+      "implementation_commit": "e75c6b66bfd7711ca93d3e3942b0dae6ece08be7",
+      "source_manifest": "artifacts/research_c_separated_J_U/2026-11-01/technical/SOURCE.json",
+      "source_manifest_sha256": "f2c3618c9e75bd7949a3824f9fed9213f537d3f58cea1f1616dd59198910c4f8",
+      "contract": "docs/research/research_c_separated_J_U_contract_unapproved_20261101.json",
+      "contract_sha256": "fb0e137564e4013225bd12c4812017af882cee4fd5af69c382149a5eb75735df",
+      "raw": "artifacts/research_c_separated_J_U/2026-11-01/run01",
+      "summary": "artifacts/research_c_separated_J_U/2026-11-01/execution_summary.json",
+      "postflight": "artifacts/research_c_separated_J_U/2026-11-01/execution_postflight.json",
+      "model": "saved linear H4/1.00Angstrom/STO-3G;number CDF8;Nalpha=Nbeta2;sector36/LD2;all signed symmetric J and real orthogonal U;original g-corrected kappa and scalar",
+      "algorithm": "alternating_isometric_J_local_orthogonal_U_v1",
+      "initialization": "same original qualified J/U/x0;independent roles;no warm start",
+      "maximum_units": 417,
+      "attempts": 258,
+      "complete": 258,
+      "FAIL": 0,
+      "retry": 0,
+      "resume": 0,
+      "optimization_trajectories": 2,
+      "ffsim_joint_fitter_calls": 0,
+      "J_solves": 77,
+      "U_solves": 75,
+      "first_order_qualified": {
+        "pr": false,
+        "rc2": false
+      },
+      "DF_budget": {
+        "pr": true,
+        "rc2": true
+      },
+      "terminal_status": {
+        "pr": "J_STATIONARITY_UNQUALIFIED",
+        "rc2": "OUTER_LIMIT_UNQUALIFIED"
+      },
+      "exact_tail_mass_Ha": {
+        "pr": 0.7738207630625358,
+        "rc2": 8.285809759591881
+      },
+      "sector_error_Ha": {
+        "pr": 1.1063965667743403e-08,
+        "rc2": 5.018163547874317e-09
+      },
+      "qualified_tail_comparison": null,
+      "actual_CA": null,
+      "PF_RTE_native_shots_total_resources": null,
+      "raw_files": 269,
+      "old_results_unchanged": true,
+      "CI_or_external_reproduction": false,
       "mandatory_stop": true
     }
   ],

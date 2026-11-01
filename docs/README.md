@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：J/U分離pilot・DF両PASS、一次収束は両未資格（2026-11-01）
+
+[全結果・一次診断・限界](research/research_c_separated_J_U_execution_20261101.md)。科学SOURCEcbbb11e7e無変更で新規交互最適化2 trajectory、258/最大417 COMPLETE・correctness FAIL/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1。PRは11 cycles後J勾配未達、RC2はJ基準METだがU未達で64 cycles上限。両DF予算PASS、PR λ .954543284658→.773820763063Ha（約18.93%減）は未収束終点の記述値。RC2自己目的は旧jointより高く、両U残差も旧より大きい。QualifiedなPR/RC2比較はnull、PF/RTE/native/shots/CA/総資源0、旧SOURCE/raw/STOP保全。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：J/U分離型PR-aware DFの実装と限定pilot準備（2026-11-01）
 
 [数学仕様・人工検証・比較政策](research/research_c_separated_J_U_optimization_preparation_20261101.md)／[未承認417-call科学契約](research/research_c_separated_J_U_contract_unapproved_20261101.json)。PR固定U凸問題・RC2強い係数対照・局所直交U更新を接続し、227人工/回帰PASS。将来の保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2両arm比較は同じ元qualified x0を使用し、旧joint終点と同metricで診断する。実H4 decode/最適化/保存再解析0、科学的なλ改善・収束優位は未判定。旧LP50-call/旧成果を保全し、公開照合後mandatory STOP。

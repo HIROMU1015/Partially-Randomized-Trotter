@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：J/U分離pilot・DF両PASS、一次収束は両未資格（2026-11-01）
+
+[全結果・一次診断・限界](docs/research/research_c_separated_J_U_execution_20261101.md)。科学SOURCEcbbb11e7e無変更で新規交互最適化2 trajectory、258/最大417 COMPLETE・correctness FAIL/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1。PRは11 cycles後J勾配未達、RC2はJ基準METだがU未達で64 cycles上限。両DF予算PASS、PR λ .954543284658→.773820763063Ha（約18.93%減）は未収束終点の記述値。RC2自己目的は旧jointより高く、両U残差も旧より大きい。QualifiedなPR/RC2比較はnull、PF/RTE/native/shots/CA/総資源0、旧SOURCE/raw/STOP保全。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：固定U LP係数保持profile・数値改善と全保持PASS（2026-11-01）
 
 [50-call科学結果・raw31・資格](docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。科学SOURCEc40f8128197177fd5ec2388cd306d89d36c3bd67無変更、LP1/50 COMPLETE/FAIL0/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36、元順LD2/head0/1/tail2..7、h.1/s1/r128/K0で固定U・tail tensor LPを限定実行。元全行列のdual残差9.88698e-12、gap2.55351e-15、相殺guard9.09238e-11で登録数値資格PASS。λ .954543284658→.954432028127Ha（約.0117%減）、tensor/CAR/phase/DF予算/1h-step PF-K0保持PASS。DF数値triangle bound1.89297e-8Haはengineering pilot、旧CDF optimizerは未資格。厳密LP/全law/CA/新候補shots/native/総資源は未資格/null。Local published numerical resultでCI/外部独立再現ではない。旧UNRESOLVED・raw/STOPを保全し、公開照合後mandatory STOP。以下は各時点の履歴。

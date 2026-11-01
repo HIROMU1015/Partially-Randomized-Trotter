@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：J/U分離pilot・DF両PASS、一次収束は両未資格（2026-11-01）
+
+[全結果・一次診断・限界](../docs/research/research_c_separated_J_U_execution_20261101.md)。科学SOURCEcbbb11e7e無変更で新規交互最適化2 trajectory、258/最大417 COMPLETE・correctness FAIL/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1。PRは11 cycles後J勾配未達、RC2はJ基準METだがU未達で64 cycles上限。両DF予算PASS、PR λ .954543284658→.773820763063Ha（約18.93%減）は未収束終点の記述値。RC2自己目的は旧jointより高く、両U残差も旧より大きい。QualifiedなPR/RC2比較はnull、PF/RTE/native/shots/CA/総資源0、旧SOURCE/raw/STOP保全。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：係数J・軌道U分離pilot entry（2026-11-01）
 
 [run_research_c_separated_J_U.py](run_research_c_separated_J_U.py)は既定でpassive preflightのみ。[技術報告・227人工/回帰PASS](../docs/research/research_c_separated_J_U_optimization_preparation_20261101.md)／[未承認417-call](../docs/research/research_c_separated_J_U_contract_unapproved_20261101.json)。別科学許可後だけ、同じ元qualified x0からPR／RC2各1交互trajectory、各最大64 U→J cyclesをfresh run01へ実行する。旧joint fitter/LPを再起動せず、旧終点のsame-metric診断4 unitsを明示計上。今回は実H4 decode/科学call0、retry/resume0、PF/RTE/native/shotsは対象外、公開照合後mandatory STOP。
