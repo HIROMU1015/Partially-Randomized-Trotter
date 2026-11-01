@@ -69,7 +69,7 @@ df_tol1e-8をoperator差の許容値へそのまま足さず、保存df_truncati
 
 ## 人工検査・実行・資源
 
-人工2/4qubitで9 tests PASS。signed/offdiagonal factor、手計算occupation oracle、native actionとCSR、bit順、
+人工2/4qubitの9 testsに、下記の符号付きzero読込回帰testを追加し、計10 tests PASS。signed/offdiagonal factor、手計算occupation oracle、native actionとCSR、bit順、
 補正欠落/二重加算、1/2誤り、scalar二重計上、Hermiticity/leakage、PASS/UNRESOLVED/FAIL境界を検査した。
 factorization/QuantumCircuit生成を禁止した区間で独立operator構成を確認した。実H4の科学実行はSOURCE固定後のみ。
 
@@ -83,8 +83,18 @@ PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 /home/AbeHiromu/projects/h6-env
 ```
 
 科学SOURCEは上記code/tests/条件をcommitで識別してから実行する。実際のcommit SHAとcode/input/依存SOURCE hashは出力に保存する。
-新規出力はJST日付の`artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/`、既存なら再実行を拒否する。
+新規科学出力はJST日付の`artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/`、既存なら再実行を拒否する。
 matrixは10構成のhash/shapeだけを保存し、巨大な原本やfull行列を複製しない。補正8×8と比較・scalar・status・STOPは保存する。
+
+## 技術preflightの修正記録（operator構成0）
+
+初期SOURCE `d57742f182bc4c2ae68f1df5b54dfb074a7ea7e4` は、stage1直下の入力state hash照合で停止した。
+Pauli/DF route開始・operator構成・metric計算は全て0。元の入力SHAは一致しており、算術式`real+1j*imag`による読込が虚部のsigned-zero bitを221箇所変えたことが原因だった。
+値は同一でも誤読込後のhashは`e25bd91d…`となり、成分を直接copyするとmodel/snapshotのhash `8339b1a8…`に一致する。
+原本・数値条件・operator経路を変更せず、raw値をbit保持して読む実装修正と人工回帰検査を行う。
+これは許可済みの技術debugであり、科学operatorの失敗・再計算ではない。最初のSOURCEとstage1直下の3ファイル・STOPはそのまま保全する。
+旧実行statusの`scientific_batches_started=1`はpreflight前に立てたrunner起動flagで、operator実行件数を意味しない。実際のroute開始/構成件数は0である。
+修正SOURCEを新commitで識別した後、独立run01 directoryで初回operator検証を行う。科学失敗の自動retryを許可する変更ではない。
 
 原本/SOURCE/規約不一致、欠落、数値FAIL/UNRESOLVED、scalar二重計上、sector不整合、未許可の条件変更、共有環境への干渉でSTOPする。
 科学実行失敗後の自動retry、案B、Stage 2/3/4、sampling、time evolution、N/C/G、P1/P2再実行は禁止。

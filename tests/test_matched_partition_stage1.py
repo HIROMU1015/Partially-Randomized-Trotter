@@ -15,6 +15,13 @@ from openfermion.circuits import low_rank
 from qiskit import QuantumCircuit
 
 
+def test_complex_decode_preserves_signed_zero_bytes():
+    import struct
+    raw=[[1.,-0.],[-0.,0.],[0.,-0.],[-.2,.3]]
+    actual=runner.complex_array(raw)
+    assert actual.tobytes()==b''.join(struct.pack('<dd',*pair) for pair in raw)
+
+
 def toy(weight=.3,g=None):
     g=np.array([[1.]]) if g is None else np.asarray(g)
     h=np.eye(len(g))*.4

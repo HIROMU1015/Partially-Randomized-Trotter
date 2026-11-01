@@ -19,7 +19,7 @@ import types
 from zoneinfo import ZoneInfo
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1'
+OUT=ROOT/'artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01'
 INPUT_REF='4591b8d75a2a6a55c74a51225f0c61648023c8ee'
 ORIGINAL_SOURCE='0c329b30a81accb35c212be8defa66fee0dd0f12'
 BASE='eb20e81074aaae3cb365b348f6c3ab9d217d3697'
@@ -61,7 +61,10 @@ def write(name,value):
 def complex_array(raw):
     import numpy as np
     a=np.asarray(raw,dtype=float)
-    return a[...,0]+1j*a[...,1]
+    # Arithmetic construction can change signed zero and falsify raw-byte hashes.
+    result=np.empty(a.shape[:-1],dtype=np.complex128)
+    result.real=a[...,0];result.imag=a[...,1]
+    return result
 
 
 def inputs():
@@ -124,7 +127,7 @@ def inputs():
 
 def execute():
     OUT.mkdir(parents=True,exist_ok=False);started=time.monotonic()
-    counts=dict(scientific_batches_started=1,Pauli_route_started=0,DF_route_started=0,
+    counts=dict(scientific_batches_started=0,Pauli_route_started=0,DF_route_started=0,
         routes_completed=0,operator_constructions_completed=0,native_basis_column_actions=0,
         metric_jobs_completed=0,time_evolution=0,signal_bias_B=0,SCF_FCI_DF_factorization=0,
         new_state_reference=0,RTE_law_sampling=0,circuit_build_compile=0,N_C_G=0,automatic_retries=0)
@@ -151,10 +154,15 @@ def execute():
             meminfo={s.split(':')[0]:s.split(':')[1].strip() for s in Path('/proc/meminfo').read_text().splitlines()
                 if s.startswith(('MemTotal:','MemAvailable:'))},
             BLAS=dict(OPENBLAS_NUM_THREADS=os.environ.get('OPENBLAS_NUM_THREADS'),
-                      reason='small dense matrices; independent metric jobs provide parallelism'))
+                      reason='small dense matrices; independent metric jobs provide parallelism'),
+            prior_technical_preflight=dict(source='d57742f182bc4c2ae68f1df5b54dfb074a7ea7e4',
+                artifacts='artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1',
+                operator_constructions=0,reason='decoder changed signed-zero bits; original inputs intact',
+                original_STOP_preserved=True,scientific_retry=False))
         write('source_and_inputs.json',source)
         data,provenance=inputs();source['inputs']=provenance;write('source_and_inputs.json',source)
         results={};matrices={}
+        counts['scientific_batches_started']=1
         counts['Pauli_route_started']=1;counts['DF_route_started']=1
         write('execution_status.json',dict(state='CONSTRUCTING_INDEPENDENT_ROUTES',counts=counts))
         with ThreadPoolExecutor(max_workers=2) as pool:

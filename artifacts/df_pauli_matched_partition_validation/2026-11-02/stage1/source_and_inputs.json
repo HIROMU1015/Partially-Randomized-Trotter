@@ -1,0 +1,68 @@
+{
+  "commit": "d57742f182bc4c2ae68f1df5b54dfb074a7ea7e4",
+  "code_sha256": {
+    "scripts/run_h4_p3_stage1.py": "f9daa56ccdb7206f0b0fab93a3250af97bb32338b937f09dbd2196d6c602b330",
+    "src/trotterlib/matched_partition_stage1.py": "9bcdfcdb5bae59fac357fea5e836e02a8c6eca75eb11be5b66af2cb36c17431b",
+    "tests/test_matched_partition_stage1.py": "b2ecdc7b69d4752b1402e96bb93edd01ece547dcdb1d0e52f833dd7efae79941",
+    "docs/research/h4_p3_stage1_operator_validation_20261102.md": "382b3f347936a981097a69debe1526f1ebc4df53a97d7709e8c5abf9917aa069",
+    "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+    "src/trotterlib/pauli_signal_adapter.py": "bbd8d0d3de3248c71f16bd86679c9673828b83dc435870da946c425ee199f95e",
+    "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+    "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6"
+  },
+  "runtime": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "openfermion": "1.6.1"
+  },
+  "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "execution_JST": "2026-11-02T01:13:52.063578+09:00",
+  "scope": "H4_P3_STAGE1_PARTITION_A_ONLY",
+  "condition": {
+    "molecule": "linear H4",
+    "distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "multiplicity": 1,
+    "spatial_orbitals": 4,
+    "spin_orbitals": 8,
+    "full_dimension": 256,
+    "Pauli_nonidentity_terms": 184,
+    "DF_rank_policy": "tol-only 1e-8, saved returned rank10",
+    "partition": "c_N I + T_eff + V_square",
+    "q_r_K_T": "not used; historical T=.8 only provenance"
+  },
+  "numerical_policy": {
+    "dtype": "complex128",
+    "norm": "spectral_SVD_gesdd",
+    "epsilon": 2.220446049250313e-16,
+    "gamma_multiplier": 16,
+    "scale": "max(1, spectral norm of each compared operand)",
+    "dimension": "full Fock dimension, also for inherited scalar/tensor errors",
+    "PASS": "residual <= tolerance/4",
+    "UNRESOLVED": "tolerance/4 < residual <= 4*tolerance",
+    "FAIL": "residual > 4*tolerance",
+    "uncertainty": "engineering consistency resolution, not certified rounding/DF error bound",
+    "precision_escalation": false,
+    "automatic_retry": false
+  },
+  "low_rank": {
+    "path": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/openfermion/circuits/low_rank.py",
+    "sha256": "de74fb802550417788362845515ed9e56a180e4ff85ab21ab43ba8445156dbbe"
+  },
+  "affinity_CPUs": 64,
+  "load_average": [
+    38.90283203125,
+    38.373046875,
+    38.3564453125
+  ],
+  "meminfo": {
+    "MemTotal": "528127736 kB",
+    "MemAvailable": "499452884 kB"
+  },
+  "BLAS": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "reason": "small dense matrices; independent metric jobs provide parallelism"
+  }
+}
