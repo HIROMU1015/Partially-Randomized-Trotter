@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "unique_pytest_items": 269,
+  "new_items": 18,
+  "existing_items": 251,
+  "suites": [
+    {
+      "log": "fit_tests.txt",
+      "passed": 257,
+      "seconds": 26.42,
+      "contains_new_items": 16
+    },
+    {
+      "log": "evaluation_tests.txt",
+      "passed": 10,
+      "deselected": 2,
+      "seconds": 1.29
+    },
+    {
+      "log": "final_local_tests.txt",
+      "passed": 18,
+      "seconds": 3.04,
+      "overlap_with_fit": 16
+    }
+  ],
+  "earlier_subset": {
+    "log": "new_tests.txt",
+    "passed": 15,
+    "not_added_to_unique_total": true
+  },
+  "technical_export_repair": {
+    "failure_log": "artificial_study_stdout.txt",
+    "partial_export": "partial_study_export.txt",
+    "reason": "numpy bool_ in artificial study JSON,converted to bool",
+    "regression": "test_artificial_study_is_finite_JSON_including_value_floor_case",
+    "final_study_reproduced": true
+  },
+  "coverage": [
+    "correct gradient but nonlocal step versus true local decrease",
+    "inexact inner passes J/stability but wrong envelope direction",
+    "inner accuracy control without threshold relaxation",
+    "truncation trend versus value-error/h amplification",
+    "FD assembly makes no queries",
+    "genuine invented DF all7 points resolve J and preserve cache",
+    "missing side gives null FD",
+    "initial/zero/nonfinite/correctness STOP",
+    "49-unit E2E/fresh/retry0",
+    "legacy objective/Hessian/chart/raw/codec/reduced regression"
+  ],
+  "real_molecular_NPZ_decodes": 0,
+  "new_molecular_objective_queries": 0,
+  "new_scientific_runs": 0,
+  "CI_or_external_reproduction": false
+}
