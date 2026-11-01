@@ -87,10 +87,21 @@ def central_control_body(body):
     already accumulated in the saved body are transferred once, as P(phi) on
     the ancilla. No per-event phase is added a second time.
     """
-    from qiskit import QuantumCircuit
     tokens, phase = _tokens(body)  # Validate the whole source before emitting.
-    ancilla = body.num_qubits
-    controlled = QuantumCircuit(ancilla + 1)
+    return central_control_tokens(tokens, phase, body.num_qubits)
+
+
+def central_control_tokens(tokens, phase, num_system_qubits, *, circuit_factory=None):
+    """Emit the same D2 control from validated source tokens.
+
+    A descriptor recorder can check a saved Full without rebuilding a circuit.
+    The ordinary entrypoint and real parts use QuantumCircuit.
+    """
+    if circuit_factory is None:
+        from qiskit import QuantumCircuit
+        circuit_factory = QuantumCircuit
+    ancilla = num_system_qubits
+    controlled = circuit_factory(ancilla + 1)
     mapping = []
     for index, token in enumerate(tokens):
         start = len(controlled.data)

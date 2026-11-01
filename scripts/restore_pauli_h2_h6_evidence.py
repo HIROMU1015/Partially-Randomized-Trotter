@@ -3,6 +3,12 @@
 import gzip,hashlib,io,json,sys,tarfile
 from pathlib import Path
 def digest(b):return hashlib.sha256(b).hexdigest()
+def recover_member(b,meta):
+ if meta['encoding']!='identity':
+  if digest(b)!=meta['stored_sha256']:raise ValueError('QPY_SHA')
+  b=bytearray(gzip.compress(b,compresslevel=9,mtime=0));b[9]=3;b=bytes(b)
+ if digest(b)!=meta['sha256']:raise ValueError('ORIGINAL_SHA')
+ return b
 def main():
  manifest=Path(sys.argv[1]);dest=Path(sys.argv[2]).resolve();dest.mkdir(exist_ok=False)
  for archive in json.loads(manifest.read_text()):
@@ -20,10 +26,7 @@ def main():
     original,meta=by_stored[member.name];path=(dest/original).resolve()
     if not member.isfile() or not path.is_relative_to(dest):raise ValueError('ARCHIVE_PATH')
     b=tar.extractfile(member).read()
-    if meta['encoding']!='identity':
-     if digest(b)!=meta['stored_sha256']:raise ValueError('QPY_SHA')
-     b=bytearray(gzip.compress(b,compresslevel=9,mtime=0));b[9]=3;b=bytes(b)
-    if digest(b)!=meta['sha256']:raise ValueError('ORIGINAL_SHA '+original)
+    b=recover_member(b,meta)
     path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(b);seen.add(original)
    if seen!=set(archive['members']):raise ValueError('MISSING_MEMBERS')
  print('All original evidence bytes restored and verified.')

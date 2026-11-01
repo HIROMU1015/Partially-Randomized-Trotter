@@ -229,15 +229,61 @@ def compile_saved(directory):
         output_fingerprint=a.canonical_qiskit_circuit_fingerprint(cost.transpiled_circuit),
         compiler=asdict(cost.compiler),pass_trace=None,pass_trace_missing_reason='NO_CALLBACK_IN_FIXED_WRAPPER')
 
+def pauli_event_view(record, components):
+    """Restore only saved Pauli application fields; no missing LCU data invented.
+
+    D1's full RTEEvent restoration needs probability/basis metadata. Compact
+    production records do not have those fields; Pauli replay needs only these
+    explicitly saved applications, rotation angle and phase.
+    """
+    import math
+    if 'application_sequence' in record:
+        order = record['taylor_order']
+        apps = [NS(role=x['role'],component_id=x['component_id'],
+                   coefficient_sign=x['coefficient_sign'])
+                for x in record['application_sequence']]
+        phase = complex(record['phase']['real'],record['phase']['imag'])
+        angle = record['rotation_angle']
+        ids = (*record['product_component_ids'],record['rotation_component_id'])
+    else:
+        order = record['order']
+        ids = (*record['products'],record['rotation'])
+        require(len(record['signs'])==len(ids),'COMPACT_SAVED_SIGNS')
+        apps = [NS(role='rotation' if j==order else 'product',
+                   component_id=key,coefficient_sign=record['signs'][j])
+                for j,key in enumerate(ids)]
+        phase = complex(*record['phase'])
+        angle = record['angle']
+    require(order>=0 and order%2==0 and len(apps)==order+1,'SAVED_EVENT_ORDER')
+    require(tuple(x.component_id for x in apps)==tuple(ids),'SAVED_APPLICATION_IDS')
+    require(tuple(x.role for x in apps)==('product',)*order+('rotation',),
+            'SAVED_APPLICATION_ROLES')
+    require(phase==complex((-1)**(order//2)),'SAVED_ORDER_PHASE')
+    require(math.isfinite(angle),'SAVED_ROTATION_ANGLE_FINITE')
+    for app in apps:
+        index=int(app.component_id)
+        require(str(index)==app.component_id and 0<=index<len(components),
+                'SAVED_COMPONENT_ID')
+        require(app.coefficient_sign==components[index]['sign'],'SAVED_COMPONENT_SIGN')
+    return NS(taylor_order=order,application_sequence=tuple(apps),
+              rotation_angle=angle,phase=phase)
+
+
+def interaction_metrics(full, retained, event, empty):
+    """D1 integer identities for one fixed program, with no N/G or averages."""
+    row={}
+    for metric in ('RZ','CX'):
+        f,r,e,z=(x[metric] for x in (full,retained,event,empty))
+        row[metric]=dict(full=f,retained=r,event=e,empty=z,
+            retained_increment=r-z,event_increment=e-z,isolated_prediction=r+e-z,
+            Delta_interaction=f-r-e+z,contextual_event_increment=f-r,
+            contextual_retained_increment=f-e)
+    return row
+
+
 def interactions(metrics):
     result={}
     for rep in ('pauli_jw','df_native'):
-        row={}
-        for metric in ('RZ','CX'):
-            f=metrics[rep+'_PR_full'][metric];r=metrics[rep+'_PR_retained'][metric]
-            e=metrics[rep+'_PR_event'][metric];z=metrics['empty'][metric]
-            row[metric]=dict(full=f,retained=r,event=e,empty=z,
-                retained_increment=r-z,event_increment=e-z,isolated_prediction=r+e-z,
-                Delta_interaction=f-r-e+z,contextual_event_increment=f-r,contextual_retained_increment=f-e)
-        result[rep]=row
+        result[rep]=interaction_metrics(metrics[rep+'_PR_full'],
+            metrics[rep+'_PR_retained'],metrics[rep+'_PR_event'],metrics['empty'])
     return result
