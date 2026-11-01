@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3 run04：独立32本/arm・Full128価格完了
+
+[全統計・QPY・SOURCE/STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run04/REPORT.md)。H4/1Å/STO-3G/full256、保存DF tol-only1e-8/rank10、案A/T.8/S2/q8/r4/K4/M_B・M_C/P=0。新64 Full oracle PASS、128 compile成功。RZ平均±標本SEはPauli3017.9375±9.41376、DF8559.71875±150.19704（両軸）。cos/sin共分散保持、旧pilot非pool、order4未観測。人工9PASS、半指数1/保存half照合1、新sampling64、対角化/Givens/旧価格再compile/新N/G/automatic retry0。全lawρ・母平均tail・Stage 4は未評価、旧全STOP保全、公開照合後mandatory STOP。
+
 ## 2026-11-02 H4 P3 Stage 3 run03：13件回復・36/36価格完成
 
 [限定結果・全価格・非加法性・SOURCE/STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run03/REPORT.md)。linear H4/1Å/STO-3G/full256、保存DF tol-only1e-8/rank10、案A/T.8/S2/q8/r4/K4/M_B/M_C/P=0。保存入力13件だけを異なる13 processで各1回compileし、旧23価格をそのまま継承。F16/E16/R2/Empty2と予定16非加法性が完成。Full観測RZ範囲はPauli2916–3070/DF8092–9978。各arm4本の固定cohortで母平均/一般的順位/N/Gは未評価。人工4PASS、新sampling/native構築/旧23再compile/automatic retry0。旧81nativePASSと旧STOPを保全、公開照合後mandatory STOP。
