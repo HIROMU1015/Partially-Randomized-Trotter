@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：固定U LPの人工数値診断・最小profile準備（2026-11-01）
+
+[技術報告・104人工/回帰PASS](research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)／[新しい未承認50-call](research/research_c_fixed_u_tail_lp_numerics_contract_unapproved_20261101.json)。人工固定Uで旧Optimal＋dual未資格を再現し、native係数保持閾値とSciPy1.14.1重複警告を切り分けた。全元等式・RHS・allowanceを維持し、近従属例は未資格のまま。実H4の原因確定・修復成功ではない。実H4評価0、旧raw945/旧SOURCE保全、公開照合後mandatory STOP。
+
 ## 研究C：固定U tail LP・限定実行の未解決結果（2026-11-01）
 
 [LP1回・primal/dual・9/50 STOP](research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。Solver Optimal表示に対し独立dual/gap/相殺guardが不適格でUNRESOLVED_LP。新candidateも保持/PF-RTE評価も未実行。改善余地の有無は保留、原本保全・公開照合後mandatory STOP。

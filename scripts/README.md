@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：固定U LP数値profile専用entry（2026-11-01）
+
+[run_research_c_fixed_u_tail_lp_numerics.py](run_research_c_fixed_u_tail_lp_numerics.py)は既定でpassive preflightのみ。[技術報告](../docs/research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)／[新しい未承認50-call](../docs/research/research_c_fixed_u_tail_lp_numerics_contract_unapproved_20261101.json)。旧executeを再利用し、LP1回にsmall_matrix_value=1e-12を適用、警告とrawを保存して元全行列の診断・保持gateへ接続。実H4未実行、旧run01再起動なし。別科学許可後だけfresh outputへ--execute、retry/resume0、公開照合後mandatory STOP。
+
 ## 研究C：固定U LP entryを一度実行、未解決分岐で停止（2026-11-01）
 
 [run_research_c_fixed_u_tail_lp.py](run_research_c_fixed_u_tail_lp.py)をSOURCE56a6acb8fから無変更で実行し、LP1回・9/最大50 COMPLETE、retry/resume0。[独立診断・raw・STOP](../docs/research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。HiGHS Optimalだが数値最適性未資格で候補exportと後続41 unitsはNOT_RUN。消費済みLP枠／run01は再起動せず、公開後mandatory STOP。

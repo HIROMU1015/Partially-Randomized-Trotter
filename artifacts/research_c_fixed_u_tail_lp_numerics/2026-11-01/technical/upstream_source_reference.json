@@ -1,0 +1,19 @@
+{
+  "url": "https://github.com/scipy/scipy/blob/v1.14.1/scipy/optimize/_highs/cython/src/_highs_wrapper.pyx",
+  "tag": "v1.14.1",
+  "sha256": "f66906e3b66085ac496b7883cd6348ae55d20522066553ecc617dd87016d5da0",
+  "inspection": {
+    "integer_loop": [
+      121,
+      153
+    ],
+    "double_loop": [
+      155,
+      179
+    ],
+    "finding": "small_matrix_value occurs in both loops; a float warns in the first, then is set in the second. Extra setter warnings remain unqualified."
+  },
+  "documentation": "https://docs.scipy.org/doc/scipy-1.14.1/reference/optimize.linprog-highs-ds.html",
+  "native_option_docs": "https://ergo-code.github.io/HiGHS/dev/options/definitions/#small_matrix_value",
+  "native_docs_caveat": "HiGHS development documentation is explanatory, not the identity of the SciPy-bundled binary. Pinned-wrapper inspection and invented sentinel establish the tested path."
+}

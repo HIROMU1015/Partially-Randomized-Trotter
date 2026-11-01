@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：固定U LP・微小係数保持profileの技術準備（2026-11-01）
+
+[人工切り分け・104 test methods PASS](docs/research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)／[新しい未承認50-call](docs/research/research_c_fixed_u_tail_lp_numerics_contract_unapproved_20261101.json)。Entryはscripts/run_research_c_fixed_u_tail_lp_numerics.py、adapterはsrc/trottertracks/c_fixed_u_tail_lp_numerics.py、人工testはtests/management/test_research_c_fixed_u_tail_lp_numerics.py。small_matrix_value=1e-12と固定SciPy警告資格を追加し、元全行列・RHS・dual/gap/guard・旧SOURCEを維持。実H4 decode/LP/科学call0、SOURCE109/input12のpassiveのみ。旧UNRESOLVEDは未解決のまま、公開照合後mandatory STOP。
+
 ## 研究C：固定U LP・数値最適性未資格でSTOP（2026-11-01）
 
 [LP1回・独立診断・9/50結果](docs/research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)。SOURCE56a6acb8f無変更、9 COMPLETE/例外FAIL0、retry/resume0。保存H4/直鎖1Å/STO-3G、PR通常CDF8/sector36/元順LD2、head0/1・tail2..7、h.1/s1/r128/K0。HiGHS Optimalだがdual等式残差7.8707>1e-9、gap/相殺guardも不適格でUNRESOLVED_LP。新candidate・保持/CAR/PF-RTE/DF/AはNOT_RUN。改善不能とは認定せず、raw11/旧原本を保全して公開後mandatory STOP。以下は準備時の履歴。
