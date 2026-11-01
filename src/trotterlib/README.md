@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：PR inner勾配整合の人工切分け・10-call準備（2026-11-02）
+
+[人工再現・最小修正候補・239 unique PASS・RC2ログ診断](../../docs/research/research_c_pr_gradient_consistency_investigation_20261102.md)／[未承認10-call契約](../../docs/research/research_c_pr_coefficient_point_contract_unapproved_20261102.json)。`c_pr_coefficient_point.py`と専用diagnostic/runner/testsが、同じdecoded J配列の残差/係数/chain評価へ揃える。既存inner/paired経路は無変更、実H4での原因確定・修正成功は未検証。RC2は保存JSONのみ、反復延長の成功は未判定。失敗trialUは直接未保存のため保存2点のdry BFGS replayと厳密な点identity確認を用意。実分子decode/新科学call0、旧raw2378/SOURCE/480-call STOPと131科学recordsを保全。別許可・fresh runまでmandatory STOP。以下は各時点の履歴。
+
 ## 研究C：改善reduced pilot・PR inner整合FAILで部分STOP（2026-11-02）
 
 [480-call部分結果・新admission・未実施範囲](../../docs/research/research_c_j_u_stable_execution_20261102.md)。SOURCE12e0079a2/1563-call契約を無変更で実行し、480 attempts・478 COMPLETE・2 FAIL（PR inner例外と包むouter driver）、retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1・元scales。PR初期と未受理trial1の新stabilityはPASSしたが、trial2のchart対physical-chain gradient差2.39695e-7でcorrectness STOP、受理U更新0。開始済みRC2は75点admission PASS/64受理更新、F .01742887277/J∞3.67648e-8/U₂ .0047620784でU未資格。親の新DF norm/一般K-CAR/比較はNOT_RUN/null、旧/初期DF PASSを終端へ転用しない。旧raw1879/SOURCE/STOP・旧閾値を保全、新raw499を保存し公開照合後mandatory STOP。以下は各時点の履歴。

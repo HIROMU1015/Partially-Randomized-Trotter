@@ -1,0 +1,157 @@
+{
+  "schema": "C_PR_COEFFICIENT_POINT_UNAPPROVED_CONTRACT_V1",
+  "status": "UNAPPROVED_SCIENTIFIC_EXECUTION",
+  "base_commit": "9c9eafe74493a5bd4bfa59e41db0e8bf80785e6f",
+  "scope": "C_PR_SAVED_TRIAL2_COEFFICIENT_POINT_DIAGNOSTIC_V1",
+  "entry": "scripts/run_research_c_pr_coefficient_point.py",
+  "source_manifest": "artifacts/research_c_pr_coefficient_point/2026-11-02/technical/SOURCE.json",
+  "source_manifest_sha256": "68a424484e78eab66dfc3c2949a7dd95b35d9ad16c9152aebc3066369a0d78ed",
+  "objective": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "mass_scale": 2.2093719370722074,
+    "gamma": 0.1,
+    "epsilon": 1e-08
+  },
+  "conditions": {
+    "model": "saved linear H4,1.00Angstrom,STO-3G;number CDF8;original LD2/frame order",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "DF_budget_Ha": 0.00019875,
+    "kappa": "original_g_corrected_UNCHANGED_NOT_EVALUATED",
+    "scalar": "original_once_UNCHANGED_NOT_EVALUATED",
+    "initialization": "same original qualified J/U;no endpoint warmstart fit",
+    "signed_symmetric_J": true,
+    "real_orthogonal_U": true
+  },
+  "input_paths": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "envelope0": "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/envelope_0.npz",
+    "envelope1": "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/envelope_1.npz",
+    "state1": "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/precision_state_1_refine2.npz",
+    "failing": "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/inner_raw_2_solve.npz",
+    "trace": "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/optimization_trace.jsonl"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/envelope_0.npz": "6e58af85ad1c4451847915932822c0751489c3d88792bd4298f1e91e60778e62",
+    "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/envelope_1.npz": "80c1041c4f4e92d1ce56e4a1d247fe29f5e9260c50d6c283be4dadb13358a291",
+    "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/precision_state_1_refine2.npz": "b95249433368b4c318af64b9bbda2046a95816653aa7dacfde3289d12aeb64fa",
+    "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/inner_raw_2_solve.npz": "7e0a52981c01dc7429fc5767c9a56cd01ee995b85afeb4be500e3a377a28c128",
+    "artifacts/research_c_j_u_stability/2026-11-02/run01/pr/optimization_trace.jsonl": "da6d5940918ee0053f75cce7b37d221c9496b1afe5ffc85567bd4e58d7b750b9",
+    "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "dependency_lock": {
+    "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt",
+    "sha256": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "maximum_logical_units": 10,
+  "call_limits": {
+    "saved_load": 1,
+    "outer_trace_replay": 1,
+    "trial_geometry": 1,
+    "coefficient_setup": 1,
+    "point_identity": 1,
+    "legacy_evaluation": 1,
+    "stable_setup": 1,
+    "stable_evaluation": 1,
+    "classification": 1,
+    "export": 1
+  },
+  "fresh_output": "artifacts/research_c_pr_coefficient_point/2026-11-02/run01",
+  "new_inner_solves": 0,
+  "new_optimization_trajectories": 0,
+  "new_fits": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "replay": {
+    "driver": "existing SciPy1.14.1 BFGS with old frozen options,using ONLY saved value/gradient at query0/query1;capture query2 before any objective is evaluated or accepted callback",
+    "driver_invocations": 1,
+    "new_scientific_objective_queries_in_replay": 0,
+    "accepted_steps": 0,
+    "note": "This is explicitly a dry trace-replay driver,not a new fit/optimization trajectory.Encoded coordinates for trial2 were not saved separately;do not pretend its U is available.",
+    "identity": "Exact array equality for saved eta0/eta1,query1 U,failed point x0/W/x;STOP if reconstruction differs;no sign alignment/approximate fallback"
+  },
+  "numerical_allowances": {
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "longdouble_minimum_significant_bits": 64,
+    "point_identity": "np.array_equal;scientifically necessary to identify actual failing point,not general bitwise-environment demand",
+    "rigorous_gradient_error_bound": null
+  },
+  "execution_order": [
+    "passive source/input/environment check;fresh run01",
+    "load7 saved evidence inputs in one unit",
+    "bounded saved-only BFGS query replay;capture third query",
+    "existing JAX x64 U exponential geometry",
+    "existing coefficient A/T/Gram and invertible SVD metric setup",
+    "strict saved point/metric/coordinate identity gate",
+    "old affine vs independent endpoint gradient evaluation;record known mismatch,not optimizer success",
+    "new same-array/extended matrix setup",
+    "new forward matrix derivative vs existing tensor-adjoint chain,unchanged objective check",
+    "classify numerical consistency only",
+    "save diagnostic vectors/STOP without reevaluation"
+  ],
+  "call_semantics": {
+    "saved_load": "1,all declared saved inputs;no fit",
+    "outer_trace_replay": "1,up to2 saved f/g responses then capture third query;no objective implementation invoked",
+    "trial_geometry": "1,existing U0 exp(eta/sqrt2)",
+    "coefficient_setup": "1,existing A/T and cached Gram matrices and metric;no independent Hessian/condition spectrum sweep",
+    "point_identity": "1,strict original/saved x/W/query1 identity",
+    "legacy_evaluation": "1,old vg and independent existing contraction at saved z",
+    "stable_setup": "1,extended existing maps with unchanged W;includes cached analytic Gram for class compatibility",
+    "stable_evaluation": "1,new vg plus independent adjoint/pullback and unchanged-objective gate",
+    "classification": "1,interpret observed diagnostic",
+    "export": "1,write previously computed vectors/results;no new numerical evaluation"
+  },
+  "classification": {
+    "known_legacy_FAIL": "Expected diagnostic observation,not permission to bypass a new correctness FAIL",
+    "not_reproduced": "INCONCLUSIVE_LEGACY_MISMATCH_NOT_REPRODUCED;save evidence and STOP;no alternative point",
+    "new_gate": "NEW_SAVED_POINT_NUMERICAL_CONSISTENCY_PASS only if unchanged gradient/value allowances pass",
+    "limitations": "No rigorous enclosure,inner stationarity,optimizer convergence,DF budget,PR performance or paired-trial conclusion"
+  },
+  "STOP": [
+    "source/input/environment/point identity mismatch:preserve partial and STOP",
+    "new consistency/objective mismatch/nonfinite:preserve partial and STOP",
+    "no retry/resume,new point,optimizer iteration or fallback",
+    "mandatory STOP after publishing regardless of outcome"
+  ],
+  "forbidden": [
+    "new J solve/refinement or fitting",
+    "paired1563-call replay or continuation",
+    "RC2 continuation or iteration change",
+    "new rank/strength/gauge/PSD/sign constraints",
+    "Hamiltonian/sector/DF norm/PF/RTE/ground/native circuit/shots/total-resource evaluation",
+    "important scientific review"
+  ],
+  "preserved_history": {
+    "old_scientific_SOURCE": "12e0079a264dc0f5831791efc06c0aa159b88908",
+    "result_commit": "9c9eafe74493a5bd4bfa59e41db0e8bf80785e6f",
+    "old_run": "artifacts/research_c_j_u_stability/2026-11-02/run01",
+    "old_attempts": 480,
+    "old_unused_units_not_reused": 1083
+  },
+  "resources": "Inspect actual free CPU/RAM;one sequential point with existing NumPy/SciPy/JAX x64 and longdouble;no arbitrary CPU/RAM/wall cap;local cache only;no shared changes",
+  "authorization": "Requires separate explicit chat permission for THIS10-unit saved-H4 diagnostic;no approval certificate,approval-text record or grant"
+}
