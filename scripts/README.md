@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：Guarded Armijo・8 trialの範囲で受理なし（2026-11-02）
+
+[60/60-call結果・全8 trial・pair診断](../docs/research/research_c_pr_guarded_step_execution_20261102.md)。固定SOURCEd03351ea0/60-call契約を無変更で一度実行し60 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。8 trials中stability未資格2、数値資格PASSだがArmijo不成立6、受理U更新0。最小α=.002670284759でもF .0205435180>初期 .0122676444。27 inner/18 refinement/9点、最終J/rank-nullspaceは全点PASS。Raw precision loss11/maxiter1を保全。範囲外に降下stepがない証明ではなく、DF予算/PR性能は未評価。旧raw2423/SOURCE/STOPを保全、新raw72。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：PR stability切り分け・qualified-only stepの技術準備（2026-11-02）
 
 Entry: `run_research_c_pr_guarded_step.py`（既定passive、実H4は別許可後のみ）。[保存JSON調査・人工機構・政策A/B・Q1〜Q10](../docs/research/research_c_pr_reduced_stability_investigation_20261102.md)／[未承認60-call案](../docs/research/research_c_pr_guarded_step_contract_unapproved_20261102.json)。実H4の7.3109e-6の原因は未確定。新25＋既存226＝251人工/回帰PASS。技術推奨Bはinner/1e-6資格を維持し、未資格gradientを使わない1回のqualified-only Armijo step（最大8 trials/9点）。Wolfe/BFGSの継続・厳密Φ保証ではなく正式採択は未判断。実H4 decode/新科学call0、旧raw2423/SOURCE/18-call STOPを保全、別許可までmandatory STOP。以下は各時点の履歴。

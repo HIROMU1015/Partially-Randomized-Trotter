@@ -1,0 +1,220 @@
+{
+  "schema": "C_PR_GUARDED_STEP_UNAPPROVED_CONTRACT_V1",
+  "status": "UNAPPROVED_SCIENTIFIC_EXECUTION",
+  "scope": "C_PR_QUALIFIED_ONLY_ONE_ARMIJO_STEP_V1",
+  "base_commit": "fc4ee5712d475812c03e647472f41901bdfa0165",
+  "entry": "scripts/run_research_c_pr_guarded_step.py",
+  "source_manifest": "artifacts/research_c_pr_stability_investigation/2026-11-02/technical/SOURCE.json",
+  "source_manifest_sha256": "ce9073667a287714d8b66e3e2abcf0104a21b86a1e68567e8b84323f56773047",
+  "objective": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "mass_scale": 2.2093719370722074,
+    "gamma": 0.1,
+    "epsilon": 1e-08
+  },
+  "policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_xtol": 1e-12,
+    "metric_singular_floor": 1.0,
+    "u_max_nfev": 25,
+    "u_solver_gtol": 1e-12,
+    "u_xtol": 1e-14,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10,
+    "outer_maxiter": 1,
+    "max_points": 9,
+    "outer_gtol": 1e-07,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "inner_refinements": 2
+  },
+  "search_policy": {
+    "max_trials": 8,
+    "contraction": 0.5,
+    "c1": 0.0001
+  },
+  "conditions": {
+    "model": "saved linear H4,1.00 Angstrom,STO-3G",
+    "representation": "number CDF8,signed symmetric J,real orthogonal U",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "ld": 2,
+    "original_frame_order": true,
+    "kappa": "original_g_corrected_unchanged_not_evaluated",
+    "scalar": "original_once_unchanged_not_evaluated",
+    "DF_budget_Ha": 0.00019875,
+    "initialization": "same original qualified J/U at eta=0;NOT saved trial2 U or any optimized endpoint",
+    "per_new_eta": "original J initialization,then exactly two successive same-array Newton-CG refinements",
+    "purpose": "one qualified Armijo advancement experiment;no full convergence/performance comparison"
+  },
+  "input_paths": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "dependency_lock": {
+    "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt",
+    "sha256": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "fresh_output": "artifacts/research_c_pr_guarded_step/2026-11-02/run01",
+  "call_limits": {
+    "saved_load": 1,
+    "initial_identity": 1,
+    "objective_setup": 1,
+    "outer_driver": 1,
+    "inner_J_solve": 27,
+    "precision_state": 18,
+    "reduced_admission": 9,
+    "classification": 1,
+    "export": 1
+  },
+  "maximum_logical_units": 60,
+  "maximum_trial_queries": 8,
+  "maximum_distinct_U_points": 9,
+  "maximum_accepted_U_updates": 1,
+  "maximum_inner_solver_invocations": 27,
+  "maximum_refinement_invocations": 18,
+  "outer_guarded_step_controllers": 1,
+  "outer_BFGS_invocations": 0,
+  "ffsim_joint_fitter_invocations": 0,
+  "RC2_continuation": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "algorithm": {
+    "inner": "UNCHANGED verified same-array Newton-CG,maxiter1000/xtol1e-12;original J at every eta,then exactly2 refinements",
+    "admission": "UNCHANGED J<=1e-5 plus margin,final-pair U-shift<=1e-6,original head/nullspace/tail injectivity,independent state/value/chain/nonincrease gates;raw flags independent",
+    "proposed_change": "Replace SciPy BFGS/Wolfe abort-on-unqualified outer with ONE bounded qualified-only Armijo steepest-descent step;do not call BFGS or update its Hessian",
+    "direction": "d=-g0,only from numerically admitted original eta0;do not use rejected/unqualified derivatives",
+    "initial_alpha": "min(1,1.01/norm(g0)),same first-query scaling as SciPy1.14.1 BFGS with H0=I;zero/nonfinite/non-descent:STOP",
+    "trial_schedule": "alpha_i=alpha0*0.5**i,i=0..7;no interpolation/restart or extra trial outside this registered schedule",
+    "rejectable": "Only J_UNQUALIFIED and REDUCED_GRADIENT_UNQUALIFIED of an unaccepted trial;record without supplying fictitious F or gradient;then try next registered alpha",
+    "acceptance": "Trial independently numerically admitted AND true evaluated F_trial<=F0+1e-4*alpha*dot(g0,d) AND F_trial<F0;qualified gradient finite and same eta;at most1 accepted U update",
+    "correctness": "Any source/input/nonfinite/chain/value/raw/orthogonality/progress mismatch:immediate dependent STOP,never halve and continue",
+    "numerical_limits": "point-budget exception or rounded zero step:explicit STOP;all8 trials exhausted:no accepted update;initial unqualified:no trial search",
+    "mathematical_scope": "Observed Armijo descent on numerical envelope samples,NOT strong Wolfe,not certified true reduced-gradient accuracy or global convergence"
+  },
+  "numerical_allowances": {
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "J_gradient_infinity": 1e-05,
+    "physical_U_partial_gradient_l2": 1e-05,
+    "first_order_margin": "same gradient_atol+gradient_rtol*max(value,threshold),value+margin<=threshold",
+    "orthogonality": 1e-10,
+    "longdouble_minimum_significant_bits": 64,
+    "rigorous_gradient_error_bound": null,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "rank_rule": "existing head rank LD*d-(LD-1),only U-independent universal head gauges;extra/ambiguous null refused;tail injectivity;no pseudoinverse/drop/ridge"
+  },
+  "calls": {
+    "saved_load": "1,original g/J/U and scale JSON",
+    "initial_identity": "1,finite binary64 shape/symmetry/orthogonality,original scale metadata",
+    "objective_setup": "1,unchanged objective",
+    "outer_driver": "1,one qualified-only step controller,not SciPy BFGS",
+    "inner_J_solve": "<=27,3 per initial/trial eta;all vg/Hessian/raw diagnostics included and actual counters saved",
+    "precision_state": "<=18,2 per eta;existing extended/binary64 independent J/U state",
+    "reduced_admission": "<=9,unchanged qualification plus scalar physical/chart pair norms and delta-J Frobenius from already computed arrays;no extra gradient/Hessian query",
+    "classification": "1,accepted/unaccepted/initial qualification,raw flags and stop separated",
+    "export": "1,already computed diagnostic terminal only;DF budget remains null"
+  },
+  "execution_order": [
+    "passive SOURCE/input/environment/resource checks;fresh output absent",
+    "saved_load",
+    "initial_identity",
+    "objective_setup",
+    "outer_driver:initial3-solve/2-state/admission;then up to8 registered alpha trials,each same3-solve/2-state/admission;reject qualification only;accept at most1 qualified Armijo point",
+    "classification",
+    "export",
+    "call/resources/STOP;publish and mandatory STOP"
+  ],
+  "additional_diagnostics": [
+    "physical latest-pair U-shift norm",
+    "chart latest-pair U-shift norm",
+    "delta-J Frobenius from same-U arrays"
+  ],
+  "not_measured": [
+    "mixed Hessian",
+    "quotient Hessian conditioning",
+    "gauge decomposition of real delta J",
+    "rigorous gradient error",
+    "sector operator DF budget",
+    "PF/RTE/ground/native/shots/total cost"
+  ],
+  "outputs": [
+    "raw x0/x/J/z/jac/W and pre-step/accepted point records for every inner call",
+    "solver statuses and actual evaluation/iteration counters",
+    "both precision states and all admission gates for each eta",
+    "pair physical/chart shifts and delta-J norm,not certified error bounds",
+    "trial eta/alpha and qualification/rejection reasons;unqualified objective is null in search decision record,not assigned a fake value",
+    "actual qualified Armijo operands and accepted eta if any",
+    "terminal and rejected trial identities kept separately",
+    "SOURCE/contract copies,call journal,resources,failure partial if any,STOP"
+  ],
+  "outcomes": {
+    "accepted": "QUALIFIED_ARMIJO_STEP_ACCEPTED:one numerical qualified descent step only,not full convergence/performance",
+    "no_accept": "GUARDED_TRIAL_LIMIT_NO_ACCEPT or qualification/rounding/non-descent STOP;no fallback",
+    "initial_unqualified": "No search;save diagnostic initial pair,not a reduced-qualified terminal",
+    "raw_precision_loss": "Preserve flags;neither automatically qualifies nor rejects J/reduced point",
+    "DF_budget": null,
+    "PR_performance": null,
+    "rigorous_reduced_gradient": false
+  },
+  "forbidden": [
+    "modify original objective/scales/rank/LD/kappa/scalar/spin/frame/allowances",
+    "weaken1e-6 stability or1e-5 first-order thresholds",
+    "change inner solver to trust-exact or offset objective in molecular science",
+    "use unknown gradient/NaN/penalty/zero-gradient placeholders for rejected trials",
+    "continue after correctness FAIL",
+    "more than8 trial points or1 accepted update",
+    "extra refinement/retry/resume/old run restart or leftover36-unit reuse",
+    "RC2 or joint continuation,paired run,DF/operator/CAR/PF/RTE/native/shots/total-cost science",
+    "important scientific review or automatic next stage"
+  ],
+  "provenance": {
+    "old_result_commit": "fc4ee5712d475812c03e647472f41901bdfa0165",
+    "old_scientific_SOURCE": "b2e5ab4d5ff6986e0e991b7aa0d373ecdbf755c5",
+    "old18_call_STOP_preserved": true,
+    "old54_call_contract_unchanged": true,
+    "old_unused36_not_reused": true
+  },
+  "resources": "No arbitrary CPU/RAM/worker/wall cap;one dependent PR trajectory with vectorized NumPy/SciPy/JAX/extended CPU path;choose thread coordination from actual free resources;task-local cache only;no shared environment/process changes",
+  "authorization": "PROPOSAL ONLY;user/researchC must decide the BFGS/Wolfe-to-one-Armijo-step policy change and explicitly permit this fresh60-unit scope. No approval proof/record/grant required",
+  "policy_field_scope": "Inherited dataclass retains inactive legacy optimizer fields;actual scope is one guarded step,8 trials,9 points,no BFGS. No Wolfe/BFGS curvature guarantee."
+}
