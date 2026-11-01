@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3後：追加価格とStage 4の非実行設計
+
+[新32本/arm・Full128価格の案、再利用・統計・Stage 4接続](docs/research/h4_p3_poststage3_cost_and_stage4_design_20261102.md)。設計のみで科学call0。既存36価格/全STOPを保全し、追加sampling/compile/N/Gは未実行。
+
 ## 2026-11-02 H4 P3 Stage 3：13件限定process回復
 
 [保存input QPYの13件限定compile・23件再利用・36価格完成](docs/research/h4_p3_stage3_process_recovery_20261102.md)。spawnで1 target/process、旧STOP保全、新sampling/native再生成なし。

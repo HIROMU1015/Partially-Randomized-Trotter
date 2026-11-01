@@ -1,3 +1,7 @@
+## H4 P3 Stage 3後の次作業案
+
+[独立価格確認とStage 4会計の非実行設計](research/h4_p3_poststage3_cost_and_stage4_design_20261102.md)。新32 trajectory/arm・Full128 compileを提案し、平均/SE・誤差会計の境界を具体化。今回の新科学処理0。
+
 ## H4 P3 Stage 3：13件限定回復
 
 [process分離・保存QPY・36価格完成の固定範囲](research/h4_p3_stage3_process_recovery_20261102.md)。新sampling/native構築・旧23価格の再compileなし。
