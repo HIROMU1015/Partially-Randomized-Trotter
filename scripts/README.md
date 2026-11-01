@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 2：matched nominal信号
+
+`run_h4_p3_stage2.py`：[固定条件・再利用・人工tests・STOP](../docs/research/h4_p3_stage2_nominal_validation_20261102.md)。Stage 1入力validatorを再利用し、明示許可された6信号と2normalizationだけを新namespaceへ保存。旧runnerは再実行しない。
+
 ## 2026-11-02 H4 P3 Stage 1：案Aのoperator一致
 
 [固定H4共通入力、独立T/V構成、kernel/runner/tests・数値政策](../docs/research/h4_p3_stage1_operator_validation_20261102.md)。full256次元のoperator検証のみ。時間発展・law・回路compile・N/C/Gは範囲外。

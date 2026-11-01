@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 2：matched nominal信号
+
+[科学契約](research/h4_p3_stage2_nominal_signal_contract_20261102.md)、[実行接続・精度・結果入口](research/h4_p3_stage2_nominal_validation_20261102.md)。固定案A、M_B/M_Cの6信号・2normalization。詳細科学レビュー・実効law・native価格へ自動移行しない。
+
 ## 2026-11-02 H4 P3 Stage 1：案Aのoperator一致
 
 [固定H4共通入力、独立T/V構成、kernel/runner/tests・数値政策](research/h4_p3_stage1_operator_validation_20261102.md)。full256次元のoperator検証のみ。時間発展・law・回路compile・N/C/Gは範囲外。

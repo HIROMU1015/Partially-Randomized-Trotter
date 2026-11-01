@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 2：matched nominal信号
+
+`matched_partition_stage2.py`：[独立JW/DF辞書・共通operator・有限平均・誤差伝播](../../docs/research/h4_p3_stage2_nominal_validation_20261102.md)。既存paired recurrence、DF係数抽出、finite polynomialを接続し、Gaussian回路やsamplingは生成しない。
+
 ## 2026-11-02 H4 P3 Stage 1：案Aのoperator一致
 
 [固定H4共通入力、独立T/V構成、kernel/runner/tests・数値政策](../../docs/research/h4_p3_stage1_operator_validation_20261102.md)。full256次元のoperator検証のみ。時間発展・law・回路compile・N/C/Gは範囲外。

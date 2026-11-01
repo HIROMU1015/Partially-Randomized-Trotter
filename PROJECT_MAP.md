@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 2：matched nominal信号
+
+[固定条件・matrix-only接続・kernel/runner/tests](docs/research/h4_p3_stage2_nominal_validation_20261102.md)。H4案A/T.8/S2/q8/r4/K4、独立2辞書・6複素信号・2normalization。実効law・回路・N/C/Gは対象外。
+
 ## 2026-11-02 H4 P3 Stage 1：案Aのoperator一致
 
 [固定H4共通入力、独立T/V構成、kernel/runner/tests・数値政策](docs/research/h4_p3_stage1_operator_validation_20261102.md)。full256次元のoperator検証のみ。時間発展・law・回路compile・N/C/Gは範囲外。
