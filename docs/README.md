@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：共通予算RC2／PR-tailのStage B最小準備（2026-11-01）
+
+[技術報告・Q1〜Q10](research/research_c_rc2_pr_stage_b_preparation_20261101.md)／[未承認143-call契約](research/research_c_rc2_pr_stage_b_contract_unapproved_20261101.json)。同一M4政策で新保存2終点のPF/RTE/Aを独立評価する経路。人工88 PASS・passive preflight PASS、実分子decode/科学call0。未収束・合成/law/CA/総資源の資格を昇格せず、公開照合後mandatory STOP。
+
 ## 研究C：JSON型変換・atomic出力修正と保存集計の復旧（2026-11-01）
 
 [技術修正・人工40 PASS・復旧](research/research_c_common_convergence_export_repair_20261101.md)／[valid result.json](../artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/result.json)。追加fitなし、保存scalar1 unitのみ。旧partial/failed STOPを保全し、両未収束という科学的判定を変えず出力だけ復旧。公開照合後mandatory STOP。

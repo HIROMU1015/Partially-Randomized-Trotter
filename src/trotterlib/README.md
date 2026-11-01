@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：保存有限予算DFのStage B adapter（2026-11-01）
+
+[c_rc2_pr_stage_b.py](../trottertracks/c_rc2_pr_stage_b.py)は研究固有のidentity／保存資格／実行dispatchのみを追加する。共通libraryと旧SOURCEを変更せず、Stage Bのprepare_arm／CAR／general-K／PF-RTE／ground／feasibilityと修復済みJSON出力を呼ぶ。[88人工PASS・SOURCE74・未承認143-call](../../docs/research/research_c_rc2_pr_stage_b_preparation_20261101.md)。DF予算PASSとoptimizer未資格を分離し、実H4評価前でmandatory STOP。
+
 ## 研究C：JSON exportの型変換・原本保全修正（2026-11-01）
 
 [独立JSON adapter](../trottertracks/c_common_convergence_export_repair.py)は旧library/sourceを変えず、NumPy scalar正規化、atomic/exclusive publishと例外経路を修正する。[40人工PASS・保存集計復旧](../../docs/research/research_c_common_convergence_export_repair_20261101.md)。追加fitや数値kernelはなく、旧partial/STOPを保持。科学的な両未資格を維持しmandatory STOP。

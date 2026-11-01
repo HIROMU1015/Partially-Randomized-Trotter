@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：保存RC2／PRのStage B専用entry（2026-11-01）
+
+[run_research_c_rc2_pr_stage_b.py](run_research_c_rc2_pr_stage_b.py)は既定でhash/header/JSON/package preflightだけを行う。別科学許可後の--executeのみ、新保存2終点のPF/RTE/Aを2候補×13round・最大143 unitsで評価する。[技術報告・未承認契約](../docs/research/research_c_rc2_pr_stage_b_preparation_20261101.md)。旧runnerの再開、fit/native/shotsは行わず、今回の実H4科学call0、mandatory STOP。
+
 ## 研究C：完了済みfitのJSON専用復旧entry（2026-11-01）
 
 [run_research_c_common_convergence_export_repair.py](run_research_c_common_convergence_export_repair.py)／[修正・SOURCE・実行記録](../docs/research/research_c_common_convergence_export_repair_20261101.md)。既定はbyte/JSON preflight、--recover-savedは既存scalar集計だけでfit/NPZ decode/数値kernelのentryを持たない。修復1 unitで有効集計を保存しSTOP。旧25-call runnerや消費済み旧run01は再起動しない。

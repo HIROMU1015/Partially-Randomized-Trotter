@@ -1,0 +1,86 @@
+diff --git a/src/trotterlib/rte.py b/src/trotterlib/rte.py
+index 53601b7c5..03124795a 100644
+--- a/src/trotterlib/rte.py
++++ b/src/trotterlib/rte.py
+@@ -1753,0 +1754 @@ def event_unitary(
++    *, arithmetic=None,
+@@ -1756,4 +1757,4 @@ def event_unitary(
+-    rotation_operator = np.asarray(
+-        operators[event.rotation_component_id], dtype=np.complex128
+-    )
+-    identity = np.eye(rotation_operator.shape[0], dtype=np.complex128)
++    rotation_operator = (np.asarray(operators[event.rotation_component_id], dtype=np.complex128)
++                         if arithmetic is None else operators[event.rotation_component_id])
++    identity = (np.eye(rotation_operator.shape[0], dtype=np.complex128)
++                if arithmetic is None else arithmetic.eye(len(rotation_operator)))
+@@ -1762 +1763,7 @@ def event_unitary(
+-        product = np.asarray(operators[component_id], dtype=np.complex128) @ product
++        factor=(np.asarray(operators[component_id], dtype=np.complex128)
++                if arithmetic is None else operators[component_id])
++        product = factor @ product
++    cosine=(math.cos(event.rotation_angle) if arithmetic is None
++            else arithmetic.cos(event.rotation_angle))
++    sine=(math.sin(event.rotation_angle) if arithmetic is None
++          else arithmetic.sin(event.rotation_angle))
+@@ -1764,2 +1771,2 @@ def event_unitary(
+-        math.cos(event.rotation_angle) * identity
+-        - 1j * math.sin(event.rotation_angle) * rotation_operator
++        cosine * identity
++        - 1j * sine * rotation_operator
+diff --git a/src/trottertracks/c1_molecule_extension.py b/src/trottertracks/c1_molecule_extension.py
+index 4e5fafaf5..701b7065b 100644
+--- a/src/trottertracks/c1_molecule_extension.py
++++ b/src/trottertracks/c1_molecule_extension.py
+@@ -168 +168 @@ class SectorCAR:
+-    def one(self,h):
++    def one(self,h,*,arithmetic=None):
+@@ -170,2 +170,3 @@ class SectorCAR:
+-        h=np.asarray(h)
+-        return sum((h[p,q]*self.E[p][q] for p in range(self.n) for q in range(self.n))).toarray()
++        h=np.asarray(h) if arithmetic is None else arithmetic.array(h)
++        result=sum((h[p,q]*self.E[p][q] for p in range(self.n) for q in range(self.n)))
++        return result.toarray()
+@@ -173 +174 @@ class SectorCAR:
+-    def raw_frame(self,J,U):
++    def raw_frame(self,J,U,*,arithmetic=None):
+@@ -175,0 +177,2 @@ class SectorCAR:
++        if arithmetic is not None:
++            J,U=arithmetic.array(J),arithmetic.array(U)
+@@ -178 +181 @@ class SectorCAR:
+-        out=csr_matrix((self.d,self.d),dtype=complex)
++        out=csr_matrix((self.d,self.d),dtype=complex) if arithmetic is None else arithmetic.zeros(self.d)
+diff --git a/src/trottertracks/c1_stage3_reference.py b/src/trottertracks/c1_stage3_reference.py
+index 925decfe7..b5e93c867 100644
+--- a/src/trottertracks/c1_stage3_reference.py
++++ b/src/trottertracks/c1_stage3_reference.py
+@@ -12 +12 @@ from . import c1_stage2_native as native
+-def _ordered_exponentials(generators, schedule, cache=None):
++def _ordered_exponentials(generators, schedule, cache=None,*,arithmetic=None):
+@@ -15 +15,5 @@ def _ordered_exponentials(generators, schedule, cache=None):
+-    result = np.eye(len(generators[0]), dtype=complex)
++    result = (np.eye(len(generators[0]), dtype=complex) if arithmetic is None
++              else arithmetic.eye(len(generators[0])))
++    def evaluate(index,time):
++        return (expm(-1j*float(time)*generators[index]) if arithmetic is None
++                else arithmetic.exponential(time,generators[index]))
+@@ -19 +23 @@ def _ordered_exponentials(generators, schedule, cache=None):
+-            factor=expm(-1j*float(time)*generators[index])
++            factor=evaluate(index,time)
+@@ -21 +25 @@ def _ordered_exponentials(generators, schedule, cache=None):
+-            if key not in cache:cache[key]=expm(-1j*float(time)*generators[index])
++            if key not in cache:cache[key]=evaluate(index,time)
+diff --git a/src/trottertracks/c_pr_aware_df_stage_b.py b/src/trottertracks/c_pr_aware_df_stage_b.py
+index 3b989f1d3..181fdef02 100644
+--- a/src/trottertracks/c_pr_aware_df_stage_b.py
++++ b/src/trottertracks/c_pr_aware_df_stage_b.py
+@@ -61 +61 @@ def candidate_factor(ctx,arm,index):
+-def atom_operators(ctx,arm):
++def atom_operators(ctx,arm,*,arithmetic=None):
+@@ -64 +64,2 @@ def atom_operators(ctx,arm):
+-    identity=np.eye(ctx.d,dtype=complex);densities={};out={}
++    identity=np.eye(ctx.d,dtype=complex) if arithmetic is None else arithmetic.eye(ctx.d)
++    densities={};out={}
+@@ -67 +68,2 @@ def atom_operators(ctx,arm):
+-            V=np.asarray(arm.plan.frames[atom.frame_id]);zs=[]
++            V=(np.asarray(arm.plan.frames[atom.frame_id]) if arithmetic is None
++               else arithmetic.array(arm.plan.frames[atom.frame_id]));zs=[]

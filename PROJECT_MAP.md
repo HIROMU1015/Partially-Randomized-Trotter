@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：保存RC2／PR-tailのStage B準備（2026-11-01）
+
+[目的・SOURCE・人工88 PASS・Q1〜Q10](docs/research/research_c_rc2_pr_stage_b_preparation_20261101.md)／[未承認143-call契約](docs/research/research_c_rc2_pr_stage_b_contract_unapproved_20261101.json)。直近の共通収束2-fit保存終点を新identityで接続し、DF予算PASSと両optimizer未資格を分離。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、partial S2 s1/r128/K0・δ.1・13roundのPF/RTE/Aを将来独立評価する準備。SOURCE74/input13のpassive確認のみで実H4 decode/科学call0、future run未作成。旧SOURCE/raw/partial/failed STOP保全、公開照合後mandatory STOP。実装はsrc/trottertracks/c_rc2_pr_stage_b.py、CLIはscripts/run_research_c_rc2_pr_stage_b.py、人工testはtests/management/test_research_c_rc2_pr_stage_b.py。
+
 ## 研究C：JSON出力を修正、保存scalarだけで集計復旧（2026-11-01）
 
 [修正・40人工PASS・復旧結果](docs/research/research_c_common_convergence_export_repair_20261101.md)／[有効result.json](artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/result.json)。旧SOURCE44/partial/raw37/failed STOPを保全し、独立adapterでNumPy scalar変換とatomic/exclusive出力・例外経路を修正。追加fit/optimizer/NPZ decode/新数値kernel0、保存scalar集計1 unitのみ。DF予算は両PASS、共通収束資格は両未達でONE_OR_BOTH_UNQUALIFIEDのまま。旧25＋修復1 unit、累計fit2。新runのSTOP成功と旧科学runの技術STOPを区別し、公開照合後mandatory STOP。
