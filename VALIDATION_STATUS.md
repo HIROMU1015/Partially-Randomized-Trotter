@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 4：条件付きN/G会計完了
+
+[10行/20軸・N/G/価格SE・仮定とSTOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage4/run01/REPORT.md)。H4/1Å/STO-3G/full256、保存DF tol-only1e-8/rank10、案A/T.8/S2/q8/r4/K4/M_B・M_C/P=0、5精度。finite-bit gap=0/compiled ρ=0/B engineering上界仮定で全10行ELIGIBLE_CONDITIONAL。DFはshot数が小さく、Pauliは標本価格を使ったG_RZが小さい（P/DF約.45273）。nominal-reference直接bias、数値誤差一回計上、共分散SE、scalar ceil照合20軸/修正0。人工7PASS、保存解析1batch、新sampling/compile/reference/高精度bias0。母平均tail/実装精度/全RPE保証なし。旧全STOP保持、公開照合後mandatory STOP。
+
 ## 2026-11-02 H4 P3 Stage 3 run04：独立32本/arm・Full128価格完了
 
 [全統計・QPY・SOURCE/STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run04/REPORT.md)。H4/1Å/STO-3G/full256、保存DF tol-only1e-8/rank10、案A/T.8/S2/q8/r4/K4/M_B・M_C/P=0。新64 Full oracle PASS、128 compile成功。RZ平均±標本SEはPauli3017.9375±9.41376、DF8559.71875±150.19704（両軸）。cos/sin共分散保持、旧pilot非pool、order4未観測。人工9PASS、半指数1/保存half照合1、新sampling64、対角化/Givens/旧価格再compile/新N/G/automatic retry0。全lawρ・母平均tail・Stage 4は未評価、旧全STOP保全、公開照合後mandatory STOP。
