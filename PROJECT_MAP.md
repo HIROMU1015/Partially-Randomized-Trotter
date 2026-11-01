@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：PR-only reduced限定検証・54-call技術準備（2026-11-02）
+
+[接続・226人工/回帰PASS・未資格の区別](docs/research/research_c_pr_reduced_limited_preparation_20261102.md)／[未承認54-call契約](docs/research/research_c_pr_reduced_limited_contract_unapproved_20261102.json)。既存opt-in PR inner＋2 refinement/独立state/rank-nullspaceを再利用し、raw flag・J・stability・admissionを別記する限定entryを追加。次案は保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、original qualified J/U開始、受理U更新≤2/distinct U点≤8。実H4 decode/新科学call0、旧raw2401/SOURCE/STOP不変。別明示許可・fresh runまでmandatory STOP。以下は各時点の履歴。
+
 ## 研究C：PR固定U inner1回・J基準PASS、raw precision loss（2026-11-02）
 
 [8-call結果・独立J・raw状態の区別](docs/research/research_c_pr_inner_point_execution_20261102.md)。固定SOURCEab5d80bd6/8-call契約を無変更で実行し8/8 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、保存trial2 U固定・元J初期のNewton-CGを1回実行。終端chain差1.05214e-17、独立J∞9.83543e-6＋元marginでMET。一方raw success=false/status2 precision loss/nit708、partial U₂1204.251で同時一次未達。INNER_CORRECTNESS_PASS_J_METは工程的数値基準で、正常optimizer収束/DF予算/PR性能/reduced資格ではない。Refinement/U更新/outer/RC2継続0、旧raw2388/SOURCE/STOP保全、新raw13を保存し公開照合後mandatory STOP。以下は各時点の履歴。

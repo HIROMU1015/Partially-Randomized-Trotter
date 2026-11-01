@@ -1,0 +1,3626 @@
+{
+  "artificial_only": true,
+  "real_molecular_decodes": 0,
+  "new_scientific_calls": 0,
+  "rows": [
+    {
+      "artificial_case": "advancement",
+      "seed": 41,
+      "norb": 2,
+      "rank": 3,
+      "ld": 1,
+      "loss_scale": 1.0,
+      "result": {
+        "status": "LIMITED_OUTER_RETURN",
+        "advancement": "ACCEPTED_U_ADVANCE_OBSERVED",
+        "terminal_kind": "accepted",
+        "accepted_labels": [
+          "0",
+          "1",
+          "2"
+        ],
+        "completed_U_updates": 2,
+        "outer_solver_invocations": 1,
+        "distinct_U_points": 3,
+        "inner_solves": 9,
+        "refinement_solves": 6,
+        "terminal_label": "2",
+        "terminal": {
+          "components": {
+            "objective": 0.01698933356285647,
+            "tensor_objective": 0.005358761959933019,
+            "normalized_tensor_objective": 0.005358761959933019,
+            "penalty": 0.011630571602923452,
+            "smooth_tail_mass_Ha": 0.34103623858650933,
+            "exact_tail_mass_Ha": 0.34103614283968114,
+            "full_ordered_Z_l2_Ha_squared": 0.22259048637256662
+          },
+          "J_stationarity": {
+            "value": 3.76132153201425e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "U_stationarity": {
+            "value": 0.030604176288220014,
+            "threshold": 1e-05,
+            "engineering_margin": 1.3060417628822002e-08,
+            "status": "NOT_MET"
+          },
+          "first_order_met": false,
+          "orthogonality_maxabs": 4.440892098500626e-16,
+          "rigorous_stationarity": false,
+          "stable_J_gradient_infinity": 3.7613214099059804e-10,
+          "stable_U_tangent_l2": 0.030604176288220004,
+          "binary64_J_gradient_infinity": 3.76132153201425e-10,
+          "binary64_U_tangent_l2": 0.030604176288220014,
+          "stationarity_policy": "Both same-array stable and binary64 norms must pass original thresholds/margins",
+          "value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 3.469446951953614e-18,
+            "maximum_allowance_ratio": 1.2854881888333733e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "binary64_AD_value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 3.469446951953614e-18,
+            "maximum_allowance_ratio": 1.2854881888333733e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "forward_pullback_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 0.0,
+            "maximum_allowance_ratio": 0.0,
+            "atol": 1e-08,
+            "rtol": 1e-07
+          },
+          "binary64_U_difference_observation": 9.813077866773595e-18,
+          "precision": {
+            "arithmetic": "longdouble_primal_binary64_JAX_array_Jacobian",
+            "longdouble_mantissa_bits": 64,
+            "array_point": "exact supplied binary64 J/U",
+            "rotation_pullback_separated": true,
+            "rigorous_gradient_error_bound": null
+          },
+          "wall_seconds": 0.0024871639907360077,
+          "CPU_seconds": 0.0022143820000000147
+        },
+        "terminal_qualification": {
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "applicability": {
+            "admitted": true,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 3,
+            "universal_nullity": 0,
+            "head_singular_values": [
+              1.0,
+              0.9999999999999997,
+              0.9999999999999993
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              1.046291360321681,
+              0.75,
+              0.7499999999999998,
+              0.30458888573978915,
+              0.3045888857397891
+            ],
+            "rank_guard": 9.094947017729282e-13,
+            "minimum_quotient_singular": 0.9999999999999993,
+            "extra_null_singular_max": 0.0,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-06,
+          "legacy_first_pair_physical_shift_observation": 6.598963554771482e-11,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.01698933356285647,
+            "after": 0.01698933356285647,
+            "decrease": 0.0,
+            "allowance": 2.698933356285647e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": true,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": false,
+              "status": 2,
+              "message": "Warning: Desired error not necessarily achieved due to precision loss."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "stop_trial_label": "2",
+        "stop_trial_qualification": {
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "applicability": {
+            "admitted": true,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 3,
+            "universal_nullity": 0,
+            "head_singular_values": [
+              1.0,
+              0.9999999999999997,
+              0.9999999999999993
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              1.046291360321681,
+              0.75,
+              0.7499999999999998,
+              0.30458888573978915,
+              0.3045888857397891
+            ],
+            "rank_guard": 9.094947017729282e-13,
+            "minimum_quotient_singular": 0.9999999999999993,
+            "extra_null_singular_max": 0.0,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-06,
+          "legacy_first_pair_physical_shift_observation": 6.598963554771482e-11,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.01698933356285647,
+            "after": 0.01698933356285647,
+            "decrease": 0.0,
+            "allowance": 2.698933356285647e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": true,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": false,
+              "status": 2,
+              "message": "Warning: Desired error not necessarily achieved due to precision loss."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "qualification_by_point": [
+          {
+            "label": "0",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                0.9999999999999999,
+                0.9999999999999999,
+                0.9999999999999998
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999998,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-06,
+            "legacy_first_pair_physical_shift_observation": 4.3746042682354384e-10,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.04155967546599847,
+              "after": 0.04155967546599847,
+              "decrease": 0.0,
+              "allowance": 5.155967546599847e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": false,
+                "status": 2,
+                "message": "Warning: Desired error not necessarily achieved due to precision loss."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          },
+          {
+            "label": "1",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                1.0,
+                0.9999999999999999,
+                0.9999999999999997
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999997,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-06,
+            "legacy_first_pair_physical_shift_observation": 4.5659008810865783e-11,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.031154397159473022,
+              "after": 0.031154397159473022,
+              "decrease": 0.0,
+              "allowance": 4.1154397159473025e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          },
+          {
+            "label": "2",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                1.0,
+                0.9999999999999997,
+                0.9999999999999993
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999993,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-06,
+            "legacy_first_pair_physical_shift_observation": 6.598963554771482e-11,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.01698933356285647,
+              "after": 0.01698933356285647,
+              "decrease": 0.0,
+              "allowance": 2.698933356285647e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": false,
+                "status": 2,
+                "message": "Warning: Desired error not necessarily achieved due to precision loss."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          }
+        ],
+        "outer_raw": {
+          "success": false,
+          "status": 1,
+          "message": "Maximum number of iterations has been exceeded.",
+          "fun": 0.01698933356285647,
+          "raw_fun_repr": "0.01698933356285647",
+          "nit": 2,
+          "nfev": 3,
+          "njev": 3,
+          "nhev": 0
+        },
+        "outer_raw_unavailable_reason": null,
+        "physical_first_order_met": false,
+        "first_order_qualified": false,
+        "rigorous_reduced_gradient": false,
+        "rigorous_stationarity": false,
+        "DF_budget": null,
+        "PR_performance": null,
+        "qualified_tail_comparison": null,
+        "policy": {
+          "max_cycles": 64,
+          "j_maxiter": 1000,
+          "j_xtol": 1e-12,
+          "metric_singular_floor": 1.0,
+          "u_max_nfev": 25,
+          "u_solver_gtol": 1e-12,
+          "u_xtol": 1e-14,
+          "j_gradient_infinity": 1e-05,
+          "u_tangent_l2": 1e-05,
+          "gradient_atol": 1e-08,
+          "gradient_rtol": 1e-07,
+          "value_atol": 1e-10,
+          "value_rtol": 1e-08,
+          "stall_atol": 1e-12,
+          "stall_rtol": 1e-10,
+          "stall_cycles": 3,
+          "orthogonality": 1e-10,
+          "outer_maxiter": 2,
+          "max_points": 8,
+          "outer_gtol": 1e-07,
+          "refinement_U_l2": 1e-06,
+          "rank_guard_factor": 256.0,
+          "rank_gap_factor": 1024.0,
+          "inner_refinements": 2
+        },
+        "wall_seconds": 1.5144902998581529,
+        "CPU_seconds": 4.419966479999999,
+        "RC2_continuation": 0,
+        "retry": 0,
+        "resume": 0
+      },
+      "calls": {
+        "inner_J_solve": 9,
+        "precision_state": 6,
+        "reduced_admission": 3
+      },
+      "raw_inner": [
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": false,
+          "status": 2,
+          "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+          "nit": 74,
+          "nfev": 188,
+          "njev": 188,
+          "nhev": 75,
+          "stationarity": {
+            "value": 8.38248581658263e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.664673786749176e-09,
+              "maximum_allowance_ratio": 0.1664673764189137,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.1465033482714671e-20,
+              "maximum_allowance_ratio": 1.1465033447236014e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213549e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.1906197360813366e-21,
+              "maximum_allowance_ratio": 5.190619735424295e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213552e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.1906197360813366e-21,
+              "maximum_allowance_ratio": 5.190619735424295e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213552e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 80,
+          "nfev": 162,
+          "njev": 162,
+          "nhev": 80,
+          "stationarity": {
+            "value": 9.786733467224583e-11,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": false,
+              "finite_shape": true,
+              "maxabs": 4.322906452467533e-08,
+              "maximum_allowance_ratio": 4.322906449541266,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": false,
+              "finite_shape": true,
+              "maxabs": 4.322906452467533e-08,
+              "maximum_allowance_ratio": 4.322906449541266,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.845633690123962e-21,
+              "maximum_allowance_ratio": 5.845633684402747e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 8.430318972987333e-09,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 5.39587125658993e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.028437258923753e-20,
+              "maximum_allowance_ratio": 2.028437258854405e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 8.430318972987333e-09,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 5.39587125658993e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.028437258923753e-20,
+              "maximum_allowance_ratio": 2.028437258854405e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 8.430318972987333e-09,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": false,
+          "status": 2,
+          "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+          "nit": 94,
+          "nfev": 179,
+          "njev": 179,
+          "nhev": 95,
+          "stationarity": {
+            "value": 6.061345323283945e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.794460508964678e-09,
+              "maximum_allowance_ratio": 0.17944604900394528,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.535182466475154e-21,
+              "maximum_allowance_ratio": 5.53518242552513e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 3.76132153201425e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 8.878698201202776e-21,
+              "maximum_allowance_ratio": 8.878698178968064e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 1.2854881888333733e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 3.76132153201425e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 8.878698201202776e-21,
+              "maximum_allowance_ratio": 8.878698178968064e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 1.2854881888333733e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        }
+      ]
+    },
+    {
+      "artificial_case": "point_limit",
+      "seed": 41,
+      "norb": 2,
+      "rank": 3,
+      "ld": 1,
+      "loss_scale": 1.0,
+      "result": {
+        "status": "OUTER_LIMIT_UNQUALIFIED",
+        "advancement": "NO_ACCEPTED_U_UPDATE",
+        "terminal_kind": "accepted",
+        "accepted_labels": [
+          "0"
+        ],
+        "completed_U_updates": 0,
+        "outer_solver_invocations": 1,
+        "distinct_U_points": 1,
+        "inner_solves": 3,
+        "refinement_solves": 2,
+        "terminal_label": "0",
+        "terminal": {
+          "components": {
+            "objective": 0.04155967546599847,
+            "tensor_objective": 0.031418264984525344,
+            "normalized_tensor_objective": 0.031418264984525344,
+            "penalty": 0.010141410481473127,
+            "smooth_tail_mass_Ha": 0.3184558129705458,
+            "exact_tail_mass_Ha": 0.3184557434286928,
+            "full_ordered_Z_l2_Ha_squared": 0.1560329359132763
+          },
+          "J_stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "U_stationarity": {
+            "value": 0.10420382036743135,
+            "threshold": 1e-05,
+            "engineering_margin": 2.0420382036743134e-08,
+            "status": "NOT_MET"
+          },
+          "first_order_met": false,
+          "orthogonality_maxabs": 4.440892098500626e-16,
+          "rigorous_stationarity": false,
+          "stable_J_gradient_infinity": 4.2635247455418237e-10,
+          "stable_U_tangent_l2": 0.10420382036743135,
+          "binary64_J_gradient_infinity": 4.263524531132277e-10,
+          "binary64_U_tangent_l2": 0.10420382036743132,
+          "stationarity_policy": "Both same-array stable and binary64 norms must pass original thresholds/margins",
+          "value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 6.938893903907228e-18,
+            "maximum_allowance_ratio": 1.3457985996213552e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "binary64_AD_value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 0.0,
+            "maximum_allowance_ratio": 0.0,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "forward_pullback_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 1.3877787807814457e-17,
+            "maximum_allowance_ratio": 6.818642616297575e-10,
+            "atol": 1e-08,
+            "rtol": 1e-07
+          },
+          "binary64_U_difference_observation": 2.797157557069959e-17,
+          "precision": {
+            "arithmetic": "longdouble_primal_binary64_JAX_array_Jacobian",
+            "longdouble_mantissa_bits": 64,
+            "array_point": "exact supplied binary64 J/U",
+            "rotation_pullback_separated": true,
+            "rigorous_gradient_error_bound": null
+          },
+          "wall_seconds": 0.002568606287240982,
+          "CPU_seconds": 0.002294125000000591
+        },
+        "terminal_qualification": {
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "applicability": {
+            "admitted": true,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 3,
+            "universal_nullity": 0,
+            "head_singular_values": [
+              0.9999999999999999,
+              0.9999999999999999,
+              0.9999999999999998
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              1.046291360321681,
+              0.75,
+              0.7499999999999998,
+              0.30458888573978915,
+              0.3045888857397891
+            ],
+            "rank_guard": 9.094947017729282e-13,
+            "minimum_quotient_singular": 0.9999999999999998,
+            "extra_null_singular_max": 0.0,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-06,
+          "legacy_first_pair_physical_shift_observation": 4.3746042682354384e-10,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.04155967546599847,
+            "after": 0.04155967546599847,
+            "decrease": 0.0,
+            "allowance": 5.155967546599847e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": true,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": false,
+              "status": 2,
+              "message": "Warning: Desired error not necessarily achieved due to precision loss."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "stop_trial_label": "0",
+        "stop_trial_qualification": {
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "applicability": {
+            "admitted": true,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 3,
+            "universal_nullity": 0,
+            "head_singular_values": [
+              0.9999999999999999,
+              0.9999999999999999,
+              0.9999999999999998
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              1.046291360321681,
+              0.75,
+              0.7499999999999998,
+              0.30458888573978915,
+              0.3045888857397891
+            ],
+            "rank_guard": 9.094947017729282e-13,
+            "minimum_quotient_singular": 0.9999999999999998,
+            "extra_null_singular_max": 0.0,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-06,
+          "legacy_first_pair_physical_shift_observation": 4.3746042682354384e-10,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.04155967546599847,
+            "after": 0.04155967546599847,
+            "decrease": 0.0,
+            "allowance": 5.155967546599847e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": true,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": false,
+              "status": 2,
+              "message": "Warning: Desired error not necessarily achieved due to precision loss."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "qualification_by_point": [
+          {
+            "label": "0",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                0.9999999999999999,
+                0.9999999999999999,
+                0.9999999999999998
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999998,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-06,
+            "legacy_first_pair_physical_shift_observation": 4.3746042682354384e-10,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.04155967546599847,
+              "after": 0.04155967546599847,
+              "decrease": 0.0,
+              "allowance": 5.155967546599847e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": false,
+                "status": 2,
+                "message": "Warning: Desired error not necessarily achieved due to precision loss."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          }
+        ],
+        "outer_raw": null,
+        "outer_raw_unavailable_reason": "qualification/callback stop or initial first-order gate before SciPy return",
+        "physical_first_order_met": false,
+        "first_order_qualified": false,
+        "rigorous_reduced_gradient": false,
+        "rigorous_stationarity": false,
+        "DF_budget": null,
+        "PR_performance": null,
+        "qualified_tail_comparison": null,
+        "policy": {
+          "max_cycles": 64,
+          "j_maxiter": 1000,
+          "j_xtol": 1e-12,
+          "metric_singular_floor": 1.0,
+          "u_max_nfev": 25,
+          "u_solver_gtol": 1e-12,
+          "u_xtol": 1e-14,
+          "j_gradient_infinity": 1e-05,
+          "u_tangent_l2": 1e-05,
+          "gradient_atol": 1e-08,
+          "gradient_rtol": 1e-07,
+          "value_atol": 1e-10,
+          "value_rtol": 1e-08,
+          "stall_atol": 1e-12,
+          "stall_rtol": 1e-10,
+          "stall_cycles": 3,
+          "orthogonality": 1e-10,
+          "outer_maxiter": 2,
+          "max_points": 1,
+          "outer_gtol": 1e-07,
+          "refinement_U_l2": 1e-06,
+          "rank_guard_factor": 256.0,
+          "rank_gap_factor": 1024.0,
+          "inner_refinements": 2
+        },
+        "wall_seconds": 0.05080834496766329,
+        "CPU_seconds": 0.0502035799999998,
+        "RC2_continuation": 0,
+        "retry": 0,
+        "resume": 0
+      },
+      "calls": {
+        "inner_J_solve": 3,
+        "precision_state": 2,
+        "reduced_admission": 1
+      },
+      "raw_inner": [
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": false,
+          "status": 2,
+          "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+          "nit": 74,
+          "nfev": 188,
+          "njev": 188,
+          "nhev": 75,
+          "stationarity": {
+            "value": 8.38248581658263e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.664673786749176e-09,
+              "maximum_allowance_ratio": 0.1664673764189137,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.1465033482714671e-20,
+              "maximum_allowance_ratio": 1.1465033447236014e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213549e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.1906197360813366e-21,
+              "maximum_allowance_ratio": 5.190619735424295e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213552e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.1906197360813366e-21,
+              "maximum_allowance_ratio": 5.190619735424295e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213552e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        }
+      ]
+    },
+    {
+      "artificial_case": "tiny_stability_allowance_observation",
+      "seed": 41,
+      "norb": 2,
+      "rank": 3,
+      "ld": 1,
+      "loss_scale": 1.0,
+      "result": {
+        "status": "LIMITED_OUTER_RETURN",
+        "advancement": "ACCEPTED_U_ADVANCE_OBSERVED",
+        "terminal_kind": "accepted",
+        "accepted_labels": [
+          "0",
+          "1",
+          "2"
+        ],
+        "completed_U_updates": 2,
+        "outer_solver_invocations": 1,
+        "distinct_U_points": 3,
+        "inner_solves": 9,
+        "refinement_solves": 6,
+        "terminal_label": "2",
+        "terminal": {
+          "components": {
+            "objective": 0.01698933356285647,
+            "tensor_objective": 0.005358761959933019,
+            "normalized_tensor_objective": 0.005358761959933019,
+            "penalty": 0.011630571602923452,
+            "smooth_tail_mass_Ha": 0.34103623858650933,
+            "exact_tail_mass_Ha": 0.34103614283968114,
+            "full_ordered_Z_l2_Ha_squared": 0.22259048637256662
+          },
+          "J_stationarity": {
+            "value": 3.76132153201425e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "U_stationarity": {
+            "value": 0.030604176288220014,
+            "threshold": 1e-05,
+            "engineering_margin": 1.3060417628822002e-08,
+            "status": "NOT_MET"
+          },
+          "first_order_met": false,
+          "orthogonality_maxabs": 4.440892098500626e-16,
+          "rigorous_stationarity": false,
+          "stable_J_gradient_infinity": 3.7613214099059804e-10,
+          "stable_U_tangent_l2": 0.030604176288220004,
+          "binary64_J_gradient_infinity": 3.76132153201425e-10,
+          "binary64_U_tangent_l2": 0.030604176288220014,
+          "stationarity_policy": "Both same-array stable and binary64 norms must pass original thresholds/margins",
+          "value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 3.469446951953614e-18,
+            "maximum_allowance_ratio": 1.2854881888333733e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "binary64_AD_value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 3.469446951953614e-18,
+            "maximum_allowance_ratio": 1.2854881888333733e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "forward_pullback_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 0.0,
+            "maximum_allowance_ratio": 0.0,
+            "atol": 1e-08,
+            "rtol": 1e-07
+          },
+          "binary64_U_difference_observation": 9.813077866773595e-18,
+          "precision": {
+            "arithmetic": "longdouble_primal_binary64_JAX_array_Jacobian",
+            "longdouble_mantissa_bits": 64,
+            "array_point": "exact supplied binary64 J/U",
+            "rotation_pullback_separated": true,
+            "rigorous_gradient_error_bound": null
+          },
+          "wall_seconds": 0.0024643195793032646,
+          "CPU_seconds": 0.0020875770000001737
+        },
+        "terminal_qualification": {
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "applicability": {
+            "admitted": true,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 3,
+            "universal_nullity": 0,
+            "head_singular_values": [
+              1.0,
+              0.9999999999999997,
+              0.9999999999999993
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              1.046291360321681,
+              0.75,
+              0.7499999999999998,
+              0.30458888573978915,
+              0.3045888857397891
+            ],
+            "rank_guard": 9.094947017729282e-13,
+            "minimum_quotient_singular": 0.9999999999999993,
+            "extra_null_singular_max": 0.0,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-30,
+          "legacy_first_pair_physical_shift_observation": 6.598963554771482e-11,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.01698933356285647,
+            "after": 0.01698933356285647,
+            "decrease": 0.0,
+            "allowance": 2.698933356285647e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": true,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": false,
+              "status": 2,
+              "message": "Warning: Desired error not necessarily achieved due to precision loss."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "stop_trial_label": "2",
+        "stop_trial_qualification": {
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "applicability": {
+            "admitted": true,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 3,
+            "universal_nullity": 0,
+            "head_singular_values": [
+              1.0,
+              0.9999999999999997,
+              0.9999999999999993
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              1.046291360321681,
+              0.75,
+              0.7499999999999998,
+              0.30458888573978915,
+              0.3045888857397891
+            ],
+            "rank_guard": 9.094947017729282e-13,
+            "minimum_quotient_singular": 0.9999999999999993,
+            "extra_null_singular_max": 0.0,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-30,
+          "legacy_first_pair_physical_shift_observation": 6.598963554771482e-11,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.01698933356285647,
+            "after": 0.01698933356285647,
+            "decrease": 0.0,
+            "allowance": 2.698933356285647e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": true,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": false,
+              "status": 2,
+              "message": "Warning: Desired error not necessarily achieved due to precision loss."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "qualification_by_point": [
+          {
+            "label": "0",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                0.9999999999999999,
+                0.9999999999999999,
+                0.9999999999999998
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999998,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-30,
+            "legacy_first_pair_physical_shift_observation": 4.3746042682354384e-10,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.04155967546599847,
+              "after": 0.04155967546599847,
+              "decrease": 0.0,
+              "allowance": 5.155967546599847e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": false,
+                "status": 2,
+                "message": "Warning: Desired error not necessarily achieved due to precision loss."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          },
+          {
+            "label": "1",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                1.0,
+                0.9999999999999999,
+                0.9999999999999997
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999997,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-30,
+            "legacy_first_pair_physical_shift_observation": 4.5659008810865783e-11,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.031154397159473022,
+              "after": 0.031154397159473022,
+              "decrease": 0.0,
+              "allowance": 4.1154397159473025e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          },
+          {
+            "label": "2",
+            "status": "NUMERICAL_PILOT_ADMITTED",
+            "applicability": {
+              "admitted": true,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 3,
+              "universal_nullity": 0,
+              "head_singular_values": [
+                1.0,
+                0.9999999999999997,
+                0.9999999999999993
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                1.046291360321681,
+                0.75,
+                0.7499999999999998,
+                0.30458888573978915,
+                0.3045888857397891
+              ],
+              "rank_guard": 9.094947017729282e-13,
+              "minimum_quotient_singular": 0.9999999999999993,
+              "extra_null_singular_max": 0.0,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-30,
+            "legacy_first_pair_physical_shift_observation": 6.598963554771482e-11,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.01698933356285647,
+              "after": 0.01698933356285647,
+              "decrease": 0.0,
+              "allowance": 2.698933356285647e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "NUMERICAL_PILOT_ADMITTED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": true,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": false,
+                "status": 2,
+                "message": "Warning: Desired error not necessarily achieved due to precision loss."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          }
+        ],
+        "outer_raw": {
+          "success": false,
+          "status": 1,
+          "message": "Maximum number of iterations has been exceeded.",
+          "fun": 0.01698933356285647,
+          "raw_fun_repr": "0.01698933356285647",
+          "nit": 2,
+          "nfev": 3,
+          "njev": 3,
+          "nhev": 0
+        },
+        "outer_raw_unavailable_reason": null,
+        "physical_first_order_met": false,
+        "first_order_qualified": false,
+        "rigorous_reduced_gradient": false,
+        "rigorous_stationarity": false,
+        "DF_budget": null,
+        "PR_performance": null,
+        "qualified_tail_comparison": null,
+        "policy": {
+          "max_cycles": 64,
+          "j_maxiter": 1000,
+          "j_xtol": 1e-12,
+          "metric_singular_floor": 1.0,
+          "u_max_nfev": 25,
+          "u_solver_gtol": 1e-12,
+          "u_xtol": 1e-14,
+          "j_gradient_infinity": 1e-05,
+          "u_tangent_l2": 1e-05,
+          "gradient_atol": 1e-08,
+          "gradient_rtol": 1e-07,
+          "value_atol": 1e-10,
+          "value_rtol": 1e-08,
+          "stall_atol": 1e-12,
+          "stall_rtol": 1e-10,
+          "stall_cycles": 3,
+          "orthogonality": 1e-10,
+          "outer_maxiter": 2,
+          "max_points": 8,
+          "outer_gtol": 1e-07,
+          "refinement_U_l2": 1e-30,
+          "rank_guard_factor": 256.0,
+          "rank_gap_factor": 1024.0,
+          "inner_refinements": 2
+        },
+        "wall_seconds": 0.1475421255454421,
+        "CPU_seconds": 0.1465838899999996,
+        "RC2_continuation": 0,
+        "retry": 0,
+        "resume": 0
+      },
+      "calls": {
+        "inner_J_solve": 9,
+        "precision_state": 6,
+        "reduced_admission": 3
+      },
+      "raw_inner": [
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": false,
+          "status": 2,
+          "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+          "nit": 74,
+          "nfev": 188,
+          "njev": 188,
+          "nhev": 75,
+          "stationarity": {
+            "value": 8.38248581658263e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.664673786749176e-09,
+              "maximum_allowance_ratio": 0.1664673764189137,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.1465033482714671e-20,
+              "maximum_allowance_ratio": 1.1465033447236014e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213549e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.1906197360813366e-21,
+              "maximum_allowance_ratio": 5.190619735424295e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213552e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 4.2635247455418237e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.1906197360813366e-21,
+              "maximum_allowance_ratio": 5.190619735424295e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 6.938893903907228e-18,
+              "maximum_allowance_ratio": 1.3457985996213552e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 80,
+          "nfev": 162,
+          "njev": 162,
+          "nhev": 80,
+          "stationarity": {
+            "value": 9.786733467224583e-11,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": false,
+              "finite_shape": true,
+              "maxabs": 4.322906452467533e-08,
+              "maximum_allowance_ratio": 4.322906449541266,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": false,
+              "finite_shape": true,
+              "maxabs": 4.322906452467533e-08,
+              "maximum_allowance_ratio": 4.322906449541266,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.845633690123962e-21,
+              "maximum_allowance_ratio": 5.845633684402747e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 8.430318972987333e-09,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 5.39587125658993e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.028437258923753e-20,
+              "maximum_allowance_ratio": 2.028437258854405e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 8.430318972987333e-09,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 5.39587125658993e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.028437258923753e-20,
+              "maximum_allowance_ratio": 2.028437258854405e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 8.430318972987333e-09,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": false,
+          "status": 2,
+          "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+          "nit": 94,
+          "nfev": 179,
+          "njev": 179,
+          "nhev": 95,
+          "stationarity": {
+            "value": 6.061345323283945e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 1.794460508964678e-09,
+              "maximum_allowance_ratio": 0.17944604900394528,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 5.535182466475154e-21,
+              "maximum_allowance_ratio": 5.53518242552513e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 2,
+          "nfev": 2,
+          "njev": 2,
+          "nhev": 2,
+          "stationarity": {
+            "value": 3.76132153201425e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 8.878698201202776e-21,
+              "maximum_allowance_ratio": 8.878698178968064e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 1.2854881888333733e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 3.76132153201425e-10,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 8.878698201202776e-21,
+              "maximum_allowance_ratio": 8.878698178968064e-13,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 3.469446951953614e-18,
+              "maximum_allowance_ratio": 1.2854881888333733e-08,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        }
+      ],
+      "interpretation": "Pair happened to be numerically identical;small artificial allowance alone does not force failure. Stability mismatch STOP separately covered by pytest."
+    },
+    {
+      "artificial_case": "extra_head_null_unqualified",
+      "seed": 41,
+      "norb": 2,
+      "rank": 3,
+      "ld": 2,
+      "loss_scale": 1.0,
+      "result": {
+        "status": "REDUCED_GRADIENT_UNQUALIFIED",
+        "advancement": "NO_ACCEPTED_U_UPDATE",
+        "terminal_kind": "unqualified_initial_diagnostic",
+        "accepted_labels": [],
+        "completed_U_updates": 0,
+        "outer_solver_invocations": 0,
+        "distinct_U_points": 1,
+        "inner_solves": 3,
+        "refinement_solves": 2,
+        "terminal_label": "0",
+        "terminal": {
+          "components": {
+            "objective": 0.041559670053356035,
+            "tensor_objective": 0.031418264632189885,
+            "normalized_tensor_objective": 0.031418264632189885,
+            "penalty": 0.010141405421166153,
+            "smooth_tail_mass_Ha": 0.3184557335198434,
+            "exact_tail_mass_Ha": 0.31845572596054234,
+            "full_ordered_Z_l2_Ha_squared": 0.23467536537934006
+          },
+          "J_stationarity": {
+            "value": 6.166325039285141e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "U_stationarity": {
+            "value": 0.12885094510016648,
+            "threshold": 1e-05,
+            "engineering_margin": 2.288509451001665e-08,
+            "status": "NOT_MET"
+          },
+          "first_order_met": false,
+          "orthogonality_maxabs": 2.220446049250313e-16,
+          "rigorous_stationarity": false,
+          "stable_J_gradient_infinity": 6.166325039285141e-12,
+          "stable_U_tangent_l2": 0.12885094510016645,
+          "binary64_J_gradient_infinity": 6.166296639964486e-12,
+          "binary64_U_tangent_l2": 0.12885094510016648,
+          "stationarity_policy": "Both same-array stable and binary64 norms must pass original thresholds/margins",
+          "value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 0.0,
+            "maximum_allowance_ratio": 0.0,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "binary64_AD_value_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 6.938893903907228e-18,
+            "maximum_allowance_ratio": 1.3457987409008978e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "forward_pullback_same_array": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 1.3877787807814457e-17,
+            "maximum_allowance_ratio": 6.818642458290813e-10,
+            "atol": 1e-08,
+            "rtol": 1e-07
+          },
+          "binary64_U_difference_observation": 3.7367087251761353e-17,
+          "precision": {
+            "arithmetic": "longdouble_primal_binary64_JAX_array_Jacobian",
+            "longdouble_mantissa_bits": 64,
+            "array_point": "exact supplied binary64 J/U",
+            "rotation_pullback_separated": true,
+            "rigorous_gradient_error_bound": null
+          },
+          "wall_seconds": 0.002329021692276001,
+          "CPU_seconds": 0.002057690000000001
+        },
+        "terminal_qualification": {
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "applicability": {
+            "admitted": false,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 5,
+            "universal_nullity": 1,
+            "head_singular_values": [
+              1.4142135623730951,
+              1.4142135623730947,
+              1.4142135623730947,
+              5.495548644492309e-16,
+              3.743022630124027e-23,
+              3.7066408971808466e-25
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              0.7499999999999998,
+              0.30458888573978915
+            ],
+            "rank_guard": 1.2862197421537486e-12,
+            "minimum_quotient_singular": 3.743022630124027e-23,
+            "extra_null_singular_max": 3.7066408971808466e-25,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-06,
+          "legacy_first_pair_physical_shift_observation": 0.0,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.041559670053356035,
+            "after": 0.041559670053356035,
+            "decrease": 0.0,
+            "allowance": 5.155967005335604e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": false,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "stop_trial_label": "0",
+        "stop_trial_qualification": {
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "applicability": {
+            "admitted": false,
+            "condition": "PR_only_universal_head_gauge",
+            "expected_head_rank": 5,
+            "universal_nullity": 1,
+            "head_singular_values": [
+              1.4142135623730951,
+              1.4142135623730947,
+              1.4142135623730947,
+              5.495548644492309e-16,
+              3.743022630124027e-23,
+              3.7066408971808466e-25
+            ],
+            "tail_singular_values": [
+              1.046291360321681,
+              0.7499999999999998,
+              0.30458888573978915
+            ],
+            "rank_guard": 1.2862197421537486e-12,
+            "minimum_quotient_singular": 3.743022630124027e-23,
+            "extra_null_singular_max": 3.7066408971808466e-25,
+            "tail_injective": true,
+            "strict_convexity_on_quotient_only": true,
+            "rigorous_numerical_enclosure": false
+          },
+          "latest_refinement_U_shift_l2": 0.0,
+          "refinement_U_shift_l2": 0.0,
+          "refinement_U_allowance": 1e-06,
+          "legacy_first_pair_physical_shift_observation": 0.0,
+          "legacy_result_not_reclassified": true,
+          "full_numeric_rank": true,
+          "objective_refinement": {
+            "before": 0.041559670053356035,
+            "after": 0.041559670053356035,
+            "decrease": 0.0,
+            "allowance": 5.155967005335604e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "RC2_analytic_bound_floating_plugin": null,
+          "rigorous_gradient_error_bound": null,
+          "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+          "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+          "inherited_admission_status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "admission_gates": {
+            "final_inner_J": true,
+            "final_independent_J": true,
+            "rank_nullspace": false,
+            "full_numeric_rank": true,
+            "latest_pair_stability": true,
+            "block_nonincrease": true,
+            "refinement_nonincrease": true
+          },
+          "inner_J_statuses": [
+            "MET",
+            "MET",
+            "MET"
+          ],
+          "raw_solver_flags": [
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            },
+            {
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully."
+            }
+          ],
+          "raw_success_is_not_an_admission_gate": true,
+          "first_inner_J_is_observation_final_refined_J_decides": true
+        },
+        "qualification_by_point": [
+          {
+            "label": "0",
+            "status": "REDUCED_GRADIENT_UNQUALIFIED",
+            "applicability": {
+              "admitted": false,
+              "condition": "PR_only_universal_head_gauge",
+              "expected_head_rank": 5,
+              "universal_nullity": 1,
+              "head_singular_values": [
+                1.4142135623730951,
+                1.4142135623730947,
+                1.4142135623730947,
+                5.495548644492309e-16,
+                3.743022630124027e-23,
+                3.7066408971808466e-25
+              ],
+              "tail_singular_values": [
+                1.046291360321681,
+                0.7499999999999998,
+                0.30458888573978915
+              ],
+              "rank_guard": 1.2862197421537486e-12,
+              "minimum_quotient_singular": 3.743022630124027e-23,
+              "extra_null_singular_max": 3.7066408971808466e-25,
+              "tail_injective": true,
+              "strict_convexity_on_quotient_only": true,
+              "rigorous_numerical_enclosure": false
+            },
+            "latest_refinement_U_shift_l2": 0.0,
+            "refinement_U_shift_l2": 0.0,
+            "refinement_U_allowance": 1e-06,
+            "legacy_first_pair_physical_shift_observation": 0.0,
+            "legacy_result_not_reclassified": true,
+            "full_numeric_rank": true,
+            "objective_refinement": {
+              "before": 0.041559670053356035,
+              "after": 0.041559670053356035,
+              "decrease": 0.0,
+              "allowance": 5.155967005335604e-10,
+              "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+            },
+            "RC2_analytic_bound_floating_plugin": null,
+            "rigorous_gradient_error_bound": null,
+            "qualification_level": "LATEST_PAIR_NUMERICAL_PILOT_NOT_ERROR_ENCLOSURE",
+            "inner_solver": "PR_Newton_CG_same_decoded_point_v1",
+            "inherited_admission_status": "REDUCED_GRADIENT_UNQUALIFIED",
+            "admission_gates": {
+              "final_inner_J": true,
+              "final_independent_J": true,
+              "rank_nullspace": false,
+              "full_numeric_rank": true,
+              "latest_pair_stability": true,
+              "block_nonincrease": true,
+              "refinement_nonincrease": true
+            },
+            "inner_J_statuses": [
+              "MET",
+              "MET",
+              "MET"
+            ],
+            "raw_solver_flags": [
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              },
+              {
+                "success": true,
+                "status": 0,
+                "message": "Optimization terminated successfully."
+              }
+            ],
+            "raw_success_is_not_an_admission_gate": true,
+            "first_inner_J_is_observation_final_refined_J_decides": true
+          }
+        ],
+        "outer_raw": null,
+        "outer_raw_unavailable_reason": "qualification/callback stop or initial first-order gate before SciPy return",
+        "physical_first_order_met": false,
+        "first_order_qualified": false,
+        "rigorous_reduced_gradient": false,
+        "rigorous_stationarity": false,
+        "DF_budget": null,
+        "PR_performance": null,
+        "qualified_tail_comparison": null,
+        "policy": {
+          "max_cycles": 64,
+          "j_maxiter": 1000,
+          "j_xtol": 1e-12,
+          "metric_singular_floor": 1.0,
+          "u_max_nfev": 25,
+          "u_solver_gtol": 1e-12,
+          "u_xtol": 1e-14,
+          "j_gradient_infinity": 1e-05,
+          "u_tangent_l2": 1e-05,
+          "gradient_atol": 1e-08,
+          "gradient_rtol": 1e-07,
+          "value_atol": 1e-10,
+          "value_rtol": 1e-08,
+          "stall_atol": 1e-12,
+          "stall_rtol": 1e-10,
+          "stall_cycles": 3,
+          "orthogonality": 1e-10,
+          "outer_maxiter": 2,
+          "max_points": 8,
+          "outer_gtol": 1e-07,
+          "refinement_U_l2": 1e-06,
+          "rank_guard_factor": 256.0,
+          "rank_gap_factor": 1024.0,
+          "inner_refinements": 2
+        },
+        "wall_seconds": 0.027648176066577435,
+        "CPU_seconds": 0.026758968000000216,
+        "RC2_continuation": 0,
+        "retry": 0,
+        "resume": 0
+      },
+      "calls": {
+        "inner_J_solve": 3,
+        "precision_state": 2,
+        "reduced_admission": 1
+      },
+      "raw_inner": [
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 22,
+          "nfev": 84,
+          "njev": 84,
+          "nhev": 22,
+          "stationarity": {
+            "value": 6.166325039285141e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.073936998985893e-20,
+              "maximum_allowance_ratio": 2.0739369989475054e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 6.166325039285141e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.073936998985893e-20,
+              "maximum_allowance_ratio": 2.0739369989475054e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        },
+        {
+          "method": "PR_Newton_CG_same_decoded_point_v1",
+          "success": true,
+          "status": 0,
+          "message": "Optimization terminated successfully.",
+          "nit": 1,
+          "nfev": 1,
+          "njev": 1,
+          "nhev": 1,
+          "stationarity": {
+            "value": 6.166325039285141e-12,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "consistency": {
+            "last_step_start": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "last_accepted": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "raw_jac_at_endpoint": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_gradient": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 2.073936998985893e-20,
+              "maximum_allowance_ratio": 2.0739369989475054e-12,
+              "atol": 1e-08,
+              "rtol": 1e-07
+            },
+            "chart_vs_physical_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "raw_vs_endpoint_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            },
+            "binary64_same_array_value": {
+              "PASS": true,
+              "finite_shape": true,
+              "maxabs": 0.0,
+              "maximum_allowance_ratio": 0.0,
+              "atol": 1e-10,
+              "rtol": 1e-08
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
