@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：新RC2／PRのnative-only adapter（2026-11-01）
+
+[c_rc2_pr_native.py](../trottertracks/c_rc2_pr_native.py)は既存Stage B/StrongBuilder/P0/CAR/B2/mutexを再利用し、新保存identity・sector index/law schema・finite-cohort dispatchのみ接続する。[105人工PASS・SOURCE・未承認655-call](../../docs/research/research_c_rc2_pr_native_preparation_20261101.md)。Library/旧SOURCE無変更、実H4評価0。全law/CA/support/総資源は未資格のまま、公開照合後mandatory STOP。
+
 ## 研究C：既存RPE/整数会計の105-call検証完了（2026-11-01）
 
 [SOURCE・実行・資格の記録](../../docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。Library/adapter無変更でC1 accuracy/energy/Hoeffdingを再利用し、仮定付きN/Wを整数・十進文字列で保存した。全law/actual CA/native価格/総資源は未資格、公開照合後mandatory STOP。

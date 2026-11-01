@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：保存RC2／PRのnative校正・技術準備（2026-11-01）
+
+[native接続・有限cohort資格・105人工PASS](research/research_c_rc2_pr_native_preparation_20261101.md)／[未承認655-call契約](research/research_c_rc2_pr_native_contract_unapproved_20261101.json)。各arm32 kernelと共通shell3件を同じP0/独立CARで検証する専用経路。実H4 decode/build/compile/再解析0、全law/CA/費用support/総資源はnull。公開照合後mandatory STOP、科学実行は別許可後のみ。
+
 ## 研究C：保存RC2／PRの条件付きshots・W実行結果（2026-11-01）
 
 [105-call・全3lane・156axis・Q1〜Q10](research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。Ideal/assumedでPRのN/Wが小さく、evidenceは未資格。正確な十進文字列・raw92・旧原本を保存し、価格・actual CA・総資源へ自動進行せずmandatory STOP。

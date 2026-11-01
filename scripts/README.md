@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：新RC2／PR native-only校正entry（2026-11-01）
+
+[run_research_c_rc2_pr_native.py](run_research_c_rc2_pr_native.py)は既定でbyte/header/env preflightのみ。[技術報告・未承認655-call](../docs/research/research_c_rc2_pr_native_preparation_20261101.md)。別科学許可後の--executeだけ、保存両終点の各32 trajectoryをfull512/raw/P0/actual-adjoint/X/Yで検証しkernel価格を保存する。旧runner・cohort・価格は再利用しない。今回実H4評価0、総資源entryなし、mandatory STOP。
+
 ## 研究C：105-call shots-only entryを限定実行（2026-11-01）
 
 [run_research_c_rc2_pr_conditional_shots.py](run_research_c_rc2_pr_conditional_shots.py)を固定SOURCEe88fa599aから一度実行し105/105 COMPLETE、FAIL/retry-resume0。[結果・156axis・STOP](../docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。消費済みrun01は再起動しない。Native価格・sampling・総費用は未実行、公開後mandatory STOP。

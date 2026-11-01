@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：保存RC2／PR-tailのnative校正準備（2026-11-01）
+
+[技術報告・105人工PASS](docs/research/research_c_rc2_pr_native_preparation_20261101.md)／[未承認655-call](docs/research/research_c_rc2_pr_native_contract_unapproved_20261101.json)。新entryはscripts/run_research_c_rc2_pr_native.py、moduleはsrc/trottertracks/c_rc2_pr_native.py、testはtests/management/test_research_c_rc2_pr_native.py。保存H4/1Å/STO-3G、未収束CDF8両arm、LD2/partial S2 δ.1/s1/r128/K0、各32 trajectoryのfull512数値gate・P0価格を提案。SOURCE130/入力26のpassiveのみ、実H4評価0。全law/CA/support/総資源は未資格、科学実行には別許可が必要。公開照合後mandatory STOP。
+
 ## 研究C：条件付きshots／W・105-call完了（2026-11-01）
 
 [全3 lane・156 axis・結果と限界](docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)。SOURCEe88fa599a無変更、105/105 COMPLETE・FAIL/retry/resume0。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、partial S2 δ.1/s1/r128/K0・13round、own-DF oracle/準備除外。Ideal NはRC2 18200774092602／PR14504、Wは74550091248614488／11822240。AssumedでもPRが小さく、evidenceはUNQUALIFIED。未収束候補の条件付き値で、μ/S/actual CA/総資源はnull。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。以下の準備表示は履歴。
