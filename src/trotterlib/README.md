@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：既存native/CAR/P0で655-call校正完了（2026-11-01）
+
+[SOURCE無変更・結果と資格](../../docs/research/research_c_rc2_pr_native_execution_20261101.md)。新RC2/PR adapterから既存kernel・独立CAR・actual adjoint・X/Y・P0・metricsを再利用し、64件とshell3 PASS。Library/旧SOURCE無変更、価格は有限cohortのみ、全law/actual CA/総資源は未資格。旧raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：新RC2／PRのnative-only adapter（2026-11-01）
 
 [c_rc2_pr_native.py](../trottertracks/c_rc2_pr_native.py)は既存Stage B/StrongBuilder/P0/CAR/B2/mutexを再利用し、新保存identity・sector index/law schema・finite-cohort dispatchのみ接続する。[105人工PASS・SOURCE・未承認655-call](../../docs/research/research_c_rc2_pr_native_preparation_20261101.md)。Library/旧SOURCE無変更、実H4評価0。全law/CA/support/総資源は未資格のまま、公開照合後mandatory STOP。

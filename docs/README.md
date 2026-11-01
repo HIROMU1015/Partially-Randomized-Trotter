@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：保存RC2／PR native校正・実行結果（2026-11-01）
+
+[655/655 COMPLETE・全gate・6指標](research/research_c_rc2_pr_native_execution_20261101.md)。保存H4/直鎖1Å/STO-3G、未収束CDF8/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0、own-oracle/準備除外・P0。64 kernelと共通shell3の数値gate PASS、FAIL/retry/resume0。各32件の完全h-step平均RZはRC2 20487／PR13246.375。有限cohortで全law/CA/support/総資源は未資格。Raw729/QPY262/STOPを保全し、公開照合後mandatory STOP。
+
 ## 研究C：保存RC2／PRのnative校正・技術準備（2026-11-01）
 
 [native接続・有限cohort資格・105人工PASS](research/research_c_rc2_pr_native_preparation_20261101.md)／[未承認655-call契約](research/research_c_rc2_pr_native_contract_unapproved_20261101.json)。各arm32 kernelと共通shell3件を同じP0/独立CARで検証する専用経路。実H4 decode/build/compile/再解析0、全law/CA/費用support/総資源はnull。公開照合後mandatory STOP、科学実行は別許可後のみ。

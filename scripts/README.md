@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：保存RC2／PR native-onlyを一度実行（2026-11-01）
+
+[run_research_c_rc2_pr_native.py](run_research_c_rc2_pr_native.py)をSOURCE14843a28fから無変更で実行し、655/655 COMPLETE・FAIL/retry/resume0。[全gate・価格・STOP](../docs/research/research_c_rc2_pr_native_execution_20261101.md)。64 trajectory/67 P0/262 QPY、raw729を保存。消費済みrun01は再起動しない。全law/CA/総資源の未資格を維持し、公開後mandatory STOP。
+
 ## 研究C：新RC2／PR native-only校正entry（2026-11-01）
 
 [run_research_c_rc2_pr_native.py](run_research_c_rc2_pr_native.py)は既定でbyte/header/env preflightのみ。[技術報告・未承認655-call](../docs/research/research_c_rc2_pr_native_preparation_20261101.md)。別科学許可後の--executeだけ、保存両終点の各32 trajectoryをfull512/raw/P0/actual-adjoint/X/Yで検証しkernel価格を保存する。旧runner・cohort・価格は再利用しない。今回実H4評価0、総資源entryなし、mandatory STOP。

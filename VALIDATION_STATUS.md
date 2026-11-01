@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：保存RC2／PRのnative数値同値性・価格を取得（2026-11-01）
+
+[655-call結果・最大残差・価格と限界](docs/research/research_c_rc2_pr_native_execution_20261101.md)／[raw729・STOP](artifacts/research_c_rc2_pr_native/2026-11-01/run01/)。SOURCE14843a28f無変更、655 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、未収束number CDF8両arm/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0・own-oracle/準備除外、各32非paired trajectory。64 full512 raw/P0/actual-adjoint/X/Yとshell3 PASS、compile67/QPY262。平均RZ RC2 20487±SE125.120／PR13246.375±SE238.114、他5指標もcohort平均はPRが小さい。全law synthesis/implemented-law/support/母平均/actual CA/保証shots/総資源は未資格・null。有限binary64数値pilotで厳密enclosure・CI・外部独立再現ではない。旧結果保全、公開照合後mandatory STOP。
+
 ## 研究C：条件付き十分shotsとWを取得、evidence資格は未解決（2026-11-01）
 
 [実行結果・資格](docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md)／[raw92・STOP](artifacts/research_c_rc2_pr_conditional_shots/2026-11-01/run01/)。固定SOURCEe88fa599aで105 COMPLETE、correctness FAIL/retry/resume0、実行時人工39 PASS。保存H4/1Å/STO-3G、通常number CDF8/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0・m0..12・own-oracle/準備除外。2候補×3lane×13round、evidence26は未資格、ideal/assumed52はconditional round/energy PASS。Ideal N RC2=18200774092602、PR=14504；W=74550091248614488／11822240。Assumed N=18282907461654／14562、W=74886508341850424／11875484。Canonical decimal文字列で保存。両optimizer未収束、全law誤差/actual CA/guaranteed shots/native μ・S/総資源は未資格・null。Local numerical pilotでCI/外部独立再現/厳密保証ではない。旧原本不変、公開後mandatory STOP。

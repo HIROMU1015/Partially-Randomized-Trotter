@@ -1695,6 +1695,127 @@
   },
   "result_sets": [
     {
+      "id": "research_c_rc2_pr_native_execution_20261101",
+      "status": "RC2_PR_FINITE_COHORT_NATIVE_COMPLETE",
+      "report": "docs/research/research_c_rc2_pr_native_execution_20261101.md",
+      "artifacts": "artifacts/research_c_rc2_pr_native/2026-11-01/run01",
+      "scientific_SOURCE_commit": "14843a28f729cfe5f238d72019b060ee281c9a45",
+      "implementation_commit": "3bb00c1caddc30f21a292927b2d2effbacbf2164",
+      "scope": "Saved linear H4/1Angstrom/STO-3G,number CDF8,sector36/full256/controlled512,original LD2,partial ordered S2 delta=h=.1/s1/r128/K0,own-DF oracle/state preparation excluded; two common-budget optimizer-unqualified endpoints; complete h-step kernel only",
+      "source_files": 130,
+      "saved_inputs": 26,
+      "scientific_units": 655,
+      "COMPLETE": 655,
+      "call_FAIL": 0,
+      "retry": 0,
+      "resume": 0,
+      "samples_per_arm": 32,
+      "paired": false,
+      "adaptive": false,
+      "native_kernels": 64,
+      "shells": 3,
+      "P0_compiles": 67,
+      "QPY": 262,
+      "raw_files": 729,
+      "raw_PASS": 64,
+      "compiled_PASS": 64,
+      "actual_adjoint_PASS": 64,
+      "XY_PASS": 64,
+      "shell_PASS": 3,
+      "finite_cohort_sample_means": {
+        "rc2": {
+          "rz_count": 20487.0,
+          "rz_depth": 6472.375,
+          "cx_count": 7558.25,
+          "cx_depth": 4482.15625,
+          "total_depth": 14192.9375,
+          "circuit_size": 41175.5
+        },
+        "pr": {
+          "rz_count": 13246.375,
+          "rz_depth": 3999.65625,
+          "cx_count": 5344.875,
+          "cx_depth": 3261.53125,
+          "total_depth": 8829.0,
+          "circuit_size": 26343.375
+        }
+      },
+      "descriptive_sample_mean_SE": {
+        "rc2": {
+          "rz_count": 125.11963629701285,
+          "rz_depth": 37.1408541145036,
+          "cx_count": 39.12580515506688,
+          "cx_depth": 20.323696510943858,
+          "total_depth": 81.64421657287421,
+          "circuit_size": 251.9253761757444
+        },
+        "pr": {
+          "rz_count": 238.11418356604165,
+          "rz_depth": 57.3221761078548,
+          "cx_count": 73.08837654709758,
+          "cx_depth": 31.31647717562645,
+          "total_depth": 125.61376735209838,
+          "circuit_size": 478.88501791459765
+        }
+      },
+      "PR_minus_RC2": {
+        "rz_count": -7240.625,
+        "rz_depth": -2472.71875,
+        "cx_count": -2213.375,
+        "cx_depth": -1220.625,
+        "total_depth": -5363.9375,
+        "circuit_size": -14832.125
+      },
+      "existing_diagnostic_maxima": {
+        "rc2": {
+          "raw_reference": 1.9949772505159607e-14,
+          "raw_unitarity": 3.2862601528904634e-14,
+          "compiled_reference": 4.119488297264191e-12,
+          "compiled_raw": 4.118018651282749e-12,
+          "compiled_unitarity": 1.4499512701604544e-13,
+          "adjoint_raw_reference": 1.9958836659470582e-14,
+          "adjoint_raw_returned": 3.241851248829014e-14,
+          "XY_raw_complex_error": 1.29299580624391e-14,
+          "XY_raw_norm_error": 9.992007221626409e-15,
+          "adjoint_compiled_reference": 4.1183618346198234e-12,
+          "adjoint_compiled_returned": 1.2886480649302423e-13,
+          "XY_compiled_complex_error": 1.0677388123252238e-13,
+          "XY_compiled_norm_error": 1.1546319456101628e-13,
+          "full_sector_factor_and_sum": 8.881784197001252e-16,
+          "tail_law_full_CAR": 1.0658141036401503e-14
+        },
+        "pr": {
+          "raw_reference": 3.043995710596354e-14,
+          "raw_unitarity": 6.084022174945858e-14,
+          "compiled_reference": 2.1480735574949205e-12,
+          "compiled_raw": 2.146849797684436e-12,
+          "compiled_unitarity": 1.6231460620019789e-13,
+          "adjoint_raw_reference": 2.966331926314394e-14,
+          "adjoint_raw_returned": 5.806466418904721e-14,
+          "XY_raw_complex_error": 4.299618180552932e-14,
+          "XY_raw_norm_error": 3.963496197911809e-14,
+          "adjoint_compiled_reference": 2.1538544886952206e-12,
+          "adjoint_compiled_returned": 1.519942179064859e-13,
+          "XY_compiled_complex_error": 1.3599038226289672e-13,
+          "XY_compiled_norm_error": 1.3178347302300608e-13,
+          "full_sector_factor_and_sum": 1.3322676295501878e-15,
+          "tail_law_full_CAR": 1.1102230246251565e-15
+        }
+      },
+      "optimizer_qualification": "UNQUALIFIED_BOTH",
+      "whole_law_synthesis_bound": null,
+      "implemented_law_error": null,
+      "cost_support": null,
+      "ideal_law_expectation": null,
+      "actual_CA_achieved": null,
+      "shots": null,
+      "conditional_interrogation_totals": null,
+      "guaranteed_advantage": null,
+      "new_fit": 0,
+      "DF_PF_RTE_ground_recalculation": 0,
+      "interpretation": "Finite-bit nonpaired fixed-cohort full512 binary64 correctness and native cost pilot only; no rigorous enclosure, all-law bound, actual CA or total-resource superiority; no old price transfer; preserve old evidence and mandatory STOP"
+    },
+    {
       "id": "research_c_rc2_pr_conditional_shots_execution_20261101",
       "status": "STAGE_C_SHOTS_COMPLETE",
       "report": "docs/research/research_c_rc2_pr_conditional_shots_execution_20261101.md",
