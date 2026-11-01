@@ -1,0 +1,83 @@
+{
+  "state": "FAILED_NO_RETRY",
+  "counts": {
+    "scientific_batches_started": 1,
+    "T_eigendecompositions": 1,
+    "DF_eigendecompositions": 0,
+    "native_bases": 1,
+    "reference_half_exponentials": 0,
+    "sampling_calls": 0,
+    "trajectories": 0,
+    "event_positions": 0,
+    "native_body_programs": 0,
+    "wrapper_targets": 0,
+    "compile_started": 0,
+    "compile_completed": 0,
+    "scientific_retries": 0,
+    "new_signal_B_N_C_G": 0,
+    "finite_bit_mean": 0,
+    "SCF_FCI_DF": 0,
+    "new_state_reference": 0
+  },
+  "source_commit": "d3c258eb019e59234a874e1d8458e383f8317d68",
+  "error": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-execution-20261102/scripts/run_h4_p3_stage3.py\", line 156, in execute\n    retained=kernel.retained_preflight(one,t);counts.update(T_eigendecompositions=1,native_bases=1,reference_half_exponentials=1)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-execution-20261102/src/trotterlib/matched_partition_stage3.py\", line 134, in retained_preflight\n    basis=basis_from_saved(u)\n          ^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-execution-20261102/src/trotterlib/matched_partition_stage3.py\", line 110, in basis_from_saved\n    require_pass(checks)\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-execution-20261102/src/trotterlib/matched_partition_stage3.py\", line 41, in require_pass\n    error=ValueError('PREFLIGHT_NONPASS:'+','.join(bad));error.checks=checks;raise error\n                                                                             ^^^^^^^^^^^\nValueError: PREFLIGHT_NONPASS:one_particle\n",
+  "failed_checks": {
+    "one_particle": {
+      "spectral_norm": 2.376341682004808e-13,
+      "frobenius_norm": 3.375282199986437e-13,
+      "maximum_entry": 2.311661159050848e-13,
+      "scale": 1.0000000000000002,
+      "tolerance": 2.8421709430404064e-14,
+      "pass_threshold": 7.105427357601016e-15,
+      "fail_threshold": 1.1368683772161626e-13,
+      "status": "FAIL"
+    },
+    "actual_adjoint": {
+      "spectral_norm": 1.14439169963056e-16,
+      "frobenius_norm": 6.509999111078367e-16,
+      "maximum_entry": 1.1102230246251565e-16,
+      "scale": 1.0000000000000007,
+      "tolerance": 9.094947017729805e-13,
+      "pass_threshold": 2.2737367544324514e-13,
+      "fail_threshold": 3.637978807091922e-12,
+      "status": "PASS"
+    },
+    "inverse_composition": {
+      "spectral_norm": 2.4262497761429123e-16,
+      "frobenius_norm": 1.8409995328633503e-15,
+      "maximum_entry": 2.220446049250313e-16,
+      "scale": 1.0000000000000009,
+      "tolerance": 9.094947017729807e-13,
+      "pass_threshold": 2.273736754432452e-13,
+      "fail_threshold": 3.637978807091923e-12,
+      "status": "PASS"
+    },
+    "unitarity": {
+      "spectral_norm": 2.4262497761429074e-16,
+      "frobenius_norm": 1.7712335510413729e-15,
+      "maximum_entry": 2.220446049250313e-16,
+      "scale": 1.0000000000000013,
+      "tolerance": 9.094947017729811e-13,
+      "pass_threshold": 2.273736754432453e-13,
+      "fail_threshold": 3.6379788070919246e-12,
+      "status": "PASS"
+    },
+    "vacuum_leakage": {
+      "spectral_norm": 0.0,
+      "frobenius_norm": 0.0,
+      "maximum_entry": 0.0,
+      "scale": 1.0,
+      "tolerance": 9.0949470177298e-13,
+      "pass_threshold": 2.27373675443245e-13,
+      "fail_threshold": 3.63797880709192e-12,
+      "status": "PASS"
+    }
+  },
+  "operations": {
+    "T_eigendecompositions": 1,
+    "native_basis_lowerings": 1,
+    "native_operator_evaluations": 2
+  },
+  "workers_joined": true,
+  "elapsed_seconds": 2.7959773410111666
+}

@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：共通basis preflightでFAIL・価格未取得
+
+[停止報告・数値・SOURCE・件数](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run01/REPORT.md)。固定H4/案A/T.8/S2/q8/r4/K4、Givens native共通保持basisのone-particle差2.376e-13が事前固定d8基準でFAIL。他4 basis検査PASS。保持指数・sampling・trajectory・価格compileは未到達、母平均/N/G未評価。科学1batch・retry0、人工13PASS。旧証拠/STOPを保全し、`STOP_STAGE3_PREFLIGHT_OR_EXECUTION_FAILURE_NO_RETRY`、公開照合後停止。
+
 ## 2026-11-02 H4 P3 Stage 2：matched nominal平均・B
 
 [限定結果・独立辞書・6信号・精度・STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/REPORT.md)。H4/案A/T.8/S2/q8/r4/K4/full256。preflight57＋closure5はengineering PASS、Pauli/DF nominal点差3.77e-15、B39.12591/34.52800。outer両軸は解像、finite両方式・両軸はUNRESOLVED。科学1batch/6信号/2normalization、人工19PASS。実効law・native回路・N/C/G未実施、旧STOP保全。`STOP_STAGE2_UNRESOLVED_COMPONENTS`、公開照合後停止。
