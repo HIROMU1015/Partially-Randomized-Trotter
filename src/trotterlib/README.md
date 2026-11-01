@@ -1,3 +1,7 @@
+## H4 P3 独立価格cohort
+
+[`matched_partition_price_mean.py`](matched_partition_price_mean.py)：保存QPY基底の復元、Full-only合成、独立cohort価格統計。[固定実行範囲](../../docs/research/h4_p3_price_confirmation_execution_20261102.md)。
+
 ## 2026-11-02 H4 P3 Stage 3：Givens数値安定化
 
 `stable_gaussian_basis.py`：[既存数保存Givensのexact-zero/atan2安定化](../../docs/research/h4_p3_stage3_stable_basis_recovery_20261102.md)。RZ/XXPlusYY・U.T・消去順を維持するproject内variant。元library/旧kernelは保全する。

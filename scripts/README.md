@@ -1,3 +1,7 @@
+## H4 P3 独立価格確認
+
+[`run_h4_p3_price_confirmation.py`](run_h4_p3_price_confirmation.py)：保存nativeを再利用し、新32本/arm・Full128 compileと平均/SE/共分散を取得する。[実行範囲とSTOP](../docs/research/h4_p3_price_confirmation_execution_20261102.md)。
+
 ## H4 P3 Stage 3：保存13件のprocess回復
 
 [`recover_h4_p3_stage3_process.py`](recover_h4_p3_stage3_process.py)はrun02保存QPYの未取得13件のみを新processでcompileし、旧23価格を継承する。[固定範囲・STOP](../docs/research/h4_p3_stage3_process_recovery_20261102.md)。

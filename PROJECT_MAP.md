@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3：独立価格確認32本/arm
+
+[保存native再利用・Full64/128 compile・統計・STOP](docs/research/h4_p3_price_confirmation_execution_20261102.md)。承認済み追加価格範囲。旧pilotをpoolせず、新N/G・Stage 4なし。
+
 ## 2026-11-02 H4 P3 Stage 3後：追加価格とStage 4の非実行設計
 
 [新32本/arm・Full128価格の案、再利用・統計・Stage 4接続](docs/research/h4_p3_poststage3_cost_and_stage4_design_20261102.md)。設計のみで科学call0。既存36価格/全STOPを保全し、追加sampling/compile/N/Gは未実行。

@@ -1,3 +1,7 @@
+## H4 P3 独立価格確認
+
+[新32 trajectory/arm・保存Gaussian・Full128価格](research/h4_p3_price_confirmation_execution_20261102.md)。adapter/runner/人工検査とSOURCE固定後の限定実行。
+
 ## H4 P3 Stage 3後の次作業案
 
 [独立価格確認とStage 4会計の非実行設計](research/h4_p3_poststage3_cost_and_stage4_design_20261102.md)。新32 trajectory/arm・Full128 compileを提案し、平均/SE・誤差会計の境界を具体化。今回の新科学処理0。
