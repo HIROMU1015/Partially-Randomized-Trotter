@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Reduced勾配の数値安定性・次pilot準備（2026-11-02）
+
+[原因切分け・人工比較・220 items PASS・限界](docs/research/research_c_j_u_gradient_stability_investigation_20261102.md)／[未承認1563-call案](docs/research/research_c_j_u_stable_contract_unapproved_20261102.json)。新entry `scripts/run_research_c_j_u_stable.py`、core `c_j_u_precision.py`/`c_j_u_stable.py`、専用pilot/tests、証拠 `artifacts/research_c_j_u_stability/2026-11-02/technical/`。既存solver/目的/PR gaugeを維持し、拡張精度残差と2回のrefinementを接続。最後のpairを元1e-6で判定する新しい数値pilotで、厳密gradient上界ではない。人工改善・未解決例/joint対照を保全、実H4 decode/新評価/最適化0、旧raw1879/SOURCE/旧STOP不変。別明示許可・fresh runまでmandatory STOP。以下は各時点の履歴。
+
 ## 研究C：実H4 reduced pilot・両armのgradient stability未資格（2026-11-02）
 
 [38/1051-call結果・全point・資格の限界](docs/research/research_c_j_u_reduced_execution_20261102.md)。SOURCEe1582a562を無変更で実行し38 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0・α=γ=.1。PRの共通head gauge数値条件と全inner J一次はPASSしたが、refinement U差はPR初期5.60584e-6、RC2未受理trial1で8.56926e-6となり固定1e-6を満たさず両REDUCED_GRADIENT_UNQUALIFIED。受理U更新0、外側性能・rebound回避は未判定。保持診断終点のDF予算は両PASS、qualified tail比較/下流/actual CAはnull。旧raw1825とSOURCE/STOPを保全、公開照合後mandatory STOP。以下は各時点の履歴。

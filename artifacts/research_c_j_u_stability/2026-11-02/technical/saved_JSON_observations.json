@@ -1,0 +1,130 @@
+{
+  "source_commit": "a4c0fcec7d03d72a34c0f304280c758a6fa2ae5c",
+  "scope": "Static copies of saved JSON diagnostic fields;no NPZ decode or new H4 numeric evaluation",
+  "rows": {
+    "pr": {
+      "envelope": [
+        {
+          "label": "0",
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "refinement_U_shift_l2": 5.605835029687368e-06,
+          "refinement_U_allowance": 1e-06,
+          "rigorous_gradient_error_bound": null,
+          "structure_admitted": true,
+          "structure_condition": "PR_only_universal_head_gauge"
+        }
+      ],
+      "inner_summary": [
+        {
+          "label": "0",
+          "solves": [
+            {
+              "method": "affine_residual_whitened_exact_Hessian_Newton_CG",
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully.",
+              "nit": 481,
+              "nfev": 785,
+              "njev": 785,
+              "nhev": 481
+            },
+            {
+              "method": "affine_residual_whitened_exact_Hessian_Newton_CG",
+              "success": true,
+              "status": 0,
+              "message": "Optimization terminated successfully.",
+              "nit": 2,
+              "nfev": 2,
+              "njev": 2,
+              "nhev": 2
+            }
+          ]
+        }
+      ],
+      "source_trace": "artifacts/research_c_j_u_reduced/2026-11-02/run01/pr/optimization_trace.jsonl"
+    },
+    "rc2": {
+      "envelope": [
+        {
+          "label": "0",
+          "status": "NUMERICAL_PILOT_ADMITTED",
+          "refinement_U_shift_l2": 2.1699547086015463e-07,
+          "refinement_U_allowance": 1e-06,
+          "rigorous_gradient_error_bound": null,
+          "structure_admitted": true,
+          "structure_condition": "RC2_positive_L2_unique"
+        },
+        {
+          "label": "1",
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "refinement_U_shift_l2": 8.56926032729875e-06,
+          "refinement_U_allowance": 1e-06,
+          "rigorous_gradient_error_bound": null,
+          "structure_admitted": true,
+          "structure_condition": "RC2_positive_L2_unique"
+        }
+      ],
+      "inner_summary": [
+        {
+          "label": "0",
+          "solves": [
+            {
+              "method": "augmented_lstsq_gelsd",
+              "success": true,
+              "status": 0,
+              "message": "LAPACK solve returned; independent stationarity decides qualification",
+              "rank": 80,
+              "linear_solves": 1,
+              "nfev": 0,
+              "njev": 0,
+              "nhev": 0,
+              "nit": 0
+            },
+            {
+              "method": "same_augmented_residual_correction_gelsd",
+              "success": true,
+              "status": 0,
+              "rank": 80,
+              "linear_solves": 1,
+              "correction_l2": 4.387314275206142e-11,
+              "nfev": 0,
+              "njev": 0,
+              "nhev": 0,
+              "nit": 0
+            }
+          ]
+        },
+        {
+          "label": "1",
+          "solves": [
+            {
+              "method": "augmented_lstsq_gelsd",
+              "success": true,
+              "status": 0,
+              "message": "LAPACK solve returned; independent stationarity decides qualification",
+              "rank": 80,
+              "linear_solves": 1,
+              "nfev": 0,
+              "njev": 0,
+              "nhev": 0,
+              "nit": 0
+            },
+            {
+              "method": "same_augmented_residual_correction_gelsd",
+              "success": true,
+              "status": 0,
+              "rank": 80,
+              "linear_solves": 1,
+              "correction_l2": 1.0388668335702429e-10,
+              "nfev": 0,
+              "njev": 0,
+              "nhev": 0,
+              "nit": 0
+            }
+          ]
+        }
+      ],
+      "source_trace": "artifacts/research_c_j_u_reduced/2026-11-02/run01/rc2/optimization_trace.jsonl"
+    }
+  }
+}
