@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：固定U LP・係数保持profileで50/50 PASS（2026-11-01）
+
+[数値資格・保持gate・全結果](docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。科学SOURCEc40f81281無変更、LP1回・50 COMPLETE・FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、PR通常CDF8/sector36/元順LD2、固定U/head0/1/tail2..7、h.1/s1/r128/K0。元全行列のdual/gap/guardを通り、λ .954543284658→.954432028127Ha（約.0117%減）。独立tensor・sector/full CAR・phase・DF予算・1h-step PF/K0保持PASS。旧optimizer未資格・厳密certificate/CA/shots/native/総資源nullは維持。Raw31/旧原本保全、公開照合後mandatory STOP。以下は準備・旧実行の履歴。
+
 ## 研究C：固定U LP・微小係数保持profileの技術準備（2026-11-01）
 
 [人工切り分け・104 test methods PASS](docs/research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)／[新しい未承認50-call](docs/research/research_c_fixed_u_tail_lp_numerics_contract_unapproved_20261101.json)。Entryはscripts/run_research_c_fixed_u_tail_lp_numerics.py、adapterはsrc/trottertracks/c_fixed_u_tail_lp_numerics.py、人工testはtests/management/test_research_c_fixed_u_tail_lp_numerics.py。small_matrix_value=1e-12と固定SciPy警告資格を追加し、元全行列・RHS・dual/gap/guard・旧SOURCEを維持。実H4 decode/LP/科学call0、SOURCE109/input12のpassiveのみ。旧UNRESOLVEDは未解決のまま、公開照合後mandatory STOP。

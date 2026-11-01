@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：固定U tail LP・50-call数値改善を確認（2026-11-01）
+
+[全gate・原結果・資格と限界](research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。SOURCEc40f81281無変更、LP1回/50 COMPLETE/FAIL0/retry-resume0。保存H4/CDF8/sector36/LD2/h.1/s1/r128/K0の固定U/head/full tail tensor LPで、λ約.0117%削減とtensor/CAR/phase/DF/PF-K0保持PASS。数値pilotで厳密LP/CA/総資源の証明ではない。旧UNRESOLVEDの原本と新raw31を保全し、公開照合後mandatory STOP。
+
 ## 研究C：固定U LPの人工数値診断・最小profile準備（2026-11-01）
 
 [技術報告・104人工/回帰PASS](research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)／[新しい未承認50-call](research/research_c_fixed_u_tail_lp_numerics_contract_unapproved_20261101.json)。人工固定Uで旧Optimal＋dual未資格を再現し、native係数保持閾値とSciPy1.14.1重複警告を切り分けた。全元等式・RHS・allowanceを維持し、近従属例は未資格のまま。実H4の原因確定・修復成功ではない。実H4評価0、旧raw945/旧SOURCE保全、公開照合後mandatory STOP。

@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：固定U LP係数保持profile・数値改善と全保持PASS（2026-11-01）
+
+[50-call科学結果・raw31・資格](docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。科学SOURCEc40f8128197177fd5ec2388cd306d89d36c3bd67無変更、LP1/50 COMPLETE/FAIL0/retry-resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36、元順LD2/head0/1/tail2..7、h.1/s1/r128/K0で固定U・tail tensor LPを限定実行。元全行列のdual残差9.88698e-12、gap2.55351e-15、相殺guard9.09238e-11で登録数値資格PASS。λ .954543284658→.954432028127Ha（約.0117%減）、tensor/CAR/phase/DF予算/1h-step PF-K0保持PASS。DF数値triangle bound1.89297e-8Haはengineering pilot、旧CDF optimizerは未資格。厳密LP/全law/CA/新候補shots/native/総資源は未資格/null。Local published numerical resultでCI/外部独立再現ではない。旧UNRESOLVED・raw/STOPを保全し、公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：固定U tail LP・solver Optimalでも独立最適性は未資格（2026-11-01）
 
 [結果・診断・STOP](docs/research/research_c_fixed_u_tail_preserving_lp_execution_20261101.md)／[raw11](artifacts/research_c_fixed_u_tail_lp/2026-11-01/run01/)。保存H4/1Å/STO-3G、PR通常number CDF8/sector36/元順LD2、head0/1・tail2..7、h.1/s1/r128/K0。SOURCE56a6acb8f無変更、LP1回、9/50 COMPLETE・call例外FAIL/retry/resume0。HiGHS success/status0/nit479、元λ.9545432846581517に対し未採用返却点λ1.1204135568304006。Primal equality2.039e-11はgate内だがdual equality7.8707/gap−6.542e-8/guard.001053が基準不適格でUNRESOLVED_LP。STOP.failed=falseは例外なしであり科学的PASSではない。新candidate・tensor/CAR/DF/PF-RTE/A等はNOT_RUN、改善不能/候補B移行/最適性/CAを認定しない。旧原本保全、公開後mandatory STOP。

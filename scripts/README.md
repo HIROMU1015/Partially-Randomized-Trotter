@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：数値profile LPを一度実行、全50 units完了（2026-11-01）
+
+[run_research_c_fixed_u_tail_lp_numerics.py](run_research_c_fixed_u_tail_lp_numerics.py)を固定SOURCEc40f81281から無変更で実行し、LP1回・50/50 COMPLETE、FAIL/retry/resume0。[結果・raw31・STOP](../docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。独立数値最適性と全保持gate PASS、λ約.0117%減の限定pilot。Fresh run01は消費済みで再起動しない。旧run/契約/原本を保全し、公開照合後mandatory STOP。以下の未承認表示は準備時の履歴。
+
 ## 研究C：固定U LP数値profile専用entry（2026-11-01）
 
 [run_research_c_fixed_u_tail_lp_numerics.py](run_research_c_fixed_u_tail_lp_numerics.py)は既定でpassive preflightのみ。[技術報告](../docs/research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)／[新しい未承認50-call](../docs/research/research_c_fixed_u_tail_lp_numerics_contract_unapproved_20261101.json)。旧executeを再利用し、LP1回にsmall_matrix_value=1e-12を適用、警告とrawを保存して元全行列の診断・保持gateへ接続。実H4未実行、旧run01再起動なし。別科学許可後だけfresh outputへ--execute、retry/resume0、公開照合後mandatory STOP。

@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：固定U LP・元全行列の数値資格と保持gate PASS（2026-11-01）
+
+[無変更SOURCE・50/50結果](../../docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。既存LP/executeとtask-local小係数profileを実行し、dual/gap/guard・tensor・一般K/CAR・head/phase・DF・1h-step PF/K0を全PASS。λ約.0117%減は保存H4/PR CDF8/LD2/s1/r128/K0の固定U問題に限る数値結果。旧SOURCE/STOP不変、新fit/native/shots0、公開後mandatory STOP。
+
 ## 研究C：固定U LPのtask-local数値profile（2026-11-01）
 
 [c_fixed_u_tail_lp_numerics.py](../trottertracks/c_fixed_u_tail_lp_numerics.py)が旧LP/executeを再利用し、専用process内の係数保持optionと固定版警告の資格付けだけを追加する。元SOURCE/行列/RHS/判定基準を変更せず、例外でもprofileを復帰。[技術報告・104人工/回帰PASS](../../docs/research/research_c_fixed_u_tail_lp_numerics_preparation_20261101.md)。実H4未評価、新しい50-call案は別途明示許可が必要。公開後mandatory STOP。
