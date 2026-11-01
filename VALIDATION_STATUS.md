@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：保存RC2／PR-tail・全26 PF/RTEセルが潜在適格（2026-11-01）
+
+[実行結果](docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)／[raw69件・STOP](artifacts/research_c_rc2_pr_stage_b/2026-11-01/run01/)。SOURCEd6b17b794固定、143/143 COMPLETE・FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、通常number CDF8/sector36/元順LD2、partial S2 δ=h=.1/s1/r128/K0・m0..12、own-DF ground oracle/準備除外。18 CAR／general-K、両tail/law/mass、3 ground/alias PASS。両arm全13round POTENTIALLY_FEASIBLE。m12のPF/RTE/AはRC2 .058425543/.052175025/8.42470113e-6、PR .067081099/.030054590/.864344018。両optimizer未収束を維持し、全law synthesis/implemented-law/CA/shots/総資源は未資格・null。Local numerical pilotでCI／外部独立再現や厳密enclosureではない。旧SOURCE/input/raw/failed STOP不変、公開照合後mandatory STOP。
+
 ## 研究C：保存結果のJSON exportを復旧、科学的未資格は継続（2026-11-01）
 
 [修復報告](docs/research/research_c_common_convergence_export_repair_20261101.md)／[新result/STOP](artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/)。NumPy scalarとpartial出力経路を独立adapterで修正、新15＋回帰25＝40 PASS。SOURCE47固定後、保存JSONの元decideを1回だけ再集計してvalid JSONを保存。追加fit/optimizer/NPZ decode/新objective-gradient-operator0、旧SOURCE44/raw37/failed STOP/旧213 blobs不変。元25 unitsは保持し修復1 unitを別計上。結果はONE_OR_BOTH_UNQUALIFIED、DF予算両PASS・両一次基準未達であり、収束成功や性能／CA／資源優位の資格を付けない。公開照合後mandatory STOP。

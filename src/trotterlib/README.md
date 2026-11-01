@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：保存DF adapterのStage B限定検証完了（2026-11-01）
+
+[固定SOURCE・実行結果](../../docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)。Libraryとadapter無変更でCAR／general-K／ground／既存PF-RTEを再利用し、143-call・26セルを完了。新fit/native/shots0、両未収束という資格は不変。公開照合後mandatory STOP。
+
 ## 研究C：保存有限予算DFのStage B adapter（2026-11-01）
 
 [c_rc2_pr_stage_b.py](../trottertracks/c_rc2_pr_stage_b.py)は研究固有のidentity／保存資格／実行dispatchのみを追加する。共通libraryと旧SOURCEを変更せず、Stage Bのprepare_arm／CAR／general-K／PF-RTE／ground／feasibilityと修復済みJSON出力を呼ぶ。[88人工PASS・SOURCE74・未承認143-call](../../docs/research/research_c_rc2_pr_stage_b_preparation_20261101.md)。DF予算PASSとoptimizer未資格を分離し、実H4評価前でmandatory STOP。

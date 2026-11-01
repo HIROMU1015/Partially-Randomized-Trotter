@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：保存RC2／PR-tailのStage B実行結果（2026-11-01）
+
+[143-call・26セル・全gate・比較の限界](research/research_c_rc2_pr_stage_b_execution_20261101.md)。両13roundが潜在適格。PRの大きいA、増えるPF誤差、round依存の補正RTE誤差を分離。未収束・全law/law/CA/総資源の未資格を維持し、公開照合後mandatory STOP。
+
 ## 研究C：共通予算RC2／PR-tailのStage B最小準備（2026-11-01）
 
 [技術報告・Q1〜Q10](research/research_c_rc2_pr_stage_b_preparation_20261101.md)／[未承認143-call契約](research/research_c_rc2_pr_stage_b_contract_unapproved_20261101.json)。同一M4政策で新保存2終点のPF/RTE/Aを独立評価する経路。人工88 PASS・passive preflight PASS、実分子decode/科学call0。未収束・合成/law/CA/総資源の資格を昇格せず、公開照合後mandatory STOP。

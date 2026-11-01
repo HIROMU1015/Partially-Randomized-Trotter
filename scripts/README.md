@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：保存2終点のStage B entryを一度実行（2026-11-01）
+
+[run_research_c_rc2_pr_stage_b.py](run_research_c_rc2_pr_stage_b.py)をSOURCEd6b17b794から無変更で実行し143/143 COMPLETE、FAIL/retry/resume0。[全26セル・結果・STOP](../docs/research/research_c_rc2_pr_stage_b_execution_20261101.md)。消費済みrun01を再起動せず、shots/native/Stage Cへ自動進行しない。公開照合後mandatory STOP。
+
 ## 研究C：保存RC2／PRのStage B専用entry（2026-11-01）
 
 [run_research_c_rc2_pr_stage_b.py](run_research_c_rc2_pr_stage_b.py)は既定でhash/header/JSON/package preflightだけを行う。別科学許可後の--executeのみ、新保存2終点のPF/RTE/Aを2候補×13round・最大143 unitsで評価する。[技術報告・未承認契約](../docs/research/research_c_rc2_pr_stage_b_preparation_20261101.md)。旧runnerの再開、fit/native/shotsは行わず、今回の実H4科学call0、mandatory STOP。
