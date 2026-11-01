@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：実H4 reduced pilot・両armのgradient stability未資格（2026-11-02）
+
+[38/1051-call結果・全point・資格の限界](../../docs/research/research_c_j_u_reduced_execution_20261102.md)。SOURCEe1582a562を無変更で実行し38 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2・同元qualified x0・α=γ=.1。PRの共通head gauge数値条件と全inner J一次はPASSしたが、refinement U差はPR初期5.60584e-6、RC2未受理trial1で8.56926e-6となり固定1e-6を満たさず両REDUCED_GRADIENT_UNQUALIFIED。受理U更新0、外側性能・rebound回避は未判定。保持診断終点のDF予算は両PASS、qualified tail比較/下流/actual CAはnull。旧raw1825とSOURCE/STOPを保全、公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：J/U結合を扱うreduced objectiveの技術準備（2026-11-02）
 
 [数学・再利用・人工186 items PASS・限界](../../docs/research/research_c_j_u_coupled_reduced_objective_preparation_20261102.md)／[未承認1051-call](../../docs/research/research_c_j_u_reduced_contract_unapproved_20261102.json)。新entry `scripts/run_research_c_j_u_reduced.py`、core/pilot `src/trottertracks/c_j_u_reduced*.py`、人工tests `tests/management/test_research_c_j_u_reduced*.py`、証拠 `artifacts/research_c_j_u_reduced/2026-11-02/technical/`。RC2一意な内側解とPRの共通head gauge条件を使い、全trialでJをsolve・再精密化する。追加null/inner未達は未資格STOP、refinement一致は厳密gradient上界ではない。実H4 decode/再解析/最適化/科学call0、旧raw1825保全、別明示許可までmandatory STOP。以下は各時点の履歴。
