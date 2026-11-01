@@ -1,3 +1,7 @@
+## H4 P3 Stage 4会計
+
+[`run_h4_p3_stage4_accounting.py`](run_h4_p3_stage4_accounting.py)：保存JSONだけから10行/20軸の条件付き会計。[範囲・SOURCE・STOP](../docs/research/h4_p3_stage4_execution_20261102.md)。
+
 ## H4 P3 独立価格確認
 
 [`run_h4_p3_price_confirmation.py`](run_h4_p3_price_confirmation.py)：保存nativeを再利用し、新32本/arm・Full128 compileと平均/SE/共分散を取得する。[実行範囲とSTOP](../docs/research/h4_p3_price_confirmation_execution_20261102.md)。

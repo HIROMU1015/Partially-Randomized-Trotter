@@ -1,3 +1,7 @@
+## H4 P3 Stage 4：条件付きscalar会計
+
+[実装・検証・固定範囲](research/h4_p3_stage4_execution_20261102.md)。既存shot関数と保存nominal/reference・32価格の接続。
+
 ## H4 P3 Stage 4：保存結果の条件付き会計案
 
 [固定入力8件・5精度・N/G/SE・scalar丸め・STOP](research/h4_p3_stage4_conditional_accounting_contract_20261102.md)。今回は静的接続確認と文書のみ。新N/G・sampling/compileは未実行。

@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 4：条件付き会計の限定実行
+
+[承認済みscalar adapter/runner・人工検査・STOP](docs/research/h4_p3_stage4_execution_20261102.md)。保存8JSONのみ、2方式×5精度。新sampling/compile/referenceなし。
+
 ## 2026-11-02 H4 P3 Stage 4：条件付き会計の非実行案
 
 [5精度・M_B/M_C・bias/B上界・共分散・N/Gの限定実行案](docs/research/h4_p3_stage4_conditional_accounting_contract_20261102.md)。保存結果だけを使う新解析の準備。実行未承認、科学call0、旧STOP維持。

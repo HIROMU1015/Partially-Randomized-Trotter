@@ -1,3 +1,7 @@
+## H4 P3 Stage 4 scalar kernel
+
+[`matched_partition_stage4.py`](matched_partition_stage4.py)：nominal/reference直接bias、B上界候補、既存Hoeffding会計とscalar端点、価格共分散。[限定実行](../../docs/research/h4_p3_stage4_execution_20261102.md)。
+
 ## H4 P3 独立価格cohort
 
 [`matched_partition_price_mean.py`](matched_partition_price_mean.py)：保存QPY基底の復元、Full-only合成、独立cohort価格統計。[固定実行範囲](../../docs/research/h4_p3_price_confirmation_execution_20261102.md)。
