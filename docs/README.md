@@ -1,3 +1,7 @@
+## H4 P3 Stage 4：保存結果の条件付き会計案
+
+[固定入力8件・5精度・N/G/SE・scalar丸め・STOP](research/h4_p3_stage4_conditional_accounting_contract_20261102.md)。今回は静的接続確認と文書のみ。新N/G・sampling/compileは未実行。
+
 ## H4 P3 独立価格確認
 
 [新32 trajectory/arm・保存Gaussian・Full128価格](research/h4_p3_price_confirmation_execution_20261102.md)。adapter/runner/人工検査とSOURCE固定後の限定実行。
