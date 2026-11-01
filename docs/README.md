@@ -1,3 +1,7 @@
+## H4 P3 Stage 3：13件限定回復
+
+[process分離・保存QPY・36価格完成の固定範囲](research/h4_p3_stage3_process_recovery_20261102.md)。新sampling/native構築・旧23価格の再compileなし。
+
 ## 2026-11-02 H4 P3 Stage 3：Givens数値安定化
 
 [旧FAILを保持した技術修正と同条件run02](research/h4_p3_stage3_stable_basis_recovery_20261102.md)。数値政策の緩和・共有library変更・自動retryなし。

@@ -1,3 +1,7 @@
+## H4 P3 Stage 3：保存13件のprocess回復
+
+[`recover_h4_p3_stage3_process.py`](recover_h4_p3_stage3_process.py)はrun02保存QPYの未取得13件のみを新processでcompileし、旧23価格を継承する。[固定範囲・STOP](../docs/research/h4_p3_stage3_process_recovery_20261102.md)。
+
 ## 2026-11-02 H4 P3 Stage 3：Givens数値安定化
 
 `run_h4_p3_stage3_stable_basis.py`：[旧runner再利用・project内lowering差替え・run02](../docs/research/h4_p3_stage3_stable_basis_recovery_20261102.md)。ユーザーの追加実行指示に対応し、run01/旧STOPを保持。閾値・tuple・seed・compilerを変更しない。

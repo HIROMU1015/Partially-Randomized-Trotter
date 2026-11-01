@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：13件限定process回復
+
+[保存input QPYの13件限定compile・23件再利用・36価格完成](docs/research/h4_p3_stage3_process_recovery_20261102.md)。spawnで1 target/process、旧STOP保全、新sampling/native再生成なし。
+
 ## 2026-11-02 H4 P3 Stage 3：Givens数値安定化の新attempt
 
 [旧FAIL保全・project内Givens修正・固定条件/閾値を維持したrun02](docs/research/h4_p3_stage3_stable_basis_recovery_20261102.md)。旧runner/kernelを再利用し、共有libraryは変更しない。新SOURCE固定後のユーザー指示による追加attempt1回だけ。
