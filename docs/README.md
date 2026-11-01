@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：PR-only reduced・初回trialのstability未資格STOP（2026-11-02）
+
+[18/54-call結果・資格とcorrectnessの区別](research/research_c_pr_reduced_limited_execution_20261102.md)。固定SOURCEb2e5ab4d5/54-call契約を無変更で一度実行し18 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。初期点はadmission PASS、最初の未受理trialはJ/rank-nullspace PASSだがlatest-pair U勾配差7.31089e-6>1e-6でREDUCED_GRADIENT_UNQUALIFIED。受理U更新0、distinct U点2/inner6/refinement4/outer1。Raw precision loss2件を保持。旧trial2未到達、DF予算/PR性能/qualified比較null、旧raw2401/SOURCE/STOP保全、新raw22。公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：PR-only reduced限定検証・54-call技術準備（2026-11-02）
 
 [接続・226人工/回帰PASS・未資格の区別]research/research_c_pr_reduced_limited_preparation_20261102.md)／[未承認54-call契約]research/research_c_pr_reduced_limited_contract_unapproved_20261102.json)。既存opt-in PR inner＋2 refinement/独立state/rank-nullspaceを再利用し、raw flag・J・stability・admissionを別記する限定entryを追加。次案は保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、original qualified J/U開始、受理U更新≤2/distinct U点≤8。実H4 decode/新科学call0、旧raw2401/SOURCE/STOP不変。別明示許可・fresh runまでmandatory STOP。以下は各時点の履歴。
