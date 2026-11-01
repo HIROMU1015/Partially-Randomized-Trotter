@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：共通収束25-callの終了値とJSON技術STOP（2026-11-01）
+
+[2-fit・一次基準未達・不具合・保全](research/research_c_common_convergence_execution_20261101.md)／[raw37件・failed STOP](../artifacts/research_c_common_convergence/2026-11-01/run01/)。両数値評価は終了したが、numpy.bool_を最終JSONへ出す処理が失敗。共通収束後の比較資格は未取得、未収束λを資源優位へ昇格しない。SOURCE/partial/STOPを変更せず公開、retry/resume0、mandatory STOP。
+
 ## 研究C：共通停止・独立再fit比較の技術準備（2026-11-01）
 
 [技術報告・二つの一次基準・公平性・148人工PASS](research/research_c_common_convergence_policy_design_20261101.md)／[未承認最大2-fit・25-call契約](research/research_c_common_convergence_contract_unapproved_20261101.json)。固定strengthと元x0を維持し、solver success／事後基準／物理DF予算を分ける。実H4の新計算・再解析は0、旧SOURCE/raw/STOPを保全しmandatory STOP。

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：共通収束2-fit・25計算完了後、JSON出力で技術STOP（2026-11-01）
+
+[終了値・未資格・serialization不具合・原本保全](docs/research/research_c_common_convergence_execution_20261101.md)。固定SOURCEe2f7dfd44で新fit2／25 COMPLETE、数値gate FAIL0、最終JSON出力FAIL、親STOP.failed=true、retry/resume0。保存直鎖H4/1Å/STO-3G、CDF8/sector36/元順LD2、同x0・α=γ=.1の両armは評価回数上限で終了し二つの一次基準未達。λ RC2=8.54568712823／PR=.954543284658 Haは未収束の記述値、共通収束後の比較は未成立。Partial result.jsonとraw37件を保全し、追加fit／集計call再実行／Stage B-Cへ進まずmandatory STOP。以下は準備時の履歴。
+
 ## 研究C：RC2／PR共通収束政策・最大2-fitの技術準備（2026-11-01）
 
 [数理・options・資格・Q1〜Q10](docs/research/research_c_common_convergence_policy_design_20261101.md)／[未承認25-call契約](docs/research/research_c_common_convergence_contract_unapproved_20261101.json)。同じ元x0・α=γ=.1で両armを独立fitし、native gradient∞／正規化identity-null投影とDF予算を分離する準備。旧loss/codec/fitter無変更、新25＋回帰123＝148人工PASS、SOURCE44/input14の両環境passive preflight PASS。実H4 decode/fit/科学call0、future run01未作成。Stage Bは再利用経路のみ、公開照合後mandatory STOP。

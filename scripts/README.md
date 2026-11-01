@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：共通収束entryは25-call後に最終JSON出力STOP（2026-11-01）
+
+[実行履歴・両終点・技術STOP](../docs/research/research_c_common_convergence_execution_20261101.md)。SOURCEe2f7dfd44を無変更で一度実行、新2 fit・25 COMPLETE。両一次資格未達、最終serialization TypeErrorとpartial再open失敗を保全。消費済みrun01を再起動せず、retry/resume0、公開照合後mandatory STOP。以下の準備表示は履歴。
+
 ## 研究C：共通収束のpaired-fit独立entry（2026-11-01）
 
 [run_research_c_common_convergence.py](run_research_c_common_convergence.py)／[政策・SOURCE・未承認25-call](../docs/research/research_c_common_convergence_policy_design_20261101.md)。既定はevaluation byte/env preflight、fit環境確認は--check-fit-environmentでpassive。別明示科学許可後だけ、同じ元x0からRC2/PR各新1 fitと独立終点／物理DF予算／λを評価しSTOPする。旧runner再起動やwarm-startはしない。今回科学call0、人工148 PASS。

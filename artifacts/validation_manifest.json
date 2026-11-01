@@ -1695,6 +1695,76 @@
   },
   "result_sets": [
     {
+      "id": "research_c_common_convergence_execution_20261101",
+      "status": "TECHNICAL_FAILURE_FINAL_JSON_EXPORT",
+      "report": "docs/research/research_c_common_convergence_execution_20261101.md",
+      "artifacts": "artifacts/research_c_common_convergence/2026-11-01/run01",
+      "scientific_SOURCE_commit": "e2f7dfd44357510d54ab9c6c9c5032e0072ab376",
+      "implementation_commit": "38c2bc02b9578ab6ab7734bb61899b6cbc1733e2",
+      "scope": "Saved linear H4/1Angstrom/STO-3G,number CDF8,sector36,original LD2,same original x0,alpha=gamma=.1,common L-BFGS-B policy; no PF evolution",
+      "source_files": 44,
+      "saved_input_files": 14,
+      "scientific_units": 25,
+      "COMPLETE": 25,
+      "call_FAIL": 0,
+      "numerical_correctness_FAIL": 0,
+      "final_output_failure": true,
+      "raw_result_json_valid": false,
+      "partial_result_status": "ONE_OR_BOTH_UNQUALIFIED",
+      "parent_STOP_failed": true,
+      "new_fits": 2,
+      "optimizer_invocations": 2,
+      "retry": 0,
+      "resume": 0,
+      "optimizers": {
+        "rc2": {
+          "success": false,
+          "status": 1,
+          "message": "STOP: TOTAL NO. of f AND g EVALUATIONS EXCEEDS LIMIT",
+          "fun": 0.022324453695515206,
+          "raw_fun_repr": "0.022324453695515206",
+          "nit": 14151,
+          "nfev": 15001,
+          "njev": 15001
+        },
+        "pr": {
+          "success": false,
+          "status": 1,
+          "message": "STOP: TOTAL NO. of f AND g EVALUATIONS EXCEEDS LIMIT",
+          "fun": 0.018666104007351476,
+          "raw_fun_repr": "0.018666104007351476",
+          "nit": 13559,
+          "nfev": 15001,
+          "njev": 15001
+        }
+      },
+      "parameter_gradient_infinity": {
+        "rc2": 0.03752730461485592,
+        "pr": 0.3785060501566606
+      },
+      "identity_tangent_norm": {
+        "rc2": 0.005394362795860612,
+        "pr": 0.036141983071728855
+      },
+      "convergence_criteria_met": {
+        "rc2": false,
+        "pr": false
+      },
+      "exact_tail_mass_Ha": {
+        "rc2": 8.545687128230103,
+        "pr": 0.9545432846581517
+      },
+      "DF_budget_observation": "Both PASS follows original recorded non-budget-failure comparison branch; not rerun after STOP",
+      "qualified_tail_comparison": null,
+      "scientific_resource_verdict": null,
+      "error": "numpy.bool_ JSON serialization after COMPLETE comparison; secondary FileExistsError opening partial result",
+      "synthetic_tests_rechecked": 25,
+      "raw_artifacts": 37,
+      "protected_old_git_blobs": 170,
+      "old_SOURCE_input_raw_and_STOP_unchanged": true,
+      "mandatory_stop": true
+    },
+    {
       "id": "research_c_regularization_first_order_execution_20261101",
       "status": "FIRST_ORDER_DIAGNOSTIC_COMPLETE_BOTH_TERMINALS_OUTSIDE_GTOL",
       "report": "docs/research/research_c_regularization_first_order_execution_20261101.md",

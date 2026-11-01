@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：共通収束は両未達、最終JSON serializationで技術STOP（2026-11-01）
+
+[結果・数値資格と出力不具合](docs/research/research_c_common_convergence_execution_20261101.md)／[原本37件](artifacts/research_c_common_convergence/2026-11-01/run01/)。SOURCEe2f7dfd44無変更、新2 fit・25 COMPLETE、数値gate FAIL0、最終出力TypeError＋二次FileExistsError、親STOP.failed=true。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、同元x0・固定α=γ=.1。両optimizerはnfev15001上限終了、gradient∞ .0375273/.378506、identity-null norm .00539436/.0361420で両基準未達。DF予算は元の比較分岐から両PASS、資格付きtail比較は未成立。Partial result.jsonは不正JSON原本として保持し、成功した集計ファイルとは扱わない。retry/resume0、SOURCE44/input14と旧170 blobs不変。実行時人工25 PASS、追加科学計算なし、公開照合後mandatory STOP。
+
 ## 研究C：保存一次診断・両終点のengineering gradient基準未達（2026-11-01）
 
 [結果と資格](docs/research/research_c_regularization_first_order_execution_20261101.md)／[raw27件・14 calls・STOP](artifacts/research_c_regularization_first_order/2026-11-01/run01/)。SOURCE0996a5abb無変更、14 COMPLETE/FAIL0、fit/optimizer/retry/resume0。保存直鎖H4/1Å/STO-3G、CDF8/sector36・元順LD2・同x0とRC2/PR保存終点、固定α=γ=.1。3点のJ exact/U maxabs差0、9 value-gradientと解析L2係数・直接U penalty0のgate PASS。自己終点gradient∞ .4222446601/1.4825504139は登録gtol1e-5未達、RC2終点で既知tensor-null方向のL2下降成分を観測。これは数値一次診断であり、厳密enclosure/大域最適/最適強度/歴史的停止原因/CA/資源優位ではない。旧DF予算・結果・STOP不変、実行時人工13 PASS、公開照合後mandatory STOP。

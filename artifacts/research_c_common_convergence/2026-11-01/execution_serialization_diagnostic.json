@@ -1,0 +1,10 @@
+{
+  "scope": "ARTIFICIAL_SCALARS_ONLY_NO_H4_ARRAYS",
+  "reproduced_primary": "Object of type bool_ is not JSON serializable",
+  "reproduced_secondary": "FileExistsError",
+  "synthetic_budget_type": "bool_",
+  "cause": "rank_assessment guard is numpy.float64; comparison yields numpy.bool_; plain-float mocks did not cover this boundary.",
+  "required_correction": "Normalize boolean scalars at JSON boundary and avoid re-opening a partial result with exclusive-create in exception handler. Preserve consumed run01 and SOURCE; no science retry.",
+  "molecular_array_decodes": 0,
+  "new_scientific_calls": 0
+}
