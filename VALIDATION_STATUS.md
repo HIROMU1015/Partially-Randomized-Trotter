@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 2：matched nominal平均・B
+
+[限定結果・独立辞書・6信号・精度・STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/REPORT.md)。H4/案A/T.8/S2/q8/r4/K4/full256。preflight57＋closure5はengineering PASS、Pauli/DF nominal点差3.77e-15、B39.12591/34.52800。outer両軸は解像、finite両方式・両軸はUNRESOLVED。科学1batch/6信号/2normalization、人工19PASS。実効law・native回路・N/C/G未実施、旧STOP保全。`STOP_STAGE2_UNRESOLVED_COMPONENTS`、公開照合後停止。
+
 文書索引：[Pauli-JW H2/H4/H6の最新総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)。文書転記・出典への案内であり、以下の科学status・certificate未受理を更新しない。既存manifestとvalidatorのschema不整合は[保守報告](docs/maintenance/pauli_jw_repository_integration_20261026.md)に記載。
 
 ## 2026-10-25 H4 Pauli B0/B0I prefix/q比較

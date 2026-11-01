@@ -1,0 +1,250 @@
+{
+  "commit": "4bfbbaad1f8178077489bf06b085377256d6fb80",
+  "base": "495ed110ad8379663145791b788a63b64f05eedd",
+  "code_sha256": {
+    "scripts/run_h4_p3_stage2.py": "458eed49a96297829114db5ab5a17bb15701a749248d7c5f50c6f5819ba8f23f",
+    "src/trotterlib/matched_partition_stage2.py": "9e9f21ad766d08bf46fe643b6409f9cdd01c8bd248921d0add935e5902d3db51",
+    "tests/test_matched_partition_stage2.py": "9f12619f4f171a8509a97a5928430aee1297ad4443ba9711edc0bb9e72011b73",
+    "docs/research/h4_p3_stage2_nominal_validation_20261102.md": "a435dd53feb4070481f5c42d4013c843b94426797deee6aecf478dfdebeec094",
+    "scripts/run_h4_p3_stage1.py": "d3bb4a97988ff333531633b63319af5aadb63ec8b4f61402861f2ea1566eda67",
+    "src/trotterlib/matched_partition_stage1.py": "9bcdfcdb5bae59fac357fea5e836e02a8c6eca75eb11be5b66af2cb36c17431b",
+    "tests/test_matched_partition_stage1.py": "f935132560cdfbb50538363a8d6198bcb1a87d75134d92396182c3679b56c9d2",
+    "docs/research/h4_p3_stage1_operator_validation_20261102.md": "fe42a9175c5494e7ccc10abfc8686e3d52a8acf2663542e40c162e6b1babbfea",
+    "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+    "src/trotterlib/pauli_signal_adapter.py": "bbd8d0d3de3248c71f16bd86679c9673828b83dc435870da946c425ee199f95e",
+    "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+    "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6",
+    "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+    "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+    "src/trotterlib/pauli_mechanism_bias.py": "7512781a33a875d2ba906b511f5afefca069bb1ec01b67861093239caec614c3",
+    "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51"
+  },
+  "runtime": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "openfermion": "1.6.1"
+  },
+  "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "correction_SOURCE": {
+    "path": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/openfermion/circuits/low_rank.py",
+    "sha256": "de74fb802550417788362845515ed9e56a180e4ff85ab21ab43ba8445156dbbe"
+  },
+  "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+  "execution_JST": "2026-11-02T02:44:34.007023+09:00",
+  "condition": {
+    "molecule": "linear H4",
+    "distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "multiplicity": 1,
+    "system_qubits": 8,
+    "dimension": 256,
+    "DF": "tol-only 1e-8, saved rank10",
+    "split": "A: T_eff / V_square, residual identity extracted",
+    "T_exact": "3602879701896397/4503599627370496",
+    "delta_exact": "3602879701896397/36028797018963968",
+    "h_exact": "3602879701896397/144115188075855872",
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "degree": 5,
+    "arms": [
+      "M_B",
+      "M_C"
+    ]
+  },
+  "resources": {
+    "affinity_CPUs": 64,
+    "load": [
+      47.533203125,
+      40.97216796875,
+      37.00390625
+    ],
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "503658120 kB"
+    },
+    "DF_factor_workers": 10,
+    "OPENBLAS_NUM_THREADS": "1",
+    "reason": "small sparse/dense matrices, independent fragment workers; no shared settings changed"
+  },
+  "uncertainty": "contract section 7 engineering estimates; not rigorous certification",
+  "inputs": {
+    "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+    "files": {
+      "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf"
+      },
+      "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+      },
+      "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/pauli.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "49e2f0b86cba9933eee20a03a05934d950caafb5044401bca50d3aa79a518175"
+      },
+      "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "9ae8973b457cab26bb685a8fac9887dbc5e3be5db9059355822893d26cae2aa4"
+      },
+      "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_model.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "cc60f6dc3de885974cfe74ef822e49380edb6b9ca44777bf12e9654256cd322a"
+      },
+      "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_result.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "b63d3da01269b2706a3fe185658188779d24f665f057b91367ac7c9254a83245"
+      },
+      "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_result.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "612f646a233c6ecfa52d57f0c1bf969eb6cc940e2c60a691ca21a0c2276e7cb2"
+      },
+      "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/run01/signal_64.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "a8156ba7bebf8ca9ed2639bbdc74d9ce8ec8ba33f8fd890735cf9ae15d55cea6"
+      },
+      "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/input_binding.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "9458b317005cc17a7aacd508b6b3cd28eccd994b5b1f5bfb5d9fee2ff1639110"
+      },
+      "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/inputs.json": {
+        "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+        "sha256": "da86c8df2fe64d298967a48e26013d2f2daa3d2bd2cc1b667f404953ea4b7d67"
+      },
+      "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/REPORT.md": {
+        "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+        "sha256": "4e75f062cdcb66e65a08e1ba0e21e05f76d78c9874105cb7180a8a2d89bc1b9d"
+      },
+      "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/operator_comparisons.json": {
+        "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+        "sha256": "b7b158c6349659243298a7cac77ca2bf07e83e54788d5723746bc4f59b1f7c84"
+      },
+      "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/construction_paths.json": {
+        "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+        "sha256": "46b2fea7d631687dbbff430d72944a9a9e7633fabd20fec2b0f0d9847b45bd07"
+      },
+      "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/source_and_inputs.json": {
+        "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+        "sha256": "8dc388fdfd24eba358a26ec10553ae3b7877c438ebfb28f0c21f47702f92f53a"
+      },
+      "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/STOP.json": {
+        "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+        "sha256": "e44f5bfc12f51aa8ef03693c0e342d55431bd3f6d77af9d579ce60965f9e2e05"
+      }
+    },
+    "original_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+    "state_hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80",
+    "state_used_for": "six physical signals, exact saved nu once; no renormalization",
+    "stored_full_H_check": {
+      "PASS": true,
+      "error": 8.462237051574415e-15,
+      "tolerance": 1e-09
+    },
+    "DF_metadata": {
+      "SCF_converged": true,
+      "basis": "STO-3G",
+      "charge": 0,
+      "df_rank_actual": 10,
+      "df_rank_requested": null,
+      "df_tol_requested": 1e-08,
+      "df_truncation_value": 0.0,
+      "distance": 1.0,
+      "geometry": [
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            3.0
+          ]
+        ]
+      ],
+      "hermitized": true,
+      "hf_energy": -2.0985459369980077,
+      "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+      "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+      "molecule_type": 4,
+      "multiplicity": 1
+    },
+    "tensor_convention_verified": true,
+    "sector_indices": [
+      240,
+      216,
+      120,
+      228,
+      180,
+      204,
+      108,
+      156,
+      60,
+      210,
+      114,
+      90,
+      198,
+      102,
+      150,
+      54,
+      78,
+      30,
+      225,
+      177,
+      201,
+      105,
+      153,
+      57,
+      165,
+      141,
+      45,
+      195,
+      99,
+      147,
+      51,
+      75,
+      27,
+      135,
+      39,
+      15
+    ],
+    "source_code_sha256": {
+      "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+      "src/trotterlib/pauli_signal_adapter.py": "ad60912944e3d87aa2fd2bf0263e1d2c3ba1be4f11c0ab5525ade337727d33cf",
+      "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+      "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6"
+    },
+    "raw_norm_exact": "139984046386112801203518524734647603751956277672653015785565228589451076440261666494512381492855534829/139984046386112763159840142535527767382602843577165595931249318810236991948760059086304843329475444736",
+    "reference": "saved DF C RAW interval divided by exact nu once",
+    "contracts": {
+      "commit": "495ed110ad8379663145791b788a63b64f05eedd",
+      "files": {
+        "docs/research/h4_p3_stage2_nominal_signal_contract_20261102.md": "c9cf79d5d46cfe36c0cf645390409f3322499ac8f7ed6284b05189a5c34078e8",
+        "docs/research/h4_p3_stage2_execution_readiness_20261102.md": "a284e3c80558fb8b3faf12a334e8b805e0527001ef4426fd81801fb148103919"
+      }
+    }
+  }
+}
