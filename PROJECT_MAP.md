@@ -1,3 +1,7 @@
+## 2026-11-01 H6 Pauli P1：限定bias分離
+
+[固定4候補・6主要信号＋2整合検査の条件、code/tests、結果保存先](docs/research/h6_pauli_p1_bias_20261101.md)。P1のみ。新N/G・sampling・回路compileは範囲外。
+
 # リポジトリの現在の入口
 
 Pauli-JWの最新研究成果は[H2・H4・H6の総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)から読む。目的・手法・最新15条件・限界を体系化し、以下の実験履歴とは分離する。

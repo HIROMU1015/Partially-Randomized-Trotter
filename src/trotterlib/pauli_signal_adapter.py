@@ -235,6 +235,23 @@ class PauliSignalAdapter:
                     B0I_reason="nonidentity_Pauli_tail_has_zero_identity_coefficient")
 
 
+def paired_polynomial_action(tail, state, step_time, r, K, *, normalization=1.):
+    """Apply r paired-Taylor polynomials of degree K+1.
+
+    normalization=1 returns the corrected ideal polynomial, without evaluating
+    any RTE law. The legacy raw-mean caller supplies its finite-event norm.
+    """
+    out = np.asarray(state, dtype=complex).copy()
+    for _ in range(r):
+        term = out.copy()
+        result = out.copy()
+        for degree in range(1, K + 2):
+            term = (-1j * step_time / r / degree) * (tail @ term)
+            result += term
+        out = result / normalization
+    return out
+
+
 def sparse_mean_action(adapter, state, *, q):
     """Independent paired-polynomial mean; no sampled signal or dense U."""
     _, blocks, tail, scalar = adapter.operators()
@@ -244,13 +261,9 @@ def sparse_mean_action(adapter, state, *, q):
             out = expm_multiply(-.5j * adapter.step_time * op, out)
         if adapter.randomized:
             # Paired degrees 0..K+1 divided by the finite event L1 norm.
-            for _ in range(adapter.r):
-                term = out.copy()
-                result = out.copy()
-                for degree in range(1, adapter.K + 2):
-                    term = (-1j * adapter.step_time / adapter.r / degree) * (tail @ term)
-                    result += term
-                out = result / adapter.distribution.exact_finite_distribution
+            out = paired_polynomial_action(
+                tail, out, adapter.step_time, adapter.r, adapter.K,
+                normalization=adapter.distribution.exact_finite_distribution)
         for op in reversed(blocks):
             out = expm_multiply(-.5j * adapter.step_time * op, out)
         out *= np.exp(-1j * scalar * adapter.step_time)
