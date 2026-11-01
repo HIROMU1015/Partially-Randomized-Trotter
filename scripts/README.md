@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：完了済みfitのJSON専用復旧entry（2026-11-01）
+
+[run_research_c_common_convergence_export_repair.py](run_research_c_common_convergence_export_repair.py)／[修正・SOURCE・実行記録](../docs/research/research_c_common_convergence_export_repair_20261101.md)。既定はbyte/JSON preflight、--recover-savedは既存scalar集計だけでfit/NPZ decode/数値kernelのentryを持たない。修復1 unitで有効集計を保存しSTOP。旧25-call runnerや消費済み旧run01は再起動しない。
+
 ## 研究C：共通収束entryは25-call後に最終JSON出力STOP（2026-11-01）
 
 [実行履歴・両終点・技術STOP](../docs/research/research_c_common_convergence_execution_20261101.md)。SOURCEe2f7dfd44を無変更で一度実行、新2 fit・25 COMPLETE。両一次資格未達、最終serialization TypeErrorとpartial再open失敗を保全。消費済みrun01を再起動せず、retry/resume0、公開照合後mandatory STOP。以下の準備表示は履歴。

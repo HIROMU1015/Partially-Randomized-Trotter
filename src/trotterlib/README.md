@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：JSON exportの型変換・原本保全修正（2026-11-01）
+
+[独立JSON adapter](../trottertracks/c_common_convergence_export_repair.py)は旧library/sourceを変えず、NumPy scalar正規化、atomic/exclusive publishと例外経路を修正する。[40人工PASS・保存集計復旧](../../docs/research/research_c_common_convergence_export_repair_20261101.md)。追加fitや数値kernelはなく、旧partial/STOPを保持。科学的な両未資格を維持しmandatory STOP。
+
 ## 研究C：共通収束政策の最小adapter（2026-11-01）
 
 共通libraryは変更せず、[task-local options／一次診断](../trottertracks/c_common_convergence.py)と[paired接続](../trottertracks/c_common_convergence_pilot.py)をtrottertracksに追加した。旧ffsim loss/AD/fitter/codec、SectorCAR／一般K／guardを再利用する。[数理・人工148 PASS・未承認25-call](../../docs/research/research_c_common_convergence_policy_design_20261101.md)。実H4の新fit／再解析0、mandatory STOP。

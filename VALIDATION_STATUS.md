@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：保存結果のJSON exportを復旧、科学的未資格は継続（2026-11-01）
+
+[修復報告](docs/research/research_c_common_convergence_export_repair_20261101.md)／[新result/STOP](artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/)。NumPy scalarとpartial出力経路を独立adapterで修正、新15＋回帰25＝40 PASS。SOURCE47固定後、保存JSONの元decideを1回だけ再集計してvalid JSONを保存。追加fit/optimizer/NPZ decode/新objective-gradient-operator0、旧SOURCE44/raw37/failed STOP/旧213 blobs不変。元25 unitsは保持し修復1 unitを別計上。結果はONE_OR_BOTH_UNQUALIFIED、DF予算両PASS・両一次基準未達であり、収束成功や性能／CA／資源優位の資格を付けない。公開照合後mandatory STOP。
+
 ## 研究C：共通収束は両未達、最終JSON serializationで技術STOP（2026-11-01）
 
 [結果・数値資格と出力不具合](docs/research/research_c_common_convergence_execution_20261101.md)／[原本37件](artifacts/research_c_common_convergence/2026-11-01/run01/)。SOURCEe2f7dfd44無変更、新2 fit・25 COMPLETE、数値gate FAIL0、最終出力TypeError＋二次FileExistsError、親STOP.failed=true。保存H4/1Å/STO-3G、CDF8/sector36/元順LD2、同元x0・固定α=γ=.1。両optimizerはnfev15001上限終了、gradient∞ .0375273/.378506、identity-null norm .00539436/.0361420で両基準未達。DF予算は元の比較分岐から両PASS、資格付きtail比較は未成立。Partial result.jsonは不正JSON原本として保持し、成功した集計ファイルとは扱わない。retry/resume0、SOURCE44/input14と旧170 blobs不変。実行時人工25 PASS、追加科学計算なし、公開照合後mandatory STOP。

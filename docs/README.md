@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：JSON型変換・atomic出力修正と保存集計の復旧（2026-11-01）
+
+[技術修正・人工40 PASS・復旧](research/research_c_common_convergence_export_repair_20261101.md)／[valid result.json](../artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/result.json)。追加fitなし、保存scalar1 unitのみ。旧partial/failed STOPを保全し、両未収束という科学的判定を変えず出力だけ復旧。公開照合後mandatory STOP。
+
 ## 研究C：共通収束25-callの終了値とJSON技術STOP（2026-11-01）
 
 [2-fit・一次基準未達・不具合・保全](research/research_c_common_convergence_execution_20261101.md)／[raw37件・failed STOP](../artifacts/research_c_common_convergence/2026-11-01/run01/)。両数値評価は終了したが、numpy.bool_を最終JSONへ出す処理が失敗。共通収束後の比較資格は未取得、未収束λを資源優位へ昇格しない。SOURCE/partial/STOPを変更せず公開、retry/resume0、mandatory STOP。

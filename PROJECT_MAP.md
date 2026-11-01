@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：JSON出力を修正、保存scalarだけで集計復旧（2026-11-01）
+
+[修正・40人工PASS・復旧結果](docs/research/research_c_common_convergence_export_repair_20261101.md)／[有効result.json](artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/result.json)。旧SOURCE44/partial/raw37/failed STOPを保全し、独立adapterでNumPy scalar変換とatomic/exclusive出力・例外経路を修正。追加fit/optimizer/NPZ decode/新数値kernel0、保存scalar集計1 unitのみ。DF予算は両PASS、共通収束資格は両未達でONE_OR_BOTH_UNQUALIFIEDのまま。旧25＋修復1 unit、累計fit2。新runのSTOP成功と旧科学runの技術STOPを区別し、公開照合後mandatory STOP。
+
 ## 研究C：共通収束2-fit・25計算完了後、JSON出力で技術STOP（2026-11-01）
 
 [終了値・未資格・serialization不具合・原本保全](docs/research/research_c_common_convergence_execution_20261101.md)。固定SOURCEe2f7dfd44で新fit2／25 COMPLETE、数値gate FAIL0、最終JSON出力FAIL、親STOP.failed=true、retry/resume0。保存直鎖H4/1Å/STO-3G、CDF8/sector36/元順LD2、同x0・α=γ=.1の両armは評価回数上限で終了し二つの一次基準未達。λ RC2=8.54568712823／PR=.954543284658 Haは未収束の記述値、共通収束後の比較は未成立。Partial result.jsonとraw37件を保全し、追加fit／集計call再実行／Stage B-Cへ進まずmandatory STOP。以下は準備時の履歴。
