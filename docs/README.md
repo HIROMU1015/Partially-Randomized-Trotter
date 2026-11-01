@@ -2,6 +2,8 @@
 
 [固定4候補・6主要信号＋2整合検査の条件、code/tests、結果保存先](research/h6_pauli_p1_bias_20261101.md)。P1のみ。新N/G・sampling・回路compileは範囲外。
 
+[P1実行結果・SOURCE・未解像成分](../artifacts/pauli_pure_rte_mechanism_validation/2026-11-01/bias/REPORT.md)：8伝播完了、STOP_UNRESOLVED_COMPONENTS。追加科学実行なし。
+
 # 文書の現在の入口
 
 Pauli-JW研究は[科学的成果の総合資料](research/pauli_jw_resource_evaluation_summary.md)へ。個別報告・SOURCE・保存値の出典もそこから辿れる。

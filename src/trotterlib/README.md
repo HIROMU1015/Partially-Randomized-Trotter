@@ -2,6 +2,8 @@
 
 [固定4候補・6主要信号＋2整合検査の条件、code/tests、結果保存先](../../docs/research/h6_pauli_p1_bias_20261101.md)。P1のみ。新N/G・sampling・回路compileは範囲外。
 
+[P1実行結果・SOURCE・未解像成分](../../artifacts/pauli_pure_rte_mechanism_validation/2026-11-01/bias/REPORT.md)：8伝播完了、STOP_UNRESOLVED_COMPONENTS。追加科学実行なし。
+
 ## 2026-10-26 既存kernelのH2追加検証への再利用
 
 [H2純RTEの独立確認・event数拡張](../../docs/h2_pauli_rte_validation_20261026.md)。pauli_signal_adapter/rte、D2 control、tight L2、既存shot/paired統計を無変更で使用。追加接続はH2専用runnerに限定し、新アルゴリズム・全lawρ保証・正式certificateは追加しない。

@@ -2,6 +2,8 @@
 
 [固定4候補・6主要信号＋2整合検査の条件、code/tests、結果保存先](../docs/research/h6_pauli_p1_bias_20261101.md)。P1のみ。新N/G・sampling・回路compileは範囲外。
 
+[P1実行結果・SOURCE・未解像成分](../artifacts/pauli_pure_rte_mechanism_validation/2026-11-01/bias/REPORT.md)：8伝播完了、STOP_UNRESOLVED_COMPONENTS。追加科学実行なし。
+
 ## 2026-10-26 H2 純RTE追加検証
 
 `run_h2_pauli_rte_validation.py`：元H2 price_job/seed、target/shot会計、event-extension dispatchを再利用。H2専用SOURCE・Phase A保存N・Phase B限定law/target、96→192→384固定確認。完了STOPを再開しない。
