@@ -109,6 +109,17 @@ def test_flat_nonunique_PR_problem_keeps_original_objective_without_ridge():
     assert p.vg(np.array([.4, .4, 0.]))[0] > 0  # epsilon floor is not subtracted.
 
 
+def test_wide_metric_preserves_every_flat_direction():
+    spec = m.pr.Objective(8, 1, 7, 1., 1., .1)
+    p = m.Coefficients(np.zeros((1,)*4), np.ones((8, 1, 1)), spec)
+    raw = []
+    _, report = m.solve_j(p, np.zeros((8, 1, 1)), record=lambda *args: raw.append(args))
+    H = raw[0][1]['initial_inverse_metric']
+    assert H.shape == (8, 8) and np.linalg.eigvalsh(H).min() > 0
+    assert report['metric_directions_dropped'] == 0
+    assert report['stationarity']['status'] == 'MET'
+
+
 @pytest.mark.parametrize('n', [2, 6])
 def test_local_U_gradient_det_sign_pi_and_independent_finite_difference(n):
     g, J, U, spec = invented(n=n, rank=2, ld=1)

@@ -190,7 +190,10 @@ def solve_j(problem, J, policy=DEFAULT, *, solver=None, record=lambda *args: Non
         # flat head directions, with a finite positive metric weight.
         B = np.vstack((problem.A/np.sqrt(problem.spec.loss_scale),
             np.sqrt(2*problem.spec.gamma)/problem.spec.mass_scale*problem.T))
-        _, singular, Vh = svd(B, full_matrices=False, lapack_driver='gesdd')
+        # A very wide artificial map also needs the complete right-null basis.
+        _, singular, Vh = svd(B, full_matrices=B.shape[0] < B.shape[1],
+                              lapack_driver='gesdd')
+        singular = np.pad(singular, (0, len(x0)-len(singular)))
         scale = 1/np.maximum(singular, policy.j_metric_singular_floor)**2
         inverse = Vh.T@(scale[:, None]*Vh)
         inverse = .5*(inverse+inverse.T)
