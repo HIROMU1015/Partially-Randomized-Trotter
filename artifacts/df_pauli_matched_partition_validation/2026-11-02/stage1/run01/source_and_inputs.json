@@ -1,0 +1,207 @@
+{
+  "commit": "da13170e593e6d845b014e3f110691be10e29d43",
+  "code_sha256": {
+    "scripts/run_h4_p3_stage1.py": "d3bb4a97988ff333531633b63319af5aadb63ec8b4f61402861f2ea1566eda67",
+    "src/trotterlib/matched_partition_stage1.py": "9bcdfcdb5bae59fac357fea5e836e02a8c6eca75eb11be5b66af2cb36c17431b",
+    "tests/test_matched_partition_stage1.py": "f935132560cdfbb50538363a8d6198bcb1a87d75134d92396182c3679b56c9d2",
+    "docs/research/h4_p3_stage1_operator_validation_20261102.md": "fe42a9175c5494e7ccc10abfc8686e3d52a8acf2663542e40c162e6b1babbfea",
+    "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+    "src/trotterlib/pauli_signal_adapter.py": "bbd8d0d3de3248c71f16bd86679c9673828b83dc435870da946c425ee199f95e",
+    "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+    "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6"
+  },
+  "runtime": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "openfermion": "1.6.1"
+  },
+  "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "execution_JST": "2026-11-02T01:18:54.651741+09:00",
+  "scope": "H4_P3_STAGE1_PARTITION_A_ONLY",
+  "condition": {
+    "molecule": "linear H4",
+    "distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "multiplicity": 1,
+    "spatial_orbitals": 4,
+    "spin_orbitals": 8,
+    "full_dimension": 256,
+    "Pauli_nonidentity_terms": 184,
+    "DF_rank_policy": "tol-only 1e-8, saved returned rank10",
+    "partition": "c_N I + T_eff + V_square",
+    "q_r_K_T": "not used; historical T=.8 only provenance"
+  },
+  "numerical_policy": {
+    "dtype": "complex128",
+    "norm": "spectral_SVD_gesdd",
+    "epsilon": 2.220446049250313e-16,
+    "gamma_multiplier": 16,
+    "scale": "max(1, spectral norm of each compared operand)",
+    "dimension": "full Fock dimension, also for inherited scalar/tensor errors",
+    "PASS": "residual <= tolerance/4",
+    "UNRESOLVED": "tolerance/4 < residual <= 4*tolerance",
+    "FAIL": "residual > 4*tolerance",
+    "uncertainty": "engineering consistency resolution, not certified rounding/DF error bound",
+    "precision_escalation": false,
+    "automatic_retry": false
+  },
+  "low_rank": {
+    "path": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/openfermion/circuits/low_rank.py",
+    "sha256": "de74fb802550417788362845515ed9e56a180e4ff85ab21ab43ba8445156dbbe"
+  },
+  "affinity_CPUs": 64,
+  "load_average": [
+    37.697265625,
+    35.91162109375,
+    37.2236328125
+  ],
+  "meminfo": {
+    "MemTotal": "528127736 kB",
+    "MemAvailable": "499135812 kB"
+  },
+  "BLAS": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "reason": "small dense matrices; independent metric jobs provide parallelism"
+  },
+  "prior_technical_preflight": {
+    "source": "d57742f182bc4c2ae68f1df5b54dfb074a7ea7e4",
+    "artifacts": "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1",
+    "operator_constructions": 0,
+    "reason": "decoder changed signed-zero bits; original inputs intact",
+    "original_STOP_preserved": true,
+    "scientific_retry": false
+  },
+  "inputs": {
+    "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+    "files": {
+      "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json": {
+        "sha256": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf",
+        "git_blob": "7f2bc64b397d3bd2b8a96fb84bcd020196a86052"
+      },
+      "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz": {
+        "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+        "git_blob": "5828b6b225bb4990a46934edba152b82ec97782f"
+      },
+      "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/pauli.json": {
+        "sha256": "49e2f0b86cba9933eee20a03a05934d950caafb5044401bca50d3aa79a518175",
+        "git_blob": "724ef5f193a61b042ba505a1fd36e3e82317c6ac"
+      },
+      "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json": {
+        "sha256": "9ae8973b457cab26bb685a8fac9887dbc5e3be5db9059355822893d26cae2aa4",
+        "git_blob": "bbb876c96034932297828cdd7d0f193b8d84a307"
+      },
+      "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_model.json": {
+        "sha256": "cc60f6dc3de885974cfe74ef822e49380edb6b9ca44777bf12e9654256cd322a",
+        "git_blob": "b6777a722a6c0c3e13b8b5df7edbb412199298fa"
+      }
+    },
+    "original_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+    "state_hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80",
+    "state_used_for": "identity audit only; no state action",
+    "stored_full_H_check": {
+      "PASS": true,
+      "error": 8.462237051574415e-15,
+      "tolerance": 1e-09
+    },
+    "DF_metadata": {
+      "SCF_converged": true,
+      "basis": "STO-3G",
+      "charge": 0,
+      "df_rank_actual": 10,
+      "df_rank_requested": null,
+      "df_tol_requested": 1e-08,
+      "df_truncation_value": 0.0,
+      "distance": 1.0,
+      "geometry": [
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            2.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            3.0
+          ]
+        ]
+      ],
+      "hermitized": true,
+      "hf_energy": -2.0985459369980077,
+      "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+      "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+      "molecule_type": 4,
+      "multiplicity": 1
+    },
+    "tensor_convention_verified": true,
+    "sector_indices": [
+      240,
+      216,
+      120,
+      228,
+      180,
+      204,
+      108,
+      156,
+      60,
+      210,
+      114,
+      90,
+      198,
+      102,
+      150,
+      54,
+      78,
+      30,
+      225,
+      177,
+      201,
+      105,
+      153,
+      57,
+      165,
+      141,
+      45,
+      195,
+      99,
+      147,
+      51,
+      75,
+      27,
+      135,
+      39,
+      15
+    ],
+    "source_code_sha256": {
+      "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+      "src/trotterlib/pauli_signal_adapter.py": "ad60912944e3d87aa2fd2bf0263e1d2c3ba1be4f11c0ab5525ade337727d33cf",
+      "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+      "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6"
+    }
+  },
+  "metric_workers": 24,
+  "route_workers": 2,
+  "route_worker_reason": "two independent construction paths"
+}
