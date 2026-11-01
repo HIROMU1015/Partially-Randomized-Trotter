@@ -1,0 +1,650 @@
+{
+  "artificial_only": true,
+  "real_molecular_decodes": 0,
+  "new_scientific_calls": 0,
+  "analytic_sensitivity": {
+    "J_gradient": 1e-08,
+    "U_gradient_shift": 0.01,
+    "exact_objective_gap": "5E-17",
+    "binary64_F_equal": true,
+    "mixed_Hessian_analytic": -1000000.0,
+    "mixed_Hessian_FD": -1000000.0,
+    "J_residual_PASS": true,
+    "U_stability_PASS": false
+  },
+  "inner_toy": [
+    {
+      "method": "Newton-CG",
+      "constant_centered_before_float": false,
+      "success": true,
+      "status": 0,
+      "message": "Optimization terminated successfully.",
+      "J_endpoint": 1e-08,
+      "independent_J_gradient": 1e-08,
+      "true_U_gradient_error": 0.01,
+      "stability_PASS": false
+    },
+    {
+      "method": "Newton-CG",
+      "constant_centered_before_float": true,
+      "success": true,
+      "status": 0,
+      "message": "Optimization terminated successfully.",
+      "J_endpoint": 1e-08,
+      "independent_J_gradient": 1e-08,
+      "true_U_gradient_error": 0.01,
+      "stability_PASS": false
+    },
+    {
+      "method": "trust-exact",
+      "constant_centered_before_float": false,
+      "success": false,
+      "status": 2,
+      "message": "A bad approximation caused failure to predict improvement.",
+      "J_endpoint": 1e-08,
+      "independent_J_gradient": 1e-08,
+      "true_U_gradient_error": 0.01,
+      "stability_PASS": false
+    },
+    {
+      "method": "trust-exact",
+      "constant_centered_before_float": true,
+      "success": true,
+      "status": 0,
+      "message": "Optimization terminated successfully.",
+      "J_endpoint": 0.0,
+      "independent_J_gradient": 0.0,
+      "true_U_gradient_error": 0.0,
+      "stability_PASS": true
+    }
+  ],
+  "scale_amplification": [
+    {
+      "loss_scale": 1.0,
+      "J_gradient": 1e-20,
+      "U_gradient_shift": 1e-14,
+      "mixed_Hessian": -1e-06
+    },
+    {
+      "loss_scale": 1e-09,
+      "J_gradient": 1e-11,
+      "U_gradient_shift": 9.999999999999999e-06,
+      "mixed_Hessian": -999.9999999999999
+    },
+    {
+      "loss_scale": 1e-12,
+      "J_gradient": 1e-08,
+      "U_gradient_shift": 0.01,
+      "mixed_Hessian": -1000000.0
+    }
+  ],
+  "real_invented_Newton": {
+    "status": 2,
+    "success": false,
+    "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+    "nit": 397,
+    "stationarity": {
+      "value": 8.495806955721719e-07,
+      "threshold": 1e-05,
+      "engineering_margin": 1.0001e-08,
+      "status": "MET"
+    },
+    "consistency": {
+      "last_step_start": {
+        "PASS": false,
+        "finite_shape": true,
+        "maxabs": 5.893388731601451e-05,
+        "maximum_allowance_ratio": 5889.917151839998,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "last_accepted": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "raw_jac_at_endpoint": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "chart_vs_physical_gradient": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 4.0197238913708405e-18,
+        "maximum_allowance_ratio": 4.0197232553232363e-10,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "chart_vs_physical_value": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-10,
+        "rtol": 1e-08
+      },
+      "raw_vs_endpoint_value": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-10,
+        "rtol": 1e-08
+      },
+      "binary64_same_array_value": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 7.105427357601002e-15,
+        "maximum_allowance_ratio": 2.0391804478180094e-08,
+        "atol": 1e-10,
+        "rtol": 1e-08
+      }
+    }
+  },
+  "Decimal_reference": {
+    "stable_U_error_l2": 2.12468566647679e-09,
+    "binary_U_error_l2": 4.149489571681428e-06,
+    "digits": 80
+  },
+  "outer_policy_comparison": [
+    {
+      "case": "recover",
+      "policy": "A_STOP",
+      "result": {
+        "status": "REDUCED_GRADIENT_UNQUALIFIED",
+        "trials": 1,
+        "accepted_U_updates": 0
+      },
+      "queries": [
+        2.0,
+        0.99
+      ],
+      "inner_diagnostics": [
+        {
+          "u": 2.0,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 2.0,
+          "F_refine2": 2.0
+        },
+        {
+          "u": 0.99,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 0.490050000032,
+          "F_refine2": 0.49005
+        }
+      ],
+      "events": [
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        }
+      ]
+    },
+    {
+      "case": "recover",
+      "policy": "B_REJECT",
+      "result": {
+        "status": "QUALIFIED_ARMIJO_STEP_ACCEPTED",
+        "trials": 2,
+        "accepted_U_updates": 1,
+        "alpha": 0.2525,
+        "initial_slope": -4.0,
+        "Armijo_bound": 1.999899,
+        "actual_decrease": 0.8824874999999999,
+        "strong_Wolfe_claim": false
+      },
+      "queries": [
+        2.0,
+        0.99,
+        1.495
+      ],
+      "inner_diagnostics": [
+        {
+          "u": 2.0,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 2.0,
+          "F_refine2": 2.0
+        },
+        {
+          "u": 0.99,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 0.490050000032,
+          "F_refine2": 0.49005
+        },
+        {
+          "u": 1.495,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 1.1175125000000001,
+          "F_refine2": 1.1175125000000001
+        }
+      ],
+      "events": [
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 1,
+          "alpha": 0.2525,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 1,
+          "alpha": 0.2525,
+          "initial_slope": -4.0,
+          "objective": 1.1175125000000001,
+          "gradient_used": true,
+          "status": "QUALIFIED",
+          "qualified_gradient_l2": 1.495,
+          "Armijo_bound": 1.999899,
+          "decision": "ACCEPT_QUALIFIED_ARMIJO"
+        }
+      ]
+    },
+    {
+      "case": "all_unqualified",
+      "policy": "A_STOP",
+      "result": {
+        "status": "REDUCED_GRADIENT_UNQUALIFIED",
+        "trials": 1,
+        "accepted_U_updates": 0
+      },
+      "queries": [
+        2.0,
+        0.99
+      ],
+      "inner_diagnostics": [
+        {
+          "u": 2.0,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 2.0,
+          "F_refine2": 2.0
+        },
+        {
+          "u": 0.99,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 0.490050000032,
+          "F_refine2": 0.49005
+        }
+      ],
+      "events": [
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        }
+      ]
+    },
+    {
+      "case": "all_unqualified",
+      "policy": "B_REJECT",
+      "result": {
+        "status": "GUARDED_TRIAL_LIMIT_NO_ACCEPT",
+        "trials": 8,
+        "accepted_U_updates": 0
+      },
+      "queries": [
+        2.0,
+        0.99,
+        1.495,
+        1.7475,
+        1.87375,
+        1.936875,
+        1.9684375,
+        1.98421875,
+        1.992109375
+      ],
+      "inner_diagnostics": [
+        {
+          "u": 2.0,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 2.0,
+          "F_refine2": 2.0
+        },
+        {
+          "u": 0.99,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 0.490050000032,
+          "F_refine2": 0.49005
+        },
+        {
+          "u": 1.495,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.117512500032,
+          "F_refine2": 1.1175125000000001
+        },
+        {
+          "u": 1.7475,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.526878125032,
+          "F_refine2": 1.526878125
+        },
+        {
+          "u": 1.87375,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.7554695312820001,
+          "F_refine2": 1.7554695312500002
+        },
+        {
+          "u": 1.936875,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.8757423828444997,
+          "F_refine2": 1.8757423828124997
+        },
+        {
+          "u": 1.9684375,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.9373730957351252,
+          "F_refine2": 1.9373730957031252
+        },
+        {
+          "u": 1.98421875,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.968562023957781,
+          "F_refine2": 1.968562023925781
+        },
+        {
+          "u": 1.992109375,
+          "refine1_J_residual": 8e-06,
+          "refine2_J_residual": 0.0,
+          "U_shift": 8e-06,
+          "F_refine1": 1.9842498810134455,
+          "F_refine2": 1.9842498809814455
+        }
+      ],
+      "events": [
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 1,
+          "alpha": 0.2525,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 1,
+          "alpha": 0.2525,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 2,
+          "alpha": 0.12625,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 2,
+          "alpha": 0.12625,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 3,
+          "alpha": 0.063125,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 3,
+          "alpha": 0.063125,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 4,
+          "alpha": 0.0315625,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 4,
+          "alpha": 0.0315625,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 5,
+          "alpha": 0.01578125,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 5,
+          "alpha": 0.01578125,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 6,
+          "alpha": 0.007890625,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 6,
+          "alpha": 0.007890625,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        },
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 7,
+          "alpha": 0.0039453125,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        },
+        {
+          "kind": "guarded_trial",
+          "trial": 7,
+          "alpha": 0.0039453125,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false,
+          "status": "REDUCED_GRADIENT_UNQUALIFIED",
+          "decision": "REJECT_NUMERICALLY_UNQUALIFIED"
+        }
+      ]
+    },
+    {
+      "case": "correctness",
+      "policy": "A_STOP",
+      "result": {
+        "status": "CORRECTNESS_FAIL",
+        "error": "ARTIFICIAL_CORRECTNESS_FAIL"
+      },
+      "queries": [
+        2.0,
+        0.99
+      ],
+      "inner_diagnostics": [
+        {
+          "u": 2.0,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 2.0,
+          "F_refine2": 2.0
+        }
+      ],
+      "events": [
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        }
+      ]
+    },
+    {
+      "case": "correctness",
+      "policy": "B_REJECT",
+      "result": {
+        "status": "CORRECTNESS_FAIL",
+        "error": "ARTIFICIAL_CORRECTNESS_FAIL"
+      },
+      "queries": [
+        2.0,
+        0.99
+      ],
+      "inner_diagnostics": [
+        {
+          "u": 2.0,
+          "refine1_J_residual": 1e-08,
+          "refine2_J_residual": 0.0,
+          "U_shift": 1e-08,
+          "F_refine1": 2.0,
+          "F_refine2": 2.0
+        }
+      ],
+      "events": [
+        {
+          "kind": "guarded_trial_attempt",
+          "trial": 0,
+          "alpha": 0.505,
+          "initial_slope": -4.0,
+          "objective": null,
+          "gradient_used": false
+        }
+      ]
+    }
+  ],
+  "interpretation": "Toy mechanisms and API behavior only;H4 cause and performance not established"
+}

@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：PR stability切り分け・qualified-only stepの技術準備（2026-11-02）
+
+[保存JSON調査・人工機構・政策A/B・Q1〜Q10](research/research_c_pr_reduced_stability_investigation_20261102.md)／[未承認60-call案](research/research_c_pr_guarded_step_contract_unapproved_20261102.json)。実H4の7.3109e-6の原因は未確定。新25＋既存226＝251人工/回帰PASS。技術推奨Bはinner/1e-6資格を維持し、未資格gradientを使わない1回のqualified-only Armijo step（最大8 trials/9点）。Wolfe/BFGSの継続・厳密Φ保証ではなく正式採択は未判断。実H4 decode/新科学call0、旧raw2423/SOURCE/18-call STOPを保全、別許可までmandatory STOP。以下は各時点の履歴。
+
 ## 研究C：PR-only reduced・初回trialのstability未資格STOP（2026-11-02）
 
 [18/54-call結果・資格とcorrectnessの区別](research/research_c_pr_reduced_limited_execution_20261102.md)。固定SOURCEb2e5ab4d5/54-call契約を無変更で一度実行し18 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。初期点はadmission PASS、最初の未受理trialはJ/rank-nullspace PASSだがlatest-pair U勾配差7.31089e-6>1e-6でREDUCED_GRADIENT_UNQUALIFIED。受理U更新0、distinct U点2/inner6/refinement4/outer1。Raw precision loss2件を保持。旧trial2未到達、DF予算/PR性能/qualified比較null、旧raw2401/SOURCE/STOP保全、新raw22。公開照合後mandatory STOP。以下は各時点の履歴。
