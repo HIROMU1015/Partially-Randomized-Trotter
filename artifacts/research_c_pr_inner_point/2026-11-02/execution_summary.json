@@ -1,0 +1,248 @@
+{
+  "status": "INNER_CORRECTNESS_PASS_J_MET",
+  "scientific_SOURCE": "ab5d80bd64eeb82bab9dd8f11ef0a6c7c9a838bf",
+  "maximum_logical_units": 8,
+  "attempts": 8,
+  "COMPLETE": 8,
+  "FAIL": 0,
+  "call_counts": {
+    "saved_load": 1,
+    "saved_point_identity": 1,
+    "objective_setup": 1,
+    "inner_solver": 1,
+    "independent_state": 1,
+    "tensor_metrics": 1,
+    "classification": 1,
+    "export": 1
+  },
+  "result": {
+    "status": "INNER_CORRECTNESS_PASS_J_MET",
+    "optimizer_success": false,
+    "optimizer_status": 2,
+    "J_stationarity": {
+      "value": 9.83543446220203e-06,
+      "threshold": 1e-05,
+      "engineering_margin": 1.0001e-08,
+      "status": "MET"
+    },
+    "U_partial_gradient": {
+      "value": 1204.2512757342176,
+      "threshold": 1e-05,
+      "engineering_margin": 0.00012043512757342175,
+      "status": "NOT_MET"
+    },
+    "objective_before": 5822231.60178163,
+    "objective_after": 17.695576779649564,
+    "tensor": {
+      "tensor_maxabs": 2.207443201840409e-07,
+      "tensor_frobenius": 9.673376164916996e-07,
+      "objective_from_tensor": 4.678710321399212e-13,
+      "actual_rank": 8
+    },
+    "new_inner_solver_invocations": 1,
+    "new_refinements": 0,
+    "new_U_updates": 0,
+    "new_outer_optimizations": 0,
+    "reduced_gradient_qualification": null,
+    "DF_budget": null,
+    "PR_performance": null,
+    "rigorous_gradient_error_bound": null,
+    "retry": 0,
+    "resume": 0,
+    "paired_execution_authorized": false,
+    "mandatory_stop": true
+  },
+  "optimizer": {
+    "method": "PR_Newton_CG_same_decoded_point_v1",
+    "success": false,
+    "status": 2,
+    "message": "Warning: Desired error not necessarily achieved due to precision loss.",
+    "fun": 17.695576779649564,
+    "raw_fun_repr": "17.695576779649564",
+    "nit": 708,
+    "nfev": 1319,
+    "njev": 1319,
+    "nhev": 709,
+    "metric_directions_dropped": 0,
+    "objective_regularization_added": false,
+    "initial_objective": 5822231.60178163,
+    "initial_J_gradient_infinity": 14696878.81605361,
+    "consistency": {
+      "last_step_start": {
+        "PASS": false,
+        "finite_shape": true,
+        "maxabs": 9.36910858908183e-06,
+        "maximum_allowance_ratio": 936.8231300319374,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "last_accepted": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "raw_jac_at_endpoint": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "chart_vs_physical_gradient": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 1.0521413964055004e-17,
+        "maximum_allowance_ratio": 1.0521413789248528e-09,
+        "atol": 1e-08,
+        "rtol": 1e-07
+      },
+      "chart_vs_physical_value": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-10,
+        "rtol": 1e-08
+      },
+      "raw_vs_endpoint_value": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 0.0,
+        "maximum_allowance_ratio": 0.0,
+        "atol": 1e-10,
+        "rtol": 1e-08
+      },
+      "binary64_same_array_value": {
+        "PASS": true,
+        "finite_shape": true,
+        "maxabs": 1.4210854715202004e-14,
+        "maximum_allowance_ratio": 8.026202643415528e-08,
+        "atol": 1e-10,
+        "rtol": 1e-08
+      }
+    },
+    "raw_jac_semantics": "SciPy1.14.1 may return pre-step jac;raw preserved;endpoint J gradient independently evaluated",
+    "rigorous_gradient_error_bound": null,
+    "thresholds_changed": false,
+    "independent_objective": 17.695576779649564,
+    "stationarity": {
+      "value": 9.83543446220203e-06,
+      "threshold": 1e-05,
+      "engineering_margin": 1.0001e-08,
+      "status": "MET"
+    },
+    "extended_J_gradient_infinity": 9.71551894024742e-06,
+    "binary64_J_gradient_infinity": 9.83543446220203e-06,
+    "progress": {
+      "before": 5822231.60178163,
+      "after": 17.695576779649564,
+      "decrease": 5822213.90620485,
+      "allowance": 0.0582223161178163,
+      "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+    },
+    "value_gradient_calls_in_block": 1322,
+    "hessian_calls_in_block": 709,
+    "independent_adjoint_calls_in_block": 2,
+    "binary64_same_array_calls_in_block": 1,
+    "wall_seconds": 2.7581313075497746,
+    "CPU_seconds": 6.875593521
+  },
+  "state": {
+    "components": {
+      "objective": 17.695576779649564,
+      "tensor_objective": 4.678710321172244e-13,
+      "normalized_tensor_objective": 0.00021423027227700404,
+      "penalty": 17.695362549377286,
+      "smooth_tail_mass_Ha": 29.389930963890848,
+      "exact_tail_mass_Ha": 29.389930649652474,
+      "full_ordered_Z_l2_Ha_squared": 392.8051990220742
+    },
+    "J_stationarity": {
+      "value": 9.83543446220203e-06,
+      "threshold": 1e-05,
+      "engineering_margin": 1.0001e-08,
+      "status": "MET"
+    },
+    "U_stationarity": {
+      "value": 1204.2512757342176,
+      "threshold": 1e-05,
+      "engineering_margin": 0.00012043512757342175,
+      "status": "NOT_MET"
+    },
+    "first_order_met": false,
+    "orthogonality_maxabs": 6.661338147750939e-16,
+    "rigorous_stationarity": false,
+    "stable_J_gradient_infinity": 9.715518940218038e-06,
+    "stable_U_tangent_l2": 1204.2512735031937,
+    "binary64_J_gradient_infinity": 9.83543446220203e-06,
+    "binary64_U_tangent_l2": 1204.2512757342176,
+    "stationarity_policy": "Both same-array stable and binary64 norms must pass original thresholds/margins",
+    "value_same_array": {
+      "PASS": true,
+      "finite_shape": true,
+      "maxabs": 1.4210854715202004e-14,
+      "maximum_allowance_ratio": 8.026202643415528e-08,
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "binary64_AD_value_same_array": {
+      "PASS": true,
+      "finite_shape": true,
+      "maxabs": 1.4210854715202004e-14,
+      "maximum_allowance_ratio": 8.026202643415528e-08,
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "forward_pullback_same_array": {
+      "PASS": true,
+      "finite_shape": true,
+      "maxabs": 2.2737367544323206e-13,
+      "maximum_allowance_ratio": 1.4495448898627845e-07,
+      "atol": 1e-08,
+      "rtol": 1e-07
+    },
+    "binary64_U_difference_observation": 7.258972928762891e-06,
+    "precision": {
+      "arithmetic": "longdouble_primal_binary64_JAX_array_Jacobian",
+      "longdouble_mantissa_bits": 64,
+      "array_point": "exact supplied binary64 J/U",
+      "rotation_pullback_separated": true,
+      "rigorous_gradient_error_bound": null
+    },
+    "wall_seconds": 1.3955909758806229,
+    "CPU_seconds": 8.784449889
+  },
+  "tensor": {
+    "tensor_maxabs": 2.207443201840409e-07,
+    "tensor_frobenius": 9.673376164916996e-07,
+    "objective_from_tensor": 4.678710321399212e-13,
+    "actual_rank": 8
+  },
+  "resources": {
+    "wall_seconds": 4.253649916499853,
+    "process_CPU_seconds": 20.181210792,
+    "peak_RSS_KiB": 431072
+  },
+  "initial_identity": {
+    "status": "PASS",
+    "same_original_J": true,
+    "U": "saved and identity-qualified trial2 U",
+    "new_U_update": false
+  },
+  "new_inner_solver_invocations": 1,
+  "new_refinements": 0,
+  "new_U_updates": 0,
+  "new_outer_optimizations": 0,
+  "ffsim_joint_fitter_invocations": 0,
+  "RC2_continuation": 0,
+  "retry": 0,
+  "resume": 0,
+  "old480_call_and10_call_STOP_preserved": true,
+  "old_unused1083_units_not_reused": true,
+  "DF_sector_PF_RTE_ground_native_circuit_shots_total_resources": null,
+  "mandatory_stop": true
+}

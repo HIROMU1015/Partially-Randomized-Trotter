@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：PR固定U inner1回・J基準PASS、raw precision loss（2026-11-02）
+
+[8-call結果・独立J・raw状態の区別](docs/research/research_c_pr_inner_point_execution_20261102.md)。固定SOURCEab5d80bd6/8-call契約を無変更で実行し8/8 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、保存trial2 U固定・元J初期のNewton-CGを1回実行。終端chain差1.05214e-17、独立J∞9.83543e-6＋元marginでMET。一方raw success=false/status2 precision loss/nit708、partial U₂1204.251で同時一次未達。INNER_CORRECTNESS_PASS_J_METは工程的数値基準で、正常optimizer収束/DF予算/PR性能/reduced資格ではない。Refinement/U更新/outer/RC2継続0、旧raw2388/SOURCE/STOP保全、新raw13を保存し公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：PR inner同一配列評価器のopt-in接続・8-call準備（2026-11-02）
 
 [接続・人工256 unique PASS・制約](docs/research/research_c_pr_inner_point_preparation_20261102.md)／[未承認8-call契約](docs/research/research_c_pr_inner_point_contract_unapproved_20261102.json)。新 `c_pr_inner_point_solver.py` は既存SciPy Newton-CGのvg/hess・raw pre-step検査を同一decoded J評価器へ接続し、明示PRReducedOracleの初回/2refinement呼出しも接続。旧default/sourceへのpatchなし。次案は保存trial2 U固定・元J初期のinner1回だけ、outer/refinement/RC2/DF normは対象外。Raw flagとJ一次資格を分離し、人工precision-loss例も保全。SOURCE149/input6のpassiveのみで実分子decode/新科学call0。旧raw2388/SOURCE/STOP・132科学recordsを保全し、別許可までmandatory STOP。以下は各時点の履歴。
