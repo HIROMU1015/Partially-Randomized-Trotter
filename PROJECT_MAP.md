@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：Givens数値安定化の新attempt
+
+[旧FAIL保全・project内Givens修正・固定条件/閾値を維持したrun02](docs/research/h4_p3_stage3_stable_basis_recovery_20261102.md)。旧runner/kernelを再利用し、共有libraryは変更しない。新SOURCE固定後のユーザー指示による追加attempt1回だけ。
+
 ## 2026-11-02 H4 P3 Stage 3：matched native価格
 
 [共通Gaussian保持・固定8 trajectory/36 wrapper・kernel/runner/tests・STOP](docs/research/h4_p3_stage3_native_validation_20261102.md)。案A/T.8/S2/q8/r4/K4、M_B/M_Cのみ。native preflightが全PASSした場合だけ価格取得し、実効law平均・Stage 4へ移行しない。

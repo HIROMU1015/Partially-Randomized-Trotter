@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：Givens数値安定化
+
+`run_h4_p3_stage3_stable_basis.py`：[旧runner再利用・project内lowering差替え・run02](../docs/research/h4_p3_stage3_stable_basis_recovery_20261102.md)。ユーザーの追加実行指示に対応し、run01/旧STOPを保持。閾値・tuple・seed・compilerを変更しない。
+
 ## 2026-11-02 H4 P3 Stage 3：matched native価格
 
 `run_h4_p3_stage3.py`：[固定条件・共通保持preflight・8標本/36価格・STOP](../docs/research/h4_p3_stage3_native_validation_20261102.md)。保存辞書/Uを再利用し、段階的correctness後だけsampling/compile。旧runner・STOPは再開しない。

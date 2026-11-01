@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：Givens数値安定化
+
+[旧FAILを保持した技術修正と同条件run02](research/h4_p3_stage3_stable_basis_recovery_20261102.md)。数値政策の緩和・共有library変更・自動retryなし。
+
 ## 2026-11-02 H4 P3 Stage 3：matched native価格
 
 [非実行設計](research/h4_p3_stage3_native_cost_design_20261102.md)、[承認後の実装・検証条件](research/h4_p3_stage3_native_validation_20261102.md)。同じGaussian保持とscalarで残差辞書の固定cohort価格を比較。精度/全law/母平均保証は区別する。

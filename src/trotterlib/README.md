@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：Givens数値安定化
+
+`stable_gaussian_basis.py`：[既存数保存Givensのexact-zero/atan2安定化](../../docs/research/h4_p3_stage3_stable_basis_recovery_20261102.md)。RZ/XXPlusYY・U.T・消去順を維持するproject内variant。元library/旧kernelは保全する。
+
 ## 2026-11-02 H4 P3 Stage 3：matched native価格
 
 `matched_partition_stage3.py`：[Givens共通保持、保存Pauli/DF residual、独立native oracle、同wrapper価格](../../docs/research/h4_p3_stage3_native_validation_20261102.md)。既存native/event/D2/compiler primitivesを接続する限定kernel。新signal/B/N/Gや全lawρを評価しない。
