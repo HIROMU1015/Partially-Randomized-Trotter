@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：固定Uの全J凸最適化と局所U交互更新（2026-11-01）
+
+[c_separated_j_u.py](../trottertracks/c_separated_j_u.py)／[pilot](../trottertracks/c_separated_j_u_pilot.py)が既存tensor作用/随伴・smooth tail mass・full L2・ffsim実rotation/JAX・sector/general-Kを再利用する。PRは全方向SVD初期計量BFGS、RC2はaugmented gelsd、Uは局所L-BFGS-B。Headを含む全signed Jを自由にし、旧LPのtail保存等式は使わない。[技術報告・227人工/回帰PASS](../../docs/research/research_c_separated_J_U_optimization_preparation_20261101.md)。Solver flag・独立J/U一次資格・物理DF予算を分離。実H4未評価、未承認417-call案、公開照合後mandatory STOP。
+
 ## 研究C：固定U LP・元全行列の数値資格と保持gate PASS（2026-11-01）
 
 [無変更SOURCE・50/50結果](../../docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。既存LP/executeとtask-local小係数profileを実行し、dual/gap/guard・tensor・一般K/CAR・head/phase・DF・1h-step PF/K0を全PASS。λ約.0117%減は保存H4/PR CDF8/LD2/s1/r128/K0の固定U問題に限る数値結果。旧SOURCE/STOP不変、新fit/native/shots0、公開後mandatory STOP。

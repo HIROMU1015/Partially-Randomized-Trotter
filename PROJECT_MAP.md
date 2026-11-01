@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：J凸問題・直交U更新を分離する技術準備（2026-11-01）
+
+[数学・実装・227人工/回帰PASS](docs/research/research_c_separated_J_U_optimization_preparation_20261101.md)／[未承認417-call契約](docs/research/research_c_separated_J_U_contract_unapproved_20261101.json)。Entryはscripts/run_research_c_separated_J_U.py、core/pilotはsrc/trottertracks/c_separated_j_u*.py、testはtests/management/test_research_c_separated_J_U*.py、証拠はartifacts/research_c_separated_J_U/2026-11-01/technical/。全signed対称JをPR凸BFGS／RC2 augmented SVDで解き、局所直交U更新後にJを再solveする。旧tail tensor保存等式は継承しない。保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2の同qualified x0から両arm各1 trajectoryを提案。SOURCE114/input13のpassiveのみ、実H4 decode/最適化/再解析/科学call0。実収束・DF予算・λ改善は未検証、公開照合後mandatory STOP。以下は過去の結果・準備の履歴。
+
 ## 研究C：固定U LP・係数保持profileで50/50 PASS（2026-11-01）
 
 [数値資格・保持gate・全結果](docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。科学SOURCEc40f81281無変更、LP1回・50 COMPLETE・FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、PR通常CDF8/sector36/元順LD2、固定U/head0/1/tail2..7、h.1/s1/r128/K0。元全行列のdual/gap/guardを通り、λ .954543284658→.954432028127Ha（約.0117%減）。独立tensor・sector/full CAR・phase・DF予算・1h-step PF/K0保持PASS。旧optimizer未資格・厳密certificate/CA/shots/native/総資源nullは維持。Raw31/旧原本保全、公開照合後mandatory STOP。以下は準備・旧実行の履歴。

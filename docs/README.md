@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：J/U分離型PR-aware DFの実装と限定pilot準備（2026-11-01）
+
+[数学仕様・人工検証・比較政策](research/research_c_separated_J_U_optimization_preparation_20261101.md)／[未承認417-call科学契約](research/research_c_separated_J_U_contract_unapproved_20261101.json)。PR固定U凸問題・RC2強い係数対照・局所直交U更新を接続し、227人工/回帰PASS。将来の保存H4/1Å/STO-3G、number CDF8/sector36/元順LD2両arm比較は同じ元qualified x0を使用し、旧joint終点と同metricで診断する。実H4 decode/最適化/保存再解析0、科学的なλ改善・収束優位は未判定。旧LP50-call/旧成果を保全し、公開照合後mandatory STOP。
+
 ## 研究C：固定U tail LP・50-call数値改善を確認（2026-11-01）
 
 [全gate・原結果・資格と限界](research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。SOURCEc40f81281無変更、LP1回/50 COMPLETE/FAIL0/retry-resume0。保存H4/CDF8/sector36/LD2/h.1/s1/r128/K0の固定U/head/full tail tensor LPで、λ約.0117%削減とtensor/CAR/phase/DF/PF-K0保持PASS。数値pilotで厳密LP/CA/総資源の証明ではない。旧UNRESOLVEDの原本と新raw31を保全し、公開照合後mandatory STOP。

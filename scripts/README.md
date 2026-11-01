@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：係数J・軌道U分離pilot entry（2026-11-01）
+
+[run_research_c_separated_J_U.py](run_research_c_separated_J_U.py)は既定でpassive preflightのみ。[技術報告・227人工/回帰PASS](../docs/research/research_c_separated_J_U_optimization_preparation_20261101.md)／[未承認417-call](../docs/research/research_c_separated_J_U_contract_unapproved_20261101.json)。別科学許可後だけ、同じ元qualified x0からPR／RC2各1交互trajectory、各最大64 U→J cyclesをfresh run01へ実行する。旧joint fitter/LPを再起動せず、旧終点のsame-metric診断4 unitsを明示計上。今回は実H4 decode/科学call0、retry/resume0、PF/RTE/native/shotsは対象外、公開照合後mandatory STOP。
+
 ## 研究C：数値profile LPを一度実行、全50 units完了（2026-11-01）
 
 [run_research_c_fixed_u_tail_lp_numerics.py](run_research_c_fixed_u_tail_lp_numerics.py)を固定SOURCEc40f81281から無変更で実行し、LP1回・50/50 COMPLETE、FAIL/retry/resume0。[結果・raw31・STOP](../docs/research/research_c_fixed_u_tail_lp_numerics_execution_20261101.md)。独立数値最適性と全保持gate PASS、λ約.0117%減の限定pilot。Fresh run01は消費済みで再起動しない。旧run/契約/原本を保全し、公開照合後mandatory STOP。以下の未承認表示は準備時の履歴。

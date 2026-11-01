@@ -1,0 +1,73 @@
+{
+  "scope": "Synthetic solver selection; no molecular arrays or performance conclusions",
+  "coefficient_case": {
+    "generator": "test_research_c_separated_J_U.invented(seed41,n2,rank3,ld1,scale1)",
+    "fixed_objective": "unchanged PR smooth mass epsilon1e-8,gamma.1",
+    "controls": [
+      {
+        "method": "trust-exact",
+        "maxiter": 400,
+        "status": 1,
+        "nfev": 401,
+        "objective": 0.061710320267226414,
+        "J_gradient_inf": 0.08962317670291373
+      },
+      {
+        "method": "L-BFGS-B",
+        "maxiter": 2000,
+        "maxfun": 10000,
+        "status": 0,
+        "nit": 573,
+        "nfev": 896,
+        "objective": 0.04155967546675101,
+        "J_gradient_inf": 1.473525314693927e-05
+      },
+      {
+        "method": "BFGS identity metric",
+        "maxiter": 2000,
+        "status": 0,
+        "nit": 47,
+        "nfev": 113,
+        "objective": 0.041559675465998466,
+        "J_gradient_inf": 2.898015051891467e-08
+      }
+    ]
+  },
+  "normalized_case": {
+    "generator": "test_research_c_separated_J_U_pilot.fixture; entirely invented diagonal rank8/n4 with fixed scalar normalization only",
+    "controls": [
+      {
+        "method": "BFGS diagonal tensor curvature metric",
+        "status": 2,
+        "nit": 214,
+        "nfev": 284,
+        "objective": 0.09604092576131014,
+        "J_gradient_inf": 1465.762500254641
+      },
+      {
+        "method": "BFGS identity metric",
+        "status": 1,
+        "nit": 1000,
+        "nfev": 1174,
+        "objective": 8.596707165485807e-12,
+        "J_gradient_inf": 0.00035253018990719965
+      },
+      {
+        "method": "selected BFGS full-direction SVD metric",
+        "status": 0,
+        "nit": 485,
+        "nfev": 537,
+        "objective": 9.558089269827367e-14,
+        "J_gradient_inf": 5.0419415486262144e-09
+      }
+    ]
+  },
+  "choice": "Fixed BFGS with all-direction SVD initial inverse metric; same unmodified objective. No adaptive method/epsilon/floor search in future molecular execution.",
+  "numerical_limits": "Not a universal convergence guarantee; explicit stationarity and unqualified exits retained.",
+  "primary_library_references": [
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/optimize.minimize-bfgs.html",
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/generated/scipy.linalg.svd.html",
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/generated/scipy.linalg.lstsq.html",
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/optimize.minimize-lbfgsb.html"
+  ]
+}

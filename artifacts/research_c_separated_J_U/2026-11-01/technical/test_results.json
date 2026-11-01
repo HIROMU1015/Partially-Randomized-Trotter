@@ -1,0 +1,76 @@
+{
+  "status": "ALL_SELECTED_SYNTHETIC_AND_REGRESSION_PASS",
+  "new_test_methods": 28,
+  "regression_test_methods": 199,
+  "unique_test_methods": 227,
+  "actual_molecular_arrays_loaded": 0,
+  "actual_scientific_calls": 0,
+  "groups": [
+    {
+      "environment": "fit",
+      "passed": 130,
+      "seconds": 7.64,
+      "files": [
+        "test_research_c_separated_J_U.py (18 methods at that run)",
+        "test_research_c_regularization_comparator.py",
+        "test_research_c_regularization_comparator_pilot.py",
+        "test_research_c_common_convergence.py",
+        "test_research_c_common_convergence_pilot.py",
+        "test_research_c_c1_ffsim_corrected_codec.py",
+        "test_research_c_c1_real_orthogonal_codec.py"
+      ]
+    },
+    {
+      "environment": "fit",
+      "passed": 40,
+      "seconds": 4.51,
+      "files": [
+        "test_research_c_separated_J_U.py (19 methods at that run)",
+        "test_research_c_pr_aware_df.py",
+        "test_research_c_pr_aware_df_x0.py"
+      ]
+    },
+    {
+      "environment": "evaluation",
+      "passed": 51,
+      "seconds": 7.78,
+      "files": [
+        "test_research_c_separated_J_U_pilot.py",
+        "test_research_c_fixed_u_tail_lp.py",
+        "test_research_c_fixed_u_tail_lp_numerics.py",
+        "test_research_c_common_convergence_export_repair.py"
+      ]
+    },
+    {
+      "environment": "evaluation",
+      "passed": 10,
+      "seconds": 1.65,
+      "files": [
+        "test_research_c_pr_aware_df_pilot.py"
+      ]
+    },
+    {
+      "environment": "evaluation separate process",
+      "passed": 13,
+      "seconds": 0.177,
+      "files": [
+        "test_research_c_c1_general_k_adapter.py"
+      ]
+    },
+    {
+      "environment": "fit",
+      "passed": 20,
+      "files": [
+        "test_research_c_separated_J_U.py (final20;wide full-right-basis case added)"
+      ],
+      "seconds": 3.21
+    }
+  ],
+  "overlap_note": "18 core repeats A/B plus19 core repeats in final20. Unique count=130+40+51+10+13+20-18-19=227.",
+  "environment_issue_resolved": "Old PR orchestration tests were initially run in fit venv and8 cases failed due absent threadpoolctl/OpenFermion. The intended evaluation environment passed all10; no package install or old SOURCE edit.",
+  "fit_python": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python",
+  "evaluation_python": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+  "execution": "python -B -m pytest -q -p no:cacheprovider <tests/management/files>, PYTHONDONTWRITEBYTECODE=1; fit groups JAX_ENABLE_X64=True and process-local tiny BLAS coordination",
+  "artificial_E2E": "Actual separated blocks in fit child processes; actual artificial sector/generalK evaluation in parent. Success33 units; forced representation FAIL29 units; fresh/STOP/protected fixtures verified.",
+  "ceiling_test": "Controlled mock reaches64 U steps+65 J solves+66 states per arm, consistent417 total cap; stalls and U solver stop classified separately."
+}
