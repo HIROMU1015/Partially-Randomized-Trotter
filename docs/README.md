@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：matched native価格
+
+[非実行設計](research/h4_p3_stage3_native_cost_design_20261102.md)、[承認後の実装・検証条件](research/h4_p3_stage3_native_validation_20261102.md)。同じGaussian保持とscalarで残差辞書の固定cohort価格を比較。精度/全law/母平均保証は区別する。
+
 ## 2026-11-02 H4 P3 Stage 2：matched nominal信号
 
 [科学契約](research/h4_p3_stage2_nominal_signal_contract_20261102.md)、[実行接続・精度・結果入口](research/h4_p3_stage2_nominal_validation_20261102.md)。固定案A、M_B/M_Cの6信号・2normalization。詳細科学レビュー・実効law・native価格へ自動移行しない。

@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：matched native価格
+
+[共通Gaussian保持・固定8 trajectory/36 wrapper・kernel/runner/tests・STOP](docs/research/h4_p3_stage3_native_validation_20261102.md)。案A/T.8/S2/q8/r4/K4、M_B/M_Cのみ。native preflightが全PASSした場合だけ価格取得し、実効law平均・Stage 4へ移行しない。
+
 ## 2026-11-02 H4 P3 Stage 2：matched nominal信号
 
 [固定条件・matrix-only接続・kernel/runner/tests](docs/research/h4_p3_stage2_nominal_validation_20261102.md)。H4案A/T.8/S2/q8/r4/K4、独立2辞書・6複素信号・2normalization。実効law・回路・N/C/Gは対象外。

@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3：matched native価格
+
+`run_h4_p3_stage3.py`：[固定条件・共通保持preflight・8標本/36価格・STOP](../docs/research/h4_p3_stage3_native_validation_20261102.md)。保存辞書/Uを再利用し、段階的correctness後だけsampling/compile。旧runner・STOPは再開しない。
+
 ## 2026-11-02 H4 P3 Stage 2：matched nominal信号
 
 `run_h4_p3_stage2.py`：[固定条件・再利用・人工tests・STOP](../docs/research/h4_p3_stage2_nominal_validation_20261102.md)。Stage 1入力validatorを再利用し、明示許可された6信号と2normalizationだけを新namespaceへ保存。旧runnerは再実行しない。
