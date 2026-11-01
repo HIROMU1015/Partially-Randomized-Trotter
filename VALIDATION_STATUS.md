@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3 run02：native PASS・23価格保存・compile借用エラー
+
+[部分結果・欠測13件・旧FAIL保全](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run02/REPORT.md)。同じH4/案A/T.8/S2/q8/r4/K4でGivensを数値安定化。one-particle約4.05e-16、native preflight81PASS、8 trajectory/256 event位置。36compile開始・23正常保存後、Qiskit shared equivalence libraryのborrowエラーでSTOP。13価格未取得、全cohort/母平均/N/G未評価。人工21PASS、ユーザー指示の追加attempt1、automatic retry0。旧run01/Stage 2 STOPを保持し、公開照合後mandatory STOP。
+
 ## 2026-11-02 H4 P3 Stage 3：共通basis preflightでFAIL・価格未取得
 
 [停止報告・数値・SOURCE・件数](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run01/REPORT.md)。固定H4/案A/T.8/S2/q8/r4/K4、Givens native共通保持basisのone-particle差2.376e-13が事前固定d8基準でFAIL。他4 basis検査PASS。保持指数・sampling・trajectory・価格compileは未到達、母平均/N/G未評価。科学1batch・retry0、人工13PASS。旧証拠/STOPを保全し、`STOP_STAGE3_PREFLIGHT_OR_EXECUTION_FAILURE_NO_RETRY`、公開照合後停止。

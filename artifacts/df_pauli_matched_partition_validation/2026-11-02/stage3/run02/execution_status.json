@@ -1,0 +1,35 @@
+{
+  "state": "FAILED_NO_RETRY",
+  "counts": {
+    "scientific_batches_started": 1,
+    "T_eigendecompositions": 1,
+    "DF_eigendecompositions": 0,
+    "native_bases": 11,
+    "reference_half_exponentials": 1,
+    "sampling_calls": 8,
+    "trajectories": 8,
+    "event_positions": 256,
+    "native_body_programs": 18,
+    "wrapper_targets": 36,
+    "compile_started": 36,
+    "compile_completed": 23,
+    "scientific_retries": 1,
+    "new_signal_B_N_C_G": 0,
+    "finite_bit_mean": 0,
+    "SCF_FCI_DF": 0,
+    "new_state_reference": 0,
+    "user_directed_followup_attempts": 1,
+    "automatic_retries": 0
+  },
+  "source_commit": "9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c",
+  "error": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-stable-basis-20261102/scripts/run_h4_p3_stage3.py\", line 253, in execute\n    try:key,metrics=future.result()\n                    ^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/concurrent/futures/thread.py\", line 58, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-stable-basis-20261102/scripts/run_h4_p3_stage3.py\", line 239, in compile_one\n    compiled,metrics=kernel.price(circuit)\n                     ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-stable-basis-20261102/src/trotterlib/matched_partition_stage3.py\", line 284, in price\n    cost=transpile_and_measure_cost(circuit,compiler)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-p3-stage3-stable-basis-20261102/src/trotterlib/rte_compiled_cost.py\", line 874, in transpile_and_measure_cost\n    transpiled_circuit = transpile(circuit, **kwargs)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/utils/deprecation.py\", line 184, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/utils/deprecation.py\", line 184, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/utils/deprecation.py\", line 184, in wrapper\n    return func(*args, **kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^\n  [Previous line repeated 1 more time]\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/compiler/transpiler.py\", line 449, in transpile\n    out_circuits = pm.run(circuits, callback=callback, num_processes=num_processes)\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py\", line 441, in run\n    return super().run(circuits, output_name, callback, num_processes=num_processes)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py\", line 464, in wrapper\n    return meth(*meth_args, **meth_kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py\", line 226, in run\n    return super().run(\n           ^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py\", line 231, in run\n    out = [\n          ^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py\", line 232, in <listcomp>\n    _run_workflow(program=program, pass_manager=self, callback=callback, **kwargs)\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py\", line 292, in _run_workflow\n    passmanager_ir, final_state = flow_controller.execute(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py\", line 218, in execute\n    passmanager_ir, state = next_task.execute(\n                            ^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/basepasses.py\", line 195, in execute\n    new_dag, state = super().execute(\n                     ^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py\", line 98, in execute\n    ret = self.run(passmanager_ir)\n          ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py\", line 279, in run\n    out_dag = self._run(dag, tracker, context, use_ancillas=True, top_level=True)\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py\", line 316, in _run\n    if not self._definitely_skip_node(node, qubits, dag):\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/transpiler/passes/synthesis/high_level_synthesis.py\", line 840, in _definitely_skip_node\n    in self._equiv_lib.keys()\n       ^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: Already mutably borrowed\n",
+  "failed_checks": null,
+  "operations": {
+    "T_eigendecompositions": 1,
+    "native_basis_lowerings": 11,
+    "native_operator_evaluations": 44,
+    "reference_half_exponentials": 1
+  },
+  "workers_joined": true,
+  "elapsed_seconds": 652.4447242940078
+}
