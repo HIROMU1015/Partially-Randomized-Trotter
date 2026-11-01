@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3 Stage 3 run03：13件回復・36/36価格完成
+
+[限定結果・全価格・非加法性・SOURCE/STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run03/REPORT.md)。linear H4/1Å/STO-3G/full256、保存DF tol-only1e-8/rank10、案A/T.8/S2/q8/r4/K4/M_B/M_C/P=0。保存入力13件だけを異なる13 processで各1回compileし、旧23価格をそのまま継承。F16/E16/R2/Empty2と予定16非加法性が完成。Full観測RZ範囲はPauli2916–3070/DF8092–9978。各arm4本の固定cohortで母平均/一般的順位/N/Gは未評価。人工4PASS、新sampling/native構築/旧23再compile/automatic retry0。旧81nativePASSと旧STOPを保全、公開照合後mandatory STOP。
+
 ## 2026-11-02 H4 P3 Stage 3 run02：native PASS・23価格保存・compile借用エラー
 
 [部分結果・欠測13件・旧FAIL保全](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage3/run02/REPORT.md)。同じH4/案A/T.8/S2/q8/r4/K4でGivensを数値安定化。one-particle約4.05e-16、native preflight81PASS、8 trajectory/256 event位置。36compile開始・23正常保存後、Qiskit shared equivalence libraryのborrowエラーでSTOP。13価格未取得、全cohort/母平均/N/G未評価。人工21PASS、ユーザー指示の追加attempt1、automatic retry0。旧run01/Stage 2 STOPを保持し、公開照合後mandatory STOP。
