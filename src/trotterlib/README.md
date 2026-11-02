@@ -1,3 +1,7 @@
+## H6 selected implementation kernel
+
+[`h6_selected_implementation.py`](h6_selected_implementation.py)：既存signed Pauli/statevector/比較を使う局所15作用接続。[精度・制約](../../docs/research/h6_selected_implementation_execution_20261102.md)。law平均や全lawρとは区別する。
+
 ## H4 P3有限bit law kernel
 
 [`matched_partition_finite_bit.py`](matched_partition_finite_bit.py)：既存CDF純関数・scalar区間・moment平均とengineering誤差、bias/headroom接続。[限定実行](../../docs/research/h4_p3_finite_bit_execution_20261102.md)。native/compiled誤差は別項。

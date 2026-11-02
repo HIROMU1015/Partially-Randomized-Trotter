@@ -1,3 +1,7 @@
+## 2026-11-02 H6保存trajectoryの局所実装診断
+
+[selected C_i3・native6・compiled6、精度・再利用・STOP](docs/research/h6_selected_implementation_execution_20261102.md)。承認済み3候補/index0000、最大15状態作用。新sampling/compile/N/Gなし。
+
 ## 2026-11-02 純RTE対Hybridへ戻るH6既存証拠調査
 
 [P3の区切り・H6指定2比較・SOURCE/law/target/QPY/価格/ρ許容幅・不足証拠](docs/research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)。既存P1/P2を再利用した読取調査。新数値解析・sampling/compile・N/G更新0。

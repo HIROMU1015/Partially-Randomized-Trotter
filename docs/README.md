@@ -1,3 +1,7 @@
+## H6保存3 trajectory：局所実装診断
+
+[15状態作用・6比較・engineering resolution・STOP](research/h6_selected_implementation_execution_20261102.md)。selected-targetとnative/compiled Fullを保存標本で接続する限定実行。
+
 ## H6純RTE対Hybrid：実装精度と価格tailの証拠棚卸し
 
 [P3を区切った既存証拠調査・指定3候補/2比較・次の限定診断案](research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)。保存値とSOURCEの対応付けのみで、新科学計算なし。
