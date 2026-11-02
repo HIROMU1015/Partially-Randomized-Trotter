@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3：有限bit law・角度の限定診断完了
+
+[6平均・CDF整数count・角度区間・上側候補・STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/finite_bit/run01/REPORT.md)。固定H4/1Å/STO-3G/full256/保存DF tol-only1e-8 rank10/案A/T.8/S2/q8/r4/K4/M_B・M_C/P=0。直接差は両軸未解像、base基準のlaw/角度上側候補P9.35e-14/DF1.80e-13、保存nominal基準bridge込み候補P1.43e-9/DF1.78e-9。engineering評価でcertified_gap_upper=null。native bridge=0/compiled ρ=0を仮定した20 headroomすべて正、actual implemented headroomはnull。DFは53-bit CDFで35成分がcount0。人工9PASS、科学1batch/6.49秒、sampling/native生成/compile/Gaussian/物理reference/新N/G/自動retry0。旧206manifest entry・全結果/STOP・未解像finite Taylor biasを保全。公開照合後mandatory STOP。
+
 ## 2026-11-02 H4 P3 Stage 4：条件付きN/G会計完了
 
 [10行/20軸・N/G/価格SE・仮定とSTOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/stage4/run01/REPORT.md)。H4/1Å/STO-3G/full256、保存DF tol-only1e-8/rank10、案A/T.8/S2/q8/r4/K4/M_B・M_C/P=0、5精度。finite-bit gap=0/compiled ρ=0/B engineering上界仮定で全10行ELIGIBLE_CONDITIONAL。DFはshot数が小さく、Pauliは標本価格を使ったG_RZが小さい（P/DF約.45273）。nominal-reference直接bias、数値誤差一回計上、共分散SE、scalar ceil照合20軸/修正0。人工7PASS、保存解析1batch、新sampling/compile/reference/高精度bias0。母平均tail/実装精度/全RPE保証なし。旧全STOP保持、公開照合後mandatory STOP。
