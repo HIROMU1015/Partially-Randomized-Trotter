@@ -1,5 +1,11 @@
 # 文書索引
 
+## 研究C：11月3日成果統合・nominal価格比較（2026-11-03）
+
+[新版Evidence Map・旧24 Claimとの対応・8追加項目](research/research_c_evidence_map_updated_20261103.md)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。
+
+update005/r32の独立640件は0.5%精度目標未達・`UNRESOLVED_PRECISION_TARGET`。追加64 U更新はDF予算を維持したがU一次未達。A〜Eの科学SOURCE・結果commitと2候補を分離し、旧資料・旧判定を保全した技術的統合。新科学計算・重要科学レビュー・新規性/論文化判断は0。以下の11月2日以前の記述は各時点の条件付き履歴として読む。
+
 ## 研究C：Claimと科学的貢献候補の統合（2026-11-02）
 
 [最新Evidence Map](research/research_c_evidence_map_updated_20261102.md) ／ [科学的貢献候補・論文構成案](research/research_c_contribution_positioning_20261102.md) ／ [24 Claimと貢献候補の対応・固定証拠照合](research/research_c_claim_contribution_alignment_20261102.md)。A/B原本を保持した文書統合であり、新科学計算・証拠資格の変更・新規性や論文化の正式判断は行っていない。

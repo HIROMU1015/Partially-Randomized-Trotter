@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-11-03：研究Cの既存公開証拠統合（新科学実行なし）
+
+[最新Evidence Map](docs/research/research_c_evidence_map_updated_20261103.md)／[静的照合記録](artifacts/research_c_latest_evidence_integration/2026-11-03/static_verification.json)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。
+
+A1265/B1042/C617/D5845/E2374 unitsは各固定公開実行の実績を引用した値で、今回の実行ではない。5系列ともcorrectness FAIL/retry/resume0とmandatory STOPを維持。update005の640件は登録精度未達、update064の256件はnominalモデル内判定。2候補・32件探索cohort・独立校正・理想/仮定/evidence laneを分離し、actual CA等のnullを保持した。
+
+Manifestには既存様式の「技術的な既存証拠統合」索引1件だけを追記し、新しい科学validation成功を登録しない。全体checkerはclean起点からrelevant_commits[37]の旧キー形式でFAILしており未修正。今回追加分の転記・SOURCE/公開本文・リンク・旧record保全は独立に静的確認する。以下の科学結果・未資格・旧STOPは原条件の履歴として保持。
+
 ## 研究C：同じ新J/Uでも主RZは強決定論が低費用（2026-11-02）
 
 [156-call結果・全13round・同一J/U比較と限界](docs/research/research_c_same_ju_strong_d_execution_20261102.md)。固定SOURCE5f27539ae/156-call契約を無変更でfresh run01へ一度実行し156/156 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36、統合update005の同じJ/U、元g補正κ/scalar/frame順、own-DF ground oracle/準備除外。全frame ordered S2/s1/δ=h=.1/m0..12、保存DF予算PASS再利用・新DF norm/fit/optimizer/PR再計算0。9因子CAR/sector・ground/alias・full512 raw/compiled/actual-adjoint/X-Yと13roundがPASS。P0 kernel RZ11026、shots13728、条件付き総RZ105532782860。保存新PR idealは207919150188、同じ新J/UのPR/D比1.97018542062（CX depth比.724994660275で副指標tradeoffあり）。旧/新のD価格6指標は一致、D総RZは3.64%増、新PR自身は既報11.19%減。Numerical D/両ideal反実laneは同じ整数費用だが、厳密CA・PR全law誤差/support/母平均優位・目的だけの因果効果は未資格。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。

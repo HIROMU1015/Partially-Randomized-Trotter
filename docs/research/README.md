@@ -1,5 +1,11 @@
 # 研究計画資料
 
+## 研究C：11月3日成果統合・nominal価格比較（2026-11-03）
+
+[新版Evidence Map・旧24 Claimとの対応・8追加項目](research_c_evidence_map_updated_20261103.md)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。
+
+update005/r32の独立640件は0.5%精度目標未達・`UNRESOLVED_PRECISION_TARGET`。追加64 U更新はDF予算を維持したがU一次未達。A〜Eの科学SOURCE・結果commitと2候補を分離し、旧資料・旧判定を保全した技術的統合。新科学計算・重要科学レビュー・新規性/論文化判断は0。以下の11月2日以前の記述は各時点の条件付き履歴として読む。
+
 ## 研究C：通常CDF7・限定1-fitでDF予算PASS（2026-10-30）
 
 [結果・初期/終了誤差・CDF8比較・後続案](research_c_cdf7_onefit_execution_20261030.md)。保存直鎖H4/1Å/STO-3G、Nα=Nβ2/sector36、通常number CDF7/元順LD2、γ0 normalized tensor loss、ffsim0.0.83/修正codec/L-BFGS-B options=None。SOURCEc13d6f82a無変更で25/25 COMPLETE、correctness FAIL0、rank7 Cholesky初期化1/fit1/retry-resume0。初期sector+guard9.0647035e-4Haは予算未達の診断としてfitを許容し、終了3.02264175e-7HaでCA/8=.00019875Ha PASS。Optimizerは215iterの相対目的減少停止、正規化gradient∞=.05556で停留/大域保証なし。人工45 PASS＋29 subtests、旧保護2153件不変。PR/PF-RTE/ground/native/shots/総資源0。後続119-call案はrank7 adapter/SOURCE未固定でexecutable=false、native32は別案。公開照合後mandatory STOP。
