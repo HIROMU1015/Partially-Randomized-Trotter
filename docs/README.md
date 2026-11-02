@@ -1,3 +1,7 @@
+## H6純RTE対Hybrid：実装精度と価格tailの証拠棚卸し
+
+[P3を区切った既存証拠調査・指定3候補/2比較・次の限定診断案](research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)。保存値とSOURCEの対応付けのみで、新科学計算なし。
+
 ## H4 P3：有限bit lawの限定実行
 
 [kernel/runner・18入力・6信号・精度とSTOP](research/h4_p3_finite_bit_execution_20261102.md)。固定設計に対する最小接続と人工検査。

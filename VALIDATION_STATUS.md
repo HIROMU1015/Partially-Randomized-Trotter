@@ -1,3 +1,7 @@
+## 2026-11-02 H6純RTE対Hybrid：読取技術調査
+
+[指定2比較・既存実装精度証拠・価格tail・次の局所診断案](docs/research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)。P3を限定case studyとして区切り、H6 R64/H32/H64のSOURCE/law/target/価格/保存ρ_guardを対応付けた。既存P2復元で21member・12 QPY raw/gzipを照合し、新数値解析・QPY deserialize/状態作用・sampling/compile・感度/N/G更新0。既存H6 targetは実効53-bit law/角度平均を含むが、actualρと母平均tailは未取得。新しい科学的優位性や実装保証の採択ではない。全旧結果/STOP・旧manifest entriesを保全。
+
 ## 2026-11-02 H4 P3：有限bit law・角度の限定診断完了
 
 [6平均・CDF整数count・角度区間・上側候補・STOP](artifacts/df_pauli_matched_partition_validation/2026-11-02/finite_bit/run01/REPORT.md)。固定H4/1Å/STO-3G/full256/保存DF tol-only1e-8 rank10/案A/T.8/S2/q8/r4/K4/M_B・M_C/P=0。直接差は両軸未解像、base基準のlaw/角度上側候補P9.35e-14/DF1.80e-13、保存nominal基準bridge込み候補P1.43e-9/DF1.78e-9。engineering評価でcertified_gap_upper=null。native bridge=0/compiled ρ=0を仮定した20 headroomすべて正、actual implemented headroomはnull。DFは53-bit CDFで35成分がcount0。人工9PASS、科学1batch/6.49秒、sampling/native生成/compile/Gaussian/物理reference/新N/G/自動retry0。旧206manifest entry・全結果/STOP・未解像finite Taylor biasを保全。公開照合後mandatory STOP。

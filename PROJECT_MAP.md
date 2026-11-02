@@ -1,3 +1,7 @@
+## 2026-11-02 純RTE対Hybridへ戻るH6既存証拠調査
+
+[P3の区切り・H6指定2比較・SOURCE/law/target/QPY/価格/ρ許容幅・不足証拠](docs/research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)。既存P1/P2を再利用した読取調査。新数値解析・sampling/compile・N/G更新0。
+
 ## 2026-11-02 H4 P3：有限bit law・角度誤差の限定実行
 
 [18入力・6複素平均・誤差転送・人工検査・STOP](docs/research/h4_p3_finite_bit_execution_20261102.md)。承認された固定scopeのmatrix-only接続。sampling/native生成/compile・N/G更新なし。
