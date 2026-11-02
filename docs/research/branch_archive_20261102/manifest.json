@@ -7,12 +7,14 @@
   "initial_actual_remote_heads": 358,
   "known_historical_branch_names": 906,
   "already_absent_before_cleanup": 548,
-  "planned_deletions": 354,
+  "planned_deletions": 352,
   "keep_branches": [
+    "codex/h46-long-time-b3-20261026",
     "codex/h6-pauli-price-tail-audit-20261102",
     "codex/research-c-pr-integrated-20261102",
     "codex/research-c-pr-resource-contribution-20261102",
-    "main"
+    "main",
+    "track-b-g6-return-generator-audit-20261010"
   ],
   "archive_tag_count": 96,
   "archive_tags": [
@@ -524,16 +526,34 @@
   "scientific_status_or_STOP_changed": false,
   "delete_guard": "Only listed initial_remote_sha; changed/new heads are retained; explicit per-ref lease and atomic pushes.",
   "files_sha256": {
-    "branches.csv": "8f66567b2ca8ce8eab8e843db06eaffab234d11e22f2b4cf186dc89301f8119e",
+    "branches.csv": "d641cc6f4a0dfc2353c33cbac8da932a5158325d3aa775fc0d3dfc33b619aa7f",
     "archives.csv": "e3678fc1b8302d97087db50dc03817caa77fb5c00248001140ba2f1ab1d5c7f0"
   },
-  "execution_state": "PREPARED_ARCHIVE_TAGS_LOCAL_ONLY_NO_REMOTE_DELETION",
-  "execution_owner": "OTHER_ENVIRONMENT_CODEX_PER_USER_REQUEST",
-  "remote_archive_tags_created_by_preparer": 0,
-  "remote_branch_deletions_by_preparer": 0,
-  "local_archive_tags_prepared": 96,
-  "driver_sha256": "0fe172e72696927b2d23d45c47c29dc89419b3ace13018dbfbde42aed7365d72",
-  "guard_tests": {
+  "driver_sha256": "ee6498c966f3ee96cfb7718818fc4232ddbd3a96e547eefc0f91059ff776b51f",
+  "revision": {
+    "number": 2,
+    "supersedes_commit": "7ddf2bdf93dadb8c9868676636e06d6b9ca13143",
+    "scope": "Local technical revision only; no prepare, archive tag creation/publication, or branch deletion executed.",
+    "initial_planned_deletions": 354,
+    "keep_reasons": {
+      "track-b-g6-return-generator-audit-20261010": "Branch-name GitHub API URL in docs/reviews/track_b/track_b_G6_scientific_review_20261010.md:658; preserve this name pending reference repair.",
+      "codex/h46-long-time-b3-20261026": "Server2 inventory reports local f794a2aa4c76bc024540c808bf9400d9f523bb76 diverged from remote ebe9e2aa2c83cd71a6da0a885b78f32274bfb6ed; local object/diff not available here. Preserve remote branch pending cross-environment review."
+    },
+    "cross_environment_limits": "Server1 read-only inventory not supplied; server2 ignored raw and unpublished local commits are outside this public-history archive plan.",
+    "changes": [
+      "Verify local and public driver digests; validate origin fetch and all push URLs.",
+      "Record remote readback after deletion pushes, including transport errors; persist uncertainty before push and reconcile on explicit resume without retry.",
+      "Keep G6 and B3; preserve original fixed commits, known versions, locators, and 96 archive tags."
+    ]
+  },
+  "preparer_state": {
+    "execution_state": "PREPARED_ARCHIVE_TAGS_LOCAL_ONLY_NO_REMOTE_DELETION",
+    "execution_owner": "OTHER_ENVIRONMENT_CODEX_PER_USER_REQUEST",
+    "remote_archive_tags_created_by_preparer": 0,
+    "remote_branch_deletions_by_preparer": 0,
+    "local_archive_tags_prepared": 96
+  },
+  "preparer_guard_tests": {
     "status": "PASS",
     "tested_driver": "scripts/retire_archived_remote_branches.py",
     "tests": [
@@ -542,6 +562,14 @@
       "archive_tag_collision_rejected_without_force",
       "main_branch_is_never_a_deletion_target"
     ],
-    "test_remote": "temporary local bare repository; no GitHub mutation"
+    "test_remote": "temporary local bare repository; no GitHub mutation",
+    "source_commit": "7ddf2bdf93dadb8c9868676636e06d6b9ca13143"
+  },
+  "execution_state": "READY_FOR_GUARDED_EXECUTION",
+  "guard_tests": {
+    "status": "PASS_LOCAL_MOCK_ONLY",
+    "command": "python3 tests/test_retire_archived_remote_branches.py",
+    "test_transport": "All Git transport mocked; no real push, tag creation, or scientific execution.",
+    "tests_passed": 14
   }
 }
