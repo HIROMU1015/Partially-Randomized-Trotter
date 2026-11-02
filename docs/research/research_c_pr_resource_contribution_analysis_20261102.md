@@ -175,11 +175,13 @@ Kernel単価にancilla head/X/Y shellとsystem状態準備は含まれない。�
 
 | 保存最大観測値 | 旧PR | 新PR |
 |---|---:|---:|
-| raw/reference全成分差 | 2.242727e-14 | 5.72875080707e-14 |
+| raw unitarity全成分差 | 4.485301e-14 | 5.72875080707e-14 |
 | compiled/reference全成分差 | 2.554363e-12 | 4.28789615561e-12 |
 | compiled actual adjoint/reference差 | 2.560195e-12 | 4.29228552179e-12 |
 | raw complex X/Y差 | 3.557768e-14 | 1.66278832933e-14 |
 | compiled complex X/Y差 | 9.267111e-14 | 1.20642488545e-13 |
+
+新統合報告の「raw全成分比較max」は、[sample02_raw.json][RU]の`unitarity.max_entry`に対応する。raw/reference誤差の最大値としては扱わず、表でも旧報告の`raw_unitarity`へ対応づけた。新しい32件再集計は行っていない。
 
 Component/adjoint allowance=1e-10、signal allowance=2e-10、rtol=0、位相fitなし。これらは有限cohortの数値検査であり、全trajectory・全occurrenceの合成誤差上界や厳密丸めenclosureではない。Frobenius/max-entryとoperator2 boundも区別する。実装law誤差とcost supportの未知値を埋めない。
 
@@ -289,6 +291,7 @@ Wは約36.94%減、単価は約40.84%増であり、その積のkernel部分は�
 [CT]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/artifacts/research_c_pr_integrated/2026-11-02/run01/contract.json
 [SN]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/artifacts/research_c_pr_integrated/2026-11-02/technical/SOURCE.json
 [NE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/artifacts/research_c_pr_integrated/2026-11-02/run01/C/samples/sample00_events.json
+[RU]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/artifacts/research_c_pr_integrated/2026-11-02/run01/C/samples/sample02_raw.json
 [M]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/docs/research/research_c_pr_aware_df_M4_s1_r128_feasibility_breakeven_20261028.md
 [SO1]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/artifacts/research_c_pr_aware_df_M4/2026-10-28/technical/SOURCE.json
 [SO2]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aced1647b81e8d28091058cdc7b6e3e1ee54896a/artifacts/research_c_pr_aware_df_M4_native/2026-10-28/technical/SOURCE.json
