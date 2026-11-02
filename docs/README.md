@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：単一小step・19-call実行完了（2026-11-02）
+
+[結果・1回受理・J/U/rawの区別・STOP](research/research_c_pr_small_step_execution_20261102.md)。`run_research_c_pr_small_step.py`／`c_pr_small_step*.py` を無変更で実行。全数値資格・値尺度Armijo・独立終端PASS、F低下と1回U受理。U一次未達、DF物理予算/PR性能は未評価。Artifact `artifacts/research_c_pr_small_step/2026-11-02/run01`、公開照合後mandatory STOP。
+
 ## 研究C：小step・最大1回U更新の技術準備（2026-11-02）
 
 [最小接続・297人工/回帰PASS・未承認19-call契約](research/research_c_pr_small_step_preparation_20261102.md)。`c_pr_small_step.py`／専用pilot・runner・人工testsを追加。元H4/1Å/STO-3G、CDF8/LD2・γ=.1の初期点からα=F0/|s|/8の1trial、値尺度を含むArmijo＋独立終端state後のみ受理。旧inner/資格/閾値を維持、実H4追加計算0。旧SOURCE/raw/49-call STOP保全、別実行許可までmandatory STOP。
