@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="11" time="3.211" timestamp="2026-11-02T21:24:57.591579+09:00" hostname="abe-Precision-3260"><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_passive_import_is_non_numeric" time="0.076" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_passive_hashes_never_decode_and_input_mismatch_STOP" time="0.038" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[DF]" time="1.779" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[JU]" time="0.083" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[compiler]" time="0.083" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[oldJU]" time="0.082" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[PR_target]" time="0.082" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[missing]" time="0.082" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_artificial_full512_single_kernel_end_to_end" time="0.362"><failure message="ValueError: EXPLICIT_PAIRED_CDF_ROLE">tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-0/test_artificial_full512_single0')
+
+    def test_artificial_full512_single_kernel_end_to_end(tmp_path):
+        from threadpoolctl import threadpool_limits
+        c,r=saved_fixture(tmp_path);out=tmp_path/'out';out.mkdir();call=m.integrated.Calls(out,m.LIMITS,m.MAX_CALLS)
+        assert m.evidence(tmp_path,c)['physical']['budget_PASS']
+&gt;       with threadpool_limits(limits=1):result=m.execute(tmp_path,c,out,call)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_same_ju_strong_d.py:184: in execute
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_same_ju_strong_d.py:184: in &lt;lambda&gt;
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+h = array([[-0.4,  0. ,  0. ,  0. ],
+       [ 0. , -0.2,  0. ,  0. ],
+       [ 0. ,  0. ,  0.3,  0. ],
+       [ 0. ,  0. ,  0. ,  0.5]])
+g = array([[[[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]],
+
+        ..., 0.]],
+
+        [[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]]]])
+constant = array(0.31)
+J = array([[[0.0011 , 0.     , 0.     , 0.     ],
+        [0.     , 0.0011 , 0.     , 0.     ],
+        [0.     , 0.     ,...00187, 0.     , 0.     ],
+        [0.     , 0.     , 0.00187, 0.     ],
+        [0.     , 0.     , 0.     , 0.00187]]])
+U = array([[[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]],
+
+       [[1.,...., 0., 1.]],
+
+       [[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]]])
+
+    def prepare_arm(h,g,constant,J,U,*,role,source_identity,input_identity,ld):
+        """No XDF conversion; original-g kappa and one shared spin-basis policy."""
+        import numpy as np
+        from .c1_h4_strong_baseline import spin_adapted_eigh
+        from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+&gt;       if role not in ARMS:raise ValueError('EXPLICIT_PAIRED_CDF_ROLE')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: EXPLICIT_PAIRED_CDF_ROLE
+
+src/trottertracks/c_pr_aware_df_stage_b.py:40: ValueError</failure></testcase><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_ineligible_PF_skips_native_and_preserves_null" time="0.190"><failure message="ValueError: EXPLICIT_PAIRED_CDF_ROLE">tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-0/test_ineligible_PF_skips_nativ0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7181bd7a4d90&gt;
+
+    def test_ineligible_PF_skips_native_and_preserves_null(tmp_path,monkeypatch):
+        from trottertracks import c1_molecule_extension as molecule
+        c,r=saved_fixture(tmp_path);out=tmp_path/'out';out.mkdir();call=m.integrated.Calls(out,m.LIMITS,m.MAX_CALLS)
+        def rounds(*a,**kw):return [call('PF_round',str(i),lambda i=i:dict(m=i,pf_operator_error=1.5)) for i in range(13)]
+        monkeypatch.setattr(molecule,'PF_rounds',rounds)
+&gt;       result=m.execute(tmp_path,c,out,call)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_same_ju_strong_d.py:184: in execute
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_same_ju_strong_d.py:184: in &lt;lambda&gt;
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+h = array([[-0.4,  0. ,  0. ,  0. ],
+       [ 0. , -0.2,  0. ,  0. ],
+       [ 0. ,  0. ,  0.3,  0. ],
+       [ 0. ,  0. ,  0. ,  0.5]])
+g = array([[[[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]],
+
+        ..., 0.]],
+
+        [[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]]]])
+constant = array(0.31)
+J = array([[[0.0011 , 0.     , 0.     , 0.     ],
+        [0.     , 0.0011 , 0.     , 0.     ],
+        [0.     , 0.     ,...00187, 0.     , 0.     ],
+        [0.     , 0.     , 0.00187, 0.     ],
+        [0.     , 0.     , 0.     , 0.00187]]])
+U = array([[[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]],
+
+       [[1.,...., 0., 1.]],
+
+       [[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]]])
+
+    def prepare_arm(h,g,constant,J,U,*,role,source_identity,input_identity,ld):
+        """No XDF conversion; original-g kappa and one shared spin-basis policy."""
+        import numpy as np
+        from .c1_h4_strong_baseline import spin_adapted_eigh
+        from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+&gt;       if role not in ARMS:raise ValueError('EXPLICIT_PAIRED_CDF_ROLE')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: EXPLICIT_PAIRED_CDF_ROLE
+
+src/trottertracks/c_pr_aware_df_stage_b.py:40: ValueError</failure></testcase><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_correctness_partial_STOP_and_no_resume" time="0.003" /></testsuite></testsuites>

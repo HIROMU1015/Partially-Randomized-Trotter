@@ -1,0 +1,138 @@
+........FF.                                                              [100%]
+=================================== FAILURES ===================================
+_______________ test_artificial_full512_single_kernel_end_to_end _______________
+
+tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-0/test_artificial_full512_single0')
+
+    def test_artificial_full512_single_kernel_end_to_end(tmp_path):
+        from threadpoolctl import threadpool_limits
+        c,r=saved_fixture(tmp_path);out=tmp_path/'out';out.mkdir();call=m.integrated.Calls(out,m.LIMITS,m.MAX_CALLS)
+        assert m.evidence(tmp_path,c)['physical']['budget_PASS']
+>       with threadpool_limits(limits=1):result=m.execute(tmp_path,c,out,call)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:94: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_same_ju_strong_d.py:184: in execute
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_same_ju_strong_d.py:184: in <lambda>
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+h = array([[-0.4,  0. ,  0. ,  0. ],
+       [ 0. , -0.2,  0. ,  0. ],
+       [ 0. ,  0. ,  0.3,  0. ],
+       [ 0. ,  0. ,  0. ,  0.5]])
+g = array([[[[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]],
+
+        ..., 0.]],
+
+        [[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]]]])
+constant = array(0.31)
+J = array([[[0.0011 , 0.     , 0.     , 0.     ],
+        [0.     , 0.0011 , 0.     , 0.     ],
+        [0.     , 0.     ,...00187, 0.     , 0.     ],
+        [0.     , 0.     , 0.00187, 0.     ],
+        [0.     , 0.     , 0.     , 0.00187]]])
+U = array([[[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]],
+
+       [[1.,...., 0., 1.]],
+
+       [[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]]])
+
+    def prepare_arm(h,g,constant,J,U,*,role,source_identity,input_identity,ld):
+        """No XDF conversion; original-g kappa and one shared spin-basis policy."""
+        import numpy as np
+        from .c1_h4_strong_baseline import spin_adapted_eigh
+        from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+>       if role not in ARMS:raise ValueError('EXPLICIT_PAIRED_CDF_ROLE')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: EXPLICIT_PAIRED_CDF_ROLE
+
+src/trottertracks/c_pr_aware_df_stage_b.py:40: ValueError
+______________ test_ineligible_PF_skips_native_and_preserves_null ______________
+
+tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-0/test_ineligible_PF_skips_nativ0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7181bd7a4d90>
+
+    def test_ineligible_PF_skips_native_and_preserves_null(tmp_path,monkeypatch):
+        from trottertracks import c1_molecule_extension as molecule
+        c,r=saved_fixture(tmp_path);out=tmp_path/'out';out.mkdir();call=m.integrated.Calls(out,m.LIMITS,m.MAX_CALLS)
+        def rounds(*a,**kw):return [call('PF_round',str(i),lambda i=i:dict(m=i,pf_operator_error=1.5)) for i in range(13)]
+        monkeypatch.setattr(molecule,'PF_rounds',rounds)
+>       result=m.execute(tmp_path,c,out,call)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_same_ju_strong_d.py:184: in execute
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_same_ju_strong_d.py:184: in <lambda>
+    arm=call('native_model','same JU full-frame D;no PR split',lambda:b.prepare_arm(**p,**d,role='selected',
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+h = array([[-0.4,  0. ,  0. ,  0. ],
+       [ 0. , -0.2,  0. ,  0. ],
+       [ 0. ,  0. ,  0.3,  0. ],
+       [ 0. ,  0. ,  0. ,  0.5]])
+g = array([[[[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]],
+
+        ..., 0.]],
+
+        [[0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.],
+         [0., 0., 0., 0.]]]])
+constant = array(0.31)
+J = array([[[0.0011 , 0.     , 0.     , 0.     ],
+        [0.     , 0.0011 , 0.     , 0.     ],
+        [0.     , 0.     ,...00187, 0.     , 0.     ],
+        [0.     , 0.     , 0.00187, 0.     ],
+        [0.     , 0.     , 0.     , 0.00187]]])
+U = array([[[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]],
+
+       [[1.,...., 0., 1.]],
+
+       [[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]]])
+
+    def prepare_arm(h,g,constant,J,U,*,role,source_identity,input_identity,ld):
+        """No XDF conversion; original-g kappa and one shared spin-basis policy."""
+        import numpy as np
+        from .c1_h4_strong_baseline import spin_adapted_eigh
+        from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+>       if role not in ARMS:raise ValueError('EXPLICIT_PAIRED_CDF_ROLE')
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ValueError: EXPLICIT_PAIRED_CDF_ROLE
+
+src/trottertracks/c_pr_aware_df_stage_b.py:40: ValueError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_same_ju_strong_d.py::test_artificial_full512_single_kernel_end_to_end
+FAILED tests/management/test_research_c_same_ju_strong_d.py::test_ineligible_PF_skips_native_and_preserves_null
+2 failed, 9 passed in 3.21s

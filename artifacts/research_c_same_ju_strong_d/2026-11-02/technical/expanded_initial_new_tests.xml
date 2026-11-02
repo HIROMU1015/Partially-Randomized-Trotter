@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="16" time="6.156" timestamp="2026-11-02T21:28:22.734672+09:00" hostname="abe-Precision-3260"><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_passive_import_is_non_numeric" time="0.074" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_passive_hashes_never_decode_and_input_mismatch_STOP" time="0.023" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[DF]" time="1.605" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[JU]" time="0.079" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[compiler]" time="0.079" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[oldJU]" time="0.079" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[PR_target]" time="0.078" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_evidence_identity_missing_and_unqualified_STOP[missing]" time="0.078" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_artificial_full512_single_kernel_end_to_end" time="3.229" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_ineligible_PF_skips_native_and_preserves_null" time="0.171" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_correctness_partial_STOP_and_no_resume" time="0.005" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_legacy_passive_preflight_on_artificial_source" time="0.031" /><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_native_correctness_FAIL_stops_dependencies[phase]" time="0.126"><failure message="KeyError: 'source_manifest'">tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7640aaa91910&gt;
+fault = 'phase'
+
+    @pytest.mark.parametrize('fault',['phase','frame','compile'])
+    def test_native_correctness_FAIL_stops_dependencies(tmp_path,monkeypatch,fault):
+        from dataclasses import replace
+        from trottertracks import c_pr_aware_df_stage_b as b,c1_h4_native_fair as fair
+        c,_=saved_fixture(tmp_path);monkeypatch.setattr(m,'preflight',lambda *args:c)
+        if fault=='compile':
+            monkeypatch.setattr(fair,'compile_checked',lambda *args:(_ for _ in ()).throw(ValueError('INJECTED_COMPILE_FAIL')))
+        else:
+            original=b.prepare_arm
+            def prepare(*args,**kwargs):
+                arm=original(*args,**kwargs)
+                if fault=='phase':arm.model=replace(arm.model,constant=arm.model.constant+.2)
+                else:arm.model=replace(arm.model,blocks=arm.model.blocks[:1]+tuple(reversed(arm.model.blocks[1:])))
+                return arm
+            monkeypatch.setattr(b,'prepare_arm',prepare)
+&gt;       with pytest.raises(ValueError):m.run(tmp_path,tmp_path/'unused.json')
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s0')
+path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s0/unused.json')
+
+    def run(root,path):
+        root=Path(root).resolve();c=preflight(root,path);out=root/FRESH;out.mkdir(parents=True)
+        call=integrated.Calls(out,LIMITS,MAX_CALLS);start=time.monotonic();cpu=time.process_time()
+        try:
+&gt;           io.save(out/'contract.json',c);io.save(out/'SOURCE.json',io.read(root/c['source_manifest']))
+                                                                                  ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'source_manifest'
+
+src/trottertracks/c_same_ju_strong_d.py:269: KeyError</failure></testcase><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_native_correctness_FAIL_stops_dependencies[frame]" time="0.079"><failure message="KeyError: 'source_manifest'">tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7640a5db4c50&gt;
+fault = 'frame'
+
+    @pytest.mark.parametrize('fault',['phase','frame','compile'])
+    def test_native_correctness_FAIL_stops_dependencies(tmp_path,monkeypatch,fault):
+        from dataclasses import replace
+        from trottertracks import c_pr_aware_df_stage_b as b,c1_h4_native_fair as fair
+        c,_=saved_fixture(tmp_path);monkeypatch.setattr(m,'preflight',lambda *args:c)
+        if fault=='compile':
+            monkeypatch.setattr(fair,'compile_checked',lambda *args:(_ for _ in ()).throw(ValueError('INJECTED_COMPILE_FAIL')))
+        else:
+            original=b.prepare_arm
+            def prepare(*args,**kwargs):
+                arm=original(*args,**kwargs)
+                if fault=='phase':arm.model=replace(arm.model,constant=arm.model.constant+.2)
+                else:arm.model=replace(arm.model,blocks=arm.model.blocks[:1]+tuple(reversed(arm.model.blocks[1:])))
+                return arm
+            monkeypatch.setattr(b,'prepare_arm',prepare)
+&gt;       with pytest.raises(ValueError):m.run(tmp_path,tmp_path/'unused.json')
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s1')
+path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s1/unused.json')
+
+    def run(root,path):
+        root=Path(root).resolve();c=preflight(root,path);out=root/FRESH;out.mkdir(parents=True)
+        call=integrated.Calls(out,LIMITS,MAX_CALLS);start=time.monotonic();cpu=time.process_time()
+        try:
+&gt;           io.save(out/'contract.json',c);io.save(out/'SOURCE.json',io.read(root/c['source_manifest']))
+                                                                                  ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'source_manifest'
+
+src/trottertracks/c_same_ju_strong_d.py:269: KeyError</failure></testcase><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_native_correctness_FAIL_stops_dependencies[compile]" time="0.078"><failure message="KeyError: 'source_manifest'">tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x7640aa218690&gt;
+fault = 'compile'
+
+    @pytest.mark.parametrize('fault',['phase','frame','compile'])
+    def test_native_correctness_FAIL_stops_dependencies(tmp_path,monkeypatch,fault):
+        from dataclasses import replace
+        from trottertracks import c_pr_aware_df_stage_b as b,c1_h4_native_fair as fair
+        c,_=saved_fixture(tmp_path);monkeypatch.setattr(m,'preflight',lambda *args:c)
+        if fault=='compile':
+            monkeypatch.setattr(fair,'compile_checked',lambda *args:(_ for _ in ()).throw(ValueError('INJECTED_COMPILE_FAIL')))
+        else:
+            original=b.prepare_arm
+            def prepare(*args,**kwargs):
+                arm=original(*args,**kwargs)
+                if fault=='phase':arm.model=replace(arm.model,constant=arm.model.constant+.2)
+                else:arm.model=replace(arm.model,blocks=arm.model.blocks[:1]+tuple(reversed(arm.model.blocks[1:])))
+                return arm
+            monkeypatch.setattr(b,'prepare_arm',prepare)
+&gt;       with pytest.raises(ValueError):m.run(tmp_path,tmp_path/'unused.json')
+                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s2')
+path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_native_correctness_FAIL_s2/unused.json')
+
+    def run(root,path):
+        root=Path(root).resolve();c=preflight(root,path);out=root/FRESH;out.mkdir(parents=True)
+        call=integrated.Calls(out,LIMITS,MAX_CALLS);start=time.monotonic();cpu=time.process_time()
+        try:
+&gt;           io.save(out/'contract.json',c);io.save(out/'SOURCE.json',io.read(root/c['source_manifest']))
+                                                                                  ^^^^^^^^^^^^^^^^^^^^
+E           KeyError: 'source_manifest'
+
+src/trottertracks/c_same_ju_strong_d.py:269: KeyError</failure></testcase><testcase classname="tests.management.test_research_c_same_ju_strong_d" name="test_nontrivial_rotations_general_signed_J_full512" time="0.107"><failure message="ValueError: ORIGINAL_SOURCE_INPUT_POLICY">tmp_path = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_nontrivial_rotations_gene0')
+
+    def test_nontrivial_rotations_general_signed_J_full512(tmp_path):
+        from scipy.linalg import expm,eigh
+        from threadpoolctl import threadpool_limits
+        from trottertracks import c1_molecule_extension as molecule
+        c,r=saved_fixture(tmp_path);rng=np.random.default_rng(902)
+        J=rng.normal(size=(8,4,4))*1e-4;J=(J+J.transpose(0,2,1))/2
+        X=rng.normal(size=(8,4,4))*.2;U=np.stack([expm(a-a.T) for a in X])
+        np.savez(tmp_path/c['export'],J=J,U=U);h=m.io.sha(tmp_path/c['export']);c['saved_inputs'][c['export']]=h
+        packet=dict(np.load(tmp_path/c['input']));ctx=molecule.SectorCAR(4);G=ctx.generators(**packet,J=J,U=U);H=sum(G);pair=eigh(H)
+        np.savez(tmp_path/c['reference'],J=J,U=U,generators=np.asarray(G),H=H)
+        np.savez(tmp_path/c['ground'],energy=pair[0][0],sector_state=pair[1][:,0])
+        r['physical']['candidate_sha256']=h;r['new_result']['selected']['physical']=r['physical'];r['ground_report']['energy_Ha']=float(pair[0][0])
+        for x in r['new_result']['performance']['lanes'].values():
+            for row in x['rounds']:
+                if 'target_id' in row:row['target_id']='integrated:'+h
+        for k,path in c['records'].items():(tmp_path/path).write_text(json.dumps(r[k]))
+        out=tmp_path/'nontrivial';out.mkdir();call=m.integrated.Calls(out,m.LIMITS,m.MAX_CALLS)
+&gt;       with threadpool_limits(limits=1):result=m.execute(tmp_path,c,out,call)
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_same_ju_strong_d.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_same_ju_strong_d.py:154: in execute
+    saved=call('evidence_load','fixed selected and old reference identities',lambda:evidence(root,c))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_same_ju_strong_d.py:154: in &lt;lambda&gt;
+    saved=call('evidence_load','fixed selected and old reference identities',lambda:evidence(root,c))
+                                                                                    ^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+root = PosixPath('/tmp/prt-c-same-ju-strong-d-preparation-20261102/.cache/same-ju-tests/tmp/pytest-of-abe/pytest-2/test_nontrivial_rotations_gene0')
+c = {'basis': 'basis.npz', 'export': 'selected.npz', 'ground': 'proposed_ground.npz', 'input': 'input.npz', ...}
+
+    def evidence(root,c):
+        r={k:io.read(Path(root)/v) for k,v in c['records'].items()};new=r['new_result'];selected=new['selected']
+        if (r['new_STOP']['failed'] or r['new_STOP']['scientific_units']!=543
+                or new['performance']['status']!='PERFORMANCE_NATIVE_COMPLETE'
+                or selected['id']!='update005' or not selected['qualification']['status']=='NUMERICAL_PILOT_ADMITTED'
+                or selected['physical']!=r['physical']):raise ValueError('NEW_SELECTED_PROVENANCE')
+        orig=r['new_contract']
+        if (orig['scope']!='C_PR_INTEGRATED_H4_REDUCED_PERFORMANCE_V1'
+                or orig['target']!=m2.TARGET or orig['compiler']!=COMPILER
+                or orig['input_paths']['input']!=c['input']
+                or orig['saved_inputs'][c['input']]!=c['saved_inputs'][c['input']]
+                or io.sha(Path(root)/c['records']['new_SOURCE'])!=orig['source_manifest_sha256']):
+&gt;           raise ValueError('ORIGINAL_SOURCE_INPUT_POLICY')
+E           ValueError: ORIGINAL_SOURCE_INPUT_POLICY
+
+src/trottertracks/c_same_ju_strong_d.py:76: ValueError</failure></testcase></testsuite></testsuites>
