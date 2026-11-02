@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3：有限bit law・角度誤差の非実行設計
+
+[53-bit CDF・binary64角度・6平均案・native境界・bias/headroom接続](docs/research/h4_p3_finite_bit_law_design_20261102.md)。静的確認と文書のみ。Stage 4 STOPを維持し、新科学計算・sampling/compile・N/G更新は未実行。
+
 ## 2026-11-02 H4 P3 Stage 4：条件付き会計の限定実行
 
 [承認済みscalar adapter/runner・人工検査・STOP](docs/research/h4_p3_stage4_execution_20261102.md)。保存8JSONのみ、2方式×5精度。新sampling/compile/referenceなし。

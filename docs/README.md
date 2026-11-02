@@ -1,3 +1,7 @@
+## H4 P3：有限bit実効law・角度誤差
+
+[非実行設計・CDF/角度・名目平均とのbridge・native境界・headroom](research/h4_p3_finite_bit_law_design_20261102.md)。Stage 4後の優先検証案。数値実行は別途明示許可を要する。
+
 ## H4 P3 Stage 4：条件付きscalar会計
 
 [実装・検証・固定範囲](research/h4_p3_stage4_execution_20261102.md)。既存shot関数と保存nominal/reference・32価格の接続。
