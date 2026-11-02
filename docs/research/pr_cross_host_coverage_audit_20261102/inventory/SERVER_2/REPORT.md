@@ -164,7 +164,7 @@ B3のlocal最終`f794a2aa…`と公開carrier`ebe9e2aa…`の差は既存landsca
 
 32件のTrack A文書blob、182件の対象repo SOURCE索引blobも既存値と一致。これは存在・metadataの確認で、全科学SOURCEの再監査や独立科学レビューではない。変更対象はINVENTORY.csv、REPORT.md、DETAILS.jsonlの3ファイルだけ。研究概要、PROJECT_MAP、status/manifest、科学コードは変更しない。
 
-通常push後のremote SHAと、固定公開commitの3ファイル本文の照合結果は最終チャットに記載する。自己参照になるため、このREPORT自身へ公開commit SHAを埋め込まない。公開失敗・本文未照合を完了扱いにしない。
+通常pushはHTTPS認証情報がなく失敗した（terminal prompts disabled / could not read Username）。remoteに本branchは未発見で、3ファイルは未公開。remote SHA・固定公開本文照合は未実施。接続済みGitHubツールには大きいローカルファイルを直接uploadする手段がないため、REPORTだけの部分公開はしていない。自己参照になるため、このREPORT自身へ最終commit SHAを埋め込まない。公開・照合の完了条件は未達である。
 
 ## 11. 原本・STOPの保全
 
@@ -174,9 +174,9 @@ B3のlocal最終`f794a2aa…`と公開carrier`ebe9e2aa…`の差は既存landsca
 
 ## 12. Mandatory STOP
 
-**本成果物の通常commit/pushとremote SHA・公開本文照合後、SERVER 2 Phase 1を終了してmandatory STOP。** 未展開・未解決項目は上記のまま保留する。Phase 2統合、Phase 3 coverage評価、不足A〜Eの分類・優先度、詳細科学レビュー、主要claim採択、新科学計算へ自動移行しない。
+**現在は公開待ちSTOP。棚卸し成果物の作成・技術検査・local commitは完了したが、HTTPS認証不足でpushできず、SERVER 2 Phase 1の公開・照合完了は未達である。** 通常pushとremote SHA・公開本文照合が完了した場合もmandatory STOPする。未展開・未解決項目は上記のまま保留する。Phase 2統合、Phase 3 coverage評価、不足A〜Eの分類・優先度、詳細科学レビュー、主要claim採択、新科学計算へ自動移行しない。
 
-次の担当はユーザー：未展開・未解決の扱いと、必要な場合のPhase 2開始範囲を判断する。Codexは別指示まで追加調査・計算を開始しない。
+次の担当はユーザー：GitHub認証を利用できる環境から本branchを通常pushする。Codex：公開後に同じ許可範囲のremote SHA・3ファイル本文照合を完了してmandatory STOPする。Phase 2/3や新科学計算は開始しない。
 
 ## 付録A. Track A既存19系列の対応
 
