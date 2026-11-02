@@ -1,0 +1,16 @@
+# 固定SOURCEと原証拠
+
+GitHub originからHEAD `80b7bf61fe0a735d4031bb719c4b3e788611c3ba` と測定SOURCE `b7ad344401b10395c49e4cfa806909282859bab5` をexact fetchした。
+content commitは`9bbf87f47688340c1d52899b0a5c614c2d8932ef`、最終HEADはreceipt-only後続であり、測定SOURCEと混同しない。
+独自SHA256で89 pinsとcontent receipt82 fileを実Git bytesへ照合し、HEADと測定SOURCEの対象src/testsが等しいことを確認した。
+Archiveは7 part、26,597,824 bytes、SHA256 `cf3485b46a55b0cfddf78469ea38eff0f3b387b2e8204ce21942634e302725bb`。
+994 memberの存在、重複なし、path安全性、bytes/SHA256を照合して復元し、検証後にも全memberを再照合した。
+manifest自身のSHA、全part、全memberは[source_inventory.json](source_inventory.json)に保存。
+
+科学SOURCE `76ca3c4089b201d55da0fede08e1f77733ac38a5`の8 module/201 entryはbytes/ASTだけで照合した。
+10 input pinsは内容の数値解析をせずbytes/hashで確認した。parent/worker宣言runtimeのexecutable/library bytesは現在のhostと一致。
+保存当時のprocessがそのbytesを使ったという外部attestationや別物理hostの独立性までは証明しない。
+
+API測定SOURCEの指示SHAに不一致があり、原inventoryの`78c571005fe766c61b32dc867e006531099ff608`を使用した。
+元Bundleの測定SOURCEは`deade78a19f5b23859d16816d3a7bfb37765dd80`で一致。
+[参照解決](fixed_reference_resolution.json)、[input/runtime/291旧path保全](pins_and_preservation_verification.json)。

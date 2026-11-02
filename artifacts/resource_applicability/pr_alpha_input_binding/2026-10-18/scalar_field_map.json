@@ -1,0 +1,20 @@
+{
+  "schema": "PR_ALPHA_BOUND_NATIVE_SCALARS_V2",
+  "values_evaluated_in_preparation": false,
+  "field_map": {
+    "corrected": "<signal>/signals/corrected/{real,imag}",
+    "raw": "<signal>/signals/raw; deterministic log_B=0 identity only",
+    "reference": "<signal>/reference",
+    "log_B": "<signal>/log_B",
+    "allowance": "<signal>/allowance/{real,imag}",
+    "log_B_margin": "<signal>/allowance/log_B_margin",
+    "bias": "ABS_SAVED_AXIS_TOTAL, SUM_ABS_SAVED_PARTS or COPY_SAVED_MAGNITUDE; deferred",
+    "B_corr": "post-grant exp(saved log_B)",
+    "B_budget": "post-grant exp(saved log_B + factor*saved margin)",
+    "headroom": "<baseline>/axes/{axis}/headroom",
+    "shots": "<baseline>/axes/{axis}/shots",
+    "PF_cost": "source_fields.costs pointer(s), original_axis_costs preserved per case",
+    "PR_cost": "original CSV confirmation rows from cost.pairs[*].CSV_data_rows; n32 pairing retained"
+  },
+  "event_scope": "one complex signal only; no post-selection/multi-signal/RPE guarantee"
+}

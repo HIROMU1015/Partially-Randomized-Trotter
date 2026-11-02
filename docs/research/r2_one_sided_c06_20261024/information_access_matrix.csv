@@ -1,0 +1,19 @@
+information_id,information,tier,acquisition,computational_cost,dependencies,available_before_signal,certificate_limits,used_by,assessment
+M_SCHEDULE,PF family/q/K/signed piece/整数配分,M,固定metadataと既存allocation,O(piece数)程度のmetadata/整数処理;取得0ではない,固定SOURCE/数値規約,YES,総Rは高次piece対応を尽くさない,P-C;P-B,構造入力;正解biasなし
+D_TABLE,lambda/p/fragment/basis/support,D_saved,既存DF/preparation receiptをbinding照合,table読出/検証;保存されていても抽出/照合費用あり,同じHamiltonian/DF threshold/order/input,IF_SAME_BOUND_INPUT,SOURCE名一致のみでidentityにしない,P-A;P-B;P-C,既存入力なら再利用可能
+D_NEW,未取得DF分解/対角化,D_new,既存科学pipelineで新DF処理,新規数値処理と保存;規模/input依存,元積分/DF/数値誤差,POSSIBLE_BUT_NOT_CHEAP_BY_DECLARATION,今回未承認/未実行,P-A;P-B;P-C,cheap metadataへ分類不可
+L_KERNEL,Green/return有限係数,L,G6_CORE ReturnKernelの既存前処理,O(L m²)有理演算/O(L m)係数;bit長別,D_TABLE;x;m;SOURCE,YES_CONDITIONALLY,入力取得費用/precisionを除外しない,P-A;P-B;P-C,構造は既存;実行0
+L_QUERY,特定parentと全child係数,L,G6_CORE word_series/parent,O(m³+L m²)有理演算/query;実s再sum等別,L_KERNEL;word,YES_CONDITIONALLY,局所queryは全support取得ではない,P-A;P-B,多数queryを一回分と数えない
+L_U,U/ordinary envelope/root/r_l,L,既存G7 upper_normalizerと局所root,既存setup+O(L m)DP/root精度費用,L_KERNEL;root precision,YES_CONDITIONALLY,UをB_fullと同一視しない;U.loはB_full下界でない,P-A;P-B,上界の構造は既存
+L_ROOT_LOWER,empty parent質量の下側root,L,既存root_intervalの下端と正値性,局所係数/root query;bit費用あり,L_KERNEL;厳密区間;digital係数下側保証,YES_CONDITIONALLY,B_minusの一部;下界が選択に有用な強さか不明,P-A,独自の新取得機構でない
+L_P5,P5少数群とB5,L,P5_CODE root/pair/first-label群,O(L²)群構築;群selectorも現SOURCEではO(L²)になり得る,D_TABLE;x;finite bits,YES_CONDITIONALLY,全word/全child価格の取得を代用しない,P-A;P-C,既存成果;無料/O(L)全時間を主張しない
+L_DIGITAL,実proposal/weight/係数誤差/moment/range,L,G6 finite-bit証拠と既存budget式,root/丸め/sort/guard/bit供給/保存;F2参照,L_KERNEL;全precision/SOURCE;誤差保証,YES_CONDITIONALLY,実piを使う;ideal Zで予算を縮小しない,P-A;P-B,実際のIID/全N測定の達成は別
+E_DICT,全event係数と価格の重み付き和,E,辞書列挙または正当な集約式,support規模/query回数/保存を課金,L_QUERY;N_NATIVE,NOT_FREE,全取得不要とするには別の集約保証が必要,P-A,一般に高価;局所一回と区別
+B_BIAS,独立な全path bias上界/下界,D_saved/L/S/N,証明・norm/commutator certificateまたは有料検証,強さ/input次第;新行列処理があれば追加科学費用,PF誤差;finite積;input;native誤差,ONLY_WITH_VALID_CERTIFICATE,上界不通過は不適格証明でない;実測empirical値とは別,P-A;P-B,今回新しい安価なcertificateなし
+B_RADIUS,位相targetの信号半径下側保証,D_saved/L/S,独立の解析certificateまたはreference取得,保証取得費用を課金;真値を無料にしない,state/targetとSOURCE,ONLY_WITH_VALID_CERTIFICATE,FR_AVAILABLE utility不通過の履歴を保持,P-B,Oracle半径で代用不可
+S_SIGNAL,候補別signal/reference/headroom,S,既存の有料simulation/reference評価,候補別計算とprovenance;今回0,state/target/全path,NO_AS_CHEAP_FEATURE,保存済みでも選択時点の無料入力でない,P-A;P-B,取得後の評価情報
+N_NATIVE,controlled/angle/adjoint/wrapper/native価格と誤差,N,provider証拠/認証model/compile,実装・precision・event依存;compileは今回0,同compiler/runtime/誤差/境界scope,ONLY_IF_ALREADY_CERTIFIED,構造計数や別event価格を一般lower/upperにしない,P-A;P-B,未取得価格を0にしない
+N_H,全受理event共通の費用下限h,M/N,同一scopeの固定wrapper/準備/provider下限の証拠,certificate検証費用;metric依存,N_NATIVEまたは正当な固定構造価格,IF_CERTIFIED,zero後準備の条件;h=0なら弱い下界は自明,P-A,lawのみから任意T/RZ正値を仮定不可
+I_INCUMBENT,適格な対照certificateと費用上界,D_saved/L/S/N,同target精度/費用での既存certificateまたは取得,全入力binding・confidence・誤差・費用の取得分,B_BIAS;N_NATIVE;L_DIGITAL,IF_ALREADY_CERTIFIED,点推定/empirical allowanceはrigorous上界と別,P-A,安価な候補下界だけでは閉じない
+C_CLASSICAL,setup/全trial online/coin reject/保存,L/E/N,F2静的モデルまたは同条件の実測証拠,O式はCPU秒でない;回数・cache hit/miss・出力を課金,同実装層/bit precision/全N,MODEL_ONLY_OR_PAID_MEASUREMENT,他費用座標と無換算に加算不可,P-A;P-C,未知値0/上界同士の実費順位禁止
+O_ORACLE,真のbias/radius/最終G/最良順位,O,正解評価後にのみ存在する情報,評価全体の費用を要する,S_SIGNAL;N_NATIVE,NO,cheap特徴へ移す案は不採用,P-A;P-B,この調査で取得/再解析0

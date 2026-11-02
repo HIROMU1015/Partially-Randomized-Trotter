@@ -1,0 +1,596 @@
+{
+  "schema": "local_independent_public_overlays_matrix_v1",
+  "cases": [
+    {
+      "group": "public_overlays",
+      "case": "test_ENTER_after_STOP_rechained",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "ENTER_AFTER_STOP_OR_DUPLICATE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_ENTER_after_STOP_rechained/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_caller_close_exception_not_success",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "classification_equal": true,
+      "issues": [],
+      "evidence_gaps": [
+        "Caller observed bridge/delivery failure"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526982,
+          "observed_or_projected": 5526982,
+          "physical_retained": 5526982,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285747,
+          "observed_or_projected": 4285747,
+          "physical_retained": 4285747,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_caller_close_exception_not_success/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_duplicate_RESERVE_rechained",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "RESERVE_PHASE_OR_DUPLICATE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_duplicate_RESERVE_rechained/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_global_trial_mode_collision_rechained",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "GLOBAL_TRIAL_ID"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_global_trial_mode_collision_rechained/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_marker_alone_not_success",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "classification_equal": true,
+      "issues": [
+        "Missing retained pre-final evidence: receipt.json"
+      ],
+      "evidence_gaps": [
+        "External delivery after final close is absent"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_marker_alone_not_success/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_missing_caller_observation",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "classification_equal": true,
+      "issues": [],
+      "evidence_gaps": [
+        "Caller observation after delivery close is absent"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526982,
+          "observed_or_projected": 5526982,
+          "physical_retained": 5522886,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285747,
+          "observed_or_projected": 4285747,
+          "physical_retained": 4285747,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_missing_caller_observation/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_IPC_noncoalesced_ACK",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "COALESCED_ACK_RPC_COUNT"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_IPC_noncoalesced_ACK/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_RAM_state_false_complete",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "RAM_STATE_TOTAL"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_RAM_state_false_complete/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_byte_global_double_budget",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "ONE_GLOBAL_BYTE_LIMIT:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_byte_global_double_budget/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_call_cap",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "RAM_GLOBAL_RESERVED"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_call_cap/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_cursor_refund",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "CURSOR_RESERVED_SUM"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_cursor_refund/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_S_condition_only",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "CALLER_MANIFEST_INPUT"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_S_condition_only/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_condition_budget_double",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "GLOBAL_BYTE_LIMIT:log"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_condition_budget_double/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_diagnostic_success",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "ACK_EXCEEDS_PHYSICAL:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_diagnostic_success/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_formal_adoption_flip",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_formal_adoption_flip/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_marker_without_closed_receipt",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "GLOBAL_PHYSICAL_RESERVED_CAP:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_marker_without_closed_receipt/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_mode_seed_domain",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_mode_seed_domain/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_receipt_false_completed",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "ACK_EXCEEDS_PHYSICAL:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_receipt_false_completed/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_receipt_preclose",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "GLOBAL_PHYSICAL_RESERVED_CAP:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_receipt_preclose/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_seed_namespace",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "COMPARISON_BINDING:seed_namespace"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_seed_namespace/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_summary_prefix",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_CHAIN"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_summary_prefix/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_document_summary_receipt_counter",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "ACK_EXCEEDS_PHYSICAL:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_document_summary_receipt_counter/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_duplicate_pair",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "DUPLICATE_PAIR"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_duplicate_pair/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_physical_state_claim",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "RAM_PHYSICAL_SHA"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_physical_state_claim/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_production_permission",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "FINAL_IDENTITY:production_permission"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_production_permission/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_receipt_identity",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "FINAL_IDENTITY:manifest_binding"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_receipt_identity/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_reserved_refund",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "RAM_GLOBAL_RESERVED"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_reserved_refund/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_runtime_identity",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "FINAL_IDENTITY:candidate_binding"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_runtime_identity/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_schema_mix",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "GLOBAL_RESULT_SCHEMA"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_schema_mix/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_source_candidate",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "FINAL_IDENTITY:source_release_candidate"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_source_candidate/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_trial_offset",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "JOURNAL_PAIR_REPORT"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_trial_offset/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_trusted_prefix",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_ROW_BOUNDARY"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_trusted_prefix/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_mutation_unknown_credit_refund",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "UNKNOWN_CREDIT_NONREFUND:result"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_mutation_unknown_credit_refund/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_semantic_CPU_double_add",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "CPU_DOUBLE_ADD"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_semantic_CPU_double_add/verification.json"
+    },
+    {
+      "group": "public_overlays",
+      "case": "test_semantic_observer_double_add",
+      "expected": "INTEGRITY_MISMATCH",
+      "status": "INTEGRITY_MISMATCH",
+      "classification_equal": true,
+      "issues": [
+        "JOURNAL_PAIR_REPORT"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "case_reports/public_overlays/test_semantic_observer_double_add/verification.json"
+    }
+  ],
+  "counts": {
+    "INTEGRITY_MISMATCH": 32,
+    "INCOMPLETE_EVIDENCE": 3
+  },
+  "all_classifications_equal": true,
+  "producer_self_checker_used": false,
+  "scientific_calls": 0,
+  "mandatory_STOP": true
+}

@@ -1,0 +1,1055 @@
+# Codex指示：Track B W2c-B3 Global Bundle × API Port End-to-End人工統合版のローカル独立技術受入
+
+## 1. 目的と作業範囲
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+担当：ローカルCodex
+
+サーバーCodexが実装したGlobal Bundle × API Portの人工End-to-End統合SOURCEについて、**実装者とは独立した技術受入検証**を実施してください。
+
+今回の検証対象は、2026-10-19に公開された次の統合版です。
+
+公開HEAD：
+
+`62967269e611b61e73b70abe20e998d9c7eaaf50`
+
+人工測定SOURCE：
+
+`deade78a19f5b23859d16816d3a7bfb37765dd80`
+
+従来はGlobal BundleとAPI Portがそれぞれ人工検証されていましたが、両者の内部接続は未検証でした。
+
+今回のサーバー版では、新しいversioned Bridgeを通じて人工Portを実際のGlobal Bundle workerへ渡し、Storage V2・STOP・post-closeまで接続したと報告されています。
+
+**今回の目的は、そのEnd-to-End統合が本当に成立しているかを、公開SOURCEと原証拠から独立に確かめることです。**
+
+### 今回実施すること
+
+1. 固定SOURCE・契約・人工rawの取得とSHA256照合。
+2. 新しい統合SOURCEの構造・変更差分の確認。
+3. Producerから独立したoffline adapterの実装。
+4. 人工Port dispatchのEnd-to-End独立検証。
+5. S/P1、6-phase、global identity、call/byte budgetの検証。
+6. ArtificialBits、seed-prefix、event、canonical、F01の検証。
+7. Admission、one-shot、STOP、UNKNOWN、Storage V2の検証。
+8. 53件の公開人工ケースと45件のmutationの独立受入。
+9. 新しい独立negative/mutation tests。
+10. Evidence Packetのcommit/push・公開照合・mandatory STOP。
+
+今回は**技術実装と人工検証のみ**を実施します。
+
+正式な科学契約の採択、実G7/F3 sampling、実科学API接続、新科学計算は許可されていません。
+
+細かな技術的設計・checkerの実装・人工テスト・checker自身の不具合修正は、今回の範囲で自律的に進めてください。
+
+---
+
+## 2. 固定SOURCE・必須資料
+
+### A. 今回の検証対象：人工End-to-End統合版
+
+Branch：
+
+`track-b-g6-w2c-b3-closed-port-bundle-integration-20261019`
+
+公開HEAD：
+
+`62967269e611b61e73b70abe20e998d9c7eaaf50`
+
+人工測定SOURCE：
+
+`deade78a19f5b23859d16816d3a7bfb37765dd80`
+
+資料：
+
+`docs/research/track_b_g6_w2c_b3_closed_port_bundle_integration_20261019/`
+
+必須確認資料：
+
+- `README.md`
+- `handoff.md`
+- `integration_architecture.md`
+- `endpoint_injection_design.md`
+- `worker_and_spawn_binding.md`
+- `global_identity_and_seed_prefix.md`
+- `global_call_and_byte_accounting.md`
+- `admission_one_shot_and_stop.md`
+- `storage_v2_and_post_close_acceptance.md`
+- `cpu_wall_and_monitoring.md`
+- `artificial_end_to_end_acceptance.md`
+- `source_and_contract_delta.md`
+- `producer_consumer_discrepancies.md`
+- `pending_and_required_decisions.md`
+- `technical_contract_candidate.json`
+- `integration_manifest_candidate.json`
+- `endpoint_binding_manifest.json`
+- `port_dispatch_provenance.json`
+- `global_call_accounting.json`
+- `global_byte_accounting.json`
+- `artificial_acceptance_matrix.json`
+- `source_inventory.json`
+- `verification.json`
+- `publication_receipt.json`
+
+資料の正確な存在・pathは実際のGit treeで確認してください。
+
+主要な新SOURCEは、
+
+`src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/`
+
+配下です。
+
+少なくともbridge、adapter、contract、storage consumer、offline verifierの実際のSOURCEを確認してください。
+
+**今回の最終受入では、サーバーが作成したoffline verifierの判定に依存しないでください。**
+
+### B. API Binding Port原本
+
+公開HEAD：
+
+`82896d53fa97235fa848d6c0833eb193af8b99d6`
+
+人工測定SOURCE：
+
+`78c571005fe766c61b32dc867e006531099ff608`
+
+SOURCE：
+
+`src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/`
+
+このPortにはArtificialEndpoint、ArtificialBits、静的科学API binding、fake authority等が実装されています。
+
+今回の統合SOURCEが、固定Portの正しいSOURCE bytesを参照していることを確認してください。
+
+### C. API Bindingのローカル独立受入
+
+公開HEAD：
+
+`5e862a70f2d74defe72dd39205d38c2a4f8ebeaf`
+
+資料：
+
+`docs/research/track_b_g6_w2c_b3_api_binding_independent_acceptance_local_20261019/`
+
+既存結果：
+
+- 独立975 tests PASS
+- 科学8 module・201 entryの静的確認
+- 人工Portの独立検証
+- Bit consumption・prefix検証
+- Fake authority・closed gate検証
+
+**今回のローカル作業は、この独立検証版を直接基点の第一候補としてください。**
+
+以前の独立checkerは原則保護し、今回の統合版に対応する新しいversioned checkerを追加してください。
+
+### D. Global Bundle Bridge原本
+
+公開HEAD：
+
+`d24cccbecdf0928fe977080dd7b28c591df0089e`
+
+人工測定SOURCE：
+
+`e099dcc461247e81eff981867dc28c3f3b16df5e`
+
+Global Bundleの既存構造：
+
+- 単一global claim
+- S/P1二条件
+- 6-phase
+- Global call/byte budget
+- Storage V2
+- STOP
+- Post-close成功判定
+
+固定Global Bundle SOURCEと今回のversioned派生SOURCEの差分を確認してください。
+
+### E. 既存Global Bundleのローカル独立受入
+
+固定HEAD：
+
+`6bffb5b5819918698b522270ff19b255766d3072`
+
+既存のglobal identity、trace、storage、cost独立検証器を再利用して構いません。
+
+### F. Storage V2
+
+固定HEAD：
+
+`596781daeba253418ba35f4b7964312a54caf233`
+
+RAM/physical、trusted prefix、UNKNOWN、未ACK credit非返却、STOP、保存障害時の会計を固定参照として保持してください。
+
+### G. 固定科学SOURCE
+
+科学参照commit：
+
+`76ca3c4089b201d55da0fede08e1f77733ac38a5`
+
+実G7/F3 SOURCEは、静的読取り・SOURCE hash・AST確認だけを許可します。
+
+科学moduleのimport・callは禁止します。
+
+### H. 正式共通運用指示
+
+`research_project_instructions_unified_2026-10-17.md`
+
+固定commit：
+
+`7eff8a33bef4ee1f29698ab10c6da46988dc8db5`
+
+固定path：
+
+`docs/research/qc_relative_form_finite_step_audit_20261017/inputs/research_project_instructions_unified_2026-10-17.md`
+
+実際に取得・確認し、特に§8.4を適用してください。
+
+---
+
+## 3. 独立作業環境
+
+新しいbranch/worktreeを使用してください。
+
+推奨branch：
+
+`track-b-g6-w2c-b3-closed-port-bundle-independent-local-20261019`
+
+直接基点の第一候補：
+
+`5e862a70f2d74defe72dd39205d38c2a4f8ebeaf`
+
+検証対象のサーバー統合版：
+
+`62967269e611b61e73b70abe20e998d9c7eaaf50`
+
+サーバー統合版は固定参照として取得し、既存branch同士を無条件にmerge/rebaseしないこと。
+
+### 独立性の原則
+
+以下を守ってください。
+
+1. ProducerのSOURCEをread-onlyで確認する。
+2. Producerの自己checkerを独立検証器として使用しない。
+3. 公開raw・契約・trace・F01・receiptを独立に再計算する。
+4. 旧global verifierと旧Port independent checkerを活用する。
+5. 新統合SOURCEに対する判定は、独立したversioned adapterで実施する。
+6. Producerが保存したPASS/FAILを根拠としてコピーしない。
+7. 不一致があれば固定SOURCE・原証拠・不変条件から原因を調べる。
+
+**独立consumerの通常検証経路では、Producer/Bridge/scheduler/Admission/Producer自己checkerをimportしないでください。**
+
+人工Producerの再実行が必要な場合は、別process・独立した人工scope・新規outputで実施してください。
+
+実装主体の異なる検証SOURCEであることと、別物理環境による再現であることは区別してください。
+
+---
+
+## 4. Phase A：固定SOURCE・公開証拠の照合
+
+最初にSOURCEと人工rawを取得してください。
+
+### A1. SOURCE
+
+確認対象：
+
+- 公開HEAD
+- 人工測定SOURCE
+- Git tree/blob
+- SOURCE SHA256
+- 固定Port6files
+- 固定Global Bundle SOURCE
+- 新統合SOURCE
+- Versioned contract/schema
+- Artificial endpoint binding
+- Runtime identity
+- Scientific reference
+- Input pins
+- Publication receipt
+
+今回の公開HEAD、測定SOURCE、元Port commit、元Bundle commitを混同しないこと。
+
+測定後に追加されたpostprocessing helperは、人工測定SOURCEと区別してください。
+
+### A2. 保存raw
+
+サーバー報告の人工raw：
+
+- 分割archive：10 parts
+- 元archive：39,731,962 bytes
+- SHA256：
+  `6bacee98898f0aaeab4b15e2a5513867f14afc240f3c7b2e451f90ad6fab9d77`
+- Member数：2,706
+
+固定manifestを取得し、分割part、復元archive、全memberのbytes/SHA256を照合してください。
+
+既存結果へ上書きしないよう、新しい専用outputで復元すること。
+
+GitHubの表示・取得APIが大きなJSONの内容を省略した場合、空ファイルとは判断せず、Git blobのsize・SHAと実bytesを取得して確認してください。
+
+特に`global_byte_accounting.json`は大きな証拠ファイルなので、全文を取得・照合できたか区別してください。
+
+### A3. 契約の閉鎖状態
+
+新候補は以下の状態を維持しています。
+
+- `artificial_only=true`
+- `content_adopted=false`
+- `run_ready=false`
+- `contract_grants_execution=false`
+- `science_release=null`
+- `scientific_adoption=null`
+- `retry=0`
+- `resume=false`
+- `mandatory_STOP=true`
+
+実際のschemaと型を確認してください。
+
+人工受入に成功しても、正式採択済みとは扱いません。
+
+---
+
+## 5. Phase B：Global Bundle × Port統合構造の独立確認
+
+**今回の最重要項目です。**
+
+従来のPort単体の試験とGlobal Bundle単体の試験では、End-to-End統合の成立を証明できませんでした。
+
+今回は統合SOURCEの実際のdata flowを独立に確認してください。
+
+### B1. 新しいBridge構造
+
+以下を固定SOURCEから調査してください。
+
+- Global Bundle entry
+- Versioned Bridge
+- ArtificialFactory
+- ArtificialBits factory
+- Global coordinator
+- Scheduler
+- Worker spawn
+- Worker endpoint constructor
+- Global trial allocation
+- Pair engine
+- F01
+- Storage V2
+- Summary/receipt
+- Post-close caller
+
+元Bundleのhardwired factoryが、新しいversioned Bridgeでどのように切り替えられたか確認してください。
+
+固定Global Bundleの実装が不要に変更されていないか確認してください。
+
+### B2. 本当にPortが呼ばれたか
+
+保存された正常trialについて、以下の一連の経路を検証してください。
+
+1. Global Bundleがtrialを割り当てる。
+2. Schedulerが該当workerを起動・管理する。
+3. Workerが固定ArtificialFactoryを使用する。
+4. ArtificialEndpointが該当trialを処理する。
+5. ArtificialBitsが消費される。
+6. Event/result/evidenceが構築される。
+7. 固定pair engineが結果を処理する。
+8. Canonical/F01が生成される。
+9. Global state/counterが更新される。
+10. Raw・traceへ保存される。
+11. Summary/receiptへ結果が結合される。
+12. Post-close callerが最終状態を観測する。
+
+**この経路が実際につながっていることを、SOURCEと保存rawの両方から独立に示してください。**
+
+Portの名前がmanifestにあるだけでは不十分です。
+
+PortのSOURCEが固定され、人工bits/event/結果が実際の保存rawに反映されたことを確認してください。
+
+### B3. Port dispatch provenance
+
+サーバーが保存した、
+
+`port_dispatch_provenance.json`
+
+を取得・検証してください。
+
+少なくとも、
+
+- Port SOURCE
+- Factory identity
+- Worker PID
+- Runtime identity
+- Contract/manifest binding
+- Global trial ID
+- Global offset
+- Artificial bit consumption
+- Event/evidence
+- Canonical/F01
+- Trace
+- State/counter
+- Receipt
+
+の対応を確認してください。
+
+公開済みの全正常trialについて、必要なrawから対応関係を独立に再計算してください。
+
+サーバー保存済みのdispatch判定を、そのまま信用しないこと。
+
+### B4. Metamorphic確認
+
+サーバー側は、人工Portの識別tag変更が保存raw/hashへ伝播する試験を実施しています。
+
+人工bitstreamを保持したまま、versioned人工fixtureの差分が期待されるevent/evidence/hashへ反映されることを確認してください。
+
+ただし、科学lawを変えたり、実G7/F3の意味論を変更する試験ではありません。
+
+**Portを使わない従来Bundleが正常終了するだけの偽統合を、独立checkerが拒否できること**を確認してください。
+
+---
+
+## 6. Phase C：Global call・trial・identityの整合性
+
+今回の人工正常ケースは以下です。
+
+| Profile | Global calls |
+|---|---:|
+| n=16 | 1,536 |
+| n=256 | 16,896 |
+
+### C1. 算術
+
+4方式×2layer×2axis＝16cell。
+
+Correctnessは各cell16 calls。
+
+n=16では1条件768 calls、S/P1合計1,536 calls。
+
+n=256では1条件8,448 calls、S/P1合計16,896 calls。
+
+以下を独立に照合してください。
+
+- Planned
+- Reserved
+- Started
+- Completed
+- Failed
+- Cancelled
+- Unknown
+- Global offsets
+- Task identity
+- Condition別counts
+- Statefile
+- Report
+- Receipt
+
+正常ケースでは予定・予約・開始・完了が全件一致していること。
+
+### C2. Global構造
+
+S/P1二条件が次を共有することを確認してください。
+
+- 単一global scope
+- 単一global claim
+- 単一coordinator
+- 単一call counter
+- 単一result/log budget
+- 単一STOP状態
+
+独立した2つのone-shot実行を単に連続させた構造になっていないこと。
+
+### C3. 6-phase
+
+S側3phaseの後、P1側3phaseへ移ることを確認してください。
+
+BarrierとSTOPの意味論を保持してください。
+
+### C4. Identity
+
+- Run
+- Condition
+- Arm
+- Layer
+- Axis
+- Phase
+- Pass
+- Local trial
+- Global trial
+- Global offset
+
+が衝突しないことを確認してください。
+
+ModeはGlobal trial identityに含めます。
+
+Modeを人工seed domainに含めないこと。
+
+---
+
+## 7. Phase D：Bit consumption・event・F01
+
+固定科学参照：
+
+`P5_general_order`
+
+- p=(1/5,3/10,1/2)
+- x=5/7
+- m=5
+- sigma=+1
+
+4方式：
+
+- Ordinary
+- Partial Return + ordinary tail
+- Closed P3 + ordinary tail
+- General Full Return
+
+Layer A/B、Axis X/Yを維持します。
+
+### D1. ArtificialBits
+
+保存rawから次を再計算してください。
+
+- Seed domain
+- Counter
+- Width
+- Value
+- Consumption count
+- Trial identity
+- Eventとの対応
+
+S/P1、A/B、correctness/profile、baseline/instrumentedの人工prefixを検証してください。
+
+Arm/axisのdomain分離を確認してください。
+
+### D2. Event・weight
+
+次の対応を独立検証してください。
+
+- Artificial event
+- Word/raw word
+- Weight
+- Child
+- Exact rational
+- Evidence
+- Angle/requery
+- Hash retention
+- Pair output
+
+`Fraction`等のexact valueを、浮動小数点近似へ黙って変換しないこと。
+
+Bool/int混同を許容しないこと。
+
+### D3. F01・失敗
+
+Generator/audit/angle/requeryの人工失敗について、typed category、stage、reason、provenance、STOPを保持しているか確認してください。
+
+科学的失敗を一般のzeroへ変換しないこと。
+
+### D4. 科学的な限界
+
+この人工Endpointはsurrogateです。
+
+今回の検証によって、実G7/F3のlaw、bitstream、angle enclosure、科学的分布の同値性が証明されるわけではありません。
+
+科学SOURCEの実import・samplingは実施しないでください。
+
+---
+
+## 8. Phase E：Admission・one-shot・STOP
+
+### E1. Fake authority
+
+以下を確認してください。
+
+- Global scope
+- Global claim
+- Fake approval
+- Atomic claim
+- Race
+- Spent
+- Commit ACK不明
+- 二重claim拒否
+- Retry0
+- Resume禁止
+
+Fake storeの原証拠とbindingを独立に照合してください。
+
+Snapshotだけで全atomic transition履歴が証明されたとは扱わないこと。
+
+### E2. S失敗
+
+S側で人工Portが失敗した場合、
+
+- Global STOP
+- 後続P1の新規開始禁止
+- 部分raw保全
+- 未完了の保持
+- Credit非返却
+- Global success拒否
+
+を検証してください。
+
+### E3. P1失敗
+
+P1で人工Portが失敗した場合、
+
+- S完了済みraw・receiptの保持
+- P1未完了の保持
+- Unknownの保持
+- Global success拒否
+- 同一claimでの再実行禁止
+
+を確認してください。
+
+### E4. Cooperative STOP
+
+- Parent arrival order
+- STOP後ENTER禁止
+- 既に開始済みのin-flight drain
+- RESERVEDと実関数entryの区別
+- CANCEL/FAIL/UNKNOWN
+- Worker/parent crash
+- 未ACK credit非返却
+
+を検証してください。
+
+Global STOPの成立を、全workerが同じ物理時刻で停止した証明とは扱わないこと。
+
+---
+
+## 9. Phase F：Storage V2とPost-close成功判定
+
+今回のPort統合によって、旧Storage V2の保証が失われていないことを確認してください。
+
+### F1. State・物理証拠
+
+- RAM authoritative state
+- Physical statefile
+- Ordered trace
+- Trusted prefix
+- Journal
+- Summary
+- Receipt
+- Diagnostic
+- Marker
+- Delivery
+- Caller observation
+
+をそれぞれ確認してください。
+
+RAMの未保存状態を、物理的に証明できたstateへ格上げしないこと。
+
+### F2. 正常成功
+
+少なくとも以下の結合が成立することを確認してください。
+
+1. 固定SOURCE/input/runtime。
+2. 単一global claim。
+3. 全trialの正常完了。
+4. Port dispatch証拠。
+5. Pair/F01。
+6. Global state/counter。
+7. Trusted trace prefix。
+8. Condition receipts。
+9. Global summary/receipt。
+10. Diagnostic。
+11. Marker。
+12. Admission STOP。
+13. Storage close。
+14. Delivery/caller観測。
+15. Global call/byte budget。
+16. 保存errorがないこと。
+
+Marker単独では成功としないこと。
+
+### F3. 証拠不完全
+
+保存に失敗した場合には、`INCOMPLETE_EVIDENCE`を維持してください。
+
+欠けたtrace、state、receipt、caller観測を推定補完しないこと。
+
+26件の証拠不完全を、正常完了へ再分類することは目標ではありません。
+
+---
+
+## 10. Phase G：公開53ケース・45 mutation・追加3 negative
+
+今回の公開報告は以下です。
+
+### G1. 人工53ケース
+
+| 分類 | 件数 |
+|---|---:|
+| Global bundle正常 | 3 |
+| Condition-only正常 | 2 |
+| 技術的失敗 | 22 |
+| 証拠不完全 | 26 |
+| 合計 | 53 |
+
+これらを全件独立検証してください。
+
+Condition-only成功をGlobal Bundle成功として扱わないこと。
+
+### G2. Mutation 45件
+
+サーバーの分類：
+
+- Integrity mismatch：42件
+- Incomplete evidence：3件
+
+この分類を独立に確認してください。
+
+特に重要なのは、**Port固有の10 mutation**です。
+
+サーバー報告では、これらは旧Storage checkerの検査だけでは通過し得る偽Port証拠を対象としています。
+
+今回の独立checkerでは、少なくともPort SOURCE、dispatch、bits、event、identity、F01、receiptの対応が不正なら拒否できることを確認してください。
+
+### G3. 追加negative 3件
+
+固定報告：
+
+1. S失敗後のP1 ENTER偽造。
+2. P1失敗時のS receipt喪失。
+3. Seed domainへのMode混入。
+
+それぞれ期待される不整合・証拠不完全として拒否できることを確認してください。
+
+### G4. 件数の扱い
+
+53 cases、45 mutations、追加3件は、保存rawの検証単位です。
+
+新統合134 testsと機械的に合算しないこと。
+
+134 testsは旧107相当を移植した検査と統合追加27件による、新しいmodule IDの回帰です。
+
+旧107 PASSやAPI73 PASSも、今回の新規134件へ単純加算しないこと。
+
+---
+
+## 11. Phase H：Global call/byte・CPU/wall費用
+
+### H1. Global予算
+
+現在の未採択候補：
+
+- Calls：16,896
+- Result：64 GiB
+- Log：256 MiB
+
+S/P1共通の一つのglobal budgetであることを確認してください。
+
+条件別に予算を二重付与しないこと。
+
+### H2. Byte accounting
+
+以下を区別してください。
+
+- Reserved
+- Observed/ACK
+- Physical retained
+- Unknown credit
+- Trace
+- Journal
+- Statefile
+- Pair outputs
+- Summary/receipt
+- Diagnostic
+- Marker
+- Finalization
+
+Trace自己課金・ACK・未返却creditを独立検証してください。
+
+大きな`global_byte_accounting.json`やrawから、実際の値を再計算してください。
+
+保存reportの値だけを転載して独立検証としないこと。
+
+### H3. CPU/wall
+
+- Parent CPU
+- 全worker CPU
+- Total CPU
+- Global outer wall
+- S/P1条件別費用
+- Pair CPU/wall
+- Setup/online
+- Port dispatch
+- Generator/audit相当
+- Angle/requery相当
+- IPC
+- Observer
+- Serialization/hash
+- Storage
+- Memory/RSS/HWM
+- I/O
+
+を検証してください。
+
+Pair/IPC/observerをTotal CPUへ二重加算しないこと。
+
+Global wallとpair wallの和を混同しないこと。
+
+今回の人工Port費用を実G7/F3のCPU費用予測へ外挿しないでください。
+
+実科学用のCPU母平均CIや方式固有の一般的speedupも主張しないこと。
+
+---
+
+## 12. Phase I：独立negative・mutation tests
+
+サーバーが作成した45 mutationを再検証するだけでなく、独立した不変条件から新しいmutationを作成してください。
+
+特に以下を検査してください。
+
+### Port dispatch
+
+- FactoryがPortを使用していない偽正常。
+- Wrong Port SOURCE。
+- Wrong ArtificialBits。
+- Wrong worker/factory identity。
+- Port tagだけを改変した偽証拠。
+- Payloadとdispatch metadataの不一致。
+- Event/evidence/hashの不一致。
+- 同じbitstreamなのに保存eventが矛盾。
+- Global receiptへの不正結合。
+
+### Global identity
+
+- Trial ID衝突。
+- Global offset不一致。
+- Modeのseed domainへの誤混入。
+- S/P1 prefix不一致。
+- Phase順序違反。
+- Duplicate RESERVE。
+- Duplicate COMPLETE。
+
+### Admission・STOP
+
+- Spent claim再利用。
+- 二重claim。
+- Fake approval mutation。
+- S失敗後P1開始。
+- STOP後ENTER。
+- P1失敗時S証拠喪失。
+- Unknown credit返却。
+
+### Storage
+
+- Trace hash破損。
+- Trusted prefix境界改変。
+- Physical state/counter不一致。
+- Receipt改変。
+- Markerだけの偽成功。
+- Close失敗の隠蔽。
+- Delivery/caller失敗の隠蔽。
+- Byte cap超過。
+
+### Production gate
+
+- Closed flag改変。
+- Fake authorityの本番転用。
+- Fake bitsの本番転用。
+- Wrong SOURCE release。
+- Forbidden science import要求。
+- Grantなし実行要求。
+
+実科学処理を実際に実行せず、禁止操作が拒否されることを確認してください。
+
+独立checker自身の不具合があれば修正・再検証してください。
+
+Producer側の不具合が疑われる場合は、固定SOURCEを変更せずに最小再現と証拠を保全してください。
+
+---
+
+## 13. 回帰と既存独立SOURCEの保全
+
+今回の直接作業基点には、API Binding独立受入の975 PASSが記録されています。
+
+関連する既存独立回帰を実行し、今回の統合checkerを追加してください。
+
+参照される過去の件数：
+
+- Global Bundle Producer：107
+- API Port Producer：73
+- Storage V2 Producer：41
+- 既存V2独立：57
+- Global Bundleローカル独立：845
+- API Bindingローカル独立：975
+- 今回サーバー統合：134
+
+**これらをそのまま足して今回のPASS件数にしないこと。**
+
+今回実際に実行したテスト集合と、過去の固定参照を区別してください。
+
+旧Python3.10/3.12の`co_qualname`ラベル差は、原版・補正版を保全し、実行環境に応じて適切に分類してください。
+
+既存SOURCEを新しい期待値に合わせて無断変更しないこと。
+
+---
+
+## 14. 禁止事項
+
+以下を今回実施してはいけません。
+
+- 実G7/F3 module import。
+- 実科学bitstream生成。
+- 実科学sampling。
+- 新科学計算・数値再解析。
+- Native quantum build/compile/synthesis。
+- 正式science SOURCE release。
+- Production gate解除。
+- 実authorization/grant/claim発行・消費。
+- 既存one-shot再利用。
+- 既存STOP解除。
+- 本番correctness。
+- 実科学16,896 calls。
+- Full-N 31,710,848 calls。
+
+科学SOURCEは静的読取りだけとしてください。
+
+科学的意味論の変更、pilot規模の正式採択、precision/law/seed条件の変更は、ユーザー・GPTの判断事項です。
+
+今回のcheckerが技術的にPASSしても、科学実行GOにはしないこと。
+
+---
+
+## 15. 計算資源・共有環境
+
+正式共通指示§8.4を適用してください。
+
+CPU、RAM、worker数、thread数、wall time等に恣意的な低い資源制限を設けないでください。
+
+重いSHA256照合、人工raw検証、streaming、大量trialの再読は、利用可能な資源に応じて適切に高速化・並列化してください。
+
+必要な場合は、人工n16に加えて人工n256を新しいscopeで実行して構いません。
+
+ただし、公開済み正常rawの独立検証と新規人工再実行は別の証拠として区別してください。
+
+ローカル環境が共有サーバー上にある場合、以下は禁止です。
+
+- OS/kernel/sysctl変更。
+- 共有scheduler/cgroup/quota変更。
+- 共有venv/package/cache変更。
+- 他ユーザーのprocess/job操作。
+- 他ユーザーのファイル変更。
+- 共有サービス再起動。
+- 他worktreeの保護対象変更。
+
+自分が所有する分離されたworktree、process、temp、cache、outputだけを変更してください。
+
+実際の空きCPU/RAM/I/O・pressureを確認し、他ユーザーへの干渉を避けてください。
+
+既存の固定科学契約・資源条件も無断変更しないこと。
+
+---
+
+## 16. 成果物
+
+推奨branch：
+
+`track-b-g6-w2c-b3-closed-port-bundle-independent-local-20261019`
+
+推奨ディレクトリ：
+
+`docs/research/track_b_g6_w2c_b3_closed_port_bundle_independent_local_20261019/`
+
+### 独立検証SOURCE
+
+- Global Bundle × Port independent adapter
+- Port dispatch verifier
+- Global trial identity verifier
+- Artificial bit/event/F01 verifier
+- Global admission/STOP verifier
+- Storage V2/post-close verifier
+- Global cost/byte accounting verifier
+- Mutation/negative tests
+
+### Markdown資料
+
+- `README.md`
+- `handoff.md`
+- `independent_source_verification.md`
+- `integration_architecture_acceptance.md`
+- `port_dispatch_independent_verification.md`
+- `global_identity_and_call_accounting.md`
+- `bitstream_event_and_F01_acceptance.md`
+- `admission_one_shot_and_STOP.md`
+- `storage_v2_and_post_close_acceptance.md`
+- `global_cost_and_byte_accounting.md`
+- `producer_consumer_discrepancies.md`
+- `pending_and_required_decisions.md`
+- `artificial_regression_results.md`
+
+### 機械可読資料
+
+- `artificial_53_case_verification.json`
+- `independent_port_dispatch_verification.json`
+- `independent_mutation_results.json`
+- `global_call_accounting_verification.json`
+- `global_byte_accounting_verification.json`
+- `source_inventory.json`
+- `verification.json`
+- `publication_receipt.json`
+
+必要なraw、fixture、logs、hash、runtime identityも保存してください。
+
+ファイル名・分割構成は合理的に調整して構いません。
+
+各検査について、Check ID、固定SOURCE、入力identity、期待値、観測値、PASS/FAIL/PENDING、証拠、未解決事項を機械可読で保存してください。
+
+---
+
+## 17. 最終報告 Q1〜Q10
+
+**Q1.** 固定Global Bundle × Port統合SOURCE・契約・rawのbytes/SHA256を照合できたか。
+
+**Q2.** Producer自身のoffline checkerとは独立した統合adapterを実装できたか。独立性の範囲は何か。
+
+**Q3.** 新しいPortがGlobal Bundleのscheduler・worker・pair/F01・Storage V2・receiptまで到達したことを独立に確認できたか。
+
+**Q4.** 人工n16=1,536、n256=16,896 callsのglobal計画・予約・開始・完了、S/P1 identityと6-phaseは整合しているか。
+
+**Q5.** Seed-prefix、ArtificialBits、event、weight、F01、canonical、Port dispatch provenanceは整合しているか。
+
+**Q6.** Global one-shot、Admission、STOP、S失敗時のP1禁止、P1失敗時のS保全、in-flight drain、UNKNOWN非返却を確認できたか。
+
+**Q7.** Storage V2、trusted prefix、global receipt、marker、close、delivery/caller observationによる正常完了判定は成立したか。
+
+**Q8.** 53公開ケース、45 mutation、追加3 negativeの独立分類はどうなったか。特にPort固有10 mutationを拒否できたか。
+
+**Q9.** 独立testsの結果、新しいProducer不具合、証拠不足、実科学API接続前に必要な技術修正・契約判断は何か。
+
+**Q10.** 実G7/F3 import/sampling、科学bitstream生成、新科学計算・再解析、science SOURCE採択、実authorization/grant/claim発行・消費、native quantum処理がすべて0件であるか。
+
+---
+
+## 18. GitHub公開・Mandatory STOP
+
+以下を完了してください。
+
+1. 固定SOURCE・契約・公開raw取得。
+2. SHA256・Git object照合。
+3. 独立統合adapter実装。
+4. Port dispatchのEnd-to-End独立検証。
+5. Global identity・call会計。
+6. ArtificialBits・event・F01検証。
+7. Admission・STOP・UNKNOWN検証。
+8. Storage V2/post-close成功判定。
+9. Global result/log・CPU/wall会計。
+10. 53 cases・45 mutations・追加3 negativeの独立受入。
+11. 新規negative/mutation tests。
+12. 既存＋新規回帰。
+13. Evidence Packet作成。
+14. Commit/push。
+15. Remote HEAD・公開bytes/SHA256照合。
+16. 既存SOURCE、raw、grant、ledger、marker、STOP、他worktreeの保全確認。
+
+完了後、**mandatory STOP**してください。
+
+重大な不整合が見つかった場合は、固定Producerを変更せず、最小再現・原因・必要な修正条件を保存してSTOPしてください。
+
+独立受入が成功しても、正式science SOURCE release、production gate解除、実G7/F3接続、限定pilot、Full-Nへ自動移行しないこと。
+
+**次の担当はユーザーとGPTです。**
+
+今回の最終目標は、Global Bundle × API PortのEnd-to-End人工統合について、サーバーの自己検証とは独立した技術的な根拠を確保し、正式科学接続に進む前に必要な技術条件と未解決事項を確定できる状態にすることです。

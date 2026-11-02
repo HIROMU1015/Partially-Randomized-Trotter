@@ -1,0 +1,489 @@
+"""New-host one-shot binding. Draft flags never authorize runtime or CPU use."""
+from dataclasses import dataclass,replace
+from contextlib import redirect_stdout,redirect_stderr
+import io
+import json
+import os
+from pathlib import Path
+import re
+import sys
+import time
+import tempfile
+
+from . import gates
+from .identity import require, fingerprint, sha, hash_id
+from .prelaunch_audit import private_path, receipt_inventory, environment_profile, compiler_profile, host_readonly, static_invocations
+from .resources import GiB, ROLE_CAP, HEADROOM, OUTPUT_CAP, WALL_CAP, fsync_directory
+from .observer import AS_CAP, RSS_CAP, FRAME_CAP, TERMINAL_RESERVE
+
+RUN_ID='h4-newhost-signal-compile-20261010-run10'
+ORIGINAL_CARRY={'actual_invocations':20,'charged_bytes':165214360,'wall_seconds':5466.188392877579}
+PRIOR_CARRY={'actual_invocations':20,'charged_bytes':4428938712,'wall_seconds':5472.345380863175}
+RUN02_CARRY={'actual_invocations':21,'charged_bytes':8692723164,'wall_seconds':5766.582514658794}
+HISTORICAL_CARRY={'actual_invocations':22,'charged_bytes':12956511264,'wall_seconds':6004.111340102032}
+CARRY={'actual_invocations':0,'charged_bytes':0,'wall_seconds':0.0}
+EXPECTED_FREEZE='75d7ddc8dc71ebeec03a6c173397a9b941b492b74e4dc80814d613d83ce56c69'
+EXPECTED_JOURNAL='6b68368565cc336d283bc094f844a37ceb1966838ca5482f1f12347d0c5d669e'
+EXPECTED_LOG='7108181a3b295ca92d4a73de7e7420d160898270d45a95657a34e7c6526947b1'
+CONTROL_LOG_CAP=8*2**20
+AMENDED_OUTPUT_CAP=13*GiB  # Explicit new-host amendment; legacy default stays10GiB.
+RETRY_OUTPUT_CAP=17*GiB  # Proposal only: runtime still requires explicit amendment approval.
+FILE_LIMITS={'record-':4096,'ledger-':4096,'signal-':524288,'worker-log-':8192,'map-complete':4096,'launch-stop':4096,'ledger.lock':0}
+
+STRUCTURES={
+ 'plan':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'source_root':str,
+         'source_hashes':dict,'source_audit':dict,'environment_profile':dict,'compiler_profile':dict,'library_cache_profile':dict,
+         'input_root':str,'stop_evidence_root':str,'stop_evidence_receipt':dict,'output_root':str,'control_root':str,
+         'inputs':dict,'generation_freeze_digest':str,'templates':list,'contract_plan_fingerprint':str,
+         'compiler_fingerprint':str,'environment_fingerprint':str,'requested_workers':int,
+         'cpu_proposal':dict,'carry':dict,'caps':dict,'storage':dict,'sealed':bool,'memory_pressure_profile':dict,'gaussian_synthesis_profile':dict},
+ 'authorization':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
+         'approved':bool,'runtime_authorization':bool,'allowed_cpus':list,'one_shot':bool,
+         'permission':str,'result_prior':bool,'environment_accepted':bool,'observer_role':dict,'budget_amendment':dict,
+         'output_budget_amendment':dict,'budget_accounting':dict,'recovery_policy':dict,'pressure_amendment':dict,'gaussian_amendment':dict},
+ 'review':{'schema_version':str,'stage':str,'run_id':str,'source_commit':str,'plan_fingerprint':str,
+         'authorization_digest':str,'approved':bool,'runtime_authorization':bool,'reviewer':str,'mandatory_stop':bool}}
+VERSIONS={k:'h4-newhost-'+k+'-v2' for k in STRUCTURES}
+
+
+def structural(plan,authorization,review):
+    for label,doc in [('plan',plan),('authorization',authorization),('review',review)]:
+        schema=STRUCTURES[label]
+        optional={'memory_budget_amendment'} if label=='authorization' and type(doc) is dict and 'memory_budget_amendment' in doc else set()
+        require(type(doc) is dict and set(doc)==set(schema)|optional,'newhost '+label+' schema fields')
+        if optional:require(type(doc['memory_budget_amendment']) is dict,'memory amendment field type')
+        require(doc['schema_version']==VERSIONS[label],'newhost schema version')
+        for key,kind in schema.items():require(type(doc[key]) is kind,'newhost field type: '+key)
+
+
+def roles(plan):
+    value=plan['cpu_proposal'];require(set(value)=={'driver','workers','observer'},'role CPU schema')
+    require(len(value['workers'])==plan['requested_workers'],'worker CPU count')
+    lists=[value['driver'],*value['workers'],value['observer']]
+    require(all(type(x) is list and len(x)==1 and type(x[0]) is int and x[0]>=0 for x in lists),'single physical-core role CPUs')
+    flat=[x[0] for x in lists];require(len(set(flat))==len(flat),'role CPUs overlap')
+    return flat
+
+
+def authorize(plan,authorization,review, *, explicit_launch):
+    """Pure permission checks precede filesystem, affinity, output and science."""
+    require(explicit_launch is True,'explicit signal/compile launch required')
+    structural(plan,authorization,review)
+    require(plan['sealed'] and authorization['approved'] and authorization['runtime_authorization'] and
+            review['approved'] and review['runtime_authorization'],'unsealed/unapproved newhost launch')
+    require(all(d['stage']=='signal_compile' and d['run_id']==RUN_ID and d['source_commit']==plan['source_commit']
+                for d in (plan,authorization,review)),'newhost stage/run/source')
+    require(re.fullmatch('[0-9a-f]{40}',plan['source_commit']) is not None,'actual source SHA')
+    require(authorization['one_shot'] and authorization['result_prior'] and authorization['permission']=='signal_compile' and
+            authorization['environment_accepted'] and review['mandatory_stop'] and bool(review['reviewer'].strip()),
+            'separate one-shot environment/final review')
+    p=fingerprint('h4-newhost-plan-v2',plan)
+    require(authorization['plan_fingerprint']==p and review['plan_fingerprint']==p and
+            review['authorization_digest']==fingerprint('h4-newhost-authorization-v2',authorization),'newhost plan/auth/review binding')
+    require(plan['carry']==CARRY and all(type(plan['carry'][k]) is type(v) for k,v in CARRY.items()),
+            'explicit per-attempt carry0 binding')
+    accounting=authorization['budget_accounting']
+    recovery=authorization['recovery_policy']
+    require(set(accounting)=={'scope','exclude_failed_carry','authority'} and
+            accounting['scope']=='per_attempt' and accounting['exclude_failed_carry'] is True,
+            'explicit failed-carry exclusion required')
+    require(set(recovery)=={'approved','mode','scope','authority'} and recovery['approved'] is True and
+            recovery['mode']=='investigate_fix_fresh_restart' and recovery['scope']=='signal_compile_only',
+            'explicit bounded recovery policy required')
+    for authority in (accounting['authority'],recovery['authority']):
+        require(type(authority) is dict and set(authority)=={'path','sha256'} and
+                type(authority['path']) is str and bool(authority['path']) and
+                not Path(authority['path']).is_absolute() and '..' not in Path(authority['path']).parts,
+                'relative user-authority reference')
+        hash_id(authority['sha256'])
+    pressure=authorization['pressure_amendment']
+    require(set(pressure)=={'approved','from_host_stop_percent','to_host_stop_percent','profile','authority'} and
+            pressure['approved'] is True and type(pressure['from_host_stop_percent']) is float and
+            type(pressure['to_host_stop_percent']) is float and
+            (pressure['from_host_stop_percent'],pressure['to_host_stop_percent']) in ((0.0,1.0),(1.0,5.0)) and
+            pressure['profile']==plan['memory_pressure_profile'],
+            'explicit bounded host-pressure contract amendment')
+    for entry in (pressure['profile'],pressure['authority']):
+        require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
+                bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
+                'relative pressure profile/authority reference')
+        hash_id(entry['sha256'])
+    from .gaussian_structure import SEMANTICS
+    gaussian=authorization['gaussian_amendment']
+    require(set(gaussian)=={'approved','from_semantics','to_semantics','profile','authority','old_partial_cache_reuse'} and
+            gaussian['approved'] is True and gaussian['from_semantics']=='h4-full-gaussian-paired-wrapper-v1' and
+            gaussian['to_semantics']==SEMANTICS and gaussian['profile']==plan['gaussian_synthesis_profile'] and
+            gaussian['old_partial_cache_reuse'] is False,'explicit structured Gaussian/new cost adoption')
+    for entry in (gaussian['profile'],gaussian['authority']):
+        require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
+                bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
+                'relative Gaussian profile/authority reference')
+        hash_id(entry['sha256'])
+    require(plan['contract_plan_fingerprint']==gates.PLAN_FP,'science contract unchanged')
+    require(set(plan['inputs'])==set(gates.DISTANCES),'six inputs')
+    for distance,entry in plan['inputs'].items():
+        require(set(entry)=={'file','bytes_sha256','input','H','DF','state'} and entry['file']=='input-'+distance+'.npz','input schema')
+        for field in ('bytes_sha256','input','H','DF','state'):hash_id(entry[field])
+    hash_id(plan['generation_freeze_digest']);hash_id(plan['environment_fingerprint']);hash_id(plan['compiler_fingerprint'])
+    require(type(plan['requested_workers']) is int and 1<=plan['requested_workers']<=12,'up to12 workers')
+    require(type(authorization['allowed_cpus']) is list and sorted(authorization['allowed_cpus'])==sorted(roles(plan)),
+            'CPU proposal is not permission; exact separate role approval required')
+    caps=plan['caps']
+    require(set(caps)=={'actual_invocations','wall_seconds','output_bytes','driver_AS_RSS','worker_AS_RSS','headroom','monitor_seconds','observer_AS','observer_RSS'},'cap schema')
+    from .memory_budget import WORKER_CAP, validate_cap, required_available
+    worker_cap=validate_cap(caps['worker_AS_RSS'],plan['requested_workers'])
+    if worker_cap==WORKER_CAP:
+        memory=authorization.get('memory_budget_amendment')
+        require(type(memory) is dict and set(memory)=={'approved','from','to','profile','authority'} and
+                memory['approved'] is True and type(memory['from']) is int and memory['from']==ROLE_CAP and
+                type(memory['to']) is int and memory['to']==WORKER_CAP,'explicit worker memory amendment')
+        for entry in (memory['profile'],memory['authority']):
+            require(type(entry) is dict and set(entry)=={'path','sha256'} and type(entry['path']) is str and
+                    bool(entry['path']) and not Path(entry['path']).is_absolute() and '..' not in Path(entry['path']).parts,
+                    'relative worker memory profile/authority reference')
+            hash_id(entry['sha256'])
+    else:require('memory_budget_amendment' not in authorization,'legacy memory amendment mismatch')
+    fixed=dict(wall_seconds=WALL_CAP,driver_AS_RSS=ROLE_CAP,worker_AS_RSS=worker_cap,
+               headroom=HEADROOM,monitor_seconds=5,observer_AS=AS_CAP,observer_RSS=RSS_CAP)
+    require(all(type(caps[k]) is int and caps[k]==v for k,v in fixed.items()),'existing caps / observer candidates')
+    change=authorization['output_budget_amendment']
+    require(set(change)=={'approved','from','to','authority_reference'} and type(change['approved']) is bool and
+            type(change['from']) is int and type(change['to']) is int and
+            (change['from'],change['to']) in ((OUTPUT_CAP,AMENDED_OUTPUT_CAP),(AMENDED_OUTPUT_CAP,RETRY_OUTPUT_CAP)) and
+            type(change['authority_reference']) is str,'output amendment schema')
+    output_cap=caps['output_bytes']
+    require(type(output_cap) is int and output_cap in (OUTPUT_CAP,AMENDED_OUTPUT_CAP,RETRY_OUTPUT_CAP),'closed output caps')
+    if output_cap!=OUTPUT_CAP:
+        require(change['to']==output_cap and change['approved'] is True and bool(change['authority_reference'].strip()),
+                'explicit output amendment matching selected cap')
+    else:
+        require(change['approved'] is False,'output amendment and plan cap disagree')
+    role=authorization['observer_role']
+    require(role==dict(approved=True,runtime_authorization=True,AS_bytes=AS_CAP,RSS_bytes=RSS_CAP),'observer extra role needs approval')
+    counts=static_invocations(plan['templates'],carry_actual=CARRY['actual_invocations'])
+    cap=caps['actual_invocations'];require(type(cap) is int and cap in (74784,74804,74805),'no arbitrary invocation cap')
+    change=authorization['budget_amendment']
+    require(set(change)=={'approved','from','to','authority_reference'},'budget amendment schema')
+    if cap!=74784:
+        expected_from=74784 if cap==74804 else 74804
+        require(type(change['approved']) is bool and change['approved'] is True and
+                type(change['from']) is int and change['from']==expected_from and
+                type(change['to']) is int and change['to']==cap and
+                type(change['authority_reference']) is str and bool(change['authority_reference'].strip()),'explicit actual contract amendment')
+    require(cap>=counts['cumulative_actual_worst_case'],'remaining actual cannot guarantee all74784 logical wrappers including carry')
+    for key in ('source_root','input_root','stop_evidence_root','output_root','control_root'):
+        path=Path(plan[key]);require(path.is_absolute() and path.is_relative_to('/home/AbeHiromu') and '..' not in path.parts,'home-local binding')
+    require(plan['output_root']!=plan['input_root'] and RUN_ID in Path(plan['output_root']).parts and RUN_ID in Path(plan['control_root']).parts,
+            'fresh dedicated run output/control')
+    require(bool(plan['source_hashes']),'source closure missing')
+    for path,value in plan['source_hashes'].items():
+        require(type(path) is str and not Path(path).is_absolute() and '..' not in Path(path).parts,'relative source closure')
+        hash_id(value)
+    return BoundPermit('signal_compile',plan,plan['source_root'],fingerprint('h4-newhost-review-v2',review),authorization,review,os.getpid())
+
+
+@dataclass(frozen=True)
+class BoundPermit(gates.Permit):
+    authorization:dict
+    review:dict
+    driver_pid:int
+    launch_observation:object=None
+
+
+def reference(root,entry):
+    require(set(entry)=={'path','sha256'},'profile/source reference schema')
+    rel=Path(entry['path']);require(not rel.is_absolute() and '..' not in rel.parts,'relative fixed artifact reference')
+    p=private_path(root/rel);data=p.read_bytes();require(sha(data)==entry['sha256'],'profile/audit byte binding')
+    return json.loads(data)
+
+
+def read_pressure_profile(plan):
+    from .pressure_policy import verify
+    return verify(reference(Path(plan['source_root']),plan['memory_pressure_profile']))
+
+
+def verify_runtime(permit):
+    plan=permit.plan
+    authorize(plan,permit.authorization,permit.review,explicit_launch=True)
+    root=private_path(permit.source_root)
+    require(Path(__file__).absolute()==root/'src/trottertracks/resource_applicability/h4_geometry/launch_binding.py','loaded newhost source root')
+    audit=reference(root,plan['source_audit'])
+    require(audit['source_commit']==plan['source_commit'] and audit['source_hashes']==plan['source_hashes'],'source closure audit binding')
+    for path,expected in plan['source_hashes'].items():
+        require(sha(gates.git_blob(root,plan['source_commit'],path))==expected and sha((root/path).read_bytes())==expected,'source blob/checkout mismatch')
+    live={str(p.relative_to(root)) for p in (root/'src/trottertracks/resource_applicability/h4_geometry').glob('*.py')}
+    require(live<=set(plan['source_hashes']),'unlisted runtime module')
+    require(sys.flags.safe_path and sys.dont_write_bytecode and all(os.environ.get(k)==v for k,v in gates.THREAD_ENV.items()),'Python -P -B / process thread limits')
+    env=reference(root,plan['environment_profile']);comp=reference(root,plan['compiler_profile'])
+    require(sys.executable==env['python'] and environment_profile(env['dependencies'],env['installed_sources'])==env,'candidate environment changed')
+    require(compiler_profile(comp['explicit_options'],comp['inherited_defaults'])==comp,'candidate compiler profile changed')
+    require(env['fingerprint']==plan['environment_fingerprint'] and comp['fingerprint']==plan['compiler_fingerprint'],'plan profile fingerprints')
+    from .library_cache import verify
+    verify(reference(root,plan['library_cache_profile']))
+    from .gaussian_structure import verify as verify_gaussian
+    gaussian_profile=verify_gaussian(reference(root,plan['gaussian_synthesis_profile']))
+    gaussian_authority=reference(root,permit.authorization['gaussian_amendment']['authority'])
+    require(gaussian_authority['schema_version']=='h4-user-gaussian-authority-v1' and
+            gaussian_authority['instruction']=='新方式へ切替・再実行' and
+            gaussian_authority['gaussian_cost_amendment_approved'] is True and
+            gaussian_authority['accepted_profile']==gaussian_profile and
+            gaussian_authority['old_partial_cache_reuse'] is False,
+            'user structured Gaussian/new cost authority binding')
+    pressure_profile=read_pressure_profile(plan)
+    if plan['caps']['worker_AS_RSS']!=ROLE_CAP:
+        from .memory_budget import verify as verify_memory, WORKER_CAP
+        memory=permit.authorization['memory_budget_amendment']
+        memory_profile=verify_memory(reference(root,memory['profile']))
+        memory_authority=reference(root,memory['authority'])
+        require(memory_authority['schema_version']=='h4-user-worker-memory-authority-v1' and
+                memory_authority['instruction']=='上限を３２Gで修正して' and
+                memory_authority['worker_memory_amendment_approved'] is True and
+                memory_authority['accepted_profile']==memory_profile and
+                plan['requested_workers']==memory_profile['workers'] and
+                plan['caps']['worker_AS_RSS']==WORKER_CAP,'user-approved worker memory/profile binding')
+        from .resources import require_inherited_address_space
+        require_inherited_address_space(WORKER_CAP)
+    pressure_authority=reference(root,permit.authorization['pressure_amendment']['authority'])
+    grace=pressure_profile['schema_version']=='h4-memory-pressure-policy-v2'
+    expected_instruction='猶予案を承認して再実行' if grace else 'この条件を承認して再実行'
+    expected_version='h4-user-pressure-authority-v2' if grace else 'h4-user-pressure-authority-v1'
+    require(pressure_authority['schema_version']==expected_version and
+            pressure_authority['instruction']==expected_instruction and
+            pressure_authority['pressure_amendment_approved'] is True and
+            pressure_authority['accepted_profile']==pressure_profile and
+            (permit.authorization['pressure_amendment']['from_host_stop_percent'],
+             permit.authorization['pressure_amendment']['to_host_stop_percent'])==((1.0,5.0) if grace else (0.0,1.0)),
+            'user-approved pressure profile/authority binding')
+    for section in ('budget_accounting','recovery_policy'):
+        authority=reference(root,permit.authorization[section]['authority'])
+        require(authority['schema_version']=='h4-user-recovery-authority-v1' and
+                authority['budget_reset_approved'] is True and authority['recovery_approved'] is True and
+                authority['next_stage_authorized'] is False and
+                authority['budget_instruction']=='失敗した過去分は残さなくてよい' and
+                authority['launch_instruction']=='では本計算を行って',
+                'user budget/recovery/launch authority binding')
+    contract=gates.verify_contract(root)
+    require(plan['templates']==contract['templates'] and comp['explicit_options']==contract['compiler_environment_reference']['compiler']['explicit_options'],
+            'scientific templates/compiler options unchanged')
+    return contract,comp['explicit_options']
+
+
+def verify_frozen_receipts(plan):
+    evidence=reference(Path(plan['source_root']),plan['stop_evidence_receipt'])
+    require(evidence['control_complete'] is True and evidence['all_old_owned_processes_ended'] is True,
+            'native stop/control proof not received')
+    for row in evidence['control_files']:
+        require(receipt_inventory(plan['stop_evidence_root'],{row['file']:row['sha256']})['complete'],'control proof file missing')
+    require(bool(evidence['control_files']),'native stop/control file inventory missing')
+    expected={entry['file']:entry['bytes_sha256'] for entry in plan['inputs'].values()}
+    expected['generation-freeze.json']=EXPECTED_FREEZE
+    incoming=receipt_inventory(plan['input_root'],expected)
+    require(incoming['complete'],'frozen inputs/freeze not received')
+    stop=receipt_inventory(plan['stop_evidence_root'],{'byte-budget.journal':EXPECTED_JOURNAL,'runner.log':EXPECTED_LOG})
+    require(stop['complete'],'stopped predecessor journal/log not received')
+    root=private_path(plan['input_root']);freeze=json.loads((root/'generation-freeze.json').read_bytes())
+    require(fingerprint('h4-generation-freeze-v1',freeze)==plan['generation_freeze_digest'] and freeze['inputs']==plan['inputs'] and
+            freeze['source_commit']=='049e69919af16ad29a67a217dc7a407d6b1754a6' and freeze['stage']=='INPUTS_FROZEN_STOP' and
+            freeze['mandatory_stop'] is True,'original generation lineage')
+    data=(private_path(plan['stop_evidence_root'])/'byte-budget.journal').read_bytes()
+    require(len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==ORIGINAL_CARRY['charged_bytes'],
+            'old-host predecessor byte carry proof')
+    verify_newhost_stop(evidence)
+    from .retry_receipt import verify_retry_stop
+    verify_retry_stop(evidence,PRIOR_CARRY,RUN02_CARRY)
+    from .run03_receipt import verify_run03_stop
+    verify_run03_stop(evidence,RUN02_CARRY,HISTORICAL_CARRY)
+    from .run04_receipt import verify_stopped_attempt as verify_run04_stop
+    verify_run04_stop(evidence)
+    from .stopped_attempt_receipt import verify_stopped_attempt
+    verify_stopped_attempt(evidence)
+    from .run06_receipt import verify_run06_stop
+    verify_run06_stop(evidence)
+    from .run07_receipt import verify_run07_stop
+    verify_run07_stop(evidence)
+    from .run08_receipt import verify_run08_stop
+    verify_run08_stop(evidence)
+    from .run09_receipt import verify_run09_stop
+    verify_run09_stop(evidence)
+    return {**freeze,'input_root':str(root),'consumed_seconds':CARRY['wall_seconds'],
+            'prior_charge':CARRY['charged_bytes'],'prior_invocations':CARRY['actual_invocations']}
+
+
+def verify_newhost_stop(evidence):
+    """Keep the failed first launch's journal/identities; never refund it."""
+    from .prelaunch_audit import streaming_sha
+    from .observer import process_sample
+    predecessor=evidence['newhost_predecessor']
+    require(predecessor['run_id']=='h4-newhost-signal-compile-20261007-run01' and
+            predecessor['source_commit']=='6bd1ba01cd71ec3e2071082963c9f07478dada9a' and
+            predecessor['carry']==PRIOR_CARRY and predecessor['all_owned_processes_ended'] is True and
+            predecessor['new_actual_invocations']==0, 'failed newhost launch carry/stop')
+    root=private_path(predecessor['output_root'])
+    require(root.name==predecessor['run_id'], 'predecessor output scope')
+    for row in predecessor['files']:
+        require(Path(row['file']).name==row['file'], 'predecessor receipt basename')
+        actual=streaming_sha(root/row['file'])
+        require(actual['bytes']==row['bytes'] and actual['sha256']==row['sha256'], 'predecessor receipt bytes/hash')
+    require({'byte-budget.journal','launch-stop.json','observer.jsonl'} <= {r['file'] for r in predecessor['files']},
+            'newhost journal/STOP/observer receipts')
+    data=(root/'byte-budget.journal').read_bytes()
+    require(sha(data)=='5482824c1b84da80c99acad1437eeeb21a40b7ee8ec32eb77c9c5a45599acee6' and
+            len(data)%128==0 and sum(int(data[i:i+128].strip()) for i in range(0,len(data),128))==PRIOR_CARRY['charged_bytes'],
+            'newhost charge cannot be reset/refunded')
+    stop=json.loads((root/'launch-stop.json').read_bytes())
+    require(stop['status']=='FAIL_CLOSED_STOP' and stop['automatic_retry'] is False and
+            stop['consumed_seconds']==PRIOR_CARRY['wall_seconds'], 'newhost STOP wall carry')
+    identities=predecessor['identities']
+    require(len(identities)==14 and len({row['pid'] for row in identities})==14, 'newhost14 owned identities')
+    for row in identities:
+        require(row['classification']=='ABSENT', 'predecessor native receipt not terminal')
+        try:current=process_sample(row['pid'])
+        except FileNotFoundError:continue
+        require(current['start']!=row['expected_start'], 'predecessor owned identity still exists')
+
+
+def fresh_gate(plan,observation, *, now=None,pressure_profile=None):
+    now=time.monotonic() if now is None else now
+    require(0<=now-observation['observed_monotonic']<=5,'fresh launch observation')
+    memory=observation['memory']
+    from .pressure_policy import PressureGuard
+    profile=read_pressure_profile(plan) if pressure_profile is None else pressure_profile
+    if profile.get('schema_version')=='h4-memory-pressure-policy-v2':
+        require(memory['psi_full_by_scope']['host']<profile['fresh_launch_host_required_below_percent'],
+                'fresh launch host pressure must remain below1%')
+    pressure=PressureGuard(memory,profile).decision(memory,now=now)
+    require(pressure['reason'] is None,'launch memory pressure: '+str(pressure['reason']))
+    require(0<=now-memory['observed_at']<=5,'fresh memory sample')
+    from .memory_budget import required_available
+    require(memory['available']>=required_available(plan['requested_workers'],plan['caps']['worker_AS_RSS']),'observer-inclusive admission')
+    needed=set(roles(plan));require(needed<=set(observation['scheduler_affinity']) & set(observation['online_cpus']),'role CPUs unavailable')
+    topology={x['cpu']:(x['package'],x['core']) for x in observation['topology']}
+    require(len({topology[c] for c in needed})==len(needed),'distinct physical role cores')
+    load={x['cpu']:x['busy_fraction'] for x in observation['topology']}
+    require(all(load[c] is not None and 0<=load[c]<=0.20 for c in needed),'fresh selected-core passive load exceeds20% or missing')
+    fs=observation['filesystem'];storage=plan['storage']
+    require(fs['block_bytes']==storage['block_bytes'],'filesystem allocation block changed')
+    require(fs['available_bytes']>=storage['required_bytes'] and fs['available_inodes']>=storage['required_inodes'],'launch capacity/inodes')
+    quota=observation['quota'];require(quota['status']=='KNOWN','quota not proven; no filesystem-only fallback')
+    for row in quota['items']:
+        if row['status']=='ACTIVE':
+            require((row['available_bytes'] is None or row['available_bytes']>=storage['required_bytes']) and
+                    (row['available_inodes'] is None or row['available_inodes']>=storage['required_inodes']),'launch quota capacity')
+    require(storage['cumulative_charge_bound']<=plan['caps']['output_bytes'],'cumulative output budget including observer/control')
+
+
+def role_affinity(permit,role,index=None):
+    """Own-process only, unreachable for false draft flags. Tests mock syscall."""
+    authorize(permit.plan,permit.authorization,permit.review,explicit_launch=True)
+    require(role in ('driver','worker'),'closed CPU role')
+    cp=permit.plan['cpu_proposal']
+    if role=='worker':
+        require(type(index) is int and 0<=index<permit.plan['requested_workers'] and os.getppid()==permit.driver_pid,'worker parent/index')
+        mask=set(cp['workers'][index])
+    else:require(os.getpid()==permit.driver_pid,'driver ownership');mask=set(cp['driver'])
+    require(mask<=set(permit.authorization['allowed_cpus']),'role permission')
+    os.sched_setaffinity(0,mask)
+    require(set(os.sched_getaffinity(0))==mask,'own role affinity did not bind')
+    # No /tmp probing even when dill/Qiskit first query tempfile in a worker.
+    tempfile.tempdir=str(private_path(Path(permit.plan['control_root'])/'private-temp'))
+    if role=='worker':install_write_guard(permit.plan,worker=True)
+
+
+def write_guard(plan,event,args, *, worker=False,library_cache=None):
+    """Keep runtime writes budgeted; a user's home is not a shared system path."""
+    if event not in ('open','os.mkdir','os.remove','os.rename','os.rmdir'):return
+    if not args or not isinstance(args[0],(str,bytes,os.PathLike)):return
+    writing=event!='open'
+    if event=='open':
+        mode=args[1] or '';flags=args[2] or 0
+        writing=bool((isinstance(mode,str) and any(x in mode for x in 'wax+')) or flags & (os.O_WRONLY|os.O_RDWR|os.O_CREAT|os.O_TRUNC|os.O_APPEND))
+    if not writing:return
+    paths=args[:2] if event=='os.rename' else args[:1]
+    for raw in paths:
+        path=Path(os.fsdecode(raw))
+        if not path.is_absolute():
+            from .resources import MANAGED_WRITE_CONTEXT
+            managed=getattr(MANAGED_WRITE_CONTEXT,'root',None)
+            require(managed is not None and len(path.parts)==1 and '..' not in path.parts,'unbound relative write forbidden')
+            path=Path(managed)/path
+        if path==Path('/dev/null'):continue
+        if library_cache is not None:
+            from .library_cache import existing_directory_probe
+            if existing_directory_probe(library_cache,event,path):continue
+        require(not worker,'unbudgeted worker disk/cache/temp write forbidden: '+event+' '+str(path)[:512])
+        output=Path(plan['output_root']);control=Path(plan['control_root'])
+        require(path.is_relative_to(output) or path.is_relative_to(control),'outside budgeted run write forbidden')
+        require(not path.is_relative_to(control/'private-temp'),'unbudgeted compiler temporary file forbidden')
+
+
+def install_write_guard(plan, *, worker=False):
+    cache=reference(Path(plan['source_root']),plan['library_cache_profile'])
+    from .library_cache import configure
+    configure(cache)
+    sys.addaudithook(lambda event,args:write_guard(plan,event,args,worker=worker,library_cache=cache))
+
+
+def claim_once(permit):
+    """Every attempt has one exclusive marker; recovery uses a new bound run."""
+    authorize(permit.plan,permit.authorization,permit.review,explicit_launch=True)
+    root=private_path(permit.plan['control_root'])
+    require(not private_path(permit.plan['output_root']).exists(),'existing output forbids retry/resume')
+    root.mkdir(parents=True,exist_ok=True,mode=0o700);fsync_directory(root.parent)
+    fd=os.open(root/'one-shot.json',os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+    try:
+        data=json.dumps(dict(run_id=RUN_ID,source=permit.plan['source_commit'],review=permit.review_digest,
+                             driver_pid=os.getpid(),uid=os.getuid(),started_monotonic=time.monotonic())).encode()
+        require(os.write(fd,data)==len(data),'one-shot write');os.fsync(fd)
+    finally:os.close(fd)
+    fsync_directory(root)
+
+
+class CappedDriverLog(io.TextIOBase):
+    def __init__(self,path,cap=CONTROL_LOG_CAP):
+        self.fd=os.open(private_path(path),os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+        self.cap,self.bytes=cap,0
+    def write(self,value):
+        data=value.encode();require(self.bytes+len(data)<=self.cap,'driver control log cap')
+        require(os.write(self.fd,data)==len(data),'driver log write');os.fsync(self.fd);self.bytes+=len(data)
+        return len(value)
+    def flush(self):
+        if self.fd is not None:os.fsync(self.fd)
+    def close(self):
+        if self.fd is not None:os.close(self.fd);self.fd=None
+        super().close()
+
+
+def launch(plan,authorization,review, *, explicit_launch=False):
+    permit=authorize(plan,authorization,review,explicit_launch=explicit_launch)
+    started=time.monotonic()
+    _contract,options=verify_runtime(permit)
+    verify_frozen_receipts(plan)  # bytes+metadata only before science stage
+    observation=host_readonly(private_path(plan['output_root']).parent,sample_seconds=3)
+    fresh_gate(plan,observation)
+    permit=replace(permit,launch_observation=observation)
+    claim_once(permit)
+    temp=private_path(Path(plan['control_root'])/'private-temp');temp.mkdir(mode=0o700)
+    os.environ['TMPDIR']=str(temp)  # this owned process and its children only
+    from .resources import OutputBudget
+    trace_cap=(72*3600+2)*FRAME_CAP+TERMINAL_RESERVE
+    budget=OutputBudget(plan['output_root'],cap=plan['caps']['output_bytes'],
+                        prior_charge=CARRY['charged_bytes'],file_limits=FILE_LIMITS)
+    try:
+        # Reserve all control/observer expenses before log/observer startup.
+        budget.reserve(CONTROL_LOG_CAP+65536);budget.reserve(trace_cap+FRAME_CAP)
+        cache=reference(Path(plan['source_root']),plan['library_cache_profile'])
+        budget.reserve(cache['bytes'])  # include the new dependency cache, no refund
+        role_affinity(permit,'driver')
+        install_write_guard(plan)
+        from .execution import signal_stage
+        with CappedDriverLog(Path(plan['control_root'])/'runner.log') as log,redirect_stdout(log),redirect_stderr(log):
+            try:
+                result=signal_stage(permit,authorization,options,launch_started=started,prepared_budget=budget)
+            except BaseException as exc:
+                budget.write('launch-stop.json',json.dumps({'status':'FAIL_CLOSED_STOP','reason':type(exc).__name__+': '+str(exc)[:1024],
+                    'consumed_seconds':CARRY['wall_seconds']+time.monotonic()-started,'automatic_retry':False}).encode())
+                raise
+            budget.write('launch-stop.json',json.dumps({'status':result['status'],'consumed_seconds':CARRY['wall_seconds']+time.monotonic()-started,
+                'automatic_retry':False}).encode())
+            return result
+    finally:budget.close()

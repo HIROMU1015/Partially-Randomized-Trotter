@@ -1,0 +1,13 @@
+# SOURCE・contract差分
+
+固定SOURCE：[78c571005fe766c61b32dc867e006531099ff608](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/78c571005fe766c61b32dc867e006531099ff608)。直接基点 `d24cccbecdf0928fe977080dd7b28c591df0089e`。ローカル独立受入 `6bffb5b5819918698b522270ff19b255766d3072` は固定参照のみでmerge/rebaseしない。
+
+今回の範囲は静的読取・AST・hash照合と人工技術検証。実科学入口閉鎖、科学的採択なし、mandatory STOP。サーバーCodex主担当一名による自己検証であり、別reviewerの独立受入ではない。
+
+直接基点d24cccb、独立受入6bffb5b5は参照のみ。追加namespace/API port/人工bits/fake authority/monitor/preflight/offline/harness/testと本packetだけを新規作成する。既存科学6 files、固定runtime52 files、旧Bundle/V2/checker/契約/raw/grant/ledger/marker/STOPは固定bytes。新subpackageに置いたため、旧Bundle candidateのg6_w2c_b3_*.py globを変えない。
+
+新contractは未採択。元n256、16cells、correctness256＋baseline4096＋instrumented4096=8448/条件、S/P1計16896、S→P1、6phase、fused/CachedObserver、64GiB result/256MiB log、retry0/resume falseを静的参照。人工小規模n16とsurrogate用sidecarは別試験形状であり科学予算の変更ではない。
+
+旧Global Bundleの外部endpoint注入口がない点を明示した。今回その改造/再実装/monkeypatchは行わない。別実科学SOURCEに必要な注入口とauthority/runtime/STOP/storage bindingは未採択事項。
+
+開発時の疎checkout依存不足は固定資料を専用worktreeへ補完して解消。旧legacy_restoration.json生成差分は元bytesへ戻し、途中診断は新packetのdevelopmentに保全。初期SOURCE190d7d5fの比較でbool/intを同一視し得る点を発見し、canonical bytes比較と整数型guardを追加した別SOURCE78c57100へ固定し直した。初期SOURCE/人工証拠は開発履歴として保持し、最終SOURCEで全新規人工検証をやり直した。package/restore/docs/publicationのpostprocessing helpersは最終content commitへ記録し、人工測定SOURCEとは区別する。

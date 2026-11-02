@@ -1,0 +1,100 @@
+{
+  "schema": "C1_1_D0_PARTITION_DIAGNOSTIC_CONTRACT_V1",
+  "run_id": "track_b_c1_1_d0_h4_partition_hash_20261021_one_shot_v1",
+  "branch": "track-b-c1-1-d0-partition-hash-20261021",
+  "base_commit": "4cfe1c257709f0ac09351eadce3952b81403cf93",
+  "scientific_reference_commit": "243eea8e840f3c472753f7935e510391626fd325",
+  "source_commit_binding": "new authorization direct child of source commit, adding only new receipt",
+  "snapshot": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "bytes": 8652,
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a"
+  },
+  "model": {
+    "molecule": "linear H4",
+    "spacing_A": "1.00",
+    "basis": "STO-3G",
+    "DF_rank": 12,
+    "system_qubits": 8,
+    "generation_prefix": 3
+  },
+  "reference_result": "artifacts/pr2_new_series_validation/2026-09-28/pr2_v1_v3_result_v1.json",
+  "reference_result_sha256": "0eb22c813eb838169eb455334146140467ebbc5636db78bd923b1e6bdaed46d8",
+  "reference_pointer": "/stages/V2/ranks/0/methods/B2-G",
+  "expected_partition_hash": "722ec0077b4505d963c03bccdd6311f9dd8b3d3a5ed1b9117f7a6f8fa85a7450",
+  "npz_read_members": [
+    "constant",
+    "one_body",
+    "lambdas",
+    "g_matrices",
+    "metadata_json"
+  ],
+  "npz_members_not_read": [
+    "sector_basis_indices",
+    "state_vector",
+    "sector_state_vector"
+  ],
+  "allowed_scientific_calls": {
+    "np_load": 1,
+    "df_hamiltonian_hash": 1,
+    "generation_partition": 1,
+    "_partition_hash": 1,
+    "float_and_saved_metadata_comparison": "same result JSON; same snapshot existing other rank records only, no new rank computation"
+  },
+  "partition_policy": "explicit_ordered_partition",
+  "weight_rule": "lambda_frobenius_squared",
+  "payload_path": "unmodified _partition_hash first assignment AST expression; UTF-8 sorted compact JSON; no newline; actual source function cross-check",
+  "evidence_order": "write actual canonical bytes, full payload, float repr/hex and hash identity before expected hash comparison",
+  "comparisons": "bitwise float.hex equality; no tolerance, rounding patch, replacement-field/hash search or version exploration",
+  "classification_rules": {
+    "HASH_MATCH_VERIFIED": "actual == expected and fixed source/canonical byte checks pass",
+    "HASH_MISMATCH_CAUSE_PARTIALLY_IDENTIFIED": "mismatch plus differing available saved fragment metadata; direct original payload absent so no unique causal attribution",
+    "HASH_MISMATCH_UNRESOLVED": "mismatch with no differences in available saved fields",
+    "HASH_MISMATCH_CAUSE_IDENTIFIED": "reserved for fully supported specific procedural/payload cause; never infer from hash inequality alone",
+    "TECHNICAL_INCONCLUSIVE": "input/source/env/evidence preservation/diagnostic failure"
+  },
+  "exit_mapping": {
+    "HASH_MATCH_VERIFIED": 0,
+    "diagnostic_HASH_MISMATCH": 2,
+    "TECHNICAL_INCONCLUSIVE": 1
+  },
+  "output_schema": {
+    "result/attempt.json": "one attempt, retry0, UTC start",
+    "result/run_identity.json": "source and new auth commit identities",
+    "result/input_identity.json": "necessary array and H hashes and layout",
+    "result/partition_payload.canonical.json": "exact bytes hashed; no trailing newline",
+    "result/partition_payload.json": "readable full payload",
+    "result/float_provenance.json": "path/value/repr/hex/type/calculation dependency",
+    "result/hash_identity.json": "expected/actual/H hash/source/serialization",
+    "result/field_comparison.json": "saved-pointer comparisons and missing fields",
+    "result/diagnosis.json": "classification and limitations",
+    "result/scientific_call_observations.json": "listed Python function profile counts; not C/global call certificate",
+    "result/numpy_build_metadata.json": "runtime build metadata only",
+    "result/failure.json": "on mismatch or exception; original traceback on exception",
+    "result/secondary_failures.json": "optional logger/preservation failures; does not overwrite primary",
+    "result/terminal.json": "classification, expected exit, usage, mandatory STOP",
+    "result/runner_output_inventory.json": "all files at runner terminal excluding self",
+    "raw_logs_and_outer_exit": "copied from dedicated runtime after process exit; final preservation inventory covers them"
+  },
+  "runtime_identity": "environment_identity.json; same existing C1-1 interpreter/dependencies; no additions or switching",
+  "cache_directory": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-d0-partition-hash-20261021.runtime",
+  "resources": "no CPU/RAM/worker caps imposed; existing BLAS defaults; dependency chain and immediate stop; no unnecessary basis reconstruction",
+  "run_limit": 1,
+  "retry_limit": 0,
+  "authorization_basis": "current user D0 request explicitly authorizes both preparation and one diagnosis; no second permission needed",
+  "old_authorization_reused": false,
+  "prohibited": [
+    "prepare_df_partial_s2 full call",
+    "basis diagonalization/Gaussian reconstruction/registry serialization",
+    "exact G6 lambda/p",
+    "Hamiltonian matrix/model differences",
+    "adapter/sampler",
+    "SCF/DF factorization",
+    "circuit build/compile/synthesis",
+    "native costs/N/benchmark/sampling/Pilot/Full-N",
+    "new nontrivial proof",
+    "old source/input/result/grant/marker/STOP changes"
+  ],
+  "post_outcome": "preserve and publish any outcome, verify public bytes and protections, mandatory STOP; never resume C1-1 basis/exact work",
+  "created_utc": "2026-10-20T15:38:14.868195+00:00"
+}

@@ -1,0 +1,53 @@
+{
+  "schema": "H8_NONCANCELLATION_PREPARATION_SUMMARY_V1",
+  "SOURCE": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+  "plan_digest": "c9bc52053f4b4838c1264b2bfc2620ce4ab1822f19967e36e8b6d0d348ded236",
+  "prepared": [
+    "per-axis empirical noncancellation runner for 184 deterministic + PR union6",
+    "frozen D0 shot accounting with bias substitution only",
+    "exact reproduction gates (1900 usual rows, PR paired metrics)",
+    "B2-gated measured-first/fixed-model cost comparison, old32 vs 184",
+    "input manifest 22 roles and private SHA-verified snapshot",
+    "UNAPPROVED plan and INVALID draft grant",
+    "metadata-only evidence audit"
+  ],
+  "executed_now": {
+    "metadata_evidence_audit": 1,
+    "artificial_tests": 108,
+    "regression_tests": 113,
+    "draft_rejection_CLI": 1
+  },
+  "not_executed": {
+    "saved_value_noncancellation_bias": 0,
+    "shots": 0,
+    "usual_reaccounting": 0,
+    "costs": 0,
+    "rankings": 0,
+    "PR_sampling": 0,
+    "compile": 0,
+    "fit": 0,
+    "signal": 0,
+    "SCF_DF_state": 0,
+    "GPU": 0
+  },
+  "B2_full_four_axis_PASS_available": false,
+  "cost_stage_executable": false,
+  "next": [
+    {
+      "who": "User",
+      "what": "Decide B2 handling and whether to explicitly approve one NONCANCELLATION_SHOTS run for this SOURCE/plan digest"
+    },
+    {
+      "who": "Codex",
+      "what": "Handle the B2 attempt02 STOP and any further B2 attempt within its existing authorization"
+    },
+    {
+      "who": "Claude Code",
+      "what": "After explicit approval only: bind fresh gate/grant, run the approved stage once, save result/STOP/native exit, mandatory STOP; cost stage only after B2 full PASS binding and approval"
+    }
+  ],
+  "approved": false,
+  "runtime_authorization": false,
+  "next_stage_authorized": false,
+  "mandatory_STOP": true
+}

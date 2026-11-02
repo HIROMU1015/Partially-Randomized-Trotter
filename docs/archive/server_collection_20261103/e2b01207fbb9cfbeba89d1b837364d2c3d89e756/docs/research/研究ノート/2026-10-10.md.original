@@ -1,0 +1,62 @@
+
+
+## 2026-10-10 H4 run06：carry0で本計算、STOP後も修正・再実行を継続
+
+利用者が過去失敗分を次回へ加算しない方針と、STOP後チャットを終了せず原因調査・修正・再実行の継続、本体起動を明示認可。
+新SOURCE 697843fbbd2a2aa7224261aa26f8da141ca57687/closure55、library cache v2保持、新run06。純粋21 tests PASS、人工compile/追加transpile0。
+carry0（actual/charge/wall）・既承認17GiB/74805/72h、全map8.136939GiB/74784。環境/CPU4workers/driver16/observer18/資源caps/科学compiler不変。
+旧証拠・入力・one-shotを保持し、各fresh attemptを独立認可binding。停止した同一runのresumeと旧partial科学cache混合は禁止。
+独立review・immutable artifact・直前fresh gatesを経て本計算、一度のSTOPで作業を終了せず必要修正とfresh再起動を続ける。次stage未認可。
+[最新入口](../track_a_h4_production_run06_20261010.md)。
+
+
+## 2026-10-10 H4 run06もhost PSI0.18でSTOP、inactive修正案を固定
+
+run06は4workersで約856.585秒、host PSI0.18/nonroot全0/OOM増分0/available約445GiB/role8GiB内でもmemory_pressure STOP。
+4actual予約/完了0・signal0、6identity残存0を2回確認。STOPの発生元や正確な終了時刻は補完しない。
+元D4 contractのmemory PSI full avg10>0即STOPを変更するには明示契約改定が必要。通常の修正/再実行認可をpressure変更に拡張解釈しない。
+SOURCE41d2b61f640937255c5fa6cab9549ae67b83c462/closure58、旧55 source不変、inactive evaluator・16pure tests PASS。
+提案はhost-only PSI<1%を完全なnonroot PSI0/OOM0delta/effective120.25GiB/fresh5秒/既存role8GiB guardで条件付き許容。nonroot>0/host>=1%/欠測等はSTOP。
+threshold最適性/共有負荷安全性/本計算成功は未検証。production未接続、approved/runtime false・allowed[]・未seal・commandnull。
+carry0/17GiB/74805/72h/科学/compiler/凍結入力維持。本体再起動0、GPU/共有環境/venv/他job変更0。
+[最新入口](../track_a_h4_host_pressure_policy_fix_20261010.md)。
+
+
+## 2026-10-10 H4 run07：host-only PSI例外の明示承認・本番接続
+
+利用者が「この条件を承認して再実行」と明示承認。host-only PSI<1%は全nonroot0/OOM増分0/effective120.25GiB/fresh5秒でのみ許容、他pressure/欠測/8GiB/5秒等はfail-closed維持。
+SOURCE1dbdd1be2133a59ab81c7b81a6074af0880f72a3/closure62、33pure tests PASS、初回失敗ログ保持。actual kernel baselineと原driver OOM/hierarchyをobserver子へ固定transport。
+run06原STOP/費用/6×2ABSENT/10filesSHAを保持し、新run07/carry0/CPU4subset[2,4,5,6]/driver16/observer18で再実行。17GiB/74805/72h・科学/compiler/凍結6入力不変。
+独立review・immutable artifact・直前fresh/未使用lock PASS後に起動。共有環境/venv/他job/GPU変更0。開始確認後chat終了可、observer監視は継続。
+[最新入口](../track_a_h4_production_run07_20261010.md)。
+
+
+## 2026-10-10 H4 run07 STOP原因監査：q2 workerのAS8GiB枯渇が最有力
+
+run07はgeometry0.70/B0/L_D3/q1/delta0.8の2wrapperをcompile COMPLETEしsignal1保存後、q2/delta0.4/cosine workerのresponse EOFでSTOP。
+last AS7.999725GiB/残288KiB、RSS7.648GiB、hostavailable438.6995GiB/PSI0/OOM増分なし。full dense256x2568qUnitaryGateのgenericQSDでq1すでに約273万operation。
+AS制限による割当失敗が強く支持されるが、元native error/signal/compile-vsmetrics phaseは未記録。stderrDEVNULLとformatter二次MemoryErrorによるerrorframe欠落をsource/mock2caseで確認。
+SOURCE1dbdd1be2133a59ab81c7b81a6074af0880f72a3/closure62不変。6予約(2COMPLETE4RESERVED)/signal1/charge4263870068B/6identities×2ABSENT・raw18fileSHAを保存。
+新science/input/compile/worker/affinity/GPU/source/caps変更・再起動0。全map成功やmemory leakは断定せず、原partialは次attemptへ混合しない。
+[原因監査入口](../track_a_h4_run07_stop_cause_audit_20261010.md)。
+
+
+## 2026-10-10 H4 worker AS/RSS32GiBを明示承認・SOURCE固定
+
+利用者の「上限を３２Gで修正して」でnewhost4workersを32GiB、driver8GiB/observer256MiB・64MiB/head16GiBを維持。両fresh/startup gateは152.25GiB。
+親soft8でhardをchild準備まで保持し、workerは認可/checkout後に32、全ready後driverhard8。observerはtrusted driver PIDとnative登録workerを8/32で区別。
+独立review P2 cleanup signal errorでの後続掃除skipを修正、最終53pure/mock PASS。実child/science/transpile/affinity/本体0。
+SOURCE b652fff9d2907015d3b8b7b23ce8bf0fe4fce33a/closure65、旧SOURCE変更7/不変55+new3。科学/compiler/凍結入力/旧pressure/carry0/17GiB/74805/72h不変。
+SOURCE/profile/input/carry/capsの準備binding、memory承認true・overalllaunchfalse/allowed[]/未seal/commandnull。fresh run/plan/auth/review/freshgatesは次回起動へ。
+旧run07 one-shot/partial/cacheは保持し再利用しない。元native診断2gapsと全map完走は未検証。共有環境/venv/他job/GPU変更0。
+[修正資料入口](../track_a_h4_worker_memory32_fix_20261010.md)。
+
+
+## 2026-10-10 H4 run08：worker32GiBで明示再実行
+
+利用者が本計算再実行と開始確認後chat終了を明示指示。SOURCE8c917a5af7943969d4abede8b0bb012880efeee0/closure67、新run08/carry0。
+worker4 AS/RSS32GiB、driver8GiB、observer256MiB/64MiB、admission152.25GiB、CPU2/4/5/6・driver16・observer18。科学/compiler/旧pressure/凍結6入力/17GiB/74805/72h不変。
+最新run07 native6×2ABSENT/元18fileSHA/cost保持、旧partial/control/one-shotを再利用しない。新11metadata/byte tests PASS、旧53campaignと人工compile再実行0。
+独立reviewとimmutable artifact・直前SOURCE/profile/input/carry/CPU/memory/pressure/OOM/容量/inode/quota/未使用lock合格後、一度mapを起動。実状態はruntime receiptへ別記録。
+共有環境/既存venv/他job/GPU変更0、home内だけ。全map完走は未検証、次stage未認可。
+[起動資料入口](../track_a_h4_production_run08_20261010.md)。

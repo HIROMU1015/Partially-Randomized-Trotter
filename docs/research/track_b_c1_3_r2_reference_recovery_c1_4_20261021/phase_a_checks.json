@@ -1,0 +1,177 @@
+{
+  "status": "PASS",
+  "artificial_only": true,
+  "fixtures": [
+    {
+      "fixture": 0,
+      "saved_hex": {
+        "shape": [
+          2,
+          2
+        ],
+        "real_hex": [
+          [
+            "0x0.0p+0",
+            "-0x0.0p+0"
+          ],
+          [
+            "0x0.0p+0",
+            "-0x0.0p+0"
+          ]
+        ],
+        "imag_hex": [
+          [
+            "0x0.0p+0",
+            "0x0.0p+0"
+          ],
+          [
+            "-0x0.0p+0",
+            "-0x0.0p+0"
+          ]
+        ]
+      },
+      "expected_sha256": "4a581a35d7fd84fdfc10f1126e7304f1dd594d04c5745991cf2618746acfdffc",
+      "actual_sha256": "4a581a35d7fd84fdfc10f1126e7304f1dd594d04c5745991cf2618746acfdffc",
+      "expected_bytes_hex": "00000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000008000000000000000800000000000000080",
+      "new_bytes_hex": "00000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000008000000000000000800000000000000080",
+      "legacy_bytes_hex": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000800000000000000000",
+      "legacy_difference": {
+        "equal": false,
+        "first_difference_byte_offset": 23,
+        "differing_byte_count": 3,
+        "differing_binary64_components": [
+          {
+            "byte_offset": 16,
+            "expected_binary64_bits": "0x8000000000000000",
+            "actual_binary64_bits": "0x0",
+            "zero_sign_only": true
+          },
+          {
+            "byte_offset": 40,
+            "expected_binary64_bits": "0x8000000000000000",
+            "actual_binary64_bits": "0x0",
+            "zero_sign_only": true
+          },
+          {
+            "byte_offset": 56,
+            "expected_binary64_bits": "0x8000000000000000",
+            "actual_binary64_bits": "0x0",
+            "zero_sign_only": true
+          }
+        ],
+        "all_differences_are_zero_sign_bits": true
+      },
+      "new_exact_bytes_equal": true
+    },
+    {
+      "fixture": 1,
+      "saved_hex": {
+        "shape": [
+          2,
+          2
+        ],
+        "real_hex": [
+          [
+            "0x1.4000000000000p+0",
+            "-0x1.c000000000000p+1"
+          ],
+          [
+            "-0x1.8000000000000p+2",
+            "0x1.4000000000000p+3"
+          ]
+        ],
+        "imag_hex": [
+          [
+            "-0x1.4000000000000p+1",
+            "0x1.3000000000000p+2"
+          ],
+          [
+            "-0x1.0000000000000p+3",
+            "0x1.6000000000000p+3"
+          ]
+        ]
+      },
+      "expected_sha256": "6f0724b909730c28c46e5532fe0f4918549bd4def65afd7dc9448590a1156ccc",
+      "actual_sha256": "6f0724b909730c28c46e5532fe0f4918549bd4def65afd7dc9448590a1156ccc",
+      "expected_bytes_hex": "000000000000f43f00000000000004c00000000000000cc0000000000000134000000000000018c000000000000020c000000000000024400000000000002640",
+      "new_bytes_hex": "000000000000f43f00000000000004c00000000000000cc0000000000000134000000000000018c000000000000020c000000000000024400000000000002640",
+      "legacy_bytes_hex": "000000000000f43f00000000000004c00000000000000cc0000000000000134000000000000018c000000000000020c000000000000024400000000000002640",
+      "legacy_difference": {
+        "equal": true,
+        "first_difference_byte_offset": null,
+        "differing_byte_count": 0,
+        "differing_binary64_components": [],
+        "all_differences_are_zero_sign_bits": false
+      },
+      "new_exact_bytes_equal": true
+    },
+    {
+      "fixture": 2,
+      "saved_hex": {
+        "shape": [
+          2,
+          2
+        ],
+        "real_hex": [
+          [
+            "0x0.0000000000001p-1022",
+            "-0x0.0000000000001p-1022"
+          ],
+          [
+            "0x1.fffffffffffffp+1023",
+            "-0x0.0p+0"
+          ]
+        ],
+        "imag_hex": [
+          [
+            "-0x0.0000000000001p-1022",
+            "0x0.0000000000001p-1022"
+          ],
+          [
+            "-0x0.0p+0",
+            "0x0.0000000000001p-1022"
+          ]
+        ]
+      },
+      "expected_sha256": "b1daf7989317fb6c9630c5fa69b0e257cb4927da9f1985c84df892aa7473c052",
+      "actual_sha256": "b1daf7989317fb6c9630c5fa69b0e257cb4927da9f1985c84df892aa7473c052",
+      "expected_bytes_hex": "0100000000000000010000000000008001000000000000800100000000000000ffffffffffffef7f000000000000008000000000000000800100000000000000",
+      "new_bytes_hex": "0100000000000000010000000000008001000000000000800100000000000000ffffffffffffef7f000000000000008000000000000000800100000000000000",
+      "legacy_bytes_hex": "0100000000000000010000000000008001000000000000800100000000000000ffffffffffffef7f000000000000000000000000000000000100000000000000",
+      "legacy_difference": {
+        "equal": false,
+        "first_difference_byte_offset": 47,
+        "differing_byte_count": 2,
+        "differing_binary64_components": [
+          {
+            "byte_offset": 40,
+            "expected_binary64_bits": "0x8000000000000000",
+            "actual_binary64_bits": "0x0",
+            "zero_sign_only": true
+          },
+          {
+            "byte_offset": 48,
+            "expected_binary64_bits": "0x8000000000000000",
+            "actual_binary64_bits": "0x0",
+            "zero_sign_only": true
+          }
+        ],
+        "all_differences_are_zero_sign_bits": true
+      },
+      "new_exact_bytes_equal": true
+    }
+  ],
+  "fixture_count": 3,
+  "signed_zeros_real_imag_and_both": true,
+  "finite_subnormal_values": true,
+  "exact_binary64_hex_and_complex_storage_C_order": true,
+  "independent_expected": "row-major struct.pack(<dd), no adapter gate or operator output",
+  "failure_logger_terminal_preserves_first_failure": true,
+  "connection_regression": "10 controlled comparisons and 63 artificial first-moment events, unchanged criteria",
+  "reference_sha256": "5cc805e30ea5280530656033ce3085e7614917ba0987c7b5d115bb7f75b42ad6",
+  "bitwise_helper_sha256": "7ee1d9c7bf3f02af00153605e6ead12ed92a2eb0021f6ad04f2bc426d9411465",
+  "adapter_sha256": "657521c6e9f3ab2712d772a7e608acceb2b2638a06cc911571e0bb42005026fe",
+  "H4_arrays_or_basis_opened": false,
+  "H4_scientific_attempts": 0,
+  "legacy_H4_cause_inferred_from_artificial_only": false
+}

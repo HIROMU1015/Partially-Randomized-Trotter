@@ -1,0 +1,4021 @@
+{
+  "static": {
+    "cells": 16,
+    "phases_per_condition": 3,
+    "global_phases": 6,
+    "per_condition": {
+      "correctness": 256,
+      "baseline": 4096,
+      "instrumented": 4096,
+      "total": 8448
+    },
+    "total": 16896
+  },
+  "cases": {
+    "public/normal_S": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 768,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 768,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 686845908,
+          "worker_cpu_ns": 4654393000,
+          "wall_ns": 5252107182,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234031
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31535
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142328,
+              "result": 4877808
+            },
+            "observed": {
+              "log": 2142328,
+              "result": 675312
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "VERIFIED_ARTIFICIAL_CONDITION_ONLY"
+    },
+    "public/normal_P1": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 768,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 768,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 326051228,
+          "worker_cpu_ns": 5018508000,
+          "wall_ns": 1218820179,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234032
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31536
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2153326,
+              "result": 4878355
+            },
+            "observed": {
+              "log": 2153326,
+              "result": 675859
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "VERIFIED_ARTIFICIAL_CONDITION_ONLY"
+    },
+    "public/normal_bundle_small": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 709451072,
+          "worker_cpu_ns": 4673744000,
+          "wall_ns": 5291491524,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877820
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675324
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 365432938,
+          "worker_cpu_ns": 5119382000,
+          "wall_ns": 1263080155,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878435
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675939
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282961,
+              "result": 5522790
+            },
+            "observed": {
+              "log": 4282961,
+              "result": 1320294
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE"
+    },
+    "public/normal_bundle_n256": {
+      "calls": {
+        "planned": 16896,
+        "reserved": 16896,
+        "started": 16896,
+        "completed": 16896,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 16896,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 8448,
+          "started": 8448,
+          "completed": 8448,
+          "planned": 8448,
+          "parent_cpu_ns": 5305688302,
+          "worker_cpu_ns": 11745477000,
+          "wall_ns": 16313668577,
+          "budget_before": {
+            "reserved": {
+              "log": 29956,
+              "result": 4234106
+            },
+            "observed": {
+              "log": 29956,
+              "result": 31610
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 21544383,
+              "result": 9863302
+            },
+            "observed": {
+              "log": 21544383,
+              "result": 5660806
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 8448,
+          "started": 8448,
+          "completed": 8448,
+          "planned": 8448,
+          "parent_cpu_ns": 2691965219,
+          "worker_cpu_ns": 13406625000,
+          "wall_ns": 3993362239,
+          "budget_before": {
+            "reserved": {
+              "log": 21545073,
+              "result": 9863927
+            },
+            "observed": {
+              "log": 21545073,
+              "result": 5661431
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 43188056,
+              "result": 15498030
+            },
+            "observed": {
+              "log": 43188056,
+              "result": 11295534
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE"
+    },
+    "public/S_failure_blocks_P1": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 1,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 5924001,
+          "worker_cpu_ns": 158096000,
+          "wall_ns": 162823848,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234058
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31562
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 31958,
+              "result": 4235555
+            },
+            "observed": {
+              "log": 31958,
+              "result": 33059
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/P1_failure_preserves_S": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 775,
+        "started": 775,
+        "completed": 774,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 761,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 774,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 687402149,
+          "worker_cpu_ns": 4668040000,
+          "wall_ns": 5264729223,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234059
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31563
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877832
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675336
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 7,
+          "started": 7,
+          "completed": 6,
+          "planned": 768,
+          "parent_cpu_ns": 23145098,
+          "worker_cpu_ns": 1308887000,
+          "wall_ns": 220233170,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878447
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675951
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2245716,
+              "result": 4894873
+            },
+            "observed": {
+              "log": 2245716,
+              "result": 692377
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/F01_after_event": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 1,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 4613953,
+          "worker_cpu_ns": 159121000,
+          "wall_ns": 163032527,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234063
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31567
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 31746,
+              "result": 4235957
+            },
+            "observed": {
+              "log": 31746,
+              "result": 33461
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/worker_crash": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 770,
+        "started": 770,
+        "completed": 769,
+        "unknown": 1,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 766,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 769,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 1
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 695834381,
+          "worker_cpu_ns": 4673164000,
+          "wall_ns": 5277463894,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234057
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31561
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142331,
+              "result": 4877836
+            },
+            "observed": {
+              "log": 2142331,
+              "result": 675340
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 2,
+          "started": 2,
+          "completed": 1,
+          "planned": 768,
+          "parent_cpu_ns": 18881050,
+          "worker_cpu_ns": 1298270000,
+          "wall_ns": 215379267,
+          "budget_before": {
+            "reserved": {
+              "log": 2143019,
+              "result": 4878451
+            },
+            "observed": {
+              "log": 2143019,
+              "result": 675955
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2224790,
+              "result": 4890418
+            },
+            "observed": {
+              "log": 2224790,
+              "result": 687922
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/reserved_worker_crash": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 777,
+        "started": 775,
+        "completed": 775,
+        "unknown": 1,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 759,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 775,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 1
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 706301792,
+          "worker_cpu_ns": 4658246000,
+          "wall_ns": 5270483654,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234066
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31570
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142331,
+              "result": 4877839
+            },
+            "observed": {
+              "log": 2142331,
+              "result": 675343
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 9,
+          "started": 7,
+          "completed": 7,
+          "planned": 768,
+          "parent_cpu_ns": 22533182,
+          "worker_cpu_ns": 1275975000,
+          "wall_ns": 198647170,
+          "budget_before": {
+            "reserved": {
+              "log": 2143019,
+              "result": 4878454
+            },
+            "observed": {
+              "log": 2143019,
+              "result": 675958
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2241729,
+              "result": 4894031
+            },
+            "observed": {
+              "log": 2241729,
+              "result": 691535
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/missing_ACK_unknown_credit": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 793,
+        "started": 790,
+        "completed": 789,
+        "unknown": 1,
+        "cancelled": 3
+      },
+      "states": {
+        "NOT_STARTED": 743,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 789,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 3,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 1
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 702224986,
+          "worker_cpu_ns": 4661538000,
+          "wall_ns": 5271832586,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234061
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31565
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142317,
+              "result": 4877838
+            },
+            "observed": {
+              "log": 2142317,
+              "result": 675342
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 25,
+          "started": 22,
+          "completed": 21,
+          "planned": 768,
+          "parent_cpu_ns": 20325248,
+          "worker_cpu_ns": 1305129000,
+          "wall_ns": 201997892,
+          "budget_before": {
+            "reserved": {
+              "log": 2143005,
+              "result": 4878453
+            },
+            "observed": {
+              "log": 2143005,
+              "result": 675957
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2281588,
+              "result": 4907039
+            },
+            "observed": {
+              "log": 2281588,
+              "result": 703624
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/partial_worker_write": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 771,
+        "started": 770,
+        "completed": 769,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 765,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 769,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 697961526,
+          "worker_cpu_ns": 4681263000,
+          "wall_ns": 5289937799,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234058
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31562
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142322,
+              "result": 4877828
+            },
+            "observed": {
+              "log": 2142322,
+              "result": 675332
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 3,
+          "started": 2,
+          "completed": 1,
+          "planned": 768,
+          "parent_cpu_ns": 17725207,
+          "worker_cpu_ns": 1321011000,
+          "wall_ns": 211712318,
+          "budget_before": {
+            "reserved": {
+              "log": 2143010,
+              "result": 4878443
+            },
+            "observed": {
+              "log": 2143010,
+              "result": 675947
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2235114,
+              "result": 4890911
+            },
+            "observed": {
+              "log": 2235114,
+              "result": 687509
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/worker_flush": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 943,
+        "started": 943,
+        "completed": 943,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 593,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 943,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 665507361,
+          "worker_cpu_ns": 4688333000,
+          "wall_ns": 5270036799,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234058
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31562
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142341,
+              "result": 4877826
+            },
+            "observed": {
+              "log": 2142341,
+              "result": 675330
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 175,
+          "started": 175,
+          "completed": 175,
+          "planned": 768,
+          "parent_cpu_ns": 85282553,
+          "worker_cpu_ns": 1428808000,
+          "wall_ns": 306534002,
+          "budget_before": {
+            "reserved": {
+              "log": 2143029,
+              "result": 4878441
+            },
+            "observed": {
+              "log": 2143029,
+              "result": 675945
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2680684,
+              "result": 5032007
+            },
+            "observed": {
+              "log": 2680684,
+              "result": 829511
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/P1_inflight_drain": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 776,
+        "started": 776,
+        "completed": 775,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 760,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 775,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 688734763,
+          "worker_cpu_ns": 4680671000,
+          "wall_ns": 5282548850,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234039
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31543
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142337,
+              "result": 4877803
+            },
+            "observed": {
+              "log": 2142337,
+              "result": 675307
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 8,
+          "started": 8,
+          "completed": 7,
+          "planned": 768,
+          "parent_cpu_ns": 23082529,
+          "worker_cpu_ns": 2014817000,
+          "wall_ns": 297755672,
+          "budget_before": {
+            "reserved": {
+              "log": 2143025,
+              "result": 4878418
+            },
+            "observed": {
+              "log": 2143025,
+              "result": 675922
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2251730,
+              "result": 4898326
+            },
+            "observed": {
+              "log": 2251730,
+              "result": 695830
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/parent_dispatch_failure": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 32,
+        "started": 32,
+        "completed": 32,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1504,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 32,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 32,
+          "started": 32,
+          "completed": 32,
+          "planned": 768,
+          "parent_cpu_ns": 30988155,
+          "worker_cpu_ns": 328654000,
+          "wall_ns": 354238469,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234044
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31548
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 113128,
+              "result": 4258660
+            },
+            "observed": {
+              "log": 113128,
+              "result": 56164
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/parent_crash": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/call_cap": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 255,
+        "started": 255,
+        "completed": 255,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1281,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 255,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 255,
+          "started": 255,
+          "completed": 255,
+          "planned": 768,
+          "parent_cpu_ns": 184406291,
+          "worker_cpu_ns": 1364814000,
+          "wall_ns": 1522762729,
+          "budget_before": {
+            "reserved": {
+              "log": 14525,
+              "result": 4234035
+            },
+            "observed": {
+              "log": 14525,
+              "result": 31539
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 710670,
+              "result": 4449556
+            },
+            "observed": {
+              "log": 710670,
+              "result": 247060
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/result_cap": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1217,
+        "started": 1215,
+        "completed": 1212,
+        "unknown": 0,
+        "cancelled": 2
+      },
+      "states": {
+        "NOT_STARTED": 319,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1212,
+        "FAILED": 3,
+        "CANCELLED_BEFORE_START": 2,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 685191578,
+          "worker_cpu_ns": 4677250000,
+          "wall_ns": 5273599972,
+          "budget_before": {
+            "reserved": {
+              "log": 14522,
+              "result": 4234032
+            },
+            "observed": {
+              "log": 14522,
+              "result": 31536
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877803
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675307
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 449,
+          "started": 447,
+          "completed": 444,
+          "planned": 768,
+          "parent_cpu_ns": 164504359,
+          "worker_cpu_ns": 2871104000,
+          "wall_ns": 650105211,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878418
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675922
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 3425545,
+              "result": 5242078
+            },
+            "observed": {
+              "log": 3425545,
+              "result": 1039582
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/log_cap": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/S_reserve_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 0,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 4047862,
+          "worker_cpu_ns": 159570000,
+          "wall_ns": 162982827,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 23860,
+              "result": 4235512
+            },
+            "observed": {
+              "log": 23263,
+              "result": 33016
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/S_enter_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 0,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 4074092,
+          "worker_cpu_ns": 149154000,
+          "wall_ns": 152595915,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 24553,
+              "result": 4235533
+            },
+            "observed": {
+              "log": 23963,
+              "result": 33037
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/S_complete_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 1,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 1
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 1,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 4935642,
+          "worker_cpu_ns": 160716000,
+          "wall_ns": 164834228,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 26428,
+              "result": 4236576
+            },
+            "observed": {
+              "log": 25835,
+              "result": 34080
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/P1_reserve_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 769,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 767,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 697710551,
+          "worker_cpu_ns": 4684809000,
+          "wall_ns": 5290477459,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142320,
+              "result": 4877812
+            },
+            "observed": {
+              "log": 2142320,
+              "result": 675316
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 16243097,
+          "worker_cpu_ns": 1297610000,
+          "wall_ns": 215732316,
+          "budget_before": {
+            "reserved": {
+              "log": 2143008,
+              "result": 4878427
+            },
+            "observed": {
+              "log": 2143008,
+              "result": 675931
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2196975,
+              "result": 4890401
+            },
+            "observed": {
+              "log": 2196338,
+              "result": 687905
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/P1_enter_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 769,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 767,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 715208146,
+          "worker_cpu_ns": 4664164000,
+          "wall_ns": 5287026699,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142323,
+              "result": 4877818
+            },
+            "observed": {
+              "log": 2142323,
+              "result": 675322
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 13086957,
+          "worker_cpu_ns": 1295334000,
+          "wall_ns": 193454429,
+          "budget_before": {
+            "reserved": {
+              "log": 2143011,
+              "result": 4878433
+            },
+            "observed": {
+              "log": 2143011,
+              "result": 675937
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2197611,
+              "result": 4890428
+            },
+            "observed": {
+              "log": 2197014,
+              "result": 687932
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/P1_complete_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 770,
+        "started": 770,
+        "completed": 768,
+        "unknown": 2,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 766,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 2
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 727127501,
+          "worker_cpu_ns": 4695393000,
+          "wall_ns": 5328932449,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142319,
+              "result": 4877829
+            },
+            "observed": {
+              "log": 2142319,
+              "result": 675333
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 2,
+          "started": 2,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 14818079,
+          "worker_cpu_ns": 1310657000,
+          "wall_ns": 198553181,
+          "budget_before": {
+            "reserved": {
+              "log": 2143007,
+              "result": 4878444
+            },
+            "observed": {
+              "log": 2143007,
+              "result": 675948
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2201417,
+              "result": 4892952
+            },
+            "observed": {
+              "log": 2200817,
+              "result": 690456
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/admission_commit_ack_unknown": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/summary_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 703150580,
+          "worker_cpu_ns": 4660084000,
+          "wall_ns": 5273165118,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877814
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675318
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 338983413,
+          "worker_cpu_ns": 5049918000,
+          "wall_ns": 1224120974,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878429
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675933
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282863,
+              "result": 5522709
+            },
+            "observed": {
+              "log": 4282863,
+              "result": 1320213
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/state_reserve_write": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 0,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 5600183,
+          "worker_cpu_ns": 159739000,
+          "wall_ns": 164702548,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 31095,
+              "result": 4235512
+            },
+            "observed": {
+              "log": 31095,
+              "result": 33016
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/state_entry_write": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 0,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 5412621,
+          "worker_cpu_ns": 158366000,
+          "wall_ns": 162901538,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 31772,
+              "result": 4235533
+            },
+            "observed": {
+              "log": 31772,
+              "result": 33037
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/trace_partial": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 769,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 1
+      },
+      "states": {
+        "NOT_STARTED": 767,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 1,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 707059207,
+          "worker_cpu_ns": 4668393000,
+          "wall_ns": 5285270332,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142319,
+              "result": 4877815
+            },
+            "observed": {
+              "log": 2142319,
+              "result": 675319
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 1,
+          "started": 0,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 13757432,
+          "worker_cpu_ns": 1291875000,
+          "wall_ns": 193589388,
+          "budget_before": {
+            "reserved": {
+              "log": 2143007,
+              "result": 4878430
+            },
+            "observed": {
+              "log": 2143007,
+              "result": 675934
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2196962,
+              "result": 4890404
+            },
+            "observed": {
+              "log": 2196336,
+              "result": 687908
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/trace_complete_flush": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 769,
+        "started": 769,
+        "completed": 768,
+        "unknown": 1,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 767,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 1
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 714204591,
+          "worker_cpu_ns": 4638294000,
+          "wall_ns": 5260537101,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142319,
+              "result": 4877820
+            },
+            "observed": {
+              "log": 2142319,
+              "result": 675324
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 1,
+          "started": 1,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 15067235,
+          "worker_cpu_ns": 1296402000,
+          "wall_ns": 192852843,
+          "budget_before": {
+            "reserved": {
+              "log": 2143007,
+              "result": 4878435
+            },
+            "observed": {
+              "log": 2143007,
+              "result": 675939
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2199578,
+              "result": 4891896
+            },
+            "observed": {
+              "log": 2199578,
+              "result": 689400
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/diagnostic_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 693299740,
+          "worker_cpu_ns": 4672096000,
+          "wall_ns": 5276449602,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142329,
+              "result": 4877814
+            },
+            "observed": {
+              "log": 2142329,
+              "result": 675318
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 323683957,
+          "worker_cpu_ns": 5031580000,
+          "wall_ns": 1234977244,
+          "budget_before": {
+            "reserved": {
+              "log": 2143017,
+              "result": 4878429
+            },
+            "observed": {
+              "log": 2143017,
+              "result": 675933
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282838,
+              "result": 5522719
+            },
+            "observed": {
+              "log": 4282838,
+              "result": 1320223
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "TECHNICAL_FAILURE"
+    },
+    "public/receipt_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 706116951,
+          "worker_cpu_ns": 4640923000,
+          "wall_ns": 5254593245,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142323,
+              "result": 4877798
+            },
+            "observed": {
+              "log": 2142323,
+              "result": 675302
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 334061466,
+          "worker_cpu_ns": 4952468000,
+          "wall_ns": 1238577035,
+          "budget_before": {
+            "reserved": {
+              "log": 2143011,
+              "result": 4878413
+            },
+            "observed": {
+              "log": 2143011,
+              "result": 675917
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282849,
+              "result": 5522718
+            },
+            "observed": {
+              "log": 4282849,
+              "result": 1320222
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/receipt_flush": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 648214557,
+          "worker_cpu_ns": 4675633000,
+          "wall_ns": 5248344489,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142319,
+              "result": 4877800
+            },
+            "observed": {
+              "log": 2142319,
+              "result": 675304
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 366251410,
+          "worker_cpu_ns": 5006156000,
+          "wall_ns": 1222402814,
+          "budget_before": {
+            "reserved": {
+              "log": 2143007,
+              "result": 4878415
+            },
+            "observed": {
+              "log": 2143007,
+              "result": 675919
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282881,
+              "result": 5522720
+            },
+            "observed": {
+              "log": 4282881,
+              "result": 1320224
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/receipt_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 686248346,
+          "worker_cpu_ns": 4705927000,
+          "wall_ns": 5307463864,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142341,
+              "result": 4877817
+            },
+            "observed": {
+              "log": 2142341,
+              "result": 675321
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 313741809,
+          "worker_cpu_ns": 4976432000,
+          "wall_ns": 1161007314,
+          "budget_before": {
+            "reserved": {
+              "log": 2143029,
+              "result": 4878432
+            },
+            "observed": {
+              "log": 2143029,
+              "result": 675936
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282864,
+              "result": 5522760
+            },
+            "observed": {
+              "log": 4282864,
+              "result": 1320264
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/marker_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 678901910,
+          "worker_cpu_ns": 4674653000,
+          "wall_ns": 5268764648,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142323,
+              "result": 4877807
+            },
+            "observed": {
+              "log": 2142323,
+              "result": 675311
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 349486579,
+          "worker_cpu_ns": 5027312000,
+          "wall_ns": 1206921500,
+          "budget_before": {
+            "reserved": {
+              "log": 2143011,
+              "result": 4878422
+            },
+            "observed": {
+              "log": 2143011,
+              "result": 675926
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282900,
+              "result": 5522740
+            },
+            "observed": {
+              "log": 4282900,
+              "result": 1320244
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/trace_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 634737629,
+          "worker_cpu_ns": 4686969000,
+          "wall_ns": 5244231255,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142338,
+              "result": 4877805
+            },
+            "observed": {
+              "log": 2142338,
+              "result": 675309
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 352677908,
+          "worker_cpu_ns": 5062073000,
+          "wall_ns": 1244636472,
+          "budget_before": {
+            "reserved": {
+              "log": 2143026,
+              "result": 4878420
+            },
+            "observed": {
+              "log": 2143026,
+              "result": 675924
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282873,
+              "result": 5522708
+            },
+            "observed": {
+              "log": 4282873,
+              "result": 1320212
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/state_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 672518521,
+          "worker_cpu_ns": 4671403000,
+          "wall_ns": 5259579230,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142337,
+              "result": 4877806
+            },
+            "observed": {
+              "log": 2142337,
+              "result": 675310
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 325114591,
+          "worker_cpu_ns": 5033337000,
+          "wall_ns": 1230036112,
+          "budget_before": {
+            "reserved": {
+              "log": 2143025,
+              "result": 4878421
+            },
+            "observed": {
+              "log": 2143025,
+              "result": 675925
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282871,
+              "result": 5522750
+            },
+            "observed": {
+              "log": 4282871,
+              "result": 1320254
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/journal_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 678139297,
+          "worker_cpu_ns": 4662285000,
+          "wall_ns": 5256983645,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142322,
+              "result": 4877816
+            },
+            "observed": {
+              "log": 2142322,
+              "result": 675320
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 327276912,
+          "worker_cpu_ns": 5045757000,
+          "wall_ns": 1215407804,
+          "budget_before": {
+            "reserved": {
+              "log": 2143010,
+              "result": 4878431
+            },
+            "observed": {
+              "log": 2143010,
+              "result": 675935
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282862,
+              "result": 5522749
+            },
+            "observed": {
+              "log": 4282862,
+              "result": 1320253
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/fake_STOP_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 657136793,
+          "worker_cpu_ns": 4680588000,
+          "wall_ns": 5259118805,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142338,
+              "result": 4877810
+            },
+            "observed": {
+              "log": 2142338,
+              "result": 675314
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 347702392,
+          "worker_cpu_ns": 5050381000,
+          "wall_ns": 1285914994,
+          "budget_before": {
+            "reserved": {
+              "log": 2143026,
+              "result": 4878425
+            },
+            "observed": {
+              "log": 2143026,
+              "result": 675929
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282922,
+              "result": 5522751
+            },
+            "observed": {
+              "log": 4282922,
+              "result": 1320255
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/final_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 713601012,
+          "worker_cpu_ns": 4670175000,
+          "wall_ns": 5292314522,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142325,
+              "result": 4877815
+            },
+            "observed": {
+              "log": 2142325,
+              "result": 675319
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 310683486,
+          "worker_cpu_ns": 4932740000,
+          "wall_ns": 1176086142,
+          "budget_before": {
+            "reserved": {
+              "log": 2143013,
+              "result": 4878430
+            },
+            "observed": {
+              "log": 2143013,
+              "result": 675934
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282806,
+              "result": 5522769
+            },
+            "observed": {
+              "log": 4282806,
+              "result": 1320273
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/delivery_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 660577164,
+          "worker_cpu_ns": 4696602000,
+          "wall_ns": 5272343453,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142340,
+              "result": 4877807
+            },
+            "observed": {
+              "log": 2142340,
+              "result": 675311
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 333506028,
+          "worker_cpu_ns": 5097529000,
+          "wall_ns": 1183378922,
+          "budget_before": {
+            "reserved": {
+              "log": 2143028,
+              "result": 4878422
+            },
+            "observed": {
+              "log": 2143028,
+              "result": 675926
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282890,
+              "result": 5522698
+            },
+            "observed": {
+              "log": 4282890,
+              "result": 1320202
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/trace_STOP_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 1,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 4021421,
+          "worker_cpu_ns": 160163000,
+          "wall_ns": 163918293,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234058
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31562
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 25301,
+              "result": 4235555
+            },
+            "observed": {
+              "log": 24725,
+              "result": 33059
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public/journal_STOP_save": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 1535,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 0,
+        "FAILED": 1,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": false,
+          "reserved": 1,
+          "started": 1,
+          "completed": 0,
+          "planned": 768,
+          "parent_cpu_ns": 4694932,
+          "worker_cpu_ns": 154448000,
+          "wall_ns": 158672422,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234058
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31562
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 21949,
+              "result": 4235555
+            },
+            "observed": {
+              "log": 21380,
+              "result": 33059
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public_overlays/test_ENTER_after_STOP_rechained": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_caller_close_exception_not_success": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 709451072,
+          "worker_cpu_ns": 4673744000,
+          "wall_ns": 5291491524,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877820
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675324
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 365432938,
+          "worker_cpu_ns": 5119382000,
+          "wall_ns": 1263080155,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878435
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675939
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282961,
+              "result": 5522790
+            },
+            "observed": {
+              "log": 4282961,
+              "result": 1320294
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public_overlays/test_duplicate_RESERVE_rechained": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_global_trial_mode_collision_rechained": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_marker_alone_not_success": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public_overlays/test_missing_caller_observation": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 709451072,
+          "worker_cpu_ns": 4673744000,
+          "wall_ns": 5291491524,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4234036
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31540
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2142326,
+              "result": 4877820
+            },
+            "observed": {
+              "log": 2142326,
+              "result": 675324
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 365432938,
+          "worker_cpu_ns": 5119382000,
+          "wall_ns": 1263080155,
+          "budget_before": {
+            "reserved": {
+              "log": 2143014,
+              "result": 4878435
+            },
+            "observed": {
+              "log": 2143014,
+              "result": 675939
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4282961,
+              "result": 5522790
+            },
+            "observed": {
+              "log": 4282961,
+              "result": 1320294
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "public_overlays/test_mutation_IPC_noncoalesced_ACK": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_RAM_state_false_complete": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_byte_global_double_budget": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_call_cap": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_cursor_refund": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_S_condition_only": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_condition_budget_double": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_diagnostic_success": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_formal_adoption_flip": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_marker_without_closed_receipt": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_mode_seed_domain": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_receipt_false_completed": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_receipt_preclose": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_seed_namespace": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_summary_prefix": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_document_summary_receipt_counter": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_duplicate_pair": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_physical_state_claim": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_production_permission": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_receipt_identity": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_reserved_refund": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_runtime_identity": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_schema_mix": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_source_candidate": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_trial_offset": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_trusted_prefix": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_mutation_unknown_credit_refund": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_semantic_CPU_double_add": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "public_overlays/test_semantic_observer_double_add": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INTEGRITY_MISMATCH"
+    },
+    "fresh/local_S_condition_receipt_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 768,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 768,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 768,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "fresh/local_caller_delivery_close": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 172237730,
+          "worker_cpu_ns": 2013443000,
+          "wall_ns": 2168022470,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233979
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31483
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2144071,
+              "result": 4877286
+            },
+            "observed": {
+              "log": 2144071,
+              "result": 674790
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 202009220,
+          "worker_cpu_ns": 2472179000,
+          "wall_ns": 539719545,
+          "budget_before": {
+            "reserved": {
+              "log": 2144759,
+              "result": 4877901
+            },
+            "observed": {
+              "log": 2144759,
+              "result": 675405
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4286440,
+              "result": 5521630
+            },
+            "observed": {
+              "log": 4286440,
+              "result": 1319134
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "fresh/local_delivery_write": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 165401200,
+          "worker_cpu_ns": 1996765000,
+          "wall_ns": 2144792835,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233979
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31483
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2144091,
+              "result": 4877241
+            },
+            "observed": {
+              "log": 2144091,
+              "result": 674745
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 210042924,
+          "worker_cpu_ns": 2462576000,
+          "wall_ns": 567943004,
+          "budget_before": {
+            "reserved": {
+              "log": 2144779,
+              "result": 4877856
+            },
+            "observed": {
+              "log": 2144779,
+              "result": 675360
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4286497,
+              "result": 5521683
+            },
+            "observed": {
+              "log": 4286497,
+              "result": 1319187
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "fresh/local_final_write": {
+      "calls": null,
+      "states": null,
+      "conditions": null,
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "fresh/local_global_receipt_after_write": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 171042063,
+          "worker_cpu_ns": 2030008000,
+          "wall_ns": 2181071259,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233979
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31483
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2144110,
+              "result": 4877240
+            },
+            "observed": {
+              "log": 2144110,
+              "result": 674744
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 232874013,
+          "worker_cpu_ns": 2709527000,
+          "wall_ns": 607022429,
+          "budget_before": {
+            "reserved": {
+              "log": 2144798,
+              "result": 4877855
+            },
+            "observed": {
+              "log": 2144798,
+              "result": 675359
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4286684,
+              "result": 5521653
+            },
+            "observed": {
+              "log": 4286684,
+              "result": 1319157
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    },
+    "fresh/local_normal_bundle_n256": {
+      "calls": {
+        "planned": 16896,
+        "reserved": 16896,
+        "started": 16896,
+        "completed": 16896,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 16896,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 8448,
+          "started": 8448,
+          "completed": 8448,
+          "planned": 8448,
+          "parent_cpu_ns": 1387160053,
+          "worker_cpu_ns": 5358860000,
+          "wall_ns": 6544540571,
+          "budget_before": {
+            "reserved": {
+              "log": 29956,
+              "result": 4234049
+            },
+            "observed": {
+              "log": 29956,
+              "result": 31553
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 21546227,
+              "result": 9859135
+            },
+            "observed": {
+              "log": 21546227,
+              "result": 5656639
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 8448,
+          "started": 8448,
+          "completed": 8448,
+          "planned": 8448,
+          "parent_cpu_ns": 1478876385,
+          "worker_cpu_ns": 7372142000,
+          "wall_ns": 1923451113,
+          "budget_before": {
+            "reserved": {
+              "log": 21546917,
+              "result": 9859758
+            },
+            "observed": {
+              "log": 21546917,
+              "result": 5657262
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 43191916,
+              "result": 15487262
+            },
+            "observed": {
+              "log": 43191916,
+              "result": 11284766
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE"
+    },
+    "fresh/local_normal_bundle_small": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 169779272,
+          "worker_cpu_ns": 2004165000,
+          "wall_ns": 2151670515,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233979
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31483
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2144004,
+              "result": 4877294
+            },
+            "observed": {
+              "log": 2144004,
+              "result": 674798
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 191634608,
+          "worker_cpu_ns": 2287360000,
+          "wall_ns": 541641181,
+          "budget_before": {
+            "reserved": {
+              "log": 2144692,
+              "result": 4877909
+            },
+            "observed": {
+              "log": 2144692,
+              "result": 675413
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4286234,
+              "result": 5521725
+            },
+            "observed": {
+              "log": 4286234,
+              "result": 1319229
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE"
+    },
+    "fresh/local_state_complete_persistence": {
+      "calls": {
+        "planned": 1536,
+        "reserved": 771,
+        "started": 771,
+        "completed": 771,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 765,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 771,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 165992045,
+          "worker_cpu_ns": 2048135000,
+          "wall_ns": 2193617568,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4233979
+            },
+            "observed": {
+              "log": 14526,
+              "result": 31483
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2144115,
+              "result": 4877231
+            },
+            "observed": {
+              "log": 2144115,
+              "result": 674735
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": false,
+          "reserved": 3,
+          "started": 3,
+          "completed": 3,
+          "planned": 768,
+          "parent_cpu_ns": 8083440,
+          "worker_cpu_ns": 554659000,
+          "wall_ns": 92490598,
+          "budget_before": {
+            "reserved": {
+              "log": 2144803,
+              "result": 4877846
+            },
+            "observed": {
+              "log": 2144803,
+              "result": 675350
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2239012,
+              "result": 4892987
+            },
+            "observed": {
+              "log": 2239012,
+              "result": 690491
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "status": "INCOMPLETE_EVIDENCE"
+    }
+  },
+  "science_calls": 0
+}

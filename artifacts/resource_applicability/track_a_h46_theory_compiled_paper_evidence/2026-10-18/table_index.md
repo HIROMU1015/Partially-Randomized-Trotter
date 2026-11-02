@@ -1,0 +1,147 @@
+# 表候補と元データの対応索引
+
+これは採用前の表案。保存値のみを転記し、再解析・再会計・新しい小数丸めは行わない。
+
+## 比較単位と配置案
+
+|表|機械可読候補|元行|比較単位・配置案|
+|---|---|---|---|
+|A|[条件](table_a_conditions.json)|candidate receipts 7件|物理系・compiler・標本。本文又は補足。|
+|B1|[期待費用](table_b_expectation_candidates.json)|正本84行、mixed表示28行|理論期待値対保存平均。補足。lower/upperはCIではない。|
+|B2|[same-event](table_b_same_event_candidates.json)|正本84行、mixed表示28行|同じ1 eventの理論/native/compiled。本文又は補足。|
+|C|[shot込み](table_c_candidates.json)|正本360行、mixed/RZ/factor1表示30条件|固定pairと保存shotの条件付き比較。本文の例と補足全表。|
+|D|[S4修正](table_d_s4_candidates.json)|受入8行と対応same-event。全モデル変更は正本差分表|技術付録。旧値と現在の正本を区別。|
+
+[全528行](row_index.json)は比較種別・0始まりJSON pointer・正本file hash・row digest・実評価SOURCEを持つ。
+EXPECT/EVENT/COSTは文書aliasで、元データの科学IDを改変していない。値を引用するときは正本commitとpointerを併記する。
+
+## B1：保存平均と標本数の表示候補
+
+理論lower/upper、rho、residualの正確な有理数はB1 JSONの同じrow IDに転記した。非常に長い有理数を未承認の再丸め値へ置き換えない。
+
+|row ID|系・候補|軸|metric|保存compiled平均|n（平均の標本数）|元JSON pointer|
+|---|---|---|---|---:|---:|---|
+|EXPECT-004|H4 B1_p12_q1_2nd|cosine|RZ|7416|1|/4|
+|EXPECT-005|H4 B1_p12_q1_2nd|cosine|CX|3640|1|/5|
+|EXPECT-010|H4 B1_p12_q1_2nd|sine|RZ|7416|1|/10|
+|EXPECT-011|H4 B1_p12_q1_2nd|sine|CX|3640|1|/11|
+|EXPECT-016|H4 B1_p12_q1_4th|cosine|RZ|21662|1|/16|
+|EXPECT-017|H4 B1_p12_q1_4th|cosine|CX|10760|1|/17|
+|EXPECT-022|H4 B1_p12_q1_4th|sine|RZ|21662|1|/22|
+|EXPECT-023|H4 B1_p12_q1_4th|sine|CX|10760|1|/23|
+|EXPECT-028|H4 B2_p3_q1_2nd_r4_K2|cosine|RZ|3374.9375|32|/28|
+|EXPECT-029|H4 B2_p3_q1_2nd_r4_K2|cosine|CX|1477.3125|32|/29|
+|EXPECT-034|H4 B2_p3_q1_2nd_r4_K2|sine|RZ|3374.9375|32|/34|
+|EXPECT-035|H4 B2_p3_q1_2nd_r4_K2|sine|CX|1477.3125|32|/35|
+|EXPECT-040|H4 B2_p3_q8_2nd_r2_K4|cosine|RZ|23582.1875|32|/40|
+|EXPECT-041|H4 B2_p3_q8_2nd_r2_K4|cosine|CX|10730.5|32|/41|
+|EXPECT-046|H4 B2_p3_q8_2nd_r2_K4|sine|RZ|23582.1875|32|/46|
+|EXPECT-047|H4 B2_p3_q8_2nd_r2_K4|sine|CX|10730.5|32|/47|
+|EXPECT-052|H6 B1_p19_q8_4th|cosine|RZ|878573|1|/52|
+|EXPECT-053|H6 B1_p19_q8_4th|cosine|CX|396212|1|/53|
+|EXPECT-058|H6 B1_p19_q8_4th|sine|RZ|878573|1|/58|
+|EXPECT-059|H6 B1_p19_q8_4th|sine|CX|396212|1|/59|
+|EXPECT-064|H6 B2_p10_q8_2nd_r1_K2|cosine|RZ|170411.25|8|/64|
+|EXPECT-065|H6 B2_p10_q8_2nd_r1_K2|cosine|CX|75984|8|/65|
+|EXPECT-070|H6 B2_p10_q8_2nd_r1_K2|sine|RZ|170411.25|8|/70|
+|EXPECT-071|H6 B2_p10_q8_2nd_r1_K2|sine|CX|75984|8|/71|
+|EXPECT-076|H6 B2_p15_q8_2nd_r2_K4|cosine|RZ|250271.875|8|/76|
+|EXPECT-077|H6 B2_p15_q8_2nd_r2_K4|cosine|CX|112542|8|/77|
+|EXPECT-082|H6 B2_p15_q8_2nd_r2_K4|sine|RZ|250271.875|8|/82|
+|EXPECT-083|H6 B2_p15_q8_2nd_r2_K4|sine|CX|112542|8|/83|
+
+## B2：同一eventの絶対count
+
+各rowは1 event／固定回路。B1のn32/n8平均とは別。以下は全mixed28行で、A/Bを含む84行は正本を参照。
+
+|row ID|系・候補|軸|metric|理論same-event|native explicit|保存compiled|保存rho|
+|---|---|---|---|---:|---:|---:|---|
+|EVENT-004|H4 B1_p12_q1_2nd|cosine|RZ|16096|16096|7416|927/2012|
+|EVENT-005|H4 B1_p12_q1_2nd|cosine|CX|7150|7150|3640|28/55|
+|EVENT-010|H4 B1_p12_q1_2nd|sine|RZ|16097|16097|7416|7416/16097|
+|EVENT-011|H4 B1_p12_q1_2nd|sine|CX|7150|7150|3640|28/55|
+|EVENT-016|H4 B1_p12_q1_4th|cosine|RZ|48274|48274|21662|10831/24137|
+|EVENT-017|H4 B1_p12_q1_4th|cosine|CX|21446|21446|10760|5380/10723|
+|EVENT-022|H4 B1_p12_q1_4th|sine|RZ|48275|48275|21662|21662/48275|
+|EVENT-023|H4 B1_p12_q1_4th|sine|CX|21446|21446|10760|5380/10723|
+|EVENT-028|H4 B2_p3_q1_2nd_r4_K2|cosine|RZ|5359|5359|3203|3203/5359|
+|EVENT-029|H4 B2_p3_q1_2nd_r4_K2|cosine|CX|2238|2238|1428|238/373|
+|EVENT-034|H4 B2_p3_q1_2nd_r4_K2|sine|RZ|5360|5360|3203|3203/5360|
+|EVENT-035|H4 B2_p3_q1_2nd_r4_K2|sine|CX|2238|2238|1428|238/373|
+|EVENT-040|H4 B2_p3_q8_2nd_r2_K4|cosine|RZ|45269|45269|24069|24069/45269|
+|EVENT-041|H4 B2_p3_q8_2nd_r2_K4|cosine|CX|18640|18640|10876|2719/4660|
+|EVENT-046|H4 B2_p3_q8_2nd_r2_K4|sine|RZ|45270|45270|24069|8023/15090|
+|EVENT-047|H4 B2_p3_q8_2nd_r2_K4|sine|CX|18640|18640|10876|2719/4660|
+|EVENT-052|H6 B1_p19_q8_4th|cosine|RZ|1521173|1521173|878573|878573/1521173|
+|EVENT-053|H6 B1_p19_q8_4th|cosine|CX|667248|667248|396212|99053/166812|
+|EVENT-058|H6 B1_p19_q8_4th|sine|RZ|1521174|1521174|878573|878573/1521174|
+|EVENT-059|H6 B1_p19_q8_4th|sine|CX|667248|667248|396212|99053/166812|
+|EVENT-064|H6 B2_p10_q8_2nd_r1_K2|cosine|RZ|292509|292509|170441|170441/292509|
+|EVENT-065|H6 B2_p10_q8_2nd_r1_K2|cosine|CX|125584|125584|76000|4750/7849|
+|EVENT-070|H6 B2_p10_q8_2nd_r1_K2|sine|RZ|292510|292510|170441|170441/292510|
+|EVENT-071|H6 B2_p10_q8_2nd_r1_K2|sine|CX|125584|125584|76000|4750/7849|
+|EVENT-076|H6 B2_p15_q8_2nd_r2_K4|cosine|RZ|423365|423365|250055|50011/84673|
+|EVENT-077|H6 B2_p15_q8_2nd_r2_K4|cosine|CX|183264|183264|112482|18747/30544|
+|EVENT-082|H6 B2_p15_q8_2nd_r2_K4|sine|RZ|423366|423366|250055|250055/423366|
+|EVENT-083|H6 B2_p15_q8_2nd_r2_K4|sine|CX|183264|183264|112482|18747/30544|
+
+## C：全固定pairのmixed/RZ/倍率1表示候補
+
+理論PR/PF lower/upperはC JSONの各rowにそのまま保存。方向は既存direction_auditの値を転記し、新しい順位を計算しない。
+compiled比は保存された正確な有理数。欠測は元キーがない状態を維持し、次の表示ではMISSINGと書く。
+
+|row ID|系|PR|PF|ε|保存compiled PR/PF|保存方向：理論／compiled|適格性|
+|---|---|---|---|---:|---|---|---|
+|COST-005|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_2nd|0.0005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-017|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_2nd|0.001|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-029|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_2nd|0.005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-041|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_2nd|0.01|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-053|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_2nd|0.05|1110381437/2191694976|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-065|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_4th|0.0005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-077|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_4th|0.001|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-089|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_4th|0.005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-101|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_4th|0.01|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-113|H4|B2_p3_q1_2nd_r4_K2|B1_p12_q1_4th|0.05|1110381437/5249482432|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-125|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_2nd|0.0005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-137|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_2nd|0.001|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-149|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_2nd|0.005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-161|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_2nd|0.01|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-173|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_2nd|0.05|454664575/182641248|PF_LOWER / PF_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-185|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_4th|0.0005|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-197|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_4th|0.001|MISSING|MISSING|NO_COMMON_SAVED_ELIGIBILITY|
+|COST-209|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_4th|0.005|12245955185/45147767104|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-221|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_4th|0.01|34581297065/49264760176|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-233|H4|B2_p3_q8_2nd_r2_K4|B1_p12_q1_4th|0.05|1363993725/1312370608|PR_LOWER / PF_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-245|H6|B2_p10_q8_2nd_r1_K2|B1_p19_q8_4th|0.0005|217311473634795/494624270863664|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-257|H6|B2_p10_q8_2nd_r1_K2|B1_p19_q8_4th|0.001|8560275137700/30856646112079|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-269|H6|B2_p10_q8_2nd_r1_K2|B1_p19_q8_4th|0.005|34042760033/164324779628|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-281|H6|B2_p10_q8_2nd_r1_K2|B1_p19_q8_4th|0.01|5144829245/25671024487|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-293|H6|B2_p10_q8_2nd_r1_K2|B1_p19_q8_4th|0.05|4811732055/24642215504|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-305|H6|B2_p15_q8_2nd_r2_K4|B1_p19_q8_4th|0.0005|638171531622975/989248541727328|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-317|H6|B2_p15_q8_2nd_r2_K4|B1_p19_q8_4th|0.001|50277339210175/123426584448316|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-329|H6|B2_p15_q8_2nd_r2_K4|B1_p19_q8_4th|0.005|99972201665/328649559256|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-341|H6|B2_p15_q8_2nd_r2_K4|B1_p19_q8_4th|0.01|725213813275/2464418350752|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+|COST-353|H6|B2_p15_q8_2nd_r2_K4|B1_p19_q8_4th|0.05|28260700125/98568862016|PR_LOWER / PR_LOWER|CONDITIONAL_SAVED_COST_COMPARISON|
+
+## D：S4の8受入行
+
+|系・候補|軸|metric|旧理論|新理論|保存native|保存compiled（不変）|same-event row|
+|---|---|---|---:|---:|---:|---:|---|
+|H4 B1_p12_q1_4th|cosine|RZ|48272|48274|48274|21662|EVENT-016|
+|H4 B1_p12_q1_4th|cosine|CX|21444|21446|21446|10760|EVENT-017|
+|H4 B1_p12_q1_4th|sine|RZ|48273|48275|48275|21662|EVENT-022|
+|H4 B1_p12_q1_4th|sine|CX|21444|21446|21446|10760|EVENT-023|
+|H6 B1_p19_q8_4th|cosine|RZ|1521189|1521173|1521173|878573|EVENT-052|
+|H6 B1_p19_q8_4th|cosine|CX|667264|667248|667248|396212|EVENT-053|
+|H6 B1_p19_q8_4th|sine|RZ|1521190|1521174|1521174|878573|EVENT-058|
+|H6 B1_p19_q8_4th|sine|CX|667264|667248|667248|396212|EVENT-059|
+
+S4変更はA/B/mixedの全てに及ぶ。[正本old_new_differences](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6e2b7eb6a0afc4ee2c5f57d3b7baf89b4ed237e1/artifacts/resource_applicability/track_a_h46_s4_counter_native_compatibility/2026-10-18/stage3/old_new_differences.json)の24／24／168変更行を参照する。
+方向変化0件、相関した方向不一致6行、共通適格192行は[保存summary](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6e2b7eb6a0afc4ee2c5f57d3b7baf89b4ed237e1/artifacts/resource_applicability/track_a_h46_s4_counter_native_compatibility/2026-10-18/stage3/result_summary.json)と[保存direction audit](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6e2b7eb6a0afc4ee2c5f57d3b7baf89b4ed237e1/artifacts/resource_applicability/track_a_h46_s4_counter_native_compatibility/2026-10-18/stage3/direction_audit.json)の記録を使う。
+
+## 列と算術定義
+
+- B1 `compiled_saved_mean`はn32/n8又はPF n1の保存平均。B2 `compiled_same_event`は別の保存1 event。
+- `rho_lower/upper`、`residual_lower/upper`は元値。rhoはcompiled/theory、residualの分母はcompiled。
+- Cは候補固有の保存shotを用いた費用比。shotは各rowにPR/PF別に参照し、不適格を救済しない。
+- 表は表記案であり、本文・補足・付録への採用はユーザーが判断する。

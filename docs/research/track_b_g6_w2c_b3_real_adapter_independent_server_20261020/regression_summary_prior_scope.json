@@ -1,0 +1,106 @@
+{
+  "old_Producer_regression": {
+    "PASS": 107,
+    "source": "8d5135ee77e6cd06d8b2ed8aa0b9ee50a41a0e36",
+    "independently_rerun": 0
+  },
+  "final_source": "b7ad344401b10395c49e4cfa806909282859bab5",
+  "changed_paths": [
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py",
+    "tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_integration_v1.py",
+    "tests/tracks/algorithm_codesign/test_g6_w2c_b3_real_adapter_v1.py"
+  ],
+  "old_test_files": [
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_b3_port_bundle_v1.py",
+      "sha256": "1bfd632fdc5aeef05c5bd08c81383dc03c16f45ce63a191e5aa911f30eaae8e0",
+      "unchanged": true,
+      "import_syntax": [
+        "from concurrent.futures import ThreadPoolExecutor",
+        "from copy import deepcopy",
+        "from hashlib import sha256",
+        "from pathlib import Path",
+        "import importlib.util, json, os, shutil, subprocess, sys, tempfile, unittest",
+        "from trottertracks.algorithm_codesign.g6_w2c_b3_port_bundle_v1 import contract as K",
+        "from trottertracks.algorithm_codesign.g6_w2c_b3_port_bundle_v1 import bridge as B",
+        "from trottertracks.algorithm_codesign.g6_w2c_b3_port_bundle_v1 import offline as O",
+        "from trottertracks.algorithm_codesign.g6_w2c_b3_bundle_store_v1 import FakeStore, Denied",
+        "from fractions import Fraction",
+        "from trottertracks.algorithm_codesign import g6_w2c_b3_exact_serialization as E",
+        "import sqlite3",
+        "from trottertracks.algorithm_codesign.g6_w2c_b3_api_binding_v1.static import Rejected",
+        "import inspect",
+        "from trottertracks.algorithm_codesign.g6_w2c_b3_api_binding_v1 import ports as P",
+        "import importlib"
+      ]
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_b3_parallel_codec.py",
+      "sha256": "5a8b557f98a4eea3a81f0bbab4272e6b2f91d83bee5a0931dbfbc8eeff7652a6",
+      "unchanged": true,
+      "import_syntax": [
+        "from copy import deepcopy",
+        "from fractions import Fraction as F",
+        "from hashlib import sha256",
+        "import importlib",
+        "import json",
+        "from pathlib import Path",
+        "import random",
+        "import subprocess",
+        "import sys",
+        "import tempfile",
+        "from types import ModuleType",
+        "import unittest",
+        "from unittest.mock import patch",
+        "import test_g6_w2c_b3_driver as T",
+        "import test_g6_w2c_b3_f01_provenance as P",
+        "import test_g6_w2c_b3_host_integration as I",
+        "from trottertracks.algorithm_codesign import g6_w2c_b3_parallel_driver as D",
+        "from trottertracks.algorithm_codesign import g6_w2c_b3_driver as REFERENCE"
+      ]
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_b3_parallel_f01.py",
+      "sha256": "016b42611ab4343df426deaace34362427b4cb28ec8210eaf591e82f6309a64f",
+      "unchanged": true,
+      "import_syntax": [
+        "from copy import deepcopy",
+        "from contextlib import ExitStack",
+        "from hashlib import sha256",
+        "from itertools import cycle",
+        "import json",
+        "from pathlib import Path",
+        "import sys",
+        "import tempfile",
+        "import unittest",
+        "from unittest.mock import patch",
+        "import test_g6_w2c_b3_driver as T",
+        "from trottertracks.algorithm_codesign import g6_w2c_b3_parallel_driver as M"
+      ]
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_b3_storage_v2.py",
+      "sha256": "a0ab3372cee92af72657ba817d9ac83bdff350be9e939e1cd66f8cdcb232d494",
+      "unchanged": true,
+      "import_syntax": [
+        "from hashlib import sha256",
+        "from pathlib import Path",
+        "from types import SimpleNamespace",
+        "import os, tempfile, unittest",
+        "import sqlite3, threading",
+        "from concurrent.futures import ThreadPoolExecutor",
+        "from unittest.mock import patch",
+        "import b3_storage_artificial_fixture as F",
+        "from copy import deepcopy"
+      ]
+    }
+  ],
+  "old_SOURCE_tests_preserved": 291,
+  "final_canonical_changes_exercised_by": "197 independent Codec/Result/Audit/Angle probes and independent replay of all Layer B raw",
+  "Producer_102_unit_and_30_integration_rerun": 0,
+  "reason_not_reexecuted": "Their module import closure includes user static-only g6_w2c_cost_preparation and/or g6_w2c_b3_driver; no stubs or guard relaxation used"
+}

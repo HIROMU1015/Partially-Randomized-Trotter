@@ -1,0 +1,40 @@
+{
+  "schema": "h6_confirmation_future_handoff_intent_v1",
+  "status": "DESIGN_ONLY_FUTURE_EXECUTION_NOT_AUTHORIZED",
+  "parent_source": "73018cbcc39803890974c7ee51401063e6c8daf6",
+  "manifest_digest": "982a1ba84cf06747278c2d23be793d2c0e39d9f335f9abb071173f40ff992621",
+  "selection_digest": "dace7b98e66ca2f0c166eb9a234d2ca97b3500ab75233996c5bf512e145f1019",
+  "task_list_digest": "35f7b9ad32b2d2206d4c25e7a76f9a0923bd1a44a03c2556347f670c21192dbf",
+  "fixed_groups": 256,
+  "replicas_per_cell": 32,
+  "paired_axes_per_group": 2,
+  "seed_depends_on_source_commit": false,
+  "reuse_unit": "complete whole trajectory group with both cosine and sine wrapper results",
+  "required_receipts": [
+    "source/profile/input/archive/selection/task/seed/compiler identities",
+    "TASK_COMPLETE native worker_terminal and worker_claim",
+    "cost_result/supporting wrapper/event/trajectory file hashes",
+    "source-specific admit_confirmation_group checks",
+    "parent run terminal/first STOP/own cleanup proof"
+  ],
+  "partial_results_reused": false,
+  "exploration_samples_pooled": false,
+  "source_preservation": "running source immutable; optimized implementation in separate worktree/new SOURCE",
+  "handoff_method": "stop only this run on explicit handoff instruction; verify cleanup; freeze complete group receipts; fresh new run for only missing original tasks/seeds",
+  "drain_request_implemented": false,
+  "current_STOP_REQUEST": "immediate own-run cleanup; up to4 active groups can be partial",
+  "migration_extra_calls_not_preapproved": {
+    "maximum_full_group_reservations_if4_partial": {
+      "compile": 8,
+      "trajectory": 4
+    }
+  },
+  "cumulative_compile_cap": 1712,
+  "cumulative_trajectory_cap": 840,
+  "budget_policy": "charge actual known calls; independently reserve unknown partial calls; no refund/reset; determine any required amendment at handoff",
+  "worker8_status": "not implemented or launched; reestimate resources and fresh CPU/RAM before switch",
+  "hash_reuse_status": "not implemented; canonical digest preservation and mutation safety require bounded regression checks",
+  "numerical_roundoff": "existing approved bridge only; original science/compiler/seed/discrete ordering remain fixed",
+  "automatic_retry": false,
+  "automatic_migration": false
+}

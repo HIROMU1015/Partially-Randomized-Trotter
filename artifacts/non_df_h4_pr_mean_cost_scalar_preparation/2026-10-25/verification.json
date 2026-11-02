@@ -1,0 +1,101 @@
+{
+  "kind": "PRIMARY_AGENT_TECHNICAL_PREPARATION_NOT_SCIENTIFIC_REVIEW",
+  "base_commit": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+  "github_fixed_base_ref_verified": true,
+  "github_fixed_files": [
+    {
+      "path": "docs/non_df_h4_pr_mean_cost_stage1_20261025.md",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "b79ac0d02502a00291c4468335ebfb85ad781d3f",
+      "local_blob_equal": true
+    },
+    {
+      "path": "docs/non_df_h4_pr_mean_cost_design_20261025.md",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "2bc31174ad0b475889e1deb688beb615f871ab6d",
+      "local_blob_equal": true
+    },
+    {
+      "path": "artifacts/non_df_h4_pr_mean_cost_stage1/2026-10-25/scalar_batch_SPEC_DISABLED.json",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "2eb8f876eb701ee84a6c1cb3a9d4fd7d3a18fec2",
+      "local_blob_equal": true
+    },
+    {
+      "path": "artifacts/non_df_h4_data_catalog/2026-10-25/README.md",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "646f4471e4d23c2b1ef713c128c15dd0373c3eba",
+      "local_blob_equal": true
+    },
+    {
+      "path": "src/trotterlib/h4_conditional_cng.py",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "21722a3b883749b526d53aa09581cad569e7aad3",
+      "local_blob_equal": true
+    },
+    {
+      "path": "src/trotterlib/h4_d2_pauli_control.py",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "5f3a20806ad62b0bcaaf3e3c47f490fca62ddd4e",
+      "local_blob_equal": true
+    },
+    {
+      "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+      "ref": "c5f17b117b9d34c27b4e1d680c02a444fff4e084",
+      "git_blob_sha": "c676f49af1c458229b73fd437a512310fdb30102",
+      "local_blob_equal": true
+    }
+  ],
+  "implementation": "src/trotterlib/h4_pr_mean_cost_scalar.py",
+  "new_sqrt_check": "Exact rational squares: lo^2 <= input_lo and hi^2 >= input_hi, with nonnegative ordered endpoints; failure raises without precision escalation.",
+  "reused_ln_helper": "h4_conditional_cng.trans_bounds unchanged; shared one call per batch",
+  "tests": {
+    "new_artificial": 8,
+    "reused_artificial": 4,
+    "all_passed": true,
+    "new_command": "python3 tests/test_h4_pr_mean_cost_scalar.py",
+    "reuse_command": "python3 artifacts/non_df_h4_pr_mean_cost_design/2026-10-25/artificial_checks.py",
+    "inputs": "Artificial rationals only; no H4 input binding passed to evaluate_scalar_batch."
+  },
+  "binding_only_command": "python3 scripts/run_h4_pr_mean_cost_scalar.py",
+  "binding_only_status": "INPUTS_VERIFIED_NO_H4_EVALUATION",
+  "default_mode_imports_numerical_kernel": false,
+  "source_input_binding_files": [
+    "artifacts/non_df_h4_pr_mean_cost_stage1/2026-10-25/scalar_batch_SPEC_DISABLED.json",
+    "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+    "src/trotterlib/h4_d2_pauli_control.py",
+    "src/trotterlib/h4_conditional_cng.py",
+    "src/trotterlib/h4_pr_mean_cost_scalar.py",
+    "scripts/run_h4_pr_mean_cost_scalar.py"
+  ],
+  "source_input_hashes_match": true,
+  "runtime": {
+    "Python": "3.12.3",
+    "libmpdec": "2.5.1",
+    "Decimal_precision_for_future_batch": 96
+  },
+  "current_H4_calls": {
+    "scalar_batches": 0,
+    "upper_evaluation": 0,
+    "ln_evaluation": 0,
+    "sqrt_endpoint_evaluation": 0,
+    "lower_reduction": 0,
+    "axis_comparison": 0,
+    "circuit_build_compile": 0,
+    "sampling_RNG_replay": 0,
+    "Hamiltonian_state_Arb_actions": 0,
+    "raw_price_reaggregation": 0,
+    "N_G": 0,
+    "new_grants": 0
+  },
+  "numerical_separation_status": "NOT_RUN",
+  "count_premise_status": "SOURCE_COUNT_BOUND_SUPPORTED_ON_NORMAL_RETURN; TOTALITY_AND_WHEEL_CORRESPONDENCE_UNPROVED",
+  "statistical_model_status": "USER_SPECIFIED_IID_ASSUMPTION; delta_cost=.05 and each delta_axis=.025; paired axes, union bound",
+  "population_claim_scope": "NO_NEW_NUMERICAL_CLAIM; future scope is conditional named PR mean-price comparison only",
+  "unconditional_full_law_guarantee": false,
+  "formal_certificate_accepted": false,
+  "B0_B0I_or_other_worktree_operations": false,
+  "historical_SOURCE_results_grants_ledgers_markers_STOP_changed": false,
+  "scientific_execution_permission_received": false,
+  "mandatory_STOP": true
+}

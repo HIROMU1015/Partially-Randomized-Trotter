@@ -1,0 +1,107 @@
+{
+  "status": "COMPARISON_ONLY_NO_SELECTION_OR_MERGE",
+  "implementations": [
+    {
+      "id": "A",
+      "SOURCE": "1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f",
+      "preparation_commit": "21e3d13469b508545b28415b13eaf25c60a9d38f",
+      "scope": "H8_B1_NEW_B0_8_B0I16_FIT_VALIDATION_V1",
+      "admission": "NORMAL_COMPLETE_AND_FINAL_GATE_PASS_REQUIRED",
+      "run02_accepted_by_existing_code": false
+    },
+    {
+      "id": "B",
+      "SOURCE": "6fb8a0a71986fda571d82b5658686f5e74a32f8b",
+      "result_commit": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+      "scope": "H8_B1_REUSED_B0_RUN02_B0I16_FIT_V1",
+      "admission": "PINNED_SAVED_STOP_AUDIT_PLUS_EXPLICIT_REUSE_GRANT",
+      "historical_execution_already_recorded": true
+    }
+  ],
+  "common_ancestor": "847266323ea3d7bd29ac42322b7819b0b2a6c43f",
+  "implementation_selection": "EXISTING_RESULT_SOURCE_PRESERVED_NO_NEW_SELECTION",
+  "implementation_changes_authorized": false,
+  "shared_static_contract": [
+    "S2 a+b*q+d*prefix*q",
+    "Exact rational three-column OLS, four independent method/axis strata",
+    "B0 TRAIN p14q1/p21q1/p14q8; HOLDOUT p21q8",
+    "B0I eight training anchors per axis, not independent holdout",
+    "Per-axis measured denominator; error >= 1/50 STOP",
+    "No refit, new measurement, compile, B2 execution, C reaccount"
+  ],
+  "material_differences": [
+    "A requires successful original acquisition terminal/final gate and rejects run02; B has a distinct saved-STOP audit and reuse grant flag.",
+    "A validates 24 normalized rows before fitting, including explicit preparation and input-binding fields; B preparation validates original receipts/preparation through the saved audit, then its numerical module checks eligible normalized anchors. The numerical module alone is not the complete B admission gate.",
+    "B emits four pre-registered B2 model predictions with compile authorization false; A emits no numerical B2 predictions.",
+    "A closure has 17 files; B historical public closure has 19 including saved-audit/execution support. Receipt, grant and model schemas differ; scope/config/model hashes and locks are not interchangeable.",
+    "Both have per-output one-shot locks, not a shared cross-implementation execution authorization. Do not launch either to resolve duplication."
+  ],
+  "existing_B_SOURCE_files_verified_in_Git": 19,
+  "static_comparison_only": true,
+  "numerical_equivalence_certified": false,
+  "numerical_modules_executed_this_task": 0,
+  "existing_runners_modified": 0,
+  "implementation_files": [
+    {
+      "implementation": "A",
+      "SOURCE": "1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f",
+      "path": "src/trotterlib/h8_phase_b1_model.py",
+      "bytes": 8081,
+      "sha256": "24cee96f4d08e1ff624cb7ad2ece6cb5e8ee635c3462ef627a37011dea44dba9",
+      "blob": "32216ed90acd12ecec78e81ab132273614b9a258"
+    },
+    {
+      "implementation": "A",
+      "SOURCE": "1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f",
+      "path": "scripts/h8_phase_b1_validation.py",
+      "bytes": 11605,
+      "sha256": "3802bc797cc31b1da58fed44274c264ad42ec99f814d2aca3e7aedfd18b47ef5",
+      "blob": "e5229d9e004c8b4292f1183148dd5fd5bd7f2d8b"
+    },
+    {
+      "implementation": "A",
+      "SOURCE": "1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f",
+      "path": "scripts/run_h8_phase_b1_validation.py",
+      "bytes": 5783,
+      "sha256": "a4eda60f2b875899047244e447925bc922e320106a79c77f1797cf9953fd337a",
+      "blob": "9d508d8ddd98bc0884f0a2c477a024e93ccc5131"
+    },
+    {
+      "implementation": "A",
+      "SOURCE": "1e25d5691b2a5c4738ca8b67c398ae06b70c4e0f",
+      "path": "scripts/launch_h8_phase_b1_validation.py",
+      "bytes": 4715,
+      "sha256": "89bda322420bbb2593b54cbfe9f9eb4bc8bd12cbc5510680cc25d1ff7b906fec",
+      "blob": "adef36a84db6c2254e9c1674688b0a0ec51d2354"
+    },
+    {
+      "implementation": "B",
+      "SOURCE": "6fb8a0a71986fda571d82b5658686f5e74a32f8b",
+      "path": "src/trotterlib/h8_phase_b1_fit.py",
+      "bytes": 6655,
+      "sha256": "ba27471a851d7d59d7c6c8acb63438c8a6a5ad81d60869c8be5f11ab8d945e72",
+      "blob": "eb64b21b0861c92abe926ef926cba50804fc2e1b"
+    },
+    {
+      "implementation": "B",
+      "SOURCE": "6fb8a0a71986fda571d82b5658686f5e74a32f8b",
+      "path": "scripts/h8_phase_b1_execution.py",
+      "bytes": 15611,
+      "sha256": "2ead4262a1b5e9a600cd53eae5cbf2a406492c216d171b59d9434e166ba19023",
+      "blob": "0cbdb9bc9c443f2cd2c911bccfe82a82d0fd33ed"
+    },
+    {
+      "implementation": "B",
+      "SOURCE": "6fb8a0a71986fda571d82b5658686f5e74a32f8b",
+      "path": "src/trotterlib/h8_b0_saved_anchor_audit.py",
+      "bytes": 13316,
+      "sha256": "2cb2860c8701aa36863adec37b07bf4ee0b03ecc5ddd733b1d30828cf2bb2021",
+      "blob": "fe7966ee4fcd72f18cdc31dc2c14afdaeb0ee50a"
+    }
+  ],
+  "M1_S_V0": "SEPARATE_RESEARCH_NOT_READ_MERGED_OR_MODIFIED",
+  "mandatory_STOP": true,
+  "authoritative_result_commit": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+  "new_acceptance_required": false,
+  "historical_authorization_reopened": false
+}

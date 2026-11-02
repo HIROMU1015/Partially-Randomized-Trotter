@@ -1,0 +1,323 @@
+{
+  "status": "COMPLETE_MANDATORY_STOP",
+  "stage": "H6_CONFIRMATION_S_STATS",
+  "binding": {
+    "system": "H6",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 19,
+    "rank_policy": "tol_only_1e-8",
+    "T": 0.8,
+    "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+    "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+    "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+    "control": "symmetric_directional"
+  },
+  "policy": {
+    "schema": "H6_S_STATS_POLICY_V1",
+    "stage": "H6_CONFIRMATION_S_STATS",
+    "family_alpha": 0.05,
+    "comparisons": 2,
+    "planning_power": 0.8,
+    "SD_multipliers": [
+      1,
+      2,
+      4
+    ],
+    "pilot_n": 8,
+    "minimum_planning_n": 2,
+    "H8_reference_n": 48,
+    "visibility_failure_probability": 0.025,
+    "recommendation_block": 8,
+    "recommendation_rule": "round_up_8(max(H8_reference_n, SD4_planning_n, order2_visibility_97_5_min_n))",
+    "recommendation_is_final_n": false,
+    "plan_path": "artifacts/resource_applicability/track_a_h6_pr_confirmation_phase0/2026-10-19/plan_PROPOSED.json",
+    "plan_sha256": "cef97c6da9a5e38d174a21d93f15912c3fba32b3a999f978a834e02a67a74f2d",
+    "phase0_commit": "6d290fc8fb656f4db148e2c9f91b757d80ed83c2",
+    "allowed_passes": 1,
+    "saved_variance_reaggregation": false,
+    "new_confirmation_seeds": false,
+    "scientific_sampling_compile_authorized": false,
+    "next_stage_authorized": false,
+    "mandatory_STOP": true
+  },
+  "candidates": [
+    {
+      "scope": "H6_CONFIRM_P4_Q2",
+      "cell": {
+        "id": "B2_p4_q2_2nd_r4_K2",
+        "method": "B2",
+        "prefix": 4,
+        "q": 2,
+        "r": 4,
+        "K": 2,
+        "R": 8,
+        "formula": "2nd"
+      },
+      "epsilon": 0.05,
+      "fixed_PF_id": "B0I_p7_q1_2nd",
+      "expected_direction": -1,
+      "saved_n8": {
+        "n": 8,
+        "mean_exact": "5037196305/8",
+        "paired_SE": 8425392.116288794,
+        "SD": null,
+        "variance": null,
+        "new_statistics_computed": false
+      },
+      "fixed_PF_G_exact": "356097424",
+      "original_law_sha256": "1d899a6281059434a189249ee7ee0f56897374b9462bf19da9db820eca7ee29a",
+      "saved_order2_probability": 0.01739703152030961,
+      "scenarios": [
+        {
+          "normal_plugin_n": 1,
+          "sd_multiplier": 1,
+          "alpha_each": 0.025,
+          "assumed_power": 0.8,
+          "margin_exact": "2188416913/8",
+          "pilot_SD": 23830607.598333932,
+          "unknown_variance_t_adjustment": false,
+          "assumed_normal_finite_variance": true,
+          "actual_power_certified": false,
+          "all_strata_variance_covered": false,
+          "normal_ceiling_n": 1,
+          "planning_n": 2,
+          "signed_margin_exact": "-2188416913/8",
+          "expected_direction": -1,
+          "saved_PR_mean_exact": "5037196305/8",
+          "fixed_PF_G_exact": "356097424",
+          "variance_source": "saved_PR_paired_SE_n8",
+          "visibility_at_planning_n": {
+            "order2_trajectory_probability": 0.13099039917705854,
+            "probability_at_least_one": 0.24482231367755194,
+            "n": 2
+          },
+          "normal_model_power_at_n48": 1.0,
+          "normal_model_power_at_recommended_n": 1.0
+        },
+        {
+          "normal_plugin_n": 1,
+          "sd_multiplier": 2,
+          "alpha_each": 0.025,
+          "assumed_power": 0.8,
+          "margin_exact": "2188416913/8",
+          "pilot_SD": 23830607.598333932,
+          "unknown_variance_t_adjustment": false,
+          "assumed_normal_finite_variance": true,
+          "actual_power_certified": false,
+          "all_strata_variance_covered": false,
+          "normal_ceiling_n": 1,
+          "planning_n": 2,
+          "signed_margin_exact": "-2188416913/8",
+          "expected_direction": -1,
+          "saved_PR_mean_exact": "5037196305/8",
+          "fixed_PF_G_exact": "356097424",
+          "variance_source": "saved_PR_paired_SE_n8",
+          "visibility_at_planning_n": {
+            "order2_trajectory_probability": 0.13099039917705854,
+            "probability_at_least_one": 0.24482231367755194,
+            "n": 2
+          },
+          "normal_model_power_at_n48": 1.0,
+          "normal_model_power_at_recommended_n": 1.0
+        },
+        {
+          "normal_plugin_n": 1,
+          "sd_multiplier": 4,
+          "alpha_each": 0.025,
+          "assumed_power": 0.8,
+          "margin_exact": "2188416913/8",
+          "pilot_SD": 23830607.598333932,
+          "unknown_variance_t_adjustment": false,
+          "assumed_normal_finite_variance": true,
+          "actual_power_certified": false,
+          "all_strata_variance_covered": false,
+          "normal_ceiling_n": 1,
+          "planning_n": 2,
+          "signed_margin_exact": "-2188416913/8",
+          "expected_direction": -1,
+          "saved_PR_mean_exact": "5037196305/8",
+          "fixed_PF_G_exact": "356097424",
+          "variance_source": "saved_PR_paired_SE_n8",
+          "visibility_at_planning_n": {
+            "order2_trajectory_probability": 0.13099039917705854,
+            "probability_at_least_one": 0.24482231367755194,
+            "n": 2
+          },
+          "normal_model_power_at_n48": 1.0,
+          "normal_model_power_at_recommended_n": 1.0
+        }
+      ],
+      "reference_n48": {
+        "order2_trajectory_probability": 0.13099039917705854,
+        "probability_at_least_one": 0.998816469160186,
+        "n": 48
+      },
+      "order2_visibility_min_n_97_5": 27,
+      "visibility_at_min_n": {
+        "order2_trajectory_probability": 0.13099039917705854,
+        "probability_at_least_one": 0.9774231413886215,
+        "n": 27
+      },
+      "recommended_n": 48,
+      "recommended_visibility": {
+        "order2_trajectory_probability": 0.13099039917705854,
+        "probability_at_least_one": 0.998816469160186,
+        "n": 48
+      }
+    },
+    {
+      "scope": "H6_CONFIRM_P4_Q8",
+      "cell": {
+        "id": "B2_p4_q8_2nd_r4_K2",
+        "method": "B2",
+        "prefix": 4,
+        "q": 8,
+        "r": 4,
+        "K": 2,
+        "R": 32,
+        "formula": "2nd"
+      },
+      "epsilon": 0.0005,
+      "fixed_PF_id": "B0I_p11_q4_4th",
+      "expected_direction": 1,
+      "saved_n8": {
+        "n": 8,
+        "mean_exact": "65509543717397/2",
+        "paired_SE": 254602554677.51428,
+        "SD": null,
+        "variance": null,
+        "new_statistics_computed": false
+      },
+      "fixed_PF_G_exact": "36384720355183",
+      "original_law_sha256": "54058330823e9b5567e0853440fe77ce45b675ede7efc07b396142bac45e1a4a",
+      "saved_order2_probability": 0.0011216662832458251,
+      "scenarios": [
+        {
+          "normal_plugin_n": 1,
+          "sd_multiplier": 1,
+          "alpha_each": 0.025,
+          "assumed_power": 0.8,
+          "margin_exact": "7259896992969/2",
+          "pilot_SD": 720124771679.5564,
+          "unknown_variance_t_adjustment": false,
+          "assumed_normal_finite_variance": true,
+          "actual_power_certified": false,
+          "all_strata_variance_covered": false,
+          "normal_ceiling_n": 1,
+          "planning_n": 2,
+          "signed_margin_exact": "7259896992969/2",
+          "expected_direction": 1,
+          "saved_PR_mean_exact": "65509543717397/2",
+          "fixed_PF_G_exact": "36384720355183",
+          "variance_source": "saved_PR_paired_SE_n8",
+          "visibility_at_planning_n": {
+            "order2_trajectory_probability": 0.03527622900502826,
+            "probability_at_least_one": 0.06930804567724133,
+            "n": 2
+          },
+          "normal_model_power_at_n48": 1.0,
+          "normal_model_power_at_recommended_n": 1.0
+        },
+        {
+          "normal_plugin_n": 2,
+          "sd_multiplier": 2,
+          "alpha_each": 0.025,
+          "assumed_power": 0.8,
+          "margin_exact": "7259896992969/2",
+          "pilot_SD": 720124771679.5564,
+          "unknown_variance_t_adjustment": false,
+          "assumed_normal_finite_variance": true,
+          "actual_power_certified": false,
+          "all_strata_variance_covered": false,
+          "normal_ceiling_n": 2,
+          "planning_n": 2,
+          "signed_margin_exact": "7259896992969/2",
+          "expected_direction": 1,
+          "saved_PR_mean_exact": "65509543717397/2",
+          "fixed_PF_G_exact": "36384720355183",
+          "variance_source": "saved_PR_paired_SE_n8",
+          "visibility_at_planning_n": {
+            "order2_trajectory_probability": 0.03527622900502826,
+            "probability_at_least_one": 0.06930804567724133,
+            "n": 2
+          },
+          "normal_model_power_at_n48": 1.0,
+          "normal_model_power_at_recommended_n": 1.0
+        },
+        {
+          "normal_plugin_n": 5,
+          "sd_multiplier": 4,
+          "alpha_each": 0.025,
+          "assumed_power": 0.8,
+          "margin_exact": "7259896992969/2",
+          "pilot_SD": 720124771679.5564,
+          "unknown_variance_t_adjustment": false,
+          "assumed_normal_finite_variance": true,
+          "actual_power_certified": false,
+          "all_strata_variance_covered": false,
+          "normal_ceiling_n": 5,
+          "planning_n": 5,
+          "signed_margin_exact": "7259896992969/2",
+          "expected_direction": 1,
+          "saved_PR_mean_exact": "65509543717397/2",
+          "fixed_PF_G_exact": "36384720355183",
+          "variance_source": "saved_PR_paired_SE_n8",
+          "visibility_at_planning_n": {
+            "order2_trajectory_probability": 0.03527622900502826,
+            "probability_at_least_one": 0.1643683152584394,
+            "n": 5
+          },
+          "normal_model_power_at_n48": 0.9999999999935973,
+          "normal_model_power_at_recommended_n": 1.0
+        }
+      ],
+      "reference_n48": {
+        "order2_trajectory_probability": 0.03527622900502826,
+        "probability_at_least_one": 0.821621285997626,
+        "n": 48
+      },
+      "order2_visibility_min_n_97_5": 103,
+      "visibility_at_min_n": {
+        "order2_trajectory_probability": 0.03527622900502826,
+        "probability_at_least_one": 0.9752538913409178,
+        "n": 103
+      },
+      "recommended_n": 104,
+      "recommended_visibility": {
+        "order2_trajectory_probability": 0.03527622900502826,
+        "probability_at_least_one": 0.9761268407369589,
+        "n": 104
+      }
+    }
+  ],
+  "saved_scalar_passes": 1,
+  "population_mean_certified": false,
+  "actual_power_certified": false,
+  "cost_contribution_bound": null,
+  "confidence_intervals": null,
+  "p_values": null,
+  "normal_model_assumptions_verified": false,
+  "visibility_is_cost_mean_precision": false,
+  "final_scientific_n": null,
+  "final_scientific_SOURCE": null,
+  "final_seed_registry": null,
+  "final_scientific_call_budget": null,
+  "scientific_execution_approved": false,
+  "new_sampling": 0,
+  "native_compile": 0,
+  "signal": 0,
+  "shot_recalculation": 0,
+  "new_confirmation_seeds": 0,
+  "raw_variance_reaggregation": 0,
+  "bootstrap": 0,
+  "retry": false,
+  "next_stage_authorized": false,
+  "SOURCE": "4ebccfeda760473b63765816f34ef68df9cbfaa4",
+  "spec_digest": "b1028f947636ca52858198c96b19e2b08ac3d39d796678ba4fe94c626d3426f2",
+  "actual_calls": {
+    "saved_scalar_pass": 1
+  }
+}

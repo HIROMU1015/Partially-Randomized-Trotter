@@ -1,0 +1,523 @@
+# 研究方法・解析手順
+
+本資料は、[先行研究と未解決点](先行研究と未解決点.md)で特定した課題に対し、本研究で用いる記号、入力、探索変数、派生量および最適化の依存関係を定める。理論上の最終手順を示しつつ、現行実装で実行する数値評価の詳細は[数値実験・評価計画](数値実験・評価計画.md)へ分離する。
+
+PR-2の次段に限っては、[matched-accuracy resource-map契約](pr2_matched_accuracy_resource_contract_v1.md)が
+候補集合、`q*delta=T`、normalization、candidate fingerprint、direct-compile選抜、停止条件の正本である。
+同契約は実装・科学計算をまだ承認せず、M1実装契約の別freezeを要求する。
+
+## 1. 入力、仮定および探索変数
+
+### 1.1 あらかじめ与える入力
+
+- 分子、基底関数、活性空間および量子ビット写像
+- DF表現、DF rank、fragment順位、coefficient thresholdおよびidentity policy
+- Product Formulaの次数 $p$ と、誤差上界または経験的surrogate
+- target energy precision $\epsilon_E$
+- 共通のRPE branch margin $\beta_{\mathrm{RPE}}$ と総失敗確率 $\alpha_{\mathrm{tot}}$
+- target signalの位相関係と、正当化された場合の基準半径下界 $\rho_{\star,m,\mathrm{lb}}$
+- compiler/backend条件とcompiled-cost指標
+
+DF生成条件は現段階では固定し、rank済み二体DF fragment列のprefix長 $L_D$ だけをHamiltonian分割変数として探索する。
+
+### 1.2 入力状態とsignal model
+
+状態準備法は研究対象外とし、必要な入力状態を利用できると仮定する。この仮定により状態準備コストを総コストから除外するが、shot数が候補ごとに異なるため、数学的な相殺を主張するものではない。
+
+これとは独立に、対象となるpartial-$S_2$ signalが
+
+$$
+Z_{\star,m}
+=
+\rho_{\star,m}e^{-iq_m\theta_\star},
+\qquad
+\rho_{\star,m}>0
+$$
+
+というRPEに必要な位相関係と基準半径を持つことを条件付きで仮定する。この成立は本研究の証明対象ではなく、元のHamiltonianのexact ground stateを利用できることだけから $\rho_{\star,m}=1$ が自動的に従うとはしない。
+
+### 1.3 変数と派生量
+
+| 区分 | 量 | 現段階での扱い |
+|---|---|---|
+| 外側探索 | $L_D,\delta_{\mathrm{time}}$ | 方法論上の探索変数。現行実装では外側探索は未統合 |
+| round内探索 | $r_m,K_m$ | 固定された外側候補と配分scheduleの下で探索 |
+| 位相配分 | $\overline\beta_{\mathrm{PF},m},\overline\beta_{\mathrm{RTE},m},\overline\beta_{\mathrm{stat},m}$ | 最終的には探索。現行評価では事前指定schedule |
+| 失敗確率配分 | $\alpha_{m,c},\alpha_{m,s}$ | 最終的には探索。現行評価では事前指定schedule |
+| 派生量 | $H_D,H_R,\lambda_R,M,\tau_m,A_m^{\mathrm{att}},N_{m,b}$ | 上記入力・変数から計算 |
+
+## 2. 全体の依存関係
+
+方法論上の依存関係は
+
+$$
+(L_D,\delta_{\mathrm{time}})
+\longrightarrow
+(H_D,H_R,\lambda_R,M)
+\longrightarrow
+\{r_m,K_m,\overline\beta_{j,m},\alpha_{m,b}\}
+$$
+
+$$
+\longrightarrow
+\{\epsilon_{Z,m},A_m^{\mathrm{att}},N_{m,b},
+\mathbb E[C_{m,b}^{\mathrm{target,no\text{-}prep}}]\}
+\longrightarrow
+G_{\mathrm{total}}^{\mathrm{target}}
+$$
+
+である。ここで $j\in\{\mathrm{PF},\mathrm{RTE},\mathrm{stat}\}$、$b\in\{c,s\}$ とする。
+
+本文は研究上の総コストモデルと解析方針を示す。Product Formula次数、回路制御方式、直接構築可能なround範囲など、現行実装に固有の評価条件は[数値実験・評価計画](数値実験・評価計画.md)で定める。
+
+## 3. 外側候補
+
+### 3.1 固定DF表現下の分割 $L_D$
+
+固定した順位のDF fragment列について、先頭 $L_D$ 個を決定論側、それ以降をランダム側とする。
+
+$$
+H
+=
+H_D(L_D)+H_R(L_D)
+$$
+
+各 $L_D$ について、決定論回路、ランダムtail、Product Formula誤差評価および二種類のtail normを再計算する。fragment順位用の `ranking_proxy_lambda_r` は候補の記述・分析に用いるが、RTE確率、Taylor cutoffおよびattenuationにはI/Z/ZZ展開後の `exact_rte_lambda_r` を用いる。$\lambda_R$ 単独ではなく最終総コストで $L_D$ を比較する。
+
+### 3.2 時間刻み $\delta_{\mathrm{time}}$
+
+RPE round $m$ の反復数と発展時間を
+
+$$
+q_m=2^m,
+\qquad
+t_m=q_m\delta_{\mathrm{time}}
+$$
+
+とする。alias-freeなenergy windowを仮定し、最終roundは少なくとも
+
+$$
+\frac{\beta_{\mathrm{RPE}}}
+{2^M\delta_{\mathrm{time}}}
+\leq
+\epsilon_E
+$$
+
+を満たすように選ぶ。$M$ が切り替わる点だけでなく、同じ $M$ の区間内でもfinite-RTE設定とcompiled costが変わるため、$\delta_{\mathrm{time}}$ を離散候補として比較する。
+
+### 3.3 Product Formula係数の推定
+
+小規模系では、full-$H$基底状態に連続するpartial-$S_2$の支配固有位相から
+$C_{\mathrm{PF,eig}}$を直接求める。PF演算子を対角化できない候補・大規模系では、
+$H|\psi_0\rangle=E_0|\psi_0\rangle$と
+
+$$
+\Delta\psi(\delta)
+=
+U_{\mathrm{partial}}(\delta)|\psi_0\rangle
+-e^{-iE_0\delta}|\psi_0\rangle
+$$
+
+を用い、先行する決定論PF評価と同じ一次摂動式
+
+$$
+\Delta E_{\mathrm{pert,D6}}(\delta)
+=
+\frac{
+\operatorname{Re}\langle\psi_0|\Delta\psi(\delta)\rangle
+}{
+\delta\sin(E_0\delta)
+}
+$$
+
+から$C_{\mathrm{partial,D6}}$を求める。対象系で実行可能な窓$\mathcal D_n$に対し、
+
+$$
+C_{\mathrm{use}}(H_n,L_D)
+=
+\max_{\delta\in\mathcal D_n}
+\frac{|\Delta E_{\mathrm{pert,D6}}(\delta)|}{\delta^2}
+$$
+
+を経験的上包絡として使う。これは実行窓外を保証する厳密上界ではない。
+
+$|\sin(E_0\delta)|$が事前閾値未満の点は、small-$\delta$近似などへ黙って置き換えず、
+D6係数fitから除外する。位相を基準回転して得るshift-invariant survival推定量は、
+state-action実装とsurvival phaseの整合性を監視する診断量に限定し、主たる
+$C_{\mathrm{partial}}$には使用しない。
+
+## 4. roundごとのfinite-RTEモデル
+
+$r_m$ は1回のrandom-tail occurrenceに用いるRTE short-step数である。round全体のshort-step総数と、1 short step当たりの無次元時間は
+
+$$
+R_m^{\mathrm{total}}=q_mr_m,
+\qquad
+\tau_m
+=
+\frac{\lambda_R\delta_{\mathrm{time}}}{r_m}
+$$
+
+となる。ここで $\lambda_R$ は `exact_rte_lambda_r` である。
+
+偶数finite Taylor cutoff $K_m$ に対して、normalizationとTaylor次数分布を
+
+$$
+B_{K_m}(\tau_m)
+=
+\sum_{\substack{0\leq n\leq K_m\\n\ \mathrm{even}}}
+a_n(\tau_m),
+\qquad
+q_{K_m}(n)
+=
+\frac{a_n(\tau_m)}{B_{K_m}(\tau_m)}
+$$
+
+により構成する。1 short stepのTaylor残差上界を $R_{K_m}(\tau_m)$ とすると、round全体のnormalization補正後の誤差上界を
+
+$$
+\epsilon_{Z,m}
+\leq
+\left(
+1+R_{K_m}(\tau_m)
+\right)^{q_mr_m}-1
+$$
+
+と評価し、attenuationを
+
+$$
+A_m^{\mathrm{att}}
+=
+B_{K_m}(\tau_m)^{-q_mr_m}
+$$
+
+とする。finite-RTE誤差とattenuationは別の量であり、前者は位相と半径を変え得る誤差、後者は既知の正のnormalizationによる信号減衰である。
+
+## 5. 位相誤差、信号半径およびshot数
+
+### 5.1 系統的な位相誤差
+
+Product Formulaのenergy biasを
+
+$$
+\lvert\Delta E_{\mathrm{PF}}\rvert
+\leq
+\epsilon_{\mathrm{PF}}
+$$
+
+と評価した場合、
+
+$$
+\beta_{\mathrm{PF},m}^{\mathrm{ub}}
+\leq
+t_m\epsilon_{\mathrm{PF}}
+$$
+
+とする。正当化された基準半径下界があり、
+
+$$
+0\leq\epsilon_{Z,m}<\rho_{\star,m,\mathrm{lb}}
+$$
+
+なら、finite-RTEによる位相誤差は
+
+$$
+\beta_{\mathrm{RTE},m}^{\mathrm{ub}}
+\leq
+\arcsin\!\left(
+\frac{\epsilon_{Z,m}}
+{\rho_{\star,m,\mathrm{lb}}}
+\right)
+$$
+
+で評価する。
+
+### 5.2 簡略半径モデルと保守的下界
+
+主解析では、finite-RTE誤差による半径低下を省略した簡略モデル
+
+$$
+\rho_m^{\mathrm{obs,model}}
+=
+A_m^{\mathrm{att}}\rho_{\star,m}
+$$
+
+を用いる。`model` は近似モデルを表し、この量を一般的な厳密下界としては扱わない。
+
+保証を伴う保守的評価では、三角不等式から
+
+$$
+\rho_{m,\mathrm{lb}}^{\mathrm{obs}}
+=
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
+$$
+
+を用いる。現行実装の $\rho_{\star,m,\mathrm{lb}}=1$ specializationも、この基準半径を外部から仮定した条件付きモデルであり、exact ground stateから自動的に導かれるものではない。
+
+### 5.3 統計誤差の一般形
+
+cosine・sine各座標について、許容誤差と失敗確率を別々に
+
+$$
+\Pr\!\left(
+\lvert\Delta X_m\rvert
+>
+\epsilon_{\mathrm{coord},m,c}
+\right)
+\leq
+\alpha_{m,c},
+$$
+
+$$
+\Pr\!\left(
+\lvert\Delta Y_m\rvert
+>
+\epsilon_{\mathrm{coord},m,s}
+\right)
+\leq
+\alpha_{m,s}
+$$
+
+とする。保守的半径下界を用いる統計位相誤差の一般形は
+
+$$
+\beta_{\mathrm{stat},m}^{\mathrm{ub}}
+\leq
+\arcsin\!\left(
+\frac{
+\sqrt{
+\epsilon_{\mathrm{coord},m,c}^{2}
++
+\epsilon_{\mathrm{coord},m,s}^{2}
+}
+}{
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
+}
+\right)
+$$
+
+である。分子が分母より小さい候補に適用する。主解析の簡略モデルでは、分母を $\rho_m^{\mathrm{obs,model}}$ として $\epsilon_{Z,m}$ による半径低下を省略する。
+
+共通座標誤差を使う場合は
+
+$$
+\epsilon_{\mathrm{coord},m,c}
+=
+\epsilon_{\mathrm{coord},m,s}
+=
+\epsilon_{\mathrm{coord},m}
+$$
+
+とし、許容統計位相 $\overline\beta_{\mathrm{stat},m}$ から、保守的評価では
+
+$$
+\epsilon_{\mathrm{coord},m}
+=
+\frac{
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
+}{\sqrt{2}}
+\sin\overline\beta_{\mathrm{stat},m}
+$$
+
+と設定できる。主解析では同じ式の半径を $\rho_m^{\mathrm{obs,model}}$ に置き換える。
+
+Hadamard-test outcomeを $\{-1,+1\}$ とし、各round・各軸内で独立な有界標本を仮定するHoeffding評価では、
+
+$$
+N_{m,b}
+=
+\left\lceil
+\frac{2}{\epsilon_{\mathrm{coord},m,b}^{2}}
+\log\!\left(
+\frac{2}{\alpha_{m,b}}
+\right)
+\right\rceil
+$$
+
+とする。ランダムtailでは、認証に用いるこのモデルは量子Hadamard-test shotごとにfresh IIDなRTE trajectoryを要求する。compiled-cost期待値を推定する古典Monte Carlo標本数は、この量子shot数に掛けない。
+
+二つの座標誤差事象を合成すると、union boundにより
+
+$$
+\Pr\!\left(
+\beta_{\mathrm{stat},m}^{\mathrm{actual}}
+>
+\overline\beta_{\mathrm{stat},m}
+\right)
+\leq
+\alpha_{m,c}+\alpha_{m,s}
+$$
+
+である。単独の $\alpha_{m,b}$ をround位相失敗確率とはしない。
+
+### 5.4 位相・失敗確率の配分
+
+配分値と実際の上界を区別し、各roundで
+
+$$
+\overline\beta_{\mathrm{PF},m}
++
+\overline\beta_{\mathrm{RTE},m}
++
+\overline\beta_{\mathrm{stat},m}
+\leq
+\beta_{\mathrm{RPE}}
+$$
+
+および
+
+$$
+\beta_{j,m}^{\mathrm{ub}}
+\leq
+\overline\beta_{j,m}
+$$
+
+を確認する。全roundでは
+
+$$
+\sum_{m=0}^{M}
+\left(
+\alpha_{m,c}+\alpha_{m,s}
+\right)
+\leq
+\alpha_{\mathrm{tot}}
+$$
+
+を課す。数学的なcertificationには厳密不等式
+
+$$
+\beta_{\mathrm{RPE}}<\frac{\pi}{3}
+$$
+
+を用いる。$\beta_{\mathrm{RPE}}\leq\pi/2$ の範囲での数値的resource evaluationは可能でも、それだけでcertifiedとはしない。
+
+## 6. expected compiled costのscope
+
+回路scopeを次の三段階に分ける。
+
+| 段階 | scope | 用途 |
+|---|---|---|
+| 現行の主な直接評価 | `compiled_time_evolution_subcircuit` | controlled partial-$S_2$ time evolutionだけを直接compile |
+| 中間評価 | `single_hadamard_interrogation_without_state_preparation` | ancilla gates、controlled evolution、axis basis change、measurementを含む1 interrogation |
+| 最終目標 | `target full RPE interrogation cost excluding state preparation` | 必要な全round・全軸・全shotの総コストへ接続 |
+
+event列 $\omega$ の確率を $p_m(\omega)$、選んだscopeでのcompiled costを $C_{m,b}(\omega)$ とする。event空間を列挙できれば
+
+$$
+\mathbb E[C_{m,b}]
+=
+\sum_\omega
+p_m(\omega)C_{m,b}(\omega)
+$$
+
+を直接計算する。列挙できない場合は、古典Monte Carlo標本数 $S_{\mathrm{MC}}$ を用いて
+
+$$
+\widehat C_{m,b}
+=
+\frac{1}{S_{\mathrm{MC}}}
+\sum_{s=1}^{S_{\mathrm{MC}}}
+C_{m,b}(\omega_s)
+$$
+
+と標準誤差を求める。compiler/backend条件、制御方式およびscopeが異なるコストは直接混合しない。
+
+## 7. 総コストと入れ子型最適化
+
+最終目標のroundコストと総コストを
+
+$$
+G_m^{\mathrm{target}}
+=
+\sum_{b\in\{c,s\}}
+N_{m,b}\,
+\mathbb E\!\left[
+C_{m,b}^{\mathrm{target,no\text{-}prep}}
+\right],
+$$
+
+$$
+G_{\mathrm{total}}^{\mathrm{target}}
+=
+\sum_{m=0}^{M}G_m^{\mathrm{target}}
+$$
+
+とする。方法論上の最終問題は
+
+$$
+G_{\mathrm{opt}}(L_D,\delta_{\mathrm{time}})
+=
+\min_{\{r_m,K_m,\overline\beta_{j,m},\alpha_{m,b}\}}
+G_{\mathrm{total}}^{\mathrm{target}}
+$$
+
+である。
+
+ただし現行実装は配分最適化を行わず、複数の事前指定scheduleを比較する。固定scheduleの下では各roundの $(r_m,K_m)$ を探索できる一方、$\alpha_{m,b}$ 自体を最適化する場合は
+
+$$
+\sum_{m,b}\alpha_{m,b}
+\leq
+\alpha_{\mathrm{tot}}
+$$
+
+によってround間が結合する。したがって、現行のshort-round最小値を、配分まで最適化した全roundの大域最適値とは呼ばない。
+
+## 8. 解析・評価の順序
+
+1. 固定DF表現から $L_D$ 候補を作り、`ranking_proxy_lambda_r` と `exact_rte_lambda_r` を区別して記録する。
+2. 各 $\delta_{\mathrm{time}}$ について $M$、PF誤差およびalias-free条件を確認する。
+3. 事前指定した配分scheduleごとに、各roundの $(r_m,K_m)$ gridを評価する。
+4. finite-RTE誤差、attenuation、信号半径、shot数および選択scopeの期待compiled costを計算する。
+5. 短roundでは直接評価を検証し、長round用proxyは別に較正・検証する。
+6. 同一条件の決定論baselineと比較し、最終的に外側候補と配分scheduleを比較する。
+
+数値grid、主・副コスト指標、`certified`／`empirical_screening`、trajectory samplingおよびbackend条件は[次の主資料](数値実験・評価計画.md)を正本とする。
+
+## 9. 研究テーマ選定pilotの方法
+
+テーマ選定中は、8節の全cost workflowを各候補へ一律に要求しない。各pilotで、主張に直接必要な
+対照・holdout・停止条件だけを先に固定する。
+
+- P-Bでは、target-centered固有位相bias、target weight、q別signalを分離する。全対角化は小系の
+  参照値に限り、state-action等の安価な診断が候補選択を変えられるかを見る。実質的な選択不一致が
+  なければ、診断の相関だけを根拠に主題化しない。
+- P-Cでは、$E_{\mathrm{eff}}-E_{\mathrm{exact}}$の符号規約を固定し、複数deltaでleading領域を
+  確認する。geometry間のHamiltonian、状態、軌道、DF fragmentの対応を記録し、較正に使わない
+  geometry pairの差分biasを予測する。近接点での自明な相殺だけなら停止する。
+- P-Aでは、既知の部分基底変換、同basis共有、隣接相対basis融合、現行policyを強いbaselineとし、
+  同じoperatorを保つことを数値残差で確認する。有限候補oracle、未使用構造、悪化例、古典探索costを
+  分けて残す。
+
+pilotの順序はP-B、P-C、P-Aとし、各段階の否定的結果を削除せず次の判別へ進む。共通の5%を全pilotの
+科学的合否基準にはせず、数値同値性、signal使用条件、Monte Carlo精度、研究上意味のある差を分ける。
+
+2026-09-25に3 pilotを完了した。P-Bは停止条件、P-Cは進行条件を満たした。P-Cでは
+0.80/1.00/1.20 Åをtraining、0.85/1.15 Åをgeometry holdout、$\delta=0.4$をdelta holdoutとし、
+二重holdoutの差分biasもendpoint bias基準10%以内で予測した。P-Aではtraining列長2/4/6と独立
+holdout列長3/5/8を分け、full共有、event-support、現行`support_run_le_1`、interval-union DPを
+同じcompiler条件で比較した。DPは現行比pooled RZ -7.194%、各長で改善、最大個別悪化+0.231%、
+有限4候補oracle regret/full RZ 0.00482%、operator最大残差$3.126\times10^{-15}$で全6 gateを通過した。
+
+4問比較では一度P-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とした。その後P-Aは文献監査、
+blind transfer、形式化、非退化mechanism validationまで進み、明示的一区間baselineとの差が
+training/blind全30 taskで0だったためinterval claimを停止した。
+
+続くP-C tracking・breakdown validationでは、tracked prefixが独立prefixと全点同一で、
+stretch側blind coefficient予測とcontinuity診断が固定gateを通らなかったため、
+current H4 familyを停止した。現時点でA/B/Cに確認済み主題はない。次はP-Dを独立pilotとして
+事前登録するか、A/B/Cの停止原因を踏まえて問いを再定義する。H12、長RPE、追加$q>32$を
+自動的な次作業にしない。
+
+前の主資料：[先行研究と未解決点](先行研究と未解決点.md)
+
+次の主資料：[数値実験・評価計画](数値実験・評価計画.md)

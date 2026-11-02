@@ -1,0 +1,27 @@
+{
+  "status": "PASS_ARTIFICIAL_ONLY",
+  "new_tests": 13,
+  "first_12_test_seconds": 18.124,
+  "additional_saved_audit_test_seconds": 0.0,
+  "existing_retry_boundary_tests": 13,
+  "existing_test_seconds": 1.815,
+  "toy_native_single_term_S4_q": [
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "toy_scalar_shifts": [
+    0.0,
+    0.23
+  ],
+  "molecular_inputs_loaded": 0,
+  "molecular_compiles": 0,
+  "actor": "Codex primary agent; no subagents or separate reviewer",
+  "commands": [
+    "venv/bin/python -B -m unittest discover -s tests -p test_pf_direct_retry106.py -v (first 12 tests)",
+    "python3 -B -m unittest discover -s tests -p test_pf_direct_retry106.py -k saved_audit -v (additional boundary)",
+    "venv/bin/python -B -m unittest discover -s tests -p test_pf_direct_retry216.py -v"
+  ]
+}

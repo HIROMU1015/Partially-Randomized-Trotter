@@ -1,0 +1,170 @@
+{
+  "schema": "C1_3_R2_NEW_FIXED_ONE_SHOT_V1",
+  "base_commit": "49dae5247ff0ad2c4efb9056e095b70913cc9ddb",
+  "model_sha256": "e96ea0faea31bc6a784dfb8dc6f7cf4856789b0256e4a1c53b63ce087c86dc49",
+  "partition_hash": "16b35c1dde1a6807d39c733defd87e315e4ac7317a831b240d0f7214e744a834",
+  "snapshot": {
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a"
+  },
+  "model": "linear H4 1.00 Angstrom / STO-3G / DF12 / R1 new partition / 8 system qubits / 324 labels / 13 bases",
+  "T": "4/5",
+  "q_outer": 1,
+  "r_RTE": 4,
+  "m": 5,
+  "sigma": 1,
+  "outer": "symmetric second order PF; forward deterministic half, one tail occurrence with four substeps, reverse half",
+  "adoption_scope": "limited correctness only, not performance/optimal scientific condition",
+  "precision": {
+    "root_bits": 4096,
+    "probability_bits": 2048,
+    "eta": "1/1000000000000",
+    "rho": "1/1000000000000",
+    "angle_tau": "1/1000000000000",
+    "angle_root_bits": 256,
+    "angle_terms": 64
+  },
+  "precision_policy": "one fixed supplied precision; F1/F3 P0-P5 exact checks inside one-shot; failure stops, no refinement",
+  "event_selection": {
+    "a": 0,
+    "b": 2,
+    "c": 36,
+    "d": 9,
+    "rule": "a first negative; b first positive; c first different-basis label from a excluding a,b; d first positive ZZ excluding a,b,c. Stable R1 label order. Two root, two length-2, two length-4 events as listed.",
+    "numerical_results_consulted": false
+  },
+  "events": [
+    {
+      "word": [],
+      "child": 0
+    },
+    {
+      "word": [],
+      "child": 9
+    },
+    {
+      "word": [
+        0,
+        2
+      ],
+      "child": 36
+    },
+    {
+      "word": [
+        36,
+        0
+      ],
+      "child": 9
+    },
+    {
+      "word": [
+        0,
+        2,
+        36,
+        9
+      ],
+      "child": 2
+    },
+    {
+      "word": [
+        9,
+        36,
+        2,
+        0
+      ],
+      "child": 36
+    }
+  ],
+  "reference": "saved local binary64 matrices composed in time order independently of gate restoration; Q=sign B P B-adjoint; analytic cos/sin atan(s/a), ordered Q product, strict block diag(I,V), no global phase alignment",
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "state_sha256": "c9aca811b5c023772d148d0331c82958bac6824b593a367cb65a5f89937f4f63",
+  "state_tolerance": 1e-12,
+  "state_criterion_source": "R1 result/state_checks.json existing_state_tolerance",
+  "operator_tolerance": 1e-10,
+  "operator_criterion_source": "243eea8e840f3c472753f7935e510391626fd325:src/trottertracks/algorithm_codesign/g10_comparison.py:73-85",
+  "criterion_application": "same strict controlled phase/order/composition diagnostic; Frobenius <=1e-10 is sufficient for the existing spectral-norm criterion; not rigorous arithmetic/native certificate",
+  "XY_status": "saved-state expectation diagnostic; no new rigorous tolerance or sampling/confidence PASS",
+  "gates": [
+    "immutable identities",
+    "exact p positive sum one",
+    "P0-P5 ready",
+    "exact proposal*weight=coefficient",
+    "F3 angle enclosure",
+    "controlled and actual-adjoint Frobenius errors <=1e-10"
+  ],
+  "output": "result/ original outputs plus state_identity.json; raw stdout/stderr and resource observations retained",
+  "runs": 1,
+  "retry": 0,
+  "failure": "preserve log/failure/terminal; stop; do not enter C1-4",
+  "success": "C1-4 documentation/static survey only, then publish/preserve/mandatory STOP",
+  "prohibited": [
+    "molecular reconstruction",
+    "eigendecomposition",
+    "DF factorization",
+    "full H4 event enumeration",
+    "random trajectories",
+    "shots",
+    "native compile/transpile/synthesis",
+    "N/resource ranking",
+    "source repair/retry after science starts"
+  ],
+  "resource_policy": "no agent-added CPU/RAM/worker caps; task-local caches only; shared environment unchanged",
+  "run_id": "C1-3-R2-H4-selected-20261021",
+  "previous_contract_sha256": "ea14db63632731d6e763949c7850739bbcb5e7e2d05c550f4637c0a9bede7755",
+  "previous_failed_run_preserved": true,
+  "previous_authorization_reused": false,
+  "state_hash_policy": "dtype.str + canonical JSON shape + C-order bytes; fixed pr2_s0_s1_validation::_array_hash semantics",
+  "state_hash_policy_source": "243eea8e840f3c472753f7935e510391626fd325:src/trotterlib/pr2_s0_s1_validation.py:145",
+  "shared_connection": {
+    "adapter": {
+      "path": "docs/research/track_b_c1_2_c1_4_integrated_adapter_validation_20261021/adapter.py",
+      "bytes": 10696,
+      "sha256": "657521c6e9f3ab2712d772a7e608acceb2b2638a06cc911571e0bb42005026fe"
+    },
+    "reference": {
+      "path": "docs/research/track_b_c1_3_r2_reference_recovery_c1_4_20261021/reference.py",
+      "bytes": 3056,
+      "sha256": "5cc805e30ea5280530656033ce3085e7614917ba0987c7b5d115bb7f75b42ad6"
+    },
+    "bitwise_helper": {
+      "path": "docs/research/track_b_c1_3_r2_reference_recovery_c1_4_20261021/bitwise.py",
+      "bytes": 2383,
+      "sha256": "7ee1d9c7bf3f02af00153605e6ead12ed92a2eb0021f6ad04f2bc426d9411465"
+    },
+    "state_identity_helper": {
+      "path": "docs/research/track_b_c1_3_r1_recovery_c1_4_20261021/state_identity.py",
+      "bytes": 1403,
+      "sha256": "eba2a83f3a337245a629e9869e7a238f44fef15f6a421464a313de095307346a"
+    },
+    "journal": {
+      "path": "docs/research/track_b_c1_3_r1_recovery_c1_4_20261021/journal.py",
+      "bytes": 3222,
+      "sha256": "054466ff13804922c0e119559222dd7512edd1a3354a09d16ebbfe6686241af9"
+    },
+    "modification": "saved local hex reconstruction only; all operator/norm/phase/XY definitions unchanged"
+  },
+  "failure_schema": "C1_3_R1_FAILURE_V1; first failure immutable; logger errors kept separately",
+  "terminal_schema": "C1_3_R1_TERMINAL_V1",
+  "classifications": [
+    "C1_3_CORRECTNESS_PASS",
+    "C1_3_PRECISION_INSUFFICIENT_STOP",
+    "C1_3_OPERATOR_MISMATCH_STOP",
+    "C1_3_INPUT_IDENTITY_STOP",
+    "C1_3_TECHNICAL_INCONCLUSIVE_STOP",
+    "C1_3_GUARANTEE_UNRESOLVED_STOP"
+  ],
+  "classification_policy": "journal.classify_failure: precision category; explicit operator/adjoint gates; explicit guarantee gates; restoration/schedule identity; remaining technical failure",
+  "phase_A_PASS": {
+    "path": "docs/research/track_b_c1_3_r2_reference_recovery_c1_4_20261021/phase_a_checks.json",
+    "bytes": 6276,
+    "sha256": "47020defafee68e87a85796181df6928443d82241c0507ffeb2aa8323ebadb39"
+  },
+  "phase_B_PASS": {
+    "path": "docs/research/track_b_c1_3_r2_reference_recovery_c1_4_20261021/phase_b/summary.json",
+    "bytes": 498,
+    "sha256": "0ec4f524275be6883f2aebd54c984345104c3d4310d6287e115c3522ec13fa37"
+  }
+}

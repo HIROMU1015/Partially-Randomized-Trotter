@@ -1,0 +1,34 @@
+{
+  "events": [
+    {
+      "source": "70e9f99e",
+      "status": "STOP_BEFORE_OUTPUT_CREATION",
+      "reason": "H6 aggregate unit table includes separate PR n8/n32 means; duplicate guard refused unused PR rows",
+      "resolution": "Restrict unit-price index to PF; PR uses original confirmation CSV pairs only",
+      "scientific_calls": 0
+    },
+    {
+      "source": "eeb6cb4b",
+      "status": "STOP_BEFORE_OUTPUT_CREATION",
+      "reason": "H8 usual/noncancellation metadata differ despite identical RZ and measured flags",
+      "resolution": "Keep exact case-specific metadata; compare only copied RZ and measured flag for cross-row unit identity",
+      "scientific_calls": 0
+    },
+    {
+      "source": "ed397bac",
+      "status": "INCOMPLETE_JOIN_SNAPSHOT_PRESERVED",
+      "reason": "Legacy H8 D0/B0I factor is a string; numeric-only join omitted 190 saved baselines",
+      "resolution": "Normalize declared factor encoding for join only; preserve run01 input bytes and create run02 inputs",
+      "scientific_calls": 0
+    },
+    {
+      "source": "832577fa",
+      "status": "STOP_BEFORE_OUTPUT_CREATION",
+      "reason": "H8 confirmation table repeats deterministic comparators from exploration table",
+      "resolution": "Use exploration deterministic rows and confirmation PR rows; never pool PR phases",
+      "scientific_calls": 0
+    }
+  ],
+  "scientific_attempts": 0,
+  "valid_grants_issued": 0
+}

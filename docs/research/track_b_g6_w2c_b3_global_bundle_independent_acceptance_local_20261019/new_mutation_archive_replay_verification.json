@@ -1,0 +1,629 @@
+{
+  "schema": "restored_independent_mutations_replay_v1",
+  "cases": [
+    {
+      "case": "test_ACK_exceeds_reserved",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_PHYSICAL_RESERVED_CAP:log"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_CPU_double_add",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "CPU_DOUBLE_ADD"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_P1_failure_loses_S_raw",
+      "status": "INCOMPLETE_EVIDENCE",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "equal": true,
+      "issues": [
+        "Missing completed pair evidence: S__correctness_baseline_ordinary_A"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_RAM_physical_disagreement",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "RAM_PHYSICAL_SHA"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_RPC_count_is_not_trial_count",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "COALESCED_ENTER_TRIAL_COUNT"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_SQLite_binding_mutation",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_CLAIM_BINDING"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_SQLite_double_claim",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "ONE_GLOBAL_CLAIM"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_S_failure_then_P1",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "P1_AFTER_S_FAILURE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_adoption_flip",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_boolean_call_cap",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_CALL_CAP"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_boolean_offset",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_OFFSET"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_call_cap",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_CALL_CAP"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_caller_return_failure",
+      "status": "INCOMPLETE_EVIDENCE",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "equal": true,
+      "issues": [],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_condition_CPU_double_add",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "CONDITION_WORKER_CPU_SUM"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_condition_mode_collision",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TASK_MODE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_current_ticket",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "FINAL_UNDRAINED_TICKETS"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_cursor_refund",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "CURSOR_RESERVED_SUM"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_delivery_hash",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "DELIVERY_FINAL_HASH"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_diagnostic_false_success",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "DIAGNOSTIC_IS_NOT_ACCEPTANCE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_double_global_budget",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_BYTE_LIMIT:log"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_duplicate_complete",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "MISSING_OR_DUPLICATE_TERMINAL"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_duplicate_pair",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "JOURNAL_EXTRA_PAIR"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_duplicate_reserve",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "RESERVE_PHASE_OR_DUPLICATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_enter_after_stop",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "ENTER_AFTER_STOP_OR_DUPLICATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_fake_approval",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "MANIFEST_FIELDS"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_false_COMPLETE_state",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "COMPLETION_AFTER_UNFINISHED_TRIAL"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_global_cap_doubled_in_report",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "ONE_GLOBAL_BYTE_LIMIT:log"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_global_counter_refund",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "RAM_GLOBAL_RESERVED"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_global_offset",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_OFFSET"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_marker_wrong_receipt",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "MARKER_RECEIPT_HASH"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_marker_wrong_run",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "POST_CLOSE_RUN:marker"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_missing_caller",
+      "status": "INCOMPLETE_EVIDENCE",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "equal": true,
+      "issues": [],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_missing_receipt",
+      "status": "INCOMPLETE_EVIDENCE",
+      "expected": "INCOMPLETE_EVIDENCE",
+      "equal": true,
+      "issues": [
+        "Missing retained pre-final evidence: receipt.json"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_mode_seed_domain",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_pair_offset",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "JOURNAL_PAIR_REPORT"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_parent_CPU_zero",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "HOST_OUTER_BOUNDARY"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_partial_trace_tail",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_ROW_BOUNDARY"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_phase_barrier",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "SIX_PHASE_BARRIER"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_receipt_counter",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_RECEIPT_COUNTER:completed"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_receipt_preclose",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "RECEIPT_POST_CLOSE:storage_closed_before_receipt"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_reserve_after_stop",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "RESERVE_AFTER_STOP"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_resume",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "CLOSED_FLAG:resume"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_retry",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "CLOSED_FLAG:retry"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_started_false",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "RAM_STARTED_BOUNDARY"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_summary_condition",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "SUMMARY_CONDITIONS"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_summary_prefix",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_CHAIN"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trace_chain",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRACE_CHAIN"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trace_self_double_charge",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRACE_POST_CLOSE_RESERVATION:log"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trial_id_collision",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_TRIAL_ID"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trusted_prefix_SHA",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_SHA"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trusted_prefix_chain",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_CHAIN"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trusted_prefix_mid_row",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_ROW_BOUNDARY"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_trusted_prefix_rows",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_PREFIX_ROWS"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_unknown_credit_refund",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "UNKNOWN_CREDIT_NONREFUND:result"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wall_sum_false",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "HOST_OUTER_BOUNDARY"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_SOURCE",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_claim",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_CLAIM"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_prefix_namespace",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "COMPARISON_BINDING:seed_namespace"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_runtime",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_schema",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "GLOBAL_RESULT_SCHEMA"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_scientific_reference",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "TRUSTED_CANDIDATE"
+      ],
+      "comparison_eligible": false
+    },
+    {
+      "case": "test_wrong_scope",
+      "status": "INTEGRITY_MISMATCH",
+      "expected": "INTEGRITY_MISMATCH",
+      "equal": true,
+      "issues": [
+        "ARTIFICIAL_SCOPE"
+      ],
+      "comparison_eligible": false
+    }
+  ],
+  "all_equal": true,
+  "counts": {
+    "INTEGRITY_MISMATCH": 58,
+    "INCOMPLETE_EVIDENCE": 4
+  },
+  "reexecution_not_added_to_unique_tests": true,
+  "producer_imports": 0,
+  "scientific_calls": 0
+}

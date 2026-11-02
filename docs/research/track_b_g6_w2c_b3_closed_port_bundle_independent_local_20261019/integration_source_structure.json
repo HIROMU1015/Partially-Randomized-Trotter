@@ -1,0 +1,884 @@
+{
+  "deltas": [
+    {
+      "original": "g6_w2c_b3_bundle_bridge_v1.py",
+      "original_sha256": "cf35e8a2e6af0da6e9a680943300efddab9157e1b00a7325c6340f877be3b485",
+      "versioned": "bridge.py",
+      "versioned_sha256": "d201cfe9e9c0abf01951d734c3fae1c3e46421f3c4e5527b59893bc02cafc7a6",
+      "delta": "independent_bridge.py.patch"
+    },
+    {
+      "original": "g6_w2c_b3_bundle_offline_v1.py",
+      "original_sha256": "2e0a94f200745380c583f2cd69356628e507bd4a3e6f73077c8c1278adc1857b",
+      "versioned": "storage_consumer.py",
+      "versioned_sha256": "992a37939bd0660eccb164662067fcd9b03946152f41c2f0ab7b026f653018c5",
+      "delta": "independent_storage_consumer.py.patch"
+    }
+  ],
+  "AST": {
+    "adapter.py": {
+      "sha256": "31e836b9e488b5dbb6065410cc550476c4fbfb1d259ee490e4c66eb9f587f01b",
+      "imports": [
+        "from pathlib import Path",
+        "from copy import deepcopy",
+        "import os",
+        "from ..g6_w2c_b3_api_binding_v1 import ports as PORT",
+        "from ..g6_w2c_b3_api_binding_v1.static import need, sha, digest, encoded",
+        "from .. import g6_w2c_b3_parallel_driver as D",
+        "from . import contract as K"
+      ],
+      "functions": [
+        {
+          "name": "bits_factory",
+          "line": 10,
+          "signature": "arm, axis",
+          "calls": [
+            "PORT.ArtificialBits",
+            "PORT.install_guard"
+          ]
+        },
+        {
+          "name": "__init__",
+          "line": 15,
+          "signature": "self, stage, reason",
+          "calls": [
+            "super",
+            "super().__init__"
+          ]
+        },
+        {
+          "name": "to_dict",
+          "line": 17,
+          "signature": "self",
+          "calls": [
+            "dict"
+          ]
+        },
+        {
+          "name": "__init__",
+          "line": 23,
+          "signature": "self, runtime_manifest, context",
+          "calls": [
+            "deepcopy",
+            "digest"
+          ]
+        },
+        {
+          "name": "__call__",
+          "line": 28,
+          "signature": "self, task, settings",
+          "calls": [
+            "(root / path).read_bytes",
+            "Endpoint",
+            "PORT.install_guard",
+            "Path",
+            "Path(PORT.__file__).resolve",
+            "Path(__file__).resolve",
+            "digest",
+            "encoded",
+            "need",
+            "next",
+            "self.runtime_manifest['source_pins'].items",
+            "sha",
+            "type"
+          ]
+        },
+        {
+          "name": "__init__",
+          "line": 43,
+          "signature": "self, task, settings, context",
+          "calls": [
+            "PORT.ArtificialEndpoint",
+            "deepcopy"
+          ]
+        },
+        {
+          "name": "shared_identity",
+          "line": 49,
+          "signature": "self",
+          "calls": [
+            "D.identity",
+            "dict",
+            "self.port.shared_identity"
+          ]
+        },
+        {
+          "name": "fault",
+          "line": 53,
+          "signature": "self, stage, trial_id=None",
+          "calls": [
+            "PortFailure",
+            "next",
+            "os._exit",
+            "stage.upper",
+            "str",
+            "trial_id.endswith",
+            "x.get"
+          ]
+        },
+        {
+          "name": "sample",
+          "line": 61,
+          "signature": "self, bits, trial_id",
+          "calls": [
+            "PortFailure",
+            "self._sample",
+            "str",
+            "type"
+          ]
+        },
+        {
+          "name": "_sample",
+          "line": 67,
+          "signature": "self, bits, trial_id",
+          "calls": [
+            "D.identity",
+            "PORT.TrialIdentity",
+            "PORT.validate_result",
+            "PortFailure",
+            "dict",
+            "digest",
+            "ident.global_id",
+            "int",
+            "os._exit",
+            "os.getpid",
+            "result.validate",
+            "self.fault",
+            "self.fault_requested",
+            "self.legacy_fault",
+            "self.port.sample",
+            "trial_id.split"
+          ]
+        },
+        {
+          "name": "fault_requested",
+          "line": 98,
+          "signature": "self, stage, tid",
+          "calls": [
+            "any",
+            "str",
+            "tid.endswith",
+            "x.get"
+          ]
+        },
+        {
+          "name": "angle_for",
+          "line": 103,
+          "signature": "self, result",
+          "calls": [
+            "PortFailure",
+            "self.fault",
+            "self.legacy_fault",
+            "self.port.angle_for"
+          ]
+        },
+        {
+          "name": "legacy_fault",
+          "line": 108,
+          "signature": "self, stage, tid=None",
+          "calls": [
+            "any",
+            "str",
+            "tid.endswith"
+          ]
+        }
+      ]
+    },
+    "storage_consumer.py": {
+      "sha256": "992a37939bd0660eccb164662067fcd9b03946152f41c2f0ab7b026f653018c5",
+      "imports": [
+        "from collections import Counter",
+        "from pathlib import Path",
+        "from hashlib import sha256",
+        "import json, sqlite3",
+        "from .. import g6_w2c_b3_offline_result as V",
+        "from .. import g6_w2c_b3_parallel_verifier_core as G",
+        "from .. import g6_w2c_b3_parallel_offline_adapter as A",
+        "from .. import g6_w2c_b3_offline_cost as C",
+        "from .. import g6_w2c_b3_bundle_trace_v1 as T"
+      ],
+      "functions": [
+        {
+          "name": "_identity",
+          "line": 18,
+          "signature": "value",
+          "calls": [
+            "json.dumps",
+            "json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode",
+            "sha256",
+            "sha256(json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=True).encode()).hexdigest"
+          ]
+        },
+        {
+          "name": "_read",
+          "line": 19,
+          "signature": "path",
+          "calls": [
+            "A.safe_values",
+            "Path",
+            "Path(path).read_bytes",
+            "V.plain"
+          ]
+        },
+        {
+          "name": "_sha",
+          "line": 20,
+          "signature": "path",
+          "calls": [
+            "Path",
+            "Path(path).read_bytes",
+            "sha256",
+            "sha256(Path(path).read_bytes()).hexdigest"
+          ]
+        },
+        {
+          "name": "_same",
+          "line": 21,
+          "signature": "a, b",
+          "calls": [
+            "_same",
+            "all",
+            "len",
+            "set",
+            "type",
+            "zip"
+          ]
+        },
+        {
+          "name": "plan",
+          "line": 23,
+          "signature": "n",
+          "calls": [
+            "G.plan",
+            "dict",
+            "enumerate",
+            "tasks.append"
+          ]
+        },
+        {
+          "name": "identity",
+          "line": 31,
+          "signature": "c, m, trusted, source_root",
+          "calls": [
+            "CLOSED.items",
+            "V.require",
+            "V.safe_path",
+            "_identity",
+            "_same",
+            "_sha",
+            "c['python']['libraries'].values",
+            "c['scientific_reference']['input_pins'].items",
+            "c['source_pins'].items",
+            "dict",
+            "m['global_scope'].startswith",
+            "plan",
+            "type"
+          ]
+        },
+        {
+          "name": "_claim",
+          "line": 52,
+          "signature": "root, m, report",
+          "calls": [
+            "V.require",
+            "_identity",
+            "_same",
+            "db.execute",
+            "db.execute('PRAGMA quick_check').fetchone",
+            "db.execute('SELECT scope,claim,binding,status,spent FROM claims').fetchall",
+            "db.execute('SELECT seq,scope,event,binding FROM history ORDER BY seq').fetchall",
+            "dict",
+            "len",
+            "list",
+            "p.is_symlink",
+            "p.resolve",
+            "p.resolve().as_uri",
+            "sqlite3.connect"
+          ]
+        },
+        {
+          "name": "_control",
+          "line": 64,
+          "signature": "out, tasks, r, gaps",
+          "calls": [
+            "(out / 'control.jsonl').read_bytes",
+            "(out / 'control.jsonl').read_bytes().splitlines",
+            "A.safe_values",
+            "V.Invalid",
+            "V.plain",
+            "V.require",
+            "_same",
+            "arrivals.append",
+            "begun.append",
+            "bool",
+            "dict",
+            "ends.items",
+            "gaps.append",
+            "len",
+            "line.endswith",
+            "list",
+            "rows.append",
+            "x.items"
+          ]
+        },
+        {
+          "name": "_cost",
+          "line": 95,
+          "signature": "r, delivery, pairs",
+          "calls": [
+            "C.partition",
+            "C.subtotal",
+            "V.nonnegative",
+            "V.require",
+            "all",
+            "dict",
+            "result.append",
+            "row['control_rpc'].get",
+            "sum"
+          ]
+        },
+        {
+          "name": "verify_storage",
+          "line": 118,
+          "signature": "root, trusted, source_root=None",
+          "calls": [
+            "','.join",
+            "(out / 'delivery.json').exists",
+            "(out / 'delivery.json').stat",
+            "(out / 'final.json').exists",
+            "(out / 'final.json').stat",
+            "(out / 'operations.jsonl').read_bytes",
+            "(out / 'operations.jsonl').read_bytes()[:trace['trusted_bytes']].splitlines",
+            "(out / 'trial_states.bin').read_bytes",
+            "(out / name).stat",
+            "(root / 'external_observation.json').exists",
+            "(root / 'external_observation.json').stat",
+            "A.verify_worker",
+            "Counter",
+            "G.state_counts",
+            "Path",
+            "T.inspect",
+            "T.read_prefix",
+            "V.cross_pair",
+            "V.nonnegative",
+            "V.require",
+            "_claim",
+            "_control",
+            "_cost",
+            "_identity",
+            "_read",
+            "_same",
+            "_sha",
+            "all",
+            "b['observed'].get",
+            "b['reserved'].get",
+            "bool",
+            "budget.values",
+            "bykey.get",
+            "cost.update",
+            "dict",
+            "enumerate",
+            "ev['next_indices'].values",
+            "gaps.append",
+            "history['ack_bytes'].get",
+            "history['reserved_bytes'].get",
+            "identity",
+            "inodes.add",
+            "isinstance",
+            "len",
+            "list",
+            "out.iterdir",
+            "p.is_file",
+            "p.is_symlink",
+            "p.stat",
+            "pairs.append",
+            "path.exists",
+            "r['parent_messages'].get",
+            "r['physical_files_before_final'].items",
+            "r['states'].values",
+            "result.update",
+            "set",
+            "str",
+            "sum",
+            "t['key'].split",
+            "x.items",
+            "zip"
+          ]
+        }
+      ]
+    },
+    "contract.py": {
+      "sha256": "616eb794be6d1782b62888b06d6209044da381271ee6bda9f9866612ce2143b7",
+      "imports": [
+        "from pathlib import Path",
+        "from copy import deepcopy",
+        "import sys",
+        "from .. import g6_w2c_b3_bundle_contract_v1 as OLD",
+        "from ..g6_w2c_b3_api_binding_v1 import static as S",
+        "from .. import g6_w2c_b3_parallel_admission as A"
+      ],
+      "functions": [
+        {
+          "name": "endpoint_binding",
+          "line": 23,
+          "signature": "pins",
+          "calls": [
+            "dict",
+            "p.startswith",
+            "pins.items"
+          ]
+        },
+        {
+          "name": "candidate",
+          "line": 35,
+          "signature": "root",
+          "calls": [
+            "(root / directory).glob",
+            "(root / p).read_bytes",
+            "(root / path).read_bytes",
+            "A.manifest",
+            "FIXED_PINS.items",
+            "OLD.candidate",
+            "Path",
+            "Path(root).resolve",
+            "S.need",
+            "S.runtime",
+            "S.sha",
+            "c.update",
+            "deepcopy",
+            "dict",
+            "digest",
+            "endpoint_binding",
+            "p.relative_to",
+            "paths.update",
+            "set",
+            "sorted",
+            "str"
+          ]
+        },
+        {
+          "name": "manifest",
+          "line": 53,
+          "signature": "c, scope, *, port_variant='PORT_V1', port_faults=None, **kw",
+          "calls": [
+            "OLD.manifest",
+            "ValueError",
+            "digest",
+            "m.update"
+          ]
+        },
+        {
+          "name": "guard",
+          "line": 60,
+          "signature": "c, m",
+          "calls": [
+            "(Path(c['runtime_root']) / path).read_bytes",
+            "CLOSED.items",
+            "Path",
+            "S.need",
+            "S.sha",
+            "any",
+            "c['scientific_reference']['input_pins'].items",
+            "candidate",
+            "digest",
+            "encoded",
+            "m.get",
+            "m['global_scope'].startswith",
+            "manifest",
+            "n.rsplit",
+            "pins_loaded",
+            "tuple",
+            "type"
+          ]
+        },
+        {
+          "name": "pins_loaded",
+          "line": 80,
+          "signature": "c",
+          "calls": [
+            "Path",
+            "Path(module.__file__).resolve",
+            "getattr",
+            "list",
+            "name.replace",
+            "name.startswith",
+            "sys.modules.items"
+          ]
+        }
+      ]
+    },
+    "bridge.py": {
+      "sha256": "d201cfe9e9c0abf01951d734c3fae1c3e46421f3c4e5527b59893bc02cafc7a6",
+      "imports": [
+        "from collections import Counter",
+        "from dataclasses import replace",
+        "from copy import deepcopy",
+        "from hashlib import sha256",
+        "from pathlib import Path",
+        "import json, os, resource, sys, time",
+        "from .. import g6_w2c_b3_pilot_storage_v2 as R",
+        "from . import contract as K",
+        "from . import adapter as F",
+        "from ..g6_w2c_b3_bundle_store_v1 import FakeStore, Denied, private"
+      ],
+      "functions": [
+        {
+          "name": "production_entry",
+          "line": 20,
+          "signature": "*args, **kwargs",
+          "calls": [
+            "Denied"
+          ]
+        },
+        {
+          "name": "validate",
+          "line": 26,
+          "signature": "c, m",
+          "calls": [
+            "Denied",
+            "F.PORT.install_guard",
+            "K.guard",
+            "Path",
+            "Path(__file__).resolve",
+            "str"
+          ]
+        },
+        {
+          "name": "_bytes",
+          "line": 80,
+          "signature": "value",
+          "calls": [
+            "P.safe_json"
+          ]
+        },
+        {
+          "name": "_save",
+          "line": 82,
+          "signature": "out, name, value, ctl, fault, *, slot=None, pre_reserved=False",
+          "calls": [
+            "(out / name).open",
+            "D.clock",
+            "D.delta",
+            "D.need",
+            "_bytes",
+            "ctl.budget.reserve",
+            "ctl.budget.wrote",
+            "f.close",
+            "f.flush",
+            "f.write",
+            "fault",
+            "len",
+            "memoryview",
+            "sha256",
+            "sha256(data).hexdigest",
+            "type"
+          ]
+        },
+        {
+          "name": "_condition",
+          "line": 102,
+          "signature": "ctl, mode, c, m, root, factory, fault",
+          "calls": [
+            "D.clock",
+            "K.digest",
+            "P.validate_success",
+            "_save",
+            "all",
+            "ctl.condition_event",
+            "ctl.ctx.Barrier",
+            "ctl.run_phase",
+            "ctl.states.mapping[t['offset']:t['offset'] + 2 * t['n']].count",
+            "ctl.stop",
+            "deepcopy",
+            "dict",
+            "len",
+            "m['condition_faults'].get",
+            "range",
+            "replace",
+            "repr",
+            "resource.getrusage",
+            "round",
+            "sum",
+            "tuple",
+            "validate"
+          ]
+        },
+        {
+          "name": "execute_artificial",
+          "line": 129,
+          "signature": "c, m, *, root, store, storage_fault=None",
+          "calls": [
+            "(out / 'final.json').exists",
+            "(out / 'final.json').read_bytes",
+            "(out / 'summary.json').read_bytes",
+            "(out / 'trial_states.bin').read_bytes",
+            "A.manifest",
+            "Coordinator",
+            "D.clock",
+            "D.delta",
+            "Denied",
+            "F.ArtificialFactory",
+            "Fault",
+            "K.digest",
+            "P.Settings",
+            "P.own_io",
+            "P.own_io().items",
+            "R.close_storage",
+            "_condition",
+            "_save",
+            "all",
+            "budget['unknown_credit'].values",
+            "conditions.append",
+            "ctl.budget.reserve",
+            "ctl.report",
+            "ctl.run_phase",
+            "ctl.stop",
+            "dict",
+            "io.get",
+            "late_errors.append",
+            "len",
+            "list",
+            "n.rsplit",
+            "out.iterdir",
+            "out.mkdir",
+            "p.is_file",
+            "p.read_bytes",
+            "p.stat",
+            "private",
+            "projected.get",
+            "report.update",
+            "repr",
+            "resource.getrusage",
+            "round",
+            "sha256",
+            "sha256((out / 'final.json').read_bytes()).hexdigest",
+            "sha256((out / 'summary.json').read_bytes()).hexdigest",
+            "sha256((out / 'trial_states.bin').read_bytes()).hexdigest",
+            "sha256(p.read_bytes()).hexdigest",
+            "store.claim",
+            "store.snapshot",
+            "store.stop",
+            "store_errors.append",
+            "str",
+            "sum",
+            "type",
+            "validate"
+          ]
+        },
+        {
+          "name": "__call__",
+          "line": 22,
+          "signature": "self, *args, **kwargs",
+          "calls": [
+            "production_entry"
+          ]
+        },
+        {
+          "name": "__init__",
+          "line": 35,
+          "signature": "self, spec=None",
+          "calls": []
+        },
+        {
+          "name": "__call__",
+          "line": 36,
+          "signature": "self, point, **context",
+          "calls": [
+            "OSError",
+            "Partial",
+            "any",
+            "context.get",
+            "ctl.current.values",
+            "dict",
+            "self.spec.get",
+            "self.spec.get('match', {}).items"
+          ]
+        },
+        {
+          "name": "__init__",
+          "line": 49,
+          "signature": "self, file",
+          "calls": []
+        },
+        {
+          "name": "write",
+          "line": 50,
+          "signature": "self, data",
+          "calls": [
+            "OSError",
+            "self.file.write"
+          ]
+        },
+        {
+          "name": "__getattr__",
+          "line": 53,
+          "signature": "self, n",
+          "calls": [
+            "getattr"
+          ]
+        },
+        {
+          "name": "__init__",
+          "line": 57,
+          "signature": "self, *args, manifest, **kwargs",
+          "calls": [
+            "super",
+            "super().__init__"
+          ]
+        },
+        {
+          "name": "_record",
+          "line": 60,
+          "signature": "self, op, **fields",
+          "calls": [
+            "fields.get",
+            "key.split",
+            "next",
+            "self._local_index",
+            "super",
+            "super()._record"
+          ]
+        },
+        {
+          "name": "_local_index",
+          "line": 66,
+          "signature": "self, key, tid",
+          "calls": [
+            "int",
+            "next",
+            "tid.rsplit"
+          ]
+        },
+        {
+          "name": "run_phase",
+          "line": 68,
+          "signature": "self, tasks, *args, drain_only=False, **kwargs",
+          "calls": [
+            "dict",
+            "self._record",
+            "self.log",
+            "super",
+            "super().run_phase"
+          ]
+        },
+        {
+          "name": "condition_event",
+          "line": 75,
+          "signature": "self, event, **fields",
+          "calls": [
+            "dict",
+            "self._record",
+            "self.log"
+          ]
+        },
+        {
+          "name": "post_notify",
+          "line": 77,
+          "signature": "self, op, **fields",
+          "calls": [
+            "dict",
+            "self.post_close_credits.append"
+          ]
+        }
+      ]
+    },
+    "__init__.py": {
+      "sha256": "513e96fa14aaef3f2b67e47c48ebc207cd40ed9f32c1de34573bafb5cf50ab7a",
+      "imports": [],
+      "functions": []
+    },
+    "offline.py": {
+      "sha256": "c1b138838a73646fe20bbff7287cd8a4d2b5e39516ca8a839f057aa111aa3ea4",
+      "imports": [
+        "from collections import Counter",
+        "from fractions import Fraction as F",
+        "from hashlib import sha256",
+        "from pathlib import Path",
+        "import json, sys",
+        "from . import storage_consumer as B",
+        "from .. import g6_w2c_b3_offline_result as V"
+      ],
+      "functions": [
+        {
+          "name": "surrogate",
+          "line": 15,
+          "signature": "arm, axis, counter, variant",
+          "calls": [
+            "F",
+            "counter.to_bytes",
+            "dict",
+            "domain.encode",
+            "draw",
+            "draws.append",
+            "hex",
+            "int.from_bytes",
+            "reversed",
+            "sha256",
+            "sha256(domain.encode() + counter.to_bytes(8, 'big')).digest",
+            "tuple"
+          ]
+        },
+        {
+          "name": "verify",
+          "line": 39,
+          "signature": "root, trusted, source_root=None",
+          "calls": [
+            "'/'.join",
+            "(out / 'final.json').exists",
+            "(out / f).exists",
+            "(out / f).read_bytes",
+            "(out / f).read_bytes().strip",
+            "B.T.read_prefix",
+            "B._identity",
+            "B._read",
+            "B.plan",
+            "B.verify_storage",
+            "Counter",
+            "Path",
+            "V.Reader",
+            "V.canonical",
+            "V.canonical(dict(dispatch=dispatch, consumption=consumption, event_hash=evhash)).encode",
+            "V.event_hash",
+            "V.identity",
+            "V.require",
+            "c['source_pins'].items",
+            "dict",
+            "digest.hexdigest",
+            "digest.update",
+            "domains.add",
+            "gaps.append",
+            "int",
+            "isinstance",
+            "len",
+            "n.rsplit",
+            "path.exists",
+            "payload.get",
+            "result.update",
+            "rows.get",
+            "set",
+            "sha256",
+            "str",
+            "surrogate",
+            "tid.split"
+          ]
+        },
+        {
+          "name": "draw",
+          "line": 19,
+          "signature": "",
+          "calls": [
+            "counter.to_bytes",
+            "dict",
+            "domain.encode",
+            "draws.append",
+            "hex",
+            "int.from_bytes",
+            "sha256",
+            "sha256(domain.encode() + counter.to_bytes(8, 'big')).digest"
+          ]
+        }
+      ]
+    }
+  },
+  "source_execution": false
+}

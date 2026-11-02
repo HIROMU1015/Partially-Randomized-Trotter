@@ -1,0 +1,11 @@
+# 2026-10-20 PF qモデル比較準備の記録
+
+ユーザーが基点2619688bの788軸を対象に、保存qモデル/予測との対応作成と公開情報検査を指示した。数値誤差/比率、モデル予測、fit、compile、費用再会計は今回未承認。
+
+[報告書](../track_a_pf_q_model_comparison_preparation_20261020.md)と専用packetを追加。保存予測との対応450軸（H6 192/H8 258）はruntime/profileと元runの制約を残して条件付きとし、無条件比較可能0。予測未保存78軸と同一入力系列モデルなし260軸は別理由の比較不能。既存学習/検証点のroleを保持し、新788軸とのID重複0を確認した。初回572欠測・H2 20軸旧signal・旧profile待ち48軸は保全。
+
+H8のmodel SHAがcanonical JSON hashであることを元contractから確認した。原ファイルSHAと異なるため、文字列転記用parse_float=strの表現ではcanonical SHAを作らず、元JSON数値型で定義どおりhashだけ照合する。これは新モデル予測ではない。保存予測450個は元出典locatorと文字列一致を確認した。
+
+GitHubの基点と既承認branchはpublic。ユーザーが承認した累積80パスと差分が一致し、gzip展開を含むscoped検査で秘密情報pattern/非空認証fieldは検出されなかった。runtime path/hashと科学実行承認metadataの開示は記録し、絶対的な秘密不存在や全履歴監査は主張しない。
+
+新12構造/人工検査と固定入力再転記checkを実施。科学計算0、旧SOURCE/raw/grant/ledger/marker/STOP不変。新成果物はlocal commitのみで公開未承認。次担当ユーザーが条件付き450軸の定量比較、別途78軸のモデル評価範囲とdomain方針、今回の公開範囲を判断する。Codexは明示承認後のみ該当範囲へ進む。mandatory STOP。

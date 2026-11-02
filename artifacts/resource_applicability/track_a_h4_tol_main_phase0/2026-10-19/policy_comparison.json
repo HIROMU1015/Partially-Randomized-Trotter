@@ -1,0 +1,137 @@
+{
+  "differences": [
+    {
+      "item": "SCF/integrals",
+      "status": "ALIGNED_SOURCE_AND_SAVED_SETTINGS",
+      "note": "RHF, 1e-9/50, no symmetry, canonical MO helper, spin mapping and 1/2 convention agree"
+    },
+    {
+      "item": "DF decomposition",
+      "status": "ALIGNED_POLICY",
+      "note": "OpenFermion low_rank_two_body_decomposition; threshold 1e-8; no final rank; retain generation order and signed coefficients; cutoff0"
+    },
+    {
+      "item": "weighted Hermitian projection",
+      "status": "ALIGNED_DEFINITION",
+      "note": "same weighted triangle inequality; full-Fock N=8/12/16; engineering decision 9.9e-11; no interval certificate"
+    },
+    {
+      "item": "saved-state solver",
+      "status": "DECLARED_NUMERICAL_IMPLEMENTATION_DIFFERENCE",
+      "note": "H4 dense eigh sector36; H6/H8 eigsh SA with HF initial state; same lowest-sector-state target and canonical phase; preserve frozen states"
+    },
+    {
+      "item": "normalization/residual gates",
+      "status": "DECLARED_NUMERICAL_IMPLEMENTATION_DIFFERENCE",
+      "note": "H4 uses normalized eigh vector/residual1e-10; H6/H8 one binary64 normalization and absolute+relative residual gate; no re-solve authorized"
+    },
+    {
+      "item": "compiler profile",
+      "status": "DIFFERENT_LINEAGE_IDENTIFIERS",
+      "note": "same declared Qiskit1.3.0/rz-sx-x-cx/opt1/seed17; H8 historical profile identifier differs; old binary outputs not certified identical"
+    },
+    {
+      "item": "candidate search and cost evidence",
+      "status": "DIFFERENT_REGISTERED_DOMAINS",
+      "note": "H4 proposed D190/A50; H6/H8 A16 and strengthened PF domains differ and include model evidence; no pure size-scaling attribution"
+    },
+    {
+      "item": "new common-protocol input regeneration",
+      "status": "NOT_AUTHORIZED_OR_NECESSARY_FOR_SAVED_INPUT_REUSE",
+      "note": "Any decision to require identical solver implementations or change saved inputs is a separate scientific approval; no silent normalization/projection change"
+    }
+  ],
+  "H6_H8_integral_convention": "same saved convention and original source helpers",
+  "state_solver_policy_identical": false,
+  "saved_inputs_reused": true,
+  "numerical_policy_evidence_sha256": "abf29e6b54c90fbcc44a59a944cc6bcc0d9b5441f7a5fdb47d8fea1a18fe6267",
+  "source_provenance": [
+    {
+      "SOURCE": "fc6bd039dc7171d5674ac04f0b3ad427f1b6495b",
+      "repo_path": "scripts/pr_cost_native.py",
+      "sha256": "5f14364af9904914c7ee599b72a87caca2dece3c7d67d3d946ec577fb20b14b4"
+    },
+    {
+      "SOURCE": "fc6bd039dc7171d5674ac04f0b3ad427f1b6495b",
+      "repo_path": "scripts/pr_cost_contract.py",
+      "sha256": "be0b6105a9fc406f980b88e900770c4dde8f421923a00cd63176cb1b427fb519"
+    },
+    {
+      "SOURCE": "fc6bd039dc7171d5674ac04f0b3ad427f1b6495b",
+      "repo_path": "src/trotterlib/pr_cost_integration.py",
+      "sha256": "26fdc184385c0a8136ac91355d92430b795c40210bfddff64d8c4cf39cb762d7"
+    },
+    {
+      "SOURCE": "fc6bd039dc7171d5674ac04f0b3ad427f1b6495b",
+      "repo_path": "references/pr_cost_integration_evidence_v1.json",
+      "sha256": "cb6d21cee00091e8ad1c17676696fb4776fb2576a82c3694e340759e5af0aa57"
+    },
+    {
+      "SOURCE": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "repo_path": "scripts/h8_pr_confirmation.py",
+      "sha256": "de45b22f85f8d5bd22208220ea19f75699ce89ea5011c64ec352ccb0af36bde5"
+    },
+    {
+      "SOURCE": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "repo_path": "scripts/h8_pr_confirmation_parallel.py",
+      "sha256": "46eb3489155479f71d616105b0fe24eb129ad8d351edfadbd180d46f93efff34"
+    },
+    {
+      "SOURCE": "67312f3195aede26e8ba4f5727d89c236772f82e",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_input_generation_port_v1.py",
+      "sha256": "bb2cde6d0b076672749501fd50d05d6e427f0ab2687aed2331dd26eb7e2ac0f0"
+    },
+    {
+      "SOURCE": "67312f3195aede26e8ba4f5727d89c236772f82e",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_input_generation_contract_v1.py",
+      "sha256": "24e45f35d62cd73b8fca206f161ad7d5807c6f74cb41e77b85a4d8f6edc0e01e"
+    },
+    {
+      "SOURCE": "ff24de4bc410234472a416186b773fc7875ae373",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_df_diagnostic_port_v1.py",
+      "sha256": "6dff5c7a60fc83a070dbb0b4c290a38ca61497183c4e2a54ccdd891ac2379b4e"
+    },
+    {
+      "SOURCE": "ff24de4bc410234472a416186b773fc7875ae373",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_df_diagnostic_contract_v1.py",
+      "sha256": "4e27cc3b7693b61889d6165a48c5cae2fad6664005892124ac953fe537fe0213"
+    },
+    {
+      "SOURCE": "d5900669c9e58215b19c7addfc5760ff63a2ed00",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_input.py",
+      "sha256": "094d3e2bf96a3383ac008cb0a7ad469dbead8616d25b00e7fab695de4aca6774"
+    },
+    {
+      "SOURCE": "d5900669c9e58215b19c7addfc5760ff63a2ed00",
+      "repo_path": "src/trottertracks/resource_applicability/h48_preflight_contract_v1.py",
+      "sha256": "1c15d3d52c7f8172fe3c943941b081f07b9784dd77093181aa4704e53b29475f"
+    },
+    {
+      "SOURCE": "2ff3fc9f6e1091cbd9915507acfa74112c7d3055",
+      "repo_path": "src/trottertracks/resource_applicability/h8_saved_projection_v1.py",
+      "sha256": "33c3ea82276faf9df03d7d2782419bdb89b4b5211cf292abe5bce683a34a451f"
+    },
+    {
+      "SOURCE": "2ff3fc9f6e1091cbd9915507acfa74112c7d3055",
+      "repo_path": "src/trottertracks/resource_applicability/h8_saved_state_port_v1.py",
+      "sha256": "0a167a311a88f25a51148a862feebb01631526d2dbc9a0b4710863fd5196593f"
+    },
+    {
+      "SOURCE": "f37005f01b2be38c5993d6e82df91abe9c643d21",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_saved_completion_port_v2.py",
+      "sha256": "58950a1f02a7a2ea9948fcd69a6f4a3a2585999d40000545cadebf8b78a00a58"
+    },
+    {
+      "SOURCE": "f37005f01b2be38c5993d6e82df91abe9c643d21",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_saved_completion_contract_v2.py",
+      "sha256": "7ecf715d1039f85071d51139aff5fb9533f0c9f339c08fd25e1ccee73cd8b7af"
+    },
+    {
+      "SOURCE": "f37005f01b2be38c5993d6e82df91abe9c643d21",
+      "repo_path": "src/trottertracks/resource_applicability/ax2b_h6_weighted_projection_v1.py",
+      "sha256": "45fc873057a4d015fd3ff63b1f3cafdf7f629a780adbc4efb56f7c10dc122164"
+    }
+  ],
+  "scientific_input_changes_performed": false,
+  "new_numerical_analysis": false
+}

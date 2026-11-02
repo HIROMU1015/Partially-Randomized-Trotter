@@ -1,0 +1,10 @@
+# 不一致と解決履歴
+
+API測定SHAは指示文と原inventoryが不一致。原資料の`78c571005fe766c61b32dc867e006531099ff608`を採用しexact fetchした。
+当初、利用者§3Eは8module静的限定、Producer guardはcore6module対象で、人工runtimeはcost preparation helperへ依存していた。
+独立guardはhelperをload前に遮断し保留。その後ユーザーがdriver/helperの人工用途のみを明示許可し、core6禁止を維持して残試験を完了した。
+旧判断を*_prior_scope.jsonとimport_scope_finding.mdへ保持する。固定Producerや既存STOPの変更ではない。
+
+回帰一時runtimeの不足fixtureは原Git blobから補い、最終107PASS。途中の5ERRORを保持した。
+保存人工22case/20mutationのProducer結論は独立oracleでも一致。未解決の人工技術不整合は0。
+物理host独立性、実科学law/live型/atan保証/科学費用、real authorityは未確立。

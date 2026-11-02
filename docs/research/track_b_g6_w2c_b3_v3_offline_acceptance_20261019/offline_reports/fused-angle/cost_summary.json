@@ -1,0 +1,1193 @@
+{
+  "schema": "b3_v3_offline_cost_v1",
+  "status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+  "execution_condition": {
+    "mode": "P1",
+    "workers": 8,
+    "inflight_cap": 2,
+    "codec": "fused",
+    "workload": "light",
+    "profile_n": 16,
+    "flush_rows": 4096
+  },
+  "serial_condition_is_different": true,
+  "pairs": [
+    {
+      "task_key": "correctness_baseline_ordinary_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "ordinary",
+      "layer": "A",
+      "worker_pid": 3699367,
+      "outer_cpu_wall_ns": [
+        24114991,
+        25951739
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          21354690,
+          23056138
+        ],
+        "outer_total_ns": [
+          24114991,
+          25951739
+        ],
+        "residual_ns": [
+          2760301,
+          2895601
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20211408,
+            "wall_ns": 20212081
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39770,
+            "wall_ns": 39760
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 72680,
+            "wall_ns": 71829
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 46920,
+            "wall_ns": 46940
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 273351,
+            "wall_ns": 804276
+          },
+          "correctness.event_invariants": {
+            "calls": 1,
+            "cpu_ns": 107770,
+            "wall_ns": 108120
+          },
+          "online.EVENT.evidence": {
+            "calls": 1,
+            "cpu_ns": 53590,
+            "wall_ns": 53680
+          },
+          "save.serialize": {
+            "calls": 3,
+            "cpu_ns": 126310,
+            "wall_ns": 127090
+          },
+          "save.hash": {
+            "calls": 3,
+            "cpu_ns": 47030,
+            "wall_ns": 47130
+          },
+          "save.file_hash": {
+            "calls": 3,
+            "cpu_ns": 11570,
+            "wall_ns": 11320
+          },
+          "save.write": {
+            "calls": 3,
+            "cpu_ns": 197520,
+            "wall_ns": 1140625
+          },
+          "online.ZERO_R.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 83170,
+            "wall_ns": 238278
+          },
+          "online.ZERO_R.evidence": {
+            "calls": 1,
+            "cpu_ns": 24790,
+            "wall_ns": 24880
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 49121,
+            "wall_ns": 120529
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 3940,
+            "wall_ns": 3860
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 5750,
+            "wall_ns": 5740
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20370778,
+        20370610
+      ],
+      "online_cpu_wall_ns": [
+        484022,
+        1241643
+      ],
+      "generator_audit_cpu_wall_ns": [
+        405642,
+        1163083
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": [
+        78380,
+        78560
+      ],
+      "output_cpu_wall_ns": [
+        392120,
+        1335765
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 9,
+        "cpu_ns": 344372,
+        "wall_ns": 2185578,
+        "coalesced_write_acks": 3
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226611,
+        "wchar": 4423,
+        "syscr": 180,
+        "syscw": 12,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 3374,
+      "output_rows": 3,
+      "logical_completed": 2,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_ordinary_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "ordinary",
+      "layer": "B",
+      "worker_pid": 3699368,
+      "outer_cpu_wall_ns": [
+        23766511,
+        25655451
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          20972388,
+          22675499
+        ],
+        "outer_total_ns": [
+          23766511,
+          25655451
+        ],
+        "residual_ns": [
+          2794123,
+          2979952
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19858418,
+            "wall_ns": 19858373
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39930,
+            "wall_ns": 39930
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 70080,
+            "wall_ns": 69460
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 47030,
+            "wall_ns": 47030
+          },
+          "online.EVENT.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 446940,
+            "wall_ns": 1008454
+          },
+          "correctness.event_invariants": {
+            "calls": 1,
+            "cpu_ns": 210250,
+            "wall_ns": 210769
+          },
+          "online.EVENT.angle_and_requery": {
+            "calls": 1,
+            "cpu_ns": 102990,
+            "wall_ns": 954235
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 82140,
+            "wall_ns": 82160
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 22190,
+            "wall_ns": 22220
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 5810,
+            "wall_ns": 5330
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 76050,
+            "wall_ns": 367068
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 4370,
+            "wall_ns": 4320
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 6190,
+            "wall_ns": 6150
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20015458,
+        20014793
+      ],
+      "online_cpu_wall_ns": [
+        549930,
+        1962689
+      ],
+      "generator_audit_cpu_wall_ns": [
+        446940,
+        1008454
+      ],
+      "angle_requery_cpu_wall_ns": [
+        102990,
+        954235
+      ],
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        196750,
+        487248
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 5,
+        "cpu_ns": 331820,
+        "wall_ns": 2225917,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226467,
+        "wchar": 2621,
+        "syscr": 172,
+        "syscw": 6,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1909,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_partial_return_tail_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "partial_return_tail",
+      "layer": "A",
+      "worker_pid": 3699369,
+      "outer_cpu_wall_ns": [
+        23982991,
+        44622928
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          21152570,
+          41679833
+        ],
+        "outer_total_ns": [
+          23982991,
+          44622928
+        ],
+        "residual_ns": [
+          2830421,
+          2943095
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20530059,
+            "wall_ns": 20530359
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 41680,
+            "wall_ns": 41640
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 76260,
+            "wall_ns": 75830
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 47000,
+            "wall_ns": 47059
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 210171,
+            "wall_ns": 20649558
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 75010,
+            "wall_ns": 74619
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 24560,
+            "wall_ns": 24700
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 6550,
+            "wall_ns": 6420
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 125900,
+            "wall_ns": 214389
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 5790,
+            "wall_ns": 5720
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 9590,
+            "wall_ns": 9539
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20694999,
+        20694888
+      ],
+      "online_cpu_wall_ns": [
+        210171,
+        20649558
+      ],
+      "generator_audit_cpu_wall_ns": [
+        210171,
+        20649558
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        247400,
+        335387
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 3,
+        "cpu_ns": 272071,
+        "wall_ns": 20914207,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32010240
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226460,
+        "wchar": 1894,
+        "syscr": 168,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1505,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_partial_return_tail_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "partial_return_tail",
+      "layer": "B",
+      "worker_pid": 3699370,
+      "outer_cpu_wall_ns": [
+        23435649,
+        45767892
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          20631268,
+          42846888
+        ],
+        "outer_total_ns": [
+          23435649,
+          45767892
+        ],
+        "residual_ns": [
+          2804381,
+          2921004
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20030398,
+            "wall_ns": 20030512
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 39040,
+            "wall_ns": 39140
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 71830,
+            "wall_ns": 71589
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 47170,
+            "wall_ns": 47190
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 216120,
+            "wall_ns": 22272659
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 59110,
+            "wall_ns": 59080
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 20710,
+            "wall_ns": 20500
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 5620,
+            "wall_ns": 5490
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 107840,
+            "wall_ns": 267598
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 11380,
+            "wall_ns": 11180
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 22050,
+            "wall_ns": 21950
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20188438,
+        20188431
+      ],
+      "online_cpu_wall_ns": [
+        216120,
+        22272659
+      ],
+      "generator_audit_cpu_wall_ns": [
+        216120,
+        22272659
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        226710,
+        385798
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 3,
+        "cpu_ns": 335220,
+        "wall_ns": 22671757,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226460,
+        "wchar": 1894,
+        "syscr": 168,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1505,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_closed_P3_tail_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "closed_P3_tail",
+      "layer": "A",
+      "worker_pid": 3699371,
+      "outer_cpu_wall_ns": [
+        23928729,
+        72691766
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          21102248,
+          43904262
+        ],
+        "outer_total_ns": [
+          23928729,
+          72691766
+        ],
+        "residual_ns": [
+          2826481,
+          28787504
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20193878,
+            "wall_ns": 20193850
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 40060,
+            "wall_ns": 40040
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 70580,
+            "wall_ns": 70180
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 47100,
+            "wall_ns": 47049
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 281980,
+            "wall_ns": 22757027
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 115440,
+            "wall_ns": 115330
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 43810,
+            "wall_ns": 43869
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 12010,
+            "wall_ns": 11750
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 276950,
+            "wall_ns": 605467
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 8640,
+            "wall_ns": 8290
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 11800,
+            "wall_ns": 11410
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20351618,
+        20351119
+      ],
+      "online_cpu_wall_ns": [
+        281980,
+        22757027
+      ],
+      "generator_audit_cpu_wall_ns": [
+        281980,
+        22757027
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        468650,
+        796116
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 3,
+        "cpu_ns": 439800,
+        "wall_ns": 49210743,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32251904
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226460,
+        "wchar": 1879,
+        "syscr": 168,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1500,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_closed_P3_tail_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "closed_P3_tail",
+      "layer": "B",
+      "worker_pid": 3699372,
+      "outer_cpu_wall_ns": [
+        24178350,
+        74146708
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          21284909,
+          44902997
+        ],
+        "outer_total_ns": [
+          24178350,
+          74146708
+        ],
+        "residual_ns": [
+          2893441,
+          29243711
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20317729,
+            "wall_ns": 20318460
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 40590,
+            "wall_ns": 40440
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 72710,
+            "wall_ns": 72210
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 46530,
+            "wall_ns": 46540
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 211930,
+            "wall_ns": 23601702
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 78970,
+            "wall_ns": 78780
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 25720,
+            "wall_ns": 25740
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 7130,
+            "wall_ns": 6840
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 456040,
+            "wall_ns": 685386
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 13180,
+            "wall_ns": 12550
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 14380,
+            "wall_ns": 14349
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20477559,
+        20477650
+      ],
+      "online_cpu_wall_ns": [
+        211930,
+        23601702
+      ],
+      "generator_audit_cpu_wall_ns": [
+        211930,
+        23601702
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        595420,
+        823645
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 3,
+        "cpu_ns": 361480,
+        "wall_ns": 50335008,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226460,
+        "wchar": 1879,
+        "syscr": 168,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1500,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_full_return_A",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "full_return",
+      "layer": "A",
+      "worker_pid": 3699373,
+      "outer_cpu_wall_ns": [
+        23116439,
+        71472493
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          20298438,
+          43077686
+        ],
+        "outer_total_ns": [
+          23116439,
+          71472493
+        ],
+        "residual_ns": [
+          2818001,
+          28394807
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 19632898,
+            "wall_ns": 19633294
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 42350,
+            "wall_ns": 42370
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 71250,
+            "wall_ns": 70709
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 47180,
+            "wall_ns": 47210
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 227790,
+            "wall_ns": 22823446
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 76760,
+            "wall_ns": 76999
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 25640,
+            "wall_ns": 25980
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 7600,
+            "wall_ns": 7340
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 151510,
+            "wall_ns": 335178
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 5640,
+            "wall_ns": 5340
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 9820,
+            "wall_ns": 9820
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        19793678,
+        19793583
+      ],
+      "online_cpu_wall_ns": [
+        227790,
+        22823446
+      ],
+      "generator_audit_cpu_wall_ns": [
+        227790,
+        22823446
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        276970,
+        460657
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 3,
+        "cpu_ns": 297430,
+        "wall_ns": 48657136,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226460,
+        "wchar": 1870,
+        "syscr": 168,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1497,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    },
+    {
+      "task_key": "correctness_baseline_full_return_B",
+      "phase": "correctness",
+      "pass_name": "baseline",
+      "arm": "full_return",
+      "layer": "B",
+      "worker_pid": 3699374,
+      "outer_cpu_wall_ns": [
+        24007400,
+        69064146
+      ],
+      "coarse": {
+        "exclusive_sum_ns": [
+          21004539,
+          39913484
+        ],
+        "outer_total_ns": [
+          24007400,
+          69064146
+        ],
+        "residual_ns": [
+          3002861,
+          29150662
+        ],
+        "rows": {
+          "setup.source_check": {
+            "calls": 1,
+            "cpu_ns": 20178569,
+            "wall_ns": 20179630
+          },
+          "setup.constructor_and_preflight": {
+            "calls": 1,
+            "cpu_ns": 45570,
+            "wall_ns": 45730
+          },
+          "setup.share_identity": {
+            "calls": 1,
+            "cpu_ns": 69540,
+            "wall_ns": 69280
+          },
+          "setup.axis_identity": {
+            "calls": 1,
+            "cpu_ns": 46570,
+            "wall_ns": 46549
+          },
+          "online.generator_and_audit": {
+            "calls": 1,
+            "cpu_ns": 297050,
+            "wall_ns": 19172587
+          },
+          "save.serialize": {
+            "calls": 1,
+            "cpu_ns": 112500,
+            "wall_ns": 112429
+          },
+          "save.hash": {
+            "calls": 1,
+            "cpu_ns": 38130,
+            "wall_ns": 38340
+          },
+          "save.file_hash": {
+            "calls": 1,
+            "cpu_ns": 7620,
+            "wall_ns": 7700
+          },
+          "save.write": {
+            "calls": 1,
+            "cpu_ns": 177490,
+            "wall_ns": 210589
+          },
+          "save.flush": {
+            "calls": 1,
+            "cpu_ns": 12940,
+            "wall_ns": 12460
+          },
+          "save.finalize": {
+            "calls": 1,
+            "cpu_ns": 18560,
+            "wall_ns": 18190
+          }
+        }
+      },
+      "fine_alternative": null,
+      "setup_cpu_wall_ns": [
+        20340249,
+        20341189
+      ],
+      "online_cpu_wall_ns": [
+        297050,
+        19172587
+      ],
+      "generator_audit_cpu_wall_ns": [
+        297050,
+        19172587
+      ],
+      "angle_requery_cpu_wall_ns": null,
+      "evidence_cpu_wall_ns": null,
+      "output_cpu_wall_ns": [
+        367240,
+        399708
+      ],
+      "IPC_overlapping_diagnostic": {
+        "calls": 3,
+        "cpu_ns": 448800,
+        "wall_ns": 45512754,
+        "coalesced_write_acks": 1
+      },
+      "memory": {
+        "VmHWM_bytes": 39845888,
+        "VmRSS_bytes": 32256000
+      },
+      "memory_baseline": {
+        "VmHWM_bytes": 31981568,
+        "VmRSS_bytes": 31981568
+      },
+      "io": {
+        "rchar": 9226460,
+        "wchar": 1870,
+        "syscr": 168,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 1497,
+      "output_rows": 1,
+      "logical_completed": 0,
+      "failed_prefix": true,
+      "shared_XY_setup_charged_once": true
+    }
+  ],
+  "comparison_eligible": false,
+  "ranking": null,
+  "unknown_cost_is_zero": false,
+  "receipt_self_cost_ns": null,
+  "coarse_fine_added": false,
+  "pair_CPU_added_to_worker_CPU": false,
+  "IPC_added_to_outer": false,
+  "parent_worker_wall_summed": false,
+  "RSS_sum_is_unique_memory": false,
+  "measurement_boundary": "host including outer STOP",
+  "parent_cpu_ns": 95180307,
+  "all_worker_cpu_ns": 1633366000,
+  "total_cpu_ns": 1728546307,
+  "global_wall_ns": 351727184,
+  "known_pair_cpu_in_worker_total_ns": 190531060,
+  "worker_unattributed_including_lost_pair_cpu_ns": 1442834940,
+  "pair_costs_unknown": [],
+  "parent_launch_diagnostic": {
+    "cpu_ns": 2050561,
+    "wall_ns": 6700035,
+    "count": 8
+  },
+  "coordinator_snapshot_cpu_wall": [
+    11947003,
+    266069029
+  ],
+  "shared_finalization_in_parent": null,
+  "post_stop_worker_CPU_estimate_ns": 293366000,
+  "post_stop_CPU_resolution_ns": 80000000,
+  "peak_sampled_RSS_shared_page_sum": 192417792,
+  "logical_output": {
+    "result": {
+      "reserved": 14287,
+      "ack_observed": 14287,
+      "physical_bytes": 14287,
+      "unknown_credit": 0,
+      "credit_refunded": false
+    },
+    "log": {
+      "reserved": 53330,
+      "ack_observed": 53330,
+      "physical_bytes": 53330,
+      "unknown_credit": 0,
+      "credit_refunded": false
+    }
+  },
+  "state_retained_bytes": 768,
+  "state_cumulative_pwrite_traffic_bytes": 12,
+  "variant": "PF",
+  "measurement_condition": "concurrent_pairs",
+  "measurement_condition_evidence": "fixed SOURCE definition applied to saved settings",
+  "observer_cost_ns": null,
+  "observer_cost_unknown": true,
+  "observer_boundary": "fine partition is an alternative; no isolated cached-observer overhead observation",
+  "host_io": {
+    "rchar": 147014272,
+    "wchar": 247142,
+    "syscr": 5524,
+    "syscw": 199,
+    "read_bytes": 0,
+    "write_bytes": 192512,
+    "cancelled_write_bytes": 0
+  },
+  "execution_io": {
+    "rchar": 146946852,
+    "wchar": 230049,
+    "syscr": 5495,
+    "syscw": 188,
+    "read_bytes": 0,
+    "write_bytes": 163840,
+    "cancelled_write_bytes": 0
+  },
+  "execution_outer": {
+    "parent_cpu_ns": 92699935,
+    "wall_ns": 347834146,
+    "worker_cpu_ns": 1633366000,
+    "io": {
+      "rchar": 146946852,
+      "wchar": 230049,
+      "syscr": 5495,
+      "syscw": 188,
+      "read_bytes": 0,
+      "write_bytes": 163840,
+      "cancelled_write_bytes": 0
+    }
+  },
+  "same_condition_comparison_key": {
+    "mode": "P1",
+    "workers": 8,
+    "inflight_cap": 2,
+    "codec": "fused",
+    "workload": "light",
+    "profile_n": 16,
+    "flush_rows": 4096
+  },
+  "failed_prefix_excluded_from_comparison": true
+}

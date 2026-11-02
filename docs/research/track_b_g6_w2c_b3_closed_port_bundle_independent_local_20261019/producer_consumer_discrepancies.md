@@ -1,0 +1,15 @@
+# 不一致・修正・独立性の限界
+
+直接基点 `5e862a70f2d74defe72dd39205d38c2a4f8ebeaf`。統合公開HEAD `62967269e611b61e73b70abe20e998d9c7eaaf50`、人工測定SOURCE `deade78a19f5b23859d16816d3a7bfb37765dd80`。実施2026-10-19〜20 JST。ARTIFICIAL_ONLY・未採択・実科学入口閉鎖。
+
+公開53/45/追加3と新規人工3件は期待分類に一致。この実施範囲で新しいProducer不具合は確認されなかった。実科学や全障害一般への正しさを意味しない。
+
+独立checkerはProducer/Bridge/scheduler/Admission/self-checkerを通常経路でimportしない。既存独立Bundle verifierの保存・STOP判断を再利用するため、その既知のscope/限界は共有する。人工replayは前回の独立API bitsを再利用し、新たにvariant/dispatch/global identity/trace/state/receipt joinを実装した。別物理hostによる再現は未確立。
+
+独立testの初回worker PID mutation builderが `0x` を壊すhexを作り、保存検査の段階で拒否された。fixtureだけを有効な同幅PID改変へ修正し、保存検査PASS/統合検査REJECTを確認。初回logをdevelopment_diagnosticsへ保存。初回local runtime verifierのPath引数型も新checker内で修正し、local3caseを再検証した。固定Producer SOURCEは変更しない。
+
+今回Producer134の入力は、ローカルで新規実行した正常3件と、公開fault metadata/再配置rawを組み合わせたもの。53件を全て新規Producer実行したという結果ではない。historical metadataを読むtestとfresh rawへself-checkerを適用するtestを区別。最終受入は独立101件の原raw再読で判断した。
+
+co_qualname 3.10/3.12差の原版・補正版は保全し、既存975は3.10原版623＋独立165/57/130として再実行。旧Producer107/73/41やserver134を機械的に加算しない。
+
+NOT_ESTABLISHED/PENDINGは証拠未確認・未接続の状態。不可能性確定NOT_APPLICABLEとは区別する。

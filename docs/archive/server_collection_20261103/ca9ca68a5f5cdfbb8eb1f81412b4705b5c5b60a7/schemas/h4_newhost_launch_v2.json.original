@@ -1,0 +1,444 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "H4 new-host one-shot launch v2",
+  "type": "object",
+  "required": [
+    "plan",
+    "authorization",
+    "review"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "plan": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "stage",
+        "run_id",
+        "source_commit",
+        "source_root",
+        "source_hashes",
+        "source_audit",
+        "environment_profile",
+        "compiler_profile",
+        "input_root",
+        "stop_evidence_root",
+        "stop_evidence_receipt",
+        "output_root",
+        "control_root",
+        "inputs",
+        "generation_freeze_digest",
+        "templates",
+        "contract_plan_fingerprint",
+        "compiler_fingerprint",
+        "environment_fingerprint",
+        "requested_workers",
+        "cpu_proposal",
+        "carry",
+        "caps",
+        "storage",
+        "sealed",
+        "library_cache_profile",
+        "memory_pressure_profile"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "h4-newhost-plan-v2"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source_commit": {
+          "type": "string"
+        },
+        "source_root": {
+          "type": "string"
+        },
+        "source_hashes": {
+          "type": "object"
+        },
+        "source_audit": {
+          "type": "object"
+        },
+        "environment_profile": {
+          "type": "object"
+        },
+        "compiler_profile": {
+          "type": "object"
+        },
+        "input_root": {
+          "type": "string"
+        },
+        "stop_evidence_root": {
+          "type": "string"
+        },
+        "stop_evidence_receipt": {
+          "type": "object"
+        },
+        "output_root": {
+          "type": "string"
+        },
+        "control_root": {
+          "type": "string"
+        },
+        "inputs": {
+          "type": "object"
+        },
+        "generation_freeze_digest": {
+          "type": "string"
+        },
+        "templates": {
+          "type": "array"
+        },
+        "contract_plan_fingerprint": {
+          "type": "string"
+        },
+        "compiler_fingerprint": {
+          "type": "string"
+        },
+        "environment_fingerprint": {
+          "type": "string"
+        },
+        "requested_workers": {
+          "type": "integer"
+        },
+        "cpu_proposal": {
+          "type": "object"
+        },
+        "carry": {
+          "type": "object"
+        },
+        "caps": {
+          "type": "object",
+          "properties": {
+            "actual_invocations": {
+              "type": "integer",
+              "enum": [
+                74784,
+                74804,
+                74805
+              ]
+            },
+            "output_bytes": {
+              "type": "integer",
+              "enum": [
+                10737418240,
+                13958643712,
+                18253611008
+              ]
+            },
+            "driver_AS_RSS": {
+              "type": "integer",
+              "const": 8589934592
+            },
+            "worker_AS_RSS": {
+              "type": "integer",
+              "enum": [
+                8589934592,
+                34359738368
+              ]
+            }
+          }
+        },
+        "storage": {
+          "type": "object"
+        },
+        "sealed": {
+          "type": "boolean"
+        },
+        "library_cache_profile": {
+          "type": "object"
+        },
+        "memory_pressure_profile": {
+          "type": "object"
+        }
+      }
+    },
+    "authorization": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "stage",
+        "run_id",
+        "source_commit",
+        "plan_fingerprint",
+        "approved",
+        "runtime_authorization",
+        "allowed_cpus",
+        "one_shot",
+        "permission",
+        "result_prior",
+        "environment_accepted",
+        "observer_role",
+        "budget_amendment",
+        "output_budget_amendment",
+        "budget_accounting",
+        "recovery_policy",
+        "pressure_amendment"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "h4-newhost-authorization-v2"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source_commit": {
+          "type": "string"
+        },
+        "plan_fingerprint": {
+          "type": "string"
+        },
+        "approved": {
+          "type": "boolean"
+        },
+        "runtime_authorization": {
+          "type": "boolean"
+        },
+        "allowed_cpus": {
+          "type": "array"
+        },
+        "one_shot": {
+          "type": "boolean"
+        },
+        "permission": {
+          "type": "string"
+        },
+        "result_prior": {
+          "type": "boolean"
+        },
+        "environment_accepted": {
+          "type": "boolean"
+        },
+        "observer_role": {
+          "type": "object"
+        },
+        "budget_amendment": {
+          "type": "object"
+        },
+        "output_budget_amendment": {
+          "type": "object",
+          "required": [
+            "approved",
+            "from",
+            "to",
+            "authority_reference"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {
+              "type": "boolean"
+            },
+            "from": {
+              "type": "integer"
+            },
+            "to": {
+              "type": "integer"
+            },
+            "authority_reference": {
+              "type": "string"
+            }
+          },
+          "oneOf": [
+            {
+              "properties": {
+                "from": {
+                  "const": 10737418240
+                },
+                "to": {
+                  "const": 13958643712
+                }
+              }
+            },
+            {
+              "properties": {
+                "from": {
+                  "const": 13958643712
+                },
+                "to": {
+                  "const": 18253611008
+                }
+              }
+            }
+          ]
+        },
+        "budget_accounting": {
+          "type": "object"
+        },
+        "recovery_policy": {
+          "type": "object"
+        },
+        "pressure_amendment": {
+          "type": "object",
+          "required": ["approved", "from_host_stop_percent", "to_host_stop_percent", "profile", "authority"],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {"const": true},
+            "from_host_stop_percent": {"enum": [0.0, 1.0]},
+            "to_host_stop_percent": {"enum": [1.0, 5.0]},
+            "profile": {"type": "object"},
+            "authority": {"type": "object"}
+          },
+          "oneOf": [
+            {"properties": {"from_host_stop_percent": {"const": 0.0}, "to_host_stop_percent": {"const": 1.0}}},
+            {"properties": {"from_host_stop_percent": {"const": 1.0}, "to_host_stop_percent": {"const": 5.0}}}
+          ]
+        },
+        "memory_budget_amendment": {
+          "type": "object",
+          "required": [
+            "approved",
+            "from",
+            "to",
+            "profile",
+            "authority"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "approved": {
+              "const": true
+            },
+            "from": {
+              "type": "integer",
+              "const": 8589934592
+            },
+            "to": {
+              "type": "integer",
+              "const": 34359738368
+            },
+            "profile": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "authority": {
+              "type": "object",
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "stage",
+        "run_id",
+        "source_commit",
+        "plan_fingerprint",
+        "authorization_digest",
+        "approved",
+        "runtime_authorization",
+        "reviewer",
+        "mandatory_stop"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "const": "h4-newhost-review-v2"
+        },
+        "stage": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": "string"
+        },
+        "source_commit": {
+          "type": "string"
+        },
+        "plan_fingerprint": {
+          "type": "string"
+        },
+        "authorization_digest": {
+          "type": "string"
+        },
+        "approved": {
+          "type": "boolean"
+        },
+        "runtime_authorization": {
+          "type": "boolean"
+        },
+        "reviewer": {
+          "type": "string"
+        },
+        "mandatory_stop": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "plan": {
+            "properties": {
+              "caps": {
+                "properties": {
+                  "worker_AS_RSS": {
+                    "const": 34359738368
+                  }
+                },
+                "required": [
+                  "worker_AS_RSS"
+                ]
+              }
+            },
+            "required": [
+              "caps"
+            ]
+          }
+        },
+        "required": [
+          "plan"
+        ]
+      },
+      "then": {
+        "properties": {
+          "authorization": {
+            "required": [
+              "memory_budget_amendment"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

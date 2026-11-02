@@ -1,0 +1,40 @@
+{
+  "summary": {
+    "observations": 3329,
+    "maximum_active_trajectory_workers": 16,
+    "maximum_observed_leader_RSS": 5126832128,
+    "maximum_observed_axis_RSS": 5409017856,
+    "maximum_observed_axis_private": 4802359296,
+    "maximum_observed_leader_PSS": 5036955648,
+    "maximum_observed_threads": 1,
+    "minimum_admission_cpu_slots": 46,
+    "maximum_admission_cpu_slots": 64,
+    "observations_are_samples_not_global_peak_guarantee": true
+  },
+  "native": {
+    "exit_code": 0,
+    "reaped": true,
+    "elapsed": 5835.538211913779,
+    "CPU_seconds": 87888.548436,
+    "peak_RSS_bytes": 5459464192
+  },
+  "memory_forecast": {
+    "private_peak_bytes": 29978099712,
+    "threads_per_axis": 1,
+    "IO_profile_capacity": 64,
+    "includes_two_axes_and_control_oracle": true,
+    "provenance": {
+      "kind": "SAME_FIXED_CANDIDATE_HISTORICAL_NATIVE_RSS_WORKLOAD_FORECAST_NOT_BOUND",
+      "historical_receipt_rows": 49,
+      "max_observed_RSS_bytes": 4996349952,
+      "observed_native_threads": [
+        1
+      ],
+      "formula": "2 * (leader_peak + 2 * axis_peak), each conservatively max historical RSS",
+      "scope": "empirical memory admission only, not hard cap; scientific cost unknown",
+      "IO_model": "one atomic append/write stream per CPU admitted trajectory; files small relative to CPU-heavy native work; read actual PSI dynamically"
+    }
+  },
+  "full_observations_private_sha256": "14ce0fd6fcf3ee749022f4b13da6b609ba1f6de6cb7e3b1c5ea2c7cafa6fa806",
+  "full_observations_private": true
+}

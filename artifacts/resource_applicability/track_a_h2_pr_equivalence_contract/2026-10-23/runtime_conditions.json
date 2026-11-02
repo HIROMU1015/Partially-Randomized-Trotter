@@ -1,0 +1,40 @@
+{
+  "rows": [
+    {
+      "condition": "Qiskit 830 corresponding package files including Rust acceleration",
+      "status": "VERIFIED",
+      "scope": "Byte equality, not complete runtime behavior identity"
+    },
+    {
+      "condition": "Python interpreter bytes",
+      "status": "MISMATCH",
+      "old_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+      "adopted_sha256": "ebc2fae9fa0845b8c1fc09ed10196c0e93c26cb8fbd2a84d64548326ef93209b",
+      "scope": "Known byte mismatch, not scientific inequivalence"
+    },
+    {
+      "condition": "NumPy/SymEngine ABI counterpart bytes",
+      "status": "MISMATCH",
+      "scope": "20 ABI counterpart binaries exist and differ; output sensitivity not measured"
+    },
+    {
+      "condition": "Historical liblzma current bytes",
+      "status": "MISMATCH",
+      "scope": "1 known historical seal drift; no change by this work, no direct cost effect established"
+    },
+    {
+      "condition": "Historical complete worker actual-load observation",
+      "status": "UNRESOLVED",
+      "scope": "SOURCE/version/origin checks and inventory are partial actual-use evidence"
+    },
+    {
+      "condition": "Compiler-relevant output/cost equivalence across runtimes",
+      "status": "UNRESOLVED",
+      "scope": "Qiskit byte equality and old same-runtime guard do not settle cross-ABI output sensitivity"
+    }
+  ],
+  "corresponding_liblzma_ELF_evidence": "runtime_relevance.json",
+  "strict_full_runtime_identity": false,
+  "scientific_inequivalence_from_version_alone": false,
+  "worker_nonload_claimed": false
+}

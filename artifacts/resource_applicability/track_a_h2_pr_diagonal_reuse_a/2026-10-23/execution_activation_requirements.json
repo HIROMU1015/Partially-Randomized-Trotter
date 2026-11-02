@@ -1,0 +1,64 @@
+{
+  "status": "SOURCE_AND_MOCK_PREPARED_REAL_ENTRY_DISABLED",
+  "current_SOURCE": "44cb469279ebcfccb8e261a9d4e3de4ea2f25356",
+  "scientific_calls_authorized": false,
+  "live_grants": 0,
+  "exact_planned_budget": {
+    "bootstrap": 1,
+    "setup": 1,
+    "prepare": 1,
+    "diagonal_primitive_evaluation": 6,
+    "archived_axis_parameter_compare": 134,
+    "sampling": 0,
+    "request_factory": 0,
+    "rte_event": 0,
+    "circuit_build": 0,
+    "lowering": 0,
+    "compile": 0,
+    "transpile": 0,
+    "simulation": 0,
+    "u_N_G": 0,
+    "allowance": 0,
+    "ranking": 0
+  },
+  "direct_scientific_call_reuse": [
+    "h46_new2_native.prepare(ham,1)",
+    "df_trotter.ops.one_body_diagonal_primitives(np.asarray(block.diagonal_eigenvalues),primitive_time)",
+    "df_trotter.ops.df_squared_diagonal_primitives(np.asarray(block.diagonal_eta),block.lam,primitive_time)"
+  ],
+  "internal_calls": {
+    "prepare_calls": 1,
+    "expected_recorded_Gaussian_groups": 6,
+    "one_body_primitive_calls": 3,
+    "fragment_primitive_calls": 3,
+    "primitive_calls_within_prepare": 0,
+    "new_evolution_circuit_builds": 0,
+    "divisions_at_primitive_function_entry": 0,
+    "comparison_is_after_all_six_receipts_serialized": true
+  },
+  "budget_increase": 0,
+  "independent_stage_allowed_inputs": [
+    "sealed Hamiltonian/state snapshot",
+    "snapshot receipt",
+    "fixed scientific SOURCE/runtime",
+    "common preparation receipt only for binding"
+  ],
+  "independent_stage_prohibited_inputs": [
+    "QPY/raw/native/compiled circuit angles",
+    "original cost receipts",
+    "original event payloads",
+    "expected parameter list derived from archived outputs"
+  ],
+  "remaining_before_real_execution": [
+    "Explicit approval for exactly the six primitive calls and 134 metadata comparisons, no other science",
+    "An isolated activation SOURCE must bind a new one-shot approval/unused grant/run_root and full actual runtime closure; no activation capability is issued in this preparation SOURCE",
+    "Recheck fixed input and scientific SOURCE hashes, source-derived time mapping and scientific physical scope",
+    "Adapt only the missing authorization/output plumbing; preserve existing scientific functions and algorithms",
+    "Seal independent producer input manifest and receipt bytes before comparator may read any QPY, then stop on first mismatch"
+  ],
+  "no_scientific_algorithm_reimplementation": true,
+  "old_contracts_and_science_SOURCE_unchanged": true,
+  "alternative_adopted": false,
+  "COMPARE_ready": false,
+  "mandatory_STOP": true
+}

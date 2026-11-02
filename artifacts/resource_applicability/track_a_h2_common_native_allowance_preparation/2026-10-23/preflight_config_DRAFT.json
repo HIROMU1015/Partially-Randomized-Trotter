@@ -1,0 +1,102 @@
+{
+  "schema": "h2_common_preflight_v1",
+  "status": "DRAFT_NOT_EXECUTABLE",
+  "science_authorized": false,
+  "native_adopted": false,
+  "allowance_adopted": false,
+  "physical": {
+    "system": "linear_H2_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 3,
+    "rank_policy": "tol_only_1e-8",
+    "T": 0.8,
+    "epsilon": 0.0005,
+    "alpha_axis": 0.025,
+    "P": 0,
+    "n_qubits": 4,
+    "ancilla": 4,
+    "control": "symmetric_directional",
+    "bias_mode": "USUAL_SIGNED"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "backend": null,
+    "coupling_map": null,
+    "layout": null,
+    "routing": null,
+    "num_processes": 1,
+    "phase_policy": "H2_QISKIT130_SYMBOLIC_ZERO_SCALAR_GUARD_V1"
+  },
+  "candidates": [
+    {
+      "id": "B1_p3_q4_2nd",
+      "method": "FULL",
+      "formula": "2nd",
+      "prefix": 3,
+      "q": 4,
+      "K": null,
+      "r_policy": null,
+      "r_value": null
+    },
+    {
+      "id": "B1_p3_q2_4th",
+      "method": "FULL",
+      "formula": "4th",
+      "prefix": 3,
+      "q": 2,
+      "K": null,
+      "r_policy": null,
+      "r_value": null
+    },
+    {
+      "id": "H2O32_c7ec590a32a859bc",
+      "method": "PR",
+      "formula": "2nd",
+      "prefix": 1,
+      "q": 4,
+      "K": 4,
+      "r_policy": "ABS_TIME_PER_OUTER",
+      "r_value": 32
+    },
+    {
+      "id": "H2O32_8a2ecdd0294ffb74",
+      "method": "PR",
+      "formula": "4th",
+      "prefix": 1,
+      "q": 2,
+      "K": 4,
+      "r_policy": "ABS_TIME_PER_OUTER",
+      "r_value": 32
+    }
+  ],
+  "native_policy": "H2_COMMON_ADJACENT_QR_SIGNED_PIECES_V1_PROPOSED",
+  "allowance_policy": "H2_COMMON_ADAPTIVE_A_RULE_V1_PROPOSED",
+  "production_dispatch_bound": false,
+  "grant": null,
+  "ledger": null,
+  "marker": null,
+  "retry": false,
+  "mandatory_STOP": true,
+  "new_call_counts": null,
+  "missing_inputs": [
+    "shared_reference_policy_and_candidate_rebinding",
+    "PR_independent_path_vector_discrepancies",
+    "PR_both_path_work_action_counts",
+    "PR_corrected_signal_unit_closure",
+    "PR_both_path_full_stage_norm_coverage",
+    "common_Gaussian_preparation_operation_stream_acceptance",
+    "old_Full_PF_compiled_vector_or_new_common_native_correctness",
+    "new_common_runtime_loaded_closure_seal_and_liblzma_resolution",
+    "identity_witness_for_saved_PR_C_reuse",
+    "exact_backend_scientific_call_recipe",
+    "separate_policy_adoption_and_one_shot_execution_approval"
+  ]
+}

@@ -1,0 +1,366 @@
+{
+  "suite": "SavedNegative",
+  "ids": [
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_bool_budget",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_bool_consume",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_caller_bad_hash",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_caller_not_closed",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_duplicate_trial",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_fake_real_grant",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_fake_to_real",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_missing_caller",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_missing_claim",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_missing_raw",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_missing_record",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_missing_report",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_missing_sidecar",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_bool_cpu",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_bool_n",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_duplicate_pair",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_false_STOP",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_false_integration",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_science_GO",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_wrong_budget",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_wrong_seed_digest",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_report_wrong_source",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_resume",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_retry",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_snapshot_refund",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_snapshot_unstop",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_budget",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_claim",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_contract",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_event_hash",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_global_mode",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_port_domain",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_runtime",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_scope",
+    "test_g6_w2c_b3_api_independent_v1.SavedNegative.test_wrong_source_release"
+  ],
+  "run": 35,
+  "PASS": 35,
+  "FAIL": 0,
+  "ERROR": 0,
+  "SKIP": 0,
+  "failures": [],
+  "errors": [],
+  "results": [
+    {
+      "mutation": "bool_budget",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "bool_consume",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:EXACT_CONSUMPTION_TRACE"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "caller_bad_hash",
+      "target": "port_caller.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:CALLER_POST_CLOSE"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "caller_not_closed",
+      "target": "port_caller.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:CALLER_POST_CLOSE"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "duplicate_trial",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:DUPLICATE_PORT_LOCAL_ID"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "fake_real_grant",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "fake_to_real",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "missing_caller",
+      "target": "port_caller.json",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [
+        "MISSING:/tmp/prt-b3-port-bundle-independent-local-20261019/prior_api130/fixtures/SavedNegative/missing_caller/port_caller.json"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "missing_claim",
+      "target": "FAKE_ONLY.sqlite3",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "OperationalError:unable to open database file"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "missing_raw",
+      "target": "ports/S__correctness_baseline_ordinary_A.jsonl",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:F01_PAIR:[\"[Errno 2] No such file or directory: '/tmp/prt-b3-port-bundle-independent-local-20261019/prior_api130/fixtures/SavedNegative/missing_raw/ports/S__correctness_baseline_ordinary_A.jsonl'\"]"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "missing_record",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:MISSING_PORT_RECORD"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "missing_report",
+      "target": "port_report.json",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [
+        "MISSING:/tmp/prt-b3-port-bundle-independent-local-20261019/prior_api130/fixtures/SavedNegative/missing_report/port_report.json"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "missing_sidecar",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [
+        "MISSING:/tmp/prt-b3-port-bundle-independent-local-20261019/prior_api130/fixtures/SavedNegative/missing_sidecar/ports/S__correctness_baseline_ordinary_A.port.json"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_bool_cpu",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:OUTER_CPU:parent_cpu_ns"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_bool_n",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:PROFILE_N"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_duplicate_pair",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:TASK_ORDER_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_false_STOP",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:REPORT_CLOSED:mandatory_STOP"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_false_integration",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:REPORT_CLOSED:global_bundle_equivalence"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_science_GO",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:REPORT_CLOSED:scientific_GO"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_wrong_budget",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:CALL_PLAN"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_wrong_seed_digest",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:REPORT_CANDIDATE_HASH"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "report_wrong_source",
+      "target": "port_report.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:MEASURED_SOURCE"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "resume",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "retry",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "snapshot_refund",
+      "target": "fake_snapshot.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:SNAPSHOT_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "snapshot_unstop",
+      "target": "fake_snapshot.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:SNAPSHOT_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_budget",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_claim",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_contract",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_event_hash",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:EVENT_DIGEST"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_global_mode",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:GLOBAL_TRIAL_MODE_ID"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_port_domain",
+      "target": "ports/S__correctness_baseline_ordinary_A.port.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:SEED_DOMAIN"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_runtime",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_scope",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    },
+    {
+      "mutation": "wrong_source_release",
+      "target": "authority_binding.json",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "Invalid:AUTHORITY_BINDING"
+      ],
+      "base_case": "sealed_small"
+    }
+  ],
+  "forbidden_imports": [],
+  "scientific_calls": 0
+}

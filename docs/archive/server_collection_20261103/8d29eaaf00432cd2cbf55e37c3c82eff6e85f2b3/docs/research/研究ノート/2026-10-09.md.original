@@ -1,0 +1,13 @@
+# 研究ノート 2026-10-09
+
+## H4 cleanup P1 ESRCH競合の修正
+
+利用者の明示修正指示に従い、origin992c09d6一致を確認しhome内の独立worktree/branchで作業した。
+旧SOURCE/証拠を保存し、両pidfd送信経路のESRCHだけをalready-exitedへ限定した。他の送信errorはraise、所有検証不変。
+新SOURCE `6bd1ba01cd71ec3e2071082963c9f07478dada9a`、新14＋既存関連25件PASS。max4の最小人工process cleanup以外はmock、12実workers/追加transpile/科学actual0。
+authorと別担当の独立再reviewは13純mock件PASS、closure33とbindingを照合してP1_SCOPE_TECHNICAL_PASS。
+旧P1不合格を上書きせず、[新資料入口](../track_a_h4_cleanup_esrch_fix_20261009.md)へ追記した。
+新SOURCEに将来のseedを再結合し、旧random/partial/cacheと混合しない。
+入力・freeze/native停止証拠は未受領。P1合格だけではtechnical planをsealしない。
+環境/CPU/observer/+20 actual→74804/launchは未承認でfalse flags保持、carry/科学/compiler/上限を変更せず資料固定後STOP。
+共有環境・既存venv・他job変更0、/tmp使用0、GPU/taskset/本計算0。

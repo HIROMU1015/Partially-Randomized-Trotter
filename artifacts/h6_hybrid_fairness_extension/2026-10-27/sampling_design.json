@@ -1,0 +1,58 @@
+{
+  "status": "FIXED_BEFORE_EXPLORATION",
+  "candidates": [
+    "PR_p0078_q8_r16_K2",
+    "PR_p0078_q8_r32_K2",
+    "PR_p0078_q8_r64_K2",
+    "PR_p0684_q1_r16_K4"
+  ],
+  "n_E": 128,
+  "n_E_max": 128,
+  "n_C_min": 64,
+  "n_C_max": 1024,
+  "nominal_relative_halfwidth": 0.01,
+  "confirmation_variance_coefficient": "Student_t_0.975_df_nE_minus1",
+  "confirmation_rule": "All jointly eligible candidates; n_C=max over eligible eps and finite fixed comparators of ceil(v/(D^2/c^2-SE_old^2)), clipped[64,1024]. Nonpositive denominator keeps unresolved floor; also require own 1% mean precision. Freeze n_C once before confirmation. No confirmation top-up.",
+  "nominee_rule": "Per-epsilon finite eligible exploration minimum, exact G then candidate ID tie-break; freeze before confirmation. Keep post-confirmation minimum separate.",
+  "legacy_cv2_max": 6.121583257009193e-05,
+  "cv_based_n_E_requirement": 3,
+  "rarity": {
+    "PR_p0078_q8_r16_K2": {
+      "nonzero_event_mass": 0.001899427875450832,
+      "probability_any_nonzero_per_trajectory": 0.2160091751843735,
+      "n_for_nominal90pct_at_least_one": 10,
+      "not_a_tail_or_variance_bound": true,
+      "K": 2
+    },
+    "PR_p0078_q8_r32_K2": {
+      "nonzero_event_mass": 0.0004761372297216182,
+      "probability_any_nonzero_per_trajectory": 0.11478095708121804,
+      "n_for_nominal90pct_at_least_one": 19,
+      "not_a_tail_or_variance_bound": true,
+      "K": 2
+    },
+    "PR_p0078_q8_r64_K2": {
+      "nonzero_event_mass": 0.00011911463855007742,
+      "probability_any_nonzero_per_trajectory": 0.059167660001485045,
+      "n_for_nominal90pct_at_least_one": 38,
+      "not_a_tail_or_variance_bound": true,
+      "K": 2
+    },
+    "PR_p0684_q1_r16_K4": {
+      "nonzero_event_mass": 0.0004168307005167904,
+      "probability_any_nonzero_per_trajectory": 0.00664848197055495,
+      "n_for_nominal90pct_at_least_one": 346,
+      "not_a_tail_or_variance_bound": true,
+      "K": 4
+    }
+  },
+  "maximum_new_trajectories": 4608,
+  "maximum_axis_compiles": 9216,
+  "actual_trajectory_cap": 4608,
+  "new_target_max": 4,
+  "new_law_max": 4,
+  "independent_cohorts": true,
+  "confirmation_top_up": false,
+  "old_cohort_top_up": false,
+  "unseen_rare_event_contribution_zero": false
+}

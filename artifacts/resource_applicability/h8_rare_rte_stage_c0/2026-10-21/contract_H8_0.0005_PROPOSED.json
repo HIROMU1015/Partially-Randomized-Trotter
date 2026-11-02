@@ -1,0 +1,588 @@
+{
+  "schema": "H8_RARE_RTE_STAGE_C_DRAFT_V1",
+  "status": "PROPOSED_NOT_AUTHORIZED_NOT_EXECUTABLE",
+  "approved": false,
+  "runtime_authorization": false,
+  "valid_grant_issued": false,
+  "baseline_STAGE_B": "3d5ab5bb1cf0d78a3157ad7f742cfa5c7b58efbb",
+  "new_execution_SOURCE": null,
+  "old_science_SOURCE": "745a674546f2cb6258526fbfde1d9a00601689f8",
+  "science": {
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 28,
+    "rank_policy": "tol_only_1e-8",
+    "T": "0.8",
+    "P": 0,
+    "formula": "2nd",
+    "bias": "USUAL_SIGNED",
+    "allowance": 1,
+    "control": "symmetric_directional",
+    "full_Fock_scalar_once": true,
+    "reference_rotated": false,
+    "law": "original unconditional finite-RTE law; cost-only stratum conditioning; unchanged quantum coefficients"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "backend": null,
+    "coupling_map": null,
+    "target": null,
+    "profile_canonical_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+    "new_live_runtime_closure_sha256": null
+  },
+  "strata": [
+    "S2_SINGLE",
+    "S2_MULTI",
+    "S4_PRESENT"
+  ],
+  "sampling": {
+    "law": "full multinomial counts conditional on stratum; uniform placement; iid original components; original _make_event; q consecutive chunks each r events",
+    "single": "N2=1,N4=0",
+    "multi": "N2>=2,N4=0",
+    "s4": "N4>=1,N2 arbitrary",
+    "sampler_adapter": "new-source adapter around pinned h6_dba_sampling.steps and h8_rare_tail_selection primitives; do not invoke legacy q4/q8 scope validator",
+    "positive_support_truncation": false,
+    "representability_policy": "STOP on underflow or unresolved positive cell; high-precision categorical adapter must be approved/tested before molecular calls",
+    "law_numerical_convention_and_tolerance": null,
+    "bit_level_PRNG_law_certificate": false
+  },
+  "sample_design": {
+    "phase": null,
+    "n_by_stratum": {
+      "S2_SINGLE": null,
+      "S2_MULTI": null,
+      "S4_PRESENT": null
+    },
+    "pilot_n_and_budget": null,
+    "target_absolute_G_halfwidth": null,
+    "confidence_level": null,
+    "precision_allocation": null,
+    "production_N_freeze": "after separately authorized variance/load pilot or justified existing input; production excludes adaptive pilot from primary estimate",
+    "inference": "paired-stratified variance including old S0; model-based approximate interval unless separately valid bound/inference supplied",
+    "optional_precision_stopping": false,
+    "CI_family": "UNRESOLVED_USER_CHOICE",
+    "unknown_tail_cost_zero_fill": false
+  },
+  "original_P": "n48 S0 anchor retained as separate cohort; not pooled with old q4/q8 pilots or new strata",
+  "accounting": {
+    "G": "Ncos*RZcos+Nsin*RZsin of SAME event trajectory full measured wrappers",
+    "estimate": "sum_s pi_s*mean_G_s; unknown residual terms retained",
+    "variance_estimate": "sum_s pi_s^2 * sample_variance_G_s / n_s; includes S0; iid/independent strata assumptions disclosed",
+    "unconditional_certificate": false,
+    "new_mathematical_bound_adoption": false
+  },
+  "budget": {
+    "numeric_frozen_budget": null,
+    "symbolic_trajectory": "N=sum approved n_s",
+    "symbolic_RTE_event": "q*r*N",
+    "symbolic_occurrence": "q*N",
+    "symbolic_native_evolution": "N",
+    "symbolic_wrapper_build": "2*N plus explicitly approved control wrappers",
+    "symbolic_compile_misses": "<=2*N; before-call nonrefundable reservation; cache hits recorded separately",
+    "saved_preparation_decode": "once per approved private parent context",
+    "prefix_reconstruction": "once per prefix, deterministic old algebra from saved blocks, hash equality mandatory",
+    "control_probes_and_event_oracles": null,
+    "saved_numeric_analysis_calls": null,
+    "signal_SCF_DF_state_new_generation": 0
+  },
+  "authorization": {
+    "separate_grant_marker_STOP_per_condition": true,
+    "grant_sha256": null,
+    "approval_receipt": null,
+    "one_shot": true,
+    "retry": false,
+    "resume": false,
+    "concurrent_conditions_authorized": false,
+    "start_order": null,
+    "no_active_grant_can_be_issued_in_C0": true
+  },
+  "parallel": {
+    "mode": "trajectory processes plus optional two-axis fork/COW using a global CPU/memory/I-O admission token pool",
+    "worker_count": null,
+    "arbitrary_static_resource_cap": false,
+    "common_parent_preparation": "read-only original blocks/state/preps; no per-worker restoration or SCF",
+    "single_thread_fork_parent_required": true,
+    "fallback_if_fork_unsafe": "STOP and submit identity-preserving spawn/shared-memory design for approval",
+    "host_shared_settings_changed": false,
+    "speedup_claim": null
+  },
+  "audit": [
+    "SOURCE/input/preparation/compiler/runtime/library hashes",
+    "private deterministic seed registry, all stream collision checks",
+    "same event digest both axes",
+    "before-call nonrefundable ledger",
+    "native exit/wait4/reap all descendants",
+    "integer CSV/JSON + independent moments/law audit",
+    "partial outputs preserved on failure; no reuse without new authorization",
+    "only own PID/start/UID identities targeted",
+    "old STOP and unrelated worktree HEAD retained"
+  ],
+  "required_before_science": [
+    "user approval of condition/phase/layers",
+    "resolve n/precision/confidence/budget and S0 treatment",
+    "freeze law precision/rounding and representability adapter",
+    "bind live runtime and all actually imported provider files",
+    "implement/review with synthetic tests the q2/q16 sampler bridge and dynamic scheduler",
+    "approve exact new SOURCE, input registry, controls including any simulation and numerical analysis",
+    "fresh resource/noninterference admission",
+    "issue fresh separate grant/marker/STOP only AFTER approval"
+  ],
+  "public": {
+    "push_authorized": false,
+    "private_raw_seed_paths_credentials_published": false
+  },
+  "mandatory_STOP_after_C0": true,
+  "condition": "H8_0.0005",
+  "candidate": "B2_p7_q16_2nd_r4_K4",
+  "q": 16,
+  "r": 4,
+  "K": 4,
+  "R": 64,
+  "original_binding": {
+    "system": "H8",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 28,
+    "rank_policy": "tol_only_1e-8",
+    "T": 0.8,
+    "hamiltonian": "1a5ebefa18fc1c9f01ad644b81d13f49c7bf944bccfe3837d459c35d3325dbe2",
+    "state": "50a8fcb4cd29d60349db8e8fe728cb609eaaa903d9531833ef63e2711fa363fb",
+    "snapshot": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "profile": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+    "control": "symmetric_directional"
+  },
+  "target_preparation_sha256": "f794c14366f6081237cafd80a91b6659c98450f3eb720c90073ab5ed2263abc4",
+  "saved_preparation_export_sha256": "771137828552b858361b6e2b25d2b675fb83f908aad6209f757e46464b817420",
+  "shots": {
+    "cosine": 79863816,
+    "sine": 99933856
+  },
+  "fixed_PF": "B0I_p15_q4_4th",
+  "fixed_PF_G_exact": "94193016652860",
+  "original_input_rows": [
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.000",
+      "role": "input_0",
+      "bytes": 1968,
+      "sha256": "0b068f0c29d29a2b69a25d3ff41ad81b52f2771cc826feb09e80a4b49bfd6180",
+      "origin_evidence_id": "E00983"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.001",
+      "role": "input_1",
+      "bytes": 57635,
+      "sha256": "0f03316afffce82bbebabdea1bb4bcc0f9c9897d081e4c66b364f9a7dbdde475",
+      "origin_evidence_id": "E00984"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.002",
+      "role": "input_2",
+      "bytes": 844891,
+      "sha256": "1e666735a8cf52ae68fa93222b4d28133c1722cdb2783b3d8f2d55e04afe635b",
+      "origin_evidence_id": "E00985"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.003",
+      "role": "input_3",
+      "bytes": 59077,
+      "sha256": "259713ed9d69742eacd73eab3efbc65a5f3ac4f95b353cd8e7dfdb5dc0647399",
+      "origin_evidence_id": "E00986"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.004",
+      "role": "input_4",
+      "bytes": 59185,
+      "sha256": "2b86ad7ce6f1f53304c7de81c3d248fe32fac4ca104007d0a0a9b66aee47e823",
+      "origin_evidence_id": "E00987"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.005",
+      "role": "input_5",
+      "bytes": 1676306,
+      "sha256": "2dc9f69877361ce289f7537efb20680c1b28478bdceb4f8fb0a6acd578501375",
+      "origin_evidence_id": "E00988"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.006",
+      "role": "input_6",
+      "bytes": 1462,
+      "sha256": "321a946b2e3fde8cfec0970726134214ca486da825330be7e6c050718f66199e",
+      "origin_evidence_id": "E00989"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.007",
+      "role": "input_7",
+      "bytes": 7675271,
+      "sha256": "38b414817fd06351430389886bf85652d58f0d192b694bc90883e32d97399a5b",
+      "origin_evidence_id": "E00990"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.008",
+      "role": "input_8",
+      "bytes": 115425,
+      "sha256": "3d6ef0826a860579fc32d6bc171510e4d72fd841ebaf3baa96c0b616197d0cb0",
+      "origin_evidence_id": "E00991"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.009",
+      "role": "input_9",
+      "bytes": 46519,
+      "sha256": "4715c291c4a87dbdf7a0d06c1032de17b93135c920ca596e95ef6e8c9de29d1c",
+      "origin_evidence_id": "E00992"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.010",
+      "role": "input_10",
+      "bytes": 31248,
+      "sha256": "4911d1f5faab5fe81bfb70c6c2ef01265e3085107a513d4c990e1f39b44a7e0f",
+      "origin_evidence_id": "E00993"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.011",
+      "role": "input_11",
+      "bytes": 32457,
+      "sha256": "64927a85f25f6fcfb5bad91e70678b599a389380ca20f4dcf7e6d90365b77dfa",
+      "origin_evidence_id": "E00994"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.012",
+      "role": "input_12",
+      "bytes": 297,
+      "sha256": "6547afc94e903c5bf95b3c6a2ea5bffb5d422d5f29fa0d6f3c775ac52af5feb4",
+      "origin_evidence_id": "E00995"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.013",
+      "role": "input_13",
+      "bytes": 1252,
+      "sha256": "678e6f46715fe91e3660b734823714db01d4b528fb2a8d7e1dcd4f6ae2022bab",
+      "origin_evidence_id": "E00996"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.014",
+      "role": "input_14",
+      "bytes": 349029,
+      "sha256": "6bbaf6170d5bc97c101e09f70db7adf16cc25b980fe8626e11b9f7f2e54a8bca",
+      "origin_evidence_id": "E00997"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.015",
+      "role": "input_15",
+      "bytes": 2717,
+      "sha256": "7452fbb84d7fa894beb384303d0171322abb2b10623e11f31d90a7b883e605c1",
+      "origin_evidence_id": "E00998"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.016",
+      "role": "input_16",
+      "bytes": 5520922,
+      "sha256": "771137828552b858361b6e2b25d2b675fb83f908aad6209f757e46464b817420",
+      "origin_evidence_id": "E00999"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.017",
+      "role": "input_17",
+      "bytes": 15514351,
+      "sha256": "831e2b9826594b7b9769ef48cbdbfdba4bc34c86958316b14208395c945ad95a",
+      "origin_evidence_id": "E01000"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.018",
+      "role": "input_18",
+      "bytes": 27980,
+      "sha256": "833c67040296fda69b8e963b8a695c6ea542d03b7f10cc15312c8de2598868fe",
+      "origin_evidence_id": "E01001"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.019",
+      "role": "input_19",
+      "bytes": 355706,
+      "sha256": "848721f12cc838c8de7d78eb4d076257b450fca2c72a88d4f7098693d00094e4",
+      "origin_evidence_id": "E01002"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.020",
+      "role": "input_20",
+      "bytes": 349293,
+      "sha256": "85e8e83d5e907230f43c2b472716f61cc86a312948901bdb609d81dbed84890b",
+      "origin_evidence_id": "E01003"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.021",
+      "role": "input_21",
+      "bytes": 59152,
+      "sha256": "8847ad85b31af10717309977ab5fa9fc84a54d851db1906bb23fb595dfbbf93d",
+      "origin_evidence_id": "E01004"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.022",
+      "role": "input_22",
+      "bytes": 103593,
+      "sha256": "8f1a320cc9a751cb629619bbd8101e1af31b04cf4353c5b380a3b8d06d326c87",
+      "origin_evidence_id": "E01005"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.023",
+      "role": "input_23",
+      "bytes": 67497,
+      "sha256": "923fd25958884a3278c6435b02ea22dd83d2ec8f0bf47405cddf6623095ab901",
+      "origin_evidence_id": "E01006"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.024",
+      "role": "input_24",
+      "bytes": 18051,
+      "sha256": "b6015092b860ec99886154b8b53f3281c85cb2285dbbd7cb25fa980fda3d9c70",
+      "origin_evidence_id": "E01007"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.025",
+      "role": "input_25",
+      "bytes": 4578,
+      "sha256": "b61cacde7d97514cf6734e1678c425471bd93acd4bbc93fd49542ad9c21cce18",
+      "origin_evidence_id": "E01008"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.026",
+      "role": "input_26",
+      "bytes": 302868,
+      "sha256": "be8f26e72abb3a95b95fa62d3d46c04b4ee240c85a12322b232a2b02660cc79c",
+      "origin_evidence_id": "E01009"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.027",
+      "role": "input_27",
+      "bytes": 1299688,
+      "sha256": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+      "origin_evidence_id": "E01010"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.028",
+      "role": "input_28",
+      "bytes": 5542,
+      "sha256": "d660f949a28256ba7a69b5bd21b2d6eb70d9f8543873616767200087baf03958",
+      "origin_evidence_id": "E01011"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.029",
+      "role": "input_29",
+      "bytes": 7672251,
+      "sha256": "f7d88db7067ccd3daf6ec11966c2e2d147b972fc1cf94ab3d735d941b2b1cafd",
+      "origin_evidence_id": "E01012"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.030",
+      "role": "confirmation:new_accounting_spec",
+      "bytes": 43987,
+      "sha256": "b0c512ccff04887e9727bbfcc32e93ac362dd2284daa96e8ca8cc4e0ce9bc25e",
+      "origin_evidence_id": "E01013"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.031",
+      "role": "confirmation:original_A_payload",
+      "bytes": 46519,
+      "sha256": "4715c291c4a87dbdf7a0d06c1032de17b93135c920ca596e95ef6e8c9de29d1c",
+      "origin_evidence_id": "E00992"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.032",
+      "role": "confirmation:saved_D_result",
+      "bytes": 3911796,
+      "sha256": "5b9d65f96bd98390b6b1a912e42854cf48c3bc26b62fe0a1e26d43317b19eaff",
+      "origin_evidence_id": "E01014"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.033",
+      "role": "confirmation:old_master_and_derived_seed_exclusions",
+      "bytes": 103593,
+      "sha256": "8f1a320cc9a751cb629619bbd8101e1af31b04cf4353c5b380a3b8d06d326c87",
+      "origin_evidence_id": "E01005"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.034",
+      "role": "confirmation:published_selection_design",
+      "bytes": 7548,
+      "sha256": "8d216c083d68e993ed67dfdabafc93aa05a59ace364066e5b1cbdd3df4b9eccb",
+      "origin_evidence_id": "E01015"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.035",
+      "role": "confirmation:seed_plan",
+      "bytes": 15559,
+      "sha256": "f0ae2a57480f4723cb811165b41644c98e30b85098addcbea05e629a034c16a7",
+      "origin_evidence_id": "E00107"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.036",
+      "role": "confirmation:seed_registry",
+      "bytes": 160952,
+      "sha256": "08dcdb673a498d766db615545315b3e4dc74c68a9dfab18b9b27eeec2eb4a90f",
+      "origin_evidence_id": "E00106"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.037",
+      "role": "confirmation:law:H8_CONFIRM_P8_Q2",
+      "bytes": 398877,
+      "sha256": "b4931c7c6392755ddf326bade693cadb585cbb4001e9e7aaa816d772be98918f",
+      "origin_evidence_id": "E01016"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.038",
+      "role": "confirmation:law:H8_CONFIRM_P7_Q16",
+      "bytes": 3333504,
+      "sha256": "8ca99ecf0671166329fec323aa5266d2a5df04199c1ae560dbd551cd3fdfd0a4",
+      "origin_evidence_id": "E01017"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.039",
+      "role": "resume:origin_spec",
+      "bytes": 145762,
+      "sha256": "a8df18ac0447b3e7ca53fdb145ffadf3d5e5099b2cba01daaa3d6e0082775446",
+      "origin_evidence_id": "E01125"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.040",
+      "role": "resume:parent_native_wait",
+      "bytes": 119,
+      "sha256": "28270f4ea04e44560d8d4d9dbaee42a5a91db8bc55f740c7ae9c74008eac6db0",
+      "origin_evidence_id": "E01021"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.041",
+      "role": "resume:original_STOP",
+      "bytes": 106,
+      "sha256": "0b8da7eff3cfee3f4159e7bcd73cf9a8e0c3469f438b92c3f1a286991b8c04c1",
+      "origin_evidence_id": "E01384"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.042",
+      "role": "resume:map_native_wait",
+      "bytes": 627,
+      "sha256": "a1c06c4875226d167d40bd458f0074f0f0fed40b352cec924c59f063273e0fa3",
+      "origin_evidence_id": "E01026"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.043",
+      "role": "resume:prior_event:B2_p7_q16_2nd_r4_K4_0",
+      "bytes": 3356379,
+      "sha256": "ba1e7d5e25602fe4115fdad297f595f515e10c6b3d6fdc56af444d59d6157c08",
+      "origin_evidence_id": "E02024"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.044",
+      "role": "resume:task_charge:B2_p7_q16_2nd_r4_K4_0:RTE_event_64_reserved.json",
+      "bytes": 81,
+      "sha256": "73747c261b58b06c305fac6a186e6cb4b0c65eb44a49d4a90899b7c84711efc7",
+      "origin_evidence_id": "E01129"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.045",
+      "role": "resume:task_charge:B2_p7_q16_2nd_r4_K4_0:control_probe_4_reserved.json",
+      "bytes": 83,
+      "sha256": "57f8615655dfdc78e81edce20167a7eacd673fdea6882c42a21fbb37f22a0b42",
+      "origin_evidence_id": "E01130"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.046",
+      "role": "resume:task_charge:B2_p7_q16_2nd_r4_K4_0:independent_event_oracle_1_reserved.json",
+      "bytes": 94,
+      "sha256": "86d8be8675084d8201da5126b4db345132e559e7b8378163e704639cbe503ef4",
+      "origin_evidence_id": "E01131"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.047",
+      "role": "resume:task_charge:B2_p7_q16_2nd_r4_K4_0:native_evolution_1_reserved.json",
+      "bytes": 86,
+      "sha256": "4306396aa2b43b37f1da4f6c2342b8fc68664b4bcf6ba79bc884910d7b70369e",
+      "origin_evidence_id": "E01132"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.048",
+      "role": "resume:task_charge:B2_p7_q16_2nd_r4_K4_0:occurrence_16_reserved.json",
+      "bytes": 82,
+      "sha256": "460002c7a382cf33be7063b2c41270a3860bdefb457f40aa58c65c4c01264f6f",
+      "origin_evidence_id": "E01133"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.049",
+      "role": "resume:task_charge:B2_p7_q16_2nd_r4_K4_0:trajectory_1_reserved.json",
+      "bytes": 80,
+      "sha256": "796b197b565b0af5d9649087c9177c3ffd918dcec57d714761b1fc6717133624",
+      "origin_evidence_id": "E01134"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.050",
+      "role": "resume:parent_charge:RTE_event_64_reserved.json",
+      "bytes": 81,
+      "sha256": "73747c261b58b06c305fac6a186e6cb4b0c65eb44a49d4a90899b7c84711efc7",
+      "origin_evidence_id": "E01135"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.051",
+      "role": "resume:parent_charge:control_probe_4_reserved.json",
+      "bytes": 83,
+      "sha256": "57f8615655dfdc78e81edce20167a7eacd673fdea6882c42a21fbb37f22a0b42",
+      "origin_evidence_id": "E01136"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.052",
+      "role": "resume:parent_charge:independent_event_oracle_1_reserved.json",
+      "bytes": 94,
+      "sha256": "86d8be8675084d8201da5126b4db345132e559e7b8378163e704639cbe503ef4",
+      "origin_evidence_id": "E01137"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.053",
+      "role": "resume:parent_charge:native_evolution_1_reserved.json",
+      "bytes": 86,
+      "sha256": "4306396aa2b43b37f1da4f6c2342b8fc68664b4bcf6ba79bc884910d7b70369e",
+      "origin_evidence_id": "E01138"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.054",
+      "role": "resume:parent_charge:occurrence_16_reserved.json",
+      "bytes": 82,
+      "sha256": "460002c7a382cf33be7063b2c41270a3860bdefb457f40aa58c65c4c01264f6f",
+      "origin_evidence_id": "E01139"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.055",
+      "role": "resume:parent_charge:trajectory_1_reserved.json",
+      "bytes": 80,
+      "sha256": "796b197b565b0af5d9649087c9177c3ffd918dcec57d714761b1fc6717133624",
+      "origin_evidence_id": "E01140"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.056",
+      "role": "resume:parent_charge:wrapper_compile_2_reserved.json",
+      "bytes": 85,
+      "sha256": "f2d213577b86e8ff0681d4020aa09d5ddab09288725b2b9404f78318a45ca029",
+      "origin_evidence_id": "E01141"
+    },
+    {
+      "input_id": "H8_CONFIRM_P7_Q16.input.057",
+      "role": "resume:manifest",
+      "bytes": 11615,
+      "sha256": "8f4cb9904ef244506bf20649f549e0bb2f784192964d4b4bd7e5fcfdbe94ae68",
+      "origin_evidence_id": "E01385"
+    }
+  ],
+  "native_build_policy": {
+    "max_instructions": 1000000,
+    "origin": "original 745a6745 native evolution and wrapper builder guard",
+    "meaning": "implementation STOP threshold, NOT compiled RZ upper bound or arbitrary CPU/RAM cap",
+    "preserve_event_order": true,
+    "control_diagonal_only": true,
+    "identity_as_relative_ancilla_phase": true,
+    "cost_unit": "full measured wrapper; state preparation excluded"
+  }
+}

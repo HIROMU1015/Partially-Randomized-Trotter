@@ -1,0 +1,30 @@
+test_bits_domain (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_bits_value (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_bits_width (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_candidate (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_consumption_digest (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_endpoint_source (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_event_digest (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_factory (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_global_offset (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_global_trial (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_manifest (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_runtime (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_variant_tag_only (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... ok
+test_worker_pid (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks) ... FAIL
+
+======================================================================
+FAIL: test_worker_pid (test_g6_w2c_b3_port_bundle_independent_v1.RepairedPortAttacks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-g6-w2c-b3-closed-port-bundle-independent-local-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_port_bundle_independent_v1.py", line 64, in test
+    root=copy_case(name);change_first_evidence(root,change);old=OLD.verify(root,REF);self.assertEqual(old['status'],'VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE',old['issues']);new=A.verify(root,REF);self.assertEqual(new['status'],'INTEGRITY_MISMATCH',new['issues']);RESULTS.append(dict(mutation=name,base_case='normal_bundle_small',storage_only=old['status'],integrated=new['status'],issues=new['issues']))
+AssertionError: 'INTEGRITY_MISMATCH' != 'VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE'
+- INTEGRITY_MISMATCH
++ VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE
+ : ['PAIR_F01:S__correctness_baseline_ordinary_A:HEX_INT_TAG']
+
+----------------------------------------------------------------------
+Ran 14 tests in 49.512s
+
+FAILED (failures=1)

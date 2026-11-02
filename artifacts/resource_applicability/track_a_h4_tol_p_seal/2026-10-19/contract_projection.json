@@ -1,0 +1,220 @@
+{
+  "scope": "H4_TOL10_INDEPENDENT_P_20261019",
+  "SOURCE": "3c664ca4a9f003880b9f6d56f2a0e55ed5b56603",
+  "contract_digest": "d930b6adbffa78ab2f9facb8ff2c06e768d8071c6b8e028e7d702d6d08e10b52",
+  "status": "TECHNICALLY_SEALED_PENDING_EXPLICIT_APPROVAL",
+  "pending": [
+    "SEPARATE_EXPLICIT_P_SCIENTIFIC_APPROVAL",
+    "FRESH_RESOURCE_ADMISSION",
+    "REFRESH_KNOWN_SEED_INVENTORY_WITHOUT_REDRAW"
+  ],
+  "plan": {
+    "scope": "H4_TOL10_INDEPENDENT_P_20261019",
+    "stage": "P",
+    "binding": {
+      "system": "linear_H4_1Angstrom",
+      "basis": "STO-3G",
+      "rank": 10,
+      "rank_policy": "tol_only_1e-8",
+      "T": 0.8,
+      "P": 0,
+      "control": "symmetric_directional",
+      "scalar": "original_plus_tail_once",
+      "reference_rotated": false,
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+    },
+    "fixed_D_commit": "406f70570323366da185355550a3900388717fbb",
+    "fixed_A_commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+    "fixed_S_STATS_commit": "d728d088c010089c6b672eef0521261791b2d209",
+    "targets": [
+      {
+        "epsilon": 0.05,
+        "cell": {
+          "id": "B2_p3_q1_2nd_r4_K2",
+          "method": "B2",
+          "prefix": 3,
+          "q": 1,
+          "formula": "2nd",
+          "r": 4,
+          "K": 2,
+          "R": 4
+        },
+        "n": 1108,
+        "PF_cell_id": "B0I_p5_q1_2nd"
+      },
+      {
+        "epsilon": 0.0005,
+        "cell": {
+          "id": "B2_p2_q8_2nd_r2_K4",
+          "method": "B2",
+          "prefix": 2,
+          "q": 8,
+          "formula": "2nd",
+          "r": 2,
+          "K": 4,
+          "R": 16
+        },
+        "n": 78,
+        "PF_cell_id": "B0_p7_q8_2nd"
+      }
+    ],
+    "n_fixed": {
+      "B2_p3_q1_2nd_r4_K2": 1108,
+      "B2_p2_q8_2nd_r2_K4": 78
+    },
+    "cohort": "INDEPENDENT_H4_CONFIRMATION",
+    "namespace": "H4_TOL10_MAIN_V1_20261019_CONFIRMATION",
+    "calls": {
+      "trajectory": 1186,
+      "native_evolution": 1186,
+      "wrapper_compile": 2372,
+      "occurrence": 1732,
+      "RTE_event": 5680,
+      "control_probe": 8,
+      "independent_event_oracle": 2,
+      "preparation_reconstruction": 2,
+      "endpoint_accounting_pass": 1,
+      "endpoint_comparisons": 2,
+      "seed_slots": 1810,
+      "signal": 0,
+      "PF_compile": 0,
+      "SCF_DF_state_reference": 0,
+      "bootstrap": 0,
+      "shot_recalculation": 0,
+      "old_sample_aggregation": 0
+    },
+    "decision": "sign(saved PF_G - new paired PR mean) equals saved S_STATS direction; zero INCONCLUSIVE",
+    "family_alpha": 0.05,
+    "power_design": 0.8,
+    "SD_design_inflation": 4,
+    "relative_gap_design": 0.02,
+    "n_purpose": "finite-sample point-direction reproduction planning only",
+    "population_mean_certified": false,
+    "actual_power_certified": false,
+    "CI_or_p_values": false,
+    "rare_policy": "Unobserved S2/S4 costs and variances remain unknown, never zero filled",
+    "law": "original unconditional finite RTE, direct_master_to_step_seeds_v1, unmodified weights",
+    "no_pooling": true,
+    "no_reselection": true,
+    "no_optional_stopping": true,
+    "one_shot": true,
+    "automatic_retry": false,
+    "next_stage_authorized": false,
+    "mandatory_STOP": true,
+    "parallel": {
+      "agent_imposed_CPU_RAM_worker_wall_caps": null,
+      "worker_threads": 1,
+      "allocation": "fresh physical CPUs within existing affinity/quota and effective RAM; account for known jobs",
+      "first_controls_before_remaining": true,
+      "fork_COW": true,
+      "preparation_cache": true,
+      "paired_evolution_shared": true,
+      "fingerprint_reuse": true,
+      "PSI_diagnostic_only": true,
+      "unrelated_worktree_changes_are_gates": false
+    }
+  },
+  "endpoints": [
+    {
+      "epsilon": 0.05,
+      "cell": {
+        "id": "B2_p3_q1_2nd_r4_K2",
+        "method": "B2",
+        "prefix": 3,
+        "q": 1,
+        "formula": "2nd",
+        "r": 4,
+        "K": 2,
+        "R": 4
+      },
+      "n": 1108,
+      "saved_shots": {
+        "cosine": 12305,
+        "sine": 8258
+      },
+      "PF_id": "B0I_p5_q1_2nd",
+      "PF_G_exact": "70108214",
+      "expected_direction": 1,
+      "exploratory_n": 8,
+      "exploratory_mean_exact": "542760385/8",
+      "saved_rare_counts": {
+        "S0_ONLY": 8,
+        "S2_SINGLE": 0,
+        "S2_MULTI": 0,
+        "S4_PRESENT": 0
+      },
+      "unseen_cost": null,
+      "unseen_variance": null
+    },
+    {
+      "epsilon": 0.0005,
+      "cell": {
+        "id": "B2_p2_q8_2nd_r2_K4",
+        "method": "B2",
+        "prefix": 2,
+        "q": 8,
+        "formula": "2nd",
+        "r": 2,
+        "K": 4,
+        "R": 16
+      },
+      "n": 78,
+      "saved_shots": {
+        "cosine": 174919953,
+        "sine": 95102971
+      },
+      "PF_id": "B0_p7_q8_2nd",
+      "PF_G_exact": "7856558002614",
+      "expected_direction": 1,
+      "exploratory_n": 8,
+      "exploratory_mean_exact": "4912729573525",
+      "saved_rare_counts": {
+        "S0_ONLY": 8,
+        "S2_SINGLE": 0,
+        "S2_MULTI": 0,
+        "S4_PRESENT": 0
+      },
+      "unseen_cost": null,
+      "unseen_variance": null
+    }
+  ],
+  "seed_registry_sha256": "b427b704b2c570045f82ccbf38b46b33c0de45cd798adb717a55373ac886dda2",
+  "seed_inventory_receipt_sha256": "dd302a8f3fbec0fc172230175cad8c618fd02f3edb2bcbae3e198bb0f8091471",
+  "source_hashes": {
+    "tests/test_h4_tol_p.py": "f66116992895d3f8e491702fd9a42111399acd5c242624a24483c9917b8d6a85",
+    "scripts/audit_h4_tol_p_completed.py": "34b1188a5ee1f402a9cba8dd6b7d03a71b391be06a8755e80b88c670f741f095",
+    "scripts/h4_tol_p_science.py": "3273f643f2e096c3a68b0760bcf7a6e4ba4d7cb1934b2ea09b09deafd915c191",
+    "scripts/h4_native_science.py": "f9b3b4d27d1a777dc48f81bac66418d83a7431a4ac0f8beca1d3d4937f7e89f1",
+    "scripts/h6_native_b0i_bridge_v1.py": "e9b6c3ca795801114b066cc74c0a7d8ad4d540351fd4358cd51af3d9b567e6ab",
+    "scripts/h8_key_compile_parallel.py": "327f8fa198279671062cb0255285b462a7437008f60d89fc7ccb712ec8f70110",
+    "scripts/h4_native_contract.py": "0ca0e917a26f17d065c00f467ca1a0f4441c433b49854b86f7edb30f4761e795",
+    "scripts/h6_dba_contract.py": "122253bfefa55296aea7093353a3a36fb4f570c24d53611f7d2baf43f8657711",
+    "scripts/h4_dp_science.py": "adce281e9f77d295a8b87e63f446b38b6e9db235b85db3d379db32954ca64770",
+    "scripts/h4_dp_contract.py": "624fe120922d3ba9c155572561ddf5a4a4b334815978b838b5d5cce22e31c2ed",
+    "scripts/h4_tol_only_input.py": "8fbfc1ed0b38641c331ef33c0d54d28eb34e1dfe3ed586e5a4712bd5e9fc0818",
+    "scripts/h4_followup_contract.py": "b348502002a4ef10ca994fedb90e3e053da384cc689572088b619974b2416e9c",
+    "scripts/h4_tol_p_contract.py": "a0429f7e8a577d45316082c3e1c4970219d0a7b5bdffa70f7f13b7c9cad61eb6",
+    "scripts/h4_tol_s_stats_contract.py": "0e172aac08f9724ecf9185f370ab3194863d1877612b3e968e37997350696e2a",
+    "scripts/h4_tol_main_contract.py": "3dc3abc53355fc82900001067a06b10cf83ab31c71a0d076427af652e862fd5c",
+    "scripts/audit_h4_tol_d_completed.py": "41269630a2464232511c958cc8a162e8795134497aff6ffe6c34d189dec18253",
+    "scripts/seal_h4_tol_d.py": "0f1bb4cdf2f3bc8f28efd53f2db55ee59dd0e277eb2d0a0022bf82d4d91e46a9",
+    "scripts/run_h4_tol_p.py": "c3aa2a4f7f150c15045558dc359d8a6d84765343c817521680c7870b53d884b6",
+    "scripts/h6_dba_science.py": "f248590021c3925bd0a648d714a5a42a84dfa491d6e3bc6f5d0b6255e925ffda",
+    "scripts/h6_dba_signal.py": "35da938ab5198275393f7147093e04eb95ca5d7226cd4db09ee02594c3eed74b",
+    "scripts/h6_dba_native.py": "d05606a081eedd13939fb7f436d7f95fa369a530d0490c695005076e49577982",
+    "scripts/h6_dba_sampling.py": "9c3d12d16a005a76fae6f2e6a600c2a0f5b37bb4f2b36c460aa98c2c6970fe1d",
+    "scripts/seal_h4_tol_p.py": "7d1d23fb4776fdf253e6325ad2cf8b05ccc5f30bf93ca4d557516dbb75a5d7f0",
+    "scripts/h4_p_seed_inventory.py": "9495c73fb5e290d09049904524baafcdc7e2632a07304b10d10d12995c9bd495",
+    "scripts/seal_h4_tol_a.py": "a275822dcfca4cd69226e74d54919b2669d1a74f348ae73e9181a3be0277bded"
+  },
+  "input_files": 29,
+  "provider_files": 251,
+  "runtime_files": 34273,
+  "native_provider_SOURCE": "217c971dd537b1cc7fbc13742bc0f6c263ff7f45",
+  "A_kernel_SOURCE": "31ef62a12407010e9c1a07f9b37facedb8dff5fe",
+  "scientific_execution_authorized": false,
+  "launch_command": null
+}

@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "invalid_grant_entries": [
+    {
+      "entry": "driver",
+      "rejected": true,
+      "reason": "SEPARATE_EXPLICIT_STAGE_APPROVAL_REQUIRED",
+      "returncode": 1
+    },
+    {
+      "entry": "worker",
+      "rejected": true,
+      "reason": "SEPARATE_EXPLICIT_STAGE_APPROVAL_REQUIRED",
+      "returncode": 1
+    },
+    {
+      "entry": "adapter",
+      "rejected": true,
+      "reason": "SEPARATE_EXPLICIT_STAGE_APPROVAL_REQUIRED"
+    }
+  ],
+  "tamper_rejections": [
+    {
+      "field": "SOURCE",
+      "rejected": true,
+      "reason": "ORIGINAL_A_SEAL_CHANGED:SOURCE"
+    },
+    {
+      "field": "budget",
+      "rejected": true,
+      "reason": "ORIGINAL_A_SEAL_CHANGED:calls"
+    },
+    {
+      "field": "dependencies",
+      "rejected": true,
+      "reason": "FROZEN_ACTUAL_DEPENDENCY_BINDINGS"
+    },
+    {
+      "field": "seed_registry",
+      "rejected": true,
+      "reason": "ORIGINAL_A_SEAL_CHANGED:seed_registry"
+    }
+  ],
+  "stdlib_only": true,
+  "numerical_packages_imported": false,
+  "real_H2_arrays_loaded": false,
+  "scientific_execution": 0,
+  "valid_grant_created": false,
+  "A_attempt_created": false
+}

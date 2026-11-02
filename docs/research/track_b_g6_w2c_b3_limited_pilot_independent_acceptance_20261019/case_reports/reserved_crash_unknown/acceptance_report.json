@@ -1,0 +1,414 @@
+{
+  "schema": "b3_limited_pilot_independent_acceptance_v1",
+  "checks": [
+    {
+      "check_id": "INPUT_INTEGRITY",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "No detected input inconsistency",
+      "observed": "TECHNICAL_FAILURE",
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "PILOT_IDENTITY",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Published closed candidate / fixed SOURCE/input/schema pins",
+      "observed": {
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b",
+        "inner_binding": {
+          "formal_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b",
+          "runtime_manifest_sha256": "be65d622b633aa015d14200f48ddc9a39f979bfa3c9849430b9abfb0f9e7f688",
+          "source_pins_sha256": "84261e1a0c33938fccea54fa22ac6e1cfd73e21ece9db35e10db886cb454df82",
+          "driver_digest": "8cd9ba159ef51ef37450012f82e7feb0ad8fcafca8d3a4b9caafe3c48cdb76ab"
+        },
+        "historical_python_bytes_verified": false,
+        "real_authorization_verified": false
+      },
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "FAKE_SNAPSHOT",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Read-only single store/scope/claim/digest/spent binding",
+      "observed": {
+        "status": "VERIFIED_FAKE_SPENT_SNAPSHOT",
+        "store_id": "8b61e733-f074-48a5-b9a9-c1256878ec09",
+        "scope": "ARTIFICIAL_PILOT_FORWARD_V1",
+        "claim_id": "ARTIFICIAL_PILOT_CLAIM_FORWARD_V1",
+        "claim_status": "STOPPED",
+        "sha256": "ec6f01529d96c5aa01db99b60132938fad43b55ee3f0d3f922da3f79725fa66b",
+        "snapshot_proves_atomic_history": false,
+        "original_private_approval_bytes_available": false,
+        "real_authorization_verified": false
+      },
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "ATOMIC_HISTORY",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Atomic admission/race/transition history",
+      "observed": "Snapshot and saved observations",
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "SAVED_SNAPSHOT_AND_CLAIM",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": "Snapshot cannot prove atomic transition order; independent fresh artificial replay is separate evidence.",
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "ORDERED_TRACE",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Canonical chain, seq/run/trial, phase/STOP/drain, state witnesses",
+      "observed": {
+        "bytes": 38261,
+        "rows": 115,
+        "sha256": "c86bef93cf8d75e991dcc09fb3476f016b2fcd04a53f9b4921f65ea4fecf9fe3",
+        "chain": "60ab296516e7050ae296944e2d089ef273a66a2a71438e9e33956b41c9cff78d",
+        "op_counts": {
+          "WRITE_RESERVE": 50,
+          "WRITE_ACK": 50,
+          "PHASE_BEGIN": 1,
+          "RESERVE": 5,
+          "ENTER": 2,
+          "COMPLETE": 2,
+          "STOP": 1,
+          "UNKNOWN": 1,
+          "CANCEL": 2,
+          "PHASE_END": 1
+        },
+        "terminal_state_witness": {
+          "COMPLETED": 2,
+          "TERMINATED_WITH_UNKNOWN_RESULT": 1,
+          "CANCELLED_BEFORE_START": 2
+        },
+        "outstanding": {},
+        "prefix_checked": false,
+        "global_offset": "derived from pinned task offsets; optional explicit field checked"
+      },
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "CALL_BUDGET",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Independent counts and global cap",
+      "observed": {
+        "planned": 768,
+        "reserved": 5,
+        "started_observed": 2,
+        "completed": 2,
+        "failed": 0,
+        "cancelled_before_start": 2,
+        "unknown": 1,
+        "not_started": 763,
+        "reserved_is_actual_call_start": false,
+        "unknown_credit_refunded": false,
+        "latest_state_is_transition_history": false,
+        "failed_slot_entry_history": "NOT_ESTABLISHED_FROM_LATEST_STATE"
+      },
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "BYTE_BUDGET",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Trace self bytes + nontrace credits; ACK <= physical <= reserved",
+      "observed": {
+        "result": {
+          "reserved": 11616,
+          "ack_observed": 11616,
+          "physical_bytes": 11616,
+          "unknown_credit": 0,
+          "refunded": false,
+          "trace_self_bytes": 0
+        },
+        "log": {
+          "reserved": 84861,
+          "ack_observed": 84861,
+          "physical_bytes": 84861,
+          "unknown_credit": 0,
+          "refunded": false,
+          "trace_self_bytes": 38261
+        }
+      },
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "F01_PREFIX",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Engine commit is distinct from physical row/prefix",
+      "observed": 8,
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "SUCCESS_RECEIPT",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Summary/receipt/trace-prefix joined",
+      "observed": {
+        "started_workers": 8,
+        "ended_workers": 7,
+        "evidence_gaps": [],
+        "receipt_present": false
+      },
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": "Failed or admission-only case has no successful completion proof.",
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "COST_BOUNDARIES",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Host parent+all workers, outer wall, alternative coarse/fine, null unknown",
+      "observed": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "HISTORICAL_PENDING",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "Old 47 cases unchanged",
+      "observed": true,
+      "judgment": "PASS",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": null,
+      "formal_adoption_required": false
+    },
+    {
+      "check_id": "TWO_CONDITION_BRIDGE",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "S/P1 global scientific bundle implementation",
+      "observed": "NOT_IMPLEMENTED",
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": "Scientific bridge and adoption are separate future work.",
+      "formal_adoption_required": true
+    },
+    {
+      "check_id": "PILOT_SCOPE_ADOPTION",
+      "target_SOURCE": "fixed pilot preparation / independent consumer",
+      "public_commit": "76ca3c4089b201d55da0fede08e1f77733ac38a5",
+      "content_commit": "f3ba0cd09d3c09c5d04a6b48c3d6c9da63fff867",
+      "measured_SOURCE_commit": "b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa",
+      "input_identity": {
+        "case": "reserved_crash_unknown",
+        "pilot_digest": "383eca795c2278ac17ccc8c35e4b98948ecc513743a1f1503bc0c520fc00e1e2",
+        "inner_digest": "523e46469ee771bd889a312291e0a5d8a7383e20ad6430d7a4b9a5e17ad5441b"
+      },
+      "expected": "User adoption of N/modes/seed/measurement contract",
+      "observed": "UNADOPTED_EXECUTION_CLOSED",
+      "judgment": "PENDING_EVIDENCE",
+      "evidence": "RAW_RECOMPUTATION",
+      "evidence_files": [
+        "pilot_contract.json",
+        "inner_contract.json",
+        "observations.json",
+        "FAKE_ONLY_claims.sqlite3",
+        "artificial_raw.tar.gz"
+      ],
+      "unresolved": "Static arithmetic is checked; scientific scope remains a user/GPT decision.",
+      "formal_adoption_required": true
+    }
+  ],
+  "scientific_GO": false,
+  "historical_pending_reclassified": false,
+  "mandatory_STOP": true
+}

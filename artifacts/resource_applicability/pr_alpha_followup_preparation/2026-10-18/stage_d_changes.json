@@ -1,0 +1,49 @@
+{
+  "schema": "PR_ALPHA_STAGE_D_EXPLANATION_CHANGE_V1",
+  "base_commit": "e62ddb59173d100c113be7a33581515d78f152ee",
+  "changes": [
+    {
+      "study_id": "H4_GEOMETRY",
+      "field": "normalization_policy",
+      "before": "PR B_upper=exp(log_B+saved_margin); deterministic B=1",
+      "after": "PR uses saved.normalization directly; deterministic B=1; no native saved margin and no explicit u subtraction; legacy geometry contract"
+    },
+    {
+      "study_id": "H4_GEOMETRY_B0I",
+      "field": "normalization_policy",
+      "before": "PR B_upper=exp(log_B+saved_margin); deterministic B=1",
+      "after": "PR uses saved.normalization directly; deterministic B=1; no native saved margin and no explicit u subtraction; legacy geometry contract"
+    }
+  ],
+  "scientific_numeric_fields_changed": false,
+  "A04_172_candidate_gap_resolved": false,
+  "historical_receipts": "original commit receipts retained; this correction has a separate receipt",
+  "source_evidence": [
+    "d0726e946f89f8c30a08d383fb8ff48b363629ec:src/trottertracks/resource_applicability/h4_geometry/signal.py",
+    "98cdb35cd08469714f20d6cc3b982d9c80908f46:artifacts/resource_applicability/track_a_h4_b0i_map_results/2026-10-14/analyze_saved_results.py"
+  ],
+  "changed_files": [
+    {
+      "path": "artifacts/resource_applicability/track_a_h4_h8_cross_system_evidence/2026-10-17/study_inventory_v1.json",
+      "before_sha256": "0c72ebb50f49a74549cd4f3832a3e466d201b884d4834981cfc1da8e1f645c78",
+      "after_sha256": "3192a5ae8cc3198bc86edf2ac01ea89b88dace9525cb30e1dbd6b2cea52d13d3"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h4_h8_cross_system_evidence/2026-10-17/comparison_conditions_v1.csv",
+      "before_sha256": "e0d5e083fcc6ad0f4fdf214401f9aa09371c2a50834563f16243c4734f043fd0",
+      "after_sha256": "d1aeab586152f5ce559c9eafa530750374719a15c0f65b34dfcfc1cc108ea990"
+    },
+    {
+      "path": "docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md",
+      "before_sha256": "e7b8ecb25f48b72077d08dad6c02970b6aead5898ca3fdced7c6e9e13115b6ad",
+      "after_sha256": "638b6f8bdb245da6177d37fe6ddcdcd971bbc0b9ee9f2102d049aa5a9f0b8400",
+      "numeric_tables_unchanged": true
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h8_six_axis_reaccount_run01/2026-10-17/README.md",
+      "before_sha256": "7188318fd9e84455b7d779993cbe535862731e3e6bc3ddf1d4d04c07045fba08",
+      "after_sha256": "0ce9d3280bc435d23ad660ee245eb2d2ee6be05064aef1c2e58fcd592024a247",
+      "numeric_tables_unchanged": true
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "schema": "H8_NONCANCELLATION_DIAGNOSTIC_IMPLEMENTATION_PLAN_UNAPPROVED_V1",
+  "scope": "H8_SAVED_COMPONENT_VALIDATION_AND_EMPIRICAL_NONCANCELLATION_DESIGN_ONLY",
+  "approved": false,
+  "runtime_authorization": false,
+  "execution_sealed": false,
+  "SOURCE_COMMIT": null,
+  "allowed_cpus": [],
+  "absolute_launch_command": null,
+  "science": {
+    "system": "LINEAR_H8",
+    "separation_angstrom": 1.0,
+    "basis": "STO-3G",
+    "DF_rank": 28,
+    "modes": 16,
+    "sector_dimension": 4900,
+    "T": 0.8,
+    "qs": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "deterministic_candidates": 184,
+    "old_deterministic": 32,
+    "additional_deterministic": 152,
+    "PR_primary": "PREEXISTING_CONFIRMATION_UNION6_N32",
+    "epsilon": [
+      0.05,
+      0.01,
+      0.005,
+      0.001,
+      0.0005
+    ],
+    "allowance_factors": [
+      1.0,
+      10.0
+    ],
+    "alpha_axis": 0.025,
+    "P": 0,
+    "metric": "SHOT_WEIGHTED_FULL_WRAPPER_RZ_STATE_PREPARATION_EXCLUDED"
+  },
+  "observed_evidence": {
+    "saved_component_candidates": 172,
+    "endpoint_reconstruction_candidates": 12,
+    "unrecoverable_endpoint_missing_candidates": 0,
+    "component_agreement_newly_verified": false,
+    "full_domain_admissible_component_set_exists": false,
+    "raw_component_values_written_to_public_report": false
+  },
+  "stages": [
+    {
+      "id": "S1",
+      "action": "After separate explicit approval, bind immutable bytes, preserve definitions and reconstruct old B0I12 components from saved endpoints.",
+      "input": "fixed saved endpoints and per-case reference/scalar/parent receipts",
+      "new_signal": 0
+    },
+    {
+      "id": "S2",
+      "action": "Verify each signed part against endpoints and stored total/closure, preserving empirical path limits. No alternate reference/scalar or tolerance rescue.",
+      "closure_proposal": {
+        "rel_tol": 1e-12,
+        "abs_tol": 1e-12,
+        "origin": "EXISTING_H6_V1_POLICY_NOT_EXECUTED_ON_H8_HERE"
+      }
+    },
+    {
+      "id": "S3",
+      "action": "After explicit numerical-analysis authorization, evaluate per-axis noncancellation envelopes and new diagnostic shots under the frozen shot/normalization policy. Do not reuse normal signed-bias shots."
+    },
+    {
+      "id": "S4",
+      "action": "Only with all B2 four-axis PASS, native wait/reap/final gate and separately authorized cost scope, combine measured-first/B1-fixed-model costs, old32 vs all184, and preexisting PR union6/n32."
+    }
+  ],
+  "formulas": {
+    "B0_and_B0I_signed": "abs(total_signed_axis)",
+    "B0_and_B0I_noncancellation": "abs(discard_axis)+abs(PF_axis)",
+    "full_PF_noncancellation": "abs(PF_axis)",
+    "PR_noncancellation": "abs(outer_PF_axis)+abs(finite_RTE_axis)",
+    "PR_reduction_percent": "100*(1-G_PR/G_det)",
+    "exact_bias_upper_bound": null
+  },
+  "missing_policy": "ANY_UNRESOLVED_CANDIDATE_IMPLIES_FULL_DECLARED_DOMAIN_MINIMUM_AND_PR_RATIO_NULL; NO_DROPPING_CANDIDATES",
+  "error_policy": {
+    "combined_empirical_u": "KEEP_SEPARATE_NO_REPEATED_U_PER_COMPONENT_NO_RSS_INDEPENDENCE_ASSUMPTION",
+    "reference": "KEEP_PER_RECORD_SAVED_REFERENCE_UNROTATED_FOR_B0I",
+    "exact_truncated": "NUMERICALLY_COMPUTED_NOT_CERTIFIED_EXACT",
+    "independence": "CORRECTED_PATH_COMPARISON_WITH_SHARED_TRUNCATED_REFERENCE_AND_B0I_SCALAR_NOT_INDEPENDENT_CERTIFICATES",
+    "unknown_physical_bias_bound": null
+  },
+  "PR_policy": {
+    "confirmation_union_unchanged": true,
+    "n": 32,
+    "exploration_n8_mixed": false,
+    "noncancellation_shots_recomputed_only_after_approval": true,
+    "paired_SE": "REWEIGHT_ORIGINAL_PAIRED_SAMPLES_WITH_DIAGNOSTIC_SHOTS; NORMAL_BIAS_SE_NOT_REUSED",
+    "missing_paired_cost_data": "SE_MISSING_NOT_ZERO_NOT_INDEPENDENCE_ASSUMED",
+    "population_mean_guaranteed": false
+  },
+  "cost_policy": {
+    "B1_result": "83a3c4a6688e66576f85471bf41a45e29cbfb705",
+    "model_sha256": "8420b9f247c63f47f10f40ba5e875f5ed971e8948ea6748b9845698fe6bdb8b0",
+    "B2_required": "ALL_FOUR_AXES_PASS_NATIVE_EXIT_REAP_FINAL_GATE_AND_SOURCE_PROFILE_INPUT_BINDING",
+    "B2_partial_STOP_or_failure": "NO_UNVALIDATED_S4_FALLBACK_NO_AUTO_C_EXECUTION",
+    "measured_model_PR_mean_missing_separate": true,
+    "all_184_measured_best_claim": false,
+    "refit": false
+  },
+  "implementation": {
+    "current": "METADATA_AUDITOR_PLUS_ARTIFICIAL_ONLY_PROTOTYPE",
+    "real_numerical_runner_available": false,
+    "parse_index_once": true,
+    "cache_component_axis_across_precision_and_comparison_sets": true,
+    "heavy_work_parallelism": "ADAPT_TO_ACTUAL_AVAILABLE_RESOURCES_AND_NONINTERFERENCE_IF_NEEDED",
+    "arbitrary_CPU_RAM_worker_caps": null,
+    "shared_system_limits_changed": false,
+    "existing_B2_contract_changed": false,
+    "subagents": 0
+  },
+  "forbidden_calls": {
+    "new_signal": 0,
+    "new_compile": 0,
+    "new_sampling": 0,
+    "new_fit": 0,
+    "SCF_DF_state_generation": 0
+  },
+  "fresh_execution_preconditions": [
+    "New real numerical implementation and complete SOURCE closure fixed after publication is allowed.",
+    "Explicit user authorization for saved component reconstruction/checks and the declared numeric scope.",
+    "Fresh resources and protection checks without modifying B2/M1-S/shared environment; own-run monitoring and cleanup.",
+    "B2 full PASS binding before any noncancellation cost/model comparison."
+  ],
+  "new_valid_grant_created": false,
+  "carry_reset_or_refund": false,
+  "automatic_retry": false,
+  "next_stage_authorized": false,
+  "mandatory_STOP": true,
+  "metadata_auditor_SOURCE_COMMIT": "efc7e00f5032d3003347e843b4929eb57b7ed47e",
+  "SOURCE_COMMIT_note": "Null remains intentional: real numerical runner is not implemented or authorized."
+}

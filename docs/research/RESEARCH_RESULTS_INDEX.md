@@ -140,3 +140,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## main内の版差・統合索引
 
 [同名37 pathの整理と88原版](main_collection_versions_20261103.md)で、資料索引の統合とSOURCE配置を確認できる。原データ所在と枝別の収録範囲は[main収録記録](main_collection_20261103.md)を参照する。
+
+## サーバー側に残っていた公開成果
+
+[サーバー1・2の照合から追加した成果とSOURCEの対応](main_server_results_collection_20261103.md)を参照する。元の科学SOURCE・条件・statusは各原記録を使う。

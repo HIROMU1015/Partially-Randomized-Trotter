@@ -1,0 +1,191 @@
+test_new_S_projection_is_separate_complete_artificial_evidence (test_g6_w2c_b3_pilot_independent.FreshReplays.test_new_S_projection_is_separate_complete_artificial_evidence) ... ERROR
+test_producer_trace_write_failure_underreports_reserved_slot (test_g6_w2c_b3_pilot_independent.FreshReplays.test_producer_trace_write_failure_underreports_reserved_slot) ... ERROR
+test_factory_metadata_without_matching_filename_rejected (test_g6_w2c_b3_pilot_independent.GuardSource.test_factory_metadata_without_matching_filename_rejected) ... ok
+test_filename_is_not_callable_code_authentication (test_g6_w2c_b3_pilot_independent.GuardSource.test_filename_is_not_callable_code_authentication) ... ok
+test_production_helpers_always_deny_without_imports (test_g6_w2c_b3_pilot_independent.GuardSource.test_production_helpers_always_deny_without_imports) ... ok
+setUpClass (test_g6_w2c_b3_pilot_independent.Published) ... ERROR
+setUpClass (test_g6_w2c_b3_pilot_independent.RawMutations) ... ERROR
+test_bounded_trace_memory (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_bounded_trace_memory) ... ok
+test_cli_fresh_output_only (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_cli_fresh_output_only) ... ERROR
+test_snapshot_binding_is_not_transition_history (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_snapshot_binding_is_not_transition_history) ... ok
+test_snapshot_store_id_and_version_mutations (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_snapshot_store_id_and_version_mutations) ... ok
+test_truncated_gzip_returns_machine_integrity_status (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_truncated_gzip_returns_machine_integrity_status) ... ERROR
+test_unknown_parent_cpu_zero_rejected (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_unknown_parent_cpu_zero_rejected) ... ERROR
+test_ack_without_credit (test_g6_w2c_b3_pilot_independent.Trace.test_ack_without_credit) ... ok
+test_cancel_entered (test_g6_w2c_b3_pilot_independent.Trace.test_cancel_entered) ... ok
+test_canonical_payload_even_if_rehashed (test_g6_w2c_b3_pilot_independent.Trace.test_canonical_payload_even_if_rehashed) ... ok
+test_duplicate_complete (test_g6_w2c_b3_pilot_independent.Trace.test_duplicate_complete) ... ok
+test_duplicate_reserve (test_g6_w2c_b3_pilot_independent.Trace.test_duplicate_reserve) ... ok
+test_duplicate_seq (test_g6_w2c_b3_pilot_independent.Trace.test_duplicate_seq) ... ok
+test_enter_before_stop_can_drain (test_g6_w2c_b3_pilot_independent.Trace.test_enter_before_stop_can_drain) ... ok
+test_global_offset (test_g6_w2c_b3_pilot_independent.Trace.test_global_offset) ... ok
+test_missing_seq (test_g6_w2c_b3_pilot_independent.Trace.test_missing_seq) ... ok
+test_phase_barrier (test_g6_w2c_b3_pilot_independent.Trace.test_phase_barrier) ... ok
+test_phase_four_forbidden (test_g6_w2c_b3_pilot_independent.Trace.test_phase_four_forbidden) ... ok
+test_stop_enter (test_g6_w2c_b3_pilot_independent.Trace.test_stop_enter) ... ok
+test_stop_reserve (test_g6_w2c_b3_pilot_independent.Trace.test_stop_reserve) ... ok
+test_trace_prefix_must_end_on_row (test_g6_w2c_b3_pilot_independent.Trace.test_trace_prefix_must_end_on_row) ... ok
+test_unknown_before_enter_keeps_reservation (test_g6_w2c_b3_pilot_independent.Trace.test_unknown_before_enter_keeps_reservation) ... ok
+test_wrong_run_id (test_g6_w2c_b3_pilot_independent.Trace.test_wrong_run_id) ... ok
+test_wrong_trial_id (test_g6_w2c_b3_pilot_independent.Trace.test_wrong_trial_id) ... ok
+
+======================================================================
+ERROR: test_new_S_projection_is_separate_complete_artificial_evidence (test_g6_w2c_b3_pilot_independent.FreshReplays.test_new_S_projection_is_separate_complete_artificial_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 278, in test_new_S_projection_is_separate_complete_artificial_evidence
+    p,ref=self.ref_for('fresh_S_projection');r=A.verify(p,ref)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 269, in ref_for
+    p=PACKET/'artificial_replays'/name;c=json.loads((p/'pilot_contract.json').read_text());ref=I.Reference(TREE,LEGACY)
+                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+======================================================================
+ERROR: test_producer_trace_write_failure_underreports_reserved_slot (test_g6_w2c_b3_pilot_independent.FreshReplays.test_producer_trace_write_failure_underreports_reserved_slot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 282, in test_producer_trace_write_failure_underreports_reserved_slot
+    p,ref=self.ref_for('fresh_trace_reserve_write_failure');r=A.verify(p,ref)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 269, in ref_for
+    p=PACKET/'artificial_replays'/name;c=json.loads((p/'pilot_contract.json').read_text());ref=I.Reference(TREE,LEGACY)
+                                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+======================================================================
+ERROR: setUpClass (test_g6_w2c_b3_pilot_independent.Published)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 33, in setUpClass
+    cls.ref=I.Reference(TREE,LEGACY)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+======================================================================
+ERROR: setUpClass (test_g6_w2c_b3_pilot_independent.RawMutations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 80, in setUpClass
+    cls.c=json.loads((CASES/'normal/pilot_contract.json').read_text());cls.inner=json.loads((CASES/'normal/inner_contract.json').read_text());cls.ref=I.Reference(TREE,LEGACY)
+                                                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+======================================================================
+ERROR: test_cli_fresh_output_only (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_cli_fresh_output_only)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 205, in test_cli_fresh_output_only
+    out=Path(d)/'reports';v,h=CLI.run(CASES/'normal',TREE,LEGACY,out);self.assertEqual(v['status'],'VERIFIED_COMPLETE');self.assertEqual(len(list(out.iterdir())),4)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_cli.py", line 51, in run
+    v=A.verify(case,I.Reference(tree,legacy));h=acceptance(v)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+======================================================================
+ERROR: test_truncated_gzip_returns_machine_integrity_status (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_truncated_gzip_returns_machine_integrity_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 202, in test_truncated_gzip_returns_machine_integrity_status
+    self.assertEqual(A.verify(p,I.Reference(TREE,LEGACY))['status'],'INTEGRITY_MISMATCH')
+                                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+======================================================================
+ERROR: test_unknown_parent_cpu_zero_rejected (test_g6_w2c_b3_pilot_independent.SnapshotAndAPI.test_unknown_parent_cpu_zero_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/tests/tracks/algorithm_codesign/test_g6_w2c_b3_pilot_independent.py", line 198, in test_unknown_parent_cpu_zero_rejected
+    self.assertEqual(A.verify(p,I.Reference(TREE,LEGACY))['status'],'INTEGRITY_MISMATCH')
+                                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py", line 18, in __init__
+    self.tree=Path(tree).resolve();self.legacy=I.Reference(legacy)
+                                               ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py", line 78, in __init__
+    self.inventory=V.plain((self.root/'source_inventory.json').read_text())
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1029, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/pathlib.py", line 1015, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v3_offline_acceptance_20261019/fixed_reference/source_inventory.json'
+
+----------------------------------------------------------------------
+Ran 28 tests in 4.650s
+
+FAILED (errors=7)

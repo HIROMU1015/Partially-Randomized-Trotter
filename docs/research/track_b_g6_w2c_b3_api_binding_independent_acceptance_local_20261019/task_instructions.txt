@@ -1,0 +1,954 @@
+# Codex指示：Track B W2c-B3 実G7/F3 API Binding候補のローカル独立技術受入
+
+## 1. 目的と作業範囲
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+担当：ローカルCodex
+
+サーバーCodexが作成した、限定G7 pilot向けの実科学API Binding・Authority・Monitoring準備版について、独立した技術受入検証を実施してください。
+
+今回の目的は、サーバー側のPASS報告を追認することではなく、**固定SOURCE、静的API定義、人工raw、独立した不変条件から、接続仕様と安全な閉鎖境界を検証すること**です。
+
+対象は次のとおりです。
+
+1. 固定G7/F3 SOURCEとAPI Binding候補の整合性確認。
+2. 8 module・201 entryの静的API inventoryの独立確認。
+3. 4方式・Layer A/B・Axis X/YのAPI mappingの受入。
+4. 人工endpoint・bits・結果schema・F01・angle/requeryの独立検証。
+5. Seed domain、bit consumption、global trial identityの検証。
+6. Fake authority、one-shot、spent、STOPの検証。
+7. Monitoring、保存・CPU費用、preflightの技術監査。
+8. 実科学入口が閉鎖されていることの検証。
+9. 既存Global Bundleとの接続済み・未接続範囲の明確化。
+10. Evidence Packetの公開とmandatory STOP。
+
+技術的な実装・人工検証・独立checker自身の修正は今回の権限内で実施して構いません。
+
+**実科学SOURCEのimport・sampling、新科学計算、数値再解析、正式release採択、実authorization/grant/claimの発行・消費は一切行わないでください。**
+
+科学的な研究方針や正式実行契約を独断で採択しないこと。
+
+---
+
+## 2. 固定SOURCE・必須資料
+
+### A. 今回の検証対象：API Binding候補
+
+Branch：
+
+`track-b-g6-w2c-b3-real-api-binding-preflight-candidate-20261019`
+
+最終公開HEAD：
+
+`82896d53fa97235fa848d6c0833eb193af8b99d6`
+
+人工測定SOURCE：
+
+`78c571005fe766c61b32dc867e006531099ff608`
+
+資料ディレクトリ：
+
+`docs/research/track_b_g6_w2c_b3_real_api_binding_preflight_candidate_20261019/`
+
+必須確認資料：
+
+- `README.md`
+- `handoff.md`
+- `scientific_api_static_inventory.md`
+- `real_api_binding_design.md`
+- `science_input_and_precision_binding.md`
+- `seed_and_bitstream_binding.md`
+- `authority_and_one_shot_design.md`
+- `monitoring_and_cost_design.md`
+- `storage_stop_and_final_acceptance.md`
+- `preflight_and_production_gate.md`
+- `source_and_contract_delta.md`
+- `artificial_acceptance_results.md`
+- `pending_and_required_decisions.md`
+- `scientific_api_inventory.json`
+- `technical_contract_candidate.json`
+- `api_binding_manifest_candidate.json`
+- `authority_binding_candidate.json`
+- `monitoring_manifest_candidate.json`
+- `artificial_acceptance_matrix.json`
+- `source_inventory.json`
+- `verification.json`
+- `publication_receipt.json`
+
+新規SOURCE：
+
+`src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/`
+
+特に以下の役割を持つSOURCEを実際に確認してください。
+
+- Static API inventory・binding
+- Port/interface
+- Artificial endpoint
+- Artificial bits
+- Fake authority
+- Preflight
+- Monitoring
+- Artificial exercise
+- Offline verification
+
+正確なファイル名は`source_inventory.json`および実際のGit treeから取得してください。
+
+実際に存在しないファイル名や関数を推測で補わないこと。
+
+### B. Global Bundle Bridge V1
+
+公開HEAD：
+
+`d24cccbecdf0928fe977080dd7b28c591df0089e`
+
+人工測定SOURCE：
+
+`e099dcc461247e81eff981867dc28c3f3b16df5e`
+
+資料：
+
+`docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/`
+
+この版は、S/P1二条件を単一global claim・call/byte budget・STOPで扱う人工Bundle候補です。
+
+### C. Global Bundleのローカル独立受入
+
+Branch：
+
+`track-b-g6-w2c-b3-global-bundle-independent-acceptance-local-20261019`
+
+固定公開HEAD：
+
+`6bffb5b5819918698b522270ff19b255766d3072`
+
+資料：
+
+`docs/research/track_b_g6_w2c_b3_global_bundle_independent_acceptance_local_20261019/`
+
+既存成果：
+
+- 独立845 tests PASS
+- 公開43人工ケースを独立分類
+- 人工16,896 callsのglobal会計確認
+- Global STOP・one-shot・post-close受入
+- 独立global・storage・trace・cost検証器
+
+今回の作業基点は、このローカル独立検証版を第一候補としてください。
+
+### D. Storage V2
+
+固定公開HEAD：
+
+`596781daeba253418ba35f4b7964312a54caf233`
+
+Storage V2のRAM/physical、trusted prefix、UNKNOWN、保存障害時の会計、STOP、close後判定を固定参照として保持してください。
+
+### E. 科学SOURCE
+
+限定pilotの固定参照：
+
+`76ca3c4089b201d55da0fede08e1f77733ac38a5`
+
+主要SOURCE：
+
+- `g7_generator.py`
+- `g7_provider.py`
+- `return_aggregation.py`
+- `g6_f3_contract.py`
+- `g6_f3_precision.py`
+- `g6_f3_generator.py`
+
+追加依存SOURCEは、固定inventoryに基づいて確認してください。
+
+科学SOURCEの参照はread-onlyの静的解析に限定します。
+
+**実科学moduleをimportしてはいけません。**
+
+### F. 正式共通運用指示
+
+`research_project_instructions_unified_2026-10-17.md`
+
+固定commit：
+
+`7eff8a33bef4ee1f29698ab10c6da46988dc8db5`
+
+参照path：
+
+`docs/research/qc_relative_form_finite_step_audit_20261017/inputs/research_project_instructions_unified_2026-10-17.md`
+
+実際に取得・確認し、特に§8.4を適用してください。
+
+---
+
+## 3. 独立作業環境
+
+新しいbranch/worktreeを作成してください。
+
+推奨branch：
+
+`track-b-g6-w2c-b3-api-binding-independent-acceptance-local-20261019`
+
+第一候補の基点：
+
+`6bffb5b5819918698b522270ff19b255766d3072`
+
+サーバー側の`82896d53...`は固定参照として扱い、無条件にmerge/rebaseしないこと。
+
+既存のローカル独立検証器は保護してください。
+
+### 独立検証の原則
+
+- Producerの自己checkerを最終判定に使用しない。
+- Producer SOURCE・契約・schemaを直接確認する。
+- 静的API mappingを科学SOURCEから独立に検証する。
+- 人工rawからidentity、bit consumption、F01、保存証拠を再計算する。
+- Producerと同じ内部検証関数を呼び出して独立確認と称しない。
+- 不一致は固定SOURCE・原証拠・期待条件に基づいて調査する。
+
+必要な独立adapter、offline checker、人工mutation testは新しく実装してください。
+
+人工Producerの再実行が必要な場合は、分離された新しい人工scope・outputを使用してください。
+
+既存fake claimや保存rawを再使用・上書きしないこと。
+
+---
+
+## 4. Phase A：固定SOURCE・公開証拠の照合
+
+今回のサーバー報告では、127ファイルの公開bytes/SHA256を照合しています。
+
+ローカル側でも、必要な固定SOURCE・契約・人工rawについて独立に照合してください。
+
+対象：
+
+- Git commit/tree/blob
+- 人工測定SOURCE
+- SOURCE inventory
+- Scientific SOURCE pins
+- Input pins
+- Runtime pins
+- Python executable/library identity
+- API inventory
+- Static manifest
+- Contract candidate
+- Source release candidate digest
+- Artificial fixture
+- Saved raw
+- Publication receipt
+
+測定SOURCEと、測定後に追加・更新された管理helperを区別してください。
+
+### 人工raw
+
+サーバー報告の保存archive：
+
+- 12 parts
+- 元archive：46,334,109 bytes
+- 5,912 members
+- SHA256：`884a442b394fc16888eb6662c236b0788da2449f19c1a7f6765e2734e5650925`
+
+実際のmanifestを取得し、各part・元archive・memberのSHA256を確認してください。
+
+新しい専用ディレクトリへ復元し、既存結果は上書きしないこと。
+
+公開された全件を取得できない場合は、取得済み範囲と未取得範囲を区別してください。
+
+---
+
+## 5. Phase B：G7/F3 APIの独立静的検証
+
+今回の中心的な検証対象です。
+
+サーバー側では8 module・201 class/function/nested entryをAST解析しています。
+
+この結果を単に再表示するのではなく、**固定科学SOURCEを独立に静的解析し、接続mappingの妥当性を確認してください。**
+
+### B1. API inventory
+
+以下を確認してください。
+
+- Module path
+- SOURCE SHA256
+- Function/class
+- Signature
+- Input parameters
+- Return structure
+- Raise/exception
+- Exact representation
+- Generator state
+- Bitstream依存
+- Side effect
+- Cache依存
+- Audit/angle/requery
+- Failure provenance
+
+ASTから確定できる事項と、実行しない限り分からない事項を区別してください。
+
+Return構文だけから実行時schemaを完全に証明したことにしないこと。
+
+### B2. 四方式のmapping
+
+固定方式：
+
+1. Ordinary
+2. Partial Return + ordinary tail
+3. Closed P3 + ordinary tail
+4. General Full Return
+
+各方式のLayer A/Bを確認してください。
+
+サーバー側の静的mapping候補：
+
+| 方式 | Layer A | Layer B |
+|---|---|---|
+| Ordinary | G7 canonical generator | LegacyEndpoint系の監査・再照会 |
+| Partial Return | G7 canonical generator | LegacyEndpoint系の監査・再照会 |
+| Closed P3 | G7 canonical generator | LegacyEndpoint系の監査・再照会 |
+| Full Return | FullReturnGenerator | F3 facade／session |
+
+このmappingを独立に検証してください。
+
+特に以下を確認してください。
+
+- Canonical 3方式に、存在しないF3 facadeを仮定していないか。
+- F3.prepareの正入力canonicalケースでの拒否境界。
+- Full Returnのevent/packet/child生成関係。
+- CanonicalとFullでLayer Bの監査経路が異なること。
+- Source上で提供される機能と、今回の人工surrogateだけが提供する機能の区別。
+
+### B3. Result・event・weight
+
+次の型・意味論を静的に確認してください。
+
+- Word / raw word
+- Exact rational
+- Proposal / coefficient / weight
+- Child identity
+- Raw event
+- Reduced/nonreduced
+- Coin reject
+- Accepted
+- Zero/None
+- Audit evidence
+- Angle enclosure
+- Requery
+- Typed failure
+
+Full Returnが`None`を返す場合、raw zero、nonreduced、coin reject等の区別を不当に消去していないか確認してください。
+
+科学的な拒否や失敗を一般のzeroへ変換してはいけません。
+
+`Fraction`等のexact representationを、浮動小数点値へ黙って変更しないこと。
+
+### B4. F3・codec
+
+F3のEvidence、Failure、trace、angle等のSOURCE上の契約を確認してください。
+
+F3独自のexact codecと、既存driverのcanonical codecがbyte互換であると無条件に仮定しないこと。
+
+必要な変換・照合境界が未実装ならpendingとしてください。
+
+### B5. 限界
+
+今回許可されるのは静的なSOURCE検証です。
+
+実G7/F3をimportして実行同値性を確認することは禁止です。
+
+科学law、bitstream、angle/requeryの実行同値性が未確認なら、その状態を明示してください。
+
+---
+
+## 6. Phase C：API Port・人工endpointの独立受入
+
+サーバー側は、固定pair engineを利用する閉鎖portを作成しています。
+
+### 検証対象
+
+- ArtificialEndpoint
+- ArtificialBits
+- Request schema
+- Result schema
+- Word/event/weight
+- Seed domain
+- Consumption trace
+- Angle/requery
+- F01
+- Monitoring
+- Failure mapping
+
+実装に存在する正確なAPI名・schemaを固定SOURCEから確認してください。
+
+### 正常人工ケース
+
+サーバーの保存結果：
+
+| ケース | 結果 |
+|---|---|
+| `sealed_small` | 1,536人工calls |
+| `sealed_n256` | 16,896人工calls |
+| `S_generator` | Typed technical failure |
+| `P1_angle` | Typed technical failure |
+
+これらを独立に検証してください。
+
+正常ケースでは、SOURCE/input identity、trial、event、bit consumption、output、F01を照合します。
+
+障害ケースでは、失敗prefix、typed failure、STOP、未完了trialを確認してください。
+
+### 重要な境界
+
+**今回のportは固定Global Bundle内部には注入されていません。**
+
+したがって、次の2つを区別してください。
+
+A. 新portを固定pair engineへ接続した人工試験。
+
+B. 変更していないGlobal Bundleの既存人工回帰。
+
+AとBがそれぞれPASSしても、**新portをGlobal Bundleへ統合したend-to-end試験がPASSしたことにはなりません。**
+
+この境界を独立検証報告の主要項目として明示してください。
+
+今回の検証中にGlobal Bundleの実装を変更して、未接続部分を勝手に接続しないでください。
+
+---
+
+## 7. Phase D：Bitstream・seed・global identity
+
+固定科学参照：
+
+`P5_general_order`
+
+- p=(1/5,3/10,1/2)
+- x=5/7
+- m=5
+- sigma=+1
+
+四方式・A/B・X/Yを維持します。
+
+### D1. Identityの区別
+
+- Global bundle
+- Run
+- Condition
+- Arm
+- Layer
+- Axis
+- Phase
+- Pass
+- Trial
+- Scientific input
+- Seed namespace
+
+**Modeはglobal trial identityに含め、科学seed domainからは除外する。**
+
+この契約を独立に確認してください。
+
+### D2. Prefix
+
+以下を確認してください。
+
+- S/P1対応trial
+- Layer A/B
+- Correctness/profile
+- Baseline/instrumented
+- Arm/axis domain分離
+
+同一にすべきprefixと、独立domainを持つ項目を明示してください。
+
+### D3. Bit consumption
+
+人工bitsの消費traceについて、
+
+- Counter
+- Width
+- Value
+- Domain
+- Trial identity
+- Consumption count
+- Eventとの結合
+
+を独立に検証してください。
+
+Pythonの`bool`を整数値として誤受入しないよう、型検査も行ってください。
+
+### D4. 禁止事項
+
+科学namespaceの実bit列を生成しないでください。
+
+実G7/F3のbit consumption同値性を、人工結果だけで保証したことにしないこと。
+
+---
+
+## 8. Phase E：Authority・Admission・one-shot
+
+今回の新portに対するfake authorityと、固定Global BundleのAdmission意味論の対応を検査してください。
+
+### E1. Binding
+
+- SOURCE release candidate
+- Contract digest
+- Scientific input
+- Runtime identity
+- Seed namespace
+- Global scope
+- Global claim
+- Call/result/log budget
+- Worker policy
+- Storage
+- Monitoring
+- STOP
+
+### E2. Fake authority
+
+人工scopeを使用して、必要に応じて以下を検証してください。
+
+- Atomic claim競合
+- Winner/loser
+- Spent
+- Double claim拒否
+- Commit ACK不明
+- Claim再使用禁止
+- Retry0
+- Resume禁止
+- STOP
+- Binding mutation
+
+保存snapshotだけから、全atomic transitionの履歴を証明したと扱わないこと。
+
+### E3. Real authorityとの境界
+
+- Real authorizationを発行しない。
+- Real grantを作成しない。
+- Real claimを消費しない。
+- 既存spent scopeを変更しない。
+- Fake approvalを本番へ転用しない。
+- Production gateを解除しない。
+
+今回のstatic portに、本番実行能力が既に備わっていると仮定しないでください。
+
+---
+
+## 9. Phase F：Preflight・Production Gate
+
+次を独立に検証してください。
+
+### Source/runtime
+
+- SOURCE hash mismatch
+- Runtime mismatch
+- API signature mismatch
+- Input hash mismatch
+- Contract digest mismatch
+- Schema mismatch
+- Seed mismatch
+- Trial/result identity mismatch
+
+### Production guard
+
+- `run_ready=false`
+- `content_adopted=false`
+- `contract_grants_execution=false`
+- `science_release=null`
+- `scientific_adoption=null`
+
+実際のschema上のキー名と型を確認してください。
+
+閉鎖されたproduction entryが、booleanやfake authorityの変更だけで開かないことを確認してください。
+
+親processおよび人工workerで、禁止科学moduleのimportが発生していないことを確認してください。
+
+科学import自体を行ってから拒否する試験にはしないこと。
+
+Python内のguardを、任意の悪意あるコード実行に耐えるOS sandboxとみなさないこと。
+
+---
+
+## 10. Phase G：Monitoring・費用・STOP
+
+今回のAPI Binding候補では、実科学計算の費用は取得していません。
+
+技術的に計測可能な範囲だけを検証してください。
+
+### G1. Monitoring
+
+- Parent CPU
+- Worker CPU
+- Global wall
+- Condition別費用
+- Setup/online
+- Generator
+- Audit
+- Angle/requery
+- Serialization/hash
+- IPC
+- Observer
+- Memory/RSS/HWM
+- I/O
+- Storage
+- STOP/drain
+- Unknown credit
+
+各項目について、
+
+1. 既存SOURCEで計測可能
+2. 新adapterで計測可能
+3. 実API接続後に計測可能
+4. 現状では識別不能
+
+を分類してください。
+
+実測のない項目に推定費用を記入しないこと。
+
+### G2. Global費用
+
+既存Global Bundleの固定参照では、
+
+- S/P1二条件
+- 16,896 calls
+- Result64GiB
+- Log256MiB
+
+が未採択の第一候補です。
+
+これを今回の人工port結果によって正式採択しないこと。
+
+今回のport sidecar保存量と、Global Bundle内部のresult/log budgetを混同しないでください。
+
+### G3. STOP・Storage V2
+
+固定Global Bundle回帰について、
+
+- RAM/physical
+- Trusted prefix
+- UNKNOWN
+- 未ACK credit非返却
+- STOP後ENTER禁止
+- In-flight drain
+- Summary/receipt
+- Diagnostic
+- Marker
+- Close
+- Delivery/caller observation
+
+を確認してください。
+
+ただし、固定Bundle側の受入結果を、新port側で同じ機能がend-to-endに実装された証拠として扱わないこと。
+
+---
+
+## 11. Phase H：独立negative・mutation test
+
+サーバー側の既存テストを再実行するだけではなく、独立した期待条件に基づくmutation testを追加してください。
+
+検査対象例：
+
+### API mapping
+
+- Wrong signature
+- Wrong class/function
+- Wrong arm/layer/axis
+- Unsupported canonical F3
+- Wrong Full Return event shape
+- Missing weight
+- Wrong exact rational
+- Missing child
+- Unsupported angle/requery
+- Incorrect failure mapping
+
+### Bitstream
+
+- Wrong seed domain
+- Modeの誤混入
+- Wrong counter
+- Wrong width
+- Wrong consumption count
+- Boolean/int混同
+- Wrong prefix
+- Duplicate trial identity
+
+### Authority
+
+- Wrong source release
+- Wrong runtime
+- Wrong contract digest
+- Wrong scope/claim
+- Reused spent claim
+- Retry/resume
+- Fake-to-real credential confusion
+
+### 保存・STOP
+
+- Corrupted hash
+- Wrong trace
+- Partial evidence
+- Wrong STOP classification
+- Missing receipt
+- Unknown credit refund
+- Success markerのみの偽成功
+
+### Closed gate
+
+- Fake authorityによる不正解放
+- Run-ready flag改変
+- Wrong scientific SOURCE
+- Forbidden module import要求
+- Missing approval
+
+不正入力を拒否できることを確認してください。
+
+独立checkerが検出できない不一致があれば、最小再現を保存してください。
+
+---
+
+## 12. 独立offline checker
+
+今回のAPI Binding候補に対する独立offline adapterを新設してください。
+
+既存ローカルのglobal、V2、Bundle verifierを再利用して構いません。
+
+ただし、
+
+- Producerのport実装
+- Producerのexercise
+- Producerのauthority
+- Producerのself-checker
+
+を通常の独立検証経路へimportしないこと。
+
+SOURCE静的照合と、保存済み人工rawの動的整合性検証を分けてください。
+
+異なる意味論を同じラベルでPASSにしないこと。
+
+### 不整合が発見された場合
+
+Checker自身の技術的不具合は、今回の範囲で修正・再検証してください。
+
+Producer側の不具合が疑われる場合は固定SOURCEを編集せず、
+
+- 固定commit
+- 再現入力
+- 期待結果
+- 観測結果
+- 原因候補
+- 必要な修正
+- 科学実行への影響
+
+を保存してください。
+
+科学契約の変更を必要とする問題は、ユーザー・GPTへ判断を戻してください。
+
+---
+
+## 13. 回帰テストと結果の区別
+
+サーバー側の固定報告：
+
+- 新規73 tests PASS
+- 22 mutation拒否
+- Additional controls 4件PASS
+- Port正常2件・故障2件
+- 既存補正版828 PASS
+
+既存Global Bundleのローカル独立受入：
+
+- 845 PASS
+
+これらは異なる検証集合です。
+
+今回のローカル実行で実際に確認したテスト数と、過去の固定参照の件数を分けて報告してください。
+
+古い`co_qualname` label差について、Python環境の違いを区別してください。
+
+旧テストの原版・補正版を無断で上書きしないこと。
+
+### 完了条件
+
+- 独立checkerの主要検査が完了している。
+- SOURCE・入力の固定照合が成立している。
+- 人工正常・故障を正しく分類できる。
+- 未接続境界が明記されている。
+- 新Producer不整合の有無が記録されている。
+- 未検証の実科学意味論をPASSに昇格させていない。
+
+全歴史pendingを解消する必要はありません。
+
+---
+
+## 14. 禁止事項・保全
+
+今回、次を禁止します。
+
+- 実G7/F3 import
+- 科学namespaceのbit生成
+- 実科学sampling
+- 新しい科学計算
+- 科学結果の数値再解析
+- Native quantum build/compile/synthesis
+- Global Bundleへの新portの実接続
+- 正式science SOURCE release
+- 実authorization/grant/claim発行・消費
+- 既存claim再使用
+- 既存STOP解除
+- 本番correctness
+- 実科学16,896 calls
+- Full-N 31,710,848 calls
+
+既存SOURCE、raw、契約、grant、ledger、marker、STOPを保護してください。
+
+今回のテスト用に新しいfake authority/storeを使用する場合、既存の人工scopeも再利用しないこと。
+
+---
+
+## 15. 計算資源・環境
+
+正式共通指示§8.4を適用してください。
+
+CPU、RAM、worker数、thread数、wall time等に恣意的な低い資源制限を設けないでください。
+
+重いSHA256照合、streaming、人工回帰は、実際に利用可能な資源に応じて効率的に並列化・高速化してください。
+
+共有サーバーで作業する場合も一律の低い上限は設けませんが、他ユーザーの利用を圧迫しないこと。
+
+以下は禁止です。
+
+- 共有OS/kernel/sysctl変更
+- 共有scheduler/cgroup/quota変更
+- 共有venv/package/cache変更
+- 他ユーザーprocess操作
+- 他ユーザーのファイル変更
+- 共有サービス再起動
+- 他worktree保護対象の変更
+
+自分が所有する独立worktree、process、temp、outputの内部で作業してください。
+
+物理ホスト、OS、Python/runtime、CPU/RAM、I/O環境を確認し、サーバーとの違いを記録してください。
+
+別物理環境と確認できない場合は、その独立性を主張しないこと。
+
+既存の固定科学契約・資源条件も無断変更しないこと。
+
+---
+
+## 16. 成果物
+
+推奨branch：
+
+`track-b-g6-w2c-b3-api-binding-independent-acceptance-local-20261019`
+
+推奨ディレクトリ：
+
+`docs/research/track_b_g6_w2c_b3_api_binding_independent_acceptance_local_20261019/`
+
+### 実装
+
+- Independent static API verifier
+- Independent port-result adapter
+- Bit-consumption verifier
+- Seed/domain verifier
+- Authority/preflight verifier
+- Offline artificial evidence checker
+- Independent mutation tests
+
+### Markdown資料
+
+- `README.md`
+- `handoff.md`
+- `independent_source_verification.md`
+- `scientific_api_mapping_acceptance.md`
+- `port_contract_acceptance.md`
+- `bitstream_and_seed_acceptance.md`
+- `authority_and_preflight_acceptance.md`
+- `monitoring_and_cost_acceptance.md`
+- `closed_production_gate_acceptance.md`
+- `global_bundle_integration_boundary.md`
+- `producer_consumer_discrepancies.md`
+- `pending_and_required_decisions.md`
+- `artificial_regression_results.md`
+
+### 機械可読資料
+
+- `scientific_api_independent_inventory.json`
+- `artificial_port_case_verification.json`
+- `independent_mutation_results.json`
+- `fixed_bundle_regression_verification.json`
+- `source_inventory.json`
+- `verification.json`
+- `publication_receipt.json`
+
+必要なSOURCE、raw、fixture、logs、runtime identityも保存してください。
+
+ファイル構成は合理的に整理して構いません。
+
+各検査について、次を保持してください。
+
+- Check ID
+- 固定SOURCE
+- Input identity
+- Expected
+- Observed
+- PASS/FAIL/PENDING
+- Evidence
+- 未解決事項
+
+未取得の証拠をPASSにしないこと。
+
+---
+
+## 17. 最終報告 Q1〜Q10
+
+**Q1.** 固定API Binding SOURCE、G7/F3科学SOURCE、Global Bundle、公開rawのbytes/SHA256を照合できたか。
+
+**Q2.** 8 module・201 entryの静的API inventoryと、4方式・A/B・X/Yのmappingは独立確認できたか。未確認箇所は何か。
+
+**Q3.** Artificial endpoint・bits・result schema・F01・angle/requeryの契約は成立したか。サーバーのport正常2件・故障2件をどう分類したか。
+
+**Q4.** Modeとseed domain、S/P1 prefix、bit consumption、trial identityは整合しているか。
+
+**Q5.** Fake authority、one-shot、spent、ACK不明、SOURCE/runtime binding、STOPは成立しているか。実認可との境界は明確か。
+
+**Q6.** PreflightとProduction gateは閉鎖されているか。実科学moduleをimportせずに検証できたか。
+
+**Q7.** Monitoring、CPU/wall、保存・unknown、実API計測項目について、何を確認でき、何が未計測か。
+
+**Q8.** 固定Global Bundleへの外部endpoint注入口が未接続であることを確認できたか。今回のport試験とBundle試験の証拠を分離できたか。
+
+**Q9.** 独立testsの結果、Producer側の新不具合、証拠不足、次のGlobal Bundle統合に必要な技術変更・契約判断は何か。
+
+**Q10.** 実G7/F3 import/sampling、科学bit列生成、新科学計算・再解析、science SOURCE採択、実authorization/grant/claim発行・消費、native quantum処理がすべて0件であるか。
+
+---
+
+## 18. GitHub公開・Mandatory STOP
+
+今回の技術範囲では、必要な独立checker実装、人工試験、checker自身の修正を自律的に進めてください。
+
+次を完了してください。
+
+1. 固定SOURCE・契約の確認
+2. G7/F3 API静的mappingの独立検証
+3. 独立port/offline adapter実装
+4. 公開人工rawの再読
+5. Bitstream/seed/identityの検証
+6. Authority・preflight・production gate検証
+7. Monitoring・STOP・保存契約の検証
+8. 独立mutation/negative test
+9. 既存回帰
+10. ProducerとGlobal Bundleの未接続境界の記録
+11. Evidence Packet作成
+12. Commit/push
+13. Remote HEAD・公開bytes/SHA256照合
+14. 既存SOURCE、raw、grant、ledger、marker、STOPの保全確認
+
+その後、**mandatory STOP**してください。
+
+重大な不整合が残る場合は、原証拠・最小再現を保存してSTOPしてください。
+
+人工技術受入が成功しても、Global Bundleへの実API接続、正式science SOURCE採択、実G7/F3 sampling、限定pilot、Full-Nへ自動移行しないこと。
+
+**次の担当はユーザーとGPTです。**
+
+今回の最終目標は、サーバーが作成したAPI Binding閉鎖候補について、実装主体とは独立した技術的根拠を確保し、次のGlobal Bundle統合SOURCEに必要な変更範囲を確定できる状態を整えることです。

@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/run_independent_writer_fault.py", line 41, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/run_independent_writer_fault.py", line 32, in main
+    with patch.object(F.R.Coordinator,'_record',record):report=F.invoke(root,c,inner,ledger,auth)
+                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime/tests/tracks/algorithm_codesign/b3_storage_artificial_fixture.py", line 27, in invoke
+    return R.execute_artificial(c,inner,root=root,ledger=ledger,authority=auth,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py", line 414, in execute_artificial
+    port=ArtificialAdmission(c,inner,Path(root),ledger,authority,fault=admission_fault)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py", line 52, in __init__
+    super().__init__(*args,**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py", line 317, in __init__
+    require(p.is_relative_to(Path('/tmp')) and p.name.startswith('b3-r1-artificial-'), 'PRIVATE_TEMP_ONLY')
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-independent-acceptance-server-20261019/docs/research/track_b_g6_w2c_b3_v2_independent_acceptance_server_20261019/injection_runtime/src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py", line 44, in require
+    raise Denied(message)
+trottertracks.algorithm_codesign.g6_w2c_b3_admission.Denied: PRIVATE_TEMP_ONLY

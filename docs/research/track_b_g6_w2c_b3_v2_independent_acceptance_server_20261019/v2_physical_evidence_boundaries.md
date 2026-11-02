@@ -1,0 +1,9 @@
+# RAM claimと物理証拠
+
+108ケース中82件では完全と申告された物理state bytesからcountsを再計算し、report・shadow SHA256・pair別cursor・global reservedと照合した。14件はstate保存不完全、12件はfinal report欠損であり、同じexact state/report証明には格上げしていない。
+
+RAM stateはProducerが保持するmonotone intentである。保存失敗のstate_errors、statefile_complete、physical witness不足を明示し、保存されなかったRAMを独立に復元できたとは扱わない。現在の完全な最終stateも、それだけで全transition履歴を証明しない。state close失敗時に読めるbytesが一致しても、closeが成功したという証明にはしない。
+
+66件のINCOMPLETE_EVIDENCEは意図的に維持した。少なくともtrace、state、journal、host report、closeのいずれかの証拠限界が残る。保存不能を正常完了や費用0へ補完しない。UNKNOWNの実entry/開始時刻を推定せず、不明なcall/byte creditを返却しない。
+
+fake SQLiteはimmutable read-only URIでquick_check、single store/scope/claim、contract/source/input binding、spent/STOP flagsを検査する。実authority storeは開かない。保存snapshotとProducer観測だけからatomic transition順序、当時のprivate approval、歴史runtime load、power-failure耐久性を独立に証明することはできない。新規writer故障時のRAM観測も別の新規人工証拠として区別する。

@@ -1,0 +1,213 @@
+{
+  "stage": "S_STATS",
+  "status": "TECHNICALLY_SEALED_PENDING_EXPLICIT_STATS_APPROVAL",
+  "SOURCE": "8752489bde3903d80d306c4500535c79ac65ef31",
+  "plan": {
+    "scope": "H4_TOL10_S_STATS_20261019",
+    "stage": "S_STATS",
+    "binding": {
+      "system": "linear_H4_1Angstrom",
+      "basis": "STO-3G",
+      "rank": 10,
+      "rank_policy": "tol_only_1e-8",
+      "T": 0.8,
+      "P": 0,
+      "control": "symmetric_directional",
+      "scalar": "original_plus_tail_once",
+      "reference_rotated": false,
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b"
+    },
+    "targets": [
+      {
+        "epsilon": 0.05,
+        "cell_id": "B2_p3_q1_2nd_r4_K2",
+        "PF_cell_id": "B0I_p5_q1_2nd"
+      },
+      {
+        "epsilon": 0.0005,
+        "cell_id": "B2_p2_q8_2nd_r2_K4",
+        "PF_cell_id": "B0_p7_q8_2nd"
+      }
+    ],
+    "fixed_A_commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+    "fixed_D_commit": "406f70570323366da185355550a3900388717fbb",
+    "upstream_scientific_SOURCE": "84db3909639b34ec521004c3d8f7ef9b5e6ad851",
+    "family_alpha": 0.05,
+    "power": 0.8,
+    "family_size": 2,
+    "multiplicity": "one-sided Bonferroni alpha/2 for the two fixed primary endpoints",
+    "SD_inflation_sensitivity": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "relative_gap_sensitivity": [
+      0.01,
+      0.02,
+      0.05
+    ],
+    "reference_scenario": {
+      "SD_inflation": 4,
+      "relative_gap": 0.02
+    },
+    "minimum_n": 2,
+    "n_cap": null,
+    "formula": "max(2,ceil(((z_(1-alpha/m)+z_power)*inflation*saved_SE*sqrt(saved_n)/(eta*PF_G))**2))",
+    "SD_input": "saved_SE * sqrt(saved_n)",
+    "difference": "eta * saved_D_PF_G",
+    "reference_direction": "sign(saved_D_PF_G - saved_A_PR_mean_exact)",
+    "candidate_n": "maximum over its registered endpoints; no endpoint double counting",
+    "required_cohort": "EXPLORATION_N8",
+    "saved_FP_n32_used": false,
+    "legacy_used": false,
+    "calls": {
+      "numeric_design_pass": 1,
+      "normal_scenarios": 24,
+      "fixed_reference_sign_comparisons": 2,
+      "sensitivity_settings": 12,
+      "raw_trajectory_aggregation": 0,
+      "bootstrap": 0,
+      "sampling": 0,
+      "compile": 0,
+      "signal": 0,
+      "shot_recalculation": 0,
+      "candidate_selection_or_reranking": 0,
+      "old_FP_or_legacy_pooling": 0,
+      "P_scientific_execution": 0,
+      "new_seed_generation": 0,
+      "SCF_DF_state_reference_generation": 0,
+      "law_reconstruction": 0,
+      "rare_visibility_n_calculation": 0
+    },
+    "rare_policy": "Copy saved stratum counts only; probabilities/visibility/unseen costs remain unknown; no zero filling",
+    "actual_power_certified": false,
+    "population_mean_certified": false,
+    "selection_adjusted_inference": false,
+    "CI_or_p_values": false,
+    "candidate_reselection": false,
+    "optional_stopping": false,
+    "P_n": null,
+    "P_SOURCE": null,
+    "P_seeds": null,
+    "P_budget": null,
+    "P_finalization": "PENDING_S_STATS_RESULT_AND_SEPARATE_USER_DECISION_WITH_RARE_TAIL_LIMITS",
+    "resources": {
+      "agent_imposed_CPU_RAM_worker_wall_caps": null,
+      "processes": "one scalar pass; 24 scenarios",
+      "affinity_modified": false,
+      "shared_settings_modified": false,
+      "PSI_diagnostic_only": true
+    },
+    "one_shot": true,
+    "automatic_retry": false,
+    "next_stage_authorized": false,
+    "mandatory_STOP": true
+  },
+  "spec_digest": "c21d9b2eb4fad92cabb5b381346e8f41d9bb15f5f92f03cf655cfcf511d11426",
+  "source_hashes": {
+    "tests/test_h4_tol_s_stats.py": "413112ffc09a8983b567676c9c9f89338139fa40fdb1efe4ecfb95323dfb070b",
+    "scripts/prepare_h4_tol_s_stats.py": "0509bac286beba8c1964d7fad556f708c3bf7f1d12c9a2d8139f04b7050784e3",
+    "scripts/h4_tol_s_stats_contract.py": "0e172aac08f9724ecf9185f370ab3194863d1877612b3e968e37997350696e2a",
+    "scripts/h4_tol_main_contract.py": "3dc3abc53355fc82900001067a06b10cf83ab31c71a0d076427af652e862fd5c",
+    "scripts/h4_native_contract.py": "0ca0e917a26f17d065c00f467ca1a0f4441c433b49854b86f7edb30f4761e795",
+    "scripts/h6_dba_contract.py": "122253bfefa55296aea7093353a3a36fb4f570c24d53611f7d2baf43f8657711",
+    "scripts/h4_dp_contract.py": "624fe120922d3ba9c155572561ddf5a4a4b334815978b838b5d5cce22e31c2ed",
+    "scripts/run_h4_tol_s_stats.py": "72760cb9db4b5e3b05c0244c09fbc158db04f0c2558d3bf0c6ce2965f6378c3d",
+    "scripts/h4_tol_s_stats_numeric.py": "fc2cf44b8a45cf1b5bb93bd5107f349e51ceca69c581ed8fad0fae880a0d18a9"
+  },
+  "input_count": 13,
+  "input_manifest": [
+    {
+      "role": "A_result",
+      "commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_a_completed/2026-10-19/result.json",
+      "sha256": "3c217dc6c6cafe3e13d9ee767088d671dee18273dff300dd9bf34cb03d8dbb69"
+    },
+    {
+      "role": "A_audit",
+      "commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_a_completed/2026-10-19/completion_audit.json",
+      "sha256": "929559a79518fb59b85f190c18bbcbd5b2f8e9681bb37128536cca668575b321"
+    },
+    {
+      "role": "A_native_exit",
+      "commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_a_completed/2026-10-19/native_exit.json",
+      "sha256": "a0b3ed093693273f616b124fcfb6528b8c9e3773875b330da294e883bdaa44d7"
+    },
+    {
+      "role": "A_execution_binding",
+      "commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_a_completed/2026-10-19/execution_binding.json",
+      "sha256": "6027490b5a4a546ff6e4ae9b81677d1a433c5238db7ae2eadf3bfa2a09aec967"
+    },
+    {
+      "role": "A_artifact_manifest",
+      "commit": "85cb5b4d1808434165c421115ed09dab3b63dd00",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_a_completed/2026-10-19/artifact_manifest.json",
+      "sha256": "def805742480855e94164ec7ccb8ec29eeae575970ddaa1e8be322f17a99c08c"
+    },
+    {
+      "role": "D_result",
+      "commit": "406f70570323366da185355550a3900388717fbb",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_d_completed/2026-10-19/result.json",
+      "sha256": "106469f5a604af01ff2cb77012a736646df3291abe60a7c870e77785058ec8a3"
+    },
+    {
+      "role": "D_audit",
+      "commit": "406f70570323366da185355550a3900388717fbb",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_d_completed/2026-10-19/completion_audit.json",
+      "sha256": "6a8df3f7bd34a62ac01c227389428b3063203868f8aa0258c019f963c994a6bb"
+    },
+    {
+      "role": "D_native_exit",
+      "commit": "406f70570323366da185355550a3900388717fbb",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_d_completed/2026-10-19/native_exit.json",
+      "sha256": "7402eb986255ab246f46c5c53d6c60dfa699ee80d64a3f7b671b08e13fc82e5d"
+    },
+    {
+      "role": "D_execution_binding",
+      "commit": "406f70570323366da185355550a3900388717fbb",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_d_completed/2026-10-19/execution_binding.json",
+      "sha256": "d112a59a9f003d15c782675459ac35d434e002d9e0b6877c93a22f694d81ad9a"
+    },
+    {
+      "role": "D_artifact_manifest",
+      "commit": "406f70570323366da185355550a3900388717fbb",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_d_completed/2026-10-19/artifact_manifest.json",
+      "sha256": "ba653364a3c9db9bd20e3840d8756303e3587cc368cd1b9b2137676f9398f893"
+    },
+    {
+      "role": "rank10_S_STATS_draft",
+      "commit": "80652ab6b42cf0c11ee97485214027f507b1bf0a",
+      "repo_path": "artifacts/resource_applicability/track_a_h4_tol_main_phase0/2026-10-19/S_STATS_contract_DRAFT.json",
+      "sha256": "9cab5bf2db4ae991e1c9405d1ed70f56594e072f94eb0af8ecee6aa5c8dff193"
+    },
+    {
+      "role": "selected_summaries",
+      "sha256": "d379cd35ef74e398b278dfed23e507c6c3e98baf69a80b40ba8123bf48cd62fa"
+    },
+    {
+      "role": "preparation_receipt",
+      "sha256": "afa3f52d74ee2094feab62b6477cd7e8a2fed4ac2b113ca3c7be48c5a59480f8"
+    }
+  ],
+  "summary_sha256": "d379cd35ef74e398b278dfed23e507c6c3e98baf69a80b40ba8123bf48cd62fa",
+  "runtime_file_count": 128,
+  "runtime_binding_digest": "6f21dd664a5d2f670ae71ee68db7db17225046dbe9b8d2a384d2d9fb31abfa23",
+  "python_sha256": "ebc2fae9fa0845b8c1fc09ed10196c0e93c26cb8fbd2a84d64548326ef93209b",
+  "pending": [
+    "SEPARATE_EXPLICIT_S_STATS_NUMERICAL_APPROVAL",
+    "FRESH_RESOURCE_RECEIPT_AT_ACTIVATION"
+  ],
+  "approved_by_user": false,
+  "runtime_authorization": false,
+  "actual_numerical_passes": 0,
+  "output_created": false,
+  "one_shot_created": false,
+  "mandatory_STOP": true
+}

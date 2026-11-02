@@ -1,0 +1,38 @@
+{
+  "iterations": [
+    {
+      "tests": 24,
+      "errors": 4,
+      "reason": "Normalize old stdlib receipt ValueError to new Stop"
+    },
+    {
+      "tests": 36,
+      "status": "PASS"
+    },
+    {
+      "tests": 39,
+      "errors": 1,
+      "reason": "Artificial reference fixture lacked saved bias; add fixture and early bias schema gate"
+    },
+    {
+      "tests": 39,
+      "status": "PASS"
+    },
+    {
+      "suite": "tests/test_h2_diagnostics_binding.py",
+      "tests": 26,
+      "failures": 1,
+      "reason": "Harness used -I -S for parent; legacy test_nonisolated_flags_rejected intentionally expects an ordinary nonisolated parent. Use -B only for test harness; production preflight stays -I -S -B.",
+      "source_commit": "46a3b33e3717c4fadf11846e922caf17d10156d9",
+      "log": "technical_tests_isolated_parent.log"
+    },
+    {
+      "tests": 40,
+      "status": "PASS",
+      "reason": "Add explicit sampling=0 contract key and refusal before callback; production/source unchanged by harness fix",
+      "source_commit": "46a3b33e3717c4fadf11846e922caf17d10156d9"
+    }
+  ],
+  "final_regression_total": 138,
+  "scientific_execution": false
+}

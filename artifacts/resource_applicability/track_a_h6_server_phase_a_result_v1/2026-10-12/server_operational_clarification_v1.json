@@ -1,0 +1,24 @@
+{
+  "observed_at_jst": "2026-10-12T01:19:34.375871+09:00",
+  "user_cpu_ram_approval_received": true,
+  "formal_server_rules_received": false,
+  "direct_execution_permitted_by_server_policy": null,
+  "scheduler_command_or_config_detected": false,
+  "checked": [
+    "/etc/motd absent",
+    "/etc/issue OS banner only",
+    "/etc/slurm/slurm.conf absent",
+    "/etc/pbs.conf absent",
+    "/etc/torque/server_name absent",
+    "sbatch/sinfo/scontrol/qsub/qstat/bsub absent from PATH",
+    "/etc/profile.d contains locale/apps/mpi/cuda setup but no scheduler/server usage rule",
+    "preparation report explicitly formal_server_rules_received=false"
+  ],
+  "openmpi_scheduler_plugins": "generic integration libraries only; do not establish a running scheduler or a server policy",
+  "decision": "PASS_USER_OPERATIONAL_CLARIFICATION_WITH_RESOURCE_GUARDS",
+  "stop_instruction_origin": "user Phase A execution instruction section3: shared-server policy unconfirmed and job permission indeterminate => STOP",
+  "new_scientific_runner_invocations": 0,
+  "user_clarification": "利用規則やschedulerは特にない。ほかの利用者に著しく迷惑がかからない範囲で使用可。",
+  "direct_execution_permitted_by_user_operational_instruction": true,
+  "supersedes_missing_formal_policy_stop": true
+}

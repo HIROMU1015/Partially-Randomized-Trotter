@@ -1,0 +1,37 @@
+{
+  "date_jst": "2026-10-18",
+  "scope": "B03/B08/B02-B06 technical package",
+  "base_commit": "3fd8fca966e6b5a6a972aa71de68b31a0129f5ab",
+  "new_source_commit": "d87d217a2c4044fbe62e5aa4d3bc44bfb864ff00",
+  "observed_execution": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 tests/test_rpe_shot_underflow_20261018.py",
+      "status": "PASS",
+      "purpose": "new source normal/underflow regression"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/check_pr_beta_followup_20261018.py",
+      "status": "PASS",
+      "purpose": "fixed metadata and saved synthetic evidence"
+    },
+    {
+      "command": "new-entry-only manifest check",
+      "status": "PASS"
+    },
+    {
+      "command": "full manifest validator base/current",
+      "status": "INHERITED_IDENTICAL_FAILURE"
+    }
+  ],
+  "resources_at_start": {
+    "self_affinity_cpus": 64,
+    "mem_total_kib": 528127736,
+    "mem_available_kib": 448118624,
+    "observation_only": true,
+    "artificial_resource_caps_added": false
+  },
+  "shared_environment_or_other_process_changes": false,
+  "scientific_dispatches": 0,
+  "publication": "NOT_ATTEMPTED: external publication authorization unconfirmed; user section 7 permits local-only preservation",
+  "initial_code_fix_commit": "e0ae7a675d2db7445ab805242207de57d9089310"
+}

@@ -1,0 +1,116 @@
+{
+  "artificial_only": true,
+  "science_imports_or_calls": 0,
+  "cases": [
+    {
+      "case": "match_with_stage",
+      "exit": 0,
+      "passed": true,
+      "terminal": {
+        "classification": "R1_LIMITED_REANALYSIS_COMPLETE",
+        "stage": "synthetic",
+        "diagnosis_complete": true,
+        "preservation_after_run": "VERIFIED",
+        "attempts": 1,
+        "retries": 0,
+        "mandatory_STOP": true,
+        "wall_seconds": 0.0010701250284910202,
+        "own_CPU_seconds": 0.0002866399999999908,
+        "peak_RSS_KiB": 20992,
+        "expected_process_exit": 0
+      },
+      "failure": null,
+      "stdout": "{\"event\": \"MANDATORY_STOP\", \"details\": {\"terminal\": {\"classification\": \"R1_LIMITED_REANALYSIS_COMPLETE\", \"stage\": \"synthetic\", \"diagnosis_complete\": true, \"preservation_after_run\": \"VERIFIED\", \"attempts\": 1, \"retries\": 0, \"mandatory_STOP\": true, \"wall_seconds\": 0.0010701250284910202, \"own_CPU_seconds\": 0.0002866399999999908, \"peak_RSS_KiB\": 20992}}}\n",
+      "stderr": ""
+    },
+    {
+      "case": "mismatch_with_stage",
+      "exit": 2,
+      "passed": true,
+      "terminal": {
+        "classification": "HASH_MISMATCH_UNRESOLVED",
+        "stage": "synthetic",
+        "diagnosis_complete": true,
+        "preservation_after_run": "VERIFIED",
+        "attempts": 1,
+        "retries": 0,
+        "mandatory_STOP": true,
+        "wall_seconds": 0.000962844118475914,
+        "own_CPU_seconds": 0.0002770210000000023,
+        "peak_RSS_KiB": 20992,
+        "expected_process_exit": 2
+      },
+      "failure": {
+        "kind": "HASH_COMPARISON_MISMATCH",
+        "exception_traceback": null,
+        "diagnostic_outcome": {
+          "classification": "HASH_MISMATCH_UNRESOLVED",
+          "stage": "synthetic",
+          "diagnosis_complete": true
+        },
+        "meaning": "preserved mismatch, not an invented Python exception"
+      },
+      "stdout": "{\"event\": \"MANDATORY_STOP\", \"details\": {\"terminal\": {\"classification\": \"HASH_MISMATCH_UNRESOLVED\", \"stage\": \"synthetic\", \"diagnosis_complete\": true, \"preservation_after_run\": \"VERIFIED\", \"attempts\": 1, \"retries\": 0, \"mandatory_STOP\": true, \"wall_seconds\": 0.000962844118475914, \"own_CPU_seconds\": 0.0002770210000000023, \"peak_RSS_KiB\": 20992}}}\n",
+      "stderr": ""
+    },
+    {
+      "case": "primary_exception",
+      "exit": 1,
+      "passed": true,
+      "terminal": {
+        "classification": "TECHNICAL_INCONCLUSIVE",
+        "diagnosis_complete": false,
+        "primary_error_type": "ValueError",
+        "primary_error": "synthetic primary exception",
+        "preservation_after_run": "VERIFIED",
+        "attempts": 1,
+        "retries": 0,
+        "mandatory_STOP": true,
+        "wall_seconds": 0.0013108216226100922,
+        "own_CPU_seconds": 0.0009157509999999924,
+        "peak_RSS_KiB": 20992,
+        "expected_process_exit": 1
+      },
+      "failure": {
+        "classification": "TECHNICAL_INCONCLUSIVE",
+        "diagnosis_complete": false,
+        "primary_error_type": "ValueError",
+        "primary_error": "synthetic primary exception",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/support.py\", line 95, in run_guarded\n    state = action(output)\n            ^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/check_logger.py\", line 15, in fail\n    raise ValueError('synthetic primary exception')\nValueError: synthetic primary exception\n"
+      },
+      "stdout": "{\"event\": \"MANDATORY_STOP\", \"details\": {\"terminal\": {\"classification\": \"TECHNICAL_INCONCLUSIVE\", \"diagnosis_complete\": false, \"primary_error_type\": \"ValueError\", \"primary_error\": \"synthetic primary exception\", \"preservation_after_run\": \"VERIFIED\", \"attempts\": 1, \"retries\": 0, \"mandatory_STOP\": true, \"wall_seconds\": 0.0013108216226100922, \"own_CPU_seconds\": 0.0009157509999999924, \"peak_RSS_KiB\": 20992}}}\n",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/support.py\", line 95, in run_guarded\n    state = action(output)\n            ^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/check_logger.py\", line 15, in fail\n    raise ValueError('synthetic primary exception')\nValueError: synthetic primary exception\n"
+    },
+    {
+      "case": "primary_and_logger_exception",
+      "exit": 1,
+      "passed": true,
+      "terminal": {
+        "classification": "TECHNICAL_INCONCLUSIVE",
+        "diagnosis_complete": false,
+        "primary_error_type": "ValueError",
+        "primary_error": "synthetic primary exception",
+        "preservation_after_run": "VERIFIED",
+        "attempts": 1,
+        "retries": 0,
+        "mandatory_STOP": true,
+        "wall_seconds": 0.0013130027800798416,
+        "own_CPU_seconds": 0.0007537900000000042,
+        "peak_RSS_KiB": 20992,
+        "secondary_failure_count": 1,
+        "diagnostic_classification_before_secondary_failure": "TECHNICAL_INCONCLUSIVE",
+        "expected_process_exit": 1
+      },
+      "failure": {
+        "classification": "TECHNICAL_INCONCLUSIVE",
+        "diagnosis_complete": false,
+        "primary_error_type": "ValueError",
+        "primary_error": "synthetic primary exception",
+        "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/support.py\", line 95, in run_guarded\n    state = action(output)\n            ^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/check_logger.py\", line 15, in fail\n    raise ValueError('synthetic primary exception')\nValueError: synthetic primary exception\n"
+      },
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/support.py\", line 95, in run_guarded\n    state = action(output)\n            ^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-b-c1-1-r1-new-partition-exact-model-20261021/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/check_logger.py\", line 15, in fail\n    raise ValueError('synthetic primary exception')\nValueError: synthetic primary exception\n"
+    }
+  ],
+  "all_passed": true
+}

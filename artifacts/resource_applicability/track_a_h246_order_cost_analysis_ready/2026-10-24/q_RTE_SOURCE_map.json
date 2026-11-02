@@ -1,0 +1,42 @@
+{
+  "schedule": {
+    "commit": "8613b3ecda2030a677b1690fe7aa3da23dec4873",
+    "path": "src/trotterlib/h46_m5_plan.py",
+    "functions": [
+      "weights",
+      "allocation",
+      "schedule"
+    ],
+    "H2_accepted_acquisition_SOURCE_sha_matches": true,
+    "input_policy": "PR K4 ABS_TIME_PER_OUTER32; Full schedule uses unused PER_PIECE1 placeholder",
+    "derived_times_or_allocations_before_approval": false
+  },
+  "native_call_path": [
+    "h46_m5_native.make_requests",
+    "make_df_partial_s2_step_request",
+    "DF deterministic diagonal/Gaussian plus saved RTE applications",
+    "full Hadamard wrapper",
+    "existing compiled cost receipt"
+  ],
+  "native_reference": {
+    "commit": "8613b3ecda2030a677b1690fe7aa3da23dec4873",
+    "paths": [
+      "scripts/h46_m5_native.py",
+      "scripts/h46_m5_cost_native.py"
+    ]
+  },
+  "actual_evidence": {
+    "PR_candidate_count": 6,
+    "first_registered_trajectory_per_candidate": 1,
+    "original_full_event_digests_verified": 6,
+    "all_QPY_reparse": false,
+    "all_trajectory_full_event_analysis": false,
+    "raw_result_trajectory_metadata": 214
+  },
+  "limitations": [
+    "Basis adjacency counts describe six original witnesses, not all operations of all axes",
+    "Event order/sign and q change together; no isolated PF-order causal estimate",
+    "Step count is not compiled RZ cost; no unobserved event cost imputation"
+  ],
+  "no_circuit_generation": true
+}

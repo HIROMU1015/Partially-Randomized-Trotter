@@ -1,0 +1,88 @@
+{
+  "complete": true,
+  "trials": 1024,
+  "microsteps": 4096,
+  "setup_stages": {
+    "R1_input_registry_setup": {
+      "calls": 1,
+      "wall_seconds": 2.0188520699739456,
+      "CPU_seconds": 2.0116586379999997
+    },
+    "P5_normalizer_completion_setup": {
+      "calls": 1,
+      "wall_seconds": 289.0347559414804,
+      "CPU_seconds": 283.993160344
+    },
+    "group_prefix_selector_setup": {
+      "calls": 1,
+      "wall_seconds": 0.49390111304819584,
+      "CPU_seconds": 0.49355875500003776
+    }
+  },
+  "online_stages": {
+    "sampling_checks_event_Evidence_storage": {
+      "calls": 4096,
+      "wall_seconds": 400.7228982951492,
+      "CPU_seconds": 400.6340313490009
+    },
+    "angle_lookup": {
+      "calls": 4096,
+      "wall_seconds": 0.04005301557481289,
+      "CPU_seconds": 0.04064112899902739
+    },
+    "angle_query_and_Evidence": {
+      "calls": 24,
+      "wall_seconds": 23.545277569442987,
+      "CPU_seconds": 23.53904136599988
+    },
+    "weight_path_Evidence": {
+      "calls": 1024,
+      "wall_seconds": 2.7850223686546087,
+      "CPU_seconds": 2.7851229559998956
+    },
+    "path_durable_storage": {
+      "calls": 1024,
+      "wall_seconds": 0.6249088570475578,
+      "CPU_seconds": 0.25138427999996793
+    },
+    "sampling_batch_compression": {
+      "calls": 32,
+      "wall_seconds": 0.9528858922421932,
+      "CPU_seconds": 0.9528155180000226
+    }
+  },
+  "online_wall_seconds": 430.54288393445313,
+  "total_wall_seconds": 722.1270926706493,
+  "angle_cache_hits": 4072,
+  "angle_cache_misses": 24,
+  "event_cache_hits": 3951,
+  "event_cache_misses": 145,
+  "SOURCE_derived_online_query_counts": {
+    "sampler_calls": 4096,
+    "P5_level2_queries_sample_plus_event": 46
+  },
+  "max_RSS_KiB": 1772004,
+  "final_process": {
+    "pid": 1657064,
+    "status": {
+      "State": "R (running)",
+      "VmSize": "1920980 kB",
+      "VmHWM": "1772004 kB",
+      "VmRSS": "1566796 kB",
+      "Threads": "1"
+    },
+    "smaps_rollup": {
+      "Rss": "1569964 kB",
+      "Pss": "1561812 kB",
+      "Shared_Clean": "12148 kB",
+      "Shared_Dirty": "0 kB",
+      "Private_Clean": "118516 kB",
+      "Private_Dirty": "1439300 kB",
+      "Swap": "0 kB"
+    },
+    "user_CPU_seconds": 713.59,
+    "system_CPU_seconds": 2.83
+  },
+  "coherent_signal_estimator": null,
+  "retry": 0
+}

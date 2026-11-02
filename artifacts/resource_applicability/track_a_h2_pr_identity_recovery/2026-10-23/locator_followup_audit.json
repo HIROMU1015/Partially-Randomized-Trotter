@@ -1,0 +1,51 @@
+{
+  "status": "CANONICAL_LOCATOR_STILL_MISSING",
+  "checked_at_utc": "2026-10-23T06:51:00.240232+00:00",
+  "base_commit": "4008ce45d26bb858e092d8654187bfcda2dbe180",
+  "canonical_NEW_EXECUTION": null,
+  "originals": {
+    "O00002": {
+      "locator": "${NEW_EXECUTION}/stagepacks/H2_PR_EXPLORATION/config_APPROVED_PRIVATE.json",
+      "sha256": "f011e12b5df6c534fd610899abd2f0f8a17dd05e1cfefaf418a7cb09c0c9a8c7",
+      "bytes": 1331184,
+      "retrieved": false
+    },
+    "O00001": {
+      "locator": "${NEW_EXECUTION}/config_PIPELINE_APPROVED_PRIVATE.json",
+      "sha256": "f4da8233474bf8e9f43784e80028948d62d8dd8f43a3f8d82f4c1136ccbdfc0d",
+      "bytes": 1483023,
+      "retrieved": false
+    }
+  },
+  "limited_checks": [
+    {
+      "source": "fixed a05f4ed19/4ec26921c/10e29e2ad outer32 execution/result/start records",
+      "result": "SOURCE/plan/end-audit match; public records intentionally omit private absolute roots"
+    },
+    {
+      "source": "fixed 8825391ff prepare_h246_confirmation.py and 4f1e4ebd exporter",
+      "result": "origin_config_path chain confirmed in SOURCE. Actual old proposal02 config not in public tree. Original paths are required CLI inputs."
+    },
+    {
+      "source": "fixed 328a7914d new-environment STOP and later 3eca46148 migration documentation",
+      "result": "Old private pack and exclusions were historically missing; later reconstruction explicitly did not recover the old exploration private pack. No inference that every current storage location is absent."
+    },
+    {
+      "source": "Git registry filtered to exact outer32/H246 related branches",
+      "result": "Only known metadata-export worktree registered for original outer32 series; no original confirmation/acquisition worktree found by these names"
+    },
+    {
+      "source": "known main repo, known metadata sender worktree, known old H2 worktree; immediate entries only",
+      "result": "No outer32/token-map/private-pack locator. Old H2 private parent contains only 2026-10-19."
+    }
+  ],
+  "broad_filesystem_or_history_search": false,
+  "other_user_data_opened": false,
+  "original_private_config_or_raw_archive_published": false,
+  "needed_information": [
+    "Exact canonical NEW_EXECUTION directory or exact O00002 canonical file path",
+    "Or exact sender exporter private token-map path (roots maps absolute directories to token NEW_EXECUTION)",
+    "If data is on another environment or offline archive, the owner-supplied mount/copy/archive locator and available path mapping"
+  ],
+  "root_known_before_SHA_verification": false
+}

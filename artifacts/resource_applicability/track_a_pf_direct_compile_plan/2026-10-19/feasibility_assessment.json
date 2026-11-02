@@ -1,0 +1,52 @@
+{
+  "status": "TECHNICAL_PLAN_FROM_SAVED_RECORDS_NOT_LAUNCH_PROOF",
+  "cases": [
+    {
+      "series": "H2_DF3",
+      "assessment": "HIGH_EXPECTED_FEASIBILITY",
+      "basis": "Small 4-system-qubit circuits; D completed q1..16 and both PF orders for p2/full; p0/p1 missing rows are not excluded",
+      "limitations": "No new benchmark, no numeric runtime projection; p0 B0/B0I remain distinct decompositions"
+    },
+    {
+      "series": "H4_DF10",
+      "assessment": "HIGH_EXPECTED_FEASIBILITY",
+      "basis": "129 existing measured candidates incl q16 and S4; 125 new candidates stage wall 1017.5871014744043 seconds, 250 axes",
+      "source": "H4_D_COMPLETION",
+      "limitations": "Stage wall includes more than compilation; no sum-of-estimated-hours derived"
+    },
+    {
+      "series": "H6_DF19",
+      "assessment": "FEASIBLE_WITH_DYNAMIC_ADMISSION",
+      "basis": "p15 q8 S4 compiled at 530.6741248946637/534.8988664690405 seconds per axis; historical 4-axis stage peak aggregate RSS 9545846784 bytes; p11 q4 S4 2-axis native-stage peak RSS 3815890944 bytes",
+      "sources": [
+        "H6_S4_VALIDATION",
+        "H6_S4_COMPLETION",
+        "H6_D_LATEST"
+      ],
+      "limitations": "Per-axis compile time and stage aggregate peak are different quantities; largest full-rank missing profile remains unresolved"
+    },
+    {
+      "series": "H8_DF28",
+      "assessment": "FEASIBLE_BUT_LARGE_CASES_NEED_CAREFUL_ADMISSION",
+      "basis": "p15 q4 S4 668636 RZ/axis with recorded worker peak RSS 10561605632 bytes for first cosine; p16 q4 S4 713432 RZ/axis and compile 144.41190458647907/144.56327833794057 seconds; p21 q8 S4 measured 1852640 RZ/axis",
+      "sources": [
+        "H8_SIX_DIRECT",
+        "H8_D_B0I_p16_q4_4th",
+        "H8_SAVED_ACCOUNTING"
+      ],
+      "limitations": "Do not substitute driver RSS for worker/aggregate memory. Full p28 q8 S4 is a larger resource class; saved measurements show existence but exact old profile is unknown. No new cost-model runtime extrapolation"
+    },
+    {
+      "series": "H4_LEGACY_DF12",
+      "assessment": "HIGH_EXPECTED_FEASIBILITY_SEPARATE_SERIES",
+      "basis": "55 new candidates/110 axes native wall 536.0692663248628 seconds, remaining33 are previously ineligible not physically impossible",
+      "source": "Fixed legacy D completion report",
+      "limitations": "Different geometry ordinary-control maps are excluded; no reuse into DF10"
+    }
+  ],
+  "actual_free_resources_probed": false,
+  "new_benchmark_or_compile": false,
+  "numeric_runtime_or_memory_prediction": false,
+  "recommendation": "Retain every registered q; prioritize H6 epsilon0.005 and stored model-dependent selected PFs, then finish all missing axes using cost-neutral scheduling. Resource ordering is not exclusion.",
+  "unknown_future_profile_policy": "Recover exact saved profile/runtime or create explicitly separately versioned direct observation, never silently declare legacy equality"
+}

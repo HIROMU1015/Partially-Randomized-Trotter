@@ -1,0 +1,3581 @@
+[
+  {
+    "case": "P1_inflight",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 8,
+      "started_observed": 8,
+      "completed": 7,
+      "failed": 1,
+      "cancelled_before_start": 0,
+      "unknown": 0,
+      "not_started": 760,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 21716,
+        "ack_observed": 21716,
+        "actual_file_bytes": 21716,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 52506,
+        "ack_observed": 52506,
+        "actual_file_bytes": 52506,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 25,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 8,
+          "started_observed": 8,
+          "completed": 7,
+          "failed": 1,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 760,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 21716,
+            "ack_observed": 21716,
+            "actual_file_bytes": 21716,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 52506,
+            "ack_observed": 52506,
+            "actual_file_bytes": 52506,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 8,
+          "started_observed": 8,
+          "completed": 7,
+          "failed": 1,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 760,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "P2_inflight",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 2,
+      "started_observed": 2,
+      "completed": 1,
+      "failed": 1,
+      "cancelled_before_start": 0,
+      "unknown": 0,
+      "not_started": 766,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 13808,
+        "ack_observed": 13808,
+        "actual_file_bytes": 13808,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 48485,
+        "ack_observed": 48485,
+        "actual_file_bytes": 48485,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 25,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 2,
+          "started_observed": 2,
+          "completed": 1,
+          "failed": 1,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 766,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 13808,
+            "ack_observed": 13808,
+            "actual_file_bytes": 13808,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 48485,
+            "ack_observed": 48485,
+            "actual_file_bytes": 48485,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 2,
+          "started_observed": 2,
+          "completed": 1,
+          "failed": 1,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 766,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "after_event",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 7,
+      "started_observed": 6,
+      "completed": 5,
+      "failed": 1,
+      "cancelled_before_start": 1,
+      "unknown": 0,
+      "not_started": 761,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 18646,
+        "ack_observed": 18646,
+        "actual_file_bytes": 18646,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 51487,
+        "ack_observed": 51487,
+        "actual_file_bytes": 51487,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 23,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 7,
+          "started_observed": 6,
+          "completed": 5,
+          "failed": 1,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 761,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 18646,
+            "ack_observed": 18646,
+            "actual_file_bytes": 18646,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 51487,
+            "ack_observed": 51487,
+            "actual_file_bytes": 51487,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 7,
+          "started_observed": 6,
+          "completed": 5,
+          "failed": 1,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 761,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "angle",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 3,
+      "started_observed": 2,
+      "completed": 1,
+      "failed": 1,
+      "cancelled_before_start": 1,
+      "unknown": 0,
+      "not_started": 765,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 13780,
+        "ack_observed": 13780,
+        "actual_file_bytes": 13780,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 49291,
+        "ack_observed": 49291,
+        "actual_file_bytes": 49291,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 24,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 3,
+          "started_observed": 2,
+          "completed": 1,
+          "failed": 1,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 765,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 13780,
+            "ack_observed": 13780,
+            "actual_file_bytes": 13780,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 49291,
+            "ack_observed": 49291,
+            "actual_file_bytes": 49291,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 3,
+          "started_observed": 2,
+          "completed": 1,
+          "failed": 1,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 765,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "correctness_zero",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 119,
+      "started_observed": 118,
+      "completed": 118,
+      "failed": 0,
+      "cancelled_before_start": 1,
+      "unknown": 0,
+      "not_started": 649,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 119447,
+        "ack_observed": 119447,
+        "actual_file_bytes": 119447,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 57288,
+        "ack_observed": 57288,
+        "actual_file_bytes": 57288,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 24,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 119,
+          "started_observed": 118,
+          "completed": 118,
+          "failed": 0,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 649,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 119447,
+            "ack_observed": 119447,
+            "actual_file_bytes": 119447,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 57288,
+            "ack_observed": 57288,
+            "actual_file_bytes": 57288,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 119,
+          "started_observed": 118,
+          "completed": 118,
+          "failed": 0,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 649,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "event",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 7,
+      "started_observed": 4,
+      "completed": 3,
+      "failed": 1,
+      "cancelled_before_start": 3,
+      "unknown": 0,
+      "not_started": 761,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 15800,
+        "ack_observed": 15800,
+        "actual_file_bytes": 15800,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 49150,
+        "ack_observed": 49150,
+        "actual_file_bytes": 49150,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 21,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 7,
+          "started_observed": 4,
+          "completed": 3,
+          "failed": 1,
+          "cancelled_before_start": 3,
+          "unknown": 0,
+          "not_started": 761,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 15800,
+            "ack_observed": 15800,
+            "actual_file_bytes": 15800,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 49150,
+            "ack_observed": 49150,
+            "actual_file_bytes": 49150,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 7,
+          "started_observed": 4,
+          "completed": 3,
+          "failed": 1,
+          "cancelled_before_start": 3,
+          "unknown": 0,
+          "not_started": 761,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "flush",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 213,
+      "started_observed": 210,
+      "completed": 210,
+      "failed": 0,
+      "cancelled_before_start": 3,
+      "unknown": 0,
+      "not_started": 555,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 220583,
+        "ack_observed": 220583,
+        "actual_file_bytes": 220583,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 54790,
+        "ack_observed": 54790,
+        "actual_file_bytes": 54790,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 19,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 213,
+          "started_observed": 210,
+          "completed": 210,
+          "failed": 0,
+          "cancelled_before_start": 3,
+          "unknown": 0,
+          "not_started": 555,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 220583,
+            "ack_observed": 220583,
+            "actual_file_bytes": 220583,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 54790,
+            "ack_observed": 54790,
+            "actual_file_bytes": 54790,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 213,
+          "started_observed": 210,
+          "completed": 210,
+          "failed": 0,
+          "cancelled_before_start": 3,
+          "unknown": 0,
+          "not_started": 555,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "light-after8-0",
+    "status": "VERIFIED_COMPLETE",
+    "issues": [],
+    "calls": {
+      "planned": 4352,
+      "reserved": 4352,
+      "started_observed": 4352,
+      "completed": 4352,
+      "failed": 0,
+      "cancelled_before_start": 0,
+      "unknown": 0,
+      "not_started": 0,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 3293563,
+        "ack_observed": 3293563,
+        "actual_file_bytes": 3293563,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 128506,
+        "ack_observed": 128506,
+        "actual_file_bytes": 128506,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 24,
+      "ended_workers": 24,
+      "failure_notifications": 0,
+      "receipt_present": true,
+      "stop_saved": false,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "STATE_HASH_CLAIM",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Producer external state SHA",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 4352,
+          "reserved": 4352,
+          "started_observed": 4352,
+          "completed": 4352,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 0,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 3293563,
+            "ack_observed": 3293563,
+            "actual_file_bytes": 3293563,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 128506,
+            "ack_observed": 128506,
+            "actual_file_bytes": 128506,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 4352,
+          "reserved": 4352,
+          "started_observed": 4352,
+          "completed": 4352,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 0,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "log_cap",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 217,
+      "started_observed": 216,
+      "completed": 216,
+      "failed": 0,
+      "cancelled_before_start": 1,
+      "unknown": 0,
+      "not_started": 551,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 226067,
+        "ack_observed": 226067,
+        "actual_file_bytes": 226067,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 11943,
+        "ack_observed": 11943,
+        "actual_file_bytes": 11943,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 1,
+      "failure_notifications": 6,
+      "receipt_present": false,
+      "stop_saved": false,
+      "evidence_gaps": [
+        "Some WORKER_END records not persisted"
+      ]
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 217,
+          "started_observed": 216,
+          "completed": 216,
+          "failed": 0,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 551,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 226067,
+            "ack_observed": 226067,
+            "actual_file_bytes": 226067,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 11943,
+            "ack_observed": 11943,
+            "actual_file_bytes": 11943,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 217,
+          "started_observed": 216,
+          "completed": 216,
+          "failed": 0,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 551,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [
+          "Some WORKER_END records not persisted"
+        ],
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      },
+      {
+        "check_id": "CONTROL_FAILURE_COVERAGE",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "All failure notices persisted",
+        "observed": 6,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Log budget or STOP save failure; not complete independent failure history."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "parent_crash",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 1,
+      "started_observed": null,
+      "completed": 0,
+      "failed": 0,
+      "cancelled_before_start": 0,
+      "unknown": 1,
+      "not_started": 767,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": null,
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 0,
+      "failure_notifications": 0,
+      "receipt_present": false,
+      "stop_saved": false,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 1,
+          "started_observed": null,
+          "completed": 0,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 1,
+          "not_started": 767,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 1,
+          "started_observed": null,
+          "completed": 0,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 1,
+          "not_started": 767,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 1,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": true,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "INSUFFICIENT_EVIDENCE",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "parent_dispatch",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 0,
+      "started_observed": 0,
+      "completed": 0,
+      "failed": 0,
+      "cancelled_before_start": 0,
+      "unknown": 0,
+      "not_started": 768,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 2988,
+        "ack_observed": 2988,
+        "actual_file_bytes": 2988,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 15932,
+        "ack_observed": 15932,
+        "actual_file_bytes": 15932,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 1,
+      "ended_workers": 2,
+      "failure_notifications": 7,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": [
+        "Missing WORKER_START:correctness_baseline_ordinary_B"
+      ]
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 0,
+          "started_observed": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 768,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 2988,
+            "ack_observed": 2988,
+            "actual_file_bytes": 2988,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 15932,
+            "ack_observed": 15932,
+            "actual_file_bytes": 15932,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 0,
+          "started_observed": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 768,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [
+          "Missing WORKER_START:correctness_baseline_ordinary_B"
+        ],
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "reserved_exit",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 3,
+      "started_observed": 0,
+      "completed": 0,
+      "failed": 0,
+      "cancelled_before_start": 2,
+      "unknown": 1,
+      "not_started": 765,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 10482,
+        "ack_observed": 10482,
+        "actual_file_bytes": 10482,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 43164,
+        "ack_observed": 43164,
+        "actual_file_bytes": 43164,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 7,
+      "failure_notifications": 24,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 3,
+          "started_observed": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled_before_start": 2,
+          "unknown": 1,
+          "not_started": 765,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 10482,
+            "ack_observed": 10482,
+            "actual_file_bytes": 10482,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 43164,
+            "ack_observed": 43164,
+            "actual_file_bytes": 43164,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 3,
+          "started_observed": 0,
+          "completed": 0,
+          "failed": 0,
+          "cancelled_before_start": 2,
+          "unknown": 1,
+          "not_started": 765,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 1,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "result_cap",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 4,
+      "started_observed": 3,
+      "completed": 1,
+      "failed": 2,
+      "cancelled_before_start": 1,
+      "unknown": 0,
+      "not_started": 764,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 482,
+        "ack_observed": 482,
+        "actual_file_bytes": 482,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 63416,
+        "ack_observed": 63416,
+        "actual_file_bytes": 63416,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 29,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 4,
+          "started_observed": 3,
+          "completed": 1,
+          "failed": 2,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 764,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 482,
+            "ack_observed": 482,
+            "actual_file_bytes": 482,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 63416,
+            "ack_observed": 63416,
+            "actual_file_bytes": 63416,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 4,
+          "started_observed": 3,
+          "completed": 1,
+          "failed": 2,
+          "cancelled_before_start": 1,
+          "unknown": 0,
+          "not_started": 764,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "sample",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 25,
+      "started_observed": 23,
+      "completed": 22,
+      "failed": 1,
+      "cancelled_before_start": 2,
+      "unknown": 0,
+      "not_started": 743,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 36472,
+        "ack_observed": 36472,
+        "actual_file_bytes": 36472,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 53952,
+        "ack_observed": 53952,
+        "actual_file_bytes": 53952,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 23,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 25,
+          "started_observed": 23,
+          "completed": 22,
+          "failed": 1,
+          "cancelled_before_start": 2,
+          "unknown": 0,
+          "not_started": 743,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 36472,
+            "ack_observed": 36472,
+            "actual_file_bytes": 36472,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 53952,
+            "ack_observed": 53952,
+            "actual_file_bytes": 53952,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 25,
+          "started_observed": 23,
+          "completed": 22,
+          "failed": 1,
+          "cancelled_before_start": 2,
+          "unknown": 0,
+          "not_started": 743,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "simultaneous",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 8,
+      "started_observed": 8,
+      "completed": 0,
+      "failed": 8,
+      "cancelled_before_start": 0,
+      "unknown": 0,
+      "not_started": 760,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 12064,
+        "ack_observed": 12064,
+        "actual_file_bytes": 12064,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 50680,
+        "ack_observed": 50680,
+        "actual_file_bytes": 50680,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 25,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 8,
+          "started_observed": 8,
+          "completed": 0,
+          "failed": 8,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 760,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 12064,
+            "ack_observed": 12064,
+            "actual_file_bytes": 12064,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 50680,
+            "ack_observed": 50680,
+            "actual_file_bytes": 50680,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 8,
+          "started_observed": 8,
+          "completed": 0,
+          "failed": 8,
+          "cancelled_before_start": 0,
+          "unknown": 0,
+          "not_started": 760,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "stop_save",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 13,
+      "started_observed": 11,
+      "completed": 10,
+      "failed": 1,
+      "cancelled_before_start": 2,
+      "unknown": 0,
+      "not_started": 755,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 23402,
+        "ack_observed": 23402,
+        "actual_file_bytes": 23402,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 51245,
+        "ack_observed": 51245,
+        "actual_file_bytes": 51245,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 23,
+      "receipt_present": false,
+      "stop_saved": false,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 13,
+          "started_observed": 11,
+          "completed": 10,
+          "failed": 1,
+          "cancelled_before_start": 2,
+          "unknown": 0,
+          "not_started": 755,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 23402,
+            "ack_observed": 23402,
+            "actual_file_bytes": 23402,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 51245,
+            "ack_observed": 51245,
+            "actual_file_bytes": 51245,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 13,
+          "started_observed": 11,
+          "completed": 10,
+          "failed": 1,
+          "cancelled_before_start": 2,
+          "unknown": 0,
+          "not_started": 755,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "worker_exit",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 2,
+      "started_observed": 2,
+      "completed": 1,
+      "failed": 0,
+      "cancelled_before_start": 0,
+      "unknown": 1,
+      "not_started": 766,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 12302,
+        "ack_observed": 12302,
+        "actual_file_bytes": 12302,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 43576,
+        "ack_observed": 43576,
+        "actual_file_bytes": 43576,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 7,
+      "failure_notifications": 24,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 2,
+          "started_observed": 2,
+          "completed": 1,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 1,
+          "not_started": 766,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 12302,
+            "ack_observed": 12302,
+            "actual_file_bytes": 12302,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 43576,
+            "ack_observed": 43576,
+            "actual_file_bytes": 43576,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 2,
+          "started_observed": 2,
+          "completed": 1,
+          "failed": 0,
+          "cancelled_before_start": 0,
+          "unknown": 1,
+          "not_started": 766,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 1,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  },
+  {
+    "case": "write",
+    "status": "TECHNICAL_FAILURE",
+    "issues": [],
+    "calls": {
+      "planned": 768,
+      "reserved": 9,
+      "started_observed": 7,
+      "completed": 6,
+      "failed": 1,
+      "cancelled_before_start": 2,
+      "unknown": 0,
+      "not_started": 759,
+      "reserved_is_actual_call_start": false,
+      "unknown_credit_refunded": false,
+      "latest_state_is_transition_history": false
+    },
+    "output_budget": {
+      "result": {
+        "reserved": 18209,
+        "ack_observed": 16969,
+        "actual_file_bytes": 16969,
+        "unacknowledged_credit": 1240,
+        "unacknowledged_credit_refunded": false
+      },
+      "log": {
+        "reserved": 53805,
+        "ack_observed": 53805,
+        "actual_file_bytes": 53805,
+        "unacknowledged_credit": 0,
+        "unacknowledged_credit_refunded": false
+      }
+    },
+    "control": {
+      "started_workers": 8,
+      "ended_workers": 8,
+      "failure_notifications": 22,
+      "receipt_present": false,
+      "stop_saved": true,
+      "evidence_gaps": []
+    },
+    "checks": [
+      {
+        "check_id": "P01",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": true,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P03",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "planned": 768,
+          "reserved": 9,
+          "started_observed": 7,
+          "completed": 6,
+          "failed": 1,
+          "cancelled_before_start": 2,
+          "unknown": 0,
+          "not_started": 759,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P04",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Consistent published evidence",
+        "observed": {
+          "result": {
+            "reserved": 18209,
+            "ack_observed": 16969,
+            "actual_file_bytes": 16969,
+            "unacknowledged_credit": 1240,
+            "unacknowledged_credit_refunded": false
+          },
+          "log": {
+            "reserved": 53805,
+            "ack_observed": 53805,
+            "actual_file_bytes": 53805,
+            "unacknowledged_credit": 0,
+            "unacknowledged_credit_refunded": false
+          }
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P08",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "No RESERVE/ENTER after parent STOP",
+        "observed": "Final state/control has no per-operation history",
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "INSUFFICIENT_INDEPENDENT_EVIDENCE",
+        "unresolved": "Need ordered parent gate trace; statefile is not transition history."
+      },
+      {
+        "check_id": "P02",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "State/F01 logical completion vs in-flight",
+        "observed": {
+          "planned": 768,
+          "reserved": 9,
+          "started_observed": 7,
+          "completed": 6,
+          "failed": 1,
+          "cancelled_before_start": 2,
+          "unknown": 0,
+          "not_started": 759,
+          "reserved_is_actual_call_start": false,
+          "unknown_credit_refunded": false,
+          "latest_state_is_transition_history": false
+        },
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P05",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Lost worker/parent conservatively unknown",
+        "observed": 0,
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": "Physical child exit is only a saved producer claim."
+      },
+      {
+        "check_id": "P06",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Phase barrier in control log",
+        "observed": [],
+        "judgment": "PASS",
+        "evidence": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "unresolved": null
+      },
+      {
+        "check_id": "P07",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Atomic one-shot scope reservation and nonreuse",
+        "observed": null,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Flags/state alone do not prove atomic admission. Baseline runtime artificial regressions supplied separately."
+      },
+      {
+        "check_id": "P10",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Global summary/receipt hashes and join declaration",
+        "observed": false,
+        "judgment": "PENDING_EVIDENCE",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "all_workers_joined is a receipt declaration; control WORKER_END precedes join in producer."
+      },
+      {
+        "check_id": "P11",
+        "target_SOURCE": "published P1 prototype / independent verifier",
+        "fixed_commit": "1cd2a7196bc48a4aa1a904d7bd351e3d8fbf45ff",
+        "schema_version": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+        "expected": "Retry0/resume false",
+        "observed": {
+          "retry": 0,
+          "resume": false
+        },
+        "judgment": "PASS",
+        "evidence": "COMPARED_SUMMARY_CLAIMS",
+        "unresolved": "Runtime claim-reuse refusal is separate artificial evidence."
+      }
+    ],
+    "cost_status": "VERIFIED_PARALLEL_COST_BOUNDARIES",
+    "cost_issues": null,
+    "full_trace_independent": "Only retained full documents; compact trace cannot be reconstructed"
+  }
+]

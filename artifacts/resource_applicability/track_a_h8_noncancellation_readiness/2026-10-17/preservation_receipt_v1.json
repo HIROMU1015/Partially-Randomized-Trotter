@@ -1,0 +1,83 @@
+{
+  "schema": "H8_NONCANCELLATION_PREPARATION_PRESERVATION_V1",
+  "B2_attempt02_protection_replica": {
+    "config_sha256": "749b6f91ec3babcc36f6f186869cdbe97648e0b14cf309b0eceff1a2c232b58a",
+    "checked_before_UTC": "2026-10-17T07:14:54.857141+00:00",
+    "checked_after_UTC": "2026-10-17T07:43:26.702862+00:00",
+    "protected_files": 692,
+    "protected_files_changed": 0,
+    "protected_worktrees": 127,
+    "protected_worktrees_changed": 0,
+    "method": "READ_ONLY_SIZE_SHA_AND_GIT_HEAD_STATUS_WITH_OPTIONAL_LOCKS_DISABLED",
+    "checker_sha256": "922760cb3671215a224d4dc466df471e80982e2451750c39ec7cca53c866965c"
+  },
+  "other_evidence": {
+    "preexisting_unprotected_worktrees": 4,
+    "preexisting_unprotected_worktrees_unchanged": true,
+    "files_hashed": 240,
+    "files_changed": 0,
+    "areas": [
+      "signed-bias run01 execution and preparation",
+      "bias-evidence audit snapshot",
+      "Phase C preparation snapshot",
+      "B2 attempt02 config/grants/lock/fresh gate"
+    ],
+    "checker_sha256": "e731e5f935891989f2bab2d3644700c98ad76bc482e81b8c26efe43e24fd9628",
+    "new_worktree_of_other_session_observed": "h8-b2-sine-spool-recovery-20261017 (not modified here)"
+  },
+  "B2_attempt02": {
+    "observed_running_JST": "16:06",
+    "resource_stop_JST": "16:15:03",
+    "launcher_and_witness_receipts_JST": "16:15:09",
+    "driver_terminal": "STOP",
+    "monitor_first_stop": "RuntimeError:MEMORY_PRESSURE",
+    "driver_native_exit_code": -9,
+    "witness_native_exit_code": 1,
+    "final_gate_file_present": false,
+    "new_axis_acceptance_files": [
+      "axis_01_accepted.json"
+    ],
+    "trigger": {
+      "group": "/sys/fs/cgroup/user.slice",
+      "full_avg10": 0.18,
+      "threshold": ">0",
+      "scope": "parent slice of all users"
+    },
+    "own_user_and_session_cgroups": {
+      "full_avg10_at_stop": 0.0,
+      "full_total_us_at_stop": [
+        1792,
+        1793
+      ],
+      "full_total_us_read_here_at_16_06_JST": [
+        1792,
+        1793
+      ],
+      "unchanged": true
+    },
+    "this_work_timeline_JST": {
+      "read_only_protection_check": "16:14:54 (0.49 s)",
+      "read_only_hash_inventory": "about 16:15:09-16:15:10",
+      "new_worktree_created": "16:15:18",
+      "input_snapshot_copy": "16:28"
+    },
+    "causation": "NO_EVIDENCE_THIS_WORK_CAUSED_THE_STOP; NOT_A_PROOF_OF_NONCAUSATION",
+    "writes_signals_locks_renames_affinity_in_B2_areas": 0,
+    "B2_receipts_read": "READ_ONLY_STATUS_FIELDS"
+  },
+  "concurrent_B2_session": {
+    "snapshot_file_mtime_JST": "16:43:36",
+    "this_worktree_recorded": {
+      "HEAD": "d567e6e1f3b1713b455a80da9b5c5f9e7848f2de",
+      "status_sha256": "7ae421d5fa0c370f2f66000536fbba10cf22d5db239e280af2f79e3658bb5140"
+    },
+    "handling": "Worktree HEAD/status kept frozen; documentation commit built with a temporary index and published by ref, local branch not moved",
+    "files_of_that_session_modified": 0,
+    "its_protected_files_under_this_work_areas": 0
+  },
+  "signed_bias_result_B2_STOP_SOURCE_raw_grant_ledger_marker_M1S_modified": false,
+  "shared_OS_scheduler_packages_venv_modified": false,
+  "other_users_processes_touched": false,
+  "own_CPU_affinity_or_limits_set": false,
+  "subagents": 0
+}

@@ -1,0 +1,124 @@
+{
+  "schema": "h4-pr-mean-cost-stage1-disabled-scalar-spec-v1",
+  "base_commit": "a5d96ae54d8cc3bc891d684570ad7e82160bab6c",
+  "status": "CONDITIONAL_SOURCE_MODEL_SCALAR_SPEC_READY_EXECUTION_NOT_AUTHORIZED",
+  "execution_enabled": false,
+  "fixed_scope": {
+    "geometry": "linear H4 adjacent1.00A / STO-3G",
+    "Pauli": "184 nonidentity / PR prefix27 / central rotation control",
+    "DF": "tol-only1e-8 / rank10 / one-body + fragment0 retained",
+    "formula": "S2",
+    "T_saved": 0.8,
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "n_system": 8,
+    "L_Pauli_retained": 27,
+    "compiler": "Qiskit1.3.0 rz/sx/x/cx opt1 seed17 no Target/backend/coupling/layout/routing",
+    "price": "full-wrapper compiled RZ; excludes state preparation",
+    "axes": [
+      "cosine",
+      "sine"
+    ]
+  },
+  "statistical_model": {
+    "status": "EXPLICIT_USER_ASSUMPTION",
+    "model": "IID trajectories under each representation fixed effective RTE law",
+    "confidence_decimal": "0.95",
+    "delta_cost_exact_decimal": "0.05",
+    "delta_axis_exact_decimal": {
+      "cosine": "0.025",
+      "sine": "0.025"
+    },
+    "axis_combination": "union bound; independence of cosine/sine NOT required",
+    "independence_of_PRNG_hierarchy_proved": false,
+    "quantum_shot_alpha_is_a_distinct_quantity": true,
+    "selected_DF_component_set_U_used_as_fixed_stratum": false
+  },
+  "input_bindings": {
+    "sample_count": {
+      "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+      "json_pointer": "/df_native_PR/n",
+      "saved_value": 256
+    },
+    "DF_saved_minima": {
+      "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+      "json_pointer": "/df_native_PR/observed_min",
+      "saved_value": {
+        "cosine": 21754,
+        "sine": 21754
+      }
+    },
+    "Pauli_model": "artifacts/non_df_h4_data_catalog/2026-10-25/catalog.json series pauli_jw_PR__central; fixed user dimensions above",
+    "raw_price_reaggregation_allowed": false,
+    "QPY_or_state_loading_allowed": false
+  },
+  "count_theorem": {
+    "status": "SOURCE_COUNT_BOUND_SUPPORTED_ON_NORMAL_RETURN",
+    "formula": "U_P,a = 12*q*L + q*r*((10*n+2)+7*n*K) + 7 + I(a=sine)",
+    "premises": [
+      "Same fixed standard gate family and library / SOURCE-to-runtime correspondence",
+      "Normally returning BasisTranslator cost search, no integer overflow",
+      "Native total-count nonincrease for the Target-free opt1 path",
+      "For whole-law mean application: normal completion on every allowed trajectory, not conditioning the event law on successful compilation"
+    ],
+    "full_law_runtime_totality_proved": false,
+    "wheel_binary_rebuild_equivalence_proved": false,
+    "unconditional_full_law_upper_accepted": false,
+    "failure_cost_zero_or_success_conditioned_law_allowed": false
+  },
+  "scalar_procedure": [
+    "After separate permission, bind exact integer dimensions and saved minima; convert delta using decimal strings, not Fraction(binary64_literal).",
+    "Evaluate each U_P,a once using integer arithmetic; no input circuit construction.",
+    "Reuse ONLY h4_conditional_cng.trans_bounds(ln, exact(2)/exact(delta_axis)) once because deltas match. Do not call reuse, shot, scale_bounds, cost_summary or rare_law.",
+    "Divide the ln enclosure by exact 2*n_s; use Decimal precision96 with outward rational-to-decimal endpoint conversion; surround each correctly rounded sqrt endpoint by next_minus/next_plus to enclose e.",
+    "Use exact rational endpoint arithmetic: L_lo=c_min*max(0,1-e_hi), L_hi=c_min*max(0,1-e_lo).",
+    "Per axis: U<L_lo means SUFFICIENT_INEQUALITY_SEPARATED; U>=L_hi means SUFFICIENT_BOUND_NOT_SEPARATED; otherwise NUMERICALLY_INCONCLUSIVE.",
+    "Separate numerical inequality status from premise status. Do not release full-law population ordering while a necessary premise is unresolved/unaccepted.",
+    "Save both axes and STOP after this single scalar batch. No automatic higher precision, law-weighted method, new data, N/G or certificate acceptance."
+  ],
+  "numerics": {
+    "decimal_precision": 96,
+    "rounding_scope": "Outward log and sqrt endpoints; exact integer/rational comparisons",
+    "new_sqrt_helper": "Only if needed at the future implementation stage; synthetic rational tests before H4 use",
+    "automatic_precision_escalation": false
+  },
+  "maximum_future_operations": {
+    "limited_scalar_batches": 1,
+    "U_integer_evaluations": 2,
+    "shared_log_enclosure_helper_calls": 1,
+    "shared_sqrt_endpoint_evaluations": 2,
+    "axis_lower_reductions": 2,
+    "axis_separation_tests": 2,
+    "circuit_builds": 0,
+    "compiles": 0,
+    "sampling_or_RNG_replay": 0,
+    "Hamiltonian_or_state_actions": 0,
+    "N_G_accounting": 0
+  },
+  "GO_conditions": [
+    "Separate explicit user permission for this limited scalar batch",
+    "Fixed input identities and confidence allocation retained",
+    "Count premises resolved OR explicitly retained as conditions of a SOURCE-model-only numerical diagnostic; unresolved premises block any stronger ranking claim"
+  ],
+  "STOP_conditions": [
+    "Both axes separated: report only the conclusion supported by the stated premises and stop",
+    "Any axis not separated: report conservatism, without inferring the reverse order, and stop",
+    "Numerical interval ambiguous, nonfinite value, exception, source mismatch or invalid count premise: stop; no fabricated result"
+  ],
+  "unresolved_questions": [
+    "All-allowed-input normal completion and SOURCE model to actual wheel correspondence remain explicit premises, not proved by the saved samples",
+    "True population price ordering has not been numerically tested",
+    "Population G, implementation residual rho, Pauli B0/B0I PF, best deterministic PF and other molecules are outside scope"
+  ],
+  "current_H4_scalar_values": {
+    "U_P_cosine": null,
+    "U_P_sine": null,
+    "e": null,
+    "L_D_cosine": null,
+    "L_D_sine": null,
+    "axis_separation": null
+  },
+  "new_scientific_grants_issued_or_consumed": 0,
+  "mandatory_STOP": true
+}

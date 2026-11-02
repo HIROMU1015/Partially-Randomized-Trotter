@@ -1,0 +1,213 @@
+{
+  "status": "INCOMPLETE_EVIDENCE",
+  "checks": [
+    {
+      "check_id": "B-I01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "Pinned source/schema/contract and declared runtime identity",
+      "observed": {
+        "planned": 1536,
+        "candidate_digest": "1afab47266d671b2cdfd105dfdb18cb9549b6bdf50972dc23bbf91a3de0c6f12",
+        "manifest_digest": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+        "run_id": "27cd5db651b69f3fe6659268fe2700e216d4f4fb2aa7e0573bba5a12371b4917",
+        "historical_runtime_bytes_proven": false,
+        "local_runtime_bytes_proven": true,
+        "runtime_projection": true,
+        "real_authority_verified": false
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-G01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "Single global planned/reserved/started/completed counters",
+      "observed": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-S01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "RAM state has exact physical statefile witness",
+      "observed": true,
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-T01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "Trusted operation prefix is validated; no tail reconstruction",
+      "observed": {
+        "bytes": 3961273,
+        "sha256": "8fe12c75d3c3acfd977557c23c689b5640038ef7aac83d26f96983b9c07a368c",
+        "trusted_bytes": 3961273,
+        "trusted_rows": 7939,
+        "chain": "afa1aac13686d3a857b7d48a006b1a0151ac5624228f2212ea21743087759c13",
+        "tail_bytes": 0,
+        "tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "untrusted_tail_used_as_history": false
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-A01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "One fake SPENT claim snapshot binding; no atomic history inference",
+      "observed": {
+        "snapshot": {
+          "schema": "b3_FAKE_ONLY_snapshot_v1",
+          "claim": [
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-06orbnea",
+            "04c45478537047e57e4f09c9883863d9f5797b6544d4c7f5d1b468ef9a5f7416",
+            "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+            "STOPPED",
+            1
+          ],
+          "history": [
+            [
+              1,
+              "ARTIFICIAL_ONLY/b3-bundle-artificial-06orbnea",
+              "CLAIM_COMMITTED",
+              "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482"
+            ],
+            [
+              2,
+              "ARTIFICIAL_ONLY/b3-bundle-artificial-06orbnea",
+              "STOP_COMMITTED",
+              "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482"
+            ]
+          ],
+          "real_authority": false
+        },
+        "sha256": "42e902e0f521b9d9c1ed9816dd10a53e9293461f413df6a897cb39c1f8fb20da",
+        "read_only": true,
+        "atomic_transition_history_independently_proven": false,
+        "real_authority": false
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-P01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "Full two-condition post-close receipt/marker/caller join",
+      "observed": {
+        "full_success_join": false,
+        "marker_alone_sufficient": false
+      },
+      "judgment": "PENDING",
+      "evidence": "verification.json",
+      "unresolved": [
+        "Delivery bytes are incomplete; caller independently observed persistence failure",
+        "External delivery after final close is absent",
+        "Caller observed bridge/delivery failure"
+      ],
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-B01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "Global result/log reserved/observed/physical accounting",
+      "observed": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525873,
+          "observed_or_projected": 5525873,
+          "physical_retained": 5521777,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4289283,
+          "observed_or_projected": 4289283,
+          "physical_retained": 4289283,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        }
+      },
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-C01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "public_HEAD": "d24cccbecdf0928fe977080dd7b28c591df0089e",
+      "input_identity": "32e32bcf3e249b781eb293ef8fb16f2e1f9fd49f0ada8e0bfe7861556d910482",
+      "expected": "Parent+worker CPU and caller outer wall; no double addition",
+      "observed": "VERIFIED_ARTIFICIAL_COST_BOUNDARIES",
+      "judgment": "PASS",
+      "evidence": "verification.json",
+      "unresolved": null,
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    },
+    {
+      "check_id": "B-R01",
+      "fixed_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+      "input_identity": "1afab47266d671b2cdfd105dfdb18cb9549b6bdf50972dc23bbf91a3de0c6f12",
+      "expected": "Historical runtime actual executable/library bytes independently available",
+      "observed": false,
+      "judgment": "PENDING",
+      "evidence": "verification.json",
+      "unresolved": [
+        "Saved hashes are declarations; current runtime is recorded separately"
+      ],
+      "formal_adoption_required": true,
+      "input_observed_path_at_execution": "/tmp/prt-b3-global-independent-local-20261019/fresh_producer_cases/local_delivery_write"
+    }
+  ],
+  "scientific_GO": false,
+  "mandatory_STOP": true,
+  "saved_input_archive": {
+    "manifest": "../../../local_artificial_raw_manifest.json",
+    "member_prefix": "fresh_cases/local_delivery_write"
+  },
+  "independent_source_inventory": "../../../source_inventory.json"
+}

@@ -1,0 +1,92 @@
+{
+  "status": "EXISTING_EVIDENCE_ONLY_NO_NEW_SCIENTIFIC_DECISIONS",
+  "series": [
+    {
+      "id": "H468_original_confirmation",
+      "result_commit": "e7a63b2b06a124f9305483aa39bcf1ba8cafdd0d",
+      "primary": "artifacts/resource_applicability/track_a_h468_paper_evidence_integration/2026-10-19/main_table_proposed.csv",
+      "SOURCE": {
+        "H4": "3c664ca4a9f003880b9f6d56f2a0e55ed5b56603",
+        "H6": "bf0c26dae4477de5fe7264a7c91e077661ef9b38",
+        "H8": "745a674546f2cb6258526fbfde1d9a00601689f8"
+      },
+      "conditions": "H4/H6/H8 linear 1 Angstrom STO-3G tol-only 1e-8 DF10/19/28; T=.8 P=0; signed bias, empirical allowance factor1; six fixed endpoint comparisons.",
+      "cohort": "H4 n1108/n78; H6 n48/n104; H8 n48/n48. Search n8 and legacy H4 DF12 excluded from pooling.",
+      "limitations": "H4 coarse NOT_REPRODUCED is retained; H6 coarse REPRODUCED means PF cheaper; H8 aliases existing Mechanism samples, not extra independent evidence."
+    },
+    {
+      "id": "H246_outer32_acquisition",
+      "result_commit": "a05f4ed19e87e1eb65f7fc346385b5b4eae69845",
+      "primary": "artifacts/resource_applicability/track_a_h2_outer32_run01/2026-10-21/summary.json",
+      "SOURCE": "4ec26921c6872ed6e8667f167074e1e405cf1a3f",
+      "conditions": "H2 linear 1 Angstrom STO-3G DF3 prefix1; T=.8 P=0; S2/Yoshida4/m5_best q1/2/4/8 K4 outer32.",
+      "cohort": "525 exploration trajectories; 396 design-pilot trajectories kept separate.",
+      "limitations": "Acquisition completion alone is not a ranking or population expectation guarantee."
+    },
+    {
+      "id": "H46_outer32_acquisition",
+      "result_commit": "605ca07a653241db49348fbd7f4e091f9f18ced7",
+      "primary": "artifacts/resource_applicability/track_a_h46_pr_exploration_run01/2026-10-21/run_summary.json",
+      "SOURCE": "5a448d94ea389ada6e2b2755de6a215ed2034679",
+      "conditions": "H4 DF10/prefix3 and H6 DF19/prefix5, linear 1 Angstrom STO-3G tol-only1e-8, T=.8 P=0, S2/Yoshida4/m5_best q1/2/4/8 K4 outer32.",
+      "cohort": "H4 793 / H6 607 exploration trajectories; pilot and independent confirmation not pooled.",
+      "limitations": "Same nominal compiler profile does not prove identical historical loaded runtime."
+    },
+    {
+      "id": "H246_saved_cost_results",
+      "result_commit": "8613b3ecda2030a677b1690fe7aa3da23dec4873",
+      "primary": "artifacts/resource_applicability/track_a_h246_saved_cost_results/2026-10-21/formula_comparison_30.csv",
+      "SOURCE": "9a77d2b0a0b87e246e85f085b37f5923c18e27bb",
+      "conditions": "Same outer32 H2/H4/H6 acquisition; five saved precisions .05/.01/.005/.001/.0005; declared conditional empirical allowance/shot policy.",
+      "cohort": "36 PR exploration groups and separate saved deterministic m5 subset; no new pooling here.",
+      "limitations": "Earlier SHOT_POLICY_NOT_ADOPTED STOP remains history; later stored evaluation is present. Noncancellation B0/B0I missing components and unsupported population guarantees remain."
+    },
+    {
+      "id": "H246_independent_confirmation_run01",
+      "result_commit": "0d3578a4584a924ed10bdd124db6093e02d90c94",
+      "primary": "candidates/h246_confirmation_run01/confirmation_results.json",
+      "SOURCE": "8825391ff73b531be5834bf852b9bf2479d1799b",
+      "conditions": "H2/H4/H6 DF3/10/19 prefix1/3/5, linear1 Angstrom STO-3G, T=.8 P=0, K4 outer32, epsilon=.0005; fixed formula/q pairs.",
+      "cohort": "H2 S2 q4 n24 / Yoshida4 q2 n28; H4 S2 q8 n25 / m5 q1 n9; H6 run01 planned32, accepted0.",
+      "limitations": "LOCAL_ONLY_PENDING_PUBLICATION_APPROVAL. H2/H4 saved REPRODUCED; H6 run01 SIGBUS STOP NOT_EVALUATED; do not replace missing H6 with zero."
+    },
+    {
+      "id": "H6_independent_recovery_run02",
+      "result_commit": null,
+      "primary": "candidates/h6_recovery_run02/axis_costs_64.csv",
+      "SOURCE": "01d12e3384f8c06a31cf9da0c8149c86ec4b6ee2",
+      "conditions": "Saved H6 recovery fixed confirmation tasks; candidate formula/prefix/q/K and metrics transcribed per row, without recomputing statistics.",
+      "cohort": "32 task results /64 axis records; distinct from run01 failure and other cohorts.",
+      "limitations": "SOURCE not available on GitHub at lookup. Saved exit0 and complete unit-cost witness present; final end_audit.json not found; no aggregate confirmation evaluation asserted."
+    },
+    {
+      "id": "H2_common_diagnostics",
+      "result_commit": "e7a63b2b06a124f9305483aa39bcf1ba8cafdd0d",
+      "primary": "artifacts/resource_applicability/track_a_h2_diagnostics_execution/2026-10-23/run01/diagnostic_projection.json",
+      "SOURCE": "35444654f9159a5d85debdbc577feab0590e2610",
+      "conditions": "H2 1 Angstrom STO-3G tol-only1e-8 DF3 T=.8 epsilon_sig=.0005 alpha_axis=.025 P=0; Full S2/q4, Full Y4/q2, PR S2/q4, PR Y4/q2.",
+      "cohort": "Four fixed diagnostic candidates, no cost/shot/ranking measurement.",
+      "limitations": "PR complete historical operation-stream/runtime/correctness join remains unresolved despite newly found O00002."
+    },
+    {
+      "id": "H2_original_metadata_export",
+      "result_commit": "e3531956af6a6d359e2f1fb320e9a5179f41eb98",
+      "primary": "artifacts/resource_applicability/track_a_h2_outer32_metadata_export/2026-10-23/completion_status.json",
+      "SOURCE": "4ec26921c6872ed6e8667f167074e1e405cf1a3f",
+      "conditions": "Existing H2 acquisition metadata and compiler guard receipts; original raw/event/runtime payloads are not republished.",
+      "cohort": "Historical 67-task evidence request; not a new acquisition.",
+      "limitations": "Public metadata export is not proof of full raw stream/runtime identity."
+    },
+    {
+      "id": "static_claim_audit",
+      "result_commit": "df7beb8588a3866a7dac2f29add4be7493d092db",
+      "primary": "artifacts/resource_applicability/track_a_final_technical_audit/2026-10-19/E_claim_evidence/claim_evidence_matrix.csv",
+      "SOURCE": null,
+      "conditions": "Existing A rare events/B domain/C nonclifford/D H6 lineage/E claim-evidence audit.",
+      "cohort": "Historical finite-sample cohorts remain separate.",
+      "limitations": "Static technical investigation; not an independent scientific review or population certification."
+    }
+  ],
+  "values_and_units": "Referenced original tables or byte-identical copies control; no recomputation or re-ranking.",
+  "host_attribution": "See environment_scope.json; indexed cross-environment references are not reassigned to this host."
+}

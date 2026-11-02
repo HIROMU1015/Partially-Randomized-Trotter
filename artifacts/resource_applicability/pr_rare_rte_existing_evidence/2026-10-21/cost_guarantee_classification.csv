@@ -1,0 +1,17 @@
+id,classification,existing_evidence,valid_scope,limitation,evidence_id
+MATH_NORMALIZATION,既存数学的関係,B_infinity≤exp(τ²)、finite B_K,normalization/attenuation,compiled費用ではない,CONVENTIONS
+MATH_RESIDUAL,既存数学的関係,step/occurrence/round Taylor residual,operator/signal誤差,RZ/CXの確率的tail上界でない,CONVENTIONS
+FINITE_LAW,法則の定義＋実装,a_n/B_K・component iid・multinomial,固定tail/time/r/Kのモデル,SOURCE実装/seed分離と数学的独立性/丸め保証を分ける,RTE_SOURCE
+EXACT_EVENT,保存exact有限model期待値,全event列挙×実compiled metric,旧H4 K0単event,指定P full-wrapper全trajectoryの期待値ではない,EVENT_EXACT_SAVED
+MC_WHOLE_WRAPPER,経験的推定,無条件paired標本平均・SE,固定8条件と固定shot,未観測層の母平均保証でない,H6_result
+CONDITIONAL_PILOT,経験的条件付き推定,s2/multi/s4小標本,旧p5またはp7 q4/8等,別Pへ移送しない。部分supportのn8で全support上限にしない,B_DIAGNOSTIC
+SENSITIVITY,解析的条件付き感度,未知μを変数にした逆転境界,旧H6/H8保存S0/single点等に条件付く,逆転境界を未知費用の実測値/厳密上界にしない,H8_RARE
+BOOTSTRAP,経験的再抽選診断,保存経験分布/累積列,H4同P、H8旧union,未観測層を再現しない。分位範囲≠厳密CI/selection-adjusted coverage,H4_MC
+SAMPLE_MAX,保存標本の最大値,group min-max/観測maximum,保存trajectoryのみ,全support compiled boundでない,H4_MC
+NATIVE_GUARD,実装上の制限,native instruction/最大request/transpile/size guard,当該API・成功枝,guard通過・全support正常終了の証明でない,H6_RARE
+THEORY_DP,固定分解の解析的モデル,A/B/native mixed有限law期待値・phase lower/upper,明示loweringとbasis再利用政策,Fractionは入力丸めを消さない。実Qiskit upper boundでない,THEORY_REUSE
+L1,固定profile下の条件付きコード事実,最終RZ≤完全basis translation直後の総gate数,target/error/routing等なしの特定pipeline,native命令数/理論RZへ置換不可。今回Pへの仮定結合未完,TIER_R
+L2,一部静的確認・未充足,固定mapのtemplate加法性,同じreplacement map/前処理に条件付く,全native t(g)、CRZZ/CCX再帰、mutable library、Rust/runtime、alphabet未確認,TIER_R
+TIER_R,未採択・未評価,law×正当化したtranslation重みの期待費用案,必要仮定確定後の候補,数値上界なし。今回新上界採択・数値評価しない,TIER_R
+CLUSTER_Q_PROXY,解析的proxy＋局所経験検証,connected-cluster・q依存費用fit/holdout,指定snapshot/範囲/compiler,局所5%/2%診断をrigorous boundにしない,COST_HISTORY
+PF100,条件付き保存値診断,重複100scope/unique40のPF単価政策比較,旧確認union8/6 n32,PR rare expectation/P再確認/全候補母平均保証ではない,Q100

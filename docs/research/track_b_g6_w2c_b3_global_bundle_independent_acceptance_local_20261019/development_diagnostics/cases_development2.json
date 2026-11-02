@@ -1,0 +1,1042 @@
+{
+  "schema": "global_bundle_independent_case_matrix_local_v1",
+  "cases": [
+    {
+      "case": "F01_after_event",
+      "status": "TECHNICAL_FAILURE",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 4237933,
+          "observed_or_projected": 4237933,
+          "physical_retained": 4237933,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 33830,
+          "observed_or_projected": 33830,
+          "physical_retained": 33830,
+          "unknown_credit": 0,
+          "trace_self_bytes": 15632,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "F01_after_event.json"
+    },
+    {
+      "case": "P1_complete_persistence",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "P1_complete_persistence.json"
+    },
+    {
+      "case": "P1_enter_persistence",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "P1_enter_persistence.json"
+    },
+    {
+      "case": "P1_failure_preserves_S",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "P1_failure_preserves_S.json"
+    },
+    {
+      "case": "P1_inflight_drain",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "P1_inflight_drain.json"
+    },
+    {
+      "case": "P1_reserve_persistence",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "P1_reserve_persistence.json"
+    },
+    {
+      "case": "S_complete_persistence",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "S_complete_persistence.json"
+    },
+    {
+      "case": "S_enter_persistence",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "S_enter_persistence.json"
+    },
+    {
+      "case": "S_failure_blocks_P1",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "S_failure_blocks_P1.json"
+    },
+    {
+      "case": "S_reserve_persistence",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "S_reserve_persistence.json"
+    },
+    {
+      "case": "admission_commit_ack_unknown",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final host witness absent; RAM/full transitions/close and costs are not established"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "admission_commit_ack_unknown.json"
+    },
+    {
+      "case": "call_cap",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "call_cap.json"
+    },
+    {
+      "case": "delivery_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Caller observed bridge/delivery failure"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526890,
+          "observed_or_projected": 5526890,
+          "physical_retained": 5526890,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285676,
+          "observed_or_projected": 4285676,
+          "physical_retained": 4285676,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "delivery_close.json"
+    },
+    {
+      "case": "diagnostic_save",
+      "status": "TECHNICAL_FAILURE",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525769,
+          "observed_or_projected": 5525436,
+          "physical_retained": 5525436,
+          "unknown_credit": 333,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4286582,
+          "observed_or_projected": 4286582,
+          "physical_retained": 4286582,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3962044,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "diagnostic_save.json"
+    },
+    {
+      "case": "fake_STOP_save",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Fake STOP was not persisted; SPENT is retained"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525663,
+          "observed_or_projected": 5525663,
+          "physical_retained": 5525663,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4287015,
+          "observed_or_projected": 4287015,
+          "physical_retained": 4287015,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3962392,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "fake_STOP_save.json"
+    },
+    {
+      "case": "final_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final close/persistence was not successfully observed"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526961,
+          "observed_or_projected": 5526961,
+          "physical_retained": 5526961,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285592,
+          "observed_or_projected": 4285592,
+          "physical_retained": 4285592,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": false
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "final_close.json"
+    },
+    {
+      "case": "journal_STOP_save",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Storage/write/flush/close failure retained",
+        "Journal incomplete; no missing operations are inferred"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "journal_STOP_save.json"
+    },
+    {
+      "case": "journal_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained",
+        "Journal incomplete; no missing operations are inferred"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525799,
+          "observed_or_projected": 5525799,
+          "physical_retained": 5525799,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4286259,
+          "observed_or_projected": 4285834,
+          "physical_retained": 4285834,
+          "unknown_credit": 425,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "journal_close.json"
+    },
+    {
+      "case": "log_cap",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final host witness absent; RAM/full transitions/close and costs are not established"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "log_cap.json"
+    },
+    {
+      "case": "marker_save",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final close/persistence was not successfully observed",
+        "Receipt/marker persistence failed after storage close"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526932,
+          "observed_or_projected": 5526606,
+          "physical_retained": 5526606,
+          "unknown_credit": 326,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285686,
+          "observed_or_projected": 4285686,
+          "physical_retained": 4285686,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "marker_save.json"
+    },
+    {
+      "case": "missing_ACK_unknown_credit",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "missing_ACK_unknown_credit.json"
+    },
+    {
+      "case": "normal_P1",
+      "status": "VERIFIED_ARTIFICIAL_CONDITION_ONLY",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 768,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 4880974,
+          "observed_or_projected": 4880974,
+          "physical_retained": 4880974,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 2156112,
+          "observed_or_projected": 2156112,
+          "physical_retained": 2156112,
+          "unknown_credit": 0,
+          "trace_self_bytes": 1987963,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "normal_P1.json"
+    },
+    {
+      "case": "normal_S",
+      "status": "VERIFIED_ARTIFICIAL_CONDITION_ONLY",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 768,
+        "started": 768,
+        "completed": 768,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 4880425,
+          "observed_or_projected": 4880425,
+          "physical_retained": 4880425,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 2145112,
+          "observed_or_projected": 2145112,
+          "physical_retained": 2145112,
+          "unknown_credit": 0,
+          "trace_self_bytes": 1977455,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "normal_S.json"
+    },
+    {
+      "case": "normal_bundle_n256",
+      "status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 16896,
+        "reserved": 16896,
+        "started": 16896,
+        "completed": 16896,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 15502271,
+          "observed_or_projected": 15502271,
+          "physical_retained": 15502271,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 43190850,
+          "observed_or_projected": 43190850,
+          "physical_retained": 43190850,
+          "unknown_credit": 0,
+          "trace_self_bytes": 42846844,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": true,
+      "evidence": "normal_bundle_n256.json"
+    },
+    {
+      "case": "normal_bundle_small",
+      "status": "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526982,
+          "observed_or_projected": 5526982,
+          "physical_retained": 5526982,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285747,
+          "observed_or_projected": 4285747,
+          "physical_retained": 4285747,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": true,
+      "evidence": "normal_bundle_small.json"
+    },
+    {
+      "case": "parent_crash",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final host witness absent; RAM/full transitions/close and costs are not established"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "parent_crash.json"
+    },
+    {
+      "case": "parent_dispatch_failure",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Dispatch aborted before WORKER_START was physically saved"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "parent_dispatch_failure.json"
+    },
+    {
+      "case": "partial_worker_write",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "partial_worker_write.json"
+    },
+    {
+      "case": "receipt_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final close/persistence was not successfully observed",
+        "Receipt/marker persistence failed after storage close"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526626,
+          "observed_or_projected": 5526626,
+          "physical_retained": 5526626,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285650,
+          "observed_or_projected": 4285650,
+          "physical_retained": 4285650,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "receipt_close.json"
+    },
+    {
+      "case": "receipt_flush",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final close/persistence was not successfully observed",
+        "Receipt/marker persistence failed after storage close"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526586,
+          "observed_or_projected": 5526586,
+          "physical_retained": 5526586,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285667,
+          "observed_or_projected": 4285667,
+          "physical_retained": 4285667,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "receipt_flush.json"
+    },
+    {
+      "case": "receipt_save",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Final close/persistence was not successfully observed",
+        "Receipt/marker persistence failed after storage close"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5526584,
+          "observed_or_projected": 5525768,
+          "physical_retained": 5525768,
+          "unknown_credit": 816,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285635,
+          "observed_or_projected": 4285635,
+          "physical_retained": 4285635,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "receipt_save.json"
+    },
+    {
+      "case": "reserved_worker_crash",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "reserved_worker_crash.json"
+    },
+    {
+      "case": "result_cap",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "result_cap.json"
+    },
+    {
+      "case": "state_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525800,
+          "observed_or_projected": 5525800,
+          "physical_retained": 5525800,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4286192,
+          "observed_or_projected": 4285808,
+          "physical_retained": 4285808,
+          "unknown_credit": 384,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "state_close.json"
+    },
+    {
+      "case": "state_entry_write",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "RAM intent is not fully witnessed by physical state",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "state_entry_write.json"
+    },
+    {
+      "case": "state_reserve_write",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "RAM intent is not fully witnessed by physical state",
+        "Late RESERVE notification has only a failed-persistence RAM intent witness",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "state_reserve_write.json"
+    },
+    {
+      "case": "summary_save",
+      "status": "TECHNICAL_FAILURE",
+      "issues": [],
+      "evidence_gaps": [],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525426,
+          "observed_or_projected": 5523881,
+          "physical_retained": 5523881,
+          "unknown_credit": 1545,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285902,
+          "observed_or_projected": 4285902,
+          "physical_retained": 4285902,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961342,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "summary_save.json"
+    },
+    {
+      "case": "trace_STOP_save",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "trace_STOP_save.json"
+    },
+    {
+      "case": "trace_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "issues": [],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "output_budget": {
+        "result": {
+          "limit": 68719476736,
+          "reserved": 5525758,
+          "observed_or_projected": 5525758,
+          "physical_retained": 5525758,
+          "unknown_credit": 0,
+          "trace_self_bytes": 0,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        },
+        "log": {
+          "limit": 268435456,
+          "reserved": 4285810,
+          "observed_or_projected": 4285810,
+          "physical_retained": 4285810,
+          "unknown_credit": 0,
+          "trace_self_bytes": 3961273,
+          "refunded": false,
+          "self_projection_independently_delivered": true
+        }
+      },
+      "comparison_eligible": false,
+      "evidence": "trace_close.json"
+    },
+    {
+      "case": "trace_complete_flush",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "trace_complete_flush.json"
+    },
+    {
+      "case": "trace_partial",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [
+        "Only the declared trusted prefix is evidence; tail and unsaved operations remain unknown",
+        "Storage/write/flush/close failure retained"
+      ],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "trace_partial.json"
+    },
+    {
+      "case": "worker_crash",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "worker_crash.json"
+    },
+    {
+      "case": "worker_flush",
+      "status": "INTEGRITY_MISMATCH",
+      "issues": [
+        "UNSUPPORTED_COARSE_STAGE"
+      ],
+      "evidence_gaps": [],
+      "calls": null,
+      "output_budget": null,
+      "comparison_eligible": false,
+      "evidence": "worker_flush.json"
+    }
+  ],
+  "counts": {
+    "TECHNICAL_FAILURE": 3,
+    "INTEGRITY_MISMATCH": 23,
+    "INCOMPLETE_EVIDENCE": 13,
+    "VERIFIED_ARTIFICIAL_CONDITION_ONLY": 2,
+    "VERIFIED_ARTIFICIAL_BUNDLE_COMPLETE": 2
+  },
+  "case_count": 43,
+  "elapsed_seconds": 6.695093429647386,
+  "process_parallelism": 32,
+  "scientific_calls": 0,
+  "producer_imports_in_consumer": 0
+}

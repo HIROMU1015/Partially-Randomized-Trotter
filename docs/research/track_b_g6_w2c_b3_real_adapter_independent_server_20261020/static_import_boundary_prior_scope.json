@@ -1,0 +1,52 @@
+{
+  "status": "SCOPE_DEPENDENCY_CONFLICT_REQUIRES_DECISION",
+  "source": "b7ad344401b10395c49e4cfa806909282859bab5",
+  "user_static_only_modules": [
+    "g6_f3_contract",
+    "g6_f3_generator",
+    "g6_f3_precision",
+    "g6_w2c_b3_driver",
+    "g6_w2c_cost_preparation",
+    "g7_generator",
+    "g7_provider",
+    "return_aggregation"
+  ],
+  "candidate_guard_forbids_only_six": true,
+  "eager_dependencies_from_artificial_bits": [
+    {
+      "module": "trottertracks.algorithm_codesign.g6_w2c_cost_preparation",
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py",
+      "chain": [
+        {
+          "importer": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/bits.py",
+          "module": "trottertracks.algorithm_codesign.g6_w2c_b3_api_binding_v1.ports",
+          "line": 4,
+          "syntax": "from ..g6_w2c_b3_api_binding_v1.ports import install_guard"
+        },
+        {
+          "importer": "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/ports.py",
+          "module": "trottertracks.algorithm_codesign.g6_w2c_b3_parallel_driver",
+          "line": 7,
+          "syntax": "from .. import g6_w2c_b3_parallel_driver as D"
+        },
+        {
+          "importer": "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_driver.py",
+          "module": "trottertracks.algorithm_codesign.g6_w2c_cost_preparation",
+          "line": 20,
+          "syntax": "from . import g6_w2c_cost_preparation as audit"
+        }
+      ]
+    }
+  ],
+  "observed_probe_failure": "SUBJECT_PRELOAD_DENIAL:trottertracks.algorithm_codesign.g6_w2c_cost_preparation",
+  "prohibited_module_loaded": false,
+  "initial_probe_failed_before_test_execution": true,
+  "operational_science_processing_observed": false,
+  "interpretation": "The helper is stdlib artificial audit infrastructure, but user section 3E expressly restricts it to static reading. This is not evidence that real G7/F3 sampling ran.",
+  "resolution_options": [
+    "Explicit permission for artificial execution of this helper and, for old regressions, g6_w2c_b3_driver; preserve the six core science prohibitions",
+    "Separate versioned Producer dependency refactor; then repeat affected acceptance against the new fixed SOURCE"
+  ],
+  "producer_modified": false,
+  "guard_bypass_or_stub": false
+}

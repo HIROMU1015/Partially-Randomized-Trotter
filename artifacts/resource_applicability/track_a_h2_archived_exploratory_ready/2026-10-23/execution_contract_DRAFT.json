@@ -1,0 +1,103 @@
+{
+  "schema": "H2_FOUR_METHOD_ARCHIVED_COST_EXPLORATORY_V1",
+  "status": "SEALED_AWAITING_SEPARATE_SCIENTIFIC_APPROVAL",
+  "contract_sha256": "a71201e23738f5b7117213fb94dfe265d307ca4f194de2ef0defc55a950d6e23",
+  "input_manifest_sha256": "e30c4de7ef9a48fd04696367bb2dda68ba8829cc4ba8026598af0d337775fffe",
+  "source_commit": "aca689060d302b4e1f37d32d7075c9266b637f56",
+  "physical": {
+    "system": "linear_H2_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 3,
+    "rank_policy": "tol_only_1e-8",
+    "T": 0.8,
+    "epsilon": 0.0005,
+    "alpha_axis": 0.025,
+    "P": 0,
+    "n_qubits": 4,
+    "ancilla": 4,
+    "control": "symmetric_directional",
+    "bias_mode": "USUAL_SIGNED"
+  },
+  "candidates": [
+    {
+      "id": "B1_p3_q4_2nd",
+      "method": "FULL",
+      "formula": "2nd",
+      "prefix": 3,
+      "q": 4,
+      "K": null,
+      "r_policy": null,
+      "r_value": null
+    },
+    {
+      "id": "B1_p3_q2_4th",
+      "method": "FULL",
+      "formula": "4th",
+      "prefix": 3,
+      "q": 2,
+      "K": null,
+      "r_policy": null,
+      "r_value": null
+    },
+    {
+      "id": "H2O32_c7ec590a32a859bc",
+      "method": "PR",
+      "formula": "2nd",
+      "prefix": 1,
+      "q": 4,
+      "K": 4,
+      "r_policy": "ABS_TIME_PER_OUTER",
+      "r_value": 32
+    },
+    {
+      "id": "H2O32_8a2ecdd0294ffb74",
+      "method": "PR",
+      "formula": "4th",
+      "prefix": 1,
+      "q": 2,
+      "K": 4,
+      "r_policy": "ABS_TIME_PER_OUTER",
+      "r_value": 32
+    }
+  ],
+  "exact_calls": {
+    "bootstrap": 1,
+    "bundle_load": 1,
+    "allowance": 4,
+    "empirical_allowance": 4,
+    "accounting": 4,
+    "u_aware_shots": 4,
+    "axis_headroom": 8,
+    "cost_statistics": 4,
+    "resource_row": 4,
+    "metric_summary": 8,
+    "ranking": 1,
+    "sampling": 0,
+    "circuit_build": 0,
+    "lowering": 0,
+    "compile": 0,
+    "transpile": 0,
+    "simulate": 0,
+    "signal": 0,
+    "reference_recompute": 0,
+    "prepare": 0,
+    "setup": 0,
+    "primitive_evaluation": 0
+  },
+  "run_root": "${NEW_EXPLORATORY_ASSETS}/EXPLORATORY_run01",
+  "retry": false,
+  "mandatory_STOP": true,
+  "science_authorized": false,
+  "grant_issued": false,
+  "strict_COMPARE": "BLOCKED",
+  "limitations": [
+    "Full_complete_parameter_stream",
+    "historical_actual_load",
+    "provider_dynamic_noninterference",
+    "Py312_vs_Py311_output_equivalence",
+    "A_independent_absolute_diagonal",
+    "single_state_not_operator",
+    "finite_sample_not_population_mean",
+    "empirical_allowance_not_certificate"
+  ]
+}

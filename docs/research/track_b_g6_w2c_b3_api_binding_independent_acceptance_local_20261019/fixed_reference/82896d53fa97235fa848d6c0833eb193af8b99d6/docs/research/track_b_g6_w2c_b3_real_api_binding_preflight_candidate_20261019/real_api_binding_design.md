@@ -1,0 +1,13 @@
+# 閉鎖port設計
+
+固定SOURCE：[78c571005fe766c61b32dc867e006531099ff608](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/78c571005fe766c61b32dc867e006531099ff608)。直接基点 `d24cccbecdf0928fe977080dd7b28c591df0089e`。ローカル独立受入 `6bffb5b5819918698b522270ff19b255766d3072` は固定参照のみでmerge/rebaseしない。
+
+今回の範囲は静的読取・AST・hash照合と人工技術検証。実科学入口閉鎖、科学的採択なし、mandatory STOP。サーバーCodex主担当一名による自己検証であり、別reviewerの独立受入ではない。
+
+新namespaceは src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/。static.pyがSOURCE path/name/signature inventory/入力/precision/監視を結ぶ。ports.pyが人工専用ArtificialEndpoint.sample(bits,trial_id)、angle_for(result)、shared_identity、ArtificialBitsを実装。人工結果は固定parallel driverのOutcomeへ渡し、固定run_pair/fused codec/CachedObserver/F01を再利用する。
+
+実module loader/callable resolver/科学dispatchは実装していない。production_entry、real_bits、real_authorityは引数とbooleanに無関係に拒否。人工factory/bitsとfake storeの型・namespaceを限定する。人工event/angleはsurrogateであり、実law、F3 Evidence、角度enclosureと等価ではない。
+
+exercise.pyは48pair・6phaseのport interface gridであり、Global Bundleを再実装しない。Sを逐次、P1を8 spawn、pairごとfresh workerで人工APIの形状を検証する。global admission/call/byte schedulerやStorage V2を書き直さない。固定Bundleはその既存run_case/run_matrix/run_testsを別試験として実行した。portのsidecar保存量はBundle予算へ混入させず、既存Bundle内へ新portを注入できたという結論を出さない。
+
+offline.pyはports/exercise/static/authority/Producer/schedulerをimportせず、固定offline codec/F01/cost primitivesからidentity/consumption/prefix/claim snapshot/callerを別ロジックで照合する。後続のローカルCodex独立受入は別作業。

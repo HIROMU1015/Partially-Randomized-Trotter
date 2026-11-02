@@ -1,0 +1,247 @@
+{
+  "schema_version": 1,
+  "date_jst": "2026-10-23",
+  "environment_id": "ENV-LOCAL-01",
+  "audience": "sanitized_repository_report",
+  "search_scope_file": "SEARCH_SCOPE.json",
+  "science_executed": false,
+  "original_payload_exported": false,
+  "mandatory_stop": true,
+  "limits": [
+    "探索範囲内のファイル名・研究語・既知保存先・既存manifestと、候補に結び付く特定Git履歴だけを確認した。全ファイルの内容検索ではない。",
+    "別host、SSH接続先、他ユーザー領域、共有設定、未知の保存領域には探索を広げていない。",
+    "symlink先ディレクトリ、Gitのunreachable/dangling object・reflog、無関係な研究領域、アプリcache内部は未調査。",
+    "圧縮物4235件はファイル名のみを記録した。member検索・展開はしておらず、圧縮物内部の不存在は主張しない。",
+    "旧screeningが指す旧研究rootは現環境で存在しなかった。具体的な内部絶対パスは公開版から除外した。",
+    "実施したfilename検索・既知path probeに権限エラーはなかった。未調査領域をACCESS_UNAVAILABLEや不存在と分類していない。",
+    "並行作業のworktreeや科学processを凍結・変更していない。観測は探索時点の限定された結果である。"
+  ],
+  "gap_id": "GAP-001",
+  "status": "NOT_FOUND_IN_SEARCH_SCOPE",
+  "resolved": false,
+  "items": [
+    {
+      "requested": "H2_H6_2nd_grouped_uwc_alpha_bliss_quadratic_theta_0p01_gpu.json",
+      "status": "NOT_FOUND_IN_SEARCH_SCOPE"
+    },
+    {
+      "requested": "H3_bliss_sector_scaling_diagnostics.json",
+      "status": "NOT_FOUND_IN_SEARCH_SCOPE"
+    },
+    {
+      "requested": "H2_H6_2nd_grouped_uwc_alpha_simple_shift_gpu.json",
+      "status": "NOT_FOUND_IN_SEARCH_SCOPE"
+    },
+    {
+      "requested": "grouped_uwc_pf_qpe theta sweep JSON/CSV, comparison raw, original run manifest/log and run-bound inputs",
+      "status": "NOT_FOUND_IN_SEARCH_SCOPE"
+    }
+  ],
+  "available_source_snapshots": [
+    {
+      "path": "src/trotterlib/uwc.py",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "2ac09a203c36169a376724356d1a4ad956a1b4ea",
+      "git_blob_oid_recomputed": "2ac09a203c36169a376724356d1a4ad956a1b4ea",
+      "git_blob_oid_matches": true,
+      "bytes": 24903,
+      "sha256": "24107639fd4768eae39e1717b637c9c321874bd6685e7be5904cd7ec01cdf880",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/src/trotterlib/uwc.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "src/trotterlib/grouped_uwc_comparison.py",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "b1c668c001b60500237cf2e0ee9288601fd53164",
+      "git_blob_oid_recomputed": "b1c668c001b60500237cf2e0ee9288601fd53164",
+      "git_blob_oid_matches": true,
+      "bytes": 42669,
+      "sha256": "42d363dcf78c56113f37496ddc8bc37912d04f89b2c73c75f689b5edf208062f",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/src/trotterlib/grouped_uwc_comparison.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "scripts/run_grouped_uwc_pf_qpe.py",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "3da811e1971130733ea16d13200fb9ee5bac7ae0",
+      "git_blob_oid_recomputed": "3da811e1971130733ea16d13200fb9ee5bac7ae0",
+      "git_blob_oid_matches": true,
+      "bytes": 9346,
+      "sha256": "697bb4054b3433744a0d97c253507b7a607d3fa11ee604560359ecc01d411868",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/scripts/run_grouped_uwc_pf_qpe.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "scripts/run_uwc_grouped_alpha_h2_h6.py",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "14b8f7c43e384f7a04884aacd61355f2e8d9fe74",
+      "git_blob_oid_recomputed": "14b8f7c43e384f7a04884aacd61355f2e8d9fe74",
+      "git_blob_oid_matches": true,
+      "bytes": 14992,
+      "sha256": "edfc3e2d580bcd526106ea99b6f7096988e997a77d8f10e55c4280fc89a3b37b",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/scripts/run_uwc_grouped_alpha_h2_h6.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "src/trotterlib/config.py",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "6df176524a81767383781fca8c1279e73d75df79",
+      "git_blob_oid_recomputed": "6df176524a81767383781fca8c1279e73d75df79",
+      "git_blob_oid_matches": true,
+      "bytes": 12783,
+      "sha256": "15e12517f82ed3e9d56eac8a272693ced87226a8ae5e97351e1c2c9b4e3415ca",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/src/trotterlib/config.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "src/trotterlib/io_cache.py",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "4b90e4d48a4d6a764e9193d1d52a35e2d3c9445b",
+      "git_blob_oid_recomputed": "4b90e4d48a4d6a764e9193d1d52a35e2d3c9445b",
+      "git_blob_oid_matches": true,
+      "bytes": 1580,
+      "sha256": "e7504b620eabf71af5f88992113a7306ed0506d5e7b99ca705aa43afb1d00ca1",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/src/trotterlib/io_cache.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "requirements.txt",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "e923f2184dea3c2301766197b00ee9443f1e2ce8",
+      "git_blob_oid_recomputed": "e923f2184dea3c2301766197b00ee9443f1e2ce8",
+      "git_blob_oid_matches": true,
+      "bytes": 297,
+      "sha256": "d9f2e0af70bf58be27c6e46b3c28bfece031591de9988420f73d08cecfa2c111",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/requirements.txt",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "requirements-gpu.txt",
+      "git_commit": "0ce0389c5d907995558f4a3b1b8c593fd6494d77",
+      "git_blob_oid": "dfb9f8b2ed27aedec956d833ea2aa0b3b28c0811",
+      "git_blob_oid_recomputed": "dfb9f8b2ed27aedec956d833ea2aa0b3b28c0811",
+      "git_blob_oid_matches": true,
+      "bytes": 43,
+      "sha256": "cbc27b46c5766d24e10de2936a27932bd222a1c64acca52b7967c5ff35ae676a",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0ce0389c5d907995558f4a3b1b8c593fd6494d77/requirements-gpu.txt",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "src/trotterlib/grouped_uwc_theta_sweep.py",
+      "git_commit": "c774c671c0a4eaf91045b7844bdcc9be41d2f453",
+      "git_blob_oid": "2e44478d87a9a686474f73e9143aa9b364e1589a",
+      "git_blob_oid_recomputed": "2e44478d87a9a686474f73e9143aa9b364e1589a",
+      "git_blob_oid_matches": true,
+      "bytes": 17178,
+      "sha256": "7acbb11c5343f119582cf88b302f7bd12d7a6040e3823aa77f12c24a892cbf64",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c774c671c0a4eaf91045b7844bdcc9be41d2f453/src/trotterlib/grouped_uwc_theta_sweep.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    },
+    {
+      "path": "scripts/run_grouped_uwc_theta_sweep.py",
+      "git_commit": "c774c671c0a4eaf91045b7844bdcc9be41d2f453",
+      "git_blob_oid": "0ffbaa4dc67b0816578c401753461a1c5ffab91f",
+      "git_blob_oid_recomputed": "0ffbaa4dc67b0816578c401753461a1c5ffab91f",
+      "git_blob_oid_matches": true,
+      "bytes": 8091,
+      "sha256": "42318d6b505df258186ea272cfd70aa23cc8d6495cf9249b480a1f7d578e1af2",
+      "role": "historical_repository_source_snapshot_not_actual_run_binding",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c774c671c0a4eaf91045b7844bdcc9be41d2f453/scripts/run_grouped_uwc_theta_sweep.py",
+      "bytes_read_only": true,
+      "actual_run_binding": "UNVERIFIED"
+    }
+  ],
+  "source_binding": "Source bytes are identified at existing historical commits, but correspondence to any original run remains unverified.",
+  "expected_raw_identity": "No independently fixed original raw SHA256 was located in the examined references. The reported prose conditions are not a byte-level identity.",
+  "reported_conditions_only": {
+    "source_note_commit": "231d17e393f573fd29c659eaf1fd9bae2a68d8f9",
+    "method": "bliss",
+    "power": "quadratic",
+    "theta": 0.01,
+    "pf_label": "2nd",
+    "target_error": 0.01,
+    "cost_metric": "rz_layers",
+    "alpha_backend": "gpu",
+    "gpu_ids": [
+      0,
+      1
+    ],
+    "baseline_alpha_source": "artifact",
+    "basis": "sto-3g",
+    "distance": 1.0,
+    "H3_corrected_target_particle_number": 3,
+    "H3_old_incorrect_target_particle_number": 2,
+    "H3_diagnostic_time_grid": [
+      0.75,
+      0.752,
+      0.754,
+      0.756
+    ],
+    "theta_sweep_reported": [
+      0,
+      0.001,
+      0.005,
+      0.01,
+      0.05,
+      0.1
+    ],
+    "actual_run_commit_command_environment": "NOT_FOUND_IN_SEARCH_SCOPE"
+  },
+  "handoff_gap_id": "GAP-001",
+  "fixed_references": [
+    {
+      "path": "docs/research/pr_algorithm_improvement_landscape_20261023/EVIDENCE_GAPS.md",
+      "git_commit": "a9bdcf1d44061daceffe896637e2c92fcb3353b4",
+      "git_blob_oid": "d54efc579a10a386ddbe59aaac147e566126dcef",
+      "git_blob_oid_recomputed": "d54efc579a10a386ddbe59aaac147e566126dcef",
+      "git_blob_oid_matches": true,
+      "bytes": 15772,
+      "sha256": "8f175137966c523f15d47588ab09335e0e8dae49dd54cf6b3cc4301284f239a4",
+      "role": "fixed_reference",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a9bdcf1d44061daceffe896637e2c92fcb3353b4/docs/research/pr_algorithm_improvement_landscape_20261023/EVIDENCE_GAPS.md",
+      "bytes_read_only": true
+    },
+    {
+      "path": "notes/uwc_current_implementation_and_results.md",
+      "git_commit": "231d17e393f573fd29c659eaf1fd9bae2a68d8f9",
+      "git_blob_oid": "add5d3a48b1c42ed9234861f2dd82f1383a333e2",
+      "git_blob_oid_recomputed": "add5d3a48b1c42ed9234861f2dd82f1383a333e2",
+      "git_blob_oid_matches": true,
+      "bytes": 17529,
+      "sha256": "cd59e5ea3b23e84cc52a40640ef56adbc07cfe109184443fca43a37b0522ed11",
+      "role": "fixed_reference",
+      "location_kind": "existing_local_git_object",
+      "public_reference": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/231d17e393f573fd29c659eaf1fd9bae2a68d8f9/notes/uwc_current_implementation_and_results.md",
+      "bytes_read_only": true
+    }
+  ]
+}

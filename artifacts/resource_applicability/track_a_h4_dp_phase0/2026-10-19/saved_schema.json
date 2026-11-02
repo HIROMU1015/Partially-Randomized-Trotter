@@ -1,0 +1,61 @@
+{
+  "schema": "h4_dp_phase0_v1",
+  "contract_status": [
+    "DRAFT_UNAUTHORIZED",
+    "SEALED_FOR_EXECUTION"
+  ],
+  "endpoint_status": [
+    "REPRODUCED",
+    "NOT_REPRODUCED",
+    "INCONCLUSIVE",
+    "TECHNICAL_STOP"
+  ],
+  "paired_result_required": [
+    "cell_id",
+    "replica",
+    "seed",
+    "event_digest",
+    "axes.cosine",
+    "axes.sine",
+    "calls",
+    "stratum"
+  ],
+  "axis_required": [
+    "RZ",
+    "CX",
+    "RZ_depth",
+    "CX_depth",
+    "depth",
+    "size",
+    "compiler_hash",
+    "fingerprint",
+    "seed",
+    "event_digest"
+  ],
+  "strata": [
+    "S0_ONLY",
+    "S2_SINGLE",
+    "S2_MULTI",
+    "S4_PRESENT"
+  ],
+  "independence_unit": "one complete trajectory with both axes",
+  "private_only": [
+    "seed_list",
+    "step_seed_list",
+    "grant_original",
+    "internal_paths",
+    "runtime_operational_metadata"
+  ],
+  "point_comparison_required": [
+    "fixed_PF_id",
+    "fixed_shots",
+    "fixed_n",
+    "G_exact",
+    "sample_SD",
+    "paired_SE",
+    "point_direction",
+    "status"
+  ],
+  "null_policy": "missing/ineligible/pending values stay null; no zero fill",
+  "population_mean_certified": false
+}

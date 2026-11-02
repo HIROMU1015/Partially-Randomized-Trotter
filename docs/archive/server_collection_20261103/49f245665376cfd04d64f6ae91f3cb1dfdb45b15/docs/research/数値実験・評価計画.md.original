@@ -1,0 +1,662 @@
+# 数値実験・評価計画
+
+本資料は、[研究方法・解析手順](研究方法・解析手順.md)で定めた方法を、現行実装でどこまで、どの固定条件で評価するかを定める。Product Formula次数、DF生成条件、回路scope、直接構築可能なround、grid、コスト指標および保証statusは本資料を正本とする。
+
+## 1. 評価の目的
+
+本評価の目的は、同一の目標エネルギー精度と成功確率の下で、DF分割、基準時間、round別RTE設定および誤差配分を選択し、RPEに必要な期待compiled総コストを最小化できるかを検証することである。
+
+研究上の最終目的関数は、選択した回路コスト指標を $g$ として、
+
+$$
+G_{\mathrm{total}}
+=
+\sum_{m=0}^{M}
+\sum_{b\in\{c,s\}}
+N_{m,b}\,
+\mathbb{E}[g_{m,b}]
+$$
+
+とする。ここで $g_{m,b}$ の最終scopeは、状態準備を除外した1回のRPE interrogation circuitである。当面は期待総RZ countを主指標とし、CX count、RZ/CX depth、total depth、circuit sizeを副指標として記録する。
+
+最適化問題は概念的に、
+
+$$
+\min_{L_D,\,\delta_{\mathrm{time}},\,
+\{r_m,K_m\},\,\mathcal A}
+G_{\mathrm{total}}
+$$
+
+である。ここで $\mathcal A$ は位相誤差予算と失敗確率の配分を表す。
+
+候補は少なくとも、
+
+$$
+\overline\beta_{\mathrm{PF},m}
++\overline\beta_{\mathrm{RTE},m}
++\overline\beta_{\mathrm{stat},m}
+\leq
+\beta_{\mathrm{RPE}},
+$$
+
+$$
+\sum_{m=0}^{M}
+(\alpha_{m,c}+\alpha_{m,s})
+\leq
+\alpha_{\mathrm{tot}},
+$$
+
+$$
+\frac{\beta_{\mathrm{RPE}}}
+{2^M\delta_{\mathrm{time}}}
+\leq
+\epsilon_E
+$$
+
+を満たし、各系統誤差の実上界が対応する配分値以下である必要がある。
+
+## 2. 検証する研究上の問い
+
+1. 総コストを最小にする $L_D$ はどこに存在するか。
+2. $\lambda_R$ の減少は、実際の総コスト削減にどの程度結び付くか。
+3. $\delta_{\mathrm{time}}$ の選択によって、必要round数と各roundの回路コストのバランスがどのように変化するか。
+4. roundごとの $(r_m,K_m)$ 全探索は、事前指定した参照scheduleより有利か。
+5. finite-RTEの打切り誤差、attenuation、1 shot当たりのcompiled costの間にどのようなトレードオフがあるか。
+6. 位相誤差予算と失敗確率の配分を変えることで、必要shot数を削減できるか。
+7. 小規模系で構築したcompiled-cost近似を、大規模系のresource estimateに利用できるか。
+
+## 3. 評価対象と前提
+
+当面の評価範囲を以下に限定する。
+
+- 二次partial-$S_2$
+- 問題インスタンスごとにDF表現、DF rank、fragment順位およびcoefficient thresholdを固定
+- rank済み二体DF fragmentのprefix長 $L_D$ によって $H_D/H_R$ を分割
+- constantとone-body correctionは常に決定論側
+- RTEには `exact_rte_lambda_r` を使用
+- 現行回路モデルは `ordinary_controlled = diag(I,U)`
+- 量子Hadamard-test shotごとにfresh IIDなRTE trajectoryを用いる場合だけ、現行Hoeffding条件による認証対象とする
+
+PR論文の `paper_cpm_halving` と現行の `ordinary_controlled` は異なる回路モデルである。そのため、PR論文との理論resource比較と、同一回路モデル内でのcompiled-cost比較を分離する。
+
+入力状態については、必要な状態を利用できると仮定し、状態準備法とそのコストを研究範囲外とする。これは候補間で数学的に相殺されるという主張ではない。
+
+別の条件付き仮定として、対象となるpartial-$S_2$ signalがRPEに必要な位相関係と基準半径を持つとする。現行の単位半径specialization $\rho_{\star,m,\mathrm{lb}}=1$ はこのsignal modelへの外部仮定であり、元のHamiltonianのexact ground stateを入力できることだけから自動的に従うものではない。その成立自体を本評価で証明・保証したとは主張しない。
+
+compiled costのscopeは次のように区別する。
+
+| 段階 | scope | 含むもの／除くもの |
+|---|---|---|
+| 現行の主な直接評価 | `compiled_time_evolution_subcircuit` | controlled partial-$S_2$ time evolutionを含み、状態準備、Hadamard-test H/X/Y、測定を除く |
+| 中間評価 | `single_hadamard_interrogation_without_state_preparation` | ancilla gates、controlled evolution、axis basis change、測定を含み、状態準備を除く |
+| 研究上の最終目標 | `target full RPE interrogation cost excluding state preparation` | 必要shot数を各round・各軸の期待compiled costへ掛け、全roundで合計 |
+
+現行の部分回路コストを、full RPE interrogationの総コストとして直接評価できているとは扱わない。
+
+## 4. 変数を扱うレイヤー
+
+| レイヤー | 現段階の扱い | 主な量 |
+|---|---|---|
+| Hamiltonian・DF表現 | 問題ごとに固定 | 分子、基底、active space、DF rank、fragment |
+| fragment順位 | 固定規則 | $w_\ell$、rank |
+| 決定論／ランダム分割 | 探索 | $L_D$ |
+| RPE外側条件 | 探索または精度から決定 | $\delta_{\mathrm{time}},M$ |
+| 誤差・失敗確率配分 | 当面は事前指定、将来は探索 | $\overline\beta_{j,m},\alpha_{m,b}$ |
+| round内RTE | roundごとに探索 | $r_m,K_m$ |
+| compile条件 | 比較中は固定 | backend、basis gates、transpiler、seed |
+
+現行評価では、複数の位相誤差・失敗確率scheduleを事前指定し、各scheduleの下でroundごとの $(r_m,K_m)$ を探索する。方法論上は配分自体も最適化対象だが、$\alpha_{m,b}$ を動かすと
+
+$$
+\sum_{m,b}\alpha_{m,b}
+\leq
+\alpha_{\mathrm{tot}}
+$$
+
+によってround間が結合するため、現行のround別探索と将来の配分最適化を区別する。
+
+「$L_D$ のみを分割変数とする」とは、Hamiltonianを $H_D$ と $H_R$ に分けるレイヤーにおいて、DF表現と順位を固定し、prefix長だけを動かすという意味である。$\delta_{\mathrm{time}},r_m,K_m$ は最適化変数だが、Hamiltonianの分割変数ではない。
+
+将来の分割変数としては、任意のfragment部分集合、順位付け規則、round依存の $L_{D,m}$、fragment内部の成分分割、DF表現・DF rank自体の変更などが考えられる。ただし、これらは現段階の探索対象には含めない。
+
+## 5. $\lambda_R$ の位置付け
+
+### 5.1 fragment順位と二種類のtail norm
+
+現行DF実装のデフォルト順位weightは、
+
+$$
+w_\ell
+=
+|\lambda_\ell|
+\left\|g^{(\ell)}\right\|_F^2
+$$
+
+である。rank済みfragmentの先頭 $L_D$ 個を決定論側に置くと、順位付け用proxyは、
+
+$$
+\lambda_{\mathrm{rank}}(L_D)
+=
+\sum_{\ell\geq L_D}w_\ell
+$$
+
+となる。これは実装上 `ranking_proxy_lambda_r` に対応する。
+
+一方、finite RTEで使用するのは、tailをI/Z/ZZ成分へ展開し、thresholdとidentity policyを適用した後の、
+
+$$
+\lambda_R^{\mathrm{exact}}(L_D)
+=
+\sum_{j\in\mathrm{randomized\ components}}|c_j|
+$$
+
+であり、`exact_rte_lambda_r` に対応する。RTE確率、Taylor cutoff、attenuationにはこちらを使用する。
+
+### 5.2 $\lambda_R$ は目的関数ではない
+
+固定した順位で $L_D$ を増やすと、tailから非負weightを持つfragmentが除かれるため、$\lambda_R$ は非増加となる。したがって、$L_D$ に制約を置かず $\lambda_R$ 単独を最小化すると、全fragmentを決定論側へ置く自明な解になる。
+
+$$
+L_D=L
+\quad\Longrightarrow\quad
+\lambda_R=0
+$$
+
+しかし、この場合は決定論回路コストが最大になる可能性がある。したがって、$\lambda_R$ 自体の最小化を研究目的にはしない。
+
+$\lambda_R$ は、
+
+- RTEの無次元時間 $\tau_m=\lambda_R\delta_{\mathrm{time}}/r_m$
+- finite-RTE打切り誤差
+- normalization $B_{K_m}$
+- attenuation
+- 必要shot数
+
+を通して総コストへ影響する中間量である。
+
+$L_D$ は、決定論回路の増加とランダムtailの軽量化を両方含めた、
+
+$$
+L_D^*
+=
+\arg\min_{L_D}G_{\mathrm{total}}(L_D)
+$$
+
+によって選択する。
+
+## 6. 実装状況と評価段階
+
+| 項目 | 現在の状態 | 本評価での扱い |
+|---|---|---|
+| finite-RTE event回路 | 実装済み | 直接評価に使用 |
+| finite-RTE信号・attenuation検証 | H4の短round gridで実装・local検証済み | 最終コスト前の近似検証に使用。詳細は[検証資料](../finite_rte_signal_validation.md) |
+| PF誤差surrogate・CPU摂動・単一位相検証 | H4の$L_D=0,\ldots,11$と未使用$\delta$ gridでQiskit/direct-tail、論文Eq. (D6)摂動誤差、理想QPE分布をlocal検証済み。D6係数と同一4点の支配位相係数のfit差は最大0.288% | $C_D$はscreening限定。主PF入力は支配固有位相の$C_{\mathrm{PF,eig}}$、候補・大規模系の推定器はfull-$H$基底状態の$C_{\mathrm{partial,D6}}$とする。$|\sin(E_0\delta)|<0.1$の点はD6 fitから除外し、shift-invariant値は診断量とする。詳細は[検証資料](../pf_delta_validation.md) |
+| PF係数の系サイズ・実行可能$\delta$窓検証 | 距離1.0 ÅのH2--H5で支配固有位相とEq. (D6)を直接比較し、差は0.45--1.14%。PF演算子を構築しないstate-action経路をH6までlocal検証済み | 系ごとの既存Qiskit実行窓で$|\Delta E_{\mathrm{D6}}|/\delta^2$の最大値を$C_{\mathrm{use}}$とする。H6は0.02086663。H3の別の単一位相signal条件は2.076%でreject。H12はGPUで$\delta=0.120,0.122,0.124$を実行するまで未決定。詳細は[検証資料](../pf_c_system_size_validation.md) |
+| partial-$S_2$ one-step／短い反復回路 | 実装済み | exactまたは古典MCでcompiled costを評価 |
+| ランダム回路cost加法モデル | H4、$L_D=3$、$\delta=0.1$、$K=0$のpilotをlocal実行。共有DF表現の$r=2$・100標本ではevent別compile和がRTE occurrence一体compileを48--58%過大評価し、別DF表現の300標本でも53--61%。RTE occurrenceを一部分とするpartial-$S_2$ 3部分和のずれは最大0.96% | eventをproxyの独立加算単位にはしない。RTE occurrence以上を最小較正単位とし、非canonicalなprocess間DF表現を混ぜないHamiltonian共有batchで$L_D,\delta,r,K,q$ gridへ拡張する。詳細は[検証資料](../random_circuit_cost_validation.md) |
+| RTE境界補正model | 同じH4条件・共通DF表現の独立2 seedで各1000標本。pair-onlyはcount/sizeで最大約8%、z約3、depthではz<1。tripleは全metricで最大3.73%、z<1。same/different-fragmentの1500/1500標本層別modelはpair holdoutを最大0.849%、z 0.587で予測 | depthはpair候補、count/sizeはtriple候補。same-onlyは不採用。$\mu_3$自体は最大1.40標準誤差なので追加確認が必要。詳細は[検証資料](../rte_boundary_pair_validation.md) |
+| 階層cost model拡張 | 同じH4条件で、$K=0$の$L=8$を2000標本holdoutするとtriple最大誤差1.744%、z 0.521。旧$K=2$ IID runは全8000 event位置でorder-2が1回だけなので根拠から除外。共通DF表現上のTaylor次数条件付き・同一trajectoryの対応あり局所残差では$L=4,6$のall-order-0/order-2が1回を全metric最大1.373%、RZ countの点ごとの正規近似95%診断1.796%以内で予測。controlled partial-$S_2$は$q=1,2$各300標本から$q=4$を全metric最大0.307%、同診断0.958%以内で予測 | $K=0$はcount/sizeにtriple、depthにpairを候補とする。$K=2$の3-event局所式とcontrolled affine候補は代表条件の暫定5%を通過。ただし$K=2$の独立500標本係数推定は最大9.119%で不十分なため、解析次数重みと対応ありconnected-cluster推定を運用候補とする。詳細は[検証資料](../hierarchical_cost_validation.md) |
+| $K=2$ connected-cluster運用推定 | 同じH4条件・固定DF snapshotで、order条件付きsample、order-0単event厳密列挙、same/different pair層別、K1--K3のNeyman配分を実装。未使用$L=4,6,8$の全order-0各1500標本とorder-2が1回の各位置375標本に対し、全6 metric最大点誤差2.936%、RZ最大z 2.074、予測側95%半幅1.537% | 点誤差5%と予測精度2%は通過したが、点wise正規近似95%上側診断は5.724%で未達。order-2 K1は要求1535に対しcap 1500。別process再構築のDF表現は絶対costを再現しないため、snapshotをcalibration/holdoutの再現単位とする。詳細は[検証資料](../rte_connected_cluster_cost_validation.md) |
+| connected-cluster軽量運用 | offline calibration、Qiskitを呼ばないprediction、固定calibrationのtransfer holdoutを別API・artifactへ分離。pattern単位checkpoint、直接条件付きpair sample、決定論的work配分、厳密数値回路keyのSQLite cacheを実装 | 実装確認のみ。角度を除外した構造再利用は、明示したshort-step区間・$L_D$・compiler/coupling条件で全6 metricの不変性をholdout確認するまで無効とする |
+| round resource accounting | 実装済み | 誤差、attenuation、shot数、roundコストを計算 |
+| 短round $(r_m,K_m)$ 全探索 | $m=0,1,2$、$q_m\leq4$ | 小規模検証に使用 |
+| accounting用Hadamard interrogation provider | $q_m\leq4$ で直接評価可能 | cosine・sine軸を含む中間scopeのshort-round評価に使用 |
+| short-round信号・shot・cost接続 | H4、rank 12、$L_D=3$、$\delta=0.1,r=4,K=2$、$q=1,2,4$でlocal検証済み。単位半径と実半径の整数shotが一致し、`round_cost=N_cg_c+N_sg_s`、scope分離、古典MC非乗算を確認 | 1 snapshot・1 compilerの直接接続検証。$q=8$は別のholdout済みproxyで1 round接続済み。全roundと最終costは未評価。短roundの測定失敗率は次行で別途検証。詳細は[接続検証](../rpe_round_cost_connection_validation.md) |
+| 仮想Hadamard測定・失敗確率 | 同じH4短roundで厳密二項確率、10万回の周辺Bernoulli反復、2340本のfresh IID RTE trajectoryをlocal検証済み。6軸座標失敗率0.0010363、3 round統計位相失敗率$1.48\times10^{-6}$ | 暫定$\alpha_{\mathrm{tot}}=0.05$を通過。全roundのbranch selection・位相復元、実backend、noiseは未評価。詳細は[検証資料](../rpe_hadamard_failure_validation.md) |
+| medium-$q$ Hadamard benchmark | workload guard内で直接構築可能 | calibration／holdout datasetの生成に使用。H4代表条件で$q=8$ holdoutを生成済み |
+| validated Hadamard affine cost proxy | fit、holdout validation、制限付きresource providerを実装済み | H4固定snapshot・compilerの$q=8$で全指標最大0.726%。$q=1,2,4$直接costとの限定4段集計へ接続済みだが、$q>8$と最終全round合計は未接続 |
+| WP05-a sequence policy full-scope proxy | H4 rank 12、$L_D=3,12$、$\delta=0.02$、$r=1,2,4,8,16,32$、$q=1,2,4$でcomplete controlled partial-$S_2$と測定付きHadamard wrapperをlocal直接評価 | `support_run_le_1`の$q=4$ RZ holdout最大2.29%、全metric最大2.43%、中央additive bridgeのfull-wrapper RZ残差最大2.63%で5%基準を通過。$q>4$、$\delta=0.01$、$\alpha$/shot再最適化、最終総costは未評価。詳細は[WP05-a](../research_direction_full_scope.md) |
+| WP05-b/R full-scope拡張 | 同じH4条件で$q=8$と$\delta=0.01$へ拡張。初回$\delta=0.02,r=32,q=8$の5%超過を独立32 trajectoryで再検証 | 再検証では`support_run_le_1`のRZ誤差0.52%、全metric最大0.54%、full basis RZ誤差0.83%。$\delta=0.01$も含め全checkを通過。$q>8$、別snapshot/compiler、最終総costは未評価。詳細は[WP05-b/R](../research_direction_full_scope_extension.md) |
+| WP01-D/C07候補別再最適化 | 同じH4 snapshot、rank 12、CA/10、$L_D=3,12$、$\delta=0.01,0.02$。full-scope affine proxyを用いてcompiled RZ、cost-weighted $\alpha$、$\beta_{\mathrm{RPE}}=0.40$ radの下で配分とshot数を候補別に最適化 | 両候補とも$\delta=0.02$を選択。$L_D=3$は点推定13.92%低く5% local model区間は僅かに分離したが、25%移送区間は重なる。頑健な判断は`undetermined_under_transfer_sensitivity`。詳細は[WP01-D/C07](../research_direction_decision_cost.md) |
+| M06/L08 compiler-transfer | 同じH4・rank 12・$\delta=0.02$でoptimization level 1→2だけを変更し、$L_D=3,r=32,q=1,2,16,32$を同一trajectoryで比較。tail-free $L_D=12$も再compile | opt2 proxyはselected RZ 2.340%、full-basis RZ 3.420%、direct RZ relative SE 1.387%で通過。固定plan focused再集計の点差は8.42%だが区間は重なり、compiler-invariantな分離は未確立。詳細は[M06/L08](../research_direction_compiler_transfer.md) |
+| N07/P03不確かさ・状態準備break-even | 既存3 artifactから不確かさclassを分離し、`G(P)=G_no-prep+P*N_shots`を共通Pと候補別Pで評価 | $L_D=3$は2,376 shot多い。点推定break-evenはopt1 99,045,126、opt2 focused 47,067,344 RZ相当/shot。opt2 focusedはP=0で区間が重なり、compiler-robustな区間優位性は未確立。詳細は[N07/P03](../research_direction_uncertainty_break_even.md) |
+| WP11限定判断統合 | Gate S1からN07/P03までの11 artifactを検証し、T1--T7と4つの次段候補を比較 | T4/T7を主軸、T1を範囲変更、T3を保留。次はopt2未測定$r=1,2,4,8,16$を埋めるall-r coherent再最適化を一件だけ選択。外部instance pilotは延期。詳細は[WP11](../research_direction_wp11_synthesis.md) |
+| M06-F all-r coherent opt2 | 初回36 taskと事前登録fresh-32 15 taskを同一opt2 contextで統合し、全rの`q=1,2`較正と固定`q=8` holdout後にbeta、alpha、shot、scheduleを再最適化 | 51/51、SE 1.9844%、selected RZ/all-metric holdout 4.4898%/4.7488%でgate通過。$L_D=3/12$のno-prep点推定は1.263314e12/1.327822e12で点差4.858%だが全区間重複。局所compiler精密化を止め、外部instance pilotを次段候補として再開。詳細は[M06-F](../research_direction_full_opt2.md) |
+| $\beta,\alpha$配分感度 | H4固定snapshot、$L_D=3,\delta=0.1,r=4,K=2$、$q=1,2,4,8$でlocal検証済み | 5 beta profileと2 alpha policyを比較し、暫定100倍headroom規則から$(0.02,0.02,0.36)$とcost感度重み配分を選択。最終最適化ではない |
+| 限定4段集計と新配分の失敗率 | 同じH4固定snapshotで$q=1,2,4,8$のshot×1 shot RZ集計と8軸union boundをlocal検証済み。$q=1,2,4$は物理信号を固定して新shot数の厳密二項失敗率を再計算 | 1,572 shot、RZ数$3.2673961\times10^7$、$\alpha$和0.05。短3段の厳密座標失敗率$2.2246\times10^{-4}$。この成果物に含まれなかった$q=8$物理信号とbranch復元は次行で追試。詳細は[限定4段検証](../rpe_four_round_accounting_validation.md) |
+| 4段の物理信号・分枝復元 | 同じ固定条件で$q=8$物理信号、4段全1,572 fresh-IID shot、厳密二項確率、逐次分枝復元をlocal検証済み | $q=8$信号半径0.9932198。4段合成座標失敗率$1.3363\times10^{-3}$。10万回の分枝失敗・最終位相失敗は0件。目標精度からのround数決定と$q>8$は未評価。詳細は[4段分枝復元検証](../rpe_four_round_phase_validation.md) |
+| $(L_D,\delta_{\mathrm{time}})$ 外側探索 | H4の$L_D=3,12$、$\delta=0.01,0.02$をWP01-D/C07へ統合 | 現shortlist内のlocal比較。別$L_D$、別instance、広い$\delta$探索は未統合 |
+| 誤差・失敗確率配分の最適化 | H4 WP01-D/C07の候補ごとのcost-weighted $\alpha$とshot数をlocal実装 | 一般条件・backend/noise込みの最終最適化ではない |
+| 全roundを覆うfull RPE interrogation評価 | 未実装 | 長round proxyと全round集計を含む最終検証課題 |
+
+主な直接providerの `compiled_time_evolution_subcircuit` には、状態準備、Hadamard-test H/X/Y、測定、量子shot実行およびノイズは含まれない。中間providerはHadamard wrapperと測定までを含むが、状態準備、複数shotのbackend実行、ノイズ、全roundのphase reconstructionは含まない。どちらの古典Monte Carlo標本数も、量子shot数の乗数ではない。
+
+medium-$q$ benchmarkとaffine proxyの詳細は[Hadamard compiled-cost benchmark](../rpe_hadamard_compiled_cost_benchmark.md)および[large-$q$ affine proxy](../rpe_hadamard_compiled_cost_proxy.md)に従う。H4代表条件では未使用$q=8$を通過した固定proxyを1 round accountingおよび$q=1,2,4$直接costとの限定4段集計へ接続した。これはholdoutで検証した$q_m$範囲外の精度、または最終全round総コストを保証しない。詳細は[$q=8$ proxy接続検証](../rpe_hadamard_proxy_resource_validation.md)と[限定4段検証](../rpe_four_round_accounting_validation.md)に記録する。
+
+## 7. 問題インスタンスと固定条件
+
+各実験では、次の情報を固定して記録する。
+
+| 項目 | 記録内容 |
+|---|---|
+| Hamiltonian | 分子・モデル、geometry、basis、active space、量子ビット写像 |
+| DF | DF生成法、DF rank、fragment順位規則、係数threshold、identity policy |
+| 目標 | $\epsilon_E,\alpha_{\mathrm{tot}},\beta_{\mathrm{RPE}}$ |
+| 外側探索 | $L_D$ 候補、$\delta_{\mathrm{time}}$ 候補 |
+| 内側探索 | 各roundの $r_m$ grid、偶数 $K_m$ grid |
+| 誤差配分 | $\overline\beta_{\mathrm{PF},m},\overline\beta_{\mathrm{RTE},m},\overline\beta_{\mathrm{stat},m}$ |
+| 失敗確率配分 | $\alpha_{m,c},\alpha_{m,s}$ |
+| 回路scope | time-evolution subcircuit／状態準備なしHadamard interrogation |
+| compile | backend、basis gates、optimization level、transpiler seed、`ordinary_controlled` |
+| RTE sampling | 量子shotごとのtrajectory policy、古典MCのPRNG・seed |
+| 古典MC | $S_{\mathrm{MC}}$、期待compiled costの標準誤差、停止条件 |
+| 主指標 | 期待総RZ count |
+
+最初は厳密行列計算が可能な小規模系を用い、その後、量子ビット数、DF fragment数、tail weight分布の異なる問題へ拡張する。
+
+## 8. コスト最適化前の妥当性確認
+
+### 8.1 Product Formula誤差
+
+小規模系で、厳密時間発展信号とPF信号を比較する。
+
+$$
+Z_m^{\mathrm{exact}}
+\quad\text{と}\quad
+Z_m^{\mathrm{PF}}
+$$
+
+これにより、実位相誤差、厳密上界、state-specific phase-bias surrogateの関係を確認する。
+
+### 8.2 finite-RTE誤差
+
+normalization補正後のfinite-RTE信号について、
+
+$$
+\left|
+\widetilde Z_m^{\mathrm{RTE}}
+-Z_m^{\mathrm{PF}}
+\right|
+\leq
+\epsilon_{Z,m}^{\mathrm{calc}}
+$$
+
+が成立するか確認する。また、解析上界が実誤差に対してどの程度保守的かを記録する。
+
+### 8.3 attenuation
+
+解析値
+
+$$
+A_m^{\mathrm{att}}
+=
+B_{K_m}(\tau_m)^{-q_mr_m}
+$$
+
+と、RTE trajectoryをサンプリングして得た平均信号の減衰を比較する。
+
+主解析では、finite-RTE誤差による半径低下を省略した
+
+$$
+\rho_m^{\mathrm{obs,model}}
+=
+A_m^{\mathrm{att}}\rho_{\star,m}
+$$
+
+を用い、一般的な厳密下界とは呼ばない。`certified` を判定する保守的評価では、現行specialization $\rho_{\star,m,\mathrm{lb}}=1$ を含め、
+
+$$
+\rho_{m,\mathrm{lb}}^{\mathrm{obs}}
+=
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right)
+$$
+
+を使う。両モデルのshot数と総コストの差を記録する。
+
+### 8.4 compiled-cost期待値
+
+event列のexact enumerationが可能な範囲ではexact期待値を求め、古典Monte Carlo推定値と比較する。古典MC標本数 $S_{\mathrm{MC}}$ はcompiled-cost期待値の推定用であり、量子shot数 $N_{m,b}$ には加算・乗算しない。
+
+### 8.5 short-round資源式への接続
+
+H4、距離1.0 Å、STO-3G、DF rank 12、$L_D=3$、$\delta=0.1$、$r=4$、$K=2$、
+$q=1,2,4$では、同一Hamiltonian snapshot上でfinite-RTE信号検証と直接Hadamard
+interrogation costを接続した。物理full-$H$基底状態のPF信号半径は1から最大
+$1.11\times10^{-8}$のずれで、単位半径と実半径の各軸shot数は389、390、391で一致した。
+また`round_cost=N_cg_c+N_sg_s`の再計算、古典MC標本数を追加乗算しないこと、
+time-evolution部分とHadamard interrogation全体のscope分離を確認した。
+
+これは短roundの接続確認であり、全round総costではない。続く仮想Hadamard測定検証では、
+389、390、391 shotの厳密二項確率と10万回反復を評価し、6軸合成座標失敗率0.0010363、
+3 round合成統計位相失敗率$1.48\times10^{-6}$を得た。さらに2340本のfresh IID RTE trajectoryを
+明示作用し、samplerと周辺信号の整合を確認した。これはshort-round統計検証であり、全roundの
+branch selectionまたは最終位相復元を含むend-to-end RPE成功率ではない。
+
+event単純和は境界相殺を失うため、固定short-step分布で
+
+$$
+\widehat C_L^{(2)}=L\mu_1+(L-1)\mu_2,
+\qquad
+\widehat C_L^{(3)}=\widehat C_L^{(2)}+(L-2)\mu_3
+$$
+
+を較正候補とする。$\mu_1$は1-event期待値、$\mu_2$は2-eventから求めるpair境界補正、
+$\mu_3$は3-eventから求める残差である。calibration長とholdout長でseedを分離し、
+relative errorとcalibration/holdout標準誤差を合わせたz-scoreを記録する。H4の最初の
+holdout結果は[境界補正検証](../rte_boundary_cost_validation.md)に従う。
+
+$K=0$の未使用$L=8$検証では、count/sizeのpair-only残差約8%が再現し、triple補正は
+全metricを1.744%、absolute z-score 0.521以内で予測した。この条件・精度では4-event以上の
+cluster係数を追加せず、count/sizeはtriple、depthはpairを候補とする。
+
+$K=2$では単一event自体のTaylor orderとevent lengthが変動する。旧IID runはorder-2確率が
+$1.06\times10^{-4}$で、全8000 event位置中1回しかorder-2を含まなかったため根拠から外す。
+Taylor次数を条件付きで強制し、同一trajectoryの局所1--3 event窓と全回路の対応あり残差を
+測ると、$L=4,6$のall-order-0/order-2が1回の全metric最大点誤差は1.373%だった。
+したがって運用候補ではorderを解析確率で再構成し、connected pair/triple係数を対応ありで
+推定する。独立500標本の$C_2,C_3$差引きは最大9.119%なので採用しない。点ごとの正規近似診断は
+厳密信頼上界や同時保証とは呼ばず、別parameter条件への移送前に再holdoutする。
+
+運用推定器ではpilotからNeyman配分し、固定DF snapshot上の独立$L=4,6,8$ holdoutへ進む。
+H4代表条件では全metric最大点誤差2.936%で事前5%を通過したが、正規近似95%上側診断は
+5.724%なのでrigorousな5%保証とは扱わない。全order-0 RZ countの符号付き差は$L=4,6,8$で
+それぞれ+2.59%、-0.35%、+2.94%で単調増加せず、order-2が1回のRZ点誤差は1.02%以下だった。
+現条件ではK4を追加せず、別parameterへの移送で点誤差または長さ依存が悪化した場合に再検討する。
+
+総コスト探索ではcompiled-cost較正を目的関数の内側で実行しない。正確なDF snapshotとcompiler条件を
+keyにoffline calibration artifactを作り、探索中は`predict_connected_cluster_cost`による解析的
+order重み付けだけを用いる。calibrationがない候補はsymbolic proxyでscreeningするか、shortlist後に
+別jobで較正する。full holdoutは代表条件と移送判定だけに限定する。
+
+同じevent identityに対するcompiled metricがshort-step時間で変化しない可能性は独立validatorで
+検査する。意図する$\tau$区間の端点・中間点、same/different境界、Taylor order 0/2、全6 metricを
+含むことを受理条件とする。一つでも差があれば数値角度をcache/calibration keyへ残し、short-step
+ごと、または差が生じないことを別途確認した区間ごとに較正する。低標本smokeだけで構造再利用を
+有効化しない。
+
+partial-$S_2$反復については、完成controlled回路の$q=1,2$期待costから
+$\widehat D_q=a+bq$を較正し、未使用$q$で検証する。H4代表点の$q=4$は暫定5%を通過したが、
+検証した$q$、$L_D$、short-stepおよびcompiler contextの外へ無条件に外挿しない。
+
+### 8.5 RPE位相条件と統計誤差
+
+小規模系では各roundについて、
+
+$$
+d(\phi_m,q_m\theta)<\frac{\pi}{3}
+$$
+
+を確認する。仮想Hadamard-test実験を反復し、座標誤差と経験的失敗確率が割り当てた $\alpha_{m,c},\alpha_{m,s}$ と整合するか評価する。
+
+数値的resource evaluationとcertificationを区別する。`certified` のbranch条件には
+
+$$
+\beta_{\mathrm{RPE}}<\frac{\pi}{3}
+$$
+
+を用い、$\beta_{\mathrm{RPE}}=\pi/3$ は含めない。
+
+## 9. `empirical_screening`の検証
+
+`state_specific_phase_bias_surrogate` は、選択した決定論Hamiltonianの状態に対するsmall-time survival phaseのfitから得る経験的係数であり、PR論文の厳密な $C_{\mathrm{gs}}$ 上界ではない。
+
+既存のstale DF screening artifactは評価結果として再利用しない。再生成・検証状況は[検証状況](../../VALIDATION_STATUS.md)に従う。
+
+この値は、
+
+- 有望な $L_D$ 候補の絞り込み
+- fit windowやtime gridに対する安定性比較
+- 詳細なcompiled-cost評価を行う候補の優先順位付け
+
+にのみ使用する。
+
+小規模系では、各 $L_D$ について、
+
+1. surrogateが予測するPF誤差順位
+2. 厳密計算したPF位相誤差順位
+3. 最終的な総コスト順位
+
+を比較する。順位相関、上位候補の一致率、surrogateで選んだ候補と真の最良候補のコスト差を記録し、大規模系のscreeningに使用できるかを判断する。
+
+surrogateを用いた候補が数値的な誤差条件を満たしても、数学的なRPE成功保証は主張しない。結果は `empirical_screening` として報告する。`certified` は、外部から厳密なPF誤差上界と基準信号半径下界を与え、厳密なbranch条件、zero DF-threshold error、各軸内の独立有界標本、random tailに対するshotごとのfresh IID trajectory、および全roundのunion boundを含む全認証条件を満たした場合に限る。
+
+## 10. 比較手法
+
+| 比較手法 | 確認する効果 |
+|---|---|
+| 完全決定論的二次PF | 部分ランダム化自体の効果 |
+| $(L_D,\delta_{\mathrm{time}})$ 固定＋内側最適化 | $(r_m,K_m)$ 最適化の効果 |
+| $L_D$ のみ探索＋他を固定 | 分割選択の効果 |
+| $\delta_{\mathrm{time}}$ のみ探索＋他を固定 | 基準時間選択の効果 |
+| 事前指定した参照schedule | round別全探索の効果 |
+| 全変数を入れ子最適化 | 提案手法全体の効果 |
+| PR論文resource model | 先行研究との理論比較 |
+
+PR論文resource modelは `paper_cpm_halving` を用いる理論baselineであり、`ordinary_controlled` の現行compiled-cost結果と同一条件の直接比較には用いない。提案手法と決定論baselineの直接比較では、Hamiltonian、精度、成功確率、制御方式、回路scope、compiler/backendおよびコスト指標を同一にする。
+
+「事前指定schedule」は、
+
+$$
+\mathcal S_{\mathrm{ref}}
+=
+\{(r_0^{\mathrm{ref}},K_0^{\mathrm{ref}}),
+\ldots,
+(r_M^{\mathrm{ref}},K_M^{\mathrm{ref}})\}
+$$
+
+をcompiled-cost比較前に固定する方法を指す。全roundで同じ値を使う場合と、解析式からroundごとに異なる値を事前決定する場合を区別して記録する。
+
+$\lambda_R$ 単独の最小化は、制約がなければ全決定論分割を選ぶ自明な問題になるため、独立した主要baselineにはしない。代わりに、
+
+$$
+\lambda_R(L_D)
+\quad\text{と}\quad
+G_{\mathrm{total}}(L_D)
+$$
+
+の関係を調べ、tail normの減少が総コストの減少に直結するかを分析する。必要な場合に限り、固定された決定論fragment数または決定論コスト上限の下で、$\lambda_R$ に基づく分割選択を補助baselineとする。
+
+## 11. 実験の実行手順
+
+### 11.1 研究方向screeningの実行順
+
+以下の一般的な候補評価を広いgridへ適用する前に、H4固定snapshotを中心として次のgateを使う。
+
+1. 比較の共通taskと既存artifactのcoverageを固定する。
+2. 各$(\epsilon_E,\delta_{\mathrm{time}})$のround horizonとproxy domainを整理する。
+3. 決定論endpoint、$L_D=0$、中間分割を、既存proxyと明示したscenario幅で比較する。この段階は
+   `model_conditional_screening`であり、full interrogationの最終比較ではない。
+4. round別$(r_m,K_m)$、$\beta$、$\alpha$を固定順の逐次差分と完全設定からの
+   leave-one-outで比較する。適用可能な最適化は決定論baselineにも与える。
+5. PF係数の選択だけを差し替え、最適$L_D$、$\delta_{\mathrm{time}}$、candidate regretが
+   不確かさ以上に変わるか確認する。
+6. 上記をGate S1として、最大の判断不確かさを減らす次の一件を選ぶ。
+7. 標準経路では、代表小回路の構造改善pilotを行った後、screeningで残った少数候補について
+   central RTE、partial step、controlled repetition、Hadamard wrapperを順に接続する。
+8. full-scope proxyと不確かさを用いて候補を再集計し、ここで初めてdecision-grade比較とする。
+
+2026-09-22までに1--5を実行した。比較契約はH4、1.0 Å、STO-3G、rank 12の固定snapshot、
+主精度CA/10、$L_D=0,3,12$、$\delta=0.01,0.0125,0.02$、状態準備なしHadamard scopeへ固定した。
+CA/10は既存3 schedule・56点行列検査を再利用できた。CA/100は全3$\delta$が経験的PF予算を
+超えるため、小さい$\delta$と新scheduleを先に作る。WP01-Sでは$L_D=0$を拡張した解析的
+component-application screenで除外し、$L_D=12$の点推定が$L_D=3$より21.0%低かったが、
+25%移送scenarioで区間が重なったため
+`undetermined`とした。これは手順10の最終総コストではなく、手順4--8を近似したscreeningである。
+WP04では$\delta=0.02,M=17$へ固定し、42-cell factorial、逐次差分、leave-one-outを実行した。
+両候補に公平な配分改善を与えると$L_D=12$対3のRZ点推定差は4.96%へ縮み、5%・25%区間が
+ともに重なった。主要因は$\beta$、次いで$\alpha$の再配分で、$L_D=3$のround別schedule単独の
+利得はcompiled-cost整合選択で固定schedule比1.93%だった。WP03では$C_D$、論文D6、支配
+固有位相係数だけを変更した18条件が全て実行可能で、全係数が$L_D=12,\delta=0.02$を
+点推定最良とした。D6での$L_D=3$の点regretは5.216%だがscenario区間は0を跨ぐため、
+係数選択はWP04の未決定を解消しない。手順6のGate S1では、区間を「同点」でなく未決定、
+最大の残存不確かさをfull controlled interrogationの回路scope・構造と判定した。T4/T7を主軸、
+T1/T2/T5/T6を限定継続、T3を保留とし、次の一件をWP06-a、その後をWP05とする。
+WP06-a専用の$\eta_{decision}$はRZ相対変化5%とし、順位反転、$q$傾き・適用domainの変更、
+controlled relative phase補償の欠落もproxy再較正triggerとする。詳細は
+[研究方向screening検証](../research_direction_prevalidation.md)と
+[WP04寄与分解](../research_direction_ablation.md)、
+[WP03係数感度](../research_direction_pf_sensitivity.md)、
+[Gate S1判断](../research_direction_gate_s1.md)に記録する。
+
+WP06-aを実行すると、support限定Gaussian completionは単一controlled Z/ZZのRZを61.76%・39.23%
+減らし、5% triggerが発火した。一方、異なるZZ supportの長さ3列ではfull basis共有より15.01%
+高くなったため、一律置換はしない。diagonal-only control、relative-phase補償、scalar phase集約は
+小行列同値性を通過した。詳細は
+[WP06-a回路構造pilot](../research_direction_structure_pilot.md)に記録する。
+
+続くWP06-bではproduction RTE builderへ明示basis-plan経路を追加し、既定のfull basisは変更せず、
+元basisのsingleton runだけsupport限定へ置換するpolicyを独立trainingで固定した。未使用列長3, 6の
+holdoutではRZ -10.67%、CX -8.13%、total depth -2.25%、oracle regret 0.390%、controlled operator
+残差最大$1.34\times10^{-15}$だった。中央RTE差を既存proxyの$q$ slopeへ加えたbridgeは最大8.00%
+の係数変化と$L_D=3/12$点順位反転を示したが、区間は重なる。従って次は選択policyを明示入力として
+WP05でfull partial-$S_2$とHadamard wrapperを直接transpileする。詳細は
+[WP06-b sequence policy](../research_direction_sequence_policy.md)に記録する。
+
+WP05-aではこの明示policyをcomplete controlled partial-$S_2$、反復回路、cosine/sine Hadamard
+wrapper、ancilla測定まで伝播した。$r=1,2,4,8,16,32$の各条件で$q=1,2$を較正し、独立$q=4$
+を8 trajectoryでholdoutした。選択policyのRZ誤差は最大2.29%、全6 metricは最大2.43%、
+中央RTE additive bridgeのfull-wrapper RZ残差は最大2.63%で、5%基準を通過した。固定WP04の
+round・shot・$\alpha$を保つ長$q$感度では$L_D=3$が点推定で6.07%低いが区間は重なる。
+この時点の長$q$部分は$q>4$未検証の非decision-grade外挿だった。WP05-bで$q=8$と比較対照
+$\delta=0.01$へ拡張し、初回に5%を超えた$\delta=0.02,r=32,q=8$も独立32 trajectoryの
+WP05-bRで通過した。詳細は[WP05-a full-scope接続](../research_direction_full_scope.md)と
+[WP05-b/R拡張・再検証](../research_direction_full_scope_extension.md)に記録する。
+
+WP01-D/C07では$L_D=3,12$、$\delta=0.01,0.02$について、full-scope affine proxyを使い
+$\alpha$・shot数を候補ごとに再最適化した。両候補とも$\delta=0.02$を選び、no-prep RZ点推定は
+$L_D=3$が$L_D=12$より13.92%低かった。5% local model区間は僅かに分離したが、25%移送区間は
+重なるため、頑健な方向判断は未確定とした。G08では総costの83--91%が後半3 roundに集中する
+ことを確認した。続くM08で$\delta=0.02,r=32,q=16,32$を直接holdoutし、selected RZ 2.466%、
+全metric 2.569%、full-basis RZ 3.286%、direct RZ relative SE 1.353%で事前基準を通過した。
+M08 selected RZ幅と観測RZ最大幅による再集計ではlocal区間が分離するが、直接domainは$q\leq32$に
+限られ、25%移送区間は重なる。従って頑健判定は未確定のままとし、次は主張範囲の見直しまたは
+外部条件での移送検証とする。詳細は[WP01-D/C07再最適化](../research_direction_decision_cost.md)と
+[G08/M08後半round proxy精度](../research_direction_late_round_proxy.md)に記録する。
+
+WP11が選択したM06-F all-r coherent opt2はfresh-32を含む51/51 taskと両gateを完了した。
+同一opt2 contextのno-prep点推定は$L_D=3/12$で1.263314e12/1.327822e12、点差4.858%だが
+全区間が重なる。共通Pの点break-evenは26,590,335 RZ相当/shotで、P=0から頑健区間は重なる。
+局所compiler精密化は止め、条件を事前固定した小さな外部instance pilotを次のdiscriminator候補とする。
+
+高次PF、非prefix分割、DF再最適化、importance samplingは、Gate S1またはdecision-grade比較で
+価値が残った場合の条件付きbranchとする。screeningで既存証拠を再利用する場合も、入力hash、
+covered domain、remaining deltaを記録する。
+
+### 11.2 候補ごとの一般手順
+
+各問題インスタンスについて、次を実行する。
+
+1. Hamiltonian、DF表現、fragment順位、compile条件を固定する。
+2. 各 $L_D$ について $H_D,H_R$、`ranking_proxy_lambda_r`、`exact_rte_lambda_r` を計算する。
+3. 各 $\delta_{\mathrm{time}}$ について、目標精度から必要round数 $M$ を決める。
+4. PF誤差を評価し、実行不可能な候補を除外する。
+5. 位相誤差予算と失敗確率を各round・各測定軸へ配分する。
+6. 各roundで $(r_m,K_m)$ の全候補を評価する。
+7. finite-RTE誤差、$B_{K_m}$、attenuation、簡略信号半径モデルと保守的下界、および必要shot数を計算する。
+8. event回路または短い反復回路をcompileし、time-evolution subcircuitまたは状態準備なしHadamard interrogationのscopeを付けて、1 shot当たりの期待コストを求める。
+9. 各roundで実行可能な最小コスト候補を選ぶ。
+10. 全roundのコストを合計する。
+11. 外側候補 $(L_D,\delta_{\mathrm{time}})$ を比較する。
+12. 小規模系では、選択した候補について厳密信号またはend-to-end simulationで妥当性を確認する。
+
+候補評価失敗やworkload制限によってgridを完全に探索できなかった場合は、「最適値」ではなく「探索未完了」として記録する。
+
+## 12. 系の規模に応じた段階的評価
+
+三つの評価段階をすべての系で実行するわけではない。小規模系で近似モデルを検証し、大規模系では検証済みモデルによる見積もりへ移行する。
+
+| 規模 | 実行する評価 | 実行しない評価 |
+|---|---|---|
+| 小規模系 | 厳密対角化、厳密信号、event exact enumeration、直接回路構築、end-to-end RPE | なし。ただしworkload guard内に限定 |
+| 中規模系 | short-round・部分回路のcompile、古典MC、境界効果と反復コストの較正 | 厳密statevectorや長round全回路 |
+| 大規模系 | 解析的誤差上界、symbolic count、較正済みcompiled-cost proxy、resource estimate | 長round interrogation circuit構築、厳密信号、end-to-end simulation |
+
+### 12.1 小規模系：直接検証
+
+- PF・finite-RTE・attenuationの式を厳密計算と比較する。
+- $m=0,1,2$ の短roundで $(r_m,K_m)$ 全探索を検証する。
+- exact enumerationと古典MCのcompiled-cost期待値を比較する。
+- 可能な範囲でRPE推定を反復し、エネルギー誤差と成功率を測定する。
+
+### 12.2 中規模系：compiled-cost proxyの較正
+
+- one-stepおよび短い反復回路を直接compileする。
+- event種別、fragment数、$r_m,K_m,q_m$ とcompiled costの関係を測定する。
+- 単純な加算コストと、反復回路をまとめてcompileしたコストとの差を評価する。
+- H4 pilotではevent別加算がRTE occurrence一体compileを48--61%過大評価したため、
+  個々のeventを補正なしで独立加算するproxyは候補から外す。
+- 固定short-step分布の1--3 event列からpair/triple境界補正を較正し、未使用の長さと
+  parameter条件で検証する。H4の1000標本・独立2 seedではpair-onlyのcount/size残差が
+  最大約8%、z約3で再現し、tripleでは最大3.73%、z<1だった。depthではpair-onlyを棄却
+  していない。追加の2000標本$L=8$ではtriple最大1.744%、z 0.521だった。
+- pair係数はsame/different-fragmentの条件付き補正を解析確率で重み付けする。H4では
+  same-onlyが最大z 2.59で外れ、二分類は別seed pair holdoutを最大0.849%、z 0.587で予測した。
+- $K=2$ではTaylor次数を解析確率で扱い、同一trajectoryの局所窓差からconnected pair/triple
+  係数を推定する。代表条件の対応あり$L=4,6$残差は全metric最大1.373%である。運用実装は
+  fixed snapshot、order層別、Neyman配分、checkpointを備え、独立$L=4,6,8$を全metric最大
+  2.936%で予測した。点wise95%診断5.724%の留保を残し、別$L_D$、short-step、compiler条件で
+  再holdoutする。詳細は[運用検証](../rte_connected_cluster_cost_validation.md)に従う。
+- 先にRTE-occurrence-only scopeで広いgridを走査し、代表点だけpartial-$S_2$全体と
+  $q=2,4$の反復回路を直接compileする。H4代表点のcontrolled$q=4$ affine holdoutは
+  全metric最大0.307%、点ごとの正規近似95%上側診断0.958%だった。
+- calibration点だけからaxis・metric別のaffine proxyをfitし、未使用のholdout点で明示的な許容誤差に対して検証する。
+- 検証済み $q_m$ 範囲、fit weighting、残差、標準誤差およびfingerprintを保存する。
+- H4、rank 12、$L_D=3$、$\delta=0.1,r=4,K=2$では、各8 trajectoryの$q=1,2,4$
+  較正と未使用$q=8$ holdoutを実行した。状態準備なしHadamard一体compileの
+  全6指標・両軸は最大0.726%、RZ入力平均の最大相対SEは0.732%だった。
+
+### 12.3 大規模系：resource estimate
+
+- 長roundの状態準備なしRPE interrogationや長い $2^m$ time-evolution回路を直接構築しない。
+- 解析的な誤差・attenuation・shot数と、検証済みcompiled-cost proxyを組み合わせる。
+- proxyはholdoutで検証した $q_m$ 範囲だけに用い、適用範囲と推定不確かさを併記する。
+- 現行providerはvalidation fingerprint、Hamiltonian・DF split、$L_D,\delta,r,K$、compilerが
+  一致し、かつ実際にholdoutした$q_m$だけを受理する。H4では$q=8$のみ接続済みで、
+  $q=16$は拒否する。
+- $q=8$の1 round接続値を全round総コストとして報告しない。
+- 配分感度では固定1 shot costを再利用し、$\alpha$のcost感度重み
+  $w_{m,b}=2g_{m,b}/\epsilon_{\rm coord,m}^2$を用いる。現H4条件では
+  $(\beta_{\rm PF},\beta_{\rm RTE},\beta_{\rm stat})=(0.02,0.02,0.36)$を限定4段検証の
+  暫定入力に使用したが、100倍headroom規則も含めて別条件へ一般化しない。
+- 上記の暫定入力で$q=1,2,4,8$の限定4段資源集計を通過し、続く追試で$q=8$物理信号、
+  全1,572 fresh-IID shot、4段のbranch復元まで確認した。これは固定H4・固定4段の
+  end-to-end検証であり、目標精度から決まる最終全round総コストとは区別する。
+- 目標精度からのround範囲診断では、既存設定`CA/10`を暫定主条件とすると
+  $M=15,q_{\max}=32768$となった。固定$\delta=0.1,r=4,K=2$は同$q$でPF位相予算を超え、
+  attenuationも$7.91\times10^{-13}$まで低下したため、そのままの長round外挿は行わない。
+- 小規模・4段で確認できた範囲を超えて、一般のend-to-end成功を検証済みとは主張しない。
+
+大規模系に対する直接回路構築の目的ではなく、小規模・短round回路を、大規模resource estimateの妥当性を検証する基準として用いる。
+
+## 13. 作成する図表
+
+- $L_D$ に対する `ranking_proxy_lambda_r`、`exact_rte_lambda_r`、総コストの比較
+- $(L_D,\delta_{\mathrm{time}})$ に対する総コストheatmap
+- roundごとの最適 $r_m,K_m,N_{m,c},N_{m,s}$
+- deterministic、RTE、attenuation由来shot増加のコスト内訳
+- 事前指定scheduleとround別最適scheduleの比較
+- exact enumerationと古典MCの期待compiled cost比較
+- 実PF誤差、surrogate、厳密上界の比較
+- 目標精度 $\epsilon_E$ に対する総コストscaling
+- short-round直接compiled costと長round proxy予測の比較
+- `certified`、`empirical_screening`、`not_certified`の件数と理由
+
+## 14. 有効性の判定基準
+
+提案手法の有効性は、同一のHamiltonian、精度、成功確率、制御方式、回路scope、compiler/backendおよびコスト指標の下で、
+
+$$
+G_{\mathrm{total}}^{\mathrm{proposed}}
+<
+G_{\mathrm{total}}^{\mathrm{baseline}}
+$$
+
+となるかによって評価する。
+
+加えて、次を明らかにする。
+
+- どの変数の最適化がコスト削減に寄与したか。
+- どのコスト成分が減少または増加したか。
+- $\lambda_R$ の減少と総コストの最小点が一致するか。
+- どの精度・系サイズ・tail分布で部分ランダム化が有効か。
+- 解析上界と実誤差の差がどの程度か。
+- compiled-cost proxyがどの範囲まで直接評価を再現するか。
+
+厳密上界を用いた結果と経験的surrogateを用いた結果を混在させない。`empirical_screening`の結果は候補選択と経験的性能の評価として報告し、RPE成功の数学的保証は `certified` の条件を満たした場合にのみ主張する。
+
+前の主資料：[研究方法・解析手順](研究方法・解析手順.md)
+
+研究資料一覧：[README](README.md)
