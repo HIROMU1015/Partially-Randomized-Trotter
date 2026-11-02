@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：物理適格5 U更新・新候補の条件付きPR資源評価（2026-11-02）
+
+[統合runnerの実行結果](../docs/research/research_c_pr_integrated_execution_20261102.md)。固定SOURCE980b514c8/1759-call統合契約を無変更で一度実行し543/543 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、sector36。旧19-call受理点の物理DF予算を初めて評価しPASS、新trajectoryは5受理U更新/全受理点DF予算PASS。F .01079246794→.006617509795、exact λ .7258193873→.5683498547、J∞9.59327e-8 MET/U₂ .6589358143 NOT_METで同時一次未達。次の登録3qは全数値適格だが降下せずFINITE_STEP_GRID_NO_ACCEPT。選定update005を新s1/r128/K0のPF/RTE13round・新native32/128QPYへ接続し各correctness検査PASS。Ideal反実laneの条件付き総RZ 207919150188、旧PR比0.88809634、保存強D benchmark比2.0419077。実CA/全law合成・実装law/support・母平均優位はnull、強Dは旧J/U/異なる誤差資格、RC2は別有限endpointで公平な収束比較ではない。旧SOURCE/raw2579件/STOPを保全、新raw500件、公開照合後mandatory STOP。
+
 ## 研究C：物理DF・複数U更新・条件付きPR統合実験（2026-11-02）
 
 [固定条件・312人工/回帰PASS・統合1759-call契約](../docs/research/research_c_pr_integrated_preparation_20261102.md)。新 `c_pr_integrated*`／`run_research_c_pr_integrated.py`／人工tests。H4/CDF8/LD2・γ.1、保存19-call受理点の物理評価を先行し、最大64 recentered更新、各3q、毎受理点DF予算。適格選定点だけを新PF/RTE/RPE・条件付きnative32へ接続。旧SOURCE/raw/STOP保全、統合完了/停止条件でmandatory STOP。

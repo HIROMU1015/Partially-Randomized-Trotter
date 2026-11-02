@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：物理適格5 U更新・新候補の条件付きPR資源評価（2026-11-02）
+
+[固定科学SOURCE・calls実績・STOP](docs/research/research_c_pr_integrated_execution_20261102.md)。固定SOURCE980b514c8/1759-call統合契約を無変更で一度実行し543/543 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、sector36。旧19-call受理点の物理DF予算を初めて評価しPASS、新trajectoryは5受理U更新/全受理点DF予算PASS。F .01079246794→.006617509795、exact λ .7258193873→.5683498547、J∞9.59327e-8 MET/U₂ .6589358143 NOT_METで同時一次未達。次の登録3qは全数値適格だが降下せずFINITE_STEP_GRID_NO_ACCEPT。選定update005を新s1/r128/K0のPF/RTE13round・新native32/128QPYへ接続し各correctness検査PASS。Ideal反実laneの条件付き総RZ 207919150188、旧PR比0.88809634、保存強D benchmark比2.0419077。実CA/全law合成・実装law/support・母平均優位はnull、強Dは旧J/U/異なる誤差資格、RC2は別有限endpointで公平な収束比較ではない。旧SOURCE/raw2579件/STOPを保全、新raw500件、公開照合後mandatory STOP。
+
 ## 研究C：小stepで1回の資格付きU更新を受理（2026-11-02）
 
 [19-call結果・独立終端・未収束の区別](docs/research/research_c_pr_small_step_execution_20261102.md)。固定SOURCEa426d62f2/19-call契約を無変更で一度実行し19/19 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。α=F0/|s|/8=.000175615780642の単一trialを、全admission・値尺度Armijo・独立終端確認後にU更新として1回受理。F .01226764443→.01079246794、独立J∞1.22271e-7はMET、partial U₂2.95498→2.66969はNOT_METで同時一次未達。Inner6/refinement4、raw precision loss1、新ffsim fit/外部outer optimizer0。真の勾配精度・厳密降下は未資格、DF物理予算/PR性能/下流は未評価。旧raw2554/SOURCE/STOP保全、新raw25、公開照合後mandatory STOP。以下は各時点の履歴。
