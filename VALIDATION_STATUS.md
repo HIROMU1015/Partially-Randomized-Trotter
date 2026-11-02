@@ -1,3 +1,7 @@
+## 2026-11-02 H6保存3 trajectory：15作用の局所実装診断完了
+
+[selected→native→compiledの6比較・数値不確かさ・STOP](artifacts/h6_selected_implementation/2026-11-02/run01/REPORT.md)。H6/1Å/STO-3G/Pauli918/system12/T.8/S2/q8/K2/P=0、R64/H32/H64のconfirmation0000。selected3/native6/compiled6を一度ずつ、15/15作用・15 distinct PID・全join・exit0、約14.88秒。6組すべてselected→compiledのengineering上側候補が保存ε=.0005の局所rho_guard内、直接差は全て分解能以下。actual/whole-lawρ・certified upperはnull、旧N/G不変。人工9PASS、新sampling/compile/law平均/full-H reference/price tail/retry0。旧全結果/STOPと208manifest entryを保全し、公開照合後mandatory STOP。
+
 ## 2026-11-02 H6純RTE対Hybrid：読取技術調査
 
 [指定2比較・既存実装精度証拠・価格tail・次の局所診断案](docs/research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)。P3を限定case studyとして区切り、H6 R64/H32/H64のSOURCE/law/target/価格/保存ρ_guardを対応付けた。既存P2復元で21member・12 QPY raw/gzipを照合し、新数値解析・QPY deserialize/状態作用・sampling/compile・感度/N/G更新0。既存H6 targetは実効53-bit law/角度平均を含むが、actualρと母平均tailは未取得。新しい科学的優位性や実装保証の採択ではない。全旧結果/STOP・旧manifest entriesを保全。
