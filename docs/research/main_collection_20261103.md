@@ -52,6 +52,19 @@
 新しい科学計算、保存結果の数値再解析、回路build/compile、元runner/testの再実行は0回である。
 Git管理外のraw・cache・他hostの原本は、その既存保存先を保全する。今回の所在表はGitに公開済みのデータだけを対象とする。
 
+## 第2回の補足：ルートの報告・入力定義・ライセンス
+
+上記の研究ディレクトリに加え、ルートにあった過去の報告・計画、`references/` の入力定義、
+`schemas/`、`LICENSES/` の39ファイル（1,478,587 bytes）も、公開版の内容とmodeを保ったまま収録した。
+[ファイル別の原snapshot・blob対応](main_collection_20261103_additional_files.tsv)を使って原記録へ戻れる。
+第2回と補足の追加原ファイルは合計49,582件（1,491,174,536 bytes）である。
+
+ルートの旧計画や `REPORT.md` は当時の研究別記録であり、現在の統合仕様ではない。
+`PROJECT_MAP.md` に従い、現行の `docs/research/` の統合文書を優先する。
+入力定義の配置は新しい科学実行の許可、既存契約の改訂、STOP解除を意味しない。
+ルートの `.h4_execution_claims/` と `.h4_precision_b_claims/` の7件は原snapshotに保持し、
+現在のcheckoutの実行状態へ移植しない。これらも保留path表に区別して記録した。
+
 ## 残る統合
 
 索引・manifestの構造的な衝突、同名SOURCEの異なる版、科学的に意味の異なる記録を区別して解決する。

@@ -145,3 +145,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 これは過去の証拠とSOURCEの収録であり、新しい科学結果・実行許可・共通ライブラリ採択ではない。
 
 第2回は[公開snapshot間で衝突のない追加ファイルと原データ所在](docs/research/main_collection_20261103.md#第2回競合のない追加ファイルの収録)を収録。既存pathの別版と枝全体のmergeは保留し、元の科学SOURCE・結果・STOPを区別して保存する。
+
+2026-11-03のmain集約で追加したルートの旧計画・`REPORT.md`・`references/` 等は、
+当時の研究別記録として[出典対応](docs/research/main_collection_20261103_additional_files.tsv)から辿る。
+現行の統合仕様・実行許可は、この入口で示す優先順位と各研究の既存契約に従う。
