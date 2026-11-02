@@ -1,0 +1,238 @@
+{
+  "fit_python": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python",
+  "evaluation_python": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0",
+    "symengine": "0.13.0",
+    "qiskit-aer": "0.15.1"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "dependency_lock": {
+    "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt",
+    "sha256": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "schema": "C_U_STEP_CONTROL_CONTRACT_V1",
+  "status": "UNAPPROVED_SCIENTIFIC_PROPOSAL",
+  "execution_requires_separate_user_permission": true,
+  "base_commit": "a4d24682e79857f1e97f105cc03448d0e1786ea2",
+  "scope": "C_PR_REDUCED_U_BOUNDED_ARMIJO_V1",
+  "entry": "scripts/run_research_c_u_step_control.py",
+  "source_manifest": "artifacts/research_c_u_step_control/2026-11-03/technical/SOURCE.json",
+  "source_manifest_sha256": "a1b18ce895cbf88170571158c43ab024cc922dd913fccdcc8e6c007b130037e4",
+  "input_paths": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json",
+    "selected": "artifacts/research_c_pr_integrated/2026-11-02/run01/selected.npz",
+    "result": "artifacts/research_c_pr_integrated/2026-11-02/run01/result.json",
+    "STOP": "artifacts/research_c_pr_integrated/2026-11-02/run01/STOP.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_pr_integrated/2026-11-02/run01/SOURCE.json": "7eda4aa319b9b861cfa2b5e8c25e3381b4670c275bdad2bdb073335df550aff5",
+    "artifacts/research_c_pr_integrated/2026-11-02/run01/STOP.json": "9a2f373f13b8f2731f03b3703fdf986e13bdc8829635a4899138357dacef7bb9",
+    "artifacts/research_c_pr_integrated/2026-11-02/run01/result.json": "0e299bf7d749b92eabb978abaa5c77367db9158d2b3d99ac8b8b7df7f746498f",
+    "artifacts/research_c_pr_integrated/2026-11-02/run01/selected.npz": "938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+    "artifacts/research_c_pr_integrated/2026-11-02/technical/SOURCE.json": "7eda4aa319b9b861cfa2b5e8c25e3381b4670c275bdad2bdb073335df550aff5",
+    "docs/research/research_c_pr_integrated_contract_20261102.json": "b5fdbe049e611864be84680d6c513fde94dc7019ccf1be1e71c19b75d1c20c3a"
+  },
+  "initial_candidate": {
+    "id": "update005",
+    "sha256": "938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+    "origin_result": "artifacts/research_c_pr_integrated/2026-11-02/run01/result.json",
+    "qualification": "saved numerical/reduced and physical DF PASS; J MET,U NOT_MET; reassess independently",
+    "reason": "latest qualified finite endpoint of the unchanged PR objective"
+  },
+  "objective": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "mass_scale": 2.2093719370722074,
+    "gamma": 0.1,
+    "epsilon": 1e-08
+  },
+  "policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_xtol": 1e-12,
+    "metric_singular_floor": 1.0,
+    "u_max_nfev": 25,
+    "u_solver_gtol": 1e-12,
+    "u_xtol": 1e-14,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10,
+    "outer_maxiter": 64,
+    "max_points": 33,
+    "outer_gtol": 1e-07,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "inner_refinements": 2
+  },
+  "step_policy": {
+    "max_trials": 32,
+    "max_updates": 64,
+    "contraction": 0.5,
+    "c1": 0.0001,
+    "alpha_max": 1.0,
+    "displacement_cap": 1.01,
+    "accepted_alpha_growth": 2.0
+  },
+  "conditions": {
+    "molecule": "linear H4",
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "representation": "number CDF",
+    "rank": 8,
+    "ld": 2,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "J": "signed real symmetric",
+    "U": "real orthogonal,existing exponential chart",
+    "kappa": "original_g_corrected",
+    "scalar": "nuclear_once",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36
+  },
+  "DF_budget_Ha": 0.00019875,
+  "initialization": {
+    "U": "selected update005",
+    "cold_J": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "J_solves_per_new_U": 3,
+    "refinements_per_new_U": 2,
+    "selected_J": "phase-A provenance/physical assessment only,never cross-U warm start"
+  },
+  "step_rules": {
+    "direction": "negative admitted physical tangent in each recentered eta=0 chart",
+    "alpha0": "min(1,1.01/||g||); subsequent centers also min with 2*previous_accepted_alpha",
+    "alpha_trials": "alpha0*0.5**i,i=0..31;stop at first provisional pass",
+    "acceptance": "qualified trial,Ftrial+comparison_scale<=F0+1e-4*alpha*gTd,and Ftrial+comparison_scale<F0",
+    "comparison": "unchanged local.value_profile/comparison_scale; engineering sensitivity,not exact-inner value enclosure",
+    "rejected_trial_gradient_used": false,
+    "terminal": "small.assess,zero additional J solves",
+    "recenter": "only after independent terminal and independent physical DF PASS",
+    "difference": "replace three F/||g||^2 fractions; preserve objective,inner,geometry,qualifications"
+  },
+  "call_limits": {
+    "saved_load": 1,
+    "initial_identity": 1,
+    "physical_context": 1,
+    "phase_A_assessment": 1,
+    "objective_setup": 1,
+    "optimization_driver": 1,
+    "inner_J_solve": 6147,
+    "precision_state": 4098,
+    "reduced_admission": 2049,
+    "independent_terminal_assessment": 64,
+    "physical_assessment": 65,
+    "export": 1
+  },
+  "maximum_logical_units": 12430,
+  "maximum_U_points": 2049,
+  "maximum_trials": 2048,
+  "maximum_optimization_updates": 64,
+  "maximum_physical_assessments": 66,
+  "inner_limit": "original Newton-CG maxiter1000/xtol1e-12 per solve; preserve pre-step jac semantics",
+  "precision_loss": "raw status retained separately; final independent J/rank/latest-pair/nonincrease gates decide; no extra refinement/retry",
+  "stop_rules": [
+    "BOTH_FIRST_ORDER_MET",
+    "REGISTERED_OBJECTIVE_STALL",
+    "MAXIMUM_ACCEPTED_UPDATES",
+    "BACKTRACKING_NUMERICAL_QUALIFICATION_EXHAUSTED",
+    "VALUE_RESOLUTION_UNQUALIFIED",
+    "BACKTRACKING_TRIAL_LIMIT_NO_ACCEPT",
+    "STEP_ROUNDING_STALLED",
+    "NO_QUALIFIED_DESCENT_DIRECTION",
+    "initial numerical qualification failure",
+    "saved selected or refined initial DF budget FAIL",
+    "POST_UPDATE_J_UNQUALIFIED",
+    "PROVISIONAL_CANDIDATE_DF_BUDGET_NOT_MET",
+    "any correctness/nonfinite/identity/orthogonality/general-K-CAR mismatch -> failed STOP"
+  ],
+  "qualifications": {
+    "raw_optimizer_success": "observation,separate from admission",
+    "J_U_stationarity": "original thresholds and margins",
+    "reduced_gradient": "admitted approximate gradient only",
+    "true_reduced_gradient_qualification": null,
+    "certified_descent": null,
+    "rigorous_stationarity": false,
+    "actual_CA_achieved": null
+  },
+  "future_outputs": [
+    "Fgamma",
+    "exact lambda",
+    "J/physical-U first-order conditions",
+    "DF norm+guard and budget",
+    "qualified update count",
+    "registered stop reason",
+    "all attempted trials/raw inner records",
+    "last physically qualified terminal; failed trials diagnostic only"
+  ],
+  "output_policy": {
+    "formats": [
+      "JSON",
+      "JSONL",
+      "NPZ"
+    ],
+    "complete_raw_evidence": true,
+    "finite_scope": "2049 U points;3 solves/point;1000 iterations/solve;64 independent terminals;66 physical assessments",
+    "do_not_truncate_failed_records": true
+  },
+  "fresh_output": "artifacts/research_c_u_step_control/2026-11-03/run01",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "forbidden": [
+    "real-molecule scientific execution during preparation",
+    "old STOP resume or unused-call transfer",
+    "objective/scale/rank/split/Hamiltonian/codec/gauge/qualification changes",
+    "extra refinement or alternate optimizer",
+    "PF/RTE,ground-state performance,shots,native build/compile,total-resource evaluation",
+    "RC2 continuation,paired reoptimization,post-result policy switch,important GPT scientific review"
+  ],
+  "resources": {
+    "artificial_CPU_RAM_GPU_worker_or_wall_caps": null,
+    "acceleration": "existing vectorized Hessian/decoded-point/extended residuals/JAX/SciPy; persistent physical context",
+    "scheduling": "U/trial/refinement sequential; independent technical tests parallel; coordinate outer processes and BLAS",
+    "shared_environment": "existing environments read-only; task-owned cache/output; respect actual quotas and other users"
+  }
+}
