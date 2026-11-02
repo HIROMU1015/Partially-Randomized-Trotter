@@ -1,0 +1,114 @@
+{
+  "status": "TECHNICAL_PROPOSAL_NOT_SCIENTIFIC_INFERENCE",
+  "inputs": {
+    "old_n": 32,
+    "quoted_total_SE": 1273489921.49,
+    "D": 105038112319,
+    "quoted_point_gap": 3919672236
+  },
+  "formula": "H(n)/D=t_(.975,n-1)*SE_old*sqrt(32/n)/D",
+  "confidence": 0.95,
+  "precision_target_halfwidth_over_D": 0.01,
+  "candidates": [
+    {
+      "N": 64,
+      "predicted_halfwidth": 1799492388.076562,
+      "predicted_halfwidth_over_D": 0.01713180433604439,
+      "predicted_halfwidth_over_old_point_gap": 0.459092566860369,
+      "native_compiles": 64,
+      "QPY": 256,
+      "native_reference_NPZ": 64,
+      "logical_calls": 640,
+      "future_SD_multiplier_at_precision_boundary": 0.5837096784347776
+    },
+    {
+      "N": 96,
+      "predicted_halfwidth": 1459655301.9974406,
+      "predicted_halfwidth_over_D": 0.013896435015553953,
+      "predicted_halfwidth_over_old_point_gap": 0.37239218335434326,
+      "native_compiles": 96,
+      "QPY": 384,
+      "native_reference_NPZ": 96,
+      "logical_calls": 929,
+      "future_SD_multiplier_at_precision_boundary": 0.7196090212207114
+    },
+    {
+      "N": 128,
+      "predicted_halfwidth": 1260003366.9315872,
+      "predicted_halfwidth_over_D": 0.0119956779412121,
+      "predicted_halfwidth_over_old_point_gap": 0.32145630835128514,
+      "native_compiles": 128,
+      "QPY": 512,
+      "native_reference_NPZ": 128,
+      "logical_calls": 1218,
+      "future_SD_multiplier_at_precision_boundary": 0.8336335844466289
+    },
+    {
+      "N": 160,
+      "predicted_halfwidth": 1124803806.1630454,
+      "predicted_halfwidth_over_D": 0.010708530278486197,
+      "predicted_halfwidth_over_old_point_gap": 0.28696374044552775,
+      "native_compiles": 160,
+      "QPY": 640,
+      "native_reference_NPZ": 160,
+      "logical_calls": 1507,
+      "future_SD_multiplier_at_precision_boundary": 0.9338349652043607
+    },
+    {
+      "N": 192,
+      "predicted_halfwidth": 1025483152.925092,
+      "predicted_halfwidth_over_D": 0.009762962512223248,
+      "predicted_halfwidth_over_old_point_gap": 0.26162472043111207,
+      "native_compiles": 192,
+      "QPY": 768,
+      "native_reference_NPZ": 192,
+      "logical_calls": 1796,
+      "future_SD_multiplier_at_precision_boundary": 1.0242792582149096
+    },
+    {
+      "N": 256,
+      "predicted_halfwidth": 886675545.2331914,
+      "predicted_halfwidth_over_D": 0.008441464965976959,
+      "predicted_halfwidth_over_old_point_gap": 0.22621165542607663,
+      "native_compiles": 256,
+      "QPY": 1024,
+      "native_reference_NPZ": 256,
+      "logical_calls": 2374,
+      "future_SD_multiplier_at_precision_boundary": 1.184628502316205
+    },
+    {
+      "N": 320,
+      "predicted_halfwidth": 792308737.9492817,
+      "predicted_halfwidth_over_D": 0.007543059566255777,
+      "predicted_halfwidth_over_old_point_gap": 0.20213647729837422,
+      "native_compiles": 320,
+      "QPY": 1280,
+      "native_reference_NPZ": 320,
+      "logical_calls": 2952,
+      "future_SD_multiplier_at_precision_boundary": 1.325721998104782
+    },
+    {
+      "N": 640,
+      "predicted_halfwidth": 559180449.8543926,
+      "predicted_halfwidth_over_D": 0.005323595764517984,
+      "predicted_halfwidth_over_old_point_gap": 0.14266000221106054,
+      "native_compiles": 640,
+      "QPY": 2560,
+      "native_reference_NPZ": 640,
+      "logical_calls": 5842,
+      "future_SD_multiplier_at_precision_boundary": 1.8784296258274285
+    }
+  ],
+  "minimum_plan_N": 184,
+  "recommended_N": 256,
+  "reason": "256 gives0.844percent plannedhalfwidth/D and18.46percent SD headroom versus192 gives0.976percent and2.43percent;64morecompiles/578morecalls balance variance uncertainty from32samples againstcost;not success/power/coverage guarantee",
+  "scientific_raw_reanalysis": 0,
+  "new_H4_sampling": 0,
+  "new_price_estimation": 0,
+  "old_raw_decodes": 0,
+  "assumptions": [
+    "published32-sample SE approximates future variance,unverified",
+    "selection/rare tails can invalidate planning or leave sign unresolved",
+    "N/precision/confidence/diagnostics are proposals requiring separate adoption/execution permission"
+  ]
+}
