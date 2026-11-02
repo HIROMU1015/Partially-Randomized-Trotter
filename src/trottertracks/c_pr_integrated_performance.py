@@ -23,7 +23,7 @@ SAMPLING=dict(master=2026110201,cohort='integrated_best_fixed32_v1',axis='INTEGR
     events_per_sample=128,PRNG='numpy.random.PCG64',paired=False,adaptive=False)
 
 
-def native(root,c,out,call,a):
+def native(root,c,out,call,a,*,sampling=None,prepared=None):
     import numpy as np
     from qiskit import qpy
     from threadpoolctl import threadpool_limits
@@ -34,44 +34,54 @@ def native(root,c,out,call,a):
     from .pr_dictionary_validation.f2_execution import circuit_metrics
     from .c_pr_aware_df_m2 import sector_match
     arm=a['arm'];h=Fraction(1,10);shared=SharedQiskitCalls(call)
+    policy=dict(SAMPLING if sampling is None else sampling)
+    steps=policy['events_per_sample']
+    if (policy['samples']!=32 or type(steps) is not int or steps<1
+            or (sampling is not None and a['config'].rte_steps!=steps)):
+        raise ValueError('NATIVE_SAMPLING_CONFIG')
     for leaf in ('circuits','samples','references'):(out/leaf).mkdir()
-    car=call('car_context','full256 CAR',lambda:b.stage1.car_bilinears(8))
-    G=[call('raw_factor',str(i),lambda i=i:b.stage1.raw_base(b.stage1.corrected_kappa(a['p']['h'],a['p']['g']),a['p']['constant'],car)
-        if i==0 else b.stage1.raw_frame(arm.J[i-1],arm.U[i-1],car)[0]) for i in range(9)]
-    ix,report=call('full_sector_gate','all9 full/sector',lambda:sector_match(G,a['sector']));io.save(out/'full_sector.json',report)
-    psi=np.zeros(256,complex);psi[ix]=a['ground']
-    ctx=call('reference_context','immutable CAR atom/head cache',lambda:b2.reference_context(arm,G,car,h))
-    saved=dict(lambda_R=a['tail'].lambda_r,identity=arm.plan.extracted_identity,atoms=len(arm.plan.atoms),
-        components=[dict(probability=x.probability) for x in a['tail'].components])
-    io.save(out/'full_law.json',call('full_law_gate','new candidate signed tail',lambda:b2.law_gate(arm,a['tail'],ctx,saved)))
-    builder=StrongBuilder(relative_fusion=True,call=call)
-    for block in arm.model.blocks:call('gaussian_build',block.block_id,lambda block=block:basis_request(builder,arm.model,block))
-    for order in (tuple(range(3)),tuple(reversed(range(3)))):
-        for i,j in zip(order,order[1:]):builder.transition(arm.model,arm.model.blocks[i],arm.model.blocks[j])
-    shells={}
-    for label in ('head','X','Y'):
-        qs={}
-        for kind in ('raw','compiled'):
-            def load(label=label,kind=kind):
-                with (root/c['shells'][label][kind]).open('rb') as f:items=qpy.load(f)
-                if len(items)!=1 or items[0].num_qubits!=9:raise ValueError('SHELL_SCHEMA')
-                return items[0]
-            qs[kind]=call('shell_load',label+kind,load)
-        shells[label],report=call('shell_assessment',label,lambda label=label:b2.shell_assessment(qs['raw'],qs['compiled'],label))
-        io.save(out/(label+'_shell.json'),report)
+    if prepared:
+        if prepared['arm'] is not arm:raise ValueError('NATIVE_PREPARED_ARM_IDENTITY')
+        ctx,psi,builder,shells=(prepared[k] for k in ('ctx','psi','builder','shells'))
+    else:
+        car=call('car_context','full256 CAR',lambda:b.stage1.car_bilinears(8))
+        G=[call('raw_factor',str(i),lambda i=i:b.stage1.raw_base(b.stage1.corrected_kappa(a['p']['h'],a['p']['g']),a['p']['constant'],car)
+            if i==0 else b.stage1.raw_frame(arm.J[i-1],arm.U[i-1],car)[0]) for i in range(9)]
+        ix,report=call('full_sector_gate','all9 full/sector',lambda:sector_match(G,a['sector']));io.save(out/'full_sector.json',report)
+        psi=np.zeros(256,complex);psi[ix]=a['ground']
+        ctx=call('reference_context','immutable CAR atom/head cache',lambda:b2.reference_context(arm,G,car,h))
+        saved=dict(lambda_R=a['tail'].lambda_r,identity=arm.plan.extracted_identity,atoms=len(arm.plan.atoms),
+            components=[dict(probability=x.probability) for x in a['tail'].components])
+        io.save(out/'full_law.json',call('full_law_gate','new candidate signed tail',lambda:b2.law_gate(arm,a['tail'],ctx,saved)))
+        builder=StrongBuilder(relative_fusion=True,call=call)
+        for block in arm.model.blocks:call('gaussian_build',block.block_id,lambda block=block:basis_request(builder,arm.model,block))
+        for order in (tuple(range(3)),tuple(reversed(range(3)))):
+            for i,j in zip(order,order[1:]):builder.transition(arm.model,arm.model.blocks[i],arm.model.blocks[j])
+        shells={}
+        for label in ('head','X','Y'):
+            qs={}
+            for kind in ('raw','compiled'):
+                def load(label=label,kind=kind):
+                    with (root/c['shells'][label][kind]).open('rb') as f:items=qpy.load(f)
+                    if len(items)!=1 or items[0].num_qubits!=9:raise ValueError('SHELL_SCHEMA')
+                    return items[0]
+                qs[kind]=call('shell_load',label+kind,load)
+            shells[label],report=call('shell_assessment',label,lambda label=label:b2.shell_assessment(qs['raw'],qs['compiled'],label))
+            io.save(out/(label+'_shell.json'),report)
+        if prepared is not None:prepared.update(arm=arm,ctx=ctx,psi=psi,builder=builder,shells=shells,origin=str(out))
     profile=CompilerProfile();profile.validate()
     def qsave(label,kind,q):
         with (out/'circuits'/(label+'_'+kind+'.qpy')).open('xb') as f:qpy.dump(q,f)
     def task(i):
         label=f'sample{i:02d}'
         def sample():
-            master=(SAMPLING['master'],SAMPLING['cohort'],c['source_manifest_sha256'])
+            master=(policy['master'],policy['cohort'],c['source_manifest_sha256'])
             events=b.independent_occurrence(arm,a['tail'],a['dist'],a['config'],master=master,
-                round_index=-1,axis=SAMPLING['axis'],shot=i,occurrence=0)
-            if len(events)!=128 or any(x.taylor_order!=0 for x in events):raise ValueError('R128_K0_EVENTS')
+                round_index=-1,axis=policy['axis'],shot=i,occurrence=0)
+            if len(events)!=steps or any(x.taylor_order!=0 for x in events):raise ValueError('NATIVE_K0_EVENT_COUNT')
             return events
         events=call('trajectory_sample',label,sample)
-        io.save(out/'samples'/(label+'_events.json'),dict(sample=i,sampling=SAMPLING,
+        io.save(out/'samples'/(label+'_events.json'),dict(sample=i,sampling=policy,
             SOURCE=c['source_manifest_sha256'],JU=arm.model.source_identity,events=[x.to_dict() for x in events],
             coherent_occurrences_independent=True,quantum_shots=0,old_cohort_pooled=False))
         raw=shared('kernel_build',label,lambda:b.build_kernel(arm,h,events,a['config'],builder=builder));qsave(label,'raw',raw)
