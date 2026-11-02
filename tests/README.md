@@ -1,5 +1,7 @@
 # tests の役割
 
+研究C近接比較II：[ENTRY backend試験](management/test_research_c_near_stable.py)／[人工E2EとSTOP](management/test_research_c_near_practical.py)。Bの38件と既存inner/stable/Armijoを再利用。実分子データは使用しない。
+
 ## 研究C：RC2科学実行環境の人工再確認（2026-11-01）
 
 [実行報告](../docs/research/research_c_regularization_comparator_execution_20261101.md)。固定SOURCEの新人工22件を実行worktreeで再確認PASS。準備時171件＋29 subtestsの全再実行ではない。その後に別途許可された実H4の1 fit/17 callsを一度実行し、科学correctness FAIL0。人工PASSとDF/proxy数値結果を分離して記録した。

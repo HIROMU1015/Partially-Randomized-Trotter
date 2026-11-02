@@ -1,5 +1,7 @@
 # 文書索引
 
+[研究C：近接weighted L1比較IIのstable接続・技術準備](research/research_c_near_objective_practical_comparison_preparation_20261103.md)／[A/B判断資料](research/research_c_comparison_readiness_integration_20261103.md)。未承認1,629-call Stage O、実H4科学実行0。
+
 ## 研究C：11月3日成果統合・nominal価格比較（2026-11-03）
 
 [新版Evidence Map・旧24 Claimとの対応・8追加項目](research/research_c_evidence_map_updated_20261103.md)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。

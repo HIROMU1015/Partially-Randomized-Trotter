@@ -1,0 +1,135 @@
+{
+  "status": "PASSIVE_READY_UNAPPROVED",
+  "observed_UTC": "2026-11-02T23:52:48.497036+00:00",
+  "technical_GO": true,
+  "science_authorized_by_this_preparation": false,
+  "base_commit": "2459e018ea2276c359d6fe96253fbcad0bfd65bb",
+  "implementation_source_commit": "9e9fc8391590aeb7f9d36b76d90b5a25bbe2fe5e",
+  "contract_path": "docs/research/research_c_near_objective_practical_comparison_contract_unapproved_20261103.json",
+  "contract_sha256": "4a40d894a21710a3fcc65b4fef2f94ff5c4271711081aa9b6c3c7856cd7be1f0",
+  "source_manifest_path": "artifacts/research_c_near_practical/2026-11-03/technical/SOURCE.json",
+  "source_manifest_sha256": "6442b2061e0be7533344d96a13e5059d738af343ffa98122841a405e0457e8fb",
+  "source_closure_files": 108,
+  "source_closure_current_bytes_PASS": true,
+  "source_closure_implementation_commit_PASS": true,
+  "source_closure_method": "recursive local AST imports including function bodies;all local files plus existing runtime locks;external numerical sources pinned in contract",
+  "saved_input_bytes_without_decode": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": true,
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": true,
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": true
+  },
+  "inherited_B_oracle_and_9_file_SOURCE_unchanged": {
+    "src/trottertracks/c_near_objective.py": true,
+    "tests/management/test_research_c_near_objective.py": true,
+    "src/trottertracks/c_pr_aware_df.py": true,
+    "src/trottertracks/c_rcdf_comparator.py": true,
+    "src/trottertracks/c1_ffsim_corrected_codec.py": true,
+    "src/trottertracks/c1_real_orthogonal_codec.py": true,
+    "src/trottertracks/c1_general_k_adapter.py": true,
+    "tests/management/test_research_c_regularization_comparator.py": true,
+    "tests/management/test_research_c_pr_aware_df.py": true
+  },
+  "old_tracked_scientific_artifacts_changed": [],
+  "public_fixed_references": {
+    "A_report_blob": "a13d607548e9c36969b7d975dcbd9fdfcf6d55a0",
+    "B_report_blob": "9674e5bbd1bb4f0b71c90aa578e5537dfe8cf0e0",
+    "B_oracle_blob": "53f0249348177b463a050ebc5290ec30a7920bd8",
+    "stable_algorithm_blob": "d65a1e85920fba2991cd675d68e7fa3f0de40bd4",
+    "all_public_body_matches_local_fixed_git": true
+  },
+  "tests": {
+    "fit": 162,
+    "evaluation": 3,
+    "unique_PASS": 165,
+    "B_original_38_included": true,
+    "fit_deselected_evaluation_only": 2,
+    "notes": "Environment-role separation;no skips in combined unique coverage;local artificial tests,not immutable CI or molecular performance"
+  },
+  "commands": {
+    "fit": "python -B -m pytest -q -p no:cacheprovider tests/management/test_research_c_near_objective.py tests/management/test_research_c_regularization_comparator.py tests/management/test_research_c_pr_aware_df.py tests/management/test_research_c_near_stable.py tests/management/test_research_c_near_practical.py tests/management/test_research_c_pr_inner_point_solver.py tests/management/test_research_c_j_u_stability.py tests/management/test_research_c_pr_reduced_limited.py tests/management/test_research_c_pr_small_step.py tests/management/test_research_c_u_step_control.py -k 'not test_real_invented_evaluation_worker_pipe and not test_actual_new_runner_CAR_worker_and_locked_service_on_artificial_input'",
+    "evaluation": "python -B -m pytest -q -p no:cacheprovider tests/management/test_research_c_u_step_control.py::test_real_invented_evaluation_worker_pipe tests/management/test_research_c_pr_integrated_pipeline.py::test_real_synthetic_sector_generalK_and_original_kappa tests/management/test_research_c_near_practical.py::test_actual_new_runner_CAR_worker_and_locked_service_on_artificial_input",
+    "environment": "JAX_ENABLE_X64=1, own process OPENBLAS/MKL threads1, task-local .cache/near-practical;separate read-only fit/evaluation venvs"
+  },
+  "fit_environment": {
+    "role": "fit",
+    "status": "PASS",
+    "python": "3.11.1 (main, Nov 18 2024, 15:05:59) [GCC 11.4.0]",
+    "executable": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python",
+    "prefix": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit",
+    "packages": {
+      "ffsim": "0.0.83",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "jax": "0.4.38",
+      "jaxlib": "0.4.38",
+      "qiskit": "2.4.2",
+      "pyscf": "2.14.0"
+    },
+    "external_ffsim_source_identity": {
+      "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+      "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+    },
+    "affinity_cpus": 32,
+    "available_memory_kB": "54477680",
+    "scientific_calls": 0,
+    "real_molecular_array_decodes": 0
+  },
+  "evaluation_environment": {
+    "role": "evaluation",
+    "status": "PASS",
+    "python": "3.11.1 (main, Nov 18 2024, 15:05:59) [GCC 11.4.0]",
+    "executable": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "prefix": "/tmp/prt-c1-stage2-preparation-20261025/.venv",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "threadpoolctl": "3.6.0",
+      "symengine": "0.13.0",
+      "qiskit-aer": "0.15.1"
+    },
+    "external_ffsim_source_identity": null,
+    "affinity_cpus": 32,
+    "available_memory_kB": "54473216",
+    "scientific_calls": 0,
+    "real_molecular_array_decodes": 0
+  },
+  "unapproved_cli_refusal_PASS": true,
+  "passive_runner_without_numerical_imports_PASS": true,
+  "call_limits": {
+    "saved_load": 1,
+    "initial_identity": 1,
+    "physical_context": 1,
+    "common_physical_assessment": 1,
+    "objective_setup": 1,
+    "comparison": 1,
+    "export": 1,
+    "optimization_driver": 2,
+    "inner_J_solve": 774,
+    "precision_state": 516,
+    "reduced_admission": 258,
+    "independent_terminal_assessment": 34,
+    "physical_assessment": 34,
+    "endpoint_diagnostics": 2,
+    "arm_export": 2
+  },
+  "maximum_logical_units": 1629,
+  "real_molecular_array_decodes": 0,
+  "new_scientific_calls": 0,
+  "new_ffsim_fits": 0,
+  "new_real_native_build_compile": 0,
+  "real_fresh_output_exists": false,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "scientific_limitations": [
+    "single neutral initialization,matched initial penalty and finite algorithmic opportunity only",
+    "engineering numerical admission,not exact argmin/gradient enclosure",
+    "candidate-specific ground/alias/PF/RTE/shots/native/price and actualCA not evaluated"
+  ],
+  "next_owner": "user selects/permits fixed Stage O;Codex executes only after separate explicit science permission"
+}
