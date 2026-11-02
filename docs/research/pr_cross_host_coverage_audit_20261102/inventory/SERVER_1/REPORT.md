@@ -832,6 +832,14 @@ S1-Tはopaque locatorの公開逆引き。固定commitからの内容読取を�
 - 技術検査は主agent自身による。独立科学レビュー、immutable CI、外部再現、正式採択とは呼ばない。元のSOURCE/input/raw/result/grant/ledger/marker/STOPと既存研究概要・manifestは変更していない。
 - この公開commitはCSV分割と本REPORTだけを追加する。通常push後のremote SHAおよび固定remote commitから取得したCSV全分割/REPORTの本文照合結果は最終チャットで報告する。この文書だけを公開成功の証明にしない。
 
+## 今回の公開結果：認証不足で未公開
+
+独立branchへのcommitは完了した。通常pushは `fatal: could not read Username for https://github.com: No such device or address` 相当のHTTPS認証取得失敗で終了し、既存GitHub CLIも利用できなかった。認証情報の新規作成・表示、共有設定の変更、force push、別branchへの代替公開は行っていない。
+
+**未公開。remote SHA・公開CSV/REPORT本文の一致は未確認であり、公開完了を主張しない。** CSVの全行・分割・形式・参照・再連結SHAの環境内検査は完了している。GitHubの予定branchは `codex/pr-coverage-inventory-server1-20261102`。認証を利用できる環境内terminalから、このbranchを通常pushした後、remote SHAと本REPORT/全CSVの本文を照合する必要が残る。環境内の作業treeを含む再実行コマンドは最終チャットに記載する。
+
+公開に依存する処理だけを未完了として残し、ここでmandatory STOPする。別環境、Phase 2/3、科学計算、原本/STOPの変更へ進まない。
+
 ## Mandatory STOP
 
 **SERVER 1 Phase 1の棚卸し・技術検査・公開照合の終了でmandatory STOP。** LOCAL/SERVER 2の調査、Phase 2/3、coverage不足のA〜E判定、詳細科学レビュー、主要claim採択、新科学計算、旧契約/STOPの再開は行わない。未アクセスと未解決の所在・条件joinは、そのまま後続担当へ渡す。
