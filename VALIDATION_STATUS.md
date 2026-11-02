@@ -1,5 +1,9 @@
 # Validation status
 
+## 研究C：同じ新J/Uでも主RZは強決定論が低費用（2026-11-02）
+
+[156-call結果・全13round・同一J/U比較と限界](docs/research/research_c_same_ju_strong_d_execution_20261102.md)。固定SOURCE5f27539ae/156-call契約を無変更でfresh run01へ一度実行し156/156 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36、統合update005の同じJ/U、元g補正κ/scalar/frame順、own-DF ground oracle/準備除外。全frame ordered S2/s1/δ=h=.1/m0..12、保存DF予算PASS再利用・新DF norm/fit/optimizer/PR再計算0。9因子CAR/sector・ground/alias・full512 raw/compiled/actual-adjoint/X-Yと13roundがPASS。P0 kernel RZ11026、shots13728、条件付き総RZ105532782860。保存新PR idealは207919150188、同じ新J/UのPR/D比1.97018542062（CX depth比.724994660275で副指標tradeoffあり）。旧/新のD価格6指標は一致、D総RZは3.64%増、新PR自身は既報11.19%減。Numerical D/両ideal反実laneは同じ整数費用だが、厳密CA・PR全law誤差/support/母平均優位・目的だけの因果効果は未資格。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：物理適格5 U更新・新候補の条件付きPR資源評価（2026-11-02）
 
 [固定科学SOURCE・calls実績・STOP](docs/research/research_c_pr_integrated_execution_20261102.md)。固定SOURCE980b514c8/1759-call統合契約を無変更で一度実行し543/543 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、sector36。旧19-call受理点の物理DF予算を初めて評価しPASS、新trajectoryは5受理U更新/全受理点DF予算PASS。F .01079246794→.006617509795、exact λ .7258193873→.5683498547、J∞9.59327e-8 MET/U₂ .6589358143 NOT_METで同時一次未達。次の登録3qは全数値適格だが降下せずFINITE_STEP_GRID_NO_ACCEPT。選定update005を新s1/r128/K0のPF/RTE13round・新native32/128QPYへ接続し各correctness検査PASS。Ideal反実laneの条件付き総RZ 207919150188、旧PR比0.88809634、保存強D benchmark比2.0419077。実CA/全law合成・実装law/support・母平均優位はnull、強Dは旧J/U/異なる誤差資格、RC2は別有限endpointで公平な収束比較ではない。旧SOURCE/raw2579件/STOPを保全、新raw500件、公開照合後mandatory STOP。

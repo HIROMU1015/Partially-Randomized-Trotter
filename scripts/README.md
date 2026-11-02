@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：同じ新J/Uでも主RZは強決定論が低費用（2026-11-02）
+
+[156-call結果・全13round・同一J/U比較と限界](../docs/research/research_c_same_ju_strong_d_execution_20261102.md)。固定SOURCE5f27539ae/156-call契約を無変更でfresh run01へ一度実行し156/156 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36、統合update005の同じJ/U、元g補正κ/scalar/frame順、own-DF ground oracle/準備除外。全frame ordered S2/s1/δ=h=.1/m0..12、保存DF予算PASS再利用・新DF norm/fit/optimizer/PR再計算0。9因子CAR/sector・ground/alias・full512 raw/compiled/actual-adjoint/X-Yと13roundがPASS。P0 kernel RZ11026、shots13728、条件付き総RZ105532782860。保存新PR idealは207919150188、同じ新J/UのPR/D比1.97018542062（CX depth比.724994660275で副指標tradeoffあり）。旧/新のD価格6指標は一致、D総RZは3.64%増、新PR自身は既報11.19%減。Numerical D/両ideal反実laneは同じ整数費用だが、厳密CA・PR全law誤差/support/母平均優位・目的だけの因果効果は未資格。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：新selected J/Uの強決定論公平比較・技術準備（2026-11-02）
 
 [再利用・134人工/回帰PASS・未承認156-call契約](../docs/research/research_c_same_ju_strong_d_preparation_20261102.md)。`c_same_ju_strong_d.py`／`run_research_c_same_ju_strong_d.py`。同じH4/CDF8の全frame S2/s1、保存sector/ground/DF誤差を再利用し、1 kernel/P0と13round、数値合成lane＋共通ideal反実条件を準備。実H4追加decode/計算0、旧SOURCE/raw/STOP保全。別の科学許可までmandatory STOP。
