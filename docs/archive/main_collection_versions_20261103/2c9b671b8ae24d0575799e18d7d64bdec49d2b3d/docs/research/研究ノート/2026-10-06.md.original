@@ -1,0 +1,38 @@
+# 2026-10-06 研究ノート
+
+## Track A H4追加6距離と最大12 workersの契約準備
+
+確認済みは利用者による距離・worker条件の確認と、そのhandoff文書化まで。
+基準はserver preparation commit `c2ab34fed49bb1fb104d39fe83b36858a2c92c2a`、
+元handoff `48f9ac3b756bcf572aeb7c594a0c88791a458725`、旧証拠 `4c23453c541700c6a41ba71fc5ec9323b53858d6`。
+利用者指示で今回の契約準備資料だけをcommit/pushする。serverの正式契約完成・source実装・本計算の結果ではない。
+
+追加6距離は0.70/0.80/0.90/1.10/1.40/1.60 Å、最大12 CPU workers・各thread1。
+H4 linear/STO-3G/requested・actual DF rank12/8 system qubits/T=0.8/二次DF-prefix PF/canonical finite-RTEの設計で、
+同じ218 template/点、32 random trajectories/axis共有、1点12,464・計74,784 wrapperを将来契約上限として記録した。
+圧縮側と伸長側を含む固定離散geometry mapとし、fresh blindとは呼ばない。partialが勝つことは成功条件ではない。
+
+[正式契約準備指示](../gpu_server_track_a_h4_geometry_contract_preparation_prompt.md)と
+[scope JSON](../track_a_h4_geometry_contract_preparation_scope_v1.json)を作成した。
+公開checkpoint草案の数値full-wrapper fingerprint field欠落を別schemaで補い、
+wrapper key、角度/global phase、外部ledger digest、COMPLETE owner、mutation拒否を合成recordで検査するよう依頼する。
+schema fieldの存在だけをcross-record意味論の証明と扱わない。
+
+snapshot生成・sector/solver・seed・memory/wall/output・表示規則は未確認部分が残る。
+静的sourceと文書から案を固定し、未解決なら契約準備でSTOPする。
+新science source port・authorization作成・SCF/DF/reference solve・科学入力アクセス・signal/sampling/build/compile・GPUは認可しない。
+serverの既存Python3.12.3/Qiskit1.3.0等を優先し、旧guardを削除せず、依存と共有環境を変更しない。
+
+旧1.00 Å218候補と1.30 Å固定5構成は別layer。新anchor・1.30 Å全候補化・8点化は追加しない。
+原稿保留を継続し、旧science result/status/manifest・原稿/図・Track Bは不変。
+今回新benchmark・科学tests・分子/runtime操作は0。serverの128 synthetic callsは公開準備の履歴で、今回の追加実行ではない。
+
+文書の静的照合は確認済み。stdlibだけのinline検査でscope JSON・予算恒等式・保存inventoryの218 template、
+公開manifest/planのSHA-256、source247件と保存JSON6件のbyte/hash不変性、新Markdownの相対links3件を照合した。
+文書準備時の`git diff --check`はexit0。公開前のHEADは`48f9ac3`、indexは空だった。
+旧proposal/handoff・VALIDATION_STATUS・validation manifestのSHA-256も変更前後で一致した。
+pytestやscience runner、serverの21件検査を再実行した結果ではなく、immutable CIでもない。
+
+次はサーバー側で正式契約案/schema/zero-compute planと契約検査を整え、reviewへ戻る。
+その後のscience source/tests→source commit→plan/別authorization→最終review→利用者launchは別段階。
+現状の科学計算STOP、次段未認可、研究判断nullを維持する。

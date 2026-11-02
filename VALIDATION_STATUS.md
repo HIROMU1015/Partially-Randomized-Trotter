@@ -587,3 +587,8 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-03 conflict-free path collection
 
 公開48枝の通常mergeには索引等の衝突があったため、[収録範囲](docs/research/main_collection_20261103.md)に示す追加pathだけを内容同一で収録した。分類はhistorical_evidence。元の科学的status・SOURCE identity・STOPを保持し、新しい科学検証や原runner/testの再実行は行っていない。大きな原データは既存の公開snapshotで保持し、その所在を記録した。
+
+## main内の索引・SOURCE版差整理（2026-11-03）
+
+[整理結果と原版対応](docs/research/main_collection_versions_20261103.md)を追加した。既存の検証状態、欠落・quarantine、元の科学SOURCEとSTOPは保持する。
+今回のSOURCE配置は公開ファイルの保全であり、main全体のAPI・科学性能・再現性の検証完了を意味しない。

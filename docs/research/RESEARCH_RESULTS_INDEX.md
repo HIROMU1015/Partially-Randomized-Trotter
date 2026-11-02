@@ -136,3 +136,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 [P3]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f9adc2ce1c373c7ba311864c733ac6f40b575fbc/docs/research/b2d_research_entry_20261028.md
 [P4]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/33424d205aa918498e1ef54beb94ab67612bdec8/docs/research/track_b_research_entry_20261028.md
 [BASE_CATALOG]: prevalidation_catalog_evidence_map.md
+
+## main内の版差・統合索引
+
+[同名37 pathの整理と88原版](main_collection_versions_20261103.md)で、資料索引の統合とSOURCE配置を確認できる。原データ所在と枝別の収録範囲は[main収録記録](main_collection_20261103.md)を参照する。

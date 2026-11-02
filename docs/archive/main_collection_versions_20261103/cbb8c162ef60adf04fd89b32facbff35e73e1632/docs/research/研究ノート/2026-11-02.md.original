@@ -1,0 +1,115 @@
+# 研究ノート 2026-11-02
+
+
+## 研究C：J/U整合gateの評価点誤りを修正して同条件で1回再実行
+
+[全証拠・修正内容・結果](../research_c_j_u_consistency_repair_execution_20261101.md)。ユーザーの修正・再実行指示に基づき、旧curvature run/source/STOPを保全したまま保存rawの15-call限定診断を固定SOURCE a6a2c55aa8400428329165578d54e2f65bff4636から実行。PR旧J0の不一致はraw jac対endpoint7.86716e-7で、独立physical-chain対chart差4.55206e-11は元allowance内。固定SciPy1.14.1 Newton-CGは更新前のgfkを返す場合があり、終点jacとする検証仮定が誤りだった。RC2は元Uとのgradient差1.39850e-6に対し同じJAX decode点では4.95139e-8で固定allowance内。異なる点の微分を比較していた。
+
+生jacを保持して実際のpre-step/accepted/endpoint点で照合し、physical終点勾配を独立再計算。ffsim ADと独立経路は同じdecode点を使い、元candidate J/Uは変更せず既存codec忠実性guardも維持。各差分を例外前に記録する修正を独立SOURCE b0dc86e61e29469bf9d19f8709e3c68a613f9aebへ固定。291人工/回帰methods＋29 subtests PASS。目的/γ/ε/scales/rank/初期化/solver/64cycles/数値allowance/一次1e-5/DF予算は変更していない。
+
+新たな同条件415-call scopeをSOURCE24a7268359506abd171686132f12b4876f9e62bfに固定し、保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、同じ元qualified J/U/x0から独立PR/RC2各1 trajectoryをfresh fit_run01へ実行。328 COMPLETE/FAIL0、今回の保存診断15と合わせ343/最大430units、修正版paired再実行1回、各新run内retry/resume0。旧210や旧258の未使用枠を転用しない。
+
+終端必要整合・codec・sector一般K/rawCARとDF予算は両PASS。PR norm1.10629378e-8Ha/guard3.22716676e-9、RC2 norm5.01799693e-9/guard3.17557652e-9。ただしPRは35cycles後J∞1.80768881e-5/U₂2.95483792でBOTH_UNQUALIFIED、RC2は64cycles後J∞6.03709705e-7/U₂.866716719でU_UNQUALIFIED。λはPR.773775270191/RC2 8.285810103455Haという未収束終点の記述値。Qualified比較null、actual CA/PF-RTE/native/shots/総資源への資格はない。異点の参考gradient差FAILは観測値として保存し、全項目PASSと偽らない。
+
+旧raw1471/旧SOURCE/契約/grant/ledger/marker/STOPを保全し、新診断raw9/fit raw345を公開する。固定scope名20261101は変更せず、2026-11-02の公開記録として追記。Codexはremote SHA/tree/本文照合後mandatory STOP。次はユーザー／研究CがJ/U結合・conditioningを扱う研究方向を判断し、追加fitや新しい科学条件へ自動進行しない。
+
+
+## 研究C：実H4 reduced-objective pilotを実行、数値stabilityで登録停止
+
+[全結果・比較・次判断](../research_c_j_u_reduced_execution_20261102.md)。ユーザーの1051-call明示科学許可後、SOURCE e1582a5620e61caec52f0ee284c8cad8c0202580・契約SHA377db724f81353d47f7d38c7ece5cde3219cd8f53be24eabdfc5103503f06343を変更せずfresh run01へ実行。保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、元g補正κ・scalar、同qualified x0・α=γ=.1・元scales・DF予算CA/8を保持。38/1051 COMPLETE、correctness FAIL0、retry/resume0、PR/RC2各1 trajectory、inner J solve6、outer driver1、受理U更新0。
+
+PR初期点のhead rank19/共通nullity1・tail injectivityは登録数値条件を通過したが、refinement前後U gradient差5.60583503e-6>1e-6でREDUCED_GRADIENT_UNQUALIFIED。内側Newton-CGは481+2 iterationsでraw success/J一次ともPASS。RC2初期点は差2.16995471e-7で数値admissionを通過したが、最初の未受理trialで8.56926033e-6となり同じ未資格STOP。初期/試行の全gelsd rank80・全J一次はPASS。構造の追加nullやJ内側未達を停止原因とせず、stability検証の独立した制限として記録する。
+
+両診断終点は初期UのJ solve後で、PR F .0122676444298/J∞1.32490308e-7/U₂2.954975096/λ.773835579843Ha、RC2 F .0291938287548/J∞6.28335286e-8/U₂.867029585/λ8.285829796166Ha。終端同一点微分・codec・sector generalK/rawCARはPASS、DF norm/guardはPR1.106436985e-8/3.227171475e-9Ha、RC2 5.020319750e-9/3.175577551e-9Haで両予算PASS。U一次未達かつenvelope未資格でqualified比較はnull。旧jointに対するPR F/λ差を新outer改善と扱わず、旧両分離結果は上回っていない。Rebound回避やreduced方式一般の有効性は未判定。
+
+SOURCE133/input25・旧raw1825を保全し、数値allowanceを変えて続行しなかった。次はユーザー／研究Cがinexact inner-oracleの数値安定化を人工条件で調べるか、local joint J/η接続を優先するか判断する。今回の結果から新方式を採択したり、追加H4/fit/PF/RTE/ground/shots/native/総資源/重要レビューへ進まない。公開照合後mandatory STOP。
+
+
+## 研究C：拡張精度＋追加refinementのreduced pilotを実行、PR inner整合FAILで部分STOP
+
+[結果と根拠](../research_c_j_u_stable_execution_20261102.md)。SOURCE12e0079a2/1563-call契約を無変更で実行し、480 attempts・478 COMPLETE・2 FAIL（PR inner例外と包むouter driver）、retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、同元qualified x0・α=γ=.1・元scales。PR初期と未受理trial1の新stabilityはPASSしたが、trial2のchart対physical-chain gradient差2.39695e-7でcorrectness STOP、受理U更新0。開始済みRC2は75点admission PASS/64受理更新、F .01742887277/J∞3.67648e-8/U₂ .0047620784でU未資格。親の新DF norm/一般K-CAR/比較はNOT_RUN/null、旧/初期DF PASSを終端へ転用しない。旧raw1879/SOURCE/STOP・旧閾値を保全、新raw499を保存し公開照合後mandatory STOP。
+
+PR point0の旧coarse pair差5.6058350e-6はそのまま、新final pair差4.1721025e-10を別規則の数値admissionとして記録する。Trial1のrefinement raw status2/nit0による同一勾配差0は、真のinner解への精度保証ではない。Trial2のraw jac対last-step-startはPASSしており、旧pre-step意味の取り違えを直接原因とみなさず、別predicateであるchart/physical-chain一致のFAILを区別する。追加の実配列診断・閾値緩和・再実行はしない。
+
+次はユーザー／研究Cが、Codexによる人工・保存JSONでのinner座標整合調査を優先するか判断する。実H4の新診断・再最適化・RC2上限変更には新しい固定範囲と明示許可が必要。今回の未使用枠や旧runは転用せず、公開照合後mandatory STOP。
+
+
+## 研究C：保存PR trial2の10-call診断で新同一配列経路PASS
+
+[結果原本と解釈](../research_c_pr_coefficient_point_execution_20261102.md)。固定SOURCE565de95fc/10-call契約を無変更で実行し10/10 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1・同元qualified x0から保存PR trial2の点をdry replayで復元し、保存η/U/W/x identity PASS。旧経路の差2.37552e-7で不一致を再現、新同一配列・拡張精度経路は差9.18462e-18で元allowance内、objective差7.10543e-15もPASS。単一保存点の数値整合のみで厳密gradient上界/optimizer収束/DF予算/PR性能は未認定。新J solve/fit/最適化trajectory0、RC2継続・paired再実行なし。旧raw2378/SOURCE/旧480-call STOPを保全、新raw10を保存し公開照合後mandatory STOP。
+
+旧報告の差2.3969496e-7と今回2.3755165e-7は同じ値ではなく、gradient vectorのbitwise再現は主張しない。点identityと旧gateの不合格再現、新経路の数値整合を区別する。9.18e-18は真のgradientへの誤差上界でも全域の正しさ証明でもない。実H4で精度向上要因を個別にablationする追加計算は実行しない。
+
+次候補はユーザー／研究Cの判断後、Codexによる既存PR inner solverへの最小接続・人工検証と新契約準備。今回の承認でpaired1563-call、追加fit、RC2 continuation、Joint移行へ進まず、公開照合後mandatory STOP。
+
+
+## 研究C：保存trial2 U固定で修正PR inner1回を実行
+
+[実行結果と限界](../research_c_pr_inner_point_execution_20261102.md)。固定SOURCEab5d80bd6/8-call契約を無変更で実行し8/8 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、保存trial2 U固定・元J初期のNewton-CGを1回実行。終端chain差1.05214e-17、独立J∞9.83543e-6＋元marginでMET。一方raw success=false/status2 precision loss/nit708、partial U₂1204.251で同時一次未達。INNER_CORRECTNESS_PASS_J_METは工程的数値基準で、正常optimizer収束/DF予算/PR性能/reduced資格ではない。Refinement/U更新/outer/RC2継続0、旧raw2388/SOURCE/STOP保全、新raw13を保存し公開照合後mandatory STOP。
+
+Raw jacは今回はlast-accepted/endpointで一致し、last-step-startでは差9.36911e-6のFAIL観測が残る。固定規則は3点いずれか一致のOR条件なので合成correctnessはPASSであり、下位検査すべてPASSと偽らない。F5822231.60178→17.69557677965は同じ固定UのJ最適化before/afterで、旧初期UやRC2との性能順位ではない。新tensor Frobenius9.67338e-7は測定したがsector norm/DF予算は未評価/nullのまま。
+
+次候補はユーザー／研究Cの判断後、CodexによるPR-only reduced検証の条件設計。今回の結果から追加refinement、paired1563-call、RC2 continuation、Joint移行、重要科学レビューへ自動進行しない。新規科学計算には別の固定範囲と明示許可が必要で、公開照合後mandatory STOP。
+
+
+## 研究C：PR-only reducedで初回trialが最新pair未資格
+
+[実行結果と限界](../research_c_pr_reduced_limited_execution_20261102.md)。固定SOURCEb2e5ab4d5/54-call契約を無変更で一度実行し18 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。初期点はadmission PASS、最初の未受理trialはJ/rank-nullspace PASSだがlatest-pair U勾配差7.31089e-6>1e-6でREDUCED_GRADIENT_UNQUALIFIED。受理U更新0、distinct U点2/inner6/refinement4/outer1。Raw precision loss2件を保持。旧trial2未到達、DF予算/PR性能/qualified比較null、旧raw2401/SOURCE/STOP保全、新raw22。公開照合後mandatory STOP。以下は各時点の履歴。
+
+生Newton-CGは6件中2件がprecision loss、各J gateはMETだったが、最終2refinementのU勾配差が固定1e-6を満たさず停止した。これは旧chain整合FAILとは別の数値資格問題で、correctness FAILはない。旧trial2やその先のouter安定性は今回未検証。終点は資格を通った初期UのJ2で、未受理trialのJ/U・勾配を別保存し、初期点をU更新に数えない。
+
+次候補はユーザー／研究Cの判断後、Codexによる保存ログ・人工問題のstability未達の原因切り分け。新しい実H4評価・追加refinement・継続計算には別の固定範囲と明示許可が必要。残り36 unitsを流用せず、公開照合後mandatory STOP。
+
+
+## 研究C：Qualified-only Armijoを登録8 trialまで実行
+
+[60/60-call結果・全8 trial・pair診断](../research_c_pr_guarded_step_execution_20261102.md)。固定SOURCEd03351ea0/60-call契約を無変更で一度実行し60 COMPLETE・correctness FAIL/retry/resume0。保存H4/直鎖1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。8 trials中stability未資格2、数値資格PASSだがArmijo不成立6、受理U更新0。最小α=.002670284759でもF .0205435180>初期 .0122676444。27 inner/18 refinement/9点、最終J/rank-nullspaceは全点PASS。Raw precision loss11/maxiter1を保全。範囲外に降下stepがない証明ではなく、DF予算/PR性能は未評価。旧raw2423/SOURCE/STOPを保全、新raw72。公開照合後mandatory STOP。以下は各時点の履歴。
+
+未資格点のgradientを使わず登録halvingを進める処理は動作し、correctness FAILはなかった。一方、資格を通る6 trialでも降下条件を満たさず、登録上限でGUARDED_TRIAL_LIMIT_NO_ACCEPT。受理終点は初期point0、最後のtrial8を終点へ代入しない。初回J solveのNOT_MET2件とraw status2/1は消さず、元規則どおり最終refined Jが判定対象であったことを区別する。
+
+新pair診断では未資格point1/3のphysical/chart差が両方とも1e-6超。ΔJ normも保存したが、gauge成分・H_UJ・真のgradient誤差は未測定で、感度上界や原因確定には使わない。次はユーザー／研究Cの判断後、Codexが保存ログ・人工問題で局所step scaleとinner精度に関する最小後続条件を準備する候補。追加H4・第9trial・条件変更・Joint/RC2への自動進行はせずmandatory STOP。
+
+
+## 研究C：3段階の局所対称診断を一度実行
+
+[49-call結果](../research_c_pr_local_direction_execution_20261102.md)。固定SOURCEe06913a23/49-call契約を無変更で一度実行し49/49 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。初期＋6側点すべて数値資格PASS、h=1.75616e-4/4.39039e-5/1.09760e-5で正方向Fがすべて低下。最小hの中央FD−候補s=-8.10735e-6、工程的FD尺度1.01876e-5。真のgradient/inner誤差/truncation/降下保証は未資格null。Inner21/refinement14、raw precision loss3、外側最適化/U受理0、J/U同時一次未達。DF物理予算/PR性能/下流は未評価。旧raw2495/SOURCE/STOP保全、新raw59、公開照合後mandatory STOP。以下は各時点の履歴。
+
+旧60-callの8 trialでは降下がなかった一方、今回登録したより小さい3尺度では全pairを数値資格内で評価し、正方向の近似reduced F低下を観測した。最小hのFD差が工程的感度尺度内に入ったことを記録するが、inner bias/truncationを分離・包絡した結果ではない。Raw status2の3件を保全し、既存のJ/rank/stability/gradient許容差を変更しない。診断点を自動採用せず、元Uのrefined initialのみexportした。
+
+次の判断担当はユーザー／研究C。小stepからの限定U更新試験の技術準備が候補であり、新しい実H4計算・外側最適化・RC2/Joint継続・重要科学レビューを自動開始しない。追加の実計算には固定範囲と明示許可が必要。旧call残枠を転用せずmandatory STOP。
+
+
+## 研究C：小stepの単一trialを独立確認後に1回受理
+
+[19-call結果](../research_c_pr_small_step_execution_20261102.md)。固定SOURCEa426d62f2/19-call契約を無変更で一度実行し19/19 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。α=F0/|s|/8=.000175615780642の単一trialを、全admission・値尺度Armijo・独立終端確認後にU更新として1回受理。F .01226764443→.01079246794、独立J∞1.22271e-7はMET、partial U₂2.95498→2.66969はNOT_METで同時一次未達。Inner6/refinement4、raw precision loss1、新ffsim fit/外部outer optimizer0。真の勾配精度・厳密降下は未資格、DF物理予算/PR性能/下流は未評価。旧raw2554/SOURCE/STOP保全、新raw25、公開照合後mandatory STOP。以下は各時点の履歴。
+
+今回の受理は、元初期点とtrialを新たに同じcold-start/2-refinementで評価した後、工程的値尺度を含むArmijo、同一配列での独立J/U/chart state再評価を通したもの。旧49-callの診断点を後付け採用していない。受理eventは独立終端確認の後だけに記録し、追加trial/U更新は0だった。J一次とU一次、raw precision lossと登録数値資格を混同しない。
+
+次の判断担当はユーザー／研究C。複数U更新に向けた限定条件の技術準備が候補だが、今回の受理点から自動継続せず、新しい実H4計算には固定範囲と別の明示許可が必要。DF物理予算・PR性能・RC2/Joint/paired継続・重要科学レビューは今回の完了範囲外。公開照合後mandatory STOP。
+
+
+## 研究C：物理DF・複数更新・条件付きPR性能を統合実行
+
+[全結果・Q1〜Q10](../research_c_pr_integrated_execution_20261102.md)。固定SOURCE980b514c8/1759-call統合契約を無変更で一度実行し543/543 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、sector36。旧19-call受理点の物理DF予算を初めて評価しPASS、新trajectoryは5受理U更新/全受理点DF予算PASS。F .01079246794→.006617509795、exact λ .7258193873→.5683498547、J∞9.59327e-8 MET/U₂ .6589358143 NOT_METで同時一次未達。次の登録3qは全数値適格だが降下せずFINITE_STEP_GRID_NO_ACCEPT。選定update005を新s1/r128/K0のPF/RTE13round・新native32/128QPYへ接続し各correctness検査PASS。Ideal反実laneの条件付き総RZ 207919150188、旧PR比0.88809634、保存強D benchmark比2.0419077。実CA/全law合成・実装law/support・母平均優位はnull、強Dは旧J/U/異なる誤差資格、RC2は別有限endpointで公平な収束比較ではない。旧SOURCE/raw2579件/STOPを保全、新raw500件、公開照合後mandatory STOP。
+
+従来の一点診断を繰り返す代わりに、今回の明示許可と固定一括契約の範囲でA/B/条件付きCを中間承認なしで進めた。各新Uで元cold J、chart再中心化・新physical方向、各受理後の独立物理評価を保持した。λの低下だけで資源優位を推定せず、新J/U固有のlaw/PF/RTE/shots/native価格を計算した。有限探索終了後に選定点へ接続し、未知誤差やsupportを0補完しなかった。
+
+次の判断担当はユーザー／研究C。H4で同じ新J/Uの強決定論baselineと局所step/inner精度を切り分ける最小検証、または未収束の限界を明記した系サイズ拡張を選ぶ。Codexは採択された新しい範囲を準備する候補であり、今回のSTOPからH6/RC2/Joint/追加最適化/重要科学レビューへ自動進行しない。
+
+
+## 研究C：統合selected J/Uの強決定論を156-callで評価
+
+[全結果・比較条件](../research_c_same_ju_strong_d_execution_20261102.md)。固定SOURCE5f27539ae/156-call契約を無変更でfresh run01へ一度実行し156/156 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/sector36、統合update005の同じJ/U、元g補正κ/scalar/frame順、own-DF ground oracle/準備除外。全frame ordered S2/s1/δ=h=.1/m0..12、保存DF予算PASS再利用・新DF norm/fit/optimizer/PR再計算0。9因子CAR/sector・ground/alias・full512 raw/compiled/actual-adjoint/X-Yと13roundがPASS。P0 kernel RZ11026、shots13728、条件付き総RZ105532782860。保存新PR idealは207919150188、同じ新J/UのPR/D比1.97018542062（CX depth比.724994660275で副指標tradeoffあり）。旧/新のD価格6指標は一致、D総RZは3.64%増、新PR自身は既報11.19%減。Numerical D/両ideal反実laneは同じ整数費用だが、厳密CA・PR全law誤差/support/母平均優位・目的だけの因果効果は未資格。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
+異なるJ/Uの新PR/旧D比2.0419を同一表現の効果と扱わず、保存新selectedをDへ入力した独立実験を実施した。新DFでDのnative価格は下がらず、PF/shot重みが増えた一方、PR内部の条件付き削減は保存される。ただし主RZでの同J/U強D優位は崩れなかった。これは固定H4/1Å/rank8の未収束有限endpoint・既存PF/serial政策の観測で、PR一般の不可能性・因果効果・研究終了を採択しない。
+
+次の判断担当はユーザー／研究C。別Bの費用寄与分析と合わせ、H4でkernel価格を考慮する改良か成果整理かを選ぶ。Codexは採択された新しい範囲の技術準備を行う候補であり、今回scope内の未完了科学計算はない。新fit/PR探索/H6/厳密保証/重要科学レビューへ自動進行せずmandatory STOP。
+
+
+## 研究C：native価格改善機構・現証拠では新fit準備を見送り
+
+[統合技術報告](../research_c_pr_native_cost_improvement_feasibility_20261102.md)。**TECHNICAL_NO_GO_CURRENT_EVIDENCE**。同一新J/Uの強D比較（38b8d0df）と別branchのPR寄与分析（2639221a）を接続し、旧surrogate・第三DF転移・P4 support・native融合の負結果を整理した。λ以外のbasis確率・U構造情報は存在するが、新selectedのcomplete P0価格を下げる操作は未特定。新目的・runner・科学契約は追加せず、保存scalarの損益分岐照合以外の新規科学計算0。これは技術的な実験準備判断で、研究C全体の終了・一般的不可能性を採択しない。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
+理由は、cohort内の価格相関と新しいJ/Uを操作した際のcomplete価格改善が別であり、旧複合モデルも第三DF切替モデルも登録基準を満たさず、既存の単純native融合にもwhole-kernel RZ改善の新根拠がないため。過去NO-GOを全方式の否定へ拡張せず、未実装・未測定のhead/tail境界等を未検証として残す。新PRのW/shell固定の単価損益分岐は約10062.82 RZで、現標本平均から約49.24%減という仮想尺度。新目的の閾値や実現可能性として採択しない。
+
+次担当はユーザー／研究C。現系列の成果整理か、具体的な価格機構の証拠取得へ範囲を定めるか判断する。Codexは新しい具体的依頼の範囲だけを担当し、今回から追加科学計算・詳細科学レビューへ進まない。

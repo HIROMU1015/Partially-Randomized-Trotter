@@ -104,3 +104,8 @@ DF部分ランダム化研究と混同しない。
 - `eig_error.py`、`qpe_beta.py`：固有値誤差・位相推定の旧来支援
 
 新しい機能は、runnerへ直接大きな処理を書くのではなく、ここへテスト可能な関数として置く。
+
+## main集約の版差と原SOURCE（2026-11-03）
+
+[索引の統合・SOURCEの版差・保存原版](../../docs/research/main_collection_versions_20261103.md)から、同名ファイルの各公開版とmainの配置を確認できる。
+過去のSOURCE・test・結果は元snapshotの条件で読む。科学実行と元の研究testの再実行は行っていない。

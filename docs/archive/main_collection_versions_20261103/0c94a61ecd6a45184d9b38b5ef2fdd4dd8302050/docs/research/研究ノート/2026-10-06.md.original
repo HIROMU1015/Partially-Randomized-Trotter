@@ -1,0 +1,233 @@
+# 2026-10-06 研究ノート
+
+## Track A H4追加6距離と最大12 workersの契約準備
+
+確認済みは利用者による距離・worker条件の確認と、そのhandoff文書化まで。
+基準はserver preparation commit `c2ab34fed49bb1fb104d39fe83b36858a2c92c2a`、
+元handoff `48f9ac3b756bcf572aeb7c594a0c88791a458725`、旧証拠 `4c23453c541700c6a41ba71fc5ec9323b53858d6`。
+利用者指示で今回の契約準備資料だけをcommit/pushする。serverの正式契約完成・source実装・本計算の結果ではない。
+
+追加6距離は0.70/0.80/0.90/1.10/1.40/1.60 Å、最大12 CPU workers・各thread1。
+H4 linear/STO-3G/requested・actual DF rank12/8 system qubits/T=0.8/二次DF-prefix PF/canonical finite-RTEの設計で、
+同じ218 template/点、32 random trajectories/axis共有、1点12,464・計74,784 wrapperを将来契約上限として記録した。
+圧縮側と伸長側を含む固定離散geometry mapとし、fresh blindとは呼ばない。partialが勝つことは成功条件ではない。
+
+[正式契約準備指示](../gpu_server_track_a_h4_geometry_contract_preparation_prompt.md)と
+[scope JSON](../track_a_h4_geometry_contract_preparation_scope_v1.json)を作成した。
+公開checkpoint草案の数値full-wrapper fingerprint field欠落を別schemaで補い、
+wrapper key、角度/global phase、外部ledger digest、COMPLETE owner、mutation拒否を合成recordで検査するよう依頼する。
+schema fieldの存在だけをcross-record意味論の証明と扱わない。
+
+snapshot生成・sector/solver・seed・memory/wall/output・表示規則は未確認部分が残る。
+静的sourceと文書から案を固定し、未解決なら契約準備でSTOPする。
+新science source port・authorization作成・SCF/DF/reference solve・科学入力アクセス・signal/sampling/build/compile・GPUは認可しない。
+serverの既存Python3.12.3/Qiskit1.3.0等を優先し、旧guardを削除せず、依存と共有環境を変更しない。
+
+旧1.00 Å218候補と1.30 Å固定5構成は別layer。新anchor・1.30 Å全候補化・8点化は追加しない。
+原稿保留を継続し、旧science result/status/manifest・原稿/図・Track Bは不変。
+今回新benchmark・科学tests・分子/runtime操作は0。serverの128 synthetic callsは公開準備の履歴で、今回の追加実行ではない。
+
+文書の静的照合は確認済み。stdlibだけのinline検査でscope JSON・予算恒等式・保存inventoryの218 template、
+公開manifest/planのSHA-256、source247件と保存JSON6件のbyte/hash不変性、新Markdownの相対links3件を照合した。
+文書準備時の`git diff --check`はexit0。公開前のHEADは`48f9ac3`、indexは空だった。
+旧proposal/handoff・VALIDATION_STATUS・validation manifestのSHA-256も変更前後で一致した。
+pytestやscience runner、serverの21件検査を再実行した結果ではなく、immutable CIでもない。
+
+次はサーバー側で正式契約案/schema/zero-compute planと契約検査を整え、reviewへ戻る。
+その後のscience source/tests→source commit→plan/別authorization→最終review→利用者launchは別段階。
+現状の科学計算STOP、次段未認可、研究判断nullを維持する。
+
+
+## サーバー側契約準備 v1（local未commit、科学未認可）
+
+### 2026-10-06 サーバー側正式契約案・schema・合成record検査を準備し判断待ちSTOP
+
+handoff `2a80f1d5d5e5734e51d970b2b6822cd2543fd596`、公開準備
+`c2ab34fed49bb1fb104d39fe83b36858a2c92c2a`を固定起点としたlocal未commit準備。
+[契約準備bundle](../../../artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06/README.md)が現在の入口。
+H4 linear/STO-3G、requested/actual DF rank12、8 system qubits、T=0.8、
+二次DF-prefix PF/canonical finite-RTE、L_D=0/3/4/5/6/9/12、q=1/2/4/8、
+delta=0.8/0.4/0.2/0.1、同じ218 templateを追加0.70/0.80/0.90/1.10/1.40/1.60 Åへ移す条件を固定。
+将来上限は74,784 logical wrapper/actual invocation、random各32・二軸共有、外側workers最大12・内部1。
+条件確認は科学認可ではなく、新source/input identityとscience master seedはnull、execution plan未seal。
+
+wrapper key/数値回路fingerprint/外部record digestを新schemaへ追加し、合成JSONだけの
+111基本＋18独立foreign-owner検査＝129 local testsがPASS（fail/skip0）。
+schema構造と意味論validatorを分け、数値角度/global phase・identity・owner/ledger改変とcross-scope reuseを拒否する。
+実Qiskit serializer、物理operator、atomic runtimeの実装・検証は行っていない。
+旧snapshot sourceが生成順を保持し、汎用関数のFrobenius再ソートと異なる点を静的に確認した。
+SCF/DF生成規約、order/solver/gates、master seed、science memory/wall/outputの4判断は未固定。
+
+statusは `H4_GEOMETRY_CONTRACT_REQUIRES_DECISION_SCIENCE_NOT_AUTHORIZED`、mandatory STOP、
+next_stage=false、research_decision=null。共有環境・他job変更、分子入力アクセス/生成、
+signal/sampling/build/compile、新synthetic transpile、runtime/cache/registry、GPU、commit/pushは0。
+公開準備25 files、旧247 source・保存6 JSON、旧result/status/validation manifest/原稿/図/Track Bは不変。
+以下の各milestoneは当時の履歴として保持する。
+
+## GPUサーバー側 契約v2レビュー採用案と公開（後続指示）
+
+利用者添付指示で、公開v1 `7c1a3d43f61c5501a9e79206b7c60933f94b1077`から専用branch
+`track-a-h4-geometry-contract-v2-20261006`を作成した。既存worktree/branchのreset/clean/stashをしない。
+[資料入口](../../../artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06-v2/README.md)。
+v1公開manifest SHA68cc9c28…の33件を起点blobと照合し、旧v1 bundle26件・manifestをbyte-identicalで保持する。
+今回の8索引/overview/note更新はv2 manifestへ収録し、旧manifestは書き換えない。
+
+D1はinstalled source静的確認からRHF/minao/通常CDIIS8/cycle1/damp0、conv_tol1e-9/max_cycle50とstrict final raw gradient gate。
+PySCF extra-cycleの緩和を独立確認し、normal DIISと不収束後救済を分離した。旧run_pyscfのcontrols/saveをfuture sourceへ流用しない。
+D2は生成順を維持しFrobenius再ソートなし、sign/返却tie/sector36/eigh/gatesを具体化。
+rank12を有意固有値数へ変更せず、null縮退は単一basis freeze、有意縮退/有意prefix tie STOPを採用案にした。
+D3はmaster seed20261006案、actual seed/source/inputはnullで実seed生成0。
+D4はworker/driver AS各8 GiB、RSS別監視、headroom16 GiB、required_available(w)=8+8w+16 GiB。
+64 GiBで最大5 workers、12 workersには120 GiB、w=1も32 GiBが必要。最大12・明示CPU許可・start前削減・pressure STOP。
+wall累積72h/output総10 GiB/fixed run/root案、output directory/registry未作成。観測availableを予約と呼ばない。
+
+認可を入力生成専用plan/別認可/review/明示launch→6距離入力生成→bytes freeze STOP→
+input-bound signal/compile plan/別result-prior認可/最終review/明示launch→map STOPに分離した。
+source段はsynthetic semantic testsだけで、科学signal/costを認可前gateに使わない。
+新規320 pure JSON tests pass（fail/skip0）。旧129件runner再実行0。
+準備中に通常importの.pyc lookupが読込前guard拒否され、source-text in-memory loadへ修正した。
+次に固定wrapper semanticsを別ownerで受理するfixture期待値が不適切でschemaに拒否され、reject検査へ修正した。
+2失敗ログを保存し、最終成功suiteとは区別した。科学データ・science cacheを読み込んでいない。
+最終suiteのscientific import/protected access試行0。環境45 metadata不変、旧source/evidence/原稿/図/Track B不変。
+分子アクセス/生成・signal/sampling/science build/compile/transpile・新synthetic transpile・GPU・共有環境/他job変更0。
+D1〜D4のレビュー承認は未解決、契約完成とはしない。科学/source port/入力生成/次段未認可、plan未seal、研究判断null。
+今回は軽量bundleと索引だけをcommit/non-force pushし、公開後レビューまでSTOPする。
+
+
+## 2026-10-06 H4 geometry server-native source固定・科学未実行
+
+利用者の新指示で契約v2 D1〜D4を実装条件へ採用し、旧未承認履歴を保存した。
+新namespace `src/trottertracks/resource_applicability/h4_geometry/`、二つのfuture runner、専用synthetic testsの入口は
+[実装資料](../track_a_h4_geometry_server_native_source_implementation.md)と
+[bundle](../../../artifacts/resource_applicability/track_a_h4_geometry_source/2026-10-06/README.md)。
+最終94 tests pass、fail/error/skip0。失敗・再検査込みsynthetic transpile25/64、旧benchmark128再実行0。
+SOURCE_COMMITとsourceを変えないREVIEW_BUNDLE_COMMITを分離し、actual blob/hashは別監査で固定する。
+旧247 source・v1/v2 bundle・準備25 files・保存6 JSONは不変。分子入力/科学処理/本番runner launch/GPU/環境・他job変更/認可発行0。
+`H4_GEOMETRY_SOURCE_FROZEN_AWAITING_REVIEW`で公開後STOP。別入力生成authorizationの作成へ進めるかをレビューし、今回は発行・実行しない。
+以下は各milestone当時の履歴。
+
+## 2026-10-06 H4 geometry compile並列source再固定・科学未実行
+
+compileの逐次waitをadmitted worker数以下のbounded投入・回収へ変更した。処理中ownerを追跡し、
+COMPLETEとidentity/digest検査後だけ再利用する。trajectory/axis順・weight、科学scope・seed/compilerは不変。
+[実装資料](../track_a_h4_geometry_parallel_source_implementation.md)と[new bundle](../../../artifacts/resource_applicability/track_a_h4_geometry_parallel_source/2026-10-06/README.md)を現在の入口とする。
+既存94＋並列回帰17＝111 synthetic tests PASS、fail/error/skip0。今回transpile3、旧25＋新3＝28/64。
+fake futures/mock workersだけで制御を検査し、実worker/production性能は未検証。旧bundle/audit/契約・保存証拠は不変。
+SOURCEとsourceを変更しないREVIEWの2 commitを分ける。分子アクセス/科学処理/GPU/本番起動/認可発行/共有環境・他job変更0。
+`H4_GEOMETRY_PARALLEL_SOURCE_FROZEN_AWAITING_REVIEW`で公開後STOP。入力生成plan/auth作成・本計算・H6/Track Bへ進まない。
+
+## 2026-10-06 H4 geometry 入力生成専用認可草案・実行未承認
+
+凍結science source6a121725（17 Python＋親2件）を変えず、入力生成source-bound planとresult-prior認可草案を追加した。
+requested workers6、inputs/freeze digestはnull、218 templatesを機械転記。reviewはapproved=false、allowed_cpus=[]。
+CPU許可は利用者指示で未確定のまま。現在process CPU0–255を許可とみなさず、launch contextとmemory観測は未解決。
+既存observerはroot cgroup memory.max欠落で停止し、実行準備完了とはしない。source/共有設定を緩和しない。
+新57 zero-science gate tests PASS、fail/error/skip0。合格経路はメモリ内模擬承認だけ、追加transpile0・旧累積28/64不変。
+[実装・停止条件](../track_a_h4_geometry_input_generation_authorization_draft.md)と[bundle・最終レビュー入口](../../../artifacts/resource_applicability/track_a_h4_geometry_input_generation_authorization/2026-10-06/README.md)を参照する。
+`H4_INPUT_GENERATION_AUTHORIZATION_DRAFT_FROZEN_AWAITING_REVIEW`で公開後STOP。科学/GPU/本番起動/共有環境・他job変更0。
+有効execution authorization0、final review/利用者の明示launch未実施。入力生成・本計算・signal/compile認可・H6/Track Bへ進まない。
+
+## 2026-10-06 H4入力生成 resource observer修正・未承認草案再固定
+
+真のv2 hierarchy rootをnamespace/mount/所属から判定し、rootの非root memory interface要求を修正した。
+全可視非root祖先の制限・pressure/OOMは保持し、非root欠測/不明namespace/hidden mountはSTOP、host-only fallbackなし。
+observer33 zero-science tests PASS、実read-only観測成功。準備観測available約981.826GiB、PSI/OOM0はlaunch成立ではない。
+production変更はresources observerとgateのnew audit pathだけ。科学/並列/seed/compiler source15件は不変。
+[実装資料](../track_a_h4_geometry_resource_observer_fix.md)と[source bundle](../../../artifacts/resource_applicability/track_a_h4_geometry_resource_observer_fix/2026-10-06/README.md)、
+[new認可草案v2](../../../artifacts/resource_applicability/track_a_h4_geometry_input_generation_authorization/2026-10-06-v2/README.md)を参照する。source固定→別草案commit、binding検査結果はv2へ記録。
+requested workers6、allowed_cpus=[]、approved=false。CPU/launch context・独立最終review・明示launch未解決、実行準備完了とはしない。
+`H4_INPUT_GENERATION_RESOURCE_FIX_FROZEN_AWAITING_REVIEW`で公開後STOP。科学/追加transpile/GPU/本番起動/共有環境・他job変更0。
+旧bundle/科学証拠/原稿/Track Bと旧監査履歴を保存し、系列transpile28/64を維持する。
+
+## 2026-10-06 H4入力生成 CPU/launch最終案・利用者承認未取得
+
+提案CPU[3,5,6,7,8,9]、6 worker、異なる6 physical core・NUMA0。約3秒の受動負荷sampleで各core busy0%。
+source19 pathsとplan v2 bytes/source_rootは不変。authは候補CPU集合だけ、reviewはauth digestだけ変更しapproved=falseを保持。
+own新規runだけにtaskset maskを指定する未実行commandを用意した。CPU許可/専有予約/独立review/明示launchは未取得。
+memory/context read-only確認は成功。filesystem空き約3.717GiBは総上限10GiB全量確保案に未達で、launch容量条件は未解決。
+12 metadata gate tests PASS、fail/error/skip0。観測01/02の失敗logと03の容量未解決記録を保持し、追加transpile0/旧28件不変。
+[提案資料](../track_a_h4_input_generation_cpu_launch_proposal.md)と[bundle・一括承認判断](../../../artifacts/resource_applicability/track_a_h4_geometry_input_generation_cpu_launch_proposal/2026-10-06/README.md)を参照する。
+`H4_INPUT_GENERATION_CPU_LAUNCH_PROPOSAL_FROZEN_AWAITING_APPROVAL`で公開後STOP。taskset/科学/worker/GPU/共有環境・他job変更0。
+
+
+## 2026-10-06 H4入力生成stage容量確認・最終承認待ち
+
+旧全10GiB空き確保案を当時の監査履歴として保持し、6入力生成→freeze→STOPだけの
+stage-specific容量根拠を補足した。10GiBは全campaign charge capであり、
+このstage開始前の全量空き確保は契約/sourceの必須fieldではないため。
+
+固定sourceの保存32配列/NPY・ZIP overhead/64MiB generation IPC boundaryから算術見積り。
+72h全量のwall監視259202 files、budget journal、一時/final、4KiB丸め、
+inode/directory/misc metadataを含め2.883205GiB/259227 inodes、必要量を3GiB/260000へ切り上げた。
+source由来値とmetadata仮定をJSONと説明資料で区別した。科学array/NPZは生成していない。
+
+2026-10-06 16:58:53 JST、既存artifacts親でnonroot available約3.615GiB、
+available/free inode225817022。own user/group/project quotaはread-only Q_GETFMTで3種ESRCH＝非有効。
+初期project GETQUOTA EPERMも保存し、未確認をquotaなしとは扱わなかった。
+必要量余裕約0.615GiB/225557022 inodes、判定は「足りる」。容量予約ではなくlaunch前fresh検査が必要。
+
+source19、plan v2、CPU入りauth、approved=false reviewはbyte-identical。
+CPU [3,5,6,7,8,9]、6 worker、own-run mask0x3e8は未承認案を維持。
+CPU使用許可・独立最終review・明示launch・fresh CPU/memory/pressure/OOM/容量検査が残る。
+6入力生成後freeze STOPだけを次の承認対象とし、signal/compile容量は別認可で確認する。
+科学/追加transpile/taskset/worker/GPU/共有環境・他job変更0。旧transpile28件は不変。
+
+[容量根拠](../track_a_h4_input_generation_stage_storage_review.md)と
+[最終承認入口](../../../artifacts/resource_applicability/track_a_h4_input_generation_storage_review/2026-10-06/README.md)を参照する。
+status `H4_INPUT_GENERATION_STAGE_STORAGE_CONFIRMED_AWAITING_FINAL_APPROVAL`。
+軽量bundleと必要な索引だけを専用branchへcommit/non-force pushし、公開報告後STOPする。
+
+
+## 2026-10-06 H4 worker bootstrap修正・run02の6入力freeze完了STOP
+
+run01はprivate worker初期化でstdlib signalを隣の研究signal.pyから誤importし停止した。
+private entry引数なしで原因を再現し、-PでImportErrorを解消した。
+利用者の「では修正してもう一度実行して」で独立worktreeへworker起動とrun02/audit参照だけを修正した。
+SOURCE049e69919af16ad29a67a217dc7a407d6b1754a6、prelaunch binding b3caa9923a83f5ec3b3d4cafed1998695e422a38。
+科学source/seed/compiler/resource条件は不変。bootstrap回帰test1 PASS、old run/output拒否gateもPASS。
+
+CPU [3,5,6,7,8,9]・6 worker・own-run限定。fresh resource/容量/quota検査PASS。
+H4 linear/neutral singlet/STO-3G、DF fragments12、追加距離0.70/0.80/0.90/1.10/1.40/1.60 Åの
+6入力生成とfreezeが完了。NPZ6 file bytes SHAをfreezeと照合し、own driver/worker残存0。
+status INPUTS_FROZEN_STOP、next_stage_authorized=false、mandatory_stop=true。
+input generation stageの完了だけを主張し、資源map/最終科学結論/独立CI再生成とはしない。
+sourceシリーズ旧synthetic transpile28件保持、追加transpile0。signal/compile/GPU/共有環境・他job変更0。
+
+run01のsource/plan/認可/driver log/空journalは保持。削除/移設/resumeなし。
+NPZ/generation-freeze/runtime/cache/checkpointをcommitしない。lightweight metadata proofと索引だけを追記する。
+[修正・scope](../track_a_h4_worker_bootstrap_run02.md)と
+[完了報告](../../../artifacts/resource_applicability/track_a_h4_worker_bootstrap_run02/2026-10-06/COMPLETION_REPORT_v1.md)を参照。次段へ進まずfreeze後STOP。
+
+
+## H4 signal/compile次段の準備：容量不足でSTOP
+
+利用者の「その方針で進めて」は次段plan/auth草案とstage容量条件の準備指示で、launch許可ではない。
+source049e6991の19件/218 template/科学/compiler条件とrun02 input generation recordsを保持し、
+generation-freeze fingerprint0fd1de52へINPUT_BOUND planを結合した。変更はstage/binding/inputs/freeze digestの4項目だけ。
+全72h監視・74784 checkpoint/149569 ledger deltas/全8KiB logs/1308 signal files/302表示点、
+byte journal128-byte rowsとdirectory/temp/metadata余裕を含め、小計3.328216553 GiB、上方丸め必要3.5 GiB/560000 inodes。
+18:44:16 JSTにext4 /homeのnonroot available3.419376373 GiB・inode225814677、user/group/project quota非有効をread-only確認。
+小計より空きは多いが、余裕込み必要量から約82.6 MiB不足しstorage blockedでSTOP。10GiB全量空きを新たな条件にしない。
+ext4の既存inode tableとfree-blockを二重計上せず、inode数とdirectory/extent/ACL/journal余裕を別途確認。
+旧stage4KiB/inode余裕・旧10GiB案・旧source/入力/runtime/認可は変更せず履歴に保持。
+CPU [3,5,6,7,8,9]・6 worker/own-run0x3e8の候補観測とmemory約983.119GiB/PSI/OOMはPASS。
+review=false、別CPU利用許可/最終review/明示launch未取得。科学array open/load/生成0、signal/seed/sampling/compile/worker/GPU0。
+[次段文書](../track_a_h4_signal_compile_plan_review.md)と
+[資料入口](../../../artifacts/resource_applicability/track_a_h4_signal_compile_plan_review/2026-10-06/README.md)に未実行command・承認対象を記録。
+fixed filesystemのuser available3.5GiB以上の確認が必要。削除/予約/移設/共有設定変更は実行しない。
+将来は別承認後の一回だけsignal/compile→MAP_COMPLETE_STOP。fresh resource/capacity不合格なら起動しない。
+
+
+## H4候補間compile投入・12 worker明示再実行
+
+利用者の増員再実行指示により[run03 source・認可・検査記録](../track_a_h4_cross_candidate_run03.md)を追加した。候補内2回路の完了待ちで4 workerがidleとなる問題を、候補間bounded queueで修正。旧run02はworker failure STOPで全証跡を保持し、旧6入力を再生成せず利用する。49人工job/metadata testsはlocal PASSで科学的結果ではない。12 workerのfresh CPU/memory/容量/hash検査後だけ一度起動しMAP_COMPLETE_STOP。旧累積bytes/wall/actual invocationsを引継ぎ、科学条件・compiler・上限は不変。
+
+
+## H4 run04：identity hash分割・5秒監視維持
+
+[run04固定sourceと再実行binding](../track_a_h4_streaming_monitor_run04.md)を追加した。run03はmonitor STOPで旧全証跡を保持。人工JSONで旧一括encoderのmonitor interval/freshnessを再現し、新streaming encoderは同じdigestで全監視PASS。65 local tests PASSは実装証拠で科学結果ではない。旧6入力を再生成せず、bytes/wall/7 consumed invocationsをcarryし、CPU12件・12 workerのfresh検査後に一度実行してMAP_COMPLETE_STOP。
+
+
+## H4 run05：identity hash分割・5秒監視維持
+
+[run05固定sourceと再実行binding](../track_a_h4_lazy_identity_run05.md)を追加した。run04はmonitor STOPで旧全証跡を保持。人工JSONで旧一括encoderのmonitor interval/freshnessを再現し、新streaming encoderは同じdigestで全監視PASS。75 local tests PASSは実装証拠で科学結果ではない。旧6入力を再生成せず、bytes/wall/12 consumed invocationsをcarryし、CPU12件・12 workerのfresh検査後に一度実行してMAP_COMPLETE_STOP。

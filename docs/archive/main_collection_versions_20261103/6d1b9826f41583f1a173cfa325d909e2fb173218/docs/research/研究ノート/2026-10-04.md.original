@@ -1,0 +1,164 @@
+# 2026-10-04 研究ノート
+
+## PR-2 M2 held-out transfer契約の固定
+
+状態：`契約・zero-compute plan固定完了・科学実行未認可`
+
+M1-B1 development結果を受け、全面的な研究方針変更の前にH4 1.30 Åへ一度だけtransferする方針を採用した。
+held-outを新しい最適点の探索場所にせず、developmentで固定した次の5構成だけを移す。
+
+- `B2-rank3-q1-r4-K2`
+- `B2-rank3-q1-r8-K2`
+- `B0-rank6-q1-r0-K0`
+- `B1-rank12-q1-r0-K0`
+- `B3-rank0-q8-r32-K4`
+
+primaryを`shots × expected compiled RZ`、point Paretoを同じ6 compiled metrics、materialityをbest B2対best
+endpointのratio 1.10とした。重大cost underestimateは、held-out shot数とdevelopment 1-shot compiled costに
+よる事前予測をheld-out actual RZが10%超上回る場合と定義した。
+
+terminal statusは`TRANSFER_SUPPORTED / TRANSFER_NOT_SUPPORTED / TRANSFER_INCONCLUSIVE /
+IMPLEMENTATION_GATE_FAILED`だけで、全status後に研究方針reviewへ戻る。supportedでも次段階を認可しない。
+
+zero-compute段階のfuture capはrandom 3構成×32 trajectory×2軸とB0/B1×2軸の196 wrappers、最大5 workers。
+追加96、再最適化、別geometry、H5/H6/H12、S3、長RPEを認可しない。held-outはpath literalだけを契約へ記録し、
+resolve/stat/hash/load、signal、trajectory、compileを行わない。次はsource/schema/test/plan bundleの独立reviewである。
+
+contract source commitは`06b2c32528713a5270ee4915432bcd3898e0e5e1`、plan SHA-256は
+`7b9a2c4e9fbf4e9c58b6a5e5402239b9527c49d27ccf8e8f0f1a5ae080097132`、plan fingerprintは
+`e6b6ae0bcf9ff7b97eb61b2703305d793f7d531460456baf2337960fb36fb198`である。M2専用9件を含むfocused
+testsは30 passed。科学計算は0である。
+
+## 02:59 JST：M2外部reviewのusable B2修正
+
+状態：`確認済み・未commit draft・科学実行未認可`。
+review済みbranch HEAD：`622834832d371c7cc7b4ca3e4371d1ab0805c47f`。
+
+利用者が提示した外部reviewは`REVISE_M2_CONTRACT_BEFORE_IMPLEMENTATION`。
+v1 §5の「重大underestimate B2はsupport不可」を、§6のratio条件にも明示する最小の契約修正を採用した。
+現行のratioコードは既にusable集合を使っていたが、文書・planの分子式がeligible集合と読めたため、
+[amendment v2](../pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)とv2 schema/planへ統一した。
+固定5構成・trajectory seed・196-wrapper cap・閾値・全status後STOPは変更しない。
+
+usable B2が空ならNOT_SUPPORTEDを優先し、usable B2があるがendpointが空ならINCONCLUSIVE。
+Paretoのsupport証人とratio分子はともにusable B2だけにする。M2のclaimは固定5構成のtransferに限定し、
+held-out上のmethod最適性は主張しない。v1契約・schema・planとM1-B1科学artifactはbyte-identicalを確認した。
+
+M2専用28 passed、M1-B1 contract/execution/validationを含むfocused全49 passed、fail/skip/warning 0。
+次のcommandをPython 3.11.0rc1の既存`.venv311`で実行した。分子snapshotを使わないsynthetic/保存JSONの検査で、
+M2科学計算・held-out accessは0。immutable CIまたは科学transfer結果とは呼ばない。
+
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 \
+PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src:. \
+"/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python" -m pytest -q -rs \
+  tests/test_pr2_matched_accuracy_m2_transfer_contract.py \
+  tests/test_pr2_matched_accuracy_m1_b1_contract.py \
+  tests/test_pr2_matched_accuracy_m1_b1_execution.py \
+  tests/test_pr2_matched_accuracy_m1_b1_result_validation.py -p no:cacheprovider
+```
+
+zero-compute runnerは`--source-commit 622834832d371c7cc7b4ca3e4371d1ab0805c47f --draft`で実行した。
+v2 draft fingerprintは`3ec1a1deb56c51da3ff5e6fd103c3a52fe0c5b40efa4fc4ed9ca47820911c77e`、
+SHA-256は`d0cff0e08619c7cae9391918a53d01998dbefab4a0695ceb85723fd292fdf6e0`。
+statusは`M2_TRANSFER_CONTRACT_DRAFT_EXECUTION_NOT_AUTHORIZED`、source bindingは`WORKTREE_DRAFT`。
+正式planはsource commitの全blobと現在のsourceが一致した後にだけ生成する。v1を上書きしない。
+
+次はscience module/runner/testを結果前に実装・commitし、そのsourceに対して別commitでauthorizationを作り、
+最終pre-execution reviewへ戻す。今はheld-outを開かず、M2後は必ず停止して全面的な方針reviewを行う。
+資料整理の既存未commit変更は保持したまま、追加の移動・削除・commit/pushは行っていない。
+
+## M2契約v2正式freezeと科学実行sourceの実装
+
+利用者の「その方針で進めて」に従い、契約v2を`a529e9434d2e62fe752fdab5bd4c9a63fb15e830`、正式planを
+`40888b84b680ca726a603b677296cc97ec3534c4`に別commitした。正式plan SHA-256は
+`d2bb5c5e57002fac5e8045f89a048913f4dadd5177d6f6d1465cc40a8755af7c`、fingerprintは
+`7880c8fed57a02f30a07ff7463eb65e423098ad9420e38410f365fad2e24cc4f`。
+以前のWORKTREE_DRAFT記録は書き換えず、現行planをCOMMIT_BOUNDとして追加した。
+
+続けてscience module/runner/testを結果前に実装した。全library Pythonのcommit blob照合、別commit済み
+authorization、source/compiler/seed/configuration identity、最大5 workers、196-wrapper上限をheld-out load前に
+検査する。paired-axis covarianceを保持するSE、usable B2判定、10%の厳密境界、candidate取り違え拒否を検査した。
+one-shot registryで別output再実行を拒否する。snapshot load一回を守るためresumeは追加しない。
+failureの不明/partial countはnullとledger監査で表し、未評価の5構成について架空のresultを作らない。
+
+M2 execution専用35件、M2契約とM1-B1関連を含むfocused84件がlocal passed、fail/skip 0。
+pure syntheticモデル、mock、保存JSONだけの検査で、小型synthetic baselineのQiskit transpile二軸も含む。
+held-out resolve/stat/hash/load、H4 signal/trajectory/compile、transfer、GPUは0。
+science結果・immutable CI・外部再現とは呼ばない。
+
+次はactual science source commitに結合したzero-compute execution planを保存して停止する。
+execution authorizationはこのturnでは作らず、別commitのauthorizationと最終pre-execution reviewを待つ。
+研究方針は変更せず、将来M2を実行した後の全statusで停止して全面reviewへ戻す。
+資料整理の既存変更は分離して保持し、このturnで移動・削除・pushは行わない。
+
+## M2 actual sourceとexecution planの固定完了
+
+actual science sourceを`2978e2fea672b7a1ff20cac74269ec9a610159dc`へcommitし、同じHEADでzero-compute
+execution planを生成した。全library Pythonとprimary sourceのcommit blob一致を確認した。
+plan SHA-256は`2aa09a927e5ac58ebe417397802ace0e70c0097e8d0c53c05457075a41e85527`、fingerprintは
+`ff7ed3d74bf4a0316adecdbac6b633978d71ca87bc1856d03db6fff9a2153276`。
+statusは`M2_EXECUTION_PLAN_FROZEN_EXECUTION_NOT_AUTHORIZED`。held-out accessとscience wrappersは0。
+source helper経路の追加回帰テスト134件もpassed、fail/skip 0で、focused84件と区別して記録した。
+execution authorizationは作成せず、最終pre-execution reviewの前段で停止する。pushは行っていない。
+
+## M2 execution authorization固定と最終reviewへの引継ぎ
+
+利用者が「1・2まで」を確認して進行を指示したため、actual source `2978e2fea672b7a1ff20cac74269ec9a610159dc`と
+execution planに結合したauthorizationだけを別commit `90a9f24707ec439cd3618cc4ec2616a8caaf1148`へ固定した。
+JSON SHA-256は `dbc8b66fad5316004ef404fe8253d3f6cb0f29bf7065502ea995240e5fbd7ff1`。
+5構成、32 paired trajectories、196 wrappers、最大5 workers、一回限り、fixed output、全status後STOPは不変。
+
+machine JSONの認可条件を固定しただけでlaunchせず、運用statusを
+`M2_AUTHORIZATION_FROZEN_AWAITING_FINAL_REVIEW`として外部最終reviewへ渡す。
+review承認と利用者の実行指示が揃うまでheld-outを開かない。レビュー待ちは運用barrierで、science runnerによる
+review artifact検査ではない。exclusive registryはfixed root内の一回制限であり、別checkoutを横断するlockではない。
+別root/server/outputでの再実行を運用契約でも禁止し、failure/interruption後はresumeせずreviewへ戻す。
+
+local focused84件とhelper回帰134件がpassed、fail/skip 0。commit済みauthorizationのpositive gate、
+128 source blob、plan/環境、candidate/seed/wrapper keys、改変拒否をheld-out非アクセスで監査する。
+固定result output/registryは作らず、科学run、H4 signal/trajectory/compile/transfer、GPUは0。
+これはimplementation/authorization evidenceだけで、M2科学結果やimmutable CIではない。
+
+最終review依頼と監査資料をcommitし、HIROMU1015のoriginへ関連commitをnon-force pushする。
+資料整理の既存未commit変更をstageせず保持し、このturnで移動・削除は行わない。
+研究方針を変えず、M2の一回実行と結果後の全面方針reviewは次の別段階として停止する。
+
+## 15:10 JST：M2 held-out一回実行完了、`TRANSFER_SUPPORTED`
+
+利用者提供の最終review `APPROVE_M2_EXECUTION`と明示指示「M2で実行して」を受け、review bundle
+`40a11d02a67954175686b2e532b83c7953ec8316`、actual source `2978e2f`、authorization `90a9f24`を変更せず、
+固定root/output/commandで一度だけM2を実行した。科学runは05:54:28.620222–06:10:40.444279 UTC、
+wall971.824秒、最大5 CPU workers、各BLAS1。failure/retry/resume、runtime移送、source修正は行わない。
+
+H4 linear 1.30 Å、STO-3G、DF rank12、8 system qubits、`T=0.8`、固定5構成。
+B2 `L_D=3,q=1,r=4/8,K=2`とB0 `L_D=6,q=1`、B1 `L_D=12,q=1`は`delta=0.8`、
+B3 `L_D=0,q=8,r=32,K=4`は`delta=0.1`。全5構成がaccuracy適格で、B2二件はmajor primary underestimateなし、
+6指標point Paretoに残った。primary ratioは最小B2 r4対最小endpoint B0で0.586089813、upper2SEは
+0.593584114、事前基準1.10以下。formal CIでもheld-out method最適性でもなく、固定構成のtransferだけを支持する。
+状態準備`P`感度はsecondaryで、大きい`P`ではB1がlower envelopeへ入り、一般的B2優位を主張しない。
+
+196 wrappersを全件computed、reused0。196 checkpoint照合、未解決予約0、壊れたrecord0。
+trajectory96、occurrence8,576、snapshot hash/load各1、signal5、GPU query/allocation/kernel0。
+保存済みJSON/checkpointだけで128 sourceと全identity、paired covariance、判定、manifest bytes/SHAを照合し、
+NPZの再読み込みと追加科学計算は0。pre/postともfocused84＋helper134 passed、fail/skip0。
+結果照合とtests終了は06:14:48 UTC。local evidenceであり、immutable CIや外部再現とは呼ばない。
+
+result SHA-256は`f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931`、fingerprintは
+`d9003ac6e32b2888d69aa1fed226dbef48cf13e1a6f10829e137c136824bb320`。
+[結果報告](../../pr2_matched_accuracy_m2_transfer_result_validation.md)、result outputのlaunch/post-execution audit、
+研究概要・status・manifestへ記録した。runner生成result/manifest/marker、固定plan/source/authorization、M1-B1証拠は変更しない。
+
+`mandatory_stop_reached=true`、`next_stage_authorized=false`を維持し、今後の研究方針を自動判定しない。
+追加96、retuning、別geometry/分子、S3、長RPE、最終総costを開始せず、全面的な研究方針reviewへ戻る。
+resultは未commit。利用者の既存Markdown整理を保持し、追加の移動・削除・commit/pushは行っていない。
+
+## M2結果のcommit・push指示
+
+実行完了と結果照合の報告後、利用者から「コミットプッシュして」を受けた。
+M2の軽量result、runner manifest/marker、launch/post-execution audit、結果報告と関連索引・概要・status・証拠台帳だけを
+`pr2-v4-s2-parallelization-20260928`へcommitし、HIROMU1015のoriginへnon-force pushする。
+同じ文書に重なっている資料整理の差分はindex上で分離し、移動・削除・archive収録はstageしない。
+`.runtime`、one-shot registry、NPZ、matrix/state/vectorは除外する。
+科学計算の再実行と追加検証は行わず、`TRANSFER_SUPPORTED`後のmandatory STOP・研究方針全面review待ちを維持する。
+正確なresult commit hashとpushの成否はcommit後のhandoffで示す。

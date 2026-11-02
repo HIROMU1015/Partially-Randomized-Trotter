@@ -1,0 +1,154 @@
+# 2026-10-26 研究ノート
+
+## C1：H6全基底合成上界の限定科学実行・確認済み
+
+基準／科学SOURCEは`e36e0560624c66df0aedf619fc5c8c33ecb4f837`。ユーザーの明示的な開始許可に従い、固定scope `C1_H6_COMPLETE_SECTOR_SYNTHESIS_BOUND_V1`を独立worktree・fresh run01に1回実行した。[結果・コマンド・資格の限界](../research_c_c1_h6_synthesis_bound_execution_20261026.md)。契約の歴史的な`unapproved`表示は変更せず、承認証明／新grantは作成しない。
+
+直鎖H6・1.00 Å・STO-3G、Nα=Nβ3／sector400、保存修正fit最終CDF14／selected XDF14。通常number・元g補正κ・scalar・frame順、全frame ordered S2 s1/s4、δ0.1／m0..12、literal/shared8経路、own-DF ground oracle／状態準備費用除外、CA0.00159／DF reserve CA/8、P0 Qiskit1.3 opt1 seed17を維持した。
+
+literal/shared4対が位相・ordered gate・angle・qubitを含むIRで完全一致したためG4。各800入力列・full8192出力を完了し、3335/最大6535 units、correctness FAIL/inflight0、retry/resume0。kernel数値上界CDF s1/s4=7.9697438830e-10/8.1857544161e-10、XDF=1.5602042434e-9/1.5455465726e-9。数値reference欠損をα guardに保持し、保存head/X/Y・PF結果と同targetのcomplex signalへ接続。全104行がπ/12以内で、8経路すべてPOTENTIALLY_PHASE_ELIGIBLE_NUMERICALだった。
+
+今回の決定は「全列に基づく資格Bが登録位相予算に対して有用だった」と記録すること。資格C・full8192全入力上界・最終CA・shots・総費用へ昇格させない。leakageはfull残差内に残し、別測定のゼロ値として補完しない。各列L2／8列batchのcomponent・norm最大値という記録粒度を報告した。保存値のCSV整形だけを追加し、新operator／norm計算・state-action再実行はしていない。
+
+SOURCE51／入力38／旧証拠849件のpostflight PASS。raw23ファイル、CSVは8 kernel／104 round／3200列。runner wall5173.34秒、CPU10058.06秒、peak RSS4.81GiB。新fit・optimizer・rank探索・DF/PF再計算・新build/compile・CA/shots/総費用0。先行人工／回帰134 PASSのSOURCEを無変更利用し、今回追加テストのための科学再実行は0。
+
+次はユーザー／研究Cが、資格Bと保存DF/PF/native費用を既存RPE統計・energyへ接続する限定数値pilotの条件整理を依頼・許可するか判断する。Codexは必要な具体的依頼と別明示科学許可後に進む。旧104未資格profile・旧FAIL・627-call履歴・grant/ledger/marker/STOPは保持し、今回公開照合後mandatory STOP。
+
+
+## 02:36 JST：H6共通CA・RPE shots・条件付き総資源の限定実行・確認済み
+
+ユーザーが119-call契約への進行を許可したため、SOURCE55b3d86817308a8d676221982aae13e1a6e3bed4を無変更でfresh run01に一度だけ実行した。[全結果・コマンド・資格](../research_c_c1_h6_ca_resources_execution_20261026.md)。直鎖H6・1Å・STO-3G、Nα=Nβ3/sector400、保存修正fit最終CDF14/selected XDF14、元g補正κ・scalar・frame順、全frame ordered S2 s1主/s4対照、δ0.1・m0..12・PRなし、own-DF ground oracle/状態準備除外、ideal IID Born、CA0.00159/DF reserveCA/8、β_totalπ/6/β_statπ/12、候補failure0.01/各軸0.01/26、保存P0 Qiskit1.3 opt1 seed17を保持。
+
+119/119 COMPLETE、correctness FAIL/inflight/retry/resume0。全52roundと4候補が数値CA PASS、104軸costを保存。数値energy評価CDF0.0013863479083772862/XDF0.0013819296308689773 Ha。同sのNはCDF/XDFで全round/axis一致し、shots合計s1=13880/s4=13326。条件付き総RZはs1 CDF520491751108/XDF510393076228、s4 CDF1761144891569/XDF1727240281697。CDFはXDF比1.978607%/1.962935%多い。今回の小さなCDF合成上界は整数shotsを減らさず、このH6条件でCDF総RZ削減は未観測だったと記録する。別分子/rank/無条件の優劣へ一般化しない。
+
+資格B・ideal測定/oracle/serial費用モデルの数値pilotを完了したが、厳密C/CA/device/状態準備込み/4候補同時/事後選択/無条件資源優位は未資格。depthはscheduled serial和。新fit/optimizer/rank探索/DF-PF-合成再計算/state-action/新build-compile/実量子sampling0。SOURCE54/input47/protected872 postflight PASS、raw19、wall1.4798秒。旧FAIL・call履歴・grant/ledger/marker/STOPは保全した。
+
+本契約内の追加科学作業はなく、ユーザー／研究Cが研究レビュー・今後の方針を判断する。Codexは別の具体的依頼と必要な独立許可後に対応し、公開照合後mandatory STOP。
+
+
+## 03:42 JST：保存H4 XDF prefix・DF予算の限定実行完了
+
+固定SOURCE f7bc730d12ad704cdb72cc8a82d2bd973d01b2e5と356-call契約に対するユーザーの明示許可で、独立worktree・fresh run01を一度実行した。[全9prefix・来歴・資格](../research_c_c1_h4_xdf_prefix_budget_execution_20261026.md)。直鎖H4・1.00 Å・STO-3G、Nα=Nβ2/sector36、保存OpenFermion1.6.1 eigh元順prefix1..9、元g補正済みκ・核scalar・spin/bit順、既存binary64_operation_scale_guard8_v1、CA/8=.00019875 Haを維持した。PF次数・時間・PR splitは非適用。
+
+356/356 COMPLETE、correctness FAIL/inflight/retry/resume0、324実matvec・9norm。rank1..7 NOT_MET、rank8/9 PASS、保存順のfirst-passingは8。rank7 norm+guard .0002633451443931131、rank8 .00009533901455091894、rank9 .0000002094713465922879 Ha。保存rank10/CDF8はscalar引用のみで、新rank10 norm・CDF fit・再分解・physical生成・PF/native/合成/shots/費用0。
+
+今回の更新は、前回未解決だった「保存順rank10がDF予算のfirst-passingか」に対する測定結果としてrank8を記録すること。旧CDF8/XDF10の約27%費用差は元条件の保存結果として維持する。XDF8/9のPF・ground/alias・回路・合成・RPE・費用は未資格で、新baselineの正式採用・費用順位を自動決定しない。数値guardを厳密enclosureに昇格させず、全XDF方式の最小rankや最終CAは主張しない。
+
+SOURCE15/input7を含む旧protected44と元packetのpostflight PASS、raw19を保存。9workers/BLAS1、runner wall1.8672秒、CPU10.3343秒、peak RSS277488 KiB。旧full256 SVD回帰制約・H2/H4/H6既存結果・grant/ledger/marker/STOPは保持した。ユーザー／研究CがXDF8を次比較へ採用するか判断し、Codexは具体的な次依頼と必要な別許可後にのみ技術準備・科学実行へ進む。公開照合後mandatory STOP。
+
+
+## H4 XDF8を追加比較候補に採用・第1段階の技術準備
+
+ユーザーが保存OpenFermion元順prefix8を新しい追加比較候補に採用した。直鎖H4・1.00 Å・STO-3G、Nα=Nβ2/sector36、元g補正κ・核scalar・frame順、全frame ordered S2 s1/s4、δ0.1・m0..12、PRなし、own-DF ground oracle・状態準備除外、CA.00159/DF reserveCA/8を維持。[新SOURCE・再利用・公平な後続設計](../research_c_c1_h4_xdf8_requalification_preparation_20261026.md)と[未承認93-call契約](../research_c_c1_h4_xdf8_pf_contract_unapproved_20261026.json)を固定した。旧CDF8/XDF10約27%削減を置換せず、独立した追加比較を準備する判断である。
+
+新22＋回帰92 tests PASS、実byte/environment preflight PASS。新adapterのcomplex dtypeとOF/Qiskit permutationを人工系で修正し、旧SOURCEは無変更。実H4の数値decode／表現・ground・PF26セル／DF norm／fit／回路／合成／CA／shots／費用は0。旧full256回帰制約も解消扱いにしない。CDF8/XDF8双方への同precision/P0とfull512 Frobeniusを推奨するが、coverage/route等の正式採択・実行は別判断。
+
+次はユーザー／研究Cが固定SOURCE・第1段階契約を確認して限定科学実行を許可するか判断する。Codexは別明示許可後のみfresh run01を一度実行する。第1段階PASSでも第2・3段階へ自動進行しない。旧H2/H4/H6・SOURCE/raw/grant/ledger/marker/STOPを保持し、今回公開照合後mandatory STOP。
+
+
+## H4保存順XDF8の表現・own-ground/alias・PF限定実行完了
+
+固定SOURCE328f31007ee8069d1f7ba24f91029a3748b59109と93-call契約に基づき、独立worktree・fresh run01へ一度実行。[結果・全26値・資格](../research_c_c1_h4_xdf8_pf_execution_20261026.md)。直鎖H4・1.00 Å・STO-3G、Nα=Nβ2/sector36、保存OpenFermion1.6.1 eigh元順prefix8、元g補正κ・核scalar・spin/bit/frame順、全frame ordered S2 s1/s4、δ0.1・m0..12、PRなし、own-DF ground oracle／状態準備除外、CA.00159／DF reserveCA/8を維持。契約の歴史的unapproved表示・旧SOURCEは変更せず、新grant／承認証明は作成しない。
+
+93/93 COMPLETE、correctness FAIL/inflight/retry/resume0。保存DF予算PASSを再利用、raw CAR/一般Kのbase+8frameと保存matvec targetへのsumがPASS。own-ground energy−2.166402428462818 Ha、residual1.8198861331e-15 Ha、正規化・H4 alias PASS。全26 PFセルがsin(π/12)以内で、s1/s4ともPOTENTIALLY_FEASIBLE。最大operator誤差はm12で各.06842795072754271/.004276939210418963。
+
+今回の判断は両候補をnative再資格付けの提案対象に残すことまで。最終CA／合成／shots／総資源優位へ昇格しない。CDF8/XDF10旧結果・約27%の歴史的比較は不変。新fit／DF分解／DF norm再計算／CDF8-XDF10新評価／回路build-compile0。SOURCE21/input6と元packet postflight PASS、raw45、直前人工22 PASS、runner wall1.3951秒、2workers/local BLAS1。ユーザーによる技術中断時の修正許可を使う中断・修正再実行は発生していない。
+
+次はユーザー／研究Cが同precision/P0とcoverage/routeの公平なnative・合成評価条件を判断する。Codexは具体的依頼後にそのSOURCE・人工検証・契約を準備し、実科学計算は別明示許可後のみ。今回scope内の残計算はなく、旧H2/H4/H6のSOURCE/raw/grant/ledger/marker/STOPを保全し、公開照合後mandatory STOP。
+
+
+## H4 CDF8/XDF8共通precision・full512を採用し技術準備
+
+ユーザー採用の両arm共通H6 Gaussian/MPFR160 P0、4 kernel+head/X/Y、full512 Frobenius方式で、[薄いadapter・数値guard・人工検証](../research_c_c1_h4_native_fair_preparation_20261026.md)と[未承認305-call契約](../research_c_c1_h4_native_fair_contract_unapproved_20261026.json)を固定した。起点1f318bb9fc4e412bda647b424278deb80dbc5790、直鎖H4・1.00 Å・STO-3G、CDF8/元順XDF8、Nα=Nβ2/sector36、元g補正κ・scalar・frame順、全frame ordered S2 s1/s4、δ.1・m0..12、PRなし、own-DF oracle／状態準備除外、CA.00159／DF reserveCA/8を維持。旧CDF8/XDF10約27%の結果は置換しない。
+
+CDF一般KとXDF squareの両方が同じPrecisionBuilder._basisを通ることを確認。旧SOURCE無変更でH6の数値修正を再利用し、全512入力/出力・direct compiled/reference Frobenius、両行列とshellのnorm growth、52profileを接続した。CDFも次実行で再build/compileし、旧metricsを無条件で流用しない。数値pilotと厳密rounding enclosureを区別し、CDF旧numeric kernel未保存のreference対応限界を報告した。
+
+新20＋既存136＝156 unique testsが適切なprocess分離でPASS。混在batchの旧mock1FAILはimport済みreal opsが偽RZZGateに置換されないfixture前提によるものとして原本を保全し、旧mock27件を別processでPASS確認。SOURCE29/input33・実packetのbyte preflight PASS、NumPy/Qiskit未import、新科学0。実H4の数値decode/build/compile/合成/CA/shots/費用、fit、DF/PF誤差再計算は行っていない。
+
+今回の技術範囲は完了。ユーザー／研究Cが固定SOURCE・305-call native/full512契約を確認して別明示科学許可を判断し、Codexは許可後だけfresh run01を一度実行する。CA/shots/総費用や詳細科学レビューへ自動進行せず、旧SOURCE/raw/grant/ledger/marker/STOPを保全して今回mandatory STOP。
+
+
+## H4 CDF8/XDF8の固定305-call native/full512限定科学実行完了
+
+明示許可されたSOURCE862a97d4213121749448ca716cde820a44b99772と契約SHA256 4a99e76ea879226e077376dd69f12b529f9eb1a48e98dd048143892a59b0e578を変更せず、独立branch codex/research-c-c1-h4-native-fair-execution-20261026のfresh run01で一度実行した。[全結果・数値pilotの限界](../research_c_c1_h4_native_fair_execution_20261026.md)。直鎖H4・1Å・STO-3G、CDF8/元順XDF8、Nα=Nβ2/sector36、全frame ordered S2 s1/s4・δ.1・m0..12、PRなし、own-DF oracle/状態準備除外。同H6 Gaussian/P0/shared routeで305/305 COMPLETE、FAIL/inflight/retry/resume0、局所18/kernel4/shell3/actual adjoint8/X-Y12がPASS。full512全入力/出力Frobeniusと両matrix/shell norm growthを使う52/52位相profileは数値潜在適格。
+
+単一h-step RZは同sでCDF12,272/XDF13,944、比.8800917957544464（約11.99%削減）、CX7,388/7,756、depth12,806/13,113。s4の反復費用、CA/shots/総資源は未評価。旧CDF8/XDF10約27%結果は歴史的条件のまま保全。保存DF norm+guardは両CA/8内だがCDF7.6662159163e-5/XDF9.5339014551e-5 Haと異なる。rounding enclosure・strict CAは未資格、未知誤差を0としない。新fit/DF-PF norm再計算/旧科学SOURCE変更0。
+
+実行環境人工20 PASS。source29/input33のprotected62件・契約・manifest・原packetのpostflight PASS、raw109/QPY40/operator18を保存。局所18/候補4 workers/BLAS1、runner106.2676s/CPU450.2239s/peak916720 KiB。旧結果/grant/ledger/marker/STOP・SVD既知制約は不変。ユーザー／研究Cが保存profileと費用を確認し次のCA/RPE shots/条件付き総資源への移行を判断する。Codexはその依頼に応じ最小技術準備を行い、新科学実行・詳細レビューは各別許可を待つ。公開照合後mandatory STOP。
+
+
+## H4 CDF8/XDF8：固定119-callの共通CA・条件付き総資源pilot完了
+
+明示許可されたSOURCE18045333a1438740160d7b9e44e78139ad59f2b5／契約SHA256 7540af39daec4e1584f2805a8338c4ab91d2042923d83830dcaef183f5fb4edbを無変更で一度実行した。[全結果・資格と限界](../research_c_c1_h4_ca_resources_execution_20261026.md)。直鎖H4・1Å・STO-3G、CDF8/元順XDF8、Nα=Nβ2/sector36、全frame ordered S2 s1/s4・δ.1・m0..12、PRなし、own-DF oracle/状態準備除外、同H6 precision/P0/shared/serial policy。保存52合成profile・DF/PF/ground/metricsを再利用し119/119 COMPLETE、FAIL/inflight/retry/resume0、52round/4候補の数値CA十分条件PASS。
+
+CA=.00159 Ha、DF reserveCA/8、beta_total pi/6/beta_stat pi/12、candidate failure.01/axis.01/26を維持。energy誤差上界pilotはCDF.0013549794824010532/XDF.001373656337788953 Ha、実測誤差や厳密enclosureではない。shots CDF/XDFはs1 13,606/13,600、s4 13,314/13,314。総RZ CDF/XDFはs1 113,219,727,909/128,445,454,592（11.853846%減）、s4 413,834,761,607/470,217,718,215（11.990819%減）。同sだけ比較し、旧CDF8/XDF10約27%結果は置換しない。保存levelB/idealIIDBorn/oracle/状態準備除外/serial modelの条件付き数値pilotであり、strictCA・実機・無条件優位・選択後保証は未資格。
+
+実行前人工21 PASS、source24/input12 protected36・旧protected62/raw109が不変。raw19/52accuracy/104軸shots/104軸costを保存。4 workers、runner1.48467s/CPU9.77566s/peak349844 KiB。新fit/operator/DF-PF-合成誤差/state-action/build-compile/量子sampling0。ユーザー／研究Cが結果統合・詳細レビュー・追加検証の要否を判断し、Codexは具体的次依頼と必要な別許可後のみ対応。旧SOURCE/results/grant/ledger/marker/STOPを保全し、公開照合後mandatory STOP。
+
+
+## C1：旧新H4を含む結果統合と次期最小実験の技術推奨
+
+起点3a8356a…から保存16候補を転記し、H4約27%→約12%にはrankに加えnative precision／shots手続きの差もあると技術整理した。新しいnorm／shots／費用再集計・重要な科学レビューは0。[統合報告](../research_c_c1_h2_h4_h6_integration_update_20261026.md)。旧監査の「低prefix未評価」は当時の記録として保全し、prefix8が保存順first-passingと判明した最新結果を別報告へ反映した。
+
+次の推奨は[H4 XDF9の表現・ground/alias・PF26](../research_c_c1_next_minimal_experiment_selection_20261026.md)。DF first-passingと総資源最適baselineは別であり、現H4主張のbaseline依存性へ直接情報を与えるため選んだ。H6 CDF13の1fitは新しい開始予算政策と後続sector-complete合成の負荷があるため次順位。どちらも未採択、Bの新runnerは未実装。
+
+Aの薄いentryを既存SOURCE無変更で追加し78 tests＋29 subtests PASS、SOURCE24／保存JSON3／原packetのbyte preflight PASS。[未承認95-call契約](../research_c_c1_h4_xdf9_pf_contract_unapproved_20261026.json)と技術証拠を公開する。今回実H4 decode／科学call0、retry/resume0、承認証明書・新grantなし。ユーザー／研究Cが正式採否と固定範囲の科学許可を判断し、Codexは公開照合後mandatory STOP。native／CA／shots／総費用・重要な科学レビューは別許可まで進めない。
+
+
+## C1：保存H4 XDF9の表現・own-ground/alias・PF限定科学実行
+
+研究CはXDF9限定検証を採用し、read-only preflight完了後にユーザーが95-call科学実行を明示許可した。固定SOURCE9a4cda44a45675c2518b2252a98e78eeeb320942を変更せずfresh run01へ一度実行し、95/95 COMPLETE・correctness FAIL/inflight/retry/resume0。[全gate・26セル・資格・次の担当](../research_c_c1_h4_xdf9_pf_execution_20261026.md)。承認証明書・原文保存・新grantなし、historical unapproved契約名/metadataは不変。
+
+直鎖H4・1Å・STO-3G、Nα=Nβ2/sector36、保存OpenFermion元順prefix9、元g補正κ・核scalar・元frame順、全frame S2 s1/s4、δ.1・m0..12、PRなし、own-XDF9 oracle/状態準備除外。保存DF予算PASSを再利用、表現10因子・sum・ground/alias・PF26が全PASS。最大誤差s1 .06843041535127227/s4 .004277093283650178（m12）、両POTENTIALLY_FEASIBLE。既報XDF8最大値よりわずかに大きく、DF精度改善だけでPF/shots/費用改善を推定しない。旧targetの数値再評価は0。
+
+固定SOURCE24/savedJSON3と原packet・契約・manifest不変、raw45を保全。新fit/DF norm/native/合成/CA/shots/総費用0。旧約27%／約12%比較とH2/H6の証拠・失敗履歴・STOPを維持する。ユーザー／研究Cがnative／合成資格付けへの移行を判断し、Codexは具体的依頼後の技術準備と別明示許可後の科学実行だけを担当する。公開照合後mandatory STOP。
+
+
+## C1：H4 XDF9のnative費用・楽観的shotsスクリーニング準備
+
+ユーザー指示により、full512を最初から計算せず、固定native2 kernel費用と合成誤差0というcounterfactualの十分shots／serial RZ費用を先にscreenする経路を準備した。[技術報告・式・限界](../research_c_c1_h4_xdf9_cost_screen_preparation_20261026.md)。既存PrecisionBuilder／MPFR160 P0、RPE/Hoeffding、serial composition、rational aggregate_optimisticを再利用し、CA gateへsame_accuracy=Trueを偽装しない。原κ・scalar・signed λ/G・元frame順・P0／境界条件を維持した。
+
+固定PFに非負合成誤差を加えると処方shotsは非減少、ceilと非負serial費用重みも順序を保つ。これは固定した十分処方の楽観的下限であり、普遍的下界・実数丸めenclosure・actual CAではない。構造gateはfull operator証明を代替しないことを人工testで明示し、actual synthesisやactual totalsはnullを維持した。
+
+新27＋関連回帰70＝97 tests PASS、SOURCE56／saved input24／原packet／環境のbyte preflight PASS。83-callの新しい未承認契約を固定したが、実H4 decode／native build-compile／shots／費用・科学callは0。旧95/305/119-call SOURCE・raw・STOPや約12%／約27%比較を保全した。次はユーザー／研究Cが公開SOURCEと83-call契約の限定科学実行を許可するか判断する。Codexは公開照合後mandatory STOPし、full512や詳細科学レビューへ進まない。
+
+
+## C1：H4 XDF9 native・楽観的費用の83-call限定実行
+
+ユーザーの明示許可後、固定SOURCE7328ecc9a0602524810e2055cf99c2b1e07729dbを変更せずfresh run01へ一度実行し、83/83 COMPLETE、correctness FAIL/inflight/retry/resume0。[全gate・結果・資格の限界](../research_c_c1_h4_xdf9_cost_screen_execution_20261026.md)。承認証明書・原文保存・新grantなし、historical unapproved契約名・metadataは不変。
+
+直鎖H4・1Å/STO-3G、Nα=Nβ2、元順XDF9、全frame S2 s1/s4、δ.1/m0..12、own-ground/preparation excluded、共通precision/P0/shared/fenced serialを保持。構造gate PASS、RZ/kernel15720（両s）。楽観的N合計13600/13314、Copt144805110560/530107748679は保存XDF8/CDF8両方の同s費用より大きく、登録4比較でstrict改善を固定数値モデル内に限って除外した。source/input protected80と原packet等不変、raw48/QPY4を保存。旧約27%／約12%比較、H2/H6/95-call PF結果は変更していない。
+
+固定処方の非負追加誤差・ceil・非負費用による下限性に依存し、実合成誤差0・full operator・厳密丸め保証・actual CAや最終費用の認定ではない。両sでnegative screenのためXDF9 full512を費用競争目的で優先する理由は弱くなったと研究Cへ返すが、正式な研究採否・終了判断はユーザー／研究Cに残す。Codexは公開照合後mandatory STOPし、追加科学計算・詳細レビューへ進まない。
+
+
+## C1：H4強baseline s1の227-call限定実行
+
+明示許可後、SOURCE880006396326a4d46f4a4030564279e92fadb9cf／固定227-call契約を無変更でfresh run01へ一度実行した。[結果・full512 gate・5比較](../research_c_c1_h4_strong_baseline_execution_20261026.md)。227/227 COMPLETE、correctness FAIL/inflight/retry/resume0。H4直鎖1Å/STO-3G、CDF8／元順XDF8、Nα=Nβ2、元κ/scalar/frame順、S2 s1/h.1、own-ground/preparation excluded、共通Gaussian/P0を維持した。
+
+B1 spin基底のXDFはRZ11821で、保存CDF B0の12272より小さく、他5指標も小さかった。B2同士はCDF RZ11062/XDF11307、CXは7008同数、RZ/CX/total depthはXDFが小さい。基底構築単独と共通fusion単独が単一kernel差に寄与した観測。B3未実行のため相互作用は未識別、旧約12%の13round総RZを取消し・新順位へ外挿しない。
+
+9 G構造/再構成・9 local・3 full512 raw/P0・6 actual adjoint・9 complex X/Y gate全PASS。Frobenius等は数値pilotで、strict rounding enclosure・13round合成・CA/shots/総費用は未資格／未評価。raw60/QPY21/operator6保存、SOURCE32/input45 protected77と原packet等が不変、wall81.4507s/peak730604KiB。旧結果・grant・ledger・marker・STOP、C4/singleton終了を維持。次はユーザー／研究CがB3の情報価値またはC1を区切る方針を判断し、Codexは公開照合後mandatory STOP。重要科学レビューは実施していない。
+
+## C1：H4 B3 spin＋relativeの65-call限定実行
+
+明示許可後、固定SOURCE b40fce5c62c9fff97f68073cbc02182e4bbf2b9b／65-call契約を無変更でfresh run01へ一度実行した。[全結果・gate・比較・制約](../research_c_c1_h4_b3_execution_20261026.md)。65/65 COMPLETE、correctness FAIL/inflight/retry/resume0。H4直鎖1Å/STO-3G、元順XDF8/保存CDF8、Nα=Nβ2、元κ/scalar/frame順、全frame S2 s1/h.1、PRなし、own-DF oracle/状態準備除外、共通Gaussian/P0を維持した。
+
+B1と同じexact spin recipe＋B2 relative融合を併用し、B3の新full512 raw/P0、actual adjoint2、complex X/Y3 gateがPASS。RZ10885/CX6892/RZdepth5524/CXdepth6192/totaldepth11973/size20606は保存B2 CDF11062/7008/5577/6280/12127/21011より全6指標で小さく、RZ差−177/約1.60%。B1 XDF比RZ−936、B2 XDF比−422。単一kernelの限定観測として記録し、既報約12%の13round条件付き総RZを新順位へ更新しない。旧B3未実行の記述は過去時点の履歴として残す。
+
+丸めenclosure・s4/13round合成・CA/shots/総費用・新規性は未資格／未評価、unknownはnull。旧Uのbitwise一致は主張せず、同recipe/λ順と新独立reference gateを確認した。原本24/QPY4/operator4、protected88と旧raw60・元packet・契約・manifest不変、wall33.3981s/peak505604KiB。旧H2/H4/H6・XDF9・grant/ledger/marker/STOP、C4/singleton終了状態を保全。ユーザー／研究Cが追加同CA再資格付けまたはC1を区切る判断を担当し、Codexは公開照合後mandatory STOP。重要科学レビューや追加科学計算を自動開始しない。
+
+## C1：H4強baselineの86-call共通CA・shots・serial総資源比較
+
+修正契約v2への明示許可後、SOURCE1aeedd96178a3f50a15bc2701c3c332f4f391b64を変更せずfresh run01へ一度実行した。[結果・26round・52軸・制約](../research_c_c1_h4_strong_baseline_ca_resources_execution_20261026.md)。86/86 COMPLETE、correctness FAIL/inflight/retry/resume0。旧契約のpath mismatchは科学call前に修正した履歴として保持した。承認証明・承認原文保存・新grantなし。
+
+H4直鎖1Å/STO-3G、B2 CDF8 relative対B3元順XDF8 spin＋relative、Nα=Nβ2、元κ/scalar/frame順、全frame ordered S2 s1・δ.1/m0..12、PRなし、own-DF oracle/ideal IID Born/状態準備除外、共通precision/P0/β/failure/serial政策を維持。両13/13合成位相・RPE/fixed-N・共通CA数値十分条件PASS。Shots13606/13600、条件付き総RZ102056444569/100267421030でXDFが1.7529745883%少ない。今回の強baseline比較ではCDF優位が維持されず、旧約11.85%は当時の実装・scopeの結果として保全する。CDF/XDF一般や研究継続・終了判断へは昇格しない。
+
+level B・丸めenclosure未資格、CA_achieved/rigorous_enclosure/guaranteed_actual_shotsはnull、無条件総資源保証false。保存DF近似は不一致だが各CA/8内、energy上界pilotと実測energyを区別。s4/fit/DF-PF再計算/Operator/build-compile/量子抽選0。protected65と旧raw84・元input・契約・manifest不変、raw13と26round/52軸CSV保存、wall1.48129秒/peak345732KiB。ユーザー／研究C／統括がC1の継続／縮小／終了や追加検証を判断し、Codexは公開照合後mandatory STOP。重要な科学レビューは今回行っていない。
+
+
+## PR-aware DF初期設計の技術準備（依頼識別子20261026）
+
+ユーザー依頼の範囲で既存CDF/PR/resource資産とRCDF/SCDF/PR論文の関連節を調査し、固定tailの実係数massを滑らかに抑える第一候補、固定U・凍結価格weighted massの第二候補を[設計報告](../research_c_pr_aware_df_optimization_design_20261026.md)に記録した。loss/gradient・codec・optimizerを再実装せず、人工49 tests＋29 subtests、passive byte/package preflight PASS。人工テストは最適化nit0、実分子decode／科学call0。
+
+[Stage A案](../research_c_pr_aware_df_pilot_contract_draft_20261026.json)はpaired 2 fit・最大30 logical unitsだけを提案する。γ/ε・共通初期値・normalized baseline・1% exact mass基準は未採択、PR総費用削減や独立新規性を認定しない。Stage B/C・第二候補calibrationは別範囲。旧科学結果／SOURCE／STOPを保全し、公開後mandatory STOP。次は研究C／ユーザーが条件の採否と実行可否を判断し、許可後に限りCodexが固定Stage Aを実行する。

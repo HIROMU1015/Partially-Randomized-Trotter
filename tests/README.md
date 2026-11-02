@@ -23,3 +23,8 @@ Hadamard 1 shot全体や最終総コストの検証ではない。
 
 [G6 formal test SOURCE](tracks/algorithm_codesign/test_g6_return_aggregation.py)は元snapshotの内容を保存したもの。
 [元の保存記録と今回の収録範囲](../docs/research/main_collection_20261103.md)を参照。今回そのtestを再実行しておらず、mainでの新しい科学的検証結果を意味しない。
+
+## main集約の版差と原SOURCE（2026-11-03）
+
+[索引の統合・SOURCEの版差・保存原版](../docs/research/main_collection_versions_20261103.md)から、同名ファイルの各公開版とmainの配置を確認できる。
+過去のSOURCE・test・結果は元snapshotの条件で読む。科学実行と元の研究testの再実行は行っていない。
