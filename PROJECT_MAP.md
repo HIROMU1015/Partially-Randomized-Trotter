@@ -138,3 +138,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 新しい検証を追加するときは、可能な限り同じ語幹で
 `src/trotterlib/`、`scripts/`、`tests/`、`docs/`、`artifacts/`を対応させる。
+
+## 既存研究成果のmain収録（2026-11-03）
+
+[収録済み成果と原SOURCE](docs/research/main_collection_20261103.md)から、main内のG6報告・保存結果・STOP・再現用SOURCEを辿れる。
+これは過去の証拠とSOURCEの収録であり、新しい科学結果・実行許可・共通ライブラリ採択ではない。

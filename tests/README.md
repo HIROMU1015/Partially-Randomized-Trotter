@@ -18,3 +18,8 @@
 `test_rpe_delta_round_schedule_validation.py`、`test_rpe_delta_compiled_cost_validation.py`を、
 対応する検証文書・artifactと一組で読む。最後の検証は中央RTEブロックだけを扱い、
 Hadamard 1 shot全体や最終総コストの検証ではない。
+
+## 過去のtest SOURCEの保存
+
+[G6 formal test SOURCE](tracks/algorithm_codesign/test_g6_return_aggregation.py)は元snapshotの内容を保存したもの。
+[元の保存記録と今回の収録範囲](../docs/research/main_collection_20261103.md)を参照。今回そのtestを再実行しておらず、mainでの新しい科学的検証結果を意味しない。

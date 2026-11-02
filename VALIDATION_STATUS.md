@@ -577,3 +577,9 @@ UWC note が保存している実行記録は `.venv/bin/python -m pytest -q` �
 6. **clean checkout で検証する。** 固定した依存環境と文書化した command で、小規模な end-to-end 再生成および全 test suite を CI から実行する。結果 artifact を作った commit に対する成功 check を GitHub 上に残し、比較 tolerance と期待値を test または検証 script に固定する。
 
 上記が完了するまでは、旧来の高次 Trotter artifact、DF screening、UWC 表を互いに独立した進捗資料として扱い、現在の partial-randomized DF/UWC の完成済み検証結果として一括して引用しないでください。
+
+## 2026-11-03 existing G6 evidence imported into main
+
+[収録範囲](docs/research/main_collection_20261103.md)に従い、G6の公開snapshot `28cfabb1d47e0e1824bce1e154a9c289738fa2b9` から結果・文書・再現用SOURCEを同一内容で収録した。
+分類は `historical_evidence`。当時のsource-bound形式検査記録とmandatory STOPを維持し、今回の科学実行・元runner/testの再実行は0件。
+mainへの収録によってnative性能、独立新規性、現在の科学的正しさや外部再現性の新しい認定は行っていない。

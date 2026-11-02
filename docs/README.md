@@ -73,3 +73,7 @@
 個別文書に数値があっても、それだけで現在利用可能とは判断しない。
 再現可能性、失効、成果物の有無は[`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)と
 [`../artifacts/validation_manifest.json`](../artifacts/validation_manifest.json)で確認する。
+
+## mainに収録した過去の成果
+
+[収録済み成果と原SOURCE](research/main_collection_20261103.md)：第1回はTrack B G6の既存結果・文書・再現用SOURCE。元の科学的区分とSTOPを保持する。
