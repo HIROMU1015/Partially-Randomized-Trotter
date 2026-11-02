@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：小step・最大1回U更新の技術準備（2026-11-02）
+
+[最小接続・297人工/回帰PASS・未承認19-call契約](../docs/research/research_c_pr_small_step_preparation_20261102.md)。`c_pr_small_step.py`／専用pilot・runner・人工testsを追加。元H4/1Å/STO-3G、CDF8/LD2・γ=.1の初期点からα=F0/|s|/8の1trial、値尺度を含むArmijo＋独立終端state後のみ受理。旧inner/資格/閾値を維持、実H4追加計算0。旧SOURCE/raw/49-call STOP保全、別実行許可までmandatory STOP。
+
 ## 研究C：PR局所対称診断・49-call実行完了（2026-11-02）
 
 [結果・3対称pair・SOURCE・STOP](../docs/research/research_c_pr_local_direction_execution_20261102.md)。既存 `run_research_c_pr_local_direction.py`／`c_pr_local_direction*.py` を無変更で実行。全7点数値資格PASS、3尺度の正方向F低下、U受理/outer0。FDと候補微分の比較は数値観測で、真のgradient誤差/厳密降下は未資格。Artifact `artifacts/research_c_pr_local_step/2026-11-02/run01`、公開照合後mandatory STOP。
