@@ -1,5 +1,8 @@
 # Partially Randomized Trotter
 
+複数ブランチの研究結果は、[研究結果への統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)から探せます。
+研究別の総括、結果・SOURCE・raw、検証状態、固定commitへの入口をまとめています。
+
 ## 研究内容を確認する入口
 
 リポジトリ内の実装、検証、文書、成果物の区分は、最初に

@@ -1,5 +1,8 @@
 # 文書索引
 
+研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
+このcheckoutにない後続資料も、固定commitから参照できる。
+
 このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
 研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
 [`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
