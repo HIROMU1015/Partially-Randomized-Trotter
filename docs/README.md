@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：物理DF・複数U更新・条件付きPR統合実験（2026-11-02）
+
+[固定条件・312人工/回帰PASS・統合1759-call契約](research/research_c_pr_integrated_preparation_20261102.md)。新 `c_pr_integrated*`／`run_research_c_pr_integrated.py`／人工tests。H4/CDF8/LD2・γ.1、保存19-call受理点の物理評価を先行し、最大64 recentered更新、各3q、毎受理点DF予算。適格選定点だけを新PF/RTE/RPE・条件付きnative32へ接続。旧SOURCE/raw/STOP保全、統合完了/停止条件でmandatory STOP。
+
 ## 研究C：単一小step・19-call実行完了（2026-11-02）
 
 [結果・1回受理・J/U/rawの区別・STOP](research/research_c_pr_small_step_execution_20261102.md)。`run_research_c_pr_small_step.py`／`c_pr_small_step*.py` を無変更で実行。全数値資格・値尺度Armijo・独立終端PASS、F低下と1回U受理。U一次未達、DF物理予算/PR性能は未評価。Artifact `artifacts/research_c_pr_small_step/2026-11-02/run01`、公開照合後mandatory STOP。

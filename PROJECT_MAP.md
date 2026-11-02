@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：物理DF・複数U更新・条件付きPR統合実験（2026-11-02）
+
+[固定条件・312人工/回帰PASS・統合1759-call契約](docs/research/research_c_pr_integrated_preparation_20261102.md)。新 `c_pr_integrated*`／`run_research_c_pr_integrated.py`／人工tests。H4/CDF8/LD2・γ.1、保存19-call受理点の物理評価を先行し、最大64 recentered更新、各3q、毎受理点DF予算。適格選定点だけを新PF/RTE/RPE・条件付きnative32へ接続。旧SOURCE/raw/STOP保全、統合完了/停止条件でmandatory STOP。
+
 ## 研究C：小stepで1回の資格付きU更新を受理（2026-11-02）
 
 [19-call結果・独立終端・未収束の区別](docs/research/research_c_pr_small_step_execution_20261102.md)。固定SOURCEa426d62f2/19-call契約を無変更で一度実行し19/19 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。α=F0/|s|/8=.000175615780642の単一trialを、全admission・値尺度Armijo・独立終端確認後にU更新として1回受理。F .01226764443→.01079246794、独立J∞1.22271e-7はMET、partial U₂2.95498→2.66969はNOT_METで同時一次未達。Inner6/refinement4、raw precision loss1、新ffsim fit/外部outer optimizer0。真の勾配精度・厳密降下は未資格、DF物理予算/PR性能/下流は未評価。旧raw2554/SOURCE/STOP保全、新raw25、公開照合後mandatory STOP。以下は各時点の履歴。
