@@ -1,6 +1,6 @@
 # PR研究Coverage監査：G01/G02限定証拠照合 addendum
 
-LOCAL Codex、2026-11-03T02:56:10+09:00。既存資料・metadataの読取と技術照合だけを行った。**新しい科学計算、保存値の科学的再解析・再ランキング、詳細科学レビュー、主要claim採択は行っていない。** Phase3等の原成果物を更新せず、独立した追補として保存する。
+LOCAL Codex、2026-11-03T02:59:52+09:00。既存資料・metadataの読取と技術照合だけを行った。**新しい科学計算、保存値の科学的再解析・再ランキング、詳細科学レビュー、主要claim採択は行っていない。** Phase3等の原成果物を更新せず、独立した追補として保存する。
 
 ## 結果
 
@@ -60,7 +60,7 @@ Phase2では、7候補それぞれに元登録5精度のcanonical group/元recor
 | A08 H4の2固定比較 | 公開paired projectionのcandidate/replicaと固定n、SOURCE契約、保存seed refreshのknown coverageが対応 | 保存除外監査の列挙範囲と固定cohort/indexに限定したDOCUMENTED_DISJOINT。cohortラベルだけでlegacyDF12と統合しない |
 | A08 H6の2固定比較 | 確認replica0–47、0–103とcandidate/結果が対応。Q2 STOPと別dispatchのQ8を分離 | RECORDED_SEPARATE。公開初期designのnはnullで、final n seal/探索seed除外の閉じた対応を再構成していない |
 | A08 H8の2固定比較 | 確認replica0–47、両軸pairedの公開projectionと固定候補が対応 | RECORDED_SEPARATE。designの事前freeze政策と実行最終seed監査を混同しない。元詳細audit制約を維持 |
-| A09 高次の6保存群 | 118標本の公開sample IDと固定候補/旧shotを対応。新stage contractの別namespace・既知除外監査を記録 | RECORDED_SEPARATE。旧proposal02・全旧seed除外は未回収。新群相互のindex照合を全歴史的独立へ拡張しない |
+| A09 高次の6保存群 | 118標本の公開sample IDと固定候補/旧shotを対応。新stage contractのstage/namespace digest・既知除外監査を記録。literal cohort名はNOT_RECORDED | RECORDED_SEPARATE。旧proposal02・全旧seed除外は未回収。新群相互のindex照合を全歴史的独立へ拡張しない |
 | A11 長時間B2の39候補 | 固定nominee/n、探索と確認の全公開trial locator suffixをcandidate/cohort/indexへ対応 | 当該価格pairのDOCUMENTED_DISJOINT。確認59比較は39候補の価格共有を含み、独立cohort数ではない |
 | A12 DF B3の40候補 | 固定64 nominee viewと40確認価格群、探索/確認のcandidate/cohort/indexが対応 | 当該価格pairのDOCUMENTED_DISJOINT。精度/公式viewを独立標本にしない。B2 baselineに確認価格がない比較は探索参照 |
 | 追加7候補 | execution SOURCEと同じPLANで全7候補のn/2cohortを先に固定。全公開trial suffixのindex集合とnが対応 | DOCUMENTED_DISJOINTはこのrunの探索対確認に限定。保存seed-sequence digestはPLANとEND_AUDITで一致、seed再生成はしていない |

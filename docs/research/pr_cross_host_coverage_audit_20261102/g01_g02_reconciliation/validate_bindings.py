@@ -109,6 +109,13 @@ def main():
   if r['research_series'] in ['LONG_TIME_B2','DF_NATIVE_B3','SEVEN_ADDITIONAL_PR_CANDIDATES']:
    e,c=r['exploration_cohort'],r['confirmation_cohort'];assert e['indices_match_zero_based_plan'] and c['indices_match_zero_based_plan'] and e['declared_cohort']!=c['declared_cohort']
   if r['relationship_role']=='COPY_OR_CITATION_ALIAS':assert r['independence_class']=='REUSED_OR_OVERLAPPING'
+  if r['research_series']=='H4_H6_H8_FIXED_CONFIRMATION':assert r['exploration_cohort']['cohort']=='NOT_RECORDED'
+  if r['research_series']=='HIGHER_PF_FIXED_CONFIRMATION':
+   c=r['confirmation_cohort'];assert c['cohort']=='NOT_RECORDED'
+   contracts=obj(OLD,'artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/stage_contracts.json')['contracts']
+   original=next(v for v in contracts if v['stage']==c['stage_as_recorded']);assert c['campaign_namespace_sha256_as_recorded']==original['campaign_namespace_sha256'];literal_checks+=1
+  if r['relationship_role']=='COPY_OR_CITATION_ALIAS':assert r['confirmation_cohort']['cohort']==r['exploration_cohort']['cohort']
+
  # Catalog/index and original observation links remain exact fixed metadata, not new experiment IDs.
  entries={}
  for r in g1:
