@@ -16,7 +16,7 @@ DEFAULT = replace(inner.DEFAULT, outer_maxiter=2, max_points=8)
 
 class Oracle(inner.PRReducedOracle):
     def __init__(self, g, J, U, spec, policy=DEFAULT, *,
-                 call=lambda k,l,f:f(), record=lambda *a:None):
+                 call=lambda k,l,f:f(), record=lambda *a:None, backend=None):
         self.summaries = {}
 
         def evidence(kind, label, data, arrays):
@@ -50,7 +50,7 @@ class Oracle(inner.PRReducedOracle):
                     q['status'] = 'REDUCED_GRADIENT_UNQUALIFIED'
                 return q
             return call(kind, label, admission)
-        super().__init__(g,J,U,spec,policy,call=dispatch,record=evidence)
+        super().__init__(g,J,U,spec,policy,call=dispatch,record=evidence,backend=backend)
 
 
 def optimize(g,J,U,spec,policy=DEFAULT,*,call=lambda k,l,f:f(),

@@ -74,10 +74,10 @@ def propose(evaluate, initial, step=STEP, policy=DEFAULT, *, record=lambda *a:No
     return (p if passed else initial), decision
 
 
-def assess(g, p, base_U, spec, policy=DEFAULT, *, record=lambda *a:None):
+def assess(g, p, base_U, spec, policy=DEFAULT, *, record=lambda *a:None,state_evaluator=None):
     """Independent same-array terminal state; zero further J solves/updates."""
     import numpy as np
-    row, gj, gu, chart, binary = stable.state(g, p['J'], p['U'], spec, policy,
+    row, gj, gu, chart, binary = (state_evaluator or stable.state)(g, p['J'], p['U'], spec, policy,
         base_U=base_U, eta=p['eta'])
     checks = dict(
         value=compare(row['components']['objective'], p['value'], atol=policy.value_atol, rtol=policy.value_rtol),

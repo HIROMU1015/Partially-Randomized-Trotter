@@ -73,7 +73,7 @@ def parts_gradient_J(g,J,U,spec,*,extended=True):
         full_ordered_Z_l2_Ha_squared=float(l2)),np.asarray(adj,dtype=float),residual
 
 
-def evaluate(g,J,U,spec,*,base_U=None,eta=None):
+def evaluate(g,J,U,spec,*,base_U=None,eta=None,parts_evaluator=None):
     """Primal residual in LD; existing JAX derivative at exactly J/U arrays.
 
     Mathematical quantities are unchanged. This is NOT a certified oracle.
@@ -82,7 +82,7 @@ def evaluate(g,J,U,spec,*,base_U=None,eta=None):
     """
     import numpy as np
     ld=require_extended()
-    parts,gj,r=parts_gradient_J(g,J,U,spec)
+    parts,gj,r=(parts_evaluator or parts_gradient_J)(g,J,U,spec)
     zero=np.zeros(spec.rank*spec.norb*(spec.norb-1)//2)
     D=np.asarray(_array_jacobian(spec.rank,spec.norb)(zero,g,J,U,spec.loss_scale)).reshape(g.size,U.size)
     normalized=r.ravel()/np.sqrt(ld(spec.loss_scale))

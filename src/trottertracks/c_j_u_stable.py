@@ -28,15 +28,15 @@ DEFAULT=Policy()
 Unqualified=previous.Unqualified
 
 
-def state(g,J,U,spec,policy=DEFAULT,*,base_U=None,eta=None):
+def state(g,J,U,spec,policy=DEFAULT,*,base_U=None,eta=None,parts_evaluator=None):
     import numpy as np
     from .c_j_u_consistency_repair import compare
     tick,cpu=time.monotonic(),time.process_time()
-    parts,gj,gu,chart,meta=precision.evaluate(g,J,U,spec,base_U=base_U,eta=eta)
+    parts,gj,gu,chart,meta=precision.evaluate(g,J,U,spec,base_U=base_U,eta=eta,parts_evaluator=parts_evaluator)
     zero=np.zeros(spec.rank*spec.norb*(spec.norb-1)//2)
     # Do not pack/unpack J merely to evaluate a reference: binary64 x=D*j
     # followed by j=x/D can move by one ulp. Both evaluations use J/U directly.
-    binary,old_j,_=precision.parts_gradient_J(g,J,U,spec,extended=False)
+    binary,old_j,_=(parts_evaluator or precision.parts_gradient_J)(g,J,U,spec,extended=False)
     old_value,old_u=old.u_value_gradient(zero,g,J,U,spec,binary['penalty'])
     check=compare(parts['objective'],binary['objective'],atol=policy.value_atol,rtol=policy.value_rtol)
     adcheck=compare(parts['objective'],old_value,atol=policy.value_atol,rtol=policy.value_rtol)

@@ -53,12 +53,14 @@ def applicability(p, policy=DEFAULT):
     Additional/ambiguous nulls are refused, not removed with a pseudoinverse.
     """
     import numpy as np
-    if not p.is_pr:
+    if not p.is_pr and not getattr(p,'is_entry',False):
         m = 2*p.spec.strength/p.spec.l2_scale
         return dict(admitted=bool(m > 0), condition='RC2_positive_L2_unique',
                     strong_convexity_lower=m, rigorous_numerical_enclosure=False)
     s = p.spec
-    if s.gamma <= 0 or s.epsilon <= 0:
+    strength=s.strength if getattr(p,'is_entry',False) else s.gamma
+    epsilon=s.entry_epsilon if getattr(p,'is_entry',False) else s.epsilon
+    if strength <= 0 or epsilon <= 0:
         return dict(admitted=False, condition='PR_positive_gamma_epsilon_required')
     d = s.norb*(s.norb+1)//2
     H = p.A[:, :s.ld*d]
@@ -72,7 +74,7 @@ def applicability(p, policy=DEFAULT):
     tail_injective = T.shape[1] == 0 or (len(ts) == T.shape[1] and ts[-1] > policy.rank_gap_factor*guard)
     admitted = bool(tail_injective and (expected == 0 or smallest > policy.rank_gap_factor*guard)
                     and null_max <= guard)
-    return dict(admitted=admitted, condition='PR_only_universal_head_gauge',
+    return dict(admitted=admitted, condition='ENTRY_only_universal_head_gauge' if getattr(p,'is_entry',False) else 'PR_only_universal_head_gauge',
         expected_head_rank=expected, universal_nullity=max(0, s.ld-1),
         head_singular_values=sv.tolist(), tail_singular_values=ts.tolist(),
         rank_guard=guard, minimum_quotient_singular=smallest,

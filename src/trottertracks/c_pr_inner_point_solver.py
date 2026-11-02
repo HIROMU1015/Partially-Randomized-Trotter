@@ -12,10 +12,10 @@ DEFAULT=stable.DEFAULT
 VERSION='PR_Newton_CG_same_decoded_point_v1'
 
 
-def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None):
+def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None,parts_evaluator=None):
     import numpy as np
     from scipy.optimize import minimize
-    if not p.is_pr:raise ValueError('OPT_IN_PR_ONLY_NO_RC2_CHANGE')
+    if not p.is_pr and not getattr(p,'is_entry',False):raise ValueError('OPT_IN_PR_ONLY_NO_RC2_CHANGE_OR_EXPLICIT_ENTRY_BACKEND')
     tick,cpu=time.monotonic(),time.process_time();chart=point.CoefficientChart(p,J,policy)
     evaluations,hessians=0,0;trace=[];accepted=[np.zeros(len(chart.x0))]
     def vg(z):
@@ -52,7 +52,7 @@ def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None):
     checks['raw_vs_endpoint_value']=point.compare(info['fun'],fv,atol=policy.value_atol,rtol=policy.value_rtol) if info['fun'] is not None else dict(PASS=False)
     # Same decoded arrays for the inherited binary64 observation, not another
     # coefficient pack/unpack. Its J norm still participates in stationarity.
-    binary,binary_g,_=stable.precision.parts_gradient_J(p.g,j,p.mapping.U,p.spec,extended=False)
+    binary,binary_g,_=(parts_evaluator or stable.precision.parts_gradient_J)(p.g,j,p.mapping.U,p.spec,extended=False)
     checks['binary64_same_array_value']=point.compare(value,binary['objective'],atol=policy.value_atol,rtol=policy.value_rtol)
     info.update(consistency=checks,raw_jac_semantics='SciPy1.14.1 may return pre-step jac;raw preserved;endpoint J gradient independently evaluated',
         rigorous_gradient_error_bound=None,thresholds_changed=False)
@@ -77,9 +77,18 @@ class PRReducedOracle(stable.StableReducedOracle):
     Explicit opt-in class; old optimize()/paired runners still use old defaults.
     FD/line-search tests use this class through the existing SciPy interface.
     """
-    def __init__(self,g,J,U,spec,policy=DEFAULT,**kwargs):
-        if not isinstance(spec,stable.pr.Objective):raise ValueError('OPT_IN_PR_ONLY_NO_RC2_CHANGE')
+    def __init__(self,g,J,U,spec,policy=DEFAULT,*,backend=None,**kwargs):
+        if backend is None:
+            if not isinstance(spec,stable.pr.Objective):raise ValueError('OPT_IN_PR_ONLY_NO_RC2_CHANGE')
+        else:backend.validate(spec)
+        self.backend=backend
         super().__init__(g,J,U,spec,policy,**kwargs)
+
+    def _state(self,*args,**kwargs):
+        return (self.backend.state if self.backend else stable.state)(*args,**kwargs)
+
+    def _solve(self,*args,**kwargs):
+        return (self.backend.solve_j if self.backend else solve_j)(*args,**kwargs)
 
     def evaluate(self,eta):
         import numpy as np
@@ -95,18 +104,18 @@ class PRReducedOracle(stable.StableReducedOracle):
             def initial():
                 V=stable.precision.geometry(self.U0,eta)
                 if np.max(abs(V.transpose(0,2,1)@V-np.eye(s.norb)))>pcy.orthogonality:raise ValueError('U_ORTHOGONALITY_FAIL_NO_PROJECTION')
-                p=stable.Coefficients(self.g,V,s);j,info=solve_j(p,self.J0,pcy,record=raw('solve'))
+                p=(self.backend.Coefficients if self.backend else stable.Coefficients)(self.g,V,s);j,info=self._solve(p,self.J0,pcy,record=raw('solve'))
                 return V,p,j,info
             V,p,J0,i0=self.call('inner_J_solve',label+'_solve',initial)
-            J1,i1=self.call('inner_J_solve',label+'_refine1',lambda:solve_j(p,J0,pcy,record=raw('refine1')))
-            a,j1,u1,c1,binary1=self.call('precision_state',label+'_refine1',lambda:stable.state(self.g,J1,V,s,pcy,base_U=self.U0,eta=eta))
+            J1,i1=self.call('inner_J_solve',label+'_refine1',lambda:self._solve(p,J0,pcy,record=raw('refine1')))
+            a,j1,u1,c1,binary1=self.call('precision_state',label+'_refine1',lambda:self._state(self.g,J1,V,s,pcy,base_U=self.U0,eta=eta))
             self.record('precision_state',label+'_refine1',a,dict(J=J1,U=V,eta=eta,gradient_J=j1,physical_gradient_U=u1,chart_gradient=c1,binary64_gradient_U=binary1))
-            J2,i2=self.call('inner_J_solve',label+'_refine2',lambda:solve_j(p,J1,pcy,record=raw('refine2')))
-            b,j2,u2,c2,binary2=self.call('precision_state',label+'_refine2',lambda:stable.state(self.g,J2,V,s,pcy,base_U=self.U0,eta=eta))
+            J2,i2=self.call('inner_J_solve',label+'_refine2',lambda:self._solve(p,J1,pcy,record=raw('refine2')))
+            b,j2,u2,c2,binary2=self.call('precision_state',label+'_refine2',lambda:self._state(self.g,J2,V,s,pcy,base_U=self.U0,eta=eta))
             self.record('precision_state',label+'_refine2',b,dict(J=J2,U=V,eta=eta,gradient_J=j2,physical_gradient_U=u2,chart_gradient=c2,binary64_gradient_U=binary2))
             self.record('inner_summary',label,dict(solves=[i0,i1,i2]),None)
             def admit():
-                structure=stable.previous.applicability(p,pcy)
+                structure=(self.backend.applicability if self.backend else stable.previous.applicability)(p,pcy)
                 parts0=p.parts(p.pack(J0),independent=True)
                 _,coarse=stable.old.u_value_gradient(np.zeros(nrot),self.g,J0,V,s,parts0['penalty'])
                 shift=max(float(np.linalg.norm(u2-u1)),float(np.linalg.norm(c2-c1)))
