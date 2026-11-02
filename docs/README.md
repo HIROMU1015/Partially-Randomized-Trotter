@@ -1,3 +1,7 @@
+## H4 P3：有限bit lawの限定実行
+
+[kernel/runner・18入力・6信号・精度とSTOP](research/h4_p3_finite_bit_execution_20261102.md)。固定設計に対する最小接続と人工検査。
+
 ## H4 P3：有限bit実効law・角度誤差
 
 [非実行設計・CDF/角度・名目平均とのbridge・native境界・headroom](research/h4_p3_finite_bit_law_design_20261102.md)。Stage 4後の優先検証案。数値実行は別途明示許可を要する。

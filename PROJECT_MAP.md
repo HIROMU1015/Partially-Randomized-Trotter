@@ -1,3 +1,7 @@
+## 2026-11-02 H4 P3：有限bit law・角度誤差の限定実行
+
+[18入力・6複素平均・誤差転送・人工検査・STOP](docs/research/h4_p3_finite_bit_execution_20261102.md)。承認された固定scopeのmatrix-only接続。sampling/native生成/compile・N/G更新なし。
+
 ## 2026-11-02 H4 P3：有限bit law・角度誤差の非実行設計
 
 [53-bit CDF・binary64角度・6平均案・native境界・bias/headroom接続](docs/research/h4_p3_finite_bit_law_design_20261102.md)。静的確認と文書のみ。Stage 4 STOPを維持し、新科学計算・sampling/compile・N/G更新は未実行。

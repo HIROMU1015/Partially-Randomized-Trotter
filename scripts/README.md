@@ -1,3 +1,7 @@
+## H4 P3有限bit law
+
+[`run_h4_p3_finite_bit.py`](run_h4_p3_finite_bit.py)：保存辞書・53-bit CDF・binary64角度の6複素平均と20 headroom preview。[固定範囲・SOURCE・STOP](../docs/research/h4_p3_finite_bit_execution_20261102.md)。sampling/回路/N/Gなし。
+
 ## H4 P3 Stage 4会計
 
 [`run_h4_p3_stage4_accounting.py`](run_h4_p3_stage4_accounting.py)：保存JSONだけから10行/20軸の条件付き会計。[範囲・SOURCE・STOP](../docs/research/h4_p3_stage4_execution_20261102.md)。

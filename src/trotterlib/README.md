@@ -1,3 +1,7 @@
+## H4 P3有限bit law kernel
+
+[`matched_partition_finite_bit.py`](matched_partition_finite_bit.py)：既存CDF純関数・scalar区間・moment平均とengineering誤差、bias/headroom接続。[限定実行](../../docs/research/h4_p3_finite_bit_execution_20261102.md)。native/compiled誤差は別項。
+
 ## H4 P3 Stage 4 scalar kernel
 
 [`matched_partition_stage4.py`](matched_partition_stage4.py)：nominal/reference直接bias、B上界候補、既存Hoeffding会計とscalar端点、価格共分散。[限定実行](../../docs/research/h4_p3_stage4_execution_20261102.md)。
