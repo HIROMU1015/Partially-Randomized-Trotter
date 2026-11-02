@@ -131,7 +131,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 [C_IDENTITY]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b8f1429887af5e1255c0801908a7bc31123d15dd/artifacts/research_c_pr_small_step/2026-11-02/run01/initial_identity.json
 [C_STATUS]: ../../artifacts/research_c_pr_small_step/2026-11-02/execution_postflight.json
 [C_PREV]: research_c_pr_reduced_limited_execution_20261102.md
-[P1]: ../integration/p1_df_pipeline_h4_20261027/IMPLEMENTATION_REPORT.md
+[P1]: ../integration/main_p1_c_price_cohorts_20261103.md#p1
 [P2]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/04f4cd9cdc8e348a9f0a182ead9cd07f1ee69696/docs/integration/p2_pauli_jw_pipeline_20261027/IMPLEMENTATION_REPORT.md
 [P3]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f9adc2ce1c373c7ba311864c733ac6f40b575fbc/docs/research/b2d_research_entry_20261028.md
 [P4]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/33424d205aa918498e1ef54beb94ab67612bdec8/docs/research/track_b_research_entry_20261028.md

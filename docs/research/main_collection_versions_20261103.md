@@ -6,16 +6,16 @@
 | 扱い | path数 | 内容 |
 |---|---:|---|
 | 索引の統合 | 7 | 元索引の資料リンクをまとめる。元の全版は別途保存 |
-| 公開履歴で後続版を確認できたSOURCE | 12 | 公開ファイル変更の旧blob→新blobの経路を確認し、全候補版から一意に到達する版を原内容で配置 |
+| SOURCEの配置 | 19 | 公開履歴の一意な後続版12件と、P1・研究Cの対応から選定した7件を原内容で配置 |
 | docstringだけのnamespace | 1 | 両版ともmodule docstring以外の文がないことをASTで確認し、原版を配置 |
-| 単一の実行pathを選ばず原版を保存 | 17 | 独立に分岐したSOURCE 7、研究ノート4、発表資料4、過去の承認記録2 |
+| 単一の版を選ばず原版を保存 | 10 | 研究ノート4、発表資料4、過去の承認記録2 |
 
 全37 path・88版（1,594,127 bytes）を保存し、出典commit・blob・modeと対応付けた。
-SOURCEの後続関係は公開履歴の変更から求め、日付・ブランチ名・ファイルの大きさから版を選んでいない。
+元のSOURCE12件の後続関係は公開履歴から求めた。後続のP1・研究Cの7件は依存関係・入力別の対応から選定し、日付・ブランチ名・ファイルの大きさだけで版を選んでいない。
 いずれのSOURCE配置でも、後続の公開子孫で削除されたファイルを再導入していないことを確認した。
-分岐したP1 pipeline一式とCのprice-statistics SOURCEは、単一の整合する実行版を選んでいない。
+共有coreの旧／公開版を含む現在の対応表は42 path・98版である。後続のP1・研究Cの選定と共有core 5件の取り込みは、[SOURCEの組と検査結果](../integration/main_p1_c_price_cohorts_20261103.md)を参照する。
 
-[全88版の出典と配置（TSV）](main_collection_versions_20261103.tsv) ／ [原版の保存場所](../archive/main_collection_versions_20261103/README.md)
+[全版の出典と配置（TSV）](main_collection_versions_20261103.tsv) ／ [原版の保存場所](../archive/main_collection_versions_20261103/README.md)
 
 ## pathごとの扱い
 
@@ -36,7 +36,7 @@ SOURCEの後続関係は公開履歴の変更から求め、日付・ブラン�
 | `docs/tracks/algorithm_codesign/README.md` | [統合索引](../tracks/algorithm_codesign/README.md) | 8 |
 | `scripts/h8_key_compile_parallel.py` | [原版を配置](../../scripts/h8_key_compile_parallel.py) `a631d63b1bad` | 2 |
 | `scripts/restore_pauli_h2_h6_evidence.py` | [原版を配置](../../scripts/restore_pauli_h2_h6_evidence.py) `209ba3875669` | 2 |
-| `scripts/run_df_research_pipeline.py` | 全原版を保存。単一版の選択は保留 | 2 |
+| `scripts/run_df_research_pipeline.py` | [公開SOURCEを配置](../../scripts/run_df_research_pipeline.py) `3f276dc54960` | 2 |
 | `scripts/tracks/algorithm_codesign/README.md` | [統合索引](../../scripts/tracks/algorithm_codesign/README.md) | 4 |
 | `src/trotterlib/h4_d1_adapter.py` | [原版を配置](../../src/trotterlib/h4_d1_adapter.py) `7b9869a51bc0` | 2 |
 | `src/trotterlib/h4_d2_pauli_control.py` | [原版を配置](../../src/trotterlib/h4_d2_pauli_control.py) `6ca2fa2154b7` | 2 |
@@ -47,15 +47,15 @@ SOURCEの後続関係は公開履歴の変更から求め、日付・ブラン�
 | `src/trottertracks/algorithm_codesign/rte_reallocation/numeric.py` | [原版を配置](../../src/trottertracks/algorithm_codesign/rte_reallocation/numeric.py) `2b6f083cb672` | 2 |
 | `src/trottertracks/c_pr_aware_df_m4.py` | [原版を配置](../../src/trottertracks/c_pr_aware_df_m4.py) `4c7fd8b4b521` | 2 |
 | `src/trottertracks/c_pr_integrated_performance.py` | [原版を配置](../../src/trottertracks/c_pr_integrated_performance.py) `1d3fc707e08b` | 2 |
-| `src/trottertracks/c_r32_price_statistics.py` | 全原版を保存。単一版の選択は保留 | 2 |
+| `src/trottertracks/c_r32_price_statistics.py` | [公開SOURCEを配置](../../src/trottertracks/c_r32_price_statistics.py) `82e013411ef2` | 2 |
 | `src/trottertracks/c_rc2_pr_stage_b.py` | [原版を配置](../../src/trottertracks/c_rc2_pr_stage_b.py) `29c30f71838c` | 2 |
 | `src/trottertracks/resource_applicability/README.md` | [統合索引](../../src/trottertracks/resource_applicability/README.md) | 2 |
 | `src/trottertracks/resource_applicability/__init__.py` | [原版を配置](../../src/trottertracks/resource_applicability/__init__.py) `2520332eca1a` | 2 |
-| `src/trottertracks/resource_applicability/df_core_stages.py` | 全原版を保存。単一版の選択は保留 | 2 |
-| `src/trottertracks/resource_applicability/h4_geometry_pipeline.py` | 全原版を保存。単一版の選択は保留 | 2 |
-| `src/trottertracks/resource_applicability/pipeline.py` | 全原版を保存。単一版の選択は保留 | 2 |
-| `src/trottertracks/resource_applicability/pipeline_fixture.py` | 全原版を保存。単一版の選択は保留 | 2 |
-| `tests/test_df_research_pipeline.py` | 全原版を保存。単一版の選択は保留 | 2 |
+| `src/trottertracks/resource_applicability/df_core_stages.py` | [公開SOURCEを配置](../../src/trottertracks/resource_applicability/df_core_stages.py) `56913258e496` | 2 |
+| `src/trottertracks/resource_applicability/h4_geometry_pipeline.py` | [公開SOURCEを配置](../../src/trottertracks/resource_applicability/h4_geometry_pipeline.py) `880177473c83` | 2 |
+| `src/trottertracks/resource_applicability/pipeline.py` | [公開SOURCEを配置](../../src/trottertracks/resource_applicability/pipeline.py) `86c59b5a86cd` | 2 |
+| `src/trottertracks/resource_applicability/pipeline_fixture.py` | [公開SOURCEを配置](../../src/trottertracks/resource_applicability/pipeline_fixture.py) `66a4c8cd04e2` | 2 |
+| `tests/test_df_research_pipeline.py` | [公開SOURCEを配置](../../tests/test_df_research_pipeline.py) `913279ab89a6` | 2 |
 | `tests/tracks/algorithm_codesign/README.md` | [統合索引](../../tests/tracks/algorithm_codesign/README.md) | 5 |
 | `tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py` | [原版を配置](../../tests/tracks/algorithm_codesign/test_df_correction_comparison_v2.py) `dde0e0af72f3` | 2 |
 
@@ -68,11 +68,11 @@ grant・ledger・marker・STOP・一回実行条件は元の記録と固定snaps
 保存原版、元snapshotを区別している。
 
 今回のSOURCEは過去の公開内容の収録である。main全体のAPI整合・科学性能・再現性の検証完了は主張しない。
-元runnerや研究testは再実行せず、ファイル同一性、AST・JSON構文、リンク、既存manifest checkerを確認する。
+前回の37 path整理は静的確認だけを実施した。後続P1は人工・mock検査79件を実施し、研究Cと共有coreの科学計算・数値検証は実施していない。
 全結果のstatusと既存のquarantine/missingはそのまま保持する。
 
 ## 残る範囲
 
-枝全体のGit mergeとブランチ削除は行っていない。既存mainの別版ファイル、分岐したSOURCE一式、
+枝全体のGit mergeとブランチ削除は行っていない。その他の既存mainの別版ファイル、
 symlink等65 path、ルートの実行claim/marker7件は、元snapshot・保存参照を維持する。
 大きな原データは既存の保存先を使い、今回も再計算・再解析・compileは行わない。

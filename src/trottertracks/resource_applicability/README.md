@@ -20,3 +20,8 @@
 
 - [原版 7935831f63f6](../../../docs/archive/main_collection_versions_20261103/7935831f63f60663450cec7c168686d7d58f7bb9/src/trottertracks/resource_applicability/README.md.original) ／ [元snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/af54aeb7ebac042a3ca02379d61516ac635feef9/src/trottertracks/resource_applicability/README.md)
 - [原版 0045edf07570](../../../docs/archive/main_collection_versions_20261103/0045edf075702540776f15588af997b5767929b4/src/trottertracks/resource_applicability/README.md.original) ／ [元snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2c865c66171fc9d1972b67c1257c57e5684fe26c/src/trottertracks/resource_applicability/README.md)
+
+## P1・研究C SOURCEの組（2026-11-03）
+
+[選定したSOURCEと依存版・検査範囲](../../../docs/integration/main_p1_c_price_cohorts_20261103.md)を参照する。P1は人工・mock検査79件PASS、研究Cはpassive importと静的互換を確認した。
+共有coreの変更前版は保存済み。過去の科学SOURCE・入力・結果・契約・STOPは元snapshotを使う。

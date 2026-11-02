@@ -154,3 +154,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [同名37 pathの整理結果](docs/research/main_collection_versions_20261103.md)から、統合した7索引、原内容で配置したSOURCE、全88保存版を辿る。
 旧snapshotの研究記述を、全研究系列の現在の状態へ読み替えない。
+
+## P1・研究C SOURCEの組（2026-11-03）
+
+[選定したSOURCEと依存版・検査範囲](docs/integration/main_p1_c_price_cohorts_20261103.md)を参照する。P1は人工・mock検査79件PASS、研究Cはpassive importと静的互換を確認した。
+共有coreの変更前版は保存済み。過去の科学SOURCE・入力・結果・契約・STOPは元snapshotを使う。

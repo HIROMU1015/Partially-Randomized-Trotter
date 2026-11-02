@@ -76,3 +76,8 @@ Git管理外のraw・cache・他hostの原本は、その既存保存先を保�
 [37 path・88版の整理結果](main_collection_versions_20261103.md)を反映した。7索引を統合し、公開履歴で後続版が一意なSOURCE12件とdocstringのみのnamespace1件を原内容で配置した。
 全88版をmain内に保存し、独立に分岐したSOURCE・研究ノート・発表資料・過去の承認記録17 pathでは単一版を選んでいない。
 これは追加の内容集約であり、枝全体のGit mergeではない。
+
+## 第4回：P1・研究CのSOURCEと依存版
+
+[P1の6ファイル・研究C helper・P1依存core 5件の選定](../integration/main_p1_c_price_cohorts_20261103.md)を反映した。すべて公開SOURCEの原内容を使用し、変更前のcoreも保存している。
+P1の人工・mock検査は79件PASS。研究Cの統計処理・科学実行は行わず、元のSOURCE記録・契約・STOPを保持する。

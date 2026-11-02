@@ -15,11 +15,13 @@ from qiskit.circuit.library import PhaseGate
 from .df_hamiltonian import DFHamiltonian
 from .df_partial_randomized_pf import (
     DFFragmentPartition,
+    df_fragment_weight,
     df_hamiltonian_hash,
     df_hamiltonian_to_model,
     rank_df_fragments,
 )
 from .df_rte_circuit import (
+    DFRTEBasisPlan,
     DFRTEEventPreparation,
     DFRTEEventSequenceCircuitRequest,
 )
@@ -108,6 +110,10 @@ class DFDeterministicFragmentSpec:
 DFDeterministicBlockSpec: TypeAlias = (
     DFDeterministicOneBodySpec | DFDeterministicFragmentSpec
 )
+DFPartialS2PartitionPolicy: TypeAlias = Literal[
+    "weight_ranked_prefix",
+    "explicit_ordered_partition",
+]
 
 
 @dataclass(frozen=True)
@@ -204,6 +210,8 @@ class DFPartialS2Preparation:
 def _partition_hash(
     hamiltonian_hash: str,
     partition: DFFragmentPartition,
+    *,
+    partition_policy: DFPartialS2PartitionPolicy,
 ) -> str:
     payload = {
         "hamiltonian_hash": hamiltonian_hash,
@@ -216,7 +224,11 @@ def _partition_hash(
         ],
         "ranking_proxy_lambda_r": partition.ranking_proxy_lambda_r,
         "weight_rule": partition.weight_rule,
-        "partition_hash_policy": "ranked_df_prefix_v1",
+        "partition_hash_policy": (
+            "ranked_df_prefix_v1"
+            if partition_policy == "weight_ranked_prefix"
+            else "explicit_ordered_df_partition_v1"
+        ),
     }
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
     return hashlib.sha256(encoded).hexdigest()
@@ -225,28 +237,70 @@ def _partition_hash(
 def _validate_partition(
     hamiltonian: DFHamiltonian,
     partition: DFFragmentPartition,
+    *,
+    partition_policy: DFPartialS2PartitionPolicy,
 ) -> None:
     ld = require_integer_count(partition.ld, name="partition.ld")
     if ld > hamiltonian.n_blocks:
         raise ValueError("partition.ld exceeds the number of DF fragments.")
-    expected = rank_df_fragments(
-        hamiltonian,
-        weight_rule=partition.weight_rule,
-    )
-    if partition.deterministic_fragments != expected[:ld]:
-        raise ValueError("Deterministic fragments are not the ranked L_D prefix.")
-    if partition.randomized_fragments != expected[ld:]:
-        raise ValueError("Randomized fragments are not the ranked suffix.")
     deterministic = partition.deterministic_block_indices
     randomized = partition.randomized_block_indices
-    if deterministic != tuple(item.original_index for item in expected[:ld]):
-        raise ValueError("Deterministic block order differs from ranked prefix order.")
-    if randomized != tuple(item.original_index for item in expected[ld:]):
-        raise ValueError("Randomized block order differs from ranked suffix order.")
     if set(deterministic).intersection(randomized):
         raise ValueError("Deterministic and randomized fragments overlap.")
     if set((*deterministic, *randomized)) != set(range(hamiltonian.n_blocks)):
         raise ValueError("DF partition does not cover every two-body fragment.")
+    if partition_policy == "weight_ranked_prefix":
+        expected = rank_df_fragments(
+            hamiltonian,
+            weight_rule=partition.weight_rule,
+        )
+        if partition.deterministic_fragments != expected[:ld]:
+            raise ValueError("Deterministic fragments are not the ranked L_D prefix.")
+        if partition.randomized_fragments != expected[ld:]:
+            raise ValueError("Randomized fragments are not the ranked suffix.")
+        if deterministic != tuple(item.original_index for item in expected[:ld]):
+            raise ValueError("Deterministic block order differs from ranked prefix order.")
+        if randomized != tuple(item.original_index for item in expected[ld:]):
+            raise ValueError("Randomized block order differs from ranked suffix order.")
+    elif partition_policy == "explicit_ordered_partition":
+        ordered = (
+            partition.deterministic_fragments + partition.randomized_fragments
+        )
+        if tuple(item.rank for item in ordered) != tuple(range(hamiltonian.n_blocks)):
+            raise ValueError("Explicit partition ranks must be contiguous in order.")
+        if deterministic != tuple(
+            item.original_index for item in partition.deterministic_fragments
+        ):
+            raise ValueError("Explicit deterministic block order is inconsistent.")
+        if randomized != tuple(
+            item.original_index for item in partition.randomized_fragments
+        ):
+            raise ValueError("Explicit randomized block order is inconsistent.")
+        for item in ordered:
+            index = int(item.original_index)
+            if item.weight_rule != partition.weight_rule:
+                raise ValueError("Explicit fragment weight rule mismatch.")
+            if not math.isclose(
+                item.lam,
+                float(hamiltonian.lambdas[index]),
+                rel_tol=0.0,
+                abs_tol=0.0,
+            ):
+                raise ValueError("Explicit fragment lambda mismatch.")
+            expected_weight = df_fragment_weight(
+                hamiltonian,
+                index,
+                weight_rule=partition.weight_rule,
+            )
+            if not math.isclose(
+                item.weight,
+                expected_weight,
+                rel_tol=1e-13,
+                abs_tol=1e-14,
+            ):
+                raise ValueError("Explicit fragment weight mismatch.")
+    else:  # pragma: no cover - guarded by the public entry point.
+        raise ValueError(f"Unsupported partition policy: {partition_policy}")
 
 
 def _block_hash_payload(block: DFDeterministicBlockSpec) -> dict[str, object]:
@@ -279,20 +333,39 @@ def prepare_df_partial_s2(
     coefficient_atol: float = 0.0,
     diagonal_sort: str = "descending_abs",
     basis_construction_policy: BasisConstructionPolicy = "fermionic_gaussian_jw",
+    partition_policy: DFPartialS2PartitionPolicy = "weight_ranked_prefix",
 ) -> DFPartialS2Preparation:
-    """Prepare ranked deterministic blocks and the exact symbolic RTE tail."""
+    """Prepare deterministic blocks and the exact symbolic RTE tail.
+
+    ``explicit_ordered_partition`` is a provenance-bearing adapter for a
+    preregistered fragment order.  It validates every stored fragment against
+    the Hamiltonian but does not re-sort the explicit order.
+    """
     if basis_construction_policy != "fermionic_gaussian_jw":
         raise ValueError("Unsupported basis construction policy.")
     if not diagonal_sort:
         raise ValueError("diagonal_sort must not be empty.")
     if not math.isfinite(coefficient_atol) or coefficient_atol < 0.0:
         raise ValueError("coefficient_atol must be finite and non-negative.")
-    _validate_partition(hamiltonian, partition)
+    if partition_policy not in (
+        "weight_ranked_prefix",
+        "explicit_ordered_partition",
+    ):
+        raise ValueError(f"Unsupported partition policy: {partition_policy}")
+    _validate_partition(
+        hamiltonian,
+        partition,
+        partition_policy=partition_policy,
+    )
     hamiltonian_fingerprint = df_hamiltonian_hash(
         hamiltonian,
         weight_rule=partition.weight_rule,
     )
-    partition_fingerprint = _partition_hash(hamiltonian_fingerprint, partition)
+    partition_fingerprint = _partition_hash(
+        hamiltonian_fingerprint,
+        partition,
+        partition_policy=partition_policy,
+    )
     model = df_hamiltonian_to_model(hamiltonian)
     registry = DFBasisRegistry()
     deterministic_blocks: list[DFDeterministicBlockSpec] = []
@@ -433,6 +506,7 @@ class DFPartialS2StepRequest:
     ancilla_qubit: int | None = None
     seed: int | None = None
     pf_label: Literal["2nd"] = "2nd"
+    rte_basis_plan: DFRTEBasisPlan | None = None
 
     def __post_init__(self) -> None:
         if self.pf_label != "2nd":
@@ -459,6 +533,7 @@ class DFPartialS2StepRequest:
                     self.rte_config,
                     self.rte_distribution,
                     self.rte_occurrence,
+                    self.rte_basis_plan,
                 )
             ):
                 raise ValueError("A deterministic-only step must not contain RTE data.")
@@ -473,6 +548,11 @@ class DFPartialS2StepRequest:
         config = self.rte_config
         distribution = self.rte_distribution
         occurrence = self.rte_occurrence
+        if self.rte_basis_plan is not None and not isinstance(
+            self.rte_basis_plan,
+            DFRTEBasisPlan,
+        ):
+            raise TypeError("rte_basis_plan must be a DFRTEBasisPlan or None.")
         tail = self.preparation.rte_preparation.symbolic_tail
         if not math.isclose(
             config.evolution_time,
@@ -722,6 +802,10 @@ class DFPartialS2CircuitResult:
     extracted_identity_phase: float
     rte_relative_phase: float
     rte_sequence_fingerprint: str | None
+    rte_basis_structure_policy: str | None
+    rte_basis_plan_fingerprint: str | None
+    rte_full_basis_application_count: int
+    rte_support_restricted_application_count: int
     basis_reuse_policy: Literal["disabled", "raw_adjacent_equal_basis", "none"]
     compiler_independent_fingerprint: str
     untranspiled_circuit_size: int
@@ -841,6 +925,21 @@ class QiskitDFPartialS2CircuitBuilder:
             "role": role,
             "fingerprint_policy": "df_partial_s2_circuit_v1",
         }
+        # Keep the established no-plan fingerprint byte-for-byte stable.  An
+        # explicit plan is part of circuit semantics and therefore must not
+        # alias the default full-basis path.
+        if request.rte_basis_plan is not None:
+            payload.update(
+                {
+                    "rte_basis_structure_policy": (
+                        request.rte_basis_plan.policy_id
+                    ),
+                    "rte_basis_plan_fingerprint": (
+                        request.rte_basis_plan.plan_fingerprint
+                    ),
+                    "fingerprint_policy": "df_partial_s2_circuit_v2",
+                }
+            )
         encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode()
         return hashlib.sha256(encoded).hexdigest()
 
@@ -859,7 +958,10 @@ class QiskitDFPartialS2CircuitBuilder:
         if request.rte_occurrence is not None:
             rte_result = QiskitDFRTEEventCircuitBuilder(
                 basis_registry=request.preparation.rte_preparation.basis_registry
-            ).build_sequence(request.rte_occurrence)
+            ).build_sequence(
+                request.rte_occurrence,
+                basis_plan=request.rte_basis_plan,
+            )
             rte_circuit = rte_result.circuit
             rte_fingerprint = rte_result.circuit_fingerprint
 
@@ -966,6 +1068,20 @@ class QiskitDFPartialS2CircuitBuilder:
                 0.0 if rte_result is None else rte_result.relative_ancilla_phase
             ),
             rte_sequence_fingerprint=rte_fingerprint,
+            rte_basis_structure_policy=(
+                None if rte_result is None else rte_result.basis_structure_policy
+            ),
+            rte_basis_plan_fingerprint=(
+                None if rte_result is None else rte_result.basis_plan_fingerprint
+            ),
+            rte_full_basis_application_count=(
+                0 if rte_result is None else rte_result.full_basis_application_count
+            ),
+            rte_support_restricted_application_count=(
+                0
+                if rte_result is None
+                else rte_result.support_restricted_application_count
+            ),
             basis_reuse_policy=reuse_policy,
             compiler_independent_fingerprint=full_fingerprint,
             untranspiled_circuit_size=int(circuit.size()),

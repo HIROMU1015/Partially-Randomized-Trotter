@@ -7,6 +7,8 @@ controlling DF basis changes when only the diagonal evolution needs control.
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 from dataclasses import dataclass
 from typing import Any, Iterator, Literal, Protocol, TypeAlias
@@ -78,6 +80,100 @@ class DFRTEIdentityCircuitSpec:
 
 
 DFRTECircuitSpec: TypeAlias = DFRTEComponentCircuitSpec | DFRTEIdentityCircuitSpec
+
+
+BasisChoiceConstruction: TypeAlias = Literal[
+    "registered_full_basis",
+    "support_restricted_preserved_columns_v1",
+]
+
+
+@dataclass(frozen=True)
+class DFRTEApplicationBasisChoice:
+    """One audited replacement basis for an ordered non-identity application."""
+
+    source_basis_id: str
+    source_basis_hash: str
+    selected_basis_id: str
+    selected_basis_hash: str
+    diagonal_pauli_support: tuple[int, ...]
+    construction: BasisChoiceConstruction
+    preserved_columns_max_abs_residual: float
+
+    def __post_init__(self) -> None:
+        if not all(
+            (
+                self.source_basis_id,
+                self.source_basis_hash,
+                self.selected_basis_id,
+                self.selected_basis_hash,
+            )
+        ):
+            raise ValueError("Basis-choice identifiers and hashes must not be empty.")
+        if len(self.diagonal_pauli_support) not in (1, 2):
+            raise ValueError("A basis choice requires Z or ZZ support.")
+        if self.construction not in (
+            "registered_full_basis",
+            "support_restricted_preserved_columns_v1",
+        ):
+            raise ValueError("Unsupported basis-choice construction.")
+        residual = float(self.preserved_columns_max_abs_residual)
+        if not math.isfinite(residual) or residual < 0.0:
+            raise ValueError("Basis-choice residual must be finite and non-negative.")
+        object.__setattr__(self, "preserved_columns_max_abs_residual", residual)
+        if self.construction == "registered_full_basis" and (
+            self.selected_basis_id != self.source_basis_id
+            or self.selected_basis_hash != self.source_basis_hash
+        ):
+            raise ValueError("A full-basis choice must retain the source basis.")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "source_basis_id": self.source_basis_id,
+            "source_basis_hash": self.source_basis_hash,
+            "selected_basis_id": self.selected_basis_id,
+            "selected_basis_hash": self.selected_basis_hash,
+            "diagonal_pauli_support": list(self.diagonal_pauli_support),
+            "construction": self.construction,
+            "preserved_columns_max_abs_residual": (
+                self.preserved_columns_max_abs_residual
+            ),
+        }
+
+
+@dataclass(frozen=True)
+class DFRTEBasisPlan:
+    """Explicit basis choices aligned with all non-identity applications."""
+
+    policy_id: str
+    selection_objective: str
+    choices: tuple[DFRTEApplicationBasisChoice, ...]
+    training_fingerprint: str | None = None
+
+    def __post_init__(self) -> None:
+        if not self.policy_id or not self.selection_objective:
+            raise ValueError("Basis-plan policy and objective must not be empty.")
+        if not self.choices:
+            raise ValueError("An explicit basis plan must contain at least one choice.")
+        if self.training_fingerprint is not None and not self.training_fingerprint:
+            raise ValueError("training_fingerprint must be non-empty when supplied.")
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "policy_id": self.policy_id,
+            "selection_objective": self.selection_objective,
+            "choices": [choice.to_dict() for choice in self.choices],
+            "training_fingerprint": self.training_fingerprint,
+        }
+
+    @property
+    def plan_fingerprint(self) -> str:
+        encoded = json.dumps(
+            self.to_dict(),
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode()
+        return hashlib.sha256(encoded).hexdigest()
 
 
 @dataclass(frozen=True)
@@ -418,6 +514,10 @@ class DFRTEEventCircuitResult:
     )
     circuit_qubit_count: int = 0
     circuit_fingerprint: str = ""
+    basis_structure_policy: str = "registered_full_basis"
+    basis_plan_fingerprint: str | None = None
+    full_basis_application_count: int = 0
+    support_restricted_application_count: int = 0
 
     def __post_init__(self) -> None:
         for name, minimum in (
@@ -428,21 +528,33 @@ class DFRTEEventCircuitResult:
             ("naive_basis_change_count", 0),
             ("emitted_basis_change_count", 0),
             ("circuit_qubit_count", 0),
+            ("full_basis_application_count", 0),
+            ("support_restricted_application_count", 0),
         ):
             object.__setattr__(
                 self,
                 name,
                 require_integer_count(getattr(self, name), name=name, minimum=minimum),
             )
+        if not self.basis_structure_policy:
+            raise ValueError("basis_structure_policy must not be empty.")
+        if self.basis_plan_fingerprint is not None and not self.basis_plan_fingerprint:
+            raise ValueError("basis_plan_fingerprint must be non-empty when supplied.")
 
 
 class DFRTEEventCircuitBuilder(Protocol):
     """Interface implemented by concrete DF RTE event circuit builders."""
 
     def build_event(
-        self, request: DFRTEEventCircuitRequest
+        self,
+        request: DFRTEEventCircuitRequest,
+        *,
+        basis_plan: DFRTEBasisPlan | None = None,
     ) -> DFRTEEventCircuitResult: ...
 
     def build_sequence(
-        self, request: DFRTEEventSequenceCircuitRequest
+        self,
+        request: DFRTEEventSequenceCircuitRequest,
+        *,
+        basis_plan: DFRTEBasisPlan | None = None,
     ) -> DFRTEEventCircuitResult: ...
