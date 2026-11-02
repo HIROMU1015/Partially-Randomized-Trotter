@@ -1,3 +1,7 @@
+## 2026-11-02 H6全lawへの実装誤差転送：非実行の技術調査
+
+[転送式の再利用・native phase/compiler証明の不足・限定scopeの選択肢](docs/research/h6_whole_law_transfer_feasibility_20261102.md)。R64/H32/H64だけのSOURCE読取。全law上界は未確定、新状態作用/誤差数値評価/sampling/compile/N/Gなし。局所診断STOP維持。
+
 ## 2026-11-02 H6保存trajectoryの局所実装診断
 
 [selected C_i3・native6・compiled6、精度・再利用・STOP](docs/research/h6_selected_implementation_execution_20261102.md)。承認済み3候補/index0000、最大15状態作用。新sampling/compile/N/Gなし。

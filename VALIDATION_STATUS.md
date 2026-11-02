@@ -1,3 +1,7 @@
+## 2026-11-02 H6全lawへの誤差転送：非実行の実現可能性調査完了
+
+[SOURCE対応・転送式・未証明条件・代替の限定scope](docs/research/h6_whole_law_transfer_feasibility_20261102.md)。R64/H32/H64のみ。既存R2/R2-Cの条件付き転送式は再利用可能だが、native相対phase/remainder・compiler binding/actual 1Q再合成の一様誤差が未証明で、全lawρ上界と予算所属は未確定。既存局所値を外挿せず、新状態作用/QPY deserialize/誤差数値評価/人工数値tests/sampling/compile/N/G/価格解析0。局所STOP・全旧科学証拠/manifest entriesを保全。大規模実行へは進まない。
+
 ## 2026-11-02 H6保存3 trajectory：15作用の局所実装診断完了
 
 [selected→native→compiledの6比較・数値不確かさ・STOP](artifacts/h6_selected_implementation/2026-11-02/run01/REPORT.md)。H6/1Å/STO-3G/Pauli918/system12/T.8/S2/q8/K2/P=0、R64/H32/H64のconfirmation0000。selected3/native6/compiled6を一度ずつ、15/15作用・15 distinct PID・全join・exit0、約14.88秒。6組すべてselected→compiledのengineering上側候補が保存ε=.0005の局所rho_guard内、直接差は全て分解能以下。actual/whole-lawρ・certified upperはnull、旧N/G不変。人工9PASS、新sampling/compile/law平均/full-H reference/price tail/retry0。旧全結果/STOPと208manifest entryを保全し、公開照合後mandatory STOP。

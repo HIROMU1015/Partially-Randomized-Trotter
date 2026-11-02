@@ -1,3 +1,7 @@
+## H6全lawへの実装誤差転送：SOURCE読取調査
+
+[既存R2/R2-Cの再利用条件・全law保証に不足するnative/compiler辺・次の限定範囲](research/h6_whole_law_transfer_feasibility_20261102.md)。新科学計算・人工数値testsなし、局所STOP維持。
+
 ## H6保存3 trajectory：局所実装診断
 
 [15状態作用・6比較・engineering resolution・STOP](research/h6_selected_implementation_execution_20261102.md)。selected-targetとnative/compiled Fullを保存標本で接続する限定実行。
