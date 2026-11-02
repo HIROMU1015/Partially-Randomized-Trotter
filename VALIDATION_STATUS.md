@@ -1,3 +1,7 @@
+## 2026-11-02 Pauli-JW論文化向け追補：既存証拠の文書統合
+
+[追補・既存C1–C10との対応・P1/P2/局所/A/A-1/Bの限界・二つの位置付け案](docs/research/pauli_h2_h4_h6_paper_evidence_addendum_20261102.md)。固定4591版Table S1の60行とTable 1の15行を一次CSVの保存文字列に照合し、比率/判定15行も原文一致。旧H6参照線・H4例外/選抜差を保持。新科学計算・保存数値再解析・sampling/compile/N/G/再ランキング/独立詳細レビュー/原稿改訂0。全law実装誤差と母期待価格は未保証のまま、旧全証拠/STOPを維持し公開後mandatory STOP。
+
 ## 2026-11-02 H6 A-1：全law Native接続の限定技術調査完了
 
 [保持角度・scalar/product/order位相・remainder/winding・条件付きNative式](docs/research/h6_native_bridge_scalar_phase_feasibility_20261102.md)。固定R64/H32/H64、元SOURCE AST22比較・model/3 law hash・prefix bitsと入力域を技術照合。保持角度項はRN条件下で共通式に整理でき、Hybrid間共有/R64空和。Nativeのactual remainder全域誤差・winding根拠は未完了、全law上界/予算所属は未取得。新科学数値評価/状態作用/QPY decode/sampling/compile/N/G/価格解析/tests0、Aと全旧証拠/STOPを保全。Compilerと独立B価格tailは扱わず、公開照合後mandatory STOP。

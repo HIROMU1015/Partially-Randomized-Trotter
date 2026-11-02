@@ -1,3 +1,7 @@
+## 2026-11-02 Pauli-JW論文化向け証拠追補
+
+[既存C1–C10/表の再利用・P1/P2/局所/A/A-1/B・必要な追加証拠・論文位置付けの判断材料](docs/research/pauli_h2_h4_h6_paper_evidence_addendum_20261102.md)。固定文書・一次結果の文字列照合のみ。原稿/図/科学結果を変更せず、新科学計算・数値再解析・claim正式採択0、公開後STOP。
+
 ## 2026-11-02 H6 A-1：Native保持角度・scalar/phaseの限定調査
 
 [operand順序・共通保持項・K2位相更新・remainder/winding・条件付き転送](docs/research/h6_native_bridge_scalar_phase_feasibility_20261102.md)。固定Aを基点とする独立worktree。新誤差数値/状態作用/compile/価格解析0、actual remainder未証明・局所STOP維持。Compiler証明とB価格tailは対象外。

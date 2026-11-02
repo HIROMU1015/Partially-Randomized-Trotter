@@ -1,3 +1,7 @@
+## Pauli-JW H2/H4/H6：論文化向け追補
+
+[条件付き低G・最近のH6証拠・Methods/Results/図表の修正候補・追加検証の必要条件](research/pauli_h2_h4_h6_paper_evidence_addendum_20261102.md)。11/01の統合/claim mapは置き換えず、原稿改訂・新数値解析・主要claim採択なし。
+
 ## H6 A-1：全law Native接続のscalar/phase条件
 
 [保持角度のSOURCE対応・位相所有・Python/Rust remainder・未証明条件と次の限定scope](research/h6_native_bridge_scalar_phase_feasibility_20261102.md)。新科学計算なし、独立worktreeで文書だけを公開しSTOP。
