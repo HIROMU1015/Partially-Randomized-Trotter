@@ -1,0 +1,126 @@
+{
+  "phase": "B",
+  "scope": "Independent mathematical and small synthetic technical audit only",
+  "source_sha256": "5b13247a292d704b65efcb68b3385bfda36302281da92c826b2664813aa32ee7",
+  "production_runner_calls": 0,
+  "molecule_NPZ_GPU_calls": 0,
+  "trajectory_or_quantum_shots": 0,
+  "result": {
+    "status": "CONDITIONAL_PASS",
+    "general_support_proof": "Finite-dimensional even CAR algebra on span of <=6 orbital columns; no numerical rank dropping permitted",
+    "fixtures": [
+      {
+        "system_modes": 7,
+        "active_modes": 6,
+        "primitive_ranks": [
+          2,
+          2,
+          2
+        ],
+        "lift_residual": 1.0221556844419481e-14,
+        "rotation_residual": 1.8725884457274826e-15,
+        "max_cross_primitive_overlap": 0.5819168242074219,
+        "actual_norm_diagnostic_only": 2.395769041807087,
+        "kappa_used": 4
+      },
+      {
+        "system_modes": 5,
+        "active_modes": 3,
+        "primitive_ranks": [
+          1,
+          2,
+          2
+        ],
+        "lift_residual": 1.0627822460526696e-14,
+        "rotation_residual": 1.3710417250764848e-15,
+        "max_cross_primitive_overlap": 0.8296419332012931,
+        "actual_norm_diagnostic_only": 3.1571228292824816,
+        "kappa_used": 4
+      },
+      {
+        "system_modes": 4,
+        "active_modes": 2,
+        "primitive_ranks": [
+          0,
+          1,
+          2
+        ],
+        "lift_residual": 0.0,
+        "rotation_residual": 9.998415630659692e-16,
+        "max_cross_primitive_overlap": 0.7909989692183407,
+        "actual_norm_diagnostic_only": 0.0,
+        "kappa_used": 4
+      }
+    ],
+    "interval_certified_rank_selection": "NOT_IMPLEMENTED"
+  },
+  "status": "FOCUSED_CHECKS_PASS",
+  "checks": [
+    {
+      "name": "B.7.6.lift",
+      "pass": true,
+      "details": 1.0221556844419481e-14
+    },
+    {
+      "name": "B.7.6.rotation",
+      "pass": true,
+      "details": 1.8725884457274826e-15
+    },
+    {
+      "name": "B.7.6.Hermitian_bound",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "B.7.6.control_zero_identity",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "B.5.3.lift",
+      "pass": true,
+      "details": 1.0627822460526696e-14
+    },
+    {
+      "name": "B.5.3.rotation",
+      "pass": true,
+      "details": 1.3710417250764848e-15
+    },
+    {
+      "name": "B.5.3.Hermitian_bound",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "B.5.3.control_zero_identity",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "B.4.2.lift",
+      "pass": true,
+      "details": 0.0
+    },
+    {
+      "name": "B.4.2.rotation",
+      "pass": true,
+      "details": 9.998415630659692e-16
+    },
+    {
+      "name": "B.4.2.Hermitian_bound",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "B.4.2.control_zero_identity",
+      "pass": true,
+      "details": null
+    }
+  ],
+  "checks_passed": 12,
+  "wall_seconds": 0.13368581235408783,
+  "CPU_seconds": 0.12434298299999999,
+  "peak_RSS_MiB": 64.82421875,
+  "python": "3.11.0rc1",
+  "threads": 1
+}

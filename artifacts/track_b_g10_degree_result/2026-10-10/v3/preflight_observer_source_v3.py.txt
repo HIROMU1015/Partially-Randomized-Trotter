@@ -1,0 +1,54 @@
+import hashlib
+import json
+import subprocess
+import sys
+from pathlib import Path
+from trottertracks.algorithm_codesign.g10_launch import verify_launch
+from trottertracks.algorithm_codesign.synthesis_placement.wrapper_launch import verify_runtime
+
+ROOT = Path.cwd()
+TMP = Path(__file__).parent
+S = 'b9ed01455351628c9073748f5ba5751aa794b789'
+CONTRACT = ROOT/'artifacts/track_b_g10_key_compatibility_preparation/2026-10-10/v3/contract_v3.json'
+
+def identity(path):
+    if str(path).lower().endswith('.npz'):
+        raise PermissionError('NPZ rejected before access')
+    digest, size = hashlib.sha256(), 0
+    with Path(path).open('rb') as stream:
+        for block in iter(lambda: stream.read(32768), b''):
+            digest.update(block); size += len(block)
+    return {'bytes': size, 'sha256': digest.hexdigest()}
+
+c, auth, head, before = verify_launch(ROOT, CONTRACT, S)
+runtime = verify_runtime(ROOT, c)
+executable = identity(Path(sys.executable).resolve())['sha256']
+assert executable == c['runtime_executable_sha256']
+assert not (ROOT/c['result_directory']).exists()
+assert not (ROOT/c['result_directory']/'one_shot_consumed.json').exists()
+parents = subprocess.check_output(['git', 'show', '-s', '--format=%P', head], text=True).split()
+paths = subprocess.check_output(['git', 'diff', '--name-only', S, head], text=True).splitlines()
+remote = subprocess.check_output(['git', 'ls-remote', 'origin', 'refs/heads/'+subprocess.check_output(['git', 'branch', '--show-current'], text=True).strip()], text=True).strip()
+assert parents == [S] and remote.split()[0] == head
+manifest = json.loads((ROOT/c['source_manifest']).read_text())
+prefixes = {rel: identity(ROOT/rel) for rel in manifest['sha256']}
+assert len(prefixes) == 180
+assert all(prefixes[p]['sha256'] == h for p, h in manifest['sha256'].items())
+for name, obj in [('source_prefix_identity_v3.json', prefixes), ('preflight_receipt_v3.json', {
+    'status': 'PREFLIGHT_PASS', 'source_commit': S, 'authorization_commit': head,
+    'execution_HEAD': head, 'parents': parents, 'authorization_only_paths': paths,
+    'worktree_clean': True, 'remote': remote, 'marker_absent': True,
+    'result_directory_absent': True, 'contract_sha256': identity(CONTRACT)['sha256'],
+    'authorization_sha256': identity(ROOT/c['authorization_path'])['sha256'],
+    'source_manifest_identity': identity(ROOT/c['source_manifest']),
+    'runtime': runtime, 'runtime_executable_sha256': executable, 'protected_before': before,
+    'critical_paths': len(prefixes), 'runs': 1, 'retries': 0, 'mandatory_STOP': True,
+    'preflight_runner_invocations': 0, 'preflight_science_synthesis_matrix_sampling_LP_GPU': 0,
+    'next_science_authorized': False,
+})]:
+    with (TMP/name).open('x') as stream:
+        json.dump(obj, stream, ensure_ascii=False, indent=2); stream.write('\n')
+assert not any(name.startswith(('numpy', 'mpmath', 'pygridsynth')) for name in sys.modules)
+print(json.dumps({'status': 'PREFLIGHT_PASS', 'S3': S, 'A3': head,
+                  'critical_paths': len(prefixes), 'protected_paths': before['protected_paths'],
+                  'runtime_match': True, 'marker_absent': True, 'runner_invocations': 0}))

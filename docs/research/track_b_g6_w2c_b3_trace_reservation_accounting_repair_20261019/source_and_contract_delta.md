@@ -1,0 +1,13 @@
+# SOURCEと技術契約差分
+
+基点76ca3c40と固定独立checker49a0dcc9の原bytesは保全。既存R1/F01/Admission/Host、旧pilot candidate/offline、G7/F3、旧raw/契約/STOPは編集しない。新しいstorage_v2 SOURCEとschema、追加checker、人工fixture/test/runnerを作成した。外部checkerは選択copyで、merge/rebaseしない。
+
+新candidateは`b3_pilot_storage_repair_candidate_v2`、result/summary/receiptはV2。健康なordered traceのseq/run_id/op、chain/canonical形式、trial粒度はV1を維持する。科学seed/law/precision/Nや保存粒度を変更していない。
+
+V2はRAM state/counter/cursor/ticket、trusted trace prefix、state/journal/trace保存状態、STOPの保存先別成否、unknown credit、保存errorを明示する。物理stateが未確認の場合は独立state一致を主張しない。diagnosticは常にcomplete=false/final_acceptance=falseのpre-close snapshotであり、成功判定の代用ではない。diagnosticのbytesもresult予算へ課金する。
+
+費用はhost parent＋全worker、wallはouter window。trace自己writeは同じlogへ一度だけ課金し、その自己課金を再帰journal化しない。statefileの保持長と累積pwrite trafficは別。RAM shadowの追加保持、fault notification、diagnostic/finalizationを含めた実行条件を明示する。新しい科学的CPU性能優位は主張しない。
+
+物理flushはpower-failure耐久性の証明ではない。既存SQLite locking/commitの前提も保持する。schema/失敗証拠・成功marker順序・RAM shadowは技術的な契約差分候補であり、将来の正式SOURCE/実行契約に取り込むには別の採択と独立受入を要する。今回は科学条件・16,896 calls候補・log256MiB/result64GiB・retry0/resumefalseを正式採択していない。
+
+本versionは人工APIだけを実装。ProductionFactory/Bits/entryは無条件拒否を保持し、production bundle bridgeは実装していない。

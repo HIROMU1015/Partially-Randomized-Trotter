@@ -1,0 +1,57 @@
+{
+  "new_code_reason": "selected-event Pauli vector action and exact-bra inner-product bound are missing from compiled ancilla-Z kernel; reuse recenter instead of whole operator/law engine",
+  "reuse": [
+    {
+      "SOURCE": "92a5f104a2e9962353870e87f1d910d236adba41",
+      "path": "src/trotterlib/h4_arb_bridge.py",
+      "use": "unchanged compiled native kernel, artificial gate/wire validation, global L2 recenter, residual interval with saved B once"
+    },
+    {
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "use": "exact Fraction/fmpq conversions, phase/endpoints; dense Pauli/signal primitives for artificial oracle only"
+    },
+    {
+      "path": "src/trotterlib/h4_r0_empirical.py",
+      "use": "selected C chronological schedule as reference; QPY/token/fingerprint/control checks; do not call empirical propagate/selected_C_action"
+    },
+    {
+      "path": "src/trotterlib/rte_event_audit.py",
+      "use": "pure verify_join by existing AST extractor; no sampler/adapters imported"
+    },
+    {
+      "path": "tests/test_h4_arb_bridge.py",
+      "use": "native fixtures and 256bit dense artificial oracle; ten tests reused"
+    },
+    {
+      "path": "tests/test_h4_arb_qpy.py",
+      "use": "six QPY artificial tests reused"
+    },
+    {
+      "path": "tests/test_h4_r1_sine.py",
+      "use": "nine existing artificial phase/measurement tests reused; no H4 sine extension"
+    }
+  ],
+  "source_checks": [
+    {
+      "SOURCE": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "current_sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "function": null,
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "same_function_or_file": true
+    },
+    {
+      "SOURCE": "84a326598b006384d13c7a354a3eec6881ee841c",
+      "current_sha256": "3e2c7d3d0448e257225e0e9c4d8e4bf8ebdc259b089860b34a47837b5b2c7711",
+      "function": null,
+      "path": "src/trotterlib/h4_r0_empirical.py",
+      "same_function_or_file": true
+    },
+    {
+      "SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "current_sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "function": "event_unitary",
+      "path": "src/trotterlib/rte.py",
+      "same_function_or_file": true
+    }
+  ]
+}

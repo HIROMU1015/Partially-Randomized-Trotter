@@ -1,0 +1,94 @@
+{
+  "status": "COMPLETE_DETERMINISTIC_ACCURACY_PILOT",
+  "source_commit": "002d0dc2e1dafd8cb71735c43253fa054e675f6d",
+  "branch": "codex/research-c-c1-stage3-deterministic-execution-20261025",
+  "contract_sha256": "59c920cbd08a6b7ad7abda0216ef7d0399d78ea5edbc410a58290aa327b3a957",
+  "source_manifest_sha256": "0aee1202e8bf7150cb0dd2a15805a5fdbaa2b0e2689f2581c310ad4afa284512",
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "post_execution_source_files": 27,
+  "post_execution_saved_files": 49,
+  "post_execution_identity": "PASS",
+  "scientific_units": 110,
+  "maximum_scientific_units": 110,
+  "call_counts": {
+    "saved_bundle_load": 1,
+    "saved_operator_load": 9,
+    "input_load": 1,
+    "car_context": 1,
+    "xdf_full_generator": 11,
+    "shell_assessment": 3,
+    "qpy_load": 8,
+    "operator_decode": 8,
+    "kernel_assessment": 4,
+    "round_accuracy_assessment": 52,
+    "local_kernel_reference": 2,
+    "energy_assessment": 4,
+    "cost_attachment": 4,
+    "cost_comparison": 2
+  },
+  "failed_calls": 0,
+  "candidate_status_counts": {
+    "NUMERICAL_PILOT_CA_PASS": 4
+  },
+  "round_status_counts": {
+    "CONDITIONAL_ROUND_PASS": 52
+  },
+  "kernel_gates_PASS": 4,
+  "common_shell_gates_PASS": 3,
+  "comparisons": 2,
+  "rigorous_CA_qualification": "UNRESOLVED_NUMERICAL_REFERENCE_ENCLOSURES",
+  "CA_achieved": null,
+  "guaranteed_actual_shots": null,
+  "guaranteed_total_resource_superiority": false,
+  "new_fit": 0,
+  "optimizer": 0,
+  "retry": 0,
+  "resume": 0,
+  "circuit_build": 0,
+  "compile": 0,
+  "PF_rounds_recomputed": 0,
+  "DF_norm_recomputed": 0,
+  "shot_count_solved": 0,
+  "quantum_shots_drawn": 0,
+  "resources": {
+    "plan": {
+      "workers": 4,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56555024384,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    },
+    "wall_seconds": 11.277617323677987,
+    "preparation_plan": {
+      "workers": 10,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56543633408,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    },
+    "process_cpu_seconds": 42.644009407999995,
+    "peak_RSS_KiB": 480520
+  },
+  "scientific_first_attempt_unix_seconds": 1792916228.1610696,
+  "pre_execution_artificial_tests": 12,
+  "mandatory_STOP": true,
+  "external_reproduction": false,
+  "execution_command": {
+    "executable": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "arguments": [
+      "scripts/run_research_c_c1_stage3_deterministic_accuracy.py",
+      "--contract",
+      "docs/research/research_c_c1_stage3_deterministic_accuracy_contract_unapproved_20261025.json",
+      "--input",
+      "/tmp/prt-c1-stage1-compatibility-20261025/.external/P-H4.npz",
+      "--execute",
+      "--output",
+      "artifacts/research_c_c1_stage3_deterministic_accuracy_science/2026-10-25/run01"
+    ],
+    "caches": "task-local .cache/stage3-deterministic-accuracy"
+  }
+}

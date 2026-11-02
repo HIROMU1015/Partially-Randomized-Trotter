@@ -1,0 +1,215 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "additional_trajectories_executed": {
+      "const": 0
+    },
+    "automatic_next_stage": {
+      "type": "null"
+    },
+    "candidate_results": {
+      "items": {
+        "type": "object",
+        "properties": {
+          "candidate_id": {
+            "enum": [
+              "B2-rank3-q1-r4-K2",
+              "B2-rank3-q1-r8-K2",
+              "B0-rank6-q1-r0-K0",
+              "B1-rank12-q1-r0-K0",
+              "B3-rank0-q8-r32-K4"
+            ]
+          },
+          "method": {
+            "enum": [
+              "B0",
+              "B1",
+              "B2",
+              "B3"
+            ]
+          },
+          "accuracy_eligible": {
+            "type": "boolean"
+          },
+          "major_cost_underestimate": {
+            "type": "boolean"
+          },
+          "transfer_support_usable": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "method",
+          "accuracy_eligible",
+          "major_cost_underestimate",
+          "transfer_support_usable"
+        ],
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "method": {
+                  "const": "B2"
+                },
+                "accuracy_eligible": {
+                  "const": true
+                },
+                "major_cost_underestimate": {
+                  "const": false
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "transfer_support_usable": {
+                  "const": true
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "transfer_support_usable": {
+                  "const": false
+                }
+              }
+            }
+          }
+        ]
+      },
+      "maxItems": 5,
+      "minItems": 5,
+      "type": "array"
+    },
+    "held_out_candidate_searches": {
+      "const": 0
+    },
+    "held_out_reoptimized": {
+      "const": false
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "point_pareto_metrics": {
+      "const": [
+        "rz_count",
+        "rz_depth",
+        "cx_count",
+        "cx_depth",
+        "total_depth",
+        "circuit_size"
+      ]
+    },
+    "primary_metric": {
+      "const": "rz_count"
+    },
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m2_transfer_result_v2"
+    },
+    "status": {
+      "enum": [
+        "TRANSFER_SUPPORTED",
+        "TRANSFER_NOT_SUPPORTED",
+        "TRANSFER_INCONCLUSIVE",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "transfer_plan_fingerprint": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "terminal_decision_rule": {
+      "const": {
+        "allowed_statuses": [
+          "TRANSFER_SUPPORTED",
+          "TRANSFER_NOT_SUPPORTED",
+          "TRANSFER_INCONCLUSIVE",
+          "IMPLEMENTATION_GATE_FAILED"
+        ],
+        "usable_b2_predicate": {
+          "method": "B2",
+          "accuracy_eligible": true,
+          "major_cost_underestimate": false,
+          "major_underestimate_metric": "rz_count"
+        },
+        "pareto_support_candidate_set": "usable_B2",
+        "ratio_numerator_candidate_set": "usable_B2",
+        "ratio_denominator_candidate_set": "accuracy_eligible_B0_B1_B3",
+        "decision_order": [
+          "implementation_gate_failed",
+          "empty_usable_B2_not_supported",
+          "empty_eligible_endpoints_inconclusive",
+          "usable_B2_on_point_Pareto_supported",
+          "usable_B2_ratio_upper_2SE_at_most_1.10_supported",
+          "usable_B2_ratio_lower_2SE_above_1.10_not_supported",
+          "otherwise_inconclusive"
+        ],
+        "supported": "with a nonempty eligible endpoint set, at least one usable B2 is on the point six-metric Pareto frontier, or the primary ratio computed exclusively from usable B2 has upper 2SE <=1.10",
+        "not_supported": "the usable B2 set is empty, or no usable B2 is point-Pareto and its primary ratio has lower 2SE >1.10",
+        "inconclusive": "usable B2 exists but eligible endpoints are unavailable, or no usable B2 is point-Pareto and its primary ratio has lower 2SE <=1.10 < upper 2SE",
+        "implementation_gate_failed": "any source, identity, numerical, or resource gate fails",
+        "runner_authorizes_next_stage": false,
+        "mandatory_stop_after_terminal_status": true
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "transfer_plan_fingerprint",
+    "candidate_results",
+    "primary_metric",
+    "point_pareto_metrics",
+    "held_out_reoptimized",
+    "held_out_candidate_searches",
+    "additional_trajectories_executed",
+    "next_stage_authorized",
+    "automatic_next_stage",
+    "terminal_decision_rule"
+  ],
+  "title": "Reserved PR-2 M2 held-out transfer result v2",
+  "type": "object",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "TRANSFER_SUPPORTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "candidate_results": {
+            "contains": {
+              "type": "object",
+              "properties": {
+                "method": {
+                  "const": "B2"
+                },
+                "accuracy_eligible": {
+                  "const": true
+                },
+                "major_cost_underestimate": {
+                  "const": false
+                },
+                "transfer_support_usable": {
+                  "const": true
+                }
+              },
+              "required": [
+                "method",
+                "accuracy_eligible",
+                "major_cost_underestimate",
+                "transfer_support_usable"
+              ]
+            },
+            "minContains": 1
+          }
+        }
+      }
+    }
+  ]
+}
+

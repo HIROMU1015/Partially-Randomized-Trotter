@@ -1,0 +1,248 @@
+{
+  "scope": "Fixed synthetic source bridge and five representative compilations",
+  "source_sha256": "709788a02b011e9616c203c9191c86d443871da7062e69075a75525f488bd6b5",
+  "production_runner_calls": 0,
+  "molecule_NPZ_GPU_calls": 0,
+  "trajectory_or_quantum_shots": 0,
+  "Clifford_T_synthesis_calls": 0,
+  "DF_access": {
+    "n": 4,
+    "one_particle_access": "local gate blocks; no full Fock required",
+    "convention_residuals": {
+      "U": 8.388087760363555e-16,
+      "U_T": 1.5869283612117535,
+      "U_conjugate": 1.99533329648185,
+      "U_dagger": 1.997878530011804
+    },
+    "Q_residuals": [
+      8.610075797982411e-16,
+      8.779312486308566e-16,
+      5.462621508983404e-16
+    ],
+    "vacuum_phase": [
+      -0.6832445815004959,
+      0.7301895930853931
+    ],
+    "thin_isometry_compiler": "NOT_IMPLEMENTED; source accepts square U"
+  },
+  "full_embedding": {
+    "system_modes": 4,
+    "active_used": 4,
+    "ancilla": 1,
+    "workspace": 0,
+    "gate_counts": {
+      "cx": 399,
+      "rz": 2069,
+      "sx": 1302
+    },
+    "depth": 2465,
+    "strict_operator_residual": 5.578443515497157e-14,
+    "T_count": "UNRESOLVED"
+  },
+  "central_compilations": [
+    {
+      "active_modes": 3,
+      "controlled": false,
+      "ancilla": 0,
+      "workspace": 0,
+      "theta": 0.03125,
+      "kappa": 4,
+      "gate_counts": {
+        "cx": 20,
+        "rz": 120,
+        "sx": 80
+      },
+      "RZ": 120,
+      "CX": 20,
+      "1Q": 200,
+      "depth": 125,
+      "strict_operator_residual": 9.256439630018516e-15,
+      "circuit_fingerprint": "171f321e2f3bcc51b177e7b62735b5fbf9d80e36a5f56639b7f03809efac41b5",
+      "compiler_settings_hash": "59f18e1e5165d7a9ac8edb657b3e8e50812974c7e5936dc4e1a0634e199938b6",
+      "T_count": "UNRESOLVED; arbitrary RZ synthesis/error allocation not performed"
+    },
+    {
+      "active_modes": 3,
+      "controlled": true,
+      "ancilla": 1,
+      "workspace": 0,
+      "theta": 0.03125,
+      "kappa": 4,
+      "gate_counts": {
+        "cx": 90,
+        "rz": 453,
+        "sx": 302
+      },
+      "RZ": 453,
+      "CX": 90,
+      "1Q": 755,
+      "depth": 549,
+      "strict_operator_residual": 1.4284178804951726e-14,
+      "circuit_fingerprint": "760c74713f0b7f0b0ec9d4469af13c79f227b767b19ddfdd906e3afa10690ec2",
+      "compiler_settings_hash": "59f18e1e5165d7a9ac8edb657b3e8e50812974c7e5936dc4e1a0634e199938b6",
+      "T_count": "UNRESOLVED; arbitrary RZ synthesis/error allocation not performed"
+    },
+    {
+      "active_modes": 6,
+      "controlled": false,
+      "ancilla": 0,
+      "workspace": 0,
+      "theta": 0.03125,
+      "kappa": 4,
+      "gate_counts": {
+        "cx": 1868,
+        "rz": 11256,
+        "sx": 7504
+      },
+      "RZ": 11256,
+      "CX": 1868,
+      "1Q": 18760,
+      "depth": 13981,
+      "strict_operator_residual": 2.1343655690877297e-13,
+      "circuit_fingerprint": "e6425e3c45207de1fab4a9c5992c11b3bd51d41d7f8bacda76ff6c36ff441e90",
+      "compiler_settings_hash": "59f18e1e5165d7a9ac8edb657b3e8e50812974c7e5936dc4e1a0634e199938b6",
+      "T_count": "UNRESOLVED; arbitrary RZ synthesis/error allocation not performed"
+    },
+    {
+      "active_modes": 6,
+      "controlled": true,
+      "ancilla": 1,
+      "workspace": 0,
+      "theta": 0.03125,
+      "kappa": 4,
+      "gate_counts": {
+        "cx": 5299,
+        "rz": 27153,
+        "sx": 18102
+      },
+      "RZ": 27153,
+      "CX": 5299,
+      "1Q": 45255,
+      "depth": 35310,
+      "strict_operator_residual": 5.077582947819582e-13,
+      "circuit_fingerprint": "9e86db0e5064b14ec7086a1239e8c77bcd4c118f99d67603c69b46d721d8702d",
+      "compiler_settings_hash": "59f18e1e5165d7a9ac8edb657b3e8e50812974c7e5936dc4e1a0634e199938b6",
+      "T_count": "UNRESOLVED; arbitrary RZ synthesis/error allocation not performed"
+    }
+  ],
+  "compile_calls": 5,
+  "compiler": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "backend_name": null,
+    "coupling_map": null,
+    "optimization_level": 0,
+    "layout_method": null,
+    "routing_method": null,
+    "transpiler_seed": 20261011,
+    "qiskit_version": "1.3.0"
+  },
+  "status": "CONDITIONAL_PASS_NATIVE_T_AND_PRODUCTION_ACCESS_UNRESOLVED",
+  "checks": [
+    {
+      "name": "source.Q.(0,)",
+      "pass": true,
+      "details": 8.610075797982411e-16
+    },
+    {
+      "name": "source.Q.(0, 2)",
+      "pass": true,
+      "details": 8.779312486308566e-16
+    },
+    {
+      "name": "source.Q.()",
+      "pass": true,
+      "details": 5.462621508983404e-16
+    },
+    {
+      "name": "source.one_particle_local_access",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "source.nonGaussian_registry_rejected",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "source.signed_DF_coefficients",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "central.3.nonzero",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "compile.3.False.size_guard",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "compile.3.False.strict_phase",
+      "pass": true,
+      "details": 9.256439630018516e-15
+    },
+    {
+      "name": "compile.3.True.size_guard",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "compile.3.True.strict_phase",
+      "pass": true,
+      "details": 1.4284178804951726e-14
+    },
+    {
+      "name": "central.6.nonzero",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "compile.6.False.size_guard",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "compile.6.False.strict_phase",
+      "pass": true,
+      "details": 2.1343655690877297e-13
+    },
+    {
+      "name": "compile.6.True.size_guard",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "compile.6.True.strict_phase",
+      "pass": true,
+      "details": 5.077582947819582e-13
+    },
+    {
+      "name": "embedding.control_zero_relative_phase",
+      "pass": true,
+      "details": null
+    },
+    {
+      "name": "embedding.compiled_strict_phase",
+      "pass": true,
+      "details": 5.578443515497157e-14
+    }
+  ],
+  "checks_passed": 18,
+  "wall_seconds": 15.823849243111908,
+  "CPU_seconds": 15.818064865,
+  "peak_RSS_MiB": 557.46484375,
+  "runtime": {
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "threads": 1
+  }
+}

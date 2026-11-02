@@ -1,0 +1,249 @@
+{
+  "kind": "D3_FIXED_EXECUTION_CONTRACT_V1",
+  "date_JST": "2026-10-13",
+  "status": "SOURCE_PREPARED_SEPARATE_AUTHORIZATION_REQUIRED",
+  "science_execution_authorized": false,
+  "source_commit": null,
+  "base_commit": "4cf2827c14fec96613a60bb1427287b30766d5da",
+  "review_intake_commit": "b51924226f89273f70ab2f76254c1a8939f91321",
+  "review_original": {
+    "path": "docs/research/track_b_d1_d2_integrated_scientific_review_20261013.md",
+    "bytes": 34473,
+    "sha256": "adaff342a1e263873e4dd2bd69bf3eaea51da0f2a639e55bb91ca5dac59e4949"
+  },
+  "input": {
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "tau": "5/7",
+    "sigma": 1,
+    "state": "000",
+    "system_qubits": 3,
+    "provider": "Q0=Z0; V1=R_XX01(pi/4); V2=R_XX12(pi/4)R_ZZ01(pi/4); Qi=Vi†ZiVi",
+    "rotation_convention": "R_P(theta)=exp(-i theta P/2)",
+    "development_known": true,
+    "held_out": false,
+    "same_I1_provider_access_all_arms": true
+  },
+  "degree": 5,
+  "steps": [
+    1,
+    2
+  ],
+  "arms": [
+    "ordinary",
+    "partial_return_tail",
+    "closed_P3_tail",
+    "full_return",
+    "closed_P5_full",
+    "matched_CTS"
+  ],
+  "rows_per_ledger": 12,
+  "primary_pair": [
+    "partial_return_tail",
+    "closed_P5_full"
+  ],
+  "primary_r_choice": "each of partial/P5 may choose r in {1,2}; fixed-r contrasts kept separately",
+  "guarantee_policies": {
+    "G0": "Taylor step 3*abs(x)^6/720",
+    "G1": "Taylor step abs(x)^6/720; real x and Hermitian contraction R"
+  },
+  "price_policies": {
+    "P0": "fixed D1 sequences and actual prices at strict 1e-6",
+    "P1": "one fresh sequence per all 36 fixed positive atan ratios at strict 1e-7; same actual adjoint for negative signs"
+  },
+  "ledgers": [
+    "G0_P0",
+    "G1_P0",
+    "G0_P1",
+    "G1_P1"
+  ],
+  "guarantee_only": "G1_P0 vs G0_P0",
+  "price_only": [
+    "G0_P1 vs G0_P0",
+    "G1_P1 vs G1_P0"
+  ],
+  "interaction": "(G1_P1-G1_P0)-(G0_P1-G0_P0); save metric intercept and slope separately",
+  "error_accounting": {
+    "epsilon_axis": "1/200",
+    "complex_accuracy_upper": "sqrt(2)/200 < 1/100",
+    "alpha_axis": "49/24000",
+    "resource_failure_per_row": "1/12000",
+    "resource_tail_t": 10,
+    "familywise_alpha_per_12_row_ledger": "1/20",
+    "four_ledger_simultaneous_familywise_0_05_claim": false,
+    "interpretation": "alternative resource forecasts, no quantum experiment or joint 96-axis confidence campaign",
+    "primitive_error_account": "1/1000000",
+    "primitive_error_new_acquisition": "1/10000000",
+    "native_precision_credit_to_N": false,
+    "eta": "1/1000000000000",
+    "rho": "1/1000000000000",
+    "probability_bits": 160,
+    "root_bits": 256,
+    "implementation_step": "8*rho+16*(1+rho)*primitive_error_account",
+    "Taylor_product": "(1+delta_g)^r-1",
+    "implementation_product": "(1+delta_g+e)^r-(1+delta_g)^r",
+    "axis_bias": "2*(Taylor_product+implementation_product)",
+    "remaining": "epsilon_axis-axis_bias; <=0 => inconclusive, no rescue",
+    "moment_range_acceptance": "reuse fixed production_step_bounds; do not use observed reference moments to reduce N",
+    "N": "ceil(log_upper(2/alpha_axis)*(2*M2_step^r/remaining^2+4*range_step^r/(3*remaining)))",
+    "log_and_accepted_cap": "same frozen g8_bounds functions and precision as D1",
+    "signal_or_eigenvalue_oracle": false,
+    "probability_rounding": "saved q and exact rational w=a/q; no additional mean bias or law regeneration"
+  },
+  "native_policy": {
+    "r1": "saved D1 within-step literal pass",
+    "r2": "saved D2 boundary literal pass",
+    "new_sequence_internal_or_boundary_optimization": false,
+    "whole_circuit_compiler": false,
+    "R_not_cancelled_certificate": {
+      "path": "artifacts/track_b_d3_preparation/2026-10-13/v1/static_boundary_price_certificate_v1.json",
+      "bytes": 4808,
+      "sha256": "97af79180d6fe1b1b40be12e3f7257a4d5d9b264a79eeab968e824d517a4319e"
+    },
+    "price_update": "reprice saved event R occurrences using all new keys; literal gate costs fixed",
+    "r2_expected_per_trial": "2*Z*c_step(new_price) - saved_D2_cancellation_saving_per_whole_trial",
+    "prep_readout_slope": "2*N*Z^r; preserve exact saved Z, including full_return zero-fill",
+    "tail_and_hard": "reprice worst saved single-step event; conservative r*max remains valid after inverse removal; use new N/accepted_cap",
+    "metrics": [
+      "T",
+      "CX",
+      "native_1Q",
+      "workspace"
+    ],
+    "T_included_in_1Q": true,
+    "classical_online": "NOT_ACQUIRED; not zero",
+    "CF_state_preparation_and_readout": "unknown h vector; retain symbolic",
+    "no_new_pair_evaluations_required": true
+  },
+  "acquisition": {
+    "key_inventory": {
+      "path": "artifacts/track_b_d3_preparation/2026-10-13/v1/key_inventory_plan_v1.json",
+      "bytes": 41116,
+      "sha256": "b9d036f34b1b7e99a2528406a5e6e1be0c18b32071366f34564a3115f86f8fee"
+    },
+    "unique_keys": 36,
+    "synthesis_calls": 36,
+    "strict_guard_keys": 36,
+    "all_six_arms_equal_opportunity": true,
+    "no_partial_all_arm_claim": true,
+    "ratio_order": "ascending exact Fraction; frozen inventory",
+    "new_precision_conditions": 1,
+    "seed_conditions": 1,
+    "reuse_P1_looser_or_cheapest_old_new": false,
+    "tool_identity": {
+      "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+      "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984"
+    },
+    "runtime_executable": "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+    "runtime_executable_sha256": "b94e9b56bc1f96b18d36a0f1d14308575bb7b5960eda94ae0520f0376e95d12d",
+    "options": {
+      "dloop": 10,
+      "dps": 100,
+      "dtimeout": 500,
+      "floop": 10,
+      "ftimeout": 500,
+      "measure_time": false,
+      "seed": 0,
+      "show_graph": false,
+      "up_to_phase": false,
+      "verbose": 0
+    },
+    "interval_dps": 100,
+    "backend_request_epsilon": "primitive_error_new_acquisition/4 = 1/40000000",
+    "angle": "raw radians atan(exact positive ratio), scale 1; RZ(theta)=exp(-i theta Z/2)",
+    "strict_phase": "up_to_phase=false; retain W; no projective minimization; negative signs use actual sequence adjoint",
+    "cache_isolation": "P0 old cache immutable; P1 new cache with new epsilon/tool/options identities; missing key fails"
+  },
+  "caps": {
+    "workers": 2,
+    "numeric_threads": 1,
+    "parent_RSS_MiB": 512,
+    "worker_RSS_MiB": 512,
+    "aggregate_RSS_MiB": 1536,
+    "virtual_address_MiB": 1536,
+    "total_CPU_seconds": 1800,
+    "per_key_CPU_seconds": 20,
+    "total_wall_seconds": null,
+    "phase_wall_seconds": null,
+    "per_key_wall_seconds": null,
+    "synthesis_calls": 36,
+    "new_cache_entries": 36,
+    "new_cache_bytes": 4194304,
+    "per_key_log_bytes": 65536,
+    "sequence_characters": 20000,
+    "output_bytes": 16777216,
+    "review_chunk_bytes": 524288,
+    "rows": 48,
+    "event_metadata_reads_max": 1890,
+    "shot_cap_per_axis": 100000000,
+    "registered_pair_evaluations": 0,
+    "circuit_builds": 0,
+    "native_compiles": 0,
+    "provider_matrix_evaluations": 0,
+    "quantum_shots": 0,
+    "sampling": 0,
+    "LP": 0,
+    "DF": 0,
+    "molecules": 0,
+    "GPU": 0
+  },
+  "reuse": {
+    "D1_result_commit": "fc96571881f301435a655f057709df4d6c1678e0",
+    "D2_result_commit": "d1c59b28f4370cc7be65cff60d1ec877fd1491f5",
+    "saved_identity_ledger": {
+      "path": "artifacts/track_b_d3_preparation/2026-10-13/v1/saved_inputs_identity_v1.json",
+      "bytes": 5883,
+      "sha256": "6ea1429ffdf8fc71196a42d731433fea1c5aa3e1738372d0ba09a5da30acdf1d"
+    },
+    "old_budget_policy": "G0 computed result must exactly reproduce saved N/bias and D1r1+D2r2 totals before interpreting new ledgers",
+    "reuse_price_scope": "only P0 can use old 1e-6 sequences; no matrix/target/trajectory result transfer as a new validation"
+  },
+  "planned_launch": {
+    "authorization_path": "artifacts/track_b_d3_source/2026-10-13/v1/authorization.json",
+    "optional_receipt_path": "docs/tracks/algorithm_codesign/d3_execution_authorization_receipt.md",
+    "result_namespace": "artifacts/track_b_d3_result/2026-10-13/v1",
+    "requirements": [
+      "future D3 execution source frozen and focused tests pass",
+      "user explicit one-shot approval",
+      "authorization-only direct child of source",
+      "remote matches child, clean execution worktree",
+      "new namespace and exclusive marker before acquisition",
+      "outer process receipt/inner terminal consistency"
+    ],
+    "execution_runner_now": null,
+    "authorization_created_now": false,
+    "marker_created_now": false
+  },
+  "planned_outcomes": {
+    "complete": "D3_GUARANTEE_PRICE_MAP_COMPLETE_AWAITING_GPT_REVIEW",
+    "incomplete": "D3_TECHNICAL_INCONCLUSIVE",
+    "P5_win_is_success_condition": false,
+    "primary": "exact T/CX/1Q affine relations; fixed-r and equal-r-choice contrasts; attribution of guarantee/price/interaction",
+    "secondary": [
+      "all-six-arm h=0 ranks and h>=0 envelope",
+      "physical h_1Q>=h_T constraint separated from unrestricted formal h",
+      "quantum coordinate Pareto, excludes unknown online classical cost",
+      "per-key/root price delta and remaining statistical width"
+    ],
+    "technical_failure": "retain consumed marker, receipts, partial logs and all completed keys; no retry or successful-prefix winner",
+    "method_adoption": false,
+    "new_scientific_classification_now": false
+  },
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "future_science_automatic": false,
+  "requires_GPT_decision_only_if": "coherent semantics, bound assumptions, scientific fairness or major comparison conditions cannot be maintained; routine source implementation/tests can be Codex",
+  "next_authorized_work_now": "source implementation and off-domain validation only; explicit instruction required before one-shot",
+  "execution": {
+    "authorization_path": "artifacts/track_b_d3_source/2026-10-13/v1/authorization.json",
+    "source_manifest": "artifacts/track_b_d3_source/2026-10-13/v1/source_manifest_v1.json",
+    "protected_ledger": "artifacts/track_b_d3_source/2026-10-13/v1/protected_hashes_v1.json",
+    "optional_receipt_path": "docs/tracks/algorithm_codesign/d3_execution_authorization_receipt.md",
+    "result_directory": "artifacts/track_b_d3_result/2026-10-13/v1",
+    "design_contract_sha256": "76b3e4d95df62a00f6e66bd9dacd3230a09025167d29de838c917de4722d726e"
+  }
+}

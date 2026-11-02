@@ -583,3 +583,7 @@ UWC note が保存している実行記録は `.venv/bin/python -m pytest -q` �
 [収録範囲](docs/research/main_collection_20261103.md)に従い、G6の公開snapshot `28cfabb1d47e0e1824bce1e154a9c289738fa2b9` から結果・文書・再現用SOURCEを同一内容で収録した。
 分類は `historical_evidence`。当時のsource-bound形式検査記録とmandatory STOPを維持し、今回の科学実行・元runner/testの再実行は0件。
 mainへの収録によってnative性能、独立新規性、現在の科学的正しさや外部再現性の新しい認定は行っていない。
+
+## 2026-11-03 conflict-free path collection
+
+公開48枝の通常mergeには索引等の衝突があったため、[収録範囲](docs/research/main_collection_20261103.md)に示す追加pathだけを内容同一で収録した。分類はhistorical_evidence。元の科学的status・SOURCE identity・STOPを保持し、新しい科学検証や原runner/testの再実行は行っていない。大きな原データは既存の公開snapshotで保持し、その所在を記録した。

@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py", line 55, in <module>
+    main()
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py", line 47, in main
+    m.fit_worker(ROOT, args.output, c, args.fit_worker)
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py", line 155, in fit_worker
+    x, gradient = calls('terminal_independent', role, independent)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py", line 150, in independent
+    x, gradient, diagnostic = native_diagnostic(packet['g'], J, U,
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py", line 98, in native_diagnostic
+    raise ValueError('INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH')
+ValueError: INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH

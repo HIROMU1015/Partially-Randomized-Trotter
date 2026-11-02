@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "<EXECUTION_WORKTREE>/scripts/run_h8_b0_anchors.py", line 80, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "<EXECUTION_WORKTREE>/scripts/run_h8_b0_anchors.py", line 77, in main
+    execute(a.config,a.grant,a.fresh_gate)
+  File "<EXECUTION_WORKTREE>/scripts/run_h8_b0_anchors.py", line 52, in execute
+    r.verify_files(config);r.protected(config)
+                           ^^^^^^^^^^^^^^^^^^^
+  File "<EXECUTION_WORKTREE>/scripts/h8_b0_anchor_runtime.py", line 99, in protected
+    status=subprocess.check_output(['git','status','--porcelain=v1','-z'],cwd=row['path'])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<PINNED_PYTHON>/lib/python3.11/subprocess.py", line 465, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<PINNED_PYTHON>/lib/python3.11/subprocess.py", line 548, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<PINNED_PYTHON>/lib/python3.11/subprocess.py", line 1192, in communicate
+    stdout = self.stdout.read()
+             ^^^^^^^^^^^^^^^^^^
+  File "<EXECUTION_WORKTREE>/scripts/run_h8_b0_anchors.py", line 45, in stop
+    def stop(*args):raise RuntimeError('DRIVER_STOP_SIGNAL_OR_DEADLINE')
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: DRIVER_STOP_SIGNAL_OR_DEADLINE

@@ -1,0 +1,82 @@
+{
+  "schema_version": "pr2_s0_s1_authorization_manifest_v3",
+  "status": "PR2_S0_S1_AUTHORIZED_STOP_AFTER_S1",
+  "created_date": "2026-09-28",
+  "evidence_status": "result_prior_authorization_no_s0_or_s1_results",
+  "generation_base_commit": "71169d817c165b76a9e25fc6f6a16ade28ffe069",
+  "external_review_commit": "d3e17239702b56e765ff0a2f8993135015332ea8",
+  "amendment_commit_binding": "record_git_commit_at_s0_execution",
+  "supersedes_manifest": "artifacts/pr2_s1_s3_preregistration/2026-09-28/pr2_s1_s3_dry_run_manifest_v2.json",
+  "provenance": {
+    "amendment_v3_path": "docs/research/pr2_s0_s1_execution_amendment_v3.md",
+    "amendment_v3_sha256": "a64b977034d6371095558c384d0d114c5cdb17a575dfb0bdbfe6c45604726344",
+    "v1_preregistration_sha256": "9cff2a38071c3779648ad6179679b425e7a2d63618ee28de8b3784898b91b97b",
+    "v1_dry_run_manifest_sha256": "07d1afa9fa9d2ee805573a9201ac482330b45c67a45f420d713bc28d6ea261f7",
+    "external_review_sha256": "748c3546fbacf06046fe5f0ee0457e96f7dfb9bb252ea4b20aa0afdc9e06942b",
+    "amendment_v2_sha256": "e93eade73723939a727b87d4d43f680532afbea922cc45db15adf2c61e48914a",
+    "dry_run_manifest_v2_sha256": "adcd579eb58c3a20b32fa94f8e038a1a99bb51213952861fb869a413bd23f775",
+    "codex_validation_policy_sha256": "8079a7b1263f575d1fdd40f9960e8fcb51342fff8eca654218c082fff5a7c21c",
+    "parent_contract_sha256": "4d325c0cc28dae08e975ab6311f77258f0cfdefa224e5dfcfb93c1b0a6e8a2b0"
+  },
+  "results_seen_before_v3": {
+    "pr2_pr3_minimal_pilot": true,
+    "S0": false,
+    "S1": false,
+    "S2": false,
+    "S3": false
+  },
+  "authorization": {
+    "S0_implementation": true,
+    "S0_execution": true,
+    "S1_execution_only_after_S0_pass": true,
+    "S2_execution": false,
+    "S3_execution": false,
+    "automatic_next_stage": null
+  },
+  "S0_allowed_scope": [
+    "development_H4_1p00_snapshot_generation_and_freeze",
+    "held_out_H4_1p30_snapshot_generation_and_blind_freeze",
+    "prefix_identity_gate_rank3_rank6_rank9",
+    "generation_prefix_adapter_if_required",
+    "normalization_corrected_estimator_tests",
+    "q1_q8_wrapper_tests",
+    "artifact_schema_fingerprint_tamper_and_stop_guard_tests"
+  ],
+  "S0_terminal_statuses": [
+    "S0_PASS_S1_AUTHORIZED",
+    "BLOCKED_IMPLEMENTATION_INVALID",
+    "STOP_INPUT_REPRODUCTION_MISMATCH",
+    "STOP_ENVIRONMENT_MISMATCH_NO_EXECUTION",
+    "STOP_ESTIMAND_OR_SCOPE_INVALID"
+  ],
+  "S1_scope": {
+    "stage": "correctness_only",
+    "development_distance_angstrom": 1.0,
+    "physical_time": 0.1,
+    "repetition_count": 1,
+    "primary_rank": 6,
+    "control_ranks": [3, 9],
+    "r_values": [1, 2, 4, 8, 16, 32],
+    "finite_taylor_orders": [2, 4],
+    "control_rank_sentinel": {"r": 1, "K": 2},
+    "planned_full_wrapper_compile_upper_bound_before_identity_collapse": 88,
+    "expected_cost_monte_carlo": false,
+    "resource_winner": false,
+    "materiality_decision": false,
+    "state_preparation_break_even": false
+  },
+  "S1_terminal_statuses": [
+    "S1_CORRECTNESS_PASS_AWAITING_EXTERNAL_REVIEW",
+    "BLOCKED_IMPLEMENTATION_INVALID",
+    "STOP_ESTIMAND_OR_SCOPE_INVALID"
+  ],
+  "executed_counts_at_authorization": {
+    "molecular_calculations": 0,
+    "signal_evaluations": 0,
+    "circuits_compiled": 0,
+    "trajectory_samples": 0,
+    "quantum_shots": 0
+  },
+  "next_allowed_action": "commit_result_prior_authorization_then_implement_S0",
+  "automatic_next_stage": null
+}

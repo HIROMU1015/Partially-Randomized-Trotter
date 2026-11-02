@@ -1,0 +1,2634 @@
+{
+  "schema": "R1_PARALLEL_8PAIR_ARTIFICIAL_RESULT_V1",
+  "settings": {
+    "workers": 8,
+    "mode": "P1",
+    "inflight_cap": 2,
+    "profile_n": 16,
+    "workload": "light",
+    "result_bytes": 1500,
+    "log_bytes": 268435456,
+    "call_limit": 31710848,
+    "faults": [],
+    "parent_fault": "",
+    "collision": false
+  },
+  "planned": 768,
+  "reserved": 4,
+  "started_observed": 3,
+  "states": {
+    "NOT_STARTED": 764,
+    "START_RESERVED": 0,
+    "STARTED": 0,
+    "IN_FLIGHT": 0,
+    "COMPLETED": 1,
+    "FAILED": 2,
+    "CANCELLED_BEFORE_START": 1,
+    "TERMINATED_WITH_UNKNOWN_RESULT": 0
+  },
+  "max_inflight": 4,
+  "complete": false,
+  "failures": [
+    {
+      "worker": "correctness_baseline_ordinary_A",
+      "type": "Stop",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "parent_arrival": 1,
+      "parent_observed_ns": 13291024353839180,
+      "inflight_snapshot": {
+        "correctness_baseline_ordinary_A": {
+          "index": 0,
+          "trial_id": "correctness/baseline/ordinary/A/X/0",
+          "state": "IN_FLIGHT",
+          "reserved_ns": 13291024348297540,
+          "worker": "correctness_baseline_ordinary_A",
+          "worker_entry_ns": 13291024349402654
+        },
+        "correctness_baseline_ordinary_B": {
+          "index": 32,
+          "trial_id": "correctness/baseline/ordinary/B/X/0",
+          "state": "IN_FLIGHT",
+          "reserved_ns": 13291024348448020,
+          "worker": "correctness_baseline_ordinary_B",
+          "worker_entry_ns": 13291024349548324
+        },
+        "correctness_baseline_partial_return_tail_B": {
+          "index": 96,
+          "trial_id": "correctness/baseline/partial_return_tail/B/X/0",
+          "state": "IN_FLIGHT",
+          "reserved_ns": 13291024349234435,
+          "worker": "correctness_baseline_partial_return_tail_B",
+          "worker_entry_ns": 13291024349322195
+        },
+        "correctness_baseline_partial_return_tail_A": {
+          "index": 64,
+          "trial_id": "correctness/baseline/partial_return_tail/A/X/0",
+          "state": "START_RESERVED",
+          "reserved_ns": 13291024350071701,
+          "worker": "correctness_baseline_partial_return_tail_A"
+        }
+      }
+    },
+    {
+      "worker": "correctness_baseline_partial_return_tail_A",
+      "type": "Halt",
+      "reason": "CANCELLED_BEFORE_START",
+      "parent_arrival": 2,
+      "parent_observed_ns": 13291024354478867
+    },
+    {
+      "type": "Stop",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "worker": "correctness_baseline_partial_return_tail_B",
+      "parent_arrival": 3,
+      "parent_observed_ns": 13291024354548216
+    },
+    {
+      "type": "Stop",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "worker": "correctness_baseline_full_return_B",
+      "parent_arrival": 4,
+      "parent_observed_ns": 13291024354650506
+    },
+    {
+      "worker": "correctness_baseline_partial_return_tail_A",
+      "type": "Stop",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "parent_arrival": 5,
+      "parent_observed_ns": 13291024354925284
+    },
+    {
+      "op": "FAIL",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "stage": "SAMPLING",
+      "trial_id": "correctness/baseline/partial_return_tail/B/X/1",
+      "worker_observed_ns": 13291024354951604,
+      "worker_cpu_ns": 7060062,
+      "worker": "correctness_baseline_partial_return_tail_B",
+      "parent_arrival": 6,
+      "parent_observed_ns": 13291024355108813
+    },
+    {
+      "op": "FAIL",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "stage": "STREAM_EMIT",
+      "trial_id": "correctness/baseline/ordinary/A/X/0",
+      "worker_observed_ns": 13291024355066713,
+      "worker_cpu_ns": 9386643,
+      "worker": "correctness_baseline_ordinary_A",
+      "parent_arrival": 7,
+      "parent_observed_ns": 13291024355224063
+    },
+    {
+      "op": "FAIL",
+      "reason": "RESULT_BYTE_LIMIT",
+      "stage": "STREAM_EMIT",
+      "trial_id": "correctness/baseline/ordinary/B/X/0",
+      "worker_observed_ns": 13291024355315742,
+      "worker_cpu_ns": 7576353,
+      "worker": "correctness_baseline_ordinary_B",
+      "parent_arrival": 8,
+      "parent_observed_ns": 13291024355426111
+    },
+    {
+      "worker": "correctness_baseline_ordinary_A",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/ordinary/A/X/0",
+            "stage": "STREAM_EMIT",
+            "result_acquired": true,
+            "event_present": true,
+            "record_constructed": true,
+            "candidate_ready": true,
+            "stream_emit_started": true,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": {
+            "raw_word": [
+              0,
+              0
+            ],
+            "word": [],
+            "child": 2,
+            "phase_i_power": 2,
+            "circuit_time_word": [],
+            "ratio": {
+              "exact": "{\"rat\":[\"0x1001fc0\",\"0x4000039\"]}"
+            },
+            "proposal": {
+              "exact": "{\"rat\":[\"0x1\",\"0x2\"]}"
+            },
+            "coefficient": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x688005d12\"]}"
+            },
+            "weight": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x344002e89\"]}"
+            },
+            "provider_calls": {
+              "2": 2
+            }
+          },
+          "candidate_trace_sha256": "3776cd77c9f861c94bda7c909ae00ad463cfb7aede93e027fd3cb8faf2fb147e",
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Stop",
+            "reason": "OUTPUT_STOPPED"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 9,
+      "parent_observed_ns": 13291024356893023
+    },
+    {
+      "op": "FAIL",
+      "reason": "CANCELLED_BEFORE_START",
+      "stage": "SAMPLING",
+      "trial_id": "correctness/baseline/partial_return_tail/A/X/0",
+      "worker_observed_ns": 13291024356551165,
+      "worker_cpu_ns": 7764773,
+      "worker": "correctness_baseline_partial_return_tail_A",
+      "parent_arrival": 10,
+      "parent_observed_ns": 13291024359538339
+    },
+    {
+      "type": "Stop",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "worker": "correctness_baseline_closed_P3_tail_A",
+      "parent_arrival": 11,
+      "parent_observed_ns": 13291024359623829
+    },
+    {
+      "type": "Stop",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "worker": "correctness_baseline_closed_P3_tail_B",
+      "parent_arrival": 12,
+      "parent_observed_ns": 13291024359672488
+    },
+    {
+      "worker": "correctness_baseline_ordinary_B",
+      "terminal_failure": {
+        "type": "Stop",
+        "reason": "RESULT_BYTE_LIMIT",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Stop",
+          "reason": "RESULT_BYTE_LIMIT",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/ordinary/B/X/0",
+            "stage": "STREAM_EMIT",
+            "result_acquired": true,
+            "event_present": true,
+            "record_constructed": true,
+            "candidate_ready": true,
+            "stream_emit_started": true,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": {
+            "raw_word": [
+              0,
+              0
+            ],
+            "word": [],
+            "child": 2,
+            "phase_i_power": 2,
+            "circuit_time_word": [],
+            "ratio": {
+              "exact": "{\"rat\":[\"0x1001fc0\",\"0x4000039\"]}"
+            },
+            "proposal": {
+              "exact": "{\"rat\":[\"0x1\",\"0x2\"]}"
+            },
+            "coefficient": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x688005d12\"]}"
+            },
+            "weight": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x344002e89\"]}"
+            },
+            "provider_calls": {
+              "2": 2
+            }
+          },
+          "candidate_trace_sha256": "3776cd77c9f861c94bda7c909ae00ad463cfb7aede93e027fd3cb8faf2fb147e",
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Stop",
+              "reason": "RESULT_BYTE_LIMIT",
+              "stage": "CHAIN_HASH",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Stop",
+            "reason": "OUTPUT_STOPPED"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Stop",
+              "reason": "RESULT_BYTE_LIMIT",
+              "stage": "CHAIN_HASH",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 13,
+      "parent_observed_ns": 13291024359826397
+    },
+    {
+      "worker": "correctness_baseline_partial_return_tail_B",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {
+            "ZERO_C": 1
+          },
+          "completed_axes": [],
+          "trace_sha256": "908029f7a63e8cc5624aa31c75cb8e8364fefb17674417ee70199582abc23435",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": {
+            "axis": "X",
+            "trial_id": "correctness/baseline/partial_return_tail/B/X/0",
+            "trial_index": 0
+          },
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 1,
+            "trial_id": "correctness/baseline/partial_return_tail/B/X/1",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 1,
+            "written_bytes_including_possible_partial_tail": 482,
+            "last_complete_chain_sha256": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+            "written_bytes_sha256": "28e2bc41c02c540081536cbadcc2917cc1d6a207a16a94c2c5458ae5e782095d",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Stop",
+            "reason": "RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 1,
+            "written_bytes_including_possible_partial_tail": 482,
+            "last_complete_chain_sha256": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+            "written_bytes_sha256": "28e2bc41c02c540081536cbadcc2917cc1d6a207a16a94c2c5458ae5e782095d",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Stop",
+              "reason": "RESULT_BYTE_LIMIT",
+              "stage": "CHAIN_HASH",
+              "committed_rows": 1,
+              "written_bytes": 482,
+              "last_complete_hash": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 14,
+      "parent_observed_ns": 13291024360122766
+    },
+    {
+      "worker": "correctness_baseline_full_return_B",
+      "type": "Stop",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "parent_arrival": 15,
+      "parent_observed_ns": 13291024360272105
+    },
+    {
+      "worker": "correctness_baseline_partial_return_tail_A",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "CANCELLED_BEFORE_START",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "CANCELLED_BEFORE_START",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/partial_return_tail/A/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 16,
+      "parent_observed_ns": 13291024361864886
+    },
+    {
+      "type": "Stop",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "worker": "correctness_baseline_full_return_A",
+      "parent_arrival": 17,
+      "parent_observed_ns": 13291024362061525
+    },
+    {
+      "op": "FAIL",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "stage": "SAMPLING",
+      "trial_id": "correctness/baseline/full_return/B/X/0",
+      "worker_observed_ns": 13291024360382794,
+      "worker_cpu_ns": 6996603,
+      "worker": "correctness_baseline_full_return_B",
+      "parent_arrival": 18,
+      "parent_observed_ns": 13291024362440483
+    },
+    {
+      "worker": "correctness_baseline_full_return_A",
+      "type": "Stop",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "parent_arrival": 19,
+      "parent_observed_ns": 13291024363819056
+    },
+    {
+      "worker": "correctness_baseline_full_return_B",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/full_return/B/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 20,
+      "parent_observed_ns": 13291024364032025
+    },
+    {
+      "op": "FAIL",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "stage": "SAMPLING",
+      "trial_id": "correctness/baseline/full_return/A/X/0",
+      "worker_observed_ns": 13291024363935205,
+      "worker_cpu_ns": 7389924,
+      "worker": "correctness_baseline_full_return_A",
+      "parent_arrival": 21,
+      "parent_observed_ns": 13291024364204404
+    },
+    {
+      "worker": "correctness_baseline_closed_P3_tail_A",
+      "type": "Stop",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "parent_arrival": 22,
+      "parent_observed_ns": 13291024365597916
+    },
+    {
+      "worker": "correctness_baseline_closed_P3_tail_B",
+      "type": "Stop",
+      "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+      "parent_arrival": 23,
+      "parent_observed_ns": 13291024365821695
+    },
+    {
+      "worker": "correctness_baseline_full_return_A",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/full_return/A/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 24,
+      "parent_observed_ns": 13291024366069553
+    },
+    {
+      "op": "FAIL",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "stage": "SAMPLING",
+      "trial_id": "correctness/baseline/closed_P3_tail/A/X/0",
+      "worker_observed_ns": 13291024365757675,
+      "worker_cpu_ns": 7549033,
+      "worker": "correctness_baseline_closed_P3_tail_A",
+      "parent_arrival": 25,
+      "parent_observed_ns": 13291024366254102
+    },
+    {
+      "op": "FAIL",
+      "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+      "stage": "SAMPLING",
+      "trial_id": "correctness/baseline/closed_P3_tail/B/X/0",
+      "worker_observed_ns": 13291024365950224,
+      "worker_cpu_ns": 7417002,
+      "worker": "correctness_baseline_closed_P3_tail_B",
+      "parent_arrival": 26,
+      "parent_observed_ns": 13291024367678535
+    },
+    {
+      "worker": "correctness_baseline_closed_P3_tail_A",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/closed_P3_tail/A/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 27,
+      "parent_observed_ns": 13291024369091727
+    },
+    {
+      "worker": "correctness_baseline_closed_P3_tail_B",
+      "terminal_failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/closed_P3_tail/B/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "parent_arrival": 28,
+      "parent_observed_ns": 13291024369275076
+    },
+    {
+      "phase": 0,
+      "validation_error": "Stop('PAIR_NOT_COMPLETED')",
+      "parent_arrival": 29,
+      "parent_observed_ns": 13291024369423835
+    }
+  ],
+  "representative_failure": {
+    "worker": "correctness_baseline_ordinary_A",
+    "type": "Stop",
+    "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+    "parent_arrival": 1,
+    "parent_observed_ns": 13291024353839180,
+    "inflight_snapshot": {
+      "correctness_baseline_ordinary_A": {
+        "index": 0,
+        "trial_id": "correctness/baseline/ordinary/A/X/0",
+        "state": "IN_FLIGHT",
+        "reserved_ns": 13291024348297540,
+        "worker": "correctness_baseline_ordinary_A",
+        "worker_entry_ns": 13291024349402654
+      },
+      "correctness_baseline_ordinary_B": {
+        "index": 32,
+        "trial_id": "correctness/baseline/ordinary/B/X/0",
+        "state": "IN_FLIGHT",
+        "reserved_ns": 13291024348448020,
+        "worker": "correctness_baseline_ordinary_B",
+        "worker_entry_ns": 13291024349548324
+      },
+      "correctness_baseline_partial_return_tail_B": {
+        "index": 96,
+        "trial_id": "correctness/baseline/partial_return_tail/B/X/0",
+        "state": "IN_FLIGHT",
+        "reserved_ns": 13291024349234435,
+        "worker": "correctness_baseline_partial_return_tail_B",
+        "worker_entry_ns": 13291024349322195
+      },
+      "correctness_baseline_partial_return_tail_A": {
+        "index": 64,
+        "trial_id": "correctness/baseline/partial_return_tail/A/X/0",
+        "state": "START_RESERVED",
+        "reserved_ns": 13291024350071701,
+        "worker": "correctness_baseline_partial_return_tail_A"
+      }
+    }
+  },
+  "completion_order": [
+    "correctness_baseline_ordinary_A",
+    "correctness_baseline_ordinary_B",
+    "correctness_baseline_partial_return_tail_B",
+    "correctness_baseline_partial_return_tail_A",
+    "correctness_baseline_full_return_B",
+    "correctness_baseline_full_return_A",
+    "correctness_baseline_closed_P3_tail_A",
+    "correctness_baseline_closed_P3_tail_B"
+  ],
+  "contract_order": [
+    "correctness_baseline_ordinary_A",
+    "correctness_baseline_ordinary_B",
+    "correctness_baseline_partial_return_tail_A",
+    "correctness_baseline_partial_return_tail_B",
+    "correctness_baseline_closed_P3_tail_A",
+    "correctness_baseline_closed_P3_tail_B",
+    "correctness_baseline_full_return_A",
+    "correctness_baseline_full_return_B",
+    "profile_baseline_ordinary_A",
+    "profile_baseline_ordinary_B",
+    "profile_baseline_partial_return_tail_A",
+    "profile_baseline_partial_return_tail_B",
+    "profile_baseline_closed_P3_tail_A",
+    "profile_baseline_closed_P3_tail_B",
+    "profile_baseline_full_return_A",
+    "profile_baseline_full_return_B",
+    "profile_instrumented_ordinary_A",
+    "profile_instrumented_ordinary_B",
+    "profile_instrumented_partial_return_tail_A",
+    "profile_instrumented_partial_return_tail_B",
+    "profile_instrumented_closed_P3_tail_A",
+    "profile_instrumented_closed_P3_tail_B",
+    "profile_instrumented_full_return_A",
+    "profile_instrumented_full_return_B"
+  ],
+  "all_pair_states": {
+    "correctness_baseline_ordinary_A": "FAILED",
+    "correctness_baseline_ordinary_B": "FAILED",
+    "correctness_baseline_partial_return_tail_A": "FAILED",
+    "correctness_baseline_partial_return_tail_B": "FAILED",
+    "correctness_baseline_closed_P3_tail_A": "FAILED",
+    "correctness_baseline_closed_P3_tail_B": "FAILED",
+    "correctness_baseline_full_return_A": "FAILED",
+    "correctness_baseline_full_return_B": "FAILED",
+    "profile_baseline_ordinary_A": "NOT_STARTED",
+    "profile_baseline_ordinary_B": "NOT_STARTED",
+    "profile_baseline_partial_return_tail_A": "NOT_STARTED",
+    "profile_baseline_partial_return_tail_B": "NOT_STARTED",
+    "profile_baseline_closed_P3_tail_A": "NOT_STARTED",
+    "profile_baseline_closed_P3_tail_B": "NOT_STARTED",
+    "profile_baseline_full_return_A": "NOT_STARTED",
+    "profile_baseline_full_return_B": "NOT_STARTED",
+    "profile_instrumented_ordinary_A": "NOT_STARTED",
+    "profile_instrumented_ordinary_B": "NOT_STARTED",
+    "profile_instrumented_partial_return_tail_A": "NOT_STARTED",
+    "profile_instrumented_partial_return_tail_B": "NOT_STARTED",
+    "profile_instrumented_closed_P3_tail_A": "NOT_STARTED",
+    "profile_instrumented_closed_P3_tail_B": "NOT_STARTED",
+    "profile_instrumented_full_return_A": "NOT_STARTED",
+    "profile_instrumented_full_return_B": "NOT_STARTED"
+  },
+  "pairs": [
+    {
+      "task": {
+        "key": "correctness_baseline_ordinary_A",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "ordinary",
+        "layer": "A",
+        "pair_index": 0,
+        "n": 16,
+        "offset": 0
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/ordinary/A/X/0",
+            "stage": "STREAM_EMIT",
+            "result_acquired": true,
+            "event_present": true,
+            "record_constructed": true,
+            "candidate_ready": true,
+            "stream_emit_started": true,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": {
+            "raw_word": [
+              0,
+              0
+            ],
+            "word": [],
+            "child": 2,
+            "phase_i_power": 2,
+            "circuit_time_word": [],
+            "ratio": {
+              "exact": "{\"rat\":[\"0x1001fc0\",\"0x4000039\"]}"
+            },
+            "proposal": {
+              "exact": "{\"rat\":[\"0x1\",\"0x2\"]}"
+            },
+            "coefficient": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x688005d12\"]}"
+            },
+            "weight": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x344002e89\"]}"
+            },
+            "provider_calls": {
+              "2": 2
+            }
+          },
+          "candidate_trace_sha256": "3776cd77c9f861c94bda7c909ae00ad463cfb7aede93e027fd3cb8faf2fb147e",
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Stop",
+            "reason": "OUTPUT_STOPPED"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540186,
+      "cpu_ns": 7659273,
+      "wall_ns": 23478672,
+      "process_cpu_ns": 9505303,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1979431,
+          "wall_ns": 1979329
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 109640,
+          "wall_ns": 109620
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 210170,
+          "wall_ns": 209649
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 71570,
+          "wall_ns": 71710
+        },
+        "online.EVENT.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 704140,
+          "wall_ns": 13969383
+        },
+        "correctness.event_invariants": {
+          "calls": 1,
+          "cpu_ns": 230340,
+          "wall_ns": 230819
+        },
+        "online.EVENT.evidence": {
+          "calls": 1,
+          "cpu_ns": 83770,
+          "wall_ns": 83899
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 1632821,
+          "wall_ns": 1633422
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 26400,
+          "wall_ns": 26450
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 81460,
+          "wall_ns": 2477397
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 4900,
+          "wall_ns": 4670
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 7070,
+          "wall_ns": 7120
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          5141712,
+          20803468
+        ],
+        "outer_total_ns": [
+          7659273,
+          23478672
+        ],
+        "unattributed_and_observer_residual_ns": [
+          2517561,
+          2675204
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 26497024,
+        "VmRSS_bytes": 26497024
+      },
+      "control_rpc": {
+        "calls": 4,
+        "cpu_ns": 371320,
+        "wall_ns": 16199572
+      },
+      "io": {
+        "rchar": 170958,
+        "wchar": 476,
+        "syscr": 38,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_ordinary_B",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "ordinary",
+        "layer": "B",
+        "pair_index": 1,
+        "n": 16,
+        "offset": 32
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Stop",
+        "reason": "RESULT_BYTE_LIMIT",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Stop",
+          "reason": "RESULT_BYTE_LIMIT",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/ordinary/B/X/0",
+            "stage": "STREAM_EMIT",
+            "result_acquired": true,
+            "event_present": true,
+            "record_constructed": true,
+            "candidate_ready": true,
+            "stream_emit_started": true,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": {
+            "raw_word": [
+              0,
+              0
+            ],
+            "word": [],
+            "child": 2,
+            "phase_i_power": 2,
+            "circuit_time_word": [],
+            "ratio": {
+              "exact": "{\"rat\":[\"0x1001fc0\",\"0x4000039\"]}"
+            },
+            "proposal": {
+              "exact": "{\"rat\":[\"0x1\",\"0x2\"]}"
+            },
+            "coefficient": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x688005d12\"]}"
+            },
+            "weight": {
+              "exact": "{\"rat\":[\"0xa110804f\",\"0x344002e89\"]}"
+            },
+            "provider_calls": {
+              "2": 2
+            }
+          },
+          "candidate_trace_sha256": "3776cd77c9f861c94bda7c909ae00ad463cfb7aede93e027fd3cb8faf2fb147e",
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Stop",
+              "reason": "RESULT_BYTE_LIMIT",
+              "stage": "CHAIN_HASH",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Stop",
+            "reason": "OUTPUT_STOPPED"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Stop",
+              "reason": "RESULT_BYTE_LIMIT",
+              "stage": "CHAIN_HASH",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540187,
+      "cpu_ns": 6593043,
+      "wall_ns": 18940447,
+      "process_cpu_ns": 7723683,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1842340,
+          "wall_ns": 1879050
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 84000,
+          "wall_ns": 84120
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 182961,
+          "wall_ns": 182989
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 71600,
+          "wall_ns": 71620
+        },
+        "online.EVENT.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 657310,
+          "wall_ns": 11177839
+        },
+        "correctness.event_invariants": {
+          "calls": 1,
+          "cpu_ns": 275550,
+          "wall_ns": 275789
+        },
+        "online.EVENT.angle_and_requery": {
+          "calls": 1,
+          "cpu_ns": 1230531,
+          "wall_ns": 1231023
+        },
+        "online.EVENT.evidence": {
+          "calls": 1,
+          "cpu_ns": 97040,
+          "wall_ns": 97329
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 138170,
+          "wall_ns": 138540
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 23090,
+          "wall_ns": 22890
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 6400,
+          "wall_ns": 6280
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 11200,
+          "wall_ns": 11090
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          4620192,
+          15178559
+        ],
+        "outer_total_ns": [
+          6593043,
+          18940447
+        ],
+        "unattributed_and_observer_residual_ns": [
+          1972851,
+          3761888
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 26497024,
+        "VmRSS_bytes": 26497024
+      },
+      "control_rpc": {
+        "calls": 3,
+        "cpu_ns": 282620,
+        "wall_ns": 12596713
+      },
+      "io": {
+        "rchar": 170896,
+        "wchar": 416,
+        "syscr": 36,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_partial_return_tail_A",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "partial_return_tail",
+        "layer": "A",
+        "pair_index": 2,
+        "n": 16,
+        "offset": 64
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "CANCELLED_BEFORE_START",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "CANCELLED_BEFORE_START",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/partial_return_tail/A/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540188,
+      "cpu_ns": 6407073,
+      "wall_ns": 18911737,
+      "process_cpu_ns": 7960903,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1984560,
+          "wall_ns": 1992769
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 108991,
+          "wall_ns": 109070
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 178240,
+          "wall_ns": 177899
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 70240,
+          "wall_ns": 70440
+        },
+        "online.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 301270,
+          "wall_ns": 4873733
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 94960,
+          "wall_ns": 95079
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 24200,
+          "wall_ns": 24220
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 73450,
+          "wall_ns": 557507
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 7030,
+          "wall_ns": 6700
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 8870,
+          "wall_ns": 8880
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          2851811,
+          7916297
+        ],
+        "outer_total_ns": [
+          6407073,
+          18911737
+        ],
+        "unattributed_and_observer_residual_ns": [
+          3555262,
+          10995440
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 27021312,
+        "VmRSS_bytes": 27021312
+      },
+      "control_rpc": {
+        "calls": 4,
+        "cpu_ns": 378080,
+        "wall_ns": 9165399
+      },
+      "io": {
+        "rchar": 170993,
+        "wchar": 504,
+        "syscr": 38,
+        "syscw": 4,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_partial_return_tail_B",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "partial_return_tail",
+        "layer": "B",
+        "pair_index": 3,
+        "n": 16,
+        "offset": 96
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {
+            "ZERO_C": 1
+          },
+          "completed_axes": [],
+          "trace_sha256": "908029f7a63e8cc5624aa31c75cb8e8364fefb17674417ee70199582abc23435",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": {
+            "axis": "X",
+            "trial_id": "correctness/baseline/partial_return_tail/B/X/0",
+            "trial_index": 0
+          },
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 1,
+            "trial_id": "correctness/baseline/partial_return_tail/B/X/1",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 1,
+            "written_bytes_including_possible_partial_tail": 482,
+            "last_complete_chain_sha256": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+            "written_bytes_sha256": "28e2bc41c02c540081536cbadcc2917cc1d6a207a16a94c2c5458ae5e782095d",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Stop",
+            "reason": "RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 1,
+            "written_bytes_including_possible_partial_tail": 482,
+            "last_complete_chain_sha256": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+            "written_bytes_sha256": "28e2bc41c02c540081536cbadcc2917cc1d6a207a16a94c2c5458ae5e782095d",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Stop",
+              "reason": "RESULT_BYTE_LIMIT",
+              "stage": "CHAIN_HASH",
+              "committed_rows": 1,
+              "written_bytes": 482,
+              "last_complete_hash": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540189,
+      "cpu_ns": 6020971,
+      "wall_ns": 12094494,
+      "process_cpu_ns": 7270682,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1824211,
+          "wall_ns": 1823870
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 90850,
+          "wall_ns": 90689
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 163520,
+          "wall_ns": 163339
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 70400,
+          "wall_ns": 70420
+        },
+        "online.ZERO_C.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 320170,
+          "wall_ns": 1036904
+        },
+        "online.ZERO_C.evidence": {
+          "calls": 1,
+          "cpu_ns": 92420,
+          "wall_ns": 92880
+        },
+        "save.serialize": {
+          "calls": 2,
+          "cpu_ns": 125820,
+          "wall_ns": 126169
+        },
+        "save.hash": {
+          "calls": 2,
+          "cpu_ns": 52230,
+          "wall_ns": 52380
+        },
+        "save.file_hash": {
+          "calls": 1,
+          "cpu_ns": 5320,
+          "wall_ns": 4700
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 1078340,
+          "wall_ns": 3833799
+        },
+        "online.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 95160,
+          "wall_ns": 1065634
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 10000,
+          "wall_ns": 9790
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 11560,
+          "wall_ns": 11600
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          3940001,
+          8382174
+        ],
+        "outer_total_ns": [
+          6020971,
+          12094494
+        ],
+        "unattributed_and_observer_residual_ns": [
+          2080970,
+          3712320
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 27021312,
+        "VmRSS_bytes": 27021312
+      },
+      "control_rpc": {
+        "calls": 5,
+        "cpu_ns": 374240,
+        "wall_ns": 6452745,
+        "coalesced_write_acks": 1
+      },
+      "io": {
+        "rchar": 170989,
+        "wchar": 1174,
+        "syscr": 40,
+        "syscw": 6,
+        "read_bytes": 0,
+        "write_bytes": 4096,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 482,
+      "output_rows": 1,
+      "chain": "1692274368a9da8d48f69afa7f154195b127633196edb338f65fcc60dddf22a6",
+      "file_sha": "28e2bc41c02c540081536cbadcc2917cc1d6a207a16a94c2c5458ae5e782095d"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_closed_P3_tail_A",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "closed_P3_tail",
+        "layer": "A",
+        "pair_index": 4,
+        "n": 16,
+        "offset": 128
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/closed_P3_tail/A/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540190,
+      "cpu_ns": 6283832,
+      "wall_ns": 18973077,
+      "process_cpu_ns": 7677993,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1910931,
+          "wall_ns": 1905569
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 114410,
+          "wall_ns": 114569
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 162440,
+          "wall_ns": 162209
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 71820,
+          "wall_ns": 71890
+        },
+        "online.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 198270,
+          "wall_ns": 7479919
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 103970,
+          "wall_ns": 103420
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 25880,
+          "wall_ns": 25959
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 98800,
+          "wall_ns": 1070714
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 5200,
+          "wall_ns": 5130
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 7700,
+          "wall_ns": 7740
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          2699421,
+          10947119
+        ],
+        "outer_total_ns": [
+          6283832,
+          18973077
+        ],
+        "unattributed_and_observer_residual_ns": [
+          3584411,
+          8025958
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 27021312,
+        "VmRSS_bytes": 27021312
+      },
+      "control_rpc": {
+        "calls": 3,
+        "cpu_ns": 282640,
+        "wall_ns": 9031692
+      },
+      "io": {
+        "rchar": 170976,
+        "wchar": 361,
+        "syscr": 36,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_closed_P3_tail_B",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "closed_P3_tail",
+        "layer": "B",
+        "pair_index": 5,
+        "n": 16,
+        "offset": 160
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/closed_P3_tail/B/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540191,
+      "cpu_ns": 6221923,
+      "wall_ns": 19474074,
+      "process_cpu_ns": 7539053,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1943710,
+          "wall_ns": 4946733
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 128640,
+          "wall_ns": 129090
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 148680,
+          "wall_ns": 148390
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 69200,
+          "wall_ns": 69359
+        },
+        "online.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 1577361,
+          "wall_ns": 8935691
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 93880,
+          "wall_ns": 93799
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 26190,
+          "wall_ns": 26260
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 88300,
+          "wall_ns": 1244303
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 4780,
+          "wall_ns": 4660
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 7690,
+          "wall_ns": 7700
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          4088431,
+          15605985
+        ],
+        "outer_total_ns": [
+          6221923,
+          19474074
+        ],
+        "unattributed_and_observer_residual_ns": [
+          2133492,
+          3868089
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 27021312,
+        "VmRSS_bytes": 27021312
+      },
+      "control_rpc": {
+        "calls": 3,
+        "cpu_ns": 273601,
+        "wall_ns": 10526022
+      },
+      "io": {
+        "rchar": 170976,
+        "wchar": 361,
+        "syscr": 36,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_full_return_A",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "full_return",
+        "layer": "A",
+        "pair_index": 6,
+        "n": 16,
+        "offset": 192
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/full_return/A/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540192,
+      "cpu_ns": 6157863,
+      "wall_ns": 16464890,
+      "process_cpu_ns": 7504344,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1927750,
+          "wall_ns": 5926938
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 104160,
+          "wall_ns": 104120
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 135780,
+          "wall_ns": 135529
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 1466632,
+          "wall_ns": 5457350
+        },
+        "online.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 180980,
+          "wall_ns": 774616
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 92520,
+          "wall_ns": 92420
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 27550,
+          "wall_ns": 27610
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 70010,
+          "wall_ns": 1520531
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 5030,
+          "wall_ns": 4970
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 7760,
+          "wall_ns": 7870
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          4018172,
+          14051954
+        ],
+        "outer_total_ns": [
+          6157863,
+          16464890
+        ],
+        "unattributed_and_observer_residual_ns": [
+          2139691,
+          2412936
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 27021312,
+        "VmRSS_bytes": 27021312
+      },
+      "control_rpc": {
+        "calls": 3,
+        "cpu_ns": 232010,
+        "wall_ns": 2553685
+      },
+      "io": {
+        "rchar": 170976,
+        "wchar": 355,
+        "syscr": 36,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": {
+        "key": "correctness_baseline_full_return_B",
+        "phase_index": 0,
+        "phase": "correctness",
+        "pass_name": "baseline",
+        "arm": "full_return",
+        "layer": "B",
+        "pair_index": 7,
+        "n": 16,
+        "offset": 224
+      },
+      "status": "FAILED",
+      "outcome": null,
+      "failure": {
+        "type": "Halt",
+        "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+        "trial_failure_provenance": {
+          "kind": "TYPED_FAILURE",
+          "type": "Halt",
+          "reason": "GLOBAL_STOP_NO_NEW_RESERVATION",
+          "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+          "completed_prefix": {},
+          "completed_axes": [],
+          "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+          "last_completed_trial": null,
+          "current_attempt": {
+            "axis": "X",
+            "trial_index": 0,
+            "trial_id": "correctness/baseline/full_return/B/X/0",
+            "stage": "SAMPLING",
+            "result_acquired": false,
+            "event_present": false,
+            "record_constructed": false,
+            "candidate_ready": false,
+            "stream_emit_started": false,
+            "stream_emit_returned": false,
+            "trial_completed": false
+          },
+          "inflight_event": null,
+          "candidate_trace_sha256": null,
+          "stream_prefix_before_failure_record": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": null,
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          },
+          "mandatory_STOP": true,
+          "is_random_zero": false,
+          "retry": 0,
+          "resume": false,
+          "failure_record_write_error": {
+            "type": "Halt",
+            "reason": "GLOBAL_RESULT_BYTE_LIMIT"
+          },
+          "stream_prefix_after_failure_record_attempt": {
+            "complete_rows": 0,
+            "written_bytes_including_possible_partial_tail": 0,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "file_hash_covers_written_bytes": true,
+            "failure": {
+              "type": "Halt",
+              "reason": "GLOBAL_RESULT_BYTE_LIMIT",
+              "stage": "WRITE",
+              "committed_rows": 0,
+              "written_bytes": 0,
+              "last_complete_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+              "file_hash_covers_written_bytes": true,
+              "mandatory_STOP": true
+            },
+            "readback_verified": false,
+            "fsync_durability_verified": false
+          }
+        },
+        "committed_engine_summary_before_cleanup_failure": null
+      },
+      "pid": 3540193,
+      "cpu_ns": 6054333,
+      "wall_ns": 13484677,
+      "process_cpu_ns": 7116253,
+      "coarse": {
+        "setup.source_check": {
+          "calls": 1,
+          "cpu_ns": 1850881,
+          "wall_ns": 1850650
+        },
+        "setup.constructor_and_preflight": {
+          "calls": 1,
+          "cpu_ns": 102810,
+          "wall_ns": 103069
+        },
+        "setup.share_identity": {
+          "calls": 1,
+          "cpu_ns": 147530,
+          "wall_ns": 147179
+        },
+        "setup.axis_identity": {
+          "calls": 1,
+          "cpu_ns": 66250,
+          "wall_ns": 66420
+        },
+        "online.generator_and_audit": {
+          "calls": 1,
+          "cpu_ns": 200920,
+          "wall_ns": 3574951
+        },
+        "save.serialize": {
+          "calls": 1,
+          "cpu_ns": 80800,
+          "wall_ns": 80809
+        },
+        "save.hash": {
+          "calls": 1,
+          "cpu_ns": 28430,
+          "wall_ns": 28630
+        },
+        "save.write": {
+          "calls": 1,
+          "cpu_ns": 75990,
+          "wall_ns": 2076789
+        },
+        "save.flush": {
+          "calls": 1,
+          "cpu_ns": 4840,
+          "wall_ns": 4770
+        },
+        "save.finalize": {
+          "calls": 1,
+          "cpu_ns": 7810,
+          "wall_ns": 7820
+        }
+      },
+      "reconciliation": {
+        "exclusive_sum_ns": [
+          2566261,
+          7941087
+        ],
+        "outer_total_ns": [
+          6054333,
+          13484677
+        ],
+        "unattributed_and_observer_residual_ns": [
+          3488072,
+          5543590
+        ],
+        "unknown_bit_operations": null,
+        "includes_observer_effect": true
+      },
+      "fine": null,
+      "fine_reconciliation": null,
+      "memory_baseline": {
+        "VmHWM_bytes": 24399872,
+        "VmRSS_bytes": 24399872
+      },
+      "memory": {
+        "VmHWM_bytes": 27021312,
+        "VmRSS_bytes": 27021312
+      },
+      "control_rpc": {
+        "calls": 3,
+        "cpu_ns": 269920,
+        "wall_ns": 7703269
+      },
+      "io": {
+        "rchar": 170976,
+        "wchar": 355,
+        "syscr": 36,
+        "syscw": 3,
+        "read_bytes": 0,
+        "write_bytes": 0,
+        "cancelled_write_bytes": 0
+      },
+      "output_bytes": 0,
+      "output_rows": 0,
+      "chain": "0000000000000000000000000000000000000000000000000000000000000000",
+      "file_sha": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "parent_cpu_ns": 17204677,
+  "wall_ns": 40939586,
+  "worker_cpu_ns": 75372000,
+  "total_cpu_ns": 92576677,
+  "output": {
+    "limits": {
+      "result": 1500,
+      "log": 268435456
+    },
+    "reserved": {
+      "log": 63416,
+      "result": 482
+    },
+    "observed": {
+      "log": 63416,
+      "result": 482
+    }
+  },
+  "peak_sampled_rss_bytes": 232947712,
+  "rss_is_shared_page_sum_not_unique_memory": true,
+  "log_errors": [],
+  "state_update_io_bytes": 14,
+  "worker_launch_cost": {
+    "cpu_ns": 6455743,
+    "wall_ns": 16443001,
+    "count": 8
+  },
+  "stop_to_join_ns": 15753164,
+  "post_stop_parent_cpu_ns": 6019872,
+  "post_stop_worker_cpu_estimate_ns": 75372000,
+  "post_stop_cpu_resolution_ns": 80000000,
+  "retry": 0,
+  "resume": false,
+  "mandatory_STOP": true,
+  "artificial_only": true,
+  "parent_messages": {
+    "RESERVE": 9,
+    "ENTER": 4,
+    "WRITE_RESERVE": 7,
+    "FAIL": 8,
+    "END": 8
+  },
+  "host_outer": {
+    "parent_cpu_ns": 34908856,
+    "wall_ns": 76372264,
+    "worker_cpu_ns": 75372000,
+    "io": {
+      "rchar": 2929732,
+      "wchar": 167037,
+      "syscr": 650,
+      "syscw": 171,
+      "read_bytes": 0,
+      "write_bytes": 176128,
+      "cancelled_write_bytes": 0
+    }
+  },
+  "fake_claim_status": "STOPPED",
+  "state_file_sha256": "85e36f0855da38c049a0c718833c9779fd6dc5556d6a5fa9a8def285ee0c6e71"
+}

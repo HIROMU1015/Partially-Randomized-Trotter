@@ -1,0 +1,261 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "analysis_label",
+    "evidence_commit",
+    "RQ",
+    "domains",
+    "epsilon_design",
+    "accounting",
+    "metrics",
+    "P_design",
+    "uncertainty",
+    "future_outputs",
+    "output_columns",
+    "representatives",
+    "missing_policy",
+    "claim_audit_required",
+    "future_analysis_caps",
+    "future_result_statuses",
+    "permissions",
+    "mandatory_stop",
+    "next_stage_authorized",
+    "research_decision",
+    "source_freeze_required_before_analysis"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "track_a_pm2_precision_contract_v1"
+    },
+    "status": {
+      "const": "PM2_PRECISION_CONTRACT_FROZEN_ANALYSIS_NOT_AUTHORIZED"
+    },
+    "analysis_label": {
+      "const": "POSTHOC_SAVED_VALUES_ONLY"
+    },
+    "evidence_commit": {
+      "const": "194cc604b90c56a0e7e949b91b064a4bcfc846da"
+    },
+    "RQ": {
+      "const": "Accuracy eligibility versus measurement-inclusive resource choice in the fixed DF-prefix second-order finite grid"
+    },
+    "domains": {
+      "const": {
+        "development": 218,
+        "reference_eligible_development": 214,
+        "transfer_fixed_five": 5,
+        "retain_original_ineligible": true,
+        "cross_geometry_optimum_comparison": false
+      }
+    },
+    "epsilon_design": {
+      "const": {
+        "reference": 0.05,
+        "minimum": 0.005,
+        "maximum": 0.1,
+        "log_uniform_base_points": 301,
+        "reference_inserted_exactly": true,
+        "base_point_definition": "0.005*(0.1/0.005)**(i/300), i=0..300; endpoints exact; insert 0.05; sort and deduplicate",
+        "rationale": "ten times tighter to twice looser than the original coherent-signal task, not selected from resulting rankings",
+        "adaptive_precision_sampling": false,
+        "continuous_coverage_claim": false,
+        "epsilon_min": "sqrt(2)*max(axis_bias)",
+        "eligibility": "epsilon>epsilon_min AND all(epsilon/sqrt(2)-axis_bias>0)",
+        "equality_boundary_eligible": false
+      }
+    },
+    "accounting": {
+      "const": {
+        "alpha_axis": 0.025,
+        "axis_map": {
+          "real": "cosine",
+          "imag": "sine"
+        },
+        "axis_shots": "ceil(2*B**2/(epsilon/sqrt(2)-b_axis)**2*log(2/alpha_axis))",
+        "work": "sum_axis(N_axis*(saved_axis_compiled_mean+P))",
+        "ineligible_axis_shots": null,
+        "ineligible_matched_work": null,
+        "missing_is_zero": false,
+        "fixed_C_eff_allowed": false,
+        "shot_rule": "sufficient corrected Hoeffding bound, not minimum achievable shots or task impossibility",
+        "reference_reproduction": "exact integer axis shots and eligibility; work relative tolerance 1e-12 / absolute 1e-6"
+      }
+    },
+    "metrics": {
+      "const": {
+        "primary": "rz_count",
+        "point_pareto": [
+          "rz_count",
+          "rz_depth",
+          "cx_count",
+          "cx_depth",
+          "total_depth",
+          "circuit_size"
+        ],
+        "strict_dominance": "all <= and at least one <; retain ties",
+        "research_GO_threshold": null
+      }
+    },
+    "P_design": {
+      "const": {
+        "minimum": 0,
+        "maximum": null,
+        "unit": "common RZ-equivalent preparation cost per shot",
+        "primary_only": true,
+        "method": "analytic affine lower envelope at each fixed epsilon, all P>=0, retain boundary ties",
+        "P_grid": false,
+        "actual_preparation_compile": false,
+        "candidate_specific_preparation": false
+      }
+    },
+    "uncertainty": {
+      "const": {
+        "sample_source": "saved paired cosine/sine trajectory costs only",
+        "sample_covariance_denominator": "n-1 (unbiased sample variance/covariance)",
+        "work_SE": "sqrt((N_real**2*scc+N_imag**2*sss+2*N_real*N_imag*scs)/n)",
+        "P_changes_sampling_SE": false,
+        "engineering_interval": "point +/- 2SE",
+        "deterministic_variance": "exact nonrandom cost; absent SE is not missing stochastic variance",
+        "formal_CI": false,
+        "familywise_winner_guarantee": false,
+        "interval_ranking_rule": "overlap does not resolve a winner; point frontier remains descriptive"
+      }
+    },
+    "future_outputs": {
+      "const": [
+        "summary.json",
+        "precision_ledger.csv",
+        "eligibility_boundaries.csv",
+        "P_envelope.csv",
+        "representative_decomposition.csv",
+        "claim_audit.json",
+        "report.md",
+        "manifest.json"
+      ]
+    },
+    "output_columns": {
+      "const": {
+        "precision_ledger.csv": [
+          "dataset",
+          "candidate_id",
+          "candidate_fingerprint",
+          "epsilon",
+          "epsilon_min",
+          "accuracy_eligible",
+          "axis_bias_real",
+          "axis_bias_imag",
+          "normalization",
+          "allowance_real",
+          "allowance_imag",
+          "N_real",
+          "N_imag",
+          "N_total",
+          "primary_RZ_P0",
+          "primary_SE",
+          "point_frontier",
+          "rz_count",
+          "rz_depth",
+          "cx_count",
+          "cx_depth",
+          "total_depth",
+          "circuit_size",
+          "missing_reason"
+        ],
+        "eligibility_boundaries.csv": [
+          "dataset",
+          "candidate_id",
+          "epsilon_min",
+          "strict_boundary",
+          "inside_display_range"
+        ],
+        "P_envelope.csv": [
+          "dataset",
+          "epsilon",
+          "candidate_id",
+          "G_RZ_P0",
+          "N_total",
+          "P_min",
+          "P_max",
+          "boundary_tie"
+        ],
+        "representative_decomposition.csv": [
+          "dataset",
+          "epsilon",
+          "method",
+          "candidate_id",
+          "N_total",
+          "normalization_squared",
+          "bias_real",
+          "bias_imag",
+          "remaining_headroom_real",
+          "remaining_headroom_imag",
+          "mean_RZ_cosine",
+          "mean_RZ_sine",
+          "G_RZ_P0"
+        ]
+      }
+    },
+    "representatives": {
+      "const": "all exact point-minimum ties per method at every fixed epsilon; no handpicked favorable examples"
+    },
+    "missing_policy": {
+      "const": "null in JSON; MISSING in CSV; no eligible registered candidate is not method impossibility"
+    },
+    "claim_audit_required": {
+      "const": [
+        "PM0_attribution_corrections_preserved",
+        "PM1_pure_bias_decomposition_missing",
+        "M2_only_original_five",
+        "no_general_optimum",
+        "no_energy_RPE_total_cost",
+        "posthoc_not_preregistered_science"
+      ]
+    },
+    "future_analysis_caps": {
+      "const": {
+        "cpu_processes": 1,
+        "BLAS_threads": 1,
+        "epsilon_points": 302,
+        "candidate_epsilon_records": 67346,
+        "additional_candidates": 0,
+        "new_signal_evaluations": 0,
+        "new_cost_samples": 0,
+        "circuit_build_compile": 0,
+        "protected_data_access": 0,
+        "gpu_operations": 0,
+        "quantum_shots": 0
+      }
+    },
+    "future_result_statuses": {
+      "const": [
+        "PM2_PRECISION_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "permissions": {
+      "const": {
+        "preparation_input_inventory": true,
+        "precision_analysis": false,
+        "new_science": false,
+        "automatic_research_decision": false,
+        "next_stage": false
+      }
+    },
+    "mandatory_stop": {
+      "const": true
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "research_decision": {
+      "const": null
+    },
+    "source_freeze_required_before_analysis": {
+      "const": true
+    }
+  }
+}

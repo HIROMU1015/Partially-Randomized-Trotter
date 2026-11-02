@@ -1,0 +1,452 @@
+{
+  "status": "H4_STRONG_BASELINE_S1_CA_RESOURCES_COMPLETE",
+  "scientific_SOURCE": "1aeedd96178a3f50a15bc2701c3c332f4f391b64",
+  "implementation_SOURCE": "969c17d623d56eb645417b281deadb1be4757699",
+  "contract": "docs/research/research_c_c1_h4_strong_baseline_ca_resources_contract_binding_v2_20261026.json",
+  "contract_SHA256": "1bf82b39693f07503eec2879c93cb17a734ccdfdcdca03b50544a15444a56cd2",
+  "source_manifest_SHA256": "881694bde50cfa1ad50a67fef86c0bffc42c165559a6f8be56e148573e7cad8c",
+  "conditions": {
+    "atoms": 4,
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "system_dimension": 256,
+    "controlled_dimension": 512,
+    "CDF_rank": 8,
+    "XDF_rank": 8,
+    "XDF_order": "original saved OpenFermion1.6.1 eigh prefix8",
+    "number_representation": true,
+    "original_g_kappa": true,
+    "scalar": "nuclear once",
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "PF": "all-frame ordered symmetric S2",
+    "substeps": [
+      1
+    ],
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "route": "B2_CDF_relative versus B3_XDF_spin_relative",
+    "serial_policy": "separate head/kernel/readout with all-wire fences; no long-round compile",
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "candidate_failure": 0.01,
+    "axis_failure": 0.0003846153846153846,
+    "PR_split": null
+  },
+  "accuracy_target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+  "candidates": [
+    {
+      "candidate": "B2_CDF_relative",
+      "arm": "CDF",
+      "s": 1,
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "DF_norm_plus_guard_Ha": 7.666215916301914e-05,
+      "numerical_energy_error_bound_Ha": 0.0013549794824010532,
+      "candidate_failure_upper": 0.01,
+      "total_shots": 13606,
+      "total_executions": 13606,
+      "total_rz_count": 102056444569,
+      "total_rz_depth": 51452635379,
+      "total_cx_count": 64654784832,
+      "total_cx_depth": 57938363120,
+      "total_total_depth": 111882019897,
+      "total_circuit_size": 193844506833,
+      "synthesis_rounds_PASS": 13,
+      "RPE_rounds_PASS": 13,
+      "max_synthesis_complex_error": 3.61239425568958e-07,
+      "max_combined_error": 0.06913729194855545,
+      "max_phase_bias": 0.06919248973495769,
+      "minimum_fixed_N_margin": 2.166962701555253e-06,
+      "compiled_reference_frobenius": 3.118100926800043e-11,
+      "norm_upper_pilot": 1.000000000004071,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "rigorous_enclosure": null,
+      "shots_per_axis_by_m": [
+        511,
+        512,
+        512,
+        512,
+        512,
+        512,
+        513,
+        514,
+        516,
+        520,
+        530,
+        549,
+        590
+      ],
+      "kernel_metrics": {
+        "rz_count": 11062,
+        "rz_depth": 5577,
+        "cx_count": 7008,
+        "cx_depth": 6280,
+        "total_depth": 12127,
+        "circuit_size": 21011
+      },
+      "shell_metrics": {
+        "head": {
+          "rz_count": 2,
+          "rz_depth": 2,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "total_depth": 3,
+          "circuit_size": 3
+        },
+        "X": {
+          "rz_count": 2,
+          "rz_depth": 2,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "total_depth": 4,
+          "circuit_size": 4
+        },
+        "Y": {
+          "rz_count": 1,
+          "rz_depth": 1,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "total_depth": 3,
+          "circuit_size": 3
+        }
+      },
+      "numerical_energy_assessment": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0013549794824010532,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 102056444569.0,
+          "rz_depth": 51452635379.0,
+          "cx_count": 64654784832.0,
+          "cx_depth": 57938363120.0,
+          "total_depth": 111882019897.0,
+          "circuit_size": 193844506833.0
+        },
+        "intervals": {
+          "rz_count": [
+            102056444569.0,
+            102056444569.0
+          ],
+          "rz_depth": [
+            51452635379.0,
+            51452635379.0
+          ],
+          "cx_count": [
+            64654784832.0,
+            64654784832.0
+          ],
+          "cx_depth": [
+            57938363120.0,
+            57938363120.0
+          ],
+          "total_depth": [
+            111882019897.0,
+            111882019897.0
+          ],
+          "circuit_size": [
+            193844506833.0,
+            193844506833.0
+          ]
+        },
+        "shots": 13606,
+        "executions": 13606,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13606
+      }
+    },
+    {
+      "candidate": "B3_XDF_spin_relative",
+      "arm": "XDF",
+      "s": 1,
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "DF_norm_plus_guard_Ha": 9.533901455091894e-05,
+      "numerical_energy_error_bound_Ha": 0.001373656337788953,
+      "candidate_failure_upper": 0.01,
+      "total_shots": 13600,
+      "total_executions": 13600,
+      "total_rz_count": 100267421030,
+      "total_rz_depth": 50884473032,
+      "total_cx_count": 63485782056,
+      "total_cx_depth": 57037719456,
+      "total_total_depth": 110289593414,
+      "total_circuit_size": 189812628308,
+      "synthesis_rounds_PASS": 13,
+      "RPE_rounds_PASS": 13,
+      "max_synthesis_complex_error": 5.490105208994203e-07,
+      "max_combined_error": 0.06842849973806361,
+      "max_phase_bias": 0.06848201485765056,
+      "minimum_fixed_N_margin": 2.1852248319187417e-06,
+      "compiled_reference_frobenius": 4.738879866495084e-11,
+      "norm_upper_pilot": 1.0000000000039608,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "rigorous_enclosure": null,
+      "shots_per_axis_by_m": [
+        511,
+        512,
+        512,
+        512,
+        512,
+        512,
+        513,
+        514,
+        516,
+        520,
+        529,
+        548,
+        589
+      ],
+      "kernel_metrics": {
+        "rz_count": 10885,
+        "rz_depth": 5524,
+        "cx_count": 6892,
+        "cx_depth": 6192,
+        "total_depth": 11973,
+        "circuit_size": 20606
+      },
+      "shell_metrics": {
+        "head": {
+          "rz_count": 2,
+          "rz_depth": 2,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "total_depth": 3,
+          "circuit_size": 3
+        },
+        "X": {
+          "rz_count": 2,
+          "rz_depth": 2,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "total_depth": 4,
+          "circuit_size": 4
+        },
+        "Y": {
+          "rz_count": 1,
+          "rz_depth": 1,
+          "cx_count": 0,
+          "cx_depth": 0,
+          "total_depth": 3,
+          "circuit_size": 3
+        }
+      },
+      "numerical_energy_assessment": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.001373656337788953,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 100267421030.0,
+          "rz_depth": 50884473032.0,
+          "cx_count": 63485782056.0,
+          "cx_depth": 57037719456.0,
+          "total_depth": 110289593414.0,
+          "circuit_size": 189812628308.0
+        },
+        "intervals": {
+          "rz_count": [
+            100267421030.0,
+            100267421030.0
+          ],
+          "rz_depth": [
+            50884473032.0,
+            50884473032.0
+          ],
+          "cx_count": [
+            63485782056.0,
+            63485782056.0
+          ],
+          "cx_depth": [
+            57037719456.0,
+            57037719456.0
+          ],
+          "total_depth": [
+            110289593414.0,
+            110289593414.0
+          ],
+          "circuit_size": [
+            189812628308.0,
+            189812628308.0
+          ]
+        },
+        "shots": 13600,
+        "executions": 13600,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13600
+      }
+    }
+  ],
+  "comparison": {
+    "verdict": "XDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+    "unconditional_total_resource_claim": false,
+    "qualification": "conditional numerical pilot only",
+    "rigorous_same_accuracy": null,
+    "guaranteed_total_resource_superiority": false
+  },
+  "native_total_comparisons": [
+    {
+      "metric": "rz_count",
+      "B2_CDF": 102056444569,
+      "B3_XDF": 100267421030,
+      "difference_XDF_minus_CDF": -1789023539,
+      "XDF_over_CDF": "0.9824702541171670199221517621",
+      "XDF_reduction_percent_vs_CDF": "1.752974588283298007784823794"
+    },
+    {
+      "metric": "rz_depth",
+      "B2_CDF": 51452635379,
+      "B3_XDF": 50884473032,
+      "difference_XDF_minus_CDF": -568162347,
+      "XDF_over_CDF": "0.9889575656754038468393687135",
+      "XDF_reduction_percent_vs_CDF": "1.104243432459615316063128647"
+    },
+    {
+      "metric": "cx_count",
+      "B2_CDF": 64654784832,
+      "B3_XDF": 63485782056,
+      "difference_XDF_minus_CDF": -1169002776,
+      "XDF_over_CDF": "0.9819193153447566947739308811",
+      "XDF_reduction_percent_vs_CDF": "1.808068465524330522606911891"
+    },
+    {
+      "metric": "cx_depth",
+      "B2_CDF": 57938363120,
+      "B3_XDF": 57037719456,
+      "difference_XDF_minus_CDF": -900643664,
+      "XDF_over_CDF": "0.9844551413692061516424836132",
+      "XDF_reduction_percent_vs_CDF": "1.554485863079384835751638680"
+    },
+    {
+      "metric": "total_depth",
+      "B2_CDF": 111882019897,
+      "B3_XDF": 110289593414,
+      "difference_XDF_minus_CDF": -1592426483,
+      "XDF_over_CDF": "0.9857669133568914118261344890",
+      "XDF_reduction_percent_vs_CDF": "1.423308664310858817386551103"
+    },
+    {
+      "metric": "circuit_size",
+      "B2_CDF": 193844506833,
+      "B3_XDF": 189812628308,
+      "difference_XDF_minus_CDF": -4031878525,
+      "XDF_over_CDF": "0.9792004499334431753533516959",
+      "XDF_reduction_percent_vs_CDF": "2.079955006655682464664830413"
+    }
+  ],
+  "scientific_units": 86,
+  "call_counts": {
+    "saved_bundle_load": 1,
+    "evidence_attachment": 2,
+    "round_synthesis": 26,
+    "round_accuracy": 26,
+    "energy_assessment": 2,
+    "round_serial_cost": 26,
+    "cost_aggregation": 2,
+    "cost_comparison": 1
+  },
+  "correctness_FAIL": 0,
+  "inflight": 0,
+  "retry": 0,
+  "resume": 0,
+  "synthesis_rounds_PASS": 26,
+  "RPE_rounds_PASS": 26,
+  "axes": 52,
+  "exclusions": {
+    "new_fit": 0,
+    "optimizer": 0,
+    "rank_search": 0,
+    "DF_recomputation": 0,
+    "PF_recomputation": 0,
+    "operator_regeneration": 0,
+    "array_decode": 0,
+    "state_action": 0,
+    "build_compile": 0,
+    "quantum_sampling": 0,
+    "s4": 0,
+    "PR": 0
+  },
+  "resources": {
+    "wall_seconds": 1.481289278715849,
+    "CPU_seconds": 9.774233627000001,
+    "peak_RSS_KiB": 345732
+  },
+  "CA_achieved": null,
+  "rigorous_enclosure": null,
+  "guaranteed_actual_shots": null,
+  "guaranteed_total_resource_superiority": false,
+  "interpretation": "Fixed H4 s1 level-B numerical CA/interrogation pilot; own-DF ground oracle/ideal IID Born/state preparation excluded; no general CDF/XDF ranking or novelty/C1-continuation decision",
+  "mandatory_stop": true
+}

@@ -1,0 +1,43 @@
+{"run_id": "light-P-0", "wall_s": 2.442568405, "parent_cpu_s": 0.896616091, "worker_cpu_s": 10.296686, "total_cpu_s": 11.193302091}
+{"run_id": "light-SF-0", "wall_s": 9.671198587, "parent_cpu_s": 1.373284519, "worker_cpu_s": 8.648738, "total_cpu_s": 10.022022519}
+{"run_id": "light-S-0", "wall_s": 10.329685464, "parent_cpu_s": 1.394602791, "worker_cpu_s": 9.287522, "total_cpu_s": 10.682124791}
+{"run_id": "light-PF-0", "wall_s": 2.391165048, "parent_cpu_s": 0.87208502, "worker_cpu_s": 9.625569, "total_cpu_s": 10.49765402}
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_host.py", line 110, in _execute
+    control.run_phase([t for t in tasks if t['phase_index']==phase],root,c['source_pins'],factory,bits,watch)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_scheduler.py", line 591, in run_phase
+    ready = wait(list(self.active)+[r['process'].sentinel for r in self.active.values()], timeout=.05)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/multiprocessing/connection.py", line 1136, in wait
+    ready = selector.select(timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/selectors.py", line 415, in select
+    fd_event_list = self._selector.poll(timeout)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/scripts/tracks/algorithm_codesign/run_b3_integrated_artificial.py", line 196, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/scripts/tracks/algorithm_codesign/run_b3_integrated_artificial.py", line 188, in main
+    if args.suite=='benchmark':benchmark(args.output,args.repeats)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/scripts/tracks/algorithm_codesign/run_b3_integrated_artificial.py", line 104, in benchmark
+    metrics,report=run_one(cfg,workload,n,out,f'{workload}-{cfg[0]}-{repeat}',keep=repeat==0)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/scripts/tracks/algorithm_codesign/run_b3_integrated_artificial.py", line 65, in run_one
+    root=Path(temp);c,l,a=F.fixture(root,settings);report=F.invoke(root,c,l,a,settings)
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/tests/tracks/algorithm_codesign/b3_parallel_integrated_fixture.py", line 173, in invoke
+    result=H.execute_artificial_v3(c,root=root,ledger=ledger,authority=auth,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_host.py", line 84, in execute_artificial_v3
+    return _execute(port, root, endpoint_factory, bits_factory, watch)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-parallel-fused-r1-technical-integration-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_host.py", line 149, in _execute
+    wrapped=P.BundleFailure(result);wrapped.primary=repr(exc);raise wrapped from exc
+                                                              ^^^^^^^^^^^^^^^^^^^^^^
+trottertracks.algorithm_codesign.g6_w2c_b3_parallel_scheduler.BundleFailure: PARALLEL_V3_BUNDLE_STOP

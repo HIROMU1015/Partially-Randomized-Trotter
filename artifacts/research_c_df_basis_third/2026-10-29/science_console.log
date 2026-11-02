@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/scripts/run_research_c_df_basis_third.py", line 27, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/scripts/run_research_c_df_basis_third.py", line 19, in main
+    result=study.run(ROOT,a.contract)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/src/trottertracks/c_df_basis_third.py", line 274, in run
+    return execute(root,c,out,call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/src/trottertracks/c_df_basis_third.py", line 256, in execute
+    cal=native(root,c,out/'native',call,a,lanes,prices)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/src/trottertracks/c_df_basis_third_native.py", line 52, in execute
+    io.save(out/'law_gate.json',call('full_law_gate','signed tail+identity',lambda:b2.law_gate(arm,a['tail'],ctx,a['tail_info'])))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/src/trottertracks/c_df_basis_third_native.py", line 52, in <lambda>
+    io.save(out/'law_gate.json',call('full_law_gate','signed tail+identity',lambda:b2.law_gate(arm,a['tail'],ctx,a['tail_info'])))
+                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-third-gamma0-execution-20261029/src/trottertracks/c_pr_aware_df_stage_b2.py", line 177, in law_gate
+    or [x.probability for x in tail.components] != [x['probability'] for x in saved['components']]):
+                                                                              ~~~~~^^^^^^^^^^^^^^
+KeyError: 'components'

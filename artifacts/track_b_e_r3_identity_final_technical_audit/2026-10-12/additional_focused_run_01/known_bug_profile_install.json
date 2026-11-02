@@ -1,0 +1,37 @@
+{
+  "source": "8377c1d12439cabab3b97bcc1f57ac030a479785",
+  "fault": "install",
+  "observed_path_returned": true,
+  "observed_phase": "IDENTITY_OBSERVATION_SAVED",
+  "observed_observation": "EXCEPTION",
+  "actual": null,
+  "payload_calls": 0,
+  "profile_left_installed": false,
+  "exception": {
+    "type": "builtins.RuntimeError",
+    "message": "mock profile install failed",
+    "message_truncated": false,
+    "traceback": [
+      {
+        "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-e-r3-identity-final-technical-audit-20261012/src/trottertracks/algorithm_codesign/e_r3_identity_diagnostic/evaluation.py",
+        "line": 93,
+        "function": "observe_path"
+      },
+      {
+        "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-e-r3-identity-final-technical-audit-20261012/src/trottertracks/algorithm_codesign/e_r3_identity_diagnostic/evaluation.py",
+        "line": 37,
+        "function": "__enter__"
+      },
+      {
+        "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-e-r3-identity-final-technical-audit-20261012/tests/tracks/algorithm_codesign/test_e_r3_identity_final_technical.py",
+        "line": 158,
+        "function": "set_profile"
+      }
+    ],
+    "traceback_truncated": false
+  },
+  "required_outcome": "TECHNICAL_INCONCLUSIVE",
+  "production_fault_observed": false,
+  "synthetic_fault_injection": true,
+  "contract_fitness": false
+}

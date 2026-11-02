@@ -1,0 +1,30 @@
+{
+  "status": "FROZEN_EXECUTION_RESOURCE_CONFIGURATION_READY",
+  "cpu_count": 32,
+  "cpu_affinity_count": 32,
+  "memory": {
+    "MemTotal": 67095019520,
+    "MemAvailable": 55588278272
+  },
+  "gpu_probe_exit_code": 9,
+  "gpu_probe_stdout": "NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running.\n\n",
+  "gpu_probe_stderr": "",
+  "gpu_calls_planned": 0,
+  "workers": 2,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "RAYON_NUM_THREADS": "1"
+  },
+  "python": "3.12.3",
+  "numpy": "1.26.4",
+  "wall_time_cap_seconds": null,
+  "cpu_time_cap_seconds": null,
+  "optimization": "Frozen source uses independent case workers, in-case determinant/spectral/PSD caches and prebuilt small affine matrices. No implementation or comparison changes.",
+  "validated_path": "24 prior synthetic tests, cache-off/reference equality and two-worker spawn are retained in preparation artifacts; not rerun on held-out inputs.",
+  "remaining_limitations": "Exact rational PSD/checking is CPU-only. RSS watchdog is sampled, not instantaneous. No speedup or large-system claim.",
+  "new8_predicates_before_launch": 0,
+  "scientific_batches_before_launch": 0
+}

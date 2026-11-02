@@ -1,0 +1,390 @@
+次の段階としては、**研究方針を全面的に練り直すのではなく、AをR1へ進める方向でよい**です。  
+ただし、現在のR1案をそのまま実行するのではなく、**R0.5で残ったmethod deltaだけを検証するようにR1契約を一度修正してから実装・実行**するのが適切です。
+
+判定を付けるなら、
+
+> **`PROCEED_TO_R1_PREPARATION_WITH_NARROWED_CLAIM`**  
+> R1準備へGO、R1 science実行はまだ未認可。
+
+です。
+
+## R0.5で何が残ったか
+
+今回かなり重要なのは、Aが完全に既知法へ吸収されなかったことです。
+
+一方で、主張範囲はかなり狭くなりました。
+
+- ordinary paired RTE → 既知。
+- common-angle / identity redistribution → 既知。
+- Taylor再配分という広い原理 → 既知。
+- Pauli collectionが可能なI1では、固定fixtureで**collected CTSの方がAより低normalization**。
+- しかし、Pauli closureや全word collectionを仮定しないI0では、
+  - Aのclosed-form generator
+  - Aのrestricted-class optimum
+  - ordinary / zero-order PTSCより小さいnormalization
+  - 一般involution atom
+  が残った。
+
+CTSはPauli-basisでTaylor項を集約し、実部と虚部からprobabilistic unitary ensembleを構成する強い手法なので、Pauli-collectable領域でAが最良でないこと自体は問題ではありません。:chatgpt-content-reference{index="0"}
+
+したがって、研究問いを
+
+> 「AはTaylor simulationとしてCTSより優れているか」
+
+にはしません。
+
+---
+
+# 新しい主RQ
+
+R1以降のAについては、次に固定するのがよいです。
+
+> **Pauli coefficient collectionを必要とせず、Hermitian involutionのsampling / implementation accessだけから生成できるfinite-mean-preserving ensembleは、標準paired RTEや同accessの既知構成より実装資源を削減できるか。**
+
+つまり、
+
+\[
+\boxed{
+\text{Aの価値}
+=
+\text{I0-accessでのclosed-form finite-mean redesign}
+}
+\]
+
+です。
+
+「CTSより強い」という研究ではありません。
+
+むしろ、
+
+\[
+\text{I0: general involution access}
+\qquad\text{vs}\qquad
+\text{I1: Pauli collection available}
+\]
+
+で、どちらを使うべきかまで整理できれば研究として意味があります。
+
+---
+
+# R1で確認すべきこと
+
+R0/R0.5では数学が成立しました。
+
+R1で初めて確認するのは、
+
+\[
+\boxed{
+\text{normalization gain}
+\stackrel{?}{\longrightarrow}
+\text{native controlled resource gain}
+}
+\]
+
+です。
+
+Aはordinaryより \(B\) が小さい一方で、
+
+- odd-order event
+- 追加 \(Q\)
+- controlled relative phase
+- different rotation angle
+- basis changes
+
+を必要とします。
+
+その追加costによって理論的なweight改善が消える可能性があります。
+
+**ここは文献監査や追加の数式だけでは決まりません。R1を行う情報価値があります。**
+
+---
+
+# R1案は3点修正した方がよい
+
+## 1. zero-order PTSCを同I0のstrong baselineへ追加
+
+現在のR1 proposalは主に
+
+- ordinary
+- A
+
+ですが、R0.5で同target・同I0へ落とせるzero-order PTSCが明示されました。
+
+したがってR1では最低限、
+
+\[
+\boxed{
+\text{ordinary pairing}
+\quad
+\text{vs}
+\quad
+\text{PTSC-K0 finite specialization}
+\quad
+\text{vs}
+\quad
+\text{A}
+}
+\]
+
+を比較します。
+
+Zengらの本来の高次PTSCはTrotter error compensationを対象にするので、異なるtargetを無理にwinner競争へ入れません。:chatgpt-content-reference{index="1"}
+
+---
+
+## 2. CTSは「control」として入れる
+
+R0.5でPauli fixtureでは、
+
+\[
+\mu_{\rm CTS}^{\rm coll}<B_A
+\]
+
+でした。
+
+したがってCommon-Pauli contextでは、
+
+- ordinary
+- A
+- PTSC-K0
+- collected CTS
+
+を比較してよいです。
+
+ただしCTSは**Aが負けたらR1 failure**ではありません。
+
+ここでの目的は、
+
+> Pauli collection可能ならCTSへ行くべき
+
+という境界を確認することです。
+
+### evidence roleを分ける
+
+| context | R1での役割 |
+|---|---|
+| common Pauli commuting | control |
+| common Pauli noncommuting | control |
+| **distinct basis / general involution** | **primary performance context** |
+
+この分け方が重要です。
+
+---
+
+# 3. sampling optimizationをmethod deltaと混ぜない
+
+Resource-Optimal Importance Samplingは、固定されたrandomized protocolのsampling probabilityを回路costとvarianceから最適化する一般frameworkを既に与えています。:chatgpt-content-reference{index="2"}
+
+したがってAだけcanonical sampling、ordinaryだけoptimized sampling、のような比較にはしません。
+
+ただ、R1で最初から複雑なimportance-sampling optimizationを主研究へ入れる必要もありません。
+
+推奨は、
+
+- **primary mechanism comparison：canonical sampling**
+- secondary robustness：両armへ同じadmissible ISを与えた場合
+
+です。
+
+これで、
+
+> Aのevent representation変更による利益
+
+と
+
+> fixed ensembleのsampling最適化による利益
+
+を分離できます。
+
+---
+
+# R1で何をprimaryにするか
+
+今回はSP-1のような単一T-costだけに戻さない方がよいです。
+
+保存するprimary resource vectorは、
+
+\[
+\boxed{
+\left(
+B^2,\;
+E[C_T],\;
+E[C_{\rm CX}],\;
+E[C_{1Q}],\;
+\text{workspace},\;
+C_{\rm classical}
+\right)
+}
+\]
+
+です。
+
+さらに共通finite-confidence taskを設定できるなら、
+
+\[
+G_T,\quad G_{\rm CX}
+\]
+
+などshot込みの値をsecondaryまたはco-primaryとして戻します。
+
+重要なのは、
+
+> Aは \(B^2\) で勝つがevent circuitが重い
+
+という場合を「勝ち」とも「負け」とも単純化しないことです。
+
+---
+
+# R1の結果による研究判断
+
+### ケース1：distinct-basisでも実資源改善が残る
+
+例えば、
+
+- \(B^2\) は改善
+- T/CXの増加が小さい
+- shot込み総costでもordinary/PTSC-K0より有利
+- odd builderの追加workspaceも小さい
+
+なら、
+
+> **AをTrack Bの主method candidateへ昇格**
+
+してよいです。
+
+その後に初めて実DF/partial-RTEへの接続を検討します。
+
+---
+
+### ケース2：normalizationだけ改善、実資源では同等/悪化
+
+これはかなりあり得ます。
+
+その場合、
+
+> **数学的構成は残すが、実用algorithmの主線からは外す**
+
+のがよいです。
+
+着地点は、
+
+- restricted-class theorem
+- closed-form construction
+- ordinary/PTSC/CTSとのaccess-model比較
+
+をまとめたtechnical/theory note候補です。
+
+FRと同じく「数学的改善はあるがdecision relevanceなし」という扱いになります。
+
+---
+
+### ケース3：odd-event実装costで明確に崩れる
+
+この場合はAを主線としてSTOP。
+
+R1後にTrack Bを再設計します。
+
+---
+
+### ケース4：Pauli contextではCTS、distinct-basisではA
+
+これはむしろ**かなり研究としてきれいな結果**です。
+
+論文メッセージを、
+
+> 「単一の最良Taylor representation」ではなく、  
+> **available algebraic accessによって最適なrandomized representationが変わる**
+
+とできます。
+
+これは単なるA優位より、設計研究として意味があります。
+
+---
+
+# 研究としての新規性・着地点
+
+現時点では、Aを
+
+> 「新しいTaylor randomization原理」
+
+とは呼ばない方がよいです。
+
+新規性候補はもっと具体的です。
+
+### 理論部分
+
+> **general Hermitian-involution accessの下で、有限Taylor meanを保存するadjacent-degree ensemble familyと、そのrestricted-class closed-form optimum。**
+
+### algorithm部分
+
+> **Pauli collectionを必要とせず、そのoptimum ensembleをO(m)程度のdescriptionから生成するfinite-RTE redesign。**
+
+### numerical / implementation部分
+
+> **normalization reductionとnative controlled event costのtrade-offを定量化し、I0/I1のどちらでどのrepresentationを選ぶべきか示す。**
+
+この3つが揃えば、単なるapplicationより明確にmethod paper寄りになります。
+
+ただし「world-first」はまだ不可です。R0.5もcitation network全体の不存在証明ではありません。
+
+---
+
+# 次にCodexへやらせる作業
+
+したがって次は**R1 scienceそのものではなく、R1 preregistration / implementation source preparation**です。
+
+Codexには、
+
+1. R1 proposalをR0.5結果に合わせて改訂
+2. ordinary / PTSC-K0 / A の同I0 baselineを固定
+3. Pauli controlだけCTS collectedを追加
+4. distinct-basisをprimary performance contextに指定
+5. odd-event controlled builderを実装
+6. phase・basis・complement-angle semantic tests
+7. synthesis keysを結果前列挙
+8. native cost/error guardを実装
+9. canonical sampling primaryを固定
+10. ISを行うなら完全に別secondaryとして対称適用
+11. resource vector・finite-confidence会計を固定
+12. science source Sをfreeze
+13. **STOPしてGPT source reviewへ戻す**
+
+までです。
+
+その後、sourceにblocking issueがなければ初めてone-shot R1を認可します。
+
+---
+
+## 最終判断
+
+今回R0.5まで進んだことで、
+
+\[
+\boxed{
+\textbf{今は研究方針を再び練り直す段階ではない}
+}
+\]
+
+です。
+
+Aには狭いながら**具体的method delta候補が残っています**。
+
+したがって、
+
+\[
+\boxed{
+R0.5
+\rightarrow
+\textbf{R1 contract/implementation preparation}
+\rightarrow
+\text{source review}
+\rightarrow
+\text{R1 one-shot}
+\rightarrow
+\text{mandatory STOP}
+}
+\]
+
+と進めるのがよいです。
+
+**研究方針を本格的に再設計するのはR1結果の後**です。R1は、Aをmethod paper候補へ昇格させるか、数学的technical resultへ縮小するかを決めるための、ちょうど必要な検証になっています。

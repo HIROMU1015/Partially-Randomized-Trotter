@@ -1,0 +1,1191 @@
+{
+  "operation": "Existing literal/pointer extraction only;no new posthoc statistics or physical/cost quantities",
+  "fixed_commit": "3dd94637e8da77ce6e1f724f12f6a67dd4ded7ed",
+  "accepted_existing_modes": {
+    "empirical": {
+      "paired_eligible_comparisons": 16,
+      "unresolved_or_ineligible": 16,
+      "registered_5_percent_improvements": 0,
+      "ratio_min": 1.0000000000000004,
+      "ratio_max": 3.7982641929084235
+    },
+    "joint": {
+      "paired_eligible_comparisons": 16,
+      "unresolved_or_ineligible": 16,
+      "registered_5_percent_improvements": 0,
+      "ratio_min": 1.0000000000000004,
+      "ratio_max": 3.611866619679713
+    },
+    "box": {
+      "paired_eligible_comparisons": 16,
+      "unresolved_or_ineligible": 16,
+      "registered_5_percent_improvements": 0,
+      "ratio_min": 1.0,
+      "ratio_max": 3.274882140773036
+    }
+  },
+  "existing_precision_choices": [
+    {
+      "input_id": "S1_weak",
+      "state": "00",
+      "price": 3,
+      "epsilon": 1e-05,
+      "method": "M02_1_3",
+      "h_index": 5,
+      "certified_PF_bound": "291542305697905500653/905679136717856502102097920",
+      "saved_numerical_eligibility": true
+    },
+    {
+      "input_id": "S1_weak",
+      "state": "00",
+      "price": 3,
+      "epsilon": 1e-06,
+      "method": "M02_1_3",
+      "h_index": 5,
+      "certified_PF_bound": "291542305697905500653/905679136717856502102097920",
+      "saved_numerical_eligibility": true
+    },
+    {
+      "input_id": "S1_weak",
+      "state": "00",
+      "price": 6,
+      "epsilon": 1e-05,
+      "method": "M02_1_3",
+      "h_index": 5,
+      "certified_PF_bound": "291542305697905500653/905679136717856502102097920",
+      "saved_numerical_eligibility": true
+    },
+    {
+      "input_id": "S1_weak",
+      "state": "00",
+      "price": 6,
+      "epsilon": 1e-06,
+      "method": "M02_1_3",
+      "h_index": 5,
+      "certified_PF_bound": "291542305697905500653/905679136717856502102097920",
+      "saved_numerical_eligibility": true
+    },
+    {
+      "input_id": "S3_signed",
+      "state": "00",
+      "price": 3,
+      "epsilon": 1e-05,
+      "method": "S0_m1",
+      "h_index": 5,
+      "certified_PF_bound": "164472253447187859025/155393085433124358520307712",
+      "saved_numerical_eligibility": true
+    },
+    {
+      "input_id": "S3_signed",
+      "state": "00",
+      "price": 6,
+      "epsilon": 1e-05,
+      "method": "S0_m1",
+      "h_index": 5,
+      "certified_PF_bound": "164472253447187859025/155393085433124358520307712",
+      "saved_numerical_eligibility": true
+    }
+  ],
+  "examples": [
+    {
+      "id": "S1_weak",
+      "price": 3,
+      "state": "00",
+      "epsilon": 1e-06,
+      "information_saved": {
+        "classical_information_is_toy_specific": true,
+        "d_rho": "2/11",
+        "gamma_lower": "5/4",
+        "source": "COEFFICIENT_PERTURBATION",
+        "state": "00",
+        "state_measurement_shots": 0,
+        "state_preparation_X": 0
+      },
+      "choices_saved": {
+        "box": {
+          "C1": "S0_m1",
+          "best_single": "S0_m1",
+          "strong_known_composition": "S0_m1",
+          "uniform_order_mixture": "M01_1_3"
+        },
+        "empirical": {
+          "C1": "M02_1_4",
+          "best_single": "S2_m1",
+          "strong_known_composition": "M02_1_4",
+          "uniform_order_mixture": "M20_1_3"
+        },
+        "joint": {
+          "C1": "M02_1_3",
+          "best_single": "S0_m1",
+          "strong_known_composition": "M02_1_3",
+          "uniform_order_mixture": "M02_1_3"
+        }
+      },
+      "frontiers_saved": {
+        "empirical:best_single": {
+          "method": "S2_m1",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 9427.428571428572,
+          "conditional_quantum_cost": 18870309136.783222,
+          "certified_PF_bound": "74834262543747871/56870645701583831040"
+        },
+        "empirical:uniform_order_mixture": {
+          "method": "M20_1_3",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 7716.285714285715,
+          "conditional_quantum_cost": 15445219195.919031,
+          "certified_PF_bound": "3631001328873789265/10796536644910055424"
+        },
+        "empirical:C1": {
+          "method": "M02_1_4",
+          "h_index": 1,
+          "eligible": true,
+          "g_per_time": 14883.714285714286,
+          "conditional_quantum_cost": 29791826477.037186,
+          "certified_PF_bound": "229524018316459398893/10919163974704095559680"
+        },
+        "empirical:strong_known_composition": {
+          "method": "M02_1_4",
+          "h_index": 1,
+          "eligible": true,
+          "g_per_time": 14883.714285714286,
+          "conditional_quantum_cost": 29791826477.037186,
+          "certified_PF_bound": "229524018316459398893/10919163974704095559680"
+        },
+        "joint:best_single": {
+          "method": "S0_m1",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 8329.714285714286,
+          "conditional_quantum_cost": 16673085709.356836,
+          "certified_PF_bound": "26442461756419906663/20101188226159812280320"
+        },
+        "joint:uniform_order_mixture": {
+          "method": "M02_1_3",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 7441.857142857143,
+          "conditional_quantum_cost": 14895914535.522299,
+          "certified_PF_bound": "290479286969371030253/863722931592804433920"
+        },
+        "joint:C1": {
+          "method": "M02_1_3",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 7441.857142857143,
+          "conditional_quantum_cost": 14895914535.522299,
+          "certified_PF_bound": "290479286969371030253/863722931592804433920"
+        },
+        "joint:strong_known_composition": {
+          "method": "M02_1_3",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 7441.857142857143,
+          "conditional_quantum_cost": 14895914535.522299,
+          "certified_PF_bound": "290479286969371030253/863722931592804433920"
+        },
+        "box:best_single": {
+          "method": "S0_m1",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 8329.714285714286,
+          "conditional_quantum_cost": 16673085709.356836,
+          "certified_PF_bound": "26442461756419906663/20101188226159812280320"
+        },
+        "box:uniform_order_mixture": {
+          "method": "M01_1_3",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 6763.857142857143,
+          "conditional_quantum_cost": 13538805111.017794,
+          "certified_PF_bound": "18823165606383878138425/55969245967213727318016"
+        },
+        "box:C1": {
+          "method": "S0_m1",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 8329.714285714286,
+          "conditional_quantum_cost": 16673085709.356836,
+          "certified_PF_bound": "26442461756419906663/20101188226159812280320"
+        },
+        "box:strong_known_composition": {
+          "method": "S0_m1",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 8329.714285714286,
+          "conditional_quantum_cost": 16673085709.356836,
+          "certified_PF_bound": "26442461756419906663/20101188226159812280320"
+        },
+        "oracle_diagnostic:all_single_subdivision": {
+          "method": "S0_m3",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 6247.285714285715,
+          "conditional_quantum_cost": 12504815221.507719,
+          "certified_PF_bound": "2138996072684931106663/6360141587183378104320"
+        },
+        "oracle_diagnostic:S4": {
+          "method": "S4_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 10412.142857142857,
+          "conditional_quantum_cost": 20841355118.927128,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:C2": {
+          "method": "C2_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": null,
+          "conditional_quantum_cost": 20364594337.257988,
+          "certified_PF_bound": null
+        }
+      },
+      "single_and_selected_count_literals": [
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "9823/331776",
+          "J2_box": "8995385/73728",
+          "J2_empirical": "796919/24576",
+          "J2_joint": "8995385/73728",
+          "box_width": "4865/663552",
+          "counts": {
+            "CX": 30,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 20,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "431/221184",
+          "g_hypothesis": 129,
+          "id": "S0_m1",
+          "joint_width": "4865/663552",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 21
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "19673/663552",
+          "J2_box": "347782057/1824768",
+          "J2_empirical": "5624857/110592",
+          "J2_joint": "347782057/1824768",
+          "box_width": "13417/1824768",
+          "counts": {
+            "CX": 38,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 28,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "217/110592",
+          "g_hypothesis": 161,
+          "id": "S1_m1",
+          "joint_width": "13417/1824768",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 22
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "47/1024",
+          "J2_box": "116699771/608256",
+          "J2_empirical": "772705/55296",
+          "J2_joint": "116699771/608256",
+          "box_width": "21899/2433024",
+          "counts": {
+            "CX": 36,
+            "RZ": 22,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 16,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "-145/221184",
+          "g_hypothesis": 146,
+          "id": "S2_m1",
+          "joint_width": "21899/2433024",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 21
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "1567/294912",
+          "J2_box": "61175657497/233570304",
+          "J2_empirical": "31665629/7077888",
+          "J2_joint": "16333301455/77856768",
+          "box_width": "287857/233570304",
+          "counts": {
+            "CX": 110,
+            "RZ": 71,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 60,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "-149/7077888",
+          "g_hypothesis": 461,
+          "id": "M02_1_4",
+          "joint_width": "76855/77856768",
+          "kind": "MACRO",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 26
+        },
+        {
+          "D_Pauli_terms": 8,
+          "D_l1": "353/331776",
+          "J2_box": "34674288797/197074944",
+          "J2_empirical": "50792519/1990656",
+          "J2_joint": "1458956665/21897216",
+          "box_width": "163157/197074944",
+          "counts": {
+            "CX": 110,
+            "RZ": 71,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 60,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "239/1990656",
+          "g_hypothesis": 461,
+          "id": "M02_1_3",
+          "joint_width": "6865/21897216",
+          "kind": "MACRO",
+          "known_uniform_mixture": true,
+          "max_coefficient_bit_length": 24
+        }
+      ]
+    },
+    {
+      "id": "S2_balanced",
+      "price": 3,
+      "state": "00",
+      "epsilon": 1e-06,
+      "information_saved": {
+        "classical_information_is_toy_specific": true,
+        "d_rho": "2",
+        "gamma_lower": null,
+        "source": "TRIVIAL_TRACE_DISTANCE",
+        "state": "00",
+        "state_measurement_shots": 0,
+        "state_preparation_X": 0
+      },
+      "choices_saved": {
+        "box": {
+          "C1": "S0_m1",
+          "best_single": "S0_m1",
+          "strong_known_composition": "S0_m1",
+          "uniform_order_mixture": "M01_1_3"
+        },
+        "empirical": {
+          "C1": "S2_m1",
+          "best_single": "S2_m1",
+          "strong_known_composition": "S2_m1",
+          "uniform_order_mixture": "M20_1_3"
+        },
+        "joint": {
+          "C1": "M02_1_3",
+          "best_single": "S0_m1",
+          "strong_known_composition": "M02_1_3",
+          "uniform_order_mixture": "M02_1_3"
+        }
+      },
+      "frontiers_saved": {
+        "empirical:best_single": {
+          "method": "S2_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45236.82539682539,
+          "conditional_quantum_cost": 92339629149.9847,
+          "certified_PF_bound": null
+        },
+        "empirical:uniform_order_mixture": {
+          "method": "M20_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 37026.031746031746,
+          "conditional_quantum_cost": 75579357587.41472,
+          "certified_PF_bound": null
+        },
+        "empirical:C1": {
+          "method": "S2_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45236.82539682539,
+          "conditional_quantum_cost": 92339629149.9847,
+          "certified_PF_bound": null
+        },
+        "empirical:strong_known_composition": {
+          "method": "S2_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45236.82539682539,
+          "conditional_quantum_cost": 92339629149.9847,
+          "certified_PF_bound": null
+        },
+        "joint:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 39969.52380952381,
+          "conditional_quantum_cost": 81587767269.47173,
+          "certified_PF_bound": null
+        },
+        "joint:uniform_order_mixture": {
+          "method": "M02_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 35709.206349206346,
+          "conditional_quantum_cost": 72891395550.77103,
+          "certified_PF_bound": null
+        },
+        "joint:C1": {
+          "method": "M02_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 35709.206349206346,
+          "conditional_quantum_cost": 72891395550.77103,
+          "certified_PF_bound": null
+        },
+        "joint:strong_known_composition": {
+          "method": "M02_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 35709.206349206346,
+          "conditional_quantum_cost": 72891395550.77103,
+          "certified_PF_bound": null
+        },
+        "box:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 39969.52380952381,
+          "conditional_quantum_cost": 81587767269.47173,
+          "certified_PF_bound": null
+        },
+        "box:uniform_order_mixture": {
+          "method": "M01_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 32455.873015873014,
+          "conditional_quantum_cost": 66250537190.63265,
+          "certified_PF_bound": null
+        },
+        "box:C1": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 39969.52380952381,
+          "conditional_quantum_cost": 81587767269.47173,
+          "certified_PF_bound": null
+        },
+        "box:strong_known_composition": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 39969.52380952381,
+          "conditional_quantum_cost": 81587767269.47173,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:all_single_subdivision": {
+          "method": "S0_m3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 29977.142857142855,
+          "conditional_quantum_cost": 61190830129.9138,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:S4": {
+          "method": "S4_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 12490.476190476189,
+          "conditional_quantum_cost": 25496174697.84819,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:C2": {
+          "method": "C2_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": null,
+          "conditional_quantum_cost": 24913194177.040764,
+          "certified_PF_bound": null
+        }
+      },
+      "single_and_selected_count_literals": [
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "18439/93312",
+          "J2_box": "589831/81",
+          "J2_empirical": "1218491/1728",
+          "J2_joint": "589831/81",
+          "box_width": "319/729",
+          "counts": {
+            "CX": 30,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 20,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "659/15552",
+          "g_hypothesis": 129,
+          "id": "S0_m1",
+          "joint_width": "319/729",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 17
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "19207/93312",
+          "J2_box": "137977483/11664",
+          "J2_empirical": "18015095/15552",
+          "J2_joint": "137977483/11664",
+          "box_width": "5323/11664",
+          "counts": {
+            "CX": 38,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 28,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "695/15552",
+          "g_hypothesis": 161,
+          "id": "S1_m1",
+          "joint_width": "5323/11664",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 17
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "19559/93312",
+          "J2_box": "212696377/23328",
+          "J2_empirical": "1412185/7776",
+          "J2_joint": "212696377/23328",
+          "box_width": "39913/93312",
+          "counts": {
+            "CX": 36,
+            "RZ": 22,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 16,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "265/31104",
+          "g_hypothesis": 146,
+          "id": "S2_m1",
+          "joint_width": "39913/93312",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 16
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "10199/839808",
+          "J2_box": "25837665617/2519424",
+          "J2_empirical": "205507807/279936",
+          "J2_joint": "4951526779/839808",
+          "box_width": "121577/2519424",
+          "counts": {
+            "CX": 110,
+            "RZ": 71,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 60,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "967/279936",
+          "g_hypothesis": 461,
+          "id": "M02_1_3",
+          "joint_width": "23299/839808",
+          "kind": "MACRO",
+          "known_uniform_mixture": true,
+          "max_coefficient_bit_length": 18
+        }
+      ]
+    },
+    {
+      "id": "S3_signed",
+      "price": 3,
+      "state": "00",
+      "epsilon": 1e-06,
+      "information_saved": {
+        "classical_information_is_toy_specific": true,
+        "d_rho": "46/61",
+        "gamma_lower": "19/24",
+        "source": "COEFFICIENT_PERTURBATION",
+        "state": "00",
+        "state_measurement_shots": 0,
+        "state_preparation_X": 0
+      },
+      "choices_saved": {
+        "box": {
+          "C1": "S0_m1",
+          "best_single": "S0_m1",
+          "strong_known_composition": "S0_m1",
+          "uniform_order_mixture": "M01_1_3"
+        },
+        "empirical": {
+          "C1": "S0_m1",
+          "best_single": "S0_m1",
+          "strong_known_composition": "S0_m1",
+          "uniform_order_mixture": "M01_1_3"
+        },
+        "joint": {
+          "C1": "S0_m1",
+          "best_single": "S0_m1",
+          "strong_known_composition": "S0_m1",
+          "uniform_order_mixture": "M01_1_3"
+        }
+      },
+      "frontiers_saved": {
+        "empirical:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "empirical:uniform_order_mixture": {
+          "method": "M01_1_3",
+          "h_index": 3,
+          "eligible": true,
+          "g_per_time": 66960.19047619047,
+          "conditional_quantum_cost": 135370751016.18475,
+          "certified_PF_bound": "105278717813126488243/1024319654954677167980544"
+        },
+        "empirical:C1": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "empirical:strong_known_composition": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "joint:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "joint:uniform_order_mixture": {
+          "method": "M01_1_3",
+          "h_index": 3,
+          "eligible": true,
+          "g_per_time": 66960.19047619047,
+          "conditional_quantum_cost": 135370751016.18475,
+          "certified_PF_bound": "105278717813126488243/1024319654954677167980544"
+        },
+        "joint:C1": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "joint:strong_known_composition": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "box:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "box:uniform_order_mixture": {
+          "method": "M01_1_3",
+          "h_index": 3,
+          "eligible": true,
+          "g_per_time": 66960.19047619047,
+          "conditional_quantum_cost": 135370751016.18475,
+          "certified_PF_bound": "105278717813126488243/1024319654954677167980544"
+        },
+        "box:C1": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "box:strong_known_composition": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84068,
+          "certified_PF_bound": "87373812240839976529/9712067839570272407519232"
+        },
+        "oracle_diagnostic:all_single_subdivision": {
+          "method": "S0_m4",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 41230.85714285714,
+          "conditional_quantum_cost": 83354786758.84056,
+          "certified_PF_bound": "15814283403801066978769/9712067839570272407519232"
+        },
+        "oracle_diagnostic:S4": {
+          "method": "S4_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 12884.642857142857,
+          "conditional_quantum_cost": 26048368208.61299,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:C2": {
+          "method": "C2_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": null,
+          "conditional_quantum_cost": 25452759267.59452,
+          "certified_PF_bound": null
+        }
+      },
+      "single_and_selected_count_literals": [
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "7577/27648",
+          "J2_box": "421481399/93696",
+          "J2_empirical": "101695/96",
+          "J2_joint": "421481399/93696",
+          "box_width": "227951/843264",
+          "counts": {
+            "CX": 30,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 20,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "55/864",
+          "g_hypothesis": 129,
+          "id": "S0_m1",
+          "joint_width": "227951/843264",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 15
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "3793/13824",
+          "J2_box": "11785475149/1686528",
+          "J2_empirical": "44921093/27648",
+          "J2_joint": "11785475149/1686528",
+          "box_width": "454669/1686528",
+          "counts": {
+            "CX": 38,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 28,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "1733/27648",
+          "g_hypothesis": 161,
+          "id": "S1_m1",
+          "joint_width": "454669/1686528",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 16
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "7597/27648",
+          "J2_box": "391431037/70272",
+          "J2_empirical": "996523/864",
+          "J2_joint": "391431037/70272",
+          "box_width": "73453/281088",
+          "counts": {
+            "CX": 36,
+            "RZ": 22,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 16,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "187/3456",
+          "g_hypothesis": 146,
+          "id": "S2_m1",
+          "joint_width": "73453/281088",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 15
+        }
+      ]
+    },
+    {
+      "id": "S4_strong",
+      "price": 3,
+      "state": "00",
+      "epsilon": 1e-06,
+      "information_saved": {
+        "classical_information_is_toy_specific": true,
+        "d_rho": "2",
+        "gamma_lower": null,
+        "source": "TRIVIAL_TRACE_DISTANCE",
+        "state": "00",
+        "state_measurement_shots": 0,
+        "state_preparation_X": 0
+      },
+      "choices_saved": {
+        "box": {
+          "C1": "S0_m1",
+          "best_single": "S0_m1",
+          "strong_known_composition": "S0_m1",
+          "uniform_order_mixture": "M20_1_3"
+        },
+        "empirical": {
+          "C1": "M20_1_3",
+          "best_single": "S2_m1",
+          "strong_known_composition": "M20_1_3",
+          "uniform_order_mixture": "M20_1_3"
+        },
+        "joint": {
+          "C1": "M21_1_3",
+          "best_single": "S0_m1",
+          "strong_known_composition": "M21_1_3",
+          "uniform_order_mixture": "M21_1_3"
+        }
+      },
+      "frontiers_saved": {
+        "empirical:best_single": {
+          "method": "S2_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 51725.71428571428,
+          "conditional_quantum_cost": 169755731601.98312,
+          "certified_PF_bound": null
+        },
+        "empirical:uniform_order_mixture": {
+          "method": "M20_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 42337.142857142855,
+          "conditional_quantum_cost": 138943960762.87134,
+          "certified_PF_bound": null
+        },
+        "empirical:C1": {
+          "method": "M20_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 42337.142857142855,
+          "conditional_quantum_cost": 138943960762.87134,
+          "certified_PF_bound": null
+        },
+        "empirical:strong_known_composition": {
+          "method": "M20_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 42337.142857142855,
+          "conditional_quantum_cost": 138943960762.87134,
+          "certified_PF_bound": null
+        },
+        "joint:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45702.85714285714,
+          "conditional_quantum_cost": 149989762673.65237,
+          "certified_PF_bound": null
+        },
+        "joint:uniform_order_mixture": {
+          "method": "M21_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 45171.428571428565,
+          "conditional_quantum_cost": 148245661533.27252,
+          "certified_PF_bound": null
+        },
+        "joint:C1": {
+          "method": "M21_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 45171.428571428565,
+          "conditional_quantum_cost": 148245661533.27252,
+          "certified_PF_bound": null
+        },
+        "joint:strong_known_composition": {
+          "method": "M21_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 45171.428571428565,
+          "conditional_quantum_cost": 148245661533.27252,
+          "certified_PF_bound": null
+        },
+        "box:best_single": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45702.85714285714,
+          "conditional_quantum_cost": 149989762673.65237,
+          "certified_PF_bound": null
+        },
+        "box:uniform_order_mixture": {
+          "method": "M20_1_3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 42337.142857142855,
+          "conditional_quantum_cost": 138943960762.87134,
+          "certified_PF_bound": null
+        },
+        "box:C1": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45702.85714285714,
+          "conditional_quantum_cost": 149989762673.65237,
+          "certified_PF_bound": null
+        },
+        "box:strong_known_composition": {
+          "method": "S0_m1",
+          "h_index": 4,
+          "eligible": true,
+          "g_per_time": 45702.85714285714,
+          "conditional_quantum_cost": 149989762673.65237,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:all_single_subdivision": {
+          "method": "S0_m3",
+          "h_index": 2,
+          "eligible": true,
+          "g_per_time": 34277.142857142855,
+          "conditional_quantum_cost": 112492383474.4289,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:S4": {
+          "method": "S4_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": 14282.142857142855,
+          "conditional_quantum_cost": 46871767386.95899,
+          "certified_PF_bound": null
+        },
+        "oracle_diagnostic:C2": {
+          "method": "C2_0",
+          "h_index": 0,
+          "eligible": true,
+          "g_per_time": null,
+          "conditional_quantum_cost": 45803185380.81439,
+          "certified_PF_bound": null
+        }
+      },
+      "single_and_selected_count_literals": [
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "701/2592",
+          "J2_box": "1628969/144",
+          "J2_empirical": "9245/4",
+          "J2_joint": "1628969/144",
+          "box_width": "881/1296",
+          "counts": {
+            "CX": 30,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 20,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "5/36",
+          "g_hypothesis": 129,
+          "id": "S0_m1",
+          "joint_width": "881/1296",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 14
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "1133/2592",
+          "J2_box": "35900585/1296",
+          "J2_empirical": "181447/36",
+          "J2_joint": "35900585/1296",
+          "box_width": "1385/1296",
+          "counts": {
+            "CX": 38,
+            "RZ": 19,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 28,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "7/36",
+          "g_hypothesis": 161,
+          "id": "S1_m1",
+          "joint_width": "1385/1296",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 14
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "377/1296",
+          "J2_box": "1124419/81",
+          "J2_empirical": "26645/18",
+          "J2_joint": "1124419/81",
+          "box_width": "211/324",
+          "counts": {
+            "CX": 36,
+            "RZ": 22,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 16,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "-5/72",
+          "g_hypothesis": 146,
+          "id": "S2_m1",
+          "joint_width": "211/324",
+          "kind": "SINGLE",
+          "known_uniform_mixture": false,
+          "max_coefficient_bit_length": 13
+        },
+        {
+          "D_Pauli_terms": 9,
+          "D_l1": "361/23328",
+          "J2_box": "126180289/8748",
+          "J2_empirical": "0",
+          "J2_joint": "20620681/2916",
+          "box_width": "2209/34992",
+          "counts": {
+            "CX": 116,
+            "RZ": 74,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 56,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "0",
+          "g_hypothesis": 478,
+          "id": "M20_1_3",
+          "joint_width": "361/11664",
+          "kind": "MACRO",
+          "known_uniform_mixture": true,
+          "max_coefficient_bit_length": 17
+        },
+        {
+          "D_Pauli_terms": 8,
+          "D_l1": "253/23328",
+          "J2_box": "19601425/972",
+          "J2_empirical": "14450/27",
+          "J2_joint": "2001325/324",
+          "box_width": "2713/34992",
+          "counts": {
+            "CX": 124,
+            "RZ": 74,
+            "T": null,
+            "ancilla": 0,
+            "basis_Clifford": 64,
+            "controlled_global_scalar_phase_included": true,
+            "depth": null
+          },
+          "d_approx": "1/486",
+          "g_hypothesis": 510,
+          "id": "M21_1_3",
+          "joint_width": "277/11664",
+          "kind": "MACRO",
+          "known_uniform_mixture": true,
+          "max_coefficient_bit_length": 17
+        }
+      ]
+    }
+  ],
+  "finite_step_literal_examples": [
+    {
+      "file": "artifacts/qc_c1_macrocycle_pilot_v1/2026-10-13/attempt_1/S1_weak.json",
+      "pointer": {
+        "method": "M02_1_4",
+        "h_index": 1
+      },
+      "saved_fields": {
+        "h": 0.030973451327433628,
+        "bias": 1.4672949544269898e-07,
+        "true_leading_d_diagnostic": 0.00015293409797074558,
+        "finite_h_remainder_diagnostic": 1.1451732022079869e-11,
+        "diagnostic_branch_valid": true,
+        "counts": {
+          "RZ": 71,
+          "CX": 110,
+          "basis_Clifford": 60,
+          "depth": null,
+          "T": null,
+          "ancilla": 0,
+          "controlled_global_scalar_phase_included": true
+        },
+        "approximate_overlap": {
+          "00": 0.9991810537152727,
+          "11": 4.221494164218912e-05
+        }
+      }
+    },
+    {
+      "file": "artifacts/qc_c1_macrocycle_pilot_v1/2026-10-13/attempt_1/S4_strong.json",
+      "pointer": {
+        "method": "M20_1_3",
+        "h_index": 2
+      },
+      "saved_fields": {
+        "h": 0.011290322580645162,
+        "bias": 4.403108142536638e-07,
+        "true_leading_d_diagnostic": 0.0034541795699245116,
+        "finite_h_remainder_diagnostic": 1.7639771260272903e-12,
+        "diagnostic_branch_valid": true,
+        "counts": {
+          "RZ": 74,
+          "CX": 116,
+          "basis_Clifford": 56,
+          "depth": null,
+          "T": null,
+          "ancilla": 0,
+          "controlled_global_scalar_phase_included": true
+        },
+        "approximate_overlap": {
+          "00": 0.609413214143183,
+          "11": 0.021174415759551604
+        }
+      }
+    }
+  ]
+}

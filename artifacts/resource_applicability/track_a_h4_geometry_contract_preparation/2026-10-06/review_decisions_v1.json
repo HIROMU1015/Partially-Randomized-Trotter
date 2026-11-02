@@ -1,0 +1,45 @@
+{
+  "status": "H4_GEOMETRY_CONTRACT_REQUIRES_DECISION_SCIENCE_NOT_AUTHORIZED",
+  "decisions": [
+    {
+      "id": "D1_SCF_DF",
+      "fixed": false,
+      "recommendation": "RHF charge0 spin0, real canonical MO integrals, explicit conv_tol=1e-9/max_cycle=50, no DIIS/newton/restart rescue; OpenFermion1.6.1 spin_basis=True final_rank=12",
+      "decision_needed": "approve explicit SCF/initial-guess/DIIS/integral conventions and convergence gates; implicit legacy defaults are not a closed generation contract"
+    },
+    {
+      "id": "D2_ORDER_SOLVER_GATES",
+      "fixed": false,
+      "recommendation": "preserve generated DF prefix order for old M1 scope; no Frobenius reranking; make l1-weight ties stable by original eigenpair index, freeze degeneracy conventions; Nalpha=Nbeta=2, sector36; dense eigh; first largest-amplitude phase pivot",
+      "numeric_gate_proposal": {
+        "state_norm_abs": "1e-12",
+        "reference_residual_L2_Ha": "1e-9",
+        "relative_Hermiticity": "1e-12",
+        "minimum_sector_gap_Ha": "1e-10",
+        "imaginary_energy_Ha": "1e-11"
+      },
+      "decision_needed": "approve deterministic DF/eigenvector tie and state degeneracy policy (STOP for gap<=threshold) and numerical gates; no degenerate state selection after results"
+    },
+    {
+      "id": "D3_MASTER_SEED",
+      "fixed": false,
+      "recommended_master_seed": 20261006,
+      "decision_needed": "approve campaign master seed before science source; actual master seed remains null, source/input hashes remain null"
+    },
+    {
+      "id": "D4_MEMORY_WALL_OUTPUT",
+      "fixed": false,
+      "recommendation": {
+        "per_worker_address_space_GiB": 8,
+        "driver_address_space_GiB": 8,
+        "owned_process_memory_GiB": 104,
+        "minimum_host_available_GiB": 64,
+        "wall_stop_hours": 72,
+        "output_cap_GiB": 10,
+        "output_root_template": "artifacts/resource_applicability/track_a_h4_geometry_execution/<approved-run-id>"
+      },
+      "decision_needed": "approve stop ceilings and fixed run ID/root; circuit/compiler working set is not bounded by dense-array estimates, no science ETA or reservation inferred"
+    }
+  ],
+  "next_stage_authorized": false
+}

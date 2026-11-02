@@ -1,0 +1,395 @@
+# Codex指示：H4 PF/PR × Pauli/DF費用逆転の限定診断D1を実行
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-d1-contract-preparation-20261024`
+
+基点commit：
+`3282f74cd4d219141e4358c215a225dc2e3ec9c3`
+
+実行計画：
+`docs/non_df_h4_d1_preparation_20261024.md`
+
+非実行契約案：
+`artifacts/non_df_h4_d1_preparation/2026-10-24/contract_DRAFT.json`
+
+元H4科学SOURCE：
+`0c329b30a81accb35c212be8defa66fee0dd0f12`
+
+## 1. 今回の明示的な実行承認
+
+**固定H4におけるPauli-JW／DF-nativeのPF・PR回路費用逆転について、限定診断D1の実行を承認します。**
+
+今回の承認範囲は以下です。
+
+1. 保存descriptorから元回路を再構成する最小adapterの実装
+2. 既存コードの再利用・人工テスト
+3. 新SOURCE・runtime・入力SHA・実行契約の固定
+4. 新しいone-shot科学grantの発行
+5. 保存された代表4構成の回路再構成
+6. 元回路のfingerprint・費用再現性確認
+7. 再現性が成立した場合の部分回路診断
+8. **最大9回の費用compile**
+9. RZ・CX・depth・非加法性の限定解析
+10. 結果保存・監査・commit/push・mandatory STOP
+
+今回は、adapter準備からD1の有限実行までを一括承認します。固定範囲内の技術作業について、中間承認を繰り返し求める必要はありません。
+
+ただし、**D2・D3、新しいsampling、全cohortの再compile、N/G再解析、新しいHamiltonian計算は承認しません。**
+
+既存の固定科学条件・原本は変更しないでください。
+
+## 2. 研究目的
+
+固定H4では、以下の回路単価が保存されています。
+
+| 表現 | PF | PR（256本平均） |
+|---|---:|---:|
+| Pauli-JW | 255,500 | 9,321.10 |
+| DF-native | 135,355 | 23,678.44 |
+
+単位：compiled RZ数/shot。
+
+**PFではDF-nativeが安いのに、PRではPauli-JWが安くなる原因を、回路構造に基づいて定量的に調べます。**
+
+特に、
+
+- Pauli-JW PRでZ/ZZの保持部分がどれだけ安いか
+- Pauli-JWとDF-nativeのrandom event部分の違い
+- DFのbasis変換・controlled演算の費用
+- Full回路と部分回路のcompile結果の非加法性
+
+を調べます。
+
+今回のD1は、代表4構成による機構診断です。
+
+256 trajectoryの平均費用の因果分解や、Hamiltonian表現そのものの一般的な優劣を証明するものではありません。
+
+## 3. 固定科学条件
+
+前段階の契約を維持してください。
+
+- Linear H4、隣接1.00 Å、STO-3G
+- System 8 qubit＋ancilla 1 qubit
+- Pauli-JW：184項、PR prefix27
+- DF-native：tol-only 1e-8、rank10、PR prefix1＋one-body
+- S2、T=0.8、q=8、r=4、K=4
+- Cosine軸のみ
+- Qiskit 1.3.0
+- Native basis：`rz`, `sx`, `x`, `cx`
+- Optimization level1、seed17
+- Backend／coupling／layout／routing指定なし
+- Full Hadamard wrapper
+- 状態準備費用は除外
+- DFの反復方針：`raw_concatenation`
+
+保持部分、event列、係数、角度、phase、control、basis reuse、回路順序は元の固定条件から変更しません。
+
+## 4. 実行する9構成
+
+次の9種類に限定します。
+
+| ID | 対象 | 診断 |
+|---|---|---|
+| 1 | Pauli-JW PF | Full |
+| 2 | Pauli-JW PR index0 | Full |
+| 3 | DF-native PF | Full |
+| 4 | DF-native PR index0 | Full |
+| 5 | Pauli-JW PR index0 | Retained-only |
+| 6 | Pauli-JW PR index0 | Event-only |
+| 7 | DF-native PR index0 | Retained-only |
+| 8 | DF-native PR index0 | Event-only |
+| 9 | 共通 | Empty wrapper |
+
+**費用計測用のtop-level transpile呼出しは最大9回です。**
+
+追加の代表trajectoryを選ばず、PRは両表現とも保存`trajectory_index=0`を使います。
+
+保存されている4つの代表full回路の旧RZ数は次のとおりです。
+
+| 対象 | 旧cosine RZ |
+|---|---:|
+| Pauli-JW PF | 255,500 |
+| Pauli-JW PR index0 | 9,652 |
+| DF-native PF | 135,355 |
+| DF-native PR index0 | 23,021 |
+
+**PRの256本平均を、index0の再現性判定に使用しないでください。**
+
+## 5. Adapter実装と既存コードの再利用
+
+まず既存コード・テスト・実行パイプラインを確認してください。
+
+優先的に再利用する資産：
+
+- `pauli_signal_adapter`
+- `rte_event_audit`
+- `df_partial_s2`
+- `df_partial_s2_repeated`
+- `df_rte_qiskit`
+- `df_rte_circuit`
+- `df_rte_tail`
+- `df_trotter.ops`
+- `fixed_signal_evaluation`
+- `rte_compiled_cost`
+- 既存のnative gate人工テスト
+
+保存descriptorから、既存のgate・event・basis型へ復元する薄いadapterを実装してください。
+
+元の回路生成・control・transpile関数を可能な限り再利用し、同じ処理を不要に再実装しないでください。
+
+### Pauli-JW
+
+- 保存Pauli label・係数・constantを使用
+- 保存prefix27を維持
+- 保存RTE eventのorder・component・sign・angle・phase・順序を復元
+- 既存のPauli evolution／event append関数を再利用
+- 元のgeneric whole-body controlを維持
+- Constant・negative product・order phaseを保持
+
+### DF-native
+
+- 保存basis operations・diagonal primitivesを使用
+- `RZGate`／`XXPlusYYGate`等を元のgate型で復元
+- 保存qubit順・parameter・明示zero・inverse順序を維持
+- 既存DFBasisRegistry・event sequence builderを再利用
+- 隣接equal-basis reuseを維持
+- 元のcentral-only controlled構成を維持
+- q step間は元のraw concatenationを維持
+
+保存matrixを便宜的な`UnitaryGate`に置き換えたり、保存角度を再計算したりしないでください。
+
+新しいSCF／FCI／DF生成、Hamiltonian再構成、state evolution、sampling、RNG replayは行いません。
+
+## 6. 実行前の固定・人工検証
+
+実H4回路の生成前に、次を完了してください。
+
+1. Adapterの人工テスト
+2. Phase・control・inverse・basis reuse・event順序の確認
+3. 既存SOURCEと保存inputのSHA照合
+4. 使用runtimeとcompiler設定の固定
+5. 新adapter SOURCEのcommit
+6. 実行可能なactive contractの作成
+7. 新one-shot grantの発行
+8. 実行call予算・保存先・STOP条件の固定
+
+契約案を単にflag変更して使用せず、新SOURCE・runtime・入力・今回の承認を結び付けたactive contractを作成してください。
+
+既存grantは再利用しません。
+
+実行前に必須条件が成立しない場合は、理由を保存してSTOPしてください。
+
+## 7. D1の段階的実行
+
+### Stage A：4つのfull回路を再構成
+
+保存descriptorだけを使い、4つのfull入力回路を再構成してください。
+
+各回路について以下を照合します。
+
+- 保存trajectory／event ID・hash
+- Pauli／DF descriptor
+- Gate順序・qubit順・角度
+- Basis・control構成
+- Global／relative phase
+- Compiler設定
+- 元のrecursive input fingerprint
+
+**4つのfull回路すべての旧fingerprintが一致してから、費用compileへ進んでください。**
+
+自動gate名だけによるhash不一致が疑われる場合も、勝手にrename・hash仕様変更・field無視を行わないでください。
+
+不一致があれば、その差が科学的な回路同等性に関係するかを報告し、今回の契約ではSTOPしてください。
+
+意味的同等性に基づく別の再現性基準を使う場合は、別途契約変更と承認を必要とします。
+
+### Stage B：full4構成の費用compile
+
+Stage AがPASSした場合のみ、4つのfull wrapperを元の固定compiler設定でcompileしてください。
+
+以下の旧RZ数との完全一致を確認します。
+
+- Pauli PF：255,500
+- Pauli PR index0：9,652
+- DF PF：135,355
+- DF PR index0：23,021
+
+**1つでも不一致の場合は、その時点でSTOPしてください。**
+
+失敗結果と実行証拠は保存します。
+
+旧費用と不一致の回路を使って部分回路の原因分解を進めないでください。
+
+自動retryや別trajectoryへの差替えは禁止です。
+
+### Stage C：部分回路の費用compile
+
+Full4構成がすべてPASSした場合のみ、残り5構成をcompileしてください。
+
+- Pauli PR retained-only
+- Pauli PR event-only
+- DF PR retained-only
+- DF PR event-only
+- Empty wrapper
+
+Phaseの所有規則は前段階の契約を維持してください。
+
+Retained-onlyには決定論的保持部とそのphase、event-onlyには保存event列と対応するphaseを含めます。
+
+Event-onlyから保持部を削除したことを理由に、元のevent occurrenceを新しいbasis最適化で手動結合しないでください。
+
+これらはunitaryが変わる診断ablationであり、新しい正規のPF/PR実装として扱いません。
+
+## 8. 保存する測定情報
+
+各構成について、可能な範囲で以下を保存してください。
+
+- Compiled RZ数
+- Compiled CX数
+- 回路depth
+- Transpile前後のgate histogram
+- Pauliのbody control前後の構造
+- DFのbasis switch／reuse counter
+- Input／output QPYまたはQASM
+- Recursive fingerprint
+- 使用SOURCE・runtime・入力SHA
+- 取得可能なcompiler情報
+
+Source-sidecar tagを使用し、tag付けのためにcompiler入力回路を変更しないでください。
+
+既存compiler APIで取得できない詳細pass traceは`null`と理由を保存してください。
+
+Trace取得のための別compilerや追加transpileを行わないでください。
+
+## 9. 費用構造の解析
+
+Stage Cまで完了した場合、RZ数・CX数について以下を評価してください。
+
+`C_F`：Fullのcompiled費用
+
+`C_R`：Retained-onlyのcompiled費用
+
+`C_E`：Event-onlyのcompiled費用
+
+`C_0`：Empty wrapperのcompiled費用
+
+比較量：
+
+```text
+retained_increment = C_R - C_0
+
+event_increment = C_E - C_0
+
+isolated_prediction = C_R + C_E - C_0
+
+Delta_interaction = C_F - C_R - C_E + C_0
+
+contextual_event_increment = C_F - C_R
+
+contextual_retained_increment = C_F - C_E
+```
+
+負の値もそのまま保存してください。
+
+**`Delta_interaction`を単純に「compiler最適化の効果」と断定しないでください。**
+
+この差には、部分回路の接続、制御化、位相、wrapper、コンパイル最適化などの相互作用が含まれます。
+
+また、これらの量を一意な因果寄与率へ無理に変換しないでください。
+
+## 10. 研究上の判定
+
+今回の結果から、次の問いにできる限り答えてください。
+
+**Q1. Pauli-JW PRの保持部は、DF-native PRの保持部よりどの程度安いか。**
+
+**Q2. Random event列の費用はPauli-JWとDF-nativeでどう違うか。**
+
+**Q3. DF-native PRでは保持部とevent部のどちらにbasis関連構造が残るか。**
+
+**Q4. Full回路と隔離回路の費用差はどの程度か。**
+
+**Q5. 今回の逆転を主に説明する候補機構は何か。**
+
+**Q6. D1だけでは区別できない要因は何か。**
+
+**Q7. 次にD2またはD3を実施する科学的価値はあるか。**
+
+結果は、固定代表4構成の診断として解釈してください。
+
+特に、1本のPR trajectoryから256本の平均費用における寄与率を推定したり、一般的な表現優位性を主張したりしないでください。
+
+## 11. D2・D3の扱い
+
+今回はD1だけを実行します。
+
+D2：Pauli generic controlとspecialized central controlの対照
+
+D3：DF basis reuseを無効化した対照
+
+については、D1結果から必要性を判断するための提案までにしてください。
+
+D2の追加最大2 compile、D3の追加最大1 compileは**今回の実行承認に含みません**。
+
+D1完了後に自動でD2・D3へ移行しないでください。
+
+## 12. 資源・保全・実行管理
+
+最新版`research_project_instructions_unified_2026-10-23.md`を適用してください。
+
+特に§8.4・§10・§10.3を遵守します。
+
+- 既存コード・関数・検証パイプラインを再利用
+- 不要な再実装や過剰な監査を回避
+- 科学的条件と結果の再現性を優先
+- CPU・RAM・worker数に恣意的な低い上限を設定しない
+- 独立taskは適切に並列化
+- 共有環境全体・他ユーザーの設定、ファイル、processへ影響する操作は禁止
+- 元SOURCE・raw・grant・ledger・marker・STOPを保全
+- Call前予約・one-shot・失敗call消費・自動retry禁止
+- 実行終了時のnative exit・worker回収・結果保存を確認
+
+元H4のN/G null、C/LのCOMBINATION_BLOCKED、旧compilerのMISSING_EVIDENCE、元native UNKNOWNを維持してください。
+
+今回のD1の成功を、旧compiled programの完全復元や元native PASSと解釈しないでください。
+
+## 13. 成果物・mandatory STOP
+
+専用branchに以下を保存してください。
+
+1. D1 adapterと必要な人工テスト
+2. 新SOURCE・runtime・入力manifest・active contract
+3. 新grant・call ledger・実行証拠
+4. Full4構成の再現性判定
+5. 成功した場合の最大9構成のcompiled費用
+6. RZ・CX・depth・gate histogram
+7. 必要な回路QPY/QASMとfingerprint
+8. 保持部・event部・非加法性の比較
+9. 逆転原因に関する研究結果報告書
+10. D2/D3の必要性判断
+11. Native終了・保全・mandatory STOP
+
+途中STOPとなった場合も、失敗原因と取得済み証拠を保存してください。
+
+最終報告では、特に以下を明示してください。
+
+- D1はStage A/B/Cのどこまで完了したか
+- 旧4構成のfingerprint・RZは一致したか
+- 9構成のうち何回compileしたか
+- PauliとDFの保持部・event部の費用差
+- Full回路との非加法性
+- 費用逆転の有力な原因
+- まだ区別できない交絡
+- D2/D3の追加実行が必要か
+- Branch・SOURCE・commit・remote SHA
+- Native終了・mandatory STOP
+
+専用branchへcommitし、既存の承認済みrepository運用規則に従ってpush・remote SHA照合を行ってください。
+
+認証失敗時は成果物を保全し、必要な操作を報告してください。
+
+**今回承認したD1のadapter実装・人工検証・SOURCE固定・最大9回compile・限定費用解析・結果保存・終了監査まで一括で進めてください。**
+
+D1の固定契約を超える新しい科学計算、sampling、追加compile、D2/D3、正式certificate受理は行わず、完了後は**mandatory STOP**してください。

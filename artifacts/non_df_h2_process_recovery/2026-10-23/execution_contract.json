@@ -1,0 +1,167 @@
+{
+  "acquisition_cases": [
+    "pauli_jw_PR",
+    "df_native_PF"
+  ],
+  "execution": {
+    "automatic_retry": false,
+    "fixed_scientific_cases": 2,
+    "isolated_fresh_interpreter_per_case": true,
+    "mandatory_STOP": true,
+    "new_DF_decompositions": 0,
+    "new_FCI": 0,
+    "new_SCF": 0,
+    "new_state_solves": 0,
+    "no_H4_or_larger": true,
+    "no_candidate_search": true,
+    "no_detailed_scientific_review": true,
+    "no_independent_confirmation": true,
+    "no_new_model": true,
+    "old_grant_reuse": false,
+    "one_shot": true,
+    "original_run01_permanently_stopped": true,
+    "push": false,
+    "resume": false,
+    "run_namespace": "artifacts/non_df_h2_process_recovery/2026-10-23/run02"
+  },
+  "input_receipt_sha256": "7c8a72d4ff84cca701b4a7ec2d2e649ae636d32b77100d687f221d469774dd33",
+  "input_snapshot_sha256": "fb5ca11d7f0be73abd063ae7b67c6b72399c5a2336635f3764af1a7316e81175",
+  "previous_contract_sha256": "04f77879f7b0b3aac8eef80f7a5c710fbeed4b95ad68a0babc3f6f2810e11f9c",
+  "previous_result_commit": "bd2f3ce9b2035d9caefac75785e6fe70a3dcbca2",
+  "previous_science_SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+  "reuse_without_recomputation": [
+    "pauli_jw_PF",
+    "df_native_PR"
+  ],
+  "schema": "h2_missing_cases_process_contract_v1",
+  "science": {
+    "DF": {
+      "PR_L_D": 1,
+      "coefficient_atol": 0.0,
+      "expected_rank": 3,
+      "generation_order": "OpenFermion low_rank_two_body_decomposition",
+      "identity_policy": "extract_identity_phase",
+      "rank_policy": "tol_only_1e-8_no_final_rank",
+      "split_order": "existing weight_ranked_prefix"
+    },
+    "Pauli": {
+      "DF_rank": null,
+      "PR_L_D_policy": "floor(nonidentity_term_count/2)",
+      "coefficient_cutoff": 0.0,
+      "identity": "retained_once",
+      "split_order": "descending_abs_then_label"
+    },
+    "compiler": {
+      "backend": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "cost_scope": "full Hadamard wrapper ordinary diag(I,U), phases and measurement; no preparation",
+      "coupling_map": null,
+      "optimization_level": 1,
+      "transpiler_seed": 17
+    },
+    "environment": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "evaluation": {
+      "K": 4,
+      "PR_cost_samples": 64,
+      "T": 0.8,
+      "adaptive_sampling": false,
+      "alpha_axis": 0.025,
+      "compiled_signal_check": "every sampled full cosine/sine wrapper",
+      "cost_uncertainty": "paired axes; nominal Student-t 95%; no population or rare-event guarantee",
+      "delta": 0.2,
+      "epsilon_axis_policy": "epsilon_sig/sqrt(2)",
+      "epsilon_sig": [
+        0.05,
+        0.01,
+        0.005,
+        0.001,
+        0.0005
+      ],
+      "independent_trajectory_operator_checks": 3,
+      "methods": [
+        "PF",
+        "PR"
+      ],
+      "product_formula": "S2",
+      "q": 4,
+      "r": 2,
+      "representations": [
+        "pauli_jw",
+        "df_native"
+      ],
+      "seed_rule": "sha256(H2_NON_DF_PILOT_20261022/<representation>/<method>)[:8] little-endian",
+      "state_preparation_cost": 0.0,
+      "state_preparation_excluded": true,
+      "statistical_model": "existing fresh-IID bounded +/-1 corrected by finite-RTE B; Hoeffding sufficient N"
+    },
+    "numerical": {
+      "Hamiltonian_operator_agreement": 1e-09,
+      "Hermiticity": 1e-10,
+      "allowance_policy": "existing empirical_allowance formula; no certification",
+      "allowance_settings": {
+        "floor": 1e-12,
+        "roundoff_multiplier": 64.0,
+        "safety_factor": 10.0
+      },
+      "compiled_probability_agreement": 1e-09,
+      "failure_policy": "any technical gate failure stops run; ineligible precision row remains null without changing parameters",
+      "law_mean_agreement": 1e-10,
+      "maximum_u_over_headroom": 0.01,
+      "orthonormality": 1e-10,
+      "reference_signal_agreement": 1e-10,
+      "state_energy_agreement": 1e-09,
+      "state_norm": 1e-12,
+      "state_residual": 1e-10,
+      "trajectory_unitary_agreement": 1e-09
+    },
+    "system": {
+      "SCF": {
+        "conv_tol": 1e-12,
+        "init_guess": "minao",
+        "max_cycle": 100
+      },
+      "basis": "sto-3g",
+      "charge": 0,
+      "geometry_Angstrom": [
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "integral_policy": "real orthonormal spatial MO; chemist (pq|rs); unthresholded supplied arrays",
+      "molecule": "H2",
+      "orbital_policy": "PySCF canonical real RHF MOs; no active-space/frozen-core",
+      "qubit_order": "qiskit_little_endian",
+      "reference": "each representation's own full-H on the same non-DF physical-sector state",
+      "spin_2S": 0,
+      "spin_order": "2*p+alpha(0)/beta(1)",
+      "state_policy": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+      "symmetry": false
+    }
+  }
+}

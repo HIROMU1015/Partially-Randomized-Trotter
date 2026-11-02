@@ -1,0 +1,581 @@
+{
+  "schema_version": 1,
+  "date_jst": "2026-10-18",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "worktree_base_commit": "5f17a7548b7eef1976f45f5d09bdc979e2e0a81b",
+  "branch": "track-b-g6-theory-deepening-triage-20261018",
+  "status": "TRIAGE_COMPLETE_MANDATORY_STOP_AFTER_PUBLICATION",
+  "priority_candidate_ids": [
+    "C1",
+    "C2"
+  ],
+  "first_next_work_proposal": "W1",
+  "technical_priority_proposal_only": true,
+  "formal_research_adoption": false,
+  "independent_scientific_review_performed": false,
+  "previous_review_state_source": "User explicit instruction, not inferred private-original content",
+  "latest_review_availability": {
+    "requested_filename": "track_b_g6_constructive_contribution_scientific_review_20261018.md",
+    "status": "NOT_RETRIEVED",
+    "search_scope": "Repository including registered worktree files and Codex attachment directory, exact filename and g6/contribution name variants. No claim of absence in other locations.",
+    "user_supplied_state": "Constructive value positively assessed in prior GPT review; independent novelty, universal resource improvement and submission GO remain unestablished.",
+    "unretrieved_content_inferred": false,
+    "private_originals_published": false
+  },
+  "gaps": [
+    {
+      "id": "TG01",
+      "classification": "T1 量化・境界",
+      "cells": [
+        "TG01 / T1 量化・境界",
+        "L=1の形式Green、m=1、x=1、全正pについて既存M1〜M7。x=0は別扱い",
+        "各数学domainと各APIのdomainを混同しない。特にidentityの呼出側処理",
+        "`CONTRACT_GAP`/`IMPLEMENTATION_GAP`。K 138–146,214–224、G 103–111,216–251の静的対応。新しい正値性証明ではない",
+        "適用域の誤記を防ぐ。単独の新研究としては選ばない。C4、C1の前提"
+      ]
+    },
+    {
+      "id": "TG02",
+      "classification": "T1 挿入・support",
+      "cells": [
+        "TG02 / T1 挿入・support",
+        "挿入coverは上界、0<x≤1で正値。valid parent、i≠first(u)、pure-parentの数理規約がある",
+        "x>1・負p等への延長は未保証で、現証明の十分域と真の最大域を区別。現scopeのsupport欠落があるかはAPIに照合",
+        "現域は`DOCUMENTED`、域外は`OPEN_THEORETICAL_QUESTION`。MATH §§1,3–7、K 162–202。域外不成立の反例は今回未導出",
+        "既存正値域を新しい未解決問題にしない。最大域探索は現目的上優先しない"
+      ]
+    },
+    {
+      "id": "TG03",
+      "classification": "T2 精度存在→有効仕様",
+      "cells": [
+        "TG03 / T2 精度存在→有効仕様",
+        "BIT §5にorder、label、accept、child、dの一様下界と多項式bit数の存在論証",
+        "既存lemmaを使うH/K・root幅・丸め認証条件の実効的な仕様と、全合法入力での停止条件の接続",
+        "`CONTRACT_GAP`/`IMPLEMENTATION_GAP`。既存下界とK 45–110,214–236を照合。存在保証の再証明ではない",
+        "手選び精度のfixtureと、一般入力で使用できる構成契約を分離する。C1"
+      ]
+    },
+    {
+      "id": "TG04",
+      "classification": "T2 全誤差の接続",
+      "cells": [
+        "TG04 / T2 全誤差の接続",
+        "πW̃=c̃、M̃へのmean、Mへの係数bias/range、atan処理可能性、条件付きG7 budgetがある",
+        "angle enclosure→strict Rz/actual adjoint、必要η/ρ/τと残余s、入力誤差のどこまでを対象にするか",
+        "`IMPLEMENTATION_GAP`/`CONTRACT_GAP`。BIT §§3–6、CP 2–58、G 266–284。DF入力の誤差は別C7",
+        "SOURCEが実際に認証する条件を明示。新たな一般誤差lemmaが必要なら別理論作業。C1"
+      ]
+    },
+    {
+      "id": "TG05",
+      "classification": "T3 局所算術→全bit費用",
+      "cells": [
+        "TG05 / T3 局所算術→全bit費用",
+        "setup O(Lm²)、局所parent/全child O(m³+Lm²)、係数bit長の既存評価",
+        "selectorのlaw再検査・走査、sort、isqrt、全reject、angle取得、初期化とonlineを含む費用scope",
+        "`CONTRACT_GAP`。BIT §§2,5–6、K 55–110、G 237–251。具体的な総上界の新証明は未実施",
+        "非列挙がどの入力・費用モデルで意味を持つかを限定できる。C1。mについての多項式をlog mについての多項式と呼ばない"
+      ]
+    },
+    {
+      "id": "TG06",
+      "classification": "T3 memory・繰返し",
+      "cells": [
+        "TG06 / T3 memory・繰返し",
+        "kernel O(Lm)係数、現在のlocal packet。G7 full sampleはpacket一回で、過去wordの増大cacheを要しない",
+        "root/有理数の一時領域、分布表、N試行のbit/CPU/取得費用、合法cacheの費用と再利用範囲",
+        "`CONTRACT_GAP`。K 138–160,194–236、G 237–251、BIT §2/6。全時間・memoryの数値実測なし",
+        "単一queryの算術countをend-to-end計算量へ格上げする誤りを防ぐ。C1"
+      ]
+    },
+    {
+      "id": "TG07",
+      "classification": "T4 正値性・normalizerの鋭さ",
+      "cells": [
+        "TG07 / T4 正値性・normalizerの鋭さ",
+        "B_RA≤U≤B_o。m=1は等号、L=1はU=B_RA、m≥3,x>0でU<B_o。m=3,L≥2ではB_RA<U<B_partial<B_o",
+        "一般奇数m≥5で、既存の強いpartial/closed対照と認証予算にどの順序・限界があるか",
+        "`OPEN_THEORETICAL_QUESTION`。G7C「U」「強い三次対照」、U §7。三次結論の一般化は不可",
+        "成立条件や明確な負結果で追加集約の役割を狭められる。C2。微小なU改善だけはC6として保留"
+      ]
+    },
+    {
+      "id": "TG08",
+      "classification": "T4 moment→実費",
+      "cells": [
+        "TG08 / T4 moment→実費",
+        "ideal E[X²]=B_o B_RA、全trial、量子前zero、digital上界κB_oU、hard cap Nが既存",
+        "認証可能なN、digital acceptance、eventごとのprovider/angle価格、reject古典費用を合わせて何を比較できるか",
+        "`CONTRACT_GAP`/`OPEN_THEORETICAL_QUESTION`。MATH §8、G7C finite-bit/provider、G budget。未知B_RA/Zや全価格表を入力にしない",
+        "「momentだけが改善」「予算だけが改善」「費用の成立域」を判別できる。C2、C1依存"
+      ]
+    },
+    {
+      "id": "TG09",
+      "classification": "T5 既知法への還元",
+      "cells": [
+        "TG09 / T5 既知法への還元",
+        "P1〜P12と接続B1〜B6の監査済み。Green/Euler/ordinary/rejection/ISは既知",
+        "B2のpositive suffix law、B4/B5の有限bit・U予算を、同じA0/A1と費用で保証する先行手順の具体的対応",
+        "`NOT_ESTABLISHED`。A03 §§2–4。全法一般の非還元・下界は別の新証明。G6 lawを無料oracleとして渡さない",
+        "還元は独立性を弱め、取得・保証の実質的追加は支持材料になり得る。どちらも価値。C3をC1/C2の比較義務に統合"
+      ]
+    },
+    {
+      "id": "TG10",
+      "classification": "T5 強い低次数対照",
+      "cells": [
+        "TG10 / T5 強い低次数対照",
+        "P3の非列挙closed法、G9 P5Closedのgroup/DP生成が既存",
+        "m=3/5でGreen法が必須という説明はできない。一般mの保証と低次特化の取得費用を区別",
+        "`DOCUMENTED`＋一般比較は`NOT_ESTABLISHED`。G7C、P5 11–123、C02。P5のreference列挙は利用しない",
+        "既知・既存特化へ還元される範囲を明確化。C1/C2のbaseline条件"
+      ]
+    },
+    {
+      "id": "TG11",
+      "classification": "T6 DF入力",
+      "cells": [
+        "TG11 / T6 DF入力",
+        "既存RのGaussian共役Z/ZZ、符号・係数・controlled primitiveが確認済み",
+        "float/物理係数→正有理p,x、identity shift、入力誤差とfinite Mのbinding",
+        "`IMPLEMENTATION_GAP`/`CONTRACT_GAP`。N03 §§1–4、N04 §§1–3",
+        "実データへの保証の接続。一般有理入力の理論成立とは別。C7は応用候補として分離"
+      ]
+    },
+    {
+      "id": "TG12",
+      "classification": "T6 adapter/native",
+      "cells": [
+        "TG12 / T6 adapter/native",
+        "ordered event、phase、全trial estimator、native誤差に必要な各条件は既知",
+        "現PR/RTE adapter、word依存angle、実測interfaceとstrict native費用の統合証拠",
+        "`IMPLEMENTATION_GAP`/`NOT_ESTABLISHED`。N03 §4–5、N04 §5、CP",
+        "実用性能研究として意味があるが、T1〜T5の数学保証の必要条件ではない。C7/C8"
+      ]
+    }
+  ],
+  "risks": [
+    {
+      "id": "RK01",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK01 / CONFIRMED_SCOPE_LIMIT",
+        "L=1,m=1,x=1。MATH §§1,4–8、C01、G7C",
+        "一般証明の域内。L=1のGreenにtransienceは不要。m=1でUとnormalizerは等号。x=1も正値域に含む。境界だから未証明と書かない",
+        "既存記述の参照で足りる。境界testの追加を研究課題にしない"
+      ]
+    },
+    {
+      "id": "RK02",
+      "classification": "CONFIRMED_API_GAP",
+      "cells": [
+        "RK02 / CONFIRMED_API_GAP",
+        "x=0。K 138–146と214–224、G 216–251",
+        "Kのconstructorはx=0を受け、digital_parentはidentity別経路として拒否する。G7 full sampleには明示的なidentity返却分岐がない。主定理の0<x≤1との矛盾ではなく、identityを含む公開APIの契約が別途必要",
+        "呼出側identity処理の有無・責任を仕様化するだけ。今回は修正・実行しない。identity API整備を新定理としない"
+      ]
+    },
+    {
+      "id": "RK03",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK03 / CONFIRMED_SCOPE_LIMIT",
+        "domainとsupport。K 162–202、G 103–111",
+        "valid parentはreducedな偶数長≤m−1。非空ならchild i≠first(u)。数学上のpure-parent規約とG7実装domainを区別。CanonicalGeneratorはm≥3を要求し、FullReturnGeneratorと同一domainではない",
+        "全APIに同じdomainを強制せず、各armの用途を記録。s=0処理の記載差だけで域内バグと断定しない"
+      ]
+    },
+    {
+      "id": "RK04",
+      "classification": "UNESTABLISHED_EXTENSION",
+      "cells": [
+        "RK04 / UNESTABLISHED_EXTENSION",
+        "正値性。MATH §§3–4、BIT §5",
+        "挿入coverは上界。正値の十分域は0<x≤1、正p。域外で偽だという反例・最大正値域は今回未確認。p_minが小さいことは域内正値性を失わせる根拠ではない",
+        "域外延長を採るなら新しい理論課題。現証明の修正や反例探索は今回行わない"
+      ]
+    },
+    {
+      "id": "RK05",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK05 / CONFIRMED_SCOPE_LIMIT",
+        "precision。BIT §5、K 45–110,214–236",
+        "必要bit数の多項式的存在は既存。Kは絶対root幅、Hはdyadic粒度を支配し、相対誤差にはsupport下界が関係する。固定256/160が全入力を覆う保証はない",
+        "既存下界→各局所検査という条件表を作れる。新しい全入力selectorの設計・実装、追加の非自明lemmaは別承認"
+      ]
+    },
+    {
+      "id": "RK06",
+      "classification": "CONFIRMED_API_GAP",
+      "cells": [
+        "RK06 / CONFIRMED_API_GAP",
+        "fail-closed。K 55–94,222–228、G 216–251",
+        "order/labelは初期化時、parent root/accept/childは試行中にも精度不足で例外になる。十分精度の存在と固定設定の成功は別。例外をX=0として続行する契約はない",
+        "精度不足・入力不正・確率的rejectの3状態を分離する。任意例外をzeroに読み替えたconfidence保証は未成立。retry方針を今回考案しない"
+      ]
+    },
+    {
+      "id": "RK07",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK07 / CONFIRMED_SCOPE_LIMIT",
+        "meanと誤差。BIT §§3–6、N03 §3",
+        "πW̃=c̃は近似係数への恒等式。proposal丸めの補正はroot係数誤差を消さず、M̃とMは異なる。DF floatのFraction化も物理入力誤差を消さない",
+        "入力→finite M→digital M̃→実装→測定の誤差出所を分ける。Taylor/PF/RPE誤差の統合は別task"
+      ]
+    },
+    {
+      "id": "RK08",
+      "classification": "CONFIRMED_API_GAP",
+      "cells": [
+        "RK08 / CONFIRMED_API_GAP",
+        "confidence。G 266–284、G7C finite-bit節",
+        "α_axis=1/320と16軸の契約。任意α APIではない。η/ρ、primitive_error、残余s>0の条件と共通factor-2 bias規約がある",
+        "任意confidenceへの拡張は仕様・log enclosure等の接続が必要。SOURCEにない一般α実装を達成済みにしない"
+      ]
+    },
+    {
+      "id": "RK09",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK09 / CONFIRMED_SCOPE_LIMIT",
+        "算術・bit。BIT §2/5、K/G",
+        "既存算術countと係数bit長は支持される。dyadic_indexはlawの和・dyadic検査・線形走査を含み、roundingはsortする。mについてのpolynomialはlog mについてのpolynomialとは別",
+        "input総bit長、次数m、η/ρ/τ、modelを明示。既存の一般polynomial論証を否定せず、具体的なwhole-sampler上界は追加作業として区別"
+      ]
+    },
+    {
+      "id": "RK10",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK10 / CONFIRMED_SCOPE_LIMIT",
+        "moment・受理・budget。MATH §8、G7C、U §7",
+        "A_uはvalid-parent条件付き受理率、Zはideal全trial受理率、digital acceptanceは別。U区間はUのenclosureで、B_RAの両側enclosureではない",
+        "N、期待NZ、hard cap N、event価格、reject古典費用を別々に記録。U.loをB_RA下界や実受理率に代入しない"
+      ]
+    },
+    {
+      "id": "RK11",
+      "classification": "QUESTION_ONLY",
+      "cells": [
+        "RK11 / QUESTION_ONLY",
+        "full/partial。G7Cの三次節、P5 11–123",
+        "m=3のnormalizer順序・四次展開は既存。一般mへ同じ順序を延長する証拠はない。P5にはGreenを使わない既存closed生成もある",
+        "一般比較命題の成立／不成立はC2の後続理論課題。m=3再証明、m=5の弱いpartialだけとの勝敗、保存値の再ランキングで代用しない"
+      ]
+    },
+    {
+      "id": "RK12",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK12 / CONFIRMED_SCOPE_LIMIT",
+        "controlled provider。CP 2–58、BIT §6、N04",
+        "exact CQ、actual adjoint、scalar、順序、helper resetの条件付きIR。Kはtangentを返し、一般native angle enclosure接続はない。2 provider callsは回転部分で、word分は追加",
+        "θ近似、CQ誤差、Rz合成、workspace、prep/readoutを区別。general Qの無料controlled化・provider誤差0の物理的認証は主張しない"
+      ]
+    },
+    {
+      "id": "RK13",
+      "classification": "CONFIRMED_SCOPE_LIMIT",
+      "cells": [
+        "RK13 / CONFIRMED_SCOPE_LIMIT",
+        "RNG/測定。G 59–72,237–251",
+        "uniform independent bitsの法則とSHA-counterの診断traceは別。event/None APIは実測定器・accuracyの実証ではない",
+        "固定bitstream traceからconfidenceを認定しない。後続bit/測定interface実装には明示的指示、科学samplingには別実行承認"
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "id": "C1",
+      "priority": 1,
+      "selection": "PRIORITY_PROPOSAL_NOT_ADOPTED",
+      "source_ids": [
+        "BIT",
+        "MATH",
+        "K",
+        "G",
+        "CP",
+        "G7C",
+        "A03"
+      ],
+      "current_state": "**現在の到達点**：BIT §§2–6とM9〜M12は、supportの一様下界、必要精度の多項式的取得可能性、πW̃=c̃、係数bias/range、angle enclosureの処理可能性を与える。K/Gは固定精度で検査しfail closedする。G7はU.hiを使うbudgetと条件付きprovider IRを持つ。[BIT] [K] [G] [CP]",
+      "unresolved_question": "**未解決課題**：合法な入力・誤差条件から、どのH/K・root幅・angle精度を用い、どのAPI検査を満たし、setup／各reject／accepted event／全N trialに何のbit処理と取得費用が発生するかを一つの明示契約にできるか。既存polynomial論証を否定する問いではなく、未閉鎖の具体的な処理・定数・モデルの特定である。",
+      "new_result_if_solved": "**新しく得られる成果**：一般有理入力で保証を使える実効的な構成仕様、必要な停止条件、全費用の適用範囲。追加の非自明lemmaが実際に必要で証明された場合だけ、その保証を新しい理論成果と数える。",
+      "negative_result_value": "**反対の結果の価値**：既存lemmaの直接適用で全て閉じれば「新しい精度存在定理」の候補を消せる。未認証angle/provider、bit/selector費用が支配的なら、安価な全生成という主張を限定できる。固定bitの失敗だけを一般構成の不可能性とはしない。",
+      "novelty_contribution": "**科学的新規性への寄与**：条件付き。H/Kを自動化する実装単独はroutineになり得る。価値が残るのは、既知法と同じaccessでの全費用保証、実際に追加が必要な保証・成立限界を明確にできた場合。独立新規性は本調査で認定しない。",
+      "technical_feasibility": "**技術的実現可能性**：高い静的出発点がある。p_min、t_(m−1)、root/roundingの既存下界・検査を利用できる。ただしSOURCEを実行して全入力成功を検証したわけではない。新しいselector、角度計算、cache方式はここで設計しない。",
+      "dependencies": "**依存関係**：正の有理入力、0<x≤1、有限奇数m、uniform bits、exact controlled-Qという既存条件を保持。DF入力誤差・物理provider・長時間PRは含めない。一般αや別budget規約を入れる場合は拡張条件を明示する。",
+      "next_work_type": "**必要な次作業**：まず[W1](minimal_next_work_proposals.md)の既存lemma→API条件→費用項の差分表だけ。各穴を「直接仕様化」「非自明な新証明」「実装」「物理取得」に分類する。具体的な全上界の証明・実装は別段階。",
+      "authorization_boundary": "**承認境界**：本回は選別とW1の提案まで。後続の静的照合は通常のCodex技術作業として明示指示後に可能。新理論、新SOURCE/科学test、sampling・compile等はそれぞれ別承認。新grantを発行しない。",
+      "stop_condition": "**停止条件**：既存lemmaの転記とroutineな仕様化だけで閉じたら、仕様完成としてC1の新規理論投資を止める。新oracleが必要、global表が必要、元入力の変更が必要ならscopeを広げず返す。保証違反の疑いは未確認と確定を分け、性能作業を停止する。"
+    },
+    {
+      "id": "C2",
+      "priority": 2,
+      "selection": "PRIORITY_PROPOSAL_NOT_ADOPTED",
+      "source_ids": [
+        "G7C",
+        "U",
+        "P5",
+        "G",
+        "A03",
+        "A04"
+      ],
+      "current_state": "**現在の到達点**：B_RA≤U≤B_o、ideal/digital momentとrange、Uによる十分N、量子前zeroは既存。m=3,L≥2にはB_RA<U<B_partial<B_oとpartial/full差の既存論証がある。P5には既存closed非列挙生成もある。[G7C] [U] [P5]",
+      "unresolved_question": "**未解決課題**：一般奇数m≥5で、既存partial＋ordinary tail、closed-P3＋tail、利用可能なclosed-P5等に対し、追加returnの正規化差が、有限bit・U認証・同じ残余精度・event価格・全trial古典費用を戻すと何の条件下で残るか。UとB_partialの順序、Nの順序、期待量子費用の順序は別の命題にする。",
+      "new_result_if_solved": "**新しく得られる成果**：追加集約に意味がある明示条件、保証が弱まる条件、または比較不能・成立しない範囲。単なるtoy順位や小さいU改善ではなく、比較判断を変える成立条件／限界が対象。",
+      "negative_result_value": "**反対の結果の価値**：追加normalizer差が精度・range・取得費用で消える条件、強い低次数対照で説明できる範囲が分かれば、資源主張を縮小できる。否定的な比較結果も構成保証の価値自体は反証しない。",
+      "novelty_contribution": "**科学的新規性への寄与**：一般次数・明示accessで、既知のmoment原理から直接出ない成立条件や限界が残る可能性。ただし既知のcost-aware ISや既存比較で説明し尽くせれば独立性を弱める証拠になる。どちらも検討対象。",
+      "technical_feasibility": "**技術的実現可能性**：中程度・理論的には未判定。既存U/partialの式とSOURCEから出発できる。全parent和、観測variance、真のZ、全word角価格を無料oracleとして使わない。一般比較を新しい数値探索で代用しない。",
+      "dependencies": "**依存関係**：C1の費用・precision契約に依存する部分がある。normalizerに関する数学命題だけなら先に定式化できるが、その結果を実費優位へ直結しない。非列挙ordinary、CTS layering、合法cache/Green queryを比較側にも認める。",
+      "next_work_type": "**必要な次作業**：まず[W2](minimal_next_work_proposals.md)で、既存式・仮定・未知量を固定した最小の比較命題と、正負どちらの結果なら判断が変わるかを記述する。一般mの証明、漸近展開、反例探索は実施しない。",
+      "authorization_boundary": "**承認境界**：比較命題案は今回作成できる。命題の採択・新証明の範囲はGPT/ユーザー判断。新計算は別実行承認、保存値の再集計も別承認。旧G7/G9/G10の実行枠を再利用しない。",
+      "stop_condition": "**停止条件**：改善が既知三次の再記述、小定数だけでN/成立域を変えない、弱いbaselineでしか現れない、未知normalizer/価格oracleを要する場合は当該投資を止める。特定命題の否定はその範囲の結論として保存し、別の有利な入力を自動探索しない。"
+    },
+    {
+      "id": "C3",
+      "priority": null,
+      "selection": "INTEGRATED_PREREQUISITE_OR_DEFERRED",
+      "source_ids": [
+        "A03",
+        "C01",
+        "C02",
+        "BIT",
+        "G7C",
+        "N03",
+        "N04",
+        "P5"
+      ],
+      "current_state": "B1〜B6と84セルが既存",
+      "unresolved_question": "同accessで保証まで移せる具体的先行手順",
+      "new_result_if_solved": "還元範囲または追加保証の限定",
+      "negative_result_value": "routine還元なら独立性を弱める。未発見は独立性証明でない",
+      "novelty_contribution": "非自明な保証差が残る場合に条件付き",
+      "technical_feasibility": "静的出発点あり、還元証明は未判定",
+      "dependencies": "C1/C2と同じtarget・access・precision",
+      "next_work_type": "対象限定の資料照合、必要時のみ新還元証明",
+      "authorization_boundary": "本回は問題の限定だけ。新証明・科学判断は別",
+      "stop_condition": "84セルの反復になるなら独立課題化しない"
+    },
+    {
+      "id": "C4",
+      "priority": null,
+      "selection": "INTEGRATED_PREREQUISITE_OR_DEFERRED",
+      "source_ids": [
+        "A03",
+        "C01",
+        "C02",
+        "BIT",
+        "G7C",
+        "N03",
+        "N04",
+        "P5"
+      ],
+      "current_state": "L=1/m=1/x=1は保証済み",
+      "unresolved_question": "identityの呼出側と各armのdomain",
+      "new_result_if_solved": "過大主張の除去、明確なAPI",
+      "negative_result_value": "domain外なら誤った適用を防ぐ。定理反例ではない",
+      "novelty_contribution": "通常は文書/API整備",
+      "technical_feasibility": "既存SOURCEで確認可能",
+      "dependencies": "主定理を拡張しない",
+      "next_work_type": "静的照合・記述修正",
+      "authorization_boundary": "本回はrisk記録だけ。SOURCEは変えない",
+      "stop_condition": "既存の域と責任が明確になれば終了"
+    },
+    {
+      "id": "C5",
+      "priority": null,
+      "selection": "INTEGRATED_PREREQUISITE_OR_DEFERRED",
+      "source_ids": [
+        "A03",
+        "C01",
+        "C02",
+        "BIT",
+        "G7C",
+        "N03",
+        "N04",
+        "P5"
+      ],
+      "current_state": "dyadic/weight・atan可能性は既存",
+      "unresolved_question": "自動H/K・angle実装接続",
+      "new_result_if_solved": "技術的完成度、使用可能範囲",
+      "negative_result_value": "費用・精度不足なら実装範囲を限定",
+      "novelty_contribution": "単独ではroutineになり得る",
+      "technical_feasibility": "C1確定後の技術作業として可能性あり",
+      "dependencies": "C1の仕様と誤差契約",
+      "next_work_type": "実装・science testは別承認後",
+      "authorization_boundary": "本回は実装禁止。次の明示指示が必要",
+      "stop_condition": "routine完成を新理論と数えない"
+    },
+    {
+      "id": "C6",
+      "priority": null,
+      "selection": "INTEGRATED_PREREQUISITE_OR_DEFERRED",
+      "source_ids": [
+        "A03",
+        "C01",
+        "C02",
+        "BIT",
+        "G7C",
+        "N03",
+        "N04",
+        "P5"
+      ],
+      "current_state": "正値性、U、三次比較は既存",
+      "unresolved_question": "一般域の鋭さが判断を変えるか",
+      "new_result_if_solved": "有効なら成立域・認証予算の改善",
+      "negative_result_value": "小改善・不成立なら上界改良の投資を止める",
+      "novelty_contribution": "判断・適用域が変わる場合だけ条件付き",
+      "technical_feasibility": "未判定。既存式を再利用",
+      "dependencies": "C2の比較・意思決定に依存",
+      "next_work_type": "新証明／反例／計算の必要性を先に判定",
+      "authorization_boundary": "本回は新保証・探索禁止",
+      "stop_condition": "N/成立域/比較を変えないなら停止"
+    },
+    {
+      "id": "C7",
+      "priority": null,
+      "selection": "INTEGRATED_PREREQUISITE_OR_DEFERRED",
+      "source_ids": [
+        "A03",
+        "C01",
+        "C02",
+        "BIT",
+        "G7C",
+        "N03",
+        "N04",
+        "P5"
+      ],
+      "current_state": "R成分とcontrolled primitiveは既存",
+      "unresolved_question": "入力誤差・law・推定量・nativeの接続",
+      "new_result_if_solved": "実データへ保証を接続",
+      "negative_result_value": "接続費用・入力誤差で応用を限定",
+      "novelty_contribution": "別の応用成果。演算子クラス自体は既知",
+      "technical_feasibility": "複数interface・誤差認証が必要",
+      "dependencies": "採択済D/R、物理入力、C1",
+      "next_work_type": "interface仕様、後に実装・科学検証",
+      "authorization_boundary": "本回はadapter・分子計算禁止",
+      "stop_condition": "新D/R選択や未承認入力が要れば返す"
+    },
+    {
+      "id": "C8",
+      "priority": null,
+      "selection": "INTEGRATED_PREREQUISITE_OR_DEFERRED",
+      "source_ids": [
+        "A03",
+        "C01",
+        "C02",
+        "BIT",
+        "G7C",
+        "N03",
+        "N04",
+        "P5"
+      ],
+      "current_state": "条件付きIR、phase/adjoint規約は既存",
+      "unresolved_question": "特定物理Qのstrict誤差・費用",
+      "new_result_if_solved": "query条件を特定nativeモデルで具体化",
+      "negative_result_value": "重いproviderなら資源主張を限定",
+      "novelty_contribution": "特定providerの方法差が必要",
+      "technical_feasibility": "access/model依存で未判定",
+      "dependencies": "物理model・provider・誤差scopeの別固定",
+      "next_work_type": "仕様調査、後に取得・合成・認証",
+      "authorization_boundary": "本回は回路・合成禁止",
+      "stop_condition": "一般Qを無料native化する前提が要れば返す"
+    }
+  ],
+  "candidate_required_fields": [
+    "current_state",
+    "unresolved_question",
+    "new_result_if_solved",
+    "negative_result_value",
+    "novelty_contribution",
+    "technical_feasibility",
+    "dependencies",
+    "next_work_type",
+    "authorization_boundary",
+    "stop_condition"
+  ],
+  "minimal_next_work_proposals": [
+    {
+      "id": "W1",
+      "candidate": "C1",
+      "owner": "Codex: static obligation audit; GPT/user: new proof scope if needed",
+      "input": "Positive rational p/x, odd m, eta/rho/tau and input bit lengths; no new numerical input selected",
+      "source_ids": [
+        "BIT",
+        "MATH",
+        "K",
+        "G",
+        "CP",
+        "C01"
+      ],
+      "output": "One precision/API/whole-cost obligation specification and provenance index",
+      "go": "Identify direct existing-lemma applications versus nontrivial missing proofs or implementation/physical acquisition gaps",
+      "stop": "Routine closure completes specification, not a new theorem; return on new oracle/global dictionary/domain change",
+      "authorization": "PROPOSAL_ONLY_NO_CONTRACT_OR_GRANT; later explicit task required; proof/implementation/science execution separately authorized"
+    },
+    {
+      "id": "W2",
+      "candidate": "C2",
+      "owner": "Codex: question/source table; GPT/user: choice and scope of a new comparison proposition",
+      "input": "Same finite P_m, m>=5, rational p/x, matched access/precision; P5Closed included for m=5",
+      "source_ids": [
+        "G7C",
+        "U",
+        "G",
+        "P5",
+        "A03",
+        "A04"
+      ],
+      "output": "Three separated comparison questions (normalizer, certified N, actual cost); propose at most one follow-up proposition",
+      "go": "Potential to change certified budget, cost feasibility region or an explicit limitation beyond a minor constant",
+      "stop": "Known cubic restatement, weak baseline, free unknown normalizer/cost, or no decision change",
+      "authorization": "PROPOSAL_ONLY_NO_CONTRACT_OR_GRANT; new proofs/asymptotics/counterexamples/science execution require separate authorization"
+    }
+  ],
+  "execution_accounting": {
+    "new_nontrivial_theorems": 0,
+    "new_lower_bounds_or_counterexamples": 0,
+    "new_algorithms_or_selectors": 0,
+    "scientific_source_imports": 0,
+    "scientific_source_execution": 0,
+    "scientific_source_changes": 0,
+    "scientific_test_execution": 0,
+    "new_scientific_runs": 0,
+    "saved_value_numerical_reanalysis": 0,
+    "circuit_build_compile_synthesis": 0,
+    "new_scientific_reviews": 0,
+    "paper_drafting": 0,
+    "new_contracts_grants": 0,
+    "private_original_publications": 0,
+    "other_branch_merges": 0
+  },
+  "resources": {
+    "cpu_count": 32,
+    "cpu_affinity": 32,
+    "load_average_observed": [
+      1.4794921875,
+      1.24267578125,
+      1.13818359375
+    ],
+    "memory_observed": "Initial MemTotal 65522480 kB; MemAvailable 51769300 kB",
+    "source_retrieval_io_workers": 27,
+    "strategy": "Parallel independent public text/hash retrieval in task-local cache; reuse prior seven-paper audit without repeating literature search. Small dependency-ordered metadata writing and validation. No scientific acceleration workload.",
+    "artificial_cpu_ram_worker_caps": false,
+    "other_user_or_shared_environment_mutations": false,
+    "speedup_claim": false
+  },
+  "retained_states": [
+    "G6-G10 STOP",
+    "DF/Gaussian STOP/HOLD",
+    "D+E closures",
+    "Parent allocation STOP",
+    "all existing contracts/grants/ledger/marker/claims"
+  ],
+  "mandatory_stop_after_publication": true,
+  "verification_scope": "Document/JSON/link/Git/blob/hash checks only; no scientific or mathematical certificate"
+}

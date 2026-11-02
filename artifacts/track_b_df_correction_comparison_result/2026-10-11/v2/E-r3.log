@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-comparison-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_comparison/worker.py", line 115, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-comparison-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_comparison/worker.py", line 105, in main
+    result=execute(root,job,contract,capability)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-comparison-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_comparison/worker.py", line 94, in execute
+    return native_fixture(job['r'],deserialize_frames(job['frames']),prior['central_compilations'],on_compile)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-comparison-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_comparison/native_evaluation.py", line 87, in native_fixture
+    raise ArithmeticError('Frozen E whole fingerprint mismatch; no synthesis')
+ArithmeticError: Frozen E whole fingerprint mismatch; no synthesis

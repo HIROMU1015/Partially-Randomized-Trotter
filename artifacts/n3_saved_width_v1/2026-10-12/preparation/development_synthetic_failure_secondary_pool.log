@@ -1,0 +1,79 @@
+test_lossless_large_nested_values (test_n3_saved_width_v1.ExtractionTests.test_lossless_large_nested_values) ... ok
+test_pointer_escaping (test_n3_saved_width_v1.ExtractionTests.test_pointer_escaping) ... ok
+test_tampered_fragment_rejected (test_n3_saved_width_v1.ExtractionTests.test_tampered_fragment_rejected) ... ok
+test_bad_domains_and_floats_rejected (test_n3_saved_width_v1.FixedWidthTests.test_bad_domains_and_floats_rejected) ... ok
+test_box_dominates_root (test_n3_saved_width_v1.FixedWidthTests.test_box_dominates_root) ... ok
+test_energy_scaling (test_n3_saved_width_v1.FixedWidthTests.test_energy_scaling) ... ok
+test_energy_translation_keeps_q (test_n3_saved_width_v1.FixedWidthTests.test_energy_translation_keeps_q) ... ok
+test_false_lower_rejected (test_n3_saved_width_v1.FixedWidthTests.test_false_lower_rejected) ... ok
+test_irrational_enclosure (test_n3_saved_width_v1.FixedWidthTests.test_irrational_enclosure) ... ok
+test_kappa_is_frozen (test_n3_saved_width_v1.FixedWidthTests.test_kappa_is_frozen) ... ok
+test_negative_q_and_zero_infimum (test_n3_saved_width_v1.FixedWidthTests.test_negative_q_and_zero_infimum) ... ok
+test_negative_q_with_positive_box (test_n3_saved_width_v1.FixedWidthTests.test_negative_q_with_positive_box) ... ok
+test_nondyadic_exact_root (test_n3_saved_width_v1.FixedWidthTests.test_nondyadic_exact_root) ... ok
+test_norm_and_old_embeddings (test_n3_saved_width_v1.FixedWidthTests.test_norm_and_old_embeddings) ... ok
+test_positive_exact_root (test_n3_saved_width_v1.FixedWidthTests.test_positive_exact_root) ... ok
+test_rational_cap_rejected (test_n3_saved_width_v1.FixedWidthTests.test_rational_cap_rejected) ... ok
+test_rational_parameter_boundary_grid (test_n3_saved_width_v1.FixedWidthTests.test_rational_parameter_boundary_grid) ... ok
+test_saved_set_minimum (test_n3_saved_width_v1.FixedWidthTests.test_saved_set_minimum) ... ok
+test_strict_and_overlapping_comparisons (test_n3_saved_width_v1.FixedWidthTests.test_strict_and_overlapping_comparisons) ... ok
+test_unsafe_upper_rejected (test_n3_saved_width_v1.FixedWidthTests.test_unsafe_upper_rejected) ... ok
+test_authorization_requires_each_binding (test_n3_saved_width_v1.ScopeAndSavedAuditTests.test_authorization_requires_each_binding) ... ok
+test_missing_authorization_denied_before_plan_load (test_n3_saved_width_v1.ScopeAndSavedAuditTests.test_missing_authorization_denied_before_plan_load) ... ok
+test_old_batch_authorization_cannot_be_reused (test_n3_saved_width_v1.ScopeAndSavedAuditTests.test_old_batch_authorization_cannot_be_reused) ... ok
+test_synthetic_two_worker_pipeline_and_independent_audit (test_n3_saved_width_v1.ScopeAndSavedAuditTests.test_synthetic_two_worker_pipeline_and_independent_audit) ... ERROR
+
+======================================================================
+ERROR: test_synthetic_two_worker_pipeline_and_independent_audit (test_n3_saved_width_v1.ScopeAndSavedAuditTests.test_synthetic_two_worker_pipeline_and_independent_audit)
+----------------------------------------------------------------------
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 263, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 212, in _process_chunk
+    return [fn(*args) for args in chunk]
+            ^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n3-saved-width-v1-preparation-20261012/tests/test_n3_saved_width_v1.py", line 28, in synthetic_evaluation
+    result = evaluate_case(case, primary, secondary, fingerprint, seal)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n3-saved-width-v1-preparation-20261012/src/trottertracks/representation_exploration/n3_saved_width_analysis_v1.py", line 65, in evaluate_case
+    lower, valid = checker.spectrum(K, nu, spectral)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n3-saved-width-v1-preparation-20261012/src/trottertracks/representation_exploration/n3_occupation_transfer_check_v1.py", line 111, in spectrum
+    zp = self.proof(Z, s['Z_proof'])[0]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n3-saved-width-v1-preparation-20261012/src/trottertracks/representation_exploration/n3_occupation_transfer_check_v1.py", line 67, in proof
+    self.req(key in self.pool, 'missing PSD proof')
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n3-saved-width-v1-preparation-20261012/src/trottertracks/representation_exploration/n3_occupation_transfer_check_v1.py", line 33, in req
+    if not test: raise ValueError(reason)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: missing PSD proof
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n3-saved-width-v1-preparation-20261012/tests/test_n3_saved_width_v1.py", line 183, in test_synthetic_two_worker_pipeline_and_independent_audit
+    results = list(pool.map(synthetic_evaluation, payloads))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 642, in _chain_from_iterable_of_lists
+    for element in iterable:
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+ValueError: missing PSD proof
+
+----------------------------------------------------------------------
+Ran 24 tests in 0.169s
+
+FAILED (errors=1)

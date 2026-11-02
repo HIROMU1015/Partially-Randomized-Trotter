@@ -1,0 +1,181 @@
+{
+  "status": "TECHNICAL_PHASE_LOSS_LOCALIZED_AND_REPAIRED",
+  "saved_case_diagnosis": {
+    "scope": "Authorized repair diagnosis of three failed saved circuits and one saved passing control; no new fixture or reference.",
+    "operator_evaluations": 8,
+    "records": [
+      {
+        "id": "SS_000_008_X",
+        "raw_loaded_vs_saved_reference": 4.441434166503682e-16,
+        "compiled_loaded_vs_raw_loaded": 1.999999602305021,
+        "compiled_vs_reference": 1.9999996023050213,
+        "compiled_plus_reference": 1.123959673243347e-15,
+        "raw_global_phase": 0.0,
+        "compiled_global_phase": 1.5592239597210362,
+        "raw_operations": {
+          "rz": 10,
+          "cp": 8,
+          "x": 2,
+          "h": 2,
+          "xx_plus_yy": 2,
+          "cx": 2,
+          "p": 2,
+          "measure": 1
+        },
+        "compiled_operations": {
+          "rz": 44,
+          "cx": 22,
+          "sx": 14,
+          "x": 2,
+          "measure": 1
+        }
+      },
+      {
+        "id": "SP_052_013_Y",
+        "raw_loaded_vs_saved_reference": 4.710277376051326e-16,
+        "compiled_loaded_vs_raw_loaded": 1.4379665349514776,
+        "compiled_vs_reference": 1.437966534951478,
+        "compiled_plus_reference": 1.989902501546284e-15,
+        "raw_global_phase": 0.0,
+        "compiled_global_phase": 2.3524084541563095,
+        "raw_operations": {
+          "rz": 12,
+          "cp": 8,
+          "cx": 8,
+          "h": 6,
+          "xx_plus_yy": 6,
+          "sdg": 3,
+          "x": 2,
+          "s": 2,
+          "p": 1,
+          "measure": 1
+        },
+        "compiled_operations": {
+          "rz": 73,
+          "cx": 36,
+          "sx": 32,
+          "x": 2,
+          "measure": 1
+        }
+      },
+      {
+        "id": "SP_055_040_Y",
+        "raw_loaded_vs_saved_reference": 4.710277376051326e-16,
+        "compiled_loaded_vs_raw_loaded": 1.437966534951478,
+        "compiled_vs_reference": 1.4379665349514785,
+        "compiled_plus_reference": 1.281574444413369e-15,
+        "raw_global_phase": 0.0,
+        "compiled_global_phase": 5.494001107746103,
+        "raw_operations": {
+          "rz": 12,
+          "cx": 10,
+          "cp": 8,
+          "h": 6,
+          "sdg": 3,
+          "x": 2,
+          "xx_plus_yy": 2,
+          "s": 2,
+          "p": 1,
+          "measure": 1
+        },
+        "compiled_operations": {
+          "rz": 50,
+          "cx": 30,
+          "sx": 16,
+          "x": 2,
+          "measure": 1
+        }
+      },
+      {
+        "id": "PP_001_032_X",
+        "raw_loaded_vs_saved_reference": 6.66169953867201e-16,
+        "compiled_loaded_vs_raw_loaded": 2.1423834928313568e-15,
+        "compiled_vs_reference": 2.1590360297965847e-15,
+        "compiled_plus_reference": 1.999783500349346,
+        "raw_global_phase": 0.0,
+        "compiled_global_phase": 4.708602944348655,
+        "raw_operations": {
+          "cp": 8,
+          "h": 6,
+          "cx": 6,
+          "rz": 4,
+          "x": 2,
+          "sdg": 2,
+          "s": 2,
+          "p": 1,
+          "measure": 1
+        },
+        "compiled_operations": {
+          "rz": 36,
+          "cx": 22,
+          "sx": 6,
+          "x": 2,
+          "measure": 1
+        }
+      }
+    ]
+  },
+  "first_failure_pass": "BasisTranslator",
+  "minimal_case": "RY(-0.185): nested-equivalence path drops a global phase, direct U route preserves it.",
+  "old_error_is_sign_flip": true,
+  "remedy": "UnrollCustomDefinitions with fresh empty EquivalenceLibrary to fixed native basis plus U, then original transpile settings.",
+  "production_saved_case_validation": {
+    "records": [
+      {
+        "id": "SS_000_008_X",
+        "operator_error": 3.840114600697391e-15,
+        "signal_error": 7.771561172376096e-16,
+        "counts": {
+          "rz": 44,
+          "cx": 22,
+          "sx": 14,
+          "x": 2,
+          "measure": 1
+        }
+      },
+      {
+        "id": "SP_052_013_Y",
+        "operator_error": 6.276688851805966e-15,
+        "signal_error": 5.30825383648903e-15,
+        "counts": {
+          "rz": 73,
+          "cx": 36,
+          "sx": 32,
+          "x": 2,
+          "measure": 1
+        }
+      },
+      {
+        "id": "SP_055_040_Y",
+        "operator_error": 3.1328164639182667e-15,
+        "signal_error": 5.478256737134757e-15,
+        "counts": {
+          "rz": 50,
+          "cx": 30,
+          "sx": 16,
+          "x": 2,
+          "measure": 1
+        }
+      },
+      {
+        "id": "PP_001_032_X",
+        "operator_error": 4.454769886308441e-15,
+        "signal_error": 6.661338147750939e-16,
+        "counts": {
+          "rz": 36,
+          "cx": 22,
+          "sx": 6,
+          "x": 2,
+          "measure": 1
+        }
+      }
+    ],
+    "additional_fixture_generated": false,
+    "phase_fitting": false,
+    "compiler_profile_changed": false
+  },
+  "regression_tests_passed": 5,
+  "phase_fitting": false,
+  "global_library_or_environment_modified": false,
+  "original_phase_gates_and_tolerances_unchanged": true
+}

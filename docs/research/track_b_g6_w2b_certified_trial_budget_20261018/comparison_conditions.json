@@ -1,0 +1,177 @@
+{
+  "schema": "g6_w2b_nonexecutable_conditions_v1",
+  "technical_status": "W2B_CERTIFIED_CONDITIONS_CLOSED",
+  "vocabulary": [
+    "CERTIFIED_BUDGET_FORMULA",
+    "CONDITIONAL_COMPARISON",
+    "IMPLEMENTATION_INCOMPLETE",
+    "INSUFFICIENT_CERTIFIED_INFORMATION",
+    "REQUIRES_NEW_PROOF",
+    "OUT_OF_SCOPE"
+  ],
+  "common_domain": "L>=1 finite positive rational p exact sum 1; rational 0<x<=1; odd m>=5; sigma +/-1; same finite P_m, axes, provider model, precision/error/confidence; positive s",
+  "common_parameters": {
+    "kappa": "(1+rho)^2/(1-eta)^(m+2)",
+    "lambda": "(1+rho)/(1-eta)^(m+2)",
+    "beta": "2*[3*rho+3*(1+rho)*2*epsilon_Rz]",
+    "s": "epsilon_axis-beta > 0",
+    "ell": "fixed G7 log640_upper(96), exact rational upper",
+    "alpha_axis": "1/320",
+    "familywise": "at most 16 axes: <=1/20; original two targets x four methods x two axes"
+  },
+  "arms": [
+    {
+      "arm": "ordinary",
+      "upper": "b_O=o only for pinned same-root same-K/source/input path",
+      "moment": "kappa*b_O^2",
+      "range": "lambda*b_O",
+      "N": "ceil(ell*(2*kappa*b_O^2/s^2+4*lambda*b_O/(3*s)))",
+      "statuses": [
+        "CERTIFIED_BUDGET_FORMULA",
+        "CONDITIONAL_COMPARISON",
+        "IMPLEMENTATION_INCOMPLETE"
+      ],
+      "uniform_conclusion": "N_F<=N_O for matched pinned source path; strict integer gap conditional"
+    },
+    {
+      "arm": "partial_return_tail",
+      "upper": "b_P=actual canonical group B.hi",
+      "moment": "kappa*b_P^2",
+      "range": "lambda*b_P",
+      "N": "ceil(ell*(2*kappa*b_P^2/s^2+4*lambda*b_P/(3*s)))",
+      "statuses": [
+        "CERTIFIED_BUDGET_FORMULA",
+        "CONDITIONAL_COMPARISON",
+        "IMPLEMENTATION_INCOMPLETE",
+        "INSUFFICIENT_CERTIFIED_INFORMATION"
+      ],
+      "uniform_conclusion": "not established; use C2/I1"
+    },
+    {
+      "arm": "closed_P3_tail",
+      "upper": "b_3=actual canonical group B.hi",
+      "moment": "kappa*b_3^2",
+      "range": "lambda*b_3",
+      "N": "ceil(ell*(2*kappa*b_3^2/s^2+4*lambda*b_3/(3*s)))",
+      "statuses": [
+        "CERTIFIED_BUDGET_FORMULA",
+        "CONDITIONAL_COMPARISON",
+        "IMPLEMENTATION_INCOMPLETE",
+        "INSUFFICIENT_CERTIFIED_INFORMATION"
+      ],
+      "uniform_conclusion": "not established; use C2/I1"
+    },
+    {
+      "arm": "full_return",
+      "upper": "o=ordinary B.hi and u=U.hi",
+      "moment": "kappa*o*u",
+      "range": "lambda*o",
+      "N": "ceil(ell*(2*kappa*o*u/s^2+4*lambda*o/(3*s)))",
+      "statuses": [
+        "CERTIFIED_BUDGET_FORMULA",
+        "CONDITIONAL_COMPARISON"
+      ],
+      "F3_full_preflight_implemented": true,
+      "physical_all_N_execution_complete": false
+    }
+  ],
+  "conditions": [
+    {
+      "id": "C1",
+      "kind": "ROUTINE_BUDGET_DIFFERENCE",
+      "expression": "T_F-T_a=ell*[2*kappa*(o*u-b^2)/s^2+4*lambda*(o-b)/(3*s)]",
+      "source": "G.budget"
+    },
+    {
+      "id": "C2",
+      "kind": "NECESSARY_AND_SUFFICIENT_CONTINUOUS",
+      "expression": "T_F<=T_a iff o*(u+c)<=b*(b+c); c=2*s/[3*(1+rho)]",
+      "integer_non_strict_only_sufficient": true
+    },
+    {
+      "id": "O1",
+      "kind": "ROUTINE_PINNED_ROOT_PATH_ALIGNMENT",
+      "expression": "b_O=o; q_K(v)=ceil(2^K*sqrt(v))/2^K; u=q_K(d_empty^2)+sum(q_K(t_l^2+t_(l+1)^2)*r_l)<=o",
+      "antecedents": [
+        "same fixed source and input",
+        "same K_root",
+        "existing d_empty envelope and 0<=r_l<=1",
+        "exact rational weighted summation"
+      ],
+      "conclusion": "N_F<=N_O; continuous strict for m>=3,x>0 from r_2=1-chi<1; no strict integer assertion"
+    },
+    {
+      "id": "I1",
+      "kind": "NECESSARY_AND_SUFFICIENT_INTEGER",
+      "expression": "k=ceil(T_a); N_F<=N_a iff T_F<=k; N_F<N_a iff T_F<=k-1; N_F=N_a iff k-1<T_F<=k"
+    },
+    {
+      "id": "I2",
+      "kind": "EQUIVALENT_ENDPOINT_THRESHOLD",
+      "expression": "A_o=2*ell*kappa*o/s^2; N_F<=N_a iff u<=k/A_o-c; N_F<N_a iff u<=(k-1)/A_o-c"
+    },
+    {
+      "id": "INT",
+      "kind": "SUFFICIENT_CERTIFIED_OUTER_INTERVAL_RULES",
+      "expression": "non-strict: ceil(H_F)<=ceil(L_a); strict: ceil(H_F)<ceil(L_a); tie: both integer intervals same singleton; worse: ceil(L_F)>ceil(H_a); otherwise insufficient",
+      "not_necessary_with_correlations": true
+    }
+  ],
+  "P_U": {
+    "fixed_commit": "850ac89e1a6ea955def805e5462b8694ec0840b4",
+    "status": "DISPROVED",
+    "scope": "universal conjunction/min inequality; fixed certificate does not decide P_U,3 alone",
+    "reproved_or_recomputed": false,
+    "no_inference_of_N_dominance_or_inferiority": true
+  },
+  "P5Closed": {
+    "m": "5 only",
+    "G7_status": "CERTIFIED_N_NOT_COMPARABLE",
+    "ideal_identity": "B_F,5=B_5,5; not digital/N identity",
+    "existing_other_policy": "G9PLAN.plan exists, with bias coefficient 8, alpha_axis 49/22000 and G8LOG; conditional comparisons inside fixed G9 scope only",
+    "new_P5_budget_created": false,
+    "formal_P5_plus_tail_sampler_claimed": false
+  },
+  "counts_this_task": {
+    "new_scientific_calculations": 0,
+    "saved_scientific_value_reanalysis": 0,
+    "scientific_SOURCE_changes": 0,
+    "scientific_SOURCE_imports": 0,
+    "scientific_SOURCE_calls_or_execution": 0,
+    "new_SOURCE_implementation": 0,
+    "new_tests_created_or_executed": 0,
+    "new_numeric_N_or_interval_tables": 0,
+    "new_grid_counterexample_search": 0,
+    "new_nontrivial_proofs": 0,
+    "new_normalizer_or_moment_bounds": 0,
+    "new_sampler_proposal": 0,
+    "new_confidence_policy": 0,
+    "new_scientific_contract_adoptions": 0,
+    "execution_authorization_grant_marker_claim": 0,
+    "backend_sampling_measurement": 0,
+    "circuit_build_compile_simulation_native_synthesis": 0,
+    "DF_PR_RTE_adapter": 0,
+    "W2c_cost_evaluation": 0,
+    "independent_GPT_scientific_review": 0
+  },
+  "preserved_states": {
+    "track_B_D_plus_E_20261015": "UNCHANGED_ADOPTED_LIMITED_RESULTS_RETAINED_CURRENT_NUMERICAL_EXPLORATION_CONCLUDED",
+    "track_B_current_exploration_STOP": "UNCHANGED",
+    "next_concrete_algorithm_experiment_direction": "NOT_ADOPTED",
+    "track_IV_new_theme_selection": "ON_HOLD_FOR_NOW_UNCHANGED",
+    "A2": "NOT_ADOPTED",
+    "A2_current_practical_route": "NO_FURTHER_INVESTMENT_AFTER_PHASE_B",
+    "A1": "CLOSED",
+    "K1_F": "UNAPPROVED_NOT_EXECUTED",
+    "N1": "STOP",
+    "N2": "HOLD",
+    "N3": "CLOSED",
+    "THRIFT_current_template": "CLOSED",
+    "other_STOP_CLOSED_PAUSED_HOLD_and_tracks_I_II_III": "UNCHANGED"
+  },
+  "new_nontrivial_proof_required_for_this_condition_closure": false,
+  "scientific_or_research_contract_adopted": false,
+  "contract_grants_execution": false,
+  "automatic_W2c_or_next_work": false,
+  "mandatory_STOP": true
+}

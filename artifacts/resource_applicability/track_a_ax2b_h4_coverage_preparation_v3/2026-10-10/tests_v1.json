@@ -1,0 +1,53 @@
+{
+  "after_adding_reseal_tests": {
+    "exit_code": 0,
+    "passed": 49,
+    "pytest_seconds": 0.53,
+    "stdout": ".................................................                        [100%]\n49 passed in 0.53s\n"
+  },
+  "argv": [
+    "-m",
+    "pytest",
+    "-q",
+    "-p",
+    "no:cacheprovider",
+    "tests/tracks/resource_applicability/test_ax2b_coverage_binding_v3.py"
+  ],
+  "environment_pins": {
+    "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "src"
+  },
+  "evidence_kind": "LOCAL_METADATA_AND_MOCK_ENGINEERING_TESTS_NOT_MOLECULAR_PASS_OR_CI",
+  "guard": "numerical imports and NPZ payload access forbidden; setup uses AST-isolated method and mocked load/prep/reference boundary",
+  "initial_coverage_test_run": {
+    "exit_code": 0,
+    "passed": 45,
+    "pytest_seconds": 0.39
+  },
+  "interpreter": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+  "negative_cases": [
+    "one-ULP time",
+    "index",
+    "order",
+    "missing/duplicate time",
+    "missing/extra cell",
+    "instruction upper bound",
+    "primitive count",
+    "bool/int/float substitution",
+    "signed zero",
+    "nonfinite/unsupported type",
+    "cycle/depth/nodes/bytes",
+    "bounded differences",
+    "H6 and old grant rejection",
+    "output binding",
+    "retry/resume",
+    "absent grant before I/O",
+    "seal CLI cannot execute"
+  ],
+  "new_molecular_work": false,
+  "registered_cell_count": 8,
+  "schema": "track_a_ax2b_coverage_v3_tests",
+  "scientific_claims": null,
+  "test_source_sha256": "69733863a9e4b6e60ea37f1dfc3523ffa97fd493a18025c3d96896e2e2de3719"
+}

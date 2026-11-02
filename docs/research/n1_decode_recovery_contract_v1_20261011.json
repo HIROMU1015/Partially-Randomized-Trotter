@@ -1,0 +1,203 @@
+{
+  "schema_version": 1,
+  "date_jst": "2026-10-11",
+  "base_commit": "10d91e518520e6f3fd853c85d8eff078357b7edb",
+  "branch": "n3-generator-n1-recovery-preparation-20261011",
+  "mandatory_stop": true,
+  "science_execution_authorized": false,
+  "implementation_authorized_this_preparation": false,
+  "next_scientific_stage_authorized": false,
+  "central_theme": null,
+  "prior_gpt_scientific_review_complete": true,
+  "repeat_prior_review": false,
+  "review_input": "docs/research/n3_generator_n1_recovery_inputs/n13_direction_certificate_scientific_review_2026-10-11.md",
+  "review_sha256": "6bf3ea3300d465a7bbf88999e7cae6bceff448dde2ba26aa272a894863a6165b",
+  "counts_this_preparation": {
+    "scientific_batch_runs": 0,
+    "scientific_tests_run": 0,
+    "algebra_replays": 0,
+    "diagonalizations": 0,
+    "lp_solves": 0,
+    "sdp_solves": 0,
+    "compilations": 0,
+    "quantum_shots": 0,
+    "gpu_calls": 0
+  },
+  "future_launch_requires_separate_user_instruction": true,
+  "id": "n1_decode_recovery_contract_v1_20261011",
+  "status": "RECOVERY_SCOPE_PREPARED_REPAIR_AND_RERUN_PENDING",
+  "prior_science_source": "bbcb0176d43bfd1f7a10a87fa8f38e200d61ec46",
+  "prior_failure": "artifacts/n13_redesign/2026-10-11/run1/failure.json",
+  "frozen_scientific_scope": {
+    "modes": 4,
+    "particles": 2,
+    "sector_dimension": 6,
+    "df_rank": 2,
+    "weights": [
+      0.7,
+      -0.4
+    ],
+    "geometry": null,
+    "chemical_basis": null,
+    "L_D": null,
+    "time": 0.6,
+    "q_grid": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "delta_grid": [
+      0.6,
+      0.3,
+      0.15,
+      0.075
+    ],
+    "model_budget": 0.02,
+    "epsilon_complex": 0.04,
+    "alpha_total": 0.05,
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "normalization": 1,
+    "preparation": "fixed X0 X1 included in measured-wrapper cost",
+    "domain_source": "artifacts/hamiltonian_algorithm_design/2026-10-11/run3_recovered/result.json",
+    "domain_source_sha256": "0db570b762d66eafa9893f9cb9cbd829cdf7c33df448af0c52071a7e49fe1ab5",
+    "contexts": [
+      {
+        "id": "planted_local_gauge",
+        "factor_candidate_counts": [
+          9,
+          9
+        ]
+      },
+      {
+        "id": "dense_group_frame",
+        "factor_candidate_counts": [
+          9,
+          9
+        ]
+      },
+      {
+        "id": "separated_spectrum",
+        "factor_candidate_counts": [
+          4,
+          4
+        ]
+      }
+    ],
+    "factor_candidates": 44,
+    "pair_combinations": 178,
+    "gauged_and_ungauged_max_constructions": 356,
+    "candidate_generators_frozen_to_old_domain": true,
+    "new_centers_or_angles": 0,
+    "new_q_or_precision_points": 0,
+    "model_bound": "commuting fixed-filling square-spectrum difference plus coefficient and implemented-frame residual enclosure",
+    "pf_bound": "Childs et al. arXiv:1912.08854v2 Proposition16; coefficient Pauli-L1 nested commutators; T^3 alpha2/q^2",
+    "bias": "T*model_bound+PF_bound+emitted_phase_rounding_bound",
+    "objective_metrics": [
+      "rz",
+      "cx"
+    ],
+    "objective": "safe integer Hoeffding shots times full XY wrapper metric",
+    "comparators": [
+      "native_exact",
+      "finite_shifted_cutoff",
+      "finite_zero_cutoff",
+      "same_approximation_ungauged",
+      "whole_Pauli_original",
+      "whole_Pauli_selected_N1_approximation"
+    ],
+    "exact_fallback": "retain exact in domain; if all exact q fail coefficient certificate return UNRESOLVED_PF_CERTIFICATE",
+    "guarantee_scope": "non-worsening certified objective within eligible finite domain; no guaranteed non-worsening true diagnostic work",
+    "selector_input": "artifacts/n13_redesign/2026-10-11/preparation/n1_candidate_input.json",
+    "selector_input_sha256": "70b2631b114983572cfc92527b2d569a4b48b03a6d88790b75dcf89f13614438",
+    "runtime_selector_may_load_old_full_result": false,
+    "certificate_scope": "ideal_gate_certificate_with_numerical_compile_validation unless an independent native-error enclosure is also available",
+    "native_error_policy": "Add b_native for any rigorous compiled-circuit claim; binary64 semantic residual is only numerical validation."
+  },
+  "frozen_execution_math": "docs/research/n13_redesign_execution_20261011.md",
+  "frozen_execution_plan": "docs/research/n13_redesign_execution_plan_20261011.json",
+  "repair_boundary": [
+    "explicit_vector_matrix_decoder",
+    "full_shape_finite_real_spectrum_and_whitelist_schema",
+    "all_context_preflight",
+    "N1_only_runner"
+  ],
+  "preserve_binary64_as_integer_ratio": true,
+  "allow_nonzero_spectrum_imaginary": false,
+  "allow_input_rewrite": false,
+  "allow_raw_factor_symmetrization": false,
+  "scientific_kernel_change_allowed": false,
+  "regression": {
+    "uses_actual_saved_pack_all_contexts": true,
+    "decoded_scalar_integer_ratios_match_original": true,
+    "future_synthetic_fixture_count_max": 24,
+    "decoder_regression_run_this_preparation": false
+  },
+  "scientific_attempts_max": 1,
+  "scientific_retries_max": 0,
+  "resume": false,
+  "run_N3": false,
+  "run_N2": false,
+  "new_q_precision_or_candidate_count": 0,
+  "fixed_requested_wrappers": 2920,
+  "wrapper_compiles_max": 3072,
+  "basis_compiles_max": 44,
+  "total_compiles_max": 3116,
+  "required_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "mpmath": "1.3.0"
+  },
+  "resources": {
+    "backend": "CPU",
+    "workers_max": 2,
+    "threads_per_worker": 1,
+    "worker_memory_bytes": 4294967296,
+    "aggregate_memory_bytes": 8589934592,
+    "json_shard_bytes": 33554432,
+    "output_bytes": 536870912,
+    "log_bytes": 16777216,
+    "rational_max_bits": 4096,
+    "wall_seconds": null,
+    "cpu_seconds": null,
+    "gpu_calls": 0,
+    "thread_environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "speedup_claim_requires_same_condition_comparison": true,
+    "transpile_num_processes": 1,
+    "qubits_initially_zero": false,
+    "QISKIT_PARALLEL": "FALSE",
+    "native_operations_per_circuit_max": 20000,
+    "pauli_dictionary_max": 256,
+    "interval_bits": [
+      128,
+      256
+    ]
+  },
+  "terminal_statuses": [
+    "N1_RECOVERY_COMPLETE_AWAITING_SCIENTIFIC_REVIEW",
+    "UNRESOLVED_PF_CERTIFICATE",
+    "TECHNICAL_STOP",
+    "CERTIFICATE_OR_SEMANTICS_STOP"
+  ],
+  "implementation": {
+    "status": "not_implemented",
+    "module": "src/trottertracks/representation_exploration/n1_decode_recovery_v1.py",
+    "runner": "scripts/run_n1_decode_recovery_v1.py",
+    "test": "tests/test_n1_decode_recovery_v1.py",
+    "saved_verifier": "scripts/verify_n1_decode_recovery_v1.py",
+    "source_commit": null,
+    "source_bound_plan": null,
+    "execution_authorization": null
+  }
+}

@@ -1,0 +1,89 @@
+{
+  "readiness_commit": "3a450af0fb431269ac94152807992883c1490b26",
+  "contract_path": "artifacts/resource_applicability/track_a_h8_phase_b2_readiness/2026-10-17/execution_contract_UNAPPROVED_v1.json",
+  "contract_file_sha256": "331287dea9bac353f6b2c4de12a799c2c792013708a7241098ff27aa744de5cf",
+  "authorization_for_this_run": true,
+  "approval_text": "H8 Phase B2について、commit 3a450af0fb431269ac94152807992883c1490b26 の公開済み実行契約に従い、固定S4最大4軸の実compileを一回だけ実行することを承認します。起動直前のSOURCE・入力・compiler・資源・保全gateをすべて通過した場合のみ実行してください。各軸のモデル誤差が2%以上、または技術的異常があれば即STOPし、自動retry・再fit・追加compileは行わないでください。結果を保存・報告し、公開可能な資料をcommit・pushしてremote SHA確認後、mandatory STOPしてください。Phase Cの費用再会計は今回承認しません。",
+  "authorization_projection_not_an_executable_grant": true,
+  "registered_axes": [
+    {
+      "case_id": "B0_p15_q1_4th",
+      "axis": "cosine",
+      "exact_prediction": "1175933/7"
+    },
+    {
+      "case_id": "B0_p15_q1_4th",
+      "axis": "sine",
+      "exact_prediction": "1175933/7"
+    },
+    {
+      "case_id": "B0I_p21_q8_4th",
+      "axis": "cosine",
+      "exact_prediction": "1852640"
+    },
+    {
+      "case_id": "B0I_p21_q8_4th",
+      "axis": "sine",
+      "exact_prediction": "1852640"
+    }
+  ],
+  "compile_concurrency": 1,
+  "relative_error_denominator": "MEASURED_RZ",
+  "call_caps": {
+    "snapshot_load": 1,
+    "saved_preparation_decode": 1,
+    "prefix_view": 2,
+    "native_evolution_build": 2,
+    "measured_wrapper_build": 4,
+    "probe_wrapper_copy": 4,
+    "control_probe": 8,
+    "compile": 4,
+    "model_error_check": 4,
+    "cost_fit": 0,
+    "cost_reaccount": 0,
+    "new_signal": 0,
+    "new_full_H_reference": 0,
+    "SCF": 0,
+    "DF": 0,
+    "state_solver": 0,
+    "PR_sampling": 0,
+    "law": 0,
+    "tail_scalar": 0,
+    "unregistered_compile": 0
+  },
+  "resources": {
+    "driver_processes": 1,
+    "max_compile_workers": 1,
+    "observer_processes": 1,
+    "physical_cores": 3,
+    "threads_per_role": 1,
+    "max_cases_in_parent": 1,
+    "driver_AS_bytes": 68719476736,
+    "driver_RSS_bytes": 34359738368,
+    "worker_AS_bytes": 68719476736,
+    "worker_RSS_bytes": 34359738368,
+    "observer_AS_bytes": 536870912,
+    "observer_RSS_bytes": 268435456,
+    "aggregate_RSS_bytes": 68987912192,
+    "admission_reserve_bytes": 17179869184,
+    "CPU_seconds": 86400,
+    "worker_CPU_seconds": 86400,
+    "observer_CPU_seconds": 1800,
+    "aggregate_CPU_seconds": 86400,
+    "wall_seconds": 43200,
+    "max_workers": 1,
+    "AS_bytes": 68719476736,
+    "RSS_bytes": 34359738368,
+    "stage_storage_bytes": 8589934592,
+    "output_bytes": 268435456,
+    "logs_bytes": 134217728,
+    "log_bytes": 134217728,
+    "fresh_free_disk_bytes": 17179869184,
+    "fresh_free_inodes": 40000,
+    "minimum_free_inodes": 40000,
+    "output_files_max": 20000
+  },
+  "C_authorized": false,
+  "next_stage_authorized": false,
+  "automatic_retry": false
+}

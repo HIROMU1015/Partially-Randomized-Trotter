@@ -1,0 +1,49 @@
+{
+  "status": "PASS",
+  "methods": 32,
+  "skipped": 0,
+  "wall_seconds": 2.195,
+  "SOURCE": "7f8d74660b2914a1223d0ac7990dde8d4645032e",
+  "test_output_sha256": "6a4c27787c815ff767f4fc6c4696e5ae07b28846b8018453d2611390a12e5dd7",
+  "test_plan": {
+    "scope": "ARTIFICIAL_ONLY_NO_REAL_H8_DATA_OR_TRANSPILE",
+    "SOURCE_parent": "352581103b7dbd4fa58e28af7a6ca65570d36e8e",
+    "test_driver_cpus": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17
+    ],
+    "threads_per_process": 1,
+    "maximum_case_coordinators": 3,
+    "maximum_inner_workers": 6,
+    "maximum_preparation_child_processes": 9,
+    "concurrency_proof": "barriers require three case coordinators and six inner callbacks to overlap",
+    "operations": "Tiny stdlib callbacks, NumPy API doubles, mock QPY, fake RZ only; no H8 array loading, new signal, compile, sampling, fit or cost reaccount",
+    "ownership": "PID/start/PPID/UID + pidfd; SIGTERM handler unwinds inner map; TERM/KILL/wait4; verify all native receipts and no remaining identities",
+    "test_timeouts": "5-second artificial barriers; no production wall deadline",
+    "output": "Private home test directories; pool result JSON bounded to existing 2MiB/control item",
+    "live_run": "Do not stop or modify live SOURCE/config/grant/lock/output; artificial test process affinity excludes live CPUs2/3/4"
+  },
+  "native_transpile": 0,
+  "real_H8_arrays_loaded": 0,
+  "new_signal": 0,
+  "sampling": 0,
+  "fit": 0,
+  "cost_reaccount": 0,
+  "checks": [
+    "three-case/six-inner-worker overlap barriers",
+    "two actual wrapper-builder child callbacks overlap with identical artificial bytes",
+    "global nonrefundable reservations/case-local usage exact counts",
+    "missing/duplicate/forbidden call rejection",
+    "ticket/cpu-pair/reservation tamper rejection",
+    "native/hash/source/case result rejection",
+    "nested failure root cause preserved and all owned processes reaped",
+    "six compile failure positions stop before next compile",
+    "old grant/invalid authority rejected before scientific import or effects"
+  ]
+}

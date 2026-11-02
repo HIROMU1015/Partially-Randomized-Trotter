@@ -1,0 +1,171 @@
+{
+  "source": "artifacts/research_c_pr_aware_df_stage_c2/2026-10-27/technical/upstream/qiskit_euler.rs.txt",
+  "sha256": "15d9f65eaf6de4f8e569c661db2df9c0e1115eea9e4788a863a9a86dc01d8ce6",
+  "official_url": "https://github.com/Qiskit/qiskit/blob/1.3.0/crates/accelerate/src/euler_one_qubit_decomposer.rs",
+  "atol_hex": "0x1.19799812dea11p-40",
+  "PI_hex": "0x1.921fb54442d18p+1",
+  "simplify": true,
+  "target": null,
+  "error_map": null,
+  "common_validated_condition": "finite recorded inputs,finite captured output,exact bit-value gate semantics;Arb192 encloses reference and output directly",
+  "all_source_branches_reviewed": true,
+  "all_numerical_branch_domains_covered": false,
+  "branch_instrumentation": false,
+  "uncovered": [
+    "unseen inputs on either side of every branch",
+    "all rounding/FMA/libm variants",
+    "large angles beyond chosen artificial box",
+    "invalid/nonfinite Rust behavior",
+    "private Rust run fold for arbitrary lengths"
+  ],
+  "branches": [
+    {
+      "name": "matrix_to_angles",
+      "source_lines": "923-984",
+      "predicate": "ZSXX -> params_u1x_inner -> params_zyz_inner",
+      "output_actions": "det_arg=arg(m00*m11-m01*m10); theta=2*atan2(abs(m10),abs(m00)); phi=arg(m11)+arg(m10)-det_arg; lambda=arg(m11)-arg(m10)",
+      "phase_actions": "beta=det_arg/2-(theta+phi+lambda)/2",
+      "mathematical_identity_or_target": "For an exact unitary, e^(i[beta+(theta+phi+lambda)/2]) RZ(phi) RY(theta) RZ(lambda) reconstructs M.",
+      "numerical_operations": "complex mul/sub,abs/sqrt/hypot,atan2,arg,add/sub/div;angles can be ill-conditioned at Euler poles",
+      "artificial_cases": [
+        "identity",
+        "PauliX",
+        "PauliZ",
+        "SX",
+        "phase_i_identity",
+        "near_unitary",
+        "element_perturbation"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "theta_near_zero",
+      "source_lines": "305-309",
+      "predicate": "abs(theta)<atol",
+      "output_actions": "pfun(lambda+phi);return",
+      "phase_actions": "pfun phase below",
+      "mathematical_identity_or_target": "theta=0: target=e^(i beta) P(lambda+phi);threshold replacement has a residual and is not exact equality for every near-zero theta.",
+      "numerical_operations": "add,abs,comparison,branch approximation",
+      "artificial_cases": [
+        "theta_identity",
+        "theta_zero_cut_below",
+        "theta_zero_cut_center",
+        "theta_zero_cut_above",
+        "tiny_subnormal_angle"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "theta_near_halfpi",
+      "source_lines": "311-316",
+      "predicate": "abs(theta-PI/2)<atol",
+      "output_actions": "pfun(lambda-PI/2);SX;pfun(phi+PI/2);return",
+      "phase_actions": "pfun phase below",
+      "mathematical_identity_or_target": "At mathematical theta=pi/2: e^(i beta) P(phi+pi/2) SX P(lambda-pi/2). IEEE PI and threshold replacement have residuals.",
+      "numerical_operations": "sub,div,abs,comparison,PI rounding",
+      "artificial_cases": [
+        "theta_halfpi_cut_below",
+        "theta_halfpi_cut_center",
+        "theta_halfpi_cut_above"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "theta_near_pi",
+      "source_lines": "319-323",
+      "predicate": "abs(theta-PI)<atol",
+      "output_actions": "phi-=lambda;lambda=0",
+      "phase_actions": "beta+=lambda (old lambda)",
+      "mathematical_identity_or_target": "At theta=pi, shift lambda into phase and phi-lambda;threshold approximation otherwise.",
+      "numerical_operations": "sub,abs,comparison,phase add",
+      "artificial_cases": [
+        "theta_pi",
+        "theta_pi_cut_below",
+        "theta_pi_cut_center",
+        "theta_pi_cut_above"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "phi_or_lambda_flip",
+      "source_lines": "324-329",
+      "predicate": "abs(mod_2pi(lambda+PI,atol))<atol || abs(mod_2pi(phi,atol))<atol",
+      "output_actions": "lambda+=PI;theta=-theta;phi+=PI",
+      "phase_actions": "beta-=theta (new negative theta)",
+      "mathematical_identity_or_target": "With exact pi arithmetic, the PSX parameter target is unchanged by this gauge identity.",
+      "numerical_operations": "rem_euclid,add,abs,short-circuit comparison,negation,phase sub",
+      "artificial_cases": [
+        "phi_flip_exact",
+        "lambda_plus_pi_cut_below",
+        "lambda_plus_pi_cut_center",
+        "lambda_plus_pi_cut_above",
+        "phi_zero_cut_below",
+        "phi_zero_cut_center",
+        "phi_zero_cut_above"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "general_two_SX_or_X",
+      "source_lines": "330-349",
+      "predicate": "Some(xpifun) && abs(mod_2pi(theta+PI,atol))<atol",
+      "output_actions": "theta+=PI;phi+=PI;emit pfun(lambda);X if predicate,else SX;pfun(theta);SX;then pfun(phi)",
+      "phase_actions": "beta-=PI/2,plus all pfun contributions",
+      "mathematical_identity_or_target": "SX*SX=X exactly;PSX target equals P(phi+pi) SX P(theta+pi) SX P(lambda) times adjusted phase. Near-zero central P is a numerical approximation.",
+      "numerical_operations": "add,rem_euclid,comparison,phase sub",
+      "artificial_cases": [
+        "theta_pi",
+        "generic",
+        "theta_pi_cut_below",
+        "theta_pi_cut_above"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "RZ_emit_or_omit",
+      "source_lines": "544-574",
+      "predicate": "p=mod_2pi(a,atol);abs(p)>atol",
+      "output_actions": "RZ(p) if true;otherwise no gate",
+      "phase_actions": "if emitted:beta+=p/2;otherwise no phase",
+      "mathematical_identity_or_target": "P(p)=exp(i p/2) RZ(p). Omitting the pair approximates P(p),not RZ(p) alone.",
+      "numerical_operations": "mod,abs,comparison,div,phase add",
+      "artificial_cases": [
+        "RZ_drop_below",
+        "RZ_drop_center",
+        "RZ_drop_above",
+        "theta_identity"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "mod_endpoint",
+      "source_lines": "928-939",
+      "predicate": "w=(angle+PI).rem_euclid(2*PI)-PI;abs(w-PI)<atol",
+      "output_actions": "return -PI if predicate,else w",
+      "phase_actions": "reduced parameter is also used by phase contribution",
+      "mathematical_identity_or_target": "P(a+2pi k)=P(a);RZ(a+2pi k)=(-1)^k RZ(a),so phase and RZ cannot be separated. Endpoint clamp is approximate near the cut.",
+      "numerical_operations": "PI rounded constant,add,mul,rem_euclid,sub,abs,comparison",
+      "artificial_cases": [
+        "mod_endpoint_below",
+        "mod_endpoint_center",
+        "mod_endpoint_above",
+        "mod_endpoint_clamp"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    },
+    {
+      "name": "accepted_vs_rejected_rewrite",
+      "source_lines": "1076-1240",
+      "predicate": "outside_basis || new_error<old_error || (abs(new_error.0)<1e-9 && abs(old_error.0)>=1e-9)",
+      "output_actions": "target=None,basis-closed,ZSXX only -> strict gate-count reduction;rejected candidate leaves old run",
+      "phase_actions": "only accepted:dag.add_global_phase(sequence.global_phase)",
+      "mathematical_identity_or_target": "Use identity for rejected run and direct ideal-run-to-returned-word residual for accepted run;unknown accept decisions require coverage of both possible outputs.",
+      "numerical_operations": "count as f64,lexicographic comparison,phase accumulation",
+      "artificial_cases": [
+        "captured whole-P0 artificial cases",
+        "accepted-only composition test"
+      ],
+      "coverage": "actual recorded outputs only;no interval of compiler executions"
+    }
+  ]
+}

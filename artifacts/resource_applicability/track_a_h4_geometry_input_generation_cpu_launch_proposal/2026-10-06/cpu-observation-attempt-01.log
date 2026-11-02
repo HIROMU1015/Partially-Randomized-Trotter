@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/tmp/h4_cpu_launch_proposal.py", line 322, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/h4_cpu_launch_proposal.py", line 241, in main
+    if args.mode=='observe':observe(gates,identity,resources);return
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/h4_cpu_launch_proposal.py", line 193, in observe
+    fs=os.statvfs(fs_path);fs_available=fs.f_bavail*fs.f_frsize
+       ^^^^^^^^^^^^^^^^^^^
+  File "/tmp/h4_cpu_launch_proposal.py", line 54, in guarded_statvfs
+    def guarded_statvfs(path,*a,**kw):path_guard(path);return statvfs(path,*a,**kw)
+                                                              ^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/AbeHiromu/projects/partially-randomized-trotter/artifacts/resource_applicability'

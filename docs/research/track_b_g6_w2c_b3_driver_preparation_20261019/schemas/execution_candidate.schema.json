@@ -1,0 +1,185 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B3 unadopted driver preparation candidate",
+  "type": "object",
+  "required": [
+    "schema",
+    "adopted",
+    "contract_grants_execution",
+    "input",
+    "policy",
+    "cells",
+    "source_pins",
+    "decisions",
+    "call_budget",
+    "mandatory_STOP"
+  ],
+  "properties": {
+    "schema": {
+      "const": "g6_w2c_b3_driver_candidate_v1"
+    },
+    "adopted": {
+      "const": false
+    },
+    "contract_grants_execution": {
+      "const": false
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "cells": {
+      "const": [
+        {
+          "arm": "ordinary",
+          "layer": "A",
+          "axis": "X",
+          "N": 1174526
+        },
+        {
+          "arm": "ordinary",
+          "layer": "A",
+          "axis": "Y",
+          "N": 1174526
+        },
+        {
+          "arm": "ordinary",
+          "layer": "B",
+          "axis": "X",
+          "N": 1174526
+        },
+        {
+          "arm": "ordinary",
+          "layer": "B",
+          "axis": "Y",
+          "N": 1174526
+        },
+        {
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "axis": "X",
+          "N": 894664
+        },
+        {
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "axis": "Y",
+          "N": 894664
+        },
+        {
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "axis": "X",
+          "N": 894664
+        },
+        {
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "axis": "Y",
+          "N": 894664
+        },
+        {
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "axis": "X",
+          "N": 880312
+        },
+        {
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "axis": "Y",
+          "N": 880312
+        },
+        {
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "axis": "X",
+          "N": 880312
+        },
+        {
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "axis": "Y",
+          "N": 880312
+        },
+        {
+          "arm": "full_return",
+          "layer": "A",
+          "axis": "X",
+          "N": 1014322
+        },
+        {
+          "arm": "full_return",
+          "layer": "A",
+          "axis": "Y",
+          "N": 1014322
+        },
+        {
+          "arm": "full_return",
+          "layer": "B",
+          "axis": "X",
+          "N": 1014322
+        },
+        {
+          "arm": "full_return",
+          "layer": "B",
+          "axis": "Y",
+          "N": 1014322
+        }
+      ]
+    },
+    "input": {
+      "const": {
+        "id": "P5_general_order",
+        "p": [
+          "1/5",
+          "3/10",
+          "1/2"
+        ],
+        "x": "5/7",
+        "m": 5
+      }
+    },
+    "policy": {
+      "const": {
+        "root_bits": 256,
+        "probability_bits": 160,
+        "eta": "1/1000000000000",
+        "rho": "1/1000000000000",
+        "epsilon_axis": "1/200",
+        "primitive_error": "1/1000000",
+        "alpha_axis": "1/320",
+        "alpha_familywise_16_axes": "1/20",
+        "sigma": 1
+      }
+    },
+    "decisions": {
+      "type": "object",
+      "required": [
+        "angle",
+        "seed",
+        "schedule_and_output",
+        "source_release",
+        "external_admission"
+      ],
+      "properties": {
+        "angle": {
+          "type": "null"
+        },
+        "seed": {
+          "type": "null"
+        },
+        "schedule_and_output": {
+          "type": "null"
+        },
+        "source_release": {
+          "type": "null"
+        },
+        "external_admission": {
+          "type": "null"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$comment": "Formal adoption produces a separate contract, never edits this candidate into an authority. Python semantic guards and external admission are both necessary."
+}

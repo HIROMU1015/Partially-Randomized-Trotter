@@ -1,0 +1,40 @@
+{
+  "status": "CLOSED_TECHNICAL_FIXES",
+  "findings": [
+    {
+      "id": "H6P01",
+      "issue": "bridge signal has no cell; D0 accounting requires cell id",
+      "fix": "deep-copy dedicated B0I identity without mutation of original B0 request"
+    },
+    {
+      "id": "H6P02",
+      "issue": "scientific provider changed on disk during run not rechecked at end",
+      "fix": "230-file final disk/Git SHA recheck before COMPLETE"
+    },
+    {
+      "id": "H6P03",
+      "issue": "pilot-specific seal/scientific review/materialized profile/source constraints missing",
+      "fix": "validate before loader, preserve original F01-F06 gates"
+    },
+    {
+      "id": "H6P04",
+      "issue": "launcher TERM/INT or early identity exception could skip owned cleanup",
+      "fix": "signal exception through ownership-checked bounded wait/TERM/KILL and handler restore; unresolved identity never signalled"
+    },
+    {
+      "id": "H6P05",
+      "issue": "operation journal needs its own 64MiB proposal cap",
+      "fix": "count exact JSON bytes including newline before journal write"
+    },
+    {
+      "id": "H6P06",
+      "issue": "future TMPDIR does not yet exist, tempfile may fall back to /tmp",
+      "fix": "create private temp/cache directories after auth+exclusive output; set process-local environment and tempfile.tempdir before science imports"
+    }
+  ],
+  "fixture_repairs": [
+    "JSON-serializable complex real/imag fixture encoding",
+    "field-digest rejection test refreshes only top-level contract digest"
+  ],
+  "science_policy_changes": 0
+}

@@ -1,0 +1,11 @@
+# Readiness：準備実装済み、科学実行は閉鎖
+
+consumer導入、人工raw47件、new fake admission/STOP履歴、閉じたversioned candidate、別実装offline checker、schema、SOURCE/input/runtime pin、人工受入は準備できた。`production_entry`、ProductionFactory、ProductionBitsは引数/boolにかかわらず必ず拒否し、実科学をimportする分岐を持たない。
+
+新SOURCEの人工APIは、v3の固定3phase scheduler/F01を小さいfake projectionで動かす。fake projectionはprofile16、planned768、scope/approvalはprivate fake。科学候補n256/2条件=16,896の実行済み証拠ではない。新candidate digestをinner fake payloadへbindして再検査する。新schemaは準備候補V1であり旧v3をupgradeしない。
+
+科学候補の二条件は計測設計である。現在の人工hostは一つのv3 projection/conditionを一度だけadmitする。**実科学二条件を単一one-shotのglobal予算で実行するbundle bridgeは今回のSOURCEには存在しない**。既存v3のFull-N候補をnだけ変更して科学実行することもできない。この境界を残したまま、次段階で採択された単条件/二条件scopeに合わせた正式bridgeとoffline adapterを固定する必要がある。
+
+実行までに必要な最小の次段階は、ユーザー/GPTのscope/N/比較・precision/seed・trace/予算・STOP semanticsの決定、その決定だけを反映した新release SOURCE/bridgeと対応offline adapterの人工検証、固定payloadの正式採択、別authorizationである。本packetは採択や実行の代替ではない。正式releaseの作成・science入口の解除は今回の権限外として実装していない。
+
+旧47件のprivate/history pendingは、それを過去検証の証明に使わない限り新releaseの原理的な永久blockではない。新releaseに必要なadoption、trusted store、approval、binding、STOP/費用の原本を新しく確実に保存することで扱う。旧証拠を改変しない。

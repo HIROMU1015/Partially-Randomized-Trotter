@@ -1,0 +1,93 @@
+{
+  "status": "TECHNICAL_PREPARATION_PASS",
+  "scientific_calls": 0,
+  "real_H4_NPZ_QPY_decode": 0,
+  "new_tests": 18,
+  "reused_tests": 73,
+  "distinct_tests_passed": 91,
+  "evaluation_run": {
+    "python": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "pytest",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider",
+      "tests/management/test_research_c_rte_r_retuning.py",
+      "tests/management/test_research_c_pr_aware_df_m4.py",
+      "tests/management/test_research_c_pr_integrated_native.py",
+      "tests/management/test_research_c_pr_integrated_pipeline.py",
+      "tests/management/test_research_c_rc2_pr_stage_b.py",
+      "tests/management/test_research_c_pr_aware_df_m3.py"
+    ],
+    "passed": 87,
+    "dependency_missing_jax_failures": 4,
+    "wall_seconds": 45.91,
+    "note": "4 existing integrated outer fixtures require the separate fit environment;not code or science failures"
+  },
+  "fit_fixture_recheck": {
+    "python": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python",
+    "command": [
+      "python",
+      "-B",
+      "-m",
+      "pytest",
+      "-q",
+      "--tb=short",
+      "-p",
+      "no:cacheprovider",
+      "tests/management/test_research_c_pr_integrated_pipeline.py",
+      "-k",
+      "phase_A_dependency or passive_input"
+    ],
+    "passed": 4,
+    "deselected": 3,
+    "wall_seconds": 0.86,
+    "environment_modified": false
+  },
+  "passive_preflight": {
+    "status": "PASS",
+    "entry": "scripts/run_research_c_rte_r_retuning.py",
+    "contract": "docs/research/research_c_rte_r_retuning_contract_unapproved_20261103.json",
+    "contract_sha256": "657aa5439bf66d6a9b19e7e726bd558ad82e4c19827f5386a84221c006409fd6",
+    "source_manifest_sha256": "65c8aadbbbc2dd0179ef2465ce02c9fa546a0e942f3caa4aaf3920dd44eaeef7",
+    "fresh_scientific_output_created": false
+  },
+  "coverage": [
+    "synthetic r16,32,64,128 finite RTE/normalization/PF independence/raw signal",
+    "synthetic4orb selected/sector/generalK/CAR/ground Stage A",
+    "RPE/shots/W/shell/SE successful,infeasible,unresolved andcorrectnessFAIL mocks",
+    "custom native32 andsame-arm cache reuse;raw/compiled/adjoint/XY dispatch",
+    "metadata SOURCE/input/candidate mismatch,registeredr,fresh/retry/resume andSTOP",
+    "original M3/M4,default128 native andintegrated/RC2 Stage B regressions"
+  ],
+  "normalization_precision": {
+    "changed_runtime_formula": false,
+    "allowances_relaxed": false,
+    "reason": "closed-form log1p reordering differs from binary64 stored B0;retain existing exp(-r*n*log B0) and check step normalization"
+  },
+  "resources": {
+    "affinity_CPUs": 32,
+    "load_average": [
+      1.42724609375,
+      1.61279296875,
+      1.47900390625
+    ],
+    "available_memory_line": "MemAvailable:   54488076 kB",
+    "native_plan": {
+      "workers": 32,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 55795789824,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    },
+    "arbitrary_resource_caps": null
+  },
+  "mandatory_stop": true,
+  "next": "user may explicitly permit fixed1265-unit contract;no scientific execution in preparation"
+}

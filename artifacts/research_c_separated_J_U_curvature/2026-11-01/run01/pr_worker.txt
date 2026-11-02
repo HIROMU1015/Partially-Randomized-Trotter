@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py", line 55, in <module>
+    main()
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py", line 47, in main
+    m.fit_worker(ROOT, args.output, c, args.fit_worker)
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py", line 145, in fit_worker
+    J, U, result = algorithm.optimize(packet['g'], a['J'], a['U'], spec,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature.py", line 247, in optimize
+    assess('initial');J=coefficient('0');current=assess('0')
+                        ^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature.py", line 245, in coefficient
+    v,info=call('J_solve',label,block);blocks.append(dict(block='J',label=label,**info))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature.py", line 241, in block
+    v,info=solve_j(Coefficients(g,U,spec),J,policy,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature.py", line 132, in solve_j
+    raise ValueError('J_CHART_OR_GRADIENT_MISMATCH')
+ValueError: J_CHART_OR_GRADIENT_MISMATCH

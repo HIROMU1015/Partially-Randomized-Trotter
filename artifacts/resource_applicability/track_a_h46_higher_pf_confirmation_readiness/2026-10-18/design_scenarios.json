@@ -1,0 +1,2603 @@
+{
+  "status": "TECHNICAL_DESIGN_ONLY_NOT_EXECUTION_READY",
+  "input_result_commit": "1fc58aa3f5568887e0678a9be939551b0ed6523d",
+  "cases": [
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 10,
+        "H6_Y4_q2": 35,
+        "H6_Y4_q4": 35
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 35,
+        "H6_Y4_q2": 35,
+        "H6_Y4_q4": 35
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 10
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 35
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_observed_gap_power80",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 10,
+        "H6_Y4_q2": 35,
+        "H6_Y4_q4": 35
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 105,
+            "cost_wrapper_axes": 210,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 26.849805145317806,
+            "LPT_wall_minutes_proxy": 102.15857792093496,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 105,
+            "cost_wrapper_axes": 210,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 26.849805145317806,
+            "LPT_wall_minutes_proxy": 55.08269046735174,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 105,
+            "cost_wrapper_axes": 210,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 26.849805145317806,
+            "LPT_wall_minutes_proxy": 35.92613425498518,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 80,
+            "cost_wrapper_axes": 160,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 19.365193842195893,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 80,
+            "cost_wrapper_axes": 160,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 19.365193842195893,
+            "LPT_wall_minutes_proxy": 38.31311242473312,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 80,
+            "cost_wrapper_axes": 160,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 19.365193842195893,
+            "LPT_wall_minutes_proxy": 19.15655621236656,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 80,
+            "cost_wrapper_axes": 160,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 19.365193842195893,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 80,
+            "cost_wrapper_axes": 160,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 19.365193842195893,
+            "LPT_wall_minutes_proxy": 38.31311242473312,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 80,
+            "cost_wrapper_axes": 160,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 19.365193842195893,
+            "LPT_wall_minutes_proxy": 19.15655621236656,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.9,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 13,
+        "H6_Y4_q2": 45,
+        "H6_Y4_q4": 45
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 45,
+        "H6_Y4_q2": 45,
+        "H6_Y4_q4": 45
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 13
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 45
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_observed_gap_power90",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 13,
+        "H6_Y4_q2": 45,
+        "H6_Y4_q4": 45
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 135,
+            "cost_wrapper_axes": 270,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 34.521178043980036,
+            "LPT_wall_minutes_proxy": 136.89122309104616,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 135,
+            "cost_wrapper_axes": 270,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 34.521178043980036,
+            "LPT_wall_minutes_proxy": 72.8999185715802,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 135,
+            "cost_wrapper_axes": 270,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 34.521178043980036,
+            "LPT_wall_minutes_proxy": 37.119623339859146,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 103,
+            "cost_wrapper_axes": 206,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 24.940875575983988,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 103,
+            "cost_wrapper_axes": 206,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 24.940875575983988,
+            "LPT_wall_minutes_proxy": 54.791012420823485,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 103,
+            "cost_wrapper_axes": 206,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 24.940875575983988,
+            "LPT_wall_minutes_proxy": 28.06517026448079,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 103,
+            "cost_wrapper_axes": 206,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 24.940875575983988,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 103,
+            "cost_wrapper_axes": 206,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 24.940875575983988,
+            "LPT_wall_minutes_proxy": 54.791012420823485,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 103,
+            "cost_wrapper_axes": 206,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 24.940875575983988,
+            "LPT_wall_minutes_proxy": 28.06517026448079,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 0.5,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 39,
+        "H6_Y4_q2": 137,
+        "H6_Y4_q4": 137
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 137,
+        "H6_Y4_q2": 137,
+        "H6_Y4_q4": 137
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 232199485155.375,
+          "equal_n_pair_plugin": 39
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 66411025703.0625,
+          "equal_n_pair_plugin": 137
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_half_observed_gap_power80",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 39,
+        "H6_Y4_q2": 137,
+        "H6_Y4_q4": 137
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 411,
+            "cost_wrapper_axes": 822,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 105.09780871167256,
+            "LPT_wall_minutes_proxy": 396.2910694002678,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 411,
+            "cost_wrapper_axes": 822,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 105.09780871167256,
+            "LPT_wall_minutes_proxy": 202.0760166953861,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 411,
+            "cost_wrapper_axes": 822,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 105.09780871167256,
+            "LPT_wall_minutes_proxy": 101.11092785932512,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 288.5126666353123,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 148.18681531290835,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 288.5126666353123,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 148.18681531290835,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 2,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 20,
+        "H6_Y4_q2": 69,
+        "H6_Y4_q4": 69
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 69,
+        "H6_Y4_q2": 69,
+        "H6_Y4_q4": 69
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 20
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 69
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_variance_x2_power80",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 20,
+        "H6_Y4_q2": 69,
+        "H6_Y4_q4": 69
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 207,
+            "cost_wrapper_axes": 414,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 52.932473000769384,
+            "LPT_wall_minutes_proxy": 202.0760166953861,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 207,
+            "cost_wrapper_axes": 414,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 52.932473000769384,
+            "LPT_wall_minutes_proxy": 101.11092785932512,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 207,
+            "cost_wrapper_axes": 414,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 52.932473000769384,
+            "LPT_wall_minutes_proxy": 55.08269046735174,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 158,
+            "cost_wrapper_axes": 316,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 38.26263484665044,
+            "LPT_wall_minutes_proxy": 148.18681531290835,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 158,
+            "cost_wrapper_axes": 316,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 38.26263484665044,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 158,
+            "cost_wrapper_axes": 316,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 38.26263484665044,
+            "LPT_wall_minutes_proxy": 38.31311242473312,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 158,
+            "cost_wrapper_axes": 316,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 38.26263484665044,
+            "LPT_wall_minutes_proxy": 148.18681531290835,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 158,
+            "cost_wrapper_axes": 316,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 38.26263484665044,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 158,
+            "cost_wrapper_axes": 316,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 38.26263484665044,
+            "LPT_wall_minutes_proxy": 38.31311242473312,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 4,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 39,
+        "H6_Y4_q2": 137,
+        "H6_Y4_q4": 137
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 137,
+        "H6_Y4_q2": 137,
+        "H6_Y4_q4": 137
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 39
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 137
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_variance_x4_power80",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 39,
+        "H6_Y4_q2": 137,
+        "H6_Y4_q4": 137
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 411,
+            "cost_wrapper_axes": 822,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 105.09780871167256,
+            "LPT_wall_minutes_proxy": 396.2910694002678,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 411,
+            "cost_wrapper_axes": 822,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 105.09780871167256,
+            "LPT_wall_minutes_proxy": 202.0760166953861,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 411,
+            "cost_wrapper_axes": 822,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 105.09780871167256,
+            "LPT_wall_minutes_proxy": 101.11092785932512,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 288.5126666353123,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 148.18681531290835,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 288.5126666353123,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 148.18681531290835,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 313,
+            "cost_wrapper_axes": 626,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 75.75813240343466,
+            "LPT_wall_minutes_proxy": 74.09340765645418,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": 0.5,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 21,
+        "H6_Y4_q2": 73,
+        "H6_Y4_q4": 73
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 73,
+        "H6_Y4_q2": 73,
+        "H6_Y4_q4": 73
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 21
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 73
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_difference_halfwidth_half_gap",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 21,
+        "H6_Y4_q2": 73,
+        "H6_Y4_q4": 73
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 219,
+            "cost_wrapper_axes": 438,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 56.00102216023428,
+            "LPT_wall_minutes_proxy": 212.1781198323743,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 219,
+            "cost_wrapper_axes": 438,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 56.00102216023428,
+            "LPT_wall_minutes_proxy": 110.01954191143935,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 219,
+            "cost_wrapper_axes": 438,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 56.00102216023428,
+            "LPT_wall_minutes_proxy": 55.08269046735174,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 167,
+            "cost_wrapper_axes": 334,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 40.4330306497407,
+            "LPT_wall_minutes_proxy": 157.09542936502257,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 167,
+            "cost_wrapper_axes": 334,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 40.4330306497407,
+            "LPT_wall_minutes_proxy": 83.0020217085684,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 167,
+            "cost_wrapper_axes": 334,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 40.4330306497407,
+            "LPT_wall_minutes_proxy": 45.882398368709254,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 167,
+            "cost_wrapper_axes": 334,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 40.4330306497407,
+            "LPT_wall_minutes_proxy": 157.09542936502257,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 167,
+            "cost_wrapper_axes": 334,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 40.4330306497407,
+            "LPT_wall_minutes_proxy": 83.0020217085684,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 167,
+            "cost_wrapper_axes": 334,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 40.4330306497407,
+            "LPT_wall_minutes_proxy": 45.882398368709254,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 2,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": 0.25,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 83,
+        "H6_Y4_q2": 290,
+        "H6_Y4_q4": 290
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 290,
+        "H6_Y4_q2": 290,
+        "H6_Y4_q4": 290
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 83
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 290
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "MINIMAL3_difference_halfwidth_quarter_gap",
+      "family": "MINIMAL3",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 83,
+        "H6_Y4_q2": 290,
+        "H6_Y4_q4": 290
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 870,
+            "cost_wrapper_axes": 1740,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 222.46981406120466,
+            "LPT_wall_minutes_proxy": 837.416887107635,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 870,
+            "cost_wrapper_axes": 1740,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 222.46981406120466,
+            "LPT_wall_minutes_proxy": 423.1627505798746,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 870,
+            "cost_wrapper_axes": 1740,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 222.46981406120466,
+            "LPT_wall_minutes_proxy": 212.1781198323743,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 663,
+            "cost_wrapper_axes": 1326,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 160.49723247135523,
+            "LPT_wall_minutes_proxy": 604.0428534734955,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 663,
+            "cost_wrapper_axes": 1326,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 160.49723247135523,
+            "LPT_wall_minutes_proxy": 306.4757337628049,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 663,
+            "cost_wrapper_axes": 1326,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 160.49723247135523,
+            "LPT_wall_minutes_proxy": 157.09542936502257,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 663,
+            "cost_wrapper_axes": 1326,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 160.49723247135523,
+            "LPT_wall_minutes_proxy": 604.0428534734955,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 663,
+            "cost_wrapper_axes": 1326,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 160.49723247135523,
+            "LPT_wall_minutes_proxy": 306.4757337628049,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 663,
+            "cost_wrapper_axes": 1326,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 160.49723247135523,
+            "LPT_wall_minutes_proxy": 157.09542936502257,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 13,
+        "H6_Y4_q2": 45,
+        "H6_Y4_q4": 45,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 2,
+        "H4_Y4_q2": 2,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 45,
+        "H6_Y4_q2": 45,
+        "H6_Y4_q4": 45,
+        "H6_N2_q1": 45,
+        "H4_S2_q8": 45,
+        "H4_Y4_q2": 45,
+        "H4_N2_q1": 45
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 13
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 45
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 8102958856073.125,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 7638559885762.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 944507826809.25,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 1885885913499.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 941378086690.125,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_observed_gap_power80",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 13,
+        "H6_Y4_q2": 45,
+        "H6_Y4_q4": 45,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 8,
+        "H4_Y4_q2": 19,
+        "H4_N2_q1": 14
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 315,
+            "cost_wrapper_axes": 630,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 45.912600083704454,
+            "LPT_wall_minutes_proxy": 172.65311027695813,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 315,
+            "cost_wrapper_axes": 630,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 45.912600083704454,
+            "LPT_wall_minutes_proxy": 86.53139147191541,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 315,
+            "cost_wrapper_axes": 630,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 45.912600083704454,
+            "LPT_wall_minutes_proxy": 43.55566450028758,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 111,
+            "cost_wrapper_axes": 222,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 25.44716099997174,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 111,
+            "cost_wrapper_axes": 222,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 25.44716099997174,
+            "LPT_wall_minutes_proxy": 54.791012420823485,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 111,
+            "cost_wrapper_axes": 222,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 25.44716099997174,
+            "LPT_wall_minutes_proxy": 28.06517026448079,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 152,
+            "cost_wrapper_axes": 304,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 27.57017668767399,
+            "LPT_wall_minutes_proxy": 104.1413630532256,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 152,
+            "cost_wrapper_axes": 304,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 27.57017668767399,
+            "LPT_wall_minutes_proxy": 54.791012420823485,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 152,
+            "cost_wrapper_axes": 304,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 27.57017668767399,
+            "LPT_wall_minutes_proxy": 28.06517026448079,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.9,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 17,
+        "H6_Y4_q2": 57,
+        "H6_Y4_q4": 57,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 2,
+        "H4_Y4_q2": 2,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 57,
+        "H6_Y4_q2": 57,
+        "H6_Y4_q4": 57,
+        "H6_N2_q1": 57,
+        "H4_S2_q8": 57,
+        "H4_Y4_q2": 57,
+        "H4_N2_q1": 57
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 17
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 57
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 8102958856073.125,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 7638559885762.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 944507826809.25,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 1885885913499.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 941378086690.125,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_observed_gap_power90",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 17,
+        "H6_Y4_q2": 57,
+        "H6_Y4_q4": 57,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 8,
+        "H4_Y4_q2": 19,
+        "H4_N2_q1": 14
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 399,
+            "cost_wrapper_axes": 798,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 58.155960106025645,
+            "LPT_wall_minutes_proxy": 219.04679868059853,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 399,
+            "cost_wrapper_axes": 798,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 58.155960106025645,
+            "LPT_wall_minutes_proxy": 110.24282108047822,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 399,
+            "cost_wrapper_axes": 798,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 58.155960106025645,
+            "LPT_wall_minutes_proxy": 55.726147491504285,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 139,
+            "cost_wrapper_axes": 278,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 32.2577328613674,
+            "LPT_wall_minutes_proxy": 121.82432217239402,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 139,
+            "cost_wrapper_axes": 278,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 32.2577328613674,
+            "LPT_wall_minutes_proxy": 65.03895458107581,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 139,
+            "cost_wrapper_axes": 278,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 32.2577328613674,
+            "LPT_wall_minutes_proxy": 37.119623339859146,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 180,
+            "cost_wrapper_axes": 360,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 34.38074854906965,
+            "LPT_wall_minutes_proxy": 129.80357033030208,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 180,
+            "cost_wrapper_axes": 360,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 34.38074854906965,
+            "LPT_wall_minutes_proxy": 65.16086810065123,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 180,
+            "cost_wrapper_axes": 360,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 34.38074854906965,
+            "LPT_wall_minutes_proxy": 37.119623339859146,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 0.5,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 52,
+        "H6_Y4_q2": 180,
+        "H6_Y4_q4": 180,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 2,
+        "H4_Y4_q2": 2,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 180,
+        "H6_Y4_q2": 180,
+        "H6_Y4_q4": 180,
+        "H6_N2_q1": 180,
+        "H4_S2_q8": 180,
+        "H4_Y4_q2": 180,
+        "H4_N2_q1": 180
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 232199485155.375,
+          "equal_n_pair_plugin": 52
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 66411025703.0625,
+          "equal_n_pair_plugin": 180
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 4051479428036.5625,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 3819279942881.1875,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 472253913404.625,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 942942956749.6875,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 470689043345.0625,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_half_observed_gap_power80",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 52,
+        "H6_Y4_q2": 180,
+        "H6_Y4_q4": 180,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 8,
+        "H4_Y4_q2": 19,
+        "H4_N2_q1": 14
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 1260,
+            "cost_wrapper_axes": 2520,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 183.65040033481782,
+            "LPT_wall_minutes_proxy": 689.1030998565024,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 1260,
+            "cost_wrapper_axes": 2520,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 183.65040033481782,
+            "LPT_wall_minutes_proxy": 344.8823755181666,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 1260,
+            "cost_wrapper_axes": 2520,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 183.65040033481782,
+            "LPT_wall_minutes_proxy": 172.65311027695813,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 420,
+            "cost_wrapper_axes": 840,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 100.2697877279237,
+            "LPT_wall_minutes_proxy": 380.42330239599494,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 420,
+            "cost_wrapper_axes": 840,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 100.2697877279237,
+            "LPT_wall_minutes_proxy": 194.06921368161758,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 420,
+            "cost_wrapper_axes": 840,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 100.2697877279237,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 461,
+            "cost_wrapper_axes": 922,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 102.39280341562595,
+            "LPT_wall_minutes_proxy": 384.7604140810319,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 461,
+            "cost_wrapper_axes": 922,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 102.39280341562595,
+            "LPT_wall_minutes_proxy": 194.06921368161758,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 461,
+            "cost_wrapper_axes": 922,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 102.39280341562595,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 2,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 26,
+        "H6_Y4_q2": 90,
+        "H6_Y4_q4": 90,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 2,
+        "H4_Y4_q2": 2,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 90,
+        "H6_Y4_q2": 90,
+        "H6_Y4_q4": 90,
+        "H6_N2_q1": 90,
+        "H4_S2_q8": 90,
+        "H4_Y4_q2": 90,
+        "H4_N2_q1": 90
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 26
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 90
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 8102958856073.125,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 7638559885762.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 944507826809.25,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 1885885913499.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 941378086690.125,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_variance_x2_power80",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 26,
+        "H6_Y4_q2": 90,
+        "H6_Y4_q4": 90,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 15,
+        "H4_Y4_q2": 38,
+        "H4_N2_q1": 28
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 630,
+            "cost_wrapper_axes": 1260,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 91.82520016740891,
+            "LPT_wall_minutes_proxy": 344.8823755181666,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 630,
+            "cost_wrapper_axes": 1260,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 91.82520016740891,
+            "LPT_wall_minutes_proxy": 172.65311027695813,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 630,
+            "cost_wrapper_axes": 1260,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 91.82520016740891,
+            "LPT_wall_minutes_proxy": 86.53139147191541,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 214,
+            "cost_wrapper_axes": 428,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 50.388036575955724,
+            "LPT_wall_minutes_proxy": 194.06921368161758,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 214,
+            "cost_wrapper_axes": 428,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 50.388036575955724,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 214,
+            "cost_wrapper_axes": 428,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 50.388036575955724,
+            "LPT_wall_minutes_proxy": 54.791012420823485,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 295,
+            "cost_wrapper_axes": 590,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 54.17758466782055,
+            "LPT_wall_minutes_proxy": 203.52333457046188,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 295,
+            "cost_wrapper_axes": 590,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 54.17758466782055,
+            "LPT_wall_minutes_proxy": 102.05268704748013,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 295,
+            "cost_wrapper_axes": 590,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 54.17758466782055,
+            "LPT_wall_minutes_proxy": 54.791012420823485,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 4,
+      "effect_scale": 1,
+      "halfwidth_fraction": null,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 52,
+        "H6_Y4_q2": 180,
+        "H6_Y4_q4": 180,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 2,
+        "H4_Y4_q2": 2,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 180,
+        "H6_Y4_q2": 180,
+        "H6_Y4_q4": 180,
+        "H6_N2_q1": 180,
+        "H4_S2_q8": 180,
+        "H4_Y4_q2": 180,
+        "H4_N2_q1": 180
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 52
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 180
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 8102958856073.125,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 7638559885762.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 944507826809.25,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 1885885913499.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 941378086690.125,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_variance_x4_power80",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 52,
+        "H6_Y4_q2": 180,
+        "H6_Y4_q4": 180,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 29,
+        "H4_Y4_q2": 75,
+        "H4_N2_q1": 55
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 1260,
+            "cost_wrapper_axes": 2520,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 183.65040033481782,
+            "LPT_wall_minutes_proxy": 689.1030998565024,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 1260,
+            "cost_wrapper_axes": 2520,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 183.65040033481782,
+            "LPT_wall_minutes_proxy": 344.8823755181666,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 1260,
+            "cost_wrapper_axes": 2520,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 183.65040033481782,
+            "LPT_wall_minutes_proxy": 172.65311027695813,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 420,
+            "cost_wrapper_axes": 840,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 100.2697877279237,
+            "LPT_wall_minutes_proxy": 380.42330239599494,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 420,
+            "cost_wrapper_axes": 840,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 100.2697877279237,
+            "LPT_wall_minutes_proxy": 194.06921368161758,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 420,
+            "cost_wrapper_axes": 840,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 100.2697877279237,
+            "LPT_wall_minutes_proxy": 100.96508883606099,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 579,
+            "cost_wrapper_axes": 1158,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 107.32457797574371,
+            "LPT_wall_minutes_proxy": 403.51252553734616,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 579,
+            "cost_wrapper_axes": 1158,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 107.32457797574371,
+            "LPT_wall_minutes_proxy": 202.2079319660125,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 579,
+            "cost_wrapper_axes": 1158,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 107.32457797574371,
+            "LPT_wall_minutes_proxy": 101.6288420117305,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": 0.5,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 30,
+        "H6_Y4_q2": 105,
+        "H6_Y4_q4": 105,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 2,
+        "H4_Y4_q2": 2,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 105,
+        "H6_Y4_q2": 105,
+        "H6_Y4_q4": 105,
+        "H6_N2_q1": 105,
+        "H4_S2_q8": 105,
+        "H4_Y4_q2": 105,
+        "H4_N2_q1": 105
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 30
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 105
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 8102958856073.125,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 7638559885762.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 944507826809.25,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 1885885913499.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 941378086690.125,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_difference_halfwidth_half_gap",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 30,
+        "H6_Y4_q2": 105,
+        "H6_Y4_q4": 105,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 8,
+        "H4_Y4_q2": 19,
+        "H4_N2_q1": 14
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 735,
+            "cost_wrapper_axes": 1470,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 107.1294001953104,
+            "LPT_wall_minutes_proxy": 402.69719901541634,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 735,
+            "cost_wrapper_axes": 1470,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 107.1294001953104,
+            "LPT_wall_minutes_proxy": 201.73538098188584,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 735,
+            "cost_wrapper_axes": 1470,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 107.1294001953104,
+            "LPT_wall_minutes_proxy": 101.0924819850518,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 248,
+            "cost_wrapper_axes": 496,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 58.60186695057543,
+            "LPT_wall_minutes_proxy": 222.2802229693625,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 248,
+            "cost_wrapper_axes": 496,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 58.60186695057543,
+            "LPT_wall_minutes_proxy": 111.21303099631332,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 248,
+            "cost_wrapper_axes": 496,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 58.60186695057543,
+            "LPT_wall_minutes_proxy": 56.13034052896158,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 289,
+            "cost_wrapper_axes": 578,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 60.72488263827768,
+            "LPT_wall_minutes_proxy": 228.71626412979094,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 289,
+            "cost_wrapper_axes": 578,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 60.72488263827768,
+            "LPT_wall_minutes_proxy": 114.61838524424626,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 289,
+            "cost_wrapper_axes": 578,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 60.72488263827768,
+            "LPT_wall_minutes_proxy": 58.34093005428246,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    },
+    {
+      "family_size": 7,
+      "family_alpha_nominal": 0.05,
+      "power_planning": 0.8,
+      "variance_factor_sensitivity": 1,
+      "effect_scale": 1,
+      "halfwidth_fraction": 0.25,
+      "endpoint_allocation_plugin": {
+        "H6_S2_q8": 119,
+        "H6_Y4_q2": 417,
+        "H6_Y4_q4": 417,
+        "H6_N2_q1": 2,
+        "H4_S2_q8": 3,
+        "H4_Y4_q2": 3,
+        "H4_N2_q1": 2
+      },
+      "equal_allocation_plugin": {
+        "H6_S2_q8": 417,
+        "H6_Y4_q2": 417,
+        "H6_Y4_q4": 417,
+        "H6_N2_q1": 417,
+        "H4_S2_q8": 417,
+        "H4_Y4_q2": 417,
+        "H4_N2_q1": 417
+      },
+      "comparisons": [
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_Y4_q2",
+          "planning_effect": 464398970310.75,
+          "equal_n_pair_plugin": 119
+        },
+        {
+          "left": "H6_Y4_q4",
+          "right": "H6_Y4_q2",
+          "planning_effect": 132822051406.125,
+          "equal_n_pair_plugin": 417
+        },
+        {
+          "left": "H6_S2_q8",
+          "right": "H6_N2_q1",
+          "planning_effect": 8102958856073.125,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H6_Y4_q2",
+          "right": "H6_N2_q1",
+          "planning_effect": 7638559885762.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_Y4_q2",
+          "planning_effect": 944507826809.25,
+          "equal_n_pair_plugin": 3
+        },
+        {
+          "left": "H4_S2_q8",
+          "right": "H4_N2_q1",
+          "planning_effect": 1885885913499.375,
+          "equal_n_pair_plugin": 2
+        },
+        {
+          "left": "H4_Y4_q2",
+          "right": "H4_N2_q1",
+          "planning_effect": 941378086690.125,
+          "equal_n_pair_plugin": 2
+        }
+      ],
+      "candidate_independence_assumed_for_planning": true,
+      "coverage_or_power_guaranteed": false,
+      "variance_factor_is_not_an_upper_bound": true,
+      "adopted_n": null,
+      "new_sampling": 0,
+      "new_compile": 0,
+      "case": "EXPANDED7_difference_halfwidth_quarter_gap",
+      "family": "EXPANDED7",
+      "candidates": [
+        "H6_S2_q8",
+        "H6_Y4_q2",
+        "H6_Y4_q4",
+        "H6_N2_q1",
+        "H4_S2_q8",
+        "H4_Y4_q2",
+        "H4_N2_q1"
+      ],
+      "reporting_guard_allocation_plugin": {
+        "H6_S2_q8": 119,
+        "H6_Y4_q2": 417,
+        "H6_Y4_q4": 417,
+        "H6_N2_q1": 8,
+        "H4_S2_q8": 8,
+        "H4_Y4_q2": 19,
+        "H4_N2_q1": 14
+      },
+      "reporting_guard_policy_UNADOPTED": {
+        "minimum_fresh_replication": "at least the saved pilot n8",
+        "relative_MCSE_target_plugin": 0.01,
+        "not_a_necessity_or_precision_guarantee": true
+      },
+      "resource_projections": {
+        "equal_allocation_plugin": [
+          {
+            "trajectories": 2919,
+            "cost_wrapper_axes": 5838,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 425.4567607756613,
+            "LPT_wall_minutes_proxy": 1596.2119724494676,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 2919,
+            "cost_wrapper_axes": 5838,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 425.4567607756613,
+            "LPT_wall_minutes_proxy": 798.1850834691082,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 2919,
+            "cost_wrapper_axes": 5838,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 425.4567607756613,
+            "LPT_wall_minutes_proxy": 399.4353300763139,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "endpoint_allocation_plugin": [
+          {
+            "trajectories": 963,
+            "cost_wrapper_axes": 1926,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 231.29966923235966,
+            "LPT_wall_minutes_proxy": 873.2531248731772,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 963,
+            "cost_wrapper_axes": 1926,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 231.29966923235966,
+            "LPT_wall_minutes_proxy": 436.69948194822064,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 963,
+            "cost_wrapper_axes": 1926,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 231.29966923235966,
+            "LPT_wall_minutes_proxy": 222.2802229693625,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ],
+        "reporting_guard_allocation_plugin": [
+          {
+            "trajectories": 1002,
+            "cost_wrapper_axes": 2004,
+            "workers_scenario": 16,
+            "worker_hours_proxy": 233.3089842526918,
+            "LPT_wall_minutes_proxy": 875.3817490287319,
+            "worker_RSS_GiB_proxy": 25.68194580078125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 1002,
+            "cost_wrapper_axes": 2004,
+            "workers_scenario": 32,
+            "worker_hours_proxy": 233.3089842526918,
+            "LPT_wall_minutes_proxy": 438.4021590721871,
+            "worker_RSS_GiB_proxy": 51.3638916015625,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          },
+          {
+            "trajectories": 1002,
+            "cost_wrapper_axes": 2004,
+            "workers_scenario": 64,
+            "worker_hours_proxy": 233.3089842526918,
+            "LPT_wall_minutes_proxy": 222.2802229693625,
+            "worker_RSS_GiB_proxy": 102.727783203125,
+            "actual_CPU_time_measured": false,
+            "resource_or_wall_upper_bound": false,
+            "control_initialization_and_unobserved_event_overhead_included_as_bound": false
+          }
+        ]
+      }
+    }
+  ],
+  "adopted_case": null,
+  "adopted_n": null,
+  "new_trajectories": 0,
+  "new_compile": 0,
+  "new_signal": 0,
+  "confirmation_started": false,
+  "mandatory_STOP": true
+}

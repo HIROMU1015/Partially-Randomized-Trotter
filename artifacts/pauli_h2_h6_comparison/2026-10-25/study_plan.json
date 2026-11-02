@@ -1,0 +1,50 @@
+{
+  "study": "H2_H6_PAULI_CENTRAL_S2_CONDITIONAL_RESOURCE_COMPARISON",
+  "base_commit": "fbfbfd21a252a4a32f52e3b40e50acd91b3c626a",
+  "molecules": [2, 6],
+  "geometry": "linear adjacent 1.00 Angstrom; neutral singlet STO-3G",
+  "T": 0.8,
+  "q": [1, 2, 4, 8],
+  "r": [2, 4, 8],
+  "K": [2, 4],
+  "epsilon_sig": ["0.05", "0.01", "0.005", "0.001", "0.0005"],
+  "compiler": {"qiskit": "1.3.0", "basis": ["rz", "sx", "x", "cx"], "optimization_level": 1, "seed": 17, "topology": null},
+  "inputs": {
+    "H2": "reuse saved Pauli Hamiltonian and raw state from non_df_h2_pilot; independently bound full-H reference on that ray",
+    "H6": "saved available snapshot is DF-only, without original non-DF MO integrals; generate one new RHF/STO-3G MO integral set, Pauli-JW and common sector ground state, cross-check FCI; no DF generation",
+    "H6_SCF": {"conv_tol": 1e-12, "max_cycle": 100, "init_guess": "minao", "symmetry": false},
+    "sector": "Nalpha=Nbeta=molecule_size/2, interleaved alpha/beta, Qiskit little endian",
+    "normalization": "raw binary64 state and exact common squared norm; no renormalization between methods"
+  },
+  "initial_selection": {
+    "B0_H2": "all prefixes 1..14 times q; full prefix separately labelled PF",
+    "B0_H6": "unique prefixes {1, all-Z boundary, boundary+1, round(.25*m), round(.5*m), round(.75*m), round(.9*m), m-8, m-4, m}; all q",
+    "PR": "prefixes {0, round(.25*m), all-Z boundary, boundary+1, round(.5*m), round(.75*m)} clipped below m; q skeleton r4/K4; K2 at q1/4/8; r2/8 at boundary and mid prefix, q1/4/8",
+    "prices": "only joint eligible at one of five precisions; 8 paired exploration trajectories per PR candidate; deterministic once"
+  },
+  "adaptive_rules": {
+    "rounds": 2,
+    "B0": "per precision top two eligible candidates and eligibility boundaries; prefix neighbours +/-1,+/-4 and midpoint to neighbouring evaluated prefix; q neighbours; at most 48 new configurations per round per molecule",
+    "PR": "per precision top two exploration-G candidates; one-coordinate prefix +/-1,+/-4 and q/r neighbours or K toggle; at most 32 new configurations per round per molecule",
+    "second_round_trigger": "previous improvement >1 percent, unresolved boundary or candidate/deterministic gap within five exploration SE",
+    "registration": "each concrete batch JSON and code/input SHA fixed before calls; initial/adaptive records separate"
+  },
+  "confirmation": {
+    "finalists": "freeze union of top two exploration candidates per precision, at most 10; exploration nominees retained separately from confirmation-set minimum",
+    "initial_paired_n": 48,
+    "extensions": [96, 192, 384],
+    "extend_if": "important comparison within two combined SE and nominal t95 relative halfwidth >1 percent; no strict tail or sequential-CI claim",
+    "seed_rule": "SeedSequence([20261025,molecule_size,L_D,q,r,K,cohort_tag,index]); exploration=101, confirmation=202; uint64 to existing PCG64 sampler"
+  },
+  "numerics": {
+    "target": "actual finite effective uniform53 grid event law; exact retained coefficient*time operands and native binary64 step scalar; B_saved applied once",
+    "reference": "full-H raw-state Duhamel enclosure from validated residual and Arb exp(-i*T*E); no midpoint-only reference",
+    "state_actions": "matrix-free binary64 centers with explicit L2 roundoff propagation; Arb scalar trig and probability mass conversion; artificial comparison to existing dense Arb oracle",
+    "accounting": "reuse H4 outward shot formula, alpha_axis=.025, epsilon/sqrt(2), u/headroom<=.01; rho=0 hypothetical; actual rho and PR population tail unknown",
+    "fallback": "if a relevant numerical threshold unresolved, existing Arb vector bridge 64/96/128 as needed; do not use an invented allowance"
+  },
+  "scope": "new inputs if needed, per-molecule reference, finite registered B0/full-PF/PR means, eligible compiled paired prices, adaptive batches, independent confirmation, saved-value accounting and combined H2/H4/H6 tables",
+  "technical_failures": "preserve failed outputs; repair within scope under new code SHA and fresh attempt; reuse successful results; never reopen old fixed one-shot/STOP",
+  "stop": "complete published results or unresolved major scientific premise; no other geometry/molecule, DF search, algorithm change, detailed science review or formal certificate acceptance",
+  "approval_machinery": "none; chat permission sufficient"
+}

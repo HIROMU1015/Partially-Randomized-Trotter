@@ -1,0 +1,70 @@
+{
+  "schema": "C1_STAGE1_COMPATIBILITY_DECISION_v1",
+  "base_commit": "2ecf281567cf619adf1268b78d64947caa363a25",
+  "cause": "ffsim unitaries_to_parameters passes (n_mats,dim,dim) to scipy.linalg.logm; fixed SciPy1.14.1 rejects ndim !=2; failure occurs in x0 generation before scipy.optimize.minimize",
+  "previous_static_audit_sha256": "9c7746cb5ae09d0a38e3a8af1a2850adebe3ef14a379d09798f415be974eaf09",
+  "fixed_source_records": [
+    {
+      "path": "ffsim/linalg/util.py",
+      "sha256": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+      "first_line": 192,
+      "last_line": 207
+    },
+    {
+      "path": "ffsim/linalg/double_factorized_decomposition.py",
+      "sha256": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4",
+      "first_line": 396,
+      "last_line": 424
+    },
+    {
+      "path": "scipy/linalg/_matfuncs.py",
+      "sha256": "5e929a5df38641830da4cf4bcbb7c69b4041d580b588b47cf90ce7e1354ae759",
+      "first_line": 51,
+      "last_line": 55
+    },
+    {
+      "path": "scipy/linalg/_matfuncs.py",
+      "sha256": "5e929a5df38641830da4cf4bcbb7c69b4041d580b588b47cf90ce7e1354ae759",
+      "first_line": 196,
+      "last_line": 202
+    }
+  ],
+  "candidates": [
+    {
+      "method": "Pin SciPy1.16.0",
+      "batch_API": "Documented supported",
+      "dependencies": "Python3.11 and NumPy1.26.4 meet documented minimums; changes SciPy wheel and entire linalg/optimize implementation; other compatibility would require qualification",
+      "validation": "Official documentation/source comparison only; not installed or benchmarked; no claim of identical results",
+      "adopted": false
+    },
+    {
+      "method": "Explicit task-local per-matrix bridge on fixed SciPy1.14.1",
+      "batch_API": "Ordered np.stack of existing 2D scipy.linalg.logm, default arguments; original ffsim antihermitians_to_parameters(real=real)",
+      "dependencies": "Same 22/41 wheel hashes, Python3.11.1, NumPy1.26.4, SciPy1.14.1, ffsim0.0.83, JAX0.4.38",
+      "validation": "Artificial regression and actual ffsim initialization with optimizer mock; no molecular fit",
+      "adopted": true
+    }
+  ],
+  "reason": "Shape dispatch only; retains locked logm kernels, real-part discard and parameter packing, fitter initialization/objective and SciPy solver/defaults",
+  "bridge_version": "ffsim0083_scipy1141_per_matrix_logm_v1",
+  "limitations": "Temporary in-process ffsim helper rebinding is for the dedicated single-fit worker only; never a general concurrent ffsim service. Finally restores on success/error. No installed file or global scipy function changes. Does not establish molecular convergence or physical accuracy.",
+  "references": [
+    {
+      "url": "https://docs.scipy.org/doc/scipy-1.14.1/reference/generated/scipy.linalg.logm.html",
+      "supports": "2D core API"
+    },
+    {
+      "url": "https://docs.scipy.org/doc/scipy-1.16.0/reference/generated/scipy.linalg.logm.html",
+      "supports": "batch dimensions supported as slices"
+    },
+    {
+      "url": "https://docs.scipy.org/doc/scipy/release/1.16.0-notes.html",
+      "supports": "Python3.11/NumPy1.25.2 minimums; broad linalg/optimize changes"
+    },
+    {
+      "url": "https://github.com/qiskit-community/ffsim/blob/558d3517385778c733f1aa226bb61b8f30f4b0f3/python/ffsim/linalg/util.py",
+      "supports": "Fixed helper and original parameter packing"
+    }
+  ],
+  "molecular_scientific_calls": 0
+}

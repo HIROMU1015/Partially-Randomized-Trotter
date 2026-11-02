@@ -1,0 +1,340 @@
+# Codex指示：H4 Pauli-JW PR central-control A_GATE限定実行
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-controlled-comparison-redesign-20261024`
+
+基点commit：
+`966c2cb323e3fe34032dc3be9f6b962936415e77`
+
+主要資料：
+
+- `docs/non_df_h4_controlled_comparison_redesign_20261024.md`
+- `artifacts/non_df_h4_controlled_comparison_redesign/2026-10-24/contracts_DRAFT.json`
+- `docs/non_df_h4_d2_execution_20261024.md`
+- D1/D2の固定SOURCE・保存回路・実行結果
+
+固定科学SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- D1：`9843b803878db6c3aee7ab5e7c6bb4818572c944`
+- D2：`74515d8eb4f073c40fc783681a3775dbca89e9b1`
+
+## 1. 今回の明示的な実行承認
+
+**A_GATE_ORDER2の限定科学実行を正式に承認します。**
+
+今回の目的は、D2で確認したPauli-JW PRのcentral-control実装が、order2 eventを含む保存trajectoryでも適切に構築・コンパイルできるか、さらにcosine/sine両軸の回路費用がどうなるかを調べることです。
+
+以下を一括承認します。
+
+1. 既存SOURCE・保存trajectory・非実行契約の確認
+2. 既存コードを再利用したbody-only replay接続の最小実装
+3. 必要な人工テスト
+4. 新SOURCE・runtime・入力manifestの固定
+5. 新しいone-shot科学grantの発行
+6. 保存trajectory index1のbody再構成1回
+7. Central-controlled body構築1回
+8. Cosine/sine wrapper構築各1回
+9. **費用compile最大2回**
+10. RZ・CX・depth等の取得と限定比較
+11. 結果保存・検証・commit/push・mandatory STOP
+
+固定された範囲内の技術準備と実行について、中間承認は不要です。
+
+ただし、**A_COHORT_COS、A_AXES、条件付きC/N/G解析、追加sampling、D3への自動進行は承認しません。**
+
+## 2. 固定対象
+
+科学条件は元H4/D2から変更しません。
+
+- Linear H4、隣接1.00 Å、STO-3G
+- 8 system qubit＋ancilla8
+- Pauli-JW Hamiltonian：184非identity項
+- PR prefix27
+- S2、T=0.8、q=8、r=4、K=4
+- 元のPR event law・係数・分割
+- Central-control方式：D2の固定実装
+- Qiskit 1.3.0
+- Native basis：`rz`, `sx`, `x`, `cx`
+- Optimization level1、seed17
+- Backend/coupling/layout/routing指定なし
+- 元のHadamard wrapper
+- 状態準備費用は除外
+
+### 対象trajectory
+
+保存されたPauli-JW PRの次の1本を使用します。
+
+- `trajectory_index=1`
+- `trajectory_id=596897f2d5ec2fb9b28a2b73c16423192d1494fd490fc58ca52cfc818baae0aa`
+- `trajectory_record_hash=0d16d201c87fdbb5f3e219dffb7dca7d48a69799290453e9ebb110a267db0e4b`
+- `event_record_hash=9cea6ce6d3659094b6b0d0a6da8b935cf32860c97a2e01a75a0761eded9f1779`
+
+このtrajectoryは保存されたorder2 eventを含む最小indexとして選択済みです。
+
+**代表性を保証するrandom sampleではなく、order2実装の構造coverageを確認するための事後固定対象**です。
+
+新しいtrajectory選択、sampling、RNG replayは禁止します。
+
+## 3. 最優先：既存コードの再利用
+
+最初に、過去の計算・検証で使ったコードと実行パイプラインを確認してください。
+
+特に以下を再利用候補とします。
+
+- `h4_d1_adapter`
+- `h4_d1_reproducibility`
+- `h4_d2_pauli_control`
+- `h4_d2_control`
+- `pauli_signal_adapter`
+- `rte_event_audit`
+- `fixed_signal_evaluation.hadamard_wrapper`
+- `rte_compiled_cost`
+- D1/D2の人工テスト・grant・ledger・native終了処理
+
+重要なのは、**保存trajectoryからPauli bodyを生成する処理と、Controlled化・Hadamard wrapperの生成を分離すること**です。
+
+既存のD1 adapterの`build`はgeneric whole-body controlを含むwrapperまで生成するため、これをそのままbody-only emitterとして使用しないでください。
+
+元のPauli evolution/event append関数とschedule構築処理を再利用し、必要最小限のbody-only接続を実装してください。
+
+不要な回路builder・compiler・監査基盤の再実装は避けてください。
+
+## 4. 実行前の人工検証とSOURCE固定
+
+実H4のbody再構成に入る前に、以下を完了してください。
+
+- Body-only emitterの人工テスト
+- 保存eventのorder・component・sign・rotation angle対応
+- Pauli productの順序とqubit配置
+- Noncommuting productを含むorder2への対応
+- Negative product sign・order phase・constant phase
+- System global phaseからancilla相対phaseへの変換
+- Control=0/1両branch
+- D2 central-control実装との接続
+- Cosine/sineのwrapper構成
+- 実行call数・grant・STOPの人工テスト
+
+既存のD2数学的恒等式と検証資産を再利用してください。
+
+人工テストの成功を、実H4全回路のcompiled誤差の厳密保証と扱わないでください。
+
+次に、新しい実行SOURCEをcommitし、実際に使用する入力・runtime・compiler・出力schemaを固定してください。
+
+前段階のDRAFTを単にflag反転するのではなく、今回の明示承認と新SOURCEを結び付けたactive contractを作成します。
+
+新しい専用namespace・未使用one-shot grantを使用し、過去の消費済みgrantは再利用しません。
+
+## 5. A_GATEの段階的実行
+
+### Stage A：保存trajectory対応
+
+元の保存event/price_joinを読み取り、次を照合してください。
+
+- Trajectory ID・index
+- Event hash・trajectory hash
+- Order2を含む保存event列
+- Pauli label・係数・符号
+- Rotation angle
+- Event application順序
+- Phase更新規則
+- Source/runtime/compiler対応
+
+保存値との意味的な対応が確認できない場合はSTOPしてください。
+
+元のhistorical fingerprintを復元することは今回の目的ではありません。D1のSOURCE対応基準を利用し、旧Pauli-PR hash FAILは変更しないでください。
+
+### Stage B：Body-only replayとcentral-control生成
+
+保存eventから元のPauli bodyを1回生成してください。
+
+同じbodyを用い、D2のcentral-control変換を1回適用します。
+
+次を維持してください。
+
+- 保持27項と元の順序
+- Forward/reverse half
+- Order2 product列
+- Controlled Pauli product
+- Controlled rotation
+- Constant・negative sign・order phase
+- 集約global phaseのancillaへの転送
+- Qubit・ancilla位置
+
+Phaseを重複加算したり、central rotation以外のPR演算を落としたりしないでください。
+
+SOURCE上の対応が成立しない場合は、費用compileへ進まずSTOPしてください。
+
+### Stage C：Cosine/sine両軸のcompile
+
+Stage A/BがPASSした場合だけ、同じcentral-controlled bodyから2種類のwrapperを生成してください。
+
+| 回路 | 最大compile数 |
+|---|---:|
+| Pauli-JW PR index1 cosine | 1 |
+| Pauli-JW PR index1 sine | 1 |
+| **合計** | **2** |
+
+元の固定compiler設定で、それぞれ1回だけcompileしてください。
+
+**Cosineとsineの価格が同じであるとは仮定しないでください。**
+
+また、異なる価格が出ても、それだけを理由に科学的実装不一致とは判断しないでください。
+
+入力・演算・位相・wrapperの対応を確認し、各軸の実測価格として記録してください。
+
+失敗callも消費済みとして扱い、自動retry・refund・追加compileは行いません。
+
+## 6. 保存する測定結果
+
+各軸について以下を保存してください。
+
+- Compiled RZ数
+- Compiled CX数
+- Total depth
+- RZ depth／CX depth（既存関数が対応する場合）
+- Pre/post-transpile gate histogram
+- Input/output QPY
+- Input/output fingerprintとSHA
+- Compiler profile
+- Trajectory/event ID
+- SOURCE・runtime・入力manifest
+- Native終了・worker回収結果
+
+Cosineとsineは同一trajectoryのpaired出力として保持してください。
+
+必要に応じて、同じindex1の旧generic-control費用との直接比較、およびD2 index0との記述的比較を行って構いません。
+
+ただし、**新しい256本平均・費用分布・N/G・精度適格性は計算しないでください。**
+
+## 7. 今回の研究上の判定
+
+A_GATEでは、以下を明らかにしてください。
+
+**Q1. 保存order2 eventを含むPauli PRについて、D2 central-control実装をSOURCE対応の下で構築できるか。**
+
+**Q2. Order2のproduct・sign・phaseを含めても、人工検証と固定SOURCEの対応条件を満たすか。**
+
+**Q3. Cosine/sineそれぞれのcompiled RZ・CX・depthはどうなるか。**
+
+**Q4. 同じindex1の旧generic-control費用に比べて、central controlは低コストか。**
+
+**Q5. Cosine/sine間の価格差はあるか。**
+
+**Q6. 次に全保存cohortへ費用評価を拡張する研究上の必要性はあるか。**
+
+結果の解釈では、今回の1 trajectoryによって256本の標本平均や、未観測order4を含む母平均費用が確定したと主張しないでください。
+
+また、SOURCE対応とcompiled測定誤差の保証は別です。
+
+## 8. 次の研究段階は提案のみ
+
+A_GATE完了後、必要なら次の研究候補を整理してください。
+
+**A_COHORT_COS**
+
+既存256本のPauli central-control cosine費用を揃える評価。
+
+D2 index0と今回index1の結果を再利用できる場合、残り254本の新しいcosine compileが必要になる設計です。
+
+**A_AXES**
+
+Complex signalの総費用Gに必要なsine費用を揃える評価。
+
+**B_CONDITIONAL_CNG**
+
+新しいpaired価格と、条件付き誤差会計を用いる資源比較。
+
+**C_SELECTED_DIAGNOSTIC**
+
+必要な場合のみ実施するcompiled実装残差の限定診断。
+
+**D3**
+
+DF basis reuseの対照実験。引き続き後順位です。
+
+これらを自動実行しないでください。
+
+A_GATEの結果を確認したうえで、研究価値の高い次の実験と必要な承認範囲を提示してください。
+
+## 9. 今回の禁止事項
+
+- 新SCF/FCI/DF計算
+- Hamiltonian/state再生成
+- 新PR sampling・RNG replay
+- 保存eventの再抽選
+- D2 index0の不要な再compile
+- Generic-control全cohortの再compile
+- Index1以外の新central-control PR回路生成
+- 2回を超える費用compile
+- 新しいN/G・shot計算
+- 256本の新しい費用平均・分布集計
+- 未観測order4の追加診断
+- D3実行
+- 元SOURCE・結果・grant・STOPの変更
+- 正式certificate受理
+
+今回の承認はA_GATEの有限実行だけです。
+
+## 10. 資源・再利用・保全
+
+最新版`research_project_instructions_unified_2026-10-23.md`を適用してください。
+
+特に§8.4・§10・§10.3を遵守します。
+
+既存コード・関数・検証資産の再利用を優先し、技術的な完全性だけを目的とした過剰実装は避けてください。
+
+CPU・RAM・worker数に恣意的な低い上限を設けず、独立処理は必要に応じて並列化してください。
+
+共有環境全体や他ユーザーの設定・ファイル・process等に影響する変更は禁止です。
+
+既存の固定SOURCE・raw・grant・ledger・marker・STOPを保全してください。
+
+特に以下を維持します。
+
+- Pauli-PR historical hash FAIL／原因UNKNOWN
+- 元H4 native UNKNOWN
+- 旧N/G null
+- C/L COMBINATION_BLOCKED
+- 旧compiler MISSING_EVIDENCE
+- 正式certificate未受理
+
+今回の成功を、これら過去の未解決事項が解消したという意味にしないでください。
+
+## 11. 成果物・終了条件
+
+専用branchに必要十分な成果物を保存してください。
+
+1. 新body-only replay接続と人工テスト
+2. 新SOURCE・runtime・入力manifest・active contract
+3. 新grant・call ledger・実行証拠
+4. Index1のSOURCE対応・order2/phase検証
+5. Cosine/sine各1回のcompiled費用
+6. RZ・CX・depth・gate histogram
+7. Input/output QPYとfingerprint
+8. 旧generic・D2 index0との限定比較
+9. 結果報告書
+10. Native終了・保全・mandatory STOP
+
+最終報告では、特に次を明確にしてください。
+
+- A_GATEの各stageが完了したか
+- Order2を含むbodyのSOURCE対応
+- Cosine/sineのRZ・CX・depth
+- 旧generic-control index1との費用比較
+- 両軸価格の差
+- 人工テスト結果
+- 科学的に支持できる結論と限界
+- 次に全256本へ拡張する必要性
+- Branch・SOURCE・commit・remote SHA
+- Native終了・mandatory STOP
+
+専用branchへcommitし、既存のrepository運用規則に従ってpush・remote SHA照合を行ってください。
+
+GitHub認証でpushできない場合は、成果物を保全し、必要な操作を報告してください。既に公開済みの同一commitは再push不要です。
+
+**今回承認したA_GATEの実装・人工検証・SOURCE固定・最大2compile・限定解析・結果保存・終了監査までを一括で実施してください。**
+
+固定範囲を超える追加実験には進まず、完了後は**mandatory STOP**してください。

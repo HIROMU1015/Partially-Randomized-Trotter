@@ -1,0 +1,154 @@
+{
+  "scope": "C_PR_AWARE_DF_KAPPA_HERMITICITY_DIAGNOSTIC_V1",
+  "implementation": "kappa_binary64_exact_dyadic_diagnostic_v1",
+  "base_commit": "acf61e9f1a4d5fd8948b517b978c65994b797bc5",
+  "status": "UNAPPROVED",
+  "executable": true,
+  "permission": "separate explicit chat permission before any molecular decode; no approval proof",
+  "source_manifest": "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/technical/SOURCE.json",
+  "source_manifest_sha256": "408fe5114bd32deef82279aae7d9c14461e5e4de097d6473846a29d0b84b178c",
+  "inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/inputs/P_H4_original_snapshot.npz": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+  },
+  "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "original_input": "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/inputs/P_H4_original_snapshot.npz",
+  "evidence": {
+    "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-polar-preparation/SOURCE.json": "9d077123674137b23a9d050f013eb5984f2d57f3ea2e29c4d23f02b16225ca34",
+    "docs/research/research_c_pr_aware_df_fixed_F2_polar_execution_contract_20261027.json": "c310f95ad6f25500284c46edbd82fb31dad1a1b82c7cd5c4980a8c9991716da3",
+    "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-polar-run01/failure.json": "44f549e07b59f409c901769358ec2b628f0fca7b2d3b07e276a413a5b3d5040d",
+    "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-polar-run01/STOP.json": "4ae834a603d5f28b89af894e241e59c2c22f5e6c989e16d41ea36935ff13b638",
+    "artifacts/research_c_pr_aware_df_fixed_car/2026-10-27/F2-polar-run01/science_calls.jsonl": "ecf540c7e569750733223cc369e570d24b2b2e0017fd9799a2bb954058c1b4b5",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/result.json": "bd1e63c2bb36ae9ff041101d67d085cd1349252aa73fe5490089234799aa9cea",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/provenance.json": "59a38976fe3c6d9be261789cbb69ef2a67e66e748970e3faaa9f27d61a21ea81",
+    "artifacts/research_c_c1_stage1_eval_only_science/2026-10-25/run01/evaluation_SOURCE.json": "5be0fea39b167845343f94985699f31a0a1bb07d085ea2ed9312a1af9b8dede5",
+    "artifacts/research_c_c1_stage1_compatibility/2026-10-25/environment/ffsim-python-source.json": "425016f836bbc4c22270411cde0e335788be0ebd9583c5a2ca22c92fac62889a"
+  },
+  "original_generation_commit": "86b8b002704aced8ca239414080f53793de81658",
+  "original_input_historical_path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+  "original_generation_source": "src/trotterlib/h4_molecular_inputs.py::build_h4_inputs",
+  "scientific_context": {
+    "molecule": "linear H4",
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "arm": "baseline",
+    "DF_rank_context": 8,
+    "representation": "number",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "stage1_time_split": "not applicable",
+    "F2_context": "LD2 partial S2 delta=.1 s4 h=1/40 r16 K0; not executed"
+  },
+  "policy": {
+    "norb": 4,
+    "dtype": "float64",
+    "convention": "spatial_chemist_pqrs",
+    "contraction": "prrq->pq",
+    "correction": "h - 0.5*T",
+    "allowance": "binary64_operation_scale_guard8_v1",
+    "rank_context": 8,
+    "stage1_comparison": "kappa_only_structural_Frobenius",
+    "exact_oracle": "Fraction_of_stored_binary64_real_and_imaginary_parts",
+    "norms": [
+      "max_abs_entry",
+      "Frobenius",
+      "spectral2_numerical_pilot"
+    ],
+    "target_adoption": false,
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true
+  },
+  "python": [
+    3,
+    11,
+    1
+  ],
+  "packages": {
+    "numpy": "1.26.4"
+  },
+  "precision": {
+    "returned_path": "binary64 NumPy1.26.4 FE_TONEAREST",
+    "exact_oracle": "unbounded rational arithmetic over stored binary64 dyadics",
+    "numerical_norms": "max-entry stable Frobenius and spectral2; not interval certificates",
+    "exact_norms": "Frobenius squared and entry real/imag L1 spectral upper bound",
+    "relative": "||kappa_A||F/||kappa||F; null if zero scale"
+  },
+  "stage1_allowance": {
+    "version": "binary64_operation_scale_guard8_v1",
+    "applicability": "kappa only",
+    "metric": "flattened NumPy Frobenius, separately report stable hypot",
+    "absolute": true,
+    "rtol": null,
+    "operations_base": 544,
+    "guard": 8,
+    "expression": "sqrt(n)*allowance(B,B,m,m,n,kappa-kappa.H); B=abs(c)+2*sum(abs(kappa))",
+    "rigorous": false,
+    "historical_value_is_new_diagnostic": false
+  },
+  "call_limits": {
+    "input_load": 1,
+    "input_identity": 1,
+    "kappa_generation": 1,
+    "binary64_diagnostics": 1,
+    "exact_dyadic_diagnostics": 1,
+    "classification": 1
+  },
+  "maximum_logical_units": 6,
+  "call_order": [
+    "input_load",
+    "input_identity",
+    "kappa_generation",
+    "binary64_diagnostics",
+    "exact_dyadic_diagnostics",
+    "classification"
+  ],
+  "logical_unit_definition": "fixed batched diagnostics; internal scalar/norm operations not separate units",
+  "fresh_output": "artifacts/research_c_pr_aware_df_kappa_diagnostic/2026-10-27/diagnostic-run01",
+  "old_F2_remaining_calls_reused": 0,
+  "functions": [
+    "load_inputs",
+    "input_identity",
+    "c1_stage1.corrected_kappa",
+    "binary64_diagnostics",
+    "dyadic_diagnostics",
+    "classify"
+  ],
+  "stop": {
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true,
+    "correctness": [
+      "SOURCE/input/environment mismatch",
+      "original h/g/c mismatch",
+      "nonfinite/schema mismatch",
+      "correction path mismatch",
+      "exact decomposition mismatch"
+    ],
+    "nonHermiticity": "measurement, not a diagnostic correctness failure",
+    "unresolved": "missing evidence or original generation/reduction cause remains unqualified",
+    "target_change": "do not adopt; return for separate scientific decision",
+    "partial": "save completed diagnostics, failure, Calls journal, resources and STOP"
+  },
+  "exclusions": [
+    "fit/optimizer",
+    "JU/trajectory/QPY decode",
+    "CAR/Hamiltonian/operator/exp",
+    "F2 retry or F3",
+    "U polar bridge measurement",
+    "sampling",
+    "C1 reanalysis",
+    "PF/RTE",
+    "CA/shots/total resources",
+    "new CAR target adoption",
+    "important science review"
+  ],
+  "resources": {
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "wall_cap": null,
+    "method": "n=4 dependent stages; vectorized NumPy and 64-term exact contraction; no expensive worker startup",
+    "isolation": "own worktree/venv/cache; read resources, never change shared settings"
+  }
+}

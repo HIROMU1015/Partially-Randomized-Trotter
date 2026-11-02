@@ -1,0 +1,134 @@
+{
+  "schema_version": "track-a-h4-geometry-contract-preparation-scope-v1",
+  "status": "TRACK_A_H4_GEOMETRY_CONTRACT_PREPARATION_AUTHORIZED_SCIENCE_NOT_AUTHORIZED",
+  "decision_date_jst": "2026-10-06",
+  "user_confirmation_scope": "Six additional H4 distances and at most 12 CPU workers with one thread each; contract preparation only, not science launch.",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "preparation_commit": "c2ab34fed49bb1fb104d39fe83b36858a2c92c2a",
+  "preparation_branch": "track-a-h4-geometry-resource-server-prep-20261005",
+  "initial_handoff_commit": "48f9ac3b756bcf572aeb7c594a0c88791a458725",
+  "evidence_commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+  "preparation_manifest_sha256": "33d8a7a5986bd4a29cbe7d678874d54d859614bfab8643b88de2e9f613651741",
+  "preparation_plan_sha256": "6b535440ccca73ed826f809382e629fb54cd043a7bd4332db01fdad133b177d3",
+  "preparation_plan_fingerprint": "fd0dda4e5f33a75f6b66d13f8d04a148da2e0d446a52d570d718106b4e5e4f53",
+  "distance_scope_frozen": true,
+  "additional_nearest_neighbor_distances_angstrom": [
+    "0.70",
+    "0.80",
+    "0.90",
+    "1.10",
+    "1.40",
+    "1.60"
+  ],
+  "geometry_count": 6,
+  "fresh_blind_claim": false,
+  "model_for_contract": {
+    "molecule": "H4 linear",
+    "basis": "STO-3G",
+    "requested_df_rank": 12,
+    "required_actual_df_rank": 12,
+    "system_qubits": 8,
+    "T": 0.8,
+    "delta_rule": "T/q",
+    "pf_order": 2,
+    "sampling_policy": "canonical finite-RTE",
+    "reference_target": "Lowest eigenstate of the geometry-specific DF Hamiltonian in the fixed physical sector; not exact untruncated chemistry energy."
+  },
+  "template_set_for_contract": {
+    "inventory_relative": "artifacts/resource_applicability/pr2_pm2_precision_preparation/2026-10-05/candidate_inventory_v1.json",
+    "per_geometry_count": 218,
+    "counts": {
+      "B0": 20,
+      "B1": 4,
+      "B2": 145,
+      "B3": 49
+    },
+    "adaptive_candidate_selection_authorized": false,
+    "old_geometry_bound_fingerprint_reuse_authorized": false,
+    "accuracy_ineligible_candidates_retained": true
+  },
+  "future_resource_caps_for_contract": {
+    "cpu_worker_max": 12,
+    "blas_threads_per_worker": 1,
+    "qiskit_internal_processes": 1,
+    "rayon_threads_per_worker": 1,
+    "random_trajectories_per_cell": 32,
+    "paired_axes": [
+      "cosine",
+      "sine"
+    ],
+    "signal_records_per_geometry": 218,
+    "total_signal_records": 1308,
+    "random_wrappers_per_geometry": 12416,
+    "baseline_wrappers_per_geometry": 48,
+    "logical_wrapper_records_per_geometry": 12464,
+    "total_logical_wrapper_records": 74784,
+    "actual_science_transpile_invocation_cap": 74784,
+    "additional_trajectories": 0,
+    "science_memory_cap": null,
+    "science_wall_cap": null,
+    "science_output_root": null
+  },
+  "server_environment_reference": {
+    "python_executable": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+    "observed_versions": {
+      "python": "3.12.3",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "rustworkx": "0.17.1",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0"
+    },
+    "environment_fingerprint": "7d397d409aa05efac027463b671cfe5608f554e09e464fa1e87eed1965b41cd1",
+    "compiler_fingerprint": "46ce3bcc45cbb53dbe021ca67e4253156597fa5ae9c034cfeb4cddfe6828f30d",
+    "observation_is_resource_reservation": false,
+    "environment_changes_authorized": false,
+    "old_environment_full_equivalence_established": false
+  },
+  "required_checkpoint_schema_revision": {
+    "preserve_published_draft": true,
+    "explicit_wrapper_key": true,
+    "explicit_numerical_circuit_fingerprint": true,
+    "circuit_identity_includes_angles_and_global_phase": true,
+    "completed_record_digest_bound_by_external_ledger": true,
+    "cross_geometry_cell_axis_cache_reuse_authorized": false,
+    "identical_numerical_circuit_reuse_within_candidate_axis_only": true,
+    "unresolved_reservation_auto_retry_authorized": false,
+    "synthetic_positive_and_mutation_refusal_tests_required": true
+  },
+  "authorized_now": {
+    "contract_schema_zero_compute_plan_preparation": true,
+    "static_source_and_published_lightweight_json_audit": true,
+    "synthetic_contract_tests_without_build_or_transpile": true
+  },
+  "not_authorized_now": [
+    "science_source_port_or_implementation",
+    "execution_authorization_creation",
+    "molecular_snapshot_resolve_stat_hash_load_or_generation",
+    "scf_df_reference_solve",
+    "signal_trajectory_build_or_compile",
+    "additional_synthetic_transpile_benchmark",
+    "old_runtime_checkpoint_access_or_migration",
+    "gpu_query_allocation_kernel",
+    "old_1p00_anchor_reexecution",
+    "old_1p30_full_grid_expansion",
+    "additional_geometries_or_molecules",
+    "higher_order_pf_strong_synthesis_energy_rpe_track_b_integration",
+    "commit_or_push"
+  ],
+  "still_to_specify_before_science_source": [
+    "SCF/integral/DF algorithms, ordering and ties, fixed sector, solver and state-phase conventions, numeric gates",
+    "Master seed and canonical seed/key encoding; actual snapshot/source-bound identities remain null until they exist",
+    "Formal shared-server memory/wall/output limits and interruption policy",
+    "Precision and uncertainty reporting rules, old evidence layers, artifact schemas"
+  ],
+  "future_science_source_commit": null,
+  "execution_authorization": null,
+  "scientific_execution_authorized": false,
+  "next_stage_authorized": false,
+  "automatic_research_decision_authorized": false,
+  "research_decision": null,
+  "mandatory_stop": true
+}

@@ -1,0 +1,9 @@
+# 旧512件：限定技術照合
+
+固定公開HEAD22ef92cef31f98e3e31f27a209405f81f5c4a0e4、測定SOURCEf8aad18d385c9dd787c5be8c794cf3c339335919を原本とする。raw archive608fc40b10e47d9439b95329fe9c24b84c879be42bf486a14c2fdfeda80b7a94と、原runの35filesをSHAで照合。旧SOURCE/input144pins、executable＋16libraries、Core6固定76caのbytesを照合した。
+
+新たに確認したのは512 per-trial/consumptionのLive flags、Core loadの保存記録、source/manifest/pid join、final→delivery→callerとreceiptのhash、SQLiteのimmutable read-onlyによるCOMPLETED/STOPPED/spent1。元DB bytesは不変。
+
+Exact Codec・Original digest・A/B/S/P1 event/prefix・seed/bit消費・invariantの全検査は、固定saved_evidence_check/result_summaryをSHA付きで再利用し再集計しない。結果値はS256/P1256、accepted500、ZERO_R4/coin8、draw1288、全cell coverageの原記録を引用する。新たな非metadata不整合は検出していないが、検査範囲外の一般的正しさや実F01障害を認定しない。
+
+訂正sidecarは対象raw/field/元値/意味/根拠/適用runを固定した注記であり、新しい科学結果ではない。旧raw、Evidence、manifest、receipt、claim、STOPの上書き0、新sampling/統計解析/ランキング0。

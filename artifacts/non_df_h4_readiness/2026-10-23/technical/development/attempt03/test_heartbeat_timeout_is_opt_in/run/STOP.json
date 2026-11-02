@@ -1,0 +1,43 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 3.3195533053949475,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 711399,
+      "pid": 711399,
+      "ppid": 711263,
+      "reaped": true,
+      "sid": 711399,
+      "start_ticks": 446238697,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [],
+  "reason": {
+    "reason": "HEARTBEAT_TIMEOUT:case0",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 291, in run_supervised\n    if age>policy.heartbeat_timeout: raise TimeoutError(\"HEARTBEAT_TIMEOUT:\"+c[\"job\"][\"case\"])\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nTimeoutError: HEARTBEAT_TIMEOUT:case0\n",
+    "type": "TimeoutError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 3.2649304503574967,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462386.974833461,
+      "pid": 711399
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

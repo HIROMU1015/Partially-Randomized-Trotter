@@ -1,0 +1,13 @@
+# Admission・one-shot・STOP
+
+公開18個のFAKE_ONLY_claims.sqlite3を `mode=ro&immutable=1` で読み、quick_check、単一metadata/store/claim、scope/claim/formal digest、driver/source/input digest、ledger store id、STOP flagsを独立照合した。原file SHA不変を確認する。実ledger/approvalにはアクセスしていない。
+
+公開raceは8 contender中ADMITTED1/DENIED7、同一store idの保存申告とSTOPPED snapshotが一致する。しかしsnapshotは原子transition履歴ではない。binding_recheck、commit_ack_uncertain、parent_crash、raceの4件は、元履歴・private approval原本が不足するため総合INSUFFICIENT_EVIDENCEとした。snapshotの一致は別項目PASSである。
+
+固定producerの新31testを別owned runtimeで再実行した。8接続の同一store競合、二重claim/spent拒否、commit ACK不明、owned親process crash、binding再検査等がPASS。新しく生成されたfake18 storeも独立snapshot helperで読み直した。これは今回の管理下で行った人工実装検査で、公開18件や旧47件の失われた履歴を復元した証拠ではない。原子性は固定実装のSQLite BEGIN IMMEDIATE/PRIMARY KEY/UNIQUEと正常なlocal locking/storage等の前提に依存する。
+
+通常raw13件ではcooperative STOP/drain/unknown/cancelが保存trace・state・F01と整合。log cap100のcaseはworker entry前の失敗申告とSTOPPED snapshot、空controlだけで全操作履歴なし。技術的失敗として扱い、履歴検証をPASSへ埋めない。
+
+親crash最終CPU/wallはnull。START_RESERVEDは実body entryではない。未知call/byte creditは返却しない。成功receipt不在の失敗runを成功へ変えない。追加trace writer故障の予約会計不整合はproducer修正を要する。
+
+旧47件P07/P08/P11、旧contract欠測30、旧P06欠測11、historical Python/private bytes不足は保持する。全歴史pendingを消すことを次段階の必須目的にしていない。

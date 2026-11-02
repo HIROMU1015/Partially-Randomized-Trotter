@@ -1,0 +1,344 @@
+# 研究C・C4：B2角度結合baselineの限定科学実行・比較・証拠公開
+
+## 1. 科学実行の明示承認
+
+以下の固定契約に基づく**B2限定科学実行を明示的に承認します。**
+
+- Repository：`HIROMU1015/Partially-Randomized-Trotter`
+- 公開commit：`0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162`
+- 実行契約：`C4_B2_SAVED_COMPARISON_V1`
+- 契約SHA256：`f03839377158a44477a898fdc35af7d6a3b96bf953e86275915bf97324df035f`
+
+契約正本：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162/docs/research/research_c_angle_fusion_b2_contract_20261024.json
+
+実装・準備記録：
+
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0c9d0a480db95e4bbd57a1cda02f7fb24c2b2162/docs/research/research_c_angle_fusion_b2_preparation_20261024.md
+
+**本指示による承認は、契約に固定されたB2の4case・10局所領域・8 full wrapperに限定します。**
+
+新規reference生成、B0/B1/R1の再実行、Rustiq/R2の実行、追加case、sampling、law生成、認証shot数、全round資源評価は承認しません。
+
+実行前preflightに合格した場合は、途中で追加の確認を要求せず、契約に沿って科学実行、結果保存、GitHub公開までまとめて実施してください。
+
+ただし、科学的FAILや契約違反を回避するための条件変更・自動再実行は禁止します。
+
+## 2. 研究目的
+
+前回のRustiq限定検証では、固定4-mode合成Hamiltonianの4caseで全正しさgateがPASSし、SSの3caseでRZ・CX・depthの削減が確認されました。
+
+既存の設計した8 wrapperの無重み合計は、B0/B1に対してR1が次の結果でした。
+
+- RZ：800 → 780
+- CX：402 → 382
+- Total depth：988 → 948
+
+これらは固定case集合の1-shot回路資源であり、law重み付き期待値や全round総資源ではありません。
+
+今回の目的は、**この改善が単純な同一Pauli controlled rotationの角度結合によって再現できるかを判定すること**です。
+
+新規実行するB2は、元run・basis・phaseを保持したまま、合法的に隣接する同一Pauli回転を`math.fsum`で結合する方式です。
+
+比較対象には保存済みB0/B1/R1を使用し、新しいRustiq合成は行いません。
+
+## 3. 固定科学条件
+
+前段の契約から変更しないでください。
+
+- Model：4-mode・2粒子、occupied `(0,1)`のdensity-square合成Hamiltonian
+- `L_D=1`、残差2fragment
+- `T=1/5`
+- `q=2`
+- `δ=1/10`
+- `r=2`
+- `h=1/20`
+- `K=2`
+- Qiskit 1.3.0
+- Native basis：`rz,sx,x,cx`
+- Optimization level：1
+- Transpiler seed：17
+- Approximation degree：1.0
+- `qubits_initially_zero=False`
+
+対象case：
+
+1. `SS_motif_2`
+2. `SS_motif_3`
+3. `SS_motif_4`
+4. `PP_motif_0`
+
+局所領域は契約に記載された10領域に固定します。
+
+Hamiltonian、scalar、DF、sampling law、finite target、イベント順序、basis plan、singleton判定、controlled相対位相、compiler条件を変更しないでください。
+
+B2の角度結合は、固定された元のtyped region内部に限定します。
+
+## 4. 実行前preflight
+
+まず、公開commitを起点とした独立clean worktree・専用branchを用意してください。
+
+他研究のbranch、元workspace、旧SOURCE・raw・結果・grant・ledger・marker・STOPは変更しないでください。
+
+最初の科学callより前に、以下を確認してください。
+
+- 公開HEADと契約SHA256の一致
+- 固定SOURCE 41ファイルのhash
+- 7つの保存入力・requirements lockのhash
+- 旧Rustiq結果packetのmanifestと登録ファイルのbyte identity
+- 保存reference14 bundleのschema・hash
+- 既存4case・10領域・元angle/plan/provenance
+- Python 3.11.9、Qiskit 1.3.0、依存環境・native binary
+- Compiler profileと数値許容差
+- 出力先が未使用のfresh namespaceであること
+- 実際のCPU・RAM・負荷・pressure等と共有環境への非干渉
+
+既存の技術preflightを再実施し、結果を保存してください。
+
+今回の明示承認を、契約に定めた`USER_EXPLICIT_C4_B2_EXECUTION`、公開commit、契約SHA256、fresh run IDへ関連付けた新しいapproval記録を作成してください。
+
+旧grant・旧retry許可を流用しないでください。
+
+SOURCE/input/profile/保存証拠の不一致があれば、科学実行を開始せずSTOPしてください。
+
+## 5. B2限定科学実行
+
+契約`C4_B2_SAVED_COMPARISON_V1`の実行順序とcall数を正本として進めてください。
+
+### Phase A：保存入力・reference復元
+
+- 固定4caseのsaved motif/lawを復元
+- 元event、occurrence、signed angle、basis/run/phaseを照合
+- 保存128桁reference bundle 14件を復元
+- 旧90/128桁の検証済み資格とhashを再利用
+- 保存結合前literal NPY 10件を使用
+
+新しいCAR/exterior reference、law、Hamiltonianは生成しないでください。
+
+128桁referenceの復元では、実数・虚数の十進文字列を高精度contextへ直接渡してください。
+
+不明形式の推測補完、`eval`、高精度復元前のbinary64変換は禁止します。
+
+復元失敗や非有限値があればSTOPしてください。
+
+### Phase B：局所operator同値性
+
+対象10領域でB2をbuildしてください。
+
+結合後の各局所operatorを、
+
+1. 保存独立reference
+2. 保存された結合前literal operator
+
+の両方と比較してください。
+
+Control=0枝の恒等作用、control=1枝の完全なoperator、unitarityを確認してください。
+
+Global phaseを無視した同値判定やphase fittingは禁止します。
+
+### Phase C：Full controlled evolution
+
+固定4caseについてB2のfull evolutionをbuildしてください。
+
+以下を含む完全な`diag(I,U)`を独立targetと比較してください。
+
+- 元Gaussian basis
+- D境界融合
+- Taylor phase
+- Product sign
+- Identity/scalar相対位相
+- 元の非可換演算子順序
+
+### Phase D：Actual adjoint・X/Y signal
+
+完成したB2回路から既存方式でactual inverseを構築してください。
+
+独立referenceとの絶対operator比較を行い、さらにfull Hadamard wrapperのX/Y両axisを検証してください。
+
+State preparationとreadoutを既存scopeから変更しないでください。
+
+### Phase E：Compiled正しさ
+
+Phase B～DがPASSした後、同一compiler profileでfull-wrapperをcompileしてください。
+
+Compile後にも、
+
+- 完全なwrapper operator
+- X/Y複素信号
+- 相対位相
+- 測定を含む回路scope
+
+を検証してください。
+
+Compiler cacheはB2専用とし、cold8 miss・warm8 hit、warm追加transpile0を確認してください。
+
+### Phase F：回路資源比較
+
+**全4case・両axisの正しさgateがPASSした場合のみ**資源比較へ進んでください。
+
+B2のcompiled full-wrapperについて、既存の`circuit_metrics`を再利用して以下を取得してください。
+
+- RZ count
+- CX count
+- RZ depth
+- CX depth
+- Total depth
+- Quantum-only depth
+- Circuit size
+- Measurement count
+
+B0/B1/R1は保存結果を再利用してください。
+
+B2と保存B1/R1を同じcase・axisで対応付けて比較し、結果を保存してください。
+
+保存B1 raw QPYと新B2 raw回路の診断も、固定契約の範囲で実施してください。
+
+新しいlaw重み付き集計、認証shot数、全round総資源、T count推定は行わないでください。
+
+## 6. 科学callと数値条件
+
+新規実行範囲は固定契約どおりとします。
+
+| 項目 | 上限 |
+|---|---:|
+| 保存reference復元 | 14 |
+| B2局所build | 10 |
+| Full evolution build | 4 |
+| Actual adjoint | 4 |
+| Full wrapper build | 8 |
+| Operator materialization | 26 |
+| 絶対operator比較 | 36 |
+| Unitarity検査 | 14 |
+| Raw/compiled signal評価 | 8＋8 |
+| X/Y pair gate | 8 |
+| Compiler cold/warm | 8＋8 |
+| 実transpile | 8 |
+| Compiled資源評価 | 8 |
+| 保存B1 raw QPY decode | 8 |
+| Raw metric | 16 |
+| 新reference生成 | 0 |
+| B0/B1/R1再実行 | 0 |
+| Rustiq/R2実行 | 0 |
+| Retry/resume | 0 |
+
+その他のtarget matrix復元・load・journal件数も契約JSONに従ってください。
+
+数値許容差：
+
+- Operator・unitarity・adjoint・compiled：絶対誤差 `1e-10`
+- X/Y複素信号：絶対誤差 `2e-10`
+- `rtol=0`
+- Phase fitting禁止
+- Global-phase同値のみのPASS禁止
+- 事後的な許容差緩和禁止
+
+Max-entry誤差に加え、Frobenius norm、spectral normも記録してください。
+
+実行により追加callが必要と判明した場合、契約外の処理を自動実施しないでください。
+
+## 7. 比較結果の解釈
+
+固定4caseの全正しさgateがPASSした後、設計正本のGO／STOP条件に従って結果を整理してください。
+
+特に、以下を区別してください。
+
+**A. B2がR1の削減を再現した場合**
+
+単純角度結合が今回の観測改善を説明できることを支持します。
+
+ただしRustiq内部の機構が一意に同定されたとは主張しないでください。
+
+**B. R1がB2より低コストの場合**
+
+単純角度結合で説明できない追加のcompiled費用差が残ったことを報告してください。
+
+これだけでRustiq固有の新規アルゴリズムの優位性を認定しないでください。
+
+**C. B2がR1より低コストの場合**
+
+既知の単純結合が今回のscopeでより有利だったことを報告してください。
+
+**D. Mixed/trade-offの場合**
+
+単一指標だけで勝者を決めず、case・axis・metric別の差を示してください。
+
+有利なcaseだけを抽出して全体優位としないでください。
+
+独立新規性、分子一般、PR同精度総資源について、今回の結果だけで科学的なGOを認定しないでください。
+
+研究Cの継続・終了の正式判断はユーザー・研究C・統括に戻してください。
+
+## 8. 計算資源・実行管理
+
+固定された科学call範囲内で、利用可能資源を合理的に使用してください。
+
+- Stage間の依存関係とSTOPを維持
+- Stage内の独立taskは適切に並列化
+- 実際の空きCPU・RAM・pressureを確認
+- Worker数と各ライブラリのthread数を調整
+- 不要な重複計算・reference生成を回避
+- 既存コード・関数・テスト・計算パイプラインを優先的に再利用
+
+CPU・RAM・worker数・wall timeへ恣意的な人工上限を設定しないでください。
+
+一方、共有環境全体や他ユーザーに影響する設定変更・操作は禁止します。
+
+科学的FAIL、SOURCE drift、reference復元失敗、cache/count不整合、共有環境への影響などが発生した場合、依存する後続stageを開始せず、partial evidenceを保全してmandatory STOPしてください。
+
+**Retry 0、resume禁止です。**
+
+失敗を隠すためのcase置換、科学条件変更、許容差緩和、追加検証は禁止します。
+
+## 9. 結果保存・GitHub公開
+
+新規結果は契約のfresh output namespaceへ保存してください。
+
+例：
+
+`artifacts/research_c_rustiq_angle_fusion/<execution-date>/<fresh-run-id>/`
+
+旧packetや既存結果は上書きしないでください。
+
+以下を保存してください。
+
+- 新しいapproval・SOURCE/input/contract hash
+- Preflightと実行環境
+- 元ordered event・angle・planとfusion ledger
+- 保存referenceの復元記録
+- B2 raw/compiled回路・operator
+- Operator/adjoint/信号の正しさ報告
+- B2 compiled資源と保存B0/B1/R1の対応表
+- Raw IR診断
+- 古典処理・compile・cacheの時間と資源
+- Attempt journal・summary・STOP
+
+結果を独立に追跡できるように、固定commit・SOURCE・入力・compiler・route・provenanceを記録してください。
+
+結果報告Markdownも作成してください。
+
+結果が正常完了した場合は、既存の研究記録・validation manifest等への登録を、必要かつ適切な最小範囲で行って構いません。ただし旧研究の固定結果・status・STOPを改変しないでください。
+
+成果を専用branchへcommit・pushし、remote SHA、公開本文、必要な証拠ファイルを照合してください。
+
+## 10. 最終報告・mandatory STOP
+
+最終報告には以下を含めてください。
+
+1. Branch・commit SHA・結果Markdown URL
+2. 実行状態と全gateのPASS/FAIL
+3. B2と保存B0/B1/R1の回路資源比較
+4. B2がR1の改善を再現したか
+5. 単純角度結合では説明できない差の有無
+6. 未検証事項・結論の適用範囲
+7. 実際の科学call・retry・資源使用量
+8. 既存SOURCE・結果・grant・STOPの保全状況
+9. 研究C・統括へ戻す次の判断事項
+
+実行状態に応じて、正常完了・正しさFAIL・技術的STOPを明確に区別してください。
+
+**正常完了・失敗のいずれでも、証拠を保全し、許可された公開処理を終えた時点でmandatory STOPしてください。**
+
+R2、追加case、全F1/F2、別分子、law重み付き総資源、C1、Gaussian singleton選択研究へ自動的に進まないでください。
+
+今回の目的は、**既存Rustiq結果と単純な同一Pauli角度結合baselineを公平に比較し、C4を独立研究として継続する価値が残るか判断するための証拠を取得すること**です。

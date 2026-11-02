@@ -1,0 +1,61 @@
+{
+  "schema_version": "track_a_ax1b_blockers_v2",
+  "status": "EXECUTION_BLOCKED",
+  "hardening_status": "AX1B_PRELAUNCH_HARDENING_PARTIAL_EXECUTION_NOT_AUTHORIZED",
+  "blockers": [
+    {
+      "id": "CPU_ALLOCATION_UNCONFIRMED",
+      "confirmation": "Approve 1-core allocation/affinity; observed0-31 is shared scheduling eligibility, not reservation",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "RAM_LIMIT_UNCONFIRMED",
+      "confirmation": "Confirm allocation and approve proposed8GiB address-space cap",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "WALL_LIMIT_UNCONFIRMED",
+      "confirmation": "Confirm external time restriction and approve proposed300 seconds",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "OUTPUT_DISK_LIMIT_UNCONFIRMED",
+      "confirmation": "Confirm quota/allocation and approve proposed512MiB cap",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "AX1B_INDEPENDENT_EXECUTION_REVIEW_PENDING",
+      "confirmation": "Review amendment/source/tests/environment method/budgets; execution review not obtained",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "SOURCE_COMMIT_BINDING_PENDING",
+      "confirmation": "Bind final reviewed commit/raw source hashes/canonical manifest hash in separate authorization",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "EXECUTION_AUTHORIZATION_ABSENT",
+      "confirmation": "Create separately reviewed explicit AX1b-only authorization; current false draft is not authorization",
+      "blocks": "real saved-value input reads and analysis launch"
+    },
+    {
+      "id": "EXPLICIT_USER_LAUNCH_ABSENT",
+      "confirmation": "Record actual explicit user launch and supply canonical authorization hash",
+      "blocks": "real saved-value input reads and analysis launch"
+    }
+  ],
+  "resolved_preparation_items": [
+    "Selection three-state semantic correction",
+    "107 same-source dedicated tests passed with stablePython3.11.1 and exactSciPy1.14.1"
+  ],
+  "scope_limits_not_launch_blockers": [
+    "STRUCT N_A",
+    "operational bias/N/eligibility/G/regret N_A",
+    "rare-event costs/cross-candidate covariance unresolved"
+  ],
+  "ax1b_analysis_authorized": false,
+  "science_authorized": false,
+  "explicit_user_launch_required": true,
+  "mandatory_stop": true,
+  "next_stage_authorized": false
+}

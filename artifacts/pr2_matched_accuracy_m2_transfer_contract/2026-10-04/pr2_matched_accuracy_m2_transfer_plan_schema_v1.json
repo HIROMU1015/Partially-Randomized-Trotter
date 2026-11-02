@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "authorization": {
+      "properties": {
+        "automatic_next_stage": {"type": "null"},
+        "held_out_access_authorized": {"const": false},
+        "transfer_execution_authorized": {"const": false}
+      },
+      "required": ["automatic_next_stage", "held_out_access_authorized", "transfer_execution_authorized"],
+      "type": "object"
+    },
+    "frozen_candidates": {
+      "items": {
+        "properties": {
+          "candidate_id": {
+            "enum": [
+              "B2-rank3-q1-r4-K2",
+              "B2-rank3-q1-r8-K2",
+              "B0-rank6-q1-r0-K0",
+              "B1-rank12-q1-r0-K0",
+              "B3-rank0-q8-r32-K4"
+            ]
+          }
+        },
+        "required": ["candidate_id", "candidate_fingerprint", "transfer_configuration_fingerprint"],
+        "type": "object"
+      },
+      "maxItems": 5,
+      "minItems": 5,
+      "type": "array"
+    },
+    "plan_fingerprint": {"pattern": "^[0-9a-f]{64}$", "type": "string"},
+    "resource_caps": {
+      "properties": {
+        "additional_trajectories": {"const": 0},
+        "candidate_count": {"const": 5},
+        "random_full_wrappers": {"const": 192},
+        "deterministic_or_discard_full_wrappers": {"const": 4},
+        "total_full_wrappers": {"const": 196}
+      },
+      "required": ["candidate_count", "random_full_wrappers", "deterministic_or_discard_full_wrappers", "total_full_wrappers", "additional_trajectories"],
+      "type": "object"
+    },
+    "schema_version": {"const": "pr2_matched_accuracy_m2_transfer_zero_compute_plan_v1"},
+    "status": {"const": "M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED"}
+  },
+  "required": ["schema_version", "status", "frozen_candidates", "resource_caps", "authorization", "plan_fingerprint"],
+  "title": "PR-2 M2 held-out transfer zero-compute plan v1",
+  "type": "object"
+}

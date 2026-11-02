@@ -1,0 +1,36 @@
+N3 closed and diagnosed
+N2 fixed-S LP completed (one solve)
+concurrent.futures.process._RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/process.py", line 263, in _process_worker
+    r = call_item.fn(*call_item.args, **call_item.kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n13-redesign-preparation-20261011/src/trottertracks/representation_exploration/n13_redesign.py", line 474, in run_n1
+    factors=prepare_factors(c);compiler=Compiler(out);rows=[];blocks0=[(QuantumCircuit(4),onebody_terms(mat(c['one_body'])))];gamma=anti_growth(c)
+            ^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n13-redesign-preparation-20261011/src/trottertracks/representation_exploration/n13_redesign.py", line 315, in prepare_factors
+    eta=exact['ungauged_eta']; g0=ivmatrix(mat(c['input_factors'][j])); ref0=conjugated(Q,eta)
+                                                                             ^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n13-redesign-preparation-20261011/src/trottertracks/representation_exploration/n13_redesign.py", line 136, in conjugated
+    return [[sum((q[i][k]*exact_iv(eta[k])*iconj(q[j][k]) for k in range(len(q))),mp.iv.mpc(0)) for j in range(len(q))] for i in range(len(q))]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n13-redesign-preparation-20261011/src/trottertracks/representation_exploration/n13_redesign.py", line 136, in <genexpr>
+    return [[sum((q[i][k]*exact_iv(eta[k])*iconj(q[j][k]) for k in range(len(q))),mp.iv.mpc(0)) for j in range(len(q))] for i in range(len(q))]
+                                   ~~~^^^
+KeyError: 0
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/n13-redesign-preparation-20261011/scripts/run_n13_redesign.py", line 70, in main
+    row=f.result();completed.append(row);save(out/'n1_checkpoints.json',completed);print('N1 completed',row['context'],row['status'],row['performance'],flush=True)
+        ^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.12.3/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+KeyError: 0
+TECHNICAL_STOP mandatory STOP

@@ -1,0 +1,41 @@
+{
+  "previous_namespace": "h4-b0i-map240-parallel-run01-20261014",
+  "previous_source": "b73d01573610d52f293139a4ed3374bd9f080c0c",
+  "native_driver_exit_code": 1,
+  "native_terminal": {
+    "actual_consumed_or_reserved": 0,
+    "carry": {
+      "actual_invocation_cap": 74805,
+      "actual_invocations": 73029,
+      "charge_cap_bytes": 18253611008,
+      "charged_bytes": 13615239890,
+      "failed_calls_refunded": false,
+      "recorded_wall_seconds": 268330.081695186
+    },
+    "cleanup_complete": true,
+    "first_stop_reason": "Stop: worker bootstrap first error: Stop: inherited AS hard limit too small\nworker_phase=configuration_auth_source_profile\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/src/trottertracks/resource_applicability/h4_b0i_map/runtime.py\", line 364, in worker_entry\n    try:worker_main(parent)\n        ^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/src/trottertracks/resource_applicability/h4_b0i_map/runtime.py\", line 336, in worker_main\n    limit_owned_address_space(plan['caps']['worker_AS_RSS']);os.sched_setaffinity(0,{auth['role_cpus']['workers'][index]})\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/src/trottertracks/resource_applicability/h4_geometry/resources.py\", line 207, in limit_owned_address_space\n    require_inherited_address_space(cap)\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/src/trottertracks/resource_applicability/h4_geometry/resources.py\", line 203, in require_inherited_address_space\n    require(hard == resource.RLIM_INFINITY or hard >= cap, 'inherited AS hard limit too small')\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/src/trottertracks/resource_applicability/h4_geometry/identity.py\", line 17, in require\n    raise Stop(reason)\n",
+    "mandatory_stop": true,
+    "native_observer_exit_code": -15,
+    "native_worker_exit_codes": [
+      -15
+    ],
+    "records": 0,
+    "runtime_next_stage": false,
+    "stage_allocated_control_bytes": 36864,
+    "stage_wall_seconds": 0.7697398792952299,
+    "status": "MAP240_FAIL_CLOSED_STOP",
+    "verified_pilot6_reuses": 0
+  },
+  "new_runtime_allocated_bytes": 65536,
+  "carry_after_bootstrap_stop": {
+    "actual_invocation_cap": 74805,
+    "actual_invocations": 73029,
+    "charge_cap_bytes": 18253611008,
+    "charged_bytes": 13615305426,
+    "failed_calls_refunded": false,
+    "recorded_wall_seconds": 268330.85143506527
+  },
+  "failed_invocations_refunded": false,
+  "original_terminal_sha256": "634812f5f4ec50dc06977ce1ed34c8184fe48306b8b6c98b58b5fcf43a9b3f78",
+  "own_processes_reaped": true
+}

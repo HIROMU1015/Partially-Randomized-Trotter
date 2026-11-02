@@ -1,0 +1,95 @@
+[
+  {
+    "evidence": [
+      "STOP_projection.json",
+      "scripts/h46_m5_native.py:_run_task"
+    ],
+    "finding": "Failure occurs after native/occupation and uncompiled Hadamard checks pass, at raw norm(after-before).",
+    "id": "F01",
+    "status": "CONFIRMED"
+  },
+  {
+    "evidence": [
+      "provider:src/trotterlib/df_trotter/circuit.py:34",
+      "qiskit/quantum_info/states/statevector.py:_evolve_instruction"
+    ],
+    "finding": "Top-level global phase is explicitly removed from a circuit copy then reapplied once by the saved simulator; nested definitions handle their own phase.",
+    "id": "F02",
+    "status": "CONFIRMED"
+  },
+  {
+    "evidence": [
+      "scripts/h46_m5_native.py:_run_task"
+    ],
+    "finding": "Recorded error is phase-sensitive and norm-sensitive; no normalization or fitted phase alignment is part of the gate.",
+    "id": "F03",
+    "status": "CONFIRMED"
+  },
+  {
+    "evidence": [
+      "qiskit/quantum_info/states/statevector.py:81",
+      "qiskit/quantum_info/states/statevector.py:_evolve_operator"
+    ],
+    "finding": "Statevector uses dtype=complex and numpy matrix contractions; static source gives no evidence of a complex64 downgrade.",
+    "id": "F04",
+    "status": "CONFIRMED"
+  },
+  {
+    "evidence": [
+      "provider:src/trotterlib/rte_compiled_cost.py:transpile_and_measure_cost",
+      "qiskit/compiler/transpiler.py:84"
+    ],
+    "finding": "Explicit compiler kwargs do not request approximation_degree below 1; the installed transpile default is 1.0. This is not a finite-precision accuracy certificate.",
+    "id": "F05",
+    "status": "CONFIRMED"
+  },
+  {
+    "evidence": [
+      "qiskit/transpiler/preset_passmanagers/level1.py",
+      "qiskit/transpiler/preset_passmanagers/builtin_plugins.py:OptimizationPassManager"
+    ],
+    "finding": "Default translator and opt1 definitions include basis translation, one-qubit resynthesis and inverse cancellation. Runtime per-pass trace was not saved.",
+    "id": "F06",
+    "status": "CONFIRMED_STATIC_PATH"
+  },
+  {
+    "evidence": [
+      "scripts/h46_new2_native.py:gaussian_operations",
+      "qiskit/circuit/library/standard_gates/xx_plus_yy.py"
+    ],
+    "finding": "Gaussian operations use explicit XXPlusYY; its direct matrix path and basis decomposition use different numerical operation sequences.",
+    "id": "F07",
+    "status": "CONFIRMED_STATIC_PATH"
+  },
+  {
+    "evidence": [
+      "scripts/h46_m5_native.py:_run_task",
+      "failed_task_file_inventory.json"
+    ],
+    "finding": "The failing raw check raises before cost row is saved. No QPY or before/after vectors were persisted, so saved evidence cannot separate phase, norm or non-phase error.",
+    "id": "F08",
+    "status": "CONFIRMED_OBSERVABILITY_GAP"
+  },
+  {
+    "evidence": [
+      "F02",
+      "F04",
+      "F06",
+      "F07",
+      "F08"
+    ],
+    "finding": "Accumulated gate/simulation rounding, accumulated global phase drift, and translation/resynthesis error remain distinct hypotheses.",
+    "id": "F09",
+    "status": "HYPOTHESIS_NOT_ESTABLISHED"
+  },
+  {
+    "evidence": [
+      "F01",
+      "F08",
+      "F09"
+    ],
+    "finding": "No reproducible lowering/sign/scalar bug or compiler bug is established by this static investigation. Old STOP must stay STOP.",
+    "id": "F10",
+    "status": "ROOT_CAUSE_UNRESOLVED"
+  }
+]

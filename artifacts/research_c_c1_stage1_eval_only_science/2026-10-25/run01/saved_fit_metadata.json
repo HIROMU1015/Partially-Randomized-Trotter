@@ -1,0 +1,145 @@
+{
+  "schema": "C1_STAGE1_FFSIM_NUMBER_EXPORT_v1",
+  "ffsim_commit": "558d3517385778c733f1aa226bb61b8f30f4b0f3",
+  "compatibility_version": "ffsim0083_scipy1141_per_matrix_logm_v1",
+  "z_representation": false,
+  "one_body_role": "ffsim_corrected_kappa",
+  "actual_rank": 8,
+  "settings": {
+    "optimize": true,
+    "max_vecs": 8,
+    "tol": 1e-08,
+    "method": "L-BFGS-B",
+    "options": {},
+    "callback": null,
+    "diag_coulomb_indices": null,
+    "cholesky": true,
+    "return_optimize_result": true
+  },
+  "optimizer": {
+    "success": true,
+    "status": 0,
+    "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+    "fun": 2.1839632052963425e-09,
+    "nit": 68,
+    "nfev": 74,
+    "njev": 74
+  },
+  "tensor_residual": {
+    "maxabs": 1.0550030930367438e-05,
+    "frobenius": 6.60902898358172e-05,
+    "objective_from_export": 2.183963205291161e-09,
+    "objective_difference": 5.181459357032165e-21
+  },
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "source_manifest_sha256": "e7bf161d2ab45a78d772c960ab5c2c41d3ed145bfd0a1193ee280536c1547240",
+  "input_members": {
+    "one_mo": {
+      "shape": [
+        4,
+        4
+      ],
+      "dtype": "<f8",
+      "sha256": "286dd3519d572066dc27f88bbf6545b4bb28e748c2f000c5f9b5fedc183abe49"
+    },
+    "eri_chemist": {
+      "shape": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "dtype": "<f8",
+      "sha256": "e729bf11d0cd2f63b6290cb819b4a241a842bf1b265c99a07d2d6d53bd967e4e"
+    },
+    "nuclear_repulsion": {
+      "shape": [],
+      "dtype": "<f8",
+      "sha256": "874b34c93c04576c14050d91ecace903d7b2693560bf77a05b2178fc48fb232b"
+    },
+    "mo_coeff": {
+      "shape": [
+        4,
+        4
+      ],
+      "dtype": "<f8",
+      "sha256": "16afa935042ad442a82ced1e7e1756db032121ffee35bb7517029133b43b920a"
+    }
+  },
+  "frame_ids": [
+    "F0",
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7"
+  ],
+  "group_ids": [
+    "G0",
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5",
+    "G6",
+    "G7"
+  ],
+  "arrays": {
+    "kappa": {
+      "shape": [
+        4,
+        4
+      ],
+      "dtype": "<f8",
+      "sha256": "5f0ca073f19fcc99c5e1c81b13910d527717ad4758236f59f714d47dba8ed32f"
+    },
+    "diag_coulomb_mats": {
+      "shape": [
+        8,
+        4,
+        4
+      ],
+      "dtype": "<f8",
+      "sha256": "9fbac6c4d20cf4bb3cb7f0840c407a28bad366883cc7dc150f80e1ccf7604233"
+    },
+    "orbital_rotations": {
+      "shape": [
+        8,
+        4,
+        4
+      ],
+      "dtype": "<f8",
+      "sha256": "c9c57075cc570a31710718fc0892ee0fd144044c22c1e2c2a962f9bb6bf5219c"
+    },
+    "constant": {
+      "shape": [],
+      "dtype": "<f8",
+      "sha256": "874b34c93c04576c14050d91ecace903d7b2693560bf77a05b2178fc48fb232b"
+    },
+    "optimizer_x": {
+      "shape": [
+        128
+      ],
+      "dtype": "<f8",
+      "sha256": "abdf8ab4b58ae1db8aa2f6ca58b9f9bbb24ecefd5d7ad4ce5eeff62dbdf1419f"
+    },
+    "optimizer_jac": {
+      "shape": [
+        128
+      ],
+      "dtype": "<f8",
+      "sha256": "3f3fdf7a58dd4786971648b6f717f85be48b4dd2e9ed7e68bd3f13e7604b0a30"
+    }
+  },
+  "calls": {
+    "input_load": 1,
+    "fit": 1,
+    "fit_qualification": 1,
+    "tensor_reconstruct": 1,
+    "tensor_maxabs": 1,
+    "tensor_frobenius": 1
+  },
+  "export_sha256": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08"
+}

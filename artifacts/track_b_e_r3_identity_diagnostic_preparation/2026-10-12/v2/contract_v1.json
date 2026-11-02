@@ -1,0 +1,128 @@
+{
+  "kind": "E_R3_UNCONTROLLED_SAVED_INPUT_IDENTITY_ONLY_DIAGNOSTIC_V1",
+  "input_result_commit": "ce0e286430a2a23869cb9417c82113c98064c72c",
+  "historical_science_source": "41349b73157c7781e0b534cf0fe61e06bf439954",
+  "prior_diagnostic_source": "b5fd12370eae8fc5064039355ba218d342125d06",
+  "review_intake_commit": "838768a936ea475d75cae81cb35927a03583832b",
+  "scope": {
+    "modes": 3,
+    "frame_count": 3,
+    "rank": [
+      2,
+      2,
+      2
+    ],
+    "controlled": false,
+    "signs": [
+      1,
+      -1,
+      1
+    ],
+    "nested_commutator": "comm(Q0,comm(Q1,Q2))",
+    "raw_rotation": "expm(1j*.03125*T/4)",
+    "input_regeneration": false,
+    "native_transpile": false,
+    "CD_E_r6_Pauli_T_shots_trajectory_LP_molecule_NPZ_GPU": false
+  },
+  "inputs": {
+    "saved_job": {
+      "path": "artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/E-r3.job.json",
+      "bytes": 2130,
+      "sha256": "545ee96c6929e88779bc48fd06fe54f0950fd4cdc42424d9f1b5ec319ff8dc3a"
+    },
+    "saved_inputs": {
+      "path": "artifacts/track_b_df_correction_comparison_result/2026-10-11/v2/E-inputs.json",
+      "bytes": 5500,
+      "sha256": "71494102a896c53f3666d6a58ce4ec76a9b1e882e7d6dd5ca81ea03d00f010aa"
+    },
+    "historical_expected_record": {
+      "path": "artifacts/track_b_df_sparse_correction_audit/2026-10-11/phase_E_checks.json",
+      "bytes": 6354,
+      "sha256": "1751a7fd410410291d1f13e48e628fc00311021827be32e20cd1199500108b47"
+    }
+  },
+  "legacy_helper": {
+    "path": "scripts/tracks/algorithm_codesign/audit_df_sparse_correction.py",
+    "bytes": 14429,
+    "sha256": "5b13247a292d704b65efcb68b3385bfda36302281da92c826b2664813aa32ee7"
+  },
+  "historical_expected_fingerprint": "171f321e2f3bcc51b177e7b62735b5fbf9d80e36a5f56639b7f03809efac41b5",
+  "old_marker_sha256": "dd6b9d5ec96e9d34d7bea0277eadb03f031992e1010cfdb2c940a393b2242701",
+  "path_order": [
+    "current",
+    "legacy"
+  ],
+  "context": {
+    "fresh_child_process": true,
+    "same_saved_deserialized_frames_for_both_paths": true,
+    "legacy_label": "legacy-source reconstruction under current runtime; NOT historical original",
+    "reset_circuit_name_counter": false,
+    "payload_attempts_per_path": 1,
+    "path_evaluations_per_path": 1,
+    "partial_failure_retry": false,
+    "profile_observer": "during payload only; count UnitaryGate._define and qs_decomposition Python entries; reject qiskit.compiler.transpiler.transpile before body",
+    "observer_changes_timing": true,
+    "native_IR_cost_metrics": false,
+    "matrix_stage_observation": "full C-order bytes, dtype, shape, layout; compare first different stage",
+    "hash_acceptance": "MATCH/MISMATCH/EXCEPTION observations only; preserve historical expected/policy"
+  },
+  "runtimes": {
+    "numeric": {
+      "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "executable_sha256": "320707a1d684b043661306d508d1a8655f507c0bb8e827398cb53680054aa7c8",
+      "packages": {
+        "numpy": "1.26.4",
+        "scipy": "1.14.1",
+        "qiskit": "1.3.0",
+        "mpmath": "1.3.0"
+      },
+      "source_trees": {
+        "numpy": "357db50cd85bea1dc80602c3bdb6040082eea3885e141488990ac04e46930cb2",
+        "scipy": "df7a097c15a7c4f08228571790deef94e221832217bc1087467be0d77a6de5d8",
+        "qiskit": "36f5daf62c595fdba5130a4383d8d4aa004ce7d5cab1ef94f86a628cc8a7aaa2",
+        "mpmath": "c79b951276c7b79ea48114fdc169b9c180fcf398d0314433ba73518beb649a26"
+      },
+      "tree_policy": "python_and_shared_libraries"
+    }
+  },
+  "configuration": {
+    "workers": 1,
+    "numeric_threads": 1,
+    "QISKIT_PARALLEL": false,
+    "GPU": false,
+    "wall_limit": null,
+    "speedup_claim": false
+  },
+  "caps": {
+    "CPU_seconds_total": 120,
+    "CPU_seconds_worker": 90,
+    "aggregate_RSS_MiB": 768,
+    "worker_RSS_MiB": 512,
+    "wall_seconds_total": null,
+    "wall_seconds_worker": null,
+    "output_bytes": 8388608,
+    "log_bytes": 1048576,
+    "review_file_bytes": 524288,
+    "native_transpile_calls": 0,
+    "registered_path_evaluations": 2,
+    "payload_attempts": 2,
+    "raw_expm_calls": 2,
+    "input_circuits": 2,
+    "max_system_modes": 3,
+    "max_primitive_rank": 2,
+    "max_payload_field_differences": 25000,
+    "retry": 0,
+    "RSS_poll_seconds": 0.05,
+    "containment": "periodic external process-group guard; RLIMIT_CPU and RLIMIT_FSIZE; observed overshoot possible; no instantaneous RSS ceiling claim"
+  },
+  "completion_statuses": [
+    "E_R3_IDENTITY_DIAGNOSTIC_COMPLETE",
+    "E_R3_IDENTITY_DIAGNOSTIC_TECHNICAL_INCONCLUSIVE"
+  ],
+  "exception_policy": "Fingerprint exception with complete recorded observation can complete a path; construction/storage/cap/prohibited native entry or incomplete paths are technical inconclusive. Partial records do not decide historical cause or A/B winner.",
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "source_review_required": true,
+  "diagnostic_execution_authorized": false
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "h4_b0_preparation_technical_checks_v1",
+  "performed_by": "primary Codex agent; not independent scientific review",
+  "runtime": {
+    "python": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "python_version": "3.11.0rc1",
+    "qiskit": "1.3.0",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "pytest": "8.3.5",
+    "environment_modified": false
+  },
+  "tests": [
+    {
+      "command": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python -m unittest discover -s tests -p test_h4_pauli_b0.py -v",
+      "kind": "NEW_SYNTHETIC_2_TO_3_SYSTEM_QUBITS",
+      "passed": 6,
+      "status": "PASS"
+    },
+    {
+      "command": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python -m unittest discover -s tests -p test_h4_d2_pauli_control.py -v",
+      "kind": "REUSED_D2_SYNTHETIC",
+      "passed": 12,
+      "status": "PASS"
+    },
+    {
+      "command": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python tests/test_h4_conditional_cng.py",
+      "kind": "REUSED_PURE_SCALAR_ARTIFICIAL",
+      "passed": 16,
+      "status": "PASS"
+    },
+    {
+      "command": "PYTHONPATH=src /home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python -m pytest -q -p no:cacheprovider tests/test_fixed_signal_evaluation.py -k 'pauli_b0_and_b0i_are_identical_without_duplicate_phase or missing_numerical_or_normalization_evidence_never_invents_N_G or ineligible_precision_has_no_successful_total'",
+      "kind": "REUSED_B0_AND_NULL_SEMANTICS_ARTIFICIAL",
+      "passed": 5,
+      "deselected": 66,
+      "status": "PASS"
+    }
+  ],
+  "total_passed": 39,
+  "synthetic_checks": [
+    "retained order and tail exclusion",
+    "B0/B0I one alias candidate",
+    "explicit prefix forwarding; missing/zero prefix rejected",
+    "constant and controlled relative phase",
+    "little-endian placement with Y and negative coefficient",
+    "cosine/+Im sine full wrappers",
+    "raw ray norm only at contraction boundary",
+    "D1 retained-body recipe matches direct toy B0",
+    "new path no sampler/generic control/top-level compile"
+  ],
+  "real_H4_calls": {
+    "body_builds": 0,
+    "central_lifts": 0,
+    "compile": 0,
+    "state_actions": 0,
+    "signal": 0,
+    "bias_N_G": 0
+  },
+  "scientific_grants_issued_or_consumed": 0,
+  "notes": [
+    "C-only Python lacks qiskit; switched to existing D1/D2 environment before tests",
+    "Qiskit deprecation warnings retained; no dependency changes",
+    "existing tests include synthetic generic control/compile; no H4 files passed to numerical entrypoints"
+  ]
+}

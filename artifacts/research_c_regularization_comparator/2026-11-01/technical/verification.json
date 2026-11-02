@@ -1,0 +1,63 @@
+{
+  "status": "TECHNICAL_PASS_NO_SCIENCE",
+  "base_commit": "354a090da388c6d9718624bb4525ff3c72a22022",
+  "tests": {
+    "new_tests": 22,
+    "fit_codec_regression": 88,
+    "evaluation_regression": 48,
+    "isolated_general_K_regression": 13,
+    "distinct_pass": 171,
+    "additional_unittest_subtests": 29
+  },
+  "test_logs": [
+    "new_tests.log",
+    "fit_regression.log",
+    "evaluation_regression.log",
+    "adapter_regression.log"
+  ],
+  "initial_regression_combination": {
+    "failed": 13,
+    "teardown_errors": 1,
+    "reason": "GeneralKTests requires qiskit/trotterlib absent from sys.modules; earlier tests import them",
+    "resolution": "Run original GeneralKTests unchanged in a separate process; all13 and29subtests PASS; other48 PASS"
+  },
+  "scientific_calls": 0,
+  "real_molecular_npz_decode": 0,
+  "real_optimizer_iterations": 0,
+  "new_fit": 0,
+  "saved_result_numerical_reanalysis": 0,
+  "old_SOURCE_modified": false,
+  "shared_environment_modified": false,
+  "installed_ffsim_sources_match_Stage_A": true,
+  "new_objective": "rcdf_full_ordered_Z_l2_initial_value_matched_v1",
+  "technical_classification": "COMPARABLE_DISTINCT_OBJECTIVE",
+  "fixed_law_or_CA_guarantee_adopted": false,
+  "stage_B_C_authorized": false,
+  "environment": {
+    "fit_python": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python",
+    "evaluation_python": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+    "python": "3.11.1",
+    "ffsim": "0.0.83",
+    "jax_x64": true,
+    "installed_environments_used_read_only": true,
+    "task_local_caches": true
+  },
+  "resource_observation": {
+    "affinity_cpus": 32,
+    "MemTotal_kB": 65522480,
+    "MemAvailable_kB": 55008416,
+    "load_average": "1.19 1.14 1.10",
+    "small_matrix_BLAS_threads": 1,
+    "reason": "Tiny BLAS matrices coordinated with JAX CPU pool; no CPU/RAM/worker/wall cap",
+    "GPU_required": false
+  },
+  "github_readback": {
+    "ref": "354a090da388c6d9718624bb4525ff3c72a22022",
+    "matched": [
+      "src/trottertracks/c_pr_aware_df.py",
+      "docs/research/research_c_pr_aware_df_stage_a_x0_v2_execution_20261027.md",
+      "docs/research/research_c_evidence_synthesis_and_decision_readiness_20261031.md"
+    ]
+  },
+  "mandatory_stop": true
+}

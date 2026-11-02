@@ -1,0 +1,51 @@
+{
+  "budgets": {
+    "AuditParity_construction": 8,
+    "B_angle": 256,
+    "B_event_requery": 256,
+    "B_sample_audit": 256,
+    "F3_prepare": 2,
+    "Full_angle": 64,
+    "Full_angle_packet": 64,
+    "Full_constructor_inside_prepare": 2,
+    "Full_sample_packet": 128,
+    "G7_make_generator": 14,
+    "additional_sampling": 0,
+    "bit_draw_requests_static_upper": 3200,
+    "bit_width": 160,
+    "canonical_angle": 192,
+    "canonical_snapshot": 6,
+    "diagnostic_event_queries": 0,
+    "event_witness": 512,
+    "log_bytes": 67108864,
+    "nested_internal_total_calls": "NOT_ESTABLISHED_NOT_AN_AGGREGATE_CALL_AUTHORIZATION",
+    "primary_constructions": 16,
+    "result_bytes": 1073741824,
+    "scheduled_sampling": 512
+  },
+  "internal_root_law_predicate_packet_total_calls": "NOT_ESTABLISHED",
+  "semantics": {
+    "B_event_requery": "one per B accepted event; Full packet requery is a nested operation",
+    "F3_prepare": "2 includes the two nested Full constructors within primary_constructions16",
+    "bit_draws": "384 canonical samples * at most6 + 128 Full samples * at most7 =3200; H160; fixed m5; no audit/requery draw; no retry",
+    "event_witness": "512 is the driver correctness boundary. Nested B event_witness (<=256) is observed separately inside B sampling audit, never silently called a total function bound.",
+    "internal_total": "NOT_ESTABLISHED: root/law/predicate/packet internals are not an aggregate call authorization"
+  },
+  "static_draw_proof": {
+    "Full_degree_max": 4,
+    "assumptions": [
+      "m5",
+      "H160",
+      "fixed512",
+      "no extra audit draws",
+      "no retry or adaptive samples"
+    ],
+    "canonical_degree_max": 4,
+    "canonical_samples": 384,
+    "full_samples": 128,
+    "max_canonical_draws": 6,
+    "max_full_draws": 7,
+    "total_upper": 3200,
+    "width": 160
+  }
+}

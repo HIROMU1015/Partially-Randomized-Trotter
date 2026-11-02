@@ -1,0 +1,160 @@
+{
+  "schema": "C1_STAGE3_COST_ONLY_EXECUTION_SUMMARY_V1",
+  "status": "TECHNICAL_FAILURE_PARTIAL_EVIDENCE_MANDATORY_STOP",
+  "scope": "C1_STAGE3_EIGHT_CANDIDATE_COST_ONLY_V1",
+  "fixed_source_commit": "edb9f6ef99d00e656265900af8447223029fae41",
+  "contract_sha256": "d563c4dee6723dda5b2e965aa5fc4e9c0fa258fb4d59daf00c1a2366858d6477",
+  "source_manifest_sha256": "53ea2dba6cab1d807df1c64a97bd80b0355e3a25313bdc6747343e2e8334e81c",
+  "input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "saved_shots_evidence_commit": "f85ac4c131b939bf4b8146a98997e61565345d45",
+  "first_failure": {
+    "kind": "compile",
+    "label": "CDF_PR_s4_r16_K0_0",
+    "error_type": "RuntimeError",
+    "error": "Already mutably borrowed"
+  },
+  "failure_location": "Qiskit1.3 HighLevelSynthesis._definitely_skip_node -> self._equiv_lib.keys()",
+  "cause_status": "Observed during parallel compile; concurrency/shared-library explanation not yet independently reproduced",
+  "candidate_status_counts": {
+    "STOPPED_DEPENDENCY": 6,
+    "FAIL": 2
+  },
+  "candidate_statuses": [
+    {
+      "candidate_id": "CDF_D_s1_r0_K0",
+      "status": "STOPPED_DEPENDENCY",
+      "error": "Dependent work stopped",
+      "native_calibration_complete": true,
+      "partial_round_axis_rows": 21,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "CDF_D_s4_r0_K0",
+      "status": "STOPPED_DEPENDENCY",
+      "error": "Dependent work stopped",
+      "native_calibration_complete": false,
+      "partial_round_axis_rows": 0,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "CDF_PR_s4_r16_K0",
+      "status": "FAIL",
+      "error": "Already mutably borrowed",
+      "native_calibration_complete": false,
+      "partial_round_axis_rows": 0,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "CDF_PR_s4_r16_K2",
+      "status": "STOPPED_DEPENDENCY",
+      "error": "Dependent work stopped",
+      "native_calibration_complete": false,
+      "partial_round_axis_rows": 0,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "XDF_D_s1_r0_K0",
+      "status": "STOPPED_DEPENDENCY",
+      "error": "Dependent work stopped",
+      "native_calibration_complete": true,
+      "partial_round_axis_rows": 13,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "XDF_D_s4_r0_K0",
+      "status": "STOPPED_DEPENDENCY",
+      "error": "Dependent work stopped",
+      "native_calibration_complete": false,
+      "partial_round_axis_rows": 0,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "XDF_PR_s4_r16_K0",
+      "status": "FAIL",
+      "error": "Already mutably borrowed",
+      "native_calibration_complete": false,
+      "partial_round_axis_rows": 0,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    },
+    {
+      "candidate_id": "XDF_PR_s4_r16_K2",
+      "status": "STOPPED_DEPENDENCY",
+      "error": "Dependent work stopped",
+      "native_calibration_complete": false,
+      "partial_round_axis_rows": 0,
+      "optimistic_total_RZ": null,
+      "cost_comparison_available": false
+    }
+  ],
+  "scientific_units": 106,
+  "maximum_scientific_units": 936,
+  "call_counts": {
+    "saved_shots_load": 1,
+    "input_load": 1,
+    "fit_export_load": 1,
+    "model_prepare": 2,
+    "split_native_model": 2,
+    "saved_stage2_load": 1,
+    "native_calibration": 8,
+    "gaussian_build": 20,
+    "rte_configuration": 4,
+    "cost_support_probe": 4,
+    "circuit_build": 9,
+    "compile": 9,
+    "compile_equivalence_check": 3,
+    "metrics": 3,
+    "serial_cost_expansion": 34,
+    "cost_kernel_sample": 4
+  },
+  "call_completed": 98,
+  "call_failed_events": 8,
+  "native_compile_attempts": 9,
+  "native_compile_completed": 7,
+  "native_compile_failed": 2,
+  "compile_equivalence_checks_completed": 3,
+  "compile_equivalence_check_scope": "Readout shells head/X/Y only; no new native kernel checked",
+  "numerical_equivalence_failures": 0,
+  "full_candidate_totals": 0,
+  "comparisons_completed": 0,
+  "partial_round_axis_cost_rows": 34,
+  "completed_reused_D_s1_calibrations": [
+    "CDF_D_s1_r0_K0",
+    "XDF_D_s1_r0_K0"
+  ],
+  "qpy_files": 16,
+  "new_fit": 0,
+  "optimizer": 0,
+  "PF_RTE_recomputed": 0,
+  "shots_formula_recomputed": 0,
+  "quantum_shots_drawn": 0,
+  "retry": 0,
+  "resume": 0,
+  "CA_achieved": null,
+  "conditional_total_costs": null,
+  "guaranteed_total_resource_superiority": false,
+  "scientific_NO_GO": false,
+  "preflight": "PASS",
+  "artificial_regression_tests": 13,
+  "resources": {
+    "plan": {
+      "workers": 8,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56574881792,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    },
+    "wall_seconds": 14.318148924969137,
+    "process_cpu_seconds": 22.678081953,
+    "peak_RSS_KiB": 553164
+  },
+  "mandatory_stop": true
+}

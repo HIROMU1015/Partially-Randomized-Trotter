@@ -1,0 +1,137 @@
+{
+  "schema": "C1_general_K_science_contract_DRAFT_v1",
+  "status": "UNAPPROVED_UNEXECUTED_NOT_A_GRANT",
+  "execution_authorized": false,
+  "grant_issued": false,
+  "dispatch_enabled": false,
+  "executable_command": null,
+  "technical_status": "C1_ADAPTER_PREPARED_POLICY_DEPENDENCY_REMAINS",
+  "basis": {
+    "preparation_base_commit": "e8a0cd683f65e189f5900ce002af51fce2c53059",
+    "implementation_branch": "codex/research-c-c1-general-k-adapter-20261024",
+    "future_science_source_commit": null,
+    "source_freeze_required_before_authorization": true,
+    "adapter": "src/trottertracks/c1_general_k_adapter.py",
+    "tests": "tests/management/test_research_c_c1_general_k_adapter.py",
+    "preparation_report": "docs/research/research_c_c1_general_k_adapter_preparation_20261024.md",
+    "ffsim_version": "v0.0.83",
+    "ffsim_commit": "558d3517385778c733f1aa226bb61b8f30f4b0f3"
+  },
+  "candidate_input_not_adopted": {
+    "label": "P-H4",
+    "adopted_for_science": false,
+    "repository": "HIROMU1015/Partially-Randomized-Trotter",
+    "commit": "86b8b002704aced8ca239414080f53793de81658",
+    "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+    "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "historical_input_metadata": {
+      "model": "linear H4",
+      "adjacent_distance_Angstrom": 1.0,
+      "basis": "STO-3G",
+      "charge": 0,
+      "spin_2S": 0,
+      "spatial_orbitals": 4,
+      "spin_orbitals": 8,
+      "historical_sector": "Nalpha=Nbeta=2; not adopted for this comparison"
+    },
+    "physical_input_members": ["one_mo", "eri_chemist", "mo_coeff", "nuclear_repulsion"],
+    "warning": "Historical saved X-DF ranks and partition settings are not new science conditions"
+  },
+  "adapter_technical_conventions": {
+    "opt_in": "enable_general_k must be the Python boolean True",
+    "representation": "number only; Z inputs rejected without conversion",
+    "one_body_input_role": "ffsim_corrected_kappa, not original h",
+    "spatial_to_spin": "a=2*i+sigma; K[a,b]=J[i,j]/2; V[a,b]=delta_sigma_tau*U[i,j]",
+    "density_operator": "D(K)=sum_ab K_ab n_a n_b, including diagonal and both ordered indices",
+    "fragment_semantics": "one original frame per general K; group and original order retained; no signed-square decomposition",
+    "phase_ownership": "model owns corrected kappa and constant; each frame owns only its density scalar; identity movement awaits a separate policy",
+    "rotation_validation": "shape/finite and declared orientation only; unitarity, kappa Hermiticity and CAR/Gaussian agreement pending",
+    "rte_bridge": "unnormalized candidate component/spec records only; no tail norm, threshold choice, sampling or law",
+    "real_basis_binding": "existing registry may evaluate local Operator fingerprints; this was mocked in technical tests"
+  },
+  "unresolved_conditions": {
+    "adopted_input_identity": null,
+    "sector_and_full_space_scope": null,
+    "cdf_max_vecs": null,
+    "cdf_tol": null,
+    "cdf_actual_outer_rank": null,
+    "optimizer_settings_and_success_gate": null,
+    "df_error_norm_and_tolerance": null,
+    "one_body_approximation_policy": null,
+    "xdf_baseline_saved_or_fresh_or_common_cholesky": null,
+    "group_partition_and_weight": null,
+    "L_D": null,
+    "time_and_delta_window": null,
+    "PF_step_policy": null,
+    "RTE_r_and_K": null,
+    "tail_atomization_and_identity_policy": null,
+    "tail_norm_and_sampling_law": null,
+    "shot_count_and_confidence": null,
+    "compiler_profile_and_seed": null,
+    "independent_reference_precision_and_absolute_gates": null,
+    "retry_allowance": null,
+    "scientific_call_totals": null
+  },
+  "proposed_stages_not_authorized": [
+    {
+      "stage": 1,
+      "purpose": "Representation/operator qualification, separated from physical DF approximation error",
+      "authorized": false,
+      "work": [
+        "Bind original MO h/g/constant and fit kappa/J/U to frozen input and external source identities",
+        "Run an external fit only after its explicit science approval; otherwise use separately qualified saved output",
+        "Check optimizer status and tensor residual separately from Hamiltonian/operator error",
+        "Construct independent CAR references from original number-density data, not adapter Z coefficients",
+        "Compare C-DF representation with general K, and check one-body/scalar/sector/rotation conventions",
+        "Evaluate original physical H versus C-DF H under the adopted approximation budget"
+      ]
+    },
+    {
+      "stage": 2,
+      "purpose": "Real circuit connection, absolute phase and native cost",
+      "authorized": false,
+      "work": [
+        "Build existing Gaussian and central primitive paths for all approved unique frames",
+        "Check ordered evolution, control0=I/control1=target U, scalar relative phase and actual adjoint",
+        "Check full measured X/Y raw and compiled operator/signal against the correct finite target",
+        "Give X-DF and C-DF the same legal basis/boundary/B2 opportunities and compiler profile",
+        "Record native RZ/SX/X/CX, depth/CX-depth, fit/build/compile costs without claiming shot or total-cost advantage"
+      ]
+    },
+    {
+      "stage": 3,
+      "purpose": "Separate later decision: finite PR and same-accuracy end-to-end resources",
+      "authorized": false,
+      "outside_initial_adapter_qualification": true,
+      "work": [
+        "Adopt new D/R grouping, tail atoms/norm and finite RTE target with research A/B",
+        "Validate PF bias with research B and law/shot/confidence with research A",
+        "Separate DF/PF/finite-RTE/compiler/statistical error and compare same-accuracy total resources"
+      ]
+    }
+  ],
+  "call_count_rules_not_totals": {
+    "required_inputs": ["adopted representations and fit configurations", "actual frame/group/support counts", "approved times and ordered cases", "reference/control/axis coverage", "compiler/cache identities"],
+    "fit": "One per approved configuration lacking a qualified saved output; no automatic rank/seed/retry sweep",
+    "local": "Enumerate unique representation/frame/time/control/adjoint checks after actual frames are known",
+    "wrapper": "Enumerate approved ordered cases times routes times X/Y axes, including state preparation and measurement",
+    "reference": "List independent physical-H, candidate-H, finite-target and compiled-operator references separately; count only identity-qualified reuse",
+    "compile": "Count unique approved full-wrapper compiler/cache keys; explicitly distinguish logical aliases from actual calls",
+    "totals": null
+  },
+  "decision_owners": {
+    "user_and_research_C": ["candidate input", "general-frame implementation scope", "one-body policy", "baseline and compression settings"],
+    "coordination": ["physical task/sector and error budgets", "comparison claim and same-accuracy scope", "science-stage adoption and explicit execution authorization"],
+    "research_A_joint": ["tail atomization/identity policy and law", "shot/confidence and statistical cost"],
+    "research_B_joint": ["D/R split and PF conditions/bias", "finite-target and deterministic-error budget"],
+    "Codex_technical": ["isolated runtime/provenance preparation", "existing builder/reference reuse", "resource-aware acceleration", "exact call inventory after adopted inputs are known"]
+  },
+  "future_stop_and_preservation_proposal": {
+    "adoption_pending": true,
+    "on_failure": "Preserve raw evidence and stop; do not change scientific conditions or automatically retry",
+    "old_grants_reusable": false,
+    "preserve": ["original input", "old SOURCE and results", "old grants/ledgers/markers/STOP", "C4/Gaussian temporary closure", "research A/B contracts", "original workspace and shared environments"],
+    "resource_policy": "No arbitrary CPU/GPU/RAM/worker/phase or total-wall caps; coordinate available resources and threads, accelerate dominant approved work, preserve call/output/log limits and noninterference",
+    "completion": "Publish and verify the separately approved result, then mandatory STOP; no automatic next-stage work"
+  }
+}

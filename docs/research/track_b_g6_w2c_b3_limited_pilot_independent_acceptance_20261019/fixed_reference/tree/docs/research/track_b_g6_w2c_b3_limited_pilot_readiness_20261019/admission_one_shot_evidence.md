@@ -1,0 +1,13 @@
+# P07/P11：新しい人工admission証拠
+
+新scopeはARTIFICIAL_PILOT_FORWARD_V1、claimはARTIFICIAL_PILOT_CLAIM_FORWARD_V1。各fixtureのprivate `/tmp/b3-r1-artificial-*`に別々の新storeを作る。繰返し試験が同じ本番scopeを消費したことにはならない。同一scope競合testの8 contendersだけは**同じ一つのstore**へ同時に進む。
+
+変更していないClaimLedgerのSQLite BEGIN IMMEDIATE、scope PRIMARY KEY、claim UNIQUE、EXTRA同期、commit後のbinding再検査、不可逆spentを利用する。新candidate digestをinner formal payloadへ入れ、fake承認にもbindした。新SOURCE・input・schema・Python/stdlib・import位置をadmission前後で照合する。途中mutationはSTOPPEDのspentとして残る。
+
+forward_evidence/raceは8 contenders中ADMITTED1、DENIED7の実観測、FAKE_ONLY_claims.sqlite3はSTOPPED。offline checkerはread-only SQLiteでsnapshot、inner digest、scope/claim/bindingを別実装で照合する。**snapshot単独はatomicな履歴の証明ではない**。原子性の根拠は実装/SQLiteの前提と実競合試験を合わせたもの。
+
+commit_ack_uncertainではreserve commit後に人工ACK障害を注入し、RESERVEDが残り二重使用を拒否した。parent_crashではこの作業が作った子プロセスだけを同位置でexit79とし、RESERVEDを観測した。いずれもrefund/lease/retry/resumeはない。親crashの最終CPUはnullとする。
+
+normalではadmit後にspawn workersを起動し、worker factoryのpayloadはruntime_manifestだけ。親だけに置いたfake canaryがworkerへ渡ると必ず失敗するfixtureを使い、normal完了を確認した。authority/store/claim portはworkerへ渡していない。これはPythonメモリ分離と限定payloadの技術検証であり、任意の悪意あるプロセスに対するOS sandboxの証明ではない。
+
+公開するSQLiteは**新しいfake storeだけ**。実approval、実store、実claimは作成・読出・消費していない。旧47ケースのprivate証拠不足は未解消。将来は正式release/input/runtime/adoption、独立approval、単一の信頼store・logical scope、停止時の保全手順を別途固定する必要がある。

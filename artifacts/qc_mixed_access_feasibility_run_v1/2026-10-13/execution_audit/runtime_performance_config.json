@@ -1,0 +1,38 @@
+{
+  "CPUs_affinity": 32,
+  "selected_backend": "CPU_numpy_scipy_vectorized",
+  "workers": 2,
+  "threads_per_worker": 1,
+  "thread_variables": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMEXPR_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "GPU_probe": {
+    "return_code": 9,
+    "output": "NVIDIA-SMI has failed because it couldn't communicate with the NVIDIA driver. Make sure that the latest NVIDIA driver is installed and running.\n\n"
+  },
+  "GPU_used": false,
+  "dominant_workload": "full-Fock row assembly,Gaussian row kernels,matrix powers and norm SVD",
+  "applied_acceleration": [
+    "paired row updates",
+    "Gaussian QR/Givens parity updates",
+    "13-h seed cache per method",
+    "binary matrix powers",
+    "independent method jobs with2spawn workers"
+  ],
+  "optimized_reference_validation": "unchanged frozen source;22 prior non-molecular tests PASS,including8mode mock input and2spawn audit",
+  "prior_validation_report_SHA256": "305c75f44e2fcebf102577f352ed2dc3d987c47ad6a935b626a6de738b99f25e",
+  "new_synthetic_runs": 0,
+  "scientific_conditions_changed_for_speed": false,
+  "speedup_claim": null,
+  "aggregate_RSS_cap_bytes": 4294967296,
+  "output_cap_bytes": 67108864,
+  "log_cap_bytes": 4194304,
+  "wall_or_CPU_cap": null,
+  "retry": false,
+  "molecular_jobs_so_far": 0,
+  "registered_probes_so_far": 0
+}

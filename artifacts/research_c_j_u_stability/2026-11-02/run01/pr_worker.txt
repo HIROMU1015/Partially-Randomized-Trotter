@@ -1,0 +1,65 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-j-u-stable-execution-20261102/scripts/run_research_c_j_u_stable.py", line 55, in <module>
+    main()
+  File "/tmp/prt-c-j-u-stable-execution-20261102/scripts/run_research_c_j_u_stable.py", line 47, in main
+    m.fit_worker(ROOT, args.output, c, args.fit_worker)
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_stable_pilot.py", line 122, in fit_worker
+    J, U, result = algorithm.optimize(packet['g'], a['J'], a['U'], spec,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_stable.py", line 173, in optimize
+    raw,stop=call('outer_driver','BFGS',driver)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_stable.py", line 167, in driver
+    res=(solver or minimize)(oracle.fun,zero,jac=True,method='BFGS',callback=callback,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_minimize.py", line 726, in minimize
+    res = _minimize_bfgs(fun, x0, args, jac, callback, **options)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_optimize.py", line 1397, in _minimize_bfgs
+    _line_search_wolfe12(f, myfprime, xk, pk, gfk,
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_optimize.py", line 1133, in _line_search_wolfe12
+    ret = line_search_wolfe1(f, fprime, xk, pk, gfk,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_linesearch.py", line 93, in line_search_wolfe1
+    stp, fval, old_fval = scalar_search_wolfe1(
+                          ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_linesearch.py", line 170, in scalar_search_wolfe1
+    stp, phi1, phi0, task = dcsrch(
+                            ^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_dcsrch.py", line 255, in __call__
+    phi1 = self.phi(stp)
+           ^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_linesearch.py", line 84, in phi
+    return f(xk + s*pk, *args)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py", line 325, in fun
+    self._update_fun()
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py", line 294, in _update_fun
+    fx = self._wrapped_fun(self.x)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_differentiable_functions.py", line 20, in wrapped
+    fx = fun(np.copy(x), *args)
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_optimize.py", line 79, in __call__
+    self._compute_if_needed(x, *args)
+  File "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_optimize.py", line 73, in _compute_if_needed
+    fg = self.fun(x, *args)
+         ^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_reduced.py", line 195, in fun
+    p=self.evaluate(eta)
+      ^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_stable.py", line 90, in evaluate
+    V,p,J0,i0=self.call('inner_J_solve',label+'_solve',start)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_j_u_stable.py", line 88, in start
+    J,info=blocks.solve_j(p,self.J0,pcy,record=raw('solve'))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-j-u-stable-execution-20261102/src/trottertracks/c_separated_j_u_consistent.py", line 147, in solve_j
+    raise ValueError('J_POINT_CONSISTENCY_MISMATCH')
+ValueError: J_POINT_CONSISTENCY_MISMATCH

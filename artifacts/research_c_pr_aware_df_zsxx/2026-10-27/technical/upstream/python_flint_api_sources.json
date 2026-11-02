@@ -1,0 +1,60 @@
+{
+  "license": "upstream/python_flint_LICENSE.txt",
+  "purpose": "API calls used by evaluator;no approximate matrix routines",
+  "sources": [
+    {
+      "file": "arb.pyx",
+      "ref": "0.8.0",
+      "git_blob": "74aea43ab40621d68bb2a7c82d7e469de023e20d",
+      "URL": "https://github.com/flintlib/python-flint/blob/0.8.0/src/flint/types/arb.pyx",
+      "excerpts": [
+        {
+          "start": 227,
+          "end": 266,
+          "text": "    def man_exp(self):\n        \"\"\"\n        Decomposes *self* into an integer mantissa and an exponent,\n        returning an *fmpz* pair. Requires that *self* is exact\n        and finite.\n\n            >>> from flint import arb, ctx\n            >>> ctx.prec = 53\n            >>> arb(\"1.1\").mid().man_exp() # doctest: +SKIP\n            (4953959590107545, -52)\n            >>> arb(\"1.1\").rad().man_exp() # doctest: +SKIP\n            (1, -52)\n            >>> arb(0).man_exp()\n            (0, 0)\n            >>> arb(\"1.1\").man_exp()\n            Traceback (most recent call last):\n              ...\n            ValueError: man_exp requires an exact, finite value\n            >>> arb(\"+inf\").man_exp()\n            Traceback (most recent call last):\n              ...\n            ValueError: man_exp requires an exact, finite value\n        \"\"\"\n        cdef fmpz man, exp\n        if not self.is_finite() or not self.is_exact():\n            raise ValueError(\"man_exp requires an exact, finite value\")\n        man = fmpz()\n        exp = fmpz()\n        arf_get_fmpz_2exp(man.val, exp.val, arb_midref(self.val))\n        return man, exp\n\n    def fmpq(self):\n        cdef fmpq res\n        if not self.is_finite() or not self.is_exact():\n            raise ValueError(\"fmpq requires an exact, finite value\")\n        res = fmpq()\n        arf_get_fmpq(res.val, arb_midref(self.val))\n        return res\n\n    def fmpz(self):"
+        },
+        {
+          "start": 340,
+          "end": 379,
+          "text": "    def upper(self):\n        r\"\"\"\n        Upper bound for *self* (towards `+\\infty`).\n        The output is an *arb* holding an exact floating-point number\n        that has been rounded up to the current precision.\n\n            >>> print(arb(\"-5 +/- 2\").upper().str(5, radius=False))\n            -3.0000\n        \"\"\"\n        cdef arb x = arb()\n        arb_get_ubound_arf(arb_midref(x.val), self.val, getprec())\n        return x\n\n    def mid_rad_10exp(self, long n=0):\n        r\"\"\"\n        Returns an *fmpz* triple (*mid*, *rad*, *exp*) where the larger of *mid*\n        and *rad* has *n* digits plus a few digits (*n* defaults to the current\n        precision), such that *self* is contained in\n        `[\\operatorname{mid} \\pm \\operatorname{rad}] 10^{\\operatorname{exp}}`.\n\n            >>> (arb(1) / 3).mid_rad_10exp(10)\n            (333333333333333, 2, -15)\n            >>> (arb(1) / 3).mid_rad_10exp(20)\n            (3333333333333333148296162, 555111516, -25)\n            >>> arb(0,1e-100).mid_rad_10exp(10)\n            (0, 100000000376832, -114)\n            >>> arb(-1,1e100).mid_rad_10exp()\n            (0, 10000000083585662976, 81)\n\n        \"\"\"\n        cdef fmpz mid, rad, exp\n        if n <= 0:\n            n = ctx.dps\n        mid = fmpz()\n        rad = fmpz()\n        exp = fmpz()\n        arb_get_fmpz_mid_rad_10exp(mid.val, rad.val, exp.val, self.val, n)\n        return mid, rad, exp\n\n    @property"
+        }
+      ]
+    },
+    {
+      "file": "acb.pyx",
+      "ref": "0.8.0",
+      "git_blob": "cae4f2f0a79321dfbfb1192b848ac71851f61f7b",
+      "URL": "https://github.com/flintlib/python-flint/blob/0.8.0/src/flint/types/acb.pyx",
+      "excerpts": [
+        {
+          "start": 331,
+          "end": 370,
+          "text": "    def abs_upper(self):\n        \"\"\"\n        Upper bound for the absolute value of *self*.\n        The output is an *arb* holding an exact floating-point number\n        that has been rounded up to the current precision.\n\n            >>> print(acb(3, \"-5 +/- 2\").abs_upper().str(5, radius=False))\n            7.6158\n        \"\"\"\n        cdef arb x = arb()\n        acb_get_abs_ubound_arf(arb_midref(x.val), self.val, getprec())\n        return x\n\n    def csgn(self):\n        \"\"\"\n        Complex sign function defined as a piecewise extension of\n        the real sign function.\n\n            >>> from flint import showgood\n            >>> showgood(lambda: acb(2,3).csgn(), dps=25)\n            1.000000000000000000000000\n            >>> showgood(lambda: acb(-1).csgn(), dps=25)\n            -1.000000000000000000000000\n        \"\"\"\n        res = arb.__new__(arb)\n        acb_csgn((<arb>res).val, (<acb>self).val)\n        return res\n\n    def sgn(self):\n        \"\"\"\n        Complex sign function.\n\n            >>> from flint import showgood\n            >>> showgood(lambda: acb(-1).sgn(), dps=25)\n            -1.000000000000000000000000\n            >>> showgood(lambda: acb(5,5).sgn(), dps=25)\n            0.7071067811865475244008444 + 0.7071067811865475244008444j\n            >>> showgood(lambda: acb(0).sgn(), dps=25)\n            0\n        \"\"\""
+        }
+      ]
+    },
+    {
+      "file": "acb_mat.pyx",
+      "ref": "0.8.0",
+      "git_blob": "988f28a65374fd07c92ed1d39615b78529d4e288",
+      "URL": "https://github.com/flintlib/python-flint/blob/0.8.0/src/flint/types/acb_mat.pyx",
+      "excerpts": [
+        {
+          "start": 202,
+          "end": 241,
+          "text": "    def transpose(s):\n        \"\"\"\n        Returns the transpose of *s*.\n        \"\"\"\n        cdef acb_mat u\n        u = acb_mat.__new__(acb_mat)\n        acb_mat_init(u.val, acb_mat_ncols(s.val), acb_mat_nrows(s.val))\n        acb_mat_transpose(u.val, s.val)\n        return u\n\n    def conjugate(s):\n        \"\"\"\n        Returns the entrywise conjugate (not the conjugate transpose) of *s*.\n\n            >>> acb_mat([[1-2j, 1+3j]]).conjugate()\n            [1.00000000000000 + 2.00000000000000j, 1.00000000000000 - 3.00000000000000j]\n        \"\"\"\n        cdef acb_mat u\n        u = acb_mat.__new__(acb_mat)\n        acb_mat_init(u.val, acb_mat_nrows(s.val), acb_mat_ncols(s.val))\n        acb_mat_conjugate(u.val, s.val)\n        return u\n\n    def det(s):\n        \"\"\"\n        Returns the determinant of the square matrix *s* as an *acb*.\n\n            >>> from flint import showgood\n            >>> A = acb_mat(3, 3, range(9))\n            >>> showgood(lambda: A.det(), dps=25)    # singular\n            0\n            >>> A[2,2] = 10\n            >>> showgood(lambda: A.det(), dps=25)\n            -6.000000000000000000000000\n            >>> showgood(lambda: (A * A).det())\n            36.0000000000000\n            >>> print(acb_mat(0, 0).det())\n            1.00000000000000\n        \"\"\"\n        cdef acb d"
+        },
+        {
+          "start": 212,
+          "end": 251,
+          "text": "    def conjugate(s):\n        \"\"\"\n        Returns the entrywise conjugate (not the conjugate transpose) of *s*.\n\n            >>> acb_mat([[1-2j, 1+3j]]).conjugate()\n            [1.00000000000000 + 2.00000000000000j, 1.00000000000000 - 3.00000000000000j]\n        \"\"\"\n        cdef acb_mat u\n        u = acb_mat.__new__(acb_mat)\n        acb_mat_init(u.val, acb_mat_nrows(s.val), acb_mat_ncols(s.val))\n        acb_mat_conjugate(u.val, s.val)\n        return u\n\n    def det(s):\n        \"\"\"\n        Returns the determinant of the square matrix *s* as an *acb*.\n\n            >>> from flint import showgood\n            >>> A = acb_mat(3, 3, range(9))\n            >>> showgood(lambda: A.det(), dps=25)    # singular\n            0\n            >>> A[2,2] = 10\n            >>> showgood(lambda: A.det(), dps=25)\n            -6.000000000000000000000000\n            >>> showgood(lambda: (A * A).det())\n            36.0000000000000\n            >>> print(acb_mat(0, 0).det())\n            1.00000000000000\n        \"\"\"\n        cdef acb d\n        if acb_mat_nrows(s.val) != acb_mat_ncols(s.val):\n            raise ValueError(\"matrix must be square\")\n        d = acb.__new__(acb)\n        acb_mat_det(d.val, s.val, getprec())\n        return d\n\n    def __pos__(s):\n        cdef acb_mat u\n        u = acb_mat.__new__(acb_mat)\n        acb_mat_init(u.val, acb_mat_nrows(s.val), acb_mat_ncols(s.val))"
+        },
+        {
+          "start": 315,
+          "end": 354,
+          "text": "    def __mul__(s, t):\n        cdef acb_mat u\n        if not isinstance(t, acb_mat):\n            c, d = acb_mat_coerce_scalar(s, t)\n            if c is not NotImplemented:\n                return c._scalar_mul_(d)\n            s, t = acb_mat_coerce_operands(s, t)\n            if s is NotImplemented:\n                return s\n            return s * t\n\n        if acb_mat_ncols((<acb_mat>s).val) != acb_mat_nrows((<acb_mat>t).val):\n            raise ValueError(\"incompatible shapes for matrix multiplication\")\n        u = acb_mat.__new__(acb_mat)\n        acb_mat_init(u.val, acb_mat_nrows((<acb_mat>s).val), acb_mat_ncols((<acb_mat>t).val))\n        acb_mat_mul(u.val, (<acb_mat>s).val, (<acb_mat>t).val, getprec())\n        return u\n\n    def __rmul__(s, t):\n        c, d = acb_mat_coerce_scalar(s, t)\n        if c is not NotImplemented:\n            return c._scalar_mul_(d)\n        s, t = acb_mat_coerce_operands(s, t)\n        if s is NotImplemented:\n            return s\n        return t * s\n\n    def _scalar_div_(s, acb t):\n        cdef acb_mat u\n        u = acb_mat.__new__(acb_mat)\n        acb_mat_init(u.val, acb_mat_nrows(s.val), acb_mat_ncols(s.val))\n        acb_mat_scalar_div_acb(u.val, s.val, t.val, getprec())\n        return u\n\n    def __truediv__(s, t):\n        if typecheck(s, acb_mat):\n            s, t = acb_mat_coerce_scalar(s, t)\n            if s is NotImplemented:\n                return s\n            return s._scalar_div_(t)"
+        }
+      ]
+    }
+  ]
+}

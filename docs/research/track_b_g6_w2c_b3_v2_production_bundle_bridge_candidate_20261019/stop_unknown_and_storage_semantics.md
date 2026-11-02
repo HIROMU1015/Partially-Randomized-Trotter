@@ -1,0 +1,11 @@
+# STOP・UNKNOWN・保存の境界
+
+親arrival順にfailureを保持し、first failureでSTOPをlatchする。新RESERVE/ENTERを拒否し、STOP前permit済みin-flightはcooperative drainする。CANCELはentry前、FAILはentry済みの証明可能な失敗、失われたworker/未証明COMPLETEはUNKNOWN。reserved call/未ACK byteは返却しない。current ticketとactive workerをdrain後に最終化する。
+
+S/P1のRESERVE/ENTER/COMPLETE保存故障、RAMとphysical stateの不一致、trace partial/flush、WRITE_ACK欠落、summary/diagnostic/receipt/marker保存失敗、trace/state/journal/final/delivery close失敗、STOP trace/journal/fake-store書込失敗を分けて人工注入した。trace失敗後はtrusted prefixへappendしない。tailに完全なJSONが見えてもprefix外のoperationを確定履歴へ使用しない。
+
+dispatch中断はPHASE_ABORTを記録する。WORKER_START保存前に生成済みだったworkerは、存在と最終reportだけで完全なstart履歴へ補完せず、証拠不完全に残す。parent crashではfinal report/close/RAM/CPUが欠け、snapshotだけからUNKNOWNの実entry時刻を推定しない。
+
+旧V2 marker-before-closeの履歴は保持する。新candidateのglobal receiptはstorage close後、markerはreceipt close後、final slot→delivery slot→caller observationの順。一つのmarkerや条件receiptだけでは成功にしない。delivery closeの失敗はそのdelivery自身で自己証明できないため、呼出元の観測もjoinする。
+
+26故障ケースのINCOMPLETE_EVIDENCEは、障害が期待どおり拒否されたというtest PASSと両立する。保存の完全性そのものがPASSになったという意味ではない。

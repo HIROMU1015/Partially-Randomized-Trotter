@@ -1,0 +1,244 @@
+{
+  "status": "ACQUISITION_AND_RECORDED_RESULT_CHECKS_COMPLETE",
+  "checked_at": "2026-10-26T04:08:49.038194+09:00",
+  "report": "REPORT.md",
+  "scope": "H4/H6 T<=2 PF/PR; empirical signal eligibility and acquired-price finite-sample comparisons",
+  "source_base": "90f1cd55a0d963953696bd0a27d9d041ff939bb7",
+  "source_before_report_fix": "cddfe354bbbdbb82a54ab1fe53a3d2060073a0d3",
+  "provider_SOURCE": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+  "source_files": {
+    "scripts/d0_frozen_shot_rule_v1.py": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f",
+    "scripts/h246_saved_cost_evaluation.py": "f66bb36dbac5f94927ce67fc104e2c6eaceb4d235e4f4486a699e0c5a88d2fce",
+    "scripts/h46_long_time_extension.py": "163738a01eac66b887f6d0fc522b2d6190948e0634353c9c8292f6a34ae1f635",
+    "scripts/h46_long_time_extension_fill.py": "45e7351525f32f47f0c23d28eca87cb812cbc275f6f1fef00b0d1a9b43456c31",
+    "scripts/h46_long_time_k6_probe.py": "1f0854c1c125adba0d6de19fd18bb34d72a618f91aee98c7a65fd22a6347f83f",
+    "scripts/h46_long_time_native.py": "c228b330c3fd4a775a912d5c09280addc3e7f669dd2e7ee0b8955877b97538fb",
+    "scripts/h46_long_time_pipeline.py": "06aa054ce148e703ea4403a308ec080ccd495159b73208dcdae6faa264144954",
+    "scripts/h46_long_time_report.py": "04ff4776dd8deaf79f5c9313895e69bb0c54f122f7eeec840392eea05102d8df",
+    "scripts/h46_long_time_signal.py": "7fbb966fbf87f963de9280ec10f8adefcf304c2e26d1ab051f076369445f24ca",
+    "scripts/h46_m5_tol_native.py": "bcf91dd2b05275e7ccf88e707b09d94ab87ac668609ca5e82369057e973b0da4",
+    "scripts/h46_m5_tol_saved_input.py": "b6544ed94657bc8c25c9cca972952c27c2533913bcc43b131d135902b65963ac",
+    "scripts/h46_new2_core.py": "190dfa9638dfd488acdeb561d44d444a65cc6a5a059bf23a5f8ced690d5759da",
+    "scripts/h46_new2_native.py": "a3fd7dd09fe4f16493f2d582d933eb5fe6d6d25257863e22f740573dcc5e0a83",
+    "scripts/run_pf_common_run.py": "b06275647ed6ad5e3a35bf573f8f113a1a51d2e5b02e152eaa32b68893f67a11",
+    "src/trotterlib/h46_m5_plan.py": "2ad8cfa8e5ae71a8100fe16c71995e86236d2a2eee750af5e52034ab31e3e832",
+    "scripts/h46_long_time_fixed_delta.py": "7b32d63e7fa67b95fc4fbb97fe0f12b426487bdb8e5c74029575120ebf8374b6",
+    "scripts/h46_long_time_recover.py": "a5009e4b8d29ff6bd74b65042c9907a8efbd1d2211c8e411664d1b459d11b33e",
+    "scripts/h46_long_time_saved_metrics.py": "3bfec8da19afcd978bac9cc56420d9a26c274474537a319017462da0e7332860"
+  },
+  "inputs_verified": {
+    "H4": {
+      "H4_tol_receipt.json": {
+        "bytes": 7080,
+        "sha256": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e"
+      },
+      "H4_tol_snapshot.npz": {
+        "bytes": 18126,
+        "sha256": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+      }
+    },
+    "H6": {
+      "H6_df_receipt.json": {
+        "bytes": 34000,
+        "sha256": "89cc00ab1c1b6ff65804781b5904b127e5d2e81acd15d66b0c87a86adb4c5f55"
+      },
+      "H6_snapshot.npz": {
+        "bytes": 150052,
+        "sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005"
+      },
+      "H6_snapshot_receipt.json": {
+        "bytes": 11286,
+        "sha256": "3dc5b1c695f1a042ee0c2b5e3762ae0032af90f03017667541ea470577f35e3f"
+      }
+    }
+  },
+  "compiler": {
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "optimization_level": 1,
+    "seed_transpiler": 17
+  },
+  "accounting": {
+    "eligible_endpoints": 39157,
+    "endpoints": 58160,
+    "minima_are_priced_subset_only": true,
+    "priced_candidates": 642,
+    "priced_eligible_endpoints": 2364,
+    "registered_candidates": 11632,
+    "unobserved_rare_costs_not_imputed": true
+  },
+  "cost_cohorts": {
+    "EXPLORATION": 2624,
+    "EXTENSION_EXPLORATION": 94,
+    "FIXED_DELTA_EXPLORATION": 9,
+    "CONFIRMATION": 1295
+  },
+  "accepted_new_trials": 4022,
+  "accepted_trial_failures": 0,
+  "mean_native_binding": {
+    "check_kind": "RECORDED_MEAN_NATIVE_BINDING_ONLY",
+    "checked_new_trials": 4022,
+    "complete_RTE_trial_counts": true,
+    "maximum_log_B_disagreement": 5.551115123125783e-17,
+    "maximum_scalar_disagreement": 0.0,
+    "new_seed_collisions": 0,
+    "old_scientific_runs_replayed": false,
+    "scientific_certificate": false,
+    "seed_counts": {
+      "CONFIRMATION": 17341,
+      "EXPLORATION": 52344,
+      "EXTENSION_EXPLORATION": 2592,
+      "FIXED_DELTA_EXPLORATION": 36
+    }
+  },
+  "recorded_maximum_vector_errors": {
+    "native": 4.064460831454017e-12,
+    "compiled": 5.518028791794971e-09
+  },
+  "independent_candidates": 39,
+  "independent_comparisons": 59,
+  "independent_point_direction_reproduced": 58,
+  "artificial_tests": {
+    "signal_native_accounting": 9,
+    "recovery": 2,
+    "note": "Passed during implementation; not rerun at completion. Not scientific performance evidence."
+  },
+  "result_sha256": {
+    "signal_records.json.gz": "46dfc0334e8cd01659a0a60f6e3f2994025ca1155662c6679c69d04cc981a9d8",
+    "signal_endpoints.json.gz": "470f1750ac3f9c08b4ca8139b0794bcbaad4d41bbc9e102854ed70009f27dae2",
+    "extension_signal_records.json.gz": "8aed5063ad70eb337bf2720f4e5c53ac68ef9c91953a60befc00b204036d1b09",
+    "extension_signal_endpoints.json.gz": "49b0f90c06681cdffdd9eb1b3d2d284b1e0aa5fdc450db1de77e9aa9f935d436",
+    "exploration_costs.json.gz": "a32572c4d960e4ce0ad4e8a80e705a87277764e4d18890dcaa0bb62b6a9e8516",
+    "extension_parallel_costs.json.gz": "e11443cbe08880459ab2e0d19ec9f27507acc98185241e6cd014c74aed863f32",
+    "fixed_delta_exploration_costs.json.gz": "54fe1b875f5221c583dbfe18dfa9be5cb119af7b06e902a89677bd6354158cdc",
+    "confirmation_costs.json.gz": "3bb32693511a956d04c6ea23be715134e1faf8e811d8d60ac50cc6aa8b9db8d4",
+    "accounting.json.gz": "f424798bd2e97e4111fb79c6efafc9082cba44a959aa5b955bdb5378c096f6b0",
+    "confirmation_selection.json": "9bed1d6527532501d516dae4d1b744139fd01ec36e29a7933617c19b381d8621",
+    "independent_comparisons.json": "f03807f78c724b733599c1f7147700b00d0da23c3823728e9d034849e612c7c1"
+  },
+  "resources": {
+    "signal_resources.json": {
+      "BLAS_threads_per_worker": 1,
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 529003143168,
+        "free_disk": 346734956544,
+        "idle_cpu": 63.868817204301074,
+        "shared_system_changes": false
+      },
+      "workers": 63
+    },
+    "EXPLORATION_cost_resources.json": {
+      "nested_compiler_processes": 1,
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 527756873728,
+        "free_disk": 346711736320,
+        "idle_cpu": 63.80215053763441,
+        "shared_system_changes": false
+      },
+      "workers": 63
+    },
+    "EXTENSION_EXPLORATION_cost_resources.json": {
+      "nested_compiler_processes": 1,
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 495491727360,
+        "free_disk": 346387124224,
+        "idle_cpu": 0.9354838709677419,
+        "shared_system_changes": false
+      },
+      "workers": 1
+    },
+    "recovery_cost_resources.json": {
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 527813079040,
+        "free_disk": 336456105984,
+        "idle_cpu": 62.96774193548387,
+        "shared_system_changes": false
+      },
+      "workers": 62
+    },
+    "extension_fill_resources.json": {
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 526992400384,
+        "free_disk": 330926891008,
+        "idle_cpu": 63.935483870967744,
+        "shared_system_changes": false
+      },
+      "reason": "Main pool finished; original extension retains its one running worker; only unstarted tasks claimed",
+      "workers": 63
+    },
+    "FIXED_DELTA_EXPLORATION_cost_resources.json": {
+      "nested_compiler_processes": 1,
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 526133616640,
+        "free_disk": 328878354432,
+        "idle_cpu": 64.0,
+        "shared_system_changes": false
+      },
+      "workers": 9
+    },
+    "CONFIRMATION_cost_resources.json": {
+      "nested_compiler_processes": 1,
+      "observation": {
+        "affinity": 64,
+        "arbitrary_caps": null,
+        "available_ram": 526298832896,
+        "free_disk": 328830398464,
+        "idle_cpu": 64.0,
+        "shared_system_changes": false
+      },
+      "workers": 64
+    }
+  },
+  "visual_check": {
+    "checked": [
+      "cost_vs_time.png",
+      "selected_formula_grid.png",
+      "fixed_delta_time_dependence.png"
+    ],
+    "figure_sets": 4,
+    "formats": [
+      "png",
+      "svg",
+      "pdf"
+    ]
+  },
+  "report_save_failure": {
+    "reason": "name 'ROOT' is not defined",
+    "corrected_to": "study.ROOT",
+    "scientific_outputs_recomputed": 0,
+    "private_original_stop": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/report_output_stop_20261026.json",
+    "private_original_log": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/recovery_run01.log"
+  },
+  "interruption": {
+    "public_record": "execution_interruption.json",
+    "completed_trials_reexecuted": 0,
+    "partial_attempts_preserved": 64,
+    "interrupted_work_may_have_repeated": true,
+    "old_contracts_reopened": false
+  },
+  "limits": [
+    "Acquired price subset only; no global cost optimum",
+    "Empirical numerical allowance; not a strict bias guarantee",
+    "Normal and Bonferroni intervals are approximations; no population tail cost bound",
+    "Rare unobserved conditional costs remain unknown",
+    "Private raw event/seed/QPY files are retained locally; Git aggregates alone are not a complete independent rerun environment"
+  ],
+  "next": "User decides scientific adoption or further validation; Codex performs no new science after commit/push and mandatory STOP"
+}

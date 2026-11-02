@@ -1,0 +1,64 @@
+{
+  "schema_version": "track_a_ax1b_blockers_v1",
+  "status": "EXECUTION_BLOCKED",
+  "blockers": [
+    {
+      "id": "AX1B_INDEPENDENT_REVIEW_PENDING",
+      "confirmation": "GPT independent review of this source/tests/bundle",
+      "blocks": "all real saved-value model analysis"
+    },
+    {
+      "id": "SOURCE_COMMIT_BINDING_PENDING",
+      "confirmation": "separate authorization binds commit containing reviewed bytes; HEAD and git blobs checked",
+      "blocks": "real analysis launch"
+    },
+    {
+      "id": "STABLE_ANALYSIS_ENVIRONMENT_UNCONFIRMED",
+      "confirmation": "stable Python>=3.11; exact SciPy1.14.1 and full environment identity; successful same-source synthetic audit",
+      "observed": "synthetic Python3.11.0rc1 is candidate; not approved analysis environment",
+      "blocks": "real analysis launch"
+    },
+    {
+      "id": "CPU_ALLOCATION_UNCONFIRMED",
+      "confirmation": "assigned cores and affinity, process1/BLAS1",
+      "blocks": "real analysis launch"
+    },
+    {
+      "id": "RAM_LIMIT_UNCONFIRMED",
+      "confirmation": "reviewed positive bytes; RLIMIT_AS enforcement",
+      "blocks": "real analysis launch"
+    },
+    {
+      "id": "WALL_LIMIT_UNCONFIRMED",
+      "confirmation": "reviewed positive seconds; wall alarm",
+      "blocks": "real analysis launch"
+    },
+    {
+      "id": "OUTPUT_DISK_LIMIT_UNCONFIRMED",
+      "confirmation": "reviewed positive bytes and free-space check; write cap",
+      "blocks": "real analysis launch"
+    },
+    {
+      "id": "EXECUTION_AUTHORIZATION_ABSENT",
+      "confirmation": "new independent reviewed authorization, canonical payload hash binding",
+      "blocks": "all real science input reads/fits"
+    },
+    {
+      "id": "EXPLICIT_USER_LAUNCH_ABSENT",
+      "confirmation": "user launch record plus --execute-saved-analysis and authorization hash",
+      "blocks": "all real science input reads/fits"
+    }
+  ],
+  "scope_limits_not_launch_blockers": [
+    "STRUCT_ACCOUNT/full H1 N_A",
+    "operational bias/N/eligibility/G/regret N_A",
+    "rare-event cost tail unresolved",
+    "H4/M2 are observed development evidence",
+    "new-size input acquisition cost UNKNOWN"
+  ],
+  "ax1b_analysis_authorized": false,
+  "science_authorized": false,
+  "explicit_user_launch_required": true,
+  "mandatory_stop": true,
+  "next_stage_authorized": false
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:limited-pilot-preparation:v1",
+  "type": "object",
+  "required": ["schema", "status", "source_pins", "input_pins", "python", "proposal", "retry", "resume", "mandatory_STOP"],
+  "properties": {
+    "schema": {"const": "b3_limited_pilot_preparation_v1"},
+    "status": {"const": "UNADOPTED_EXECUTION_CLOSED"},
+    "artificial_only": {"const": true},
+    "contract_grants_execution": {"const": false},
+    "content_adopted": {"const": false},
+    "run_ready": {"const": false},
+    "science_release": {"type": "null"},
+    "scientific_adoption": {"type": "null"},
+    "retry": {"const": 0},
+    "resume": {"const": false},
+    "mandatory_STOP": {"const": true}
+  },
+  "$comment": "Normative preparation validator also enforces exact generated candidate equality and all byte/runtime pins. This schema never authorizes execution. Ordered trace V1 uses seq/run_id/op/task_key/trial_id and chained canonical plain JSON; result streams retain the frozen exact hex codec."
+}

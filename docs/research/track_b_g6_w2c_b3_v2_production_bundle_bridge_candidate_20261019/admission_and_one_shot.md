@@ -1,0 +1,9 @@
+# Admission・one-shot
+
+一つのprivate FAKE_ONLY.sqlite3を新設し、一つのglobal scope/claimをBEGIN IMMEDIATE＋unique constraintで原子的にSPENTへcommitしてからACKする。S/P1の切替でclaimし直さない。32競合attemptではwinner1・拒否31を一つのtestで確認した。snapshotはread-only/immutable URIで照合する。
+
+commit ACK不明でもspentを返却しない。bridgeでのACK不明はoutput作成・worker entry前に停止し、fake STOPが可能ならSTOPPEDを残す。同scope再使用、二重claim、binding mismatch、retry1、resume true、redirect/symlinkされたstore pathを拒否した。STOP書込不能でもSPENTは消さない。
+
+同一fake scopeでP1だけ再開するAPIはない。S失敗でP1は未開始、P1失敗でS receipt/rawは保持する。claim/STOPの保存先と失敗をresultで区別する。fake atomic履歴は人工testとSQLite記録の証拠であり、実authority・元private approval・power-failure durabilityの証明ではない。
+
+production APIは無条件例外。人工APIは組込みFakeStoreと組込み人工fixtureだけを受け、外部endpoint/bits/authorityを渡す引数を持たない。正式grant発行・消費や実storeの使用は0。

@@ -1,0 +1,217 @@
+{
+  "circuit_cost": {
+    "axes": {
+      "cosine": {
+        "mean": 584.5,
+        "mean_exact": "1169/2",
+        "nominal95_halfwidth": 489.1888823526357,
+        "standard_error": 38.5
+      },
+      "sine": {
+        "mean": 584.5,
+        "mean_exact": "1169/2",
+        "nominal95_halfwidth": 489.1888823526357,
+        "standard_error": 38.5
+      }
+    },
+    "cache_hits": 0,
+    "cache_misses": 4,
+    "compiled_signal_max_error": 1.2212453270876722e-15,
+    "kind": "finite_MC_mean",
+    "mc_samples_are_quantum_shots": false,
+    "paired_axes": true,
+    "paired_covariance_RZ": 2964.5,
+    "paired_covariance_interpretation": "observed finite cost sample only; no rare/population guarantee",
+    "sample_count": 2,
+    "samples": [
+      {
+        "RZ": {
+          "cosine": 623,
+          "sine": 623
+        },
+        "event_record_hash": "a7241668841fb4cd8b777ae6168d5c60e2aa3248aa9a49bf071d56954fccb126",
+        "seed": 3395716923409750963,
+        "trajectory_id": "bd3c5bab2b2869293a439ac078d2a59a73b30cc7edabf6c7a68db84d9f78b1a9",
+        "trajectory_record_hash": "4f2caa4ed0d49f730e7b7c0d4f1d854cc3b6e470181e3c3abf3581ce59d63a1f"
+      },
+      {
+        "RZ": {
+          "cosine": 546,
+          "sine": 546
+        },
+        "event_record_hash": "94c7567983be245fb135e2aade9fa2575f9a2fba4347ea3629c84399d31463b7",
+        "seed": 9162950417427339394,
+        "trajectory_id": "2521d0dfbd2929b4fbe8c2a6dd75b1c69f0299ffa1c5120d9f75201c6372e82b",
+        "trajectory_record_hash": "0f1ec856bc483d17a0570763310495461a0fb7eb883af66377cd2bdf613472d1"
+      }
+    ],
+    "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+    "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+  },
+  "compiler": {
+    "backend_name": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "layout_method": null,
+    "optimization_level": 1,
+    "qiskit_version": "1.3.0",
+    "routing_method": null,
+    "transpiler_seed": 17
+  },
+  "config": {
+    "K": 4,
+    "L_D": 2,
+    "T": 0.8,
+    "cost_samples": 2,
+    "hamiltonian_type": "pauli_jw",
+    "method": "PR",
+    "product_formula": "S2",
+    "q": 8,
+    "r": 4,
+    "randomization_law": "finite_rte_even_paired",
+    "seed": 15033361125563812207
+  },
+  "model": {
+    "B0I_equivalent_to_B0": true,
+    "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+    "DF_rank": null,
+    "L_D": 2,
+    "generation": {
+      "coefficient_cutoff": 0.0,
+      "df_rank": null,
+      "label_order": "q[n-1]...q[0]",
+      "model_id": "supplied_artificial_eight_qubit",
+      "qubit_order": "qiskit_little_endian",
+      "split_order": "descending_abs_then_label"
+    },
+    "hamiltonian_hash": "553cb8170a38556cb41833c4a06c64d0b013b8c8e837e256fd1b2fb0fa413693",
+    "hamiltonian_type": "pauli_jw",
+    "identity_policy": "constant_always_retained_once",
+    "retained_labels": [
+      "IIIIIIIZ",
+      "IIIIIIZI"
+    ],
+    "split_unit": "nonidentity_Pauli_term",
+    "tail_labels": [
+      "IIIIIZII",
+      "IIIIXIXI",
+      "IIIIYIYI",
+      "IZIZIIII"
+    ]
+  },
+  "normalization": {
+    "B": 1.0001805157253787,
+    "K": 4,
+    "attenuation": 0.9998195168546672,
+    "lambda_r": 0.095,
+    "law": "finite_rte_even_paired",
+    "log_B": 0.00018049943437565397,
+    "log_B_margin": 0.0005364418031206254,
+    "log_B_upper": 0.0007169412374962794,
+    "normalization_certificate_verified": false,
+    "r": 4
+  },
+  "provenance": {
+    "environment": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "python": "3.11.0rc1",
+    "source": {
+      "SOURCE": "f7da77da0581c7a79c31c981cd9c6c1fcb05d98f",
+      "contract_digest": "a5ec854f4a4a371f1e955cfc91021c29588f5d59fa6d9637be199c13e1d22722",
+      "grant_id": "NO_SCIENTIFIC_GRANT_ARTIFICIAL_ONLY",
+      "receipt_sha256": "44e0d2055483b10a1f80d48a948a57522234debb83e353053121811695e026b3",
+      "snapshot_sha256": "af864a468d486994c1386d77031f89cb5869ba2e3929f5f297eecb092493a744"
+    }
+  },
+  "reference": {
+    "T": 0.8,
+    "hamiltonian_hash": "553cb8170a38556cb41833c4a06c64d0b013b8c8e837e256fd1b2fb0fa413693",
+    "method": "scipy_sparse_expm_multiply",
+    "signal": {
+      "imag": 0.0957856935381299,
+      "real": 0.9946868274956167
+    }
+  },
+  "schema": "fixed_signal_resource_evaluation_v1",
+  "shots": {
+    "N_total": null,
+    "alpha_union": 0.05,
+    "axes": {
+      "cosine": {
+        "allowance": 0.0005364418031206254,
+        "alpha": 0.025,
+        "bias": 1.1490190465757166e-08,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.034818885766016286,
+        "log_shot_bound": 8.887283072352712,
+        "shots": null,
+        "status": "UNDETERMINED"
+      },
+      "sine": {
+        "allowance": 0.0005364418031206254,
+        "alpha": 0.025,
+        "bias": 1.1600403683476035e-07,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03481878125216992,
+        "log_shot_bound": 8.887289075646668,
+        "shots": null,
+        "status": "UNDETERMINED"
+      }
+    },
+    "certificate_verified": false,
+    "epsilon_sig": 0.05,
+    "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+    "evidence_kind": "EMPIRICAL",
+    "evidence_ref": "numerical_evidence.json",
+    "interpretation": "CONDITIONAL_DIAGNOSTIC",
+    "log_B_upper": 0.0007169412374962794,
+    "schema": "fixed_complex_signal_hoeffding_v1",
+    "usable": false
+  },
+  "signal": {
+    "absolute_error": 1.1657169913362253e-07,
+    "corrected": {
+      "imag": 0.09578557753409307,
+      "real": 0.9946868389858071
+    },
+    "mean_method": "independent_sparse_paired_polynomial_state_action",
+    "raw": {
+      "imag": 0.0957682898517822,
+      "real": 0.9945073147764858
+    },
+    "signed_bias": {
+      "imag": -1.1600403683476035e-07,
+      "real": 1.1490190465757166e-08
+    }
+  },
+  "state": {
+    "basis": "qiskit_little_endian",
+    "generation": {
+      "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+      "molecular": false,
+      "physical_sector": "Nalpha=Nbeta=2",
+      "shared_across_four_cases": true
+    },
+    "hash": "c66ea2bc6459301fd152747811525e1104b6ed5eb08f2c5b0d8babe5d09df18a"
+  },
+  "total_RZ": null,
+  "validation": {
+    "RPE_rounds_evaluated": false,
+    "molecular_validation": false,
+    "resource_status": "N_G_UNDEFINED",
+    "scientific_superiority_claimed": false,
+    "status": "H4_FIXED_CASE_TECHNICAL_PASS"
+  }
+}

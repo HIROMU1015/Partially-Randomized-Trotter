@@ -1,0 +1,1701 @@
+{
+  "batch_id": "wp11-all-r-opt2-initial-20260924_023012",
+  "schema_version": "parallel_validation_task_manifest_v1",
+  "source_paths": [
+    "src/trotterlib/research_direction_full_opt2.py",
+    "src/trotterlib/research_direction_full_scope.py",
+    "src/trotterlib/research_direction_decision_cost.py",
+    "src/trotterlib/research_direction_sequence_policy.py",
+    "src/trotterlib/parallel_validation_executor.py",
+    "src/trotterlib/df_partial_s2_repeated.py",
+    "src/trotterlib/df_partial_s2_repeated_cost.py",
+    "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+    "src/trotterlib/rte_compiled_cost.py",
+    "scripts/run_research_direction_full_opt2_compute.py"
+  ],
+  "tasks": [
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 10362136597436625433,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 15219334255682929754,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 8943094881498526709,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 2,
+      "resource": "cpu",
+      "seed": 6205917552899352054,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 2,
+      "resource": "cpu",
+      "seed": 11697619098301508150,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 2,
+      "resource": "cpu",
+      "seed": 12958755214721082015,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 13902071647602749058,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 9373191908220433991,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 13051676772275366849,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 8,
+      "resource": "cpu",
+      "seed": 16852928054090251559,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 8,
+      "resource": "cpu",
+      "seed": 7958821212105456411,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 8,
+      "resource": "cpu",
+      "seed": 16742967777925113270,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 16,
+      "resource": "cpu",
+      "seed": 5064698398926162322,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 16,
+      "resource": "cpu",
+      "seed": 9570847339250462533,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 16,
+      "resource": "cpu",
+      "seed": 15278985344279762443,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 32,
+      "resource": "cpu",
+      "seed": 14125701465937866700,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 32,
+      "resource": "cpu",
+      "seed": 16681590796855442590,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 32,
+      "resource": "cpu",
+      "seed": 14717773015395578958,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 8209882917413993967,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 6396436939285915741,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 1,
+      "resource": "cpu",
+      "seed": 6857608323035683557,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 2,
+      "resource": "cpu",
+      "seed": 2879757816021415486,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 2,
+      "resource": "cpu",
+      "seed": 2901879117717273953,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 2,
+      "resource": "cpu",
+      "seed": 369825428685196266,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 8591460728209257665,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 12752306172225485337,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 4,
+      "resource": "cpu",
+      "seed": 4377863681801542462,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 8,
+      "resource": "cpu",
+      "seed": 2167274470596660758,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 8,
+      "resource": "cpu",
+      "seed": 4656688834917206548,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 8,
+      "resource": "cpu",
+      "seed": 15876026422198549891,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 1,
+      "r": 16,
+      "resource": "cpu",
+      "seed": 124387480901878549,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "sample_count": 8,
+        "seed_source": "WP05-a_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 2,
+      "r": 16,
+      "resource": "cpu",
+      "seed": 189805582552422624,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.02,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 2,
+      "ld": 3,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_randomized_cell",
+        "expected_transpile_count": 32,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "sample_count": 8,
+        "seed_source": "WP05-b_same_physical_trajectory_stream",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "wp06b_path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json"
+      },
+      "q": 8,
+      "r": 16,
+      "resource": "cpu",
+      "seed": 1161263392409730940,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-all-r-coherent-opt2-randomized-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 0,
+      "ld": 12,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_deterministic_cell",
+        "expected_transpile_count": 2,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz"
+      },
+      "q": 1,
+      "r": 0,
+      "resource": "cpu",
+      "seed": 0,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-coherent-opt2-deterministic-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 0,
+      "ld": 12,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_deterministic_cell",
+        "expected_transpile_count": 2,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "calibration",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz"
+      },
+      "q": 2,
+      "r": 0,
+      "resource": "cpu",
+      "seed": 0,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-coherent-opt2-deterministic-cell"
+    },
+    {
+      "adapter": "python_callable",
+      "compiler_settings": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 2,
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "delta": 0.01,
+      "estimated_memory_gib": 4.0,
+      "input_paths": [
+        "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+        "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+        "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+        "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+        "artifacts/research_direction_wp11_synthesis/2026-09-23/wp11_scoped_direction_synthesis_v1.json",
+        "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_same_trajectory_compute_v1.json"
+      ],
+      "k": 0,
+      "ld": 12,
+      "parameters": {
+        "callable": "trotterlib.research_direction_full_opt2:compute_full_opt2_deterministic_cell",
+        "expected_transpile_count": 2,
+        "extension": false,
+        "maximum_repetition_count": 8,
+        "partition": "holdout",
+        "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz"
+      },
+      "q": 8,
+      "r": 0,
+      "resource": "cpu",
+      "seed": 0,
+      "source_paths": [],
+      "trajectory_index": 0,
+      "validation_id": "m06f-coherent-opt2-deterministic-cell"
+    }
+  ]
+}

@@ -1,0 +1,3228 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "repository",
+    "handoff_commit",
+    "preparation_commit",
+    "distance_scope_frozen",
+    "geometry_coordinates_rule",
+    "distances_angstrom",
+    "fresh_blind_claim",
+    "model",
+    "reference_sector_proposal",
+    "templates",
+    "template_set_fingerprint",
+    "candidate_counts",
+    "future_resource_caps",
+    "thread_caps",
+    "parallel_policy",
+    "symbolic_slots",
+    "compiler_environment_reference",
+    "seed_key_rules",
+    "numerical_circuit_rules",
+    "checkpoint_schema",
+    "ledger_schema",
+    "cache_policy",
+    "atomic_policy",
+    "future_accounting",
+    "precision_rules",
+    "reporting_rules",
+    "freeze_barriers",
+    "old_evidence",
+    "unresolved_decisions",
+    "science_execution_authorized",
+    "execution_plan_sealed",
+    "contract_conditions_fully_closed",
+    "actual_science_source_commit",
+    "actual_science_source_hashes",
+    "new_snapshot_identities",
+    "master_seed",
+    "execution_authorization",
+    "science_memory_cap",
+    "science_wall_cap",
+    "science_output_root",
+    "runtime_cache_registry_created",
+    "next_stage_authorized",
+    "automatic_research_decision_authorized",
+    "research_decision",
+    "mandatory_stop",
+    "future_terminal_statuses",
+    "current_execution_counts",
+    "plan_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "track-a-h4-contract-zero-compute-v1"
+    },
+    "status": {
+      "const": "H4_GEOMETRY_CONTRACT_REQUIRES_DECISION_SCIENCE_NOT_AUTHORIZED"
+    },
+    "repository": {
+      "const": "HIROMU1015/Partially-Randomized-Trotter"
+    },
+    "handoff_commit": {
+      "const": "2a80f1d5d5e5734e51d970b2b6822cd2543fd596"
+    },
+    "preparation_commit": {
+      "const": "c2ab34fed49bb1fb104d39fe83b36858a2c92c2a"
+    },
+    "distance_scope_frozen": {
+      "const": true
+    },
+    "geometry_coordinates_rule": {
+      "const": "H_i=(0,0,(i-1.5)*d) Angstrom, i=0..3; decimal d string converted once to binary64; preserve ordered atom IDs"
+    },
+    "distances_angstrom": {
+      "const": [
+        "0.70",
+        "0.80",
+        "0.90",
+        "1.10",
+        "1.40",
+        "1.60"
+      ]
+    },
+    "fresh_blind_claim": {
+      "const": false
+    },
+    "model": {
+      "const": {
+        "molecule": "H4 linear",
+        "basis": "STO-3G",
+        "requested_df_rank": 12,
+        "required_actual_df_rank": 12,
+        "system_qubits": 8,
+        "T": 0.8,
+        "delta_rule": "T/q",
+        "pf_order": 2,
+        "sampling_policy": "canonical finite-RTE",
+        "reference_target": "Lowest eigenstate of the geometry-specific DF Hamiltonian in the fixed physical sector; not exact untruncated chemistry energy."
+      }
+    },
+    "reference_sector_proposal": {
+      "const": {
+        "electrons": 4,
+        "alpha": 2,
+        "beta": 2,
+        "dimension": 36
+      }
+    },
+    "templates": {
+      "const": [
+        {
+          "template_id": "B0-rank3-q1-r0-K0",
+          "method": "B0",
+          "L_D": 3,
+          "q": 1,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank3-q2-r0-K0",
+          "method": "B0",
+          "L_D": 3,
+          "q": 2,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank3-q4-r0-K0",
+          "method": "B0",
+          "L_D": 3,
+          "q": 4,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank3-q8-r0-K0",
+          "method": "B0",
+          "L_D": 3,
+          "q": 8,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank6-q1-r0-K0",
+          "method": "B0",
+          "L_D": 6,
+          "q": 1,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank6-q2-r0-K0",
+          "method": "B0",
+          "L_D": 6,
+          "q": 2,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank6-q4-r0-K0",
+          "method": "B0",
+          "L_D": 6,
+          "q": 4,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank6-q8-r0-K0",
+          "method": "B0",
+          "L_D": 6,
+          "q": 8,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank9-q1-r0-K0",
+          "method": "B0",
+          "L_D": 9,
+          "q": 1,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank9-q2-r0-K0",
+          "method": "B0",
+          "L_D": 9,
+          "q": 2,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank9-q4-r0-K0",
+          "method": "B0",
+          "L_D": 9,
+          "q": 4,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B0-rank9-q8-r0-K0",
+          "method": "B0",
+          "L_D": 9,
+          "q": 8,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B1-rank12-q1-r0-K0",
+          "method": "B1",
+          "L_D": 12,
+          "q": 1,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B1-rank12-q2-r0-K0",
+          "method": "B1",
+          "L_D": 12,
+          "q": 2,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B1-rank12-q4-r0-K0",
+          "method": "B1",
+          "L_D": 12,
+          "q": 4,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B1-rank12-q8-r0-K0",
+          "method": "B1",
+          "L_D": 12,
+          "q": 8,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r1-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r1-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r2-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r2-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r4-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r4-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r8-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r8-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r16-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r16-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r32-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r32-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r1-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r1-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r2-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r2-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r4-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r4-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r8-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r8-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r16-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r16-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r32-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q2-r32-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 2,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r1-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r1-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r2-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r2-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r4-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r4-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r8-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r8-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r16-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r16-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r32-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q4-r32-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 4,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r1-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r1-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r2-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r2-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r4-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r4-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r8-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r8-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r16-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r16-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r32-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q8-r32-K4",
+          "method": "B2",
+          "L_D": 3,
+          "q": 8,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r1-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r1-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r2-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r2-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r4-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r4-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r8-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r8-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r16-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r16-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r32-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q1-r32-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 1,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r1-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r1-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r2-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r2-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r4-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r4-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r8-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r8-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r16-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r16-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r32-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q2-r32-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 2,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r1-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r1-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r2-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r2-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r4-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r4-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r8-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r8-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r16-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r16-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r32-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q4-r32-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 4,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r1-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r1-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r2-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r2-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r4-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r4-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r8-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r8-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r16-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r16-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r32-K2",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank6-q8-r32-K4",
+          "method": "B2",
+          "L_D": 6,
+          "q": 8,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r1-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r1-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r2-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r2-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r4-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r4-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r8-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r8-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r16-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r16-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r32-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q1-r32-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 1,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r1-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r1-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r2-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r2-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r4-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r4-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r8-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r8-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r16-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r16-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r32-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q2-r32-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 2,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r1-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r1-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r2-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r2-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r4-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r4-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r8-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r8-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r16-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r16-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r32-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q4-r32-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 4,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r1-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r1-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r2-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r2-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r4-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r4-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r8-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r8-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r16-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r16-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r32-K2",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank9-q8-r32-K4",
+          "method": "B2",
+          "L_D": 9,
+          "q": 8,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r1-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r1-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r2-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r2-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r4-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r4-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r8-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r8-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r16-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r16-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r32-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q1-r32-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 1,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r1-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r1-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r2-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r2-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r4-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r4-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r8-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r8-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r16-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r16-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r32-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q2-r32-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 2,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r1-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r1-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r2-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r2-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r4-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r4-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r8-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r8-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r16-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r16-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r32-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q4-r32-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 4,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r1-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 1,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r1-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 1,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r2-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 2,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r2-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 2,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r4-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 4,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r4-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 4,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r8-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 8,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r8-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 8,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r16-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 16,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r16-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 16,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r32-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 32,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r32-K4",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 32,
+          "K": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B3-rank0-q8-r64-K2",
+          "method": "B3",
+          "L_D": 0,
+          "q": 8,
+          "r": 64,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "B2-rank3-q1-r64-K2",
+          "method": "B2",
+          "L_D": 3,
+          "q": 1,
+          "r": 64,
+          "K": 2,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank4-q1-r0-K0",
+          "method": "B0",
+          "L_D": 4,
+          "q": 1,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank4-q2-r0-K0",
+          "method": "B0",
+          "L_D": 4,
+          "q": 2,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank4-q4-r0-K0",
+          "method": "B0",
+          "L_D": 4,
+          "q": 4,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank4-q8-r0-K0",
+          "method": "B0",
+          "L_D": 4,
+          "q": 8,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank5-q1-r0-K0",
+          "method": "B0",
+          "L_D": 5,
+          "q": 1,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.8,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank5-q2-r0-K0",
+          "method": "B0",
+          "L_D": 5,
+          "q": 2,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.4,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank5-q4-r0-K0",
+          "method": "B0",
+          "L_D": 5,
+          "q": 4,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.2,
+          "new_candidate_fingerprint": null
+        },
+        {
+          "template_id": "PM1-B0-rank5-q8-r0-K0",
+          "method": "B0",
+          "L_D": 5,
+          "q": 8,
+          "r": 0,
+          "K": 0,
+          "T": 0.8,
+          "delta": 0.1,
+          "new_candidate_fingerprint": null
+        }
+      ]
+    },
+    "template_set_fingerprint": {
+      "const": "a939f5602a7840d92d93dfa9be40db40af52dede4483091c649413f480ef03c4"
+    },
+    "candidate_counts": {
+      "const": {
+        "total": 218,
+        "random": 194,
+        "deterministic_discard": 24,
+        "by_method": {
+          "B0": 20,
+          "B1": 4,
+          "B2": 145,
+          "B3": 49
+        }
+      }
+    },
+    "future_resource_caps": {
+      "const": {
+        "cpu_worker_max": 12,
+        "blas_threads_per_worker": 1,
+        "qiskit_internal_processes": 1,
+        "rayon_threads_per_worker": 1,
+        "random_trajectories_per_cell": 32,
+        "paired_axes": [
+          "cosine",
+          "sine"
+        ],
+        "signal_records_per_geometry": 218,
+        "total_signal_records": 1308,
+        "random_wrappers_per_geometry": 12416,
+        "baseline_wrappers_per_geometry": 48,
+        "logical_wrapper_records_per_geometry": 12464,
+        "total_logical_wrapper_records": 74784,
+        "actual_science_transpile_invocation_cap": 74784,
+        "additional_trajectories": 0,
+        "science_memory_cap": null,
+        "science_wall_cap": null,
+        "science_output_root": null
+      }
+    },
+    "thread_caps": {
+      "const": {
+        "BLAS": 1,
+        "OMP": 1,
+        "MKL": 1,
+        "NumExpr": 1,
+        "Rayon": 1,
+        "Qiskit_internal_processes": 1
+      }
+    },
+    "parallel_policy": {
+      "const": "spawned outer pool <=12; stages including snapshot/solver use no nested parallelism; lower worker count or STOP if shared-resource guard fails; no reservation implied"
+    },
+    "symbolic_slots": {
+      "const": [
+        {
+          "distance_angstrom": "0.70",
+          "signal_slots": 218,
+          "random_wrapper_slots": 12416,
+          "baseline_wrapper_slots": 48,
+          "logical_wrapper_slots": 12464,
+          "actual_source_commit": null,
+          "hamiltonian_sha256": null,
+          "df_sha256": null,
+          "state_sha256": null,
+          "slot_state": "SYMBOLIC_NOT_SCIENCE_RECORD"
+        },
+        {
+          "distance_angstrom": "0.80",
+          "signal_slots": 218,
+          "random_wrapper_slots": 12416,
+          "baseline_wrapper_slots": 48,
+          "logical_wrapper_slots": 12464,
+          "actual_source_commit": null,
+          "hamiltonian_sha256": null,
+          "df_sha256": null,
+          "state_sha256": null,
+          "slot_state": "SYMBOLIC_NOT_SCIENCE_RECORD"
+        },
+        {
+          "distance_angstrom": "0.90",
+          "signal_slots": 218,
+          "random_wrapper_slots": 12416,
+          "baseline_wrapper_slots": 48,
+          "logical_wrapper_slots": 12464,
+          "actual_source_commit": null,
+          "hamiltonian_sha256": null,
+          "df_sha256": null,
+          "state_sha256": null,
+          "slot_state": "SYMBOLIC_NOT_SCIENCE_RECORD"
+        },
+        {
+          "distance_angstrom": "1.10",
+          "signal_slots": 218,
+          "random_wrapper_slots": 12416,
+          "baseline_wrapper_slots": 48,
+          "logical_wrapper_slots": 12464,
+          "actual_source_commit": null,
+          "hamiltonian_sha256": null,
+          "df_sha256": null,
+          "state_sha256": null,
+          "slot_state": "SYMBOLIC_NOT_SCIENCE_RECORD"
+        },
+        {
+          "distance_angstrom": "1.40",
+          "signal_slots": 218,
+          "random_wrapper_slots": 12416,
+          "baseline_wrapper_slots": 48,
+          "logical_wrapper_slots": 12464,
+          "actual_source_commit": null,
+          "hamiltonian_sha256": null,
+          "df_sha256": null,
+          "state_sha256": null,
+          "slot_state": "SYMBOLIC_NOT_SCIENCE_RECORD"
+        },
+        {
+          "distance_angstrom": "1.60",
+          "signal_slots": 218,
+          "random_wrapper_slots": 12416,
+          "baseline_wrapper_slots": 48,
+          "logical_wrapper_slots": 12464,
+          "actual_source_commit": null,
+          "hamiltonian_sha256": null,
+          "df_sha256": null,
+          "state_sha256": null,
+          "slot_state": "SYMBOLIC_NOT_SCIENCE_RECORD"
+        }
+      ]
+    },
+    "compiler_environment_reference": {
+      "const": {
+        "environment_fingerprint": "7d397d409aa05efac027463b671cfe5608f554e09e464fa1e87eed1965b41cd1",
+        "compiler_fingerprint": "46ce3bcc45cbb53dbe021ca67e4253156597fa5ae9c034cfeb4cddfe6828f30d",
+        "compiler": {
+          "qiskit_version": "1.3.0",
+          "rustworkx_version": "0.17.1",
+          "explicit_options": {
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17,
+            "backend": null,
+            "coupling_map": null,
+            "initial_layout": null,
+            "layout_method": null,
+            "routing_method": null,
+            "target": null,
+            "approximation_degree": 1.0,
+            "unitary_synthesis_method": "default",
+            "unitary_synthesis_plugin_config": null,
+            "hls_config": null,
+            "qubits_initially_zero": true,
+            "num_processes": 1
+          },
+          "inherited_defaults": {
+            "circuits": "<class 'inspect._empty'>",
+            "backend": "None",
+            "basis_gates": "None",
+            "inst_map": "None",
+            "coupling_map": "None",
+            "backend_properties": "None",
+            "initial_layout": "None",
+            "layout_method": "None",
+            "routing_method": "None",
+            "translation_method": "None",
+            "scheduling_method": "None",
+            "instruction_durations": "None",
+            "dt": "None",
+            "approximation_degree": "1.0",
+            "timing_constraints": "None",
+            "seed_transpiler": "None",
+            "optimization_level": "None",
+            "callback": "None",
+            "output_name": "None",
+            "unitary_synthesis_method": "'default'",
+            "unitary_synthesis_plugin_config": "None",
+            "target": "None",
+            "hls_config": "None",
+            "init_method": "None",
+            "optimization_method": "None",
+            "ignore_backend_supplied_default_methods": "False",
+            "num_processes": "None",
+            "qubits_initially_zero": "True"
+          },
+          "available_plugins_metadata": [
+            {
+              "group": "qiskit.synthesis",
+              "name": "FullAdder.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:FullAdderSynthesisC04"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "FullAdder.ripple_c04",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:FullAdderSynthesisC04"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "FullAdder.ripple_v95",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:FullAdderSynthesisV95"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "HalfAdder.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:HalfAdderSynthesisDefault"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "HalfAdder.qft_d00",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:HalfAdderSynthesisD00"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "HalfAdder.ripple_c04",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:HalfAdderSynthesisC04"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "HalfAdder.ripple_v95",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:HalfAdderSynthesisV95"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "ModularAdder.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:ModularAdderSynthesisDefault"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "ModularAdder.qft_d00",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:ModularAdderSynthesisD00"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "ModularAdder.ripple_c04",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:ModularAdderSynthesisC04"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "ModularAdder.ripple_v95",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:ModularAdderSynthesisV95"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "Multiplier.cumulative_h18",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MultiplierSynthesisH18"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "Multiplier.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MultiplierSynthesisR17"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "Multiplier.qft_r17",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MultiplierSynthesisR17"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "PauliEvolution.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:PauliEvolutionSynthesisDefault"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "PauliEvolution.rustiq",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:PauliEvolutionSynthesisRustiq"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "clifford.ag",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:AGSynthesisClifford"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "clifford.bm",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:BMSynthesisClifford"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "clifford.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:DefaultSynthesisClifford"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "clifford.greedy",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:GreedySynthesisClifford"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "clifford.layers",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:LayerSynthesisClifford"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "clifford.lnn",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:LayerLnnSynthesisClifford"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "linear_function.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:DefaultSynthesisLinearFunction"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "linear_function.kms",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:KMSSynthesisLinearFunction"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "linear_function.pmh",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:PMHSynthesisLinearFunction"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcmt.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCMTSynthesisDefault"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcmt.noaux",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCMTSynthesisNoAux"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcmt.vchain",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCMTSynthesisVChain"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcx.1_clean_b95",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCXSynthesis1CleanB95"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcx.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCXSynthesisDefault"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcx.gray_code",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCXSynthesisGrayCode"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcx.n_clean_m15",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCXSynthesisNCleanM15"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcx.n_dirty_i15",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCXSynthesisNDirtyI15"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "mcx.noaux_v24",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:MCXSynthesisNoAuxV24"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "permutation.acg",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:ACGSynthesisPermutation"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "permutation.basic",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:BasicSynthesisPermutation"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "permutation.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:BasicSynthesisPermutation"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "permutation.kms",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:KMSSynthesisPermutation"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "permutation.token_swapper",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:TokenSwapperSynthesisPermutation"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "qft.default",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:QFTSynthesisFull"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "qft.full",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:QFTSynthesisFull"
+            },
+            {
+              "group": "qiskit.synthesis",
+              "name": "qft.line",
+              "value": "qiskit.transpiler.passes.synthesis.hls_plugins:QFTSynthesisLine"
+            },
+            {
+              "group": "qiskit.transpiler.init",
+              "name": "default",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:DefaultInitPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.layout",
+              "name": "default",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:DefaultLayoutPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.layout",
+              "name": "dense",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:DenseLayoutPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.layout",
+              "name": "sabre",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:SabreLayoutPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.layout",
+              "name": "trivial",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:TrivialLayoutPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.optimization",
+              "name": "default",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:OptimizationPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.routing",
+              "name": "basic",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:BasicSwapPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.routing",
+              "name": "lookahead",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:LookaheadSwapPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.routing",
+              "name": "none",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:NoneRoutingPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.routing",
+              "name": "sabre",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:SabreSwapPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.routing",
+              "name": "stochastic",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:StochasticSwapPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.scheduling",
+              "name": "alap",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:AlapSchedulingPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.scheduling",
+              "name": "asap",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:AsapSchedulingPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.scheduling",
+              "name": "default",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:DefaultSchedulingPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.translation",
+              "name": "synthesis",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:UnitarySynthesisPassManager"
+            },
+            {
+              "group": "qiskit.transpiler.translation",
+              "name": "translator",
+              "value": "qiskit.transpiler.preset_passmanagers.builtin_plugins:BasisTranslatorPassManager"
+            },
+            {
+              "group": "qiskit.unitary_synthesis",
+              "name": "aqc",
+              "value": "qiskit.transpiler.passes.synthesis.aqc_plugin:AQCSynthesisPlugin"
+            },
+            {
+              "group": "qiskit.unitary_synthesis",
+              "name": "default",
+              "value": "qiskit.transpiler.passes.synthesis.unitary_synthesis:DefaultUnitarySynthesis"
+            },
+            {
+              "group": "qiskit.unitary_synthesis",
+              "name": "sk",
+              "value": "qiskit.transpiler.passes.synthesis.solovay_kitaev_synthesis:SolovayKitaevSynthesis"
+            }
+          ],
+          "custom_passes": [],
+          "custom_plugin_selected": false,
+          "user_settings_policy": "private per-process config; parallel=false, num_processes=1",
+          "qiskit_settings_sha256": "05b3f872a326e785a948932399f871606f07e880b74f2f1064666d67696f2ae5",
+          "process_only_environment": {
+            "PYTHONNOUSERSITE": "1",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "OPENBLAS_NUM_THREADS": "1",
+            "OMP_NUM_THREADS": "1",
+            "MKL_NUM_THREADS": "1",
+            "NUMEXPR_NUM_THREADS": "1",
+            "QISKIT_PARALLEL": "false",
+            "QISKIT_NUM_PROCS": "1",
+            "RAYON_NUM_THREADS": "1"
+          },
+          "qiskit_num_processes": 1,
+          "rust_rayon_threads": 1,
+          "official_reference": "https://quantum.cloud.ibm.com/docs/en/api/qiskit/1.3/compiler",
+          "same_complete_compiler_as_old_results_established": false,
+          "fingerprint": "46ce3bcc45cbb53dbe021ca67e4253156597fa5ae9c034cfeb4cddfe6828f30d"
+        },
+        "metadata_binding_audit": "environment_binding_audit_v1.json"
+      }
+    },
+    "seed_key_rules": {
+      "const": {
+        "encoding": "UTF-8 sorted-key compact JSON; integer literals; floats as canonical float.hex tagged real64_hex; complex as [real_hex,imag_hex]; signed zero retained; NaN/infinity/symbolic rejected",
+        "trajectory": "SHA256(domain=h4-trajectory-v1,master_seed,geometry,H,DF,state,template,source,compiler,environment,wrapper_semantics,index); first8 bytes unsigned big-endian; no axis/epsilon",
+        "step_occurrence": "future sampler domain h4-step-occurrence-v1, parent trajectory seed, outer_step=0..q-1, short_step=0..r-1, occurrence=0..K-1, draw_kind; independent derived RNG stream per occurrence; no axis/epsilon",
+        "duplicate_seed": "STOP; no replacement seed, extension or implicit retry",
+        "wrapper_key": "SHA256(domain=h4-wrapper-v1,all identity fields including axis,trajectory_seed,index); baseline seed/index both null",
+        "sample_weight": "random each 1/32; baseline 1; reuse never deduplicates logical samples"
+      }
+    },
+    "numerical_circuit_rules": {
+      "const": {
+        "format": "ordered-numerical-full-circuit-v1",
+        "before_compiler": true,
+        "identity": "all exact parameters and global_phase, ordered bit identities/operands, axis and measurement, instruction identities, conditions/control state and full custom definitions; no skeleton/rounded keys",
+        "serializer_note": "declarative JSON contract only; production Qiskit serializer and operation round-trip tests require later science source review",
+        "record_digest": "SHA256(domain=h4-completion-record-v1,whole record) stored only in external completion ledger"
+      }
+    },
+    "checkpoint_schema": {
+      "const": "checkpoint_schema_v1.json"
+    },
+    "ledger_schema": {
+      "const": "completion_ledger_schema_v1.json"
+    },
+    "cache_policy": {
+      "const": "COMPLETE noncached owner only; same geometry/candidate/axis/H/DF/state/source/compiler/environment/semantics and exact numerical fingerprint; owner link and each sample weight retained"
+    },
+    "atomic_policy": {
+      "const": "future exclusive one-run registration; reserve invocation before compile using atomic replace+fsync and lock; record fsync+rename then ledger commit+directory fsync; interruption between writes => AMBIGUOUS/STOP, never implicit resume/retry"
+    },
+    "future_accounting": {
+      "const": [
+        "logical_slots",
+        "reserved_compile_invocations",
+        "completed_actual_transpiles",
+        "cache_reuse_records",
+        "ambiguous_consumed_reservations",
+        "failed_consumed_reservations"
+      ]
+    },
+    "precision_rules": {
+      "const": {
+        "saved_values_only": true,
+        "epsilon_range": [
+          0.005,
+          0.1
+        ],
+        "epsilon_points": 302,
+        "display_grid_definition": "0.005*(0.1/0.005)**(i/300), i=0..300; exact endpoints; insert exactly 0.05, sort and deduplicate",
+        "alpha_axis": 0.025,
+        "axis_allowance": "epsilon/sqrt(2)-axis_bias",
+        "strict_eligibility": "all axis allowances >0; boundary equality is ineligible",
+        "axis_shots": "ceil(2*B**2/(epsilon/sqrt(2)-bias_axis)**2*log(2/alpha_axis))",
+        "primary": "N_real*E[C_cosine,RZ]+N_imag*E[C_sine,RZ]",
+        "metrics": [
+          "rz_count",
+          "rz_depth",
+          "cx_count",
+          "cx_depth",
+          "total_depth",
+          "circuit_size"
+        ],
+        "P_sensitivity": "common P>=0; primary work plus (N_real+N_imag)*P; analytic affine envelope; retain ties",
+        "SE": "sqrt((N_real**2*scc+N_imag**2*sss+2*N_real*N_imag*scs)/32); paired axis sample covariance, denominator n-1",
+        "engineering_interval": "point +/- 2SE; not formal/familywise CI",
+        "ineligible_shots_and_work": null,
+        "missing_values": null,
+        "missing_as_zero": false,
+        "epsilon_points_independent_experiments": false,
+        "new_signal_sampling_compile_per_epsilon": false,
+        "strict_winner_guarantee": false,
+        "point_pareto": "eligible complete candidates only; all metrics <= and at least one <; preserve ties",
+        "geometry_interpolation_as_rigorous_boundary": false,
+        "research_GO_threshold": null,
+        "presentation_materiality_and_uncertainty_rule_freeze_required": true
+      }
+    },
+    "reporting_rules": {
+      "const": {
+        "ties": "exact point ties retained; sorted template IDs for display only; no tolerance winner threshold",
+        "uncertainty": "paired n=32, ddof=1, covariance retained; +/-2SE engineering only; overlap labelled unresolved; deterministic variance0 only with actual deterministic evidence; missing random variance null",
+        "precision_boundary": "epsilon_min=sqrt(2)*max(axis_bias); strict epsilon>epsilon_min and each headroom>0; display-grid brackets only for cost switches",
+        "geometry_boundary": "six sampled distances only; no interpolated/extrapolated certified boundary",
+        "missing": "ineligible/incomplete metrics, shots and matched work null; not zero; all candidates retained for audit; point Pareto only eligible complete coverage",
+        "P": "common P>=0 added to primary RZ only; analytic affine envelope; exact intersection ties; infinite upper endpoint null",
+        "GO_winner_threshold": null
+      }
+    },
+    "freeze_barriers": {
+      "const": [
+        "contract decisions closed",
+        "new source implemented and actual commit frozen under separate instruction",
+        "new H/DF/state/sector/ordering arrays frozen after authorized generation; no signal/cost before freeze",
+        "signal/cost identity match and semantic gates",
+        "source/input-bound sealed plan",
+        "separate result-prior authorization and independent final review",
+        "explicit one-run launch"
+      ]
+    },
+    "old_evidence": {
+      "const": {
+        "one_A_templates": 218,
+        "one_point_three_A_templates": 5,
+        "separate_identity_layer": true,
+        "anchor_authorized": false,
+        "eight_geometries_authorized": false
+      }
+    },
+    "unresolved_decisions": {
+      "const": [
+        "D1_SCF_DF",
+        "D2_ORDER_SOLVER_GATES",
+        "D3_MASTER_SEED",
+        "D4_MEMORY_WALL_OUTPUT"
+      ]
+    },
+    "science_execution_authorized": {
+      "const": false
+    },
+    "execution_plan_sealed": {
+      "const": false
+    },
+    "contract_conditions_fully_closed": {
+      "const": false
+    },
+    "actual_science_source_commit": {
+      "const": null
+    },
+    "actual_science_source_hashes": {
+      "const": null
+    },
+    "new_snapshot_identities": {
+      "const": null
+    },
+    "master_seed": {
+      "const": null
+    },
+    "execution_authorization": {
+      "const": null
+    },
+    "science_memory_cap": {
+      "const": null
+    },
+    "science_wall_cap": {
+      "const": null
+    },
+    "science_output_root": {
+      "const": null
+    },
+    "runtime_cache_registry_created": {
+      "const": false
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "automatic_research_decision_authorized": {
+      "const": false
+    },
+    "research_decision": {
+      "const": null
+    },
+    "mandatory_stop": {
+      "const": true
+    },
+    "future_terminal_statuses": {
+      "const": [
+        "GEOMETRY_PRECISION_MAP_COMPLETE_AWAITING_REVIEW",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "current_execution_counts": {
+      "const": {
+        "molecular_access": 0,
+        "molecular_generation": 0,
+        "SCF_DF_solve": 0,
+        "signal": 0,
+        "sampling": 0,
+        "science_circuit_build": 0,
+        "science_transpile": 0,
+        "additional_synthetic_transpile": 0,
+        "runtime_checkpoint_cache_access": 0,
+        "GPU": 0,
+        "shared_environment_changes": 0,
+        "other_job_changes": 0,
+        "commit": 0,
+        "push": 0
+      }
+    },
+    "plan_fingerprint": {
+      "const": "09ce44081a5a20f2e1f3dba2fced3bf8d8732251ff88393e8a190d0fa820bb88"
+    }
+  }
+}

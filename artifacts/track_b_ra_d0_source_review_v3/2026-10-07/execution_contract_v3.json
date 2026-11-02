@@ -1,0 +1,98 @@
+{
+  "schema": "ra_d0_execution_contract_v3",
+  "date_JST": "2026-10-07",
+  "status": "SOURCE_REVIEW_ONLY_NO_AUTHORIZATION",
+  "fixed_input_commits": {
+    "base_preparation": "0ddf67756516e08f85fed1b987459a5e862676b7",
+    "R1_result": "24bfeb84a4ce87b56985d174dd98d1d5e1702a2b",
+    "R1p5": "af3d014d0a0cfcbbd25bb544f6544652fec92942",
+    "math_audit": "8a04c148a66d23dbc1f045086a95a5e19a6372dc"
+  },
+  "target_scope": "saved 2-qubit distinct-basis controlled finite P3, p=(3/4,1/4), x=1/8,1/4; existing 3 implementation precisions only",
+  "primary_comparison": "certified dyadic B3 primal upper < certified B2 numerical outer dual lower",
+  "B0_saved_role": [
+    "immutable reproduction anchor",
+    "saved shots/resources",
+    "same-n budget-vector source"
+  ],
+  "B0_saved_subset_B1_num_claim": false,
+  "ideal_embedding": "B0_ideal subset B1_ideal",
+  "numerical_nesting": "B1_num subset B2_num subset B3_num",
+  "numerical_policy": "artifacts/track_b_ra_d0_source_review_v2/2026-10-07/numerical_baseline_amendment_v2.json",
+  "budget_policy": "budget_freeze_schema_v3.json",
+  "query_recipe": "bounded_query_recipe_v3.json",
+  "output_schema": "output_schema_v3.json",
+  "resource_caps": {
+    "processes": 1,
+    "threads": 1,
+    "retries": 0,
+    "main_calls": 55275,
+    "recipe_total_calls": 110550,
+    "hard_total_calls": 111000,
+    "per_LP_wall_seconds": 2,
+    "wall_seconds": 3600,
+    "CPU_seconds": 3300,
+    "RSS_MiB": 1536,
+    "virtual_MiB": 4096,
+    "output_MiB": 128
+  },
+  "single_run": {
+    "runs": 1,
+    "retries": 0,
+    "mandatory_STOP": true,
+    "future_authorization_only_direct_child_required": true,
+    "authorization_path": "artifacts/track_b_ra_d0_source_review_v3/2026-10-07/authorization.json",
+    "optional_receipt_path": "docs/tracks/algorithm_codesign/ra_d0_execution_authorization_receipt.md",
+    "expected_status": "APPROVED_FOR_ONE_RA_D0_RUN",
+    "development_execution_authorized": false,
+    "science_execution_authorized": false,
+    "authorization_created": false,
+    "explicit_future_execution_instruction_required": true
+  },
+  "classification": [
+    "D0_STRONG_DEGREE_LOCAL_SIGNAL",
+    "D0_LOCAL_DEGREE_LOCAL_SIGNAL",
+    "D0_NO_REGISTERED_WITNESS",
+    "D0_TECHNICAL_INCONCLUSIVE"
+  ],
+  "failure_precedence": "any actual technical failure or incomplete run -> technical; certified B2 minimum infeasibility is a normal recorded skip",
+  "budget_failure_subtype": "TECHNICAL_INCONCLUSIVE_BUDGET_GENERATION",
+  "resource_failure_subtype": "D0_TECHNICAL_INCONCLUSIVE_RESOURCE_CAP",
+  "forbidden_operations": [
+    "registered optimization during source review",
+    "new synthesis",
+    "new angle",
+    "new precision",
+    "importance sampling",
+    "CTS addition",
+    "DF",
+    "molecular NPZ access",
+    "science input",
+    "circuit build",
+    "matrix evaluation",
+    "trajectory sampling",
+    "GPU"
+  ],
+  "zero_execution_operations_this_revision": true,
+  "old_STOPs_preserved": true,
+  "next_stage_authorized": false,
+  "RUN_READY": false,
+  "base_source_v2_commit": "4012cbd167ec10f143fbfddc89feff4dec54bf2b",
+  "minimum_statuses": [
+    "B2_MINIMUM_CERTIFIED_FEASIBLE",
+    "B2_CERTIFIED_INFEASIBLE_AT_N",
+    "TECHNICAL_INCONCLUSIVE_BUDGET_GENERATION"
+  ],
+  "point_statuses": [
+    "BUDGET_READY",
+    "B2_POINT_CERTIFIED_INFEASIBLE",
+    "TECHNICAL_FAILURE"
+  ],
+  "minimum_solver_policy": "three fixed objective solves once each; at most one auxiliary per main; exact Farkas reverified against the same minimum LP",
+  "certified_infeasible_minimum": "normal mathematical outcome; mark point and continue; no paired budget/query, no new descriptive B3 query",
+  "any_certified_infeasible_minimum_point_policy": "B2_POINT_CERTIFIED_INFEASIBLE, budget_vectors=[], queries=[] even when same-n B0_saved vectors exist",
+  "technical_minimum_failure": "Case C unchanged: stop whole batch/run; no second candidate, settings/tolerance/denominator change or retry",
+  "NO_REGISTERED_WITNESS_scope": "no strict witness among completed certified-comparable registered queries; skipped certified-infeasible points are not negative evidence; report comparable count including zero",
+  "B3_only_feasible": "descriptive only, never STRONG/LOCAL/strict witness",
+  "runtime_guard_policy": "artifacts/track_b_ra_d0_source_review_v2/2026-10-07/execution_resource_guard_v2.json; byte-exact inherited"
+}

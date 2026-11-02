@@ -1,0 +1,20 @@
+{
+  "version": "1.14.1",
+  "files": {
+    "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_optimize.py": "917425a011e0a82a9895ab86018b5d4444448f5522a8b3e545de238706fbc178",
+    "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/lib/python3.11/site-packages/scipy/optimize/_linesearch.py": "655a6290091aaf56b2e37eefdb315a25dad081ef044dc4ec1cc0e4d1a4d82a11"
+  },
+  "facts": [
+    "BFGS uses identity H0 initially and strong-Wolfe line search",
+    "_line_search_wolfe12 catches its own line-search failure,not arbitrary oracle Unqualified exceptions",
+    "extra_condition runs after objective/gradient have been evaluated and strong-Wolfe is met;it cannot supply an unavailable derivative",
+    "first BFGS trial alpha=min(1,1.01/norm(g0)) with H0=I,derived from old_old_fval and scalar_search_wolfe1",
+    "candidate uses qualified-only Armijo steepest descent for one step;no Wolfe claim,no BFGS curvature update"
+  ],
+  "official_references": [
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/generated/scipy.optimize.line_search.html",
+    "https://docs.scipy.org/doc/scipy-1.14.1/reference/optimize.minimize-bfgs.html"
+  ],
+  "installed_source_matches_frozen_package_version": true,
+  "shared_packages_modified": false
+}

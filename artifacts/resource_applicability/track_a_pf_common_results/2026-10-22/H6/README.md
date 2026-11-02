@@ -1,0 +1,3 @@
+# H6：原metadata不足で系単独STOP
+
+28候補のうち17を固定Git blob 9bc570495d256d55868ddd658fff57e8a7c55669から回収。残る11 B0Iと、既存52 B0Iのserializerにもmaximum_intermediate_norm/raw_corrected_vector_closureがない。計63候補の推測補完・追加signal再生成を行わず、科学call/新grant0でSTOP。原観測が利用可能な111、新signal未実行102を候補表で区別する。276候補の新共通政策最良は全てUNRESOLVED。H2/H4とは独立。

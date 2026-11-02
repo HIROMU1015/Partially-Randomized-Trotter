@@ -1,0 +1,305 @@
+# Codex指示：H4非DF/DFの数値精度診断・保証手法設計（B＋C一括）
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+調査完了branch：`codex/non-df-h4-evidence-investigation-20261023`
+
+基点commit：`ebe20403bcb5c4439162614f64d991a769d7ed68`
+
+科学SOURCE：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+
+## 1. 目的と承認範囲
+
+H4非DF/DF pilotで未確定となった必要shot数N・総費用Gについて、次の2段階を一括で進めてください。
+
+**段階B：保存値による数値精度・guard感度診断**
+
+既存の保存済みu・signed bias・headroom・normalization情報を使い、現行guardを満たすために必要な数値誤差上界を定量化する。
+
+**段階C：厳密な数値証拠・normalization保証の取得方法を設計**
+
+Bの結果を踏まえ、必要な保証手法、実装方法、検証方法、科学call範囲、実行契約案を具体化する。
+
+### 明示的な承認
+
+今回、**段階Bの固定40軸に対する保存値数値診断の実行を承認します。**
+
+段階Cについては、科学SOURCEの静的調査、数理的手法の設計、実装計画、人工テスト、次回実行契約案の完成まで承認します。
+
+**実H4データを使った新しい高精度計算・区間数値計算・certificate生成・shot再計算・G再会計は、今回の承認に含みません。**
+
+Bの結果をCへ直接引き継ぎ、細かな中間確認なしで終了監査まで進めてください。
+
+## 2. 固定資料と科学条件
+
+最初にGitHubの固定commit、SOURCE、保存結果、調査報告書を確認してください。
+
+主な資料：
+
+- `docs/non_df_h4_evidence_investigation_20261023.md`
+- `artifacts/non_df_h4_evidence_investigation/2026-10-23/precision_state_inventory.json`
+- `artifacts/non_df_h4_evidence_investigation/2026-10-23/verification.json`
+- `artifacts/non_df_h4_evidence_investigation/2026-10-23/next_execution_contract_DRAFT.json`
+- `artifacts/non_df_h4_pilot/2026-10-23/postprocessing_recovery01/`
+- `src/trotterlib/fixed_signal_accounting.py`
+- `src/trotterlib/h2_non_df_pilot.py`
+- `src/trotterlib/h4_pilot_science.py`
+
+対象の4方式：
+
+1. `pauli_jw_PF`
+2. `pauli_jw_PR`
+3. `df_native_PF`
+4. `df_native_PR`
+
+要求信号精度：
+
+`ε_sig = 0.05, 0.01, 0.005, 0.001, 0.0005`
+
+cosine/sineの両軸、合計40軸を対象とします。
+
+既存調査で確認された状態：
+
+- ratio guardによるUNDETERMINED：22軸
+- headroom不足によるUNDETERMINED：18軸
+- N/Gがnull：20/20行
+- certificate不足：未解決
+- 元のnative終了証拠：未回収
+
+既存の物理条件、数値allowance、guard、候補、回路、標本数、科学契約は変更しないでください。
+
+---
+
+## 3. 段階B：保存値数値診断
+
+### B-1. 現行guardを満たすための条件を定量化
+
+既存sourceの定義を使用してください。
+
+各軸のheadroom：
+
+\[
+h_a=\epsilon_a-|b_a|-u_a
+\]
+
+追加ratio guard：
+
+\[
+\frac{u_a}{h_a}\leq 0.01
+\]
+
+保存済みのbiasと要求精度を固定した場合、必要なuの上限条件を整理してください。
+
+各40軸について、最低限以下を評価します。
+
+1. 保存された現在のu
+2. 保存されたbias・headroom
+3. 現在のguard判定
+4. guardを満たすために必要なuの上限
+5. 現在のuから必要な削減量・削減率
+6. headroomが正になるための条件
+7. uを改善しても、固定biasでは条件を満たせない場合の識別
+
+保存値の数値演算は、今回承認したBの固定範囲内で実施してよいです。
+
+ただし、**求めたuの上限は「必要な誤差予算」であり、実際に達成可能な数値精度や厳密certificateではありません。**
+
+保存bias自体の数値不確かさも、実装設計上の課題として区別してください。
+
+### B-2. 22軸と18軸を分けて評価
+
+**R群：22軸**
+
+headroomは正だが、u/headroomの追加guardによって判定が保留された条件。
+
+**H群：18軸**
+
+保存headroomが非正で、基礎shot会計の段階から判定保留になった条件。
+
+この2群について、必要な改善量がどの程度異なるか整理してください。
+
+4方式×5精度×2軸の結果を、CSV・JSON・Markdownで保存してください。
+
+新しいN/Gの計算や適格性の正式な再判定は行わず、現行のUNDETERMINEDを維持してください。
+
+### B-3. 数値診断の検証
+
+- 保存入力値とSHAの照合
+- 数式と実装の一致
+- ratio guardの境界条件
+- headroomの正負と判定の整合性
+- 浮動小数点の境界付近の扱い
+- 独立した算術検査
+- 40軸の欠落・重複検査
+- 旧N/G・旧判定の不変性
+
+を確認してください。
+
+Bの実行前に、専用SOURCE・入力SHA・解析対象・one-shot契約・必要な実行予算・grantを固定してください。
+
+異常があれば部分証拠を保存し、自動retryせずSTOPしてください。
+
+---
+
+## 4. 段階C：保証手法の設計
+
+Bで得た必要精度を入力として、以下を検討してください。
+
+### C-1. numerical error・biasの保証
+
+既存の保存入力・状態・Hamiltonian・reference・law meanについて、数値誤差の妥当な包含を得る方法を設計してください。
+
+検討対象：
+
+- 高精度浮動小数点演算
+- 区間演算・外向き丸め
+- forward/backward error解析
+- 誤差伝播
+- Hamiltonian・状態・信号計算の数値誤差評価
+- signed biasの包含
+- normalization誤差との結合
+
+候補手法ごとに、次を整理してください。
+
+1. 数学的に何を保証するか
+2. どの保存入力を利用するか
+3. 新しい計算が必要な部分
+4. 必要精度を達成できる可能性
+5. 達成しても残る不確かさ
+6. 証明・技術検証の方法
+7. 実装負荷と計算量
+
+単に複数の数値計算法が一致しただけで、厳密な包含が証明されたとは扱わないでください。
+
+### C-2. PR normalizationの保証
+
+既存の有限RTE lawを固定し、PR normalizationについて、数値丸め誤差を含む保証方法を設計してください。
+
+特に、
+
+- 有限lawの確率・係数
+- `lambda_r`
+- `B`
+- `log_B`
+- `log_B_upper`
+- finite Taylor law
+- 正規化の累積誤差
+- 浮動小数点評価の包含
+
+を対象とします。
+
+保存されている`log_B_upper`が、厳密な数値上界として十分かどうかを判断するために必要な証拠を明確化してください。
+
+通常float値を高精度で再計算するだけで、certificateが完成すると仮定しないでください。
+
+### C-3. 必要精度と保証方法の対応
+
+Bの結果に基づき、各方式・精度で必要になる証拠の強さを整理してください。
+
+重要なのは、**必要以上に重い高精度計算を一律に実行する設計にしないこと**です。
+
+まず、保存値から必要な誤差予算を確認し、それを満たすための適切な数値保証方法を選ぶ設計にしてください。
+
+ただし、計算資源の節約を理由に、必要な数学的保証を弱めてはいけません。
+
+## 5. 次回実行契約案を完成させる
+
+B＋Cの結果から、次に必要な科学実行を具体化してください。
+
+少なくとも以下を明記します。
+
+- 対象方式・精度・数値証拠
+- 実行するアルゴリズム
+- 使用する保存入力
+- SOURCE・入力SHA
+- 科学call範囲と予算
+- 高精度・区間演算の仕様
+- 証明対象と受理条件
+- numerical gate
+- 人工・回帰テスト
+- 実行監査
+- 結果保存先
+- one-shot・grant・retry禁止
+- mandatory STOP
+- 想定される失敗・未確定状態
+
+既存の`next_execution_contract_DRAFT.json`を参考にしてよいですが、過去の未承認案をそのまま実行可能なgrantとして扱わないでください。
+
+**実行契約は承認待ちの完成案とし、有効な科学実行grantを発行・消費しないでください。**
+
+Cでの実H4数値証拠生成は開始しません。
+
+---
+
+## 6. 監視証拠の扱い
+
+元H4科学runのnative exit/reap/STOP証拠は欠けたままです。
+
+今回のB＋C作業によって、この欠落を解決したことにはしないでください。
+
+- 元runを再実行しない
+- 元grantを再利用しない
+- 元STOPを新造しない
+- 事後的な正常終了PASSを主張しない
+
+新しい数値証拠の取得可能性と、元の実行監視証拠の欠落は独立して扱ってください。
+
+## 7. 計算資源・保全条件
+
+最新版`research_project_instructions_unified_2026-10-17.md`の§8.4を適用してください。
+
+- CPU・RAM・worker数に恣意的な低い上限を設定しない。
+- 重い処理は実際の空き資源を確認し、十分に高速化・並列化する。
+- 共有環境全体や他ユーザーに影響する変更・操作は絶対禁止。
+- 既存の承認済み固定契約は変更しない。
+- SOURCE・raw・入力・grant・ledger・marker・STOPを保全する。
+- 今回の専用結果を、別研究のSOURCEや会計へ混入させない。
+
+禁止事項：
+
+- 新規SCF/FCI・DF生成
+- 新規sampling・compile
+- 実H4の高精度・区間数値証拠生成
+- N/Gの新規計算・再会計
+- 数値allowance・guard閾値の変更
+- PR/PFの候補変更・再ランキング
+- 使用済み科学grantの再使用
+- 未承認の科学実行
+- 詳細科学レビュー・最終evidence freeze
+
+## 8. 成果物
+
+専用branchに以下を作成してください。
+
+1. **B：40軸の数値精度診断表**（CSV/JSON）
+2. Bの計算方法・境界条件・検証記録
+3. **C：numerical error・bias・normalization保証手法の設計書**
+4. Bの必要精度とCの手法を対応させた表
+5. 次回科学実行契約案
+6. SOURCE・入力・結果・SHA・保全監査
+7. READMEと引継ぎ資料
+8. mandatory STOP記録
+
+人工テスト・回帰テスト・構造検証を実施し、結果を独立commitに保存してください。
+
+GitHubへの新規pushは、公開範囲の承認が確認できる場合に限ります。公開済みcommitの再pushは不要です。
+
+## 9. 完了報告
+
+最終報告では以下を明確にしてください。
+
+1. 22軸・18軸で必要なuの改善量
+2. どの精度・方式が特に厳しいか
+3. 現行guardを満たすための必要数値精度
+4. その精度を保証するための有力な数値手法
+5. normalization certificateの取得方法
+6. 既存保存入力だけで実現できる範囲
+7. 次回必要な追加科学計算と実行予算
+8. 未解決事項・監視証拠の状態
+9. 検証結果・commit・公開状態
+
+**今回承認したBの数値診断、Cの保証手法設計、実行契約案、結果保存・終了監査まで一括で進めてください。**
+
+途中の細かな承認確認は不要です。
+
+ただし、Cの実H4数値証拠生成、certificate生成、N/G再会計には進まず、完了後は**mandatory STOP**してください。

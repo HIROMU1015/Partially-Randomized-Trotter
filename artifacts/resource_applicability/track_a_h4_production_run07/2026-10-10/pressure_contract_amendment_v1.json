@@ -1,0 +1,22 @@
+{
+  "approved": true,
+  "authority": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/USER_PRESSURE_AUTHORITY_v7.json",
+    "sha256": "a4daf128221c61180ad0bc20476cd8b1779090535f5aa85907fedba7546a3662"
+  },
+  "old_contract": {
+    "line": 3208,
+    "path": "artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06-v2/zero_compute_plan_v2.json",
+    "rule": "host/effective available<16GiB, own RSS>per-role budget or total admitted own budget, allocation/AS limit failure, memory PSI full avg10>0, or cgroup OOM event delta>0 => stop own run, preserve audit and STOP for review. No automatic worker restart/retry/resume or host swap/cgroup/job change",
+    "sha256": "18aa36a2776d38852657f154a88c381b3299fbc009007f20a2d95fcb865d9f7a"
+  },
+  "old_scientific_contract_fingerprint_retained": true,
+  "profile": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+    "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+  },
+  "runtime_authorization": true,
+  "schema_version": "h4-pressure-contract-amendment-v1",
+  "scope": "Only bounded host-only PSI criterion; all existing nonroot pressure/OOM/freshness/role caps and science/compiler conditions remain.",
+  "source_commit": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3"
+}

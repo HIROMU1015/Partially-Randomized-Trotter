@@ -1,0 +1,73 @@
+{
+  "status": "CONFIRMED_DEFECTS_FIXED_ARTIFICIAL_STATIC_SCOPE",
+  "audited_SOURCE": "60eeb51c148007359cf6e8bcf6288e6837a39701",
+  "SOURCE": "20f89bc32b161ee22e4a1ed709f9e3414c19633a",
+  "findings": [
+    {
+      "id": "F01",
+      "severity": "P1",
+      "classification": "CONFIRMED_DEFECT",
+      "summary": "H8 allowlisted cross-SOURCE axis pair",
+      "regression_test": "test_allowlisted_cross_source_paired_axes_are_rejected",
+      "fix": "pair SOURCE equality in independent adapter",
+      "status": "FIXED_VERIFIED_ARTIFICIAL"
+    },
+    {
+      "id": "F02",
+      "severity": "P1",
+      "classification": "CONFIRMED_DEFECT",
+      "summary": "H6 copied/reset request replay",
+      "regression_test": "test_copied_request_cannot_repeat_native_build; test_reset_built_flag_cannot_repeat_native_build; test_failed_provider_consumes_case_build_reservation",
+      "fix": "grant-owned per-case reservation consumed before provider",
+      "status": "FIXED_VERIFIED_ARTIFICIAL"
+    },
+    {
+      "id": "F03",
+      "severity": "P1",
+      "classification": "CONFIRMED_DEFECT",
+      "summary": "H6 name-only native provider",
+      "regression_test": "test_production_branch_rejects_name_only_unverified_provider; test_mock_verified_provider_builds_and_rejects_same_name_substitution",
+      "fix": "identity of provider that passed source/Git/origin validation",
+      "status": "FIXED_VERIFIED_ARTIFICIAL"
+    },
+    {
+      "id": "F04",
+      "severity": "P1",
+      "classification": "CONFIRMED_DEFECT",
+      "summary": "Missing OOM/NaN PSI observations accepted",
+      "regression_test": "test_missing_cgroup_oom_counter_cannot_admit_or_continue; test_nonfinite_pressure_is_missing_evidence_not_zero",
+      "fix": "validate required counters and finite PSI without changing frozen D0",
+      "status": "FIXED_VERIFIED_ARTIFICIAL"
+    },
+    {
+      "id": "F05",
+      "severity": "P2",
+      "classification": "CONFIRMED_DEFECT",
+      "summary": "Nonfinite quota availability accepted",
+      "regression_test": "test_quota_nonfinite_availability_never_passes",
+      "fix": "nonnegative integer availability and finite receipt time",
+      "status": "FIXED_VERIFIED_ARTIFICIAL"
+    },
+    {
+      "id": "F06",
+      "severity": "P1",
+      "classification": "CONFIRMED_DEFECT",
+      "summary": "Observation IO omitted from interval",
+      "regression_test": "test_observation_interval_includes_previous_io_duration",
+      "fix": "start-to-start interval; separate observation duration",
+      "status": "FIXED_VERIFIED_ARTIFICIAL"
+    }
+  ],
+  "confirmed_defects": 6,
+  "confirmed_defects_unfixed": 0,
+  "independent_reviewer": "/root/audit_independent_h8_h6",
+  "reviewer_history_inheritance": "none",
+  "independent_GPT_scientific_review": false,
+  "real_data_validated": false,
+  "scientific_adoption": false,
+  "remaining_classifications": [
+    "SCIENTIFIC_ASSUMPTION",
+    "RUNTIME_ONLY",
+    "TEST_GAP"
+  ]
+}

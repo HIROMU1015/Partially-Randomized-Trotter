@@ -1,0 +1,242 @@
+{
+  "artificial_only": true,
+  "canonical_trace": "group -> mode-specific labels/conditional child -> event(group_index, raw_word, child)",
+  "content_adopted": false,
+  "contract_grants_execution": false,
+  "full_trace": "order -> raw labels -> reduction -> packet iff reduced -> acceptance -> child iff accepted",
+  "live_compatibility": "NOT_ESTABLISHED",
+  "loader": "ABSENT",
+  "mandatory_STOP": true,
+  "resume": false,
+  "retry": 0,
+  "routes": [
+    {
+      "angle": null,
+      "arm": "ordinary",
+      "audit": null,
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "A",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": null,
+      "sample": "CanonicalGenerator.sample(bits)"
+    },
+    {
+      "angle": "AuditParity.invoke -> enclose_atan",
+      "arm": "ordinary",
+      "audit": "canonical_snapshot + AuditParity + event_witness",
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "B",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": "CanonicalGenerator.event(group_index, raw_word, child)",
+      "sample": "CanonicalGenerator.sample(bits)"
+    },
+    {
+      "angle": null,
+      "arm": "partial_return_tail",
+      "audit": null,
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "A",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": null,
+      "sample": "CanonicalGenerator.sample(bits)"
+    },
+    {
+      "angle": "AuditParity.invoke -> enclose_atan",
+      "arm": "partial_return_tail",
+      "audit": "canonical_snapshot + AuditParity + event_witness",
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "B",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": "CanonicalGenerator.event(group_index, raw_word, child)",
+      "sample": "CanonicalGenerator.sample(bits)"
+    },
+    {
+      "angle": null,
+      "arm": "closed_P3_tail",
+      "audit": null,
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "A",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": null,
+      "sample": "CanonicalGenerator.sample(bits)"
+    },
+    {
+      "angle": "AuditParity.invoke -> enclose_atan",
+      "arm": "closed_P3_tail",
+      "audit": "canonical_snapshot + AuditParity + event_witness",
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "B",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": "CanonicalGenerator.event(group_index, raw_word, child)",
+      "sample": "CanonicalGenerator.sample(bits)"
+    },
+    {
+      "angle": null,
+      "arm": "full_return",
+      "audit": null,
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "G7.make_generator",
+      "executable_science_loader": false,
+      "layer": "A",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": null,
+      "sample": "FullReturnGenerator.sample(bits)"
+    },
+    {
+      "angle": "GeneratorSession.angle_for_event(original Evidence)",
+      "arm": "full_return",
+      "audit": "F3 sealed preflight + AuditParity",
+      "canonical_positive_F3_boundary": "CANONICAL_PREFLIGHT_NOT_IMPLEMENTED",
+      "construction": "F3.prepare",
+      "executable_science_loader": false,
+      "layer": "B",
+      "live_compatibility": "NOT_ESTABLISHED",
+      "requery": "FullReturnGenerator.event(word, child) -> packet",
+      "sample": "GeneratorSession.sample(bits, *, trial_id)"
+    }
+  ],
+  "run_ready": false,
+  "schema": "b3_live_api_binding_candidate_v1",
+  "science_release": null,
+  "scientific_adoption": null,
+  "signatures": {
+    "g6_f3_contract.Evidence.create": {
+      "arguments": "cls, value",
+      "line": 81,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_contract.py"
+    },
+    "g6_f3_contract.Evidence.read": {
+      "arguments": "self",
+      "line": 85,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_contract.py"
+    },
+    "g6_f3_contract.make_request": {
+      "arguments": "p, x, m, *, arm='full_return', sigma=1, eta, rho, root_bits, probability_bits, angle_tau, angle_root_bits, angle_terms",
+      "line": 180,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_contract.py"
+    },
+    "g6_f3_generator.GeneratorSession.angle_for_event": {
+      "arguments": "self, record",
+      "line": 261,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_generator.py"
+    },
+    "g6_f3_generator.GeneratorSession.event": {
+      "arguments": "self, word, child, *, trial_id",
+      "line": 215,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_generator.py"
+    },
+    "g6_f3_generator.GeneratorSession.parent_packet": {
+      "arguments": "self, word",
+      "line": 239,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_generator.py"
+    },
+    "g6_f3_generator.GeneratorSession.sample": {
+      "arguments": "self, bits=None, *, trial_id",
+      "line": 188,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_generator.py"
+    },
+    "g6_f3_generator.prepare": {
+      "arguments": "p, x, m, **precision_and_context",
+      "line": 298,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_generator.py"
+    },
+    "g6_f3_precision.enclose_atan": {
+      "arguments": "ratio, *, tau, root_bits, terms, sigma=1, context=None",
+      "line": 152,
+      "path": "src/trottertracks/algorithm_codesign/g6_f3_precision.py"
+    },
+    "g6_w2c_b3_driver.LegacyEndpoint.__init__": {
+      "arguments": "self, modules, arm, layer, angle, source_check, *, permit=None",
+      "line": 369,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py"
+    },
+    "g6_w2c_b3_driver.LegacyEndpoint.angle_for": {
+      "arguments": "self, outcome",
+      "line": 456,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py"
+    },
+    "g6_w2c_b3_driver.LegacyEndpoint.sample": {
+      "arguments": "self, bits, trial_id",
+      "line": 420,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py"
+    },
+    "g6_w2c_cost_preparation.AuditParity.__init__": {
+      "arguments": "self, arm, identity, snapshot, source_check",
+      "line": 214,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py"
+    },
+    "g6_w2c_cost_preparation.AuditParity.invoke": {
+      "arguments": "self, operation",
+      "line": 223,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py"
+    },
+    "g6_w2c_cost_preparation.canonical_snapshot": {
+      "arguments": "generator, law_builder=None",
+      "line": 133,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py"
+    },
+    "g6_w2c_cost_preparation.event_witness": {
+      "arguments": "event, *, full, degree_cap, labels",
+      "line": 184,
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py"
+    },
+    "g7_generator.CanonicalGenerator.__init__": {
+      "arguments": "self, p, x, m, arm, root_bits=256, probability_bits=160, eta=F(1, 10 ** 12), rho=F(1, 10 ** 12)",
+      "line": 103,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.CanonicalGenerator.event": {
+      "arguments": "self, group_index, word, child",
+      "line": 162,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.CanonicalGenerator.sample": {
+      "arguments": "self, bits",
+      "line": 193,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.DeterministicBits.bits": {
+      "arguments": "self, n",
+      "line": 64,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.FullReturnGenerator.__init__": {
+      "arguments": "self, p, x, m, root_bits=256, probability_bits=160, eta=F(1, 10 ** 12), rho=F(1, 10 ** 12)",
+      "line": 216,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.FullReturnGenerator.event": {
+      "arguments": "self, word, child",
+      "line": 230,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.FullReturnGenerator.packet": {
+      "arguments": "self, word",
+      "line": 227,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.FullReturnGenerator.sample": {
+      "arguments": "self, bits",
+      "line": 237,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    },
+    "g7_generator.make_generator": {
+      "arguments": "p, x, m, arm, **kwargs",
+      "line": 254,
+      "path": "src/trottertracks/algorithm_codesign/g7_generator.py"
+    }
+  },
+  "source_identity": "76ca3c4089b201d55da0fede08e1f77733ac38a5"
+}

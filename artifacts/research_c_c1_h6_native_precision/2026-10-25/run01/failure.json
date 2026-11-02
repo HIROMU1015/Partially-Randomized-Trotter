@@ -1,0 +1,10 @@
+{
+  "error": "{'label': 'compiled/raw:CDF_s1_literal', 'max_entry': 5.519860650214071e-10, 'frobenius': 1.2352221380650043e-09, 'tolerance': 1e-10, 'rtol': 0}",
+  "first_failure": {
+    "kind": "kernel_action",
+    "label": "CDF_s1_literal",
+    "error_type": "ValueError",
+    "error": "{'label': 'compiled/raw:CDF_s1_literal', 'max_entry': 5.519860650214071e-10, 'frobenius': 1.2352221380650043e-09, 'tolerance': 1e-10, 'rtol': 0}",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_native.py\", line 210, in guarded_assess\n    return assess()\n           ^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_native.py\", line 204, in assess\n    compiler=action.state_gate(b,a,label='compiled/raw:'+label),\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_state_action.py\", line 114, in state_gate\n    report=component_check(actual,expected,COMPONENT_ATOL,label=label)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_stage3_molecular.py\", line 35, in component_check\n    if maximum>tolerance:raise ValueError(str(result))\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: {'label': 'compiled/raw:CDF_s1_literal', 'max_entry': 5.519860650214071e-10, 'frobenius': 1.2352221380650043e-09, 'tolerance': 1e-10, 'rtol': 0}\n"
+  }
+}

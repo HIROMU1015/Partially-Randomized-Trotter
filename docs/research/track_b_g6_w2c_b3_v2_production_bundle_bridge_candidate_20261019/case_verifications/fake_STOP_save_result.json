@@ -1,0 +1,101 @@
+{
+  "case": "fake_STOP_save",
+  "root": "/tmp/b3-bundle-artificial-tnb_la8e",
+  "spec": {
+    "name": "fake_STOP_save",
+    "fault": {
+      "point": "admission.stop"
+    }
+  },
+  "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+  "returned_complete": false,
+  "fault_hits": 1,
+  "external_host_outer": {
+    "parent_cpu_ns": 1067350621,
+    "wall_ns": 6607942571,
+    "worker_cpu_ns": 9730969000,
+    "includes_final_and_delivery_close": true
+  },
+  "forbidden_imports": [],
+  "process_exit": 0,
+  "verification_status": "INCOMPLETE_EVIDENCE",
+  "verification_issues": [],
+  "evidence_gaps": [
+    "Fake STOP not persisted; spent reservation remains"
+  ],
+  "consumer_forbidden_imports": [],
+  "calls": {
+    "planned": 1536,
+    "reserved": 1536,
+    "started": 1536,
+    "completed": 1536,
+    "unknown": 0,
+    "cancelled": 0
+  },
+  "conditions": [
+    {
+      "condition": "S",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 657136793,
+      "worker_cpu_ns": 4680588000,
+      "wall_ns": 5259118805,
+      "budget_before": {
+        "reserved": {
+          "log": 14526,
+          "result": 4234036
+        },
+        "observed": {
+          "log": 14526,
+          "result": 31540
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 2142338,
+          "result": 4877810
+        },
+        "observed": {
+          "log": 2142338,
+          "result": 675314
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    },
+    {
+      "condition": "P1",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 347702392,
+      "worker_cpu_ns": 5050381000,
+      "wall_ns": 1285914994,
+      "budget_before": {
+        "reserved": {
+          "log": 2143026,
+          "result": 4878425
+        },
+        "observed": {
+          "log": 2143026,
+          "result": 675929
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 4282922,
+          "result": 5522751
+        },
+        "observed": {
+          "log": 4282922,
+          "result": 1320255
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    }
+  ]
+}

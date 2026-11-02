@@ -1,0 +1,11 @@
+# V2統合技術契約候補
+
+正式項目名は `b3_storage_v2_global_bundle_candidate_v1`。storage protocol は `GLOBAL_MONOTONE_V2_POST_CLOSE_JOIN_V1`、manifest/result/receipt/diagnosticは別schema。candidateのcontent_adopted/run_ready/contract_grants_executionはfalse、science_release/scientific_adoptionはnull、mandatory_STOPはtrue。技術的PASSから正式科学採択へ移転しない。
+
+予約はcounter・cursor・current ticket・RAM stateを先に整合させ、後でfallible state/trace I/Oへ進む。保存失敗が予約を消したりcall creditを返却したりしない。RESERVEとENTERを区別し、ENTERのtrace/state保存後だけworkerへpermitを返す。未証明COMPLETEはUNKNOWN、STOP後の新規ENTERは禁止する。
+
+RAM shadowはmonotone intentでありdurability証明ではない。physical state、journal、ordered trace、trusted prefix、未保存RAM、partial tail、flush/close不確実性、byte unknownを別々に記録する。十分な物理witnessがなければINCOMPLETE_EVIDENCE。flushをfsyncまたはpower-failure durabilityと呼ばない。
+
+成功joinは全48pairと必要trial、各F01、A/B/pass/S/P1 prefix、global counters、summary/receipt、trusted trace、fake STOP/spent、全storage close、post-close receipt/marker、最終slot/delivery/caller観測、global call/byte capを要求する。診断schemaはcomplete=false/final_acceptance=false。一条件だけのreceipt、marker単独、RAM申告単独はbundle成功ではない。
+
+固定サイズfinal 4MiB、delivery 4096B、caller observation 4096Bのcreditを最初にglobal resultへ予約する。final report内のその3つのACKは明示的なprojectionであり、物理slotと外側の保存後観測が揃うまで成功根拠へ使わない。delivery自身のclose失敗はcallerが報告し、consumerは不完全とする。caller観測自身のclose/power-failureを自己証明する契約ではない。

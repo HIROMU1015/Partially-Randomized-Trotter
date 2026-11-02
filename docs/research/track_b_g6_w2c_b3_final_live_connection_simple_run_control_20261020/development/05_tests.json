@@ -1,0 +1,47 @@
+{
+  "connection": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 17,
+    "SKIP": 0,
+    "failures": [],
+    "run": 17
+  },
+  "preflight": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 23,
+    "SKIP": 0,
+    "failures": [],
+    "run": 23
+  },
+  "regression": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 66,
+    "SKIP": 0,
+    "failures": [],
+    "run": 66
+  },
+  "store": {
+    "ERROR": 1,
+    "FAIL": 0,
+    "PASS": 15,
+    "SKIP": 0,
+    "failures": [
+      {
+        "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_fake_real_confusion",
+        "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 147, in tearDown\n    shutil.copytree(self.root,target,symlinks=True)\n  File \"/usr/lib/python3.12/shutil.py\", line 600, in copytree\n    return _copytree(entries=entries, src=src, dst=dst, symlinks=symlinks,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/shutil.py\", line 554, in _copytree\n    raise Error(errors)\nshutil.Error: [('/tmp/b3-release-test-authority-aohufn7l/SIMPLE_RUN.sqlite3-shm', '/tmp/b3-final-development-05/control_raw/test_fake_real_confusion/SIMPLE_RUN.sqlite3-shm', \"[Errno 2] No such file or directory: '/tmp/b3-release-test-authority-aohufn7l/SIMPLE_RUN.sqlite3-shm'\")]\n"
+      }
+    ],
+    "run": 16
+  },
+  "unit": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 10,
+    "SKIP": 0,
+    "failures": [],
+    "run": 10
+  }
+}

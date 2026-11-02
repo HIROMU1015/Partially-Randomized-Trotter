@@ -1,0 +1,86 @@
+......................FF...                                              [100%]
+=================================== FAILURES ===================================
+_______ test_artificial_rank8_worker_real_ffsim_with_mock_optimizer[rc2] _______
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-666/test_artificial_rank8_worker_r0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d9b78bead10>
+role = 'rc2'
+
+    @pytest.mark.parametrize("role",["rc2","pr"])
+    def test_artificial_rank8_worker_real_ffsim_with_mock_optimizer(tmp_path,monkeypatch,role):
+        rng=np.random.default_rng(789);a=rng.normal(size=(8,4,4));J=a+a.transpose(0,2,1)
+        J*=np.sqrt(m.CONDITIONS["l2_scale"]/np.sum(J*J))
+        U=np.repeat(np.eye(4)[None],8,axis=0);U[0,:,0]*=-1;U[1,:2,:2]=-np.eye(2)
+>       J,U,x,_,_=m.previous.objective.pr.corrected.codec.roundtrip(J,U)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_common_convergence_pilot.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[ 0.14541944, -0.19882034,  0.0352694 ,  0.24188032],
+        [-0.19882034,  0.40968255,  0.22651606,  0.11254...  [ 0.01002326, -0.24393816,  0.33770646,  0.06718916],
+        [-0.03093954,  0.01558514,  0.06718916,  0.16358201]]])
+U = array([[[-1.,  0.,  0.,  0.],
+        [-0.,  1.,  0.,  0.],
+        [-0.,  0.,  1.,  0.],
+        [-0.,  0.,  0.,  1.]...     [[ 1.,  0.,  0.,  0.],
+        [ 0.,  1.,  0.,  0.],
+        [ 0.,  0.,  1.,  0.],
+        [ 0.,  0.,  0.,  1.]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+_______ test_artificial_rank8_worker_real_ffsim_with_mock_optimizer[pr] ________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-666/test_artificial_rank8_worker_r1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7d9b78dda010>
+role = 'pr'
+
+    @pytest.mark.parametrize("role",["rc2","pr"])
+    def test_artificial_rank8_worker_real_ffsim_with_mock_optimizer(tmp_path,monkeypatch,role):
+        rng=np.random.default_rng(789);a=rng.normal(size=(8,4,4));J=a+a.transpose(0,2,1)
+        J*=np.sqrt(m.CONDITIONS["l2_scale"]/np.sum(J*J))
+        U=np.repeat(np.eye(4)[None],8,axis=0);U[0,:,0]*=-1;U[1,:2,:2]=-np.eye(2)
+>       J,U,x,_,_=m.previous.objective.pr.corrected.codec.roundtrip(J,U)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_common_convergence_pilot.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+J = array([[[ 0.14541944, -0.19882034,  0.0352694 ,  0.24188032],
+        [-0.19882034,  0.40968255,  0.22651606,  0.11254...  [ 0.01002326, -0.24393816,  0.33770646,  0.06718916],
+        [-0.03093954,  0.01558514,  0.06718916,  0.16358201]]])
+U = array([[[-1.,  0.,  0.,  0.],
+        [-0.,  1.,  0.,  0.],
+        [-0.,  0.,  1.,  0.],
+        [-0.,  0.,  0.,  1.]...     [[ 1.,  0.,  0.,  0.],
+        [ 0.,  1.,  0.,  0.],
+        [ 0.,  0.,  1.,  0.],
+        [ 0.,  0.,  0.,  1.]]])
+
+    def roundtrip(J,U):
+        """Return J_out,U_out,x,diagnostics,raw arrays in locked ffsim layout.
+    
+        Unchanged J, each original column density projector and reconstructed tensor
+        are required. U_out matches the sign-gauged representative, not a forbidden
+        exponential representation of an original det=-1 matrix.
+        """
+        import numpy as np
+>       import ffsim.linalg.util as util
+E       ModuleNotFoundError: No module named 'ffsim'
+
+src/trottertracks/c1_real_orthogonal_codec.py:79: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_common_convergence_pilot.py::test_artificial_rank8_worker_real_ffsim_with_mock_optimizer[rc2]
+FAILED tests/management/test_research_c_common_convergence_pilot.py::test_artificial_rank8_worker_real_ffsim_with_mock_optimizer[pr]
+2 failed, 25 passed in 11.13s

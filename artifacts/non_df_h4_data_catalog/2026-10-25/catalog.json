@@ -1,0 +1,4388 @@
+{
+  "schema": "h4_saved_data_catalog_v1",
+  "status": "SAVED_DATA_CATALOG_NO_NEW_SCIENTIFIC_ANALYSIS",
+  "base_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+  "branch": "codex/non-df-h4-data-catalog-20261025",
+  "shared_conditions": {
+    "receipt_ref": {
+      "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+      "sha256": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf"
+    },
+    "compiler": "Qiskit1.3.0/rz,sx,x,cx/opt1/seed17/no backend-coupling-layout-routing",
+    "geometry": "linear H4 adjacent1.00 Angstrom/STO-3G",
+    "PF_order": "S2",
+    "T": 0.8,
+    "q": 8,
+    "PR_r": 4,
+    "PR_K": 4,
+    "epsilon_sig": [
+      0.05,
+      0.01,
+      0.005,
+      0.001,
+      0.0005
+    ],
+    "axes": [
+      "cosine",
+      "sine"
+    ],
+    "measurement": "ancilla8 -> clbit0; sine Sdg before final H, +Im; retain relative phases",
+    "price_scope": "full Hadamard wrapper, no state preparation; primary compiled RZ",
+    "no_new_conditions": "All constants above quote the requested fixed scope and existing reports."
+  },
+  "series": [
+    {
+      "series_id": "pauli_jw_PF__generic",
+      "case": "pauli_jw_PF",
+      "representation": "pauli_jw",
+      "implementation": "generic",
+      "method": "PF",
+      "config_verbatim": {
+        "K": 4,
+        "L_D": null,
+        "T": 0.8,
+        "cost_samples": 256,
+        "hamiltonian_type": "pauli_jw",
+        "method": "PF",
+        "product_formula": "S2",
+        "q": 8,
+        "r": 4,
+        "randomization_law": "finite_rte_even_paired",
+        "seed": 17780006248083772711
+      },
+      "model_verbatim": {
+        "B0I_equivalent_to_B0": true,
+        "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+        "DF_rank": null,
+        "L_D": 184,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "coefficient_cutoff": 0.0,
+          "df_rank": null,
+          "distance": 1.0,
+          "eri_chemist_hash": "6751a0d9660aca27831c09bfa08deebb4869ab69ee86d803ed32683aed47f87f",
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                2.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                3.0
+              ]
+            ]
+          ],
+          "hf_energy": -2.0985459369980077,
+          "input_eri": "chemist_(pq|rs)",
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "label_order": "q[n-1]...q[0]",
+          "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+          "molecule_type": 4,
+          "multiplicity": 1,
+          "nuclear_repulsion": 2.29310124732,
+          "one_body_hash": "0a6bf905ea79f023732ef2417be45cc90628b90e5ee770418e33c97c4cf202f1",
+          "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+          "orbital_basis": "real_orthonormal_spatial_MO",
+          "qubit_order": "qiskit_little_endian",
+          "spin_order": "2*p+alpha(0)/beta(1)",
+          "split_order": "descending_abs_then_label",
+          "two_body_prefactor": 0.5
+        },
+        "hamiltonian_hash": "e0dbbe9a2b6e86f81004307cd337ba83ee1e25642f04a30b02365be4d2dae795",
+        "hamiltonian_type": "pauli_jw",
+        "identity_policy": "constant_always_retained_once",
+        "retained_labels": [
+          "IZIIIIII",
+          "ZIIIIIII",
+          "IIIIIIIZ",
+          "IIIIIIZI",
+          "ZZIIIIII",
+          "IZIIIIZI",
+          "ZIIIIIIZ",
+          "IIIIIIZZ",
+          "IZZIIIII",
+          "ZIIZIIII",
+          "IIZZIIII",
+          "IZIIZIII",
+          "ZIIIIZII",
+          "IIIIZZII",
+          "IIIZZIII",
+          "IIZIIZII",
+          "IIIZIIZI",
+          "IIZIIIIZ",
+          "IIIIIZZI",
+          "IIIIZIIZ",
+          "IZIIIIIZ",
+          "ZIIIIIZI",
+          "IZIIIZII",
+          "ZIIIZIII",
+          "IIIIIZII",
+          "IIIIZIII",
+          "IIIZIIIZ",
+          "IIZIIIZI",
+          "IZIZIIII",
+          "ZIZIIIII",
+          "IIZIIIII",
+          "IIIZIIII",
+          "IIIZIZII",
+          "IIZIZIII",
+          "IIIIIZIZ",
+          "IIIIZIZI",
+          "XXYYIIII",
+          "XYYXIIII",
+          "YXXYIIII",
+          "YYXXIIII",
+          "IIIIXXYY",
+          "IIIIXYYX",
+          "IIIIYXXY",
+          "IIIIYYXX",
+          "IXZXXZXI",
+          "IXZXYZYI",
+          "IYZYXZXI",
+          "IYZYYZYI",
+          "XZXIIXZX",
+          "XZXIIYZY",
+          "YZYIIXZX",
+          "YZYIIYZY",
+          "IIXXYYII",
+          "IIXYYXII",
+          "IIYXXYII",
+          "IIYYXXII",
+          "IIXXIIYY",
+          "IIXYIIYX",
+          "IIYXIIXY",
+          "IIYYIIXX",
+          "XXIIYYII",
+          "XYIIYXII",
+          "YXIIXYII",
+          "YYIIXXII",
+          "IXZIZXII",
+          "IYZIZYII",
+          "XZIZXIII",
+          "YZIZYIII",
+          "IXXYYIII",
+          "IXYYXIII",
+          "IYXXYIII",
+          "IYYXXIII",
+          "XZXXZXII",
+          "XZXYZYII",
+          "YZYXZXII",
+          "YZYYZYII",
+          "IXXIIYYI",
+          "IXYIIYXI",
+          "IYXIIXYI",
+          "IYYIIXXI",
+          "XZZXYZZY",
+          "XZZYYZZX",
+          "YZZXXZZY",
+          "YZZYXZZX",
+          "IIIXXYYI",
+          "IIIXYYXI",
+          "IIIYXXYI",
+          "IIIYYXXI",
+          "IIXZXXZX",
+          "IIXZXYZY",
+          "IIYZYXZX",
+          "IIYZYYZY",
+          "IXZXIXZX",
+          "IYZYIYZY",
+          "XZXIXZXI",
+          "YZYIYZYI",
+          "XXIIIIYY",
+          "XYIIIIYX",
+          "YXIIIIXY",
+          "YYIIIIXX",
+          "XIZZXIII",
+          "YIZZYIII",
+          "ZXZZZXII",
+          "ZYZZZYII",
+          "IIIXZIZX",
+          "IIIYZIZY",
+          "IIXZIZXI",
+          "IIYZIZYI",
+          "IZXZZZXI",
+          "IZYZZZYI",
+          "ZIIXZZZX",
+          "ZIIYZZZY",
+          "IXZZZXZI",
+          "IYZZZYZI",
+          "XZZZXIIZ",
+          "YZZZYIIZ",
+          "IIIXZZIX",
+          "IIIYZZIY",
+          "IIXZZZXZ",
+          "IIYZZZYZ",
+          "IXZZZXII",
+          "IYZZZYII",
+          "XZZZXIII",
+          "YZZZYIII",
+          "IXXIXZZX",
+          "IXYIYZZX",
+          "IYXIXZZY",
+          "IYYIYZZY",
+          "XZZXIXXI",
+          "XZZYIYXI",
+          "YZZXIXYI",
+          "YZZYIYYI",
+          "IXZXIYZY",
+          "IYZYIXZX",
+          "XZXIYZYI",
+          "YZYIXZXI",
+          "IXZYIYZX",
+          "IYZXIXZY",
+          "XZYIYZXI",
+          "YZXIXZYI",
+          "IZIXZZZX",
+          "IZIYZZZY",
+          "ZIXZZZXI",
+          "ZIYZZZYI",
+          "IXZZXIXX",
+          "IXZZYIYX",
+          "IYZZXIXY",
+          "IYZZYIYY",
+          "XZZZZXYY",
+          "XZZZZYYX",
+          "YZZZZXXY",
+          "YZZZZYXX",
+          "IXZZZXIZ",
+          "IYZZZYIZ",
+          "XZZZXIZI",
+          "YZZZYIZI",
+          "XXIXZZXI",
+          "XXYZZZZY",
+          "XYIYZZXI",
+          "XYYZZZZX",
+          "YXIXZZYI",
+          "YXXZZZZY",
+          "YYIYZZYI",
+          "YYXZZZZX",
+          "IIXZZZXI",
+          "IIYZZZYI",
+          "IIIXZZZX",
+          "IIIYZZZY",
+          "IIIXIZZX",
+          "IIIYIZZY",
+          "IIXZZIXI",
+          "IIYZZIYI",
+          "IIZXZZZX",
+          "IIZYZZZY",
+          "IIXIZZXI",
+          "IIYIZZYI",
+          "IXZZIXII",
+          "IYZZIYII",
+          "XZZZXZII",
+          "YZZZYZII",
+          "IXIZZXII",
+          "IYIZZYII",
+          "XZZIXIII",
+          "YZZIYIII"
+        ],
+        "split_unit": "nonidentity_Pauli_term",
+        "tail_labels": []
+      },
+      "state_verbatim": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+          "molecular": true,
+          "physical_sector": "Nalpha=Nbeta=2",
+          "shared_across_four_cases": true
+        },
+        "hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80"
+      },
+      "compiler_verbatim": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "normalization_saved_verbatim": {
+        "B": 1.0,
+        "K": null,
+        "attenuation": 1.0,
+        "lambda_r": 0.0,
+        "law": "deterministic",
+        "log_B": 0.0,
+        "log_B_margin": 0.0074791908265582525,
+        "log_B_upper": 0.0074791908265582525,
+        "normalization_certificate_verified": false,
+        "r": null
+      },
+      "random_events_active": false,
+      "PF_config_caveat": "PF retains all terms/blocks; configured cost_samples=256 and r/K/randomization labels do not imply 256 PF trajectories or an active random law.",
+      "control_description": "whole-body generic control",
+      "data_source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/result.json",
+        "sha256": "277feb92bf99f982536f8a456b3bf73a192c70797b4c0dbadf4ed7c143af949e"
+      },
+      "scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "encoded_target_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "central_condition_provenance": null,
+      "pairing": "same Pauli trajectory IDs across generic/central and axes; Pauli/DF unpaired"
+    },
+    {
+      "series_id": "pauli_jw_PF__central",
+      "case": "pauli_jw_PF",
+      "representation": "pauli_jw",
+      "implementation": "central",
+      "method": "PF",
+      "config_verbatim": {
+        "K": 4,
+        "L_D": null,
+        "T": 0.8,
+        "cost_samples": 256,
+        "hamiltonian_type": "pauli_jw",
+        "method": "PF",
+        "product_formula": "S2",
+        "q": 8,
+        "r": 4,
+        "randomization_law": "finite_rte_even_paired",
+        "seed": 17780006248083772711
+      },
+      "model_verbatim": {
+        "B0I_equivalent_to_B0": true,
+        "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+        "DF_rank": null,
+        "L_D": 184,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "coefficient_cutoff": 0.0,
+          "df_rank": null,
+          "distance": 1.0,
+          "eri_chemist_hash": "6751a0d9660aca27831c09bfa08deebb4869ab69ee86d803ed32683aed47f87f",
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                2.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                3.0
+              ]
+            ]
+          ],
+          "hf_energy": -2.0985459369980077,
+          "input_eri": "chemist_(pq|rs)",
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "label_order": "q[n-1]...q[0]",
+          "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+          "molecule_type": 4,
+          "multiplicity": 1,
+          "nuclear_repulsion": 2.29310124732,
+          "one_body_hash": "0a6bf905ea79f023732ef2417be45cc90628b90e5ee770418e33c97c4cf202f1",
+          "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+          "orbital_basis": "real_orthonormal_spatial_MO",
+          "qubit_order": "qiskit_little_endian",
+          "spin_order": "2*p+alpha(0)/beta(1)",
+          "split_order": "descending_abs_then_label",
+          "two_body_prefactor": 0.5
+        },
+        "hamiltonian_hash": "e0dbbe9a2b6e86f81004307cd337ba83ee1e25642f04a30b02365be4d2dae795",
+        "hamiltonian_type": "pauli_jw",
+        "identity_policy": "constant_always_retained_once",
+        "retained_labels": [
+          "IZIIIIII",
+          "ZIIIIIII",
+          "IIIIIIIZ",
+          "IIIIIIZI",
+          "ZZIIIIII",
+          "IZIIIIZI",
+          "ZIIIIIIZ",
+          "IIIIIIZZ",
+          "IZZIIIII",
+          "ZIIZIIII",
+          "IIZZIIII",
+          "IZIIZIII",
+          "ZIIIIZII",
+          "IIIIZZII",
+          "IIIZZIII",
+          "IIZIIZII",
+          "IIIZIIZI",
+          "IIZIIIIZ",
+          "IIIIIZZI",
+          "IIIIZIIZ",
+          "IZIIIIIZ",
+          "ZIIIIIZI",
+          "IZIIIZII",
+          "ZIIIZIII",
+          "IIIIIZII",
+          "IIIIZIII",
+          "IIIZIIIZ",
+          "IIZIIIZI",
+          "IZIZIIII",
+          "ZIZIIIII",
+          "IIZIIIII",
+          "IIIZIIII",
+          "IIIZIZII",
+          "IIZIZIII",
+          "IIIIIZIZ",
+          "IIIIZIZI",
+          "XXYYIIII",
+          "XYYXIIII",
+          "YXXYIIII",
+          "YYXXIIII",
+          "IIIIXXYY",
+          "IIIIXYYX",
+          "IIIIYXXY",
+          "IIIIYYXX",
+          "IXZXXZXI",
+          "IXZXYZYI",
+          "IYZYXZXI",
+          "IYZYYZYI",
+          "XZXIIXZX",
+          "XZXIIYZY",
+          "YZYIIXZX",
+          "YZYIIYZY",
+          "IIXXYYII",
+          "IIXYYXII",
+          "IIYXXYII",
+          "IIYYXXII",
+          "IIXXIIYY",
+          "IIXYIIYX",
+          "IIYXIIXY",
+          "IIYYIIXX",
+          "XXIIYYII",
+          "XYIIYXII",
+          "YXIIXYII",
+          "YYIIXXII",
+          "IXZIZXII",
+          "IYZIZYII",
+          "XZIZXIII",
+          "YZIZYIII",
+          "IXXYYIII",
+          "IXYYXIII",
+          "IYXXYIII",
+          "IYYXXIII",
+          "XZXXZXII",
+          "XZXYZYII",
+          "YZYXZXII",
+          "YZYYZYII",
+          "IXXIIYYI",
+          "IXYIIYXI",
+          "IYXIIXYI",
+          "IYYIIXXI",
+          "XZZXYZZY",
+          "XZZYYZZX",
+          "YZZXXZZY",
+          "YZZYXZZX",
+          "IIIXXYYI",
+          "IIIXYYXI",
+          "IIIYXXYI",
+          "IIIYYXXI",
+          "IIXZXXZX",
+          "IIXZXYZY",
+          "IIYZYXZX",
+          "IIYZYYZY",
+          "IXZXIXZX",
+          "IYZYIYZY",
+          "XZXIXZXI",
+          "YZYIYZYI",
+          "XXIIIIYY",
+          "XYIIIIYX",
+          "YXIIIIXY",
+          "YYIIIIXX",
+          "XIZZXIII",
+          "YIZZYIII",
+          "ZXZZZXII",
+          "ZYZZZYII",
+          "IIIXZIZX",
+          "IIIYZIZY",
+          "IIXZIZXI",
+          "IIYZIZYI",
+          "IZXZZZXI",
+          "IZYZZZYI",
+          "ZIIXZZZX",
+          "ZIIYZZZY",
+          "IXZZZXZI",
+          "IYZZZYZI",
+          "XZZZXIIZ",
+          "YZZZYIIZ",
+          "IIIXZZIX",
+          "IIIYZZIY",
+          "IIXZZZXZ",
+          "IIYZZZYZ",
+          "IXZZZXII",
+          "IYZZZYII",
+          "XZZZXIII",
+          "YZZZYIII",
+          "IXXIXZZX",
+          "IXYIYZZX",
+          "IYXIXZZY",
+          "IYYIYZZY",
+          "XZZXIXXI",
+          "XZZYIYXI",
+          "YZZXIXYI",
+          "YZZYIYYI",
+          "IXZXIYZY",
+          "IYZYIXZX",
+          "XZXIYZYI",
+          "YZYIXZXI",
+          "IXZYIYZX",
+          "IYZXIXZY",
+          "XZYIYZXI",
+          "YZXIXZYI",
+          "IZIXZZZX",
+          "IZIYZZZY",
+          "ZIXZZZXI",
+          "ZIYZZZYI",
+          "IXZZXIXX",
+          "IXZZYIYX",
+          "IYZZXIXY",
+          "IYZZYIYY",
+          "XZZZZXYY",
+          "XZZZZYYX",
+          "YZZZZXXY",
+          "YZZZZYXX",
+          "IXZZZXIZ",
+          "IYZZZYIZ",
+          "XZZZXIZI",
+          "YZZZYIZI",
+          "XXIXZZXI",
+          "XXYZZZZY",
+          "XYIYZZXI",
+          "XYYZZZZX",
+          "YXIXZZYI",
+          "YXXZZZZY",
+          "YYIYZZYI",
+          "YYXZZZZX",
+          "IIXZZZXI",
+          "IIYZZZYI",
+          "IIIXZZZX",
+          "IIIYZZZY",
+          "IIIXIZZX",
+          "IIIYIZZY",
+          "IIXZZIXI",
+          "IIYZZIYI",
+          "IIZXZZZX",
+          "IIZYZZZY",
+          "IIXIZZXI",
+          "IIYIZZYI",
+          "IXZZIXII",
+          "IYZZIYII",
+          "XZZZXZII",
+          "YZZZYZII",
+          "IXIZZXII",
+          "IYIZZYII",
+          "XZZIXIII",
+          "YZZIYIII"
+        ],
+        "split_unit": "nonidentity_Pauli_term",
+        "tail_labels": []
+      },
+      "state_verbatim": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+          "molecular": true,
+          "physical_sector": "Nalpha=Nbeta=2",
+          "shared_across_four_cases": true
+        },
+        "hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80"
+      },
+      "compiler_verbatim": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "normalization_saved_verbatim": {
+        "B": 1.0,
+        "K": null,
+        "attenuation": 1.0,
+        "lambda_r": 0.0,
+        "law": "deterministic",
+        "log_B": 0.0,
+        "log_B_margin": 0.0074791908265582525,
+        "log_B_upper": 0.0074791908265582525,
+        "normalization_certificate_verified": false,
+        "r": null
+      },
+      "random_events_active": false,
+      "PF_config_caveat": "PF retains all terms/blocks; configured cost_samples=256 and r/K/randomization labels do not imply 256 PF trajectories or an active random law.",
+      "control_description": "D2 central-rotation control with original phase/order/wires",
+      "data_source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/result.json",
+        "sha256": "277feb92bf99f982536f8a456b3bf73a192c70797b4c0dbadf4ed7c143af949e"
+      },
+      "scientific_SOURCE": "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+      "encoded_target_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "central_condition_provenance": {
+        "path": "docs/non_df_h4_d2_execution_20261024.md",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_d2_execution_20261024.md",
+        "sha256": "21819a273d4f50b94abc7095ad879dfee32c92066e9601f347212cefd4a063e5"
+      },
+      "pairing": "same Pauli trajectory IDs across generic/central and axes; Pauli/DF unpaired"
+    },
+    {
+      "series_id": "pauli_jw_PR__generic",
+      "case": "pauli_jw_PR",
+      "representation": "pauli_jw",
+      "implementation": "generic",
+      "method": "PR",
+      "config_verbatim": {
+        "K": 4,
+        "L_D": 27,
+        "T": 0.8,
+        "cost_samples": 256,
+        "hamiltonian_type": "pauli_jw",
+        "method": "PR",
+        "product_formula": "S2",
+        "q": 8,
+        "r": 4,
+        "randomization_law": "finite_rte_even_paired",
+        "seed": 15033361125563812207
+      },
+      "model_verbatim": {
+        "B0I_equivalent_to_B0": true,
+        "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+        "DF_rank": null,
+        "L_D": 27,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "coefficient_cutoff": 0.0,
+          "df_rank": null,
+          "distance": 1.0,
+          "eri_chemist_hash": "6751a0d9660aca27831c09bfa08deebb4869ab69ee86d803ed32683aed47f87f",
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                2.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                3.0
+              ]
+            ]
+          ],
+          "hf_energy": -2.0985459369980077,
+          "input_eri": "chemist_(pq|rs)",
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "label_order": "q[n-1]...q[0]",
+          "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+          "molecule_type": 4,
+          "multiplicity": 1,
+          "nuclear_repulsion": 2.29310124732,
+          "one_body_hash": "0a6bf905ea79f023732ef2417be45cc90628b90e5ee770418e33c97c4cf202f1",
+          "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+          "orbital_basis": "real_orthonormal_spatial_MO",
+          "qubit_order": "qiskit_little_endian",
+          "spin_order": "2*p+alpha(0)/beta(1)",
+          "split_order": "descending_abs_then_label",
+          "two_body_prefactor": 0.5
+        },
+        "hamiltonian_hash": "e0dbbe9a2b6e86f81004307cd337ba83ee1e25642f04a30b02365be4d2dae795",
+        "hamiltonian_type": "pauli_jw",
+        "identity_policy": "constant_always_retained_once",
+        "retained_labels": [
+          "IZIIIIII",
+          "ZIIIIIII",
+          "IIIIIIIZ",
+          "IIIIIIZI",
+          "ZZIIIIII",
+          "IZIIIIZI",
+          "ZIIIIIIZ",
+          "IIIIIIZZ",
+          "IZZIIIII",
+          "ZIIZIIII",
+          "IIZZIIII",
+          "IZIIZIII",
+          "ZIIIIZII",
+          "IIIIZZII",
+          "IIIZZIII",
+          "IIZIIZII",
+          "IIIZIIZI",
+          "IIZIIIIZ",
+          "IIIIIZZI",
+          "IIIIZIIZ",
+          "IZIIIIIZ",
+          "ZIIIIIZI",
+          "IZIIIZII",
+          "ZIIIZIII",
+          "IIIIIZII",
+          "IIIIZIII",
+          "IIIZIIIZ"
+        ],
+        "split_unit": "nonidentity_Pauli_term",
+        "tail_labels": [
+          "IIZIIIZI",
+          "IZIZIIII",
+          "ZIZIIIII",
+          "IIZIIIII",
+          "IIIZIIII",
+          "IIIZIZII",
+          "IIZIZIII",
+          "IIIIIZIZ",
+          "IIIIZIZI",
+          "XXYYIIII",
+          "XYYXIIII",
+          "YXXYIIII",
+          "YYXXIIII",
+          "IIIIXXYY",
+          "IIIIXYYX",
+          "IIIIYXXY",
+          "IIIIYYXX",
+          "IXZXXZXI",
+          "IXZXYZYI",
+          "IYZYXZXI",
+          "IYZYYZYI",
+          "XZXIIXZX",
+          "XZXIIYZY",
+          "YZYIIXZX",
+          "YZYIIYZY",
+          "IIXXYYII",
+          "IIXYYXII",
+          "IIYXXYII",
+          "IIYYXXII",
+          "IIXXIIYY",
+          "IIXYIIYX",
+          "IIYXIIXY",
+          "IIYYIIXX",
+          "XXIIYYII",
+          "XYIIYXII",
+          "YXIIXYII",
+          "YYIIXXII",
+          "IXZIZXII",
+          "IYZIZYII",
+          "XZIZXIII",
+          "YZIZYIII",
+          "IXXYYIII",
+          "IXYYXIII",
+          "IYXXYIII",
+          "IYYXXIII",
+          "XZXXZXII",
+          "XZXYZYII",
+          "YZYXZXII",
+          "YZYYZYII",
+          "IXXIIYYI",
+          "IXYIIYXI",
+          "IYXIIXYI",
+          "IYYIIXXI",
+          "XZZXYZZY",
+          "XZZYYZZX",
+          "YZZXXZZY",
+          "YZZYXZZX",
+          "IIIXXYYI",
+          "IIIXYYXI",
+          "IIIYXXYI",
+          "IIIYYXXI",
+          "IIXZXXZX",
+          "IIXZXYZY",
+          "IIYZYXZX",
+          "IIYZYYZY",
+          "IXZXIXZX",
+          "IYZYIYZY",
+          "XZXIXZXI",
+          "YZYIYZYI",
+          "XXIIIIYY",
+          "XYIIIIYX",
+          "YXIIIIXY",
+          "YYIIIIXX",
+          "XIZZXIII",
+          "YIZZYIII",
+          "ZXZZZXII",
+          "ZYZZZYII",
+          "IIIXZIZX",
+          "IIIYZIZY",
+          "IIXZIZXI",
+          "IIYZIZYI",
+          "IZXZZZXI",
+          "IZYZZZYI",
+          "ZIIXZZZX",
+          "ZIIYZZZY",
+          "IXZZZXZI",
+          "IYZZZYZI",
+          "XZZZXIIZ",
+          "YZZZYIIZ",
+          "IIIXZZIX",
+          "IIIYZZIY",
+          "IIXZZZXZ",
+          "IIYZZZYZ",
+          "IXZZZXII",
+          "IYZZZYII",
+          "XZZZXIII",
+          "YZZZYIII",
+          "IXXIXZZX",
+          "IXYIYZZX",
+          "IYXIXZZY",
+          "IYYIYZZY",
+          "XZZXIXXI",
+          "XZZYIYXI",
+          "YZZXIXYI",
+          "YZZYIYYI",
+          "IXZXIYZY",
+          "IYZYIXZX",
+          "XZXIYZYI",
+          "YZYIXZXI",
+          "IXZYIYZX",
+          "IYZXIXZY",
+          "XZYIYZXI",
+          "YZXIXZYI",
+          "IZIXZZZX",
+          "IZIYZZZY",
+          "ZIXZZZXI",
+          "ZIYZZZYI",
+          "IXZZXIXX",
+          "IXZZYIYX",
+          "IYZZXIXY",
+          "IYZZYIYY",
+          "XZZZZXYY",
+          "XZZZZYYX",
+          "YZZZZXXY",
+          "YZZZZYXX",
+          "IXZZZXIZ",
+          "IYZZZYIZ",
+          "XZZZXIZI",
+          "YZZZYIZI",
+          "XXIXZZXI",
+          "XXYZZZZY",
+          "XYIYZZXI",
+          "XYYZZZZX",
+          "YXIXZZYI",
+          "YXXZZZZY",
+          "YYIYZZYI",
+          "YYXZZZZX",
+          "IIXZZZXI",
+          "IIYZZZYI",
+          "IIIXZZZX",
+          "IIIYZZZY",
+          "IIIXIZZX",
+          "IIIYIZZY",
+          "IIXZZIXI",
+          "IIYZZIYI",
+          "IIZXZZZX",
+          "IIZYZZZY",
+          "IIXIZZXI",
+          "IIYIZZYI",
+          "IXZZIXII",
+          "IYZZIYII",
+          "XZZZXZII",
+          "YZZZYZII",
+          "IXIZZXII",
+          "IYIZZYII",
+          "XZZIXIII",
+          "YZZIYIII"
+        ]
+      },
+      "state_verbatim": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+          "molecular": true,
+          "physical_sector": "Nalpha=Nbeta=2",
+          "shared_across_four_cases": true
+        },
+        "hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80"
+      },
+      "compiler_verbatim": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "normalization_saved_verbatim": {
+        "B": 1.2873709223899619,
+        "K": 4,
+        "attenuation": 0.7767769044709607,
+        "lambda_r": 3.5616883666823247,
+        "law": "finite_rte_even_paired",
+        "log_B": 0.25260209407554185,
+        "log_B_margin": 0.0014901161195344985,
+        "log_B_upper": 0.25409221019507633,
+        "normalization_certificate_verified": false,
+        "r": 4
+      },
+      "random_events_active": true,
+      "PF_config_caveat": null,
+      "control_description": "whole-body generic control",
+      "data_source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "sha256": "75508723fa1c31abaaff5a4629975495142cb85bab8435f723d223867cc42f3b"
+      },
+      "scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "encoded_target_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "central_condition_provenance": null,
+      "pairing": "same Pauli trajectory IDs across generic/central and axes; Pauli/DF unpaired"
+    },
+    {
+      "series_id": "pauli_jw_PR__central",
+      "case": "pauli_jw_PR",
+      "representation": "pauli_jw",
+      "implementation": "central",
+      "method": "PR",
+      "config_verbatim": {
+        "K": 4,
+        "L_D": 27,
+        "T": 0.8,
+        "cost_samples": 256,
+        "hamiltonian_type": "pauli_jw",
+        "method": "PR",
+        "product_formula": "S2",
+        "q": 8,
+        "r": 4,
+        "randomization_law": "finite_rte_even_paired",
+        "seed": 15033361125563812207
+      },
+      "model_verbatim": {
+        "B0I_equivalent_to_B0": true,
+        "B0I_reason": "nonidentity_Pauli_tail_has_zero_identity_coefficient",
+        "DF_rank": null,
+        "L_D": 27,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "coefficient_cutoff": 0.0,
+          "df_rank": null,
+          "distance": 1.0,
+          "eri_chemist_hash": "6751a0d9660aca27831c09bfa08deebb4869ab69ee86d803ed32683aed47f87f",
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                2.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                3.0
+              ]
+            ]
+          ],
+          "hf_energy": -2.0985459369980077,
+          "input_eri": "chemist_(pq|rs)",
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "label_order": "q[n-1]...q[0]",
+          "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+          "molecule_type": 4,
+          "multiplicity": 1,
+          "nuclear_repulsion": 2.29310124732,
+          "one_body_hash": "0a6bf905ea79f023732ef2417be45cc90628b90e5ee770418e33c97c4cf202f1",
+          "openfermion_eri": "h[p,q,r,s]=(ps|qr)",
+          "orbital_basis": "real_orthonormal_spatial_MO",
+          "qubit_order": "qiskit_little_endian",
+          "spin_order": "2*p+alpha(0)/beta(1)",
+          "split_order": "descending_abs_then_label",
+          "two_body_prefactor": 0.5
+        },
+        "hamiltonian_hash": "e0dbbe9a2b6e86f81004307cd337ba83ee1e25642f04a30b02365be4d2dae795",
+        "hamiltonian_type": "pauli_jw",
+        "identity_policy": "constant_always_retained_once",
+        "retained_labels": [
+          "IZIIIIII",
+          "ZIIIIIII",
+          "IIIIIIIZ",
+          "IIIIIIZI",
+          "ZZIIIIII",
+          "IZIIIIZI",
+          "ZIIIIIIZ",
+          "IIIIIIZZ",
+          "IZZIIIII",
+          "ZIIZIIII",
+          "IIZZIIII",
+          "IZIIZIII",
+          "ZIIIIZII",
+          "IIIIZZII",
+          "IIIZZIII",
+          "IIZIIZII",
+          "IIIZIIZI",
+          "IIZIIIIZ",
+          "IIIIIZZI",
+          "IIIIZIIZ",
+          "IZIIIIIZ",
+          "ZIIIIIZI",
+          "IZIIIZII",
+          "ZIIIZIII",
+          "IIIIIZII",
+          "IIIIZIII",
+          "IIIZIIIZ"
+        ],
+        "split_unit": "nonidentity_Pauli_term",
+        "tail_labels": [
+          "IIZIIIZI",
+          "IZIZIIII",
+          "ZIZIIIII",
+          "IIZIIIII",
+          "IIIZIIII",
+          "IIIZIZII",
+          "IIZIZIII",
+          "IIIIIZIZ",
+          "IIIIZIZI",
+          "XXYYIIII",
+          "XYYXIIII",
+          "YXXYIIII",
+          "YYXXIIII",
+          "IIIIXXYY",
+          "IIIIXYYX",
+          "IIIIYXXY",
+          "IIIIYYXX",
+          "IXZXXZXI",
+          "IXZXYZYI",
+          "IYZYXZXI",
+          "IYZYYZYI",
+          "XZXIIXZX",
+          "XZXIIYZY",
+          "YZYIIXZX",
+          "YZYIIYZY",
+          "IIXXYYII",
+          "IIXYYXII",
+          "IIYXXYII",
+          "IIYYXXII",
+          "IIXXIIYY",
+          "IIXYIIYX",
+          "IIYXIIXY",
+          "IIYYIIXX",
+          "XXIIYYII",
+          "XYIIYXII",
+          "YXIIXYII",
+          "YYIIXXII",
+          "IXZIZXII",
+          "IYZIZYII",
+          "XZIZXIII",
+          "YZIZYIII",
+          "IXXYYIII",
+          "IXYYXIII",
+          "IYXXYIII",
+          "IYYXXIII",
+          "XZXXZXII",
+          "XZXYZYII",
+          "YZYXZXII",
+          "YZYYZYII",
+          "IXXIIYYI",
+          "IXYIIYXI",
+          "IYXIIXYI",
+          "IYYIIXXI",
+          "XZZXYZZY",
+          "XZZYYZZX",
+          "YZZXXZZY",
+          "YZZYXZZX",
+          "IIIXXYYI",
+          "IIIXYYXI",
+          "IIIYXXYI",
+          "IIIYYXXI",
+          "IIXZXXZX",
+          "IIXZXYZY",
+          "IIYZYXZX",
+          "IIYZYYZY",
+          "IXZXIXZX",
+          "IYZYIYZY",
+          "XZXIXZXI",
+          "YZYIYZYI",
+          "XXIIIIYY",
+          "XYIIIIYX",
+          "YXIIIIXY",
+          "YYIIIIXX",
+          "XIZZXIII",
+          "YIZZYIII",
+          "ZXZZZXII",
+          "ZYZZZYII",
+          "IIIXZIZX",
+          "IIIYZIZY",
+          "IIXZIZXI",
+          "IIYZIZYI",
+          "IZXZZZXI",
+          "IZYZZZYI",
+          "ZIIXZZZX",
+          "ZIIYZZZY",
+          "IXZZZXZI",
+          "IYZZZYZI",
+          "XZZZXIIZ",
+          "YZZZYIIZ",
+          "IIIXZZIX",
+          "IIIYZZIY",
+          "IIXZZZXZ",
+          "IIYZZZYZ",
+          "IXZZZXII",
+          "IYZZZYII",
+          "XZZZXIII",
+          "YZZZYIII",
+          "IXXIXZZX",
+          "IXYIYZZX",
+          "IYXIXZZY",
+          "IYYIYZZY",
+          "XZZXIXXI",
+          "XZZYIYXI",
+          "YZZXIXYI",
+          "YZZYIYYI",
+          "IXZXIYZY",
+          "IYZYIXZX",
+          "XZXIYZYI",
+          "YZYIXZXI",
+          "IXZYIYZX",
+          "IYZXIXZY",
+          "XZYIYZXI",
+          "YZXIXZYI",
+          "IZIXZZZX",
+          "IZIYZZZY",
+          "ZIXZZZXI",
+          "ZIYZZZYI",
+          "IXZZXIXX",
+          "IXZZYIYX",
+          "IYZZXIXY",
+          "IYZZYIYY",
+          "XZZZZXYY",
+          "XZZZZYYX",
+          "YZZZZXXY",
+          "YZZZZYXX",
+          "IXZZZXIZ",
+          "IYZZZYIZ",
+          "XZZZXIZI",
+          "YZZZYIZI",
+          "XXIXZZXI",
+          "XXYZZZZY",
+          "XYIYZZXI",
+          "XYYZZZZX",
+          "YXIXZZYI",
+          "YXXZZZZY",
+          "YYIYZZYI",
+          "YYXZZZZX",
+          "IIXZZZXI",
+          "IIYZZZYI",
+          "IIIXZZZX",
+          "IIIYZZZY",
+          "IIIXIZZX",
+          "IIIYIZZY",
+          "IIXZZIXI",
+          "IIYZZIYI",
+          "IIZXZZZX",
+          "IIZYZZZY",
+          "IIXIZZXI",
+          "IIYIZZYI",
+          "IXZZIXII",
+          "IYZZIYII",
+          "XZZZXZII",
+          "YZZZYZII",
+          "IXIZZXII",
+          "IYIZZYII",
+          "XZZIXIII",
+          "YZZIYIII"
+        ]
+      },
+      "state_verbatim": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+          "molecular": true,
+          "physical_sector": "Nalpha=Nbeta=2",
+          "shared_across_four_cases": true
+        },
+        "hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80"
+      },
+      "compiler_verbatim": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "normalization_saved_verbatim": {
+        "B": 1.2873709223899619,
+        "K": 4,
+        "attenuation": 0.7767769044709607,
+        "lambda_r": 3.5616883666823247,
+        "law": "finite_rte_even_paired",
+        "log_B": 0.25260209407554185,
+        "log_B_margin": 0.0014901161195344985,
+        "log_B_upper": 0.25409221019507633,
+        "normalization_certificate_verified": false,
+        "r": 4
+      },
+      "random_events_active": true,
+      "PF_config_caveat": null,
+      "control_description": "D2 central-rotation control with original phase/order/wires",
+      "data_source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "sha256": "75508723fa1c31abaaff5a4629975495142cb85bab8435f723d223867cc42f3b"
+      },
+      "scientific_SOURCE": "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+      "encoded_target_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "central_condition_provenance": {
+        "path": "docs/non_df_h4_d2_execution_20261024.md",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_d2_execution_20261024.md",
+        "sha256": "21819a273d4f50b94abc7095ad879dfee32c92066e9601f347212cefd4a063e5"
+      },
+      "pairing": "same Pauli trajectory IDs across generic/central and axes; Pauli/DF unpaired"
+    },
+    {
+      "series_id": "df_native_PF__native",
+      "case": "df_native_PF",
+      "representation": "df_native",
+      "implementation": "native",
+      "method": "PF",
+      "config_verbatim": {
+        "K": 4,
+        "L_D": null,
+        "T": 0.8,
+        "cost_samples": 256,
+        "hamiltonian_type": "df_native",
+        "method": "PF",
+        "product_formula": "S2",
+        "q": 8,
+        "r": 4,
+        "randomization_law": "finite_rte_even_paired",
+        "seed": 14080246706327003618
+      },
+      "model_verbatim": {
+        "B0I_equivalent_to_B0": true,
+        "DF_rank": 10,
+        "L_D": 10,
+        "deterministic_block_order": [
+          "df-one-body-correction",
+          "df-fragment-0",
+          "df-fragment-1",
+          "df-fragment-2",
+          "df-fragment-3",
+          "df-fragment-4",
+          "df-fragment-5",
+          "df-fragment-6",
+          "df-fragment-7",
+          "df-fragment-8",
+          "df-fragment-9"
+        ],
+        "deterministic_fragment_indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "extracted_identity_coefficient": 0.0,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "df_rank_actual": 10,
+          "df_rank_requested": null,
+          "df_tol_requested": 1e-08,
+          "df_truncation_value": 0.0,
+          "distance": 1.0,
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                2.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                3.0
+              ]
+            ]
+          ],
+          "hermitized": true,
+          "hf_energy": -2.0985459369980077,
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+          "molecule_type": 4,
+          "multiplicity": 1
+        },
+        "hamiltonian_hash": "156939eb75c1446d3a29d28702ecb7349f36e408cddee250aa4520d93cc967e3",
+        "hamiltonian_type": "df_native",
+        "identity_policy": "extract_identity_phase",
+        "preparation_hash": "6236931bb63b37a2e536f13d02c3785f786a18984380d9da8e3fe1205d2f2bd4",
+        "split_unit": "DF_fragment"
+      },
+      "state_verbatim": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+          "molecular": true,
+          "physical_sector": "Nalpha=Nbeta=2",
+          "shared_across_four_cases": true
+        },
+        "hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80"
+      },
+      "compiler_verbatim": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "normalization_saved_verbatim": {
+        "B": 1.0,
+        "K": null,
+        "attenuation": 1.0,
+        "lambda_r": 0.0,
+        "law": "deterministic",
+        "log_B": 0.0,
+        "log_B_margin": 0.0008797645570268785,
+        "log_B_upper": 0.0008797645570268785,
+        "normalization_certificate_verified": false,
+        "r": null
+      },
+      "random_events_active": false,
+      "PF_config_caveat": "PF retains all terms/blocks; configured cost_samples=256 and r/K/randomization labels do not imply 256 PF trajectories or an active random law.",
+      "control_description": "Gaussian basis uncontrolled; diagonal/product/phase controlled; raw concatenation",
+      "data_source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PF/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PF/result.json",
+        "sha256": "b59846b4c8c32ccbb50d08f3d89ce344f570bb42bf0a6fb3430a55546fdf9aa3"
+      },
+      "scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "encoded_target_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "central_condition_provenance": null,
+      "pairing": "same Pauli trajectory IDs across generic/central and axes; Pauli/DF unpaired"
+    },
+    {
+      "series_id": "df_native_PR__native",
+      "case": "df_native_PR",
+      "representation": "df_native",
+      "implementation": "native",
+      "method": "PR",
+      "config_verbatim": {
+        "K": 4,
+        "L_D": 1,
+        "T": 0.8,
+        "cost_samples": 256,
+        "hamiltonian_type": "df_native",
+        "method": "PR",
+        "product_formula": "S2",
+        "q": 8,
+        "r": 4,
+        "randomization_law": "finite_rte_even_paired",
+        "seed": 15804010754259060803
+      },
+      "model_verbatim": {
+        "B0I_equivalent_to_B0": false,
+        "DF_rank": 10,
+        "L_D": 1,
+        "deterministic_block_order": [
+          "df-one-body-correction",
+          "df-fragment-0"
+        ],
+        "deterministic_fragment_indices": [
+          0
+        ],
+        "extracted_identity_coefficient": 0.4177175120626951,
+        "generation": {
+          "SCF_converged": true,
+          "basis": "STO-3G",
+          "charge": 0,
+          "df_rank_actual": 10,
+          "df_rank_requested": null,
+          "df_tol_requested": 1e-08,
+          "df_truncation_value": 0.0,
+          "distance": 1.0,
+          "geometry": [
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                0.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                2.0
+              ]
+            ],
+            [
+              "H",
+              [
+                0.0,
+                0.0,
+                3.0
+              ]
+            ]
+          ],
+          "hermitized": true,
+          "hf_energy": -2.0985459369980077,
+          "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+          "model_id": "H4_1.00A_STO-3G_FIXED_PILOT",
+          "molecule_type": 4,
+          "multiplicity": 1
+        },
+        "hamiltonian_hash": "156939eb75c1446d3a29d28702ecb7349f36e408cddee250aa4520d93cc967e3",
+        "hamiltonian_type": "df_native",
+        "identity_policy": "extract_identity_phase",
+        "preparation_hash": "998d719a29e3db7ac7de6cefeced8e0fefa05511323935e8d6644598bcaa6adf",
+        "split_unit": "DF_fragment"
+      },
+      "state_verbatim": {
+        "basis": "qiskit_little_endian",
+        "generation": {
+          "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+          "molecular": true,
+          "physical_sector": "Nalpha=Nbeta=2",
+          "shared_across_four_cases": true
+        },
+        "hash": "8339b1a8b0bec35ae07688e667fde7ba602d56c1182523d58e0889ea114e8b80"
+      },
+      "compiler_verbatim": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "normalization_saved_verbatim": {
+        "B": 1.1775851413163583,
+        "K": 4,
+        "attenuation": 0.8491954975605029,
+        "lambda_r": 2.862957094529878,
+        "law": "finite_rte_even_paired",
+        "log_B": 0.1634658511448318,
+        "log_B_margin": 0.0005364418031312327,
+        "log_B_upper": 0.16400229294796304,
+        "normalization_certificate_verified": false,
+        "r": 4
+      },
+      "random_events_active": true,
+      "PF_config_caveat": null,
+      "control_description": "Gaussian basis uncontrolled; diagonal/product/phase controlled; raw concatenation",
+      "data_source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+        "sha256": "19446f2800109af37960f8d00809a81142837d732010a36e7d537108ffdd80c9"
+      },
+      "scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "encoded_target_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "central_condition_provenance": null,
+      "pairing": "same Pauli trajectory IDs across generic/central and axes; Pauli/DF unpaired"
+    }
+  ],
+  "datasets": [
+    {
+      "dataset_id": "I01",
+      "name": "共通分子入力receipt",
+      "quantities": [
+        "geometry",
+        "DF rank/tolerance",
+        "prefix",
+        "state hash",
+        "full-H agreement"
+      ],
+      "units": [
+        "Angstrom",
+        "count",
+        "hash",
+        "saved diagnostic norm"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT",
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Same MO integrals and saved ray; numerical H agreement only",
+      "cautions": "Not exact Hamiltonian equality or matched physical splits.",
+      "source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+        "sha256": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ]
+    },
+    {
+      "dataset_id": "I02_pauli_jw",
+      "name": "pauli_jw encoded C model/state operands",
+      "quantities": [
+        "Hamiltonian",
+        "raw ray",
+        "event law",
+        "exact/binary64 operands"
+      ],
+      "units": [
+        "Hartree",
+        "dimensionless",
+        "radian"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Fixed encoded model, not a compiled operator",
+      "cautions": "Vector and matrix payloads referenced, not copied or regenerated.",
+      "source": {
+        "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json",
+        "sha256": "9ae8973b457cab26bb685a8fac9887dbc5e3be5db9059355822893d26cae2aa4"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    {
+      "dataset_id": "I02_df_native",
+      "name": "df_native encoded C model/state operands",
+      "quantities": [
+        "Hamiltonian",
+        "raw ray",
+        "event law",
+        "exact/binary64 operands"
+      ],
+      "units": [
+        "Hartree",
+        "dimensionless",
+        "radian"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Fixed encoded model, not a compiled operator",
+      "cautions": "Vector and matrix payloads referenced, not copied or regenerated.",
+      "source": {
+        "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_model.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_model.json",
+        "sha256": "cc60f6dc3de885974cfe74ef822e49380edb6b9ca44777bf12e9654256cd322a"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    {
+      "dataset_id": "COST_pauli_jw_PF__generic",
+      "name": "pauli_jw_PF__generic 保存価格統計",
+      "quantities": [
+        "RZ mean",
+        "SE",
+        "nominal t95",
+        "covariance"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "DETERMINISTIC_COMPILED_COUNT"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_DETERMINISTIC",
+      "guarantee_scope": "PF singleton or saved PR cohort; cosine/sine preserved",
+      "cautions": "No state preparation; no nominal CI promotion to population tail bound.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "sha256": "5ea9c5fc3d1921816bf70b78d0d0061e40a45691626977f4d994d35e7e35170f",
+        "json_pointer": "/pauli_jw_PF"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "COST_pauli_jw_PF__central",
+      "name": "pauli_jw_PF__central 保存価格統計",
+      "quantities": [
+        "RZ mean",
+        "SE",
+        "nominal t95",
+        "covariance"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "DETERMINISTIC_COMPILED_COUNT"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_DETERMINISTIC",
+      "guarantee_scope": "PF singleton or saved PR cohort; cosine/sine preserved",
+      "cautions": "No state preparation; no nominal CI promotion to population tail bound.",
+      "source": {
+        "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/statistics.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/statistics.json",
+        "sha256": "cc882f520243d5bf0c788830d022cdf4de83012df53f02bd68828c13728548c6",
+        "json_pointer": "/PF"
+      },
+      "scientific_SOURCE_commits": [
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "a37232f85812688c3b9ab957c5073c5ce143b17e"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/a37232f85812688c3b9ab957c5073c5ce143b17e"
+      ]
+    },
+    {
+      "dataset_id": "COST_pauli_jw_PR__generic",
+      "name": "pauli_jw_PR__generic 保存価格統計",
+      "quantities": [
+        "RZ mean",
+        "SE",
+        "nominal t95",
+        "covariance"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__generic"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES",
+        "EMPIRICAL_SAMPLE_ESTIMATE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_SCOPED; PR_POPULATION_UPPER_UNCERTIFIED",
+      "guarantee_scope": "PF singleton or saved PR cohort; cosine/sine preserved",
+      "cautions": "No state preparation; no nominal CI promotion to population tail bound.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "sha256": "5ea9c5fc3d1921816bf70b78d0d0061e40a45691626977f4d994d35e7e35170f",
+        "json_pointer": "/pauli_jw_PR"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "COST_pauli_jw_PR__central",
+      "name": "pauli_jw_PR__central 保存価格統計",
+      "quantities": [
+        "RZ mean",
+        "SE",
+        "nominal t95",
+        "covariance"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES",
+        "EMPIRICAL_SAMPLE_ESTIMATE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_SCOPED; PR_POPULATION_UPPER_UNCERTIFIED",
+      "guarantee_scope": "PF singleton or saved PR cohort; cosine/sine preserved",
+      "cautions": "No state preparation; no nominal CI promotion to population tail bound.",
+      "source": {
+        "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/statistics.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/statistics.json",
+        "sha256": "cc882f520243d5bf0c788830d022cdf4de83012df53f02bd68828c13728548c6",
+        "json_pointer": "/PR/axes"
+      },
+      "scientific_SOURCE_commits": [
+        "34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "a37232f85812688c3b9ab957c5073c5ce143b17e",
+        "ee7d281b5daead1d0d5e81e00c9a0ed4727792b0"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/a37232f85812688c3b9ab957c5073c5ce143b17e",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ee7d281b5daead1d0d5e81e00c9a0ed4727792b0"
+      ]
+    },
+    {
+      "dataset_id": "COST_df_native_PF__native",
+      "name": "df_native_PF__native 保存価格統計",
+      "quantities": [
+        "RZ mean",
+        "SE",
+        "nominal t95",
+        "covariance"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2"
+      ],
+      "series_ids": [
+        "df_native_PF__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "DETERMINISTIC_COMPILED_COUNT"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_DETERMINISTIC",
+      "guarantee_scope": "PF singleton or saved PR cohort; cosine/sine preserved",
+      "cautions": "No state preparation; no nominal CI promotion to population tail bound.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "sha256": "5ea9c5fc3d1921816bf70b78d0d0061e40a45691626977f4d994d35e7e35170f",
+        "json_pointer": "/df_native_PF"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "COST_df_native_PR__native",
+      "name": "df_native_PR__native 保存価格統計",
+      "quantities": [
+        "RZ mean",
+        "SE",
+        "nominal t95",
+        "covariance"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2"
+      ],
+      "series_ids": [
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES",
+        "EMPIRICAL_SAMPLE_ESTIMATE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_SCOPED; PR_POPULATION_UPPER_UNCERTIFIED",
+      "guarantee_scope": "PF singleton or saved PR cohort; cosine/sine preserved",
+      "cautions": "No state preparation; no nominal CI promotion to population tail bound.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/cost_summary.json",
+        "sha256": "5ea9c5fc3d1921816bf70b78d0d0061e40a45691626977f4d994d35e7e35170f",
+        "json_pointer": "/df_native_PR"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "RAW_pauli_jw",
+      "name": "pauli_jw_PR 元256価格標本",
+      "quantities": [
+        "per-trajectory RZ",
+        "ID",
+        "seed",
+        "event hashes"
+      ],
+      "units": [
+        "RZ/shot",
+        "identifier"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__generic"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "256 saved trajectories, paired axes; no RNG replay",
+      "cautions": "Generic Pauli historical program fingerprint failure is preserved; source criterion B is a separate later diagnostic.",
+      "source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "sha256": "75508723fa1c31abaaff5a4629975495142cb85bab8435f723d223867cc42f3b",
+        "json_pointer": "/circuit_cost/samples"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ]
+    },
+    {
+      "dataset_id": "RAW_df_native",
+      "name": "df_native_PR 元256価格標本",
+      "quantities": [
+        "per-trajectory RZ",
+        "ID",
+        "seed",
+        "event hashes"
+      ],
+      "units": [
+        "RZ/shot",
+        "identifier"
+      ],
+      "series_ids": [
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "256 saved trajectories, paired axes; no RNG replay",
+      "cautions": "Generic Pauli historical program fingerprint failure is preserved; source criterion B is a separate later diagnostic.",
+      "source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+        "sha256": "19446f2800109af37960f8d00809a81142837d732010a36e7d537108ffdd80c9",
+        "json_pointer": "/circuit_cost/samples"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ]
+    },
+    {
+      "dataset_id": "RAW_CENTRAL_COS",
+      "name": "Pauli central cosine 256費用・対照ID",
+      "quantities": [
+        "RZ",
+        "CX",
+        "depth",
+        "rz_depth",
+        "cx_depth",
+        "saved reductions"
+      ],
+      "units": [
+        "gate counts",
+        "depth",
+        "%"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Per-row SOURCE/origin; reused PR0/1 are not new independent samples",
+      "cautions": "No new cohort means for CX/depth.",
+      "source": {
+        "path": "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/cohort_costs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/cohort_costs.json",
+        "sha256": "24259230913385f21fbcd35fc23cf9dbc0691e4d5e6a3c7a6a5ba4236122fb10",
+        "json_pointer": "/rows"
+      },
+      "scientific_SOURCE_commits": [
+        "34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "ee7d281b5daead1d0d5e81e00c9a0ed4727792b0"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ee7d281b5daead1d0d5e81e00c9a0ed4727792b0"
+      ]
+    },
+    {
+      "dataset_id": "RAW_CENTRAL_AXES",
+      "name": "Pauli central両軸価格とtrajectory対応",
+      "quantities": [
+        "RZ",
+        "CX",
+        "depth",
+        "rz_depth",
+        "cx_depth",
+        "ID"
+      ],
+      "units": [
+        "gate counts",
+        "depth",
+        "identifier"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_PRICES"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "257 rows = PF singleton plus PR256; filter case before use",
+      "cautions": "cosine_SOURCE/sine_SOURCE are authoritative per row; no all-law axis equality.",
+      "source": {
+        "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/paired_costs.json",
+        "sha256": "03ceb418f78a9d810cdf3975088ded44de24e341dc57bcaeb5e9178b7ccbfa97",
+        "json_pointer": "/rows"
+      },
+      "scientific_SOURCE_commits": [
+        "34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "a37232f85812688c3b9ab957c5073c5ce143b17e",
+        "ee7d281b5daead1d0d5e81e00c9a0ed4727792b0"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/34ef0a7ca2412a61f5215a4ce1192e99f3226b2a",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/74515d8eb4f073c40fc783681a3775dbca89e9b1",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/a37232f85812688c3b9ab957c5073c5ce143b17e",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ee7d281b5daead1d0d5e81e00c9a0ed4727792b0"
+      ]
+    },
+    {
+      "dataset_id": "CENTRAL_PRICE_STATS",
+      "name": "Pauli central価格分布・共分散・order別群",
+      "quantities": [
+        "SD",
+        "SE",
+        "quantiles",
+        "paired covariance",
+        "order group means"
+      ],
+      "units": [
+        "RZ/shot",
+        "RZ^2",
+        "%"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_SAMPLE_ESTIMATE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved summaries only",
+      "cautions": "Order groups are descriptive, not causal increments. Order4 cost is null.",
+      "source": {
+        "path": "artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/statistics.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_cohort_cos/2026-10-24/run01/statistics.json",
+        "sha256": "14a0f229541bfc620849c6608b5857866986821adf75dae78f6c49f9cdd9c2c9"
+      },
+      "scientific_SOURCE_commits": [
+        "34ef0a7ca2412a61f5215a4ce1192e99f3226b2a"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/34ef0a7ca2412a61f5215a4ce1192e99f3226b2a"
+      ]
+    },
+    {
+      "dataset_id": "D1_INITIAL",
+      "name": "初回D1停止とhash不一致",
+      "quantities": [
+        "fingerprint status",
+        "compile count",
+        "cause evidence"
+      ],
+      "units": [
+        "status",
+        "count"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EXECUTION_AND_PROVENANCE_EVIDENCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "HISTORICAL_FAIL_PRESERVED",
+      "guarantee_scope": "Initial run: zero top-level cost compiles",
+      "cautions": "Later criterion-B success does not convert this FAIL into PASS.",
+      "source": {
+        "path": "artifacts/non_df_h4_d1_execution/2026-10-24/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d1_execution/2026-10-24/result_summary.json",
+        "sha256": "97ea6d76b2b5276b11dacd511d115b502a64cb14adf044f0fd0eabf385b2008e"
+      },
+      "scientific_SOURCE_commits": [
+        "48d4d27a05a529e05b11599f5f3c671302826617"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/48d4d27a05a529e05b11599f5f3c671302826617"
+      ]
+    },
+    {
+      "dataset_id": "D1_NINE",
+      "name": "D1 SOURCE基準Bの9構成",
+      "quantities": [
+        "RZ",
+        "CX",
+        "depth",
+        "rz_depth",
+        "cx_depth"
+      ],
+      "units": [
+        "gate counts",
+        "depth"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PR__generic",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "PF singleton, PR index0, isolated parts and empty; cosine",
+      "cautions": "Ablations are not valid simulation alternatives; generic Pauli only.",
+      "source": {
+        "path": "artifacts/non_df_h4_d1_source_execution/2026-10-24/metrics_table.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d1_source_execution/2026-10-24/metrics_table.csv",
+        "sha256": "07a1a030ff7caa3a9e400d55454fb8f1b7bf810a6c6d8355e3662a84d42aae6d",
+        "csv_selector": "all 9 configuration IDs"
+      },
+      "scientific_SOURCE_commits": [
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    },
+    {
+      "dataset_id": "D1_INTERACTION",
+      "name": "D1符号付き非加法性",
+      "quantities": [
+        "Delta_interaction",
+        "contextual increments"
+      ],
+      "units": [
+        "RZ or CX count"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__generic",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_DIAGNOSTIC_ARITHMETIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved operational differences, no new subtraction",
+      "cautions": "Not uniquely attributable basis/pass cost; no additive causal stack.",
+      "source": {
+        "path": "artifacts/non_df_h4_d1_source_execution/2026-10-24/interaction_table.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d1_source_execution/2026-10-24/interaction_table.csv",
+        "sha256": "7ce956b4cdf2e8783d9a5417e107d1c16f4ee0318e5c392599da566ba0de8047",
+        "csv_selector": "all 4 representation/metric rows"
+      },
+      "scientific_SOURCE_commits": [
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    },
+    {
+      "dataset_id": "D2_CONTROL",
+      "name": "D2同一Pauli body制御対照",
+      "quantities": [
+        "RZ",
+        "CX",
+        "depth",
+        "rz_depth",
+        "cx_depth",
+        "saved differences/ratios"
+      ],
+      "units": [
+        "gate counts",
+        "depth",
+        "ratio"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "MEASURED_COMPILED_DIAGNOSTIC",
+        "SAVED_DIAGNOSTIC_ARITHMETIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "PF and PR index0; cosine",
+      "cautions": "Control construction plus compiler response; not a representation-only effect.",
+      "source": {
+        "path": "artifacts/non_df_h4_d2_execution/2026-10-24/comparison_table.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/comparison_table.csv",
+        "sha256": "59833426501b46e7098518b1c5083e04b09f6d49470bf753e7c4863ad86c2fb9",
+        "csv_selector": "all 10 target/metric rows"
+      },
+      "scientific_SOURCE_commits": [
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944",
+        "74515d8eb4f073c40fc783681a3775dbca89e9b1"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/9843b803878db6c3aee7ab5e7c6bb4818572c944",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/74515d8eb4f073c40fc783681a3775dbca89e9b1"
+      ]
+    },
+    {
+      "dataset_id": "DF_BASIS_COUNTERS",
+      "name": "DF index0の保存basis counter",
+      "quantities": [
+        "literal basis reuse/switch counts"
+      ],
+      "units": [
+        "literal operation count"
+      ],
+      "series_ids": [
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_STRUCTURAL_COUNTER"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected input descriptor; not compiled RZ savings",
+      "cautions": "Occurrence-local reuse; no cross-step builder reuse claim.",
+      "source": {
+        "path": "artifacts/non_df_h4_d1_source_execution/2026-10-24/run01/variants/df_native_PR_full/input.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d1_source_execution/2026-10-24/run01/variants/df_native_PR_full/input.json",
+        "sha256": "bdb7b5315c0eed16a22610ca4b7a3778ed935498863822f2478315f7862d55d2",
+        "json_pointer": "/sidecar/basis_counters"
+      },
+      "scientific_SOURCE_commits": [
+        "48d4d27a05a529e05b11599f5f3c671302826617",
+        "9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/48d4d27a05a529e05b11599f5f3c671302826617",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/9843b803878db6c3aee7ab5e7c6bb4818572c944"
+      ]
+    },
+    {
+      "dataset_id": "C_AXES40",
+      "name": "C固定40軸の包含結果",
+      "quantities": [
+        "bias_distance bounds",
+        "total_error_upper",
+        "target",
+        "bits"
+      ],
+      "units": [
+        "signal",
+        "bits"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_ENCODED_TARGET; NOT_COMPILED_CERTIFICATE",
+      "guarantee_scope": "4 methods x5 tolerances x2 axes; central reuses encoded Pauli target only",
+      "cautions": "TARGET_MET is not certificate acceptance; C/L/literal/compiler transfer remains separate.",
+      "source": {
+        "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/axis_outcomes.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_c_reference_evidence/2026-10-23/axis_outcomes.json",
+        "sha256": "d02eeaa45cf263840af5a62daaac1059a03e1fdf8ec399734254b09a64933238",
+        "json_pointer": "/rows"
+      },
+      "scientific_SOURCE_commits": [
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    {
+      "dataset_id": "C_NORMALIZATION",
+      "name": "C保存normalizationと有限grid law",
+      "quantities": [
+        "B",
+        "log_B",
+        "normalization error",
+        "effective probabilities",
+        "range flags"
+      ],
+      "units": [
+        "dimensionless",
+        "signal",
+        "probability"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED",
+        "CONDITIONAL_MATHEMATICAL_STATEMENT"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Pauli/DF flags are distinct; IID-word assumption retained",
+      "cautions": "Pauli PR saved range flag true, DF PR false; both saved log_B upper enclosures true; formal acceptance false. Do not conflate these flags.",
+      "source": {
+        "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/normalization_saved.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_c_reference_evidence/2026-10-23/normalization_saved.json",
+        "sha256": "c1de895a597855c7abb39d431d6aa07c2d494dca9665d50fe6015a18fa42a9cd",
+        "json_pointer": "/representations"
+      },
+      "scientific_SOURCE_commits": [
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    {
+      "dataset_id": "C_RESULT_pauli_jw",
+      "name": "pauli_jw C-reference/raw numerical evidence",
+      "quantities": [
+        "encoded means",
+        "reference intervals",
+        "bias",
+        "normalization"
+      ],
+      "units": [
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Encoded local matrices and fixed law; not literal compiled program",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_result.json",
+        "sha256": "b63d3da01269b2706a3fe185658188779d24f665f057b91367ac7c9254a83245"
+      },
+      "scientific_SOURCE_commits": [
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    {
+      "dataset_id": "C_RESULT_df_native",
+      "name": "df_native C-reference/raw numerical evidence",
+      "quantities": [
+        "encoded means",
+        "reference intervals",
+        "bias",
+        "normalization"
+      ],
+      "units": [
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Encoded local matrices and fixed law; not literal compiled program",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_result.json",
+        "sha256": "612f646a233c6ecfa52d57f0c1bf969eb6cc940e2c60a691ca21a0c2276e7cb2"
+      },
+      "scientific_SOURCE_commits": [
+        "e80d7510880f8db993b777c627bb8e95b05a070d"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e80d7510880f8db993b777c627bb8e95b05a070d"
+      ]
+    },
+    {
+      "dataset_id": "L_DF_LOCAL",
+      "name": "DF-native L局所包含・一様basis伝播",
+      "quantities": [
+        "local/basis operator upper",
+        "uniform transfer",
+        "support coverage"
+      ],
+      "units": [
+        "operator norm upper",
+        "count",
+        "bits"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_LOCAL; COMBINATION_BLOCKED",
+      "guarantee_scope": "128bit, local gates/bases and symbolic support family",
+      "cautions": "No B-scale or C total addition; diagonal/control/phase/literal/compiler transfer incomplete.",
+      "source": {
+        "path": "artifacts/non_df_h4_local_diagnostic/2026-10-23/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_local_diagnostic/2026-10-23/result_summary.json",
+        "sha256": "1dd881e9a0925e451d3b0d626a7fbeb1690924c8abd10479f28d07d757c69c72"
+      },
+      "scientific_SOURCE_commits": [
+        "eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ]
+    },
+    {
+      "dataset_id": "L_local_gate_bounds",
+      "name": "DF L: 296 local forward/inverse bounds",
+      "quantities": [
+        "local operator/basis/support evidence"
+      ],
+      "units": [
+        "operator norm upper",
+        "bits"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Local only; combined measurement residual not established",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/local_gate_bounds.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/local_gate_bounds.csv",
+        "sha256": "0588c1488f5274f84d330ef16e776af3af0b8d8d922b82bd3df615d64e2bb23a",
+        "csv_selector": "all saved rows; no new evaluation"
+      },
+      "scientific_SOURCE_commits": [
+        "eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ]
+    },
+    {
+      "dataset_id": "L_basis_bounds",
+      "name": "DF L: 11 ordered bases",
+      "quantities": [
+        "local operator/basis/support evidence"
+      ],
+      "units": [
+        "operator norm upper",
+        "bits"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Local only; combined measurement residual not established",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/basis_bounds.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/basis_bounds.csv",
+        "sha256": "5554acb1c3d3ff1ce297143765a08870fa3619a2fab4f56960efe4e7ab7d18f0",
+        "csv_selector": "all saved rows; no new evaluation"
+      },
+      "scientific_SOURCE_commits": [
+        "eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ]
+    },
+    {
+      "dataset_id": "L_component_support",
+      "name": "DF L: 324 symbolic component supports",
+      "quantities": [
+        "local operator/basis/support evidence"
+      ],
+      "units": [
+        "operator norm upper",
+        "bits"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Local only; combined measurement residual not established",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/component_support.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/component_support.csv",
+        "sha256": "7c06e5a4f1f21ae26fbf2fb6669512ce577fa1938a14d4067a7d411839462381",
+        "csv_selector": "all saved rows; no new evaluation"
+      },
+      "scientific_SOURCE_commits": [
+        "eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ]
+    },
+    {
+      "dataset_id": "L_uniform_basis_transfer",
+      "name": "DF L: PF/PR basis propagation",
+      "quantities": [
+        "local operator/basis/support evidence"
+      ],
+      "units": [
+        "operator norm upper",
+        "bits"
+      ],
+      "series_ids": [
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Local only; combined measurement residual not established",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/uniform_basis_transfer.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_local_diagnostic/2026-10-23/audit02/uniform_basis_transfer.csv",
+        "sha256": "c772b0b7d25f10410ef1af87f470a0cf0a0e899ed83cddec183e94ded7271af7",
+        "csv_selector": "all saved rows; no new evaluation"
+      },
+      "scientific_SOURCE_commits": [
+        "eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/eb195bf2dedd0aed9d80ad7f84948b59ea53d854"
+      ]
+    },
+    {
+      "dataset_id": "CL_CONNECTIONS",
+      "name": "C/L 40軸gate接続",
+      "quantities": [
+        "gate status",
+        "proof obligations",
+        "missing transfer"
+      ],
+      "units": [
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "STATIC_SCOPED_PROOF_AND_EVIDENCE_MAP"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Technical overlay, no new certificate",
+      "cautions": "PROVED_EXISTING is scoped/conditional; scientific axes remain incomplete.",
+      "source": {
+        "path": "artifacts/non_df_h4_cl_transfer/2026-10-23/check03/gate_connections.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_cl_transfer/2026-10-23/check03/gate_connections.json",
+        "sha256": "abcae64339f59c676fec6281e9dc67cdeba0bd6c0fd7a7b906a04256ed119bb2"
+      },
+      "scientific_SOURCE_commits": [
+        "0880f4af98b125d62599e970db89fc33634d1b61"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0880f4af98b125d62599e970db89fc33634d1b61"
+      ]
+    },
+    {
+      "dataset_id": "CL_STATUS",
+      "name": "C/L集計済み状態",
+      "quantities": [
+        "saved categories",
+        "scientifically complete axes",
+        "formal acceptance"
+      ],
+      "units": [
+        "count",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_EVIDENCE_STATUS"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved classifications only, not new gate adjudication",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_cl_transfer/2026-10-23/gate_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_cl_transfer/2026-10-23/gate_summary.json",
+        "sha256": "8af4a36b7b32e8ac24f8f10fb53114898dec508ccab7a1f3d1c649868f37952f"
+      },
+      "scientific_SOURCE_commits": [
+        "0880f4af98b125d62599e970db89fc33634d1b61"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0880f4af98b125d62599e970db89fc33634d1b61"
+      ]
+    },
+    {
+      "dataset_id": "R0_EMPIRICAL",
+      "name": "R0経験的残差診断",
+      "quantities": [
+        "binary64 direct residual",
+        "rho_upper/null"
+      ],
+      "units": [
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_EMPIRICAL_NOT_CERTIFIED",
+      "guarantee_scope": "Selected circuits only; use Arb entries for local guaranteed enclosures",
+      "cautions": "Do not promote point differences to guaranteed bounds.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_r0_empirical/2026-10-24/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_r0_empirical/2026-10-24/run01/result_summary.json",
+        "sha256": "9befeeebfca0815afc74690a1f4c26317af04a77f75d0a12085e999663508ae4"
+      },
+      "scientific_SOURCE_commits": [
+        "84a326598b006384d13c7a354a3eec6881ee841c"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/84a326598b006384d13c7a354a3eec6881ee841c"
+      ]
+    },
+    {
+      "dataset_id": "R0_POINTS",
+      "name": "R0保存経験値",
+      "quantities": [
+        "direct signal differences"
+      ],
+      "units": [
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_central_r0_empirical/2026-10-24/results.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_r0_empirical/2026-10-24/results.csv",
+        "sha256": "bf69c81e2ef7febebe8f5e6547244dfa6c552446eed05431b33aeb39edc81a25",
+        "csv_selector": "all saved diagnostic rows"
+      },
+      "scientific_SOURCE_commits": [
+        "84a326598b006384d13c7a354a3eec6881ee841c"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/84a326598b006384d13c7a354a3eec6881ee841c"
+      ]
+    },
+    {
+      "dataset_id": "R1_ORDER2_EMPIRICAL",
+      "name": "R1_ORDER2経験的残差診断",
+      "quantities": [
+        "binary64 direct residual",
+        "rho_upper/null"
+      ],
+      "units": [
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_EMPIRICAL_NOT_CERTIFIED",
+      "guarantee_scope": "Selected circuits only; use Arb entries for local guaranteed enclosures",
+      "cautions": "Do not promote point differences to guaranteed bounds.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_r1_order2/2026-10-24/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_r1_order2/2026-10-24/run01/result_summary.json",
+        "sha256": "aa8d0dddbaa85bd1a6e74b1f20093e8a0b712edadec76306d161cc2e0fc95db7"
+      },
+      "scientific_SOURCE_commits": [
+        "ca9a1c0e2426565ba63cc8bfd0247f73339d95b8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ca9a1c0e2426565ba63cc8bfd0247f73339d95b8"
+      ]
+    },
+    {
+      "dataset_id": "R1_ORDER2_POINTS",
+      "name": "R1_ORDER2保存経験値",
+      "quantities": [
+        "direct signal differences"
+      ],
+      "units": [
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_central_r1_order2/2026-10-24/results.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_r1_order2/2026-10-24/results.csv",
+        "sha256": "00a1587578801bacd44446f5bb016421d8b9779146c314e064dc6dc776682ec2",
+        "csv_selector": "all saved diagnostic rows"
+      },
+      "scientific_SOURCE_commits": [
+        "ca9a1c0e2426565ba63cc8bfd0247f73339d95b8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ca9a1c0e2426565ba63cc8bfd0247f73339d95b8"
+      ]
+    },
+    {
+      "dataset_id": "R1_SINE_EMPIRICAL",
+      "name": "R1_SINE経験的残差診断",
+      "quantities": [
+        "binary64 direct residual",
+        "rho_upper/null"
+      ],
+      "units": [
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_EMPIRICAL_NOT_CERTIFIED",
+      "guarantee_scope": "Selected circuits only; use Arb entries for local guaranteed enclosures",
+      "cautions": "Do not promote point differences to guaranteed bounds.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_r1_sine/2026-10-24/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_r1_sine/2026-10-24/run01/result_summary.json",
+        "sha256": "06602580c54e81d0ef0af38d177c5cecf8b429f425c0a6fc0819ea38f269dafb"
+      },
+      "scientific_SOURCE_commits": [
+        "198d4916f7f62b775d9f60020c42ffb07d4c1c89"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/198d4916f7f62b775d9f60020c42ffb07d4c1c89"
+      ]
+    },
+    {
+      "dataset_id": "R1_SINE_POINTS",
+      "name": "R1_SINE保存経験値",
+      "quantities": [
+        "direct signal differences"
+      ],
+      "units": [
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EMPIRICAL_NUMERICAL_DIAGNOSTIC"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_central_r1_sine/2026-10-24/results.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_r1_sine/2026-10-24/results.csv",
+        "sha256": "bf852fe3555874070cb09e08217199639328695cae363b45a84881152294015c",
+        "csv_selector": "all saved diagnostic rows"
+      },
+      "scientific_SOURCE_commits": [
+        "198d4916f7f62b775d9f60020c42ffb07d4c1c89"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/198d4916f7f62b775d9f60020c42ffb07d4c1c89"
+      ]
+    },
+    {
+      "dataset_id": "ARB_SIX",
+      "name": "Pauli central全6局所包含",
+      "quantities": [
+        "C-target/compiled intervals",
+        "rho upper/budget",
+        "bits",
+        "state actions"
+      ],
+      "units": [
+        "signal",
+        "bits",
+        "count"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_LOCAL; WHOLE_PR_LAW_UNCERTIFIED",
+      "guarantee_scope": "PF singleton and PR0/1, both axes, fixed ray",
+      "cautions": "No all256/order4/DF transfer; formal acceptance false. B_saved once; exact raw norm.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/six_local_results.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/six_local_results.json",
+        "sha256": "cc10026b6f06dbe170db9e0d6a2e49c7572d13b42671348b0b5ea3bf369e2156",
+        "json_pointer": "/rows"
+      },
+      "scientific_SOURCE_commits": [
+        "92a5f104a2e9962353870e87f1d910d236adba41",
+        "1e6a702f51c2ba7bb1577610919b99cb9990f8d6",
+        "f1f3049670234cfc9c65430bd5016b9c6315a375",
+        "1e6a702f51c2ba7bb1577610919b99cb9990f8d6",
+        "4a14964310f6cca4f824d22c4dbae41f2ae73b34",
+        "473cc930c9d1a13d3a7662b6ad0b996f1e60517a"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/92a5f104a2e9962353870e87f1d910d236adba41",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/1e6a702f51c2ba7bb1577610919b99cb9990f8d6",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/f1f3049670234cfc9c65430bd5016b9c6315a375",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/1e6a702f51c2ba7bb1577610919b99cb9990f8d6",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/4a14964310f6cca4f824d22c4dbae41f2ae73b34",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/473cc930c9d1a13d3a7662b6ad0b996f1e60517a"
+      ]
+    },
+    {
+      "dataset_id": "ARB_PF_cosine",
+      "name": "PF_cosine 個別結果とQPY入力binding",
+      "quantities": [
+        "local signal/rho enclosure",
+        "input hashes",
+        "native status"
+      ],
+      "units": [
+        "signal",
+        "hash",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected trajectory and axis only; QPY/state/input paths follow the saved result and seal",
+      "cautions": "Reference original binary payload; no QPY decode or state action needed to use this index.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/run01/result_summary.json",
+        "sha256": "86b580edabd87741fffbcee3d1745ea27ffbbcd565e6dd1d5c76815a2a6a8901"
+      },
+      "scientific_SOURCE_commits": [
+        "92a5f104a2e9962353870e87f1d910d236adba41"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/92a5f104a2e9962353870e87f1d910d236adba41"
+      ]
+    },
+    {
+      "dataset_id": "ARB_PF_sine",
+      "name": "PF_sine 個別結果とQPY入力binding",
+      "quantities": [
+        "local signal/rho enclosure",
+        "input hashes",
+        "native status"
+      ],
+      "units": [
+        "signal",
+        "hash",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected trajectory and axis only; QPY/state/input paths follow the saved result and seal",
+      "cautions": "Reference original binary payload; no QPY decode or state action needed to use this index.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/run01/PF_sine/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/run01/PF_sine/result_summary.json",
+        "sha256": "7de0e6a624bc0e205275525cf7a4549113867a0688e610fe4adfa70ae8f046f8"
+      },
+      "scientific_SOURCE_commits": [
+        "1e6a702f51c2ba7bb1577610919b99cb9990f8d6"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/1e6a702f51c2ba7bb1577610919b99cb9990f8d6"
+      ]
+    },
+    {
+      "dataset_id": "ARB_PR0_cosine",
+      "name": "PR0_cosine 個別結果とQPY入力binding",
+      "quantities": [
+        "local signal/rho enclosure",
+        "input hashes",
+        "native status"
+      ],
+      "units": [
+        "signal",
+        "hash",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected trajectory and axis only; QPY/state/input paths follow the saved result and seal",
+      "cautions": "Reference original binary payload; no QPY decode or state action needed to use this index.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/run01/result_summary.json",
+        "sha256": "8b6d55ca40442f11fb2ca9f5a451e88f8802c493bdb5c09adafda48afb124f42"
+      },
+      "scientific_SOURCE_commits": [
+        "f1f3049670234cfc9c65430bd5016b9c6315a375"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/f1f3049670234cfc9c65430bd5016b9c6315a375"
+      ]
+    },
+    {
+      "dataset_id": "ARB_PR0_sine",
+      "name": "PR0_sine 個別結果とQPY入力binding",
+      "quantities": [
+        "local signal/rho enclosure",
+        "input hashes",
+        "native status"
+      ],
+      "units": [
+        "signal",
+        "hash",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected trajectory and axis only; QPY/state/input paths follow the saved result and seal",
+      "cautions": "Reference original binary payload; no QPY decode or state action needed to use this index.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/run01/PR0_sine/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/run01/PR0_sine/result_summary.json",
+        "sha256": "bc81f791e7947cba63a9e0a8409cc81f369982cd6a28fb101364a4759cbe24bf"
+      },
+      "scientific_SOURCE_commits": [
+        "1e6a702f51c2ba7bb1577610919b99cb9990f8d6"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/1e6a702f51c2ba7bb1577610919b99cb9990f8d6"
+      ]
+    },
+    {
+      "dataset_id": "ARB_PR1_cosine",
+      "name": "PR1_cosine 個別結果とQPY入力binding",
+      "quantities": [
+        "local signal/rho enclosure",
+        "input hashes",
+        "native status"
+      ],
+      "units": [
+        "signal",
+        "hash",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected trajectory and axis only; QPY/state/input paths follow the saved result and seal",
+      "cautions": "Reference original binary payload; no QPY decode or state action needed to use this index.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/run01/result_summary.json",
+        "sha256": "4b2221a0ac86d6942f3a77419a786ad19f297071e6032b028cb4feb47e5a7b92"
+      },
+      "scientific_SOURCE_commits": [
+        "4a14964310f6cca4f824d22c4dbae41f2ae73b34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/4a14964310f6cca4f824d22c4dbae41f2ae73b34"
+      ]
+    },
+    {
+      "dataset_id": "ARB_PR1_sine",
+      "name": "PR1_sine 個別結果とQPY入力binding",
+      "quantities": [
+        "local signal/rho enclosure",
+        "input hashes",
+        "native status"
+      ],
+      "units": [
+        "signal",
+        "hash",
+        "status"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "RIGOROUS_NUMERICAL_ENCLOSURE_SCOPED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Selected trajectory and axis only; QPY/state/input paths follow the saved result and seal",
+      "cautions": "Reference original binary payload; no QPY decode or state action needed to use this index.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/run01/result_summary.json",
+        "sha256": "857e2501ac4df74fac24395f5cdec1e9d3758d39d0a4a21af9d44c6303ad8a19"
+      },
+      "scientific_SOURCE_commits": [
+        "473cc930c9d1a13d3a7662b6ad0b996f1e60517a"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/473cc930c9d1a13d3a7662b6ad0b996f1e60517a"
+      ]
+    },
+    {
+      "dataset_id": "INPUT_BINDING_pf_cosine",
+      "name": "pf_cosine 保存QPY/state/C-target入力binding",
+      "quantities": [
+        "original file paths",
+        "saved input SHA256"
+      ],
+      "units": [
+        "hash"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT_PROVENANCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved input inventory; per-result SOURCE is in ARB_SIX",
+      "cautions": "References only. No QPY/state payload copied or decoded; no state actions.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/inputs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/inputs.json",
+        "sha256": "da86c8df2fe64d298967a48e26013d2f2daa3d2bd2cc1b667f404953ea4b7d67",
+        "json_pointer": "/files"
+      },
+      "scientific_SOURCE_commits": [
+        "92a5f104a2e9962353870e87f1d910d236adba41"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/92a5f104a2e9962353870e87f1d910d236adba41"
+      ]
+    },
+    {
+      "dataset_id": "INPUT_BINDING_pr0_cosine",
+      "name": "pr0_cosine 保存QPY/state/C-target入力binding",
+      "quantities": [
+        "original file paths",
+        "saved input SHA256"
+      ],
+      "units": [
+        "hash"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT_PROVENANCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved input inventory; per-result SOURCE is in ARB_SIX",
+      "cautions": "References only. No QPY/state payload copied or decoded; no state actions.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/inputs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/inputs.json",
+        "sha256": "b842ae70ba418e0de26ad30f7aeff6984f55cac2af602fa7ff8e04a84aa1b423",
+        "json_pointer": "/files"
+      },
+      "scientific_SOURCE_commits": [
+        "f1f3049670234cfc9c65430bd5016b9c6315a375"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/f1f3049670234cfc9c65430bd5016b9c6315a375"
+      ]
+    },
+    {
+      "dataset_id": "INPUT_BINDING_pr1_cosine",
+      "name": "pr1_cosine 保存QPY/state/C-target入力binding",
+      "quantities": [
+        "original file paths",
+        "saved input SHA256"
+      ],
+      "units": [
+        "hash"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT_PROVENANCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved input inventory; per-result SOURCE is in ARB_SIX",
+      "cautions": "References only. No QPY/state payload copied or decoded; no state actions.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/inputs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/inputs.json",
+        "sha256": "1cfd2366805b4923b082c4e91e9c2ba1e983c58e89c9a2c496b671a8c5f63dd2",
+        "json_pointer": "/files"
+      },
+      "scientific_SOURCE_commits": [
+        "4a14964310f6cca4f824d22c4dbae41f2ae73b34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/4a14964310f6cca4f824d22c4dbae41f2ae73b34"
+      ]
+    },
+    {
+      "dataset_id": "INPUT_BINDING_pr1_sine",
+      "name": "pr1_sine 保存QPY/state/C-target入力binding",
+      "quantities": [
+        "original file paths",
+        "saved input SHA256"
+      ],
+      "units": [
+        "hash"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT_PROVENANCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved input inventory; per-result SOURCE is in ARB_SIX",
+      "cautions": "References only. No QPY/state payload copied or decoded; no state actions.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json",
+        "sha256": "d03f41d9454ad7be2d026f7581d4f04a8ed6d6c01fb35e12802247fdde499966",
+        "json_pointer": "/files"
+      },
+      "scientific_SOURCE_commits": [
+        "473cc930c9d1a13d3a7662b6ad0b996f1e60517a"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/473cc930c9d1a13d3a7662b6ad0b996f1e60517a"
+      ]
+    },
+    {
+      "dataset_id": "INPUT_BINDING_pf_pr0_sine",
+      "name": "pf_pr0_sine 保存QPY/state/C-target入力binding",
+      "quantities": [
+        "original file paths",
+        "saved input SHA256"
+      ],
+      "units": [
+        "hash"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_SCIENTIFIC_INPUT_PROVENANCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved input inventory; per-result SOURCE is in ARB_SIX",
+      "cautions": "References only. No QPY/state payload copied or decoded; no state actions.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json",
+        "sha256": "defd72fc4618806db36ea0e55a70ee868ae5df709e2d697a4fb94d8f1a5de16b",
+        "json_pointer": "/files"
+      },
+      "scientific_SOURCE_commits": [
+        "1e6a702f51c2ba7bb1577610919b99cb9990f8d6"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/1e6a702f51c2ba7bb1577610919b99cb9990f8d6"
+      ]
+    },
+    {
+      "dataset_id": "G_GENERIC",
+      "name": "旧generic/DF条件付き会計",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PR__generic",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "All 100 saved rows include hypothetical residual slices; not all are rho=0.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_results.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_results.json",
+        "sha256": "6294015589e3598b1177f019974c8fdb555b8fd9ac344520adc87276227b3faf"
+      },
+      "scientific_SOURCE_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "G_CENTRAL",
+      "name": "central条件付き会計10条件",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Hypothetical rho=0; actual_N/G/rho_new null.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_results.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_results.json",
+        "sha256": "bdb09aa17e51dfae05cf12b71a56807b15a5af0167bf6bbce0ca77b60c2a8d0f"
+      },
+      "scientific_SOURCE_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "GUARD_GENERIC",
+      "name": "generic/DF保存30比較",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PR__generic",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Saved means fixed; independent method/axis guard boxes, not confidence intervals.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/comparison_regions.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/comparison_regions.json",
+        "sha256": "bc0d146b9e1ef5327b0fa22849a5ad58823ed9aa1632cda286a0eb7b93292819"
+      },
+      "scientific_SOURCE_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "GUARD_CENTRAL",
+      "name": "central保存15比較",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Specified three pairs at five tolerances only; no new pairs.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/comparison_regions.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/comparison_regions.json",
+        "sha256": "de15db0cac3af06710e139f233aa50c35d9be56180baec8f3af399b56ce2feeb"
+      },
+      "scientific_SOURCE_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "PRECISION_GENERIC",
+      "name": "bias/尺度/guardの4方式20条件関数",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PR__generic",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Two axes per row; preserved exact scalar values; never run shot evaluator.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_functions.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/conditional_functions.json",
+        "sha256": "555450470b6124ce8618fe1fb8df48716fbd2fa8fdff20801fd3b36f4422631c"
+      },
+      "scientific_SOURCE_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "PRECISION_CENTRAL",
+      "name": "central20軸の誤差会計",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Encoded target reused; no proof of zero compiled residual.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/axis_results.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/axis_results.json",
+        "sha256": "af228973a83345258a93a1e0b89e4176479f2b83ce6fa10d7a4b1c88760a7f45"
+      },
+      "scientific_SOURCE_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "PAIRED_G",
+      "name": "central保存trajectory別G",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Saved paired axes; MC cohort size is not quantum N.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/paired_G_values.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/paired_G_values.json",
+        "sha256": "3af9589a2c97d4491a50257e38d6b8714645964172b93e4981ccd41a12d4f49a"
+      },
+      "scientific_SOURCE_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "SCALE_PROVENANCE",
+      "name": "誤差/normalization尺度来歴",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Do not subtract C terms, add L blindly, or apply B twice.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/error_scale_provenance.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/error_scale_provenance.json",
+        "sha256": "3aa7ec39dbb595de14884acec2af0725ceedd770693e756d6b440b94356e35c4"
+      },
+      "scientific_SOURCE_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "REFERENCE_SCOPE",
+      "name": "各表現のreference対応",
+      "quantities": [
+        "conditional N/G",
+        "bias/scale/guard or saved comparison fields"
+      ],
+      "units": [
+        "shots",
+        "RZ",
+        "signal",
+        "dimensionless"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Saved fixed signal sufficient-condition accounting",
+      "cautions": "Separate representation full-H references; no new common-exact-H transfer.",
+      "source": {
+        "path": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/reference_scopes.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/reference_scopes.json",
+        "sha256": "4b8e3914ce6467740e480f77e9aaf9f6b4e4b5768faae65ebc8a28430b1792dc"
+      },
+      "scientific_SOURCE_commits": [
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "G_QUOTED30",
+      "name": "6系列×5精度の既存N/G引用表",
+      "quantities": [
+        "N_cos",
+        "N_sin",
+        "N_total",
+        "G",
+        "SE",
+        "nominal half-width"
+      ],
+      "units": [
+        "shots",
+        "RZ"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "CONDITIONAL_CALCULATION_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE",
+      "guarantee_scope": "Existing quotation table; direct reuse in comparison CSV",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_comparison_synthesis/2026-10-25/conditional_resources_QUOTED.csv",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_comparison_synthesis/2026-10-25/conditional_resources_QUOTED.csv",
+        "sha256": "3a3320fafc713df8defcca343491babcced277e3cbd34d49a66b521fb1bb5093",
+        "csv_selector": "30 pointer-linked hypothetical-rho-zero rows"
+      },
+      "scientific_SOURCE_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8",
+        "d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8",
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34"
+      ]
+    },
+    {
+      "dataset_id": "RTE_RARE",
+      "name": "RTE order・未観測component・tail証拠",
+      "quantities": [
+        "nominal per-event probability",
+        "implemented trajectory mass",
+        "observed count",
+        "unknown stratum price"
+      ],
+      "units": [
+        "probability",
+        "count",
+        "RZ/shot"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "SAVED_LAW_ANALYSIS",
+        "EMPIRICAL_OBSERVATION",
+        "CONDITIONAL_SENSITIVITY_SAVED"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "AVAILABLE_PROBABILITIES_AND_COUNTS; POPULATION_COST_UPPER_NULL",
+      "guarantee_scope": "Nominal/grid/IID-word assumptions distinguished",
+      "cautions": "Zero observed order4 is not zero price. DF unseen U same-data-selected. Old generic flip sensitivity must not be transferred to central prices.",
+      "source": {
+        "path": "artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/rare_cost_sensitivity.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_conditional_cng_results/2026-10-24/run01/rare_cost_sensitivity.json",
+        "sha256": "b2c876f745722d0d53397d0643b7325df542528215634e91c305aa371e012233"
+      },
+      "scientific_SOURCE_commits": [
+        "b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b1984dcde06a874d0fd6e9fe6395b7f3fb7504d8"
+      ]
+    },
+    {
+      "dataset_id": "R2C_STATUS",
+      "name": "R2-C未完証明の保存判定",
+      "quantities": [
+        "status",
+        "whole_law_rho_upper"
+      ],
+      "units": [
+        "status",
+        "signal"
+      ],
+      "series_ids": [
+        "pauli_jw_PR__central"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "STATIC_PROOF_INCOMPLETE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "PROOF_INCOMPLETE",
+      "guarantee_scope": "Reference existing result only; no proof continuation",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_r2c_compiler_phase/2026-10-25/proof_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_r2c_compiler_phase/2026-10-25/proof_summary.json",
+        "sha256": "188fc7ceeba599303bb888d7fc1e1f12777e2e4523b77ba6663f26a1372a33e2"
+      },
+      "scientific_SOURCE_commits": [
+        "c45247deb9992d08594ad74b1114e6fac505292f"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/c45247deb9992d08594ad74b1114e6fac505292f"
+      ]
+    },
+    {
+      "dataset_id": "ORIGINAL_COMPLETION",
+      "name": "元H4回収結果と終了証拠の限界",
+      "quantities": [
+        "saved case results",
+        "original native completion",
+        "old N/G null"
+      ],
+      "units": [
+        "status",
+        "count"
+      ],
+      "series_ids": [
+        "pauli_jw_PF__generic",
+        "pauli_jw_PF__central",
+        "pauli_jw_PR__generic",
+        "pauli_jw_PR__central",
+        "df_native_PF__native",
+        "df_native_PR__native"
+      ],
+      "scientific_conditions_ref": "series + shared_conditions",
+      "original_evidence_kinds": [
+        "EXECUTION_AND_PROVENANCE_EVIDENCE"
+      ],
+      "catalog_action": "SAVED_VALUE_QUOTE_OR_REFERENCE_ONLY",
+      "availability": "RESULTS_SAVED; ORIGINAL_NATIVE_UNVERIFIED",
+      "guarantee_scope": "Subsequent native exits do not establish original completion",
+      "cautions": "",
+      "source": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/postprocessing_recovery01/result_summary.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/postprocessing_recovery01/result_summary.json",
+        "sha256": "0cf097feb6860d285c501ac6bb165ba3fa364eee8b3f679f6d9c4d6d5eebceb3"
+      },
+      "scientific_SOURCE_commits": [
+        "0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ],
+      "github_SOURCE_urls": [
+        "https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/0c329b30a81accb35c212be8defa66fee0dd0f12"
+      ]
+    }
+  ],
+  "binary_inputs": [
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/output.qpy",
+      "saved_sha256": "8537e01152d7b9a169bcea2dc20f4ce107d560b3af39b47b326e37c3c309a77d",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/output.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/controlled_body.qpy",
+      "saved_sha256": "a83ce1c9f5c21efdf83a3fa4ae7ba43142fa3337e9f83d0a938e9d66e0b13c45",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/controlled_body.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/input.qpy",
+      "saved_sha256": "1059cfb127c877c057f34ce76c3e50f0c1088a80765d66a6ede9785011f24a0c",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/input.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/output.qpy",
+      "saved_sha256": "f68965bde6a001bc3a9dd6f0d55a5a76682b868738360cef620e926c0a99fa2c",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/output.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/source_body.qpy",
+      "saved_sha256": "28942db77f619f0eba3edd39aa5c38ce2b970f55fafbd5e9c95b8585ff33bcda",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PR/source_body.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr0_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/controlled_body.qpy",
+      "saved_sha256": "ac1630c27caae5b5eea90f76b9e2d4de4b51d8a57b78d2d1bdcd139781e0bd21",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/controlled_body.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/source_body.qpy",
+      "saved_sha256": "3cd0a18aa45d46be988acb165d4e25e93ba1c5bdbd5234e241fb9318ec39a033",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/source_body.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/cosine/input.qpy",
+      "saved_sha256": "1cb9d9eb674cd0ed05ab728c917625673dd592509a944419b8c135c4df99ffa3",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/cosine/input.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/cosine/output.qpy",
+      "saved_sha256": "e92515770ad16635153905e19c9b37e5c644f44884f46cdc5c2afe91b7b280df",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/cosine/output.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr1_cosine/2026-10-25/inputs.json",
+        "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/sine/input.qpy",
+      "saved_sha256": "4c41c1a0869ef3ae27386d69948cfeb1184c7cfec25f9664ce92b75a6be636bf",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/sine/input.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/sine/output.qpy",
+      "saved_sha256": "38a1a74afe2452685c3e4dfdeb6182085b6d6a28d6c9d90ed1ab2f4026f7abdd",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_gate_order2/2026-10-24/run01/variants/sine/output.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pr1_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PF/input.qpy",
+      "saved_sha256": "cbbdd6e6e8740b34d1c369ebd6e335f8467e2b0811e2d6da5ab7e03e68995be1",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PF/input.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PF/output.qpy",
+      "saved_sha256": "a478034cc3bcafa4e3d85e69739ad92a997d5073b5db3e452d2d0030542549b1",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PF/output.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PR0000/input.qpy",
+      "saved_sha256": "0b4890a7f22d2409ee623e5a77d9c667957a18658e2bd155117313a6d7e27b34",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PR0000/input.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PR0000/output.qpy",
+      "saved_sha256": "5228f426d532ffd04f973b19fb65162c10eceb064f555b46c06af337f0106c0f",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_a_axes/2026-10-24/run01/trajectories/PR0000/output.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/controlled_body.qpy",
+      "saved_sha256": "baf9c3faf0c6d98091d25540ef8f54d385c0d6f098a64a4001c06967c3511e35",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/controlled_body.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/input.qpy",
+      "saved_sha256": "0b51844014f15778346ea7789f3c30705e54feee4002c09f0f90aa5ffc161154",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/input.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    },
+    {
+      "path": "artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/source_body.qpy",
+      "saved_sha256": "5b586bba86a5328f4e51a7e78ae5f57c91e5257fdfb41dd9fa3ed289f750d94e",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_d2_execution/2026-10-24/run01/variants/pauli_jw_PF/source_body.qpy",
+      "available": true,
+      "byte_hash_rechecked_this_task": false,
+      "decoded_or_evaluated_this_task": false,
+      "binding_manifests": [
+        "artifacts/non_df_h4_central_arb_pf_pr0_sine/2026-10-25/inputs.json"
+      ]
+    }
+  ],
+  "trajectory_layout": [
+    {
+      "case": "pauli_jw_PR",
+      "sample_index_ref": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+        "sha256": "75508723fa1c31abaaff5a4629975495142cb85bab8435f723d223867cc42f3b",
+        "json_pointer": "/circuit_cost/samples"
+      },
+      "path_templates": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/{trajectory_id}/events.json",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/{trajectory_id}/price_join.json"
+      ],
+      "first_saved_example": [
+        {
+          "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97/events.json",
+          "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+          "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97/events.json",
+          "sha256": "1b5bc23d1120018f44daef7e80ec095b564b729a29a5fafbcd2bf2fbe7bfda76"
+        },
+        {
+          "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97/price_join.json",
+          "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+          "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97/price_join.json",
+          "sha256": "16b5c9cb88f5d4ff0a0cbea4126c9b6cdc90294cd94d013c70e5ee7ca9282d39"
+        }
+      ],
+      "scope": "Use saved trajectory IDs; examples and directory convention checked, no event resampling or scientific statistics."
+    },
+    {
+      "case": "df_native_PR",
+      "sample_index_ref": {
+        "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+        "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+        "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+        "sha256": "19446f2800109af37960f8d00809a81142837d732010a36e7d537108ffdd80c9",
+        "json_pointer": "/circuit_cost/samples"
+      },
+      "path_templates": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/{trajectory_id}/events.json",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/{trajectory_id}/price_join.json"
+      ],
+      "first_saved_example": [
+        {
+          "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf/events.json",
+          "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+          "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf/events.json",
+          "sha256": "4a4e60adfe76ade6023afe6e00a95e9d061fca0a7b46384a1707b6806151dcfe"
+        },
+        {
+          "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf/price_join.json",
+          "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+          "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf/price_join.json",
+          "sha256": "7e98ad64d7a0aa20deb51eecd9bc93c104a6ad014ac7356844ab72e30bc4254d"
+        }
+      ],
+      "scope": "Use saved trajectory IDs; examples and directory convention checked, no event resampling or scientific statistics."
+    }
+  ],
+  "documents_checked": [
+    {
+      "path": "docs/non_df_h4_comparison_synthesis_20261025.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_comparison_synthesis_20261025.md",
+      "sha256": "5cbf362120bcc49df92c9c9eacd0e5fafe948e5a7fc1385ac3780a34cbdabc25"
+    },
+    {
+      "path": "docs/non_df_h4_paper_plan_20261025.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_paper_plan_20261025.md",
+      "sha256": "7a245002ebac1e2a24ce89b2fbc0308448bebd0a098e74928d9da69cc584b8d7"
+    },
+    {
+      "path": "docs/non_df_h4_paper_methods_DRAFT_20261025.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_paper_methods_DRAFT_20261025.md",
+      "sha256": "71acf80eb6e38a167ef3627cb152e2f4ffdf841c3d6945faf569eb9ade59d1fc"
+    },
+    {
+      "path": "docs/non_df_h4_cost_reversal_structure_20261024.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_cost_reversal_structure_20261024.md",
+      "sha256": "9cdeaf98e2b1ca9f9fa264b80bf226ef011abc18c95b1074455c03cb20b13f91"
+    },
+    {
+      "path": "docs/non_df_h4_d1_source_execution_20261024.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_d1_source_execution_20261024.md",
+      "sha256": "fd6706fb6a3ab8b30bfa2c6f84699f28259ed036e916e09c1cfaba4417697abd"
+    },
+    {
+      "path": "docs/non_df_h4_d2_execution_20261024.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_d2_execution_20261024.md",
+      "sha256": "21819a273d4f50b94abc7095ad879dfee32c92066e9601f347212cefd4a063e5"
+    },
+    {
+      "path": "docs/non_df_h4_central_conditional_cng_20261024.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_central_conditional_cng_20261024.md",
+      "sha256": "9f7a3a2ed9edc6f40dc733062daf08aa4faa1e42dfbd8e3f6084ca385622c494"
+    },
+    {
+      "path": "docs/non_df_h4_central_arb_pf_pr0_sine_20261025.md",
+      "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+      "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/docs/non_df_h4_central_arb_pf_pr0_sine_20261025.md",
+      "sha256": "f307f6a61ebc7d807b92d74e92cd15748feda2cfcfdfc6d57ff6d801efde88f2"
+    }
+  ],
+  "existing_figure_inventory_ref": {
+    "path": "artifacts/non_df_h4_paper_plan/2026-10-25/figure_table_plan.json",
+    "artifact_snapshot_commit": "9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196",
+    "github_url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9fd3084b52c7f6c9cc72b5ee04d1c13eb820f196/artifacts/non_df_h4_paper_plan/2026-10-25/figure_table_plan.json",
+    "sha256": "6f8c5dd1ac18fc36979a2e6d0b0fba6257e4ca08c535c702dcff9d3b16c74ec2"
+  },
+  "exports": {
+    "comparison_data.json": "Quoted values with JSON pointers/CSV selectors; separate evidence levels and scopes",
+    "comparison_circuit_prices.csv": "12 series/axis rows; missing metrics empty=null, selected circuits kept separate",
+    "comparison_selected_metrics.csv": "Six cosine full-circuit rows, PF singleton or PR index0, no PR mean implied",
+    "comparison_conditional_resources.csv": "Existing 30-row quote table, copied without new arithmetic",
+    "catalog.csv": "Flat dataset index, same dataset IDs",
+    "gaps.csv": "Unresolved items by desired claim strength",
+    "gaps.json": "Same gap items as CSV; scope, importance, minimum candidate work, separate-permission boundary"
+  },
+  "CSV_null_convention": "Empty cell means null/unavailable in this summary, never zero; consult missing_metric_status and source. Saved numeric strings remain strings.",
+  "scientific_SOURCE_vs_artifact_snapshot": "Scientific SOURCE is execution code provenance; GitHub blob links use the fixed base snapshot containing results, not the pre-run SOURCE.",
+  "actions": {
+    "scientific_calculation": 0,
+    "numerical_reanalysis": 0,
+    "new_statistics_or_ranking": 0,
+    "new_figures": 0,
+    "circuit_build_compile_sampling": 0,
+    "scientific_grants": 0,
+    "formal_certificate_acceptance": 0
+  },
+  "mandatory_STOP": true,
+  "final_claim_or_research_direction_adopted": false
+}

@@ -1,0 +1,129 @@
+{
+  "analysis": "AST_ONLY_SUPPLEMENT_TO_RUNTIME_GUARDS",
+  "modules": [
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py",
+      "imports": [
+        "fractions:Fraction",
+        ".:codec,result"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/contract.py",
+      "imports": [
+        "copy:deepcopy",
+        "pathlib:Path",
+        "sys",
+        ".:codec,bits,binding",
+        "..g6_w2c_b3_port_bundle_v1:contract",
+        "..g6_w2c_b3_api_binding_v1:static",
+        "..:g6_w2c_b3_parallel_admission"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/bridge.py",
+      "imports": [
+        "collections:Counter",
+        "dataclasses:replace",
+        "copy:deepcopy",
+        "hashlib:sha256",
+        "pathlib:Path",
+        "json",
+        "os",
+        "resource",
+        "sys",
+        "time",
+        "..:g6_w2c_b3_pilot_storage_v2",
+        ".:contract",
+        ".:adapter",
+        "..g6_w2c_b3_bundle_store_v1:FakeStore,Denied,private"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/bits.py",
+      "imports": [
+        "hashlib:sha256",
+        ".codec:need,fingerprint",
+        "..g6_w2c_b3_api_binding_v1.ports:install_guard"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/binding.py",
+      "imports": [
+        "..g6_w2c_b3_api_binding_v1.static:binding"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py",
+      "imports": [
+        "collections:Counter",
+        "fractions:Fraction",
+        "hashlib:sha256",
+        "pathlib:Path",
+        ".:codec,result,storage_consumer",
+        "..:g6_w2c_b3_offline_result"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/storage_consumer.py",
+      "imports": [
+        "collections:Counter",
+        "pathlib:Path",
+        "hashlib:sha256",
+        "json",
+        "sqlite3",
+        "..:g6_w2c_b3_offline_result",
+        "..:g6_w2c_b3_parallel_verifier_core",
+        "..:g6_w2c_b3_parallel_offline_adapter",
+        "..:g6_w2c_b3_offline_cost",
+        "..:g6_w2c_b3_bundle_trace_v1"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/__init__.py",
+      "imports": [],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py",
+      "imports": [
+        "dataclasses:dataclass",
+        "fractions:Fraction",
+        "hashlib:sha256",
+        "json"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py",
+      "imports": [
+        "copy:deepcopy",
+        "pathlib:Path",
+        "os",
+        ".:codec,bits,fixture,result,contract",
+        "..g6_w2c_b3_api_binding_v1:ports",
+        "..:g6_w2c_b3_parallel_driver"
+      ],
+      "dynamic_execution_calls": []
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py",
+      "imports": [
+        "collections:Counter",
+        "copy:deepcopy",
+        "fractions:Fraction",
+        ".:codec"
+      ],
+      "dynamic_execution_calls": []
+    }
+  ],
+  "production_entry": "unconditional rejection; no real callable table/loader/factory",
+  "arbitrary_memory_patching_security_proof": false
+}

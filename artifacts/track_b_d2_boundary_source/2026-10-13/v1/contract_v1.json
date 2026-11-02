@@ -1,0 +1,189 @@
+{
+  "input": {
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "tau": "5/7",
+    "sigma": 1,
+    "state": "000",
+    "system_qubits": 3,
+    "provider": "Q0=Z0; V1=R_XX01(pi/4); V2=R_XX12(pi/4)R_ZZ01(pi/4); Qi=Vi†ZiVi",
+    "rotation_convention": "R_P(theta)=exp(-i theta P/2)",
+    "development_known": true,
+    "held_out": false,
+    "same_I1_provider_access_all_arms": true
+  },
+  "degree": 5,
+  "arms": [
+    "ordinary",
+    "partial_return_tail",
+    "closed_P3_tail",
+    "full_return",
+    "closed_P5_full",
+    "matched_CTS"
+  ],
+  "primary_pair": [
+    "partial_return_tail",
+    "closed_P5_full"
+  ],
+  "epsilon_axis": "1/200",
+  "complex_accuracy_upper": "sqrt(2)/200 < 1/100",
+  "alpha_axis": "49/24000",
+  "resource_failure_per_row": "1/12000",
+  "resource_tail_t": 10,
+  "familywise_alpha": "1/20",
+  "probability_bits": 160,
+  "root_bits": 256,
+  "eta": "1/1000000000000",
+  "rho": "1/1000000000000",
+  "primitive_error": "1/1000000",
+  "interval_dps": 100,
+  "matrix_tolerance": 1e-10,
+  "bias_policy": {
+    "Taylor_step_upper": "3*x^6/720 for 0<=x<=1",
+    "rounded_native_step_upper": "8*rho+16*(1+rho)*primitive_error",
+    "product_Taylor_upper": "(1+epsilon)^r-1",
+    "product_implementation_upper": "(1+epsilon+e)^r-(1+epsilon)^r",
+    "axis_bias": "2*(Taylor_product_upper+product_implementation_upper)",
+    "remaining": "epsilon_axis-axis_bias; exhaustion => technical inconclusive, no rescue",
+    "state_uniform": true,
+    "true_signal_sets_budget": false
+  },
+  "whole_trial_policy": "independent step proposals; any zero => whole zero before quantum initialization; zeros counted in all trials",
+  "tool_identity": {
+    "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+    "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984"
+  },
+  "runtime_executable": "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+  "runtime_executable_sha256": "b94e9b56bc1f96b18d36a0f1d14308575bb7b5960eda94ae0520f0376e95d12d",
+  "kind": "D2_SAVED_R2_COMMON_BOUNDARY_CONTRACT_V1",
+  "date_JST": "2026-10-13",
+  "source_preparation_only": true,
+  "steps": [
+    2
+  ],
+  "rows": 6,
+  "axes": 12,
+  "saved_result_commit": "fc96571881f301435a655f057709df4d6c1678e0",
+  "saved_analysis_commit": "2dcd56737be35526f6436a52835f59d817adf30c",
+  "saved_result_directory": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1",
+  "result_directory": "artifacts/track_b_d2_saved_boundary_result/2026-10-13/v1",
+  "authorization_path": "artifacts/track_b_d2_boundary_source/2026-10-13/v1/authorization.json",
+  "optional_receipt_path": "docs/tracks/algorithm_codesign/d2_boundary_execution_authorization_receipt.md",
+  "source_manifest": "artifacts/track_b_d2_boundary_source/2026-10-13/v1/source_manifest_v1.json",
+  "protected_ledger": "artifacts/track_b_d2_boundary_source/2026-10-13/v1/protected_hashes_v1.json",
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "next_science_authorized": false,
+  "scope": {
+    "registered_actions": "ordered r=2 positive saved step IR pair boundary cost evaluation only; source preparation not execution",
+    "common_pass": "exact adjacent inverse cancellation, same symbolic inverse map as frozen g9_native.simplify",
+    "literal_time_order": "left step then right step; matrices multiply right @ left",
+    "N_law_weights_bias_prices": "all reused unchanged; no smaller N or new signal oracle",
+    "controlled_phase": "retained; signed R uses same actual saved sequence and adjoint, including its global W phase",
+    "cancellation_target": "literal placeholder/native level only; no cancellation inside synthesis sequence boundaries",
+    "nonclaims": [
+      "optimal compiler",
+      "whole PR total cost",
+      "independent validation",
+      "new algorithm adoption",
+      "minimum T count"
+    ],
+    "new_synthesis": 0,
+    "new_angle": 0,
+    "matrix": 0,
+    "native_compile": 0,
+    "sampling": 0,
+    "trajectory": 0,
+    "DF_NPZ_molecule_GPU_LP": 0,
+    "old_results_markers_authorization_unmodified": true
+  },
+  "output_policy": {
+    "expected_intercepts": "2*N*sum(q_i*q_j*C_after(i,j)); zero pair -> zero before quantum init",
+    "prep_readout_slope": "old 2*N*Z^2 unchanged",
+    "confidence": "same fixed D1 N/bias/failure allowances, no realized variance substitution",
+    "tail_hard_cost": "old conservative upper retained; exact new worst_nonzero_pair is diagnostic; no new accepted count policy",
+    "all_pairs": "sum supports squared =219303; no Monte Carlo",
+    "complete": "D2_BOUNDARY_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW",
+    "failure": "D2_TECHNICAL_INCONCLUSIVE; prefix cannot make scientific conclusion",
+    "resource_direction": "report all six arms T/CX/1Q plus workspace/classical unknown; no GO threshold or automatic winner adoption",
+    "full_pair_IR_storage": false,
+    "registered_event_law_modified": false
+  },
+  "caps": {
+    "workers": 1,
+    "numeric_threads": 1,
+    "parent_RSS_MiB": 512,
+    "worker_RSS_MiB": 512,
+    "aggregate_RSS_MiB": 512,
+    "virtual_address_MiB": 1536,
+    "total_CPU_seconds": 900,
+    "per_key_CPU_seconds": 20,
+    "total_wall_seconds": null,
+    "phase_wall_seconds": null,
+    "output_bytes": 16777216,
+    "per_key_log_bytes": 65536,
+    "review_chunk_bytes": 524288,
+    "positive_pair_evaluations": 219303,
+    "denominator_bits": 16384,
+    "compile_calls": 0,
+    "synthesis_calls": 0,
+    "matrix_calls": 0
+  },
+  "registered_rows": [
+    {
+      "row_index": 6,
+      "row_path": "rows/row_06.json",
+      "arm": "ordinary",
+      "positive_step_support": 273,
+      "positive_pair_bound": 74529
+    },
+    {
+      "row_index": 7,
+      "row_path": "rows/row_07.json",
+      "arm": "partial_return_tail",
+      "positive_step_support": 264,
+      "positive_pair_bound": 69696
+    },
+    {
+      "row_index": 8,
+      "row_path": "rows/row_08.json",
+      "arm": "closed_P3_tail",
+      "positive_step_support": 258,
+      "positive_pair_bound": 66564
+    },
+    {
+      "row_index": 9,
+      "row_path": "rows/row_09.json",
+      "arm": "full_return",
+      "positive_step_support": 63,
+      "positive_pair_bound": 3969
+    },
+    {
+      "row_index": 10,
+      "row_path": "rows/row_10.json",
+      "arm": "closed_P5_full",
+      "positive_step_support": 63,
+      "positive_pair_bound": 3969
+    },
+    {
+      "row_index": 11,
+      "row_path": "rows/row_11.json",
+      "arm": "matched_CTS",
+      "positive_step_support": 24,
+      "positive_pair_bound": 576
+    }
+  ],
+  "performance_plan": {
+    "dominant_workload": "inverse-prefix boundary comparisons plus integer probability-weight accumulation, no repeated Fraction gcd per pair",
+    "IR_reuse": "saved IR once per event; cache suffix native counts; never generate provider or new gates",
+    "workers": 1,
+    "why_single_process": "219303 bounded short pair operations, memory sharing and avoiding serialization; parallel not required; no claimed speedup",
+    "threads": 1,
+    "no_pair_circuit_or_full_json_retention": true,
+    "resource_preflight": "CPU affinity, system memory, fixed runtime identity before future launch; GPU support not needed for this CPU-only stdlib task; GPU queries zero"
+  }
+}

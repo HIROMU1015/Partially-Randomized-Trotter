@@ -1,0 +1,67 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 3.120187503285706,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 697146,
+      "pid": 697146,
+      "ppid": 697015,
+      "reaped": true,
+      "sid": 697146,
+      "start_ticks": 446206581,
+      "state": "R"
+    },
+    {
+      "case": "case1",
+      "pgid": 697147,
+      "pid": 697147,
+      "ppid": 697015,
+      "reaped": true,
+      "sid": 697147,
+      "start_ticks": 446206581,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [],
+  "reason": {
+    "reason": "SIGTERM",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 259, in run_supervised\n    if interrupted: raise InterruptedError(interrupted[0])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nInterruptedError: SIGTERM\n",
+    "type": "InterruptedError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 3.0626610508188605,
+      "exit_code": -9,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462065.812387876,
+      "pid": 697146
+    },
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case1",
+      "elapsed_until_reaped": 3.0617341166362166,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462065.813949318,
+      "pid": 697147
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

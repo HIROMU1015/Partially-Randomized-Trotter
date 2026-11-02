@@ -1,0 +1,17 @@
+{
+  "status": "DESIGN_ONLY_NO_SAMPLING",
+  "random_variable": "indicator I(delta(W)>epsilon or certificate unresolved) for a newly drawn trajectory W",
+  "delta": "phase-sensitive full-operator synthesis error;0<=delta<=2 for ideal-unitary circuit targets",
+  "IID": "explicit assumption on trajectory draws;not established merely by PCG64 or paired seed generation",
+  "sample_selection": "fixed held-out n before outcomes;old exploratory cohort cannot be silently treated as fresh validation",
+  "zero_failure_formula": "q_upper=1-alpha^(1/n),confidence1-alpha;all unknown/straddling certificates count conservatively",
+  "all_occurrences": "P(any uncertified/bad occurrence among M)<=M*q_upper;needs separately allocated beta and dependence-aware sampling model",
+  "size_requirement": "n>=log(alpha)/log(1-beta/M) for zero failures if target q<=beta/M",
+  "expected_error": "E delta<=epsilon+(2-epsilon)*q_upper under the same law;operator/mean-signal propagation and statistical confidence must remain separate",
+  "alternative_mean": "Hoeffding for bounded delta can be used with validated sample upper bounds under IID;not evaluated here",
+  "raw_room": "actual room/attenuation/C1shots not reanalyzed",
+  "new_samples": 0,
+  "old_samples_reclassified": false,
+  "alpha_or_beta_adopted_for_science": false,
+  "PCG64_joint_IID_verified": false
+}

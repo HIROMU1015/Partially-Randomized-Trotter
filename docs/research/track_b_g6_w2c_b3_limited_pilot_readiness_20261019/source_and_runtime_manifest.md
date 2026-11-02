@@ -1,0 +1,11 @@
+# SOURCE/runtime/provenance
+
+新人工受入SOURCEは`b9cabcfc6cf304ab65fc8a540c33ce2173f6cbaa`、fixed consumerは`bf601f8a9723a61b7a05b534019f8e036a362735`、producer公開基点は`7ae4bd0b951dae05380538cd5c22a3ead5328ab2`。GitHub再作成commitのmetadataが変わってもSOURCE tree/bytesを照合し、元のSOURCE commitはmeasurement_source_history.bundleで保持する。
+
+candidate SOURCEはg6_w2c_b3_pilot_candidate.py、独立checkerはg6_w2c_b3_pilot_offline.py、候補schemaはpilot.schema.json。前者は既存v3を継承、後者はproducer/admission/schedulerをimportしない。共通独立coreとpair/F01 checkerだけを使う。new input/seed proposalとold Full-N referenceを混同しない。
+
+pilot_contract_candidate.jsonには実Python executable/library bytes、version/cache tag、runtime_root、SOURCE/input pins、固定条件、未採択の予算/比較条件を保存する。absolute runtime pathは当時のidentity記録であり、offline readerは明示されたreference rootに対するrelative pathだけを読む。既存runtime/schema/guardを上書きしない。
+
+source_inventory.jsonは導入原本、導入後testの1行差分、実測SOURCE、new candidate/schema/input、保護対象の一致を扱う。verification.jsonのPASSは技術準備だけの判定。固定source/input、実際に使うcompiler/runtime/result/grant/ledger/markerの変更を拒否する設計とし、無関係なworktreeのHEAD/statusは承認条件にしない。
+
+開始/終了のCPU affinity、RAM、IO/pressureをresource_start.json/resource_end.jsonへ保存する。過去runのworker/資源値を新規作業の恒常的上限にしていない。新人工schedulerの8 workerは現行8 pairの構造上の上限である。OS/cgroup/quota/scheduler、共有package/venv/cache、他jobを変更していない。既存科学計算のSTOP/再起動も行っていない。

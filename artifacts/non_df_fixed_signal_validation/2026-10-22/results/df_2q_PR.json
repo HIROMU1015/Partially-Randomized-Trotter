@@ -1,0 +1,383 @@
+{
+  "schema": "fixed_signal_resource_evaluation_v1",
+  "model": {
+    "hamiltonian_type": "df_native",
+    "hamiltonian_hash": "3238007298454d83ab59fb5582d071c98752185bafa46696b882de5814f543b4",
+    "generation": {
+      "input_kind": "artificial",
+      "model_id": "artificial_native_DF_2q"
+    },
+    "DF_rank": 2,
+    "split_unit": "DF_fragment",
+    "L_D": 1,
+    "deterministic_fragment_indices": [
+      0
+    ],
+    "deterministic_block_order": [
+      "df-one-body-correction",
+      "df-fragment-0"
+    ],
+    "preparation_hash": "495082c08493527d2bc6b8e8bbd4963488c9572d1b2f8f4aa82c640633d74dfc",
+    "identity_policy": "extract_identity_phase",
+    "extracted_identity_coefficient": -0.043,
+    "B0I_equivalent_to_B0": false
+  },
+  "config": {
+    "hamiltonian_type": "df_native",
+    "method": "PR",
+    "T": 0.2,
+    "q": 2,
+    "L_D": 1,
+    "r": 2,
+    "K": 2,
+    "seed": 17,
+    "cost_samples": 4,
+    "product_formula": "S2",
+    "randomization_law": "finite_rte_even_paired"
+  },
+  "state": {
+    "hash": "d0bb270c948e67841c42a8a2ace1a0b13473460a02807f71b0f16b9ca868d601",
+    "generation": {
+      "method": "supplied occupation state"
+    },
+    "basis": "qiskit_little_endian"
+  },
+  "reference": {
+    "hamiltonian_hash": "3238007298454d83ab59fb5582d071c98752185bafa46696b882de5814f543b4",
+    "T": 0.2,
+    "method": "scipy_sparse_expm_multiply",
+    "signal": {
+      "real": 0.9967024813574085,
+      "imag": -0.08031003743317182
+    }
+  },
+  "signal": {
+    "raw": {
+      "real": 0.9966723335188236,
+      "imag": -0.08030756312391882
+    },
+    "corrected": {
+      "real": 0.9967024831767535,
+      "imag": -0.08030999245347473
+    },
+    "signed_bias": {
+      "real": 1.819345007980644e-09,
+      "imag": 4.4979697091940274e-08
+    },
+    "absolute_error": 4.501647661402172e-08,
+    "mean_method": "independent_sparse_paired_polynomial_state_action"
+  },
+  "normalization": {
+    "law": "finite_rte_even_paired",
+    "lambda_r": 0.05499999999999999,
+    "log_B": 3.0249863377066002e-05,
+    "B": 1.0000302503209089,
+    "log_B_upper": 3.0249864377066e-05,
+    "log_B_margin": 1e-12,
+    "normalization_certificate_verified": false,
+    "r": 2,
+    "K": 2,
+    "attenuation": 0.9999697505941454
+  },
+  "shots": {
+    "schema": "fixed_complex_signal_hoeffding_v1",
+    "axes": {
+      "cosine": {
+        "status": "ELIGIBLE",
+        "epsilon": 0.07071067811865475,
+        "alpha": 0.025,
+        "bias": 1.819345007980644e-09,
+        "allowance": 1e-10,
+        "headroom": 0.07071067619930975,
+        "shots": 1753,
+        "log_shot_bound": 7.469036420479152
+      },
+      "sine": {
+        "status": "ELIGIBLE",
+        "epsilon": 0.07071067811865475,
+        "alpha": 0.025,
+        "bias": 4.4979697091940274e-08,
+        "allowance": 1e-10,
+        "headroom": 0.07071063303895767,
+        "shots": 1753,
+        "log_shot_bound": 7.469037641238663
+      }
+    },
+    "usable": true,
+    "epsilon_sig": 0.1,
+    "alpha_union": 0.05,
+    "log_B_upper": 3.0249864377066e-05,
+    "N_total": 3506,
+    "evidence_kind": "EMPIRICAL",
+    "evidence_ref": "artificial declared tolerance; not a certificate",
+    "certificate_verified": false,
+    "interpretation": "CONDITIONAL_DIAGNOSTIC",
+    "estimator": "B_times_fresh_independent_plus_minus_one_mean"
+  },
+  "circuit_cost": {
+    "axes": {
+      "cosine": {
+        "mean": 213.75,
+        "standard_error": 3.816084380618437,
+        "nominal95_halfwidth": 12.14448363775213,
+        "mean_exact": "855/4"
+      },
+      "sine": {
+        "mean": 213.75,
+        "standard_error": 3.816084380618437,
+        "nominal95_halfwidth": 12.14448363775213,
+        "mean_exact": "855/4"
+      }
+    },
+    "sample_count": 4,
+    "kind": "finite_MC_mean",
+    "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+    "paired_axes": true,
+    "mc_samples_are_quantum_shots": false,
+    "samples": [
+      {
+        "seed": 8674683036015973233,
+        "RZ": {
+          "cosine": 211,
+          "sine": 211
+        }
+      },
+      {
+        "seed": 17392747114053274305,
+        "RZ": {
+          "cosine": 225,
+          "sine": 225
+        }
+      },
+      {
+        "seed": 8243109717684339631,
+        "RZ": {
+          "cosine": 211,
+          "sine": 211
+        }
+      },
+      {
+        "seed": 1932892349247886719,
+        "RZ": {
+          "cosine": 208,
+          "sine": 208
+        }
+      }
+    ],
+    "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee",
+    "cache_hits": 0,
+    "cache_misses": 8,
+    "compiled_signal_max_error": 1.3322676295501878e-15
+  },
+  "total_RZ": {
+    "mean": 749407.5,
+    "standard_error": 13379.19183844824,
+    "nominal95_halfwidth": 42578.55963395896,
+    "mean_exact": "1498815/2"
+  },
+  "compiler": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "backend_name": null,
+    "coupling_map": null,
+    "optimization_level": 1,
+    "layout_method": null,
+    "routing_method": null,
+    "transpiler_seed": 17,
+    "qiskit_version": "1.3.0"
+  },
+  "provenance": {
+    "source": {
+      "commit": "d94437b46086c2eaa3ff1eeb111daba683d8aaf1",
+      "branch": "codex/non-df-pauli-fixed-signal-20261022",
+      "base_commit": "b81d4096e806efb6523304764d3a0680b7663320",
+      "dirty": false,
+      "files": {
+        "scripts/run_fixed_signal_evaluation.py": "c278ff9130693d130161342e1cc35dd2c367ab532e144ccca7529bcaa576d219",
+        "src/trotterlib/Almost_optimal_grouping.py": "5eae25459c7a1895d1a3715b8aa747b36965a65b198ebeb78d6e52e461cf3874",
+        "src/trotterlib/__init__.py": "7955517339eae3f619a5985a287e057354c3902ac97d5b072e8a90f4f41dae1f",
+        "src/trotterlib/analysis_utils.py": "28613830f12f7762454c06e5be2ae864c6c29ffb464b5ac02fdc1351848af2bf",
+        "src/trotterlib/analytic_circuit_cng.py": "62a76eae2eb6d81c04d5d139df2e7b8e392c84e6a34dad0da90e571005468fd7",
+        "src/trotterlib/chemistry_hamiltonian.py": "dd4c87d3a35a551710c0f9f1945e3b2abf5c5594501b92e0616860dad488cf56",
+        "src/trotterlib/config.py": "15e12517f82ed3e9d56eac8a272693ced87226a8ae5e97351e1c2c9b4e3415ca",
+        "src/trotterlib/cost_extrapolation.py": "61726e460057b8fbc278b5d1ead615c4142f10acb6a6c5ae63e5df2948468e74",
+        "src/trotterlib/current_s2_theory.py": "554a2257e4bb91b6901653c196acdc44ad4445cbe2be65a49e6e9887a57e3a78",
+        "src/trotterlib/df_cost_plotting.py": "4f4262ffde111c62c5d2789a602d7044fbcd5eb7c6104f1461296966bdf6199a",
+        "src/trotterlib/df_gpu_statevector.py": "a200e7ef474091de1026c4d586e725da006540a7dc04654a09cf276164c51032",
+        "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+        "src/trotterlib/df_partial_randomized_pf.py": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb",
+        "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+        "src/trotterlib/df_partial_s2_cost.py": "55e779228da08a2a0a0ef595637c941de38e6208449e4df18460a6b5a1fc1433",
+        "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+        "src/trotterlib/df_partial_s2_repeated_cost.py": "94171fe3b4d0f9215c624196a7b16181455c77f1da758df78da583dbfa16cd71",
+        "src/trotterlib/df_rpe_hadamard_compiled_cost.py": "2e6a026e3fbf6c6a6a91115dbba69018fdbb2b5eb5f36af90773e906b4c87715",
+        "src/trotterlib/df_rpe_resource.py": "9ac133b1f232f293050128929babf4348a8f19ae6887b201c298ec0c3bd19395",
+        "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+        "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+        "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+        "src/trotterlib/df_screening_cost.py": "6469a6a86c229b71bd268369712d8326c84334b32a7bb693d6c38aeb1f37b5f4",
+        "src/trotterlib/df_trotter/__init__.py": "5f9ad43aa005669821b7e8739ca04a46c2482fc19aae8be6ba5ed52677ee98d2",
+        "src/trotterlib/df_trotter/circuit.py": "28040c96b0622cd069be9c373c285dc5a679c3686f6be5ebab2f9e09b7c4f3d6",
+        "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+        "src/trotterlib/df_trotter/model.py": "ca8aa933fcbd5f7c2a0c1bb867a76bbd5b09a13cbddf5a2fda159f4adf625947",
+        "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+        "src/trotterlib/df_trotter/two_body.py": "d5f678f2533554b4b7f2b09626c169e3ca1b6dbdf6ac4ab0e603a50c8fc7353e",
+        "src/trotterlib/eig_error.py": "41bb8044fb93184684a96109184d8aea121e675d258a05cd633c1b9c164a1be7",
+        "src/trotterlib/finite_rte_phase_amplitude.py": "5091d044ded5b7ebda9e922b9ea042f95262adf22456eaf789f073ab48992e8b",
+        "src/trotterlib/finite_rte_signal_validation.py": "88bd1b209bcaec057ccc56c742c900bab0de2d1eb183890726640760215b1dd7",
+        "src/trotterlib/fixed_signal_accounting.py": "4e27bd062a27470728a43fe0b56404488961653d8d2d2030d4bd6972446dc098",
+        "src/trotterlib/fixed_signal_evaluation.py": "484ad98bd17ece8c8bf0ecbddf929a4682a7c426a7194935e57e920bc12ae54a",
+        "src/trotterlib/fixed_signal_io.py": "87a6d9a42db0a0d46d44edc695d71b422b57ef1c8b74652f51f99221d5eddab8",
+        "src/trotterlib/fr_revision_fr1a_posthoc.py": "6e6f093026e9a076398c025c1329a0476c1e98fd81316c2b674f8623a162a7f7",
+        "src/trotterlib/fr_revision_nonuniform.py": "a42e972d2f674cd481e8579e4b1b0bf7acc7f11776fbb12bdd65281e0798a7d5",
+        "src/trotterlib/grouped_uwc_comparison.py": "82f0368a2530724ac2b77de31e1c6fd141c07c3817574e39ac72e2fdb21246ad",
+        "src/trotterlib/grouped_uwc_theta_sweep.py": "db131f635e0cd7b0494f90cd0930d5dc621e9b6b52eec060ed51c0b2d3181e9a",
+        "src/trotterlib/h8_b0_anchor_plan.py": "a547daeec851c3a8249d8e27741b08ef626fb909c79943f5979d58e54a56b44e",
+        "src/trotterlib/h8_b0_saved_anchor_audit.py": "2cb2860c8701aa36863adec37b07bf4ee0b03ecc5ddd733b1d30828cf2bb2021",
+        "src/trotterlib/h8_epsilon_boundary.py": "6509dbae8fde02d8a49ce794bc2504ac424142924b58bc5dfad9e8fee96b6c86",
+        "src/trotterlib/h8_noncancellation.py": "2148a3123ea54a352dee8c0136f6d666846d8562b2daf8e78038006391e5c856",
+        "src/trotterlib/h8_noncancellation_cost.py": "abfbfe7a9675c4324f14439be4a2ae554899e1d5715e196a933632f6e57b659e",
+        "src/trotterlib/h8_phase_b1_contract.py": "88e67868e5e53e7c16f9c204789477528d831690f867989c9617e2061c1e9957",
+        "src/trotterlib/h8_phase_b1_fit.py": "ba27471a851d7d59d7c6c8acb63438c8a6a5ad81d60869c8be5f11ab8d945e72",
+        "src/trotterlib/h8_phase_c_accounting.py": "4cb7ff287282f6438749b7a3d2e51ed72499685e1b909d5ec6287838360762d5",
+        "src/trotterlib/h8_rare_tail_selection.py": "3815f02344557788026bfd862121013c92c5efd6fb200ff858ca93506c3aff14",
+        "src/trotterlib/h8_saved_analysis.py": "f3c5222f08a4f8b82351e85cdc1b49948018c9ad4feb3ab95bda6c29760876ef",
+        "src/trotterlib/h8_six_axis_reaccount.py": "e7fb34a15820b68983674c6cffdd8297881421bda824c3be3bf2d84aa2c9e7aa",
+        "src/trotterlib/hierarchical_cost_validation.py": "e6871c5e329429de8c2da9a39fc4cd6a43f3f7f54e3615309c2ad620229dc6d5",
+        "src/trotterlib/io_cache.py": "e7504b620eabf71af5f88992113a7306ed0506d5e7b99ca705aa43afb1d00ca1",
+        "src/trotterlib/matrix_multiply.py": "31c9323b9c0cfc8c076af5e9b0540ad933978ec133d84cca93aed5d242eb76f1",
+        "src/trotterlib/matrix_pf_build.py": "1473ed30e21401bad4898d1351bb02046b76f023b14325b0ea6e68892cc30a5c",
+        "src/trotterlib/mechanism_a82.py": "06a888001a11ac7941bf4d57fdb4cfd65d075e57c5178d255ef2bca2d9d16482",
+        "src/trotterlib/mechanism_a82_factors.py": "5e061d8331c2ad5d0d8094d5b6ede90a8e26b9108b6a67602a7773a7af99ae90",
+        "src/trotterlib/mechanism_analysis.py": "f382fc1abd8715a7ee73b4f1d67c9fbf8057ebd97ed65058d4d4648e179672c5",
+        "src/trotterlib/mechanism_explanation.py": "523fe6eea18963418498ab4ae7285e14cb3cc714056d0cfe1a471bfad2201acf",
+        "src/trotterlib/mechanism_paper.py": "93de86fe7e0ac514513377bf45aa95b4b00268d704be532b563ca1bb4dfff766",
+        "src/trotterlib/native_df_gate_model.py": "f7b9f4bb5dd828bb2609ad8e7b1491eda27d878fff9b73835a8c74eaff1685e5",
+        "src/trotterlib/native_df_metadata_binding.py": "830e6ef2074a6964466a4c6ec3fcfbfe7f195157c3fe1e34d7d37840bb73fcaa",
+        "src/trotterlib/optimal_trotter.py": "23333251a896bad70cc554babebdf2800b9fff84592a592cd29d5666197a52a5",
+        "src/trotterlib/parallel_validation_executor.py": "a22954ec737af3a7b2fe7f77536ca5ee7b718e28c7e9d681a0859f08fe7cd7c9",
+        "src/trotterlib/partial_randomized_pf.py": "c824c242d25dba77744b02c2416359c88ecc10cfd76f062b49bd7a80f0d1bf8d",
+        "src/trotterlib/pauli_partial_cgs_validation.py": "d1d28e2d4b186736af490e901bab6839655667439b869468f094e844b41da55d",
+        "src/trotterlib/pauli_signal_adapter.py": "ad60912944e3d87aa2fd2bf0263e1d2c3ba1be4f11c0ab5525ade337727d33cf",
+        "src/trotterlib/pf_c_system_size_validation.py": "723ecdac081689b99483deea37268f16b8980e926b5fe5ce5257b5dc5fa23df0",
+        "src/trotterlib/pf_decomposition.py": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26",
+        "src/trotterlib/pf_delta_validation.py": "813affacff5347db14f815c220de01cb87368e1f045c5c4b6f34f4723ca7b317",
+        "src/trotterlib/plot_utils.py": "76ffac8c783b8facc7b3054e06304e661775c91fc5ae8a4ff9acc75d7138f72b",
+        "src/trotterlib/plots_timeevo_error.py": "ea7ef2942369bde86eb89c8c608f1d97cc9eefe2eb31443acfa0a639679c822b",
+        "src/trotterlib/pr2_matched_accuracy_m1_b1_contract.py": "3523a2fc27c3a39e6db46cf70fb985dbc93ee8b9028bddca2bff2a013adb643e",
+        "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py": "b7a3a479cbebdd3ff7a93de75c4ba030343769c308401395e208754c3d566987",
+        "src/trotterlib/pr2_matched_accuracy_m1_b1_result_validation.py": "11788a67af1e47736c8ef56b82be99878be72e1a59a99a1ce7bcbd68d1a81a4d",
+        "src/trotterlib/pr2_matched_accuracy_m1_contract.py": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b",
+        "src/trotterlib/pr2_matched_accuracy_m1_execution.py": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+        "src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py": "2a533ffc7f1311db12b063f10a156c9f3d0cf9786910f21b38a7b52e75c56430",
+        "src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py": "394f528b157ebb76a1a12ae0ab7d7336f81339319d235655a7ef5fa592c39534",
+        "src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py": "3b0d1e76ca488a28cf81165df1b36bdd671d07b17c4c155476ce38162c30c35b",
+        "src/trotterlib/pr2_new_series_validation.py": "fdfe7f35f357a3651c6b378b61c4d5525a10ded704733f7af942d84690b1bade",
+        "src/trotterlib/pr2_pr3_minimal_pilot.py": "8bc6d1e57af57341b3aead653f6477ae170c068de10d5d5b32bf628c5fbade6a",
+        "src/trotterlib/pr2_s0_s1_validation.py": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+        "src/trotterlib/pr2_v4_s2_development_validation.py": "ade121de499b432ce35b39362d4e7336832ea8e9c604864e0d45be7222908210",
+        "src/trotterlib/pr2_v4_s2_parallel_execution.py": "edf4e264364342806d73574f5931c583bd923fa0551c5c284c0b52589d834900",
+        "src/trotterlib/pr_cost_integration.py": "26fdc184385c0a8136ac91355d92430b795c40210bfddff64d8c4cf39cb762d7",
+        "src/trotterlib/product_formula.py": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca",
+        "src/trotterlib/qiskit_time_evolution_grouping.py": "9145804f87f106025b6ec9c944e1c5cfb68f62c4ecbe9af430d167667031b9e0",
+        "src/trotterlib/qiskit_time_evolution_pyscf.py": "bf72e257f4e5884192d27a3a25d22016586b481d79bd839392f15140d1233d45",
+        "src/trotterlib/qiskit_time_evolution_ungrouped.py": "1b75e3f9be116ebaa0e8f7c3292a57f9a2ded079fdea4c57f45e4a5cac45bd3f",
+        "src/trotterlib/qiskit_time_evolution_utils.py": "65496e75af4c8320faea7464bfb351081e3fca495a6103145c8de588fb7a3625",
+        "src/trotterlib/qpe_beta.py": "cdbef27d4c1040af4f02d71eda7fd1238192b7a81ff5b597108f0457ab0d30ec",
+        "src/trotterlib/random_circuit_cost_validation.py": "cefb2cb2f04a60db08e5c6e9c85fa7c92832cfb955bdf87d10ea53cd5381a622",
+        "src/trotterlib/recomputed_s2_physics_validation.py": "8f38c989b70616fedc092b779337d1b127911d834ea86274d1df26b18a732b70",
+        "src/trotterlib/research_direction_ablation.py": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+        "src/trotterlib/research_direction_compiler_transfer_analysis.py": "a32bccd03249fb55eb7bda0386ad34986ea1e664070c7bdab2f3bb4b3697bd54",
+        "src/trotterlib/research_direction_compiler_transfer_compute.py": "5b09bb012e30793b2d677ab7ae395430ab5e3263046410d061151ff65a63e411",
+        "src/trotterlib/research_direction_decision_cost.py": "3e9ac9a18749381409fab89c183a40a0ca4e0e556b19a7c50aba362272b0f435",
+        "src/trotterlib/research_direction_decision_synthesis.py": "422aa784c9aee05b5a40ca08ab9ff86e334ccf8bf037ca554940d33826b4b2bc",
+        "src/trotterlib/research_direction_energy_tail_pareto.py": "c9a3c5c4488be88bdb10b50d260939bfb7a1caf1f8699e3f45d6747c668558be",
+        "src/trotterlib/research_direction_full_opt2.py": "41a4066653c74a13090879355ce2f3cd0c9ee82df8cf414e2d2c98dc6c65b1a3",
+        "src/trotterlib/research_direction_full_opt2_completion.py": "1e3f43b48d3263897e2e467f99f42fb1012b682df45c6ded52849bc02c94da16",
+        "src/trotterlib/research_direction_full_opt2_extension_analysis.py": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73",
+        "src/trotterlib/research_direction_full_scope.py": "fd823967674da65f05d6f06048393437ad3b950018bf64469df001fc45a10bcf",
+        "src/trotterlib/research_direction_full_scope_extension.py": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+        "src/trotterlib/research_direction_full_scope_replication.py": "585d717c5ad2cd445a9213890f7e94d1882fb485ca8c109b4f9446427fed6c1c",
+        "src/trotterlib/research_direction_gate_s1.py": "94b09189b68e49014ea502d40df241cced9f08cfa647acf9fd2c8fd781b5203b",
+        "src/trotterlib/research_direction_geometry_energy_difference_pilot.py": "da2cc9013100df2682f5f5379174145803b369b92608a4af0514c6c14e8ef977",
+        "src/trotterlib/research_direction_geometry_tracking_breakdown.py": "a77c427f569b36218baa0a6343ed77db96951767a12a0f9a373bef8f2da3195b",
+        "src/trotterlib/research_direction_joint_synthesis_blind_validation.py": "7dda48c11fd06b64cc364d3e021335608134c4e17dbe85dfac9ed128c3a6bf9e",
+        "src/trotterlib/research_direction_joint_synthesis_formalization.py": "50b2859d4bbbed91b70057ad829dd171df17a711273c88382f86101dc7e92bdc",
+        "src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py": "3c5c939862b63805fc9103c2f16649687c5c6a4a5c108ab28089c749f928513e",
+        "src/trotterlib/research_direction_joint_synthesis_pilot.py": "6f239f0c1f11fda55f4949b730b2087eff3b3538bc003da035767f69dad0d92b",
+        "src/trotterlib/research_direction_m08_reaggregation.py": "caa59ff692e9fd9be3988f389a5a2eede66d06523c59a4931931efe4570344eb",
+        "src/trotterlib/research_direction_pd_fair_comparison.py": "417c20b894adf35ea2a76b5f9a636a6760c8751f0e7ecbed7cf44a0b40722dcc",
+        "src/trotterlib/research_direction_pd_realization.py": "a9f82b80e2df53898b096ad9040da9cee470f4529fe6d21d2f0ddb04f2b66738",
+        "src/trotterlib/research_direction_pd_s1_posthoc.py": "15359833b2674d9a5b49efe3b4abbba396e3be9433a50a8dcba06dc0615a6152",
+        "src/trotterlib/research_direction_pf_sensitivity.py": "28b651140d1cca1762e4e0d069782511cb7a64365353b88efb9ed40561d2dfd8",
+        "src/trotterlib/research_direction_prevalidation.py": "03c9aa2dbc9f9f8ce58d082636f666204a43097585e03d652358594f3a147708",
+        "src/trotterlib/research_direction_proxy_lineage_reconciliation.py": "3ca3fdee8f485ed8576e0273e76bcc9cf653fba0ecd094c2ce1aa6918af36302",
+        "src/trotterlib/research_direction_proxy_precision.py": "b39bb978db79d52494d3b90d4b9ab896e8994def964c47878cfb7f87bf34312c",
+        "src/trotterlib/research_direction_round_dominance.py": "b7d5e0a7d58f86cd7f8627689205d556546bb3981de27a3331e34964bb5b404f",
+        "src/trotterlib/research_direction_sequence_policy.py": "4d72aa3cbc5e9e487e94c327a8d6f331ddf18c9ece8ea38d62bf74f1084c9c3f",
+        "src/trotterlib/research_direction_signal_weight_pilot.py": "31290252fb2b0ea33bc4f7a0473d5b10aa5c4c9a48324092d79f0bb655ccb74e",
+        "src/trotterlib/research_direction_structure_pilot.py": "ffb7a2caadc8453a0d8a655a8de49fd25d8f6f7bb988edea0df2e3cc283624a6",
+        "src/trotterlib/research_direction_theme_selection.py": "c08aa0ed0d3128e6bf9282bcb4d619b1413652c2e2bec446ef14b20983cc60e4",
+        "src/trotterlib/research_direction_uncertainty_break_even.py": "bec4bad244ac0ebc2a08a75a5e742372c19e938ae3a0644f5ff9ec2a7271734e",
+        "src/trotterlib/research_direction_wp11_synthesis.py": "0539627d43a0ff271be9a1c7f1ee7dbb324f41cb4d9076387b1514e8406a6d26",
+        "src/trotterlib/rpe_allocation_sensitivity_validation.py": "e2ff0ebfec2df3420f43751c841cec3371be0e4ee46e2424b7d2343a1896e3b8",
+        "src/trotterlib/rpe_delta_compiled_cost_validation.py": "4e2ba7e9e3dab6228b36c218ad558b36e55653263e251ce7df6cd9049872883d",
+        "src/trotterlib/rpe_delta_round_schedule_validation.py": "7854a9f2b05cc4d29d06e0d731fe76b988aaf63878971fb5be6a49515b9595c8",
+        "src/trotterlib/rpe_four_round_accounting_validation.py": "afd0eeb63abfb2d4b79e99334dece0bb54d9482e6cdd13cdb23126ab2643b44e",
+        "src/trotterlib/rpe_four_round_phase_validation.py": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4",
+        "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py": "38cdd6f13fd8201516b455e6a167586cc5755f198d949e1a83d9ebe4e7345eca",
+        "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py": "9c65a61b12d9f622734d37e13f3b8e49cee0822733d891705379c20a3c356067",
+        "src/trotterlib/rpe_hadamard_failure_validation.py": "5a7945059dac2f114329df0d7b06f79dec09a2170a481f105642448dbcb1abf3",
+        "src/trotterlib/rpe_hadamard_interrogation.py": "f1519d406c33465a7c0e42555d226b19237a87b464137bc7acfae80b8eae311d",
+        "src/trotterlib/rpe_hadamard_proxy_resource_validation.py": "06e22afefcc28fa9e49816c7885146eb6221f5c2ac65488db86d992060651002",
+        "src/trotterlib/rpe_hadamard_validated_proxy_provider.py": "d8a45438dbbafad06cea46917434513ed582508be358af16fd37a8c11f3b0e71",
+        "src/trotterlib/rpe_resource_accounting.py": "09c570a847ced735ae62cd4fb323a97caa2afb32fc548d41eed7a1c72ca52781",
+        "src/trotterlib/rpe_round_cost_connection_validation.py": "90bad226ad470c3af5d31431cf7cf2f32d3bc9258d7ffeaf0117fc261e7b07fb",
+        "src/trotterlib/rpe_short_round_optimization.py": "9314fad141d4c821f749a18deb9e42a9eefe97319afba997346d7c29e4e8f273",
+        "src/trotterlib/rpe_target_round_horizon_validation.py": "4547fab9c3a3311814a93118859989b416be6ed567daf427a9be2df2f4641892",
+        "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+        "src/trotterlib/rte_boundary_cost_validation.py": "bf5c97d0ff4cd4c0428b3d02fe181ff98d1a9e395994d553fad20849a38dbe19",
+        "src/trotterlib/rte_boundary_pair_validation.py": "8b1938360955166dd64b947ab3a66d607091aedfd1e6635abffc40e272e1e3a3",
+        "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+        "src/trotterlib/rte_connected_cluster_cost_validation.py": "8ade1ab145c4169225975c4ae461be23a1a22f44b75147e4ef896ad063a73dd7",
+        "src/trotterlib/rte_cost_angle_invariance_validation.py": "187a14784b6faabb48c5bb18e34b81c0b9c37f088623968c3a93abf1db1c9a6a",
+        "src/trotterlib/rte_order_stratified_cost_validation.py": "f473c352c8eaac395feb9e3a38136091a2e5ea0327b28ed6dbc603d9a72e5cc1",
+        "src/trotterlib/rte_system_size_cost_validation.py": "91ad2c41bfa34bb3c6432a910ea7a6de3abe5906f4241b4ad4e51a6ca58bd6b5",
+        "src/trotterlib/rz_layers.py": "f4129fa4685455f9574c18ea3a3d51db58f7ba4dbb095587c78f36f13dd4cf5d",
+        "src/trotterlib/targeted_validation_plan.py": "da7c0a827a0e624bc558f5810afbf76ff615fad6474606f754e45db60acd90c1",
+        "src/trotterlib/track_a_v1_contract.py": "bd3e5cf92ad26c8f71d31cdcfdec708a2837553f4e668bd6309311692601db0d",
+        "src/trotterlib/track_a_v1_p7_contract.py": "7a7c4c20f20119cbaa0fb2b62c5bacb4eecd5a545911b8ca4a43e411d904ae04",
+        "src/trotterlib/track_a_v2_residual.py": "579ad6146709e99bd092fd5ddf9ec141fd1cd630488117636d145accd9818d43",
+        "src/trotterlib/uwc.py": "24107639fd4768eae39e1717b637c9c321874bd6685e7be5904cd7ec01cdf880"
+      },
+      "input": {
+        "input_sha256": "9f5722aff8914f5e8bbeb2d41be8b8962ab2a85f64e580cbef7905437ac7cf6b",
+        "model_id": "artificial_native_DF_2q",
+        "state_generation": {
+          "method": "supplied occupation state"
+        }
+      }
+    },
+    "python": "3.12.3",
+    "environment": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0"
+    }
+  },
+  "validation": {
+    "status": "TECHNICAL_CONDITIONAL_ACCOUNTING",
+    "molecular_validation": false,
+    "resource_status": "CONDITIONAL_CNG_AVAILABLE",
+    "scientific_superiority_claimed": false,
+    "RPE_rounds_evaluated": false
+  }
+}

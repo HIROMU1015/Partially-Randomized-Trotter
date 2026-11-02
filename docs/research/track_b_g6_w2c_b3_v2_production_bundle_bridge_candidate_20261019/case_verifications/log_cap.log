@@ -1,0 +1,25 @@
+{"case": "log_cap", "root": "/tmp/b3-bundle-artificial-3jd8kgn_", "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e", "external_host_outer": {"parent_cpu_ns": 31512813, "wall_ns": 32644579, "worker_cpu_ns": 0, "includes_final_and_delivery_close": true}, "forbidden_imports": []}
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/docs/research/track_b_g6_w2c_b3_v2_production_bundle_bridge_candidate_20261019/run_case.py", line 18, in main
+    result=B.execute_artificial(c,m,root=root,store=store,storage_fault=B.Fault(spec.get('fault')))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py", line 158, in execute_artificial
+    ctl=Coordinator(settings,out,m['tasks'],m['planned'],m['run_id'],fault,manifest=m);fault.control=ctl;ctl.parent_save_cost={}
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py", line 69, in __init__
+    super().__init__(*args,**kwargs)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py", line 195, in __init__
+    self.journal.emit(dict(event='PLAN',schema='b3_parallel_control_v3',settings=P.asdict(settings),
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py", line 160, in emit
+    data=P.safe_json(row)+b'\n';self.budget.reserve('log',len(data));view=memoryview(data)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py", line 76, in reserve
+    self.raw_reserve(channel,n)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py", line 68, in raw_reserve
+    super().reserve(channel,n)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_scheduler.py", line 111, in reserve
+    D.need(self.reserved[channel]+amount <= self.limit[channel], 'GLOBAL_'+channel.upper()+'_BYTE_LIMIT')
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-v2-production-bundle-bridge-candidate-20261019/src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_driver.py", line 56, in need
+    raise Stop(reason)
+trottertracks.algorithm_codesign.g6_w2c_b3_parallel_driver.Stop: GLOBAL_LOG_BYTE_LIMIT
+

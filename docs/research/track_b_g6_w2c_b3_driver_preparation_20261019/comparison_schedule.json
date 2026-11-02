@@ -1,0 +1,157 @@
+{
+  "schema": "g6_w2c_b3_fixed_schedule_v1",
+  "not_adopted": true,
+  "cells": [
+    {
+      "arm": "ordinary",
+      "layer": "A",
+      "axis": "X",
+      "N": 1174526
+    },
+    {
+      "arm": "ordinary",
+      "layer": "A",
+      "axis": "Y",
+      "N": 1174526
+    },
+    {
+      "arm": "ordinary",
+      "layer": "B",
+      "axis": "X",
+      "N": 1174526
+    },
+    {
+      "arm": "ordinary",
+      "layer": "B",
+      "axis": "Y",
+      "N": 1174526
+    },
+    {
+      "arm": "partial_return_tail",
+      "layer": "A",
+      "axis": "X",
+      "N": 894664
+    },
+    {
+      "arm": "partial_return_tail",
+      "layer": "A",
+      "axis": "Y",
+      "N": 894664
+    },
+    {
+      "arm": "partial_return_tail",
+      "layer": "B",
+      "axis": "X",
+      "N": 894664
+    },
+    {
+      "arm": "partial_return_tail",
+      "layer": "B",
+      "axis": "Y",
+      "N": 894664
+    },
+    {
+      "arm": "closed_P3_tail",
+      "layer": "A",
+      "axis": "X",
+      "N": 880312
+    },
+    {
+      "arm": "closed_P3_tail",
+      "layer": "A",
+      "axis": "Y",
+      "N": 880312
+    },
+    {
+      "arm": "closed_P3_tail",
+      "layer": "B",
+      "axis": "X",
+      "N": 880312
+    },
+    {
+      "arm": "closed_P3_tail",
+      "layer": "B",
+      "axis": "Y",
+      "N": 880312
+    },
+    {
+      "arm": "full_return",
+      "layer": "A",
+      "axis": "X",
+      "N": 1014322
+    },
+    {
+      "arm": "full_return",
+      "layer": "A",
+      "axis": "Y",
+      "N": 1014322
+    },
+    {
+      "arm": "full_return",
+      "layer": "B",
+      "axis": "X",
+      "N": 1014322
+    },
+    {
+      "arm": "full_return",
+      "layer": "B",
+      "axis": "Y",
+      "N": 1014322
+    }
+  ],
+  "phases": [
+    {
+      "phase": "correctness",
+      "pass": "baseline",
+      "trials_per_cell": 16
+    },
+    {
+      "phase": "profile",
+      "pass": "baseline",
+      "trials_per_cell": "saved N"
+    },
+    {
+      "phase": "profile",
+      "pass": "instrumented",
+      "trials_per_cell": "same saved N"
+    }
+  ],
+  "call_budget": {
+    "correctness_sampling_calls": 256,
+    "baseline_full_N_sampling_calls": 15855296,
+    "instrumented_full_N_sampling_calls": 15855296,
+    "total_sampling_calls": 31710848,
+    "constructor_calls": 24,
+    "budget_recomputation_calls": 0,
+    "saved_budget_file_loads": 1,
+    "Full_F3_prepare_including_constructor_calls": 3,
+    "canonical_preflight_calls": 9,
+    "new_circuit_or_compile_or_synthesis_calls": 0,
+    "B1_B2_reenumeration_or_recalculation_calls": 0,
+    "angle_calls": "B only: one per accepted trial; canonical B = 4*N_a+32 each arm, Full B = observed accepted <=4*N_F+32",
+    "event_requeries": "one per B accepted trial; Full invokes original F3 event->packet; canonical original event(group,raw,child)",
+    "packet_calls": "Full original sample: one iff raw-valid, including coin reject; plus B angle requery iff accepted; frozen setup unchanged",
+    "source_checks": "shared file load/hash; per-pair setup; four sharing checks per pair; B overlay every operation; original F3 guards retained",
+    "bound_semantics": "exact scheduled sample count on success; variable path-dependent work counted, never force extra trials for coverage"
+  },
+  "schedule_policy": {
+    "result_bytes": 68719476736,
+    "log_bytes": 268435456,
+    "flush_rows": 4096,
+    "retention": "all-trial compact exact-document hashes; full documents first 16/axis and failure context",
+    "constructor": "one per arm/layer/phase-pass; share X/Y after initial/X/Y/final state/source identity checks",
+    "cache": "no new law/packet/angle memo; frozen held state X/Y only; fresh process per pair; OS cache uncontrolled",
+    "order": "correctness then baseline then instrumented; fixed arm order, A then B; own fresh Linux fork child per pair",
+    "angle": "A ratio only; B every accepted event, no cache, Full original F3 requery and canonical audited requery",
+    "memory": "own child /proc/self RSS samples every 4096 trials and own HWM/final RSS; not continuous RSS peak",
+    "output": "unbuffered per-pair exclusive JSONL; exact hex rational payload, chain SHA and file SHA; no append",
+    "flush": "Python unbuffered flush, not fsync or power-failure durability",
+    "overhead": "coarse and fine exclusive partitions separately reconciled to outer child total; baseline replay separate",
+    "resource_caps": {
+      "CPU": null,
+      "RAM": null,
+      "workers": null,
+      "wall_time": null
+    }
+  }
+}

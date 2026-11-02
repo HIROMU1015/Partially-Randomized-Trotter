@@ -1,0 +1,91 @@
+{
+  "schema": "H8_PHASE_B1_EXECUTION_V1",
+  "scope": "H8_B1_REUSED_B0_RUN02_B0I16_FIT_V1",
+  "resources": {
+    "driver_AS_bytes": 536870912,
+    "driver_RSS_bytes": 268435456,
+    "observer_AS_bytes": 536870912,
+    "observer_RSS_bytes": 268435456,
+    "AS_bytes": 536870912,
+    "RSS_bytes": 268435456,
+    "CPU_seconds": 240,
+    "worker_CPU_seconds": 240,
+    "observer_CPU_seconds": 120,
+    "aggregate_CPU_seconds": 360,
+    "wall_seconds": 600,
+    "aggregate_RSS_bytes": 536870912,
+    "admission_reserve_bytes": 536870912,
+    "max_workers": 0,
+    "minimum_free_inodes": 40000,
+    "stage_storage_bytes": 134217728,
+    "output_bytes": 67108864,
+    "log_bytes": 16777216,
+    "output_files_max": 1000
+  },
+  "call_caps": {
+    "cost_fit": 4,
+    "B0_training_checks": 6,
+    "B0_holdout_checks": 2,
+    "B0I_anchor_checks": 16,
+    "B2_prediction_rows": 4,
+    "new_compile": 0,
+    "new_signal": 0,
+    "cost_reaccount": 0,
+    "PR_sampling": 0,
+    "SCF": 0,
+    "DF": 0,
+    "state": 0,
+    "S4_compile": 0,
+    "B0I_compile": 0
+  },
+  "stratum_order": [
+    "B0/cosine",
+    "B0/sine",
+    "B0I/cosine",
+    "B0I/sine"
+  ],
+  "S2": "a+b*q+d*prefix*q",
+  "S4": "a+3*b*q+3*d*prefix*q",
+  "B0_TRAIN": [
+    [
+      14,
+      1
+    ],
+    [
+      21,
+      1
+    ],
+    [
+      14,
+      8
+    ]
+  ],
+  "B0_HOLDOUT": [
+    [
+      21,
+      8
+    ]
+  ],
+  "B0I": "ALL_EIGHT_SAVED_ANCHORS_PER_AXIS",
+  "relative_error_denominator": "MEASURED_RZ",
+  "stop_at_or_above": "1/50",
+  "exact_rational_least_squares": true,
+  "original_B0_run02_status": "STOP",
+  "saved_B0_reuse_requires_audit": true,
+  "historical_thread_compliance_certified": false,
+  "independent_axes": true,
+  "no_H6_coefficients": true,
+  "no_old_B0_anchors": true,
+  "one_shot": true,
+  "retry": false,
+  "refit": false,
+  "resume": false,
+  "mandatory_STOP": true,
+  "B2_authorized": false,
+  "C_authorized": false,
+  "next_stage_authorized": false,
+  "user_approval_text": "その方針で進めて",
+  "user_approval_context": "保存済みB0 8軸を用いるB1の3点fitと独立holdout検証、B0I既存16軸のfit。各軸2%以上STOP。新compile/B2/Cなし。",
+  "authorized_B1_executed_once": true,
+  "new_compile_authorized": false
+}

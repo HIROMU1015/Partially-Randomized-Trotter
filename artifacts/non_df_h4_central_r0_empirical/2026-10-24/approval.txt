@@ -1,0 +1,505 @@
+# Codex指示：H4 Pauli central-control R0経験的実装残差診断
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-central-rho-preparation-20261024`
+
+基点commit：
+`2734b97c2dd5f017e93cd81619ff52a6a0c6f16b`
+
+主要資料：
+
+- `docs/non_df_h4_central_rho_preparation_20261024.md`
+- `artifacts/non_df_h4_central_rho_preparation/2026-10-24/contracts_DRAFT.json`
+- `artifacts/non_df_h4_central_rho_preparation/2026-10-24/targets.json`
+- `artifacts/non_df_h4_central_rho_preparation/2026-10-24/error_ownership.json`
+- `docs/non_df_h4_central_conditional_cng_20261024.md`
+
+## 1. 今回の明示的な実行承認
+
+**R0のbinary64経験的数値診断を承認します。**
+
+目的は、固定H4のPauli-JW central-control回路について、実際の保存compiled QPYが生成する測定期待値と、Cで定義された理想信号の差を調べることです。
+
+対象は次の2つに限定します。
+
+| 対象 | 軸 | 目的 |
+|---|---|---|
+| Pauli central PF | cosine | 決定論的PFの局所残差 |
+| Pauli central PR index0 | cosine | order0を含む固定PR trajectoryの局所残差 |
+
+今回は以下を一括承認します。
+
+1. 固定SOURCE・QPY・state・C証拠の確認
+2. 既存コードを再利用した本番用R0数値adapterの最小実装
+3. 必要な人工テスト
+4. 新しい科学SOURCE・runtime・入力の固定
+5. 専用one-shot grantの発行
+6. PF/PR0の限定状態作用・信号評価
+7. Compiler-only差とC-target残差の分離
+8. 許容ρ予算との経験的比較
+9. 結果・再現性証拠の保存
+10. 技術的中断時の原因修正・限定再実行
+11. Commit/push・mandatory STOP
+
+**承認する新しい実H4状態作用は、初回実行で最大5回です。**
+
+Arb区間評価、R1、R2、N/G再計算、新規compile、samplingは承認しません。
+
+## 2. 固定科学条件
+
+従来条件を維持してください。
+
+- Linear H4、隣接1.00 Å、STO-3G
+- System 8 qubit＋ancilla 1 qubit
+- Pauli-JW Hamiltonian：184非identity項
+- PR prefix27
+- S2、T=0.8、q=8、r=4、K=4
+- 元PR event law・保存trajectory
+- D2のcentral-control合成規則
+- Qiskit 1.3.0
+- Native basis：`rz`, `sx`, `x`, `cx`
+- Optimization level1、seed17
+- Backend/coupling/layout/routing指定なし
+- 保存された元state/ray
+- 元cosine Hadamard wrapper
+
+主要SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- C：`e80d7510880f8db993b777c627bb8e95b05a070d`
+- D2：`74515d8eb4f073c40fc783681a3775dbca89e9b1`
+- A_AXES：`a37232f85812688c3b9ab957c5073c5ce143b17e`
+- 条件付きC/N/G：`d96dfe5ca0a6c950a5f1791ff61659e6dc8f1c34`
+
+元SOURCE・科学条件・保存結果を変更しないでください。
+
+## 3. 固定診断対象と新規call上限
+
+**PF cosine**
+
+Trajectory ID：
+`d761627d56a4454e644358fef8907b8a7db28c4feeb44130224c20e4e50aae4d`
+
+保存回路：D2のPauli PF central-control cosine。
+
+**PR index0 cosine**
+
+Trajectory ID：
+`93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97`
+
+保存回路：D2のPauli PR central-control cosine。
+
+新しい状態作用の初回上限は以下です。
+
+| 計算 | 上限 |
+|---|---:|
+| PF未compiled入力QPYの状態作用 | 1 |
+| PF compiled出力QPYの状態作用 | 1 |
+| PR0未compiled入力QPYの状態作用 | 1 |
+| PR0 compiled出力QPYの状態作用 | 1 |
+| PR0のC整合理想信号を求める状態作用 | 1 |
+| **合計** | **5** |
+
+PFのC理想信号は既存保存値から読み取ってください。
+
+PR0のC理想信号は個別trajectoryについて求めてください。**PR law meanをPR0の理想信号として代用してはいけません。**
+
+新しいHamiltonian構築、state生成、generic回路生成、compile、samplingは0です。
+
+## 4. 最優先：既存コードの再利用
+
+実装前に、過去のコード・関数・テスト・計算パイプラインを確認してください。
+
+特に、
+
+- `h4_central_rho_plan`
+- `h4_central_cng`
+- `h4_d2_pauli_control`
+- `h4_a_axes`
+- `fixed_signal_evaluation`
+- 既存のC selected-trajectory/reference演算
+- 保存QPY読み取り・fingerprint・SHA照合
+- Qiskit `Statevector.evolve`
+- 既存のraw ray・norm処理
+- 既存CallBudget・native witness・結果保存機能
+
+を優先して再利用してください。
+
+準備段階のtoy-only entrypointを、flag変更だけで実H4へ適用してはいけません。
+
+実H4で必要な入力接続・状態作用・C-target生成部分のみを拡張してください。
+
+既存の科学条件・入出力・数値精度に適合する関数がある場合、不要な再実装は行わないでください。
+
+## 5. 実行前のSOURCE・QPY・state照合
+
+数値作用の前に以下を確認してください。
+
+- 保存SOURCEと実使用コード
+- Input/output QPYのSHA
+- QPYを実際にdecodeした構造
+- Compiler profile
+- Input/output fingerprint
+- Gate・wire配置
+- Ancilla位置
+- Global phase
+- Control=0/1
+- Measurement配置
+- 中間measurement/reset/conditionの有無
+- 元state/rayと保存hash
+- C理想信号の参照対象
+- PR0のevent列・符号・phase
+
+保存metadataを読むだけではなく、今回使用するQPY自体とSOURCEの対応を確認してください。
+
+実行対象に未対応gateや、意味論上の不一致があれば、そのまま状態作用へ進んではいけません。
+
+旧Pauli-PR historical fingerprint FAILは保持してください。今回の対応検証で旧問題が解明したと主張しないでください。
+
+## 6. 測定期待値の計算
+
+保存された8qubitのraw状態vectorをψとします。
+
+\[
+\nu=\langle\psi|\psi\rangle
+\]
+
+元のstate/rayを変更せず、同じνで測定期待値を正規化してください。
+
+Ancillaは保存wrapperと同じwire8です。
+
+Cosineについて、Hadamard testの最後のZ測定期待値を使用します。
+
+\[
+m_{\mathrm{cos}}
+=\frac{p_0-p_1}{\nu}
+\]
+
+ここでp0、p1は、状態作用後のancilla=0/1 sectorの振幅二乗和です。
+
+計算では、
+
+- Input QPYとcompiled QPYの最終measurementを適切に除いて作用
+- 回路のglobal/relative phaseを保持
+- Ancilla wireを正しく指定
+- 元raw stateを再正規化しない
+- 出力normで再正規化しない
+- Qiskitの確率APIにおけるclippingの影響を避ける
+- 伝播した振幅から直接Z期待値を縮約
+
+してください。
+
+準備段階で発見したraw normと`probabilities` clippingの問題について、修正済み人工テストを再利用してください。
+
+## 7. C-targetとcompiler残差を区別
+
+各対象・cosine軸について、次を定義します。
+
+- \(m_C\)：CのSOURCEに整合する理想信号
+- \(m_{\mathrm{in}}\)：保存未compiled入力QPYの測定期待値
+- \(m_{\mathrm{out}}\)：保存compiled出力QPYの測定期待値
+
+B_savedを使って、次の値を求めてください。
+
+\[
+\delta=B_{\mathrm{saved}}
+|m_{\mathrm{out}}-m_{\mathrm{in}}|
+\]
+
+\[
+\eta=B_{\mathrm{saved}}
+|m_{\mathrm{in}}-m_C|
+\]
+
+\[
+d=B_{\mathrm{saved}}
+|m_{\mathrm{out}}-m_C|
+\]
+
+それぞれ、
+
+- δ：Compiler-only差
+- η：C-targetから保存入力までの差
+- d：C-targetからcompiled出力までの直接差
+
+です。
+
+三角不等式との整合性も確認してください。
+
+**今回最も重要なのはdです。**
+
+δが小さくても、ηが残るためdが小さいとは限りません。
+
+B_savedは一度だけ掛けてください。B_upをここで代用したり、Bを二重に掛けたりしてはいけません。
+
+### PF
+
+PFは決定論的なので、正しいC-target対応が成立すれば、この固定PF回路の局所残差としてdを評価できます。
+
+### PR index0
+
+PR0については、選択されたtrajectoryのC-targetを計算します。
+
+このdは**PR index0の局所残差**です。
+
+PR全lawについて、
+
+\[
+\rho_{\mathrm{PR}}
+=
+\left|
+B_{\mathrm{saved}}
+\mathbb{E}_{p}
+[m_{\mathrm{out},i}-m_{C,i}]
+\right|
+\]
+
+を保証したことにはなりません。
+
+保存256本も未観測order4を含む全event lawを網羅していません。
+
+PR0の値をPR law mean・母平均残差・全trajectory一様上界へ外挿しないでください。
+
+## 8. 数値精度方針
+
+**今回採用するのはbinary64による経験的評価のみです。**
+
+- Qiskit Statevectorの既存実装を使用
+- 新しいArb区間評価は行わない
+- 64→96→128 bitのprecision escalationは行わない
+- 数値的な真値包含を主張しない
+- 新しいroundoff保証値を作らない
+
+準備報告書の絶対幅1e-8は将来の区間評価の設計目標であり、今回のbinary64結果に保証された不確かさではありません。
+
+保存PF C-targetに区間がある場合は、その区間を尊重してください。
+
+PR0のC-targetについても、binary64の点値を区間保証済みの真値と呼ばないでください。
+
+今回のd・δ・ηは**経験的な数値結果**として保存します。
+
+## 9. 許容ρ予算との比較
+
+既存条件付きC/N/Gから、最も厳しい信号精度
+
+`epsilon_sig=0.0005`
+
+におけるcosine軸の許容ρ予算を引用してください。
+
+| 対象 | 保存された許容ρ予算 |
+|---|---:|
+| Pauli central PF cosine | 約2.64900e-6 |
+| Pauli central PR cosine | 約2.59361e-6 |
+
+既存のexact/scalar証拠がある場合は、表示上の近似値ではなく、その保存値を比較に使ってください。
+
+各対象について、
+
+- 経験的d
+- 経験的δ
+- 経験的η
+- ρ予算
+- d/ρ予算
+- 予算との差
+- 診断上の注意点
+
+を報告してください。
+
+dが予算より小さい場合でも、**LOCAL_BUDGET_METという保証判定にはしないでください。**
+
+判定は例えば、
+
+`EMPIRICAL_ONLY_NO_RHO_UPPER`
+
+として、数値的には予算より小さいか大きいかを別に記録してください。
+
+もし位相・SOURCEの不一致が見つかった場合は、予算比較より原因調査を優先してください。
+
+計算結果が期待と異なるという理由で、科学条件を変更したり、別の入力を選び直したりしないでください。
+
+## 10. 実行管理・科学SOURCE
+
+実H4の状態作用を実施する前に、今回の科学SOURCE・runtime・入力・出力schemaを固定してください。
+
+専用branchと専用namespaceを使用します。
+
+今回の明示承認に結び付けた新しいone-shot grantを作成してください。
+
+- R0論理診断：2
+- 初回の新状態作用：最大5
+- 新compile：0
+- 新sampling：0
+- 新Hamiltonian/state生成：0
+- 新C/Lフル計算：0
+- N/G再解析：0
+- Arb区間診断：0
+
+科学callは起動前に予約し、失敗したcallも消費済みとして記録してください。
+
+既存のconsumed grantやSTOPを再利用・改変してはいけません。
+
+PFとPR0は独立に実行できます。実際の計算負荷と利用可能資源を確認し、必要なら並列化してください。
+
+## 11. 意図しない技術的中断への対応
+
+従来のユーザー承認を維持します。
+
+**科学条件を変更しない技術的不具合については、原因を修正して限定再実行して構いません。**
+
+例：
+
+- QPY reader/adapterの技術的バグ
+- Statevector接続ミス
+- 保存I/Oの失敗
+- Native workerの異常
+- テストfixture・SOURCE bindingの修正可能な問題
+
+修正時には、
+
+1. 原因を特定する。
+2. 成功済みの科学結果を再利用する。
+3. 失敗・未完了の対象だけを再実行する。
+4. 失敗call・旧grant・旧STOPを保全する。
+5. Code変更後は新SOURCE・seal・未使用grantを固定する。
+6. 回復履歴と総試行回数を記録する。
+
+中間承認は不要です。
+
+ただし、原因不明の無制限retryは禁止します。
+
+以下は今回の回復承認に含みません。
+
+- 新しい科学対象・trajectory追加
+- R1/R2への移行
+- Sine診断
+- Arb区間評価
+- Hamiltonian/event lawの変更
+- Compiler profile変更
+- 新compile・sampling
+- C/L誤差会計の変更
+- N/G再解析
+- Formal certificate受理
+
+科学的に重要な不一致が解消できなければ、取得済み証拠を保全してmandatory STOPしてください。
+
+## 12. 今回必要な結果
+
+PFとPR index0について、次を明確にしてください。
+
+1. C-target信号
+2. Input QPYのcosine信号
+3. Compiled QPYのcosine信号
+4. Compiler-only差δ
+5. C-targetから入力までの差η
+6. C-targetからcompiled出力までの差d
+7. 既存ρ予算との経験的な大小関係
+8. 数値誤差の未保証部分
+9. 位相・scale・control対応の技術的問題の有無
+10. 次に必要な診断の最小範囲
+
+特に、
+
+**「Compiler変換そのものの残差」**
+
+と
+
+**「Cで定義された理想信号からcompiled実装までの残差」**
+
+を明確に区別してください。
+
+PFとPR0で残差の傾向が異なる場合は、SOURCE上で説明可能な差を整理してください。
+
+ただし、2件だけでPR全lawの保証や一般的な誤差スケーリングを主張しないでください。
+
+## 13. 次段階への判断
+
+R0完了後、結果に応じて次の候補を提示してください。
+
+**候補A：R1 order2 cosine**
+
+保存PR index1の非可換product・sign・phaseに対する局所残差。
+
+**候補B：R1 sine**
+
+実際の保存sine QPYを使った測定軸依存性。
+
+**候補C：Arb区間評価**
+
+C-targetとcompiled期待値のvalidated enclosureにより、局所ρの上界を評価。
+
+**候補D：R2全law転送**
+
+未観測eventを含むPR law全体へ誤差上界を転送する設計。
+
+これらは提案のみとします。
+
+**今回R1・R2・Arb数値計算は実行しないでください。**
+
+結果が小さい場合でも、必要な次段階を自動的に広げないでください。
+
+## 14. 最新研究運用指示
+
+最新版`research_project_instructions_unified_2026-10-23.md`を適用してください。
+
+特に§8.4・§10・§10.3を遵守します。
+
+- 既存コード・関数・テスト・計算パイプラインを再利用
+- 科学的知見と必要十分な再現性を優先
+- 不要な再実装・過剰監査・形式的完全一致要求を回避
+- CPU/RAM/worker数に恣意的な低い上限を設けない
+- 必要なら十分な並列化・高速化
+- 共有環境全体や他ユーザーの設定・process・ファイルを変更しない
+
+Codex環境の文書に§10.3がない場合は版不一致を記録し、未取得の本文を読んだことにしないでください。今回の直接指示にある研究目的優先・再現性重視・過剰管理回避は適用してください。
+
+旧SOURCE・raw・grant・ledger・marker・STOPを保全してください。
+
+以下の未解決状態も変更しません。
+
+- Pauli-PR historical hash FAIL／原因UNKNOWN
+- 元H4 native UNKNOWN
+- 旧N/G null
+- C/L COMBINATION_BLOCKED
+- 旧compiler MISSING_EVIDENCE
+- PR law全体のρ UNKNOWN
+- PR母平均費用tail UNKNOWN
+- Formal certificate未受理
+
+## 15. 成果物・mandatory STOP
+
+専用branchへ以下を保存してください。
+
+1. R0実行SOURCE・最小adapter・人工テスト
+2. QPY/state/C-targetの入力対応
+3. 実行契約・grant・call ledger
+4. PF/PR0の3信号とδ・η・d
+5. ρ予算との経験的比較
+6. 数値精度・保証範囲・未解決事項
+7. 技術的中断があった場合の原因・修正・回復履歴
+8. Native終了・保存検証
+9. 結果報告書
+10. Commit・remote SHA・mandatory STOP
+
+最終報告では、特に以下を簡潔に示してください。
+
+- 2論理診断が完了したか
+- 新状態作用の成功数・総試行数
+- PF/PR0それぞれのδ・η・d
+- ρ予算に対する経験的な余裕
+- 実装上の位相・scale・control不一致の有無
+- Arb区間診断が次に必要か
+- Order2/sine診断の優先順位
+- 次に必要な明示承認
+- SOURCE・commit・remote SHA・STOP
+
+専用branchへcommitし、既存のrepository運用規則に従ってpush・remote SHAを確認してください。
+
+認証失敗時は結果を保全して報告してください。GitHub上に同一commitが既に存在する場合は再push不要です。
+
+**今回承認したR0の実装・人工検証・SOURCE固定・2論理診断／初回最大5状態作用・経験的残差評価・必要な技術回復・成果物保全まで一括で実施してください。**
+
+完了後は**mandatory STOP**してください。
+
+Arb区間評価、R1、R2、新compile、sampling、N/G再解析、正式certificate受理には自動移行しないでください。

@@ -1,0 +1,221 @@
+{
+  "schema": "C_PR_LOCAL_DIRECTION_UNAPPROVED_CONTRACT_V1",
+  "status": "UNAPPROVED_SCIENTIFIC_EXECUTION",
+  "scope": "C_PR_LOCAL_DIRECTION_SYMMETRIC_DIAGNOSIS_V1",
+  "base_commit": "0bb25e3c0cd50b6794a78513925043d216607827",
+  "entry": "scripts/run_research_c_pr_local_direction.py",
+  "source_manifest": "artifacts/research_c_pr_local_step/2026-11-02/technical/SOURCE.json",
+  "source_manifest_sha256": "8b22d88f22620879c45f1b3d78e377e2dfe471ce13377291f6935e249c577925",
+  "objective": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "mass_scale": 2.2093719370722074,
+    "gamma": 0.1,
+    "epsilon": 1e-08
+  },
+  "policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_xtol": 1e-12,
+    "metric_singular_floor": 1.0,
+    "u_max_nfev": 25,
+    "u_solver_gtol": 1e-12,
+    "u_xtol": 1e-14,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10,
+    "outer_maxiter": 1,
+    "max_points": 7,
+    "outer_gtol": 1e-07,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "inner_refinements": 2
+  },
+  "fractions": [
+    0.125,
+    0.03125,
+    0.0078125
+  ],
+  "conditions": {
+    "model": "saved linear H4,1.00 Angstrom,STO-3G",
+    "representation": "number CDF8,signed symmetric J,real orthogonal U",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "ld": 2,
+    "original_frame_order": true,
+    "kappa": "original_g_corrected_unchanged_not_evaluated",
+    "scalar": "original_once_unchanged_not_evaluated",
+    "DF_budget_Ha": 0.00019875,
+    "initialization": "same original qualified J/U at eta=0;NOT saved trial2 U or any optimized endpoint",
+    "per_new_eta": "original J initialization,then exactly two successive same-array Newton-CG refinements",
+    "purpose": "local scale and reduced directional-derivative diagnostic;NOT an outer optimizer or U acceptance experiment"
+  },
+  "input_paths": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "dependency_lock": {
+    "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt",
+    "sha256": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "fresh_output": "artifacts/research_c_pr_local_step/2026-11-02/run01",
+  "call_limits": {
+    "saved_load": 1,
+    "initial_identity": 1,
+    "objective_setup": 1,
+    "local_probe_driver": 1,
+    "inner_J_solve": 21,
+    "precision_state": 14,
+    "reduced_admission": 7,
+    "directional_diagnostics": 1,
+    "classification": 1,
+    "export": 1
+  },
+  "maximum_logical_units": 49,
+  "maximum_signed_probe_points": 6,
+  "maximum_distinct_U_points": 7,
+  "maximum_inner_solver_invocations": 21,
+  "maximum_refinement_invocations": 14,
+  "accepted_U_updates": 0,
+  "outer_optimizations": 0,
+  "outer_BFGS_invocations": 0,
+  "ffsim_joint_fitter_invocations": 0,
+  "RC2_continuation": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "algorithm": {
+    "inner": "UNCHANGED same-array Newton-CG,maxiter1000/xtol1e-12;original J cold initialization and exactly2 refinements at every eta",
+    "admission": "UNCHANGED independent final J1e-5+margin,latest-pair U-shift1e-6,PR rank/nullspace/tail injectivity and correctness/nonincrease checks",
+    "direction": "From admitted original eta0 only:d=-g0,s=g0 dot d;this is a reported candidate direction,NOT a proven exact-Phi descent direction",
+    "scale": "alpha_scale=F0/(-s),F0>0,s<0;nonpositive F0 or zero direction:explicit no-probe STOP;nonfinite:correctness FAIL",
+    "points": "h=alpha_scale*q for q=(1/8,1/32,1/128);query eta0+h*d then eta0-h*d at each scale;all6 points predetermined from initial registered rule;no adaptivity/backtracking expansion",
+    "diagnostics": "Re-solved-J central/forward/backward differences in alpha units,FD minus reported s,interlevel change,forward delta F and empirical value-resolution scales",
+    "missing_points": "Numerically unqualified side is not used in F differences or gradients;missing pair has null FD;continue other registered independent probes only. Initial unqualified:no probes",
+    "correctness": "SOURCE/input/nonfinite/chain/value/raw/orthogonality/progress mismatch:preserve partial and STOP;never continue after correctness FAIL",
+    "no_update": "All points are diagnostic/unaccepted;export original-U refined initial only,not a new DF-qualified optimized candidate"
+  },
+  "numerical_allowances": {
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "J_gradient_infinity": 1e-05,
+    "physical_U_partial_gradient_l2": 1e-05,
+    "first_order_margin": "same gradient_atol+gradient_rtol*max(value,threshold),value+margin<=threshold",
+    "orthogonality": 1e-10,
+    "longdouble_minimum_significant_bits": 64,
+    "rigorous_gradient_error_bound": null,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "rank_rule": "existing head rank LD*d-(LD-1),only U-independent universal head gauges;extra/ambiguous null refused;tail injectivity;no pseudoinverse/drop/ridge"
+  },
+  "value_resolution": {
+    "registered_scale": "original value_atol+value_rtol*max(abs(Fa),abs(Fb))",
+    "observed_scales": [
+      "latest refinement value change",
+      "extended/binary64 value difference",
+      "independent AD value difference"
+    ],
+    "comparison_scale": "max(registered scale,known observed scales for both compared points);all same scalar objective units;NOT a rigorous bound",
+    "forward_label": "EMPIRICAL_DECREASE/EMPIRICAL_INCREASE only if saved deltaF is outside comparison scale;otherwise UNRESOLVED_VALUE_SCALE;no U acceptance",
+    "FD_sensitivity_scale": "comparison_scale(Fplus,Fminus)/(2*h);no truncation or unknown-inner bias bound is asserted",
+    "unknown_inner_solution_error": null,
+    "truncation_error_bound": null,
+    "true_reduced_gradient_qualification": null,
+    "certified_descent": null,
+    "forbid": "Do not set unknown error to0 or use FD agreement alone as true gradient qualification"
+  },
+  "calls": {
+    "saved_load": "1,original g/J/U and saved objective metadata",
+    "initial_identity": "1,finite binary64 shape,J symmetry,U orthogonality,original scales",
+    "objective_setup": "1,unchanged PR objective",
+    "local_probe_driver": "1,initial eta plus3 registered signed pairs,NO optimizer",
+    "inner_J_solve": "<=21,3 per eta;all raw/VG/Hessian diagnostics included,actual counters saved",
+    "precision_state": "<=14,2 per eta,existing same-array extended/binary64 J/U diagnostics",
+    "reduced_admission": "<=7,existing rank/stability/independent J gates and already computed pair metadata",
+    "directional_diagnostics": "1,already-computed qualified scalar values only;no new objective/gradient/Hessian queries",
+    "classification": "1,data availability and unknown error/status fields,not convergence/true derivative PASS",
+    "export": "1,already computed original-U diagnostic initial and JSON only"
+  },
+  "execution_order": [
+    "passive SOURCE/input/environment/resource checks;fresh output absent",
+    "saved_load",
+    "initial_identity",
+    "objective_setup",
+    "local_probe_driver:initial3-solves/2-states/admission,then for each registered q:plus eta then minus eta,same3-solves/2-states/admission",
+    "directional_diagnostics",
+    "classification",
+    "export",
+    "journal/resources/STOP;publish and mandatory STOP"
+  ],
+  "outputs": [
+    "raw x0/x/J/z/jac/W and pre-step/accepted semantics per inner solve",
+    "raw status,message,nit,nfev,njev,nhev and actual VG/Hessian counts",
+    "all7 eta/J/U states and pair diagnostics,with qualifiers",
+    "F0,g0,d,s,alpha_scale,q and actual h/eta",
+    "signed side qualification/missing-value records",
+    "central/forward/backward FD and engineering resolution observations",
+    "original-U diagnostic initial,not an accepted update",
+    "SOURCE/contract copies,call journal,resources,partial failure evidence if needed,mandatory STOP"
+  ],
+  "outcomes": {
+    "available": "LOCAL_DIRECTIONAL_DIAGNOSTICS_AVAILABLE means all3 qualified pairs measured,NOT accurate true reduced derivative",
+    "partial": "LOCAL_DIAGNOSTICS_PARTIAL/missing pair or initial unqualified status;unknown finite differences remain null",
+    "ambiguity": "No automatic FD derivative qualification or U acceptance;interpret curvature/inner bias/value floor as separate unresolved explanations",
+    "DF_budget": null,
+    "PR_performance": null,
+    "true_reduced_gradient_qualification": null,
+    "certified_descent": null
+  },
+  "forbidden": [
+    "restart/continue old60-call or increase its backtracking trials",
+    "actual outer optimization or accepted U updates",
+    "change inner solver,objective,rank,gamma,epsilon,scales,kappa/scalar/spin/frame/allowances",
+    "extra refinement/retry/resume/adaptive q or added probe points",
+    "convert empirical windows to rigorous bounds or unknown errors to0",
+    "new physical DF/operator/CAR/PF/RTE/ground/native/shots/total-cost evaluation",
+    "RC2/joint/paired continuation or important scientific review/automatic next phase"
+  ],
+  "provenance": {
+    "old60_call_result_commit": "0bb25e3c0cd50b6794a78513925043d216607827",
+    "old60_call_scientific_SOURCE": "d03351ea00a9352b1d637e672c0dc679201b523a",
+    "old_SOURCE_results_STOP_preserved": true,
+    "old_call_budgets_not_reused": true
+  },
+  "resources": "No arbitrary CPU/RAM/worker/wall cap;one dependent PR trajectory with vectorized NumPy/SciPy/JAX/extended CPU path;choose thread coordination from actual free resources;task-local cache only;no shared environment/process changes",
+  "authorization": "PROPOSAL ONLY;separate explicit user permission required for fresh49-unit signed local diagnosis. No approval proof/record/grant required",
+  "policy_field_scope": "Inherited optimizer fields are retained for compatibility;active scope is7 diagnostic eta points,3 inner calls per point,zero optimizer/U updates."
+}

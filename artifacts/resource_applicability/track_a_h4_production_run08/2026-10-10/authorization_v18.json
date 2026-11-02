@@ -1,0 +1,82 @@
+{
+  "allowed_cpus": [
+    2,
+    4,
+    5,
+    6,
+    16,
+    18
+  ],
+  "approved": true,
+  "budget_accounting": {
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/USER_AUTHORITY_v8.json",
+      "sha256": "b99961fc3996a8bb29c84bbe2ec9ce9592c112abfc28a2a8d57b099613cbc0a6"
+    },
+    "exclude_failed_carry": true,
+    "scope": "per_attempt"
+  },
+  "budget_amendment": {
+    "approved": true,
+    "authority_reference": "artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/USER_AUTHORITY_v8.json",
+    "from": 74804,
+    "to": 74805
+  },
+  "environment_accepted": true,
+  "memory_budget_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/USER_MEMORY_AUTHORITY_v1.json",
+      "sha256": "a81d93093aca37a150963d70e141fa401a2958467f35f9a69b09dc3078b8d827"
+    },
+    "from": 8589934592,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_worker_memory32_fix/2026-10-10/worker_memory_profile_v1.json",
+      "sha256": "0556abcce2205af3ec26e530199dfb728b2a9503f8de8d8a5170feda33b2f690"
+    },
+    "to": 34359738368
+  },
+  "observer_role": {
+    "AS_bytes": 268435456,
+    "RSS_bytes": 67108864,
+    "approved": true,
+    "runtime_authorization": true
+  },
+  "one_shot": true,
+  "output_budget_amendment": {
+    "approved": true,
+    "authority_reference": "artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/USER_AUTHORITY_v8.json",
+    "from": 13958643712,
+    "to": 18253611008
+  },
+  "permission": "signal_compile",
+  "plan_fingerprint": "a39385b1583bcc1c14080a961b769d1e51c578576c004a6f8a3fa52f86fc51df",
+  "pressure_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/USER_PRESSURE_AUTHORITY_v7.json",
+      "sha256": "a4daf128221c61180ad0bc20476cd8b1779090535f5aa85907fedba7546a3662"
+    },
+    "from_host_stop_percent": 0.0,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+      "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+    },
+    "to_host_stop_percent": 1.0
+  },
+  "recovery_policy": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run08/2026-10-10/USER_AUTHORITY_v8.json",
+      "sha256": "b99961fc3996a8bb29c84bbe2ec9ce9592c112abfc28a2a8d57b099613cbc0a6"
+    },
+    "mode": "investigate_fix_fresh_restart",
+    "scope": "signal_compile_only"
+  },
+  "result_prior": true,
+  "run_id": "h4-newhost-signal-compile-20261010-run08",
+  "runtime_authorization": true,
+  "schema_version": "h4-newhost-authorization-v2",
+  "source_commit": "8c917a5af7943969d4abede8b0bb012880efeee0",
+  "stage": "signal_compile"
+}

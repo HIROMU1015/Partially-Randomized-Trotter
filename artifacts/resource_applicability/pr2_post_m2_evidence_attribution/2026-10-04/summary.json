@@ -1,0 +1,1748 @@
+{
+  "access_audit": {
+    "circuit_build_compile": 0,
+    "embedded_artifact_paths_followed": 0,
+    "gpu_operations": 0,
+    "npz_resolve_stat_hash_load": 0,
+    "runtime_cache_reads": 0,
+    "science_imports": 0,
+    "session_total_saved_file_reads_measured": false,
+    "signal_evaluations": 0,
+    "trajectories_sampled": 0,
+    "unique_saved_json_input_files": 5,
+    "unique_source_input_files": 4
+  },
+  "candidate_domain_audit": {
+    "B0_rank4_rank5": "NOT_REGISTERED_IN_M1_OR_M2",
+    "B3_q1_r256": "NOT_REGISTERED_NO_INFERENCE_OR_NEW_RUN",
+    "r64_only": [
+      "B2-rank3-q1-r64-K2",
+      "B3-rank0-q8-r64-K2"
+    ],
+    "rank_matrix_missing_cells": 10
+  },
+  "claim_audit": [
+    {
+      "claim": "registered-grid intermediate partial remains competitive at fixed q8 and free q",
+      "status": "SUPPORTED_SCOPED_POINT_VALUES"
+    },
+    {
+      "claim": "q optimization first reveals rank3 or reverses the best method",
+      "status": "NOT_SUPPORTED_SAME_DOMAIN_Q8_ALREADY_B2_RANK3"
+    },
+    {
+      "claim": "old selector loses the primary RZ optimum",
+      "status": "NOT_SUPPORTED_RZ_REGRET_ZERO"
+    },
+    {
+      "claim": "old selector loses complete six-metric Pareto membership",
+      "status": "SUPPORTED_ONE_OF_TWO_LOST_PROXY_FRONTIER_RETAINS_BOTH"
+    },
+    {
+      "claim": "M1 vs M2 P envelope change establishes geometry-induced method change",
+      "status": "NOT_SUPPORTED_DOMAIN_CONFOUNDED_COMMON5_BOTH_REACH_B1"
+    },
+    {
+      "claim": "B0 outer_pf_bias_abs is pure PF bias",
+      "status": "NOT_SUPPORTED_DISCARD_PLUS_PF_TOTAL_BIAS"
+    },
+    {
+      "claim": "five frozen configurations transfer on H4 1.30 Angstrom",
+      "status": "EXISTING_M2_SUPPORTED_NOT_METHOD_OPTIMALITY"
+    },
+    {
+      "claim": "chemical accuracy energy/RPE end-to-end or strong-baseline superiority",
+      "status": "NOT_ESTABLISHED"
+    }
+  ],
+  "common_domains": {
+    "M1_all": {
+      "best_by_method": {
+        "B0": {
+          "candidate_id": "B0-rank6-q1-r0-K0",
+          "effective_rz_cost": 10550.0,
+          "rz_count": 253379350.0,
+          "total_shots": 24017
+        },
+        "B1": {
+          "candidate_id": "B1-rank12-q1-r0-K0",
+          "effective_rz_cost": 20168.0,
+          "rz_count": 372523128.0,
+          "total_shots": 18471
+        },
+        "B2": {
+          "candidate_id": "B2-rank3-q1-r4-K2",
+          "effective_rz_cost": 6359.71875,
+          "rz_count": 130774896.65625,
+          "total_shots": 20563
+        },
+        "B3": {
+          "candidate_id": "B3-rank0-q8-r32-K4",
+          "effective_rz_cost": 31993.531250000007,
+          "rz_count": 1152790918.0000002,
+          "total_shots": 36032
+        }
+      },
+      "eligible_count": 206,
+      "point_pareto": [
+        "B2-rank3-q1-r4-K2",
+        "B2-rank3-q1-r8-K2"
+      ],
+      "registered_count": 210
+    },
+    "M1_common5": {
+      "best_by_method": {
+        "B0": {
+          "candidate_id": "B0-rank6-q1-r0-K0",
+          "effective_rz_cost": 10550.0,
+          "rz_count": 253379350.0,
+          "total_shots": 24017
+        },
+        "B1": {
+          "candidate_id": "B1-rank12-q1-r0-K0",
+          "effective_rz_cost": 20168.0,
+          "rz_count": 372523128.0,
+          "total_shots": 18471
+        },
+        "B2": {
+          "candidate_id": "B2-rank3-q1-r4-K2",
+          "effective_rz_cost": 6359.71875,
+          "rz_count": 130774896.65625,
+          "total_shots": 20563
+        },
+        "B3": {
+          "candidate_id": "B3-rank0-q8-r32-K4",
+          "effective_rz_cost": 31993.531250000007,
+          "rz_count": 1152790918.0000002,
+          "total_shots": 36032
+        }
+      },
+      "eligible_count": 5,
+      "point_pareto": [
+        "B2-rank3-q1-r4-K2",
+        "B2-rank3-q1-r8-K2"
+      ],
+      "registered_count": 5
+    },
+    "M1_old_selector16": {
+      "best_by_method": {
+        "B2": {
+          "candidate_id": "B2-rank3-q1-r4-K2",
+          "effective_rz_cost": 6359.71875,
+          "rz_count": 130774896.65625,
+          "total_shots": 20563
+        },
+        "B3": {
+          "candidate_id": "B3-rank0-q8-r32-K4",
+          "effective_rz_cost": 31993.531250000007,
+          "rz_count": 1152790918.0000002,
+          "total_shots": 36032
+        }
+      },
+      "eligible_count": 16,
+      "point_pareto": [
+        "B2-rank3-q1-r4-K2"
+      ],
+      "registered_count": 16
+    },
+    "M1_q8": {
+      "best_by_method": {
+        "B0": {
+          "candidate_id": "B0-rank9-q8-r0-K0",
+          "effective_rz_cost": 122702.0,
+          "rz_count": 1726785246.0,
+          "total_shots": 14073
+        },
+        "B1": {
+          "candidate_id": "B1-rank12-q8-r0-K0",
+          "effective_rz_cost": 159046.0,
+          "rz_count": 2238254358.0,
+          "total_shots": 14073
+        },
+        "B2": {
+          "candidate_id": "B2-rank3-q8-r2-K2",
+          "effective_rz_cost": 47307.15625,
+          "rz_count": 684061479.375,
+          "total_shots": 14460
+        },
+        "B3": {
+          "candidate_id": "B3-rank0-q8-r32-K4",
+          "effective_rz_cost": 31993.531250000007,
+          "rz_count": 1152790918.0000002,
+          "total_shots": 36032
+        }
+      },
+      "eligible_count": 52,
+      "point_pareto": [
+        "B2-rank3-q8-r2-K2",
+        "B3-rank0-q8-r32-K4"
+      ],
+      "registered_count": 53
+    },
+    "M2_common5": {
+      "best_by_method": {
+        "B0": {
+          "candidate_id": "B0-rank6-q1-r0-K0",
+          "effective_rz_cost": 10471.0,
+          "rz_count": 190676910.0,
+          "total_shots": 18210
+        },
+        "B1": {
+          "candidate_id": "B1-rank12-q1-r0-K0",
+          "effective_rz_cost": 20040.0,
+          "rz_count": 318175080.0,
+          "total_shots": 15877
+        },
+        "B2": {
+          "candidate_id": "B2-rank3-q1-r4-K2",
+          "effective_rz_cost": 6242.53125,
+          "rz_count": 111753794.4375,
+          "total_shots": 17902
+        },
+        "B3": {
+          "candidate_id": "B3-rank0-q8-r32-K4",
+          "effective_rz_cost": 35178.1875,
+          "rz_count": 1069452078.1875,
+          "total_shots": 30401
+        }
+      },
+      "eligible_count": 5,
+      "point_pareto": [
+        "B2-rank3-q1-r4-K2",
+        "B2-rank3-q1-r8-K2"
+      ],
+      "registered_count": 5
+    }
+  },
+  "counts": {
+    "actual_frontier": 2,
+    "actual_frontier_in_proxy": 2,
+    "actual_frontier_in_selector": 1,
+    "m1_eligible": 206,
+    "m1_registered": 210,
+    "m2_frozen": 5,
+    "old_selector": 16,
+    "proxy_frontier": 64,
+    "random": 194
+  },
+  "endpoint_N_cost_ratio_decomposition": [
+    {
+      "G_RZ_ratio": 0.5161229463105419,
+      "N_ratio": 0.8561852021484782,
+      "domain": "M1_all",
+      "effective_one_shot_RZ_ratio": 0.6028169431279621,
+      "endpoint_id": "B0-rank6-q1-r0-K0",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.35105175176197384,
+      "N_ratio": 1.1132586216230849,
+      "domain": "M1_all",
+      "effective_one_shot_RZ_ratio": 0.315337105811186,
+      "endpoint_id": "B1-rank12-q1-r0-K0",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.11344199074983514,
+      "N_ratio": 0.5706871669626998,
+      "domain": "M1_all",
+      "effective_one_shot_RZ_ratio": 0.1987813942857589,
+      "endpoint_id": "B3-rank0-q8-r32-K4",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.3961473964174697,
+      "N_ratio": 1.0274994670645918,
+      "domain": "M1_q8",
+      "effective_one_shot_RZ_ratio": 0.3855451113266287,
+      "endpoint_id": "B0-rank9-q8-r0-K0",
+      "partial_id": "B2-rank3-q8-r2-K2"
+    },
+    {
+      "G_RZ_ratio": 0.30562276218965817,
+      "N_ratio": 1.0274994670645918,
+      "domain": "M1_q8",
+      "effective_one_shot_RZ_ratio": 0.2974432318323001,
+      "endpoint_id": "B1-rank12-q8-r0-K0",
+      "partial_id": "B2-rank3-q8-r2-K2"
+    },
+    {
+      "G_RZ_ratio": 0.5933959651259153,
+      "N_ratio": 0.401309946714032,
+      "domain": "M1_q8",
+      "effective_one_shot_RZ_ratio": 1.4786475391021423,
+      "endpoint_id": "B3-rank0-q8-r32-K4",
+      "partial_id": "B2-rank3-q8-r2-K2"
+    },
+    {
+      "G_RZ_ratio": 0.5161229463105419,
+      "N_ratio": 0.8561852021484782,
+      "domain": "M1_common5",
+      "effective_one_shot_RZ_ratio": 0.6028169431279621,
+      "endpoint_id": "B0-rank6-q1-r0-K0",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.35105175176197384,
+      "N_ratio": 1.1132586216230849,
+      "domain": "M1_common5",
+      "effective_one_shot_RZ_ratio": 0.315337105811186,
+      "endpoint_id": "B1-rank12-q1-r0-K0",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.11344199074983514,
+      "N_ratio": 0.5706871669626998,
+      "domain": "M1_common5",
+      "effective_one_shot_RZ_ratio": 0.1987813942857589,
+      "endpoint_id": "B3-rank0-q8-r32-K4",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.5860898125394417,
+      "N_ratio": 0.9830862163646348,
+      "domain": "M2_common5",
+      "effective_one_shot_RZ_ratio": 0.5961733597555152,
+      "endpoint_id": "B0-rank6-q1-r0-K0",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.3512336492144514,
+      "N_ratio": 1.1275429867103357,
+      "domain": "M2_common5",
+      "effective_one_shot_RZ_ratio": 0.31150355538922153,
+      "endpoint_id": "B1-rank12-q1-r0-K0",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    },
+    {
+      "G_RZ_ratio": 0.10449630863956014,
+      "N_ratio": 0.5888622084799842,
+      "domain": "M2_common5",
+      "effective_one_shot_RZ_ratio": 0.1774546016618963,
+      "endpoint_id": "B3-rank0-q8-r32-K4",
+      "partial_id": "B2-rank3-q1-r4-K2"
+    }
+  ],
+  "evidence_commit": "b6e65c6123475add5e620ec1064f361378bead95",
+  "input_identity": {
+    "block_source": {
+      "bytes": 42929,
+      "commit_blob_identical": true,
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+    },
+    "contract_source": {
+      "bytes": 28596,
+      "commit_blob_identical": true,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+      "sha256": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b"
+    },
+    "m1a": {
+      "bytes": 872226,
+      "commit_blob_identical": true,
+      "path": "artifacts/pr2_matched_accuracy_m1_execution/2026-09-30/pr2_matched_accuracy_m1_a_result_v1.json",
+      "sha256": "1f960d7a33296e2dcb74d497e360572b26409dc9aeae01522335e7b91ed81086"
+    },
+    "m1b": {
+      "bytes": 14917348,
+      "commit_blob_identical": true,
+      "path": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+      "sha256": "71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4"
+    },
+    "m2": {
+      "bytes": 170061,
+      "commit_blob_identical": true,
+      "path": "artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json",
+      "sha256": "f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931"
+    },
+    "repeated_source": {
+      "bytes": 30013,
+      "commit_blob_identical": true,
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d"
+    },
+    "s2": {
+      "bytes": 425754,
+      "commit_blob_identical": true,
+      "path": "artifacts/pr2_v4_s2_development/2026-09-29/pr2_s2_development_resource_result_parallel_v1.json",
+      "sha256": "bbe665724af438d242569b020ab6148dacce84716a75681949bea22c632dd27c"
+    },
+    "signal_source": {
+      "bytes": 30027,
+      "commit_blob_identical": true,
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293"
+    },
+    "validation": {
+      "bytes": 33733,
+      "commit_blob_identical": true,
+      "path": "artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/pr2_matched_accuracy_m1_b1_result_validation_v1.json",
+      "sha256": "c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f"
+    }
+  },
+  "mandatory_stop": true,
+  "minimal_PM1_proposal": {
+    "T": 0.8,
+    "alternative_if_no_broader_claim": "Close a registered-rank, fixed-S2-implementation note without this test.",
+    "authorized": false,
+    "held_out_access": false,
+    "max_full_wrappers": 16,
+    "max_new_signal_records": 8,
+    "proposed_q": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "random_trajectories": 0,
+    "reason": "Concrete registered-domain gap; pure-PF/discard label cannot determine the two missing ranks. No proven unused cost-reducing optimizer was established by static inspection.",
+    "selected": "DEVELOPMENT_B0_RANK4_RANK5_NEARBY_DISCARD_FALSIFICATION",
+    "strong_synthesis_baseline": "Unresolved; audit and separately authorize one applicable policy before claiming superiority to strong deterministic implementations."
+  },
+  "missing_evidence": [
+    "Exact truncated-H signal z_D: cannot separate B0 discard from PF bias.",
+    "B0 rank4/5 under matched task: absent from this M1/M2 comparison domain.",
+    "Operator/relative-phase and actual cost tests for any stronger synthesis policy.",
+    "General/high-order deterministic method comparison and energy/RPE accuracy connection.",
+    "Compiled RZ allocation by deterministic/random/basis/fixed primitive category: only full-wrapper aggregates and action proxies used; no allocation inferred."
+  ],
+  "next_stage_authorized": false,
+  "old_S2_scope": {
+    "control_partial_ranks": [
+      3,
+      9
+    ],
+    "decision_preserved": "S2_TRANSFER_CANDIDATE_AWAITING_REVIEW",
+    "delta": 0.1,
+    "interpretation": "DOMAIN_CHANGE_CONFOUNDS_ATTRIBUTION_TO_Q_ALONE",
+    "primary_partial_ranks": [
+      6
+    ],
+    "q": 8
+  },
+  "original_statuses_preserved": {
+    "M1A": "SELECTION_LIMITED",
+    "M1B1": "M1_B1_COMPILE_MAP_COMPLETE_AWAITING_REVIEW",
+    "M2": "TRANSFER_SUPPORTED"
+  },
+  "pm1_authorized": false,
+  "q8_best_by_method_rank": [
+    {
+      "candidate_id": "B0-rank6-q8-r0-K0",
+      "effective_rz_cost": 82230.0,
+      "method": "B0",
+      "rank": 6,
+      "rz_count": 3341909430.0,
+      "total_shots": 40641
+    },
+    {
+      "candidate_id": "B0-rank9-q8-r0-K0",
+      "effective_rz_cost": 122702.0,
+      "method": "B0",
+      "rank": 9,
+      "rz_count": 1726785246.0,
+      "total_shots": 14073
+    },
+    {
+      "candidate_id": "B1-rank12-q8-r0-K0",
+      "effective_rz_cost": 159046.0,
+      "method": "B1",
+      "rank": 12,
+      "rz_count": 2238254358.0,
+      "total_shots": 14073
+    },
+    {
+      "candidate_id": "B2-rank3-q8-r2-K2",
+      "effective_rz_cost": 47307.15625,
+      "method": "B2",
+      "rank": 3,
+      "rz_count": 684061479.375,
+      "total_shots": 14460
+    },
+    {
+      "candidate_id": "B2-rank6-q8-r1-K2",
+      "effective_rz_cost": 87881.62500000001,
+      "method": "B2",
+      "rank": 6,
+      "rz_count": 1236758108.6250002,
+      "total_shots": 14073
+    },
+    {
+      "candidate_id": "B2-rank9-q8-r1-K2",
+      "effective_rz_cost": 127301.78125000001,
+      "method": "B2",
+      "rank": 9,
+      "rz_count": 1791517967.5312502,
+      "total_shots": 14073
+    },
+    {
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "effective_rz_cost": 31993.531250000007,
+      "method": "B3",
+      "rank": 0,
+      "rz_count": 1152790918.0000002,
+      "total_shots": 36032
+    }
+  ],
+  "same_R_groups": [
+    {
+      "K": 2,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r2-K2",
+        "B2-rank3-q2-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r4-K2",
+        "B2-rank3-q2-r2-K2",
+        "B2-rank3-q4-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r8-K2",
+        "B2-rank3-q2-r4-K2",
+        "B2-rank3-q4-r2-K2",
+        "B2-rank3-q8-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r16-K2",
+        "B2-rank3-q2-r8-K2",
+        "B2-rank3-q4-r4-K2",
+        "B2-rank3-q8-r2-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r32-K2",
+        "B2-rank3-q2-r16-K2",
+        "B2-rank3-q4-r8-K2",
+        "B2-rank3-q8-r4-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r64-K2",
+        "B2-rank3-q2-r32-K2",
+        "B2-rank3-q4-r16-K2",
+        "B2-rank3-q8-r8-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q4-r32-K2",
+        "B2-rank3-q8-r16-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r2-K4",
+        "B2-rank3-q2-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r4-K4",
+        "B2-rank3-q2-r2-K4",
+        "B2-rank3-q4-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r8-K4",
+        "B2-rank3-q2-r4-K4",
+        "B2-rank3-q4-r2-K4",
+        "B2-rank3-q8-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r16-K4",
+        "B2-rank3-q2-r8-K4",
+        "B2-rank3-q4-r4-K4",
+        "B2-rank3-q8-r2-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q1-r32-K4",
+        "B2-rank3-q2-r16-K4",
+        "B2-rank3-q4-r8-K4",
+        "B2-rank3-q8-r4-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q2-r32-K4",
+        "B2-rank3-q4-r16-K4",
+        "B2-rank3-q8-r8-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank3-q4-r32-K4",
+        "B2-rank3-q8-r16-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 3,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r2-K2",
+        "B2-rank6-q2-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r4-K2",
+        "B2-rank6-q2-r2-K2",
+        "B2-rank6-q4-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r8-K2",
+        "B2-rank6-q2-r4-K2",
+        "B2-rank6-q4-r2-K2",
+        "B2-rank6-q8-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r16-K2",
+        "B2-rank6-q2-r8-K2",
+        "B2-rank6-q4-r4-K2",
+        "B2-rank6-q8-r2-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r32-K2",
+        "B2-rank6-q2-r16-K2",
+        "B2-rank6-q4-r8-K2",
+        "B2-rank6-q8-r4-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q2-r32-K2",
+        "B2-rank6-q4-r16-K2",
+        "B2-rank6-q8-r8-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q4-r32-K2",
+        "B2-rank6-q8-r16-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r2-K4",
+        "B2-rank6-q2-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r4-K4",
+        "B2-rank6-q2-r2-K4",
+        "B2-rank6-q4-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r8-K4",
+        "B2-rank6-q2-r4-K4",
+        "B2-rank6-q4-r2-K4",
+        "B2-rank6-q8-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r16-K4",
+        "B2-rank6-q2-r8-K4",
+        "B2-rank6-q4-r4-K4",
+        "B2-rank6-q8-r2-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q1-r32-K4",
+        "B2-rank6-q2-r16-K4",
+        "B2-rank6-q4-r8-K4",
+        "B2-rank6-q8-r4-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q2-r32-K4",
+        "B2-rank6-q4-r16-K4",
+        "B2-rank6-q8-r8-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank6-q4-r32-K4",
+        "B2-rank6-q8-r16-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 6,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r2-K2",
+        "B2-rank9-q2-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r4-K2",
+        "B2-rank9-q2-r2-K2",
+        "B2-rank9-q4-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r8-K2",
+        "B2-rank9-q2-r4-K2",
+        "B2-rank9-q4-r2-K2",
+        "B2-rank9-q8-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r16-K2",
+        "B2-rank9-q2-r8-K2",
+        "B2-rank9-q4-r4-K2",
+        "B2-rank9-q8-r2-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r32-K2",
+        "B2-rank9-q2-r16-K2",
+        "B2-rank9-q4-r8-K2",
+        "B2-rank9-q8-r4-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q2-r32-K2",
+        "B2-rank9-q4-r16-K2",
+        "B2-rank9-q8-r8-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q4-r32-K2",
+        "B2-rank9-q8-r16-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r2-K4",
+        "B2-rank9-q2-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r4-K4",
+        "B2-rank9-q2-r2-K4",
+        "B2-rank9-q4-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r8-K4",
+        "B2-rank9-q2-r4-K4",
+        "B2-rank9-q4-r2-K4",
+        "B2-rank9-q8-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r16-K4",
+        "B2-rank9-q2-r8-K4",
+        "B2-rank9-q4-r4-K4",
+        "B2-rank9-q8-r2-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q1-r32-K4",
+        "B2-rank9-q2-r16-K4",
+        "B2-rank9-q4-r8-K4",
+        "B2-rank9-q8-r4-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q2-r32-K4",
+        "B2-rank9-q4-r16-K4",
+        "B2-rank9-q8-r8-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B2-rank9-q4-r32-K4",
+        "B2-rank9-q8-r16-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B2",
+      "rank": 9,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r2-K2",
+        "B3-rank0-q2-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r4-K2",
+        "B3-rank0-q2-r2-K2",
+        "B3-rank0-q4-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r8-K2",
+        "B3-rank0-q2-r4-K2",
+        "B3-rank0-q4-r2-K2",
+        "B3-rank0-q8-r1-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r16-K2",
+        "B3-rank0-q2-r8-K2",
+        "B3-rank0-q4-r4-K2",
+        "B3-rank0-q8-r2-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r32-K2",
+        "B3-rank0-q2-r16-K2",
+        "B3-rank0-q4-r8-K2",
+        "B3-rank0-q8-r4-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q2-r32-K2",
+        "B3-rank0-q4-r16-K2",
+        "B3-rank0-q8-r8-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 2,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q4-r32-K2",
+        "B3-rank0-q8-r16-K2"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 2,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r2-K4",
+        "B3-rank0-q2-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 4,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r4-K4",
+        "B3-rank0-q2-r2-K4",
+        "B3-rank0-q4-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 8,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r8-K4",
+        "B3-rank0-q2-r4-K4",
+        "B3-rank0-q4-r2-K4",
+        "B3-rank0-q8-r1-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 16,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r16-K4",
+        "B3-rank0-q2-r8-K4",
+        "B3-rank0-q4-r4-K4",
+        "B3-rank0-q8-r2-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 32,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q1-r32-K4",
+        "B3-rank0-q2-r16-K4",
+        "B3-rank0-q4-r8-K4",
+        "B3-rank0-q8-r4-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 64,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q2-r32-K4",
+        "B3-rank0-q4-r16-K4",
+        "B3-rank0-q8-r8-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    },
+    {
+      "K": 4,
+      "R": 128,
+      "T": 0.8,
+      "candidate_ids": [
+        "B3-rank0-q4-r32-K4",
+        "B3-rank0-q8-r16-K4"
+      ],
+      "interpretation": "SAME_TAU_NORMALIZATION_RANDOM_EXPECTATION_NOT_SAME_SIGNAL_OR_COMPILED_COST",
+      "method": "B3",
+      "rank": 0,
+      "spreads": {
+        "expected_random_applications": 0.0,
+        "normalization": 0.0,
+        "tau": 0.0
+      }
+    }
+  ],
+  "schema_version": "pr2_track_a_pm0_posthoc_v1",
+  "scope": {
+    "M1_splits": [
+      0,
+      3,
+      6,
+      9,
+      12
+    ],
+    "T": 0.8,
+    "axis_alpha": 0.025,
+    "axis_error": 0.035355339059327376,
+    "compiler": "Qiskit1.3.0 rz/sx/x/cx opt1 seed17 no coupling/backend",
+    "complex_signal_error": 0.05,
+    "delta": [
+      0.8,
+      0.4,
+      0.2,
+      0.1
+    ],
+    "epsilon_sweep_performed": false,
+    "evidence_kind": "LOCAL_POSTHOC_SAVED_VALUES_NOT_NEW_CI_OR_VALIDATION",
+    "formal_confidence_interval_claimed": false,
+    "geometries_angstrom": [
+      1.0,
+      1.3
+    ],
+    "model": "H4 linear STO-3G DF rank12; 8 system qubits",
+    "q": [
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "selector_regret": [
+    {
+      "all_min_id": "B2-rank3-q1-r4-K2",
+      "all_min_work": 130774896.65625,
+      "metric": "rz_count",
+      "regret_fraction": 0.0,
+      "selected_min_id": "B2-rank3-q1-r4-K2",
+      "selected_min_work": 130774896.65625
+    },
+    {
+      "all_min_id": "B2-rank3-q1-r8-K2",
+      "all_min_work": 52970492.96875001,
+      "metric": "rz_depth",
+      "regret_fraction": 0.01217581940629664,
+      "selected_min_id": "B2-rank3-q1-r4-K2",
+      "selected_min_work": 53615452.125000015
+    },
+    {
+      "all_min_id": "B2-rank3-q1-r8-K2",
+      "all_min_work": 68976443.25000001,
+      "metric": "cx_count",
+      "regret_fraction": 0.00681317385845337,
+      "selected_min_id": "B2-rank3-q1-r4-K2",
+      "selected_min_work": 69446391.75000001
+    },
+    {
+      "all_min_id": "B2-rank3-q1-r8-K2",
+      "all_min_work": 54716585.56249999,
+      "metric": "cx_depth",
+      "regret_fraction": 0.022553531754835543,
+      "selected_min_id": "B2-rank3-q1-r4-K2",
+      "selected_min_work": 55950637.812500015
+    },
+    {
+      "all_min_id": "B2-rank3-q1-r8-K2",
+      "all_min_work": 115424211.53125,
+      "metric": "total_depth",
+      "regret_fraction": 0.011995339141867678,
+      "selected_min_id": "B2-rank3-q1-r4-K2",
+      "selected_min_work": 116808764.09375003
+    },
+    {
+      "all_min_id": "B2-rank3-q1-r4-K2",
+      "all_min_work": 249472886.375,
+      "metric": "circuit_size",
+      "regret_fraction": 0.0,
+      "selected_min_id": "B2-rank3-q1-r4-K2",
+      "selected_min_work": 249472886.375
+    }
+  ],
+  "state_preparation_point_lower_envelopes": {
+    "M1_all": [
+      {
+        "P_max": 1796.4232134543483,
+        "P_min": 0.0,
+        "candidate_id": "B2-rank3-q1-r4-K2",
+        "rz_intercept": 130774896.65625,
+        "shot_slope": 20563
+      },
+      {
+        "P_max": 16208.513015345092,
+        "P_min": 1796.4232134543483,
+        "candidate_id": "B2-rank3-q1-r8-K2",
+        "rz_intercept": 132704255.18749997,
+        "shot_slope": 19489
+      },
+      {
+        "P_max": 23061.164062500284,
+        "P_min": 16208.513015345092,
+        "candidate_id": "B2-rank3-q2-r4-K4",
+        "rz_intercept": 194231770.59374994,
+        "shot_slope": 15693
+      },
+      {
+        "P_max": 101322.0489130432,
+        "P_min": 23061.164062500284,
+        "candidate_id": "B2-rank3-q2-r8-K2",
+        "rz_intercept": 203917459.50000006,
+        "shot_slope": 15273
+      },
+      {
+        "P_max": 231515.84365384624,
+        "P_min": 101322.0489130432,
+        "candidate_id": "B2-rank3-q2-r16-K4",
+        "rz_intercept": 224891123.625,
+        "shot_slope": 15066
+      },
+      {
+        "P_max": 517626.4300902049,
+        "P_min": 231515.84365384624,
+        "candidate_id": "B2-rank3-q4-r8-K4",
+        "rz_intercept": 375376422.00000006,
+        "shot_slope": 14416
+      },
+      {
+        "P_max": 1792988.5950255115,
+        "P_min": 517626.4300902049,
+        "candidate_id": "B2-rank3-q4-r16-K2",
+        "rz_intercept": 425586185.71874994,
+        "shot_slope": 14319
+      },
+      {
+        "P_max": 2119372.720833333,
+        "P_min": 1792988.5950255115,
+        "candidate_id": "B2-rank3-q4-r32-K4",
+        "rz_intercept": 513442626.875,
+        "shot_slope": 14270
+      },
+      {
+        "P_max": 8356706.014945663,
+        "P_min": 2119372.720833333,
+        "candidate_id": "B2-rank3-q8-r16-K4",
+        "rz_intercept": 831348535.0,
+        "shot_slope": 14120
+      },
+      {
+        "P_max": 8883555.63671875,
+        "P_min": 8356706.014945663,
+        "candidate_id": "B2-rank3-q8-r32-K2",
+        "rz_intercept": 1023552773.3437502,
+        "shot_slope": 14097
+      },
+      {
+        "P_max": null,
+        "P_min": 8883555.63671875,
+        "candidate_id": "B2-rank6-q8-r1-K2",
+        "rz_intercept": 1236758108.6250002,
+        "shot_slope": 14073
+      }
+    ],
+    "M1_common5": [
+      {
+        "P_max": 1796.4232134543483,
+        "P_min": 0.0,
+        "candidate_id": "B2-rank3-q1-r4-K2",
+        "rz_intercept": 130774896.65625,
+        "shot_slope": 20563
+      },
+      {
+        "P_max": 235578.4605230845,
+        "P_min": 1796.4232134543483,
+        "candidate_id": "B2-rank3-q1-r8-K2",
+        "rz_intercept": 132704255.18749997,
+        "shot_slope": 19489
+      },
+      {
+        "P_max": null,
+        "P_min": 235578.4605230845,
+        "candidate_id": "B1-rank12-q1-r0-K0",
+        "rz_intercept": 372523128.0,
+        "shot_slope": 18471
+      }
+    ],
+    "M2_common5": [
+      {
+        "P_max": 385.07761319845855,
+        "P_min": 0.0,
+        "candidate_id": "B2-rank3-q1-r4-K2",
+        "rz_intercept": 111753794.4375,
+        "shot_slope": 17902
+      },
+      {
+        "P_max": 208735.13171225938,
+        "P_min": 385.07761319845855,
+        "candidate_id": "B2-rank3-q1-r8-K2",
+        "rz_intercept": 112153505.0,
+        "shot_slope": 16864
+      },
+      {
+        "P_max": null,
+        "P_min": 208735.13171225938,
+        "candidate_id": "B1-rank12-q1-r0-K0",
+        "rz_intercept": 318175080.0,
+        "shot_slope": 15877
+      }
+    ]
+  },
+  "static_baseline_audit": {
+    "controlled_diagonal_primitives": {
+      "end_line": 872,
+      "function": "_append_block",
+      "line": 839,
+      "source_excerpt": "    def _append_block(\n        self,\n        circuit: QuantumCircuit,\n        block: DFDeterministicBlockSpec,\n        request: DFPartialS2StepRequest,\n        *,\n        evolution_time: float | None = None,\n    ) -> None:\n        self._append_basis(circuit, block, inverse=True)\n        block_time = (\n            request.step_time / 2.0\n            if evolution_time is None\n            else float(evolution_time)\n        )\n        if not math.isfinite(block_time):\n            raise ValueError(\"Deterministic block evolution_time must be finite.\")\n        if isinstance(block, DFDeterministicOneBodySpec):\n            primitives = one_body_diagonal_primitives(\n                np.asarray(block.diagonal_eigenvalues),\n                block_time,\n            )\n        else:\n            primitives = df_squared_diagonal_primitives(\n                np.asarray(block.diagonal_eta),\n                block.lam,\n                block_time,\n            )\n        append_diagonal_primitives(\n            circuit,\n            primitives,\n            controlled=request.controlled,\n            ancilla_qubit=request.ancilla_qubit,\n        )\n        self._append_basis(circuit, block, inverse=False)"
+    },
+    "discard_bias_label": {
+      "end_line": 411,
+      "function": "_deterministic_signal_record",
+      "line": 370,
+      "source_excerpt": "def _deterministic_signal_record(\n    candidate: Mapping[str, Any],\n    preparation: DFPartialS2Preparation,\n    deterministic: Sequence[tuple[str, tuple[np.ndarray, np.ndarray]]],\n    state: np.ndarray,\n    exact_target: complex,\n) -> dict[str, Any]:\n    q = int(candidate[\"q\"])\n    delta = float(candidate[\"delta\"])\n    phase = np.exp(\n        -1j\n        * delta\n        * (\n            preparation.constant_coefficient\n            + preparation.extracted_identity_coefficient\n        )\n    )\n    evolved = state.copy()\n    for _outer_step in range(q):\n        evolved = _apply_outer_step(\n            evolved,\n            deterministic,\n            delta=delta,\n            phase=phase,\n            tail_action=None,\n        )\n    mean = complex(np.vdot(state, evolved))\n    record = _base_record(candidate, mean, mean, exact_target, 1.0)\n    record.update(\n        {\n            \"pf_exact_tail_signal\": _complex_record(mean),\n            \"outer_pf_bias_abs\": abs(mean - exact_target),\n            \"finite_truncation_bias_abs\": 0.0,\n            \"normalization_log\": 0.0,\n            \"normalization_direct_log_abs_difference\": 0.0,\n            \"corrected_raw_reconstruction_abs_error\": 0.0,\n            \"n_det\": _deterministic_fragment_count(preparation, q),\n            \"n_rand\": 0,\n            \"n_fixed\": _fixed_action_count(preparation, q),\n        }\n    )\n    return record"
+    },
+    "equal_block_step_boundary_fusion": {
+      "end_line": 622,
+      "function": "_build_boundary_optimized",
+      "line": 591,
+      "source_excerpt": "    def _build_boundary_optimized(\n        self,\n        request: DFPartialS2RepeatedRequest,\n        step_requests: Sequence[DFPartialS2StepRequest],\n    ) -> QuantumCircuit:\n        circuit = self._step_builder._new_circuit(step_requests[0])\n        self._append_aggregated_phases(circuit, request)\n        blocks = request.preparation.deterministic_blocks\n        last_step = request.repetition_count - 1\n        for index, step_request in enumerate(step_requests):\n            forward_blocks = blocks if index == 0 else blocks[1:]\n            for block in forward_blocks:\n                self._step_builder._append_block(circuit, block, step_request)\n\n            parts = self._step_builder.build_additive_circuits(step_request)\n            self._compose(circuit, parts.rte_occurrence)\n\n            if index == last_step:\n                for block in reversed(blocks):\n                    self._step_builder._append_block(circuit, block, step_request)\n            elif blocks:\n                for block in reversed(blocks[1:]):\n                    self._step_builder._append_block(circuit, block, step_request)\n                # The current reverse half of block 0 and the next forward half\n                # are adjacent and share exactly the same recorded basis.\n                self._step_builder._append_block(\n                    circuit,\n                    blocks[0],\n                    step_request,\n                    evolution_time=request.step_time,\n                )\n        return circuit"
+    },
+    "general_relative_gaussian_or_control_aware_optimality": "UNVERIFIED_NO_COST_OR_OPERATOR_TEST_ADDED",
+    "literature_coverage": "NOT_REAUDITED_IN_PM0_NO_NEW_NOVELTY_CLAIM",
+    "uncontrolled_basis_change": {
+      "end_line": 837,
+      "function": "_append_basis",
+      "line": 827,
+      "source_excerpt": "    def _append_basis(\n        circuit: QuantumCircuit,\n        block: DFDeterministicBlockSpec,\n        *,\n        inverse: bool,\n    ) -> None:\n        operations = list(block.runtime_basis_operations)\n        if inverse:\n            operations.reverse()\n        for gate, qubits in operations:\n            circuit.append(gate.inverse() if inverse else gate, list(qubits))"
+    }
+  },
+  "status": "POSTHOC_PM0_COMPLETE_NO_NEW_SCIENCE_STOP",
+  "summary_fingerprint": "578e2c71a5409e2cedf48b53ac5af86d1e456cf344dcfa418a25252539a8918f"
+}

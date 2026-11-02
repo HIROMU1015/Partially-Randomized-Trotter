@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pr2_matched_accuracy_m1_precompile_barrier_dry_run_schema_v2",
+  "title": "PR-2 matched-accuracy M1 precompile barrier zero-compute dry run",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "series_id",
+    "status",
+    "authorization_sha256",
+    "source_hashes",
+    "prior_art_gate",
+    "limited_fixture",
+    "clear_control",
+    "zero_compute_counters",
+    "permissions",
+    "mandatory_stop_reached",
+    "artifact_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m1_precompile_barrier_dry_run_v2"
+    },
+    "series_id": {
+      "const": "pr2-rebaseline-de7a5492-v1"
+    },
+    "status": {
+      "const": "M1_PREEXECUTION_AMENDMENT_V2_FROZEN_SCIENCE_NOT_AUTHORIZED"
+    },
+    "authorization_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_hashes": {
+      "type": "object",
+      "minProperties": 7,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "prior_art_gate": {
+      "type": "object",
+      "required": ["decision", "papers_added"],
+      "properties": {
+        "decision": {"const": "PROCEED_RESOURCE_STUDY"},
+        "papers_added": {"type": "array", "minItems": 2, "maxItems": 2}
+      }
+    },
+    "limited_fixture": {
+      "type": "object",
+      "required": ["fixture_only", "barrier", "compile_plan_created"],
+      "properties": {
+        "fixture_only": {"const": true},
+        "compile_plan_created": {"const": false},
+        "barrier": {
+          "type": "object",
+          "required": [
+            "status",
+            "selection_limited",
+            "m1_b_direct_compile_eligible",
+            "compile_jobs_materialized_at_barrier",
+            "mandatory_stop_reached"
+          ],
+          "properties": {
+            "status": {"const": "SELECTION_LIMITED"},
+            "selection_limited": {"const": true},
+            "m1_b_direct_compile_eligible": {"const": false},
+            "compile_jobs_materialized_at_barrier": {"const": 0},
+            "mandatory_stop_reached": {"const": true}
+          }
+        }
+      }
+    },
+    "clear_control": {
+      "type": "object",
+      "required": ["fixture_only", "barrier", "compile_plan"],
+      "properties": {
+        "fixture_only": {"const": true},
+        "barrier": {
+          "type": "object",
+          "required": [
+            "status",
+            "selection_limited",
+            "m1_b_direct_compile_eligible",
+            "compile_jobs_materialized_at_barrier"
+          ],
+          "properties": {
+            "status": {"const": "M1_A_COMPLETE_M1_B_ELIGIBLE"},
+            "selection_limited": {"const": false},
+            "m1_b_direct_compile_eligible": {"const": true},
+            "compile_jobs_materialized_at_barrier": {"const": 0}
+          }
+        },
+        "compile_plan": {
+          "type": "object",
+          "required": [
+            "plan_only",
+            "deterministic_or_discard_compile_cell_count",
+            "random_compile_cell_count",
+            "circuits_built",
+            "circuit_compilations",
+            "full_wrappers_compiled"
+          ],
+          "properties": {
+            "plan_only": {"const": true},
+            "deterministic_or_discard_compile_cell_count": {"const": 16},
+            "random_compile_cell_count": {"const": 16},
+            "circuits_built": {"const": 0},
+            "circuit_compilations": {"const": 0},
+            "full_wrappers_compiled": {"const": 0}
+          }
+        }
+      }
+    },
+    "zero_compute_counters": {
+      "type": "object",
+      "additionalProperties": {"const": 0}
+    },
+    "permissions": {
+      "type": "object",
+      "required": [
+        "m1_scientific_execution_authorized",
+        "direct_compile_authorized",
+        "held_out_access_authorized",
+        "s3_authorized",
+        "automatic_next_stage"
+      ],
+      "properties": {
+        "m1_scientific_execution_authorized": {"const": false},
+        "direct_compile_authorized": {"const": false},
+        "held_out_access_authorized": {"const": false},
+        "s3_authorized": {"const": false},
+        "automatic_next_stage": {"type": "null"}
+      }
+    },
+    "mandatory_stop_reached": {"const": true},
+    "artifact_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

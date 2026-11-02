@@ -1,0 +1,1336 @@
+{
+  "schema": "track_b_rte_reallocation_r05_symbolic_comparison_v1",
+  "status": "PASS_FIXED_EXACT_SYMBOLIC_COMPARISONS_NOT_SCIENCE",
+  "normalization_domain_count": 9,
+  "sign_mean_comparison_count": 18,
+  "free_model": {
+    "generators": 3,
+    "probabilities": [
+      "1/2",
+      "1/3",
+      "1/6"
+    ],
+    "relations_only": "Q_i^2=I"
+  },
+  "Pauli_fixture": {
+    "axes": [
+      "X",
+      "Y",
+      "Z"
+    ],
+    "probabilities": [
+      "1/2",
+      "1/3",
+      "1/6"
+    ],
+    "access": "I1; explicit one-qubit Pauli multiplication, no matrices"
+  },
+  "rows": [
+    {
+      "m": 3,
+      "x": "1/8",
+      "E": "129/128",
+      "O": "385/3072",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "385/3096"
+        ],
+        [
+          "1/1548",
+          "2/385"
+        ],
+        [
+          "129/49280",
+          "1/3072"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "40232120238133219400775632425/39614081257132168796771975168",
+          "upper_exact": "20116060119066609700387816213/19807040628566084398385987584",
+          "midpoint_display_not_decision_value": "1.015601497280459535885791644521115337488"
+        },
+        "A_optimum": {
+          "lower_exact": "40231069416233892733434219675/39614081257132168796771975168",
+          "upper_exact": "80462138832467785466868439351/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.015574970806388211158280694934955604348"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "120734240739582520213499292797/118842243771396506390315925504",
+          "upper_exact": "241468481479165040426998585597/237684487542793012780631851008",
+          "midpoint_display_not_decision_value": "1.015920239370652039879159987118318309429"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "40233453208745055648888196643/39614081257132168796771975168",
+          "upper_exact": "80466906417490111297776393287/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.015635146189371092642251313523427119276"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "360378902488881795106685371967/356526731314189519170947776512",
+          "upper_exact": "720757804977763590213370743943/713053462628379038341895553024",
+          "midpoint_display_not_decision_value": "1.010804719075321021145775788551201101653"
+        }
+      },
+      "CTS_literal_collected_Lc": "7/2304",
+      "CTS_literal_collected_Ls": "6905/55296",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "fef8ca61c674861a7a5b73b73db678a8e0f82c21e4238c4d8679d2570dcbe568",
+          "Pauli_target_sha256": "ee7af3c3162cef47f9656770ff931c0dc13fa6a2a7fbf95af6841ffa105e64a8",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 30,
+            "distinct_phase_preserving_atoms": 24
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 33
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 15,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-7/2304"
+            },
+            "imaginary_coefficients": {
+              "X": "6905/110592",
+              "Y": "6905/165888",
+              "Z": "6905/331776"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "550f045116df19016ef90feb0b48f2c5a2953c93dd725656336137588b5213f8",
+          "Pauli_target_sha256": "f0691038c309f61488e3f3fc65a4d160332ecf4e3fd37e04730ec9721f924365",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 30,
+            "distinct_phase_preserving_atoms": 24
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 33
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 15,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-7/2304"
+            },
+            "imaginary_coefficients": {
+              "X": "-6905/110592",
+              "Y": "-6905/165888",
+              "Z": "-6905/331776"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 3,
+      "x": "1/4",
+      "E": "33/32",
+      "O": "97/384",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "97/396"
+        ],
+        [
+          "1/198",
+          "2/97"
+        ],
+        [
+          "33/3104",
+          "1/384"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "84150982653466511940633308771/79228162514264337593543950336",
+          "upper_exact": "84150982653466511940633308773/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.062134725620020073601519758354018838713"
+        },
+        "A_optimum": {
+          "lower_exact": "84119470477086003607365786557/79228162514264337593543950336",
+          "upper_exact": "42059735238543001803682893279/39614081257132168796771975168",
+          "midpoint_display_not_decision_value": "1.061736986036259881743347467826640349840"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "253046172182790129403399719929/237684487542793012780631851008",
+          "upper_exact": "63261543045697532350849929983/59421121885698253195157962752",
+          "midpoint_display_not_decision_value": "1.064630573071081804122019130665977509232"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "84192686628510122825802884221/79228162514264337593543950336",
+          "upper_exact": "42096343314255061412901442111/39614081257132168796771975168",
+          "midpoint_display_not_decision_value": "1.062661103788087551492079062047116797604"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "743489457353735383113983706265/713053462628379038341895553024",
+          "upper_exact": "371744728676867691556991853137/356526731314189519170947776512",
+          "midpoint_display_not_decision_value": "1.042684029067282749738941036047165778999"
+        }
+      },
+      "CTS_literal_collected_Lc": "7/576",
+      "CTS_literal_collected_Ls": "1721/6912",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "5b1ca0dfb74a01a2bf4ddf960b5622a9fa2cea0b39a271333c421ff8fb5d1407",
+          "Pauli_target_sha256": "60d3489d727e2c3a24dd8b6a31ea15e21cb5067c8c3490c769c86e4be1c307e8",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 30,
+            "distinct_phase_preserving_atoms": 24
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 33
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 15,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-7/576"
+            },
+            "imaginary_coefficients": {
+              "X": "1721/13824",
+              "Y": "1721/20736",
+              "Z": "1721/41472"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "686be94e9d9660878b83e93f083c0ee3ccb90a979c1261fb7df25aeb2607014d",
+          "Pauli_target_sha256": "eb247180628b95f3169f3c8aed18e0c0d0e90cdc22a733052d1952cec0a45b35",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 30,
+            "distinct_phase_preserving_atoms": 24
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 33
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 15,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-7/576"
+            },
+            "imaginary_coefficients": {
+              "X": "-1721/13824",
+              "Y": "-1721/20736",
+              "Z": "-1721/41472"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 3,
+      "x": "1",
+      "E": "3/2",
+      "O": "7/6",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "7/9"
+        ],
+        [
+          "2/9",
+          "2/7"
+        ],
+        [
+          "3/14",
+          "1/6"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "76901225006040134184266421691/39614081257132168796771975168",
+          "upper_exact": "19225306251510033546066605423/9903520314283042199192993792",
+          "midpoint_display_not_decision_value": "1.941259839067824937468170981612827952743"
+        },
+        "A_optimum": {
+          "lower_exact": "150556673124208216000648483731/79228162514264337593543950336",
+          "upper_exact": "37639168281052054000162120933/19807040628566084398385987584",
+          "midpoint_display_not_decision_value": "1.900292375165229965226748375945947824762"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "247296475438622757349739765017/118842243771396506390315925504",
+          "upper_exact": "494592950877245514699479530037/237684487542793012780631851008",
+          "midpoint_display_not_decision_value": "2.080880229039761715468355390871109751161"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "161355342352113148878198767157/79228162514264337593543950336",
+          "upper_exact": "80677671176056574439099383579/39614081257132168796771975168",
+          "midpoint_display_not_decision_value": "2.036590742882147885000379046958440041958"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "1114926330704178711748763612011/713053462628379038341895553024",
+          "upper_exact": "278731582676044677937190903005/178263365657094759585473888256",
+          "midpoint_display_not_decision_value": "1.563594301322737043701099150699765173960"
+        }
+      },
+      "CTS_literal_collected_Lc": "7/36",
+      "CTS_literal_collected_Ls": "101/108",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "1d54ce3f7dcf5c6154ad22cdc5f22802555f77445a3f8055fe9bf329ff246659",
+          "Pauli_target_sha256": "7954b2b7d74e1ec4ef7c35aa2d0724884b415cc8e62915823a1cb8cbeb558b3c",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 30,
+            "distinct_phase_preserving_atoms": 24
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 33
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 15,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-7/36"
+            },
+            "imaginary_coefficients": {
+              "X": "101/216",
+              "Y": "101/324",
+              "Z": "101/648"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "0352fb9e40ae571c4fdd78b1811176e1314df4ecdcae9c2fc97c3207248d671f",
+          "Pauli_target_sha256": "2495625ca71c784d85bc0e5e56a4e4f47024f99a758100f89b33113e75fbb57f",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 30,
+            "distinct_phase_preserving_atoms": 24
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 33
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 39,
+            "distinct_phase_preserving_atoms": 15,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-7/36"
+            },
+            "imaginary_coefficients": {
+              "X": "-101/216",
+              "Y": "-101/324",
+              "Z": "-101/648"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 5,
+      "x": "1/8",
+      "E": "99073/98304",
+      "O": "164267/1310720",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "492801/3962920"
+        ],
+        [
+          "641/990730",
+          "2564/492801"
+        ],
+        [
+          "164609/63078528",
+          "164609/507253760"
+        ],
+        [
+          "769/760880640",
+          "769/94617792"
+        ],
+        [
+          "99073/48444309504",
+          "1/3932160"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "40232523339316526773192938443/39614081257132168796771975168",
+          "upper_exact": "80465046678633053546385876889/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.015611672984919040359986026272739800542"
+        },
+        "A_optimum": {
+          "lower_exact": "20115735277314844858598074379/19807040628566084398385987584",
+          "upper_exact": "80462941109259379434392297517/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.015585096963125085178369678515504758988"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "603677399442738126042016833137/594211218856982531951579627520",
+          "upper_exact": "1207354798885476252084033666289/1188422437713965063903159255040",
+          "midpoint_display_not_decision_value": "1.015930666209844748212493320451651642763"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "120701572310389889213207058241/118842243771396506390315925504",
+          "upper_exact": "241403144620779778426414116485/237684487542793012780631851008",
+          "midpoint_display_not_decision_value": "1.015645350339984867412627549658334312427"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "19460431207469101996518409189459/19252443490966234035231179931648",
+          "upper_exact": "9730215603734550998259204594851/9626221745483117017615589965824",
+          "midpoint_display_not_decision_value": "1.010803185403476779968020428462093152060"
+        }
+      },
+      "CTS_literal_collected_Lc": "96719/31850496",
+      "CTS_literal_collected_Ls": "159091249/1274019840",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "cf1ce894c0167bf6bf6c909d8e403b5b4687a64892ea96d354c5cd6bd8644f41",
+          "Pauli_target_sha256": "db08289651c11db75efe502138269840eb423d52586493f2a55c694ab2806655",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 273,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-96719/31850496"
+            },
+            "imaginary_coefficients": {
+              "X": "159091249/2548039680",
+              "Y": "159091249/3822059520",
+              "Z": "159091249/7644119040"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "d45d589303b2f5d3aec82a67f60e7f74b046406ad8c735a05f7d09dd7929b5c5",
+          "Pauli_target_sha256": "e3a55cb0554e645d7666743f0a55e6c103135dedf386b6409cc469eee4e9a6df",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 273,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-96719/31850496"
+            },
+            "imaginary_coefficients": {
+              "X": "-159091249/2548039680",
+              "Y": "-159091249/3822059520",
+              "Z": "-159091249/7644119040"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 5,
+      "x": "1/4",
+      "E": "6337/6144",
+      "O": "10347/40960",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "31041/126740"
+        ],
+        [
+          "161/31685",
+          "644/31041"
+        ],
+        [
+          "10433/993312",
+          "10433/4055680"
+        ],
+        [
+          "193/6083520",
+          "193/1489968"
+        ],
+        [
+          "6337/190715904",
+          "1/122880"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "42081946985579093842613693301/39614081257132168796771975168",
+          "upper_exact": "84163893971158187685227386605/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.062297689360209695881204794256324239528"
+        },
+        "A_optimum": {
+          "lower_exact": "42066074421874571570910117123/39614081257132168796771975168",
+          "upper_exact": "84132148843749143141820234247/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.061897009521101612175297973849243218087"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "1265433960451645904718349237213/1188422437713965063903159255040",
+          "upper_exact": "316358490112911476179587309307/297105609428491265975789813760",
+          "midpoint_display_not_decision_value": "1.064801471508581804122019130665977509232"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "252617219246154992132069370671/237684487542793012780631851008",
+          "upper_exact": "126308609623077496066034685337/118842243771396506390315925504",
+          "midpoint_display_not_decision_value": "1.062825857327662040358694947404291766770"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "2509218396824112574089151976399/2406555436370779254403897491456",
+          "upper_exact": "20073747174592900592713215811435/19252443490966234035231179931648",
+          "midpoint_display_not_decision_value": "1.042659711428943780910495213471520212127"
+        }
+      },
+      "CTS_literal_collected_Lc": "24143/1990656",
+      "CTS_literal_collected_Ls": "9913009/39813120",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "732675ef9715b0fb090b602c8d367f3c45d7c18724c5bdfac5c97dd52f348205",
+          "Pauli_target_sha256": "08b2de5709d501056705006587052d524e723035f3344a72952f22ca5d52d464",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 273,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-24143/1990656"
+            },
+            "imaginary_coefficients": {
+              "X": "9913009/79626240",
+              "Y": "9913009/119439360",
+              "Z": "9913009/238878720"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "382ff3f0e57c167373d5f8c1e3e5dd77657e0d41888b9966c87401c4bcc2c46e",
+          "Pauli_target_sha256": "6a770312a9ff47df82a960b3354e08fb425dad0f215dc40c864d42a99b591eda",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 273,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-24143/1990656"
+            },
+            "imaginary_coefficients": {
+              "X": "-9913009/79626240",
+              "Y": "-9913009/119439360",
+              "Z": "-9913009/238878720"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 5,
+      "x": "1",
+      "E": "37/24",
+      "O": "47/40",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "141/185"
+        ],
+        [
+          "44/185",
+          "44/141"
+        ],
+        [
+          "53/282",
+          "53/370"
+        ],
+        [
+          "13/555",
+          "13/423"
+        ],
+        [
+          "37/3384",
+          "1/120"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "157168999567799720460857566447/79228162514264337593543950336",
+          "upper_exact": "78584499783899860230428783225/39614081257132168796771975168",
+          "midpoint_display_not_decision_value": "1.983751668347764811051739515859070982772"
+        },
+        "A_optimum": {
+          "lower_exact": "76787593319217237005635289651/39614081257132168796771975168",
+          "upper_exact": "153575186638434474011270579303/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.938391372017300099474135457945274682713"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "1266192938135962913346277806461/594211218856982531951579627520",
+          "upper_exact": "2532385876271925826692555612937/1188422437713965063903159255040",
+          "midpoint_display_not_decision_value": "2.130880229039761715468355390871109751161"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "495475675422680054292859967903/237684487542793012780631851008",
+          "upper_exact": "247737837711340027146429983953/118842243771396506390315925504",
+          "midpoint_display_not_decision_value": "2.084594079087613966494276240162545754917"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "14999135901897536492232795497933/9626221745483117017615589965824",
+          "upper_exact": "29998271803795072984465590996109/19252443490966234035231179931648",
+          "midpoint_display_not_decision_value": "1.558153998367587550265354890245111636489"
+        }
+      },
+      "CTS_literal_collected_Lc": "1463/7776",
+      "CTS_literal_collected_Ls": "36409/38880",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "ebcf89579580d2ec097cccbdb84bac6d5b58442bd1b21c2db0fec64363d2f0fa",
+          "Pauli_target_sha256": "86cf738717d1c696d6aff5ab39f60215ed4d98bc70cdb4ca78f6ab050d618513",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 273,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-1463/7776"
+            },
+            "imaginary_coefficients": {
+              "X": "36409/77760",
+              "Y": "36409/116640",
+              "Z": "36409/233280"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "bee09ca2200924ace201b0bc9b6eeb7a058fb1d1d60395f4269c6599157e5853",
+          "Pauli_target_sha256": "14568e506eec9c80f1757c1c8ceef6c0629268b440b73f91bde738c39ac2458f",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 273,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 363,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-1463/7776"
+            },
+            "imaginary_coefficients": {
+              "X": "-36409/77760",
+              "Y": "-36409/116640",
+              "Z": "-36409/233280"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 7,
+      "x": "1/8",
+      "E": "190220161/188743680",
+      "O": "1324649089/10569646080",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "1324649089/10652329016"
+        ],
+        [
+          "3446019/5326164508",
+          "6892038/1324649089"
+        ],
+        [
+          "442468225/169555083392",
+          "442468225/1363498114048"
+        ],
+        [
+          "1034113/1022623585536",
+          "1034113/127166312544"
+        ],
+        [
+          "88572459/43406101348352",
+          "88572459/349055517196288"
+        ],
+        [
+          "1477121/2617916378972160",
+          "1477121/325545760112640"
+        ],
+        [
+          "190220161/250019143766507520",
+          "1/10569646080"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "20116261774616471190724624981/19807040628566084398385987584",
+          "upper_exact": "10058130887308235595362312491/9903520314283042199192993792",
+          "midpoint_display_not_decision_value": "1.015611678283954356759320598310402676076"
+        },
+        "A_optimum": {
+          "lower_exact": "80462941526741894238458055269/79228162514264337593543950336",
+          "upper_exact": "40231470763370947119229027635/39614081257132168796771975168",
+          "midpoint_display_not_decision_value": "1.015585102232495237854846089158986643398"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "281716121235360511728328839801/277298568799925181577403826176",
+          "upper_exact": "563432242470721023456657679609/554597137599850363154807652352",
+          "midpoint_display_not_decision_value": "1.015930671602645942176407010927842118953"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "1810523594121554177058542358167/1782633656570947595854738882560",
+          "upper_exact": "3621047188243108354117084716379/3565267313141895191709477765120",
+          "midpoint_display_not_decision_value": "1.015645355649940619660990807145690710309"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "2627158213816422588538809057794939/2599079871280441594756209290772480",
+          "upper_exact": "82098694181763205891837783057117/81221245977513799836131540336640",
+          "midpoint_display_not_decision_value": "1.010803185714392126563627309519163390568"
+        }
+      },
+      "CTS_literal_collected_Lc": "3342608983/1100753141760",
+      "CTS_literal_collected_Ls": "1099638713039/8806025134080",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "deec86f5f85de51e46fcd207c13b536298b7e74759d0498945c592d242cfa56a",
+          "Pauli_target_sha256": "c8a0d39ae394e679cdef2ca7befb3121bd73a59ce33a5551726b30bec7a6d6b6",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 2460,
+            "distinct_phase_preserving_atoms": 72
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-3342608983/1100753141760"
+            },
+            "imaginary_coefficients": {
+              "X": "1099638713039/17612050268160",
+              "Y": "1099638713039/26418075402240",
+              "Z": "1099638713039/52836150804480"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "4ba015bdb3b95443c70a819ee01d59f2a09c9765f762a7dc2e9f9834d7ee8e1d",
+          "Pauli_target_sha256": "2cfdeab7f6908899e8bbe96c4a86caa2430b684f4a8a7a4eb230e733ff082a37",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 2460,
+            "distinct_phase_preserving_atoms": 72
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-3342608983/1100753141760"
+            },
+            "imaginary_coefficients": {
+              "X": "-1099638713039/17612050268160",
+              "Y": "-1099638713039/26418075402240",
+              "Z": "-1099638713039/52836150804480"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 7,
+      "x": "1/4",
+      "E": "3041761/2949120",
+      "O": "20859553/82575360",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "20859553/85169308"
+        ],
+        [
+          "216387/42584654",
+          "432774/20859553"
+        ],
+        [
+          "7010785/667505696",
+          "7010785/2725417856"
+        ],
+        [
+          "64993/2044063392",
+          "64993/500629272"
+        ],
+        [
+          "1407115/42720364544",
+          "1407115/174426742784"
+        ],
+        [
+          "92801/1308200570880",
+          "92801/320402734080"
+        ],
+        [
+          "3041761/61517324943360",
+          "1/82575360"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "84163920853304243831865437725/79228162514264337593543950336",
+          "upper_exact": "84163920853304243831865437729/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.062298028660594850045834217095807832289"
+        },
+        "A_optimum": {
+          "lower_exact": "42066087582894510719386650489/39614081257132168796771975168",
+          "upper_exact": "84132175165789021438773300979/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.061897341751952902685790943235748020426"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "26574121934196756205146850601249/24956871191993266341966344355840",
+          "upper_exact": "6643530483549189051286712650391/6239217797998316585491586088960",
+          "midpoint_display_not_decision_value": "1.064801822702933242614082622729469572724"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "3789259508192733353834075639941/3565267313141895191709477765120",
+          "upper_exact": "1894629754096366676917037819993/1782633656570947595854738882560",
+          "midpoint_display_not_decision_value": "1.062826199377865113958566683159816448512"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "2709955919955472295229898761077141/2599079871280441594756209290772480",
+          "upper_exact": "1354977959977736147614949380554973/1299539935640220797378104645386240",
+          "midpoint_display_not_decision_value": "1.042659731199567717103146878455720296014"
+        }
+      },
+      "CTS_literal_collected_Lc": "208595863/17199267840",
+      "CTS_literal_collected_Ls": "17129679503/68797071360",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "bb9c68dc5bc1bf195fe09379c59288a6825da1e8ed9f9b23ded19fce4cf249d5",
+          "Pauli_target_sha256": "1c84e25e0a0465b5d2411d4e2163d0da0d4c49decc02f74c46edc4079c7b7eca",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 2460,
+            "distinct_phase_preserving_atoms": 72
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-208595863/17199267840"
+            },
+            "imaginary_coefficients": {
+              "X": "17129679503/137594142720",
+              "Y": "17129679503/206391214080",
+              "Z": "17129679503/412782428160"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "a970bd32e9327441f522ae43415bc986e90b33ede871a26a7dfd7bddd0927ea4",
+          "Pauli_target_sha256": "53ec954234da49a158a07228cc09a4b4015234c3c61bd187a36623c4d9dc13aa",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 2460,
+            "distinct_phase_preserving_atoms": 72
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-208595863/17199267840"
+            },
+            "imaginary_coefficients": {
+              "X": "-17129679503/137594142720",
+              "Y": "-17129679503/206391214080",
+              "Z": "-17129679503/412782428160"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "m": 7,
+      "x": "1",
+      "E": "1111/720",
+      "O": "5923/5040",
+      "A_optimum_coefficients": [
+        [
+          "1",
+          "5923/7777"
+        ],
+        [
+          "1854/7777",
+          "1854/5923"
+        ],
+        [
+          "2215/11846",
+          "2215/15554"
+        ],
+        [
+          "566/23331",
+          "566/17769"
+        ],
+        [
+          "465/47384",
+          "465/62216"
+        ],
+        [
+          "401/466620",
+          "401/355380"
+        ],
+        [
+          "1111/4264560",
+          "1/5040"
+        ],
+        [
+          "0",
+          "0"
+        ]
+      ],
+      "normalization": {
+        "A_ordinary": {
+          "lower_exact": "157280155859416359627362986959/79228162514264337593543950336",
+          "upper_exact": "157280155859416359627362986963/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.985154657992976214869995159436492521732"
+        },
+        "A_optimum": {
+          "lower_exact": "76836121448426865150827654593/39614081257132168796771975168",
+          "upper_exact": "153672242896853730301655309187/79228162514264337593543950336",
+          "midpoint_display_not_decision_value": "1.939616394223283762923088864793258587518"
+        },
+        "PTSC_K0_finite": {
+          "lower_exact": "5321971748296757452934043984653/2495687119199326634196634435584",
+          "upper_exact": "10643943496593514905868087969369/4991374238398653268393268871168",
+          "midpoint_display_not_decision_value": "2.132467530627063302769942692458411338462"
+        },
+        "CTS_free_formula_padded_I1_only": {
+          "lower_exact": "7437625619230954200949806528781/3565267313141895191709477765120",
+          "upper_exact": "3718812809615477100474903264413/1782633656570947595854738882560",
+          "midpoint_display_not_decision_value": "2.086134072420095644820471133520903934514"
+        },
+        "CTS_collected_I1": {
+          "lower_exact": "4049958269112452648039740525665341/2599079871280441594756209290772480",
+          "upper_exact": "2024979134556226324019870262849073/1299539935640220797378104645386240",
+          "midpoint_display_not_decision_value": "1.558227707376008062966488573020744431088"
+        }
+      },
+      "CTS_literal_collected_Lc": "790363/4199040",
+      "CTS_literal_collected_Ls": "3932123/4199040",
+      "relations": {
+        "A_vs_ordinary": "LESS",
+        "A_vs_PTSC_K0": "LESS",
+        "A_vs_CTS_free_formula": "LESS",
+        "CTS_collected_vs_A": "LESS"
+      },
+      "I0_CTS_free_formula_executable_for_general_involutions": false,
+      "per_sign": [
+        {
+          "sigma": -1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "18a9ed5a5c0f738b828e67220be185637c947d8b4dc2e1a162aefa31f8c4769e",
+          "Pauli_target_sha256": "a00cc77f1e5bf102736a0d27f72c0d041a9446446e4a6eb7baef82043f8968d2",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 2460,
+            "distinct_phase_preserving_atoms": 72
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-790363/4199040"
+            },
+            "imaginary_coefficients": {
+              "X": "3932123/8398080",
+              "Y": "3932123/12597120",
+              "Z": "3932123/25194240"
+            }
+          }
+        },
+        {
+          "sigma": 1,
+          "all_same_target_means_match": true,
+          "free_target_sha256": "fd1b250cc0274ac455a7889b2911a8590841dc951061536db2987bd68751eea1",
+          "Pauli_target_sha256": "4e4801295de4c54a0c665665193a8be1d6871c139d26bb581875eb666e384f44",
+          "ordinary_support": {
+            "labelled_before_identical_atom_merge": 2460,
+            "distinct_phase_preserving_atoms": 72
+          },
+          "A_optimum_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 48
+          },
+          "PTSC_K0_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 11
+          },
+          "CTS_padded_per_word_support": {
+            "labelled_before_identical_atom_merge": 3279,
+            "distinct_phase_preserving_atoms": 16,
+            "access": "I1 per-word Pauli closure/rephasing; full coefficient collection not needed"
+          },
+          "CTS_collected_support": {
+            "labelled_nonzero_collected_atoms": 4,
+            "distinct_phase_preserving_atoms": 4,
+            "real_coefficients_M_minus_I": {
+              "I": "-790363/4199040"
+            },
+            "imaginary_coefficients": {
+              "X": "-3932123/8398080",
+              "Y": "-3932123/12597120",
+              "Z": "-3932123/25194240"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "semantic_witnesses": {
+    "general_word_common_angle_shortcut_is_not_unitary": true,
+    "word_neither_Hermitian_nor_antiHermitian": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        2,
+        1,
+        0
+      ]
+    ],
+    "unitarity_residual_sha256": "2ce0ea09ed31a8ce70a2c59ceddeb967e5cfe6b80d17adf040fe70f1ae216139",
+    "Wan_adjoint_ordinary_orientation_matches_both_signs": true,
+    "A_odd_atom_not_literal_CTS_atom": true,
+    "A_odd_atom_numerator": {
+      "Y": [
+        "0",
+        "2/7"
+      ],
+      "Z": [
+        "0",
+        "-2/9"
+      ]
+    }
+  },
+  "comparison_set_extended_after_results": false,
+  "source_sha256": "0eb6b56c04af19e1e0c0f22f32df4da3de1e452d0101d90ec9b3ae62553d12df",
+  "python": "3.10.12 (main, Sep 11 2024, 15:47:36) [GCC 11.4.0]",
+  "technical_runtime_seconds": 5.968320643994957,
+  "technical_peak_RSS_KiB_linux": 16640,
+  "caps": {
+    "CPU_seconds": 30,
+    "address_space_MiB": 256,
+    "wall_seconds": 60
+  },
+  "technical_checker_runs": 1,
+  "science_runs": 0,
+  "random_sampling_calls": 0,
+  "synthesis_compile_matrix_solver_molecule_DF_NPZ_GPU_calls": 0,
+  "new_algorithm_world_priority_established": false,
+  "RUN_READY": false,
+  "science_execution_authorized": false,
+  "mandatory_STOP": true
+}

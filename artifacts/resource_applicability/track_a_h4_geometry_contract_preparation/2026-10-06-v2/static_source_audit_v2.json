@@ -1,0 +1,241 @@
+{
+  "schema_version": "h4-contract-static-source-v2",
+  "status": "READ_ONLY_SOURCE_AND_METADATA_MATCH",
+  "observed_jst": "2026-10-06T03:22:47.541757+09:00",
+  "source_findings": [
+    {
+      "installed_source": "pyscf/scf/hf.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/pyscf/scf/hf.py",
+      "sha256": "0d723670139ad00a68a9d9815b87472f446c624030761c9df97c183c32de4f27",
+      "findings": [
+        {
+          "line_start": 116,
+          "line_end": 117,
+          "finding": "sqrt(conv_tol) gradient default; proposed explicit raw gradient"
+        },
+        {
+          "line_start": 194,
+          "line_end": 196,
+          "finding": "main convergence uses energy AND gradient"
+        },
+        {
+          "line_start": 211,
+          "line_end": 230,
+          "finding": "normal extra check has relaxed thresholds and OR; independent proposal gate required"
+        },
+        {
+          "line_start": 1324,
+          "line_end": 1332,
+          "finding": "canonical MO eigensolver and first largest real component sign"
+        },
+        {
+          "line_start": 1664,
+          "line_end": 1687,
+          "finding": "config-sensitive defaults, proposed explicit SCF/CDIIS/direct settings"
+        },
+        {
+          "line_start": 436,
+          "line_end": 440,
+          "finding": "minao atom fallback for charge>96; H4 proposal rejects fallback, no molecule tested"
+        }
+      ]
+    },
+    {
+      "installed_source": "pyscf/scf/diis.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/pyscf/scf/diis.py",
+      "sha256": "6f7e9c596e7e74e4e71303697e745a9dba140e8da42e614bd056d900452b188d",
+      "findings": [
+        {
+          "line_start": 40,
+          "line_end": 66,
+          "finding": "normal CDIIS, space8/damp0/rollback0; different from post-failure rescue"
+        }
+      ]
+    },
+    {
+      "installed_source": "pyscf/gto/mole.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/pyscf/gto/mole.py",
+      "sha256": "1862a3eefb7ae665c23343634bf31b4b5a26575322a38cd06b9ad1ab37e5da92",
+      "findings": [
+        {
+          "line_start": 2300,
+          "line_end": 2318,
+          "finding": "unit config-sensitive; explicit Angstrom/symmetry/cart/incore proposals"
+        }
+      ]
+    },
+    {
+      "installed_source": "openfermionpyscf/_run_pyscf.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermionpyscf/_run_pyscf.py",
+      "sha256": "f092eed5b9792bf5ba54b78fe8614a5d261d1eba700dec33f3923f4a81e89add",
+      "findings": [
+        {
+          "line_start": 36,
+          "line_end": 60,
+          "finding": "geometry and RHF path"
+        },
+        {
+          "line_start": 77,
+          "line_end": 94,
+          "finding": "integral transform/order"
+        },
+        {
+          "line_start": 130,
+          "line_end": 132,
+          "finding": "legacy controls implicit"
+        },
+        {
+          "line_start": 202,
+          "line_end": 206,
+          "finding": "legacy run_pyscf unconditionally saves; not future safe controlled source"
+        }
+      ]
+    },
+    {
+      "installed_source": "openfermion/circuits/low_rank.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermion/circuits/low_rank.py",
+      "sha256": "de74fb802550417788362845515ed9e56a180e4ff85ab21ab43ba8445156dbbe",
+      "findings": [
+        {
+          "line_start": 112,
+          "line_end": 126,
+          "finding": "spin transform and real/symmetric/eigh"
+        },
+        {
+          "line_start": 133,
+          "line_end": 159,
+          "finding": "l1-derived weights, reversed argsort returned order, explicit rank12 overrides tolerance"
+        }
+      ]
+    },
+    {
+      "installed_source": "openfermion/chem/molecular_data.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermion/chem/molecular_data.py",
+      "sha256": "f6489483082534354131466f92c43eb726a39082bc514977475d36ddb7e57e38",
+      "findings": [
+        {
+          "line_start": 367,
+          "line_end": 402,
+          "finding": "spin-orbital interleaving and EQ_TOLERANCE zeroing"
+        },
+        {
+          "line_start": 1031,
+          "line_end": 1037,
+          "finding": "InteractionOperator factor1/2"
+        }
+      ]
+    },
+    {
+      "installed_source": "openfermion/config.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermion/config.py",
+      "sha256": "468dbf91a372733c2ed908947af3b9434a875650b9eeeedf25826be3461937e0",
+      "findings": [
+        {
+          "line_start": 16,
+          "line_end": 16,
+          "finding": "EQ_TOLERANCE=1e-8"
+        }
+      ]
+    },
+    {
+      "installed_source": "openfermion/linalg/sparse_tools.py",
+      "absolute_path": "/home/AbeHiromu/venvs/trotter-common/lib/python3.12/site-packages/openfermion/linalg/sparse_tools.py",
+      "sha256": "683ec7a6869bbebbc9c37c2c18e20aa49e36cf6e9e4632db5496fa9cb2d016aa",
+      "findings": [
+        {
+          "line_start": 292,
+          "line_end": 346,
+          "finding": "fixed alpha/beta JW occupation bit(7-p)"
+        }
+      ]
+    },
+    {
+      "repository_source": "src/trotterlib/df_hamiltonian.py",
+      "sha256": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+      "line_start": 405,
+      "line_end": 428,
+      "finding": "spin_sector sorted index order"
+    },
+    {
+      "repository_source": "src/trotterlib/pr2_s0_s1_validation.py",
+      "sha256": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+      "line_start": 159,
+      "line_end": 174,
+      "finding": "sector state phase pivot"
+    },
+    {
+      "repository_source": "src/trotterlib/df_partial_randomized_pf.py",
+      "sha256": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb",
+      "line_start": 216,
+      "line_end": 221,
+      "finding": "generic Frobenius re-sort is separate policy"
+    },
+    {
+      "repository_source": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+      "line_start": 208,
+      "line_end": 249,
+      "finding": "dense eigh and residual/imaginary energy gates"
+    }
+  ],
+  "installed_metadata_versions_RECORDs_match_v1": [
+    "attrs",
+    "certifi",
+    "charset-normalizer",
+    "cirq-core",
+    "contourpy",
+    "cycler",
+    "deprecation",
+    "dill",
+    "duet",
+    "fonttools",
+    "h5py",
+    "idna",
+    "iniconfig",
+    "kiwisolver",
+    "matplotlib",
+    "mpmath",
+    "networkx",
+    "numpy",
+    "openfermion",
+    "openfermionpyscf",
+    "packaging",
+    "pandas",
+    "pillow",
+    "pluggy",
+    "pubchempy",
+    "pygments",
+    "pyparsing",
+    "pyscf",
+    "pytest",
+    "python-dateutil",
+    "pytz",
+    "qiskit",
+    "requests",
+    "rustworkx",
+    "scipy",
+    "setuptools",
+    "six",
+    "sortedcontainers",
+    "stevedore",
+    "symengine",
+    "sympy",
+    "tqdm",
+    "typing-extensions",
+    "tzdata",
+    "urllib3"
+  ],
+  "dependency_count": 45,
+  "science_imports": 0,
+  "molecular_calculations": 0,
+  "global_config_changed": 0,
+  "actual_effective_SCF_defaults_imported": false,
+  "explicit_review_controls_proposed": true,
+  "scientific_choices_pending_review": [
+    "REVIEW_APPROVAL_D1",
+    "REVIEW_APPROVAL_D2",
+    "REVIEW_APPROVAL_D3",
+    "REVIEW_APPROVAL_D4"
+  ],
+  "full_wheel_binary_independent_equivalence_established": false
+}

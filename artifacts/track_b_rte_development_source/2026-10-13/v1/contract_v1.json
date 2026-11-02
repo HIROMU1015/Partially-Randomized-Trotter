@@ -1,0 +1,153 @@
+{
+  "kind": "RTE_DEVELOPMENT_D1_FIXED_CONTRACT_V1",
+  "date_JST": "2026-10-13",
+  "source_preparation_only": true,
+  "input": {
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "tau": "5/7",
+    "sigma": 1,
+    "state": "000",
+    "system_qubits": 3,
+    "provider": "Q0=Z0; V1=R_XX01(pi/4); V2=R_XX12(pi/4)R_ZZ01(pi/4); Qi=Vi†ZiVi",
+    "rotation_convention": "R_P(theta)=exp(-i theta P/2)",
+    "development_known": true,
+    "held_out": false,
+    "same_I1_provider_access_all_arms": true
+  },
+  "degree": 5,
+  "steps": [
+    1,
+    2
+  ],
+  "arms": [
+    "ordinary",
+    "partial_return_tail",
+    "closed_P3_tail",
+    "full_return",
+    "closed_P5_full",
+    "matched_CTS"
+  ],
+  "primary_pair": [
+    "partial_return_tail",
+    "closed_P5_full"
+  ],
+  "rows": 12,
+  "axes": 24,
+  "epsilon_axis": "1/200",
+  "complex_accuracy_upper": "sqrt(2)/200 < 1/100",
+  "alpha_axis": "49/24000",
+  "resource_failure_per_row": "1/12000",
+  "resource_tail_t": 10,
+  "familywise_alpha": "1/20",
+  "probability_bits": 160,
+  "root_bits": 256,
+  "eta": "1/1000000000000",
+  "rho": "1/1000000000000",
+  "primitive_error": "1/1000000",
+  "interval_dps": 100,
+  "matrix_tolerance": 1e-10,
+  "cross_step_fusion": false,
+  "SP_enabled": false,
+  "proposal_search": false,
+  "quantum_shots": false,
+  "online_sampling": false,
+  "bias_policy": {
+    "Taylor_step_upper": "3*x^6/720 for 0<=x<=1",
+    "rounded_native_step_upper": "8*rho+16*(1+rho)*primitive_error",
+    "product_Taylor_upper": "(1+epsilon)^r-1",
+    "product_implementation_upper": "(1+epsilon+e)^r-(1+epsilon)^r",
+    "axis_bias": "2*(Taylor_product_upper+product_implementation_upper)",
+    "remaining": "epsilon_axis-axis_bias; exhaustion => technical inconclusive, no rescue",
+    "state_uniform": true,
+    "true_signal_sets_budget": false
+  },
+  "whole_trial_policy": "independent step proposals; any zero => whole zero before quantum initialization; zeros counted in all trials",
+  "cost_policy": {
+    "model": "same literal controlled lowering and adjacent inverse cancellation within each step; no cross-step optimization",
+    "coordinates": [
+      "T",
+      "CX",
+      "native_1Q",
+      "workspace",
+      "classical"
+    ],
+    "T_included_in_1Q": true,
+    "expected_native_per_whole_trial": "r*Z^(r-1)*c_step",
+    "prep_readout_slope": "2*N*Z^r",
+    "classical_online": "NOT_ACQUIRED; retain unknown, never zero",
+    "reference_enumeration": "small-provider evaluation only; production never reads table",
+    "primary_decision": "all h>=0 affine relation, exact rational intercept/slope/crossover; no GO threshold"
+  },
+  "saved_anchor": {
+    "commit": "c95736fd2990f5ef6dd1cb5866421fd78bb28687",
+    "path": "artifacts/track_b_g9_p5_native_result/2026-10-10/v2/result_v1.json",
+    "sha256": "3eb8430014a7881b5189ca8779a58ccd7ab2f50c37a58795bd0458b174abda20",
+    "reuse_scope": "same primitive angle/precision/tool/strict phase only; r=1 missing key abort, never synthesize; no old budget/wrapper-cost transfer"
+  },
+  "runtime_executable": "/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python",
+  "runtime_executable_sha256": "b94e9b56bc1f96b18d36a0f1d14308575bb7b5960eda94ae0520f0376e95d12d",
+  "tool_identity": {
+    "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+    "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984"
+  },
+  "synthesizer_options": {
+    "dloop": 10,
+    "dps": 100,
+    "dtimeout": 500,
+    "floop": 10,
+    "ftimeout": 500,
+    "measure_time": false,
+    "seed": 0,
+    "show_graph": false,
+    "up_to_phase": false,
+    "verbose": 0
+  },
+  "caps": {
+    "workers": 2,
+    "numeric_threads": 1,
+    "parent_RSS_MiB": 512,
+    "worker_RSS_MiB": 512,
+    "aggregate_RSS_MiB": 1536,
+    "virtual_address_MiB": 1536,
+    "total_CPU_seconds": 1800,
+    "per_key_CPU_seconds": 20,
+    "total_wall_seconds": null,
+    "phase_wall_seconds": null,
+    "per_key_wall_seconds": null,
+    "output_bytes": 134217728,
+    "per_key_log_bytes": 65536,
+    "sequence_characters": 20000,
+    "shot_cap_per_axis": 100000000,
+    "saved_keys": 19,
+    "new_synthesis_keys": 53,
+    "cache_entries": 72,
+    "cache_bytes": 4194304,
+    "event_bindings": 2000,
+    "review_chunk_bytes": 524288,
+    "matrix_cache_entries": 1024
+  },
+  "authorization_path": "artifacts/track_b_rte_development_source/2026-10-13/v1/authorization.json",
+  "source_manifest": "artifacts/track_b_rte_development_source/2026-10-13/v1/source_manifest_v1.json",
+  "protected_ledger": "artifacts/track_b_rte_development_source/2026-10-13/v1/protected_hashes_v1.json",
+  "optional_receipt_path": "docs/tracks/algorithm_codesign/rte_development_d1_execution_authorization_receipt.md",
+  "result_directory": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1",
+  "runs": 1,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "technical_failure_prefix_scientific_use": false,
+  "next_science_authorized": false,
+  "legacy_source": "b9ed01455351628c9073748f5ba5751aa794b789",
+  "preparation_base": "8c9b5dbdf96dcc7b4af0605fc24921f47e0971bd",
+  "scope_reference": {
+    "review": "docs/research/track_b_existing_results_development_broad_scientific_review_20261013.md",
+    "bytes": 46337,
+    "sha256": "9ce0cf6662b0f99b8cb35ebf5817f3cb98a9249122154579c510b3d80587870e",
+    "user_instruction": "次の作業に進んで大丈夫 / 続きを行って",
+    "authorized_now": "contract/source/off-domain focused tests/publication only",
+    "separate_science_execution_instruction_required": true
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "id": "H246_OUTER32_SAVED_ACCOUNTING_ADOPTION_PROPOSAL_V1",
+  "status": "PROPOSED_NOT_ADOPTED_NOT_EXECUTABLE",
+  "adopted": false,
+  "applicable_series": "H246_HIGHER_PF_OUTER32_EXPLORATION",
+  "current_user_scientific_execution_authority_received": true,
+  "missing_decision": "Apply a declared shot/allowance/normalization policy to this new outer32 series",
+  "proposed_epsilon_grid": [
+    0.05,
+    0.01,
+    0.005,
+    0.001,
+    0.0005
+  ],
+  "proposed_axis_allocation": "epsilon/sqrt(2)",
+  "proposed_alpha_axis": 0.025,
+  "proposed_bias_policy": "USUAL_SIGNED_SAVED: absolute real/imag component of saved total_signed_bias",
+  "proposed_allowance_policy": "Saved M5_SIGNAL_EMPIRICAL_OBSERVATIONS_V1_PROPOSED u, factor1; conditional on saved reference accuracy",
+  "proposed_normalization_policy": "Saved log_B + saved empirical log_B_margin; no rigorous upper-bound claim",
+  "proposed_headroom": "epsilon/sqrt(2) - abs(saved signed bias axis) - saved u",
+  "proposed_guard": "Both axes ELIGIBLE; h>0 and u/h<=0.01, otherwise preserve INELIGIBLE/UNDETERMINED",
+  "proposed_shot_integer_SOURCE": {
+    "git_commit": "605ca07a653241db49348fbd7f4e091f9f18ced7",
+    "path": "scripts/d0_frozen_shot_rule_v1.py",
+    "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f",
+    "origin": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+    "function": "u_aware_shots",
+    "executed_in_this_preflight": false
+  },
+  "proposed_integer_formula": "max(1, ceil(2*B**2/h**2*log(2/alpha_axis))); preserve frozen binary64 operation order and checks",
+  "proposed_integer_overflow_policy": "Frozen LOG_DOMAIN_ONLY branch at log_n>=log(2**52): shots and total cost null, no fabricated integer",
+  "proposed_non_cancellation_policy": "Separate diagnostic if all saved components and closure are adequate; same declared arithmetic with component absolute-sum bias; missing input => null",
+  "reference_absolute_error": null,
+  "strict_bias_certificate": null,
+  "compiler_state_tolerance_is_shot_allowance": false,
+  "AD03": "DEFERRED",
+  "adoption_changes_old_contracts": false,
+  "adoption_requires_new_sampling_or_compile": false,
+  "next_actor": "ユーザー",
+  "next_action": "Adopt or specify the accounting policy; existing numerical execution authority is already received"
+}

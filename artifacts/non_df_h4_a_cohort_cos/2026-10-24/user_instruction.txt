@@ -1,0 +1,344 @@
+# Codex指示：H4 Pauli-JW PR central-controlの256 trajectory費用評価（A_COHORT_COS）
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-a-gate-order2-execution-20261024`
+
+基点commit：
+`5eaf32d2f01e95f514634bbbdefd43e971da5d16`
+
+主要資料：
+
+- `docs/non_df_h4_a_gate_order2_20261024.md`
+- `docs/non_df_h4_controlled_comparison_redesign_20261024.md`
+- `artifacts/non_df_h4_controlled_comparison_redesign/2026-10-24/contracts_DRAFT.json`
+- D1/D2/A_GATEの固定SOURCE・保存回路・実行結果・STOP
+
+科学SOURCE：
+
+- 元H4：`0c329b30a81accb35c212be8defa66fee0dd0f12`
+- D2：`74515d8eb4f073c40fc783681a3775dbca89e9b1`
+- A_GATE：`ee7d281b5daead1d0d5e81e00c9a0ed4727792b0`
+
+## 1. 今回の明示的な実行承認
+
+**A_COHORT_COSの限定科学実行を承認します。**
+
+目的は、Pauli-JW PRのcentral-control実装について、元の保存256 trajectoryに対応するcompiled cosine回路費用を取得し、正確な有限cohort平均と費用分布を確定することです。
+
+既存結果：
+
+| 保存trajectory | Central-control cosine RZ |
+|---|---:|
+| index0（D2） | 1,145 |
+| index1（A_GATE） | 1,129 |
+
+この2件はSOURCE・compiler・入力・費用指標の適合性を確認して再利用します。
+
+**新たに実行する対象はindex2〜255の254本のみです。**
+
+今回は以下を一括承認します。
+
+1. 既存SOURCE・保存trajectory・cost pipelineの確認
+2. D2/A_GATEコードを再利用した254本の実行接続
+3. 必要な人工テスト
+4. 新SOURCE・runtime・入力manifestの固定
+5. 新one-shot grantの発行
+6. 保存254 trajectoryのbody-only replay
+7. Central-control回路生成
+8. Cosine wrapper生成
+9. **最大254回の費用compile**
+10. 既存2件を含めた256本の費用統計・paired比較
+11. 結果検証・保存・commit/push・mandatory STOP
+
+承認した固定範囲内の技術準備・実行について、中間承認を繰り返し求める必要はありません。
+
+新しいsampling、sine側の追加compile、N/G再解析、実装残差の数値保証、D3は承認しません。
+
+## 2. 固定科学条件
+
+元の条件を維持します。
+
+- Linear H4、隣接1.00 Å、STO-3G
+- System 8 qubit＋ancilla 1 qubit
+- Pauli-JW Hamiltonian：184非identity項
+- PR prefix27
+- S2、T=0.8、q=8、r=4、K=4
+- 元の保存event law・保持規則
+- D2のcentral-control合成規則
+- Qiskit 1.3.0
+- Native basis：`rz`, `sx`, `x`, `cx`
+- Optimization level1、seed17
+- Backend／coupling／layout／routing指定なし
+- Cosine Hadamard wrapper
+- 状態準備費用除外
+
+Hamiltonian、prefix、event law、回路合成規則、compiler profileを変更しないでください。
+
+## 3. 既存コード・結果の再利用
+
+最初に既存の実装・テスト・実行パイプラインを確認してください。
+
+特に、
+
+- `h4_a_gate`
+- `h4_d2_pauli_control`
+- `h4_d1_adapter`
+- `pauli_signal_adapter`
+- `rte_event_audit`
+- `fixed_signal_evaluation`
+- `rte_compiled_cost`
+- D1/D2/A_GATEの人工テスト
+- 既存の費用統計関数
+- 既存のgrant・CallBudget・native終了管理
+
+を再利用してください。
+
+不要な回路builderやcompiler wrapperを再実装しないでください。
+
+Index0とindex1の保存済みcentral-control cosine費用は、新compileなしで利用してください。
+
+既存2件のSOURCE・compiler・測定対象が今回の条件に適合しない場合は、勝手に再compileしたり費用を補完したりせず、理由を保存してSTOPしてください。
+
+## 4. 254 trajectoryの実行方法
+
+対象は元のPauli-JW PR保存cohortの`trajectory_index=2...255`です。
+
+各trajectoryについて以下を行ってください。
+
+1. 保存trajectory ID・event hash・SOURCE・入力SHAを照合
+2. 保存eventのorder・component・sign・rotation angleを復元
+3. D1/A_GATEの既存Pauli append処理を使ってbody-only replay
+4. D2のcentral-control変換を適用
+5. Constant・negative product・order phaseを保持
+6. Cosine wrapperを生成
+7. 固定compilerで1回compile
+8. RZ・CX・depth等を保存
+9. Trajectory IDと旧generic-control cosine価格を結合
+
+新しいevent samplingやRNG replayは行わないでください。
+
+Order0/2/4のうち、保存cohortに実際に存在するeventをそのまま使用します。
+
+新たなorder4 trajectoryを生成することは禁止します。
+
+元のPauli productの順序、非可換演算、位相、control=0/1の意味を変更しないでください。
+
+## 5. 実行前の人工検証・SOURCE固定
+
+実H4への適用前に、以下を確認してください。
+
+- 保存eventのreplay
+- Body-only生成
+- D2 central-controlとの接続
+- Order2 productの順序
+- Sign・global/relative phase
+- Controlled product/rotation
+- Cosine wrapper
+- Trajectory IDと価格join
+- 重複実行防止
+- Call前予約
+- Failure／STOP処理
+
+既存テストが適合すれば再利用してください。
+
+必要な最小限のadapterだけを追加し、SOURCEと実使用runtime、入力、出力schemaを固定してください。
+
+新active contractと専用namespaceを作成し、今回の承認・固定SOURCE・入力に結合した未使用one-shot grantを発行してください。
+
+元の消費済みgrantは再利用しません。
+
+## 6. Compile予算と実行制御
+
+科学的な上限は以下とします。
+
+| 対象 | 新規実行上限 |
+|---|---:|
+| Body-only replay | 254 |
+| Central-control生成 | 254 |
+| Cosine wrapper生成 | 254 |
+| 費用top-level compile | **254** |
+| 費用統計解析 | 1固定batch |
+| 新sampling | 0 |
+| Sine compile | 0 |
+| N/G計算 | 0 |
+
+各compile callは起動前に非返還予約し、失敗時も消費済みとしてください。
+
+科学callの自動retry・resume、trajectory差替え、予算拡張は禁止します。
+
+254本は独立なので、実際の利用可能資源に応じて十分に並列化・高速化してください。
+
+CPU・RAM・worker数に恣意的な低い上限を設けず、共有環境全体や他ユーザーに影響する変更・操作は絶対禁止です。
+
+SOURCEや入力対応の本質的な失敗があれば、新しい科学条件を導入せずSTOPしてください。
+
+一部trajectoryが失敗した場合は結果を欠測として保持し、**256本の正確な平均が完成したと主張しないでください。**
+
+## 7. 保存する回路費用
+
+各trajectoryについて以下を保存してください。
+
+- Index／trajectory ID
+- Event hash・trajectory hash
+- Order構成などの既存event metadata
+- Central-control compiled RZ数
+- CX数
+- Total depth
+- RZ depth／CX depth
+- Pre/post-transpile gate histogram
+- Input/output fingerprint
+- 必要なQPY・SHA・compiler profile
+- 対応する旧generic-control cosine費用
+- SOURCE・runtime・実行状態
+
+新しい費用値と旧generic費用の対応を検証できるようにしてください。
+
+保存・再現性に必要な情報を確保しつつ、不要な重複ファイルや監査処理を増やさないでください。
+
+## 8. 256本の費用統計解析
+
+254本の計測が成功し、D2 index0・A_GATE index1を正当に再利用できた場合、固定256本の中央制御版cosine費用を集計してください。
+
+### 必須集計
+
+1. 256本のcentral-control平均RZ数
+2. 標本標準偏差・標準誤差
+3. Nominal 95%信頼区間
+4. 中央値・主要分位点・最小／最大
+5. 旧generic-controlとのpaired費用差
+6. 各trajectoryの削減率と分布
+7. Pauli central PFとの費用比較
+8. DF-nativeの保存費用との比較
+
+Pauli central PFの既存値：
+
+**15,028 RZ**
+
+旧generic Pauli PRの256本平均：
+
+**9,321.1015625 RZ**
+
+DF-nativeの保存値：
+
+- PF：135,355 RZ
+- PR：23,678.44140625 RZ（256本平均）
+
+これらは既存データとして再利用してください。
+
+### 統計上の注意
+
+256本の全価格が得られれば、**この保存cohortの平均価格は正確に計算できます。**
+
+しかし、これはPRのimplemented law全体に対する厳密な母平均費用ではありません。
+
+特に、
+
+- 未観測order4のtail
+- 有限MCによる不確かさ
+- 非DFとDFの異なるrandomization law
+- Compiler・実装依存性
+
+は区別してください。
+
+旧generic-control費用との比較は同じtrajectory IDでpairedにしてください。
+
+PauliとDFは異なるlawなので、同じindexという理由で統計的paired sampleにしないでください。
+
+Nominal信頼区間を厳密な母平均上界や希少event保証として扱わないでください。
+
+## 9. 研究上の主要な問い
+
+今回、特に以下に答えてください。
+
+**Q1. Pauli-JW PR central-controlの保存256本平均RZはいくつか。**
+
+**Q2. 旧generic-controlと比較して何%削減されたか。**
+
+**Q3. Central controlでも、PRはPFより回路単価が低いか。**
+
+**Q4. Pauli-JWとDF-nativeの費用順位はどうなるか。**
+
+**Q5. Order0/2の保存trajectoryで費用削減の大きさに違いがあるか。**
+
+**Q6. PRの回路単価分布は狭いか、それとも一部のtrajectoryが高費用か。**
+
+**Q7. 次にsine側を測定して総費用Gへ接続する研究価値はあるか。**
+
+保存されたorder構成と価格の関係を記述的に整理して構いませんが、未観測eventの費用を0と置いたり、因果関係を断定したりしないでください。
+
+## 10. N/Gと実装誤差の扱い
+
+今回の主評価は**cosine軸の回路単価C**です。
+
+以下は行いません。
+
+- 新しい必要shot数Nの計算
+- 総費用Gの計算
+- Sine価格の推定補完
+- 新compiled実装のrho保証
+- Formal certificate受理
+
+D2のSOURCE対応は既存証拠として利用しますが、全trajectoryのcompiled実装誤差が保証されたと解釈しないでください。
+
+Sine側価格が不足している状態で、complex signal全体のGを無条件に推定しないでください。
+
+今回のcohort結果から、A_AXESおよび条件付きC/N/G解析の必要性を判断する提案を作成してください。実行はしません。
+
+## 11. 禁止事項・原本保全
+
+以下は禁止します。
+
+- SCF/FCI/DFの再実行
+- Hamiltonian・state再生成
+- 新しいsampling／RNG replay
+- Prefix・q/r/K・event law変更
+- D2 index0・A_GATE index1の不要な再compile
+- Generic-controlの再compile
+- Sine側の新compile
+- 254件を超える費用compile
+- N/G再会計
+- 未承認の残差診断
+- D3
+- 正式certificate受理
+- 旧SOURCE・raw・結果・grant・ledger・marker・STOPの変更
+
+元Pauli-PR historical hash FAIL／原因UNKNOWN、元H4 native UNKNOWN、旧N/G null、C/L COMBINATION_BLOCKED、compiler MISSING_EVIDENCEも維持してください。
+
+最新版`research_project_instructions_unified_2026-10-23.md`の§8.4・§10・§10.3を適用し、研究に必要十分な検証を優先してください。
+
+## 12. 成果物・mandatory STOP
+
+専用branchに以下を保存してください。
+
+1. 新SOURCE・実行adapter・人工テスト
+2. 実行契約・grant・ledger・STOP
+3. 254本のcompiled費用結果
+4. 再利用したindex0/index1の来歴
+5. 256本の費用データと統計
+6. 旧generic-controlとのpaired比較
+7. Pauli PF/PR・DFとの費用比較
+8. 必要な図表
+9. 研究結果報告書
+10. Native終了・保全・終了監査
+
+最終報告では、特に以下を明確にしてください。
+
+- 254/254件が成功したか
+- 256本のcentral-control平均RZ
+- 旧generic-controlに対する平均削減率
+- Central-controlでのPF/PR費用比
+- PauliとDFの順位
+- Order構造と費用の関係
+- Sine計測・N/G解析の必要性
+- SOURCE・commit・remote SHA
+- Native終了・mandatory STOP
+
+専用branchへcommitし、承認済みのrepository運用規則に従いpush・remote SHAを確認してください。
+
+GitHub認証でpushできない場合は結果を保全して報告してください。
+
+**今回承認したA_COHORT_COSの実装・人工検証・SOURCE固定・最大254回のcosine compile・256本の費用統計・結果保存・終了監査まで一括で実施してください。**
+
+A_AXES、条件付きC/N/G、残差診断、D3には自動的に進まず、完了後は**mandatory STOP**してください。

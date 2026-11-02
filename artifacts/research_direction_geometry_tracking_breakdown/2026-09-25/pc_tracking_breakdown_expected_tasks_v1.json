@@ -1,0 +1,436 @@
+{
+  "configuration": {
+    "anchor_geometry_angstrom": 1.0,
+    "basis": "STO-3G",
+    "blind_geometries_angstrom": [
+      0.7,
+      0.9,
+      1.1,
+      1.4,
+      1.6
+    ],
+    "delta_holdout": 0.2,
+    "df_rank": 12,
+    "fit_deltas": [
+      0.025,
+      0.05,
+      0.1
+    ],
+    "gate_thresholds": {
+      "breakdown_coefficient_prediction_relative_error": 0.2,
+      "maximum_blind_coefficient_relative_error": 0.15,
+      "maximum_delta_holdout_relative_error": 0.1,
+      "maximum_nontrivial_cancellation_ratio": 0.5,
+      "maximum_operator_reorder_difference": 1e-10,
+      "maximum_pair_error_degradation": 0.05,
+      "maximum_pair_prediction_normalized_error": 0.15,
+      "maximum_training_coefficient_relative_difference": 0.01,
+      "maximum_training_ground_energy_absolute_difference_hartree": 1e-08,
+      "minimum_blind_coefficient_pass_count": 4,
+      "minimum_changed_blind_prefixes": 2,
+      "minimum_clear_diagnostic_count": 4,
+      "minimum_diagnostic_accuracy": 0.8,
+      "minimum_fragment_similarity": 0.9,
+      "minimum_ground_state_gap_hartree": 0.02,
+      "minimum_ground_state_overlap": 0.95,
+      "minimum_nontrivial_exact_energy_difference_hartree": 0.02,
+      "minimum_orbital_singular_value": 0.8,
+      "minimum_pair_prediction_pass_count": 3,
+      "minimum_tracking_median_error_reduction": 0.1,
+      "smooth_coefficient_prediction_relative_error": 0.1
+    },
+    "geometries_angstrom": [
+      0.7,
+      0.8,
+      0.9,
+      1.0,
+      1.1,
+      1.2,
+      1.4,
+      1.6
+    ],
+    "identity_policy": "extract_identity_phase",
+    "ld": 3,
+    "left_tracking_path_angstrom": [
+      1.0,
+      0.9,
+      0.8,
+      0.7
+    ],
+    "molecule": "H4 linear chain",
+    "n_electrons": 4,
+    "n_qubits": 8,
+    "pairs": [
+      {
+        "label": "interpolation",
+        "left": 0.9,
+        "right": 1.1
+      },
+      {
+        "label": "compression_boundary",
+        "left": 0.7,
+        "right": 0.9
+      },
+      {
+        "label": "stretched_region",
+        "left": 1.4,
+        "right": 1.6
+      },
+      {
+        "label": "cross_region",
+        "left": 0.9,
+        "right": 1.4
+      }
+    ],
+    "policies": [
+      "independent",
+      "tracked"
+    ],
+    "product_formula": "second_order_partial_S2_exact_tail_reference",
+    "right_tracking_path_angstrom": [
+      1.0,
+      1.1,
+      1.2,
+      1.4,
+      1.6
+    ],
+    "training_geometries_angstrom": [
+      0.8,
+      1.0,
+      1.2
+    ]
+  },
+  "content_fingerprint": "cbe260750d081316070d3684a2a24194d91d029ad700a54cf4f61152f2ed4a4e",
+  "decision_rules": [
+    "advance_pc_tracking_and_breakdown_design",
+    "pc_signed_error_remains_smooth_only_require_new_condition",
+    "pc_geometry_response_unexplained_do_not_advance",
+    "stop_pc_current_h4_family_as_primary"
+  ],
+  "method": "pc_h4_orbital_fragment_tracking_signed_error_breakdown_v1",
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_geometry_tracking_breakdown.py --dry-run",
+    "cpu_count_visible": 32,
+    "evidence_status": "local_dirty_worktree_not_externally_reproduced",
+    "generated_at_utc": "2026-09-25T08:34:06.862253+00:00",
+    "git_commit": "3336f030c56f4eb500b1bdf8f541619f9c445038",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/research/README.md",
+      " M \"docs/research/\\345\\205\\210\\350\\241\\214\\347\\240\\224\\347\\251\\266\\343\\201\\250\\346\\234\\252\\350\\247\\243\\346\\261\\272\\347\\202\\271.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-25.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\347\\233\\256\\347\\232\\204\\343\\203\\273\\347\\240\\224\\347\\251\\266\\350\\252\\262\\351\\241\\214.md\"",
+      " M docs/research_direction_joint_synthesis_pilot.md",
+      " M docs/research_direction_theme_selection.md",
+      " M scripts/README.md",
+      " M scripts/run_research_direction_geometry_energy_difference_pilot.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/research_direction_geometry_energy_difference_pilot.py",
+      " M tests/README.md",
+      " M tests/test_research_direction_geometry_energy_difference_pilot.py",
+      "?? artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1_corrected_energy.json",
+      "?? artifacts/research_direction_joint_synthesis_blind_validation/",
+      "?? artifacts/research_direction_joint_synthesis_formalization/",
+      "?? artifacts/research_direction_joint_synthesis_mechanism_validation/",
+      "?? docs/research/pa_joint_synthesis_blind_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_mechanism_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_prior_art_audit.md",
+      "?? docs/research/pa_joint_synthesis_v1_formalization.md",
+      "?? docs/research/pc_geometry_tracking_breakdown_preregistration.md",
+      "?? docs/research_direction_joint_synthesis_blind_validation.md",
+      "?? docs/research_direction_joint_synthesis_mechanism_validation.md",
+      "?? scripts/run_research_direction_geometry_tracking_breakdown.py",
+      "?? scripts/run_research_direction_joint_synthesis_blind_validation.py",
+      "?? scripts/run_research_direction_joint_synthesis_formalization.py",
+      "?? scripts/run_research_direction_joint_synthesis_mechanism_validation.py",
+      "?? src/trotterlib/research_direction_geometry_tracking_breakdown.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_blind_validation.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_formalization.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_blind_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_formalization.py",
+      "?? tests/test_research_direction_joint_synthesis_mechanism_validation.py"
+    ],
+    "mode": "compile_before_results_expected_tasks",
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "scipy_version": "1.14.1",
+    "source_sha256": {
+      "scripts/run_research_direction_geometry_tracking_breakdown.py": "53410e399e4a4b8bc31991d0b6dcef1e9d746522b9bb4179906727fff4968912",
+      "src/trotterlib/research_direction_geometry_tracking_breakdown.py": "a77c427f569b36218baa0a6343ed77db96951767a12a0f9a373bef8f2da3195b"
+    }
+  },
+  "schema_version": "research_direction_geometry_tracking_breakdown_expected_v1",
+  "scope": {
+    "circuit_resources_evaluated": false,
+    "cross_system_transfer_claimed": false,
+    "final_total_cost_evaluated": false,
+    "force_or_reaction_barrier_claimed": false,
+    "h12_evaluated": false,
+    "potential_energy_surface_claimed": false,
+    "rpe_rte_sampling_evaluated": false,
+    "scientific_superiority_claimed": false
+  },
+  "task_count": 16,
+  "tasks": [
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 0.7,
+      "ld": 3,
+      "policy": "independent",
+      "role": "blind_holdout",
+      "task_id": "R070_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 0.7,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "blind_holdout",
+      "task_id": "R070_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 0.8,
+      "ld": 3,
+      "policy": "independent",
+      "role": "coefficient_training",
+      "task_id": "R080_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 0.8,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "coefficient_training",
+      "task_id": "R080_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 0.9,
+      "ld": 3,
+      "policy": "independent",
+      "role": "blind_holdout",
+      "task_id": "R090_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 0.9,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "blind_holdout",
+      "task_id": "R090_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.0,
+      "ld": 3,
+      "policy": "independent",
+      "role": "coefficient_training",
+      "task_id": "R100_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.0,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "coefficient_training",
+      "task_id": "R100_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.1,
+      "ld": 3,
+      "policy": "independent",
+      "role": "blind_holdout",
+      "task_id": "R110_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.1,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "blind_holdout",
+      "task_id": "R110_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.2,
+      "ld": 3,
+      "policy": "independent",
+      "role": "coefficient_training",
+      "task_id": "R120_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.2,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "coefficient_training",
+      "task_id": "R120_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.4,
+      "ld": 3,
+      "policy": "independent",
+      "role": "blind_holdout",
+      "task_id": "R140_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.4,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "blind_holdout",
+      "task_id": "R140_tracked"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.6,
+      "ld": 3,
+      "policy": "independent",
+      "role": "blind_holdout",
+      "task_id": "R160_independent"
+    },
+    {
+      "delta_holdout": 0.2,
+      "df_rank": 12,
+      "fit_deltas": [
+        0.025,
+        0.05,
+        0.1
+      ],
+      "geometry_angstrom": 1.6,
+      "ld": 3,
+      "policy": "tracked",
+      "role": "blind_holdout",
+      "task_id": "R160_tracked"
+    }
+  ],
+  "tracking_edges": [
+    {
+      "left": 1.0,
+      "right": 0.9
+    },
+    {
+      "left": 0.9,
+      "right": 0.8
+    },
+    {
+      "left": 0.8,
+      "right": 0.7
+    },
+    {
+      "left": 1.0,
+      "right": 1.1
+    },
+    {
+      "left": 1.1,
+      "right": 1.2
+    },
+    {
+      "left": 1.2,
+      "right": 1.4
+    },
+    {
+      "left": 1.4,
+      "right": 1.6
+    }
+  ]
+}

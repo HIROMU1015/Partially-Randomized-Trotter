@@ -1,0 +1,43 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 2.8298314241692424,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 721000,
+      "pid": 721000,
+      "ppid": 720355,
+      "reaped": true,
+      "sid": 721000,
+      "start_ticks": 446276827,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [],
+  "reason": {
+    "reason": "INVALID_READY_IDENTITY:case0",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 273, in run_supervised\n    raise ValueError(\"INVALID_READY_IDENTITY:\"+c[\"job\"][\"case\"])\nValueError: INVALID_READY_IDENTITY:case0\n",
+    "type": "ValueError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 2.7739856550469995,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462768.280759057,
+      "pid": 721000
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

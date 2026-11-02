@@ -1,0 +1,60 @@
+{
+  "arbitrary_permanent_worker_cap": false,
+  "high_q_or_rare_memory_upper_bound": null,
+  "host_PSI_kill": false,
+  "inner_threads": 1,
+  "joint_stages": "ADMIT_SEQUENTIALLY_WITH_LIVE_RESERVATIONS_DO_NOT_DOUBLE_COUNT_FREE_RAM",
+  "output_disk_upper_bound": null,
+  "parallel_science_executed": false,
+  "resources_policy_adopted": false,
+  "stages": [
+    {
+      "stage": "H4_DET",
+      "resources": {
+        "disk_proxy_bytes": 25206,
+        "host_PSI_kill": false,
+        "live_own_resource_observation": true,
+        "proxy_source": "PRIOR_SAME_INPUT_NATIVE_Q2_RSS_TIMES_MAX_Q_RATIO4_NOT_UPPER_BOUND",
+        "runtime_caps": false,
+        "worker_RSS_proxy_bytes": 25412015444
+      }
+    },
+    {
+      "stage": "H6_DET",
+      "resources": {
+        "disk_proxy_bytes": 195338,
+        "host_PSI_kill": false,
+        "live_own_resource_observation": true,
+        "proxy_source": "PRIOR_SAME_INPUT_NATIVE_Q2_RSS_TIMES_MAX_Q_RATIO4_NOT_UPPER_BOUND",
+        "runtime_caps": false,
+        "worker_RSS_proxy_bytes": 92394930176
+      }
+    },
+    {
+      "stage": "H4_PR",
+      "resources": {
+        "disk_proxy_bytes": 25206,
+        "host_PSI_kill": false,
+        "live_own_resource_observation": true,
+        "proxy_source": "PRIOR_SAME_INPUT_NATIVE_Q2_RSS_TIMES_MAX_Q_RATIO4_NOT_UPPER_BOUND",
+        "runtime_caps": false,
+        "worker_RSS_proxy_bytes": 25412015444
+      }
+    },
+    {
+      "stage": "H6_PR",
+      "resources": {
+        "disk_proxy_bytes": 195338,
+        "host_PSI_kill": false,
+        "live_own_resource_observation": true,
+        "proxy_source": "PRIOR_SAME_INPUT_NATIVE_Q2_RSS_TIMES_MAX_Q_RATIO4_NOT_UPPER_BOUND",
+        "runtime_caps": false,
+        "worker_RSS_proxy_bytes": 92394930176
+      }
+    }
+  ],
+  "status": "PROPOSED_NOT_EXECUTED",
+  "strategy": "TASK_SPAWN_POOL_PROCESS_LOCAL_CONTEXT_PREFIX_AND_FINGERPRINT_CACHE;EVOLUTION_SHARED_ACROSS_AXES",
+  "unrelated_worktree_freeze": false,
+  "worker_count": "min(registered_tasks,floor(fresh_idle_CPU),floor(effective_available_RAM/worker_RSS_proxy))"
+}

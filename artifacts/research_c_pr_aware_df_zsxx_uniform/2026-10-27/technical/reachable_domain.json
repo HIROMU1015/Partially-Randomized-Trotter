@@ -1,0 +1,98 @@
+{
+  "status": "SOURCE_CONDITIONAL_REACHABLE_SUPERSET",
+  "fixed_profile": {
+    "optimization_level": 1,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "seed_transpiler": 17,
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "raw_grammar_reference": "c_pr_aware_df_c2a.primitive_grammar",
+  "raw_alphabet": [
+    "RZ",
+    "XXPlusYY",
+    "inverse Gaussian",
+    "closed controlled RZ",
+    "closed controlled RZZ",
+    "P"
+  ],
+  "official_lowered_alphabet": [
+    "u",
+    "rz",
+    "sx",
+    "x",
+    "cx"
+  ],
+  "one_qubit_run_alphabet": [
+    "rz",
+    "sx",
+    "x"
+  ],
+  "ideal_run_det": [
+    "1",
+    "i",
+    "-1",
+    "-i"
+  ],
+  "determinant_argument": "det RZ=1,det SX=i,det X=-1;multiply determinants. Circuit global phase is not in the next run matrix.",
+  "ideal_angle_domain": "all finite stored binary64 angles allowed as a safe superset;no artificial min/max promoted",
+  "post_rewrite_angles": "finite mod2pi callback yields reduced RZ angles near[-PI_f64,PI_f64];this does not bound initial raw diagonal angles or certify libm accuracy",
+  "run_length": "L<=N;rewritten gate nodes can enter later runs;event boundaries are not run boundaries",
+  "source_node_bound": {
+    "status": "CONDITIONAL_SOURCE_TOPOLOGY_BOUND",
+    "initial_nodes_upper": 67731,
+    "counts": {
+      "RZ": 320,
+      "XX": 1120,
+      "CRZ": 48,
+      "CRZZ": 168,
+      "P": 7
+    },
+    "translated_weights_upper": {
+      "RZ": 1,
+      "XX": 44,
+      "CRZ": 4,
+      "CRZZ": 106,
+      "P": 5
+    },
+    "tail_native_nodes_upper": 96,
+    "U_translation_witness_nodes": 5,
+    "restrictions": "same fixed raw grammar,official definitions,unchanged equivalence graph;no target/plugins/calibration/opaque gate",
+    "actual_H4_circuit_built": false,
+    "actual_H4_node_count": null,
+    "whole_law_bound": null
+  },
+  "node_bound_scope": "fixed raw K0 kernel grammar only;not a measured circuit size or proof for all readout/adjoint wrappers",
+  "topology_argument": [
+    "official definitions have parameter-independent gate topology on finite bound inputs",
+    "RZZ one-control path lowers two CX into two CCX plus one CRZ",
+    "CCX official unroll yields9u+6cx;CRZ adds2rz+2cx;CRZZ total18u+14cx+2rz",
+    "XX/inverse unroll7u+6rz+2cx+sx",
+    "U->U3->3RZ+2SX supplies cost5 witness for fixed additive BasisTranslator",
+    "unchanged equivalence graph,no target/plugins/calibration/opaque synthesis required"
+  ],
+  "conditional_numeric_domain": {
+    "eta": "L*p/(1-L*p)",
+    "p": "(1+a)(1+16gamma3)-1+28h(1+u)^3",
+    "definition": "union over ideal RZ/SX/X products G:||M-G||2<=eta",
+    "near_unitarity": "||M^*M-I||2<=2eta+eta^2",
+    "minimum_singular_value": ">=1-eta when eta<1",
+    "determinant": "det M within2eta+eta^2 of one of four ideal centers",
+    "includes": [
+      "Euler poles",
+      "det-arg cut near-1",
+      "signed zero",
+      "underflow terms",
+      "all source-allowed angle values"
+    ],
+    "unverified": "uniform RZ matrix-evaluation a and installed basic-operation model"
+  },
+  "full_Rust_image_covered": false,
+  "unknown_input_M_to_compiler_M_bound": null,
+  "actual_H4_bound": null
+}

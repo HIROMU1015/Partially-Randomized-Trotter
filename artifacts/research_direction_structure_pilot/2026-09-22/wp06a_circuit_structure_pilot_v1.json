@@ -1,0 +1,1525 @@
+{
+  "basis_fusion_ablation": {
+    "compiled_cost": {
+      "baseline": {
+        "circuit_size": 668,
+        "cx_count": 112,
+        "cx_depth": 58,
+        "posttranspile_gate_counts": [
+          [
+            "cx",
+            112
+          ],
+          [
+            "rz",
+            332
+          ],
+          [
+            "sx",
+            224
+          ]
+        ],
+        "pretranspile_gate_counts": [
+          [
+            "crzz",
+            2
+          ],
+          [
+            "p",
+            1
+          ],
+          [
+            "rz",
+            32
+          ],
+          [
+            "xx_plus_yy",
+            108
+          ]
+        ],
+        "rz_count": 332,
+        "rz_depth": 85,
+        "total_depth": 190,
+        "untranspiled_depth": 38,
+        "untranspiled_size": 143
+      },
+      "candidate": {
+        "circuit_size": 668,
+        "cx_count": 112,
+        "cx_depth": 58,
+        "posttranspile_gate_counts": [
+          [
+            "cx",
+            112
+          ],
+          [
+            "rz",
+            332
+          ],
+          [
+            "sx",
+            224
+          ]
+        ],
+        "pretranspile_gate_counts": [
+          [
+            "crzz",
+            2
+          ],
+          [
+            "p",
+            1
+          ],
+          [
+            "rz",
+            16
+          ],
+          [
+            "xx_plus_yy",
+            54
+          ]
+        ],
+        "rz_count": 332,
+        "rz_depth": 85,
+        "total_depth": 190,
+        "untranspiled_depth": 20,
+        "untranspiled_size": 73
+      },
+      "candidate_relative_change": {
+        "circuit_size": 0.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "rz_count": 0.0,
+        "rz_depth": 0.0,
+        "total_depth": 0.0,
+        "untranspiled_depth": -0.4736842105263158,
+        "untranspiled_size": -0.4895104895104895
+      }
+    },
+    "interpretation": "explicit_fusion_reduces_untranspiled_work;_this_compiler_also_cancels_the_adjacent_inverse_pair",
+    "operator_max_abs_difference": 7.771561172376096e-16,
+    "sequence_length": 2
+  },
+  "checks": {
+    "all_required_equivalences_pass": true,
+    "all_support_completions_preserve_columns": true,
+    "controlled_relative_phase_omission_detected": true,
+    "current_diagonal_only_control_passes": true,
+    "current_relative_phase_compensation_passes": true,
+    "eta_decision_rule_evaluated": true,
+    "final_total_cost_evaluation_not_claimed": true,
+    "sequence_structure_ranking_evaluated": true
+  },
+  "configuration": {
+    "basis": "STO-3G",
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "delta_time": 0.02,
+    "df_rank": 12,
+    "equivalence_atol": 1e-10,
+    "eta_decision_relative_rz": 0.05,
+    "geometry_angstrom": 1.0,
+    "ld": 3,
+    "molecule": "H4_chain",
+    "n_qubits": 8,
+    "size_grid": [
+      4,
+      6,
+      8
+    ],
+    "size_seed": 20260922
+  },
+  "content_fingerprint": "5faa9b596d22d1850c20d7cc2b755e3b7c4919365fdc28179aa33ae0fce7ac5f",
+  "control_optimization_ablation": {
+    "compiled_cost": {
+      "baseline": {
+        "circuit_size": 5431,
+        "cx_count": 1834,
+        "cx_depth": 1834,
+        "posttranspile_gate_counts": [
+          [
+            "cx",
+            1834
+          ],
+          [
+            "rz",
+            2567
+          ],
+          [
+            "sx",
+            1030
+          ]
+        ],
+        "pretranspile_gate_counts": [
+          [
+            "ccircuit-17477",
+            1
+          ]
+        ],
+        "rz_count": 2567,
+        "rz_depth": 1985,
+        "total_depth": 4570,
+        "untranspiled_depth": 1,
+        "untranspiled_size": 1
+      },
+      "candidate": {
+        "circuit_size": 629,
+        "cx_count": 98,
+        "cx_depth": 44,
+        "posttranspile_gate_counts": [
+          [
+            "cx",
+            98
+          ],
+          [
+            "rz",
+            311
+          ],
+          [
+            "sx",
+            220
+          ]
+        ],
+        "pretranspile_gate_counts": [
+          [
+            "crzz",
+            1
+          ],
+          [
+            "p",
+            1
+          ],
+          [
+            "rz",
+            16
+          ],
+          [
+            "xx_plus_yy",
+            54
+          ]
+        ],
+        "rz_count": 311,
+        "rz_depth": 72,
+        "total_depth": 162,
+        "untranspiled_depth": 19,
+        "untranspiled_size": 72
+      },
+      "candidate_relative_change": {
+        "circuit_size": -0.8841833916405819,
+        "cx_count": -0.9465648854961832,
+        "cx_depth": -0.9760087241003271,
+        "rz_count": -0.8788469029996104,
+        "rz_depth": -0.963727959697733,
+        "total_depth": -0.9645514223194749,
+        "untranspiled_depth": 18.0,
+        "untranspiled_size": 71.0
+      }
+    },
+    "current_builder_policy": "diagonal_only",
+    "operator_max_abs_difference": 4.72277247725713e-15
+  },
+  "decision": {
+    "algorithm_candidate_ranking_reversal_evaluated": false,
+    "controlled_relative_phase_missing_from_current_structure": false,
+    "current_control_and_phase_policies_retained": true,
+    "current_proxy_recalibration_required_before_wp05": true,
+    "direction_update": {
+      "T4": "continue_high_priority",
+      "T6": "continue_triggered_focused_followup"
+    },
+    "eta_decision_relative_rz": 0.05,
+    "eta_trigger_fired": true,
+    "next_action": "WP06b_sequence_aware_full_vs_support_basis_policy_and_recalibration",
+    "physical_controlled_rz_relative_changes": [
+      -0.6176470588235294,
+      -0.3922829581993569,
+      -0.3922829581993569,
+      -0.19578313253012047,
+      0.15014164305949018
+    ],
+    "reason": "Support-restricted bases materially change representative RZ cost, but the preferred basis strategy changes with short-sequence length; a sequence-aware policy must precede WP05.",
+    "rpe_q_slope_change_evaluated": false,
+    "support_strategy_is_sequence_dependent": true,
+    "universal_support_restricted_replacement_adopted": false,
+    "wp05_status": "wait_for_triggered_structure_integration_and_recalibration"
+  },
+  "limitations": [
+    "The physical pilot uses one H4 snapshot, L_D=3, two representative components, and one topology-free compiler context.",
+    "Support-restricted completion is a validation candidate and is not yet integrated into the production event builder or cost proxy.",
+    "The length-1/2/3 sequence comparison is not an expectation over the finite-RTE event distribution.",
+    "The synthetic n=4/6/8 diagnostic measures circuit-structure size dependence and is not molecular or system-size chemistry evidence.",
+    "No L_D=3 versus L_D=12 ranking, RPE q-slope, full partial-S2, Hadamard wrapper, state preparation, backend, noise, or final total cost is evaluated."
+  ],
+  "method": "wp06a_df_support_basis_control_phase_pilot_v1",
+  "overall_pass": true,
+  "physical_instance": {
+    "exact_rte_lambda_r": 0.5832704246339986,
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "partition_hash": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+    "preparation_hash": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc",
+    "rotation_angles": {
+      "order_0_rz_or_rzz_angle": 0.023329758772251373,
+      "order_2_rz_or_rzz_angle": 0.007776899799197447
+    },
+    "scalar_phase": {
+      "aggregated_phase": -0.047714328264243815,
+      "compensated_vs_whole_control_max_abs_difference": 4.72277247725713e-15,
+      "components": {
+        "constant_phase": -0.0458620249464,
+        "extracted_identity_phase": -0.0018523033178438153
+      },
+      "controlled_relative_phase_is_required": true,
+      "current_builder_preserves_relative_phase": true,
+      "omitted_compensation_vs_whole_control_max_abs_difference": 0.0477098021778314,
+      "separate_to_aggregated_cost": {
+        "baseline": {
+          "circuit_size": 629,
+          "cx_count": 98,
+          "cx_depth": 44,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              98
+            ],
+            [
+              "rz",
+              311
+            ],
+            [
+              "sx",
+              220
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "p",
+              2
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              54
+            ]
+          ],
+          "rz_count": 311,
+          "rz_depth": 72,
+          "total_depth": 162,
+          "untranspiled_depth": 19,
+          "untranspiled_size": 73
+        },
+        "candidate": {
+          "circuit_size": 629,
+          "cx_count": 98,
+          "cx_depth": 44,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              98
+            ],
+            [
+              "rz",
+              311
+            ],
+            [
+              "sx",
+              220
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              54
+            ]
+          ],
+          "rz_count": 311,
+          "rz_depth": 72,
+          "total_depth": 162,
+          "untranspiled_depth": 19,
+          "untranspiled_size": 72
+        },
+        "candidate_relative_change": {
+          "circuit_size": 0.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "rz_count": 0.0,
+          "rz_depth": 0.0,
+          "total_depth": 0.0,
+          "untranspiled_depth": 0.0,
+          "untranspiled_size": -0.013698630136986356
+        }
+      },
+      "separate_vs_aggregated_max_abs_difference": 2.220446049250313e-16
+    },
+    "tail_hash": "c51e35da56f3de1646896339f38da3cb40dcb8405a24d781cef134a654bab642"
+  },
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_structure_pilot.py",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-09-21T16:03:38.062097+00:00",
+    "git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/pf_delta_validation.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M scripts/README.md",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/research_direction_ablation/",
+      "?? artifacts/research_direction_gate_s1/",
+      "?? artifacts/research_direction_pf_sensitivity/",
+      "?? artifacts/research_direction_prevalidation/",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-21.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-22.md\"",
+      "?? docs/research_direction_ablation.md",
+      "?? docs/research_direction_gate_s1.md",
+      "?? docs/research_direction_pf_sensitivity.md",
+      "?? docs/research_direction_prevalidation.md",
+      "?? partial_randomized_trotter_prevalidation_catalog.md",
+      "?? scripts/run_research_direction_ablation.py",
+      "?? scripts/run_research_direction_gate_s1.py",
+      "?? scripts/run_research_direction_pf_sensitivity.py",
+      "?? scripts/run_research_direction_prevalidation.py",
+      "?? scripts/run_research_direction_structure_pilot.py",
+      "?? src/trotterlib/research_direction_ablation.py",
+      "?? src/trotterlib/research_direction_gate_s1.py",
+      "?? src/trotterlib/research_direction_pf_sensitivity.py",
+      "?? src/trotterlib/research_direction_prevalidation.py",
+      "?? src/trotterlib/research_direction_structure_pilot.py",
+      "?? tests/test_research_direction_ablation.py",
+      "?? tests/test_research_direction_gate_s1.py",
+      "?? tests/test_research_direction_pf_sensitivity.py",
+      "?? tests/test_research_direction_prevalidation.py",
+      "?? tests/test_research_direction_structure_pilot.py"
+    ],
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "source_sha256": {
+      "scripts/run_research_direction_structure_pilot.py": "ae7a834a989fa1d50dae4bc1cdafbebfbe913aedea946be67da50b9c82bc3ff8",
+      "src/trotterlib/research_direction_structure_pilot.py": "ffb7a2caadc8453a0d8a655a8de49fd25d8f6f7bb988edea0df2e3cc283624a6"
+    }
+  },
+  "representative_events": [
+    {
+      "basis_residuals": {
+        "full_unitarity_max_abs": 4.440892098500626e-16,
+        "preserved_support_columns_max_abs": 0.0,
+        "restricted_unitarity_max_abs": 3.3306690738754696e-16
+      },
+      "coefficient_abs": 0.0003255179070514832,
+      "compiled_cost": {
+        "controlled": {
+          "baseline": {
+            "circuit_size": 378,
+            "cx_count": 58,
+            "cx_depth": 30,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                58
+              ],
+              [
+                "rz",
+                204
+              ],
+              [
+                "sx",
+                116
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "crz",
+                1
+              ],
+              [
+                "p",
+                1
+              ],
+              [
+                "rz",
+                16
+              ],
+              [
+                "xx_plus_yy",
+                52
+              ]
+            ],
+            "rz_count": 204,
+            "rz_depth": 59,
+            "total_depth": 123,
+            "untranspiled_depth": 18,
+            "untranspiled_size": 70
+          },
+          "candidate": {
+            "circuit_size": 144,
+            "cx_count": 26,
+            "cx_depth": 26,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                26
+              ],
+              [
+                "rz",
+                78
+              ],
+              [
+                "sx",
+                40
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "crz",
+                1
+              ],
+              [
+                "p",
+                1
+              ],
+              [
+                "rz",
+                16
+              ],
+              [
+                "xx_plus_yy",
+                12
+              ]
+            ],
+            "rz_count": 78,
+            "rz_depth": 51,
+            "total_depth": 103,
+            "untranspiled_depth": 15,
+            "untranspiled_size": 30
+          },
+          "candidate_relative_change": {
+            "circuit_size": -0.6190476190476191,
+            "cx_count": -0.5517241379310345,
+            "cx_depth": -0.1333333333333333,
+            "rz_count": -0.6176470588235294,
+            "rz_depth": -0.13559322033898302,
+            "total_depth": -0.16260162601626016,
+            "untranspiled_depth": -0.16666666666666663,
+            "untranspiled_size": -0.5714285714285714
+          }
+        },
+        "uncontrolled": {
+          "baseline": {
+            "circuit_size": 373,
+            "cx_count": 56,
+            "cx_depth": 28,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                56
+              ],
+              [
+                "rz",
+                201
+              ],
+              [
+                "sx",
+                116
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "rz",
+                17
+              ],
+              [
+                "xx_plus_yy",
+                52
+              ]
+            ],
+            "rz_count": 201,
+            "rz_depth": 57,
+            "total_depth": 119,
+            "untranspiled_depth": 18,
+            "untranspiled_size": 69
+          },
+          "candidate": {
+            "circuit_size": 139,
+            "cx_count": 24,
+            "cx_depth": 24,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                24
+              ],
+              [
+                "rz",
+                75
+              ],
+              [
+                "sx",
+                40
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "rz",
+                17
+              ],
+              [
+                "xx_plus_yy",
+                12
+              ]
+            ],
+            "rz_count": 75,
+            "rz_depth": 49,
+            "total_depth": 99,
+            "untranspiled_depth": 15,
+            "untranspiled_size": 29
+          },
+          "candidate_relative_change": {
+            "circuit_size": -0.6273458445040214,
+            "cx_count": -0.5714285714285714,
+            "cx_depth": -0.1428571428571429,
+            "rz_count": -0.6268656716417911,
+            "rz_depth": -0.14035087719298245,
+            "total_depth": -0.16806722689075626,
+            "untranspiled_depth": -0.16666666666666663,
+            "untranspiled_size": -0.5797101449275363
+          }
+        }
+      },
+      "component_id": "df-fragment-6:Z0",
+      "df_fragment_id": "df-fragment-6",
+      "full_basis_operation_count": 34,
+      "operator_max_abs_difference": {
+        "controlled": 3.337167946540778e-16,
+        "uncontrolled": 3.3335590258932494e-16
+      },
+      "support": [
+        0
+      ],
+      "support_restricted_basis_operation_count": 14,
+      "support_size": 1
+    },
+    {
+      "basis_residuals": {
+        "full_unitarity_max_abs": 7.771561172376096e-16,
+        "preserved_support_columns_max_abs": 0.0,
+        "restricted_unitarity_max_abs": 6.661338147750939e-16
+      },
+      "coefficient_abs": 0.02906637311694845,
+      "compiled_cost": {
+        "controlled": {
+          "baseline": {
+            "circuit_size": 629,
+            "cx_count": 98,
+            "cx_depth": 44,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                98
+              ],
+              [
+                "rz",
+                311
+              ],
+              [
+                "sx",
+                220
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "crzz",
+                1
+              ],
+              [
+                "p",
+                1
+              ],
+              [
+                "rz",
+                16
+              ],
+              [
+                "xx_plus_yy",
+                54
+              ]
+            ],
+            "rz_count": 311,
+            "rz_depth": 72,
+            "total_depth": 162,
+            "untranspiled_depth": 19,
+            "untranspiled_size": 72
+          },
+          "candidate": {
+            "circuit_size": 387,
+            "cx_count": 66,
+            "cx_depth": 44,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                66
+              ],
+              [
+                "rz",
+                189
+              ],
+              [
+                "sx",
+                132
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "crzz",
+                1
+              ],
+              [
+                "p",
+                1
+              ],
+              [
+                "rz",
+                16
+              ],
+              [
+                "xx_plus_yy",
+                26
+              ]
+            ],
+            "rz_count": 189,
+            "rz_depth": 72,
+            "total_depth": 162,
+            "untranspiled_depth": 19,
+            "untranspiled_size": 44
+          },
+          "candidate_relative_change": {
+            "circuit_size": -0.38473767885532595,
+            "cx_count": -0.326530612244898,
+            "cx_depth": 0.0,
+            "rz_count": -0.3922829581993569,
+            "rz_depth": 0.0,
+            "total_depth": 0.0,
+            "untranspiled_depth": 0.0,
+            "untranspiled_size": -0.38888888888888884
+          }
+        },
+        "uncontrolled": {
+          "baseline": {
+            "circuit_size": 603,
+            "cx_count": 86,
+            "cx_depth": 34,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                86
+              ],
+              [
+                "rz",
+                297
+              ],
+              [
+                "sx",
+                220
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "rz",
+                16
+              ],
+              [
+                "rzz",
+                1
+              ],
+              [
+                "xx_plus_yy",
+                54
+              ]
+            ],
+            "rz_count": 297,
+            "rz_depth": 65,
+            "total_depth": 147,
+            "untranspiled_depth": 19,
+            "untranspiled_size": 71
+          },
+          "candidate": {
+            "circuit_size": 361,
+            "cx_count": 54,
+            "cx_depth": 34,
+            "posttranspile_gate_counts": [
+              [
+                "cx",
+                54
+              ],
+              [
+                "rz",
+                175
+              ],
+              [
+                "sx",
+                132
+              ]
+            ],
+            "pretranspile_gate_counts": [
+              [
+                "rz",
+                16
+              ],
+              [
+                "rzz",
+                1
+              ],
+              [
+                "xx_plus_yy",
+                26
+              ]
+            ],
+            "rz_count": 175,
+            "rz_depth": 65,
+            "total_depth": 147,
+            "untranspiled_depth": 19,
+            "untranspiled_size": 43
+          },
+          "candidate_relative_change": {
+            "circuit_size": -0.40132669983416247,
+            "cx_count": -0.37209302325581395,
+            "cx_depth": 0.0,
+            "rz_count": -0.4107744107744108,
+            "rz_depth": 0.0,
+            "total_depth": 0.0,
+            "untranspiled_depth": 0.0,
+            "untranspiled_size": -0.3943661971830986
+          }
+        }
+      },
+      "component_id": "df-fragment-3:Z0Z1",
+      "df_fragment_id": "df-fragment-3",
+      "full_basis_operation_count": 35,
+      "operator_max_abs_difference": {
+        "controlled": 8.881784197001252e-16,
+        "uncontrolled": 6.66169953867201e-16
+      },
+      "support": [
+        0,
+        1
+      ],
+      "support_restricted_basis_operation_count": 21,
+      "support_size": 2
+    }
+  ],
+  "schema_version": "research_direction_structure_pilot_v1",
+  "scope": {
+    "algorithm_candidate_ranking_evaluated": false,
+    "backend_execution_included": false,
+    "decision_grade": false,
+    "final_total_cost_evaluation_performed": false,
+    "full_hadamard_interrogation_included": false,
+    "full_partial_s2_step_included": false,
+    "physical_event_components": 2,
+    "physical_short_sequence_lengths": [
+      1,
+      2,
+      3
+    ],
+    "state_preparation_included": false,
+    "synthetic_size_grid_is_chemistry_evidence": false
+  },
+  "short_sequence_comparison": [
+    {
+      "compiled_cost": {
+        "baseline": {
+          "circuit_size": 629,
+          "cx_count": 98,
+          "cx_depth": 44,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              98
+            ],
+            [
+              "rz",
+              311
+            ],
+            [
+              "sx",
+              220
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              54
+            ]
+          ],
+          "rz_count": 311,
+          "rz_depth": 72,
+          "total_depth": 162,
+          "untranspiled_depth": 19,
+          "untranspiled_size": 72
+        },
+        "candidate": {
+          "circuit_size": 387,
+          "cx_count": 66,
+          "cx_depth": 44,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              66
+            ],
+            [
+              "rz",
+              189
+            ],
+            [
+              "sx",
+              132
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              26
+            ]
+          ],
+          "rz_count": 189,
+          "rz_depth": 72,
+          "total_depth": 162,
+          "untranspiled_depth": 19,
+          "untranspiled_size": 44
+        },
+        "candidate_relative_change": {
+          "circuit_size": -0.38473767885532595,
+          "cx_count": -0.326530612244898,
+          "cx_depth": 0.0,
+          "rz_count": -0.3922829581993569,
+          "rz_depth": 0.0,
+          "total_depth": 0.0,
+          "untranspiled_depth": 0.0,
+          "untranspiled_size": -0.38888888888888884
+        }
+      },
+      "component_ids": [
+        "df-fragment-3:Z0Z1"
+      ],
+      "operator_max_abs_difference": 8.881784197001252e-16,
+      "rz_preferred_structure": "support_restricted_per_event",
+      "sequence_length": 1,
+      "supports": [
+        [
+          0,
+          1
+        ]
+      ]
+    },
+    {
+      "compiled_cost": {
+        "baseline": {
+          "circuit_size": 668,
+          "cx_count": 112,
+          "cx_depth": 58,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              112
+            ],
+            [
+              "rz",
+              332
+            ],
+            [
+              "sx",
+              224
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              2
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              54
+            ]
+          ],
+          "rz_count": 332,
+          "rz_depth": 85,
+          "total_depth": 190,
+          "untranspiled_depth": 20,
+          "untranspiled_size": 73
+        },
+        "candidate": {
+          "circuit_size": 551,
+          "cx_count": 100,
+          "cx_depth": 76,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              100
+            ],
+            [
+              "rz",
+              267
+            ],
+            [
+              "sx",
+              184
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              2
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              32
+            ],
+            [
+              "xx_plus_yy",
+              52
+            ]
+          ],
+          "rz_count": 267,
+          "rz_depth": 124,
+          "total_depth": 276,
+          "untranspiled_depth": 38,
+          "untranspiled_size": 87
+        },
+        "candidate_relative_change": {
+          "circuit_size": -0.17514970059880242,
+          "cx_count": -0.1071428571428571,
+          "cx_depth": 0.31034482758620685,
+          "rz_count": -0.19578313253012047,
+          "rz_depth": 0.45882352941176463,
+          "total_depth": 0.4526315789473685,
+          "untranspiled_depth": 0.8999999999999999,
+          "untranspiled_size": 0.19178082191780832
+        }
+      },
+      "component_ids": [
+        "df-fragment-3:Z0Z1",
+        "df-fragment-3:Z0Z2"
+      ],
+      "operator_max_abs_difference": 1.000380601247454e-15,
+      "rz_preferred_structure": "support_restricted_per_event",
+      "sequence_length": 2,
+      "supports": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ]
+      ]
+    },
+    {
+      "compiled_cost": {
+        "baseline": {
+          "circuit_size": 707,
+          "cx_count": 126,
+          "cx_depth": 73,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              126
+            ],
+            [
+              "rz",
+              353
+            ],
+            [
+              "sx",
+              228
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              3
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              54
+            ]
+          ],
+          "rz_count": 353,
+          "rz_depth": 98,
+          "total_depth": 217,
+          "untranspiled_depth": 21,
+          "untranspiled_size": 74
+        },
+        "candidate": {
+          "circuit_size": 846,
+          "cx_count": 154,
+          "cx_depth": 114,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              154
+            ],
+            [
+              "rz",
+              406
+            ],
+            [
+              "sx",
+              286
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              3
+            ],
+            [
+              "p",
+              1
+            ],
+            [
+              "rz",
+              48
+            ],
+            [
+              "xx_plus_yy",
+              78
+            ]
+          ],
+          "rz_count": 406,
+          "rz_depth": 181,
+          "total_depth": 405,
+          "untranspiled_depth": 57,
+          "untranspiled_size": 130
+        },
+        "candidate_relative_change": {
+          "circuit_size": 0.19660537482319662,
+          "cx_count": 0.22222222222222232,
+          "cx_depth": 0.5616438356164384,
+          "rz_count": 0.15014164305949018,
+          "rz_depth": 0.846938775510204,
+          "total_depth": 0.8663594470046083,
+          "untranspiled_depth": 1.7142857142857144,
+          "untranspiled_size": 0.7567567567567568
+        }
+      },
+      "component_ids": [
+        "df-fragment-3:Z0Z1",
+        "df-fragment-3:Z0Z2",
+        "df-fragment-3:Z1Z2"
+      ],
+      "operator_max_abs_difference": 1.1123893155135927e-15,
+      "rz_preferred_structure": "full_basis_fused",
+      "sequence_length": 3,
+      "supports": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ]
+    }
+  ],
+  "source_evidence": {
+    "gate_s1": {
+      "content_fingerprint": "68f7229df9f69d6f171f3a7616b874685348d622abce7d0df00398be1bb5c2eb",
+      "path": "artifacts/research_direction_gate_s1/2026-09-22/gate_s1_research_direction_decision_v1.json",
+      "sha256": "c83bb7fe07579e157499b833b6bfe81cfda5f76a62bae6bcb8361d9930cae319"
+    },
+    "snapshot": {
+      "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+      "sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b"
+    }
+  },
+  "stage": "WP06-a",
+  "summary": {
+    "current_control_and_phase_policies_validated": true,
+    "current_proxy_recalibration_required_before_wp05": true,
+    "eta_trigger_fired": true,
+    "maximum_operator_equivalence_residual": 4.72277247725713e-15,
+    "next_action": "WP06b_sequence_aware_full_vs_support_basis_policy_and_recalibration",
+    "status": "WP06a_circuit_structure_pilot_complete",
+    "support_strategy_is_sequence_dependent": true,
+    "universal_support_restricted_replacement_adopted": false
+  },
+  "synthetic_size_diagnostic": [
+    {
+      "compiled_cost": {
+        "baseline": {
+          "circuit_size": 202,
+          "cx_count": 38,
+          "cx_depth": 28,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              38
+            ],
+            [
+              "rz",
+              98
+            ],
+            [
+              "sx",
+              64
+            ],
+            [
+              "x",
+              2
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "rz",
+              8
+            ],
+            [
+              "xx_plus_yy",
+              12
+            ]
+          ],
+          "rz_count": 98,
+          "rz_depth": 40,
+          "total_depth": 92,
+          "untranspiled_depth": 11,
+          "untranspiled_size": 21
+        },
+        "candidate": {
+          "circuit_size": 170,
+          "cx_count": 34,
+          "cx_depth": 28,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              34
+            ],
+            [
+              "rz",
+              84
+            ],
+            [
+              "sx",
+              52
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "rz",
+              8
+            ],
+            [
+              "xx_plus_yy",
+              10
+            ]
+          ],
+          "rz_count": 84,
+          "rz_depth": 40,
+          "total_depth": 90,
+          "untranspiled_depth": 11,
+          "untranspiled_size": 19
+        },
+        "candidate_relative_change": {
+          "circuit_size": -0.15841584158415845,
+          "cx_count": -0.10526315789473684,
+          "cx_depth": 0.0,
+          "rz_count": -0.1428571428571429,
+          "rz_depth": 0.0,
+          "total_depth": -0.021739130434782594,
+          "untranspiled_depth": 0.0,
+          "untranspiled_size": -0.09523809523809523
+        }
+      },
+      "full_basis_operation_count": 10,
+      "num_system_qubits": 4,
+      "operator_max_abs_difference": 3.331391796911832e-16,
+      "support_restricted_basis_operation_count": 9,
+      "synthetic_basis_seed": 20260926
+    },
+    {
+      "compiled_cost": {
+        "baseline": {
+          "circuit_size": 404,
+          "cx_count": 66,
+          "cx_depth": 36,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              66
+            ],
+            [
+              "rz",
+              198
+            ],
+            [
+              "sx",
+              140
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "rz",
+              12
+            ],
+            [
+              "xx_plus_yy",
+              30
+            ]
+          ],
+          "rz_count": 198,
+          "rz_depth": 56,
+          "total_depth": 126,
+          "untranspiled_depth": 15,
+          "untranspiled_size": 43
+        },
+        "candidate": {
+          "circuit_size": 276,
+          "cx_count": 50,
+          "cx_depth": 36,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              50
+            ],
+            [
+              "rz",
+              134
+            ],
+            [
+              "sx",
+              92
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "rz",
+              12
+            ],
+            [
+              "xx_plus_yy",
+              18
+            ]
+          ],
+          "rz_count": 134,
+          "rz_depth": 56,
+          "total_depth": 126,
+          "untranspiled_depth": 15,
+          "untranspiled_size": 31
+        },
+        "candidate_relative_change": {
+          "circuit_size": -0.3168316831683168,
+          "cx_count": -0.24242424242424243,
+          "cx_depth": 0.0,
+          "rz_count": -0.3232323232323232,
+          "rz_depth": 0.0,
+          "total_depth": 0.0,
+          "untranspiled_depth": 0.0,
+          "untranspiled_size": -0.2790697674418605
+        }
+      },
+      "full_basis_operation_count": 21,
+      "num_system_qubits": 6,
+      "operator_max_abs_difference": 6.66169953867201e-16,
+      "support_restricted_basis_operation_count": 15,
+      "synthetic_basis_seed": 20260928
+    },
+    {
+      "compiled_cost": {
+        "baseline": {
+          "circuit_size": 666,
+          "cx_count": 102,
+          "cx_depth": 44,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              102
+            ],
+            [
+              "rz",
+              324
+            ],
+            [
+              "sx",
+              240
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              56
+            ]
+          ],
+          "rz_count": 324,
+          "rz_depth": 72,
+          "total_depth": 162,
+          "untranspiled_depth": 19,
+          "untranspiled_size": 73
+        },
+        "candidate": {
+          "circuit_size": 378,
+          "cx_count": 66,
+          "cx_depth": 44,
+          "posttranspile_gate_counts": [
+            [
+              "cx",
+              66
+            ],
+            [
+              "rz",
+              180
+            ],
+            [
+              "sx",
+              132
+            ]
+          ],
+          "pretranspile_gate_counts": [
+            [
+              "crzz",
+              1
+            ],
+            [
+              "rz",
+              16
+            ],
+            [
+              "xx_plus_yy",
+              26
+            ]
+          ],
+          "rz_count": 180,
+          "rz_depth": 72,
+          "total_depth": 162,
+          "untranspiled_depth": 19,
+          "untranspiled_size": 43
+        },
+        "candidate_relative_change": {
+          "circuit_size": -0.43243243243243246,
+          "cx_count": -0.3529411764705882,
+          "cx_depth": 0.0,
+          "rz_count": -0.4444444444444444,
+          "rz_depth": 0.0,
+          "total_depth": 0.0,
+          "untranspiled_depth": 0.0,
+          "untranspiled_size": -0.410958904109589
+        }
+      },
+      "full_basis_operation_count": 36,
+      "num_system_qubits": 8,
+      "operator_max_abs_difference": 9.992083454300858e-16,
+      "support_restricted_basis_operation_count": 21,
+      "synthetic_basis_seed": 20260930
+    }
+  ]
+}

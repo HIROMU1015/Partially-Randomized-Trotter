@@ -1,0 +1,46 @@
+{
+  "schema": "ra_d0_bounded_query_recipe_v2",
+  "grid_source": "artifacts/track_b_ra_d0_preparation/2026-10-06/shot_grid_query_recipe_v1.json",
+  "grid_source_sha256": "a2c051ca2450b851dc7e96e9bfb4f4bd05e3c8f7c9eb39a3170197ac3d65dcc0",
+  "grid_recurrence": "n_next=ceil(201*n/200)",
+  "grid_counts": {
+    "1/8": {
+      "points": 395,
+      "anchors": 9,
+      "coverage": 386
+    },
+    "1/4": {
+      "points": 342,
+      "anchors": 9,
+      "coverage": 333
+    }
+  },
+  "total_grid_points": 737,
+  "anchor_points": 18,
+  "coverage_points": 719,
+  "grid_values_unchanged": true,
+  "legacy_coordinate_Cartesian_query_recipe_superseded": true,
+  "budgets_per_point_max": 12,
+  "objectives": [
+    "T",
+    "CX",
+    "1Q"
+  ],
+  "paired_queries_per_point_max": 36,
+  "main_calls_per_point_max": 75,
+  "all_point_main_calls_max": 55275,
+  "auxiliary_per_main_max": 1,
+  "all_point_total_calls_max": 110550,
+  "hard_total_call_guard": 111000,
+  "P1": "all 9 PRIMARY_ANCHOR shot points per x; batch freeze before anchor B3",
+  "P2": "only x lacking anchor strict witness; both lacking -> both coverage grids",
+  "early_stop": "both x anchor witnesses -> STRONG; no coverage",
+  "coverage_only_classification": "LOCAL, never STRONG",
+  "minimum_failure": "technical STOP before Phase B, even if other points witnessed earlier",
+  "infeasibility": "exact Farkas only; failed acquisition/verification -> technical STOP without retry",
+  "B3_only_feasible": "descriptive, never primary",
+  "NO_REGISTERED_WITNESS_scope": "no certified strict bound comparison in completed registered anchors/required coverage and profile-paired budgets, not a mathematical no-go",
+  "budget_values_acquired": false,
+  "registered_minima_acquired": false,
+  "registered_B3_or_strict_witness_acquired": false
+}

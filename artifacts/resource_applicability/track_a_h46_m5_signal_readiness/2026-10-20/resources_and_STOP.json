@@ -1,0 +1,20 @@
+{
+  "candidate_threads": "min(system rows, floor(fresh idle CPU / admitted system workers)); local BLAS threads=1",
+  "failure": "STOP own system; allow other system to finish; aggregate STOP if any failure",
+  "no_global_worktree_freeze": true,
+  "no_host_PSI_kill": true,
+  "no_next_phase": true,
+  "no_retry": true,
+  "resources": {
+    "disk_proxy_bytes": 220544,
+    "host_PSI_kill": false,
+    "proxy_kind": "PRIOR_SAME_INPUT_CONTEXT_PILOT_OBSERVATION_FOR_ADMISSION_NOT_A_RUNTIME_BOUND",
+    "runtime_caps": false,
+    "system_RSS_proxy_bytes": {
+      "H4": 6353003861,
+      "H6": 6856320341
+    },
+    "worker_count": "FRESH_SYSTEM_PARALLELISM_WITH_CANDIDATE_THREAD_POOL"
+  },
+  "system_processes": "up to two data partitions, fresh idle CPU/effective RAM admission"
+}

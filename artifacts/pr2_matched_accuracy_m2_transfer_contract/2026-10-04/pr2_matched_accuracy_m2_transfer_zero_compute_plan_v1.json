@@ -1,0 +1,646 @@
+{
+  "accuracy_and_shot_rule": {
+    "axis_accuracy_formula": "0.05/sqrt(2)",
+    "axis_allowance_formula": "0.05/sqrt(2)-axis_bias",
+    "axis_bias_formula": "abs(nu_axis-exact_target_axis)",
+    "axis_failure_allocation": 0.025,
+    "axis_shots_formula": "ceil(2*B_total^2/allowance^2*log(2/0.025))",
+    "complex_accuracy": 0.05,
+    "corrected_mean_formula": "nu_axis=B_total*mu_axis",
+    "development_eligible_held_out_ineligible_is_accuracy_misclassification": true,
+    "held_out_shots_recomputed": true,
+    "method_rank_q_r_K_retuned": false,
+    "nonpositive_allowance_is_ineligible": true
+  },
+  "authorization": {
+    "automatic_next_stage": null,
+    "circuit_build_authorized": false,
+    "compile_authorized": false,
+    "held_out_access_authorized": false,
+    "next_stage_authorized": false,
+    "signal_evaluation_authorized": false,
+    "trajectory_sampling_authorized": false,
+    "transfer_execution_authorized": false,
+    "zero_compute_plan_generation_authorized": true
+  },
+  "compiled_cost_rule": {
+    "metrics": [
+      "rz_count",
+      "rz_depth",
+      "cx_count",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "point_frontier_uses_all_six_metrics": true,
+    "primary_formula": "N_real*E[C_cosine_rz]+N_imag*E[C_sine_rz]",
+    "primary_metric": "rz_count",
+    "secondary_metrics": [
+      "rz_depth",
+      "cx_count",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "state_preparation_lower_envelope_is_secondary": true,
+    "state_preparation_sensitivity_formula": "G_rz(P)=G_rz(0)+(N_real+N_imag)*P, P>=0"
+  },
+  "frozen_candidates": [
+    {
+      "K": 2,
+      "candidate_fingerprint": "ff8e17f270d298339d53b9f47b8fc13189a91c30105498e405a642bfe5bf29ec",
+      "candidate_id": "B2-rank3-q1-r4-K2",
+      "development_prediction": {
+        "accuracy_eligible": true,
+        "axis_one_shot_compiled_cost": {
+          "cosine": {
+            "circuit_size": 12132.125,
+            "cx_count": 3377.2500000000005,
+            "cx_depth": 2720.9375000000005,
+            "rz_count": 6359.71875,
+            "rz_depth": 2607.3750000000005,
+            "total_depth": 5680.531250000001
+          },
+          "sine": {
+            "circuit_size": 12132.125,
+            "cx_count": 3377.2500000000005,
+            "cx_depth": 2720.9375000000005,
+            "rz_count": 6359.71875,
+            "rz_depth": 2607.3750000000005,
+            "total_depth": 5680.531250000001
+          }
+        },
+        "axis_shots": {
+          "imag": 8258,
+          "real": 12305
+        },
+        "signal_record_fingerprint": "51e5b912b87d99fb76c7580c1738b72d5083db9626ad5636f7a05792d42e8ae6",
+        "work_by_metric": {
+          "circuit_size": 249472886.375,
+          "cx_count": 69446391.75000001,
+          "cx_depth": 55950637.812500015,
+          "rz_count": 130774896.65625,
+          "rz_depth": 53615452.125000015,
+          "total_depth": 116808764.09375003
+        }
+      },
+      "future_trajectory_seeds": [
+        15075379489038852591,
+        3083336355588947974,
+        11060287435321349454,
+        4652896848357444956,
+        1838095674400775442,
+        12616111729766384472,
+        10138946358547466210,
+        13830087146148751043,
+        14740105714830327230,
+        13663292179539232215,
+        10920241335919737172,
+        5256434635276100260,
+        10648602274370834369,
+        11028492015632683739,
+        18162642872013508395,
+        7551147494794358695,
+        7982155147170361329,
+        16330575711217555718,
+        17221318282418348698,
+        800333600015137409,
+        9510751886617811354,
+        12496912326790850326,
+        17415183060913555708,
+        13038547604363654234,
+        17139572306988952588,
+        1463607802303155784,
+        15461053631279431539,
+        18128865715654124514,
+        12823019770181949898,
+        4303921516226496093,
+        11012289404305715486,
+        5940318759791182248
+      ],
+      "method": "B2",
+      "q": 1,
+      "r": 4,
+      "rank": 3,
+      "role": "development_actual_pareto_partial",
+      "transfer_configuration": {
+        "K": 2,
+        "T": 0.8,
+        "coefficient_atol": 0.0,
+        "compiler_identity": {
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "coupling_map": null,
+          "optimization_level": 1,
+          "qiskit_version": "1.3.0",
+          "transpiler_seed": 17
+        },
+        "delta": 0.8,
+        "identity_policy": "extract_identity_phase",
+        "method": "B2",
+        "method_semantics": "df_prefix_deterministic_backbone_finite_rte_tail",
+        "mode": "partial",
+        "outer_formula": "symmetric_second_order_product_formula",
+        "q": 1,
+        "r": 4,
+        "rank": 3,
+        "seed_policy": "sha256_v1_candidate_axis_trajectory_outer_step_tail_occurrence_rte_step",
+        "wrapper_semantics": "full_measured_hadamard_wrapper_without_state_preparation"
+      },
+      "transfer_configuration_fingerprint": "f3cd008581115317beda1ccd8388df06e81b3840907a8d8efb95e6b230cbfd99"
+    },
+    {
+      "K": 2,
+      "candidate_fingerprint": "2a527a84ef1481d55ffd576634b4a4841282871ce6d6872ca72767971c7255f2",
+      "candidate_id": "B2-rank3-q1-r8-K2",
+      "development_prediction": {
+        "accuracy_eligible": true,
+        "axis_one_shot_compiled_cost": {
+          "cosine": {
+            "circuit_size": 13020.312499999998,
+            "cx_count": 3539.2500000000005,
+            "cx_depth": 2807.5624999999995,
+            "rz_count": 6809.187499999998,
+            "rz_depth": 2717.9687500000005,
+            "total_depth": 5922.53125
+          },
+          "sine": {
+            "circuit_size": 13020.312499999998,
+            "cx_count": 3539.2500000000005,
+            "cx_depth": 2807.5624999999995,
+            "rz_count": 6809.187499999998,
+            "rz_depth": 2717.9687500000005,
+            "total_depth": 5922.53125
+          }
+        },
+        "axis_shots": {
+          "imag": 7827,
+          "real": 11662
+        },
+        "signal_record_fingerprint": "3815a441c1c91b7d4bee769a9683f2d6d5490ba5d04e8a1444c7a53caefb312c",
+        "work_by_metric": {
+          "circuit_size": 253752870.31249994,
+          "cx_count": 68976443.25000001,
+          "cx_depth": 54716585.56249999,
+          "rz_count": 132704255.18749997,
+          "rz_depth": 52970492.96875001,
+          "total_depth": 115424211.53125
+        }
+      },
+      "future_trajectory_seeds": [
+        4622362772145423616,
+        14863879733867800867,
+        4614717211248651041,
+        16589189798984335292,
+        8280852291312567569,
+        2868462099359787746,
+        15881532175646673092,
+        9424379860966018844,
+        13907039158699996481,
+        13807435037809936694,
+        12390066481639626980,
+        17872326357127083063,
+        9724302439512333477,
+        4608028500406751049,
+        10536244163067190094,
+        14385192663544460384,
+        16954763641695749538,
+        12550182145337977740,
+        2359831228524573422,
+        9114793307421351580,
+        1329278050004247763,
+        3340133533099568985,
+        6352576045789197715,
+        5833983421852519735,
+        7774582125781908826,
+        17414497925682370930,
+        12099486993465342178,
+        3655012383915292120,
+        14074507111007015763,
+        12280868828689327726,
+        3773240857236295329,
+        12225734766904565543
+      ],
+      "method": "B2",
+      "q": 1,
+      "r": 8,
+      "rank": 3,
+      "role": "development_actual_pareto_partial",
+      "transfer_configuration": {
+        "K": 2,
+        "T": 0.8,
+        "coefficient_atol": 0.0,
+        "compiler_identity": {
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "coupling_map": null,
+          "optimization_level": 1,
+          "qiskit_version": "1.3.0",
+          "transpiler_seed": 17
+        },
+        "delta": 0.8,
+        "identity_policy": "extract_identity_phase",
+        "method": "B2",
+        "method_semantics": "df_prefix_deterministic_backbone_finite_rte_tail",
+        "mode": "partial",
+        "outer_formula": "symmetric_second_order_product_formula",
+        "q": 1,
+        "r": 8,
+        "rank": 3,
+        "seed_policy": "sha256_v1_candidate_axis_trajectory_outer_step_tail_occurrence_rte_step",
+        "wrapper_semantics": "full_measured_hadamard_wrapper_without_state_preparation"
+      },
+      "transfer_configuration_fingerprint": "33d3dcf08fe50923099e58fee63df2e1a7c6e43fd880f70614ab047ee1803f22"
+    },
+    {
+      "K": 0,
+      "candidate_fingerprint": "4893d918556d0daeec8dae3a1a5c6f97c598ab6d7efb7e4c7d714ee6400b6d52",
+      "candidate_id": "B0-rank6-q1-r0-K0",
+      "development_prediction": {
+        "accuracy_eligible": true,
+        "axis_one_shot_compiled_cost": {
+          "cosine": {
+            "circuit_size": 20141.0,
+            "cx_count": 6020.0,
+            "cx_depth": 5099.0,
+            "rz_count": 10550.0,
+            "rz_depth": 4731.0,
+            "total_depth": 10300.0
+          },
+          "sine": {
+            "circuit_size": 20141.0,
+            "cx_count": 6020.0,
+            "cx_depth": 5099.0,
+            "rz_count": 10550.0,
+            "rz_depth": 4731.0,
+            "total_depth": 10300.0
+          }
+        },
+        "axis_shots": {
+          "imag": 7966,
+          "real": 16051
+        },
+        "signal_record_fingerprint": "53b400ff39d3f828fb8060541d7d85b6d6867b00ab1d15f1be1e3d9719a41e99",
+        "work_by_metric": {
+          "circuit_size": 483726397.0,
+          "cx_count": 144582340.0,
+          "cx_depth": 122462683.0,
+          "rz_count": 253379350.0,
+          "rz_depth": 113624427.0,
+          "total_depth": 247375100.0
+        }
+      },
+      "future_trajectory_seeds": [],
+      "method": "B0",
+      "q": 1,
+      "r": 0,
+      "rank": 6,
+      "role": "development_best_discard_reference",
+      "transfer_configuration": {
+        "K": 0,
+        "T": 0.8,
+        "coefficient_atol": 0.0,
+        "compiler_identity": {
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "coupling_map": null,
+          "optimization_level": 1,
+          "qiskit_version": "1.3.0",
+          "transpiler_seed": 17
+        },
+        "delta": 0.8,
+        "identity_policy": "extract_identity_phase",
+        "method": "B0",
+        "method_semantics": "df_prefix_discard_residual_deterministic_s2",
+        "mode": "discard",
+        "outer_formula": "symmetric_second_order_product_formula",
+        "q": 1,
+        "r": 0,
+        "rank": 6,
+        "seed_policy": "sha256_v1_candidate_axis_trajectory_outer_step_tail_occurrence_rte_step",
+        "wrapper_semantics": "full_measured_hadamard_wrapper_without_state_preparation"
+      },
+      "transfer_configuration_fingerprint": "ec5e47c69dfb4856d91f567365a3956d38c5c1149eebb7b6ef4a6913bd700041"
+    },
+    {
+      "K": 0,
+      "candidate_fingerprint": "5118c41031227fe7642bc243c875f815afae86eb716e4c1b31c31f7ea2c48c7c",
+      "candidate_id": "B1-rank12-q1-r0-K0",
+      "development_prediction": {
+        "accuracy_eligible": true,
+        "axis_one_shot_compiled_cost": {
+          "cosine": {
+            "circuit_size": 38545.0,
+            "cx_count": 11628.0,
+            "cx_depth": 9879.0,
+            "rz_count": 20168.0,
+            "rz_depth": 8840.0,
+            "total_depth": 19623.0
+          },
+          "sine": {
+            "circuit_size": 38545.0,
+            "cx_count": 11628.0,
+            "cx_depth": 9879.0,
+            "rz_count": 20168.0,
+            "rz_depth": 8840.0,
+            "total_depth": 19623.0
+          }
+        },
+        "axis_shots": {
+          "imag": 7414,
+          "real": 11057
+        },
+        "signal_record_fingerprint": "d26de93f070f394f14b68d5ee2e509bd82de0a037cee1421c81c5a1ec824fefb",
+        "work_by_metric": {
+          "circuit_size": 711964695.0,
+          "cx_count": 214780788.0,
+          "cx_depth": 182475009.0,
+          "rz_count": 372523128.0,
+          "rz_depth": 163283640.0,
+          "total_depth": 362456433.0
+        }
+      },
+      "future_trajectory_seeds": [],
+      "method": "B1",
+      "q": 1,
+      "r": 0,
+      "rank": 12,
+      "role": "development_best_full_deterministic_reference",
+      "transfer_configuration": {
+        "K": 0,
+        "T": 0.8,
+        "coefficient_atol": 0.0,
+        "compiler_identity": {
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "coupling_map": null,
+          "optimization_level": 1,
+          "qiskit_version": "1.3.0",
+          "transpiler_seed": 17
+        },
+        "delta": 0.8,
+        "identity_policy": "extract_identity_phase",
+        "method": "B1",
+        "method_semantics": "rank12_deterministic_s2",
+        "mode": "deterministic",
+        "outer_formula": "symmetric_second_order_product_formula",
+        "q": 1,
+        "r": 0,
+        "rank": 12,
+        "seed_policy": "sha256_v1_candidate_axis_trajectory_outer_step_tail_occurrence_rte_step",
+        "wrapper_semantics": "full_measured_hadamard_wrapper_without_state_preparation"
+      },
+      "transfer_configuration_fingerprint": "219b97014f85b9860a0c228d54998c60bdce6eaf3a6aa048a5e1bd5197830329"
+    },
+    {
+      "K": 4,
+      "candidate_fingerprint": "9feb7b75a61651992917ebc41e6b410eb6c6942213237eb566c049cd884377a8",
+      "candidate_id": "B3-rank0-q8-r32-K4",
+      "development_prediction": {
+        "accuracy_eligible": true,
+        "axis_one_shot_compiled_cost": {
+          "cosine": {
+            "circuit_size": 62083.78125000001,
+            "cx_count": 10562.718750000004,
+            "cx_depth": 4912.375,
+            "rz_count": 31993.531250000007,
+            "rz_depth": 7330.6875,
+            "total_depth": 16104.28125
+          },
+          "sine": {
+            "circuit_size": 62083.78125000001,
+            "cx_count": 10562.718750000004,
+            "cx_depth": 4912.375,
+            "rz_count": 31993.531250000007,
+            "rz_depth": 7330.6875,
+            "total_depth": 16104.28125
+          }
+        },
+        "axis_shots": {
+          "imag": 17977,
+          "real": 18055
+        },
+        "signal_record_fingerprint": "a3cd4e8313f8c83c3c1db5e8a48320654e14ce637b32d6ba8a183da2581fc4de",
+        "work_by_metric": {
+          "circuit_size": 2237002806.0000005,
+          "cx_count": 380595882.0000001,
+          "cx_depth": 177002696.0,
+          "rz_count": 1152790918.0000002,
+          "rz_depth": 264139332.0,
+          "total_depth": 580269462.0
+        }
+      },
+      "future_trajectory_seeds": [
+        12094473676214731029,
+        5120689103171282765,
+        11053770360042210399,
+        14662028270227336118,
+        4052887571818033024,
+        8828871018994333404,
+        5500931503331418574,
+        16418103858804205557,
+        3278852615617054776,
+        3868878617079628219,
+        9863230849719267374,
+        17130676159962586637,
+        3685643678308877608,
+        7630385942493213605,
+        4302330842429509034,
+        16609757866873568563,
+        658627087899532057,
+        10501597980560809557,
+        15775873993441644219,
+        16231541257563621728,
+        14897982089830669611,
+        10772607485868321016,
+        15772537628360515958,
+        4907752106887698436,
+        14855826932264698369,
+        14963105671451933772,
+        5636760345133189627,
+        13706655458188746413,
+        2717057870623038728,
+        2615734288272801031,
+        6169697145380447335,
+        12193643888723495461
+      ],
+      "method": "B3",
+      "q": 8,
+      "r": 32,
+      "rank": 0,
+      "role": "development_best_random_dominant_reference",
+      "transfer_configuration": {
+        "K": 4,
+        "T": 0.8,
+        "coefficient_atol": 0.0,
+        "compiler_identity": {
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "coupling_map": null,
+          "optimization_level": 1,
+          "qiskit_version": "1.3.0",
+          "transpiler_seed": 17
+        },
+        "delta": 0.1,
+        "identity_policy": "extract_identity_phase",
+        "method": "B3",
+        "method_semantics": "rank0_two_body_random_one_body_deterministic",
+        "mode": "random_dominant",
+        "outer_formula": "symmetric_second_order_product_formula",
+        "q": 8,
+        "r": 32,
+        "rank": 0,
+        "seed_policy": "sha256_v1_candidate_axis_trajectory_outer_step_tail_occurrence_rte_step",
+        "wrapper_semantics": "full_measured_hadamard_wrapper_without_state_preparation"
+      },
+      "transfer_configuration_fingerprint": "4025f90767b285ac2eff0c173930f23ac7a01403ba08061076fa0cd634faae57"
+    }
+  ],
+  "held_out_target": {
+    "basis": "STO-3G",
+    "byte_identity_verification_deferred_until_authorized_execution": true,
+    "df_rank": 12,
+    "file_hashed_during_planning": false,
+    "geometry_angstrom": 1.3,
+    "npz_loaded_during_planning": false,
+    "path_resolved_during_planning": false,
+    "path_statted_during_planning": false,
+    "repository_relative_path_literal": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p30_rank12_held_out_v1.npz",
+    "sector_qubits": 8,
+    "system": "H4 linear"
+  },
+  "input_identity": {
+    "m1_b1_evidence_commit": "8e0814e70c14ecf526444fac8a2142799610dc96",
+    "m1_b1_research_decision": "CONTINUE_RESOURCE_STUDY",
+    "m1_b1_result_fingerprint": "504d9c9089726800a291a8259e87b2d37c1fdea046263db6c9582bb659c77975",
+    "m1_b1_result_path": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+    "m1_b1_result_sha256": "71278113c32b26af0dbf6144a626237a0087478212f8a93fc908de3d4d52aee4",
+    "m1_b1_validation_fingerprint": "c3cf1c084ebfe343d576236de2803c9c69855e0247ca6a2d628c496ee0546214",
+    "m1_b1_validation_path": "artifacts/pr2_matched_accuracy_m1_b1_result_validation/2026-10-03/pr2_matched_accuracy_m1_b1_result_validation_v1.json",
+    "m1_b1_validation_sha256": "c9a05babed99cd1e80eaec5b58e47f25d74513c7ba2e5a00775cfd5959c37a0f"
+  },
+  "materiality_and_uncertainty_rule": {
+    "formal_confidence_interval_claimed": false,
+    "materially_competitive_if_ratio_at_most": 1.1,
+    "point_ratio_formula": "min_eligible_B2_G_rz/min_eligible_B0_B1_B3_G_rz",
+    "ratio_interval_method": "delta_method_independent_candidate_2SE_engineering_interval",
+    "ratio_interval_z": 2.0
+  },
+  "plan_fingerprint": "e6b6ae0bcf9ff7b97eb61b2703305d793f7d531460456baf2337960fb36fb198",
+  "planning_input_reads": {
+    "m1_b1_result_json": 1,
+    "m1_b1_validation_json": 1
+  },
+  "prediction_and_underestimate_rule": {
+    "major_underestimate_comparison": "strictly_greater_than_threshold",
+    "major_underestimate_disqualifies_that_B2_candidate_from_support": true,
+    "major_underestimate_primary_metric": "rz_count",
+    "major_underestimate_threshold_fraction": 0.1,
+    "prediction": "held-out analytic axis shots multiplied by the corresponding development one-shot expected compiled cost",
+    "relative_underestimate_formula": "max(0,actual/predicted-1)",
+    "secondary_metric_underestimates_reported_but_not_terminal": true
+  },
+  "prohibitions": {
+    "adaptive_trajectory_extension": true,
+    "additional_96_trajectories": true,
+    "automatic_research_direction_decision": true,
+    "candidate_addition_removal_or_replacement": true,
+    "development_r4_r8_winner_refinement": true,
+    "h5_h6_h12_or_long_rpe": true,
+    "held_out_rank_q_r_K_search": true,
+    "new_geometry_molecule_basis_or_pf": true
+  },
+  "provisional_claim": {
+    "general_optimum_claimed": false,
+    "r4_vs_r8_exact_winner_claimed": false,
+    "rank3_q1_general_optimum_claimed": false,
+    "scope": "H4 linear 1.00 Angstrom, STO-3G, DF rank 12, 8 qubits, T=0.8",
+    "text": "For the H4 1.00 Angstrom development condition, matched-accuracy evaluation and actual full-wrapper compilation changed the design choice relative to fixed-q/proxy comparison, and an intermediate DF-prefix partial-randomization region remained on the resource frontier."
+  },
+  "resource_caps": {
+    "additional_trajectories": 0,
+    "blas_threads_per_worker": 1,
+    "candidate_count": 5,
+    "candidate_searches": 0,
+    "deterministic_or_discard_candidate_count": 2,
+    "deterministic_or_discard_full_wrappers": 4,
+    "held_out_snapshot_loads": 1,
+    "maximum_process_workers": 5,
+    "random_candidate_count": 3,
+    "random_full_wrappers": 192,
+    "total_full_wrappers": 196,
+    "trajectories_per_random_candidate": 32
+  },
+  "schema_version": "pr2_matched_accuracy_m2_transfer_zero_compute_plan_v1",
+  "seed_policy": {
+    "axis_excluded_from_random_trajectory": true,
+    "master_seed": 2026100401,
+    "name": "pr2_m2_transfer_configuration_trajectory_sha256_v1",
+    "same_random_trajectory_shared_by_cosine_and_sine": true,
+    "seeds_fixed_before_held_out_access": true
+  },
+  "series_id": "pr2-rebaseline-de7a5492-v1",
+  "source_commit": "06b2c32528713a5270ee4915432bcd3898e0e5e1",
+  "source_hashes": {
+    "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_plan_schema_v1.json": "6c06764a9caaf3f21b95988dbde55c56893f47d3a8d24443eee53367992fc68c",
+    "artifacts/pr2_matched_accuracy_m2_transfer_contract/2026-10-04/pr2_matched_accuracy_m2_transfer_result_schema_v1.json": "2b653212377142070d61cd3e00a013fa5692ab3004b3d471454a2638bbd0c51d",
+    "docs/research/pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md": "a78d70c493125ef5321a989468dc41961ee5d3e053e6879a75db4b68d73e2f67",
+    "scripts/run_pr2_matched_accuracy_m2_transfer_contract.py": "be4e8980e125792e6a65ae82f32a357e1ef29ff00e00a9a824f1376df725e0ab",
+    "src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py": "4a2e88b60a3292a31faf27cac90f86bc6a5e2bddd3ab944e1973ab9552bf8f50",
+    "tests/test_pr2_matched_accuracy_m2_transfer_contract.py": "927c2674b50155a2d144956e3e053d7badff729bcf32a7e6a55ad37a3a5bd46e"
+  },
+  "status": "M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED",
+  "terminal_decision_rule": {
+    "allowed_statuses": [
+      "TRANSFER_SUPPORTED",
+      "TRANSFER_NOT_SUPPORTED",
+      "TRANSFER_INCONCLUSIVE",
+      "IMPLEMENTATION_GATE_FAILED"
+    ],
+    "implementation_gate_failed": "any source, identity, numerical, or resource gate fails",
+    "inconclusive": "required endpoints are unavailable or the 2SE ratio straddles 1.10 without a usable point-Pareto B2",
+    "mandatory_stop_after_terminal_status": true,
+    "not_supported": "no B2 remains accuracy-eligible, every eligible B2 has a major primary cost underestimate, or no usable B2 is point-Pareto and the lower 2SE primary ratio is >1.10",
+    "runner_authorizes_next_stage": false,
+    "supported": "at least one accuracy-eligible, non-majorly-underestimated B2 is on the point six-metric Pareto frontier, or the upper 2SE primary ratio is <=1.10"
+  },
+  "zero_science_counters": {
+    "candidate_searches": 0,
+    "circuits_built": 0,
+    "compiler_invocations": 0,
+    "development_npz_loads": 0,
+    "full_wrappers_compiled": 0,
+    "gpu_allocations": 0,
+    "gpu_kernels": 0,
+    "gpu_queries": 0,
+    "held_out_hash_reads": 0,
+    "held_out_npz_loads": 0,
+    "held_out_path_resolutions": 0,
+    "held_out_path_stats": 0,
+    "molecular_calculations": 0,
+    "occurrence_samples": 0,
+    "quantum_shots_executed": 0,
+    "signal_evaluations": 0,
+    "trajectory_samples": 0
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "kind": "TECHNICAL_FINDINGS_AND_PROPOSALS_ONLY",
+  "old_science_classification": "TECHNICAL_INCONCLUSIVE",
+  "audit_outcome": "STATIC_AUDIT_COMPLETE_CAUSAL_ALLOCATION_UNRESOLVED",
+  "confirmed": [
+    "guard after first r3 uncontrolled cost call",
+    "actual_circuit_fingerprint is pre-transpile input/recursive-definition identity",
+    "old/new CompilerSettings constructors AST-identical",
+    "old/new raw_u expression AST-identical modulo t.value",
+    "old/new primitive floating DAG differs in location of scalar2",
+    "hex frame serialization roundtrip is lossless; old frame bytes absent",
+    "TypeError/ValueError fingerprint fallback can produce None",
+    "selected prior bit-identity control is limited and passed in saved v3 XML"
+  ],
+  "unresolved": [
+    "actual digest or None at failure",
+    "old/current raw Q/T/U byte equality",
+    "recursive gate definition contribution",
+    "historical BLAS/package binary and operand memory layout",
+    "E-r6 in-flight call count"
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "name": "raw_generator_or_buffer_path",
+      "structural_difference_confirmed": true,
+      "causality": "UNRESOLVED",
+      "caution": "2x is exact in normal range; operation DAG difference is not proof of bit difference"
+    },
+    {
+      "id": "H2",
+      "name": "recursive_definition_identity",
+      "policy_confirmed": true,
+      "causality": "UNRESOLVED"
+    },
+    {
+      "id": "H3",
+      "name": "fingerprint_creation_failure_None",
+      "fallback_confirmed": true,
+      "occurrence_this_run": "UNKNOWN"
+    },
+    {
+      "id": "H4",
+      "name": "settings_or_seed_or_row_error",
+      "support": "NO_SOURCE_DIFFERENCE_FOUND"
+    },
+    {
+      "id": "H5",
+      "name": "resource_cap_failure",
+      "support": "NOT_REPORTED_STOPPING_CAUSE"
+    }
+  ],
+  "repair_candidates": [
+    {
+      "id": "R1",
+      "description": "failure diagnostic recording before raising; actual/expected hashes, matrix identity and layout, guard location",
+      "class": "OBSERVABILITY_SOURCE_CHANGE",
+      "scientific_mean_change_intended": false,
+      "adopted": false,
+      "next_required": "separate preparation scope, failure-path/off-domain tests, new source/manifest/review; no run authorization from this audit"
+    },
+    {
+      "id": "R2",
+      "description": "restore old float DAG/raw whole construction with correct assembly enclosure",
+      "class": "NUMERICAL_IMPLEMENTATION_CHANGE",
+      "scientific_mean_change_intended": false,
+      "adopted": false,
+      "remaining_risk": "causal explanation unproven; certify distance to shared ideal/B proxy, raw bytes and strict phase",
+      "next_required": "separate preparation scope and source review"
+    },
+    {
+      "id": "R3",
+      "description": "replace byte fingerprint requirement with norm/semantic equivalence",
+      "class": "CONTRACT_AND_IMPLEMENTATION_COMPARISON_CHANGE",
+      "adopted": false,
+      "next_required": "explicit GPT/user decision; cannot treat as removing an irrelevant guard"
+    },
+    {
+      "id": "R4",
+      "description": "runtime/BLAS/definition metadata freeze",
+      "class": "REPRODUCIBILITY_SCOPE_CHANGE",
+      "adopted": false,
+      "remaining_risk": "historical runtime not fully recoverable"
+    },
+    {
+      "id": "R5",
+      "description": "cap/precision/seed/expected digest changes",
+      "class": "UNSUPPORTED_CONTRACT_OR_COMPARISON_CHANGE",
+      "adopted": false
+    }
+  ],
+  "recommendation": "review bounded source preparation with failure diagnostics and full-path off-domain equivalence validation; do not launch or select a fix yet",
+  "new_source_authorized": false,
+  "new_one_shot_authorized": false,
+  "retries": 0,
+  "mandatory_STOP": true
+}

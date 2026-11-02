@@ -1,0 +1,244 @@
+{
+  "schema": "track_b_sp1_wrapper_contract_proposal_v1",
+  "date_jst": "2026-10-06",
+  "status": "SP1_CONTRACT_PROPOSAL_REVIEW_PENDING",
+  "adopted_execution_contract": false,
+  "review_label": "PROCEED_TO_WRAPPER_ACCUMULATION_AND_PLACEMENT_PILOT",
+  "science_source_commit": null,
+  "preparation_base_commit": "e57c1fdd28589422e9c973e34e53f6c725b921e9",
+  "science_execution_authorized": false,
+  "RUN_READY": false,
+  "runs_planned_after_separate_authorization": 1,
+  "runs_executed": 0,
+  "retries": 0,
+  "mandatory_STOP": true,
+  "automatic_next_stage": null,
+  "branch": "track-b-sp1-wrapper-preparation-20261006",
+  "worktree": "/home/abe/Project/prt-worktrees/track-b-sp1-wrapper-preparation-20261006",
+  "accepted_review_direction": {
+    "masks": [
+      "NONE",
+      "D",
+      "R",
+      "DR"
+    ],
+    "catalogues": 1,
+    "catalogue": "SP05_exact_k_pi_over_4_k_0_to_7",
+    "primary": "batch_init_T + sum_axis(shots_sufficient * expected_whole_wrapper_T)",
+    "single_rotation_role": "INTEGRATION_SMOKE_ONLY",
+    "science_after_review": "ONE_SHOT_THEN_MANDATORY_STOP_AND_GPT_REVIEW"
+  },
+  "proposed_domain_NOT_ADOPTED": {
+    "sizes": [
+      8,
+      16,
+      32,
+      64
+    ],
+    "templates": [
+      {
+        "id": "A",
+        "angle_cycle": [
+          "pi:3/16"
+        ],
+        "pauli_cycle": [
+          "Z",
+          "X"
+        ],
+        "role_cycle": [
+          "D"
+        ],
+        "outer": [
+          {
+            "probability": "1",
+            "weight": "1"
+          }
+        ],
+        "review_amendment": "same_angle_alternating_Pauli_instead_of_exact_same_generator"
+      },
+      {
+        "id": "B",
+        "angle_cycle": [
+          "pi:1/16",
+          "pi:1/8",
+          "pi:3/16",
+          "rad:1/5"
+        ],
+        "pauli_cycle": [
+          "Z",
+          "X"
+        ],
+        "role_cycle": [
+          "D"
+        ],
+        "outer": [
+          {
+            "probability": "1",
+            "weight": "1"
+          }
+        ]
+      },
+      {
+        "id": "C",
+        "block": [
+          {
+            "role": "D",
+            "angle": "pi:1/16",
+            "pauli": "Z"
+          },
+          {
+            "role": "R",
+            "angle": "sigma*pi:1/8",
+            "pauli": "X"
+          },
+          {
+            "role": "R",
+            "angle": "sigma*pi:1/8",
+            "pauli": "Z"
+          },
+          {
+            "role": "R",
+            "angle": "sigma*pi:1/8",
+            "pauli": "X"
+          }
+        ],
+        "repeat": "n/4",
+        "outer": [
+          {
+            "sigma": 1,
+            "probability": "1/2",
+            "weight": "1"
+          },
+          {
+            "sigma": -1,
+            "probability": "1/2",
+            "weight": "1"
+          }
+        ],
+        "outer_semantics": "finite_toy_coin_NOT_Taylor_RTE"
+      }
+    ],
+    "qubits": 2,
+    "system_state": "|0>",
+    "ancilla_state": "|+>",
+    "observable_axes": [
+      "X_ancilla",
+      "Y_ancilla"
+    ],
+    "logical_gate_order": "time_order_left_to_right",
+    "controlled_lowering_native_angles": [
+      "theta/2",
+      "-theta/2"
+    ],
+    "controlled_lowering_generators": [
+      "I_ancilla_tensor_P",
+      "Z_ancilla_tensor_P"
+    ],
+    "whole_wrapper_mask_comparisons": 48,
+    "axis_records": 96,
+    "outer_path_axis_records": 128,
+    "max_logical_gates": 64,
+    "max_native_rotations_per_path": 128,
+    "batch_init_T": 0,
+    "per_shot_clifford_prep_basis_measurement_T": 0,
+    "model_target": "same_ideal_synthetic_coherent_signal_mean_nu_within_template_and_n",
+    "B_finite_RTE": "NOT_IMPLEMENTED",
+    "shared_PAI_draws": false,
+    "cross_role_fusion": false,
+    "common_fusion_audit_completed": false,
+    "full_PAI_branch_enumeration": "PROHIBITED_use_signed_channel_composition",
+    "source_sequence_input": {
+      "commit": "e57c1fdd28589422e9c973e34e53f6c725b921e9",
+      "path": "artifacts/track_b_sp05_economics_result/2026-10-06/v1/result.json",
+      "sha256": "d92c3a3d618219f3f46c3cc8143a49b085772e3d1943036511bf39c792dfb759",
+      "literal_key_rows_available": 23,
+      "use": "known_B_primitive_sequences_T_counts_error_guards_NOT_wrapper_results",
+      "new_target_synthesis_calls_planned": 0
+    }
+  },
+  "proposed_metric_NOT_ADOPTED": {
+    "native_operator_error": "1e-6",
+    "epsilon_complex": "1/20",
+    "alpha_all_48_complex_tasks": "1/20",
+    "alpha_axis": "1/1920",
+    "epsilon_axis": "epsilon_complex/sqrt(2)",
+    "model_PF_RTE_bias": "0_only_because_target_is_ideal_synthetic_mean",
+    "numerical_bias_cap": "1e-8_bound_requires_adapter",
+    "moment": "sum_path(p * outer_weight^2 * product(gamma_i)^2)",
+    "range": "max_path(abs(outer_weight)*product(gamma_i))",
+    "synthesis_bias": "sum_path(p*abs(outer_weight)*Gamma*(fixed_delta+sum_gate(E_delta)))",
+    "variance_rule": "population_Var<=second_moment_no_oracle_variance",
+    "shot_rule": "two_sided_Bernstein_with_centered_radius_2M_and_integer_ceiling",
+    "shot_cap_per_axis": 1000000000,
+    "cap_hit": "SHOT_CAP_EXCEEDED_not_clipped_or_winner",
+    "nonpositive_bias_margin": "BIAS_BUDGET_EXHAUSTED",
+    "primary": "sufficient_bound_based_expected_G_T_NOT_minimum_necessary_cost",
+    "secondary": "E[W^2*C] with outer correlation retained_separate_from_G_T",
+    "ratio_reference": "NONE_same_template_n",
+    "materiality": "1/20",
+    "gain": "ratio_upper<=19/20",
+    "loss": "ratio_lower>=21/20",
+    "no_material_separation": "19/20<ratio_lower<=ratio_upper<21/20",
+    "uncertain": "other_boundary_crossing_NUMERIC_INCONCLUSIVE",
+    "zero_NONE_cost": "ratio_null_not_positive_witness",
+    "duplicates": "A_B_R_equals_NONE_and_DR_equals_D_not_independent_positive"
+  },
+  "tool_reference": {
+    "commit": "e57c1fdd28589422e9c973e34e53f6c725b921e9",
+    "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+    "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984",
+    "pygridsynth_version": "2.0.0",
+    "wheel_sha256": "30b5b15e9383a8ea8510d54f28e2de0385d102cb54fd4440071abf4525027568",
+    "new_synthesizer_or_catalogue": false,
+    "runtime_used_this_preparation": "stdlib_only"
+  },
+  "proposed_resource_caps_NOT_ADOPTED": {
+    "wall_seconds": 1200,
+    "cpu_seconds": 900,
+    "rss_MiB": 1024,
+    "output_MiB": 8,
+    "processes": 1,
+    "retries": 0
+  },
+  "proposed_terminal_statuses_NOT_ADOPTED": [
+    "SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+    "INCONCLUSIVE_MANDATORY_STOP_NO_RETRY"
+  ],
+  "execution_gate": {
+    "review_scope_choices": true,
+    "complete_fusion_and_interval_channel_adapter": true,
+    "focused_actual_adapter_tests": true,
+    "freeze_new_science_source_S": true,
+    "new_authorization_only_direct_child_A": true,
+    "explicit_source_bound_run_instruction": true,
+    "old_SP05_authorization_or_marker_reuse_allowed": false
+  },
+  "prohibited": [
+    "SP05_rerun",
+    "old_16_cell_pilot",
+    "second_catalogue",
+    "positive_hunting",
+    "molecular_NPZ_access",
+    "DF_Hamiltonian_generation",
+    "trajectory_sampling",
+    "GPU",
+    "Track_A_changes",
+    "shared_API_changes",
+    "BF_BM_reopening",
+    "automatic_followup_science"
+  ],
+  "science_interpretation": "mechanism_pilot_NOT_novelty_DF_RTE_advantage",
+  "pending": [
+    "adopt_concrete_domain_and_caps",
+    "review_alternating_Pauli_amendment",
+    "review_toy_outer_scope",
+    "common_fusion_audit",
+    "saved_interval_adapter",
+    "ordered_joint_channel_adapter",
+    "numerical_bias_bound",
+    "guarded_runner_and_result_schema",
+    "source_bound_review",
+    "separate_authorization",
+    "explicit_run_instruction"
+  ]
+}

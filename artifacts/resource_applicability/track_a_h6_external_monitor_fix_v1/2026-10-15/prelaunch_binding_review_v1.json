@@ -1,0 +1,64 @@
+{
+  "status": "AUTHOR_BINDING_PASS",
+  "SOURCE": "b73580dd7402df5d8ac0a95789ec351c05209049",
+  "contract_sha256": "3c042f3d2b07388d882fc95d013b7827a04752f2a3967f5b1c5b7c8785a86656",
+  "contract_bytes": 7716977,
+  "operation_limits": {
+    "snapshot_load": 1,
+    "analytic_overlay": 3,
+    "native_evolution_build": 3,
+    "measured_wrapper_build": 6,
+    "probe_wrapper_copy": 6,
+    "control_probe": 12,
+    "compile": 6
+  },
+  "external_resource_monitor": {
+    "enabled": true,
+    "role": "EXISTING_METADATA_LAUNCHER",
+    "interval_seconds": 1.0,
+    "maximum_staleness_seconds": 5.0
+  },
+  "budget_unchanged": true,
+  "launcher_role_and_budget_unchanged": true,
+  "scientific_provider_profile_input_compiler_unchanged": true,
+  "carry_preserved": true,
+  "source_closure_files": 13,
+  "profile_files": 34273,
+  "approved": true,
+  "runtime_authorization": true,
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    5,
+    8,
+    9
+  ],
+  "parallel_compile": {
+    "enabled": true,
+    "max_workers": 6,
+    "backend": "OWNED_FORK_AFTER_ALL_AB_V1",
+    "internal_threads": 1,
+    "automatic_retry": false,
+    "parent_death_signal": "SIGKILL",
+    "worker_cpus": [
+      1,
+      2,
+      3,
+      5,
+      8,
+      9
+    ],
+    "driver_cpu": 0,
+    "child_operations": "one existing verified axis compile; no loader/build/probe in child",
+    "IPC_max_bytes": 16384,
+    "aggregate_CPU_budget": "driver + all completed/running children, no reset",
+    "sampling_seconds": 0.05,
+    "bootstrap_affinity_max_seconds": 5
+  },
+  "review": "same author per user no-subagents instruction; not independent",
+  "subagents": 0,
+  "automatic_retry": false,
+  "next_stage_authorized": false
+}

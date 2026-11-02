@@ -1,0 +1,271 @@
+{
+  "status": "FIT_NUMERICAL_PILOT_PASS",
+  "source_commit": "33432e78659b8b3e654e39f1392328cb0ba5c487",
+  "source_tree": "52bdf6cbc2e044195973e50ae63ab463674ad9f4",
+  "branch": "codex/research-c-c1-h6-corrected-fit-execution-20261025",
+  "contract": "docs/research/research_c_c1_h6_corrected_fit_contract_unapproved_20261025.json",
+  "contract_sha256": "996bb93c44d42a10108dd49ba3ea70dbd5d4dd32e315748d6146dc22b552e55d",
+  "source_manifest_sha256": "bf1b942618301ef5a9c8fc466b746bef9ef115e0a631ed57e870e1671c848b14",
+  "original_input_sha256": "b82ee9864d9c76071944834ae32d3d6eea7e95959708c2e19bca011936bce447",
+  "initial_XDF_sha256": "559dc43bf923a421ccc62d05c4cefa0bdf39a48ba68824abf3c8f770c04642b1",
+  "provenance": {
+    "original_H6_SOURCE": "33c380d8aa792e5119bb3adec5dd07d1e1377214",
+    "saved_XDF_identity_SOURCE": "14cf35589a8501ef5db9a33700ed0c98bc1aa853",
+    "corrected_roundtrip_SOURCE": "43941ed8fbb0f12f0b028b2c379b872f5ba50f75",
+    "corrected_roundtrip_publication": "00dedc8d4730c3db29794d9f64ec6015308736d1",
+    "cached_initializer": "Saved XDF_selected rank14 is byte-identical to R14_before and component-identical to original tol1e-8,max_vecs14 explicit-Cholesky initializer; compare again with full XDF prefix. Return copies in one dedicated-process ffsim initialization binding; no new decomposition."
+  },
+  "molecule": {
+    "atoms": 6,
+    "geometry": "linear H atoms (0,0,i) Angstrom",
+    "distance_angstrom": 1.0,
+    "basis": "sto-3g",
+    "charge": 0,
+    "spin": 0,
+    "norb": 6,
+    "Nalpha": 3,
+    "Nbeta": 3,
+    "sector_dimension": 400
+  },
+  "rank": 14,
+  "codec": "real_schur_column_gauge_v1",
+  "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+  "DF_reserve_Ha": 0.00019875,
+  "states": [
+    {
+      "state": "saved_XDF14_before",
+      "tensor_maxabs": 2.480982165554979e-05,
+      "tensor_frobenius": 7.729927307028549e-05,
+      "objective_from_tensor": 2.987588808597282e-09,
+      "actual_rank": 14,
+      "sector_error_Ha": 0.00010247385485275444,
+      "guard_Ha": 1.1384527781887395e-06,
+      "sector_norm_plus_guard_Ha": 0.00010361230763094318,
+      "DF_budget_Ha": 0.00019875,
+      "DF_budget_status": "PASS",
+      "origin": "current fixed runner"
+    },
+    {
+      "state": "corrected_codec_x0",
+      "tensor_maxabs": 2.4809821655633058e-05,
+      "tensor_frobenius": 7.729927307042256e-05,
+      "objective_from_tensor": 2.9875888086078773e-09,
+      "actual_rank": 14,
+      "sector_error_Ha": 0.00010247385484858992,
+      "guard_Ha": 1.1384527781887395e-06,
+      "sector_norm_plus_guard_Ha": 0.00010361230762677866,
+      "DF_budget_Ha": 0.00019875,
+      "DF_budget_status": "PASS",
+      "origin": "current fixed runner"
+    },
+    {
+      "state": "corrected_CDF14_final",
+      "tensor_maxabs": 1.9044877356044765e-05,
+      "tensor_frobenius": 6.429463817061382e-05,
+      "objective_from_tensor": 2.066900248745076e-09,
+      "actual_rank": 14,
+      "sector_error_Ha": 0.00010689213236556284,
+      "guard_Ha": 1.1384527736890936e-06,
+      "sector_norm_plus_guard_Ha": 0.00010803058513925193,
+      "DF_budget_Ha": 0.00019875,
+      "DF_budget_status": "PASS",
+      "origin": "current fixed runner"
+    },
+    {
+      "state": "old_CDF14_final_saved",
+      "tensor_maxabs": 0.00010092007498568867,
+      "tensor_frobenius": 0.0008748970878188093,
+      "objective_from_tensor": 3.827224571369167e-07,
+      "actual_rank": 14,
+      "sector_error_Ha": 0.0017561186635230385,
+      "guard_Ha": 1.1952370989364111e-06,
+      "sector_norm_plus_guard_Ha": 0.001757313900621975,
+      "DF_budget_Ha": 0.00019875,
+      "DF_budget_status": "NOT_MET",
+      "origin": "saved old diagnostics only; no recomputation"
+    }
+  ],
+  "gates": [
+    {
+      "gate": "saved_XDF_identity",
+      "status": "PASS",
+      "observed": 0.0,
+      "allowance": 1e-10
+    },
+    {
+      "gate": "J_roundtrip",
+      "status": "PASS",
+      "observed": 0.0,
+      "allowance": 0
+    },
+    {
+      "gate": "density_projectors",
+      "status": "PASS",
+      "observed": 3.3306690738754696e-15,
+      "allowance": 1e-10
+    },
+    {
+      "gate": "tensor_roundtrip_F",
+      "status": "PASS",
+      "observed": 5.629106195365461e-15,
+      "allowance": 2.772982397075809e-10
+    },
+    {
+      "gate": "initial_sector_equivalence_max_entry",
+      "status": "PASS",
+      "observed": 7.549516567451064e-15,
+      "allowance": 1e-10
+    },
+    {
+      "gate": "initial_DF_budget",
+      "status": "PASS",
+      "observed": 0.00010361230762677866,
+      "allowance": 0.00019875
+    },
+    {
+      "gate": "optimizer_x0_identity",
+      "status": "PASS",
+      "observed": "exact qualified array equality in unchanged bridge",
+      "allowance": 0
+    },
+    {
+      "gate": "optimizer_return_success",
+      "status": "PASS",
+      "observed": true,
+      "allowance": "L-BFGS-B return status"
+    },
+    {
+      "gate": "final_tensor_objective_consistency",
+      "status": "PASS",
+      "observed": 3.56390766918472e-21,
+      "allowance": 1.0000206690024874e-12
+    },
+    {
+      "gate": "final_DF_budget",
+      "status": "PASS",
+      "observed": 0.00010803058513925193,
+      "allowance": 0.00019875
+    }
+  ],
+  "all_gates": "PASS",
+  "scientific_units": 20,
+  "maximum_logical_units": 20,
+  "scientific_attempts_COMPLETE": 20,
+  "scientific_attempts_FAIL": 0,
+  "new_fit": 1,
+  "optimizer_invocations": 1,
+  "optimizer": {
+    "success": true,
+    "status": 0,
+    "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+    "fun": 2.06690024874864e-09,
+    "nit": 1,
+    "nfev": 3,
+    "njev": 3
+  },
+  "initial_value_gradient": {
+    "objective": 2.987588808603715e-09,
+    "gradient_l2": 0.00010244846686917593,
+    "gradient_infinity": 3.573873205362524e-05
+  },
+  "final_value_gradient": {
+    "objective": 2.06690024874864e-09,
+    "gradient_l2": 6.065062527031419e-05,
+    "gradient_infinity": 1.2034710620884496e-05,
+    "optimizer_jac_maxabs_difference": 0.0
+  },
+  "initial_sector_operator_equivalence": {
+    "status": "PASS",
+    "operator": {
+      "label": "initial codec sector equivalence",
+      "max_entry": 7.549516567451064e-15,
+      "frobenius": 9.177608023842878e-14,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    "operator_difference_norm": 1.241107775535217e-14
+  },
+  "codec_tensor_roundtrip_F": 5.629106195365461e-15,
+  "optimizer_success": true,
+  "DF_budget_status": "PASS",
+  "tensor_objective_change": -9.206885598628012e-10,
+  "sector_error_change_Ha": 4.418277516972914e-06,
+  "comparison": {
+    "scope": "reporting arithmetic on existing saved scalar diagnostics only",
+    "old_rank14_sources": {
+      "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/codec/R14_final_tensor.json": "d9fb831d4c2639277b67e8b31faae49c814c4ec1fc26154f2eeca2aafc5d5534",
+      "artifacts/research_c_c1_h6_initialization/2026-10-25/run01/R14_final_sector.json": "55c69d8df8fc94ac3bc532d30a5e95d3828c2620757c52cbf3672bf23b93e40c",
+      "artifacts/research_c_c1_h2_h6_science/2026-10-25/H6-run01/CDF_14.json": "07e9cee74d6f96248c6286c81236019a28bd6e9748c5d4515d0b6d9d9b34ef78"
+    },
+    "old_optimizer": {
+      "success": true,
+      "status": 0,
+      "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+      "fun": 3.8272245713700757e-07,
+      "nit": 254,
+      "nfev": 263,
+      "requested_rank": 14,
+      "actual_rank": 14,
+      "optimize": true,
+      "input_sha256": "b82ee9864d9c76071944834ae32d3d6eea7e95959708c2e19bca011936bce447",
+      "export_sha256": "f5d6bc0632ed16d396b2f3b9ebdef820ac1db86b257e911bf766f6ff451b013b",
+      "number_representation": true,
+      "original_g_kappa_required": true,
+      "ffsim_version": "0.0.83"
+    },
+    "tensor_F_decrease_vs_initial_percent": 16.82374799043844,
+    "sector_error_increase_vs_initial_percent": 4.311614434238997,
+    "tensor_F_decrease_vs_old_CDF14_percent": 92.65117702804272,
+    "sector_error_decrease_vs_old_CDF14_percent": 93.91316005086347
+  },
+  "initial_decompositions": 0,
+  "rank_search": 0,
+  "PF": 0,
+  "native_build_compile": 0,
+  "shots": 0,
+  "total_cost_evaluation": 0,
+  "retry": 0,
+  "resume": 0,
+  "selected_initial_as_fallback": false,
+  "CA_achieved": null,
+  "total_resource_superiority": null,
+  "rigorous_enclosure": null,
+  "resources": {
+    "parent": {
+      "wall_seconds": 4.040692221838981,
+      "process_lifetime_CPU_seconds": 2.866550079,
+      "peak_RSS_KiB": 433512,
+      "child_peak_RSS_KiB": 426600
+    },
+    "prepare_worker": {
+      "wall_seconds": 0.014255399815738201,
+      "process_lifetime_CPU_seconds": 0.384773769,
+      "peak_RSS_KiB": 210908,
+      "child_peak_RSS_KiB": 67692
+    },
+    "fit_worker": {
+      "wall_seconds": 0.4896270548924804,
+      "process_lifetime_CPU_seconds": 1.808571087,
+      "peak_RSS_KiB": 426600,
+      "child_peak_RSS_KiB": 67072
+    },
+    "plan": {
+      "workers": 2,
+      "available_affinity_cpus": 32,
+      "available_memory_bytes": 56238837760,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 655360000,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+    }
+  },
+  "actual_optimizer_arrays_exported": true,
+  "actual_optimizer_x_jac_shape": [
+    504
+  ],
+  "pre_execution_artificial_tests": 27,
+  "post_execution_SOURCE": "PASS",
+  "post_execution_saved_input": "PASS",
+  "external_reproduction": false,
+  "mandatory_STOP": true
+}

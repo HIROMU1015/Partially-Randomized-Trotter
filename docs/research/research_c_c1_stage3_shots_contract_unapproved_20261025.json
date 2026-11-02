@@ -1,0 +1,272 @@
+{
+  "schema": "C1_STAGE3_SHOTS_CONTRACT_UNAPPROVED_V1",
+  "scope": "C1_STAGE3_OPTIMISTIC_SHOTS_SCREEN_V1",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "date_JST": "2026-10-25",
+  "base_commit": "2eef01a4256df4c146324ef571c0074cd0ea5b08",
+  "status": "TECHNICALLY_PREPARED_SAVED_DATA_REANALYSIS_UNAPPROVED",
+  "execution_authorized": false,
+  "entry": "scripts/run_research_c_c1_stage3_shots_screen.py",
+  "source_manifest": "artifacts/research_c_c1_stage3_shots_technical/2026-10-25/SOURCE.json",
+  "source_manifest_sha256": "1866f4645e91eae549b113624655a591cb44ec588921f92f005b25d9575894c9",
+  "parent_contract": "docs/research/research_c_c1_stage3_feasibility_contract_unapproved_20261025.json",
+  "parent_contract_sha256": "23a2e24f5162b57b38cdbf61095b9cfab2481f100dae68e10a21e6769c1a72ad",
+  "physical_conditions": {
+    "model": "saved linear P-H4",
+    "distance_angstrom": 1,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "full_dimension": 256,
+    "controlled_dimension": 512,
+    "CDF_rank": 8,
+    "XDF_rank": 10,
+    "CDF": "ordinary number representation, original-g corrected kappa, general K original frames",
+    "system_qubits": 8
+  },
+  "parent_proposal": {
+    "accuracy_target": {
+      "energy_ha": 0.00159,
+      "df_reserve_fraction": 0.125,
+      "base_time": 0.1,
+      "beta_total": 0.5235987755982988,
+      "beta_stat": 0.2617993877991494,
+      "alpha_axis": 0.0003846153846153846,
+      "alpha_total": 0.01
+    },
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "PR_LD": 2,
+    "correctness_tolerance": {
+      "operator_component_abs": 1e-10,
+      "unitarity_component_abs": 1e-10,
+      "xy_abs": 2e-10,
+      "phase_up_to_global": false
+    },
+    "alias_energy_window_ha": [
+      -10,
+      10
+    ],
+    "target_state": "own_DF_ground_state_oracle",
+    "state_preparation_included": false,
+    "law_model": "ideal_finite_RTE_law",
+    "substeps": [
+      1,
+      4
+    ],
+    "rte_steps": [
+      4,
+      16
+    ],
+    "finite_taylor_orders": [
+      0,
+      2
+    ],
+    "original_frame_order": true
+  },
+  "accuracy_target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "runtime_required_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "qiskit-algorithms": "0.3.1"
+  },
+  "dependency_lock": "artifacts/research_c_c1_stage2_technical/2026-10-25/environment/requirements.lock",
+  "dependency_lock_sha256": "d84a3ea8579fc588e708943a636348f9fa724a25cccddf75b017ab57ec9456e4",
+  "operating_instructions": {
+    "name": "research_project_instructions_unified_2026-10-25.md",
+    "sha256": "e1e3e2625e2b728977402bded6583658e7fb762160f5e787fd45572af0095720"
+  },
+  "saved_run": "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01",
+  "saved_evidence_source_commit": "2eef01a4256df4c146324ef571c0074cd0ea5b08",
+  "saved_inputs": {
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/result.json": "0953132c3158301bb1a3b7e702fac8d3f609ba331e53a6c7418fac9082f66aa9",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/prepared.json": "21733fb99e258245d75785c466e436944df57d2bb458ae574a8d088771e44ab6",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/STOP.json": "33f346144afab612103f8d2392679df2785a493156253d7202e3532b83f3c97d",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_D_s1_r0_K0.json": "56f30438c1e54f42d3ed99a8b847e31836e07eb9673b5d70228c1cb9d84e10d0",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_D_s4_r0_K0.json": "ad8bad67a42609fed818ddd16fc5477da41aad22631b91ff44c753678d6c0e82",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s1_r4_K0.json": "50c7cab077c44633d696c7631334a756483516036b8b3ab543072bbc57d74526",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s1_r4_K2.json": "ac1876a8536ac86bd9f7f0988792526c9f05de97360c1468cb6c3983ef2e5fea",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s1_r16_K0.json": "05488ebf48d894f20a8ed63cd4ed116c939379c09be51813b6d45530c3f28d3e",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s1_r16_K2.json": "363ac1945cf246e7b8d5827709f1cf7fe12e06bbf6d5d19572239903252d0cd2",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s4_r4_K0.json": "cdb380b4faedac60966a6037cfbb10f7879e38dd6518679c164512e49af946c9",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s4_r4_K2.json": "6edecfe17c25e651652b05dd53d04d9546e744de90fff9af90dedb8ac1ae6b93",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s4_r16_K0.json": "fc8dce907a261493b8b7ea459670cf373c8045f12e524481342351063ecdcfaa",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/CDF_PR_s4_r16_K2.json": "a1d2c06f1a4877e9b44a7857526d2b82c3d92877ca0cb8d5ec8442bee3e1d5c9",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_D_s1_r0_K0.json": "411e430a6e8dceede6a2abe075fd42f694a026dbd4254ac9baf27208927b1716",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_D_s4_r0_K0.json": "c97167ac298be8828a99a89af52a52f5595e4d722f08dfd976c1358f7c1b9806",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s1_r4_K0.json": "2f34f902b66aef11f7a4e0022a43c269de987a259bea70359667f89ecce86a73",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s1_r4_K2.json": "c8613da72e171356af73735addfcf7a37c7073624d4d467fb06bcc7abb0a565d",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s1_r16_K0.json": "163f058c630603c5fd3613a74f39641ff622e294800574b0c0ba1186c41a3384",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s1_r16_K2.json": "0e58ebdc2ac6822bfe193a99aee7a035bedb3e44b00ab4f5552122a9471a41be",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s4_r4_K0.json": "ab2fe0bd250af00f47f9461e962a1060548eff2356fc8f3e7afb2b4540e5c15e",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s4_r4_K2.json": "13323fef7ed7632b2b2d373585692695d9bc41f80eb0ee06a519806df806729e",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s4_r16_K0.json": "a07cec16d3a5b7f120ec6561e1865be99b83cd6458ce167ef6e36280e18002b2",
+    "artifacts/research_c_c1_stage3_feasibility_science/2026-10-25/run01/candidates/XDF_PR_s4_r16_K2.json": "b9a13e199918e4303caf6fb4e187d289cf758dd88e9ec0ef21993fed4bec4beb"
+  },
+  "candidate_ids": [
+    "CDF_D_s1_r0_K0",
+    "CDF_D_s4_r0_K0",
+    "CDF_PR_s1_r4_K0",
+    "CDF_PR_s1_r4_K2",
+    "CDF_PR_s1_r16_K0",
+    "CDF_PR_s1_r16_K2",
+    "CDF_PR_s4_r4_K0",
+    "CDF_PR_s4_r4_K2",
+    "CDF_PR_s4_r16_K0",
+    "CDF_PR_s4_r16_K2",
+    "XDF_D_s1_r0_K0",
+    "XDF_D_s4_r0_K0",
+    "XDF_PR_s1_r4_K0",
+    "XDF_PR_s1_r4_K2",
+    "XDF_PR_s1_r16_K0",
+    "XDF_PR_s1_r16_K2",
+    "XDF_PR_s4_r4_K0",
+    "XDF_PR_s4_r4_K2",
+    "XDF_PR_s4_r16_K0",
+    "XDF_PR_s4_r16_K2"
+  ],
+  "rounds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "primary_subjects": "Previously POTENTIALLY_FEASIBLE14; retain all20 and all260 rows, prior infeasible/unresolved never removed",
+  "new_fit": 0,
+  "optimizer": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "call_limits": {
+    "saved_evidence_load": 1,
+    "optimistic_round_assessment": 260,
+    "candidate_shots_summary": 20,
+    "screening_summary": 1
+  },
+  "maximum_logical_scientific_units": 282,
+  "scientific_calls": {
+    "saved_evidence_load": {
+      "maximum": 1,
+      "scope": "Decode23 fixed scalar JSON records: result/prepared/STOP plus20 candidate records; no NPZ, no PF/RTE/operator regeneration"
+    },
+    "optimistic_round_assessment": {
+      "maximum": 260,
+      "scope": "One logical unit per candidate/round; saved-classification consistency, reused A=1 normalized radius/phase geometry and Hoeffding helper, original saved A scaling, X/Y symmetric counts and A=1 diagnostic, exact-rational fallback; no charge per elementary scalar op"
+    },
+    "candidate_shots_summary": {
+      "maximum": 20,
+      "scope": "Retain prior status, DF reserve check, sum26 axis estimates only when all required rows eligible; no quantum cost metrics"
+    },
+    "screening_summary": {
+      "maximum": 1,
+      "scope": "Registered-order20-row table; no final resource ranking or selection"
+    }
+  },
+  "optimistic_model": {
+    "label": "Counterfactual zero synthesis/law error in adopted sufficient-shots formula",
+    "error_policy": "Keep saved PF/RTE errors and A unchanged; assumed extra errors zero only in hypothetical calculation; actual_synthesis_signal_error/actual_law_signal_error remain null",
+    "formula": "rho_opt=A*(1-epsPF-epsRTE); beta_det=asin(epsPF+epsRTE); epsilon_axis=rho_opt*sin(beta_stat)/sqrt(2); N_axis=ceil(2*log(2/alpha_axis)/epsilon_axis^2)",
+    "phase_policy": "Reuse registered sufficient condition and fixed beta_stat; no reallocating unused phase room or failure budget",
+    "failure_allocation": "Same saved alpha_axis per each of26 X/Y rounds and alpha_total0.01; do not infer a simultaneous guarantee over all20 candidates",
+    "bound_semantics": "Optimistic count within the adopted RPE/Hoeffding sufficient-shot prescription; not an information-theoretic/universal lower bound or guaranteed actual shots",
+    "state_model": "own_DF_ground_state_oracle",
+    "state_preparation_included": false,
+    "law_model": "ideal_finite_RTE_law",
+    "CA_achieved": null,
+    "guaranteed_actual_shots": null,
+    "total_resources": null,
+    "final_resource_ranking": null
+  },
+  "comparison": {
+    "outputs": [
+      "20 candidates with13 rounds and2 axis fields each, finite counts or explicit reason/status",
+      "Optimistic total shots for eligible candidates",
+      "Same-error no-attenuation diagnostic A=1 and log10 shot penalty; not a new scientific candidate",
+      "Int64 range flag; arbitrary-size decimal integer strings; log10 diagnostic"
+    ],
+    "candidate_order": "unchanged parent order, no resource ranking",
+    "prior_infeasible": "Keep all rows and prior reason; no finite candidate total, even when some short rounds have counts",
+    "prior_unresolved": "Keep unknowns and no fabricated total",
+    "selection": "No new selection threshold or shortlist fixed by this technical task"
+  },
+  "numerical_policy": {
+    "version": "normalized_binary64_geometry_rational_count_v1",
+    "geometry": "Existing assess_round at A=1 with hypothetical extra errors0; retain its radius/phase math; multiply saved A after normalization to avoid A*eps underflow",
+    "regular_count": "Existing _hoeffding_shots when finite and below2^53",
+    "large_count": "Same formula using Fraction.from_float(unit_coordinate), saved A and binary64 log constant; exact rational multiply/square/ceil and Python arbitrary integer; no clipping",
+    "precision_limit": "Pilot estimate over saved binary64 data and binary64 geometry/transcendentals; not a rigorous interval lower bound. Algebraic normalization can change last-bit rounding from direct A arithmetic.",
+    "saved_A_zero": "Retain INFEASIBLE registered binary64-zero status; do not reconstruct unsaved log-attenuation or replace with epsilon",
+    "coordinate_underflow": "Record flag/float diagnostic0, but use nonzero exact-rational coordinate for finite shots; zero diagnostic is not used as actual radius",
+    "invalid_values": "NaN/Inf/negative errors or invalid A: FAIL/STOP",
+    "missing_values": "UNRESOLVED, never zero-fill",
+    "phase_boundary": "If old normalized phase acceptance disagrees with prior sufficient predicate: UNRESOLVED, no threshold change",
+    "integer_serialization": "Decimal strings for all shot counts/totals to avoid int64/JSON double precision loss; log10 is diagnostic only"
+  },
+  "execution_order": [
+    "Byte/SOURCE/parent conditions/23 saved input hashes/runtime versions preflight, no cell decode",
+    "Fresh output; one fixed saved evidence scalar bundle load",
+    "Registered20 in order; each13 round classification consistency and optimistic XY estimates",
+    "Candidate summaries preserving prior exclusions; aggregate only eligible estimates",
+    "Save calls/progress/resources/SOURCE/contract/runtime/STOP",
+    "mandatory STOP"
+  ],
+  "stop_policy": {
+    "preflight_mismatch": "Reject before scientific decode and output creation",
+    "first_correctness_failure": "Stop subsequent calls immediately, preserve all earlier progress and failure/STOP, no retry/resume",
+    "infeasible_or_unresolved": "Keep explicit classifications and continue only remaining registered rows/candidates",
+    "fresh_output": "artifacts/research_c_c1_stage3_shots_science/<date>/<fresh-run-id>/",
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true
+  },
+  "excluded": [
+    "Real H4/NPZ decode or generation",
+    "PF/RTE/operator recomputation",
+    "New fit/optimizer",
+    "Circuit build/compile",
+    "Quantum or virtual sampling/shot execution",
+    "Quantum total cost/resource ranking",
+    "CA certification or guaranteed actual shots"
+  ],
+  "resource_policy": "No artificial CPU/RAM/worker/GPU/wall caps. Only260 scalar rows, so serial loop avoids process startup/serialization; no dense matrices. Use old read-only task environment and task-local cache; no shared or other-user changes.",
+  "preservation": "Old SOURCE/results/grants/ledgers/markers/STOP unchanged",
+  "permission_required": "Separate explicit chat permission for fixed SOURCE/contract/saved inputs/fresh output; no certificate/approval record/new grant"
+}

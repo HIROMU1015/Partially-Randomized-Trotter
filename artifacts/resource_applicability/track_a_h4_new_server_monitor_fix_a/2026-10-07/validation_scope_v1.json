@@ -1,0 +1,139 @@
+{
+  "artificial_suite": {
+    "allowed_cpus": [],
+    "driver_peak_RSS_bytes": 164179968,
+    "driver_system_seconds": 0.125006,
+    "driver_user_seconds": 8.563414999999999,
+    "errors": 0,
+    "failures": 0,
+    "input_receipt": "NPZ6/freeze/runtime/control not received; no scientific paths accessed",
+    "measurement": {
+      "io_delay_first_stop": {
+        "driver_phase": {
+          "monotonic": 12292592.896164466,
+          "name": "synthetic_io_delay",
+          "sequence": 1
+        },
+        "interval_seconds": 5.156094839796424,
+        "kind": "observation",
+        "monotonic": 12292598.05148641,
+        "observation_duration_seconds": 5.104085873812437,
+        "observation_started": 12292592.947400536,
+        "observer": {
+          "address_space": 29626368,
+          "parent": 1793019,
+          "pid": 1793021,
+          "rss": 19922944,
+          "start": "1229259284",
+          "uid": 30038
+        },
+        "phase_age_seconds": 5.155321944504976,
+        "processes": [
+          {
+            "address_space": 246427648,
+            "parent": 1793015,
+            "pid": 1793019,
+            "rss": 96468992,
+            "start": "1229259243",
+            "uid": 30038
+          }
+        ],
+        "reason": "observation_duration",
+        "staleness_seconds": 0.003993498161435127,
+        "wall_seconds": 5.211250185966492
+      },
+      "live_observer": {
+        "driver_max_rss": 97517568,
+        "max_AS": 29626368,
+        "max_interval": 0.10714828781783581,
+        "max_rss": 19922944,
+        "observations": 21,
+        "shutdown_reaped": true,
+        "trace_bytes": 13837
+      },
+      "matrix_circuit": [
+        {
+          "axis": "cosine",
+          "bytes": 4458518,
+          "new_digest": "227aa2434a2b25840dad01d7f4fcf0727f30ba2a076e9ecbd63a8b47d74c20d8",
+          "old_digest": "227aa2434a2b25840dad01d7f4fcf0727f30ba2a076e9ecbd63a8b47d74c20d8"
+        },
+        {
+          "axis": "sine",
+          "bytes": 4458516,
+          "new_digest": "fc6ab3cc424494ea91e2abeceabef451ef25557cff7788f267430ffc547c1c18",
+          "old_digest": "fc6ab3cc424494ea91e2abeceabef451ef25557cff7788f267430ffc547c1c18"
+        }
+      ]
+    },
+    "observer_children_system_seconds": 0.066372,
+    "observer_children_user_seconds": 0.237503,
+    "observer_trace_bytes": 34796,
+    "old_benchmarks": 128,
+    "old_benchmarks_rerun": 0,
+    "production_launches": 0,
+    "protected_attempts": [],
+    "python": "/home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python",
+    "real_worker_launches": 0,
+    "runtime_authorization": false,
+    "skipped": 0,
+    "status": "PASS",
+    "synthetic_cap": 64,
+    "synthetic_transpile_prior": 28,
+    "tests": 32,
+    "thread_environment": {
+      "MKL_NUM_THREADS": "1",
+      "NUMEXPR_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONNOUSERSITE": "1",
+      "QISKIT_NUM_PROCS": "1",
+      "QISKIT_PARALLEL": "false",
+      "RAYON_NUM_THREADS": "1"
+    },
+    "transpile_new": 0,
+    "wall_seconds": 13.889662811532617
+  },
+  "audited_source_count": 25,
+  "forbidden_operations": {
+    "GPU_query_use_CuPy_import": 0,
+    "SCF_DF_state_input_generation": 0,
+    "actual_signal_trajectory_build_compile": 0,
+    "molecular_access": 0,
+    "shared_environment_or_other_jobs_changed": 0,
+    "venv_install_upgrade_configuration_changed": 0
+  },
+  "future_transpile_fixture_budget": {
+    "cap": 64,
+    "inherited_synthetic_count": 28,
+    "planned_now": 0,
+    "production_or_benchmark_reexecution": false,
+    "remaining": 36,
+    "required_for_old_compiler_equivalence": "Paired old/new isolated compiler fixture not yet scoped; number and budget require separate result-prior definition."
+  },
+  "historical_raw_reference_RECORD_differences": 45,
+  "installed_source_matches": 11,
+  "normalized_RECORD_differences": 22,
+  "production_equivalence_or_success": false,
+  "real_NPZ_used": false,
+  "source_commit": "b2a5ad89e8b39d72716f7ddb17d263bd0cdedb45",
+  "source_only_auditor_correction": {
+    "auditor_correction_source": "d02eb993cbe394269f1e55ddab65de7984fef107",
+    "final_source": "b2a5ad89e8b39d72716f7ddb17d263bd0cdedb45",
+    "first_source": "e80ac5654284639b5d0c6abd9e4decb7354a7ecd",
+    "reason": "Raw vs normalized RECORD audit correction; final SOURCE also verifies original-parent exit before stopping registered reparented workers."
+  },
+  "status": "H4_NEW_HOST_MONITOR_FIX_A_SOURCE_FROZEN_PRODUCTION_UNAUTHORIZED_STOP",
+  "untested": [
+    "Production compiler output equivalence to old environment; no additional transpile or old benchmark rerun.",
+    "Full physical inputs, H4 operators/signals/trajectories/compiler/build or full74784/72h campaign.",
+    "Twelve real workers and new role CPU scheduling/pressure/AS/RSS under load.",
+    "True driver exit and live12-worker signal cleanup are fixtures; synthetic driver signaling mocked.",
+    "Uninterruptible kernel I/O plus simultaneous driver GIL stall; independent observer death during such a stall is not proven to stop within5s.",
+    "Power loss/fsync crash durability and quota capacity; tests validate call ordering and bounded files.",
+    "Circuit/parameter mutation during a lazy traversal is unsupported; one traversal requires readonly inputs.",
+    "run05 full75/old compiler benchmarks not rerun. Existing eager-API early validation moved to stream boundary."
+  ],
+  "version_differences": 18
+}

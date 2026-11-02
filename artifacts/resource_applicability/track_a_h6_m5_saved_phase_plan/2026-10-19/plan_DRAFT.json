@@ -1,0 +1,133 @@
+{
+  "STOP": [
+    "input/SOURCE/runtime/receipt SHA mismatch",
+    "saved target/qubit/layout/terminal measurement mismatch",
+    "nonfinite data or replay result",
+    "ordinary replay fails adopted reproduction gate",
+    "extended precision not wider than binary64",
+    "unknown gate or symbolic parameter",
+    "own process failure or actual OOM",
+    "output/ledger/marker collision"
+  ],
+  "classification": "Report continuous metrics and qualified interpretations; do not select a causal winner from a single fitted phase.",
+  "execution_command": null,
+  "existing_acceptance": {
+    "acceptance_override": false,
+    "full_H_reference_phase_alignment": false,
+    "main_comparison_AD03": "DEFERRED",
+    "old_STOP_remains_STOP": true,
+    "old_accepted_axes_preserved": 58,
+    "parameter_or_state_fitting": false,
+    "phase_alignment_is_diagnostic_only": true,
+    "raw_error_strictly_below": 1e-09
+  },
+  "grant_id": null,
+  "input_manifest_sha256": "bba74ce409deb699a56dfce032b399772ce3bdb9dbcb88da9fa1c5b02e5aa06a",
+  "maximum_work": {
+    "new_SCF_DF_state_generation": 0,
+    "new_candidate_search": 0,
+    "new_circuit_synthesis": 0,
+    "new_compile": 0,
+    "new_full_H_reference": 0,
+    "new_measurement_axes": 0,
+    "new_sampling": 0,
+    "new_signal_search": 0,
+    "replay_double": 2,
+    "replay_extended": 2,
+    "saved_QPY_roles": 2,
+    "saved_initial_states": 1,
+    "shot_cost_reaccounting": 0,
+    "statevector_replays": 4
+  },
+  "method": {
+    "claims": "One saved initial state and two serialized circuits; no universal unitary equivalence or rigorous error certificate.",
+    "compiled_gate_whitelist_proposed": [
+      "rz",
+      "sx",
+      "x",
+      "cx",
+      "id",
+      "barrier",
+      "measure"
+    ],
+    "extended": "Independent analytic small-gate kernels with NumPy longdouble/clongdouble; same gate order, qubit order, parameters and stored global phase; no transpile/decompose/synthesis.",
+    "gate_parameters": "Preserve original serialized binary64 values exactly; do not reconstruct higher precision coefficients or replace angles.",
+    "global_phase": "Apply each circuit stored global phase once. Fitted common phase is diagnostic only, never a corrected circuit or reference.",
+    "initial_state": "Exactly saved low vector; no normalization or new probe state.",
+    "metrics": [
+      "raw_norm_difference",
+      "before_after_norm",
+      "complex_overlap_and_common_phase",
+      "phase_aligned_residual_DIAGNOSTIC_ONLY",
+      "ancilla_branch_errors_and_phases_DIAGNOSTIC_ONLY",
+      "Hadamard_before_after_and_saved_expected",
+      "ordinary_vs_extended_comparison"
+    ],
+    "ordinary": "Original simulator/global phase convention on each saved circuit, final measurement removed only.",
+    "unknown_gate": "Fail closed rather than substitute Qiskit to_matrix in binary64.",
+    "wrapper_gate_whitelist_proposed": [
+      "h",
+      "p",
+      "rz",
+      "rzz",
+      "cx",
+      "xx_plus_yy",
+      "id",
+      "barrier",
+      "measure"
+    ]
+  },
+  "new_compile_authorized": false,
+  "one_shot": {
+    "automatic_followup": false,
+    "mandatory_STOP": true,
+    "new_analysis_grant_ledger_marker_required": true,
+    "old_grant_reuse": false,
+    "retry": false,
+    "sine_dispatch": false
+  },
+  "origin_SOURCE": "f743a88225f7cb2c8d2c91d7e19813a5780f803b",
+  "origin_result_commit": "282cba7d6047ea6613a9e69c818e467cb962dd65",
+  "parallel": {
+    "CPU_RAM_worker_cap_inherited": false,
+    "admission": "Fresh own affinity, idle CPU, RAM and disk; at most four workers because only four planned jobs exist. RSS proxies are workload estimates, never runtime caps.",
+    "independent_replays": 4,
+    "inner_threads": "Keep original ordinary replay environment; vectorize small-gate state updates. No full 8192x8192 circuit matrix.",
+    "other_worktree_freeze": false,
+    "reuse": "Two saved QPY files and one low vector; exact-value gate/index caching when useful, no candidate/grid expansion.",
+    "transient_PSI_or_CPU_kill": false
+  },
+  "plan_preparation_authorized": true,
+  "push_authorized": false,
+  "real_saved_analysis_authorized": false,
+  "runtime": {
+    "numpy": "1.26.4",
+    "policy": "Reuse sealed recovery runtime; no shared package changes; additional longdouble precision must be checked before analysis.",
+    "python": "FIXED_RECOVERY_PYTHON_3_12_ENVIRONMENT_BOUND_IN_PRIVATE_RUNTIME",
+    "qiskit": "1.3.0"
+  },
+  "scientific_SOURCE": null,
+  "scope_id": "H6_M5_SAVED_PHASE_DIAGNOSTIC_V1",
+  "status": "PLAN_COMPLETE_RUNNER_NOT_IMPLEMENTED_EXECUTION_UNAPPROVED",
+  "target": {
+    "P": 0,
+    "T": 0.8,
+    "axis": "cosine",
+    "control": "symmetric_directional",
+    "formula": "4th(m5_best)",
+    "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+    "method": "FULL",
+    "prefix": 19,
+    "q": 2,
+    "rank": 19,
+    "rank_policy": "tol_only_1e-8",
+    "series": "H6_TOL_ONLY_DF19",
+    "system": "H6",
+    "task_id": "H6_TOL_FULL_0e289606747ea369__0"
+  },
+  "technical_tolerances_PROPOSED_NOT_ADOPTED": {
+    "extended_precision_requirement": "actual mantissa bits strictly greater than binary64; otherwise STOP, no silent precision fallback",
+    "precision_fallback": false,
+    "saved_metric_and_double_replay_atol": 1e-12
+  }
+}

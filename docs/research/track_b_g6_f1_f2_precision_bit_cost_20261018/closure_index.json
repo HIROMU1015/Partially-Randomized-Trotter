@@ -1,0 +1,237 @@
+{
+  "schema": "g6_f1_f2_closure_index_v1",
+  "not_an_execution_or_scientific_contract": true,
+  "status_vocabulary": [
+    "CLOSED_BY_EXISTING_LEMMA",
+    "CLOSED_BY_ROUTINE_DERIVATION",
+    "SPECIFIED_NOT_IMPLEMENTED",
+    "CONDITIONAL_COST_BOUND",
+    "REQUIRES_NONTRIVIAL_PROOF",
+    "PHYSICAL_PROVIDER_UNCERTIFIED",
+    "OUT_OF_SCOPE",
+    "NOT_VERIFIED"
+  ],
+  "status_note": "Mathematical, implementation, cost and physical dimensions separated. No confirmed REQUIRES_NONTRIVIAL_PROOF assignment; routine derivations and conditional standard-model costs are not novel-theorem certification.",
+  "items": [
+    {
+      "id": "F01",
+      "title": "F01 入口/domain",
+      "existing_guarantee_SOURCE": "[MATH]§1、K138–145、G103–143/216–225",
+      "API_conditions_and_routine_derivation": "[F1 §1](preflight_precision_contract.md)：exact Rat/正規化、σ、型・分母・bit長、Full m≥1対canonical m≥3、直接helperの契約を一つの入口へ整理",
+      "implementation_cost_remaining_gap": "型の包括検査は未接続。読込/正規化をsetup Qモデルへ計上",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_EXISTING_LEMMA` / `CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。Codex実装は別許可後。全前提が失われず、低水準indexingをvalidatorとしないこと",
+      "statuses_by_dimension": [
+        "CLOSED_BY_EXISTING_LEMMA",
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F02",
+      "title": "F02 identity",
+      "existing_guarantee_SOURCE": "[MATH]§1、K221–222、G105/109/237–251",
+      "API_conditions_and_routine_derivation": "exact x=0をpositive sampler前に分岐、deterministic identityとして保持",
+      "implementation_cost_remaining_gap": "数学は既存、G7 dispatcherは未実装。sampling/weight/angle費用を架空に発生させない",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_EXISTING_LEMMA` / `SPECIFIED_NOT_IMPLEMENTED`。新入口実装後、random zeroと区別しbit消費なしを受入要件にする",
+      "statuses_by_dimension": [
+        "CLOSED_BY_EXISTING_LEMMA",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F03",
+      "title": "F03 order",
+      "existing_guarantee_SOURCE": "[BIT]§5/K45–82/208–212、G221",
+      "API_conditions_and_routine_derivation": "[F1 P1/R](preflight_precision_contract.md)：Δ/hを既存rootとnormalized intervalへ代入し、全orderのrelative/support guardに対する十分述語を具体化",
+      "implementation_cost_remaining_gap": "述語のpreflight証拠生成/検証は未実装。費用は3n rootsとD(n,K_root+ℓ_m)のsetup項",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。新H/K selectorを研究成果としない。固定値が受入述語を満たす証拠が必要",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F04",
+      "title": "F04 labels/child全support",
+      "existing_guarantee_SOURCE": "[BIT]§5、K230–231、G222",
+      "API_conditions_and_routine_derivation": "P2のh≤ηp_minとh≤ηp_min/2。R(0,q_min)の直接適用",
+      "implementation_cost_remaining_gap": "全到達parentに同じ十分条件、全語列挙なし。child lawはtrial中生成。親ごとの訪問PASSだけで事前保証にしない",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_EXISTING_LEMMA` / `CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。実lawと同じidentityで固定Hの証拠を保存する",
+      "statuses_by_dimension": [
+        "CLOSED_BY_EXISTING_LEMMA",
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F05",
+      "title": "F05 d midpoint",
+      "existing_guarantee_SOURCE": "[BIT]§5、K224–227",
+      "API_conditions_and_routine_derivation": "P3：Δ<d_minとΔ/2≤ρ(d_min−Δ)が全uでpositive lo/relative midpoint guardを満たす",
+      "implementation_cost_remaining_gap": "未実装preflight。dとacceptanceの2 rootをlocal費用に計上",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。条件が不成立ならSTOP、丸め値の事後救済なし",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F06",
+      "title": "F06 acceptance",
+      "existing_guarantee_SOURCE": "[MATH]§7/[BIT]§5、K85–94/228–229",
+      "API_conditions_and_routine_derivation": "P4：Δ<1/4、(2−η)Δ+h≤η/4。既存A_u下界とclip/floor誤差の直接合成",
+      "implementation_cost_remaining_gap": "受理coinはpacket後。coin rejectでもchild law/再sum費用を支払う",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。全uの相対threshold条件の事前証拠が必要。AをZとしない",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F07",
+      "title": "F07 canonical全law",
+      "existing_guarantee_SOURCE": "[G7C]、G119–160/162–212",
+      "API_conditions_and_routine_derivation": "group setup guardに加え、存在するfirst/root-child exact lawの有限最小値とconditional≥p_minで全sample/event再構築へ適用",
+      "implementation_cost_remaining_gap": "有限input/groupの条件。Greenなし。包括preflightは未接続。各modeのD/S/再構築を費用に含む",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。不存在groupの分母を評価しない。Full下界の無断転用なし",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F08",
+      "title": "F08 zero/failure/confidence",
+      "existing_guarantee_SOURCE": "[MATH]§8、[G7C]、K/G guard",
+      "API_conditions_and_routine_derivation": "[F1 §7](preflight_precision_contract.md)：raw/coin zero、technical、invalidを分離。全law条件/IID/正remaining/全N完了を固定confidenceの前提にする",
+      "implementation_cost_remaining_gap": "原因別例外/証拠接続は未実装。fixed αと任意αを区別。失敗prefixを完了confidenceにしない",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `SPECIFIED_NOT_IMPLEMENTED`。B/CをX=0にしない。新retry/failure budgetは採用しない",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "SPECIFIED_NOT_IMPLEMENTED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F09",
+      "title": "F09 mean/budget",
+      "existing_guarantee_SOURCE": "[BIT]§§3–4/[U]§7、K239–254/G258–284",
+      "API_conditions_and_routine_derivation": "実πW̃=c̃、M̃のmean、Mへの係数bias、B_o/Uのhi、κ/range、既存factor2・ceil Nを維持。C_budgetとw_bを具体化",
+      "implementation_cost_remaining_gap": "数学式は既存。入力/精度/測定とのbindingは仕様条件、任意α APIは未完成だが今回必須でない",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_EXISTING_LEMMA` / `CONDITIONAL_COST_BOUND`。未知B_RA/Zや観測varianceでNを減らさず、残余幅が非正ならSTOP",
+      "statuses_by_dimension": [
+        "CLOSED_BY_EXISTING_LEMMA",
+        "CONDITIONAL_COST_BOUND"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F10",
+      "title": "F10 setup/bit",
+      "existing_guarantee_SOURCE": "[BIT]§2、K147–160、G19–41/216–225",
+      "API_conditions_and_routine_derivation": "[F2 §§1–4](full_bit_complexity_accounting.md)：b_c、Q/R/D/S、3n roots、pow/factorial、input/Green/U/roundingを含むC_setupを提示",
+      "implementation_cost_remaining_gap": "標準モデル下の費用は具体化。実CPU/allocator/platformの保証ではない",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `CONDITIONAL_COST_BOUND`。採用モデルと入力/精度変数を保持。CPython実測への換算は別許可/証拠",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "CONDITIONAL_COST_BOUND"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F11",
+      "title": "F11 packet/3経路/weight",
+      "existing_guarantee_SOURCE": "K121–133/194–254、G237–251",
+      "API_conditions_and_routine_derivation": "[F2 §5](full_bit_complexity_accounting.md)：L²再sum、2 roots、child D、πの(m+2)H bit、C_raw/C_packet/C_coin/C_eventと最大trialを具体化",
+      "implementation_cost_remaining_gap": "現SOURCEの再計算を削除せず計上。raw zero/coin zero/acceptedのprefixが異なる。新cacheなし",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `CONDITIONAL_COST_BOUND`。最悪上界を期待実費としない。仮想高速selectorへの置換なし",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "CONDITIONAL_COST_BOUND"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F12",
+      "title": "F12 angle/provider",
+      "existing_guarantee_SOURCE": "[BIT]§6、K129/235、CP2–58",
+      "API_conditions_and_routine_derivation": "[F2 §6](full_bit_complexity_accounting.md)：symbolic ratio費用と、既存atan手順をJ/K_φで評価する条件付きC_angleを分離。phase/σ/actual adjointを維持",
+      "implementation_cost_remaining_gap": "angle APIは未実装。query意味論は条件付き既存。native/strict physical単価は未認証",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_EXISTING_LEMMA` / `SPECIFIED_NOT_IMPLEMENTED` / `CONDITIONAL_COST_BOUND` / `PHYSICAL_PROVIDER_UNCERTIFIED`。angle精度証拠と物理証拠を混同しない",
+      "statuses_by_dimension": [
+        "CLOSED_BY_EXISTING_LEMMA",
+        "SPECIFIED_NOT_IMPLEMENTED",
+        "CONDITIONAL_COST_BOUND",
+        "PHYSICAL_PROVIDER_UNCERTIFIED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F13",
+      "title": "F13 memory/全N/出力",
+      "existing_guarantee_SOURCE": "[BIT]§2、G247、既存全trial会計",
+      "API_conditions_and_routine_derivation": "[F2 §7](full_bit_complexity_accounting.md)：generator peak bits、保存容量別項、C_setup+N最大trial+出力、経路別期待会計を具体化",
+      "implementation_cost_remaining_gap": "record retain/serialization/実測outcome形式は別。N・angle/provider等の未取得情報を0にしない",
+      "next_work_acceptance_and_classification": "`CLOSED_BY_ROUTINE_DERIVATION` / `CONDITIONAL_COST_BOUND` / `NOT_VERIFIED`（具体出力形式/実bytes）。出力方針の固定後だけ全runの容量/実費を認証可能",
+      "statuses_by_dimension": [
+        "CLOSED_BY_ROUTINE_DERIVATION",
+        "CONDITIONAL_COST_BOUND",
+        "NOT_VERIFIED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    },
+    {
+      "id": "F14",
+      "title": "F14 物理/応用/比較",
+      "existing_guarantee_SOURCE": "[B-README]/[B-COST]/[B-HANDOFF]、今回のユーザー指示",
+      "API_conditions_and_routine_derivation": "DF/PR/RTE adapter・backend/state/accumulator、P_U/一般次数比較は除外。渡すのは同じ精度/費用の前提だけ",
+      "implementation_cost_remaining_gap": "再監査・実装・新証明なし。現STOP/claim保持",
+      "next_work_acceptance_and_classification": "`OUT_OF_SCOPE` / `PHYSICAL_PROVIDER_UNCERTIFIED`。別対象・承認なしに進めない",
+      "statuses_by_dimension": [
+        "OUT_OF_SCOPE",
+        "PHYSICAL_PROVIDER_UNCERTIFIED"
+      ],
+      "implementation_or_execution_authorized": false,
+      "nontrivial_proof_necessity_confirmed": false
+    }
+  ],
+  "preflight_predicates": {
+    "P0": "input and domain contract",
+    "P1": "R(zeta_o,q_min), supplied Delta/h, e=n_o Delta<1",
+    "P2": "h<=eta p_min and h<=eta p_min/2",
+    "P3": "Delta<d_min and Delta/2<=rho(d_min-Delta)",
+    "P4": "Delta<1/4 and (2-eta)Delta+h<=eta/4",
+    "P5": "law identity and fresh-bit mapping; identity separate"
+  },
+  "precision_values_selected_or_evaluated": false,
+  "normal_derivations_documented": [
+    "normalized root interval relative endpoints",
+    "midpoint/rounding guard sufficient inequalities",
+    "uniform coefficient/acceptance guard implication",
+    "common-denominator and event-weight bit lengths",
+    "standard primitive and SOURCE loop composition including L_squared repeated sums",
+    "three-path and total-N accounting"
+  ],
+  "all_scientific_evaluation_counts_zero": true,
+  "mandatory_STOP": true
+}

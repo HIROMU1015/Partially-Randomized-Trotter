@@ -1,0 +1,21 @@
+# Host接続と信頼境界
+
+新host `execute_approved(contract, root, ledger, authority=None)`は、ProductionAdmissionを作り、**with portの内側**で既存executeを呼ぶ。
+host自身の固定path/API/SHAとimport pathを照合し、独立承認を含む完全preflight後にdriverへ渡す。
+Boundaryは一度だけadmit_once(driver digest)を呼び、portが正式契約・SOURCE/input・実承認・scope/claim/store/outputを再照合して予約する。
+driverのBoundary.stopは保持し、外側contextがAdmission側STOPを担当する。hostがledgerを初期化・発行する処理はない。
+
+Productionのauthorityは候補から独立したPinnedApproval/TrustAnchorが必要。実在ユーザーscience承認statementと承認文書の参照/hash、最終release、
+正式契約digest、固定ledger path/store IDを、信頼された将来callerが独立検証して渡す。bool/候補JSON/CLI/envはauthorityではない。
+実approval bootstrapを自動で発行・設置・有効化する機能は追加していない。今回real anchor/ledger/claimは存在しない。
+userが科学実行と実authority/store/claim発行を別途承認した後のbootstrap構成・公開preflightが必要。
+同一ownerがPython code/anchorを任意改変する攻撃へのsandbox保証ではないという既存の信頼境界を保つ。
+
+hostは科学依存moduleをimportせず、driverもscienceをlazy loadする。無承認host/旧schema/unpinned host/edited candidateはload_modulesより前に拒否する。
+今回の技術候補は別schemaで、未来release/digest/authority/scope/claimがnull。runtime v2正式契約へ自動変換するAPIはない。
+高速化結果未確認の技術baselineを最終science releaseとして採択しない。
+
+人工検証だけではtest module内のArtificialBoundaryBridgeを使う。ARTIFICIAL portが実authority内容hash・予約engineを通り、DB行はARTIFICIAL_*。
+旧Boundaryの形状に合わせるreceipt変換はtestsだけに存在し、production SOURCEにmock/allow-artificial/executor引数を設けていない。
+loader/budget rows/endpoint/clockを自分のtest processで置換し、科学moduleをimportしない。runtime host pathのテストもtemp内コピーを使う。
+これは本番承認が発行・設置済みという主張ではなく、同じhost/Boundary/execute/Stream/SQLiteをつないだ人工回帰である。

@@ -1,0 +1,43 @@
+{
+  "schema": "a2_phase_b_preexecution_identity_v1",
+  "status": "PASS",
+  "observed_at_utc": "2026-10-17T18:46:53.938670+00:00",
+  "SOURCE_commit": "8d483f9bfa5983bb52fef55887e2f9f73a790511",
+  "SOURCE_files_SHA256_verified": 31,
+  "canonical_checkout_HEAD": "a0629ca65142644a38cef545a9ad1244e6387eec",
+  "C_raw_sha256": "c3b13d5007636f83def99bb04bbb00d31dbbdeaff9a6474a4a4319f9ea403c35",
+  "pins": {
+    "contract_sha256": "c3b13d5007636f83def99bb04bbb00d31dbbdeaff9a6474a4a4319f9ea403c35",
+    "authorization_sha256": "bc95ddb47ee179c02605095f589eac82bf098f7f4ace6d3dbd8535dd26f9be7f",
+    "source_commit": "8d483f9bfa5983bb52fef55887e2f9f73a790511",
+    "input_manifest_id": "c70a49aa6adf13b03f3821c4ecb546f0d570ca4db17a097fb371658aef0d139b"
+  },
+  "full_preflight": "PASS",
+  "input_container_bytes_SHA_only": "PASS",
+  "coefficient_decode_before_execution": false,
+  "ledger_exists_before_execution": false,
+  "logical_CPUs": 32,
+  "affinity_CPUs": 32,
+  "CPU_idle_fraction_short_observation": 0.96,
+  "load_average": [
+    1.5146484375,
+    1.38525390625,
+    1.2939453125
+  ],
+  "memory": {
+    "MemTotal": "65522480 kB",
+    "MemAvailable": "50729296 kB"
+  },
+  "disk_free_bytes": 419376656384,
+  "Python": "3.11.1",
+  "backend": "EXACT_FRACTION_SYMPLECTIC_COMMUTATORS_BATCHED_OCCUPATION_TRACE",
+  "acceleration": "Frozen source skips symplectically commuting Pauli pairs, caches masks and batches independent occupation-matrix trace via exact Walsh transform. Prior artificial checks rerun PASS. No performance speedup claim.",
+  "parallelization": "Pipeline stages depend on accepted previous certificates and fail immediately on rejection. Use frozen accelerated implementation for first attempt; no artificial CPU/RAM/worker/wall limits or shared BLAS/GPU/global setting changes. Fraction/bit arithmetic does not use floating BLAS/GPU; unknown real-input cost remains measured rather than forecast.",
+  "resource_caps": {
+    "cpu": null,
+    "wall": null,
+    "memory": null
+  },
+  "shared_environment_changes": false,
+  "limitation": "Host observations are not resource reservations; sandbox process listing cannot clear other users jobs. Monitor own job and actual memory/disk pressure."
+}

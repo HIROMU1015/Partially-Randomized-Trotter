@@ -1,0 +1,90 @@
+{
+  "sources": [
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/ieee754/dbl-64/s_sin.c",
+      "git_blob": "8e65f7cc00faf64f4ca85a2a1e937280bcd06d3a",
+      "url": "https://github.com/bminor/glibc/blob/glibc-2.35/sysdeps/ieee754/dbl-64/s_sin.c",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 34,
+          "text": "/****************************************************************************/\n/*                                                                          */\n/* MODULE_NAME:usncs.c                                                      */\n/*                                                                          */\n/* FUNCTIONS: usin                                                          */\n/*            ucos                                                          */\n/* FILES NEEDED: dla.h endian.h mpa.h mydefs.h  usncs.h                     */\n/*\t\t branred.c sincos.tbl\t\t\t\t\t    */\n/*                                                                          */\n/* An ultimate sin and cos routine. Given an IEEE double machine number x   */\n/* it computes sin(x) or cos(x) with ~0.55 ULP.\t\t\t\t    */\n/* Assumption: Machine arithmetic operations are performed in               */\n/* round to nearest mode of IEEE 754 standard.                              */\n/*                                                                          */\n/****************************************************************************/\n"
+        },
+        {
+          "start": 147,
+          "end": 158,
+          "text": "/* Reduce range of x to within PI/2 with abs (x) < 105414350.  The high part\n   is written to *a, the low part to *da.  Range reduction is accurate to 136\n   bits so that when x is large and *a very close to zero, all 53 bits of *a\n   are correct.  */\nstatic __always_inline int4\nreduce_sincos (double x, double *a, double *da)\n{\n  mynumber v;\n\n  double t = (x * hpinv + toint);\n  double xn = t - toint;\n  v.x = t;"
+        }
+      ]
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/ieee754/dbl-64/e_atan2.c",
+      "git_blob": "95e97bec066b5386a27cdc10e5b213d1ee9cc253",
+      "url": "https://github.com/bminor/glibc/blob/glibc-2.35/sysdeps/ieee754/dbl-64/e_atan2.c",
+      "excerpts": [
+        {
+          "start": 48,
+          "end": 63,
+          "text": "\n  /* Fix the sign and return after stage 1 or stage 2 */\nstatic double\nsignArctan2 (double y, double z)\n{\n  return copysign (z, y);\n}\n\n/* atan2 with max ULP of ~0.524 based on random sampling.  */\ndouble\nSECTION\n__ieee754_atan2 (double y, double x)\n{\n  int i, de, ux, dx, uy, dy;\n  double ax, ay, u, du, v, vv, dv, t1, t2, t3,\n\t z, zz, cor;"
+        }
+      ]
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/x86_64/fpu/multiarch/s_sin.c",
+      "git_blob": "2e3d81e11b2219ba2ce26033977350dd5dfa2fe4",
+      "url": "https://github.com/bminor/glibc/blob/glibc-2.35/sysdeps/x86_64/fpu/multiarch/s_sin.c",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 40,
+          "text": "#include <libm-alias-double.h>\n\nextern double __redirect_sin (double);\nextern double __redirect_cos (double);\n\n#define SYMBOL_NAME sin\n#include \"ifunc-avx-fma4.h\"\n\nlibc_ifunc_redirected (__redirect_sin, __sin, IFUNC_SELECTOR ());\nlibm_alias_double (__sin, sin)\n\n#undef SYMBOL_NAME\n#define SYMBOL_NAME cos\n#include \"ifunc-avx-fma4.h\"\n\nlibc_ifunc_redirected (__redirect_cos, __cos, IFUNC_SELECTOR ());\nlibm_alias_double (__cos, cos)\n\n#define __cos __cos_sse2\n#define __sin __sin_sse2\n#include <sysdeps/ieee754/dbl-64/s_sin.c>\n"
+        }
+      ]
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/ieee754/dbl-64/e_fmod.c",
+      "git_blob": "60b8bbb9d2ec7f04e82a61d952b5f2a69c4bfc2f",
+      "url": "https://github.com/bminor/glibc/blob/glibc-2.35/sysdeps/ieee754/dbl-64/e_fmod.c",
+      "excerpts": [
+        {
+          "start": 10,
+          "end": 19,
+          "text": " */\n\n/*\n * __ieee754_fmod(x,y)\n * Return x mod y in exact arithmetic\n * Method: shift and subtract\n */\n\n#include <math.h>\n#include <math_private.h>"
+        },
+        {
+          "start": 93,
+          "end": 105,
+          "text": "\t}\n\tif(__builtin_expect(iy>= -1022, 1)) {\t/* normalize output */\n\t  hx = ((hx-UINT64_C(0x0010000000000000))|((uint64_t)(iy+1023)<<52));\n\t    INSERT_WORDS64(x,hx|sx);\n\t} else {\t\t/* subnormal output */\n\t    n = -1022 - iy;\n\t    hx>>=n;\n\t    INSERT_WORDS64(x,hx|sx);\n\t    x *= one;\t\t/* create necessary signal */\n\t}\n\treturn x;\t\t/* exact output */\n}\nlibm_alias_finite (__ieee754_fmod, __fmod)"
+        }
+      ]
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/x86_64/fpu/multiarch/ifunc-avx-fma4.h",
+      "git_blob": "9eb1e56afafd5b811e7f3cf339a1ff095fa3cc8e",
+      "url": "https://github.com/bminor/glibc/blob/glibc-2.35/sysdeps/x86_64/fpu/multiarch/ifunc-avx-fma4.h",
+      "excerpts": [
+        {
+          "start": 19,
+          "end": 44,
+          "text": "\n#include <init-arch.h>\n\nextern __typeof (REDIRECT_NAME) OPTIMIZE (sse2) attribute_hidden;\nextern __typeof (REDIRECT_NAME) OPTIMIZE (avx) attribute_hidden;\nextern __typeof (REDIRECT_NAME) OPTIMIZE (fma) attribute_hidden;\nextern __typeof (REDIRECT_NAME) OPTIMIZE (fma4) attribute_hidden;\n\nstatic inline void *\nIFUNC_SELECTOR (void)\n{\n  const struct cpu_features* cpu_features = __get_cpu_features ();\n\n  if (CPU_FEATURE_USABLE_P (cpu_features, FMA)\n      && CPU_FEATURE_USABLE_P (cpu_features, AVX2))\n    return OPTIMIZE (fma);\n\n  if (CPU_FEATURE_USABLE_P (cpu_features, FMA4))\n    return OPTIMIZE (fma4);\n\n  if (CPU_FEATURE_USABLE_P (cpu_features, AVX))\n    return OPTIMIZE (avx);\n\n  return OPTIMIZE (sse2);\n}\n"
+        }
+      ]
+    }
+  ],
+  "uniform_RZ_bound": null,
+  "uniform_ZSXX_image": null,
+  "source_comments_are_not_global_proofs": true,
+  "critical_finding": "glibc e_atan2.c maximum ULP comment explicitly based on random sampling;do not adopt as all-input guarantee",
+  "fmod_note": "generic source exact-remainder algorithm is potentially justifiable separately;installed x86 wrapper and complete Euclidean/phase path are not thereby certified",
+  "installed_binary_provenance": "binary_resolution.json;dlsym is not all-callsite execution tracing"
+}

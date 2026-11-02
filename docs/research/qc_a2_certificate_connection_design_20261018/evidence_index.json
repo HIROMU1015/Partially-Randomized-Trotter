@@ -1,0 +1,482 @@
+{
+  "schema": "qc_a2_certificate_connection_design_evidence_v1",
+  "record_type": "TECHNICAL_SPECIFICATION_AND_COMPARISON_DESIGN_NOT_SCIENTIFIC_EXECUTION_CONTRACT",
+  "date_JST": "2026-10-18",
+  "recorded_at_utc": "2026-10-17T15:36:58.836289+00:00",
+  "repository": "HIROMU1015/Partially-Randomized-Trotter",
+  "base_commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+  "branch": "qc-a2-certificate-connection-design-20261018",
+  "technical_classification": "DESIGN_READY_FOR_IMPLEMENTATION_PLANNING",
+  "classification_scope": "Concrete input/output, producer/checker methods, shared identity, bounds/step/access/cost and failure specifications; no implementation or certificates or adopted science contract",
+  "reports": [
+    "certificate_connection_spec.md",
+    "source_api_connection.md",
+    "comparison_and_cost_design.md",
+    "decision_handoff.md"
+  ],
+  "received_originals": [
+    {
+      "path": "inputs/user_instruction_a2_certificate_connection_design_20261018.txt",
+      "original_local_path": "/home/abe/.codex/attachments/0f857875-c1ab-4c2e-8699-dbdd74caf075/貼り付けたテキスト.txt",
+      "bytes": 17668,
+      "sha256": "79133d311dd64e2cfd3c1c49208287c62bd2c91a2e8c729721eaa321532f39c7",
+      "byte_preserved": true,
+      "scope": "Entire user task, including explicit provisional assumptions and prohibitions; original CRLF preserved"
+    }
+  ],
+  "fixed_repository_sources": [
+    {
+      "id": "preflight_practical_preflight_report",
+      "commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+      "path": "docs/research/qc_a2_practical_preflight_20261017/practical_preflight_report.md",
+      "git_blob": "8d99d5052b11afe70a42c25ec9523b95769ffa72",
+      "bytes": 18484,
+      "sha256": "5ff09e743e14ee0fb249e1a8b39e843dfd2089b743225112ddb6297c5d3b5212",
+      "use_scope": "Mandatory first design basis, actually acquired; existing API capabilities/gaps reused without re-auditing SOURCE",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017/practical_preflight_report.md"
+    },
+    {
+      "id": "preflight_certificate_source_matrix",
+      "commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+      "path": "docs/research/qc_a2_practical_preflight_20261017/certificate_source_matrix.md",
+      "git_blob": "dd06e9f6a234f901376b3b5ab30e682949810033",
+      "bytes": 9096,
+      "sha256": "8c5fbc682574d5d32356fb8ecd0faf064ed2facf9298416a1fd19c6b17ffa72c",
+      "use_scope": "Mandatory first design basis, actually acquired; existing API capabilities/gaps reused without re-auditing SOURCE",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017/certificate_source_matrix.md"
+    },
+    {
+      "id": "preflight_decision_handoff",
+      "commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+      "path": "docs/research/qc_a2_practical_preflight_20261017/decision_handoff.md",
+      "git_blob": "15d304b3915847d36113c3b8bac3b4e45dcb97a7",
+      "bytes": 8769,
+      "sha256": "02071975752e46ad9dced302ec2f259fefa5ce9b24e2e1fa3daaf904ad3055f6",
+      "use_scope": "Mandatory first design basis, actually acquired; existing API capabilities/gaps reused without re-auditing SOURCE",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017/decision_handoff.md"
+    },
+    {
+      "id": "preflight_evidence_index",
+      "commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+      "path": "docs/research/qc_a2_practical_preflight_20261017/evidence_index.json",
+      "git_blob": "afc9f9bd7337e2a7fc20ec8dec7e1d02acd12025",
+      "bytes": 28128,
+      "sha256": "116d125bfbc9dbe4d053d627c79fccc94a539f4d9401c046f76ee0eab2735725",
+      "use_scope": "Mandatory first design basis, actually acquired; existing API capabilities/gaps reused without re-auditing SOURCE",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017/evidence_index.json"
+    },
+    {
+      "id": "preflight_publication_receipt",
+      "commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+      "path": "docs/research/qc_a2_practical_preflight_20261017/publication_receipt.json",
+      "git_blob": "5462f2f926ab57d98d46112c95ea20f44b5d6a81",
+      "bytes": 25471,
+      "sha256": "ae8465bf21751c86346dc2025b37336640d7b4434585c5c36f826ee98111b6d2",
+      "use_scope": "Mandatory first design basis, actually acquired; existing API capabilities/gaps reused without re-auditing SOURCE",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c62fe99d29e7edcaf0cb655d789d297890709a29/docs/research/qc_a2_practical_preflight_20261017/publication_receipt.json"
+    },
+    {
+      "id": "EW2_mathematical_audit",
+      "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+      "path": "docs/research/qc_relative_form_ew2_step_audit_20261017/mathematical_audit.md",
+      "git_blob": "c1c9ae48ece1185a69f0c6beced9eea79e8d241c",
+      "bytes": 14407,
+      "sha256": "cfc4e4d09e61d801671486d47502a91f04d51607c53d86797c19c13a4e26ce4b",
+      "use_scope": "Existing conditions, K0 dependency, centered strong counter, endpoint definitions, access/cost scope; no new proof review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/docs/research/qc_relative_form_ew2_step_audit_20261017/mathematical_audit.md"
+    },
+    {
+      "id": "EW2_finite_step_and_prior_art_comparison",
+      "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+      "path": "docs/research/qc_relative_form_ew2_step_audit_20261017/finite_step_and_prior_art_comparison.md",
+      "git_blob": "e3b1e299e3979ab4cbb1cdc8e4195dd19fbca286",
+      "bytes": 15845,
+      "sha256": "d4309310a0ec1de1303f0b0a60805345db14460c99e16915a63fe5945a0bca0f",
+      "use_scope": "Existing conditions, K0 dependency, centered strong counter, endpoint definitions, access/cost scope; no new proof review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/docs/research/qc_relative_form_ew2_step_audit_20261017/finite_step_and_prior_art_comparison.md"
+    },
+    {
+      "id": "EW2_decision_handoff",
+      "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+      "path": "docs/research/qc_relative_form_ew2_step_audit_20261017/decision_handoff.md",
+      "git_blob": "37225989f1a61a56532800f1174fa5eaa9fdcc62",
+      "bytes": 8700,
+      "sha256": "03d4769f6f12f5fd51f32b75cfa8c4df5ad4742e880e6841fe759087207902e6",
+      "use_scope": "Existing conditions, K0 dependency, centered strong counter, endpoint definitions, access/cost scope; no new proof review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/docs/research/qc_relative_form_ew2_step_audit_20261017/decision_handoff.md"
+    },
+    {
+      "id": "RF_mathematical_audit",
+      "commit": "051df4661eeffb6c6c4c978f70f43eeeaadfddd6",
+      "path": "docs/research/qc_relative_form_finite_step_audit_20261017/mathematical_audit.md",
+      "git_blob": "73cfd7315f64dbab03bea849bfc3228072cb26da",
+      "bytes": 16075,
+      "sha256": "569cde743bc84a3b605006ed211c401cc2412468822e149a71edd9f73fc66a70",
+      "use_scope": "Reuse fixed RF0/RF1 assumptions, ordering/branch and access conditions",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/051df4661eeffb6c6c4c978f70f43eeeaadfddd6/docs/research/qc_relative_form_finite_step_audit_20261017/mathematical_audit.md"
+    },
+    {
+      "id": "RF_prior_art_and_practical_conditions",
+      "commit": "051df4661eeffb6c6c4c978f70f43eeeaadfddd6",
+      "path": "docs/research/qc_relative_form_finite_step_audit_20261017/prior_art_and_practical_conditions.md",
+      "git_blob": "71053fdf5034bae65b5337696a2b23eac280ab38",
+      "bytes": 11742,
+      "sha256": "747dcfc6869a6f54950d722c2f6a8841f2cb1f8ffdc100a623bcc4859a79aac8",
+      "use_scope": "Reuse fixed RF0/RF1 assumptions, ordering/branch and access conditions",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/051df4661eeffb6c6c4c978f70f43eeeaadfddd6/docs/research/qc_relative_form_finite_step_audit_20261017/prior_art_and_practical_conditions.md"
+    },
+    {
+      "id": "K0",
+      "commit": "58d8672702284d73321cc67a26c4640adaddde5f",
+      "path": "docs/research/qc_sos_pf_k0_20261015/technical_audit.md",
+      "git_blob": "ceed25d0a9572f5328b967cb7d02ed149a01f52e",
+      "bytes": 32094,
+      "sha256": "6ba1ae010b24874368c9bac695626aad75157bb659718dfa859f5c000b28e2b7",
+      "use_scope": "Sections 4 and 6-7, exact existing dictionary/row-sum and signed scalar PSD shifts; no new theorem or coefficient evaluation",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/technical_audit.md"
+    },
+    {
+      "id": "K05",
+      "commit": "01bdc56a2970dcb749390b0540846143f775d6f9",
+      "path": "docs/research/qc_sos_pf_k05_20261015/technical_report.md",
+      "git_blob": "d22dac5d3b8e9d631125441992d65a49145aebf3",
+      "bytes": 21581,
+      "sha256": "99f00a89fb8fbd5b157823166f5ad46a718074b76e452fa94a92b612db8c0a10",
+      "use_scope": "Reuse strong commutator, access and cost conditions; no new prior-art review",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/01bdc56a2970dcb749390b0540846143f775d6f9/docs/research/qc_sos_pf_k05_20261015/technical_report.md"
+    },
+    {
+      "id": "formal_state",
+      "commit": "67576526c4e96ae7235fa645fdf744278d049f8d",
+      "path": "docs/research/qc_exact_encoding_direction_adoption_20261017/decision.json",
+      "git_blob": "328b32b8a85dc3dc0895bbf236f6454bd4d030d3",
+      "bytes": 6486,
+      "sha256": "3cbe55e7acc536d04295026a976e2fca9bebcf34571c9120aac8ec31b2c80316",
+      "use_scope": "Fixed formal state, unchanged by this design task",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/67576526c4e96ae7235fa645fdf744278d049f8d/docs/research/qc_exact_encoding_direction_adoption_20261017/decision.json"
+    },
+    {
+      "id": "common_instructions",
+      "commit": "051df4661eeffb6c6c4c978f70f43eeeaadfddd6",
+      "path": "docs/research/qc_relative_form_finite_step_audit_20261017/inputs/research_project_instructions_unified_2026-10-17.md",
+      "git_blob": "7033afca5c7b04cd455bbb7c556eb73b9fd3fcd2",
+      "bytes": 38191,
+      "sha256": "d2ebdac4b0e44e871c65f240f317e6b5d3c3460f27d92f4d798992da90bf422f",
+      "use_scope": "2026-10-17 version, especially section 8.4; identical to previously read root original",
+      "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/051df4661eeffb6c6c4c978f70f43eeeaadfddd6/docs/research/qc_relative_form_finite_step_audit_20261017/inputs/research_project_instructions_unified_2026-10-17.md"
+    }
+  ],
+  "reused_api_inventory": {
+    "source_index_commit": "c62fe99d29e7edcaf0cb655d789d297890709a29",
+    "source_index_path": "docs/research/qc_a2_practical_preflight_20261017/evidence_index.json",
+    "inventory_entries": [
+      {
+        "id": "SOURCE_01",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_hamiltonian.py",
+        "git_blob": "91700bdee9c1f18b159356424e1a22f5dc1aba94",
+        "bytes": 40951,
+        "sha256": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+        "read_scope": "327-758, 993-1029, 1103-1136; dataclasses, input generation, sector, solver acceptance, truncation handling and Hermitization",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_hamiltonian.py"
+      },
+      {
+        "id": "SOURCE_02",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_trotter/model.py",
+        "git_blob": "6e6408ae6ce3e367bc8a4fcab79b038b6171b6b4",
+        "bytes": 2880,
+        "sha256": "ca8aa933fcbd5f7c2a0c1bb867a76bbd5b09a13cbddf5a2fda159f4adf625947",
+        "read_scope": "DFModel/DFBlock/OneBodyGaussianBlock and Block dispatch",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_trotter/model.py"
+      },
+      {
+        "id": "SOURCE_03",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_trotter/decompose.py",
+        "git_blob": "c5b0bab697f9e823871e74c43757a7caf69d2620",
+        "bytes": 8368,
+        "sha256": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+        "read_scope": "13-34, 114-224; numerical diagonalization, parser scalar semantics and spatial integral conversion",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_trotter/decompose.py"
+      },
+      {
+        "id": "SOURCE_04",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_trotter/ops.py",
+        "git_blob": "f950b0f7950042229de60ecd728f17638bbd265b",
+        "bytes": 13557,
+        "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+        "read_scope": "116-213, 226-415; Nature/dense/Givens Gaussian routes, diagonal primitives and scalar control",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_trotter/ops.py"
+      },
+      {
+        "id": "SOURCE_05",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_trotter/two_body.py",
+        "git_blob": "2f1f066a7240b87df86fea68bde82f345dcfe804",
+        "bytes": 2884,
+        "sha256": "d5f678f2533554b4b7f2b09626c169e3ca1b6dbdf6ac4ab0e603a50c8fc7353e",
+        "read_scope": "14-76; chemist/physicist/spin mapping, normal ordering, external/correction scalar",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_trotter/two_body.py"
+      },
+      {
+        "id": "SOURCE_06",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_trotter/circuit.py",
+        "git_blob": "0c6205fa07ceeaefc16b99c46b176b2e425a8cf9",
+        "bytes": 2632,
+        "sha256": "28040c96b0622cd069be9c373c285dc5a679c3686f6be5ebab2f9e09b7c4f3d6",
+        "read_scope": "17-76; energy_shift, PF schedule, simulation/compiler APIs present but not called",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_trotter/circuit.py"
+      },
+      {
+        "id": "SOURCE_07",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_partial_randomized_pf.py",
+        "git_blob": "4b5f4b281d46d660940fbd0c536466c40fa063a9",
+        "bytes": 75107,
+        "sha256": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb",
+        "read_scope": "180-233, 276-320, 614-641, 1041-1075, 1120-1151; ranking proxy vs norm helper, full-value model bridge, state cache",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_partial_randomized_pf.py"
+      },
+      {
+        "id": "SOURCE_08",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_partial_s2.py",
+        "git_blob": "f467ae0a987595c63a02a927e5e9c95dfb7b2146",
+        "bytes": 42929,
+        "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+        "read_scope": "120-206, 328-390, 712 entry, 816-893, 946-981; deterministic-only, controlled phases and S2 construction",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_partial_s2.py"
+      },
+      {
+        "id": "SOURCE_09",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_partial_s2_repeated.py",
+        "git_blob": "6b88b58eff5056e93f963a9c692246e94e5cad2d",
+        "bytes": 30013,
+        "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+        "read_scope": "API definitions, 422-514 and 510-600; existing repeated builder and phase aggregation; no numerical execution",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_partial_s2_repeated.py"
+      },
+      {
+        "id": "SOURCE_10",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/pf_decomposition.py",
+        "git_blob": "6a2656e076f6540434c0d6ab48ef59e053f0bc7a",
+        "bytes": 2339,
+        "sha256": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26",
+        "read_scope": "6-65; symmetric positive S2 schedule",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/pf_decomposition.py"
+      },
+      {
+        "id": "SOURCE_11",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/product_formula.py",
+        "git_blob": "65bb2a09038770933ed22246639cd798225d3895",
+        "bytes": 4572,
+        "sha256": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca",
+        "read_scope": "109-150; 2nd label and weights",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/product_formula.py"
+      },
+      {
+        "id": "SOURCE_12",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+        "git_blob": "583e4a2ae28f5cfc39acbd1631e607d06f23dc9c",
+        "bytes": 15498,
+        "sha256": "f1519d406c33465a7c0e42555d226b19237a87b464137bc7acfae80b8eae311d",
+        "read_scope": "385-403; metadata explicitly excluding state preparation/backend execution",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/rpe_hadamard_interrogation.py"
+      },
+      {
+        "id": "SOURCE_13",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/df_rpe_resource.py",
+        "git_blob": "72e582b03385ed1422e37b458a80690356975b6e",
+        "bytes": 17634,
+        "sha256": "9ac133b1f232f293050128929babf4348a8f19ae6887b201c298ec0c3bd19395",
+        "read_scope": "Definition location and 326-352; compiled-provider metadata excluding state preparation; not a full resource audit",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/df_rpe_resource.py"
+      },
+      {
+        "id": "SOURCE_14",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trotterlib/rte_connected_cluster_cost_validation.py",
+        "git_blob": "0afd254e997917ea12a66a94d5ad8884db3568ce",
+        "bytes": 166798,
+        "sha256": "8ade1ab145c4169225975c4ae461be23a1a22f44b75147e4ef896ad063a73dd7",
+        "read_scope": "96-137; snapshot writer and hash-checking loader, not called",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trotterlib/rte_connected_cluster_cost_validation.py"
+      },
+      {
+        "id": "SOURCE_15",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "scripts/run_rte_connected_cluster_cost_validation.py",
+        "git_blob": "620a1527c4a8eb71f9d52c28a6c27e73c60840dc",
+        "bytes": 10997,
+        "sha256": "942835f6feb7b32ba2ad6a847579e51406a6de386e79c0f888543c7e62a5cc4e",
+        "read_scope": "143-154; existing snapshot path plumbing only",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/scripts/run_rte_connected_cluster_cost_validation.py"
+      },
+      {
+        "id": "SOURCE_16",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "tests/test_df_hamiltonian.py",
+        "git_blob": "6e4d600d65e1d4595d22b12b17af3fc2e0c8d441",
+        "bytes": 6167,
+        "sha256": "b7985fbe8b3a3025cb309d9c6fa481eb8d4232055724c5bb53d01ca0afa1695a",
+        "read_scope": "59-124; existing definitions for truncation scalar handling/reconstruction, not run",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/tests/test_df_hamiltonian.py"
+      },
+      {
+        "id": "SOURCE_17",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trottertracks/representation_exploration/n3_occupation_certificate_audit.py",
+        "git_blob": "6247127affba04da342f40195f08c3c50c62c6b0",
+        "bytes": 16311,
+        "sha256": "a9d6360292062e8ada1077061878b09f4c4245feaaa0c2a8115d27c7cd1db036",
+        "read_scope": "48-74, 119-178, function definitions; existing exact witness checker tied to N3, not called or adapted",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trottertracks/representation_exploration/n3_occupation_certificate_audit.py"
+      },
+      {
+        "id": "SOURCE_18",
+        "kind": "existing_SOURCE_or_test_read_only",
+        "commit": "db1819587df36ee8833b37227ca0083faa0408ec",
+        "path": "src/trottertracks/representation_exploration/c1_saved_oracle_spec_v1.py",
+        "git_blob": "87b934c3d4389ea8e75257ff4f3a96102b4b4b60",
+        "bytes": 2949,
+        "sha256": "7a19849c1f88fd2f534f8eb3438580b0a4f517f14426103f4056847e9d4b0f94",
+        "read_scope": "Synthetic two-qubit Pauli specification; not a molecular DF input",
+        "url": "https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/db1819587df36ee8833b37227ca0083faa0408ec/src/trottertracks/representation_exploration/c1_saved_oracle_spec_v1.py"
+      }
+    ],
+    "current_use": "API capability conclusions reused; only bytes/Git identities checked, no new SOURCE function audit, import or execution"
+  },
+  "design_implementations_required": [
+    "SPEC-01 exact intake/identity",
+    "SPEC-02 sector/PF/scalar mapping",
+    "SPEC-03 K0 PSD shift and caps/L/Lambda checker",
+    "SPEC-04 determinant U/W checker",
+    "SPEC-05 K0 dictionary/sqrt/row sum checker",
+    "SPEC-06 strong grouped commutator certificate/checker",
+    "SPEC-07 sufficient-step enclosures/comparison",
+    "SPEC-08 separate later circuit/access/readout/cost integration"
+  ],
+  "designed_methods": {
+    "target": "Exact finite binary64 coefficients interpreted as a fixed DF operator; exact Hermiticity required, no implicit symmetrization",
+    "sector": "Fixed N first, logical number-conserving grammar",
+    "L_f_Lambda": "Existing K0 signed scalar PSD shifts with standard exact coefficient triangle caps; no values generated",
+    "U_W": "Declared occupation determinant, exact normalized CAR expectation and variational upper bound; not HF metadata/FCI",
+    "K_SOS": "Existing K0 raw dictionary and row sum with independently checkable rational sqrt upper witnesses",
+    "Cbar2": "Centered standard norm caps plus exact grouped CAR/JW Pauli coefficient norm bound, cancellations shared fairly",
+    "steps": "Existing RF0/RF1/EW2 and centered-counter domains, verified rational enclosures and open endpoints",
+    "state_access": "Conditional exact ground copies, separate preparation/approximate-state models",
+    "arithmetic": "Exact rational certificate core and verifiable enclosures, not an IEEE/BLAS platform certificate"
+  },
+  "provisional_scientific_assumptions": "Specified by current user instruction for design only; not formally adopted execution conditions",
+  "scientific_policy_unset": [
+    "Concrete raw/model/mode/N/block identity",
+    "Determinant occupations and cap/refinement policy",
+    "d and alpha_spec",
+    "Root/sqrt enclosure resolution and arithmetic policy",
+    "Information acquisition/comparison envelope policy",
+    "Actual access/readout/implementation and failure allocation if pursued",
+    "Cost coordinates and reuse/amortization policy",
+    "Scientific call/output/log/STOP/retry terms"
+  ],
+  "adopted": false,
+  "A2_adopted": false,
+  "execution_authorized": false,
+  "contract_grants_execution": false,
+  "work_counts": {
+    "new_scientific_calculations": 0,
+    "saved_scientific_numeric_reanalyses": 0,
+    "certificates_generated": 0,
+    "new_mathematical_theorems_or_guarantees": 0,
+    "new_scientific_SOURCE_or_runners": 0,
+    "simulation_or_native_compile": 0,
+    "new_scientific_execution_contracts": 0,
+    "new_execution_authorizations": 0,
+    "new_grants": 0,
+    "new_markers": 0,
+    "new_important_scientific_reviews": 0,
+    "A2_adoptions": 0,
+    "other_research_changes": 0
+  },
+  "preservation": {
+    "base_tracked_blobs_byte_equal": 8481,
+    "base_blob_mismatches": [],
+    "parent_snapshot_observed_at_utc": "2026-10-17T15:24:19.396971+00:00",
+    "parent_checks": {
+      "parent_HEAD": true,
+      "parent_local_refs": true,
+      "parent_worktree_registry": true,
+      "parent_index": true,
+      "parent_exclude": true,
+      "parent_tracked_present": true,
+      "parent_tracked_absent": true,
+      "parent_selected_originals": true
+    },
+    "parent_tracked_present_checked": 1277,
+    "parent_tracked_absent_checked": 7,
+    "parent_selected_originals_checked": 7,
+    "only_new_directory": "docs/research/qc_a2_certificate_connection_design_20261018"
+  },
+  "formal_state_unchanged": {
+    "A1": "CLOSED",
+    "A2": "NOT_ADOPTED",
+    "K1_F": "NOT_AUTHORIZED_NOT_EXECUTED",
+    "exact_encoding_current_attempt": "REDUCES_TO_KNOWN_METHOD_CONCLUDED",
+    "other_stops_and_tracks_i_ii_iii": "UNCHANGED"
+  },
+  "limits": [
+    "No scientific executable implementation or schema validator",
+    "No actual model or certificate instantiated",
+    "No array payload decoded",
+    "No scientific tests or symbolic proof checker executed",
+    "No readiness claim for certificate generation, QPE or native execution",
+    "No new literature/scientific review or priority recognition"
+  ],
+  "resource_policy": {
+    "common_instructions": "2026-10-17 section 8.4",
+    "new_artificial_resource_caps": false,
+    "shared_environment_changes": false,
+    "old_fixed_contracts_unchanged": true
+  },
+  "next_actor": "USER",
+  "next_action": "Decide whether to authorize separately scoped implementation and testing preparation based on this design; formally adopt concrete science contract and separately authorize any scientific execution later",
+  "mandatory_stop": true,
+  "static_document_checks": {
+    "UTF8_and_JSON": "PASS",
+    "markdown_links_checked": 23,
+    "local_and_fixed_Git_links": "PASS_EXCEPT_RESERVED_RECEIPT_CHILD_COMMIT",
+    "reserved_receipt_links": [
+      "docs/research/qc_a2_certificate_connection_design_20261018/publication_receipt.json"
+    ],
+    "fixed_document_bytes_SHA256": "PASS",
+    "adoption_execution_boundaries_and_zero_scientific_work": "PASS",
+    "required_design_records_failure_states_and_scope_coverage": "PASS_TEXTUAL_SPECIFICATION_CHECK_ONLY",
+    "scientific_numerical_or_synthetic_tests_run": false,
+    "scientific_SOURCE_imported_or_executed": false
+  },
+  "static_document_checks_recorded_at_utc": "2026-10-17T15:39:22.662269+00:00"
+}

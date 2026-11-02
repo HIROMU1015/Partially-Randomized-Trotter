@@ -1,0 +1,37 @@
+{
+  "clocks": [
+    {
+      "name": "process_time",
+      "iterations": 10000,
+      "clock_info": {
+        "implementation": "clock_gettime(CLOCK_PROCESS_CPUTIME_ID)",
+        "resolution": 1e-09,
+        "monotonic": true,
+        "adjustable": false
+      },
+      "min_positive_observed_step_ns": 320,
+      "median_positive_step_ns": 340,
+      "whole_loop_cpu_ns": 3667421,
+      "whole_loop_wall_ns": 3666200,
+      "interpretation": "artificial clock read loop only; not science timing/variance or per-trial performance"
+    },
+    {
+      "name": "monotonic",
+      "iterations": 10000,
+      "clock_info": {
+        "implementation": "clock_gettime(CLOCK_MONOTONIC)",
+        "resolution": 1e-09,
+        "monotonic": true,
+        "adjustable": false
+      },
+      "min_positive_observed_step_ns": 70,
+      "median_positive_step_ns": 80,
+      "whole_loop_cpu_ns": 1146400,
+      "whole_loop_wall_ns": 1146573,
+      "interpretation": "artificial clock read loop only; not science timing/variance or per-trial performance"
+    }
+  ],
+  "science_calls": 0,
+  "confidence_interval": null,
+  "pilot_runtime_prediction": null
+}

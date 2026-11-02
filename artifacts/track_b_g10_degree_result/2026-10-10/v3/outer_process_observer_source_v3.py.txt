@@ -1,0 +1,84 @@
+"""External one-invocation observer; no science imports or retries."""
+import datetime
+import hashlib
+import json
+import os
+from pathlib import Path
+import signal
+import subprocess
+import time
+
+ROOT = Path('/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-g10-v3-one-shot-execution-20261010')
+TMP = Path(__file__).parent
+S = 'b9ed01455351628c9073748f5ba5751aa794b789'
+pre = json.loads((TMP/'preflight_receipt_v3.json').read_text())
+assert pre['status'] == 'PREFLIGHT_PASS' and pre['source_commit'] == S
+assert subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip() == pre['execution_HEAD']
+assert not subprocess.check_output(['git', 'status', '--porcelain', '--untracked-files=all'], cwd=ROOT)
+assert not (ROOT/'artifacts/track_b_g10_degree_result/2026-10-10/v3').exists()
+command = ['/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python',
+           '-B', 'scripts/tracks/algorithm_codesign/g10_degree_matched_native_v3.py', '--source-commit', S]
+overrides = {'PYTHONPATH': 'src', 'OPENBLAS_NUM_THREADS': '1', 'OMP_NUM_THREADS': '1',
+             'PYTHONDONTWRITEBYTECODE': '1'}
+with (TMP/'outer_invocation_consumed_v3.json').open('x') as stream:
+    json.dump({'source_commit': S, 'execution_HEAD': pre['execution_HEAD'], 'command': command,
+               'runner_invocations': 1, 'retries': 0, 'mandatory_STOP': True}, stream, indent=2)
+    stream.write('\n')
+start_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()
+start = time.monotonic()
+environment = os.environ.copy(); environment.update(overrides)
+with (TMP/'runner_stdout_v3.log').open('xb') as out, (TMP/'runner_stderr_v3.log').open('xb') as err:
+    process = subprocess.Popen(command, cwd=ROOT, env=environment, stdout=out, stderr=err)
+    print(json.dumps({'started_PID': process.pid, 'runner_invocations': 1, 'retries': 0}), flush=True)
+    terminated = None
+    terminated_at = None
+    while True:
+        pid, status, usage = os.wait4(process.pid, os.WNOHANG)
+        if pid:
+            break
+        elapsed = time.monotonic()-start
+        if elapsed >= 1200 and terminated is None:
+            process.send_signal(signal.SIGTERM)
+            terminated = 'outer_wall_cap_1200_seconds'; terminated_at = time.monotonic()
+        elif terminated_at is not None and time.monotonic()-terminated_at > 1:
+            process.kill(); terminated_at = None
+        time.sleep(0.2)
+    process.returncode = os.waitstatus_to_exitcode(status)
+
+def identity(path):
+    digest, size = hashlib.sha256(), 0
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(32768), b''):
+            digest.update(block); size += len(block)
+    return {'bytes': size, 'sha256': digest.hexdigest()}
+
+stdout = identity(TMP/'runner_stdout_v3.log'); stderr = identity(TMP/'runner_stderr_v3.log')
+records = []
+for line in (TMP/'runner_stdout_v3.log').read_text(errors='replace').splitlines():
+    try:
+        value = json.loads(line)
+    except ValueError:
+        continue
+    if isinstance(value, dict) and 'status' in value:
+        records.append(value)
+receipt = {
+    'start_UTC': start_utc, 'end_UTC': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+    'source_commit': S, 'execution_HEAD': pre['execution_HEAD'], 'command': command, 'cwd': str(ROOT),
+    'environment_overrides': overrides, 'pid': process.pid, 'wait_status': status,
+    'exit_code': os.WEXITSTATUS(status) if os.WIFEXITED(status) else None,
+    'normal_exit': os.WIFEXITED(status),
+    'termination_signal': os.WTERMSIG(status) if os.WIFSIGNALED(status) else None,
+    'outer_timeout_reason': terminated, 'wall_seconds': time.monotonic()-start,
+    'CPU_seconds': usage.ru_utime+usage.ru_stime, 'user_CPU_seconds': usage.ru_utime,
+    'system_CPU_seconds': usage.ru_stime, 'peak_RSS_KiB': usage.ru_maxrss,
+    'peak_RSS_MiB': usage.ru_maxrss/1024,
+    'stdout_bytes': stdout['bytes'], 'stdout_sha256': stdout['sha256'],
+    'stderr_bytes': stderr['bytes'], 'stderr_sha256': stderr['sha256'],
+    'terminal_status_records': records, 'runner_invocations': 1, 'retries': 0,
+    'mandatory_STOP': True, 'next_science_authorized': False,
+    'resource_scope': 'outer wait4 covers runner startup, launch/runtime checks, guard body, terminal IO and shutdown; guard receipts have narrower scopes',
+}
+with (TMP/'process_receipt_v3.json').open('x') as stream:
+    json.dump(receipt, stream, indent=2); stream.write('\n')
+print(json.dumps({k: receipt[k] for k in ('normal_exit', 'exit_code', 'termination_signal',
+    'wall_seconds', 'CPU_seconds', 'peak_RSS_MiB', 'terminal_status_records', 'runner_invocations', 'retries')}, ensure_ascii=False), flush=True)

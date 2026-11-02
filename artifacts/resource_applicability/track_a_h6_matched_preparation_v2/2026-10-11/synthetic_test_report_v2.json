@@ -1,0 +1,60 @@
+{
+  "command": "PYTHONPATH=src PYTHONDONTWRITEBYTECODE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 NUMBA_NUM_THREADS=1 .venv311/bin/python -m pytest tests/tracks/resource_applicability/test_h6_matched_v2.py tests/tracks/resource_applicability/test_h6_matched_v1.py tests/tracks/resource_applicability/test_ax2b_native_df_v5.py tests/tracks/resource_applicability/test_ax2b_h6_pilot_v2.py -q -p no:cacheprovider --junitxml=/tmp/h6_matched_v2_tests_regression.xml",
+  "errors": 0,
+  "existing_regression_tests": 159,
+  "failed": 0,
+  "junit_xml_sha256": "e4a4178c176b622856a4f46941d2977cbdc603df671d71c82aeb638f66090221",
+  "new_scientific_results": false,
+  "new_tests": 17,
+  "passed": 176,
+  "real_H6_compile_calls": 0,
+  "real_H6_signal_calls": 0,
+  "real_H6_trajectory_calls": 0,
+  "resource_test_cases": [
+    "coordinator then real signal child",
+    "coordinator then two real exploration children",
+    "coordinator then two real confirmation children",
+    "coordinator soft AS2 enforced with failing virtual-only mmap probe",
+    "worker AS8 permits virtual-only mmap probe above inherited soft2",
+    "old hard2/hard2 reproduction in real child",
+    "insufficient inherited hard ceiling fails before launch",
+    "default metadata and denied execution import no scientific packages",
+    "fresh v2 grant/plan/infrastructure gates",
+    "saved STOP audit detects coordinator policy mismatch"
+  ],
+  "scientific_input_decoded": false,
+  "scope": "Local synthetic metadata/real processes and toy/injected regression; not CI, external reproduction or real H6 scientific evidence.",
+  "source_commit": "54986a9f54515c8c2289e38fa16fd81e2b6008c2",
+  "status": "LOCAL_SYNTHETIC_AND_REGRESSION_PASS",
+  "synthetic_process_receipts": [
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/signal/synthetic_limits.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/signal/worker_claim.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/signal/task_binding.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_exploration_0000/synthetic_limits.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_exploration_0000/worker_claim.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_exploration_0000/task_binding.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_exploration_0001/synthetic_limits.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_exploration_0001/worker_claim.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_exploration_0001/task_binding.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_confirmation_0000/synthetic_limits.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_confirmation_0000/worker_claim.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_confirmation_0000/task_binding.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_confirmation_0001/synthetic_limits.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_confirmation_0001/worker_claim.json",
+    "artifacts/resource_applicability/track_a_h6_matched_preparation_v2/2026-10-11/synthetic_process_receipts/cost_confirmation_0001/task_binding.json"
+  ],
+  "test_hashes": {
+    "tests/tracks/resource_applicability/test_ax2b_h6_pilot_v2.py": "73f86b1597014c169bfc2b888f8679dcfbd45fbb0f4539ecf17ae9672688fe95",
+    "tests/tracks/resource_applicability/test_ax2b_native_df_v5.py": "ff2fc9f6b3d5a64ab2c2cb9defc61a8c78aaafcbc881fca8facbc3f18ce37514",
+    "tests/tracks/resource_applicability/test_h6_matched_v1.py": "7d8adceddd2ccd24d4e24715dcd7b11be7eb34f411dd659899c069109b8f3daf",
+    "tests/tracks/resource_applicability/test_h6_matched_v2.py": "5ca3b119d0e2aa9754308c952eb872706c0586c351519d90e3a867f5a0cec622"
+  },
+  "test_paths": [
+    "tests/tracks/resource_applicability/test_h6_matched_v2.py",
+    "tests/tracks/resource_applicability/test_h6_matched_v1.py",
+    "tests/tracks/resource_applicability/test_ax2b_native_df_v5.py",
+    "tests/tracks/resource_applicability/test_ax2b_h6_pilot_v2.py"
+  ],
+  "tests": 176,
+  "wall_seconds": "10.469"
+}

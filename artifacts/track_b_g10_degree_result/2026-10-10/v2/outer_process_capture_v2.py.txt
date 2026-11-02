@@ -1,0 +1,25 @@
+import json,os,resource,subprocess,time,hashlib
+from pathlib import Path
+from datetime import datetime,timezone
+root=Path('/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-g10-v2-one-shot-execution-20261010')
+receipt=Path('/tmp/g10_v2_outer_process_receipt.json')
+lock=Path('/tmp/g10_v2_outer_invocation_consumed.json')
+command=['/home/abe/Project/prt-worktrees/track-b-sp05-economics-preparation-20261006/.venv/bin/python','-B','scripts/tracks/algorithm_codesign/g10_degree_matched_native_v2.py','--source-commit','a139b91f119d109430ae3154a045d0fdcf722233']
+start_utc=datetime.now(timezone.utc).isoformat(); start=time.monotonic()
+with lock.open('x') as f:json.dump({'runner_invocations':1,'retries':0,'command':command,'start_UTC':start_utc},f)
+env=os.environ.copy();env.update(PYTHONPATH='src',OPENBLAS_NUM_THREADS='1',OMP_NUM_THREADS='1',PYTHONDONTWRITEBYTECODE='1')
+with Path('/tmp/g10_v2_runner_stdout.log').open('xb') as out,Path('/tmp/g10_v2_runner_stderr.log').open('xb') as err:
+    process=subprocess.Popen(command,cwd=root,env=env,stdout=out,stderr=err)
+    pid,status,usage=os.wait4(process.pid,0)
+    returncode=os.waitstatus_to_exitcode(status);process.returncode=returncode
+finish_utc=datetime.now(timezone.utc).isoformat()
+stdout=Path('/tmp/g10_v2_runner_stdout.log').read_bytes();stderr=Path('/tmp/g10_v2_runner_stderr.log').read_bytes()
+terminal=[]
+for line in stdout.decode(errors='replace').splitlines():
+    try:
+        value=json.loads(line)
+        if isinstance(value,dict) and 'status' in value:terminal.append(value)
+    except ValueError:pass
+record={'start_UTC':start_utc,'end_UTC':finish_utc,'command':command,'cwd':str(root),'environment_overrides':{k:env[k] for k in ['PYTHONPATH','OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','PYTHONDONTWRITEBYTECODE']},'pid':pid,'wait_status':status,'exit_code':returncode,'normal_exit':os.WIFEXITED(status),'termination_signal':os.WTERMSIG(status) if os.WIFSIGNALED(status) else None,'wall_seconds':time.monotonic()-start,'CPU_seconds':usage.ru_utime+usage.ru_stime,'user_CPU_seconds':usage.ru_utime,'system_CPU_seconds':usage.ru_stime,'peak_RSS_KiB':usage.ru_maxrss,'peak_RSS_MiB':usage.ru_maxrss/1024,'stdout_bytes':len(stdout),'stdout_sha256':hashlib.sha256(stdout).hexdigest(),'stderr_bytes':len(stderr),'stderr_sha256':hashlib.sha256(stderr).hexdigest(),'terminal_status_records':terminal,'runner_invocations':1,'retries':0,'mandatory_STOP':True,'next_science_authorized':False,'resource_scope':'outer wait4 covers runner startup, launch/runtime checks, guard body, terminal IO and shutdown; runner guard receipts have narrower scopes'}
+with receipt.open('x') as f:json.dump(record,f,ensure_ascii=False,indent=2);f.write('\n')
+print(json.dumps(record,ensure_ascii=False))

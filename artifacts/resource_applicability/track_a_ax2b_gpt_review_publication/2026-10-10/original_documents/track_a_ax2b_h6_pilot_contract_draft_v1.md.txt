@@ -1,0 +1,159 @@
+# Track A H6技術pilot契約案
+
+2026-10-10 JST。`DRAFT_NOT_AUTHORIZATION`、science_authorized=false、assigned_resources=null。
+独立科学レビュー用の具体案で、source変更、Hamiltonian/state作成、signal/sampling/compileを認可しない。
+[H4後レビュー](track_a_ax2b_h4_post_scientific_review_v1.md)と[不足検証一覧](track_a_ax2b_h4_validation_gaps_v1.md)を前提とする。
+旧[AX-2A追補](track_a_ax2a_research_amendment_v1.md)や旧pilot JSONを上書きしない。
+
+## 目的と情報区分
+
+H6でDF-native作用、finite平均、discard、global四次、両controlの接続と評価側の負荷を確認する。
+最良構成の探索、PR優位、shot/総資源、chemical energy accuracyはtechnical pilotの完成条件にしない。
+H6で見たrank・bias・cost・回路長・wall/RSSは全てdevelopmentとして公開扱い。
+H4 legacyと同じHamiltonian表現政策を使ったサイズ比較とは呼ばない。H8入力とtruthには接触しない。
+
+## 入力とDF政策の提案
+
+| 項目 | 提案 | 実行前の不足 |
+|---|---|---|
+| 分子 | linear H6、隣接1.00 Å、STO-3G、12 system qubits | 作成または既存input採用の別認可、provenance |
+| target | 同一serialized H_DFと指定normalized stateへのcomplex signal | Hamiltonian/snapshot/state/vector hashes |
+| DF | 共通positive tolの旧提案1e-8、final_rank指定なし、actual Lを記録 | tol採用、後段cutoff/hermitization/one-body補正の監査 |
+| prefix | generation-prefix、p=(L+1)//2、full L、0 | actual L≥2、B2のnonempty tail |
+| sector | N=6、Nα=Nβ=3、dimension400 | 完全性、基底順、各dΓ(g)のspin-sector保存 |
+| state | sector eigshのnormalized DF low-energy state、HF初期vectorを提案 | solver入力/tol/maxiter、残差とstate保存、生成認可 |
+| reference | 指定stateへのdirect sector exponential | reference作用・roundoffと独立照合の仕様 |
+| Tと診断精度 | T=0.8、ε_sig=0.001を診断labelにする | accuracy未認定。energy precisionではない |
+
+stateのsolver成功や小さい残差をground-state認定にしない。
+targetは保存した指定stateであり、理想ground stateへの置換をしない。
+solver案はeigsh/which=SA、tol1e-12、maxiter1000、ncv40、HF初期vector。
+実装のconverged flagとは別にnorm・sector・残差を記録し、不収束ではSTOPする。
+referenceはphase surrogateへの置換をprimaryにせず、|T|ρは別診断として保存する。
+
+df_tolは旧草案から維持した提案値で、採用済みではない。
+discarded-weight boundを使う場合、全補正とcutoffを検査して初めて |T|Σ_discard w_l を利用する。
+targetがH_DFなら、元分子Hamiltonianへの表現誤差は別の層で、PF/finite biasへ二重加算しない。
+H6/H8本比較のtolは最大T・精度域と併せて結果前に固定する。資源不足を理由にrankを事後切下げしない。
+cross-spin非零やsector不足の場合はSTOP。number-sectorへの変更は別契約とする。
+
+## 登録候補の提案
+
+旧草案のq8/R64から最初の負荷を小さくし、B0を加える。
+q1/q2ではδ=0.8/0.4。randomはR=4、r=2、各2 trajectoryで、最適化探索ではない。
+Rの縮小はτ=λ_R T/Rを大きくするので、normalizationやfinite biasが改善するとは限らない。
+短いtaskで負荷と意味論を検査する案であり、ε_sigを達成すると予測しない。
+
+| cell ID | method | order | prefix | q | R | r | K | cost replica |
+|---|---|---|---|---:|---:|---:|---:|---:|
+| H6_B0_S2_q2 | B0 | global二次discard | p | 2 | — | — | — | 1 |
+| H6_B1_S2_q1 | B1 | global二次 | L | 1 | — | — | — | 1 |
+| H6_B1_S2_q2 | B1 | global二次 | L | 2 | — | — | — | 1 |
+| H6_B1_S4_q1 | B1 | global四次 | L | 1 | — | — | — | 1 |
+| H6_B1_S4_q2 | B1 | global四次 | L | 2 | — | — | — | 1 |
+| H6_B2_K2_q2_R4 | B2 | partial二次finite-RTE | p | 2 | 4 | 2 | 2 | 2 |
+| H6_B3_K6_q2_R4 | B3 | partial二次finite-RTE | 0 | 2 | 4 | 2 | 6 | 2 |
+
+one-bodyはprefix0でも決定論的に残す。scalarとextracted identityは相対位相を保持する。
+B0は同じfull H_DFを正解とし、discard/PFのsigned complex分解を残す。
+B2/B3はfinite/outer-PFのsigned分解とraw/corrected/log Bを保存する。
+有限平均を非unitary gateとしてcompileしない。
+
+各replicaについてordinary/symmetric_directional × cosine/sineの4 wrapper。
+予定compileはdeterministic5×4＋random2×2×4=**36**、random trajectoryは4、outer occurrenceは8。
+technical primaryの費用labelはsymmetric_directional、ordinaryはpaired感度。
+同じexplicit trajectoryを両axis/両controlで共有し、同一wrapperの数値fingerprintとmutation検査を維持する。
+compiler案はrz/sx/x/cx、optimization1、seed17、backend/coupling指定なし。
+versionと環境は実行前に固定し、旧compilerと異なる費用を同じlayerに混ぜない。
+random seedは `SHA256("track_a_h6_pilot_draft_v1_cost_seed:"+cell_id+":"+replica)` の先頭4 bytesをbig-endianで得る。
+task/seedをplanで全列挙し、collisionはSTOP。費用を見てseedを選び直さない。
+本比較用のq8/R64、K4追加、prefix grid、標本増量は別の契約で判断する。
+
+## 計算経路と必要なport
+
+共有の [DF sector operator](../../src/trotterlib/df_hamiltonian.py) と
+[finite state-action](../../src/trottertracks/resource_applicability/ax2a_state_action.py)、
+[native DF](../../src/trottertracks/resource_applicability/ax2b_native_df_v5.py)を再利用する。
+新規に必要なのはH6 controller/input binding、sector reference、solver/reference cap、記録schemaとu-aware接続である。
+H4 v5 source/manifest/認可をH6向けに上書きしない。
+
+referenceは400次元sectorの一つの行列をbounded matvecで構成し、expm/eigh照合を行う案。
+finite tailの平均作用はsector matvec、deterministic native作用は4096次元full vectorを使用する。
+Gaussian gateごとのsector projectionは行わず、完全primitiveの後にleakageを確認して投影する。
+全DF fragmentの4096×4096 matrix/eigenvector cacheは作らない。
+Python backendを初期baselineにし、Numba/chunk経路は既存能力として保持する。GPUは初回案に含めない。
+
+| complex128単一bufferの理論サイズ | H6 | H8参考 |
+|---|---:|---:|
+| full vector | 64 KiB | 1 MiB |
+| full dense matrix | 256 MiB | 64 GiB |
+| spin sector dimension | 400 | 4,900 |
+| sector dense matrix | 2,560,000 bytes | 384,160,000 bytes |
+
+上表はSTO-3G水素鎖・half fillingの静的会計で、実測memoryやactual DF rankではない。
+仮にH6をrank12でfull dense化すると、13 block matrixと13 eigenvector matrixだけで6.5 GiBになる。
+reference・一時buffer・compiler・Python overheadを加える前の値で、8 GiB内の保証にはならない。
+sector referenceにもworkspaceとmatvec費用があり、回路compile/hashのmemoryは別に監視する。
+H8のfull dense経路は案から除外する。H4のRSSやwallをqubit/rank比で外挿しない。
+
+## 上限案と固定が必要な項目
+
+| 上限 | 提案値 | 注意 |
+|---|---:|---|
+| worker / logical CPU / BLAS threads | 1 / 1 / 1 | actual CPUとhostは未割当 |
+| address space | 8 GiB | RSSとは別。host割当も確認する |
+| input/reference phase | 1,800秒 | 入力生成の予算は別で未認可 |
+| correctness phase | 1,800秒 | before-call capと独立watchdog |
+| wrapper phase | 3,600秒 | q2でも完走時間は未予測 |
+| total pilot wall | 7,200秒 | phase合計と整合、child import等も含める |
+| output / worker log / diagnostics | 512 MiB / 64 KiB / 1,024 records | terminal/partialも上限に含む |
+| compile / trajectory / occurrence | 36 / 4 / 8 | 次の実行で採用する場合のhard cap |
+| primitive / control probe actions | 2,000 / 256 | 全時間集合とprobe planを先に展開 |
+| solver matvec / reference総matvec | 10,000 / 20,000 | 生成側とpilot側を別会計 |
+| reference matvec per action | 20,000 | cumulative capも別途enforce |
+| tail matvec per signal | B2 24 / B3 56 | 2R(K+1)、corrected+rawの合計 |
+| deterministic actions per cell | 100,000 | rank依存の静的見積りでlaunch前に点検 |
+| Qiskit instructions untranspiled / transpiled | 1,000,000 / 5,000,000 | 展開後gate・definition/hash費用の保証ではない |
+
+上限は今回採用しない。全taskとsource・inputを束縛するsealed planが必要。
+native block_instruction_boundとPF stage列からactual rankでのuntranspiled上界を確認する。
+定義の展開・compiler memory・fingerprint時間はwatchdog/ResourceTraceで制限する。
+maxiterだけではsolver matvec capにならず、matvec/rmatvecにbefore-call enforcementを設ける。
+H4と同じcall-local hash cache/群単位解放を候補とし、cross-circuit/hash cacheは追加しない。
+
+## 検証順序とGO STOP
+
+| 段階 | 必要な確認 | 判定 |
+|---|---|---|
+| 契約レビュー | target、DF/state、uの扱い、全task、cap、情報区分 | 未確定なら文書STOP |
+| 技術準備 | 別source、synthetic、hard cap、schema、source freeze | input作成・科学実行を含めない |
+| 入力準備 | 作成の別認可、snapshot/provenance/hash、sector、solver | 新入力の固定後STOP |
+| scientific preflight | source/input/environment/CPU/plan、新規認可、exclusive output | 全て照合後にだけlaunch |
+| input/reference | norm、Hermiticity、DF再構成、bit順、sector全列、参照差 | gate不通過・capでSTOP |
+| correctness | 登録7 cell、実stage時間、leakage、phase、finite/B0分解 | 技術gate通過後だけcostへ |
+| wrapper cost | 36 tasks、sample共有、mutation、metric、群解放 | partialと理由を保存、全終了後もSTOP |
+| 保存監査と科学レビュー | source/input、全counts、u区分、古典/量子scope | AX-3への自動GOなし |
+
+工学gate案はnorm/leakage1e-12、native/reference agreement1e-9、reference cross差1e-10。
+これらをu_boundにしない。実時間集合とprobe数がprimitive capを超えた場合、検査を黙って間引かない。
+総uが未認定でも技術pilotだけを許す契約案は、レビューで明示採用してから別認可に含める必要がある。
+その場合outputは `numerical_allowance_certified=false` / `accuracy_eligibility=UNDETERMINED` を維持し、N/Gはnull。
+厳密uや仮定付き会計で本比較へ進める条件は、別の科学GOとして固定する。
+
+失敗・memory/wall/call/output上限・基底/phase不一致・不収束・未知targetではSTOP。
+corrected作用のnormが大きい場合の絶対/相対agreement規則と、B overflow/raw underflowのterminal規則もlaunch前に固定する。
+上表の固定absolute gateが数値scaleに合わなくても、結果後にtoleranceやRを救済変更しない。
+retry/resume、rank/tol変更、quota増量、sector変更、GPU切替は自動実行しない。
+H6 pilotの成功はH6 development準備の証拠で、H8独立性やPR優位を保証しない。
+
+## 実行前に埋めるidentity
+
+source hash、snapshot/Hamiltonian/state/vector hash、actual L、DF provenance、sector/basis証明、
+reference/uの証拠区分、seed/task一覧、package/compiler identity、host/CPU/RAM割当、
+生成側とpilot側の別予算、authorization/hash、新規outputの全てが必要。
+現時点ではnullのままにし、placeholderをseal済みidentityと扱わない。
+
+機械可読案は
+[h6_pilot_contract_draft_v1.json](../../artifacts/resource_applicability/track_a_ax2b_h4_post_review/2026-10-10/h6_pilot_contract_draft_v1.json)。
+同JSONはH4 runnerが受理するauthorization/manifest schemaではなく、launcherもない。
+今回の終端は文書と保存値の静的監査まで、mandatory STOPである。

@@ -1,0 +1,431 @@
+{
+  "status": "PASSIVE_PREFLIGHT_PASS",
+  "scientific_calls": 0,
+  "base_commit": "4887d6af81d4b26a31c2f85cb0430670b620f4e6",
+  "base_tree": "013958b7476d61aec02d40c0250203708f22f2eb",
+  "GitHub_base_tree_matched": true,
+  "contract": "docs/research/research_c_pr_aware_df_M4_native128_contract_revision2_20261028.json",
+  "contract_sha256": "0a5d20032656dcb456a20d84ee8fdfc6d7b44ed36d4c88201a7046ecb9e12d1f",
+  "source_manifest": "artifacts/research_c_pr_aware_df_M4_native/2026-10-28/technical/SOURCE.json",
+  "source_manifest_sha256": "3c0fc544b31b4aad9dd776c83eeb6392d59ee03c5b8a3059433cd1b65d56e12f",
+  "SOURCE_files": 88,
+  "original87_unchanged": true,
+  "saved_inputs": 63,
+  "protected_files": 642,
+  "M4_calls_complete": 98,
+  "M3_run02_calls_complete": 471,
+  "M4_source": "7dbabc7866cc62a5460bf1579ce84c59493d8e1e",
+  "input_sha256": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+  "Proposed_JU_sha256": "f47a9fbf86918458ea0db6549468f2041b3b87bba6649ff70234467a442cd227",
+  "fresh_output_absent": true,
+  "sampling": {
+    "master": 2026102805,
+    "cohort": "M4_r128_native_fixed32_v1",
+    "axis": "M4_R128_NATIVE_ONLY",
+    "samples": 32,
+    "events_per_sample": 128,
+    "PRNG": "numpy.random.PCG64",
+    "paired": false,
+    "adaptive": false
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0",
+    "symengine": "0.13.0",
+    "qiskit-aer": "0.15.1"
+  },
+  "python": "3.11.1 (main, Nov 18 2024, 15:05:59) [GCC 11.4.0]",
+  "saved_affine": {
+    "ideal_exact_native": {
+      "status": "AFFINE_COST_ONLY_UNKNOWN_PRICE",
+      "W": 16631888,
+      "S": {
+        "rz_count": 56196.0,
+        "rz_depth": 56196.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "total_depth": 104364.0,
+        "circuit_size": 104364.0
+      },
+      "mu": null,
+      "total_resources": null,
+      "formula": "C_k(mu_k)=W*mu_k+S_k",
+      "shell_once_per_interrogation": true,
+      "substeps": 1,
+      "old_M3_shots_accounting": {
+        "W": 32417320,
+        "S": {
+          "rz_count": 72569.0,
+          "rz_depth": 72569.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 134771.0,
+          "circuit_size": 134771.0
+        }
+      },
+      "high_m_only_shots_swap": {
+        "W": 16711208,
+        "S": {
+          "rz_count": 57001.0,
+          "rz_depth": 57001.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 105859.0,
+          "circuit_size": 105859.0
+        }
+      },
+      "counterfactual_kind": "accounting substitution only;no extra candidate",
+      "groups": {
+        "m0_to9": {
+          "new_shots": 10486,
+          "old_shots": 10716,
+          "new_weight": 1132624,
+          "old_weight": 1211944
+        },
+        "m10_to12": {
+          "new_shots": 5570,
+          "old_shots": 10018,
+          "new_weight": 15499264,
+          "old_weight": 31205376
+        },
+        "m12": {
+          "new_shots": 2644,
+          "old_shots": 6006,
+          "new_weight": 10829824,
+          "old_weight": 24600576
+        }
+      }
+    },
+    "assumed_raw_signal_budget": {
+      "status": "AFFINE_COST_ONLY_UNKNOWN_PRICE",
+      "W": 16705612,
+      "S": {
+        "rz_count": 56420.0,
+        "rz_depth": 56420.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "total_depth": 104780.0,
+        "circuit_size": 104780.0
+      },
+      "mu": null,
+      "total_resources": null,
+      "formula": "C_k(mu_k)=W*mu_k+S_k",
+      "shell_once_per_interrogation": true,
+      "substeps": 1,
+      "old_M3_shots_accounting": {
+        "W": 32578340,
+        "S": {
+          "rz_count": 72898.0,
+          "rz_depth": 72898.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 135382.0,
+          "circuit_size": 135382.0
+        }
+      },
+      "high_m_only_shots_swap": {
+        "W": 16786212,
+        "S": {
+          "rz_count": 57239.0,
+          "rz_depth": 57239.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 106301.0,
+          "circuit_size": 106301.0
+        }
+      },
+      "counterfactual_kind": "accounting substitution only;no extra candidate",
+      "groups": {
+        "m0_to9": {
+          "new_shots": 10526,
+          "old_shots": 10760,
+          "new_weight": 1136716,
+          "old_weight": 1217316
+        },
+        "m10_to12": {
+          "new_shots": 5594,
+          "old_shots": 10068,
+          "new_weight": 15568896,
+          "old_weight": 31361024
+        },
+        "m12": {
+          "new_shots": 2656,
+          "old_shots": 6036,
+          "new_weight": 10878976,
+          "old_weight": 24723456
+        }
+      }
+    }
+  },
+  "saved_thresholds": [
+    {
+      "lane": "ideal_exact_native",
+      "target": "M3_r64",
+      "metric": "rz_count",
+      "mu_break_even": 17747.772397021312
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M3_r64",
+      "metric": "rz_depth",
+      "mu_break_even": 5955.678438716639
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M3_r64",
+      "metric": "cx_count",
+      "mu_break_even": 7625.391667500407
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M3_r64",
+      "metric": "cx_depth",
+      "mu_break_even": 5127.4290366944515
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M3_r64",
+      "metric": "total_depth",
+      "mu_break_even": 13081.79515365303
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M3_r64",
+      "metric": "circuit_size",
+      "mu_break_even": 35054.74205022605
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M2_deterministic",
+      "metric": "rz_count",
+      "mu_break_even": 6122.3279797819705
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M2_deterministic",
+      "metric": "rz_depth",
+      "mu_break_even": 3091.703190822353
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M2_deterministic",
+      "metric": "cx_count",
+      "mu_break_even": 3886.8401470716976
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M2_deterministic",
+      "metric": "cx_depth",
+      "mu_break_even": 3484.8298232888533
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M2_deterministic",
+      "metric": "total_depth",
+      "mu_break_even": 6717.5693439614315
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "M2_deterministic",
+      "metric": "circuit_size",
+      "mu_break_even": 11615.543192149924
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "old_PR_s4",
+      "metric": "rz_count",
+      "mu_break_even": 32485.193738257498
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "old_PR_s4",
+      "metric": "rz_depth",
+      "mu_break_even": 13194.68744696934
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "old_PR_s4",
+      "metric": "cx_count",
+      "mu_break_even": 16855.629162485944
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "old_PR_s4",
+      "metric": "cx_depth",
+      "mu_break_even": 13304.59805284884
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "old_PR_s4",
+      "metric": "total_depth",
+      "mu_break_even": 28791.874931276594
+    },
+    {
+      "lane": "ideal_exact_native",
+      "target": "old_PR_s4",
+      "metric": "circuit_size",
+      "mu_break_even": 62888.035974448605
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M3_r64",
+      "metric": "rz_count",
+      "mu_break_even": 17757.215094387142
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M3_r64",
+      "metric": "rz_depth",
+      "mu_break_even": 5958.8471567144625
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M3_r64",
+      "metric": "cx_count",
+      "mu_break_even": 7629.448754406603
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M3_r64",
+      "metric": "cx_depth",
+      "mu_break_even": 5130.157083477397
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M3_r64",
+      "metric": "total_depth",
+      "mu_break_even": 13088.755320711985
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M3_r64",
+      "metric": "circuit_size",
+      "mu_break_even": 35073.39291581326
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M2_deterministic",
+      "metric": "rz_count",
+      "mu_break_even": 6095.30935083372
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M2_deterministic",
+      "metric": "rz_depth",
+      "mu_break_even": 3078.059096248614
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M2_deterministic",
+      "metric": "cx_count",
+      "mu_break_even": 3869.6870249350936
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M2_deterministic",
+      "metric": "cx_depth",
+      "mu_break_even": 3469.450824070378
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M2_deterministic",
+      "metric": "total_depth",
+      "mu_break_even": 6687.923827334192
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "M2_deterministic",
+      "metric": "circuit_size",
+      "mu_break_even": 11564.282291184543
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "old_PR_s4",
+      "metric": "rz_count",
+      "mu_break_even": 32490.240422499937
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "old_PR_s4",
+      "metric": "rz_depth",
+      "mu_break_even": 13196.737286577709
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "old_PR_s4",
+      "metric": "cx_count",
+      "mu_break_even": 16858.24774081907
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "old_PR_s4",
+      "metric": "cx_depth",
+      "mu_break_even": 13306.664966629178
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "old_PR_s4",
+      "metric": "total_depth",
+      "mu_break_even": 28796.34784678945
+    },
+    {
+      "lane": "assumed_raw_signal_budget",
+      "target": "old_PR_s4",
+      "metric": "circuit_size",
+      "mu_break_even": 62897.80584255159
+    }
+  ],
+  "resource_plan": {
+    "workers": 32,
+    "available_affinity_cpus": 32,
+    "available_memory_bytes": 56604012544,
+    "quota_cpus": null,
+    "estimated_bytes_per_candidate": 268435456,
+    "BLAS_threads_per_worker": 1,
+    "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+  },
+  "observed_resources": {
+    "/proc/loadavg": "6.14 3.11 1.83 2/1767 8\n",
+    "/proc/meminfo": "MemTotal:       65522480 kB\nMemFree:         2761444 kB\nMemAvailable:   55277356 kB\nBuffers:         5237836 kB\nCached:         40963344 kB\nSwapCached:        19120 kB\nActive:         17217984 kB\nInactive:       35735012 kB\nActive(anon):    4668268 kB\nInactive(anon):  3029504 kB\nActive(file):   12549716 kB\nInactive(file): 32705508 kB\nUnevictable:      284596 kB\nMlocked:           12788 kB\nSwapTotal:       2097148 kB\nSwapFree:         187912 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:                96 kB\nWriteback:             0 kB\nAnonPages:       7017360 kB\nMapped:           967852 kB\nShmem:            933332 kB\nKReclaimable:    7990960 kB\nSlab:            8975612 kB\nSReclaimable:    7990960 kB\nSUnreclaim:       984652 kB\nKernelStack:       28704 kB\nPageTables:        85640 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    34858388 kB\nCommitted_AS:   20809048 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      155612 kB\nVmallocChunk:          0 kB\nPercpu:            44416 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:   714752 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nUnaccepted:            0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:     1768544 kB\nDirectMap2M:    41953280 kB\nDirectMap1G:    24117248 kB\n",
+    "/proc/pressure/cpu": "some avg10=0.40 avg60=2.12 avg300=0.82 total=8519819805\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=7990435\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=7902826\n",
+    "/proc/pressure/io": "some avg10=0.00 avg60=0.00 avg300=0.00 total=4343773691\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=4193988268\n",
+    "/proc/self/cgroup": "0::/user.slice/user-1001.slice/session-2733.scope\n"
+  },
+  "storage": "Filesystem      Size  Used Avail Use% Mounted on\n/dev/nvme0n1p3  926G  534G  345G  61% /tmp\n",
+  "process_snapshot": "USER     COMMAND         %CPU %MEM\nabe      codex-linux-san  0.0  0.0\nabe      bash             0.0  0.0\nabe      python           0.0  0.0\nabe      ps               0.0  0.0\n",
+  "venv": "task-local .venv;Python3.11.1;readonly dependencies .pth",
+  "dependency_locations": [
+    "/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/lib/python3.11/site-packages",
+    "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages"
+  ],
+  "task_caches": "/tmp/prt-c-M4-native128-20261028/.cache",
+  "synthetic_tests_pass": 66,
+  "tests_sha256": "397133f424c849ae8634580f02968cf9bd51612b09ce8b28aece22f9f02e9016",
+  "science_implementation_changed": false,
+  "new_fit": 0,
+  "new_PF_RTE_shots_ground_eval": 0,
+  "run_policy": "one freshrun01 after thispreflight and SOURCEcommit;retry/resume0;highprice complete32;correctnessFAIL drainandSTOP",
+  "shared_environment_changes": 0
+}

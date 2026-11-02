@@ -1,0 +1,102 @@
+{
+  "case": "trace_close",
+  "root": "/tmp/b3-bundle-artificial-csk352z4",
+  "spec": {
+    "name": "trace_close",
+    "fault": {
+      "point": "trace.close"
+    }
+  },
+  "measured_git_SOURCE_commit": "e099dcc461247e81eff981867dc28c3f3b16df5e",
+  "returned_complete": false,
+  "fault_hits": 1,
+  "external_host_outer": {
+    "parent_cpu_ns": 1050988664,
+    "wall_ns": 6554001576,
+    "worker_cpu_ns": 9749042000,
+    "includes_final_and_delivery_close": true
+  },
+  "forbidden_imports": [],
+  "process_exit": 0,
+  "verification_status": "INCOMPLETE_EVIDENCE",
+  "verification_issues": [],
+  "evidence_gaps": [
+    "Only trusted prefix is evidence; tail/unsaved intent remain unknown",
+    "Storage/flush/close failure retained"
+  ],
+  "consumer_forbidden_imports": [],
+  "calls": {
+    "planned": 1536,
+    "reserved": 1536,
+    "started": 1536,
+    "completed": 1536,
+    "unknown": 0,
+    "cancelled": 0
+  },
+  "conditions": [
+    {
+      "condition": "S",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 634737629,
+      "worker_cpu_ns": 4686969000,
+      "wall_ns": 5244231255,
+      "budget_before": {
+        "reserved": {
+          "log": 14526,
+          "result": 4234036
+        },
+        "observed": {
+          "log": 14526,
+          "result": 31540
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 2142338,
+          "result": 4877805
+        },
+        "observed": {
+          "log": 2142338,
+          "result": 675309
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    },
+    {
+      "condition": "P1",
+      "complete": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "planned": 768,
+      "parent_cpu_ns": 352677908,
+      "worker_cpu_ns": 5062073000,
+      "wall_ns": 1244636472,
+      "budget_before": {
+        "reserved": {
+          "log": 2143026,
+          "result": 4878420
+        },
+        "observed": {
+          "log": 2143026,
+          "result": 675924
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 4282873,
+          "result": 5522708
+        },
+        "observed": {
+          "log": 4282873,
+          "result": 1320212
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    }
+  ]
+}

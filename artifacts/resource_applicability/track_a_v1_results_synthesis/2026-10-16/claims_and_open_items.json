@@ -1,0 +1,117 @@
+{
+  "schema": "track_a_v1_results_claims_v1",
+  "base_commit": "f89c40af73289af9f4c2b70ed0b3966d95d47b06",
+  "claims": [
+    {
+      "id": "C1",
+      "status": "LOCAL_VALIDATED_CONDITIONAL_POINT",
+      "claim": "epsilon .05のp7候補は実測compiled単価×保存shotで保存PR確認点より低費用",
+      "evidence": [
+        "artifacts/resource_applicability/track_a_v1_p7_measured_reaccount_run01/2026-10-16/comparison.json",
+        "artifacts/resource_applicability/track_a_v1_p7_compile_run01/2026-10-16/validation_complete.json"
+      ],
+      "not_established": [
+        "全136候補の実測最良",
+        "厳密bias保証",
+        "PR母平均の優劣"
+      ]
+    },
+    {
+      "id": "C2",
+      "status": "FIXED_MODEL_CONDITIONAL",
+      "claim": "残る4精度のPR利益は決定論費用モデル条件付きの保存点推定",
+      "epsilons": [
+        0.01,
+        0.005,
+        0.001,
+        0.0005
+      ],
+      "evidence": [
+        "artifacts/resource_applicability/track_a_v1_reaccount_result/2026-10-16/comparisons.json"
+      ],
+      "not_established": [
+        "4候補の直接実測単価",
+        "全gridモデル誤差2%以内"
+      ]
+    },
+    {
+      "id": "C3",
+      "status": "LOCAL_COMPILE_VALIDATION_ONLY",
+      "claim": "登録S4全4軸とp7 S2全2軸は各2%未満PASS",
+      "evidence": [
+        "artifacts/resource_applicability/track_a_v1_phase_b_run01/2026-10-16/validation_complete.json",
+        "artifacts/resource_applicability/track_a_v1_p7_compile_run01/2026-10-16/validation_complete.json"
+      ],
+      "not_established": [
+        "他prefix/qへの誤差上界移送",
+        "自動再fitの認可"
+      ]
+    },
+    {
+      "id": "C4",
+      "status": "LIMITED_BENCHMARK_INTERPRETATION",
+      "claim": "比較対照のprefix格子・次数強化でPR点費用利益の大きさと符号が変わる",
+      "evidence": [
+        "artifacts/resource_applicability/track_a_v1_reaccount_result/2026-10-16/comparisons.json",
+        "artifacts/resource_applicability/track_a_v1_p7_measured_reaccount_run01/2026-10-16/comparison.json"
+      ],
+      "not_established": [
+        "新アルゴリズム",
+        "一般的PR優位",
+        "H8等への無条件外挿"
+      ]
+    }
+  ],
+  "open_items": [
+    {
+      "id": "U1",
+      "issue": "残る4選択対照の直接compiled費用",
+      "status": "MODEL_ESTIMATES_ONLY",
+      "direct_compile_can_address": "当該候補の両軸単価のみ"
+    },
+    {
+      "id": "U2",
+      "issue": "全136候補の費用モデル誤差・順位頑健性",
+      "status": "UNPROVEN",
+      "direct_compile_can_address": "代表候補だけでは全域保証不可"
+    },
+    {
+      "id": "U3",
+      "issue": "保守的な厳密bias certificate",
+      "status": "NOT_CERTIFIED",
+      "direct_compile_can_address": false
+    },
+    {
+      "id": "U4",
+      "issue": "旧B0I12候補のsigned分解欠測と全domain非相殺診断",
+      "status": "UNRESOLVED_FULL_DOMAIN",
+      "direct_compile_can_address": false
+    },
+    {
+      "id": "U5",
+      "issue": "PR母平均・選択補正・希少次数費用",
+      "status": "SAVED_SAMPLE_POINT_ONLY",
+      "direct_compile_can_address": false
+    },
+    {
+      "id": "U6",
+      "issue": "truth-free候補選択",
+      "status": "TRUTH_ASSISTED_BENCHMARK_ONLY",
+      "direct_compile_can_address": false
+    },
+    {
+      "id": "U7",
+      "issue": "旧binary/compiler profile同値・identity因果比較",
+      "status": "NOT_CERTIFIED",
+      "direct_compile_can_address": "対象追加だけでは旧全stratumを認定しない"
+    },
+    {
+      "id": "U8",
+      "issue": "他geometry/time/system・P>0・energy/QPE/RPE/FT",
+      "status": "OUTSIDE_CURRENT_SCOPE",
+      "direct_compile_can_address": false
+    }
+  ],
+  "original_scientific_review_modified": false,
+  "new_detailed_review": false
+}

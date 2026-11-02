@@ -1,0 +1,59 @@
+{
+  "source_commit": "05a37cebaf18fa28e3a1e8582b86f54e32ba2a66",
+  "result": {
+    "status": "PASS",
+    "tests": 24,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0,
+    "wall_seconds": 2.123953375965357,
+    "max_RSS_bytes": 31457280,
+    "rusage_maxrss_bytes": 331915264,
+    "output_bytes": 4013,
+    "real_workers": 0,
+    "transpile_invocations": 0,
+    "scientific_input_reads": 0,
+    "production_launches": 0,
+    "affinity_changes": 0,
+    "attempt": "tests-03"
+  },
+  "attempt_history": [
+    {
+      "attempt": "tests-01",
+      "status": "PASS",
+      "tests": 22,
+      "errors": 0,
+      "failures": 0
+    },
+    {
+      "attempt": "tests-02",
+      "status": "FAIL",
+      "tests": 24,
+      "errors": 1,
+      "failures": 0
+    },
+    {
+      "attempt": "tests-03",
+      "status": "PASS",
+      "tests": 24,
+      "errors": 0,
+      "failures": 0
+    }
+  ],
+  "intermediate_error": "tests-02 CLI guard rejected missing PYTHONNOUSERSITE/PYTHONDONTWRITEBYTECODE; final test process/plan contains both; production source required no correction",
+  "source_test_hashes": {
+    "schemas/h4_newhost_launch_v2.json": "9382c9d5897e35e801513c33ccca5ca892e46f01f773e6bf600cef6cd48d7fd7",
+    "scripts/resource_applicability/run_h4_resume02_tests.py": "7e176ded901fe852f8abe1a8e07cd05cdcdbef9aa514ec71e6d82cc3711df64b",
+    "scripts/resource_applicability/run_h4_resume_receipt.py": "55c836aa98b18dbf393f496d6ff1fb8a7d262a64d45eb35fafa5e81c0c010b5e",
+    "src/trottertracks/resource_applicability/h4_geometry/continuation.py": "bee52f0cbd5b106dca67c27ace8d3a056f674be70933cb237bb490491eaa6698",
+    "src/trottertracks/resource_applicability/h4_geometry/continuation_binding.py": "a5e71548ef98e5fe2d0c7930ae9b350f3d70748e8123a37f7b39844745ffafe4",
+    "src/trottertracks/resource_applicability/h4_geometry/continuation_resume01.py": "1c3d4a04e53a7b2dbe0b080308efa60cb1ea1b44890192f3629790723bbac322",
+    "src/trottertracks/resource_applicability/h4_geometry/launch_binding.py": "14fddef0877b174f17042dd0156de9e6bfb224c215f4cb37b725b1aeae449941",
+    "src/trottertracks/resource_applicability/h4_geometry/ledger.py": "c49e7b4f722da909c45261b1074dc2be256d0a2603751138069e96d427ae7a29",
+    "tests/tracks/resource_applicability/test_h4_resume02_continuation.py": "b2ed84869801ac3591969ddbe007276060b724185d23663242cb970ebb7285ae"
+  },
+  "final_log_sha256": "b5991536865c0354a6514f959623eef67794fac26c32e194013b7c0b99e17221",
+  "final_evidence_bytes": 4360,
+  "old_campaigns_reexecuted": false,
+  "evidence_kind": "LOCAL_LIMITED_MOCK_TESTS_NOT_CI_OR_PRODUCTION"
+}

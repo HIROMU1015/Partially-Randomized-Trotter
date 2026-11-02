@@ -1,0 +1,536 @@
+{
+  "CPU_exclusivity_guaranteed": false,
+  "H4_run_performed": false,
+  "H4_runtime_or_peak_prediction": "UNDETERMINED",
+  "all_synthetic_gates_passed": true,
+  "alternating_order": true,
+  "cache_limits": {
+    "entries": 256,
+    "entry_bytes": 65536,
+    "hash_buffer_bytes": 65536,
+    "payload_bytes": 262144,
+    "scope": "single hash call"
+  },
+  "cpu_affinity": [
+    3
+  ],
+  "fixtures": [
+    {
+      "fixture": "flat",
+      "hash_equal_legacy_v4_v5": true,
+      "median_wall_seconds": {
+        "v4": 0.04018527967855334,
+        "v5": 0.01959250494837761
+      },
+      "sha256": "3649a102d65a054c013aabf4e9537a622af48e90cfcbf323879e9199ae3b98ed",
+      "top_level_instructions": 128,
+      "v4_over_v5_median_speedup": 2.051053695504155,
+      "warm_wall_seconds": {
+        "v4": [
+          0.04020616319030523,
+          0.04018527967855334,
+          0.0401281388476491
+        ],
+        "v5": [
+          0.01959250494837761,
+          0.01972360908985138,
+          0.019554270897060633
+        ]
+      }
+    },
+    {
+      "fixture": "repeated_nested",
+      "hash_equal_legacy_v4_v5": true,
+      "median_wall_seconds": {
+        "v4": 0.526018338277936,
+        "v5": 0.00427227420732379
+      },
+      "sha256": "b8858f9a8c6de28f24cba1fb6b293832d53085206066cb206330a234f52cf90b",
+      "top_level_instructions": 200,
+      "v4_over_v5_median_speedup": 123.12373053588267,
+      "warm_wall_seconds": {
+        "v4": [
+          0.526018338277936,
+          0.5241083721630275,
+          0.5276876739226282
+        ],
+        "v5": [
+          0.004431562963873148,
+          0.004246288910508156,
+          0.00427227420732379
+        ]
+      }
+    },
+    {
+      "fixture": "repeated_controlled",
+      "hash_equal_legacy_v4_v5": true,
+      "median_wall_seconds": {
+        "v4": 2.66379919834435,
+        "v5": 0.7324123550206423
+      },
+      "sha256": "5e302774b749b4baceac1e91b694809df7a35e084daf57edcf8681995dc5e6e5",
+      "top_level_instructions": 100,
+      "v4_over_v5_median_speedup": 3.6370211126070826,
+      "warm_wall_seconds": {
+        "v4": [
+          2.6688931179232895,
+          2.65456407610327,
+          2.66379919834435
+        ],
+        "v5": [
+          0.7324123550206423,
+          0.7283190148882568,
+          0.7361375777982175
+        ]
+      }
+    },
+    {
+      "fixture": "distinct_definitions",
+      "hash_equal_legacy_v4_v5": true,
+      "median_wall_seconds": {
+        "v4": 0.05042527290061116,
+        "v5": 0.022003278136253357
+      },
+      "sha256": "26330b21a0a685bd315c7a364c21cd37448fc88dd30350b1d6a053871e499f09",
+      "top_level_instructions": 128,
+      "v4_over_v5_median_speedup": 2.291716379184825,
+      "warm_wall_seconds": {
+        "v4": [
+          0.051403294783085585,
+          0.050420030020177364,
+          0.05042527290061116
+        ],
+        "v5": [
+          0.02193710906431079,
+          0.022003278136253357,
+          0.02206616895273328
+        ]
+      }
+    },
+    {
+      "fixture": "oversize_definition",
+      "hash_equal_legacy_v4_v5": true,
+      "median_wall_seconds": {
+        "v4": 0.17451260890811682,
+        "v5": 0.07243317598477006
+      },
+      "sha256": "aa0866589f5e650d9bebea060ebf677bd585ab9f7a709cfc815c01729320c164",
+      "top_level_instructions": 2,
+      "v4_over_v5_median_speedup": 2.4092911367687395,
+      "warm_wall_seconds": {
+        "v4": [
+          0.17446231376379728,
+          0.17451260890811682,
+          0.1746824965812266
+        ],
+        "v5": [
+          0.07202176889404655,
+          0.07251089811325073,
+          0.07243317598477006
+        ]
+      }
+    }
+  ],
+  "gates": {
+    "all_hashes_equal": true,
+    "nested_and_controlled_median_speedup_at_least_2": true,
+    "other_fixtures_no_median_slowdown_above_1p5": true,
+    "toy_python_peak_below_legacy_quarter": true,
+    "toy_transient_excess_below_512KiB": true
+  },
+  "limits": "cProfile adds overhead; tracemalloc is not RSS; no H4/H6 extrapolation",
+  "next_stage_authorized": false,
+  "profiles": {
+    "v4": {
+      "profiled_seconds": 12.005033413000008,
+      "top_self_seconds": [
+        {
+          "cumulative_seconds": 10.404050118,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_object",
+          "line": 19,
+          "primitive_calls": 1725722,
+          "self_seconds": 3.068066698,
+          "total_calls": 25309122
+        },
+        {
+          "cumulative_seconds": 9.658852976,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_operation",
+          "line": 50,
+          "primitive_calls": 1724500,
+          "self_seconds": 0.9071788510000001,
+          "total_calls": 8719300
+        },
+        {
+          "cumulative_seconds": 12.005033152000001,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "canonical_qiskit_circuit_fingerprint",
+          "line": 103,
+          "primitive_calls": 1,
+          "self_seconds": 0.8504943110000001,
+          "total_calls": 1
+        },
+        {
+          "cumulative_seconds": 10.204328881,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_array",
+          "line": 30,
+          "primitive_calls": 1725702,
+          "self_seconds": 0.847472863,
+          "total_calls": 8290502
+        },
+        {
+          "cumulative_seconds": 10.582616317000001,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_circuit",
+          "line": 82,
+          "primitive_calls": 1725722,
+          "self_seconds": 0.8260868990000001,
+          "total_calls": 8509422
+        },
+        {
+          "cumulative_seconds": 10.022559411000001,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_instruction",
+          "line": 74,
+          "primitive_calls": 1725700,
+          "self_seconds": 0.759447638,
+          "total_calls": 8080400
+        },
+        {
+          "cumulative_seconds": 9.153109621,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_definition",
+          "line": 39,
+          "primitive_calls": 1717700,
+          "self_seconds": 0.6891985740000001,
+          "total_calls": 6783700
+        },
+        {
+          "cumulative_seconds": 1.580837891,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/__init__.py",
+          "function": "dumps",
+          "line": 183,
+          "primitive_calls": 732909,
+          "self_seconds": 0.615068772,
+          "total_calls": 732909
+        },
+        {
+          "cumulative_seconds": 2.021095861,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "_scalar",
+          "line": 15,
+          "primitive_calls": 1465818,
+          "self_seconds": 0.38217813500000003,
+          "total_calls": 1465818
+        },
+        {
+          "cumulative_seconds": 0.7510060980000001,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py",
+          "function": "encode",
+          "line": 183,
+          "primitive_calls": 732909,
+          "self_seconds": 0.35315363600000005,
+          "total_calls": 732909
+        },
+        {
+          "cumulative_seconds": 0.252702694,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py",
+          "function": "iterencode",
+          "line": 205,
+          "primitive_calls": 262003,
+          "self_seconds": 0.252702694,
+          "total_calls": 262003
+        },
+        {
+          "cumulative_seconds": 0.24507957000000002,
+          "file": "~",
+          "function": "<built-in method builtins.len>",
+          "line": 0,
+          "primitive_calls": 5247264,
+          "self_seconds": 0.24507957000000002,
+          "total_calls": 5247264
+        },
+        {
+          "cumulative_seconds": 0.21476302100000003,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py",
+          "function": "__init__",
+          "line": 105,
+          "primitive_calls": 732909,
+          "self_seconds": 0.21476302100000003,
+          "total_calls": 732909
+        },
+        {
+          "cumulative_seconds": 10.794939751000001,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v4.py",
+          "function": "canonical_chunks",
+          "line": 98,
+          "primitive_calls": 1725722,
+          "self_seconds": 0.212323434,
+          "total_calls": 1725722
+        },
+        {
+          "cumulative_seconds": 0.152838514,
+          "file": "~",
+          "function": "<built-in method builtins.isinstance>",
+          "line": 0,
+          "primitive_calls": 1568215,
+          "self_seconds": 0.12862200000000001,
+          "total_calls": 1588615
+        },
+        {
+          "cumulative_seconds": 0.11458951,
+          "file": "~",
+          "function": "<method 'extend' of 'bytearray' objects>",
+          "line": 0,
+          "primitive_calls": 1725721,
+          "self_seconds": 0.11458951,
+          "total_calls": 1725721
+        },
+        {
+          "cumulative_seconds": 0.099169108,
+          "file": "~",
+          "function": "<built-in method _warnings.warn>",
+          "line": 0,
+          "primitive_calls": 49901,
+          "self_seconds": 0.099169108,
+          "total_calls": 49901
+        },
+        {
+          "cumulative_seconds": 0.106517054,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trotterlib/rte_compiled_cost.py",
+          "function": "_numeric_parameter_payload",
+          "line": 217,
+          "primitive_calls": 71001,
+          "self_seconds": 0.066015005,
+          "total_calls": 71001
+        },
+        {
+          "cumulative_seconds": 0.192660578,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/qiskit/circuit/quantumcircuit.py",
+          "function": "__init__",
+          "line": 991,
+          "primitive_calls": 10200,
+          "self_seconds": 0.059040323000000006,
+          "total_calls": 10200
+        },
+        {
+          "cumulative_seconds": 0.058079835,
+          "file": "~",
+          "function": "<method 'encode' of 'str' objects>",
+          "line": 0,
+          "primitive_calls": 732909,
+          "self_seconds": 0.058079835,
+          "total_calls": 732909
+        }
+      ],
+      "total_calls": 84501865
+    },
+    "v5": {
+      "profiled_seconds": 2.461307262000001,
+      "top_self_seconds": [
+        {
+          "cumulative_seconds": 0.714986148,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py",
+          "function": "write",
+          "line": 48,
+          "primitive_calls": 580004,
+          "self_seconds": 0.282239585,
+          "total_calls": 624379
+        },
+        {
+          "cumulative_seconds": 0.36801272100000004,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py",
+          "function": "write",
+          "line": 27,
+          "primitive_calls": 584210,
+          "self_seconds": 0.257232563,
+          "total_calls": 584210
+        },
+        {
+          "cumulative_seconds": 0.217826246,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py",
+          "function": "iterencode",
+          "line": 205,
+          "primitive_calls": 176786,
+          "self_seconds": 0.217826246,
+          "total_calls": 176786
+        },
+        {
+          "cumulative_seconds": 2.459702355,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py",
+          "function": "operation",
+          "line": 132,
+          "primitive_calls": 100,
+          "self_seconds": 0.146789257,
+          "total_calls": 22032
+        },
+        {
+          "cumulative_seconds": 0.40365834500000003,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py",
+          "function": "encode",
+          "line": 183,
+          "primitive_calls": 220850,
+          "self_seconds": 0.14035129500000001,
+          "total_calls": 220850
+        },
+        {
+          "cumulative_seconds": 0.8169077370000001,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py",
+          "function": "scalar",
+          "line": 66,
+          "primitive_calls": 220850,
+          "self_seconds": 0.119189529,
+          "total_calls": 220850
+        },
+        {
+          "cumulative_seconds": 0.11319984400000001,
+          "file": "~",
+          "function": "<built-in method builtins.len>",
+          "line": 0,
+          "primitive_calls": 2810435,
+          "self_seconds": 0.11319984400000001,
+          "total_calls": 2810435
+        },
+        {
+          "cumulative_seconds": 2.461239726,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py",
+          "function": "_circuit",
+          "line": 106,
+          "primitive_calls": 1,
+          "self_seconds": 0.10802744700000001,
+          "total_calls": 12024
+        },
+        {
+          "cumulative_seconds": 0.101590864,
+          "file": "~",
+          "function": "<built-in method builtins.any>",
+          "line": 0,
+          "primitive_calls": 32656,
+          "self_seconds": 0.09011926,
+          "total_calls": 32656
+        },
+        {
+          "cumulative_seconds": 0.066244095,
+          "file": "~",
+          "function": "<method 'extend' of 'bytearray' objects>",
+          "line": 0,
+          "primitive_calls": 1078022,
+          "self_seconds": 0.066244095,
+          "total_calls": 1078022
+        },
+        {
+          "cumulative_seconds": 0.083136109,
+          "file": "~",
+          "function": "<built-in method builtins.isinstance>",
+          "line": 0,
+          "primitive_calls": 807148,
+          "self_seconds": 0.06417298,
+          "total_calls": 824380
+        },
+        {
+          "cumulative_seconds": 0.057009503,
+          "file": "~",
+          "function": "<built-in method _warnings.warn>",
+          "line": 0,
+          "primitive_calls": 34056,
+          "self_seconds": 0.057009503,
+          "total_calls": 34056
+        },
+        {
+          "cumulative_seconds": 0.22645210300000002,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/qiskit/circuit/quantumcircuit.py",
+          "function": "__init__",
+          "line": 991,
+          "primitive_calls": 8616,
+          "self_seconds": 0.043123618,
+          "total_calls": 8616
+        },
+        {
+          "cumulative_seconds": 0.054387622000000004,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trotterlib/rte_compiled_cost.py",
+          "function": "_numeric_parameter_payload",
+          "line": 217,
+          "primitive_calls": 42578,
+          "self_seconds": 0.032968759,
+          "total_calls": 42578
+        },
+        {
+          "cumulative_seconds": 0.734378442,
+          "file": "~",
+          "function": "<built-in method builtins.getattr>",
+          "line": 0,
+          "primitive_calls": 114577,
+          "self_seconds": 0.031547927,
+          "total_calls": 126681
+        },
+        {
+          "cumulative_seconds": 2.4612440170000003,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009/src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py",
+          "function": "circuit",
+          "line": 69,
+          "primitive_calls": 1,
+          "self_seconds": 0.025179084,
+          "total_calls": 14723
+        },
+        {
+          "cumulative_seconds": 0.07117947300000001,
+          "file": "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/copy.py",
+          "function": "deepcopy",
+          "line": 128,
+          "primitive_calls": 1000,
+          "self_seconds": 0.024748038,
+          "total_calls": 29700
+        },
+        {
+          "cumulative_seconds": 0.068751518,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/qiskit/circuit/register.py",
+          "function": "__init__",
+          "line": 43,
+          "primitive_calls": 8616,
+          "self_seconds": 0.022876155000000002,
+          "total_calls": 8616
+        },
+        {
+          "cumulative_seconds": 0.038817937000000004,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/qiskit/circuit/quantumcircuit.py",
+          "function": "_add_qreg",
+          "line": 3105,
+          "primitive_calls": 8616,
+          "self_seconds": 0.021733616,
+          "total_calls": 8616
+        },
+        {
+          "cumulative_seconds": 0.059702436000000005,
+          "file": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/qiskit/circuit/quantumcircuit.py",
+          "function": "append",
+          "line": 2473,
+          "primitive_calls": 2604,
+          "self_seconds": 0.020596633,
+          "total_calls": 2604
+        }
+      ],
+      "total_calls": 9009842
+    }
+  },
+  "python_tracemalloc_nested_fixture": {
+    "legacy": {
+      "python_traced_peak_bytes": 17256297,
+      "python_traced_retained_bytes": 3119202
+    },
+    "v4": {
+      "python_traced_peak_bytes": 3311626,
+      "python_traced_retained_bytes": 3191792
+    },
+    "v5": {
+      "python_traced_peak_bytes": 150707,
+      "python_traced_retained_bytes": 47808
+    }
+  },
+  "repetitions": 3,
+  "schema": "track_a_ax2b_fingerprint_synthetic_profile_v5",
+  "scientific_load_sampling_compile_calls": 0,
+  "scope": "fixed synthetic circuits only",
+  "warm_definitions": true
+}

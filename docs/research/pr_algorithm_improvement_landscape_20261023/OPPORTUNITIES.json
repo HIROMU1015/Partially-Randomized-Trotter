@@ -1,0 +1,225 @@
+{
+  "schema_version": 1,
+  "adopted": false,
+  "scientific_priority_assigned": false,
+  "opportunities": [
+    {
+      "id": "OP-I1",
+      "group": "I",
+      "name": "run-level基底共有と合法な境界相殺をPR wrapperへ再利用",
+      "studies": [
+        "CIR-01",
+        "CIR-02",
+        "RB-13",
+        "PR-01"
+      ],
+      "part": "DF基底変換・隣接event・controlled wrapper",
+      "mechanism": "run-level full/support-union選択とliteral inverse cancellationを同じ合法な回路最適化として両baselineに与える。",
+      "resources": "RZ/CX/depthとone-shot費用。信号mean・normalizationを保持できる場合だけshot数を分離できる。",
+      "duplicate": "basis共有・gate cancellation自体は既存成果。P-Aのinterval DP固有寄与は停止済みで、新名称で復活させない。",
+      "reuse": "既存basis-plan builder、support_run_le_1、boundary記録。",
+      "weakness": "すでにfusion済みの境界、mixed-supportでの悪化、compiler/相対位相への依存。量子費用内のbasis占有率が未取得のcontextもある。",
+      "minimal": "将来、固定event列で既存と追加共有の差分を限定し、actual-adjoint/ordinary controlを含む同値性とfull wrapper費用を照合する。",
+      "science": "新回路build/compileが必要なら別途実行承認。今回は実施0。",
+      "gaps": "旧H4 rawへの厳密帰属はGAP-002。別contextへの利益・費用占有率は未検証。",
+      "novelty": "既存成果の転用。独立新算法claimなし。"
+    },
+    {
+      "id": "OP-I2",
+      "group": "I",
+      "name": "Closed P5特殊化をPR tail候補へ接続",
+      "studies": [
+        "RB-06",
+        "RB-09",
+        "RB-10",
+        "RB-17",
+        "PR-01"
+      ],
+      "part": "低Taylor次数のtail表現・生成",
+      "mechanism": "m=5でclosed group normalizerと角度共有を用い、同じ有限meanを生成する。",
+      "resources": "Tとnormalization/十分N、setup/online古典費用。CXはCTS対照が有利になり得る。",
+      "duplicate": "Closed P5はRA内部特殊化で既に評価済み。General Fullとの差を別原理の発見としない。H4 C1移植も既に探索済み。",
+      "reuse": "g9_p5、matched-native provider、C1 exact packet/adapter。",
+      "weakness": "ideal ensemble一致とdigital law/全trial law一致は別。H4でのlogical差は小さく、strict native・十分N・deterministic halves未接続。C1は凍結中。",
+      "minimal": "将来、現在凍結したC1と異なる具体的条件差を先に提示し、同finite target・同情報・P5/CTS強対照の接続不足だけを特定する。",
+      "science": "static binding後、native/mean/費用を新取得するなら別承認。既存C1の再開は自動認可されない。",
+      "gaps": "GAP-007は旧失敗の来歴。現在未取得のnative/Nは資料回収と区別する。",
+      "novelty": "転用候補。現条件での優位を推奨・採択しない。"
+    },
+    {
+      "id": "OP-I3",
+      "group": "I",
+      "name": "Pauli/DFの既存4方式比較基盤を共通PR契約へ利用",
+      "studies": [
+        "REP-01",
+        "REP-08",
+        "PR-01"
+      ],
+      "part": "Hamiltonian表現・prefix単位・tail回路",
+      "mechanism": "同じ元H・状態・固定signal taskで、Pauli/DFが作るtail normとnative単価の交換を比較できる。",
+      "resources": "C、analytic N、shot-weighted RZ/CX。未観測次数の費用を0にしない。",
+      "duplicate": "H2固定4方式比較は2026-10-23に完了済み。非DF一般を未探索と呼ばない。H4は既に準備案がある。",
+      "reuse": "representation identity receipt、finite-RTE law、process分離・監視、既存H2保存結果。",
+      "weakness": "異なる表現のL_Dは同じ数え方でない。H2の有限標本・経験的allowanceと別系への移送は限定。",
+      "minimal": "将来、既存H4準備案との重複を確認し、共通H/sector/scalar・prefix決定規則・rare-orderの扱いを固定する。",
+      "science": "H4等の生成/signal/MC/compileには対象限定の別承認。今回は準備・科学実行を追加しない。",
+      "gaps": "H2旧失敗とrun02成功は区別済み。別系の性能は未実施検証で、回収待ちrawではない。",
+      "novelty": "既存基盤の利用。表現名の追加を新算法としない。"
+    },
+    {
+      "id": "OP-I4",
+      "group": "I",
+      "name": "rank・split・PF次数・r/Kを同じ費用台帳で扱う",
+      "studies": [
+        "OPT-01",
+        "OPT-04",
+        "PR-01",
+        "EVAL-01",
+        "EVAL-03"
+      ],
+      "part": "有限候補の協調設計",
+      "mechanism": "discard/PF/finite-RTE biasとnormalization、単価・shotsを同じ固定taskへ戻して比較する。",
+      "resources": "shot-weighted compiled cost、状態準備感度、取得費。",
+      "duplicate": "PR-2/PMとP-D/Track Aで既存の比較軸。広い最適化だけではR3の停止理由を越えない。",
+      "reuse": "matched-accuracy accounting、既存PF係数、precision/prep sensitivity。",
+      "weakness": "cheap surrogateの除外安全性、同情報baseline、rank/係数版/allowance政策の不一致。四次逆転の原因究明は別チャット。",
+      "minimal": "将来の候補選定前に、既存固定表で既に比較済みの組と未知の接続を文書上で分離する。",
+      "science": "保存rawの新再会計や新候補評価は別途承認。今回は新しい順位を計算しない。",
+      "gaps": "旧stale DFはGAP-008。次数逆転の因果は未確定として維持。",
+      "novelty": "再利用可能な評価枠組み。新selector・正式優先順位ではない。"
+    },
+    {
+      "id": "OP-II1",
+      "group": "II",
+      "name": "PR目的を明示した軌道／DF表現の協調設計",
+      "studies": [
+        "REP-03",
+        "REP-04",
+        "REP-09",
+        "QC-07",
+        "OPT-04"
+      ],
+      "part": "軌道、DF fragment、deterministic/random split",
+      "mechanism": "normだけでなくPF bias、tail normalization、basis移動・native単価を同時に小さくする表現を狙う。",
+      "resources": "RZ/CX/Tと必要shots、表現取得/最適化の古典費用。",
+      "duplicate": "orbital-rotated DF、表現selector、UWCは検討済み。UWCのorbital interface予約は実行済み軌道最適化ではない。",
+      "reuse": "DF/Gaussian builder、UWC sector metadata、N1 exact fallbackとcore/pair強対照。",
+      "weakness": "norm低減が単価増に負けた既存例、DF/tapering誤差、局所最適、取得oracleを無料化する交絡。",
+      "minimal": "将来、具体的な軌道生成/更新規則と同情報の既存orbital baselineを一つ定義し、どの費用項を変えるかを先に特定する。",
+      "science": "最適化・分子再生成・PF/signal/compileは別の科学実行承認を要する。今回は規則を実装しない。",
+      "gaps": "UWC成績の根拠はGAP-001。旧rank screeningはGAP-008。",
+      "novelty": "既存表現研究の再設計候補。軌道最適化そのものの新規性は主張しない。"
+    },
+    {
+      "id": "OP-II2",
+      "group": "II",
+      "name": "相互作用・回路共有を保つ非prefix grouping/split",
+      "studies": [
+        "OPT-03",
+        "OPT-05",
+        "RB-02",
+        "PR-01",
+        "QC-05"
+      ],
+      "part": "決定論/ランダム部分の選び方と演算子順序",
+      "mechanism": "単項weightだけでなくcommutator構造と共有basisの価格を考慮し、同じrankでも費用の高い境界を避ける。",
+      "resources": "PF bias、tail normalization、basis/CX/depth、十分shots。",
+      "duplicate": "split最適化・grouping・SPRINT系・compact BCHは既知。prefix追跡とR3/BMの既存停止を名称変更で解除しない。",
+      "reuse": "固定DF registry、compact leading評価、full-wrapper builderとmatched accounting。",
+      "weakness": "score選択の公平性、計算量、候補探索/評価費、同情報known baselineが同じ選択を得る可能性。",
+      "minimal": "将来、同情報known方法からは得られない具体的な生成/選別差と、差を見分ける固定controlを提示する。",
+      "science": "新splitの数値評価/再ランキングは別承認。今回は新しい最適L_Dやrankを選ばない。",
+      "gaps": "既存SOURCEは使えるが、独立method deltaと性能は未確立。",
+      "novelty": "条件を変える理由が必要な再検討候補。一般groupingを新自由度としない。"
+    },
+    {
+      "id": "OP-II3",
+      "group": "II",
+      "name": "生成費を支払うcost-aware whole-path sampling",
+      "studies": [
+        "QC-04",
+        "RB-18",
+        "RB-04",
+        "RB-14",
+        "RB-08"
+      ],
+      "part": "sampling law・history・zero/rejection・全path費用",
+      "mechanism": "高価なbasis切替やnative eventを避けるproposalを、正しいlikelihood weightと共に生成する。",
+      "resources": "native費用×十分N、range/tail、probability/normalizer取得、online古典費。",
+      "duplicate": "importance sampling、history相関、全path費用最適化自体は既知。現在の候補は独立生成差未成立。",
+      "reuse": "rte.pyのphase/order metadata、全trial estimator、finite-bit/zero-fill台帳。",
+      "weakness": "marginal一致だけでmeanが壊れる、重み二次moment/range増、D挿入と相対位相、巨大inverse stack、古典費用。",
+      "minimal": "将来、一つのcompact proposal生成則についてsupport・全path likelihood・coherent first momentの必要条件を明記し、最も近い既知法との差を先に照合する。",
+      "science": "新証明・sampling/compile/数値比較が必要なら別承認。今回は新lawを生成・実行しない。",
+      "gaps": "既存文献対応はある。缺けているのは新しい安い具体手順であり、既存raw不足だけではない。",
+      "novelty": "再検討の条件付き候補。q∝|a|/sqrt(g)等の既知式を新規案として数えない。"
+    },
+    {
+      "id": "OP-II4",
+      "group": "II",
+      "name": "return/Euler回転とnative synthesis placementの協調",
+      "studies": [
+        "RB-03",
+        "RB-09",
+        "RB-11",
+        "RB-13",
+        "RB-14",
+        "CIR-01"
+      ],
+      "part": "回転辞書・parent配分・joint control・合成位置",
+      "mechanism": "単独角度価格だけでなく隣接融合、符号付きjoint phase、cheap exact角、十分Nを一体で扱う。",
+      "resources": "T/CX/depth、moment/range、bias、workspace、prep/readout。",
+      "duplicate": "SP・Parent allocation・D2境界相殺・Closed P5に既存結果。単なる再組合せや同toy再探索を新研究としない。",
+      "reuse": "native signed pair、actual-adjoint、合成sequenceと価格ledger、fixed-target比較。",
+      "weakness": "加法単価とwhole compilerの差、TとCXの交換、価格取得後の選択bias、zero-cost eventでの最適law境界。",
+      "minimal": "将来、既存strong baselineがすでに融合する箇所を除き、具体的に省ける操作と同精度・同情報の対照を指定する。",
+      "science": "新angle/native合成/whole-wrapper比較は別承認。過去SP/S4/DF補正STOPを再開しない。",
+      "gaps": "全wrapper費用と生成費の接続は未実施。局所PASSは実用GOにしない。",
+      "novelty": "既存構成の条件付き再設計。独立性は未確認。"
+    },
+    {
+      "id": "OP-III1",
+      "group": "III",
+      "name": "接続性を含むPR表現・split・basis移動の協調",
+      "studies": [
+        "CIR-01",
+        "REP-01",
+        "REP-08",
+        "PR-01",
+        "RB-17"
+      ],
+      "part": "coupling mapを持つcompiled生成",
+      "mechanism": "basisを頻繁に跨ぐrandom tailとdeterministic backboneを、実接続上で共有しやすい配置・生成単位へ合わせる。",
+      "resources": "CX/SWAP/depth、RZ/T、状態/制御の追加費。",
+      "duplicate": "routing・mapping・Gaussian共有は既知。今回確認した主compiled比較はroutingなしが中心で、この組合せの研究記録は十分確認できていない。",
+      "reuse": "同H/同meanのbuilderとcompiler identity、既存basis plan。",
+      "weakness": "backend選択による恣意性、両baselineへの同じrouting最適化、単価改善のshotでの相殺。",
+      "minimal": "将来、抽象接続性と一つの明示生成差を固定し、既知mapping/compilerへ同じ合法情報を与えた比較が必要。",
+      "science": "新build/routing/compileには別実行承認。今回はbackendや配置を選ばない。",
+      "gaps": "記録不足は未探索の証明でない。発見可能branch以外と近接文献の確認が必要。",
+      "novelty": "プロジェクト内の記録が薄い可能性がある自由度。世界的新規性の認定ではない。"
+    },
+    {
+      "id": "OP-III2",
+      "group": "III",
+      "name": "roundごとの表現・rank・split変更を許すPR契約",
+      "studies": [
+        "OPT-01",
+        "PR-01",
+        "EVAL-01",
+        "RB-15",
+        "PF-05"
+      ],
+      "part": "複数時刻/RPE round間の協調設計",
+      "mechanism": "固定splitで全roundを賄う代わりに、roundごとのbias/visibility/単価条件に応じて構成を変える余地を調べる。",
+      "resources": "round合計のshots×wrapper費、再準備・前処理・compiler取得費。",
+      "duplicate": "round別r/K・beta/alpha配分は既存。round別L_D/表現まで含む同一absolute-energy contractの十分な検討記録は今回確認できていない。",
+      "reuse": "既存round schedule・matched-accuracy台帳・branch/phase ledger。",
+      "weakness": "PF固有位相がroundごとに変わる、同じE0のdecoderへのbridge、state access、探索費。単なる一般動的計画なら新規性は弱い。",
+      "minimal": "将来、構成を変えても同じ目的energyを読む条件と、固定構成に対して何を省けるかを先に文書化する。",
+      "science": "新しい非自明な保証・signal/RPE/費用再会計はすべて別承認。今回は設計を正式採択しない。",
+      "gaps": "Task Aのsignal比較をTask Bの全RPEへ移す証拠が未取得。これは回収だけで埋まるとは限らない。",
+      "novelty": "確認資料で薄い接続候補。新しい算法や性能向上を確立したものではない。"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "status": "SCHEMA_ONLY_NO_GRANT_CREATED",
+  "required_boolean_values_after_future_user_approval": {
+    "approved_by_user": true,
+    "runtime_authorization": true,
+    "automatic_retry": false,
+    "synthetic_only": false
+  },
+  "required_fields": [
+    "approved_by_user",
+    "runtime_authorization",
+    "scope",
+    "SOURCE",
+    "contract_sha256",
+    "exclusive_output",
+    "approval_evidence_sha256",
+    "review_commit",
+    "synthetic_only=false",
+    "automatic_retry=false",
+    "input_receipts_digest",
+    "budget_digest",
+    "binding_digest",
+    "profile_digest",
+    "source_hashes_digest",
+    "allowed_cpus_digest",
+    "carry_digest"
+  ],
+  "contract_hash_rule": "SHA256 exact contract file bytes",
+  "binding_digest_rule": "SHA256 canonical JSON sorted keys separators comma/colon; no NaN",
+  "current_approved": false,
+  "current_runtime_authorization": false,
+  "example_authorization_receipt_issued": false
+}

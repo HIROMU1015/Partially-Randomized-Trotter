@@ -1,0 +1,299 @@
+# Codexへの指示：A2実入力pilot準備から限定科学実行まで
+
+## 1. 目的
+
+有限step相対形式保証A2について、既存の認証SOURCEを実際の固定DF Hamiltonianに接続し、**RF0/RF1/EW2と強い交換子ノルム対照が許す十分stepを、同一条件・認証付きで比較する**ところまで進めてください。
+
+今回は以下の2段階とします。
+
+- **Phase A：実入力への接続実装、人工テスト、科学実行契約案の作成**
+- **Phase B：別途ユーザーが科学実行を明示承認した場合のみ、固定済み契約に従って限定科学実行**
+
+Phase Aは今回の作業指示で実施して構いません。
+
+**Phase Bは今回の指示だけでは実行禁止です。** Phase Aの完了後、ユーザーが科学条件・契約を採択し、別途実行を明示承認するまでmandatory STOPしてください。
+
+## 2. 固定資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+最新SOURCE・人工テスト：
+
+commit `34d9a2f1a25bd35c03566ce0635e8b66665ad996`
+
+- `src/trottercert/a2_spec01_03/`
+- `src/trottercert/a2_spec04_07/`
+- `docs/research/qc_a2_spec04_07_synthetic_20261018/`
+
+設計仕様：
+
+commit `7af83266f96b714bb3fa2f1ef5e4bc89faf37db3`
+
+- `docs/research/qc_a2_certificate_connection_design_20261018/`
+
+数学的保証・比較：
+
+commit `db1819587df36ee8833b37227ca0083faa0408ec`
+
+- `docs/research/qc_relative_form_ew2_step_audit_20261017/`
+
+その他、RF0/RF1、SOS-PF K0/K0.5、既存preflightの固定資料を必要に応じて参照してください。
+
+これらのSOURCE・報告・監査資料を実際に確認し、既存の人工98テストPASSと固定実装を基点にしてください。
+
+**既に成立した数学的保証の再証明や、実装済みSPEC-01〜07の全面的な作り直しは不要です。**
+
+## 3. Phase A：実入力pilotの準備
+
+### A-1. 入力候補の選定
+
+既存の保存資料から、認証付き比較に適した**小規模な固定DF Hamiltonian候補**を確認してください。
+
+初期対象は、固定DFモデル・固定N sector・signed DF平方・固定順序の対称二次PFとします。
+
+選定では以下を優先してください。
+
+- 元データとDFモデルのidentityを追跡できる
+- full constant・one-body・全DF blockが揃っている
+- mode順序、sector、scalar規約が明確
+- 正確なHermiticityとPSD化条件を検査できる
+- SPEC-06の指数的checkerが実行可能な見込みがある
+- 相対保証と強い対照へ同じ認証情報を提供できる
+
+**この段階では、実際の保存係数を用いた科学演算・certificate生成・step比較を実施しないでください。**
+
+候補の調査はファイルidentity、既存metadata、SOURCE・provenance資料を中心とし、ユーザーの採択前に科学入力を開いて数値評価しないこと。
+
+適切な候補が複数ある場合は、科学的な結果を見て選ばず、必要証拠・実行可能性・費用の観点から最小候補を提案してください。
+
+分子、geometry、basis、DF rank、Nなどを勝手に正式採択しないでください。
+
+### A-2. 実入力adapterの限定実装
+
+既存SPEC-01〜07を変更・破壊せず、保存DF入力を認証SOURCEのexact raw representationへ接続するadapterを実装してください。
+
+必須事項：
+
+- raw fileと全arrayのbytes/SHA256固定
+- binary64 bit patternのexact decode
+- full constant・one-body・signed平方の規約検査
+- 全block inventoryと順序の保持
+- mode/JW orderingの明示
+- 固定N sectorと保存則の検査
+- exact Hermiticityの受理・拒否
+- 元モデルとPSD fragmentのscalar台帳
+- 入力・SOURCE・certificateの親identity
+- 元電子Hamiltonianと固定DFモデルの保証範囲の分離
+
+**暗黙のHermitization、係数修正、欠落blockの補完、scalar二重加算、保存値の再解釈は禁止します。**
+
+実入力が現在のexact Hermiticity条件を満たさない場合は、黙って修正せず、別モデルへの変換が必要な理由を報告してください。
+
+### A-3. 科学実行runner・保存機構の準備
+
+後で承認済みの固定契約を受け取った場合に限り実行できる、限定runnerと保存機構を準備してください。
+
+最低限、以下を実装してください。
+
+- 固定契約・SOURCE・input identityの照合
+- 実行authorizationの確認
+- 未承認時のfail-closed
+- generatorと独立checkerの実行順序
+- 中間certificate・検証失敗理由の保存
+- stdout/stderr・費用・SOURCE hashの保存
+- 部分成果を含む再現可能な結果台帳
+- 実行済みmarker・STOP・retry条件の検査
+- 二重実行防止
+
+Phase Aでは**実入力を用いてrunnerを起動しない**でください。
+
+実装検証には人工データのみ使用します。既存SPEC-01〜07の回帰テストも実施してください。
+
+### A-4. 科学実行契約案の作成
+
+次の限定比較を実施するための科学契約**草案**を作成してください。
+
+契約には、少なくとも次を明記します。
+
+- 固定DFモデルのraw identity
+- mode順序・固定N・全fragment・PF順序
+- PSD shiftと認証capのpolicy
+- Uに使用するtrial determinant
+- \(d\)、\(\alpha_{\mathrm{spec}}\)
+- sqrt witnessの算術精度
+- step root enclosureの許容幅・反復条件
+- 使用する保証と強いbaseline
+- 許可する科学callと保存対象
+- 実行失敗時のSTOP・retry条件
+- 情報取得・検証・費用測定の範囲
+- 使用SOURCE・入力・契約の固定hash
+
+未決定の科学条件は`UNSET`として明示し、慣例値を勝手に代入しないでください。
+
+**契約草案は実行許可ではありません。**
+
+新しいauthorization・grantを発行したり、実行済みmarkerを作成したりしないでください。
+
+### Phase Aの完了条件
+
+- 実入力adapter・限定runnerを実装
+- 人工テストと既存回帰テストPASS
+- 適切な入力候補と不足資料を整理
+- 科学実行契約案を作成
+- SOURCE、テスト、契約案、技術報告をcommit・push
+- 公開bytes/SHA256と保全を確認
+
+**ここで必ずmandatory STOPし、ユーザーへ科学条件・契約の採択と、Phase Bの実行承認を求めてください。**
+
+承認を得る前に実際の科学入力を評価してはいけません。
+
+---
+
+## 4. Phase B：認証付き限定科学実行
+
+**このPhaseは、Phase A終了後にユーザーから別途明示的な実行承認が与えられた場合のみ実施してください。**
+
+正式採択された固定契約に従い、事前固定された入力とSOURCEに対して、次の処理を実施します。
+
+### B-1. 入力と認証の検査
+
+- 元raw・モデル・sector・分割・SOURCE identityの照合
+- exact Hermiticity・全block・scalar恒等式の検査
+- PSD fragmentと保存則の検証
+- generatorとcheckerの独立した認証
+- 不成立・不完全なcertificateのfail-closed
+
+### B-2. 認証情報の生成
+
+同じ固定DFモデル・sector・PSD分割について、
+
+\[
+L,\quad U,\quad W=U-L,
+\]
+
+\[
+f_j,\quad\Lambda,\quad
+K_{\mathrm{SOS}},\quad\overline C_2
+\]
+
+を生成・独立検証してください。
+
+generatorの成功だけで認証済みと扱わず、checkerの検証結果を区別して保存してください。
+
+SPEC-06では、centered capとgrouped交換子の構造・相殺を保持する対照を公平に使用してください。
+
+checkerの指数的処理が実行不能または証拠不完全な場合、粗い対照へ都合よく差し替えて相対側の優位を主張してはいけません。
+
+### B-3. 認証付き十分step比較
+
+同じ認証情報、同じ目標精度、同じ成功確率で、
+
+- RF0/RF1とEW2
+- 強化したcentered交換子ノルム保証
+
+の最大十分stepを評価してください。
+
+結果は、
+
+\[
+h_R,\qquad h_C
+\]
+
+について検証可能なenclosureとして保存してください。
+
+比較では以下を厳密に扱います。
+
+- 各保証の有効領域
+- \(\eta<1\)
+- strict/open endpoint
+- root enclosureと丸め方向
+- \(W=0,\Lambda=0,\overline C_2=0\) 等の退化case
+- 数値境界の未解像
+- 入力・証拠の不一致
+- 比較不能なcase
+
+**認証された十分stepの大小と、真のPF誤差・実QPE資源の大小を混同しないでください。**
+
+強い既知対照より小さいstepしか認められなかった場合も、結果をそのまま保存してください。
+
+### B-4. 費用と結果の記録
+
+少なくとも次を記録してください。
+
+- 入力読込み・変換費用
+- certificate生成費用
+- checker費用
+- K_SOSとCbar2の個別費用
+- CPU/wall/RAM・bit長・保存量
+- 認証stepの比較結果
+- 失敗・未解像・比較不能の理由
+
+古典費用、量子query、T/CX/depth、state preparationを根拠なく合算しないでください。
+
+現段階ではexact ground accessは条件付き理論入力です。state preparation費用・native実装費用は未評価として保持してください。
+
+**今回の比較で得られるのは、固定DFモデル上の認証付き十分stepと、その証拠取得費用までです。**
+
+実際のQPE、native compile、状態準備、元分子Hamiltonianへの厳密保証、総資源優位の認定は行いません。
+
+### B-5. STOPと公開
+
+固定契約で許可された科学callのみ実行し、終了後は結果の良否にかかわらずSTOPしてください。
+
+契約外の分子追加、rank変更、precision変更、trial変更、有利な条件への再探索、未承認retryは禁止です。
+
+SOURCE・raw・全certificate・検証結果・費用・失敗記録を保全し、commit・push、remote HEADと公開同一性を確認してください。
+
+---
+
+## 5. 計算資源・共有環境
+
+最新版正式共通運用指示：
+
+`research_project_instructions_unified_2026-10-17.md`
+
+特に§8.4を適用してください。
+
+- CPU、RAM、worker数、wall time等に恣意的な低い上限を設けない。
+- 重いexact algebra・証拠生成・独立検証は、実際の空き資源と非干渉を確認して効率化・並列化する。
+- 共有サーバー全体や他ユーザーに影響する設定・process・ファイル・環境変更は絶対禁止。
+- 既存の承認済み固定契約の資源条件は無断変更しない。
+- 科学的な入力範囲・call数・精度・retry等は採択済み契約を厳守する。
+
+実行を高速化するために証明の厳密性やcheckerの独立性を弱めないでください。
+
+## 6. 研究状態と禁止事項
+
+以下を維持してください。
+
+- A2：`NOT_ADOPTED`
+- A1：`CLOSED`
+- K1-F：未承認・未実行
+- ①PRリソース評価、②PR内部改善、③M1-Sには介入しない
+- その他のSTOP/CLOSED/PAUSED/HOLD研究も変更しない
+
+新しい数学的保証・アルゴリズム探索、重要科学レビュー、SPEC-08、QPE/native/state preparationの実装へ自動移行しないでください。
+
+既存SOURCE、raw結果、科学契約、authorization、grant、ledger、marker、親worktreeを保全してください。
+
+## 7. 最終報告
+
+Phase Aでは、次を報告してください。
+
+1. 入力候補と選定理由
+2. adapter・runnerの実装内容
+3. 人工テストと回帰テスト結果
+4. 科学実行契約案の固定リンク
+5. 未決定の科学条件
+6. SOURCE・資料の固定commit
+7. Phase Bに必要なユーザーの承認事項
+
+**Phase A完了後はmandatory STOP。**
+
+別途承認されたPhase Bを実施した場合は、認証情報、検証結果、h_R/h_Cの比較、証拠取得費用、失敗・未解像事項、固定SOURCE・結果・commitを報告してください。
+
+Phase B終了後もmandatory STOPとし、A2採択・追加分子・追加計算・SPEC-08へ自動移行しないでください。
+
+**最終目的：実装済みSPEC-01〜07を実入力に正当に接続し、承認された限定科学実行によって、相対形式保証が強い既知保証より有用な認証stepを与えるかを、公平な条件で評価すること。**

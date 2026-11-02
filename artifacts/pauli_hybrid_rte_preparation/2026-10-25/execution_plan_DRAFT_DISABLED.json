@@ -1,0 +1,114 @@
+{
+  "schema": "pauli_hybrid_rte_execution_scope_v1",
+  "status": "DRAFT_DISABLED_AWAITING_EXPLICIT_USER_EXECUTION_PERMISSION",
+  "execute_enabled": false,
+  "preparation_branch": "codex/pauli-hybrid-rte-preparation-20261025",
+  "base_commit": "e2b9215fd7432e7406ef8c7b8b5f55fba563a696",
+  "fixed_result_commits": {
+    "integrated": "e2b9215fd7432e7406ef8c7b8b5f55fba563a696",
+    "H4": "d3fdfad880902b7ff35b710d22e1c9759f7087c2",
+    "H2_H6": "8fd1ceb283309a7e515ff4a533a253260bdd0f78"
+  },
+  "SOURCE_inputs": "prospective_SOURCE_inputs.json",
+  "new_output_namespace": "artifacts/pauli_hybrid_rte_comparison/2026-10-25",
+  "conditions": {
+    "molecules": [
+      "linear H2",
+      "linear H4",
+      "linear H6"
+    ],
+    "adjacent_distance_A": "1.00",
+    "basis": "STO-3G",
+    "state_and_reference": "existing molecule-specific raw ray/full-H reference; no regeneration or renormalization",
+    "M": {
+      "H2": 14,
+      "H4": 184,
+      "H6": 918
+    },
+    "T": "0.8",
+    "formula": "S2",
+    "control": "Pauli central-rotation",
+    "compiler": "Qiskit1.3.0; rz/sx/x/cx; optimization_level1; seed17; no topology/layout/routing override",
+    "epsilon_sig": [
+      "0.05",
+      "0.01",
+      "0.005",
+      "0.001",
+      "0.0005"
+    ],
+    "cost": "compiled full Hadamard wrapper RZ, preparation excluded",
+    "G": "N_cos*C_cos+N_sin*C_sin",
+    "rho": "hypothetical 0 only"
+  },
+  "stage_A_saved_reanalysis": {
+    "scope": "New class-specific finite saved-G minima and Hybrid/RTE exact ratios, separately for exploration and independent confirmation. Preserve old H4 primary nominee separately.",
+    "registered_PR_candidates": {
+      "H2": {
+        "RTE": 13,
+        "Hybrid": 51
+      },
+      "H4": {
+        "RTE": 13,
+        "Hybrid": 128
+      },
+      "H6": {
+        "RTE": 7,
+        "Hybrid": 94
+      }
+    },
+    "comparison_cells": 15,
+    "existing_saved_N_B_bias_allowance": "quote only; no new target, shot rule or normalization computation",
+    "null_policy": "Null never 0/infinity; exclude from computable subset with unresolved-ID/status list; never claim entire registered family resolved.",
+    "H4_historical_candidate": "p027_q8_r4_K4 has historical_baseline n256; keep separate reference. Strict exploration minimum uses 140 actual exploration candidates, confirmation uses 4 actual finalists. Do not relabel or pool historical prices.",
+    "statistics": "quote saved SE; use existing paired stats only for new confirmation prices. No exact simultaneous/population-winner claim.",
+    "lower_bound_screen": "Only an already justified saved bound may support skipping confirmation; an observed minimum, exploration mean, missing value or low frequency is never promoted to a population lower bound. Otherwise sample the frozen nominee or report missing."
+  },
+  "stage_B_fresh_confirmation": {
+    "candidate_domain": "registered candidates only; no parameter search or adaptive prefix/q/r/K expansion",
+    "nomination_rule": "For each missing molecule/class/precision cell choose eligible finite-G exploration minimum after execution permission; exact ties lexical candidate ID, all ties recorded. Deduplicate the union and freeze IDs/inputs/batch/SOURCE before sampling.",
+    "H2": "no new sampling; reuse 2 existing confirmation candidates n96",
+    "H4": "only Hybrid nominees for epsilon0.001 and0.0005, at most2 distinct candidates; reuse existing RTE and eligible Hybrid confirmations",
+    "H6": "only RTE nominees for 5 precision cells, at most5 distinct candidates; reuse existing Hybrid confirmations",
+    "fresh_candidates_max": 7,
+    "fresh_seed_rule": "Reuse original candidate-specific SeedSequence rule: H2/H6 [20261025,molecule_size,L_D,q,r,K,202,index], H4 [20261025,3101,L_D,q,r,K,202,index]. Only previously unconfirmed IDs and unused indices; verify no collision with saved records before dispatch.",
+    "initial_paired_trajectories_per_candidate": 48,
+    "progressive_totals": [
+      48,
+      96,
+      192,
+      384
+    ],
+    "extension_rule": "Extend only if nominal Hybrid/RTE G difference is <=2 combined SE AND nominal t95 halfwidth of new candidate >1% of its G. Stop rather than rerun existing successful cohorts when existing comparator uncertainty dominates; at384 stop unresolved if necessary.",
+    "design_rationale": "48 matches existing H6/H4 Hybrid confirmation; saved price SE is available per candidate. After permitted reanalysis use saved gap/variance to apply this fixed extension rule. No new sample-size calculation was performed in preparation.",
+    "paired_rule": "same trajectory supplies cosine and sine prices; G variance uses paired weighted prices, not independent-axis SE addition",
+    "cohort_rule": "No exploration/confirmation pooling, no pooling different candidates or molecules. New confirmation is a fresh cohort; fixed nominee view and post-confirmation class-minimum view are distinct.",
+    "target_and_N_rule": "Reuse saved target, B, bias, allowance and N for the same candidate/epsilon. SAFE_INTEGER_LIMIT and numerical ambiguity remain unresolved; no threshold/allowance/domain changes.",
+    "new_trajectory_calls_max": 2688,
+    "new_axis_compiles_max": 5376,
+    "new_scientific_state_actions_max": 0,
+    "new_Hamiltonian_state_reference_actions_max": 0,
+    "output_policy": "Fresh driver and directory; never call old output-bound entry points or reopen their STOPs. Reuse central_trajectory/sampler/compiler/paired-stat kernels.",
+    "batch_policy": "Before each new sampling batch fix exact IDs, candidate config, saved target/N selectors, code commit/hash, runtime, seeds/index ranges and call counts. This is scientific provenance, not approval proof."
+  },
+  "stop_rules": [
+    "No scientific reanalysis, sampling or compile before user's explicit execution permission for this combined scope.",
+    "After permission: stop affected fresh batch on input/SOURCE/runtime mismatch, native failure or incomplete result; preserve evidence and do not mark unverified results PASS. No automatic retry of failed calls.",
+    "Do not treat transient shared-resource pressure as failed science; adjust only own dispatch/concurrency without changing other users or shared settings.",
+    "Technical repairs within approved scope are allowed with fresh SOURCE/batch and preserved failed evidence; no relaxation of historical one-shot/retry restrictions.",
+    "If a scientific condition/algorithm, shot rule or fair comparison must change, stop and return the decision to user.",
+    "At sample cap, keep near-tie/unresolved/missing classification; do not broaden parameters or recompute successful old cases.",
+    "After results, provenance, native exit/reap checks, commit/publication and local/remote verification: mandatory STOP; no important claim adoption or detailed GPT science review."
+  ],
+  "excluded": [
+    "new Hamiltonian/state/reference",
+    "new Arb or law-mean state actions",
+    "new PR law/algorithm/geometry",
+    "new shot rule or numerical allowance",
+    "R2-C proof continuation",
+    "formal certificate acceptance",
+    "population-tail guarantee",
+    "global optimum or general size scaling claim"
+  ],
+  "resources": "Parallel native workers selected from actual availability/workload; no arbitrary CPU/RAM caps; no shared-environment or other-user modifications.",
+  "permission_mechanism": "User chat permission only; no approval certificate, packet, grant, identity check or approval ledger."
+}

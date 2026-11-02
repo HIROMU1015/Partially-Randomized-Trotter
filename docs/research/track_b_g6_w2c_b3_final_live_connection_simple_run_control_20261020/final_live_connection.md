@@ -1,0 +1,24 @@
+# 最終接続SOURCE
+
+resolver.static_bindingはCore6と許可済みhelperのAST signature/argument shape/location/SHAを取得する。
+resolver.resolveは承認gate、固定preflight、parentのSPENT状態を確認した後だけimportlib resolverへ進む。
+loaded symbolsは__file__・code filename・qualname・signatureを再照合する。classmethodは元の関数を照合。
+同じworker内のsymbols再利用でもsource/location/permitを確認する。今回resolveは一度も呼ばなかった。
+
+wrapper.ScientificFactoryとScientificBitsFactoryはspawn可能な固定c/m/permitを受け取る。
+Endpointは既存parallel_driver.LegacyEndpointのversioned subclassで、admissionとobservationを新しい接続へ置き換える。
+旧LegacyEndpoint constructorを無断で有効化しない。Canonical/Fullの元のAPI経路と監査・angle contextを保つ。
+人工Factoryはexact builtin Symbolsだけを受け取り、任意objectをreal symbolsへ昇格させない。
+
+G7側では実sampleのraw/bit stage、owned event/packet observerから枝を捕捉し、None単独からZEROを推測しない。
+Full Bは元のF3 Evidence objectをangle_for_eventへ渡し、document/digestの完全bytesを検査・sidecarに保存する。
+Canonicalのgroup_index/raw_word/child、Fullのraw/reduction/packet/coin/child/fingerprintを保持する。
+原型typed failure、取得済みResult、観測済みbits、Audit failure sealをF01へ渡す。失敗後はterminal拒否。
+
+bits.ScientificBitsは固定G7.DeterministicBitsを委譲先にする。追加hash/drawをせず位置・幅・消費を記録する。
+今回の動的Bits試験はARTIFICIAL_FINAL_LIVE_V1だけ。science namespaceは文字列候補のままでbit列0。
+setup証拠は各pairの最初の行へoriginal documentとして保存し、全行からdigestで参照する。
+保存監査はSOURCEを呼ばず、既存Exact Codec/Resultと同じ契約で元文書・audit/angle/query/prefix/budgetを照合する。
+
+
+**実科学未実行、実行未承認。mandatory STOP。次の担当：ユーザー・GPT。**

@@ -1,0 +1,137 @@
+{
+  "passed": true,
+  "reference": "unchanged g10_saved.serial + JSON indent2/Unicode/finite/newline",
+  "cases": [
+    {
+      "case": "provider_integer_labels",
+      "bytes": 92,
+      "SHA256": "dd338604150a21b88b997a945b5c583849e5ca61e06fda7237da2d784420403a",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 91
+    },
+    {
+      "case": "mixed_keys",
+      "bytes": 54,
+      "SHA256": "d625b544756a491c498f18ffb9a4021465517a6bbfc332c64b0b04190f54b480",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 53
+    },
+    {
+      "case": "collision_integer_first",
+      "bytes": 33,
+      "SHA256": "585444e6275cff629b39f13bea7aaa58ff89d3d700e87d3a6f1be818849be2d3",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 32
+    },
+    {
+      "case": "collision_string_first",
+      "bytes": 33,
+      "SHA256": "585444e6275cff629b39f13bea7aaa58ff89d3d700e87d3a6f1be818849be2d3",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 32
+    },
+    {
+      "case": "multiple_collisions",
+      "bytes": 43,
+      "SHA256": "4cbe71da153afc7aedb69b148ed5ce3d0b82b946daecd5b62975ccaf40389340",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 42
+    },
+    {
+      "case": "insertion_order",
+      "bytes": 52,
+      "SHA256": "f028251670ac7f1f15740df421baaf2a0cdedc558ee26fba81a38bff57c58c6c",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 51
+    },
+    {
+      "case": "reverse_order",
+      "bytes": 52,
+      "SHA256": "f82d73ac8d13dc34ec353b69c2c9b1b6463b54bbc272873b220421d807ab2172",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 51
+    },
+    {
+      "case": "bool_None_keys",
+      "bytes": 48,
+      "SHA256": "69fded2362b0032cf396c8ac60043eb3b5073b3107c02c980200af99399ed3f3",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 47
+    },
+    {
+      "case": "float_keys",
+      "bytes": 54,
+      "SHA256": "db1b10bc4def40fae2b471ecd3d854d04b41eb74fd8d2f94c47327fe566eb989",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 53
+    },
+    {
+      "case": "tuple_bytes_keys",
+      "bytes": 47,
+      "SHA256": "586f4446707999bdae40c20bc890a8f7e855f4fb2933795b54f2adc643680a8f",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 46
+    },
+    {
+      "case": "nonfinite_keys_are_strings",
+      "bytes": 27,
+      "SHA256": "ac5400d63fcc8ee0f3dc3b5df4ef6333e83b9392082f7ffed24e8ec2333855fd",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 26
+    },
+    {
+      "case": "nested",
+      "bytes": 348,
+      "SHA256": "8c68f5d626974ac51d5d770774844532d531784f81b2849cd215842a228ba03c",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 347
+    },
+    {
+      "case": "fractions",
+      "bytes": 863,
+      "SHA256": "2200715c7397c6bd9985726f9e79e51ac5c47ded65d49437058cb43d4814e4cd",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 862
+    },
+    {
+      "case": "shared_subtree",
+      "bytes": 319,
+      "SHA256": "eec40b3a82a64fdfc3161bfcd0a5b0f1c2be8e1f447d4a433ca4db4efcf4b6ff",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 318
+    },
+    {
+      "case": "Unicode",
+      "bytes": 71,
+      "SHA256": "098778c807f4bccd8da3d1627b2b1f209f7976eda797845e3dbb2d0d1866d3ae",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 70
+    },
+    {
+      "case": "empty_and_scalars",
+      "bytes": 72,
+      "SHA256": "a71fad2e4a7e099303984bf3cc11614b7e4027b38c2d288e34a42c9b254a51f7",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 71
+    },
+    {
+      "case": "large_typed_2500",
+      "bytes": 816742,
+      "SHA256": "a0baa136236a8ad89c7abd849586c44e362ada7938673c48446b61f14c191006",
+      "byte_equivalent": true,
+      "maximum_write_bytes": 32768
+    }
+  ],
+  "cases_count": 17,
+  "whole_result_science_generated": false,
+  "admitted_values": "finite JSON scalars/Fraction/dict/list/tuple, acyclic including shared subtrees",
+  "keys": "stable side-effect-free str(key), all encountered int/str labels plus tested general builtins",
+  "collision_rule": "first normalized key position, last value",
+  "intentional_safety_boundary": "invalid overwritten values rejected, unlike legacy if they disappear before JSON validation",
+  "unsupported_general_cases": [
+    "side-effecting key str()",
+    "concurrent mutation"
+  ],
+  "science_synthesis_matrix_sampling_LP": 0,
+  "mandatory_STOP": true
+}

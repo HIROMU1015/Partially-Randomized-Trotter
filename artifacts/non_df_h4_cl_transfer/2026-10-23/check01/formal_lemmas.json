@@ -1,0 +1,126 @@
+{
+  "one_body": {
+    "status": "FORMAL_LEMMA_CHECKED",
+    "rule": "ONE_BODY",
+    "conclusion": "Exact phase polynomial equals -tau*H_diagonal",
+    "assumptions": [
+      "All tau/lambda/eta are real",
+      "Commuting occupation projectors n_k^2=n_k",
+      "No binary64 parameter generation or literal controlled decomposition is proved"
+    ],
+    "binding_to_saved_H4": "NOT_PROVED",
+    "formal_certificate_accepted": false,
+    "polynomial": [
+      {
+        "monomial": [
+          "bit:0",
+          "eta:0",
+          "tau"
+        ],
+        "coefficient": "-1"
+      },
+      {
+        "monomial": [
+          "bit:1",
+          "eta:1",
+          "tau"
+        ],
+        "coefficient": "-1"
+      }
+    ],
+    "system_qubits": 2,
+    "DF_squared_replaced_by_involution": false
+  },
+  "df_squared": {
+    "status": "FORMAL_LEMMA_CHECKED",
+    "rule": "DF_SQUARED",
+    "conclusion": "Exact phase polynomial equals -tau*H_diagonal",
+    "assumptions": [
+      "All tau/lambda/eta are real",
+      "Commuting occupation projectors n_k^2=n_k",
+      "No binary64 parameter generation or literal controlled decomposition is proved"
+    ],
+    "binding_to_saved_H4": "NOT_PROVED",
+    "formal_certificate_accepted": false,
+    "polynomial": [
+      {
+        "monomial": [
+          "bit:0",
+          "bit:1",
+          "eta:0",
+          "eta:1",
+          "lambda",
+          "tau"
+        ],
+        "coefficient": "-2"
+      },
+      {
+        "monomial": [
+          "bit:0",
+          "eta:0",
+          "eta:0",
+          "lambda",
+          "tau"
+        ],
+        "coefficient": "-1"
+      },
+      {
+        "monomial": [
+          "bit:1",
+          "eta:1",
+          "eta:1",
+          "lambda",
+          "tau"
+        ],
+        "coefficient": "-1"
+      }
+    ],
+    "system_qubits": 2,
+    "DF_squared_replaced_by_involution": false
+  },
+  "cosine": {
+    "status": "FORMAL_LEMMA_CHECKED",
+    "conclusion": "P0_MINUS_P1_REAL_EXPECTATION",
+    "gate": "wrapper_transfer",
+    "assumptions": [
+      "EXACT_CONTROLLED_U",
+      "IDEAL_BORN_BINARY_READOUT",
+      "NORMALIZED_PREPARED_STATE"
+    ],
+    "binding_to_saved_H4": "NOT_PROVED",
+    "formal_certificate_accepted": false
+  },
+  "sine": {
+    "status": "FORMAL_LEMMA_CHECKED",
+    "conclusion": "P0_MINUS_P1_IMAG_EXPECTATION",
+    "gate": "wrapper_transfer",
+    "assumptions": [
+      "EXACT_CONTROLLED_U",
+      "IDEAL_BORN_BINARY_READOUT",
+      "NORMALIZED_PREPARED_STATE"
+    ],
+    "binding_to_saved_H4": "NOT_PROVED",
+    "formal_certificate_accepted": false
+  },
+  "measurement": {
+    "status": "FORMAL_LEMMA_CHECKED",
+    "rule": "CROSS_BRANCH_AND_SCALE",
+    "conclusion": "|Re/Im <psi|(A0^dagger A1 - V0^dagger V1)|psi>| <= eta0+eta1+eta0*eta1",
+    "assumptions": [
+      "||V0||=||V1||=1",
+      "||A0-V0||<=eta0; ||A1-V1||<=eta1",
+      "Nonnegative eta0/eta1; all phases included",
+      "Literal Born-readout identity must be proved separately"
+    ],
+    "binding_to_saved_H4": "NOT_PROVED",
+    "formal_certificate_accepted": false,
+    "cross_difference": "(A0-V0)^dagger*A1+V0^dagger*(A1-V1)",
+    "unscaled_bound": "eta0+eta1+eta0*eta1",
+    "measurement_bound_symbolic": "B_saved*(eta0+eta1+eta0*eta1)",
+    "expectation_factor": "1",
+    "same_ray_normalization_cancels_state_norm": true,
+    "B_saved_not_nominal": true,
+    "operator_norm_one_not_inferred_from_binary_support": true,
+    "numerical_B_scaled_bound_evaluated": false
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "ERROR": 1,
+  "FAIL": 0,
+  "PASS": 77,
+  "SKIP": 0,
+  "failures": [
+    {
+      "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_cannot_complete_without_caller_evidence",
+      "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-post512-metadata-pilot-readiness-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 139, in tearDown\n    try:snapshot=self.store.snapshot(self.m)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-post512-metadata-pilot-readiness-20261020/src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/run_control.py\", line 188, in snapshot\n    require(row is None or row[:3]==(m['global_scope'],m['global_claim'],S.digest(m)),'SNAPSHOT_SCOPE_BINDING')\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-post512-metadata-pilot-readiness-20261020/src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/guard.py\", line 17, in require\n    raise Closed(reason)\ntrottertracks.algorithm_codesign.g6_w2c_b3_live_preflight_v1.guard.Closed: SNAPSHOT_SCOPE_BINDING\n"
+    }
+  ],
+  "run": 78
+}

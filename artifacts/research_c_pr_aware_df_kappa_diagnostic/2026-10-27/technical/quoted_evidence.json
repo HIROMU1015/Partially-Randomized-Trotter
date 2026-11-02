@@ -1,0 +1,59 @@
+{
+  "new_numerical_reanalysis": false,
+  "F2_failure": {
+    "error": "EXACT_HERMITIAN_INPUT_REQUIRED",
+    "first_failure": {
+      "kind": "CAR_reference",
+      "label": "baseline",
+      "error_type": "ValueError",
+      "error": "EXACT_HERMITIAN_INPUT_REQUIRED",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py\", line 159, in <lambda>\n    return call('CAR_reference',c['arm'],lambda:car.build_reference(arm,\n                                                ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py\", line 187, in build_reference\n    _hermitian_input(kappa)\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py\", line 98, in _hermitian_input\n    raise ValueError('EXACT_HERMITIAN_INPUT_REQUIRED')\nValueError: EXACT_HERMITIAN_INPUT_REQUIRED\n"
+    }
+  },
+  "F2_STOP": {
+    "mandatory_stop": true,
+    "call_counts": {
+      "input_arrays": 1,
+      "arm_replay": 1,
+      "trajectory_load": 1,
+      "CAR_reference": 1
+    },
+    "scientific_units": 4,
+    "first_failure": {
+      "kind": "CAR_reference",
+      "label": "baseline",
+      "error_type": "ValueError",
+      "error": "EXACT_HERMITIAN_INPUT_REQUIRED",
+      "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car_execution.py\", line 159, in <lambda>\n    return call('CAR_reference',c['arm'],lambda:car.build_reference(arm,\n                                                ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py\", line 187, in build_reference\n    _hermitian_input(kappa)\n  File \"/tmp/prt-c-fixed-F2-polar-execution-20261027/src/trottertracks/c_pr_aware_df_fixed_car.py\", line 98, in _hermitian_input\n    raise ValueError('EXACT_HERMITIAN_INPUT_REQUIRED')\nValueError: EXACT_HERMITIAN_INPUT_REQUIRED\n"
+    },
+    "retry": 0,
+    "resume": 0,
+    "new_fit": 0,
+    "new_sampling": 0,
+    "build_compile": 0
+  },
+  "Stage1_records": [
+    {
+      "id": "kappa_Hermitian",
+      "error": 8.660473972585522e-17,
+      "allowance": 3.518379690624931e-11,
+      "gate": true,
+      "passed": true
+    },
+    {
+      "id": "kappa_original_g",
+      "error": 0.0,
+      "allowance": 1.8829801476580426e-11,
+      "gate": true,
+      "passed": true
+    },
+    {
+      "id": "saved_XDF_kappa",
+      "error": 6.723512808976018e-17,
+      "allowance": 2.5246248268644952e-11,
+      "gate": true,
+      "passed": true
+    }
+  ],
+  "interpretation": "quote only; does not identify F2 kappa bits or diagnose its cause"
+}

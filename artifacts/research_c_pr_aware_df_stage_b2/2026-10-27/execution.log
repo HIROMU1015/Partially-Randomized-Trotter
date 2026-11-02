@@ -1,0 +1,85 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/scripts/run_research_c_pr_aware_df_stage_b2.py", line 28, in <module>
+    if __name__ == '__main__': main()
+                               ^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/scripts/run_research_c_pr_aware_df_stage_b2.py", line 25, in main
+    m.run(ROOT,a.contract,a.input,a.output)
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b2.py", line 399, in run
+    return execute(c,root,output,call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b2.py", line 380, in execute
+    if failures: raise failures[0]
+                 ^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b2.py", line 377, in execute
+    role,index,metrics = future.result(); rows[role][index] = metrics
+                         ^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b2.py", line 354, in task
+    raw = call('kernel_build',label,lambda:b.build_kernel(arm,h,events,config,builder=builder))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b2.py", line 354, in <lambda>
+    raw = call('kernel_build',label,lambda:b.build_kernel(arm,h,events,config,builder=builder))
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b.py", line 133, in build_kernel
+    qc=partial_kernel(arm.plan,h,events,rte_config=config,builder=builder,
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c1_stage3_native_bridge.py", line 32, in partial_kernel
+    qc.compose(builder.sequence(plan.model,tuple(reversed(half)),optimized=True,scalar_time=0),inplace=True)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c1_h4_strong_baseline.py", line 172, in sequence
+    append_diagonal_primitives(qc, native.combined_diagonal(model, group),
+  File "/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trotterlib/df_trotter/ops.py", line 309, in append_diagonal_primitives
+    qc.append(RZZGate(angle).control(1), [ancilla_qubit, left, right])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/library/standard_gates/rzz.py", line 150, in control
+    gate = super().control(
+           ^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/gate.py", line 142, in control
+    return add_control(self, num_ctrl_qubits, label, ctrl_state)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py", line 61, in add_control
+    cgate = control(operation, num_ctrl_qubits=num_ctrl_qubits, label=label, ctrl_state=ctrl_state)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py", line 120, in control
+    unrolled_gate = _unroll_gate(operation, basis_gates=basis)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py", line 273, in _unroll_gate
+    opqc = pm.run(circ)
+           ^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py", line 464, in wrapper
+    return meth(*meth_args, **meth_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py", line 226, in run
+    return super().run(
+           ^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py", line 231, in run
+    out = [
+          ^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py", line 232, in <listcomp>
+    _run_workflow(program=program, pass_manager=self, callback=callback, **kwargs)
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py", line 292, in _run_workflow
+    passmanager_ir, final_state = flow_controller.execute(
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py", line 218, in execute
+    passmanager_ir, state = next_task.execute(
+                            ^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/basepasses.py", line 195, in execute
+    new_dag, state = super().execute(
+                     ^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py", line 98, in execute
+    ret = self.run(passmanager_ir)
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/basis/basis_translator.py", line 129, in run
+    return base_run(
+           ^^^^^^^^^
+RuntimeError: Already borrowed

@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "status",
+    "source_commit",
+    "plan_fingerprint",
+    "completion_ledger_sha256",
+    "signal_records",
+    "logical_wrapper_records",
+    "actual_transpile_invocations",
+    "research_decision",
+    "next_stage_authorized",
+    "automatic_research_decision_authorized",
+    "mandatory_stop"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "h4-geometry-result-v1"
+    },
+    "status": {
+      "enum": [
+        "GEOMETRY_PRECISION_MAP_COMPLETE_AWAITING_REVIEW",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "plan_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "completion_ledger_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "signal_records": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 1308
+    },
+    "logical_wrapper_records": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 74784
+    },
+    "actual_transpile_invocations": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 74784
+    },
+    "research_decision": {
+      "type": "null"
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "automatic_research_decision_authorized": {
+      "const": false
+    },
+    "mandatory_stop": {
+      "const": true
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "GEOMETRY_PRECISION_MAP_COMPLETE_AWAITING_REVIEW"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "signal_records": {
+            "const": 1308
+          },
+          "logical_wrapper_records": {
+            "const": 74784
+          }
+        }
+      }
+    }
+  ]
+}

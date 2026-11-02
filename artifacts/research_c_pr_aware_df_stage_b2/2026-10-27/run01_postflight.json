@@ -1,0 +1,30 @@
+{
+  "status": "TECHNICAL_STOP_QISKIT_SHARED_BORROW",
+  "scientific_units": 429,
+  "COMPLETE": 428,
+  "technical_FAIL": 1,
+  "numerical_correctness_FAIL": 0,
+  "first_failure": {
+    "kind": "kernel_build",
+    "label": "proposed_17",
+    "error_type": "RuntimeError",
+    "error": "Already borrowed",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b2.py\", line 354, in <lambda>\n    raw = call('kernel_build',label,lambda:b.build_kernel(arm,h,events,config,builder=builder))\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c_pr_aware_df_stage_b.py\", line 133, in build_kernel\n    qc=partial_kernel(arm.plan,h,events,rte_config=config,builder=builder,\n       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c1_stage3_native_bridge.py\", line 32, in partial_kernel\n    qc.compose(builder.sequence(plan.model,tuple(reversed(half)),optimized=True,scalar_time=0),inplace=True)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trottertracks/c1_h4_strong_baseline.py\", line 172, in sequence\n    append_diagonal_primitives(qc, native.combined_diagonal(model, group),\n  File \"/tmp/prt-c-pr-aware-df-b2-execution-20261027/src/trotterlib/df_trotter/ops.py\", line 309, in append_diagonal_primitives\n    qc.append(RZZGate(angle).control(1), [ancilla_qubit, left, right])\n              ^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/library/standard_gates/rzz.py\", line 150, in control\n    gate = super().control(\n           ^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/gate.py\", line 142, in control\n    return add_control(self, num_ctrl_qubits, label, ctrl_state)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py\", line 61, in add_control\n    cgate = control(operation, num_ctrl_qubits=num_ctrl_qubits, label=label, ctrl_state=ctrl_state)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py\", line 120, in control\n    unrolled_gate = _unroll_gate(operation, basis_gates=basis)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py\", line 273, in _unroll_gate\n    opqc = pm.run(circ)\n           ^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py\", line 464, in wrapper\n    return meth(*meth_args, **meth_kwargs)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py\", line 226, in run\n    return super().run(\n           ^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py\", line 231, in run\n    out = [\n          ^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py\", line 232, in <listcomp>\n    _run_workflow(program=program, pass_manager=self, callback=callback, **kwargs)\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/passmanager.py\", line 292, in _run_workflow\n    passmanager_ir, final_state = flow_controller.execute(\n                                  ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py\", line 218, in execute\n    passmanager_ir, state = next_task.execute(\n                            ^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/basepasses.py\", line 195, in execute\n    new_dag, state = super().execute(\n                     ^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/passmanager/base_tasks.py\", line 98, in execute\n    ret = self.run(passmanager_ir)\n          ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-stage2-preparation-20261025/.venv/lib/python3.11/site-packages/qiskit/transpiler/passes/basis/basis_translator.py\", line 129, in run\n    return base_run(\n           ^^^^^^^^^\nRuntimeError: Already borrowed\n"
+  },
+  "source_unchanged": true,
+  "saved_inputs_unchanged": true,
+  "source_files": 47,
+  "saved_input_files": 22,
+  "original_retry": 0,
+  "original_resume": 0,
+  "new_fit": 0,
+  "optimizer": 0,
+  "DF_PF_recalculation": 0,
+  "quantum_shots": 0,
+  "total_resources": null,
+  "files": 439,
+  "QPY_files": 165,
+  "reference_files": 49,
+  "total_bytes": 106911514,
+  "mandatory_stop": true
+}

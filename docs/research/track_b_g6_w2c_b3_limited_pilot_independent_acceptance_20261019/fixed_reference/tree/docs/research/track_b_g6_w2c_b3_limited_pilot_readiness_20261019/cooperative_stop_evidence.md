@@ -1,0 +1,13 @@
+# P08：今回の親操作履歴
+
+新Coordinatorは既存v3を継承し、実際のstate更新と親処理順にseq/run_id付きのhash chainを保存する。RESERVE、ENTER許可、COMPLETE、FAIL、STOP、CANCEL、UNKNOWN、PHASE_BEGIN/END、WRITE_RESERVE/ACKを記録する。piggybackされた前trial COMPLETEもstate更新の時点で記録し、RPC数をcall数にしない。試験用に作った操作列を実schedulerの観測と偽っていない。
+
+ENTERは親が許可を決めた時点であり、workerの科学body開始時刻ではない。STOPは親処理順の最初のSTOPである。別workerでの例外発生の物理的な全順序を推定しない。trace書込み失敗時は新規開始を止め、欠けた履歴を検証済みにしない。
+
+forward_evidence/normalは768 reservations/ENTER/COMPLETE。drainでは8 ENTERの後に1 FAIL・STOP、残る7件がCOMPLETEとなる履歴を確認した。worker_crash_unknown、reserved_crash_unknown、unacked_credit_unknownはUNKNOWNを保持する。予約後の不明は実body開始へ読み替えない。output予約の未ACK分も返却しない。
+
+producerをimportしない新pilot_offlineがchain/canonical bytes、独立global coreの順序状態機械、final statefile、全体call/bytes、pair/F01、summary/receipt、A/B・pass・correctness prefixを照合する。重複reserve/complete、STOP後ENTER、不正phase、部分trace、canonical改変、receipt改変を拒否する人工testもある。結果はsaved_forward_verification.jsonに再抽出・再照合して保存する。
+
+traceそのもののbytesも同じglobal log予算へ課金し、自己課金を再帰的にjournal化しない。通常のwrite creditにtrace実bytesを加えた物理保持量を照合する。状態fileはlogical retained bytes、累積pwrite量は別IOである。Python flushをfsync耐久性とは呼ばない。
+
+これは**新しい人工evidence protocol V1の候補**であり旧v3 schemaを変更していない。今回normalではlog約1.68MB/768 callsを保持した。31,710,848 callsへ同じ粒度を無条件に拡張すれば256MiBを大幅に超える。将来の限定pilotでも実際のpath/保存量に応じ予算超過ならSTOPする。Full-Nへは別途、検証可能なcheckpoint/transition集約とfailure近傍保持等を設計・採択する必要がある。採択前に監査粒度を黙って落とさない。

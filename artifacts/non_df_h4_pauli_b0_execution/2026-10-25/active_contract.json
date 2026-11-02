@@ -1,0 +1,138 @@
+{
+  "schema": "h4_pauli_matched_b0_active_scope_v1",
+  "execution_enabled": true,
+  "status": "FIXED_LIMITED_EXECUTION",
+  "base_commit": "2511bf5bcaccb664b34315a883629753c76d8fa1",
+  "candidate": "Pauli central B0/B0I (one candidate)",
+  "scientific_conditions": {
+    "molecule": "linear H4",
+    "adjacent_distance_A": 1.0,
+    "basis": "STO-3G",
+    "hamiltonian": "saved Pauli-JW184 nonidentity plus constant",
+    "L_D": 27,
+    "tail_terms": 157,
+    "product_formula": "S2",
+    "T": 0.8,
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "r_K_active": false,
+    "state": "saved raw ray; no renormalization",
+    "system_wires": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "ancilla": 8,
+    "axes": [
+      "cosine",
+      "sine"
+    ],
+    "sine_convention": "+Im; Sdg before final H",
+    "compiler": {
+      "qiskit": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "backend": null,
+      "coupling_map": null,
+      "layout_method": null,
+      "routing_method": null
+    },
+    "price_scope": "full Hadamard wrapper excluding state preparation"
+  },
+  "references": {
+    "retained_body": "artifacts/non_df_h4_d1_source_execution/2026-10-24/run01/variants/pauli_jw_PR_retained/body_before_control.qpy",
+    "receipt": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+    "C_model": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json",
+    "C_reference": "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_result.json",
+    "PR_conditional_results": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/conditional_results.json",
+    "PR_axis_results": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/run01/axis_results.json",
+    "D1_body_metadata": "artifacts/non_df_h4_d1_source_execution/2026-10-24/run01/variants/pauli_jw_PR_retained/input.json"
+  },
+  "scope": {
+    "new_full_H_reference_actions": 0,
+    "new_Hamiltonian_or_state_generation": 0,
+    "new_PR_sampling_or_compile": 0,
+    "new_RNG_replay": 0,
+    "retained_body_validation_max": 1,
+    "new_uncontrolled_body_builds": 0,
+    "central_lifts_max": 1,
+    "axis_wrapper_builds_max": 2,
+    "top_level_compiles_max": 2,
+    "B0_target_complex_state_actions_per_bit_max": 1,
+    "B0_target_complex_state_actions_max": 3,
+    "compiled_state_actions_max": 0,
+    "precision_bits": [
+      64,
+      96,
+      128
+    ],
+    "N_scalar_evaluations_max": 20,
+    "conditional_G_rows_max": 5,
+    "PR_N_G_recomputation": 0
+  },
+  "target_evaluation": {
+    "reuse": [
+      "h4_ball_evidence.real/pauli/phase/evolve/signal",
+      "saved C full reference whole intervals"
+    ],
+    "tail": null,
+    "constant": "exact product of saved binary64 operands at target; D1 aggregate float phase unchanged at circuit; difference belongs to rho",
+    "raw_norm": "same exact raw norm or enclosing norm interval; divide only at physical expectation boundary",
+    "bias": "(new_B0_raw_signal - saved_full_reference_interval)/common_norm",
+    "bias_representation": "exact rational interval center b0, outward radius u_enc; never borrow PF/PR allowance",
+    "normalization": "ideal unitary B=1/logB=0; record own outward scale_bounds(1,0) B_up",
+    "forbidden_entrypoint": "EnclosureEngine.evaluate: would recompute full reference and other methods"
+  },
+  "accounting": {
+    "epsilon_sig": [
+      "0.05",
+      "0.01",
+      "0.005",
+      "0.001",
+      "0.0005"
+    ],
+    "epsilon_axis": "saved float(epsilon_sig)/sqrt(2) allocation",
+    "alpha_axis": "0.025",
+    "u": "own u_enc + own rho",
+    "guard": "h>0 and u/h<=0.01; h=epsilon_axis-abs(b0)-u",
+    "N": "ceil(2*B_up^2*ln(2/alpha_axis)/h^2), outward exact accounting",
+    "G": "N_cos*C_cos + N_sin*C_sin",
+    "scenarios": [
+      "hypothetical rho_B0=rho_PR=0",
+      "own independent guard domains; B0 endpoints versus saved PR G_guard_range_exact"
+    ],
+    "actual_N_G": null,
+    "PR_cost_basis": "saved empirical cohort256; not population mean guarantee"
+  },
+  "stop_conditions": [
+    "STOP on input/SOURCE/prefix/phase mismatch; no silent fallback build",
+    "one state action per bit yields both axes; stop at64 if guard decisions are definite",
+    "raise precision only for interval-width ambiguity, never to fix large truncation bias",
+    "STOP at128 or nonfinite or saved-reference width floor; preserve null with reason",
+    "no automatic compile/state/sampling retry or expanded candidates without applicable permission",
+    "save finite results then mandatory STOP"
+  ],
+  "exclusions": [
+    "actual compiled-rho guarantee",
+    "formal certificate acceptance",
+    "prefix/q search",
+    "new PR algorithm",
+    "R2-C proof",
+    "PR population-cost work",
+    "DF B0/I results transfer"
+  ],
+  "next_owner": "Codex executes the permitted finite scope, saves results, publishes, then mandatory STOP",
+  "approval_proof_artifacts_required": false
+}

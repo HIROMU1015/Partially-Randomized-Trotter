@@ -1,0 +1,30 @@
+.....................F....                                               [100%]
+=================================== FAILURES ===================================
+_____ test_integer_serial_aggregation_and_comparison_equality_no_CA_bypass _____
+
+    def test_integer_serial_aggregation_and_comparison_equality_no_CA_bypass():
+        s=4;key=m.integrated.Candidate('XDF9','D',s).id
+        shells={k:{z:n for z in m.accuracy.METRICS} for k,n in [('head',2),('X',3),('Y',5)]}
+        kernel={k:10 for k in m.accuracy.METRICS}
+        rounds=[dict(m=i,status='OPTIMISTIC_FORMULA_ESTIMATE',axes={a:dict(optimistic_shots_decimal=str(i+1)) for a in ('X','Y')}) for i in range(13)]
+        costs=[row for i in range(13) for row in m.serial_cost_pair(kernel,shells,s,i,key)]
+        with patch.object(m.accuracy,'aggregate_totals',side_effect=AssertionError('DO NOT BYPASS CA GATE')):
+            result=m.aggregate_screen(s,rounds,costs)
+        expected=sum((i+1)*(2*(4*(1<<i)*10)+2*2+3+5) for i in range(13))
+        assert int(result['optimistic_total_RZ_decimal'])==expected
+        assert m.compare_screen(result,expected,'XDF8')['strictly_beating_excluded'] is True
+        assert m.compare_screen(result,expected+1,'XDF8')['status']=='COMPETITIVENESS_NOT_EXCLUDED'
+        assert m.compare_screen(dict(optimistic_total_RZ_decimal=None),expected,'CDF8')['status']=='UNRESOLVED'
+        assert result['aggregation']['CA_achieved'] is None
+        huge={k:10**16+1 for k in m.accuracy.METRICS}
+        bigcosts=[row for i in range(13) for row in m.serial_cost_pair(huge,shells,s,i,key)]
+        big=m.aggregate_screen(s,rounds,bigcosts)
+        integer=sum((i+1)*(2*(s*(1<<i)*(10**16+1))+11) for i in range(13))
+>       assert int(big['optimistic_total_RZ_decimal'])==integer>2**53
+E       AssertionError: assert 7864400000000000787532 == 7864400000000000787441
+E        +  where 7864400000000000787532 = int('7864400000000000787532')
+
+tests/management/test_research_c_c1_h4_xdf9_cost_screen.py:234: AssertionError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h4_xdf9_cost_screen.py::test_integer_serial_aggregation_and_comparison_equality_no_CA_bypass
+1 failed, 25 passed in 12.61s

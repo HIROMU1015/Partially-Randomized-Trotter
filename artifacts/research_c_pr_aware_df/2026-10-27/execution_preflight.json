@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "fixed_commit": "e1085c95f5c01b68566e17d543ace5832cb94061",
+  "scope": "C_PR_AWARE_DF_PAIRED_STAGE_A_X0_V2",
+  "contract_sha256": "610be0acc2357f3e9fb0e618d67825ea8d7039292a0fe34fcd81b021e9a9fc5d",
+  "source_manifest_sha256": "5deabdfab70029ba6ef784e326908fb7a8d8ffdef6b90e0142887c0e59e9a600",
+  "source_files": 29,
+  "saved_inputs": 3,
+  "original_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "fresh_output_absent": true,
+  "previous_STOP_unchanged": true,
+  "observed_UTC": "2026-10-26T16:16:53.154110+00:00",
+  "loadavg": [
+    1.0185546875,
+    1.09423828125,
+    1.08642578125
+  ],
+  "resource_plan": {
+    "workers": 2,
+    "available_affinity_cpus": 32,
+    "available_memory_bytes": 56621031424,
+    "quota_cpus": null,
+    "estimated_bytes_per_candidate": 5308416,
+    "BLAS_threads_per_worker": 1,
+    "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed"
+  },
+  "resource_readings": {
+    "/proc/pressure/cpu": "some avg10=0.00 avg60=0.00 avg300=0.00 total=8249934237\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=0\n",
+    "/proc/pressure/memory": "some avg10=0.00 avg60=0.00 avg300=0.00 total=7895336\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=7808996\n"
+  },
+  "task_BLAS_threads": 1,
+  "BLAS_reason": "Existing resource_plan policy for two independent JAX fit processes and small 4x4/36x36 matrices",
+  "no_CPU_RAM_worker_wall_cap_added": true,
+  "scientific_calls": 0
+}

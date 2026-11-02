@@ -1,0 +1,207 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Proposed future wrapper record; schema review only",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "geometry",
+    "hamiltonian_sha256",
+    "df_sha256",
+    "state_sha256",
+    "candidate_fingerprint",
+    "axis",
+    "trajectory_seed",
+    "trajectory_index",
+    "compiler_fingerprint",
+    "environment_fingerprint",
+    "source_commit",
+    "wrapper_semantics",
+    "status",
+    "metrics",
+    "cache_reuse",
+    "actual_transpile_invocation_id",
+    "mandatory_stop",
+    "cache_owner_wrapper_key"
+  ],
+  "properties": {
+    "geometry": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hamiltonian_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "df_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "state_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "candidate_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "axis": {
+      "enum": [
+        "cosine",
+        "sine"
+      ]
+    },
+    "trajectory_seed": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "trajectory_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "compiler_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "environment_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "wrapper_semantics": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "REGISTERED",
+        "RESERVED",
+        "COMPLETE",
+        "AMBIGUOUS_AWAITING_REVIEW",
+        "FAILED_STOP"
+      ]
+    },
+    "metrics": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "rz_count",
+        "rz_depth",
+        "cx_count",
+        "cx_depth",
+        "total_depth",
+        "circuit_size"
+      ],
+      "properties": {
+        "rz_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rz_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cx_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "cx_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "total_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "circuit_size": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "cache_reuse": {
+      "type": "boolean"
+    },
+    "actual_transpile_invocation_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mandatory_stop": {
+      "const": true
+    },
+    "cache_owner_wrapper_key": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "metrics": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          },
+          "cache_reuse": {
+            "const": false
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "actual_transpile_invocation_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "COMPLETE"
+          },
+          "cache_reuse": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "cache_owner_wrapper_key": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  ]
+}

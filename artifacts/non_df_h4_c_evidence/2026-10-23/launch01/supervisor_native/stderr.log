@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py", line 64, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py", line 29, in main
+    if args.execute:print(json.dumps(ctl.launch(args.execute)));return
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py", line 233, in launch
+    require(all(v==0 for v in statuses.values()),'C_WORKER_FAILURE')
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py", line 32, in require
+    raise ValueError(reason)
+ValueError: C_WORKER_FAILURE

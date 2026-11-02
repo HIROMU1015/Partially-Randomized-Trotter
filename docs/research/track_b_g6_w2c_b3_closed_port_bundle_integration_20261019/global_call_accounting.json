@@ -1,0 +1,2409 @@
+{
+  "schema": "b3_global_port_call_accounting_v1",
+  "normal_cases": [
+    {
+      "case": "normal_bundle_small",
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 778848930,
+          "worker_cpu_ns": 5148105000,
+          "wall_ns": 5838835613,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4255231
+            },
+            "observed": {
+              "log": 14526,
+              "result": 52735
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2139096,
+              "result": 6303683
+            },
+            "observed": {
+              "log": 2139096,
+              "result": 2101187
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 451626810,
+          "worker_cpu_ns": 5472368000,
+          "wall_ns": 1309465454,
+          "budget_before": {
+            "reserved": {
+              "log": 2139784,
+              "result": 6304299
+            },
+            "observed": {
+              "log": 2139784,
+              "result": 2101803
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4276299,
+              "result": 8355011
+            },
+            "observed": {
+              "log": 4276299,
+              "result": 4152515
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "mode_arm_layer_axis": {
+        "S/ordinary/A/X": 48,
+        "S/ordinary/A/Y": 48,
+        "S/ordinary/B/X": 48,
+        "S/ordinary/B/Y": 48,
+        "S/partial_return_tail/A/X": 48,
+        "S/partial_return_tail/A/Y": 48,
+        "S/partial_return_tail/B/X": 48,
+        "S/partial_return_tail/B/Y": 48,
+        "S/closed_P3_tail/A/X": 48,
+        "S/closed_P3_tail/A/Y": 48,
+        "S/closed_P3_tail/B/X": 48,
+        "S/closed_P3_tail/B/Y": 48,
+        "S/full_return/A/X": 48,
+        "S/full_return/A/Y": 48,
+        "S/full_return/B/X": 48,
+        "S/full_return/B/Y": 48,
+        "P1/ordinary/A/X": 48,
+        "P1/ordinary/A/Y": 48,
+        "P1/ordinary/B/X": 48,
+        "P1/ordinary/B/Y": 48,
+        "P1/partial_return_tail/A/X": 48,
+        "P1/partial_return_tail/A/Y": 48,
+        "P1/partial_return_tail/B/X": 48,
+        "P1/partial_return_tail/B/Y": 48,
+        "P1/closed_P3_tail/A/X": 48,
+        "P1/closed_P3_tail/A/Y": 48,
+        "P1/closed_P3_tail/B/X": 48,
+        "P1/closed_P3_tail/B/Y": 48,
+        "P1/full_return/A/X": 48,
+        "P1/full_return/A/Y": 48,
+        "P1/full_return/B/X": 48,
+        "P1/full_return/B/Y": 48
+      },
+      "offsets": [
+        {
+          "key": "S__correctness_baseline_ordinary_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 0
+        },
+        {
+          "key": "S__correctness_baseline_ordinary_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 32
+        },
+        {
+          "key": "S__correctness_baseline_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 64
+        },
+        {
+          "key": "S__correctness_baseline_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 96
+        },
+        {
+          "key": "S__correctness_baseline_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 128
+        },
+        {
+          "key": "S__correctness_baseline_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 160
+        },
+        {
+          "key": "S__correctness_baseline_full_return_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 192
+        },
+        {
+          "key": "S__correctness_baseline_full_return_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 224
+        },
+        {
+          "key": "S__profile_baseline_ordinary_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 256
+        },
+        {
+          "key": "S__profile_baseline_ordinary_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 288
+        },
+        {
+          "key": "S__profile_baseline_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 320
+        },
+        {
+          "key": "S__profile_baseline_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 352
+        },
+        {
+          "key": "S__profile_baseline_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 384
+        },
+        {
+          "key": "S__profile_baseline_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 416
+        },
+        {
+          "key": "S__profile_baseline_full_return_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 448
+        },
+        {
+          "key": "S__profile_baseline_full_return_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 480
+        },
+        {
+          "key": "S__profile_instrumented_ordinary_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 512
+        },
+        {
+          "key": "S__profile_instrumented_ordinary_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 544
+        },
+        {
+          "key": "S__profile_instrumented_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 576
+        },
+        {
+          "key": "S__profile_instrumented_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 608
+        },
+        {
+          "key": "S__profile_instrumented_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 640
+        },
+        {
+          "key": "S__profile_instrumented_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 672
+        },
+        {
+          "key": "S__profile_instrumented_full_return_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 704
+        },
+        {
+          "key": "S__profile_instrumented_full_return_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 736
+        },
+        {
+          "key": "P1__correctness_baseline_ordinary_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 768
+        },
+        {
+          "key": "P1__correctness_baseline_ordinary_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 800
+        },
+        {
+          "key": "P1__correctness_baseline_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 832
+        },
+        {
+          "key": "P1__correctness_baseline_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 864
+        },
+        {
+          "key": "P1__correctness_baseline_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 896
+        },
+        {
+          "key": "P1__correctness_baseline_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 928
+        },
+        {
+          "key": "P1__correctness_baseline_full_return_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 960
+        },
+        {
+          "key": "P1__correctness_baseline_full_return_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 992
+        },
+        {
+          "key": "P1__profile_baseline_ordinary_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 1024
+        },
+        {
+          "key": "P1__profile_baseline_ordinary_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 1056
+        },
+        {
+          "key": "P1__profile_baseline_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 1088
+        },
+        {
+          "key": "P1__profile_baseline_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 1120
+        },
+        {
+          "key": "P1__profile_baseline_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 1152
+        },
+        {
+          "key": "P1__profile_baseline_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 1184
+        },
+        {
+          "key": "P1__profile_baseline_full_return_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 1216
+        },
+        {
+          "key": "P1__profile_baseline_full_return_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 1248
+        },
+        {
+          "key": "P1__profile_instrumented_ordinary_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 1280
+        },
+        {
+          "key": "P1__profile_instrumented_ordinary_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 1312
+        },
+        {
+          "key": "P1__profile_instrumented_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 1344
+        },
+        {
+          "key": "P1__profile_instrumented_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 1376
+        },
+        {
+          "key": "P1__profile_instrumented_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 1408
+        },
+        {
+          "key": "P1__profile_instrumented_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 1440
+        },
+        {
+          "key": "P1__profile_instrumented_full_return_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 1472
+        },
+        {
+          "key": "P1__profile_instrumented_full_return_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 1504
+        }
+      ],
+      "history": {
+        "counts": {
+          "reserved": 1536,
+          "entry_attempts": 1536
+        },
+        "terminal": {
+          "COMPLETED": 1536
+        },
+        "current": {},
+        "cursors": {
+          "S__correctness_baseline_ordinary_A": 32,
+          "S__correctness_baseline_ordinary_B": 32,
+          "S__correctness_baseline_partial_return_tail_A": 32,
+          "S__correctness_baseline_partial_return_tail_B": 32,
+          "S__correctness_baseline_closed_P3_tail_A": 32,
+          "S__correctness_baseline_closed_P3_tail_B": 32,
+          "S__correctness_baseline_full_return_A": 32,
+          "S__correctness_baseline_full_return_B": 32,
+          "S__profile_baseline_ordinary_A": 32,
+          "S__profile_baseline_ordinary_B": 32,
+          "S__profile_baseline_partial_return_tail_A": 32,
+          "S__profile_baseline_partial_return_tail_B": 32,
+          "S__profile_baseline_closed_P3_tail_A": 32,
+          "S__profile_baseline_closed_P3_tail_B": 32,
+          "S__profile_baseline_full_return_A": 32,
+          "S__profile_baseline_full_return_B": 32,
+          "S__profile_instrumented_ordinary_A": 32,
+          "S__profile_instrumented_ordinary_B": 32,
+          "S__profile_instrumented_partial_return_tail_A": 32,
+          "S__profile_instrumented_partial_return_tail_B": 32,
+          "S__profile_instrumented_closed_P3_tail_A": 32,
+          "S__profile_instrumented_closed_P3_tail_B": 32,
+          "S__profile_instrumented_full_return_A": 32,
+          "S__profile_instrumented_full_return_B": 32,
+          "P1__correctness_baseline_closed_P3_tail_A": 32,
+          "P1__correctness_baseline_full_return_B": 32,
+          "P1__correctness_baseline_ordinary_A": 32,
+          "P1__correctness_baseline_ordinary_B": 32,
+          "P1__correctness_baseline_closed_P3_tail_B": 32,
+          "P1__correctness_baseline_full_return_A": 32,
+          "P1__correctness_baseline_partial_return_tail_B": 32,
+          "P1__correctness_baseline_partial_return_tail_A": 32,
+          "P1__profile_baseline_ordinary_A": 32,
+          "P1__profile_baseline_ordinary_B": 32,
+          "P1__profile_baseline_partial_return_tail_A": 32,
+          "P1__profile_baseline_full_return_A": 32,
+          "P1__profile_baseline_partial_return_tail_B": 32,
+          "P1__profile_baseline_closed_P3_tail_A": 32,
+          "P1__profile_baseline_full_return_B": 32,
+          "P1__profile_baseline_closed_P3_tail_B": 32,
+          "P1__profile_instrumented_partial_return_tail_B": 32,
+          "P1__profile_instrumented_closed_P3_tail_B": 32,
+          "P1__profile_instrumented_ordinary_A": 32,
+          "P1__profile_instrumented_closed_P3_tail_A": 32,
+          "P1__profile_instrumented_full_return_B": 32,
+          "P1__profile_instrumented_partial_return_tail_A": 32,
+          "P1__profile_instrumented_full_return_A": 32,
+          "P1__profile_instrumented_ordinary_B": 32
+        },
+        "reserved_bytes": {
+          "log": 315760,
+          "result": 8358146
+        },
+        "ack_bytes": {
+          "log": 315760,
+          "result": 4155650
+        },
+        "stopped": false,
+        "conditions_begun": [
+          "S",
+          "P1"
+        ],
+        "conditions_ended": {
+          "S": true,
+          "P1": true
+        }
+      },
+      "one_claim": {
+        "schema": "b3_FAKE_ONLY_snapshot_v1",
+        "claim": [
+          "ARTIFICIAL_ONLY/b3-bundle-artificial-8tzajiok",
+          "7e2355400b1c038db927cd00c84d0c1c9665c4a0ee118d484b7c43d286aedca9",
+          "34893f21142fe9af2b94fb535f01fd9c6d60fd37bc2f96b672a7630ac5308392",
+          "STOPPED",
+          1
+        ],
+        "history": [
+          [
+            1,
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-8tzajiok",
+            "CLAIM_COMMITTED",
+            "34893f21142fe9af2b94fb535f01fd9c6d60fd37bc2f96b672a7630ac5308392"
+          ],
+          [
+            2,
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-8tzajiok",
+            "STOP_COMMITTED",
+            "34893f21142fe9af2b94fb535f01fd9c6d60fd37bc2f96b672a7630ac5308392"
+          ]
+        ],
+        "real_authority": false
+      }
+    },
+    {
+      "case": "normal_bundle_n256",
+      "calls": {
+        "planned": 16896,
+        "reserved": 16896,
+        "started": 16896,
+        "completed": 16896,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 16896,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 8448,
+          "started": 8448,
+          "completed": 8448,
+          "planned": 8448,
+          "parent_cpu_ns": 6082506794,
+          "worker_cpu_ns": 20725224000,
+          "wall_ns": 26041744406,
+          "budget_before": {
+            "reserved": {
+              "log": 29956,
+              "result": 4255301
+            },
+            "observed": {
+              "log": 29956,
+              "result": 52805
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 21541503,
+              "result": 11295879
+            },
+            "observed": {
+              "log": 21541503,
+              "result": 7093383
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 8448,
+          "started": 8448,
+          "completed": 8448,
+          "planned": 8448,
+          "parent_cpu_ns": 3026023754,
+          "worker_cpu_ns": 22606325000,
+          "wall_ns": 5008780159,
+          "budget_before": {
+            "reserved": {
+              "log": 21542193,
+              "result": 11296505
+            },
+            "observed": {
+              "log": 21542193,
+              "result": 7094009
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 43182221,
+              "result": 18341292
+            },
+            "observed": {
+              "log": 43182221,
+              "result": 14138796
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "mode_arm_layer_axis": {
+        "S/ordinary/A/X": 528,
+        "S/ordinary/A/Y": 528,
+        "S/ordinary/B/X": 528,
+        "S/ordinary/B/Y": 528,
+        "S/partial_return_tail/A/X": 528,
+        "S/partial_return_tail/A/Y": 528,
+        "S/partial_return_tail/B/X": 528,
+        "S/partial_return_tail/B/Y": 528,
+        "S/closed_P3_tail/A/X": 528,
+        "S/closed_P3_tail/A/Y": 528,
+        "S/closed_P3_tail/B/X": 528,
+        "S/closed_P3_tail/B/Y": 528,
+        "S/full_return/A/X": 528,
+        "S/full_return/A/Y": 528,
+        "S/full_return/B/X": 528,
+        "S/full_return/B/Y": 528,
+        "P1/ordinary/A/X": 528,
+        "P1/ordinary/A/Y": 528,
+        "P1/ordinary/B/X": 528,
+        "P1/ordinary/B/Y": 528,
+        "P1/partial_return_tail/A/X": 528,
+        "P1/partial_return_tail/A/Y": 528,
+        "P1/partial_return_tail/B/X": 528,
+        "P1/partial_return_tail/B/Y": 528,
+        "P1/closed_P3_tail/A/X": 528,
+        "P1/closed_P3_tail/A/Y": 528,
+        "P1/closed_P3_tail/B/X": 528,
+        "P1/closed_P3_tail/B/Y": 528,
+        "P1/full_return/A/X": 528,
+        "P1/full_return/A/Y": 528,
+        "P1/full_return/B/X": 528,
+        "P1/full_return/B/Y": 528
+      },
+      "offsets": [
+        {
+          "key": "S__correctness_baseline_ordinary_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 0
+        },
+        {
+          "key": "S__correctness_baseline_ordinary_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 32
+        },
+        {
+          "key": "S__correctness_baseline_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 64
+        },
+        {
+          "key": "S__correctness_baseline_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 96
+        },
+        {
+          "key": "S__correctness_baseline_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 128
+        },
+        {
+          "key": "S__correctness_baseline_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 160
+        },
+        {
+          "key": "S__correctness_baseline_full_return_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 192
+        },
+        {
+          "key": "S__correctness_baseline_full_return_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 224
+        },
+        {
+          "key": "S__profile_baseline_ordinary_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 256,
+          "offset": 256
+        },
+        {
+          "key": "S__profile_baseline_ordinary_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 256,
+          "offset": 768
+        },
+        {
+          "key": "S__profile_baseline_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 256,
+          "offset": 1280
+        },
+        {
+          "key": "S__profile_baseline_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 256,
+          "offset": 1792
+        },
+        {
+          "key": "S__profile_baseline_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 256,
+          "offset": 2304
+        },
+        {
+          "key": "S__profile_baseline_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 256,
+          "offset": 2816
+        },
+        {
+          "key": "S__profile_baseline_full_return_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 256,
+          "offset": 3328
+        },
+        {
+          "key": "S__profile_baseline_full_return_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 256,
+          "offset": 3840
+        },
+        {
+          "key": "S__profile_instrumented_ordinary_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 256,
+          "offset": 4352
+        },
+        {
+          "key": "S__profile_instrumented_ordinary_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 256,
+          "offset": 4864
+        },
+        {
+          "key": "S__profile_instrumented_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 256,
+          "offset": 5376
+        },
+        {
+          "key": "S__profile_instrumented_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 256,
+          "offset": 5888
+        },
+        {
+          "key": "S__profile_instrumented_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 256,
+          "offset": 6400
+        },
+        {
+          "key": "S__profile_instrumented_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 256,
+          "offset": 6912
+        },
+        {
+          "key": "S__profile_instrumented_full_return_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 256,
+          "offset": 7424
+        },
+        {
+          "key": "S__profile_instrumented_full_return_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 256,
+          "offset": 7936
+        },
+        {
+          "key": "P1__correctness_baseline_ordinary_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 8448
+        },
+        {
+          "key": "P1__correctness_baseline_ordinary_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 8480
+        },
+        {
+          "key": "P1__correctness_baseline_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 8512
+        },
+        {
+          "key": "P1__correctness_baseline_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 8544
+        },
+        {
+          "key": "P1__correctness_baseline_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 8576
+        },
+        {
+          "key": "P1__correctness_baseline_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 8608
+        },
+        {
+          "key": "P1__correctness_baseline_full_return_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 8640
+        },
+        {
+          "key": "P1__correctness_baseline_full_return_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 8672
+        },
+        {
+          "key": "P1__profile_baseline_ordinary_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 256,
+          "offset": 8704
+        },
+        {
+          "key": "P1__profile_baseline_ordinary_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 256,
+          "offset": 9216
+        },
+        {
+          "key": "P1__profile_baseline_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 256,
+          "offset": 9728
+        },
+        {
+          "key": "P1__profile_baseline_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 256,
+          "offset": 10240
+        },
+        {
+          "key": "P1__profile_baseline_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 256,
+          "offset": 10752
+        },
+        {
+          "key": "P1__profile_baseline_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 256,
+          "offset": 11264
+        },
+        {
+          "key": "P1__profile_baseline_full_return_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 256,
+          "offset": 11776
+        },
+        {
+          "key": "P1__profile_baseline_full_return_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 256,
+          "offset": 12288
+        },
+        {
+          "key": "P1__profile_instrumented_ordinary_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 256,
+          "offset": 12800
+        },
+        {
+          "key": "P1__profile_instrumented_ordinary_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 256,
+          "offset": 13312
+        },
+        {
+          "key": "P1__profile_instrumented_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 256,
+          "offset": 13824
+        },
+        {
+          "key": "P1__profile_instrumented_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 256,
+          "offset": 14336
+        },
+        {
+          "key": "P1__profile_instrumented_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 256,
+          "offset": 14848
+        },
+        {
+          "key": "P1__profile_instrumented_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 256,
+          "offset": 15360
+        },
+        {
+          "key": "P1__profile_instrumented_full_return_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 256,
+          "offset": 15872
+        },
+        {
+          "key": "P1__profile_instrumented_full_return_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 256,
+          "offset": 16384
+        }
+      ],
+      "history": {
+        "counts": {
+          "reserved": 16896,
+          "entry_attempts": 16896
+        },
+        "terminal": {
+          "COMPLETED": 16896
+        },
+        "current": {},
+        "cursors": {
+          "S__correctness_baseline_ordinary_A": 32,
+          "S__correctness_baseline_ordinary_B": 32,
+          "S__correctness_baseline_partial_return_tail_A": 32,
+          "S__correctness_baseline_partial_return_tail_B": 32,
+          "S__correctness_baseline_closed_P3_tail_A": 32,
+          "S__correctness_baseline_closed_P3_tail_B": 32,
+          "S__correctness_baseline_full_return_A": 32,
+          "S__correctness_baseline_full_return_B": 32,
+          "S__profile_baseline_ordinary_A": 512,
+          "S__profile_baseline_ordinary_B": 512,
+          "S__profile_baseline_partial_return_tail_A": 512,
+          "S__profile_baseline_partial_return_tail_B": 512,
+          "S__profile_baseline_closed_P3_tail_A": 512,
+          "S__profile_baseline_closed_P3_tail_B": 512,
+          "S__profile_baseline_full_return_A": 512,
+          "S__profile_baseline_full_return_B": 512,
+          "S__profile_instrumented_ordinary_A": 512,
+          "S__profile_instrumented_ordinary_B": 512,
+          "S__profile_instrumented_partial_return_tail_A": 512,
+          "S__profile_instrumented_partial_return_tail_B": 512,
+          "S__profile_instrumented_closed_P3_tail_A": 512,
+          "S__profile_instrumented_closed_P3_tail_B": 512,
+          "S__profile_instrumented_full_return_A": 512,
+          "S__profile_instrumented_full_return_B": 512,
+          "P1__correctness_baseline_ordinary_A": 32,
+          "P1__correctness_baseline_full_return_A": 32,
+          "P1__correctness_baseline_closed_P3_tail_A": 32,
+          "P1__correctness_baseline_ordinary_B": 32,
+          "P1__correctness_baseline_partial_return_tail_B": 32,
+          "P1__correctness_baseline_closed_P3_tail_B": 32,
+          "P1__correctness_baseline_partial_return_tail_A": 32,
+          "P1__correctness_baseline_full_return_B": 32,
+          "P1__profile_baseline_ordinary_B": 512,
+          "P1__profile_baseline_partial_return_tail_A": 512,
+          "P1__profile_baseline_ordinary_A": 512,
+          "P1__profile_baseline_closed_P3_tail_A": 512,
+          "P1__profile_baseline_partial_return_tail_B": 512,
+          "P1__profile_baseline_closed_P3_tail_B": 512,
+          "P1__profile_baseline_full_return_B": 512,
+          "P1__profile_baseline_full_return_A": 512,
+          "P1__profile_instrumented_ordinary_A": 512,
+          "P1__profile_instrumented_partial_return_tail_B": 512,
+          "P1__profile_instrumented_ordinary_B": 512,
+          "P1__profile_instrumented_partial_return_tail_A": 512,
+          "P1__profile_instrumented_closed_P3_tail_B": 512,
+          "P1__profile_instrumented_closed_P3_tail_A": 512,
+          "P1__profile_instrumented_full_return_A": 512,
+          "P1__profile_instrumented_full_return_B": 512
+        },
+        "reserved_bytes": {
+          "log": 336119,
+          "result": 18344471
+        },
+        "ack_bytes": {
+          "log": 336119,
+          "result": 14141975
+        },
+        "stopped": false,
+        "conditions_begun": [
+          "S",
+          "P1"
+        ],
+        "conditions_ended": {
+          "S": true,
+          "P1": true
+        }
+      },
+      "one_claim": {
+        "schema": "b3_FAKE_ONLY_snapshot_v1",
+        "claim": [
+          "ARTIFICIAL_ONLY/b3-bundle-artificial-wwthpd3o",
+          "1f9b6b361e9fef50133be6e1f9aa33eb43cccfc7a0acb02e325f325e56881db2",
+          "3587cfc11e81901a4566c9a7351306972672b19b2f6ad303d34e5e02575bbc2e",
+          "STOPPED",
+          1
+        ],
+        "history": [
+          [
+            1,
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-wwthpd3o",
+            "CLAIM_COMMITTED",
+            "3587cfc11e81901a4566c9a7351306972672b19b2f6ad303d34e5e02575bbc2e"
+          ],
+          [
+            2,
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-wwthpd3o",
+            "STOP_COMMITTED",
+            "3587cfc11e81901a4566c9a7351306972672b19b2f6ad303d34e5e02575bbc2e"
+          ]
+        ],
+        "real_authority": false
+      }
+    },
+    {
+      "case": "variant_payload_propagation",
+      "calls": {
+        "planned": 1536,
+        "reserved": 1536,
+        "started": 1536,
+        "completed": 1536,
+        "unknown": 0,
+        "cancelled": 0
+      },
+      "states": {
+        "NOT_STARTED": 0,
+        "START_RESERVED": 0,
+        "STARTED": 0,
+        "IN_FLIGHT": 0,
+        "COMPLETED": 1536,
+        "FAILED": 0,
+        "CANCELLED_BEFORE_START": 0,
+        "TERMINATED_WITH_UNKNOWN_RESULT": 0
+      },
+      "conditions": [
+        {
+          "condition": "S",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 731971610,
+          "worker_cpu_ns": 5107970000,
+          "wall_ns": 5758316081,
+          "budget_before": {
+            "reserved": {
+              "log": 14526,
+              "result": 4255231
+            },
+            "observed": {
+              "log": 14526,
+              "result": 52735
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 2139084,
+              "result": 6303677
+            },
+            "observed": {
+              "log": 2139084,
+              "result": 2101181
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        },
+        {
+          "condition": "P1",
+          "complete": true,
+          "reserved": 768,
+          "started": 768,
+          "completed": 768,
+          "planned": 768,
+          "parent_cpu_ns": 462675766,
+          "worker_cpu_ns": 5506973000,
+          "wall_ns": 1340875044,
+          "budget_before": {
+            "reserved": {
+              "log": 2139772,
+              "result": 6304293
+            },
+            "observed": {
+              "log": 2139772,
+              "result": 2101797
+            }
+          },
+          "budget_after": {
+            "reserved": {
+              "log": 4276312,
+              "result": 8355009
+            },
+            "observed": {
+              "log": 4276312,
+              "result": 4152513
+            }
+          },
+          "shared_setup_or_finalization_allocated": false
+        }
+      ],
+      "mode_arm_layer_axis": {
+        "S/ordinary/A/X": 48,
+        "S/ordinary/A/Y": 48,
+        "S/ordinary/B/X": 48,
+        "S/ordinary/B/Y": 48,
+        "S/partial_return_tail/A/X": 48,
+        "S/partial_return_tail/A/Y": 48,
+        "S/partial_return_tail/B/X": 48,
+        "S/partial_return_tail/B/Y": 48,
+        "S/closed_P3_tail/A/X": 48,
+        "S/closed_P3_tail/A/Y": 48,
+        "S/closed_P3_tail/B/X": 48,
+        "S/closed_P3_tail/B/Y": 48,
+        "S/full_return/A/X": 48,
+        "S/full_return/A/Y": 48,
+        "S/full_return/B/X": 48,
+        "S/full_return/B/Y": 48,
+        "P1/ordinary/A/X": 48,
+        "P1/ordinary/A/Y": 48,
+        "P1/ordinary/B/X": 48,
+        "P1/ordinary/B/Y": 48,
+        "P1/partial_return_tail/A/X": 48,
+        "P1/partial_return_tail/A/Y": 48,
+        "P1/partial_return_tail/B/X": 48,
+        "P1/partial_return_tail/B/Y": 48,
+        "P1/closed_P3_tail/A/X": 48,
+        "P1/closed_P3_tail/A/Y": 48,
+        "P1/closed_P3_tail/B/X": 48,
+        "P1/closed_P3_tail/B/Y": 48,
+        "P1/full_return/A/X": 48,
+        "P1/full_return/A/Y": 48,
+        "P1/full_return/B/X": 48,
+        "P1/full_return/B/Y": 48
+      },
+      "offsets": [
+        {
+          "key": "S__correctness_baseline_ordinary_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 0
+        },
+        {
+          "key": "S__correctness_baseline_ordinary_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 32
+        },
+        {
+          "key": "S__correctness_baseline_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 64
+        },
+        {
+          "key": "S__correctness_baseline_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 96
+        },
+        {
+          "key": "S__correctness_baseline_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 128
+        },
+        {
+          "key": "S__correctness_baseline_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 160
+        },
+        {
+          "key": "S__correctness_baseline_full_return_A",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 192
+        },
+        {
+          "key": "S__correctness_baseline_full_return_B",
+          "condition": "S",
+          "phase_index": 0,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 224
+        },
+        {
+          "key": "S__profile_baseline_ordinary_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 256
+        },
+        {
+          "key": "S__profile_baseline_ordinary_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 288
+        },
+        {
+          "key": "S__profile_baseline_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 320
+        },
+        {
+          "key": "S__profile_baseline_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 352
+        },
+        {
+          "key": "S__profile_baseline_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 384
+        },
+        {
+          "key": "S__profile_baseline_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 416
+        },
+        {
+          "key": "S__profile_baseline_full_return_A",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 448
+        },
+        {
+          "key": "S__profile_baseline_full_return_B",
+          "condition": "S",
+          "phase_index": 1,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 480
+        },
+        {
+          "key": "S__profile_instrumented_ordinary_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 512
+        },
+        {
+          "key": "S__profile_instrumented_ordinary_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 544
+        },
+        {
+          "key": "S__profile_instrumented_partial_return_tail_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 576
+        },
+        {
+          "key": "S__profile_instrumented_partial_return_tail_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 608
+        },
+        {
+          "key": "S__profile_instrumented_closed_P3_tail_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 640
+        },
+        {
+          "key": "S__profile_instrumented_closed_P3_tail_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 672
+        },
+        {
+          "key": "S__profile_instrumented_full_return_A",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 704
+        },
+        {
+          "key": "S__profile_instrumented_full_return_B",
+          "condition": "S",
+          "phase_index": 2,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 736
+        },
+        {
+          "key": "P1__correctness_baseline_ordinary_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 768
+        },
+        {
+          "key": "P1__correctness_baseline_ordinary_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 800
+        },
+        {
+          "key": "P1__correctness_baseline_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 832
+        },
+        {
+          "key": "P1__correctness_baseline_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 864
+        },
+        {
+          "key": "P1__correctness_baseline_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 896
+        },
+        {
+          "key": "P1__correctness_baseline_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 928
+        },
+        {
+          "key": "P1__correctness_baseline_full_return_A",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 960
+        },
+        {
+          "key": "P1__correctness_baseline_full_return_B",
+          "condition": "P1",
+          "phase_index": 3,
+          "phase": "correctness",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 992
+        },
+        {
+          "key": "P1__profile_baseline_ordinary_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 1024
+        },
+        {
+          "key": "P1__profile_baseline_ordinary_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 1056
+        },
+        {
+          "key": "P1__profile_baseline_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 1088
+        },
+        {
+          "key": "P1__profile_baseline_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 1120
+        },
+        {
+          "key": "P1__profile_baseline_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 1152
+        },
+        {
+          "key": "P1__profile_baseline_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 1184
+        },
+        {
+          "key": "P1__profile_baseline_full_return_A",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 1216
+        },
+        {
+          "key": "P1__profile_baseline_full_return_B",
+          "condition": "P1",
+          "phase_index": 4,
+          "phase": "profile",
+          "pass_name": "baseline",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 1248
+        },
+        {
+          "key": "P1__profile_instrumented_ordinary_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "A",
+          "pair_index": 0,
+          "n": 16,
+          "offset": 1280
+        },
+        {
+          "key": "P1__profile_instrumented_ordinary_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "ordinary",
+          "layer": "B",
+          "pair_index": 1,
+          "n": 16,
+          "offset": 1312
+        },
+        {
+          "key": "P1__profile_instrumented_partial_return_tail_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "A",
+          "pair_index": 2,
+          "n": 16,
+          "offset": 1344
+        },
+        {
+          "key": "P1__profile_instrumented_partial_return_tail_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "partial_return_tail",
+          "layer": "B",
+          "pair_index": 3,
+          "n": 16,
+          "offset": 1376
+        },
+        {
+          "key": "P1__profile_instrumented_closed_P3_tail_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "A",
+          "pair_index": 4,
+          "n": 16,
+          "offset": 1408
+        },
+        {
+          "key": "P1__profile_instrumented_closed_P3_tail_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "closed_P3_tail",
+          "layer": "B",
+          "pair_index": 5,
+          "n": 16,
+          "offset": 1440
+        },
+        {
+          "key": "P1__profile_instrumented_full_return_A",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "A",
+          "pair_index": 6,
+          "n": 16,
+          "offset": 1472
+        },
+        {
+          "key": "P1__profile_instrumented_full_return_B",
+          "condition": "P1",
+          "phase_index": 5,
+          "phase": "profile",
+          "pass_name": "instrumented",
+          "arm": "full_return",
+          "layer": "B",
+          "pair_index": 7,
+          "n": 16,
+          "offset": 1504
+        }
+      ],
+      "history": {
+        "counts": {
+          "reserved": 1536,
+          "entry_attempts": 1536
+        },
+        "terminal": {
+          "COMPLETED": 1536
+        },
+        "current": {},
+        "cursors": {
+          "S__correctness_baseline_ordinary_A": 32,
+          "S__correctness_baseline_ordinary_B": 32,
+          "S__correctness_baseline_partial_return_tail_A": 32,
+          "S__correctness_baseline_partial_return_tail_B": 32,
+          "S__correctness_baseline_closed_P3_tail_A": 32,
+          "S__correctness_baseline_closed_P3_tail_B": 32,
+          "S__correctness_baseline_full_return_A": 32,
+          "S__correctness_baseline_full_return_B": 32,
+          "S__profile_baseline_ordinary_A": 32,
+          "S__profile_baseline_ordinary_B": 32,
+          "S__profile_baseline_partial_return_tail_A": 32,
+          "S__profile_baseline_partial_return_tail_B": 32,
+          "S__profile_baseline_closed_P3_tail_A": 32,
+          "S__profile_baseline_closed_P3_tail_B": 32,
+          "S__profile_baseline_full_return_A": 32,
+          "S__profile_baseline_full_return_B": 32,
+          "S__profile_instrumented_ordinary_A": 32,
+          "S__profile_instrumented_ordinary_B": 32,
+          "S__profile_instrumented_partial_return_tail_A": 32,
+          "S__profile_instrumented_partial_return_tail_B": 32,
+          "S__profile_instrumented_closed_P3_tail_A": 32,
+          "S__profile_instrumented_closed_P3_tail_B": 32,
+          "S__profile_instrumented_full_return_A": 32,
+          "S__profile_instrumented_full_return_B": 32,
+          "P1__correctness_baseline_full_return_B": 32,
+          "P1__correctness_baseline_ordinary_A": 32,
+          "P1__correctness_baseline_ordinary_B": 32,
+          "P1__correctness_baseline_partial_return_tail_A": 32,
+          "P1__correctness_baseline_partial_return_tail_B": 32,
+          "P1__correctness_baseline_closed_P3_tail_A": 32,
+          "P1__correctness_baseline_closed_P3_tail_B": 32,
+          "P1__correctness_baseline_full_return_A": 32,
+          "P1__profile_baseline_ordinary_B": 32,
+          "P1__profile_baseline_ordinary_A": 32,
+          "P1__profile_baseline_partial_return_tail_A": 32,
+          "P1__profile_baseline_partial_return_tail_B": 32,
+          "P1__profile_baseline_closed_P3_tail_A": 32,
+          "P1__profile_baseline_full_return_A": 32,
+          "P1__profile_baseline_closed_P3_tail_B": 32,
+          "P1__profile_baseline_full_return_B": 32,
+          "P1__profile_instrumented_partial_return_tail_B": 32,
+          "P1__profile_instrumented_ordinary_A": 32,
+          "P1__profile_instrumented_ordinary_B": 32,
+          "P1__profile_instrumented_partial_return_tail_A": 32,
+          "P1__profile_instrumented_full_return_A": 32,
+          "P1__profile_instrumented_closed_P3_tail_A": 32,
+          "P1__profile_instrumented_closed_P3_tail_B": 32,
+          "P1__profile_instrumented_full_return_B": 32
+        },
+        "reserved_bytes": {
+          "log": 315773,
+          "result": 8358144
+        },
+        "ack_bytes": {
+          "log": 315773,
+          "result": 4155648
+        },
+        "stopped": false,
+        "conditions_begun": [
+          "S",
+          "P1"
+        ],
+        "conditions_ended": {
+          "S": true,
+          "P1": true
+        }
+      },
+      "one_claim": {
+        "schema": "b3_FAKE_ONLY_snapshot_v1",
+        "claim": [
+          "ARTIFICIAL_ONLY/b3-bundle-artificial-z8iz8c46",
+          "c0fd8567a0e8862a3c45bb33921970459e28e66e294b3f0968f986c5d10b2124",
+          "9c4d750a51a2c783a87ab8a3a7e8991dafe773a50689b5abde1f86bfa3f26ac4",
+          "STOPPED",
+          1
+        ],
+        "history": [
+          [
+            1,
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-z8iz8c46",
+            "CLAIM_COMMITTED",
+            "9c4d750a51a2c783a87ab8a3a7e8991dafe773a50689b5abde1f86bfa3f26ac4"
+          ],
+          [
+            2,
+            "ARTIFICIAL_ONLY/b3-bundle-artificial-z8iz8c46",
+            "STOP_COMMITTED",
+            "9c4d750a51a2c783a87ab8a3a7e8991dafe773a50689b5abde1f86bfa3f26ac4"
+          ]
+        ],
+        "real_authority": false
+      }
+    }
+  ],
+  "science_calls": 0
+}

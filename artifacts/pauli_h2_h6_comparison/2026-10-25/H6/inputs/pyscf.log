@@ -1,0 +1,134 @@
+#INFO: **** input file is /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pauli-h2-h6-resource-comparison-20261025/scripts/prepare_pauli_h2_h6_inputs.py ****
+#!/usr/bin/env python3
+"""New independent H2/H6 input namespace; historical runs are read only."""
+import hashlib, importlib, json, os
+from pathlib import Path
+import sys, types
+import numpy as np
+ROOT=Path(__file__).resolve().parents[1]
+pkg=types.ModuleType('hx_input');pkg.__path__=[str(ROOT/'src/trotterlib')];sys.modules[pkg.__name__]=pkg
+P=importlib.import_module(pkg.__name__+'.pauli_signal_adapter')
+OUT=ROOT/'artifacts/pauli_h2_h6_comparison/2026-10-25'
+def save(p,d):p.write_text(json.dumps(d,indent=2,ensure_ascii=False,allow_nan=False)+'\n')
+def sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()
+def main(n):
+    dest=OUT/f'H{n}'/'inputs';dest.mkdir(parents=True,exist_ok=False)
+    if n==2:
+        old=ROOT/'artifacts/non_df_h2_pilot/2026-10-22/run01/inputs'
+        d=json.loads((old/'pauli.json').read_text());receipt=json.loads((old/'receipt.json').read_text())
+        a=np.load(old/'snapshot.npz');state=a['state'];energy=float(a['energy'])
+        h=P.PauliHamiltonian(4,d['constant'],tuple(map(tuple,d['terms'])),json.dumps(d['metadata']))
+        provenance=dict(reused=True,old_source='b5ed2c6e2399b55a0c24eb8437f842892a6703ef',
+            old_files={str(p.relative_to(ROOT)):sha(p) for p in (old/'pauli.json',old/'receipt.json',old/'snapshot.npz')},
+            old_run_STOP_not_reopened=True,receipt=receipt)
+    elif n==6:
+        from pyscf import ao2mo, fci, gto, lib, scf
+        from scipy.sparse.linalg import eigsh
+        lib.param.TMPDIR=str(dest)
+        mol=gto.M(atom=[('H',(0,0,float(j))) for j in range(n)],unit='Angstrom',basis='sto-3g',charge=0,spin=0,
+                  symmetry=False,output=str(dest/'pyscf.log'),verbose=4)
+        mf=scf.RHF(mol);mf.conv_tol=1e-12;mf.max_cycle=100;mf.init_guess='minao';mf.chkfile=str(dest/'scf.chk')
+        hf=float(mf.kernel())
+        if not mf.converged:raise ValueError('SCF_NOT_CONVERGED')
+        mo=np.asarray(mf.mo_coeff);one=mo.T@mf.get_hcore()@mo
+        eri=ao2mo.restore(1,ao2mo.kernel(mol,mo),n);enuc=float(mol.energy_nuc())
+        md=dict(molecule='H6',geometry=[['H',[0,0,float(j)]] for j in range(n)],distance=1.,basis='STO-3G',charge=0,spin=0,
+                SCF_converged=True,hf_energy=hf,qubit_order='qiskit_little_endian',coefficient_cutoff=0.)
+        h=P.PauliHamiltonian.from_spatial_integrals(one,eri,nuclear_repulsion=enuc,metadata=md,model_id='H6_PAULI_COMPARISON_20261025')
+        full=h.sparse_operator()
+        indices=np.array([i for i in range(1<<(2*n)) if sum((i>>j)&1 for j in range(0,2*n,2))==3 and sum((i>>j)&1 for j in range(1,2*n,2))==3])
+        sector=full[indices][:,indices]
+        vals,vec=eigsh(sector,k=1,which='SA',tol=1e-13,v0=np.ones(len(indices)))
+        energy=float(vals[0]);v=vec[:,0];v*=np.exp(-1j*np.angle(v[np.argmax(abs(v))]));state=np.zeros(1<<(2*n),complex);state[indices]=v
+        efci,ci=fci.direct_spin1.kernel(one,eri,n,(3,3),ecore=enuc,tol=1e-12,max_cycle=150)
+        residual=float(np.linalg.norm(full@state-energy*state))
+        if abs(energy-efci)>1e-9 or residual>1e-10:raise ValueError('PAULI_STATE_FCI_MISMATCH')
+        np.savez_compressed(dest/'integrals_state.npz',mo_coeff=mo,one_mo=one,eri_chemist=eri,nuclear_repulsion=enuc,
+                            state=state,energy=energy,sector_indices=indices,fci_energy=efci)
+        provenance=dict(reused=False,reason='available historical snapshot has DF primitives/state, lacks non-DF MO integrals; new common Pauli input authorized',
+                        SCF_calls=1,FCI_calls=1,DF_calls=0,JW_calls=1,sector_dimension=len(indices),
+                        FCI_energy=float(efci),state_energy=energy,state_residual_empirical=residual,
+                        MO_orthogonality=float(np.linalg.norm(mo.T@mf.get_ovlp()@mo-np.eye(n))))
+    else:raise ValueError(n)
+    terms=h.terms;m=len(terms);z=next((i for i,(s,c) in enumerate(terms) if not set(s)<=set('IZ')),m)
+    raw=[[float(x.real),float(x.imag)] for x in state]
+    model=dict(molecule=f'H{n}',n_qubits=2*n,qubit_order='qiskit_little_endian',state=raw,energy=energy,
+               hamiltonian=dict(constant=h.constant,terms=terms,metadata=h.metadata),Hamiltonian_hash=h.hamiltonian_hash,
+               nonidentity_terms=m,all_Z_prefix=z,physical_conditions=dict(distance=1.,basis='STO-3G',neutral=True,singlet=True,T=.8),
+               provenance=provenance,state_hash=P.array_hash(state),state_renormalized=False)
+    save(dest/'model.json',model)
+    save(dest/'provenance.json',dict(model_sha256=sha(dest/'model.json'),state_hash=model['state_hash'],
+                                   Hamiltonian_hash=h.hamiltonian_hash,nonidentity_terms=m,all_Z_prefix=z,provenance=provenance))
+    print(json.dumps(dict(molecule=n,terms=m,all_Z_prefix=z,state_hash=model['state_hash'])),flush=True)
+if __name__=='__main__':main(int(sys.argv[1]))
+#INFO: ******************** input file end ********************
+
+
+System: uname_result(system='Linux', node='GPUA100-gleap02', release='6.8.0-50-generic', version='#51-Ubuntu SMP PREEMPT_DYNAMIC Sat Nov  9 17:58:29 UTC 2024', machine='x86_64')  Threads 1
+Python 3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]
+numpy 1.26.4  scipy 1.14.1  h5py 3.16.0
+Date: Sun Oct 25 18:37:20 2026
+PySCF version 2.7.0
+PySCF path  /home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/pyscf
+
+[CONFIG] conf_file None
+[INPUT] verbose = 4
+[INPUT] num. atoms = 6
+[INPUT] num. electrons = 6
+[INPUT] charge = 0
+[INPUT] spin (= nelec alpha-beta = 2S) = 0
+[INPUT] symmetry False subgroup None
+[INPUT] Mole.unit = Angstrom
+[INPUT] Symbol           X                Y                Z      unit          X                Y                Z       unit  Magmom
+[INPUT]  1 H      0.000000000000   0.000000000000   0.000000000000 AA    0.000000000000   0.000000000000   0.000000000000 Bohr   0.0
+[INPUT]  2 H      0.000000000000   0.000000000000   1.000000000000 AA    0.000000000000   0.000000000000   1.889726124565 Bohr   0.0
+[INPUT]  3 H      0.000000000000   0.000000000000   2.000000000000 AA    0.000000000000   0.000000000000   3.779452249130 Bohr   0.0
+[INPUT]  4 H      0.000000000000   0.000000000000   3.000000000000 AA    0.000000000000   0.000000000000   5.669178373695 Bohr   0.0
+[INPUT]  5 H      0.000000000000   0.000000000000   4.000000000000 AA    0.000000000000   0.000000000000   7.558904498260 Bohr   0.0
+[INPUT]  6 H      0.000000000000   0.000000000000   5.000000000000 AA    0.000000000000   0.000000000000   9.448630622825 Bohr   0.0
+
+nuclear repulsion = 4.603841735004
+number of shells = 6
+number of NR pGTOs = 18
+number of NR cGTOs = 6
+basis = sto-3g
+ecp = {}
+CPU time:         0.51
+
+
+******** <class 'pyscf.scf.hf.RHF'> ********
+method = RHF
+initial guess = minao
+damping factor = 0
+level_shift factor = 0
+DIIS = <class 'pyscf.scf.diis.CDIIS'>
+diis_start_cycle = 1
+diis_space = 8
+diis_damp = 0
+SCF conv_tol = 1e-12
+SCF conv_tol_grad = None
+SCF max_cycles = 100
+direct_scf = True
+direct_scf_tol = 1e-13
+chkfile to save SCF result = /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/pauli-h2-h6-resource-comparison-20261025/artifacts/pauli_h2_h6_comparison/2026-10-25/H6/inputs/scf.chk
+max_memory 4000 MB (current use 142 MB)
+Set gradient conv threshold to 1e-06
+Initial guess from minao.
+init E= -2.40922632478509
+  HOMO = -0.204031934141389  LUMO = 0.138023602224899
+cycle= 1 E= -3.12847047433238  delta_E= -0.719  |g|= 0.0977  |ddm|= 1.71
+  HOMO = -0.319058952465474  LUMO = 0.209859403079692
+cycle= 2 E= -3.13472382106357  delta_E= -0.00625  |g|= 0.031  |ddm|= 0.22
+  HOMO = -0.323219686097945  LUMO = 0.223468810541923
+cycle= 3 E= -3.13550862620567  delta_E= -0.000785  |g|= 0.00561  |ddm|= 0.0784
+  HOMO = -0.326070112551563  LUMO = 0.223648945550386
+cycle= 4 E= -3.1355322035019  delta_E= -2.36e-05  |g|= 0.000144  |ddm|= 0.0174
+  HOMO = -0.325998372192331  LUMO = 0.223609413347852
+cycle= 5 E= -3.1355322139183  delta_E= -1.04e-08  |g|= 7.62e-06  |ddm|= 0.000283
+  HOMO = -0.326009105983157  LUMO = 0.223614218353324
+cycle= 6 E= -3.13553221396631  delta_E= -4.8e-11  |g|= 7.89e-08  |ddm|= 2.35e-05
+  HOMO = -0.32600915581552  LUMO = 0.223614234908918
+cycle= 7 E= -3.13553221396632  delta_E= -7.99e-15  |g|= 4.52e-08  |ddm|= 9.16e-08
+  HOMO = -0.326009217504872  LUMO = 0.223614254692846
+Extra cycle  E= -3.13553221396632  delta_E= -1.78e-15  |g|= 1.44e-08  |ddm|= 8.17e-08
+converged SCF energy = -3.13553221396632

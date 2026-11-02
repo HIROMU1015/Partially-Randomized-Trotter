@@ -1,0 +1,97 @@
+{
+  "observed_at_UTC": "2026-10-15T12:44:59.883477+00:00",
+  "read_only_observation": {
+    "memory": {
+      "host_available_bytes": 501844791296,
+      "effective_available_bytes": 501844791296,
+      "oom": {
+        "/sys/fs/cgroup/user.slice/user-30038.slice/session-108384.scope": {
+          "oom": 0,
+          "oom_kill": 0
+        },
+        "/sys/fs/cgroup/user.slice/user-30038.slice": {
+          "oom": 0,
+          "oom_kill": 0
+        },
+        "/sys/fs/cgroup/user.slice": {
+          "oom": 0,
+          "oom_kill": 1
+        }
+      },
+      "full_psi_avg10": {
+        "host": 0.0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice/session-108384.scope": 0.0,
+        "/sys/fs/cgroup/user.slice/user-30038.slice": 0.0,
+        "/sys/fs/cgroup/user.slice": 0.0
+      }
+    },
+    "quota": {
+      "status": "KNOWN",
+      "items": [
+        {
+          "role": "user",
+          "id": 30038,
+          "status": "DISABLED",
+          "errno": 3
+        },
+        {
+          "role": "group",
+          "id": 30038,
+          "status": "DISABLED",
+          "errno": 3
+        },
+        {
+          "role": "project",
+          "id": 0,
+          "status": "DISABLED",
+          "errno": 3
+        }
+      ],
+      "read_only_commands": [
+        "Q_GETFMT",
+        "Q_GETQUOTA",
+        "FS_IOC_FSGETXATTR"
+      ]
+    },
+    "scientific_modules_imported": []
+  },
+  "memory_available_GiB": 467.3793830871582,
+  "filesystem_available_bytes": 319204270080,
+  "filesystem_available_inodes": 219471593,
+  "block_bytes": 4096,
+  "proposed_cpus": {
+    "worker_cpus": [
+      20,
+      21,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "driver_cpu": 22
+  },
+  "normal_workers": 8,
+  "heavy_workers": 1,
+  "signal_workers": 2,
+  "internal_threads": 1,
+  "role_AS_GiB": 32,
+  "normal_signal_RSS_GiB": 9,
+  "heavy_RSS_GiB": 16,
+  "metadata_soft_AS_GiB": 2,
+  "metadata_hard_AS_GiB": 32,
+  "normal_aggregate_RSS_GiB": 76,
+  "normal_job_RAM_GiB": 96,
+  "heavy_signal_aggregate_RSS_GiB": 22,
+  "admission_host_available_GiB": 248.25,
+  "admission_effective_available_GiB": 96,
+  "monitor_interval_seconds": 1,
+  "maximum_observation_seconds": 5,
+  "host_full_PSI_stop_percent": 1,
+  "cgroup_full_PSI_stop_percent": 0,
+  "OOM_counter_changes": "STOP; historical user.slice oom_kill=1 is a baseline, never zeroed",
+  "resource_numbers_are_proposals_not_permission": true,
+  "allowed_cpus": [],
+  "approved": false
+}

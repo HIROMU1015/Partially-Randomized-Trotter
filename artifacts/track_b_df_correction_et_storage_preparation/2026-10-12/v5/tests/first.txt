@@ -1,0 +1,70 @@
+....................F................................................... [ 97%]
+..                                                                       [100%]
+=================================== FAILURES ===================================
+________________ test_new_guard_reads_decoded_child_CPU_receipt ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-384/test_new_guard_reads_decoded_c0')
+
+    def test_new_guard_reads_decoded_child_CPU_receipt(tmp_path):
+     code=('from pathlib import Path;from trottertracks.algorithm_codesign.df_correction_et_storage_v5.storage import dump_json;'
+           'dump_json(Path('+repr(str(tmp_path/'child.json'))+'),{"value":"x"*600000,"_process_receipt":{"CPU_seconds":0.01}})')
+     old_path=os.environ.get('PYTHONPATH');os.environ['PYTHONPATH']=str(ROOT/'src')
+     try:
+      sup=Supervisor(Limits(10,10,10000,10000),tmp_path)
+      jobs=[{'label':'synthetic-only','output':str(tmp_path/'child.json'),'command':[sys.executable,'-B','-c',code]}]
+>     assert len(sup.phase(jobs,Limits(5,5,10000,10000,5,5),1,per_key=True))==1
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v5_storage.py:141: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <trottertracks.algorithm_codesign.df_correction_et_storage_v5.guard.Supervisor object at 0x7a2c24c1f5d0>
+jobs = [{'command': ['/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python', '-B', '-c', 'from pathlib import P...})'], 'label': 'synthetic-only', 'output': '/tmp/pytest-of-abe/pytest-384/test_new_guard_reads_decoded_c0/child.json'}]
+limits = Limits(wall=5, cpu=5, rss_mib=10000, worker_rss_mib=10000, per_key_wall=5, per_key_cpu=5)
+workers = 1
+
+    def phase(self, jobs, limits, workers, *, per_key=False):
+        """Jobs are fixed commands/result paths; submission order never adapts."""
+        phase_start, cpu_start = time.monotonic(), self.cpu()
+        queue = list(jobs)
+        live = []
+        failure = None
+        phase_completed = []
+        try:
+            if limits.wall<=0 or limits.cpu<=0:
+                raise CapFailure('Phase budget already exhausted; no launch')
+            while queue or live:
+                self.check_total()
+                if time.monotonic()-phase_start>limits.wall or self.cpu()-cpu_start>limits.cpu:
+                    raise CapFailure('Phase budget exhausted before further submissions')
+                while queue and len(live) < workers:
+                    job = queue.pop(0)
+                    log = self.output_dir/(job['label']+'.log')
+                    stream = log.open('xb')
+                    env = dict(os.environ, **{k:'1' for k in ('OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','NUMEXPR_NUM_THREADS','RAYON_NUM_THREADS')})
+                    env.update(QISKIT_PARALLEL='FALSE', PYTHONDONTWRITEBYTECODE='1')
+                    cpu_limit = limits.per_key_cpu if per_key else limits.cpu
+                    def restrictions():
+                        if cpu_limit:
+                            limit = max(1, math.ceil(cpu_limit))
+                            resource.setrlimit(resource.RLIMIT_CPU, (limit, limit))
+                        resource.setrlimit(resource.RLIMIT_FSIZE, (self.output_cap, self.output_cap))
+                    p = subprocess.Popen(job['command'], stdout=stream, stderr=subprocess.STDOUT,
+                                         env=env, start_new_session=True, preexec_fn=restrictions)
+                    live.append({'process': p, 'job': job, 'start': time.monotonic(), 'stream': stream})
+                for row in list(live):
+                    code = row['process'].poll()
+                    if code is None: continue
+                    row['stream'].close()
+                    live.remove(row)
+                    receipt = {'label':row['job']['label'], 'exit_status':code,
+                               'wall_seconds':time.monotonic()-row['start'], 'retry':0}
+                    self.receipts.append(receipt)
+                    if code or not artifact_exists(row['job']['output']):
+>                       raise CapFailure('Child failed or output missing: '+row['job']['label'])
+E                       trottertracks.algorithm_codesign.df_correction_et_storage_v5.guard.CapFailure: Child failed or output missing: synthetic-only
+
+src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/guard.py:132: CapFailure
+=========================== short test summary info ============================
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v5_storage.py::test_new_guard_reads_decoded_child_CPU_receipt
+1 failed, 73 passed in 2.39s

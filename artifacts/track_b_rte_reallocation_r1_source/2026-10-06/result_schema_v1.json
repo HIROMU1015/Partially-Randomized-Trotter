@@ -1,0 +1,56 @@
+{
+  "schema": "track_b_R1_result_schema_v1",
+  "required": [
+    "source_commit",
+    "authorization_commit",
+    "contract_sha256",
+    "tool_identity_sha256",
+    "key_inventory_sha256",
+    "one_shot_marker_sha256",
+    "status",
+    "synthesis_rows",
+    "resource_rows",
+    "comparison_rows",
+    "resource_usage",
+    "runs",
+    "retries",
+    "mandatory_STOP"
+  ],
+  "synthesis_rows_required": [
+    "key",
+    "sequence",
+    "sequence_sha256",
+    "T_count",
+    "Tdagger_count",
+    "one_qubit_count",
+    "global_W_count",
+    "strict_operator_error_upper",
+    "error_pass",
+    "wall_seconds",
+    "cpu_seconds",
+    "peak_RSS_KiB"
+  ],
+  "resource_rows_required": [
+    "context",
+    "x",
+    "sigma",
+    "controlled",
+    "epsilon",
+    "arm",
+    "evidence_role",
+    "profile",
+    "C_classical",
+    "finite_confidence"
+  ],
+  "profile_required": [
+    "ideal_B_squared",
+    "implemented_weight_second_moment",
+    "E_native_cost",
+    "workspace_qubits_beyond_2_system",
+    "coefficient_L1_bias_upper",
+    "coefficient_and_strict_synthesis_bias_upper",
+    "events"
+  ],
+  "scientific_GO_automatic": false,
+  "mandatory_STOP": true
+}

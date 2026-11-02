@@ -1,0 +1,85 @@
+{
+  "source_commit": null,
+  "source_sha256": {
+    "src/trottertracks/__init__.py": "107d4f39888dc644314fc079d41ccdc56333ae46a72f3346a499d4dfc17a543f",
+    "src/trottertracks/representation_exploration/__init__.py": "694c999a971c12252f4d56d19cd73f8d574fe59545ab4104dc99d73271fb85e2",
+    "src/trottertracks/representation_exploration/n3_occupation_transfer_v1.py": "dab9ffa90596e00d2a81abca3aa5e24b154a478ca34ed7b273095da1ce827ac7",
+    "src/trottertracks/representation_exploration/n3_occupation_transfer_check_v1.py": "f72e1be56cf4f9f7e5967e4fe7aa2af8bb646648212723783867a2db0310c9d5",
+    "scripts/run_n3_occupation_transfer_v1.py": "0290397ee52b89f233c29ccbca22587b246e69f2b38dd63c7d81f2e69e403e8d",
+    "scripts/verify_n3_occupation_transfer_v1.py": "49141705ad82db3997d2cb9ea1f0c953b07a5d5df64932677c574078efc53fa8",
+    "scripts/prepare_n3_occupation_transfer_v1_source.py": "68a762b0cef57a0c2bb0e2a2f1c9cb4df3b11751e56aa53c7e55f26244d11630",
+    "tests/test_n3_occupation_transfer_v1.py": "243d1c705881900d8b8adcf784a36e8ac2bc600d49fa440af45da741c895bea9"
+  },
+  "source_fingerprint": "41b951dae4968a2b679e61c9e61e761dc8253babeb2c610ccc1886fe3646fcb6",
+  "input_path": "artifacts/n3_occupation_redesign_preparation/2026-10-12/proposed_transfer_inputs.json",
+  "input_sha256": "c8df923eebfd999bf389ece2eb1728e7897c90e0950b51137785c708404489f4",
+  "scientific_batch_authorized_at_preparation": false,
+  "authorization_required": "separate source/input/plan-bound explicit user authorization",
+  "comparison_contract_path": "docs/research/n3_occupation_transfer_amendment_v2_20261012.md",
+  "comparison_contract_sha256": "10a76e9ce3b2115d4e462f55b001ccd90f875cea825a65608a0c3d783580edc4",
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "1.26.4",
+    "python_executable_preparation": "/tmp/prt-representation-venv/bin/python",
+    "numeric_precision": "binary64 proposals, exact rational acceptance",
+    "thread_environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "NUMBA_NUM_THREADS": "1",
+      "RAYON_NUM_THREADS": "1"
+    }
+  },
+  "resources": {
+    "workers": 2,
+    "numeric_threads_per_worker": 1,
+    "gpu_calls": 0,
+    "worker_address_space_bytes": 4294967296,
+    "aggregate_rss_budget_bytes": 8589934592,
+    "json_shard_bytes": 33554432,
+    "total_output_bytes": 67108864,
+    "log_bytes": 8388608,
+    "rational_bit_cap": 4096,
+    "numeric_eig_calls_per_case": 850,
+    "producer_PSD_calls_per_case": 512,
+    "occ_spectral_pairs_per_case": 180,
+    "bound_spectral_pairs_per_case": 12,
+    "wall_time_cap_seconds": null,
+    "cpu_time_cap_seconds": null
+  },
+  "stage_reservations": {
+    "bounds": {
+      "eig": 3,
+      "PSD": 35
+    },
+    "FIVE_three_rows": {
+      "eig": 0,
+      "PSD": 15
+    },
+    "OLD_three_rows": {
+      "eig": 384,
+      "PSD": 30
+    },
+    "OCC_three_rows": {
+      "eig": 414,
+      "PSD": 360
+    },
+    "fallback_unique": {
+      "eig": 0,
+      "PSD": 2
+    },
+    "secondary": {
+      "eig": 16,
+      "PSD": 6
+    }
+  },
+  "case_count": 8,
+  "raw_method_record_count": 96,
+  "primary_before_secondary": true,
+  "ground_solves": 0,
+  "quantum_compiles": 0,
+  "scientific_attempt_limit": 1,
+  "scientific_retry_limit": 0,
+  "next_scientific_stage_authorized": false,
+  "central_theme": null
+}

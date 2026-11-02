@@ -1,0 +1,29 @@
+{
+  "incidents": [
+    {
+      "unit": "H2/B2_p1_q1_2nd_r2_K4/MC_pilot",
+      "status": "FAILED_NO_RETRY",
+      "observed": "Frozen K rejected by default truncation_tolerance=1e-10 before request could complete",
+      "technical_fix_for_unexecuted_units_only": "Use original _explicit_cutoff_tolerance at exact factory tau; do not change K/r/q or law"
+    },
+    {
+      "unit": "H2/B1_p3_q1_2nd/compiled_cost",
+      "status": "FAILED_NO_RETRY",
+      "observed": "Verifier reported statevector norm difference approximately2",
+      "diagnosis": "Artificial tests isolated numeric input-global-phase bookkeeping and Aer set_statevector phase handling; failed molecular unit was not rerun or relabeled",
+      "technical_fix_for_unexecuted_units_only": "Preserve declared circuit input phase once and use native reference simulation; no output-derived phase alignment"
+    },
+    {
+      "unit": "H2/B2_p1_q4_2nd_r2_K4/MC_pilot",
+      "status": "FAILED_NO_RETRY",
+      "observed": "Own worker pool remained in futex waits after driver had initialized Aer",
+      "diagnosis": "Suspected forked simulator deadlock; own controller interrupted with SIGINT, unit wrote KeyboardInterrupt STOP and reaped its worker pool",
+      "retry": false
+    }
+  ],
+  "failed_units_retried": false,
+  "existing_STOPs_modified": false,
+  "source_v1_preserved": true,
+  "source_v2_only_unexecuted_systems": true,
+  "original_H2_recovery": "Uses pre-existing compiled samples and already successful theory units with exact input/preparation/law binding; not a new scientific retry"
+}

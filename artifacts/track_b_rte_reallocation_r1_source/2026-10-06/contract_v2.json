@@ -1,0 +1,191 @@
+{
+  "schema": "track_b_rte_reallocation_R1_preregistration_v2",
+  "status": "SOURCE_PREPARATION_FOR_GPT_REVIEW",
+  "research_direction_decision": "PROCEED_TO_R1_PREPARATION_WITH_NARROWED_CLAIM",
+  "source_freeze_rule": "containing commit S; final source review first, then direct authorization-only child A of S",
+  "claim": "finite-mean-preserving I0 ensemble redesign: normalization vs native controlled event cost; no CTS/global Taylor superiority claim",
+  "target": "P_3(-i sigma x (3 Q0/4+Q1/4)), K=2; finite target, not exponential or a channel mixture",
+  "domain": {
+    "contexts": [
+      "pauli_commuting",
+      "pauli_noncommuting",
+      "distinct_basis"
+    ],
+    "x": [
+      "1/8",
+      "1/4"
+    ],
+    "sigma": [
+      -1,
+      1
+    ],
+    "p": [
+      "3/4",
+      "1/4"
+    ],
+    "m": 3,
+    "K": 2,
+    "native_contexts": [
+      "ordinary_diagnostic",
+      "controlled"
+    ]
+  },
+  "context_implementations": {
+    "pauli_commuting": {
+      "Q0": "Z0",
+      "Q1": "Z1",
+      "role": "Pauli collection control"
+    },
+    "pauli_noncommuting": {
+      "Q0": "Z0",
+      "Q1": "X0 X1",
+      "role": "Pauli collection and phase control"
+    },
+    "distinct_basis": {
+      "Q0": "Z0",
+      "Q1": "V dagger Z1 V",
+      "V": "exp(-i pi X0 X1/16)",
+      "role": "primary performance context, controlled rows only",
+      "known_basis_circuit_required": true
+    }
+  },
+  "arms_by_context": {
+    "pauli_commuting": [
+      "ordinary",
+      "PTSC_K0",
+      "A",
+      "CTS_collected"
+    ],
+    "pauli_noncommuting": [
+      "ordinary",
+      "PTSC_K0",
+      "A",
+      "CTS_collected"
+    ],
+    "distinct_basis": [
+      "ordinary",
+      "PTSC_K0",
+      "A"
+    ]
+  },
+  "A_endpoint": "R0 analytic optimum only; no eta search; ordinary endpoint is a separate arm",
+  "sampling": {
+    "primary": "canonical positive coefficients; implemented exact rational midpoint coefficient normalization",
+    "IS_secondary_included": false,
+    "IS_or_PAI_optimizations": 0,
+    "RNG_or_trajectory_sampling": false,
+    "I0_description_generation": "O(m) before precision and index-sampler/native application costs; pilot enumeration is separate"
+  },
+  "native_lowering": {
+    "gate_set": [
+      "H",
+      "X",
+      "Y",
+      "Z",
+      "S",
+      "Sdg",
+      "CX",
+      "RZ",
+      "GLOBAL"
+    ],
+    "odd_complement": "exp(-i sigma(pi/2-theta)Q)=(-i sigma)Q exp(+i sigma theta Q); extra Q and relative phase retained",
+    "controlled_involution": "known V followed by Ctrl(P) followed by V dagger; no free controlled unknown oracle",
+    "controlled_rotation": "RZ(theta/2), CX, RZ(-theta/2), CX after axis/parity conjugation",
+    "word_reduction": "free adjacent Q^2 cancellation in distinct basis; Pauli product phase reduction in both Pauli controls, identical for all arms",
+    "shared_native_cancellation": "symbolically exact adjacent inverse gates before synthesis; signed basis RZ included",
+    "excluded": "no arbitrary angle fusion, post-synthesis whole-circuit optimizer, RUS, ancilla catalyst, dictionary, molecule or DF wrapper",
+    "cost_metric": "native IR after shared exact cancellation with additive synthesized-primitive Clifford+T counts"
+  },
+  "native_operator_epsilons": [
+    "1e-3",
+    "1e-4",
+    "1e-6"
+  ],
+  "interval_and_point_dps": 100,
+  "synthesizer_options": {
+    "dps": 100,
+    "seed": 0,
+    "dloop": 10,
+    "floop": 10,
+    "dtimeout": 500,
+    "ftimeout": 500,
+    "verbose": 0,
+    "measure_time": false,
+    "show_graph": false,
+    "up_to_phase": false
+  },
+  "synthesis_guard": "strict phase-preserving interval Frobenius upper >= operator error <= epsilon; no projective phase search; requested epsilon/4",
+  "global_phase_rule": "logical event phase becomes exact ancilla S/Z/Sdg; W scalar retained in sequence identity and strict guard; W after joint lowering is a full-circuit global phase, zero physical gate cost",
+  "error_propagation": "event strict operator upper=sum native primitive uppers; coherent measurement bias adds 2*sum alpha_mid*event upper plus coefficient L1 enclosure displacement",
+  "coefficient_rule": "round each order/group c=sqrt(a^2+b^2) using exact binary interval endpoints; multiply exact rational IID label_probability afterwards. alpha midpoint probabilities preserve order-then-IID generation without word enumeration; charge coefficient displacement; no adaptive precision",
+  "primary_resource_vector": [
+    "ideal B^2 enclosure",
+    "implemented weight second moment",
+    "E[C_T]",
+    "E[C_CX]",
+    "E[C_1Q]",
+    "workspace",
+    "C_classical structured acquisition record"
+  ],
+  "C_classical_rule": "description entries, evaluator support size, CTS collection word/multiplication counts, measured setup time diagnostic; no arbitrary scalar conversion or runtime dominance claim",
+  "finite_confidence": {
+    "role": "secondary controlled one-block complex coherent-signal forecast; ordinary rows diagnostic only",
+    "epsilon_complex": "1/100",
+    "epsilon_axis": "1/200",
+    "alpha_familywise": "1/20",
+    "controlled_task_rows": 132,
+    "axes_per_controlled_task": 2,
+    "alpha_axis": "1/5280",
+    "variance": "B_mid^2 upper, no exact signal use",
+    "centered_range": "2 B_mid",
+    "shot_rule": "ceil((2 B_mid^2+(4/3) B_mid epsilon_stat)*ln(2/alpha_axis)/epsilon_stat^2) with outward rational upper",
+    "coefficient_bias_cap": "1e-25",
+    "shot_cap_per_axis": 1000000000,
+    "state": "fixed computational |00>, preparation T/CX=0; Hadamard preparation/readout 1Q Re=2, Im=3 per shot",
+    "accuracy_target": "same finite polynomial M; exponential truncation bias outside task, no physical Hamiltonian claim"
+  },
+  "primary_comparison": "resource vector/descriptive trade-offs; no single T-cost winner; A vs ordinary and PTSC_K0 in distinct-basis controlled context; CTS control only",
+  "classification": {
+    "success": "R1_RESOURCE_MAP_COMPLETE_AWAITING_GPT_REVIEW",
+    "technical_failure": "INCONCLUSIVE",
+    "task_rows": [
+      "ELIGIBLE_COMMON_FINITE_CONFIDENCE_TASK",
+      "INFEASIBLE_BIAS",
+      "INFEASIBLE_SHOT_CAP"
+    ],
+    "ratios": "strict interval lower/upper vs 1 or OVERLAP_OR_EQUAL; zero denominator excluded; no adaptive refinement",
+    "scalar_materiality_percent": null,
+    "research_GO": false,
+    "method_adoption_automatic": false
+  },
+  "planned_resource_rows": 264,
+  "planned_comparison_groups": 72,
+  "caps": {
+    "synthesis_keys": 126,
+    "wall_seconds": 1200,
+    "cpu_seconds": 900,
+    "RSS_MiB": 512,
+    "virtual_address_MiB": 1536,
+    "watchdog_period_seconds": 0.2,
+    "per_key_wall_seconds": 30,
+    "per_key_cpu_seconds": 20,
+    "sequence_characters": 20000,
+    "output_bytes": 16777216,
+    "runs": 1,
+    "retries": 0,
+    "processes": 1
+  },
+  "key_inventory_path": "artifacts/track_b_rte_reallocation_r1_source/2026-10-06/synthesis_key_inventory_v1.json",
+  "source_manifest_path": "artifacts/track_b_rte_reallocation_r1_source/2026-10-06/source_manifest_v1.json",
+  "tool_identity": {
+    "path": "artifacts/track_b_sp05_economics_preparation/2026-10-06/tool_identity_v1.json",
+    "sha256": "803d902a18d925a9565749fbc64422dca4979bfa6c0bd8b438b28de18d3aa984"
+  },
+  "authorization_path": "artifacts/track_b_rte_reallocation_r1_source/2026-10-06/authorization.json",
+  "optional_receipt_path": "docs/tracks/algorithm_codesign/r1_execution_authorization_receipt.md",
+  "result_directory": "artifacts/track_b_rte_reallocation_r1_result/2026-10-06/v1",
+  "science_execution_authorized": false,
+  "RUN_READY": false,
+  "mandatory_STOP": true,
+  "research_decision_owner": "GPT"
+}

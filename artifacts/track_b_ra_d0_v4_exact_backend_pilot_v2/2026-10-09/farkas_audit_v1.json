@@ -1,0 +1,123 @@
+{
+  "certified_count": 6,
+  "decimal_1e18_gap_certificate": "decimal_infeasible",
+  "dyadic_gap_certificate": "dyadic_infeasible",
+  "failed_acquisition": {
+    "SoPlex_code": -15,
+    "SoPlex_status": "ERROR",
+    "fixture": "100_digit_infeasible",
+    "primal_dual_Farkas_obtained": false,
+    "status_only_infeasibility_claim": false
+  },
+  "finite_upper_certificate": "upper_induced_infeasible",
+  "formula": "r=A^T nu+H^T u; nu>=0; nu^T b+u^T f < sum min(0,r_j) U_j",
+  "overall_required_domain": "INCOMPLETE",
+  "rational_reconstruction_attempts": 0,
+  "records": [
+    {
+      "PASS": true,
+      "box_minimum": "0",
+      "id": "inequality_contradiction",
+      "nonnegative_nu": true,
+      "nu": [
+        "5/3",
+        "5/3"
+      ],
+      "orientation": -1,
+      "stationarity_residual": [
+        "0"
+      ],
+      "strict_separation_margin": "1/6",
+      "u": [],
+      "weighted_rhs": "-1/6"
+    },
+    {
+      "PASS": true,
+      "box_minimum": "0",
+      "id": "equality_inequality_contradiction",
+      "nonnegative_nu": true,
+      "nu": [
+        "3"
+      ],
+      "orientation": -1,
+      "stationarity_residual": [
+        "0"
+      ],
+      "strict_separation_margin": "1/7",
+      "u": [
+        "-3"
+      ],
+      "weighted_rhs": "-1/7"
+    },
+    {
+      "PASS": true,
+      "box_minimum": "-7/8",
+      "id": "upper_induced_infeasible",
+      "nonnegative_nu": true,
+      "nu": [
+        "7/2"
+      ],
+      "orientation": -1,
+      "stationarity_residual": [
+        "-7/2"
+      ],
+      "strict_separation_margin": "1/8",
+      "u": [],
+      "weighted_rhs": "-1"
+    },
+    {
+      "PASS": true,
+      "box_minimum": "0",
+      "id": "contradictory_equalities",
+      "nonnegative_nu": true,
+      "nu": [],
+      "orientation": -1,
+      "stationarity_residual": [
+        "0"
+      ],
+      "strict_separation_margin": "1",
+      "u": [
+        "-21",
+        "21"
+      ],
+      "weighted_rhs": "-1"
+    },
+    {
+      "PASS": true,
+      "box_minimum": "-1000000000000000000/1000000000000000003",
+      "id": "decimal_infeasible",
+      "nonnegative_nu": true,
+      "nu": [
+        "3000000000000000000/1000000000000000003"
+      ],
+      "orientation": -1,
+      "stationarity_residual": [
+        "-3000000000000000000/1000000000000000003"
+      ],
+      "strict_separation_margin": "3/1000000000000000003",
+      "u": [],
+      "weighted_rhs": "-1"
+    },
+    {
+      "PASS": true,
+      "box_minimum": "-1152921504606846976/1152921504606846979",
+      "id": "dyadic_infeasible",
+      "nonnegative_nu": true,
+      "nu": [
+        "3458764513820540928/1152921504606846979"
+      ],
+      "orientation": -1,
+      "stationarity_residual": [
+        "-3458764513820540928/1152921504606846979"
+      ],
+      "strict_separation_margin": "3/1152921504606846979",
+      "u": [],
+      "weighted_rhs": "-1"
+    }
+  ],
+  "remaining_fixture_count": 7,
+  "scope": "completed small synthetic fixtures only",
+  "sign_fixed_before_execution": "nu=-raw_row_Farkas_A; u=-raw_row_Farkas_H",
+  "sign_search_after_result": false,
+  "status": "PASS_FOR_6_COMPLETED_INFEASIBLE_FIXTURES"
+}

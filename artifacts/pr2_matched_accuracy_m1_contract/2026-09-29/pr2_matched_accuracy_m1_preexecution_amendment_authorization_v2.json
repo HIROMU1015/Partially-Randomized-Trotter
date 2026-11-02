@@ -1,0 +1,97 @@
+{
+  "schema_version": "pr2_matched_accuracy_m1_preexecution_amendment_authorization_v2",
+  "series_id": "pr2-rebaseline-de7a5492-v1",
+  "status": "M1_PREEXECUTION_AMENDMENT_V2_FROZEN_SCIENCE_NOT_AUTHORIZED",
+  "created_on": "2026-09-29",
+  "implementation_base_commit": "0ee4d641c10f4e248d2b03ebc59703c56f10e581",
+  "additive_to_v1": {
+    "prior_art_gate_path": "docs/research/pr2_matched_accuracy_prior_art_gate_v1.md",
+    "prior_art_gate_sha256": "39faf5aeaa25d391c3f537f4a89da7862aad5ad1dccc3531c717bcaa0b59cf2d",
+    "resource_contract_path": "docs/research/pr2_matched_accuracy_resource_contract_v1.md",
+    "resource_contract_sha256": "313843ef55e6740d1ab37e1d0fac0e2c68243445e9235bbc45cf92b481305416",
+    "implementation_contract_path": "docs/research/pr2_matched_accuracy_m1_implementation_contract_v1.md",
+    "implementation_contract_sha256": "b353f86a28b2aec185616cbc4f3b1e635bfb3e523f401e0a82e13ba56535f33a",
+    "v1_contract_source_path": "src/trotterlib/pr2_matched_accuracy_m1_contract.py",
+    "v1_contract_source_sha256": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b",
+    "v1_artifacts_unchanged": true
+  },
+  "prior_art_gate": {
+    "decision": "PROCEED_RESOURCE_STUDY",
+    "papers_added": [
+      "arXiv:2603.13495",
+      "arXiv:2603.22778"
+    ],
+    "known_not_claimed": [
+      "joint_per_circuit_cost_and_estimator_variance_optimization",
+      "classical_importance_sampling_for_randomized_quantum_protocols",
+      "single_ancilla_trotter_qpe_with_partially_randomized_time_evolution",
+      "unitary_weight_concentration",
+      "end_to_end_early_ftqc_chemistry_resource_estimation"
+    ],
+    "remaining_claim_scope": "fixed_df_prefix_matched_accuracy_resource_and_applicability_study"
+  },
+  "required_source_hashes": {
+    "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_a_result_schema_v2.json": "b5ad6554bd9009437ba52603766f39793b0663a66b763328dd5976abf7e33f22",
+    "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_b_result_schema_v2.json": "7e76123aae9673e76f94e8fcbdcc3f274a67020ac283509662f7c5915f4a360b",
+    "artifacts/pr2_matched_accuracy_m1_contract/2026-09-29/pr2_matched_accuracy_m1_precompile_barrier_dry_run_schema_v2.json": "3f9cc7140166156bdf21a1583c0f8a31f1ef36faf087db54702357846e2758c4",
+    "docs/research/pr2_matched_accuracy_m1_preexecution_amendment_v2.md": "163e228cbcc866bec4e5c5aeeb8e7aa95bb459a9871cddc6cfcec064f0efc4fa",
+    "scripts/run_pr2_matched_accuracy_m1_precompile_barrier.py": "0d93f165de8822e41bd35d382cdb11cbec9362d68bbdab24a727e0e4dd795516",
+    "src/trotterlib/pr2_matched_accuracy_m1_contract.py": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b",
+    "src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py": "2a533ffc7f1311db12b063f10a156c9f3d0cf9786910f21b38a7b52e75c56430",
+    "tests/test_pr2_matched_accuracy_m1_precompile_barrier.py": "e8012fd413ab8c91e87045fa139f4e0560425bc6dae141e2a11eb1564cb7f4cf"
+  },
+  "staged_m1_contract": {
+    "m1_a": {
+      "scope": "all_frozen_candidates_signal_bias_normalization_shots_and_selector",
+      "minimum_base_candidates": 208,
+      "maximum_signal_candidates": 212,
+      "direct_compile_jobs": 0,
+      "circuits_built": 0,
+      "full_wrappers_compiled": 0
+    },
+    "precompile_barrier": {
+      "selection_limited_true_status": "SELECTION_LIMITED",
+      "selection_limited_true_action": "MANDATORY_STOP_BEFORE_ANY_COMPILE_JOB",
+      "selection_limited_false_status": "M1_A_COMPLETE_M1_B_ELIGIBLE",
+      "random_compile_cell_cap": 16,
+      "deterministic_or_discard_compile_cell_cap": 16,
+      "winner_claim_before_m1_b": false,
+      "held_out_candidate_selection_before_m1_b": false
+    },
+    "m1_b": {
+      "requires_byte_fixed_m1_a_artifact": true,
+      "requires_clear_precompile_barrier": true,
+      "selection_limited_rescue_within_same_authorization": false,
+      "future_maximum_random_trajectories": 2048,
+      "future_maximum_full_wrappers": 4128
+    }
+  },
+  "permissions": {
+    "amendment_dry_run_authorized": true,
+    "m1_scientific_execution_authorized": false,
+    "development_npz_load_authorized": false,
+    "held_out_access_authorized": false,
+    "signal_evaluation_authorized": false,
+    "trajectory_sampling_authorized": false,
+    "circuit_build_authorized": false,
+    "direct_compile_authorized": false,
+    "s3_authorized": false,
+    "automatic_next_stage": null
+  },
+  "dry_run_requirements": {
+    "standard_library_only": true,
+    "synthetic_values_only": true,
+    "limited_fixture_must_stop": true,
+    "limited_fixture_compile_jobs": 0,
+    "clear_control_plan_only": true,
+    "scientific_counter_values": 0,
+    "non_overwrite_output": true
+  },
+  "mandatory_stop": {
+    "required_after_amendment_dry_run": true,
+    "next_review": "result_prior_m1_execution_authorization",
+    "execution_authorization_must_be_a_separate_commit": true,
+    "held_out_transfer_authorized": false,
+    "threshold_or_candidate_changes_after_m1_a": false
+  }
+}

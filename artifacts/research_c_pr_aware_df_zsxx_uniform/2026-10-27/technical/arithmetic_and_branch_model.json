@@ -1,0 +1,76 @@
+{
+  "status": "CONDITIONAL_MODEL_NOT_PLATFORM_CERTIFICATE",
+  "precision_bits": 192,
+  "ieee": {
+    "kind": "conditional_IEEE_binary64_RN",
+    "finite_intermediates": true,
+    "gradual_underflow": true,
+    "no_reassociation": true,
+    "contraction": "separate or correctly rounded FMA",
+    "platform_verified": false
+  },
+  "actual_RZ": "gate_matrix::rz_gate(theta) forms complex exp at imaginary0.5theta;num-complex0.4.6 calls exp(re),cos,sin",
+  "matrix_evaluation_error_a": null,
+  "product_model": {
+    "u": "2^-53",
+    "underflow_absolute": "2^-1075",
+    "gamma3": "3u/(1-3u)",
+    "component": "four real products and three adds;each term path at most3 roundings",
+    "component_error": "<=4gamma3*(1+a)*(1+e)+7h*(1+u)^3",
+    "operator_rounding": "<=16gamma3*(1+a)*(1+e)+28h*(1+u)^3",
+    "recurrence": "1+e_next <= ((1+a)(1+16gamma3)+28h(1+u)^3)*(1+e)",
+    "solution": "(1+p)^L-1 <= Lp/(1-Lp),Lp<1;no arbitrary run-length ceiling",
+    "parenthesization": "actual sequential Rust fold;balanced Arb product only for independent exact reference"
+  },
+  "branches": {
+    "prior_inventory": "artifacts/research_c_pr_aware_df_zsxx/2026-10-27/technical/branch_inventory.json",
+    "source_all_branches_reviewed": true,
+    "theta_superset": "strict guards,outward subtraction widening;uncertain branches both retained",
+    "general_superset": [
+      "lambda/phi flip or no flip",
+      "RZ emit or omit",
+      "SX pair or X",
+      "mod clamp or not"
+    ],
+    "full_compiler_image": false,
+    "missing": [
+      "uniform complex-exp RZ matrix bound",
+      "determinant/abs/sqrt under source operations",
+      "atan2/arg finite-domain image",
+      "rem_euclid image with correct phase",
+      "branch simplification and returned phase numerical image"
+    ]
+  },
+  "methods": {
+    "A": "Arb validates ideal template image only;does not execute unknown Rust inputs on a ball",
+    "B": "conditional source-fold/phase formulas;no invented transcendental ULP constants",
+    "C": "SOURCE alphabet/determinant/run-length restriction narrows domain but leaves Euler poles and cuts"
+  },
+  "libm": {
+    "installed": "glibc2.35",
+    "imports": [
+      "acos",
+      "atan2",
+      "cos",
+      "exp",
+      "fmod",
+      "sin",
+      "sincos"
+    ],
+    "source": "source_inventory.json",
+    "uniform_ULP_bound": null,
+    "reason": "glibc2.35 manual/math.texi lines1296-1322 gives accuracy goals and acknowledges violations;not a uniform certified bound",
+    "wheel_build_flags_FMA_and_full_callsite_mapping_verified": false
+  },
+  "phase": {
+    "kind": "conditional_phase_arithmetic",
+    "accumulator_correctly_rounded": true,
+    "no_accumulator_underflow_overflow": true,
+    "euclidean_quotient_relation": true,
+    "verified_for_fixed_wrapper": false,
+    "absolute_remainder_error": "282380977294612842895300178587827463815253551476229120266744218381863065973153634750242289825040819183356488433204414219964782116594229484922776863287034106570535693160772730070911082315318627686337923583345022172033084894894853825550401976519584949468691426081769045638400061022014404131665128666186372874241/404804506614621236704990693437834614099113299528284236713802716054860679135990693783920767402874248990374155728633623822779617474771586953734026799881477019843034848553132722728933815484186432682479535356945490137124014966849385397236206711298319112681620113024717539104666829230461005064372655017292012526615415482186989568",
+    "fmod_semantics": "assume exact truncated remainder for finite binary64 operands"
+  },
+  "phase_model_verified": false,
+  "whole_law_bound": null
+}

@@ -1,0 +1,13 @@
+Working directory: isolated worktree /tmp/prt-c1-stage1-compatibility-20261025
+All NumPy inputs in the following tests are artificial. No molecular scientific run is authorized.
+Environment for technical probes/tests: XDG_CACHE_HOME=$PWD/.cache TMPDIR=$PWD/.cache/tmp PYTHONPYCACHEPREFIX=$PWD/.cache/pycache
+.venv-fit/bin/python -m pytest -q -o cache_dir=.cache/pytest-fit tests/management/test_research_c_c1_ffsim_compat.py tests/management/test_research_c_c1_stage1_fit_environment.py --junitxml=artifacts/research_c_c1_stage1_compatibility/2026-10-25/tests/fit.xml
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-eval tests/management/test_research_c_c1_stage1.py tests/management/test_research_c_c1_stage1_execution.py --junitxml=artifacts/research_c_c1_stage1_compatibility/2026-10-25/tests/eval.xml
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-adapter tests/management/test_research_c_c1_general_k_adapter.py --junitxml=artifacts/research_c_c1_stage1_compatibility/2026-10-25/tests/adapter.xml
+.venv-fit/bin/python -m pip check
+.venv-eval/bin/python -m pip check
+.venv-fit/bin/python artifacts/research_c_c1_stage1_compatibility/2026-10-25/environment/probe.py fit
+.venv-eval/bin/python artifacts/research_c_c1_stage1_compatibility/2026-10-25/environment/probe.py eval
+Install: /home/abe/.pyenv/versions/3.11.1/bin/python -m venv .venv-fit (and .venv-eval)
+For role fit/eval: .venv-$role/bin/python -m pip install --no-index --find-links /tmp/prt-c1-stage1-implementation-20261024/.wheelhouse/$role --require-hashes -r artifacts/research_c_c1_stage1_compatibility/2026-10-25/environment/$role-requirements.lock
+The wheelhouse is an existing read-only source, not modified or copied into git; wheel inventories and hashes are published.

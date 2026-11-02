@@ -1,0 +1,252 @@
+....F..............FFFFF.                                                [100%]
+=================================== FAILURES ===================================
+____________ test_artificial_end_to_end_and_partial_STOP[nonfinite] ____________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-460/test_artificial_end_to_end_and4')
+fault = 'nonfinite'
+
+    @pytest.mark.parametrize('fault',[None,'infeasible','unresolved','identity','nonfinite','alias'])
+    def test_artificial_end_to_end_and_partial_STOP(tmp_path,fault):
+>       path,data=make_fixture(tmp_path,fault);out=tmp_path/'out'
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_c1_h6_ca_resources.py:61: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/management/test_research_c_c1_h6_ca_resources.py:49: in make_fixture
+    f=k+'.json';m.io.save(root/f,v);records[k]=f
+                ^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1_execution.py:29: in save
+    json.dump(payload,f,ensure_ascii=False,allow_nan=False,indent=2)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/__init__.py:179: in dump
+    for chunk in iterable:
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:432: in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:406: in _iterencode_dict
+    yield from chunks
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:406: in _iterencode_dict
+    yield from chunks
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:406: in _iterencode_dict
+    yield from chunks
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:398: in _iterencode_dict
+    yield _floatstr(value)
+          ^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+o = nan, allow_nan = False, _repr = <slot wrapper '__repr__' of 'float' objects>
+_inf = inf, _neginf = -inf
+
+    def floatstr(o, allow_nan=self.allow_nan,
+            _repr=float.__repr__, _inf=INFINITY, _neginf=-INFINITY):
+        # Check for specials.  Note that this type of test is processor
+        # and/or platform-specific, so do tests which don't depend on the
+        # internals.
+    
+        if o != o:
+            text = 'NaN'
+        elif o == _inf:
+            text = 'Infinity'
+        elif o == _neginf:
+            text = '-Infinity'
+        else:
+            return _repr(o)
+    
+        if not allow_nan:
+>           raise ValueError(
+                "Out of range float values are not JSON compliant: " +
+                repr(o))
+E           ValueError: Out of range float values are not JSON compliant: nan
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/json/encoder.py:240: ValueError
+________________ test_passive_preflight_and_fixed_policy[None] _________________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix0')
+fault = None
+
+    @pytest.mark.parametrize('fault',[None,'source','input','budget','calls'])
+    def test_passive_preflight_and_fixed_policy(tmp_path,fault):
+        path,_=make_fixture(tmp_path);c=m.io.read(path)
+        if fault=='source':(tmp_path/'source.py').write_text('changed')
+        if fault=='input':(tmp_path/'PF.json').write_text('{}')
+        if fault=='budget':c['accuracy_target']=dict(c['accuracy_target'],alpha_total=.04)
+        if fault=='calls':c['maximum_logical_units']+=1
+>       m.io.save(path,c)
+
+tests/management/test_research_c_c1_h6_ca_resources.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix0/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix0/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+_______________ test_passive_preflight_and_fixed_policy[source] ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix1')
+fault = 'source'
+
+    @pytest.mark.parametrize('fault',[None,'source','input','budget','calls'])
+    def test_passive_preflight_and_fixed_policy(tmp_path,fault):
+        path,_=make_fixture(tmp_path);c=m.io.read(path)
+        if fault=='source':(tmp_path/'source.py').write_text('changed')
+        if fault=='input':(tmp_path/'PF.json').write_text('{}')
+        if fault=='budget':c['accuracy_target']=dict(c['accuracy_target'],alpha_total=.04)
+        if fault=='calls':c['maximum_logical_units']+=1
+>       m.io.save(path,c)
+
+tests/management/test_research_c_c1_h6_ca_resources.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix1/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix1/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+________________ test_passive_preflight_and_fixed_policy[input] ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix2')
+fault = 'input'
+
+    @pytest.mark.parametrize('fault',[None,'source','input','budget','calls'])
+    def test_passive_preflight_and_fixed_policy(tmp_path,fault):
+        path,_=make_fixture(tmp_path);c=m.io.read(path)
+        if fault=='source':(tmp_path/'source.py').write_text('changed')
+        if fault=='input':(tmp_path/'PF.json').write_text('{}')
+        if fault=='budget':c['accuracy_target']=dict(c['accuracy_target'],alpha_total=.04)
+        if fault=='calls':c['maximum_logical_units']+=1
+>       m.io.save(path,c)
+
+tests/management/test_research_c_c1_h6_ca_resources.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix2/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix2/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+_______________ test_passive_preflight_and_fixed_policy[budget] ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix3')
+fault = 'budget'
+
+    @pytest.mark.parametrize('fault',[None,'source','input','budget','calls'])
+    def test_passive_preflight_and_fixed_policy(tmp_path,fault):
+        path,_=make_fixture(tmp_path);c=m.io.read(path)
+        if fault=='source':(tmp_path/'source.py').write_text('changed')
+        if fault=='input':(tmp_path/'PF.json').write_text('{}')
+        if fault=='budget':c['accuracy_target']=dict(c['accuracy_target'],alpha_total=.04)
+        if fault=='calls':c['maximum_logical_units']+=1
+>       m.io.save(path,c)
+
+tests/management/test_research_c_c1_h6_ca_resources.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix3/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix3/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+________________ test_passive_preflight_and_fixed_policy[calls] ________________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix4')
+fault = 'calls'
+
+    @pytest.mark.parametrize('fault',[None,'source','input','budget','calls'])
+    def test_passive_preflight_and_fixed_policy(tmp_path,fault):
+        path,_=make_fixture(tmp_path);c=m.io.read(path)
+        if fault=='source':(tmp_path/'source.py').write_text('changed')
+        if fault=='input':(tmp_path/'PF.json').write_text('{}')
+        if fault=='budget':c['accuracy_target']=dict(c['accuracy_target'],alpha_total=.04)
+        if fault=='calls':c['maximum_logical_units']+=1
+>       m.io.save(path,c)
+
+tests/management/test_research_c_c1_h6_ca_resources.py:155: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_stage1_execution.py:28: in save
+    with Path(path).open('x',encoding='utf-8') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = PosixPath('/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix4/contract.json')
+mode = 'x', buffering = -1, encoding = 'utf-8', errors = None, newline = None
+
+    def open(self, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None):
+        """
+        Open the file pointed by this path and return a file object, as
+        the built-in open() function does.
+        """
+        if "b" not in mode:
+            encoding = io.text_encoding(encoding)
+>       return io.open(self, mode, buffering, encoding, errors, newline)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       FileExistsError: [Errno 17] File exists: '/tmp/pytest-of-abe/pytest-460/test_passive_preflight_and_fix4/contract.json'
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/pathlib.py:1044: FileExistsError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h6_ca_resources.py::test_artificial_end_to_end_and_partial_STOP[nonfinite]
+FAILED tests/management/test_research_c_c1_h6_ca_resources.py::test_passive_preflight_and_fixed_policy[None]
+FAILED tests/management/test_research_c_c1_h6_ca_resources.py::test_passive_preflight_and_fixed_policy[source]
+FAILED tests/management/test_research_c_c1_h6_ca_resources.py::test_passive_preflight_and_fixed_policy[input]
+FAILED tests/management/test_research_c_c1_h6_ca_resources.py::test_passive_preflight_and_fixed_policy[budget]
+FAILED tests/management/test_research_c_c1_h6_ca_resources.py::test_passive_preflight_and_fixed_policy[calls]
+6 failed, 19 passed in 1.93s

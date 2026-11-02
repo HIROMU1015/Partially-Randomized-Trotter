@@ -1,0 +1,11 @@
+Task directory: /tmp/prt-c1-frame-repair-20261025
+Environment for every run: XDG_CACHE_HOME=$PWD/.cache MPLCONFIGDIR=$PWD/.cache/matplotlib TMPDIR=$PWD/.cache/tmp PYTHONPYCACHEPREFIX=$PWD/.cache/pycache
+Read-only exact-lock venvs at /tmp/prt-c1-stage1-compatibility-20261025/.venv-fit and .venv-eval; local symlinks preserve venv Python identity. No package install/update.
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-frame tests/management/test_research_c_c1_frame_repair.py tests/management/test_research_c_c1_stage1.py tests/management/test_research_c_c1_stage1_execution.py --junitxml=artifacts/research_c_c1_frame_repair/2026-10-25/tests/eval.xml
+.venv-fit/bin/python -m pytest -q -o cache_dir=.cache/pytest-fit tests/management/test_research_c_c1_ffsim_compat.py tests/management/test_research_c_c1_stage1_fit_environment.py --junitxml=artifacts/research_c_c1_frame_repair/2026-10-25/tests/fit.xml
+.venv-eval/bin/python -m pytest -q -o cache_dir=.cache/pytest-adapter tests/management/test_research_c_c1_general_k_adapter.py --junitxml=artifacts/research_c_c1_frame_repair/2026-10-25/tests/adapter.xml
+.venv-eval/bin/python artifacts/research_c_c1_frame_repair/2026-10-25/artificial_parallel_audit.py
+.venv-eval/bin/python artifacts/research_c_c1_frame_repair/2026-10-25/preloaded_backend_audit.py
+.venv-fit/bin/python -m pip check
+.venv-eval/bin/python -m pip check
+These runners use artificial arrays only. They never decode molecular inputs, fit exports, saved operators or circuit artifacts. Audit output files use exclusive creation; use a fresh destination when repeating technical probes.

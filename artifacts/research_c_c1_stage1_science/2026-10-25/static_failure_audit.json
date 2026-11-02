@@ -1,0 +1,42 @@
+{
+  "schema": "C1_STAGE1_STATIC_FAILURE_AUDIT_v1",
+  "method": "Read-only source and traceback inspection; no array reload, norm, residual, fit or optimizer invocation",
+  "source_records": [
+    {
+      "path": "ffsim/linalg/util.py",
+      "sha256": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+      "first_line": 192,
+      "last_line": 207,
+      "excerpt": "def unitaries_to_parameters(mats: np.ndarray, real: bool = False) -> np.ndarray:\n    \"\"\"Convert a batch of unitary matrices to parameters.\n\n    Converts an array of unitaries to a real-valued parameter vector. The parameter\n    vector contains non-redundant real and imaginary parts of the elements of the matrix\n    logarithms of the unitaries.\n\n    Args:\n        mats: The batch of unitary matrices, with shape (n_mats, dim, dim).\n        real: Whether to take only the real part of the matrix logarithm of the unitary,\n            and discard the imaginary part.\n\n    Returns:\n        The list of real numbers parameterizing the unitaries.\n    \"\"\"\n    return antihermitians_to_parameters(scipy.linalg.logm(mats), real=real)"
+    },
+    {
+      "path": "ffsim/linalg/double_factorized_decomposition.py",
+      "sha256": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4",
+      "first_line": 396,
+      "last_line": 424,
+      "excerpt": "    diag_coulomb_mats, orbital_rotations = _double_factorized_explicit_cholesky(\n        two_body_tensor, tol=tol, max_vecs=max_vecs\n    )\n    n_tensors, norb, _ = orbital_rotations.shape\n\n    # Structure key for the cached jitted objective. Convert to a hashable tuple so it\n    # can be used as a cache key, and back to a list inside the builder.\n    indices_key = None if diag_coulomb_indices is None else tuple(diag_coulomb_indices)\n    two_body_tensor_jax = jnp.asarray(two_body_tensor)\n\n    # Reuse a jitted value-and-gradient function cached by static structure, so the loss\n    # is compiled once and reused across all optimizer iterations (and across calls with\n    # the same structure) instead of being re-traced eagerly each step.\n    value_and_grad = _make_compressed_value_and_grad(n_tensors, norb, indices_key)\n\n    def scipy_func(x: np.ndarray) -> tuple[float, np.ndarray]:\n        value, grad = value_and_grad(jnp.asarray(x), two_body_tensor_jax)\n        return float(value), np.asarray(grad)\n\n    x0 = df_tensors_to_params(\n        diag_coulomb_mats, orbital_rotations, diag_coulomb_indices, real=True\n    )\n    result = scipy.optimize.minimize(\n        scipy_func,\n        x0,\n        method=method,\n        jac=True,\n        callback=callback,\n        options=options,"
+    },
+    {
+      "path": "scipy/linalg/_matfuncs.py",
+      "sha256": "5e929a5df38641830da4cf4bcbb7c69b4041d580b588b47cf90ce7e1354ae759",
+      "first_line": 51,
+      "last_line": 55,
+      "excerpt": "    \"\"\"\n    A = np.asarray(A)\n    if len(A.shape) != 2 or A.shape[0] != A.shape[1]:\n        raise ValueError('expected square array_like input')\n    return A"
+    },
+    {
+      "path": "scipy/linalg/_matfuncs.py",
+      "sha256": "5e929a5df38641830da4cf4bcbb7c69b4041d580b588b47cf90ce7e1354ae759",
+      "first_line": 196,
+      "last_line": 202,
+      "excerpt": "    \"\"\"\n    A = _asarray_square(A)\n    # Avoid circular import ... this is OK, right?\n    import scipy.linalg._matfuncs_inv_ssq\n    F = scipy.linalg._matfuncs_inv_ssq._logm(A)\n    F = _maybe_real(A, F)\n    errtol = 1000*eps"
+    }
+  ],
+  "conclusion": "ffsim unitaries_to_parameters passes (n_mats,dim,dim) to scipy.linalg.logm; fixed SciPy1.14.1 rejects ndim !=2; failure occurs in x0 generation before scipy.optimize.minimize",
+  "limits": "No J/U/OptimizeResult returned to glue; actual rank and initialization arrays not exported and not reconstructed",
+  "new_scientific_calls": 0,
+  "next_technical_options_not_implemented": [
+    "Test an explicitly pinned SciPy version with the required batched APIs, then freeze a new environment/SOURCE/contract before new science",
+    "Alternatively design a minimal explicit per-matrix compatibility bridge preserving semantics; do not patch the frozen installed library or replay the current run"
+  ],
+  "next_science_requires": "New explicit one-fit authorization; the current fit allowance is spent"
+}

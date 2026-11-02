@@ -1,0 +1,42 @@
+{
+  "status": "CONDITIONAL_TELESCOPING_CONNECTION",
+  "reuses": [
+    "c_pr_aware_df_c2a.monotone_budget",
+    "c_pr_aware_df_c2a.uniform_preview",
+    "c_pr_aware_df_c2_bridge.uniform_synthesis_preview"
+  ],
+  "assumptions": [
+    "fixed P0 graph/profile",
+    "basis-closed",
+    "target=None/error_map=None",
+    "ZSXX only",
+    "parameter-free cancellation",
+    "no calibrations",
+    "only strict reducing accepted rewrites",
+    "exact ideal unitary input and replacement gates",
+    "phase preserved;no free global-phase fit"
+  ],
+  "structure": "R<=N;accepted input visits<=N+5R<=6N;max ZSXX output gates5",
+  "local_budget": [
+    "ideal gate product G -> actual binary64 fold M",
+    "M -> exact gates V at observed returned angles/phase",
+    "separate circuit global-phase accumulation"
+  ],
+  "allowed_counting": "use direct certified ||G-V|| OR ||G-M||+||M-V|| once per accepted rewrite;not both",
+  "not_allowed": "6N times a maximum measured finite-pair residual;event-by-event compilation maxima;unaccepted candidate residuals",
+  "accumulation": "||U_final-U_initial|| <= epsilon_translation + sum_accepted epsilon_direct + epsilon_phase,if each factor before/after is exact unitary and certified in its actual context",
+  "rejected": "unchanged run contributes zero REWRITE error;not a claim that unknown translation/reference/law errors are zero",
+  "variable_acceptance": "a priori must cover every permitted branch/decision;captured execution certifies only its observed decision path",
+  "long_run": "exact dyadic reference gates balanced using validated acb_mat_mul;NumPy chosen M not asserted equal to hidden Rust fold",
+  "all_law_requirements": [
+    "uniform run-product error as a function of length over source-reachable angles",
+    "uniform phase-sensitive ZSXX bound including simplification/mod branches",
+    "initial translation/official control definitions and phase wrapper enclosure",
+    "Gaussian/raw/reference/shell/actual-adjoint coverage"
+  ],
+  "round_connection": "existing exact rational unitary telescoping and X/Y signal preview only when all whole-word/raw/reference/shell inputs are valid;C2B law and CAR bridge separate",
+  "composer_does_not_verify_mathematical_proofs": true,
+  "whole_P0_bound": null,
+  "whole_law_bound": null,
+  "actual_H4_bound": null
+}

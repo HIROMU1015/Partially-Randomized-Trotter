@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "External JSON cost-stage record",
+  "type": "object",
+  "required": [
+    "stage",
+    "cpu_ns",
+    "wall_ns",
+    "outcome",
+    "counters",
+    "is_scientific_confidence"
+  ],
+  "properties": {
+    "stage": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpu_ns": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "wall_ns": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "outcome": {
+      "enum": [
+        "OK",
+        "ZERO_R",
+        "ZERO_C",
+        "EVENT",
+        "FAIL"
+      ]
+    },
+    "counters": {
+      "type": "object"
+    },
+    "is_scientific_confidence": {
+      "const": false
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "StageLedger in-memory values are exact ints/Fractions; Seal encoding uses hexadecimal tagged ints/rat. Invalid-clock prefix is a failure record outside a completed cost-stage, not fabricated CPU=0."
+}

@@ -1,0 +1,62 @@
+{
+  "BLAS_threads_per_worker": 4,
+  "K": [
+    2,
+    4
+  ],
+  "SCF_DF_state_generation": 0,
+  "T": 0.8,
+  "actual_quantum_sampling": 0,
+  "allocation": "one step minimum per signed occurrence, remaining proportional to absolute coefficient; largest remainder lexical occurrence tie",
+  "automatic_retry": false,
+  "coefficient_atol": 0.0,
+  "compile": 0,
+  "compiled_total_cost": null,
+  "data_dependent_candidate_selection": false,
+  "epsilon_winner_or_total_cost_ranking": false,
+  "expected_exact_tail_records": 48,
+  "expected_finite_RTE_records": 96,
+  "formulas": [
+    "2nd",
+    "4th",
+    "4th(new_2)"
+  ],
+  "independent_checks": [
+    "four fixed matrix-free probes vs occupation assembly",
+    "full reference expm vs eigh",
+    "source paired Taylor vs spectral polynomial at negative time",
+    "raw vs corrected/B relation per case"
+  ],
+  "norm_tolerance": 1e-12,
+  "normalization_shot_multiplier": "B^2 only, NOT total required shots",
+  "numeric_tolerance": 1e-09,
+  "prefix_order": "saved signed generation order, explicit_ordered_partition, no re-ranking",
+  "prefixes": {
+    "H4": [
+      3,
+      9
+    ],
+    "H6": [
+      5,
+      15
+    ]
+  },
+  "q": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "resource_policy": "fresh available CPU/memory observation; no inherited wall/AS/RSS caps; no global environment changes; no affinity changes; owned children only, wait/reap and exception cleanup",
+  "scalar": "saved full-Fock extraction, global scalar applied once; full-H reference never rotated",
+  "schema": "h46_new2_saved_input_diagnostic_v1",
+  "science": "exact finite-distribution mean vectors, not a sampled trajectory campaign",
+  "stop_after_diagnostic": true,
+  "strict_symbolic_fourth_order_claimed": false,
+  "systems": [
+    "H4",
+    "H6"
+  ],
+  "tail_steps_per_outer": 32,
+  "workers": 2
+}

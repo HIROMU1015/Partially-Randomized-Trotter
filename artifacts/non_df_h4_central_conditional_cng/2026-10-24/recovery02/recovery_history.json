@@ -1,0 +1,46 @@
+{
+  "classification": "TECHNICAL_ADAPTER_GATE_SCOPE_ERROR",
+  "failed_SOURCE": "da979af729f3c90e3cfbd3250e870ed3806cdf57",
+  "failed_namespace": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/run01",
+  "cause": "SHARED_REFERENCE required exact cross-representation reference identity; original adapters intentionally use their own represented full Hamiltonian",
+  "evidence": [
+    "src/trotterlib/h4_audited_evaluation.py:44",
+    "src/trotterlib/h4_pilot_science.py:52",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/result.json:reference",
+    "artifacts/non_df_h4_central_conditional_cng/2026-10-24/run01/native/stderr.log"
+  ],
+  "fixed_gate": "same saved ray/T/method across representations; PF/PR exact reference equality within each representation; retain distinct cross-representation reference/bias",
+  "scientific_input_or_condition_change": false,
+  "reference_values_changed": false,
+  "scientific_tolerance_added": false,
+  "original_grant_reused": false,
+  "failed_run_and_STOP_preserved": true,
+  "prior_source_archives": {
+    "src/trotterlib/h4_central_cng.py": {
+      "SOURCE": "da979af729f3c90e3cfbd3250e870ed3806cdf57",
+      "archive": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/prior_SOURCE/src/trotterlib/h4_central_cng.py",
+      "sha256": "78cb69eed072c1a879c444554a0bff8b35c9b79fe70418b73a1f1ac7c89734f0"
+    },
+    "scripts/run_h4_central_cng.py": {
+      "SOURCE": "da979af729f3c90e3cfbd3250e870ed3806cdf57",
+      "archive": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/prior_SOURCE/scripts/run_h4_central_cng.py",
+      "sha256": "4eb6e4cb9fa13060f2604eb1c9a9d7413d10b91c189dfb197d4c7a5e43e051dd"
+    },
+    "tests/test_h4_central_cng.py": {
+      "SOURCE": "da979af729f3c90e3cfbd3250e870ed3806cdf57",
+      "archive": "artifacts/non_df_h4_central_conditional_cng/2026-10-24/recovery02/prior_SOURCE/tests/test_h4_central_cng.py",
+      "sha256": "6aad45e0dd4505ef52640d4e05210ee400389ab26439d2f57ece82187dc081c2"
+    }
+  },
+  "prior_used": {
+    "comparisons_15_with_guard_boxes": 0,
+    "input_binding_batch": 1,
+    "paired_G_statistics_batch": 0,
+    "pauli_10_conditions_20_axes_with_guard_faces": 0
+  },
+  "completed_scientific_conditions": 0,
+  "successful_scientific_results_to_reuse": [],
+  "remaining_scientific_scope": "same 10 Pauli conditions/20 axes+guard faces/15 comparisons/one paired G batch",
+  "new_SOURCE_seal_contract_namespace_grant_required": true,
+  "authorization": "attachment section 10"
+}

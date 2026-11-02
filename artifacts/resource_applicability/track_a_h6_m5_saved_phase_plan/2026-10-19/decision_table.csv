@@ -1,0 +1,7 @@
+observed_pattern,permitted_interpretation,next_action,prohibited_inference
+saved_metrics_or_ordinary_replay_do_not_reproduce,"Replay, serialization or runtime inconsistency remains unresolved",STOP; inspect saved representation and runtime identity,Do not infer compiler correctness or alter old acceptance
+ordinary_reproduces_and_extended_raw_difference_reduces,Finite precision evaluation/accumulation sensitivity is suggested,Report both precisions and their state scope,Not proof that rounding is the unique cause; old raw FAIL unchanged
+extended_raw_phase_difference_persists_with_small_aligned_residual,Difference is consistent with a common phase component in the encoded circuits on this state,Inspect stored phase accounting and synthesis representation; no new compile automatically,Not proof of equivalence on all states or a license to fit a phase correction
+extended_aligned_residual_is_not_small,Non-common-phase difference is still material for this state,"Inspect gate ordering, parameters and local definitions from saved circuits",Do not dismiss as global phase
+unknown_gate_or_insufficient_extended_precision,Diagnostic implementation cannot cover the saved path,STOP and revise/seal a new plan before real continuation,"No silent dtype downgrade, decomposition or backend substitution"
+all_diagnostics_available,Qualified diagnosis is available for one state,"Save metrics and worker exit/reap, mandatory STOP","No accepted cost, sine compile, model fit, ranking or Core adoption"

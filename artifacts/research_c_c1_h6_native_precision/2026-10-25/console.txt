@@ -1,0 +1,42 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c1-h6-native-repair-20261025/scripts/run_research_c_c1_h6_native.py", line 20, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/scripts/run_research_c_c1_h6_native.py", line 18, in main
+    m.run(ROOT,a.contract,out)
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_native.py", line 252, in run
+    with ThreadPoolExecutor(max_workers=plan['workers']) as pool:results=dict(pool.map(candidate_job,JOBS))
+                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_native.py", line 215, in candidate_job
+    kernel_report,a,b=calls('kernel_action',label,guarded_assess)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_native.py", line 210, in guarded_assess
+    return assess()
+           ^^^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_native.py", line 204, in assess
+    compiler=action.state_gate(b,a,label='compiled/raw:'+label),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_h6_state_action.py", line 114, in state_gate
+    report=component_check(actual,expected,COMPONENT_ATOL,label=label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-h6-native-repair-20261025/src/trottertracks/c1_stage3_molecular.py", line 35, in component_check
+    if maximum>tolerance:raise ValueError(str(result))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: {'label': 'compiled/raw:CDF_s1_literal', 'max_entry': 5.519860650214071e-10, 'frobenius': 1.2352221380650043e-09, 'tolerance': 1e-10, 'rtol': 0}

@@ -1,0 +1,217 @@
+{
+  "schema": "PR_AWARE_DF_STAGE_A_X0_V2_EXECUTION_SUMMARY_V1",
+  "scope": "C_PR_AWARE_DF_PAIRED_STAGE_A_X0_V2",
+  "execution_date_JST": "2026-10-27T01:16:57.625568+09:00",
+  "fixed_commit": "e1085c95f5c01b68566e17d543ace5832cb94061",
+  "implementation_commit": "5a185964090f2cb8d19d445d41cf520c4d8ed2c7",
+  "contract_sha256": "610be0acc2357f3e9fb0e618d67825ea8d7039292a0fe34fcd81b021e9a9fc5d",
+  "source_manifest_sha256": "5deabdfab70029ba6ef784e326908fb7a8d8ffdef6b90e0142887c0e59e9a600",
+  "scientific_units": 30,
+  "maximum_units": 30,
+  "COMPLETE": 30,
+  "FAIL": 0,
+  "new_fit_calls": 2,
+  "actual_optimizer_calls": 2,
+  "completed_fits": 2,
+  "retry": 0,
+  "resume": 0,
+  "previous_scientific_units": 18,
+  "cumulative_scientific_units": 48,
+  "call_counts": {
+    "snapshots_load": 2,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "sector_assessment": 4,
+    "representation_assessment": 4,
+    "initial_gate": 1,
+    "comparison": 1,
+    "original_input_load": 1,
+    "saved_initial_load": 1,
+    "corrected_codec": 1,
+    "tensor_assessment": 4,
+    "objective_setup": 1,
+    "fit_input_load": 2,
+    "optimized_fitter": 2,
+    "fit_initial_diagnostic": 2,
+    "fit_final_diagnostic": 2
+  },
+  "initial_gate": {
+    "status": "PASS"
+  },
+  "status": "STAGE_A_PROXY_AND_DF_PASS",
+  "exact_tail_mass_reduction": 0.34724644911133484,
+  "roles": {
+    "baseline": {
+      "optimizer": {
+        "success": true,
+        "status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "fun": 7.200029332968556e-09,
+        "nit": 97,
+        "nfev": 107,
+        "njev": 107
+      },
+      "initial": {
+        "tensor_objective": 2.1839632053132894e-09,
+        "normalized_tensor_objective": 1.0,
+        "exact_tail_mass_Ha": 2.2093719370656357,
+        "smooth_tail_mass_Ha": 2.2093719370722074,
+        "normalized_penalty": 1.0,
+        "combined_objective": 1.0,
+        "proxy": "cdf_fixed_prefix_smooth_pauli_tail_mass_v1",
+        "attenuation": null,
+        "PF_error": null,
+        "RTE_error": null,
+        "synthesis_error": null,
+        "shots": null,
+        "total_cost": null,
+        "CA_achieved": null,
+        "independent_novelty": null,
+        "gradient_l2": 32834.019268206124,
+        "gradient_infinity": 9754.559315383009
+      },
+      "final": {
+        "tensor_objective": 1.572459914037971e-17,
+        "normalized_tensor_objective": 7.200029332968556e-09,
+        "exact_tail_mass_Ha": 2.2097618367788057,
+        "smooth_tail_mass_Ha": 2.2097618367853338,
+        "normalized_penalty": 1.0003529818682226,
+        "combined_objective": 7.200029332968556e-09,
+        "proxy": "cdf_fixed_prefix_smooth_pauli_tail_mass_v1",
+        "attenuation": null,
+        "PF_error": null,
+        "RTE_error": null,
+        "synthesis_error": null,
+        "shots": null,
+        "total_cost": null,
+        "CA_achieved": null,
+        "independent_novelty": null,
+        "gradient_l2": 3.104515097647238,
+        "gradient_infinity": 0.7423484410886623
+      },
+      "tensor": {
+        "tensor_maxabs": 9.689323562562511e-10,
+        "tensor_frobenius": 5.607958698344648e-09,
+        "objective_from_tensor": 1.57246003811697e-17,
+        "actual_rank": 8
+      },
+      "sector": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "SECTOR_EVALUATED",
+        "sector_error": 7.018855038843621e-09,
+        "numerical_guard": 3.278781198621627e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 3.552713678800501e-15,
+          "frobenius": 9.518647678459396e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "norm_plus_guard_Ha": 1.0297636237465247e-08,
+      "resources": {
+        "wall_seconds": 0.810650896281004,
+        "process_CPU_seconds": 1.598790617,
+        "peak_RSS_KiB": 367884
+      }
+    },
+    "proposed": {
+      "optimizer": {
+        "success": true,
+        "status": 0,
+        "message": "CONVERGENCE: REL_REDUCTION_OF_F_<=_FACTR*EPSMCH",
+        "fun": 0.04262376967322519,
+        "nit": 1129,
+        "nfev": 1228,
+        "njev": 1228
+      },
+      "initial": {
+        "tensor_objective": 2.1839632053132894e-09,
+        "normalized_tensor_objective": 1.0,
+        "exact_tail_mass_Ha": 2.2093719370656357,
+        "smooth_tail_mass_Ha": 2.2093719370722074,
+        "normalized_penalty": 1.0,
+        "combined_objective": 1.1,
+        "proxy": "cdf_fixed_prefix_smooth_pauli_tail_mass_v1",
+        "attenuation": null,
+        "PF_error": null,
+        "RTE_error": null,
+        "synthesis_error": null,
+        "shots": null,
+        "total_cost": null,
+        "CA_achieved": null,
+        "independent_novelty": null,
+        "gradient_l2": 32834.23292490374,
+        "gradient_infinity": 9754.83088577364
+      },
+      "final": {
+        "tensor_objective": 1.9752503728467674e-17,
+        "normalized_tensor_objective": 9.04433906231226e-09,
+        "exact_tail_mass_Ha": 1.4424298855756243,
+        "smooth_tail_mass_Ha": 1.4424298974848968,
+        "normalized_penalty": 0.4262376062888612,
+        "combined_objective": 0.04262376967322518,
+        "proxy": "cdf_fixed_prefix_smooth_pauli_tail_mass_v1",
+        "attenuation": null,
+        "PF_error": null,
+        "RTE_error": null,
+        "synthesis_error": null,
+        "shots": null,
+        "total_cost": null,
+        "CA_achieved": null,
+        "independent_novelty": null,
+        "gradient_l2": 4.673093479443538,
+        "gradient_infinity": 1.4825504139166679
+      },
+      "tensor": {
+        "tensor_maxabs": 1.350095923946526e-09,
+        "tensor_frobenius": 6.285301032493658e-09,
+        "objective_from_tensor": 1.9752504534532918e-17,
+        "actual_rank": 8
+      },
+      "sector": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "SECTOR_EVALUATED",
+        "sector_error": 9.039161828383144e-09,
+        "numerical_guard": 3.2564531608037766e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 2.7755575615628914e-15,
+          "frobenius": 7.209946158722771e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        }
+      },
+      "norm_plus_guard_Ha": 1.229561498918692e-08,
+      "resources": {
+        "wall_seconds": 1.3590457318350673,
+        "process_CPU_seconds": 2.565077211,
+        "peak_RSS_KiB": 377932
+      }
+    }
+  },
+  "resources": {
+    "wall_seconds": 4.1540887439623475,
+    "process_CPU_seconds": 1.756128567,
+    "peak_RSS_KiB": 276648
+  },
+  "interpretation": "Fixed Stage A DF/proxy numerical PASS only; relative-function-reduction stopping, not gradient/global optimum or PR-resource qualification",
+  "attenuation": null,
+  "PF_error": null,
+  "RTE_error": null,
+  "synthesis_error": null,
+  "shots": null,
+  "total_cost": null,
+  "CA_achieved": null,
+  "novelty": null,
+  "stages_B_C_executed": false,
+  "mandatory_stop": true
+}

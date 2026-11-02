@@ -1,0 +1,48 @@
+{
+  "schema_version": "h4-b0i-map240-authorization-v2",
+  "namespace": "h4-b0i-map240-parallel-run01-20261014",
+  "source_commit": "b73d01573610d52f293139a4ed3374bd9f080c0c",
+  "plan_digest": "b4ce82f7dbcc5f23e402a1c4cfd1937c1d9b0bef94ee9446a9fadde19b5dc222",
+  "approved": true,
+  "runtime_authorization": true,
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    13,
+    14
+  ],
+  "role_cpus": {
+    "workers": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      7,
+      6,
+      8,
+      9,
+      10,
+      11
+    ],
+    "driver": 13,
+    "observer": 14
+  },
+  "absolute_launch_command": "env BLIS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 QISKIT_NUM_PROCS=1 QISKIT_PARALLEL=false RAYON_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -P -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/scripts/resource_applicability/run_h4_b0i_map240.py --plan /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/artifacts/resource_applicability/track_a_h4_b0i_map_preparation/2026-10-14-parallel-run01/plan.json --authorization /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/artifacts/resource_applicability/track_a_h4_b0i_map_preparation/2026-10-14-parallel-run01/authorization.json --review /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-map-parallel-run01-20261014/artifacts/resource_applicability/track_a_h4_b0i_map_preparation/2026-10-14-parallel-run01/review.json",
+  "user_approval_evidence_sha256": "d3eea5dc20b43ad9c4a0e8b9b1bac2720efbdbe2700fd4d0bd6ebcf928fd01b0",
+  "retry": false,
+  "automatic_scope_expansion": false,
+  "next_stage_authorized": false,
+  "mandatory_stop": true
+}

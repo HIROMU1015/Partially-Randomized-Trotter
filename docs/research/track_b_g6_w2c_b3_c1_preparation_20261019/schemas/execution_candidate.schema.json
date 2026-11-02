@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unadopted W2c B3/C1 candidate",
+  "type": "object",
+  "required": [
+    "schema",
+    "adopted",
+    "contract_grants_execution",
+    "arms",
+    "input",
+    "decisions_required",
+    "mandatory_STOP"
+  ],
+  "properties": {
+    "schema": {
+      "const": "g6_w2c_b3_c1_candidate_v1"
+    },
+    "adopted": {
+      "const": false
+    },
+    "contract_grants_execution": {
+      "const": false
+    },
+    "arms": {
+      "const": [
+        "ordinary",
+        "partial_return_tail",
+        "closed_P3_tail",
+        "full_return"
+      ]
+    },
+    "input": {
+      "type": "object"
+    },
+    "decisions_required": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "null"
+      }
+    },
+    "mandatory_STOP": {
+      "const": true
+    }
+  },
+  "additionalProperties": true
+}

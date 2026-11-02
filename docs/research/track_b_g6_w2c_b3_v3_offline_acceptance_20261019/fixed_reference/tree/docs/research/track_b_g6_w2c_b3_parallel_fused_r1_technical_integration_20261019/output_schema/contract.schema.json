@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:parallel:v3:contract",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "b3_parallel_admission_v3"
+    },
+    "content_adopted": {
+      "const": false
+    },
+    "run_ready": {
+      "const": false
+    },
+    "science_release": {
+      "type": "null"
+    },
+    "scientific_adoption": {
+      "type": "null"
+    },
+    "contract_grants_execution": {
+      "const": false
+    },
+    "scope": {
+      "type": "string",
+      "pattern": "^ARTIFICIAL_"
+    },
+    "claim_id": {
+      "type": "string",
+      "pattern": "^ARTIFICIAL_"
+    },
+    "r1_reference": {
+      "type": "object"
+    },
+    "candidate": {
+      "type": "object"
+    },
+    "settings": {
+      "type": "object"
+    },
+    "source_pins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "input_pins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "schema_pins": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "runtime_manifest": {
+      "$ref": "urn:b3:parallel:v3:runtime"
+    },
+    "output_schema": {
+      "const": "b3_parallel_result_v3"
+    },
+    "measurement_condition": {
+      "enum": [
+        "sequential_pairs",
+        "concurrent_pairs"
+      ]
+    },
+    "observer": {
+      "const": "cached_all_call_return"
+    },
+    "transport": {
+      "const": "coalesced_reserve_enter"
+    },
+    "retry": {
+      "const": 0
+    },
+    "resume": {
+      "const": false
+    },
+    "mandatory_STOP": {
+      "const": true
+    }
+  },
+  "required": [
+    "schema",
+    "content_adopted",
+    "run_ready",
+    "science_release",
+    "scientific_adoption",
+    "contract_grants_execution",
+    "scope",
+    "claim_id",
+    "r1_reference",
+    "candidate",
+    "settings",
+    "source_pins",
+    "input_pins",
+    "schema_pins",
+    "runtime_manifest",
+    "output_schema",
+    "measurement_condition",
+    "observer",
+    "transport",
+    "retry",
+    "resume",
+    "mandatory_STOP"
+  ],
+  "additionalProperties": true
+}

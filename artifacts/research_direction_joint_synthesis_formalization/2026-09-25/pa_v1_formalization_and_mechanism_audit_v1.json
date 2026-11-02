@@ -1,0 +1,198 @@
+{
+  "checks": {
+    "all_48_holdout_rows_audited": true,
+    "all_6_operator_probes_audited": true,
+    "blind_fingerprint_matches": true,
+    "blind_validation_passed": true,
+    "dp_transition_formula_matches_all_records": true,
+    "h4_pilot_and_opt2_event_stream_match": true,
+    "pilot_fingerprint_matches": true,
+    "selected_objective_metadata_matches_all_runs": true
+  },
+  "content_fingerprint": "aaa5fdba8ddc6ec25fe1f286d886aba14a7a440c435f1ca5dd78ce33404b3676",
+  "decision": {
+    "h12_or_long_rpe_required_next": false,
+    "next_action": "preregister_a_small_forced_structure_comparison_against_an_explicit_one_segment_per_source_run_baseline",
+    "primary_theme_status": "conditional_candidate_pending_nondegenerate_mechanism_validation",
+    "secondary_theme": "P-C_geometry_energy_difference",
+    "status": "pa_v1_formalized_but_interval_mechanism_not_empirically_distinguished"
+  },
+  "empirical_mechanism_audit": {
+    "holdout_nonzero_taylor_order_event_count": 0,
+    "holdout_record_count": 48,
+    "incremental_interval_partition_compiled_benefit_identified": false,
+    "incremental_interval_partition_plan_changes_observed": 0,
+    "interpretation": "The completed transfer evidence supports run-local full/support-union basis selection. It does not empirically distinguish the interval partitioning layer from a one-segment-per-source-run baseline, and it does not exercise nonzero Taylor-order event structure.",
+    "one_segment_per_source_run_matches_selected_plan_on_all_records": true,
+    "operator_probe_count": 6,
+    "operator_probe_implied_extra_applications": 0,
+    "records_with_within_run_split": 0,
+    "strata": {
+      "h4_compiler_transfer_opt2": {
+        "holdout": {
+          "dp_transition_formula_mismatches": 0,
+          "implied_extra_applications_beyond_one_rotation_per_event": 0,
+          "record_count": 24,
+          "records_with_multi_application_interval": 22,
+          "records_with_within_run_split": 0,
+          "run_count": 56,
+          "selected_full_segments": 1,
+          "selected_objective_record_mismatches": 0,
+          "selected_segment_count": 56,
+          "selected_support_union_segments": 55
+        },
+        "holdout_event_count": 128,
+        "holdout_maximum_taylor_order_observed": 0,
+        "holdout_nonzero_taylor_order_event_count": 0,
+        "nonzero_taylor_structure_observed": false,
+        "operator_probes": {
+          "dp_transition_formula_mismatches": 0,
+          "implied_extra_applications_beyond_one_rotation_per_event": 0,
+          "record_count": 3,
+          "records_with_multi_application_interval": 3,
+          "records_with_within_run_split": 0,
+          "run_count": 5,
+          "selected_full_segments": 0,
+          "selected_objective_record_mismatches": 0,
+          "selected_segment_count": 5,
+          "selected_support_union_segments": 5
+        },
+        "within_run_split_observed": false
+      },
+      "h5_physical_transfer": {
+        "holdout": {
+          "dp_transition_formula_mismatches": 0,
+          "implied_extra_applications_beyond_one_rotation_per_event": 0,
+          "record_count": 24,
+          "records_with_multi_application_interval": 23,
+          "records_with_within_run_split": 0,
+          "run_count": 64,
+          "selected_full_segments": 0,
+          "selected_objective_record_mismatches": 0,
+          "selected_segment_count": 64,
+          "selected_support_union_segments": 64
+        },
+        "holdout_event_count": 128,
+        "holdout_maximum_taylor_order_observed": 0,
+        "holdout_nonzero_taylor_order_event_count": 0,
+        "nonzero_taylor_structure_observed": false,
+        "operator_probes": {
+          "dp_transition_formula_mismatches": 0,
+          "implied_extra_applications_beyond_one_rotation_per_event": 0,
+          "record_count": 3,
+          "records_with_multi_application_interval": 3,
+          "records_with_within_run_split": 0,
+          "run_count": 7,
+          "selected_full_segments": 0,
+          "selected_objective_record_mismatches": 0,
+          "selected_segment_count": 7,
+          "selected_support_union_segments": 7
+        },
+        "within_run_split_observed": false
+      }
+    }
+  },
+  "formal_problem": {
+    "candidate_table_space_if_materialized": "O(n^2) per run",
+    "domain": "Each maximal consecutive run with one source basis is partitioned into contiguous nonempty intervals. Every interval selects either the registered full basis or the deterministic completion preserving the union of all diagonal supports in that interval.",
+    "dp_predecessor_space": "O(n) per run",
+    "dp_time_with_precomputed_interval_options": "O(n^2) per run",
+    "excluded_from_optimality_claim": [
+      "compiled RZ global optimality",
+      "arbitrary Gaussian completions",
+      "direct pairwise relative-basis transition synthesis",
+      "noncontiguous grouping",
+      "coupling-aware or noise-aware routing"
+    ],
+    "objective_order": "lexicographic_minimum",
+    "objective_tuple": [
+      "twice_basis_operation_count",
+      "segment_count",
+      "support_union_size_sum",
+      "full_mode_penalty"
+    ],
+    "optimality_scope": "Global optimum only within the finite contiguous-interval, two-mode candidate family and the frozen basis-operation-count proxy.",
+    "recurrence": "DP[t] = min over 0<=s<t and mode in {full,support_union} of DP[s] plus interval_objective(s,t,mode)",
+    "transition_count_per_run_of_length_n": "n*(n+1)"
+  },
+  "input_fingerprints": {
+    "blind": "78af3474898dbf989780ea5f2881cb5b61595609dd2698164b9846c1ce1c5919",
+    "pilot": "1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37"
+  },
+  "method": "pa_v1_dp_formalization_and_empirical_mechanism_audit_v1",
+  "operator_equivalence_contract": {
+    "assumptions": [
+      "source and selected basis definitions are unitary",
+      "all columns in each application support are preserved",
+      "basis-plan source hashes and support labels match the application",
+      "basis changes are uncontrolled and only the diagonal action is controlled",
+      "identity and event scalar phases use the existing accumulation rule"
+    ],
+    "implementation_certificate": "preserved_columns_max_abs_residual <= 1e-12 at builder acceptance; six completed dense operator probes additionally passed 1e-10",
+    "statement": "For every Z/ZZ application with support S, the selected one-particle basis preserves the source-unitary columns indexed by S. Therefore the conjugated diagonal operator is unchanged. Products remain unchanged in event order; cancelling adjacent inverse/equal basis changes is exact; basis-independent scalar phases are accumulated with the same global or controlled relative-phase convention."
+  },
+  "overall_pass": true,
+  "provenance": {
+    "command": "'/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python' scripts/run_research_direction_joint_synthesis_formalization.py",
+    "evidence_status": "local_dirty_worktree_not_externally_reproduced",
+    "generated_at_utc": "2026-09-25T07:20:26.421242+00:00",
+    "git_commit": "3336f030c56f4eb500b1bdf8f541619f9c445038",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/research/README.md",
+      " M \"docs/research/\\345\\205\\210\\350\\241\\214\\347\\240\\224\\347\\251\\266\\343\\201\\250\\346\\234\\252\\350\\247\\243\\346\\261\\272\\347\\202\\271.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-25.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\347\\233\\256\\347\\232\\204\\343\\203\\273\\347\\240\\224\\347\\251\\266\\350\\252\\262\\351\\241\\214.md\"",
+      " M docs/research_direction_joint_synthesis_pilot.md",
+      " M docs/research_direction_theme_selection.md",
+      " M scripts/README.md",
+      " M src/trotterlib/README.md",
+      " M tests/README.md",
+      "?? artifacts/research_direction_joint_synthesis_blind_validation/",
+      "?? docs/research/pa_joint_synthesis_blind_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_prior_art_audit.md",
+      "?? docs/research_direction_joint_synthesis_blind_validation.md",
+      "?? scripts/run_research_direction_joint_synthesis_blind_validation.py",
+      "?? scripts/run_research_direction_joint_synthesis_formalization.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_blind_validation.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_formalization.py",
+      "?? tests/test_research_direction_joint_synthesis_blind_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_formalization.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_joint_synthesis_formalization.py": "e7e9570c7bd2e6d8574c984ee6553d29d4a861f4fa1e8a97133d976ee954f544",
+      "src/trotterlib/research_direction_joint_synthesis_formalization.py": "50b2859d4bbbed91b70057ad829dd171df17a711273c88382f86101dc7e92bdc"
+    }
+  },
+  "schema_version": "research_direction_joint_synthesis_formalization_v1",
+  "scope": {
+    "dp_global_compiled_cost_optimality_claimed": false,
+    "h12_evaluated": false,
+    "interval_partition_advantage_claimed": false,
+    "literature_novelty_established": false,
+    "new_circuit_compilation_performed": false,
+    "new_physical_simulation_performed": false,
+    "nonzero_taylor_order_transfer_validated": false,
+    "rpe_or_final_total_cost_evaluated": false,
+    "scientific_superiority_claimed": false
+  },
+  "source_evidence": {
+    "blind": {
+      "content_fingerprint": "78af3474898dbf989780ea5f2881cb5b61595609dd2698164b9846c1ce1c5919",
+      "path": "artifacts/research_direction_joint_synthesis_blind_validation/2026-09-25/pa_v1_h5_physical_h4_opt2_blind_v1.json",
+      "sha256": "ff6a8f846795b3f56e3688c62eab3ad26c3ace6632063ba72ff97f4a12ac4ea3"
+    },
+    "pilot": {
+      "content_fingerprint": "1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37",
+      "path": "artifacts/research_direction_joint_synthesis_pilot/2026-09-25/pa_h4_interval_union_joint_synthesis_v1.json",
+      "sha256": "b5165af6561ca7b1ba8dfe6920bbdd01a2c2c3699d8fd79ed721eba000b8b64f"
+    }
+  },
+  "stage": "P-A-v1-formalization"
+}

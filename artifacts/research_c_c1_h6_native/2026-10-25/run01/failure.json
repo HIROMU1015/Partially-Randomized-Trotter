@@ -1,0 +1,10 @@
+{
+  "error": "{'label': 'raw:CDF_s1_literal', 'max_entry': 1.0400731857157292e-10, 'frobenius': 6.202629046913387e-10, 'tolerance': 1e-10, 'rtol': 0}",
+  "first_failure": {
+    "kind": "kernel_action",
+    "label": "CDF_s1_shared",
+    "error_type": "ValueError",
+    "error": "{'label': 'raw:CDF_s1_shared', 'max_entry': 1.0400731857157292e-10, 'frobenius': 6.202629046913387e-10, 'tolerance': 1e-10, 'rtol': 0}",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c1-h6-native-science-20261025/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-science-20261025/src/trottertracks/c1_h6_native.py\", line 200, in assess\n    report=dict(raw_reference=action.state_gate(a,expected,label='raw:'+label),\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-science-20261025/src/trottertracks/c1_h6_state_action.py\", line 114, in state_gate\n    report=component_check(actual,expected,COMPONENT_ATOL,label=label)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c1-h6-native-science-20261025/src/trottertracks/c1_stage3_molecular.py\", line 35, in component_check\n    if maximum>tolerance:raise ValueError(str(result))\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nValueError: {'label': 'raw:CDF_s1_shared', 'max_entry': 1.0400731857157292e-10, 'frobenius': 6.202629046913387e-10, 'tolerance': 1e-10, 'rtol': 0}\n"
+  }
+}

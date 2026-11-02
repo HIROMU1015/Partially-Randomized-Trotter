@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-post-review-20261010/scripts/resource_applicability/run_track_a_h6_matched_v1.py", line 50, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-post-review-20261010/scripts/resource_applicability/run_track_a_h6_matched_v1.py", line 27, in main
+    return execute_worker(ROOT,a.worker,a.run_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-post-review-20261010/src/trottertracks/resource_applicability/h6_matched_execution_v1.py", line 207, in execute_worker
+    m,task,writer=verify_worker(root,directory,run_root)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-post-review-20261010/src/trottertracks/resource_applicability/h6_matched_execution_v1.py", line 199, in verify_worker
+    install_limits(task_binding['cpus'],address,cap)
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-ax2b-h4-post-review-20261010/src/trottertracks/resource_applicability/h6_matched_execution_v1.py", line 27, in install_limits
+    resource.setrlimit(resource.RLIMIT_AS,(address_bytes,address_bytes))
+ValueError: not allowed to raise maximum limit

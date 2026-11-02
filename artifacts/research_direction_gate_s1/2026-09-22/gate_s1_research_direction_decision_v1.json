@@ -1,0 +1,321 @@
+{
+  "checks": {
+    "all_required_work_packages_present": true,
+    "all_upstream_artifacts_validate": true,
+    "both_cost_scenarios_overlap": true,
+    "coefficient_selection_is_invariant": true,
+    "final_total_cost_or_superiority_not_claimed": true,
+    "fixed_snapshot_chain_matches": true,
+    "next_action_is_single_and_preregistered": true,
+    "overlap_is_labeled_undetermined_not_tied": true,
+    "upstream_fingerprint_chain_matches": true
+  },
+  "comparison_contract": {
+    "basis": "STO-3G",
+    "candidate_ld_values": [
+      3,
+      12
+    ],
+    "comparison_delta_time": 0.01,
+    "cost_scope": "single_hadamard_interrogation_without_state_preparation",
+    "df_rank": 12,
+    "geometry_angstrom": 1.0,
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "molecule": "H4_chain",
+    "n_qubits": 8,
+    "precision_task": "CA_over_10",
+    "primary_delta_time": 0.02,
+    "sensitivity_delta_time": 0.0125
+  },
+  "content_fingerprint": "68f7229df9f69d6f171f3a7616b874685348d622abce7d0df00398be1bb5c2eb",
+  "direction_decisions": [
+    {
+      "decision": "continue_conditionally_after_decision_bridge",
+      "direction_id": "T1",
+      "reason": "The point estimate favors the deterministic endpoint, but both documented intervals overlap; retain the boundary question and do not claim either superiority or a tie.",
+      "reopen_or_advance_condition": "WP05 full-scope intervals separate under equal optimization, or a reproducible condition-dependent boundary is identified.",
+      "topic": "superiority_region_and_limits"
+    },
+    {
+      "decision": "narrow_to_required_coefficient_accuracy",
+      "direction_id": "T2",
+      "reason": "C_D is insufficient as a final coefficient, but paper-D6 versus the dominant eigenphase does not change the current selection.",
+      "reopen_or_advance_condition": "A candidate approaches the PF boundary, coefficient uncertainty changes ranking, or transfer to a new instance fails.",
+      "topic": "state_specific_pf_error_and_partition_design"
+    },
+    {
+      "decision": "defer",
+      "direction_id": "T3",
+      "reason": "The present decision is limited by circuit scope and structure, not by the tested second-order coefficient choice.",
+      "reopen_or_advance_condition": "WP05 shows PF error or required round depth remains the dominant cost after full-scope calibration.",
+      "topic": "higher_order_partial_randomized_pf"
+    },
+    {
+      "decision": "continue_high_priority",
+      "direction_id": "T4",
+      "reason": "Long-q affine transfer and the full controlled-interrogation scope are the largest unresolved inputs to candidate ranking.",
+      "reopen_or_advance_condition": "Complete WP06-a and then validate WP05 on unused q/scope holdouts with shared uncertainty.",
+      "topic": "long_random_circuit_cost_prediction"
+    },
+    {
+      "decision": "continue_narrow_scope",
+      "direction_id": "T5",
+      "reason": "Beta and alpha allocation materially change both candidates, whereas the partial-specific compiled schedule effect is small.",
+      "reopen_or_advance_condition": "Preserve the fair allocation rules and prioritize late rounds; broaden schedule search only if WP05 changes the cost ordering.",
+      "topic": "finite_rte_and_rpe_schedule_optimization"
+    },
+    {
+      "decision": "run_wp06a_only_then_conditionally_defer",
+      "direction_id": "T6",
+      "reason": "A cheap circuit-structure kill switch is justified, but broad representation or sampling exploration is not yet justified.",
+      "reopen_or_advance_condition": "WP06-a reaches the preregistered structural trigger or exposes a ranking-changing implementation asymmetry.",
+      "topic": "representation_and_sampling_joint_design"
+    },
+    {
+      "decision": "continue_primary_framing",
+      "direction_id": "T7",
+      "reason": "Fair baseline optimization, provider-objective reversal, and overlapping uncertainty already identify reproducible ways that a screening estimate can give the wrong research impression.",
+      "reopen_or_advance_condition": "Test whether the same corrections and limitations persist in WP05 and the later decision-grade comparison.",
+      "topic": "reliable_resource_estimation_and_negative_results"
+    }
+  ],
+  "evidence_fingerprints": {
+    "WP00": "aee0a410a11e1e5da589394d81b0cb36a176a466467eb8f5e675ef64aad05086",
+    "WP01-S": "8d23ca982c50bbf954374d0b5193381d1324e09838764eb7293490d6ad4a506d",
+    "WP02": "9753539750481c51cfb0e281a6260eb2850cc90ca057881bad62d7a9d0c880e4",
+    "WP03": "2faa8d63038fe14563b8e36b8136076d95873bb2797ab7810afdf590772e4ff3",
+    "WP04": "b7493a865fa4194e0af7dac90417cb67cbdb76781fd14f0cc51c7663028a6ab9"
+  },
+  "gate_questions": {
+    "candidate_cost_intervals": {
+      "judgement": "undetermined_not_tied",
+      "ld12_point_reduction_relative_to_ld3": 0.04957812241779743,
+      "ld12_rz_point_estimate": 1696328651024.0,
+      "ld3_rz_point_estimate": 1784816502056.2498,
+      "local_5_percent_intervals_overlap": true,
+      "paper_d6_local_relative_gap_interval": [
+        -0.15908573978946716,
+        0.28565125357453347
+      ],
+      "paper_d6_transfer_relative_gap_interval": [
+        -0.4619783145525017,
+        0.9090687430766573
+      ],
+      "transfer_25_percent_intervals_overlap": true
+    },
+    "maximum_current_uncertainty": {
+      "components": [
+        "controlled_partial_s2_repetition_and_outer_boundaries",
+        "hadamard_wrapper_scope",
+        "long_q_cost_transfer_without_unused_holdout",
+        "shared_calibration_uncertainty_and_covariance"
+      ],
+      "selected": "full_controlled_interrogation_cost_scope_and_circuit_structure",
+      "why_not_finite_rte_or_statistical_allocation": "Their largest common gains apply to both candidates and have already been separated in WP04.",
+      "why_not_pf_coefficient": "All three tested coefficient policies select the same L_D and delta."
+    },
+    "observed_gain_mechanism": {
+      "dominant_common_factor": "beta_reallocation_then_alpha_reallocation",
+      "judgement": "observed_common_gain_is_dominated_by_beta_then_alpha;_a_partial_randomization_specific_advantage_is_not_demonstrated",
+      "ld12_alpha_removal_relative_cost_increase": 0.2633048706489605,
+      "ld12_beta_removal_relative_cost_increase": 1.4960797006452815,
+      "ld3_alpha_removal_relative_cost_increase": 0.35437332245363584,
+      "ld3_beta_removal_relative_cost_increase": 1.4319177152392806,
+      "ld3_compiled_schedule_relative_rz_change_vs_fixed": -0.019341184474334305,
+      "ld3_component_objective_schedule_relative_rz_change_vs_fixed": 0.16865974720922394
+    },
+    "pf_coefficient_selection": {
+      "costed_max_paper_d6_vs_dominant_relative_gap": 0.003168021959604861,
+      "judgement": "coefficient_choice_does_not_change_the_shortlist_or_resolve_the_cost_interval_overlap",
+      "minimum_pf_boundary_relative_headroom": 0.06550510467626625,
+      "paper_d6_ld3_point_regret_vs_ld12": 0.05216433205843307,
+      "selected_candidate_for_all_policies": "ld12_delta0.02",
+      "selection_changed": false
+    }
+  },
+  "limitations": [
+    "Gate S1 synthesizes local H4 screening evidence and does not generalize to H12 or other geometries.",
+    "The candidate intervals are sensitivity scenarios, not statistical confidence intervals.",
+    "The compared costs omit state preparation and use q=1,2 affine extrapolation without an unused long-q holdout for these schedules.",
+    "The 5% WP06-a trigger is a task-specific research-routing threshold, not a universal circuit-accuracy guarantee.",
+    "No final total-cost or partial-randomization superiority evaluation has been performed."
+  ],
+  "method": "wp00_wp02_wp01s_wp04_wp03_direction_synthesis_v1",
+  "next_action": {
+    "equivalence_requirement": "exact_small_matrix_equivalence_including_known_phase_compensation_and_control_branch_relative_phase",
+    "following_action": "WP05_full_controlled_interrogation_connection",
+    "inputs": "one_or_two_representative_DF_Z_ZZ_events_and_short_sequences",
+    "isolated_changes": [
+      "full_gaussian_vs_support_restricted_basis_transform",
+      "basis_transform_fusion",
+      "known_scalar_and_phase_handling",
+      "applicable_control_optimizations"
+    ],
+    "preregistered_decision_rule": {
+      "eta_decision_relative_rz": 0.05,
+      "eta_scope": "this_WP06a_circuit_structure_recalibration_decision_only",
+      "otherwise": "retain_current_structure_and_proceed_to_WP05_while_carrying_the_measured_residual_as_uncertainty",
+      "rationale": "Five percent is approximately the current 4.96% point gap, so a change of that size can alter the candidate decision.",
+      "reroute_before_wp05_if": [
+        "representative_RZ_change_at_least_eta_decision",
+        "candidate_ranking_reverses",
+        "asymptotic_q_slope_or_proxy_domain_changes",
+        "required_controlled_relative_phase_correction_is_missing_from_the_current_structure"
+      ]
+    },
+    "reason": "It is the cheapest direct test of the largest ranking-relevant uncertainty before spending on a full-scope calibration.",
+    "title": "representative_circuit_structure_kill_switch_pilot",
+    "work_package": "WP06-a"
+  },
+  "overall_pass": true,
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_gate_s1.py",
+    "evidence_status": "local_worktree_validation_not_immutable_ci",
+    "generated_at_utc": "2026-09-21T15:38:15.808047+00:00",
+    "git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/pf_delta_validation.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M scripts/README.md",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/research_direction_ablation/",
+      "?? artifacts/research_direction_pf_sensitivity/",
+      "?? artifacts/research_direction_prevalidation/",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-21.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-22.md\"",
+      "?? docs/research_direction_ablation.md",
+      "?? docs/research_direction_gate_s1.md",
+      "?? docs/research_direction_pf_sensitivity.md",
+      "?? docs/research_direction_prevalidation.md",
+      "?? partial_randomized_trotter_prevalidation_catalog.md",
+      "?? scripts/run_research_direction_ablation.py",
+      "?? scripts/run_research_direction_gate_s1.py",
+      "?? scripts/run_research_direction_pf_sensitivity.py",
+      "?? scripts/run_research_direction_prevalidation.py",
+      "?? src/trotterlib/research_direction_ablation.py",
+      "?? src/trotterlib/research_direction_gate_s1.py",
+      "?? src/trotterlib/research_direction_pf_sensitivity.py",
+      "?? src/trotterlib/research_direction_prevalidation.py",
+      "?? tests/test_research_direction_ablation.py",
+      "?? tests/test_research_direction_gate_s1.py",
+      "?? tests/test_research_direction_pf_sensitivity.py",
+      "?? tests/test_research_direction_prevalidation.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_gate_s1.py": "3256fa722f662d69c7a891963937bf0b6926e47bd1288c9515f4b2f1c285125e",
+      "src/trotterlib/research_direction_gate_s1.py": "94b09189b68e49014ea502d40df241cced9f08cfa647acf9fd2c8fd781b5203b"
+    }
+  },
+  "schema_version": "research_direction_gate_s1_v1",
+  "scope": {
+    "evidence_status": "local_worktree_not_immutable_ci",
+    "final_total_cost_evaluation_performed": false,
+    "new_circuit_compilation_performed": false,
+    "new_physical_simulation_performed": false,
+    "research_direction_decision_record": true,
+    "scientific_superiority_decision_grade": false
+  },
+  "shortlist": {
+    "primary_pf_coefficient_policy": "paper_d6",
+    "retain_as_sensitivity_not_first_batch": [
+      {
+        "delta_time": 0.0125,
+        "ld": 3
+      },
+      {
+        "delta_time": 0.0125,
+        "ld": 12
+      }
+    ],
+    "retain_for_wp05": [
+      {
+        "delta_time": 0.02,
+        "ld": 3,
+        "role": "partial_candidate"
+      },
+      {
+        "delta_time": 0.02,
+        "ld": 12,
+        "role": "deterministic_endpoint"
+      },
+      {
+        "delta_time": 0.01,
+        "ld": 3,
+        "role": "delta_comparator"
+      },
+      {
+        "delta_time": 0.01,
+        "ld": 12,
+        "role": "delta_comparator"
+      }
+    ],
+    "screened_out_for_current_model_conditional_task": [
+      {
+        "ld": 0,
+        "reason": "WP01-S analytic component-application proxy; not a general theoretical or compiled-RZ rejection"
+      }
+    ],
+    "screening_only_policy": "hd_surrogate",
+    "small_system_reference_policy": "dominant_eigenphase"
+  },
+  "source_evidence": {
+    "WP00": {
+      "content_fingerprint": "aee0a410a11e1e5da589394d81b0cb36a176a466467eb8f5e675ef64aad05086",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp00_comparison_contract_v1.json",
+      "sha256": "534ca063871d9782d1bfb394afeeb8d5a091be9086d93875265fd308b0b96979"
+    },
+    "WP01-S": {
+      "content_fingerprint": "8d23ca982c50bbf954374d0b5193381d1324e09838764eb7293490d6ad4a506d",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp01s_model_conditional_screening_v1.json",
+      "sha256": "d52fa24dc886bcebea761494a4b3d814717bde3537eb474f37c4956835bf34ac"
+    },
+    "WP02": {
+      "content_fingerprint": "9753539750481c51cfb0e281a6260eb2850cc90ca057881bad62d7a9d0c880e4",
+      "path": "artifacts/research_direction_prevalidation/2026-09-21/wp02_round_horizon_coverage_v1.json",
+      "sha256": "196edd00e8ba971be775161779b65dd044f5edf50ae58c46c3a0c5dd8f0aec35"
+    },
+    "WP03": {
+      "content_fingerprint": "2faa8d63038fe14563b8e36b8136076d95873bb2797ab7810afdf590772e4ff3",
+      "path": "artifacts/research_direction_pf_sensitivity/2026-09-22/wp03_pf_coefficient_selection_sensitivity_v1.json",
+      "sha256": "46b593bf37e3c84d517b510f47f79abc3adc857a24638eb55d8aaabd8ea427ad"
+    },
+    "WP04": {
+      "content_fingerprint": "b7493a865fa4194e0af7dac90417cb67cbdb76781fd14f0cc51c7663028a6ab9",
+      "path": "artifacts/research_direction_ablation/2026-09-21/wp04_finite_rte_statistical_ablation_v1.json",
+      "sha256": "4b5d9eade695b1dbf963f401e5507651da2d596d54786acc6959f28379c9cbf4"
+    }
+  },
+  "stage": "Gate-S1",
+  "summary": {
+    "active_primary_directions": [
+      "T4",
+      "T7"
+    ],
+    "active_scoped_directions": [
+      "T1",
+      "T2",
+      "T5",
+      "T6"
+    ],
+    "candidate_cost_judgement": "undetermined_not_tied",
+    "deferred_directions": [
+      "T3"
+    ],
+    "following_action": "WP05",
+    "maximum_current_uncertainty": "full_controlled_interrogation_cost_scope_and_circuit_structure",
+    "next_action": "WP06-a",
+    "partial_specific_advantage_demonstrated": false,
+    "pf_coefficient_choice_changes_shortlist": false,
+    "status": "Gate_S1_direction_synthesis_complete"
+  }
+}

@@ -1,0 +1,239 @@
+{
+  "status": "TECHNICAL_CORRECTNESS_STOP_PARTIAL",
+  "scientific_SOURCE": "ecb2e7dc0ebfebe15246dfd3c290bcae72eeb246",
+  "maximum_scientific_units": 415,
+  "STOP": {
+    "failed": true,
+    "scientific_units": 210,
+    "call_counts": {
+      "saved_snapshots_load": 1,
+      "initial_qualification_gate": 1,
+      "sector_context": 1,
+      "physical_sector": 1,
+      "fit_input_load": 2,
+      "objective_setup": 2,
+      "initial_identity_gate": 2,
+      "saved_history_load": 2,
+      "state_diagnostic": 67,
+      "J_solve": 66,
+      "U_solve": 64,
+      "terminal_independent": 1
+    },
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true
+  },
+  "journal_events": {
+    "attempt": 210,
+    "COMPLETE": 208,
+    "FAIL": 2
+  },
+  "parent_failure": {
+    "error": "TECHNICAL_WORKER_FAILURE: [\"Command '['/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py', '--contract', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/docs/research/research_c_separated_J_U_curvature_contract_unapproved_20261101.json', '--fit-worker', 'pr', '--output', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/artifacts/research_c_separated_J_U_curvature/2026-11-01/run01/pr']' returned non-zero exit status 1.\", \"Command '['/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py', '--contract', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/docs/research/research_c_separated_J_U_curvature_contract_unapproved_20261101.json', '--fit-worker', 'rc2', '--output', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/artifacts/research_c_separated_J_U_curvature/2026-11-01/run01/rc2']' returned non-zero exit status 1.\"]",
+    "first_failure": null
+  },
+  "arms": {
+    "pr": {
+      "failure": {
+        "error": "J_CHART_OR_GRADIENT_MISMATCH",
+        "first_failure": {
+          "kind": "J_solve",
+          "label": "0",
+          "error_type": "ValueError",
+          "error": "J_CHART_OR_GRADIENT_MISMATCH",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature.py\", line 241, in block\n    v,info=solve_j(Coefficients(g,U,spec),J,policy,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature.py\", line 132, in solve_j\n    raise ValueError('J_CHART_OR_GRADIENT_MISMATCH')\nValueError: J_CHART_OR_GRADIENT_MISMATCH\n"
+        }
+      },
+      "STOP": {
+        "failed": true,
+        "scientific_units": 6,
+        "call_counts": {
+          "fit_input_load": 1,
+          "objective_setup": 1,
+          "initial_identity_gate": 1,
+          "saved_history_load": 1,
+          "state_diagnostic": 1,
+          "J_solve": 1
+        },
+        "retry": 0,
+        "resume": 0,
+        "mandatory_stop": true
+      },
+      "resources": {
+        "wall_seconds": 1.2176464619114995,
+        "process_CPU_seconds": 2.572757974,
+        "peak_RSS_KiB": 392012
+      },
+      "journal_events": {
+        "attempt": 6,
+        "COMPLETE": 5,
+        "FAIL": 1
+      },
+      "solver_calls": {
+        "J_raw": {
+          "invocations": 1,
+          "raw_status_counts": {
+            "0": 1
+          },
+          "raw_success_count": 1,
+          "nfev": 785,
+          "njev": 785,
+          "nhev": 481,
+          "nit": 481
+        },
+        "U_raw": {
+          "invocations": 0,
+          "raw_status_counts": {},
+          "raw_success_count": 0,
+          "nfev": 0,
+          "njev": 0,
+          "nhev": 0,
+          "nit": 0
+        }
+      },
+      "final_exported": false,
+      "terminal_diagnostic_pass": false,
+      "DF_budget": null,
+      "accepted_candidate": false,
+      "partial_optimization": null,
+      "unadmitted_J0_raw": {
+        "method": "affine_residual_whitened_exact_Hessian_Newton_CG",
+        "success": true,
+        "status": 0,
+        "message": "Optimization terminated successfully.",
+        "fun": 0.012267644429814947,
+        "nit": 481,
+        "nfev": 785,
+        "njev": 785,
+        "nhev": 481
+      }
+    },
+    "rc2": {
+      "failure": {
+        "error": "INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH",
+        "first_failure": {
+          "kind": "terminal_independent",
+          "label": "rc2",
+          "error_type": "ValueError",
+          "error": "INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH",
+          "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py\", line 150, in independent\n    x, gradient, diagnostic = native_diagnostic(packet['g'], J, U,\n                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py\", line 98, in native_diagnostic\n    raise ValueError('INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH')\nValueError: INDEPENDENT_FFSIM_OBJECTIVE_J_GRADIENT_MISMATCH\n"
+        }
+      },
+      "STOP": {
+        "failed": true,
+        "scientific_units": 200,
+        "call_counts": {
+          "fit_input_load": 1,
+          "objective_setup": 1,
+          "initial_identity_gate": 1,
+          "saved_history_load": 1,
+          "state_diagnostic": 66,
+          "J_solve": 65,
+          "U_solve": 64,
+          "terminal_independent": 1
+        },
+        "retry": 0,
+        "resume": 0,
+        "mandatory_stop": true
+      },
+      "resources": {
+        "wall_seconds": 2.904746599495411,
+        "process_CPU_seconds": 5.40889304,
+        "peak_RSS_KiB": 432424
+      },
+      "journal_events": {
+        "attempt": 200,
+        "COMPLETE": 199,
+        "FAIL": 1
+      },
+      "solver_calls": {
+        "J_raw": {
+          "invocations": 65,
+          "raw_status_counts": {
+            "0": 65
+          },
+          "raw_success_count": 65,
+          "nfev": 0,
+          "njev": 0,
+          "nhev": 0,
+          "nit": 0
+        },
+        "U_raw": {
+          "invocations": 64,
+          "raw_status_counts": {
+            "3": 62,
+            "0": 2
+          },
+          "raw_success_count": 62,
+          "nfev": 1288,
+          "njev": 350,
+          "nhev": 0,
+          "nit": null
+        }
+      },
+      "final_exported": false,
+      "terminal_diagnostic_pass": false,
+      "DF_budget": null,
+      "accepted_candidate": false,
+      "partial_optimization": {
+        "status": "OUTER_LIMIT_UNQUALIFIED",
+        "completed_cycles": 64,
+        "classification": "U_UNQUALIFIED",
+        "terminal": {
+          "components": {
+            "objective": 0.029193402354005357,
+            "tensor_objective": 7.854745602838067e-18,
+            "normalized_tensor_objective": 3.5965558319519875e-09,
+            "penalty": 0.029193398757449526,
+            "smooth_tail_mass_Ha": 8.285810103455802,
+            "exact_tail_mass_Ha": 8.285810103455127,
+            "full_ordered_Z_l2_Ha_squared": 1.2876871855991907
+          },
+          "J_stationarity": {
+            "value": 6.03709704720401e-07,
+            "threshold": 1e-05,
+            "engineering_margin": 1.0001e-08,
+            "status": "MET"
+          },
+          "U_stationarity": {
+            "value": 0.8667167192797767,
+            "threshold": 1e-05,
+            "engineering_margin": 9.667167192797766e-08,
+            "status": "NOT_MET"
+          },
+          "first_order_met": false,
+          "orthogonality_maxabs": 1.5432100042289676e-14,
+          "rigorous_stationarity": false,
+          "classification": "U_UNQUALIFIED",
+          "cycle_progress": {
+            "before": 0.02919340901428315,
+            "after": 0.029193402354005357,
+            "decrease": 6.6602777945568015e-09,
+            "allowance": 3.9193409014283153e-10,
+            "status": "PASS_WITHIN_ENGINEERING_ALLOWANCE"
+          },
+          "U_gradient_before_J_refit": 6.480206477792986e-08
+        },
+        "first_order_qualified": false
+      }
+    }
+  },
+  "resources": {
+    "wall_seconds": 4.349574750289321,
+    "process_CPU_seconds": 1.284765513,
+    "peak_RSS_KiB": 276428
+  },
+  "DF_budget": {
+    "pr": null,
+    "rc2": null
+  },
+  "qualified_tail_comparison": null,
+  "actual_CA": null,
+  "PF_RTE_ground_native_shots_total_resources": null,
+  "retry": 0,
+  "resume": 0,
+  "source_changed": false,
+  "additional_diagnostic_evaluations_after_STOP": 0,
+  "limitation": "Saved composite error messages do not identify the violated subcondition or record each discrepancy. No new NPZ decode/gradient evaluation was performed to diagnose it after STOP.",
+  "mandatory_stop": true
+}

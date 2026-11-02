@@ -1,0 +1,425 @@
+# Codexへの指示：一体項再配分PFの最終科学レビュー保存とH-E1 Stage 0事前検証
+
+## 1. 今回の目的
+
+量子化学Hamiltonian simulation研究について、次の2件を実施してください。
+
+**作業A：第一候補の完成版科学レビューをGitHubへ正式な研究記録として保存する。**
+
+**作業B：新研究候補H-E1について、先行研究との重複・独立新規性・理論的成立性を、科学計算なしで技術的に事前検証する。**
+
+今回の作業は、新しい科学レビューではありません。
+
+Codexには、GitHub資料の取得、文献調査、数式・計算量の検証、技術的な判定、証拠整理を可能な限り完結させてください。
+
+研究テーマの正式採択・終了、および重要な科学的判断はGPTに残してください。
+
+**新しい科学計算・数値pilotは実施しません。**
+
+## 2. 正式な基準資料
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+直近の第一候補の結果commit：
+
+`500ea6ece429d6951f710cd99ac7e46337fcf017`
+
+重要資料：
+
+1. `docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_results_20261015.md`
+2. `docs/research/qc_onebody_repartition_h_boundary_reaudit_v2_gpt_handoff_20261015.md`
+3. `artifacts/qc_onebody_repartition_h_boundary_reaudit_v2_execution/2026-10-15/saved_results_summary.json`
+4. `artifacts/qc_onebody_repartition_h_boundary_reaudit_v2/2026-10-15/attempt_1/independent_audit.json`
+5. `docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_finite_step_pilot_v1_scientific_review_2026-10-15.md`
+6. `docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_final_audit_scientific_review_2026-10-14.md`
+7. `docs/reviews/quantum_chemistry_pf/qc_exact_ground_state_pf_direction_rereview_2026-10-14.md`
+
+加えて、今回ユーザーから渡す完成版科学レビュー：
+
+`qc_onebody_repartition_h_boundary_final_scientific_review_20261015.md`
+
+**この完成版レビューの実際の本文を必ず取得してください。**
+
+ファイル名や過去の要約だけからレビューを再構成してはいけません。添付・ローカルファイル・GitHubのいずれからも取得できない場合は、`SOURCE_MISSING` として報告し、レビュー保存を行わずMandatory STOPしてください。
+
+また、必要に応じて既存の第一研究、Track A、Track B、PF誤差予測・QPE予算見積もりの資料を取得してください。
+
+重要な研究資料は、GitHubリンクの存在確認だけではなく、固定commitの本文を実際に読んでください。
+
+## 3. 作業A：科学レビューの正式保存
+
+### A-1. 完成版レビューの保存
+
+完成版レビューを、独立branchで次のpathに保存してください。
+
+`docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_h_boundary_final_scientific_review_20261015.md`
+
+条件：
+
+- 渡されたMarkdownの本文を改変しない。
+- 科学的結論を書き換えない。
+- 数値・表・数式・引用文献を変更しない。
+- 元ファイルのSHA256を記録する。
+- GitHub公開後に再取得して一致確認する。
+- 既存のClaude原文や過去のGPTレビューを上書きしない。
+- 完成版の作成経緯と元資料の参照関係を明示する。
+
+既存の `docs/reviews/quantum_chemistry_pf/README.md` や研究索引への追記は認めます。
+
+### A-2. 第一候補の研究状態
+
+完成版レビューは、第一候補について次を推奨しています。
+
+**現在の固定構成としての研究投資を終了し、数学的成果と否定的な費用結果を保存する。**
+
+ただし、これはレビューによる推奨であり、ユーザーが正式にCLOSEDを承認したという意味ではありません。
+
+今回の記録には、例えば以下の区別を設けてください。
+
+- 科学レビューの推奨：`CLOSE_CURRENT_CONFIGURATION_RECOMMENDED`
+- 正式な研究状態：`AWAITING_USER_ADOPTION_DECISION`
+- 一体項再配分一般の不可能性：`NOT_ESTABLISHED`
+
+既存の正式研究statusを無断で `CLOSED` に変更しないでください。
+
+第一候補の数値計算、追加h探索、別分子検証も再開しません。
+
+### A-3. 既存記録の保全
+
+以下を保持してください。
+
+- 保存された全結果と一次データ
+- 旧実行認可と消費記録
+- Mandatory STOP
+- 過去の科学レビュー
+- 既存manifestの既知FAIL
+- N1 STOP / N2 HOLD / N3 CLOSED
+- THRIFT現template CLOSED
+- C1〜C4の既存判断
+- Track A/Bの独立性
+
+他のbranchやworktreeで進行中の作業を変更しないでください。
+
+## 4. 作業B：H-E1 Stage 0
+
+### B-1. H-E1の研究仮説
+
+完成版レビューで提案されたH-E1は、
+
+**PF構成と、主要固有値誤差を補正するための情報取得方式を共同設計し、情報取得費用を含む総資源を削減する**
+
+という研究仮説です。
+
+検討対象には以下を含みます。
+
+- 対称PFの構成
+- near-integrable product formula
+- processing
+- scalar-corrected PF
+- 誤差係数の期待値推定
+- Richardson / Chebyshev等の外挿
+- 補正情報の取得精度
+- 情報取得に必要な状態利用回数
+- controlled回路費用
+- 誤差予算・失敗確率配分
+
+ただし、**H-E1は正式に採択された新研究ではありません。**
+
+既知手法の組合せにすぎない可能性を、最初から重要な対立仮説として扱ってください。
+
+### B-2. 固定する前提
+
+- 厳密量子基底状態を利用できる。
+- 厳密基底エネルギーE0は設計入力として与えない。
+- 厳密量子状態があることと、古典RDMを無償で取得できることを混同しない。
+- block-encoding、qubitization、それらを中心とするQSVT設計は対象外。
+- PR内部アルゴリズムの改良はTrack Bの担当とする。
+- Track AのPR資源評価・QPE/RPE task接続をH-E1の独立成果として流用しない。
+- 新たな状態準備法の研究を開始条件にしない。
+- 既存結果や真値を、新しいpredictorへ無断で利用しない。
+
+## 5. Stage 0：K0 先行研究・研究重複監査
+
+**最優先で実施してください。**
+
+H-E1が、既存の量子化学PF研究および本repositoryの既存研究と、どこまで重複するか確認します。
+
+### K0-1. 外部先行研究
+
+少なくとも次の研究群を調べてください。
+
+- Fluid Fermionic Fragments（FFF）
+- Hamiltonian partitioning / one-body redistribution
+- MehendaleらのPF固有値誤差予測
+- Maxwellらのcompact BCH / practical Trotter error estimation
+- CasaresらのSPRINT/GRADE、near-integrable formula、processing
+- Corrected Product Formulas（最新版・既知の訂正版を含む）
+- Richardson / Chebyshev interpolation
+- Multi-product formula / extrapolation
+- Blanes–Casas系のprocessing・合成法
+
+単なる論文タイトルやabstractの一致ではなく、関連する式・アルゴリズム・必要情報・費用評価を本文で確認してください。
+
+既存研究が既に「PF構成と誤差補正情報の取得費用の共同最適化」を扱っている場合、その一致する範囲を具体的に示してください。
+
+### K0-2. Repository内の既存研究との比較
+
+特に重要なのは、既存の次の研究との比較です。
+
+1. 第1研究：PF誤差予測と有限時間校正
+2. 第2研究：PF固有値誤差の幅・不確かさ・資源判断
+3. Track A：PRの資源評価とground-energy task接続
+4. Track B：PF/PR内部のalgorithm codesign
+5. C1〜C4および終了済みアルゴリズム候補
+
+**H-E1が、既存のPF誤差予測・QPE予算見積もりを別名で再提案していないか**を厳しく調べてください。
+
+また、既存研究を少し一般化しただけで独立新規性が成立したと判断しないでください。
+
+### K0-3. 必須の比較項目
+
+各先行研究について以下を整理してください。
+
+| 比較項目 | 確認内容 |
+|---|---|
+| 入力情報 | exact state、RDM、近似状態、既知誤差係数など |
+| 主目的 | PF誤差評価、誤差補正、回路削減、総費用最小化 |
+| 最適化自由度 | PF構成、分割、step、情報精度、測定配分 |
+| 誤差保証 | empirical、heuristic、rigorousのどれか |
+| 情報取得費用 | 無視・仮定・明示評価のどれか |
+| 量子回路費用 | 使用している資源指標 |
+| H-E1との差 | 独立した算法・情報・保証上の差が存在するか |
+
+### K0-4. 停止条件
+
+**H-E1が既存の方法・既存プロジェクトに実質的に還元され、独立した研究上の貢献が残らない場合は、`REDUCES_TO_KNOWN` としてK0で停止してください。**
+
+その場合、K1〜K3へ自動進行しません。
+
+ただし、一部の要素が既知でも、特定の非自明な共同設計・保証・情報量削減の候補が残る場合は、それを具体的に記述してください。
+
+「まだ調べていないことがある」という理由だけで継続してはいけません。
+
+新規性が不明なだけなら `UNDETERMINED` とし、不足資料を明示してください。
+
+## 6. K1：情報取得費用と損益分岐
+
+**K0で具体的な方法差の候補が残った場合だけ実施してください。**
+
+科学計算は行わず、解析的な費用モデルを整理します。
+
+対象は、少なくとも以下です。
+
+- 主要誤差係数dの必要推定精度
+- 状態利用回数
+- expectation測定
+- Hadamard test等の適用可能な推定方式
+- 状態準備単価を外部パラメータとする場合の費用
+- controlled PF回路費用
+- 誤差予算配分
+- 補正の失敗確率
+- 古典的な情報処理費用
+
+必要精度の関係
+
+\[
+\eta_d \lesssim \frac{\epsilon_{\mathrm{info}}}{h^2}
+\]
+
+を考慮してください。
+
+比較は、
+
+\[
+C_{\mathrm{total}}
+=
+C_{\mathrm{simulation}}
++
+C_{\mathrm{information}}
++
+C_{\mathrm{other}}
+\]
+
+という総費用の観点で行います。
+
+ただし、T数・状態コピー数・古典計算時間などを、換算根拠なく足してはいけません。必要なら資源ベクトルと損益分岐条件を別々に示してください。
+
+候補と対照の**双方**について必要な情報取得費用を評価してください。
+
+「候補に追加情報が必要だから必ず不利」といった、未確認の断定は避けてください。
+
+理想情報での利益と、情報取得を値付けしたときの利益を分けてください。
+
+## 7. K2：強い既知対照に対する性能上限
+
+K0・K1で検討価値が残る場合だけ実施してください。
+
+比較対象には少なくとも以下を含めます。
+
+- 元のS2
+- Scalar-corrected S2
+- S4
+- Near-integrable PF
+- Processing
+- 適用可能なcorrected PF
+- Richardson / Chebyshev等の外挿
+- 合法な既知Hamiltonian再分割
+
+弱いS2だけに対する改善を、研究全体の改善として扱わないでください。
+
+主要誤差係数だけでなく、補正後の高次残差や回路費用の変化を考慮してください。
+
+必要なら、一般的な費用モデルから改善可能な条件・上限を解析的に導いてください。
+
+既存文献の定理と、今回新たに導いた条件付きの式を区別してください。
+
+完成版レビューが示す1.5倍の研究目標や1.3倍のスクリーニング基準は、**検証すべき仮の判定基準であり、既に達成された性能ではありません。**
+
+## 8. K3：規模依存性
+
+K0〜K2で検討価値が残る場合だけ実施してください。
+
+次の観点を整理してください。
+
+- スピン軌道数
+- DF fragment数
+- fragment normの階層
+- 交換子の構造
+- 主要誤差係数と高次残差のスケーリング
+- 必要な状態情報量
+- 補正係数の測定費用
+- Gaussian基底変換・controlled位相回路費用
+
+H4一件での条件付き改善を、大規模分子へそのまま一般化しないでください。
+
+特定のnorm階層や可解性が必要なら、その条件を明示してください。
+
+規模を大きくした際に改善が残る理論的理由を特定できない場合は、その限界を報告してください。
+
+## 9. 技術判定の原則
+
+判定には、例えば次を使用してください。
+
+- `SUPPORTED`
+- `REDUCES_TO_KNOWN`
+- `CONDITIONAL`
+- `UNDETERMINED`
+- `TECHNICAL_NO_GO`
+
+**Codexは新規アルゴリズムの正式な研究採択を決定しません。**
+
+技術的な還元や成立条件については明確に判定してください。一方、科学的な新規性・論文化の最終評価・研究資源の投資判断はGPTへ戻してください。
+
+結論を曖昧にして検証を無期限に延長しないでください。
+
+## 10. 今回の禁止事項
+
+以下は実施しないでください。
+
+- 新しいHamiltonianの生成
+- 新しい分子・geometryの計算
+- 固有値・固有状態の数値計算
+- RDM・交換子期待値の新規数値取得
+- PF性能評価
+- 数値最適化
+- 新しい保存数値の集計・再ランキング
+- 回路compile・T合成
+- 新しいpilot実行
+- 第一候補の再開
+- DF因子回転の数値研究
+- Track A/Bの科学作業
+- 既存研究の正式statusの無断変更
+- 新しい重要GPTレビューの自動開始
+
+文献取得、既存資料の確認、静的数式解析、sourceのread-only確認、計算量解析、技術的な整合性確認は実施して構いません。
+
+GitHubへの研究記録追加は作業A・Bの許可範囲とします。
+
+## 11. 成果物
+
+独立branchを使用し、次の成果物を作成してください。
+
+### 成果物1：完成版科学レビュー
+
+`docs/reviews/quantum_chemistry_pf/qc_onebody_repartition_h_boundary_final_scientific_review_20261015.md`
+
+渡された完成版を原文どおり保存してください。
+
+### 成果物2：H-E1 Stage 0技術監査
+
+`docs/research/qc_he1_stage0_technical_prevalidation_20261015.md`
+
+少なくとも以下を含めてください。
+
+1. 研究仮説
+2. 固定前提
+3. 参照したGitHub資料
+4. 先行研究との直接比較
+5. 既存の第1・第2研究、Track A/Bとの境界
+6. K0判定
+7. 実施条件を満たした場合のK1〜K3結果
+8. 方法として残る独立した差
+9. 未解決事項
+10. 技術的な停止理由または継続可能性
+11. 新しい科学計算を実施していないこと
+
+### 成果物3：GPTへの科学判断引継ぎ
+
+`docs/research/qc_he1_stage0_gpt_handoff_20261015.md`
+
+次の問いに簡潔かつ具体的に答えてください。
+
+1. H-E1は既存研究に還元されるか。
+2. 独立した算法上の寄与が残るか。
+3. 成立に必要な情報・数学・回路条件は何か。
+4. 最も強い既知対照は何か。
+5. 数値pilotへ進む科学的価値を検討するだけの根拠があるか。
+6. 次にGPTが判断すべきことは何か。
+
+### 成果物4：監査証拠
+
+必要最小限のJSON等で、以下を保存してください。
+
+- 取得資料と固定commit
+- 本文取得状況
+- SHA256等のidentity
+- 実施したStage
+- 技術判定
+- 既存資料の保全結果
+- GitHub公開・再取得照合
+- Mandatory STOP
+
+## 12. GitHub公開・終了条件
+
+1. 独立branchを使用する。
+2. 既存の研究資料を上書きしない。
+3. 完成版レビューの原文一致を確認する。
+4. 新規成果物をcommit・pushする。
+5. GitHubから実際に再取得し、本文・SHAを確認する。
+6. 変更したファイルと保全対象を報告する。
+7. 最終的にMandatory STOPする。
+
+**K0で既知研究への還元が確定した場合は、K1〜K3を実施せず、その結果を記録してSTOPしてください。**
+
+一方、K0〜K3を完了して有望な仮説が残った場合も、新しい科学計算を自動開始しないでください。
+
+## 13. 最終報告
+
+作業終了時には、少なくとも次を報告してください。
+
+- 完成版科学レビューのGitHub保存先
+- H-E1技術監査のGitHub保存先
+- GPT判断用引継ぎのGitHub保存先
+- branch / commit SHA
+- K0〜K3の実施・停止状態
+- 独立した技術的寄与の有無
+- 新しい科学計算の実施回数
+- 既存資料の保全結果
+- GitHub再取得照合結果
+- Mandatory STOPの状態
+
+**今回の作業は、研究記録の確定とStage 0の技術事前検証までです。**
+
+第一候補の正式終了、H-E1の新研究採択、次の数値pilot実行は、別途ユーザーの明示承認を待ってください。

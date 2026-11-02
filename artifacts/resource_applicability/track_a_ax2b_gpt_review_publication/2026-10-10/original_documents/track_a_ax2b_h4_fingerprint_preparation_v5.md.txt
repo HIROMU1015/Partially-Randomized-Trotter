@@ -1,0 +1,137 @@
+# Track A AX-2B：fingerprint性能改善・合成検証・実行前固定v5
+
+2026-10-09開始、2026-10-10 JST完了。
+**`AX2B_H4_FINGERPRINT_V5_PREPARED_SCIENCE_NOT_AUTHORIZED`**。
+利用者の「その作業に進んで」に基づき、[v4の時間上限STOP](track_a_ax2b_h4_pilot_v4_result.md)の
+次段階として、固定toyのprofile、実装修正、合成検証、未認可manifestの固定まで行った。
+新しい分子signal評価・trajectory sampling・回路compile・H4再実行・H6/H8/GPU実行は0件。
+以下の性能・メモリ値は合成回路の測定で、H4完走や分子memory問題解消の証拠ではない。
+
+## 1. 置き場所と旧証拠の保持
+
+- branch：`track-a-ax2b-h4-fingerprint-v5-20261009`。
+- worktree：`.worktrees/track-a-ax2b-h4-fingerprint-v5-20261009`。
+- base HEAD：`b2e1bf65e21893b6c617223b42313623d3186f12`。今回commit/pushなし。
+- 元v4実行worktreeの既存2,022ファイルをbyte一致でコピーして使用した。
+- 元v4実行、元v4準備、元v3/pilot、元dirty worktreeを変更していない。
+  元v4の465-entry実行inventoryを含め、旧inventoryは各origin worktreeで照合する。
+- 証拠batchは開始時の[2026-10-09 directory](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/)を維持する。
+  完了日が翌日となったため、判断履歴は[2026-10-10のノート](研究ノート/2026-10-10_track_a_ax2b_h4_fingerprint_v5.md)へ追加した。
+
+新しい実装・入口は以下。旧v4/共有`trotterlib`は編集していない。
+
+| ファイル | 役割 |
+|---|---|
+| [ax2b_stream_fingerprint_v5.py](../../src/trottertracks/resource_applicability/ax2b_stream_fingerprint_v5.py) | 直接stream writerと1 hash call限定canonical definition bytes cache |
+| [ax2b_native_df_v5.py](../../src/trottertracks/resource_applicability/ax2b_native_df_v5.py) | native body不変、fingerprint import先をv5へ接続 |
+| [ax2b_h4_science_v5.py](../../src/trottertracks/resource_applicability/ax2b_h4_science_v5.py) | science body不変、v5 native/contract/hashを接続 |
+| [ax2b_h4_contract_v5.py](../../src/trottertracks/resource_applicability/ax2b_h4_contract_v5.py) | 新schema/source集合へ束縛するmetadata・launch契約 |
+| [run_track_a_ax2b_h4_v5.py](../../scripts/resource_applicability/run_track_a_ax2b_h4_v5.py) | default metadataのみ、科学importは認可/resource enforcement後 |
+| [verify_track_a_ax2b_h4_pilot_v5.py](../../scripts/resource_applicability/verify_track_a_ax2b_h4_pilot_v5.py) | 将来の保存JSON/hash監査。v4のpartial/complete規則を保持 |
+| [profile_track_a_ax2b_fingerprint_v5.py](../../scripts/resource_applicability/profile_track_a_ax2b_fingerprint_v5.py) | 固定5 toyだけのprofile/timing/tracemalloc、科学load/sample/compile拒否 |
+
+## 2. profileと変更内容
+
+3 qubitの固定controlled/nested toyを100回配置してv4をprofileした。
+profile上のtotal callsは84,501,865で、`_object/_array/_circuit/_instruction`等のgenerator再開と
+細かなJSON encodingが多く発生した。cProfileは処理を遅くするため、profile時間を通常のruntimeに使わない。
+同じtoyのv5では9,009,842 callsになった。これはQiskit/native allocationの全原因の特定ではない。
+
+v5はkeyのsort順を固定した直接writerで同じJSONを出力し、keyごとの`json.dumps`と多層`yield from`を避ける。
+numeric leafとconditionの既存helperを再利用し、`qiskit_recursive_numeric_circuit_v2`の政策を保持する。
+canonical JSONのphase、hex数値、array dtype/shape/content hash、control state/base gate、nested definition、
+qubit/clbit配置、operation type/nameを省略しない。definitionをsubhashへ置換しない。
+
+同じdefinition circuitを再訪した場合には、その**完全なcanonical bytes**をhashへ再投入する。
+cacheは1回のhash呼出し内に限り、次の呼出しには持ち越さない。
+同じcache entryにcircuitの強参照を保持して、lazy definitionのobject ID再利用による取り違えを防ぐ。
+native作成時・wrapper作成前のmutation検査・compile前のhashはすべて維持する。
+呼出し間のphase/parameter/array/definition変更、layout追加、再帰化を検査した。
+hash呼出し中は回路が不変であるという旧契約を保持し、同時mutationへの保証を追加していない。
+
+hash bufferは64 KiB、cache payloadとactive captureの予約budgetは256 KiB、entryは最大64 KiB/256件。
+過大なdefinitionはcacheへ入れずstreamを続ける。cache・回路参照はhash終了時に解放する。
+**これらはprocess memoryの上限ではない。** Pythonのobject overhead、bytes変換時の一時複製、
+numeric leaf、Qiskit definition、native/compile allocationが別に存在する。RLIMIT_AS8 GiBは変更していない。
+top-level circuit全体のrecursive payload/string/bytesは作らない。
+
+## 3. 合成性能検査
+
+Python3.11.1/NumPy1.26.4/Qiskit1.3.0、CPU affinity `{3}`、thread1。
+同一processでdefinitionsをwarmし、v4/v5の測定順を交互にして各3回測定した。
+CPUは共有host上の論理CPUで、物理CPUの占有は保証されない。
+[benchmark JSON](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/toy_benchmark_v5.json)が正本。
+
+| 固定toy | top-level instructions | v4 median秒 | v5 median秒 | v4/v5 |
+|---|---:|---:|---:|---:|
+| flat numeric | 128 | 0.04019 | 0.01959 | 2.05 |
+| shared nested definition | 200 | 0.52602 | 0.00427 | 123.12 |
+| controlled/nested | 100 | 2.66380 | 0.73241 | 3.64 |
+| distinct definitions | 128 | 0.05043 | 0.02200 | 2.29 |
+| oversized definition（各definitionに256 RZ） | 2 | 0.17451 | 0.07243 | 2.41 |
+
+全fixtureのlegacy/v4/v5 hash一致、nested/controlled median speedup≥2、他3 fixtureのslowdown≤1.5を通過した。
+非常に大きなshared-toy改善は同一definitionの再利用が効いたケースで、一般回路の改善率ではない。
+H4には異なるparameter/control/definitionがあり、上記倍率をv4の845.846秒へ掛けて完走時間を予測しない。
+
+shared nested toyのPython追跡peakはlegacy17,256,297 bytes、v4 3,311,626 bytes、v5 150,707 bytes。
+v5のretainedは47,808 bytesで、peak−retained<512 KiB、peak<legacy/4を通過した。
+tracemallocには観測対象のQiskit allocationも含まれ、pure serializer memoryの分解ではない。
+RSS・RLIMIT_AS・分子四次q4のpeakとは区別する。
+
+## 4. 合成回帰と静的照合
+
+**最終167 local tests passed、fail/error/skip0、11.58秒。** immutable CI/独立再現ではない。
+
+- [stream tests](../../tests/tracks/resource_applicability/test_ax2b_stream_fingerprint_v5.py)：canonical bytes/hash互換、phase/control/numeric/bit配置、拒否条件、call間mutation、cache/oversize/buffer境界。
+- [native tests](../../tests/tracks/resource_applicability/test_ax2b_native_df_v5.py)：独立Fock toy参照、global二次/四次、正負時間、scalar/ancilla branch、explicit replay、mutation拒否。
+- [runner tests](../../tests/tracks/resource_applicability/test_ax2b_h4_runner_v5.py)：28-task dummy plumbing、回路解放、watchdog/OOM診断、科学import順、旧v3/v4認可拒否、plan一致。
+- [saved tests](../../tests/tracks/resource_applicability/test_ax2b_h4_saved_audit_v5.py)：fabricated JSONだけのcomplete/partial、改変・欠落・diagnostics照合。
+
+初回167件中2件は新しいtestの前提が誤っていた。
+Qiskit `.data[i].operation`の取得結果だけを変更して回路へ反映しなかったfixtureを、instruction置換へ修正した。
+IfElseOpは旧numeric helperがQuantumCircuit parameterを拒否する対象なので、受理を要求したtestを拒否互換へ修正した。
+初回JUnit/stdoutを保持し、production sourceを変更せず最終suiteを新しいoutputへ実行した。
+古典register条件やcontrol flowを対応済みに変更していない。
+
+scienceとnativeの**全non-import top-level AST**がv4と一致することを照合した。
+diagnosticsは`ax2b_diagnostics_v4`をそのまま使用し、回路寿命・hash回数・数値計算・sampling/compile経路は維持する。
+保存auditorもv4と同じearly partial pathを保持する。将来SIGKILLでworker終端がなければ、
+frozen verifierが個別recordまで認定したという主張はできず、保存専用の追加監査が別途必要になる。
+
+## 5. 未認可の実行前固定
+
+science sourceは157 byte hashesで固定し、tests/verifier/benchmarkの6 file hashesも保存した。
+manifest digest：`e7b6d1fd05d5946f9ecaf3833655e78c9373d640e65d7757151fea24be3edf24`。
+[manifest](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/h4_preparation_manifest_v5.json)と
+[source freeze](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/source_freeze_v5.json)は
+隔離worktree上の未commit byte固定。schema/implementation以外の科学planはv4と一致した。
+
+対象は将来のlinear H4 1.00 Å/STO-3G/legacy rank12/generation-prefix/T=0.8、
+保存normalized state/36-dimensional sector、q1/q4（δ0.8/0.2）。
+B0 prefix6、B1 prefix12、B2 prefix6/R8/r2/K2,K4、B3 prefix0/R8/r2/K6、global四次B1 prefix12/q1,q4の8 cell。
+prefixはDF block数で、prefix0でもone-bodyは決定論的に残す。
+28 measured wrapper（state preparationを除く）、4 random trajectory/16 occurrence、明示event/seed共有、
+ordinary/directional、cosine/sine、compiler rz/sx/x/cx・opt1・seed17・backend/coupling指定なしを維持した。
+CPU1/thread1、address space8 GiB、phase900秒/total2700秒、output512 MiB、全counter capも同じ。
+四次baselineを外す変更、旧partialのresume、欠落分だけの補完、cap拡大を行わない。
+
+metadata入口ではNPZのbytesとUnicode metadataだけを照合し、数値配列をloadしていない。
+`science_authorized=false`、`launch_allowed=false`、`assigned_cpu=null`。
+[draft](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/h4_launch_request_draft_v5.json)は
+`approved_by_user=false`、CPU/output未割当のまま。旧v3/v4 authorizationは新schema/hashに使い回せない。
+総数値allowance未認定、accuracy UNDETERMINED、shots/total cost/winner/energy accuracy結論なし。
+
+[保護報告](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/preservation_report_v5.json)と
+[別inventory](../../artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/fingerprint_preparation_inventory_v5.json)へ
+新証拠を追加し、旧manifest/inventory、旧科学結果・原稿・Track Bを保持する。
+
+## 6. 次の一段階とGO/STOP
+
+合成互換性・性能・memory・native/runner regression、科学plan同一性、source/input固定の準備gateは通過した。
+**これは同じH4 scopeの新しい一回実行を判断できる状態で、科学実行のGOではない。**
+次に実行する場合は、v5 schemaの明示認可、実CPU割当、hashで束縛した新規exclusive outputを確定する。
+input/reference→8 correctness→28 wrapperを一組で扱い、同じ上限のもとで完了またはSTOP後に保存監査する。
+分子性能・memoryは未検証なので、synthetic倍率や旧v3/v4部分結果を完走保証に使わない。
+四次B1 q1/q4を含む全28件の完了を確認するまで、H6/H8への拡張判断は保留する。
+本作業は実装・合成検証・固定までで**mandatory STOP**。H4再実行・次段認可を自動的に開始しない。

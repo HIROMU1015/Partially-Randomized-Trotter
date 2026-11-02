@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:b3:parallel:v3:pair",
+  "type": "object",
+  "properties": {
+    "task": {
+      "type": "object"
+    },
+    "status": {
+      "enum": [
+        "OK",
+        "FAILED",
+        "LOST"
+      ]
+    },
+    "pid": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "cpu_ns": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "wall_ns": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "outcome": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "task",
+    "status",
+    "pid",
+    "cpu_ns",
+    "wall_ns",
+    "outcome",
+    "failure"
+  ],
+  "additionalProperties": true
+}

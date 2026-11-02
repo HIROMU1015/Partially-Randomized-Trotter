@@ -1,0 +1,84 @@
+# Track A H4 v5後の不足検証一覧
+
+公開時のリンク補修（2026-10-10）：未公開sourceへの参照は[公開依存関係](track_a_ax2b_gpt_review_index_v1.md)。原文と補修一覧を保存し、科学的主張・数値は変更していない。
+
+2026-10-10 JST。科学レビュー案の作業分解で、実装・計算の実行指示ではない。
+[H4後レビュー](track_a_ax2b_h4_post_scientific_review_v1.md)と
+[H6契約案](track_a_ax2b_h6_pilot_contract_draft_v1.md)を併せて使う。
+
+H4保存結果のscopeはlinear H4 1.00 Å/STO-3G/legacy DF rank12、generation-prefix、T=0.8、
+prefix0/6/12、q1/q4（δ0.8/0.2）、保存state、Nα=Nβ=2の36-dimensional sector。
+8 correctness cellと5種類/28 measured wrapperのtech pilotで、accuracyはUNDETERMINED。
+
+## 完了した検証
+
+| 項目 | 保存証拠 | 残す限定 |
+|---|---|---|
+| H4固定入力・basis bridge・primitive sector | input_reference.json、source hash | 当該snapshotとstructureの検査 |
+| native/PF/finite平均の一致 | 8 correctness JSON、primitive_lowering.json | 数値gateは総uではない |
+| strong baselineのwrapper欠落 | 四次q4を含む28 cost records | 二次B1とB2 K4のcostは未測定 |
+| ordinary/directional・axis共有 | explicit trajectory、circuit fingerprint | probe scopeは有限、cost n=2 |
+| byte互換性・保全 | 凍結audit、execution inventory | 保存監査で、独立科学再計算ではない |
+
+## 必須事項と解決方法
+
+| ID | 不足 | 再利用できるもの | 必要な追加 | 閉じる条件 |
+|---|---|---|---|---|
+| U-N1 | target/stateとuの定義 | snapshot metadata、norm、axis_headroom | u成分・証拠強度・状態正規化規約の契約 | u=0を暗黙に使わず、未知はUNDETERMINED |
+| U-N2 | referenceのroundoff会計 | expm/eigh差、sector作用、eigenphase_reference | 同じH4 targetの独立構成/精度照合と誤差評価案 | surrogate残差とreference roundoffを分離 |
+| U-N3 | 全stage時間と作用誤差伝播 | iter_pf_steps、native block、±0.2検査、終端比較 | q/order別の実時間集合、finite中間norm、誤差伝播の仕様 | 検査外時間を含むuを説明できる |
+| U-N4 | u-aware shot会計 | corrected_hoeffding_shots、AX-1b reference_shots、axis_headroom | 可変ε/u、両軸三状態、log-domain/overflow、丸め照合 | certifiedとconditionalを区別し未知のN/Gはnull |
+| U-N5 | finite平均とsampled estimatorの接続 | rte.pyのfinite分布・平均operator・event sampler、native explicit replay | 確率/phase/Bの接続とfresh trajectoryの仕様点検 | cost標本をshot標本や平均signal検証の代用にしない |
+| U-C1 | 本比較の探索範囲 | prefix_candidates、global二次/四次、両control | B0/B2同一prefix、q/R/K、quota、boundary/confirmationを事前登録 | 全方式に適用可能な自由度と同じtarget |
+| U-C2 | random期待costの精度 | paired trajectory statistics、axes/control共有 | 本比較の標本数・不確かさ・confirmation規則 | n=2やSD=0を母平均精度の認定に使わない |
+| U-H1 | H6入力とDF政策 | DF generator、PhysicalSector、sector solver、snapshot writer | 作成の別認可、actual rank/state/hash、表現誤差層 | legacy H4との政策差をサイズ効果へ混ぜない |
+| U-H2 | H6 orchestrationとcaps | generic native、tail matvec、CallBudget/ResourceTrace | hard-coded H4 controllerの別port、sector reference、before-call cap | 非密行列経路・source/plan/inputを固定 |
+| U-P1 | 拡張構造の予測契約 | frozen旧FEW、static/native proxies | order/control対応・許可情報・NA規則、H6でのfreeze | truth依存会計とoperational予測を区別 |
+| U-I1 | H8独立確認 | AX-2A情報契約 | H6後の候補/仮説/model/標本/GO条件のfreeze | freeze前にH8のtruthを見ない |
+
+U-N1/U-C1の文書化と、必要なsource変更の範囲確定が直近の作業。
+U-N2/U-N3を科学的に閉じるための新数値検査、U-N4/U-H2の実装、U-H1の入力作成は今回未認可。
+どの項目も、既存sourceがあることと対象H6で検証済みであることを区別する。
+U-I1はH6 technical pilotの前に全て実装する必要はないが、H8接触前の必要条件である。
+
+## 静的に確認したsource資産
+
+| source | 再利用可能な機能 | 対象拡張で必要な変更・確認 |
+|---|---|---|
+| [df_hamiltonian.py](../../src/trotterlib/df_hamiltonian.py) | DF入力構築、spin/number sector、Python/Numba matvec、eigsh/lobpcg、残差、chunk workspace | rank/tol provenance、solver/matvec hard cap、sector証明 |
+| [ax2a_state_action.py](track_a_ax2b_gpt_review_index_v1.md#unpublished-source) | finite Horner、corrected/raw、global PF、tail operator、projection後leakage検査 | callbackごとのu、時間集合、非unitary誤差伝播 |
+| [ax2b_native_df_v5.py](track_a_ax2b_gpt_review_index_v1.md#unpublished-source) | n依存native block、global四次、対称control、explicit RTE replay、wrapper、instruction bound | H6登録入力での意味論と負荷。有限平均をgateにしない |
+| [ax2b_h4_science_v5.py](track_a_ax2b_gpt_review_index_v1.md#unpublished-source) | 保存入力・phase/誤差分解・sample共有・群単位解放 | H4/8qubit/rank12/256次元を固定。文字列置換だけの拡張は不可 |
+| [pf_c_system_size_validation.py](../../src/trotterlib/pf_c_system_size_validation.py) | full-vector half作用＋sector tail、expm_multiply、basis変換 | 既存energy/係数taskを新signal taskと混同しない |
+| [df_gpu_statevector.py](../../src/trotterlib/df_gpu_statevector.py) | Aer GPU作用、parameterized template、phase補正 | finite-RTE平均のGPU実装とは別。CPU/GPU意味論・誤差を別検証 |
+| [pr2_s0_s1_validation.py](../../src/trotterlib/pr2_s0_s1_validation.py) | snapshot形式、固定ε・u=0のshot式 | 旧結果を保持し、新u-aware規則を別経路へ |
+| [ax1b_evaluation.py](../../src/trottertracks/resource_applicability/ax1b_evaluation.py) | 可変ε・u=0のconditional reference会計 | operational予測ではない。三状態uとoverflowの接続 |
+| [ax2a_preparation.py](track_a_ax2b_gpt_review_index_v1.md#unpublished-source) | stdlib prefix候補、axis_headroom、旧pilot草案 | 三状態判定は既存。shot/科学runnerを新規扱いする範囲を限定 |
+
+GPU moduleはimport時にCUDA library探索・preloadを行うため、今回の監査はtext/ASTの読み取りだけとした。
+GPU不存在・不可用・高速とは判定しない。
+df_linear_operatorはmatvec counterを持つが、それだけでは上限で呼出しを止めない。
+H6 solver/referenceのfuture adapterで、matvec/rmatvecのbefore-call enforcementが必要。
+
+## 追加検証の最小構成案
+
+1. 文書で、共通target/state、axis budget、uの証拠強度、unknown/overflow処理を固定する。
+2. 必要なH4検査だけを別仕様にする。保存targetの参照、登録8 signal、実primitive時間集合、
+   finite中間normが対象で、全面wrapper再compileを含めない。
+3. u-aware shotの将来synthetic検証は、既存u=0との整数一致、境界、片軸未確定、B=1/大B/overflowを確認する。
+4. H6はsource portと入力作成を別々の作業として認可・固定し、技術pilot後にscience reviewへ戻る。
+
+数値検査の具体的backend・上限・厳密性は未固定である。
+比較differenceだけをu_boundへ昇格させない。実証uを採る場合は別ラベルの感度会計とする。
+全cellに高精度計算や全Hilbert-space証明を要求する案も、費用と必要な主張をレビューしてから決める。
+
+## 計算を増やす前の判断
+
+H4 geometryの網羅、precision点の追加、cost標本だけの増量、FEW再fit、H8先行profileは
+u・task一致・探索公平性の不足を直接閉じない。
+本比較に必要な追加cost cellとconfirmationは、比較契約を固定してから選ぶ。
+科学結果を見てquota・rank・tol・sectorを救済変更せず、上限と未確定をcoverageとして残す。
+
+機械可読一覧は
+[validation_gaps_v1.json](../../artifacts/resource_applicability/track_a_ax2b_h4_post_review/2026-10-10/validation_gaps_v1.json)。
+全項目を解消済みとするものではなく、今回の科学計算・実装認可はない。

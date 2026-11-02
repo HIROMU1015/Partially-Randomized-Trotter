@@ -1,0 +1,223 @@
+{
+  "status": "UNAPPROVED",
+  "SOURCE": "ed14d951a4761838f25aeb16a653b55aba499c34",
+  "provider_SOURCE": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+  "valid_execution_grant": false,
+  "mandatory_STOP": true,
+  "automatic_next_phase": false,
+  "automatic_retry": false,
+  "closed_source_paths": [
+    {
+      "path": "src/trotterlib/higher_pf_readiness.py",
+      "bytes": 14755,
+      "sha256": "ecea5f8b006a876aee90cd42aa50c098dd25bfb801225260b52ceab98923ce4a"
+    },
+    {
+      "path": "scripts/h46_higher_pf_adapter.py",
+      "bytes": 9339,
+      "sha256": "bf6deb30f1dde7dd34c085ffcfab4997f12f73984271ba0735e1926b662cee45"
+    },
+    {
+      "path": "scripts/run_h46_higher_pf_comparison.py",
+      "bytes": 5671,
+      "sha256": "5a16fe4ee5cdec908942bc34cb9f9b6780b024596079f95a3ce9951d56dbd192"
+    },
+    {
+      "path": "scripts/audit_h46_higher_pf_readiness.py",
+      "bytes": 3740,
+      "sha256": "8e83dc45963ff2d8743b586f69ad8a666629a789e231659b19741027f82a5f89"
+    },
+    {
+      "path": "tests/test_h46_higher_pf_readiness.py",
+      "bytes": 16567,
+      "sha256": "c040637dec54ee6a7e954e394dae63d26284496bdfd9709408253ede1e170e7e"
+    },
+    {
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "bytes": 5506,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    }
+  ],
+  "resource_policy": "fresh own-process CPU/RAM/filesystem observation; use available resources; no shared changes; no transient host PSI kill; only actual inputs/SOURCE/runtime/grant/results are immutable",
+  "science_tolerance": 1e-09,
+  "failure_policy": "STOP on own process failure, invalid input/source/profile/control/phase, nonfinite values, unpaired cost events or scientific mismatch; missing candidate cost remains null, no refit/imputation",
+  "phase": "B_SAVED_ONLY",
+  "scope": "load fixed saved K4 signal values and six native groups; evaluate per-axis shots, paired RZ/CX and q-grid coverage; no acquisition",
+  "systems": {
+    "H4": {
+      "rank": 12,
+      "prefix": 3
+    },
+    "H6": {
+      "rank": 19,
+      "prefix": 5
+    }
+  },
+  "geometry_angstrom": 1.0,
+  "basis": "STO-3G",
+  "T": 0.8,
+  "K": 4,
+  "epsilon": 0.001,
+  "alpha_axis": 0.025,
+  "allowance": 1e-09,
+  "log_B_margin": 1e-12,
+  "P": 0,
+  "q_grid": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "RTE_steps_per_outer": 32,
+  "allocation": "fixed signed-generation order, abs-weight largest remainder, minimum1 per piece",
+  "series": "H46-new2-representative-native-explicit-XY-ordinary-v2",
+  "compiler_profile_sha256": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+  "compiler": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "backend": null,
+    "coupling_map": null
+  },
+  "runtime": "Python3.12.3, NumPy1.26.4, SciPy1.14.1, Qiskit1.3.0, openfermion1.6.1 when native dependencies used",
+  "native_compile": 0,
+  "sampling": 0,
+  "signal_recomputation": 0,
+  "full_grid_winner_when_cost_missing": null,
+  "storage": "metadata inventory plus 24 evaluation rows and 6 selection strata; no circuits/state arrays",
+  "closure": [
+    {
+      "path": "src/trotterlib/higher_pf_readiness.py",
+      "bytes": 14755,
+      "sha256": "ecea5f8b006a876aee90cd42aa50c098dd25bfb801225260b52ceab98923ce4a"
+    },
+    {
+      "path": "scripts/h46_higher_pf_adapter.py",
+      "bytes": 9339,
+      "sha256": "bf6deb30f1dde7dd34c085ffcfab4997f12f73984271ba0735e1926b662cee45"
+    },
+    {
+      "path": "scripts/run_h46_higher_pf_comparison.py",
+      "bytes": 5671,
+      "sha256": "5a16fe4ee5cdec908942bc34cb9f9b6780b024596079f95a3ce9951d56dbd192"
+    },
+    {
+      "path": "scripts/audit_h46_higher_pf_readiness.py",
+      "bytes": 3740,
+      "sha256": "8e83dc45963ff2d8743b586f69ad8a666629a789e231659b19741027f82a5f89"
+    },
+    {
+      "path": "tests/test_h46_higher_pf_readiness.py",
+      "bytes": 16567,
+      "sha256": "c040637dec54ee6a7e954e394dae63d26284496bdfd9709408253ede1e170e7e"
+    },
+    {
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "bytes": 5506,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    }
+  ],
+  "input_bindings": [
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/final_completion_audit.json",
+      "sha256": "8edcc457d16f2cc1c036944ee07873ac2299ac6ff2ad0ccff3967300328718d6"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/environment_compiler_profile.json",
+      "sha256": "88807a0389bd4a911c220030c64234e0b90455eead4c40731edadd58b5451b49"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/source_closure.json",
+      "sha256": "d12151d48555587e2325ddc4e9c9e05a561cfa300e410b385aa4ac4c59c9b67b"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/parallel_H6_source_closure.json",
+      "sha256": "20e31856dca1e1e5c13a0674463787b93a6a652975b818d187c8491b24f37e01"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_diagnostic/2026-10-18/H4_run02_results.json",
+      "sha256": "b373701d8230070e3ce0d1b72f159574f872beade7c2a1ebc37c5a649de0bf9c"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H4_S2_final_result.json",
+      "sha256": "2ae18cc134349affd309a55a1a56f521e1a8f1dde58c23c74a0e180cd0c1ce14"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H4_S2_imported_provider_closure.json",
+      "sha256": "752d13f202e137bf6be06bdf482e0e855d8a9fba507a8e3a42ae9bf619f1e5df"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H4_Y4_final_result.json",
+      "sha256": "8dc1f941483aa254988ae60a6bb42aed6c9dbe701816223d4be10aefdf3d6d03"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H4_Y4_imported_provider_closure.json",
+      "sha256": "752d13f202e137bf6be06bdf482e0e855d8a9fba507a8e3a42ae9bf619f1e5df"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H4_N2_final_result.json",
+      "sha256": "e79a6ca392d21d5b22a1bb59094dd03c875fd2f450a25c61b2561d2a353b3c03"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H4_N2_imported_provider_closure.json",
+      "sha256": "752d13f202e137bf6be06bdf482e0e855d8a9fba507a8e3a42ae9bf619f1e5df"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_diagnostic/2026-10-18/H6_run02_results.json",
+      "sha256": "be0d497f39b345ad852a3e7c4f59952bfae647aaf04613d4c1a46bb440be54a1"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H6_S2_final_result.json",
+      "sha256": "4a3291c75e5497671a3406a075f4906f1d462949c466443766e56995bc9f4422"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H6_S2_imported_provider_closure.json",
+      "sha256": "f1ed2ef7dbbcac8ff7c17a2b2a5d5ce7eec350f006ee7d7dab44d72bd09a4e85"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H6_Y4_final_result.json",
+      "sha256": "d99315ccd3d4421cc5a5f89537b1c5481c275ef7276c504ed58f681e12dcf900"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H6_Y4_imported_provider_closure.json",
+      "sha256": "f1ed2ef7dbbcac8ff7c17a2b2a5d5ce7eec350f006ee7d7dab44d72bd09a4e85"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H6_N2_final_result.json",
+      "sha256": "ea491a31b4cfe8e3d6000e3a3f558721ddbfecd5fcc68cc5cf80e030cf4f5769"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/H6_N2_imported_provider_closure.json",
+      "sha256": "f1ed2ef7dbbcac8ff7c17a2b2a5d5ce7eec350f006ee7d7dab44d72bd09a4e85"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/input_binding.json",
+      "sha256": "8c0a59669c702d2fd441c6154d524976a1c83fec74c48e491cae3e35f66eef49"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/coefficient_order_audit.json",
+      "sha256": "304cee5ff5fd555658d7d6198c727124ba079dd5c2ad7209eb957398538f324a"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/coefficient_binary64_audit.json",
+      "sha256": "210495c3d1532f6f07c6c4bc9dd1957979f8ecb3b85b3137b3e4cf76ab167c8c"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/plan.json",
+      "sha256": "217505e02462b28635531b9ea05cd1d6833967e9babb79e031806ce4626a870c"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_native/2026-10-18/parallel_H6_plan.json",
+      "sha256": "ba8d57bb164d211a099438db46c44ad5f8909126990129438db3222e4a639a95"
+    },
+    {
+      "path": "artifacts/resource_applicability/track_a_h46_new2_diagnostic/2026-10-18/input_binding.json",
+      "sha256": "7b27ff044f56ce4ff1888492327c52ab8a4bfd3a0a5a0bd0db0b18b248c7d19e"
+    }
+  ]
+}

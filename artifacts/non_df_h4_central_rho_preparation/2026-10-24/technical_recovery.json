@@ -1,0 +1,14 @@
+{
+  "scope": "ARTIFICIAL_PREPARATION_ONLY",
+  "first_tests": 15,
+  "first_failures": 1,
+  "cause": "Qiskit1.3 Statevector.probabilities clips to [0,1]; raw nonunit toy vectors can saturate both ancilla bins",
+  "fix": "reuse Statevector.evolve; reduce unclipped final amplitudes by ancilla sectors, divide by original saved-ray norm",
+  "state_vector_replaced": false,
+  "final_tests": 15,
+  "final_failures": 0,
+  "real_H4_calls": 0,
+  "old_results_modified": false,
+  "old_H4_impact": "NOT_REANALYZED; toy finding is not evidence of an old real-H4 failure",
+  "scientific_retry": 0
+}

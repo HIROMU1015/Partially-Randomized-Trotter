@@ -1,0 +1,167 @@
+{
+  "checks": {
+    "exactly_one_provisional_primary": true,
+    "novelty_not_overstated": true,
+    "pa_all_pilot_gates_pass": true,
+    "pa_candidate_decision_preserved": true,
+    "pb_stop_decision_preserved": true,
+    "pc_candidate_decision_preserved": true
+  },
+  "content_fingerprint": "7daa49c3c30b453d69d52830d0889ce04104cc5a0f02a2c3083517486d575fbb",
+  "decision": {
+    "h12_or_long_rpe_required_next": false,
+    "next_action": "audit_prior_art_then_predeclare_one_blind_external_sequence_and_compiler_holdout_for_PA",
+    "primary_theme": "P-A_joint_sequence_synthesis",
+    "secondary_theme": "P-C_geometry_energy_difference",
+    "status": "provisional_pending_prior_art_and_novelty_audit",
+    "stopped_theme_in_current_scope": "P-B_signal_weight"
+  },
+  "input_fingerprints": {
+    "pa": "1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37",
+    "pb": "e7b6e98d1a4049f5e061c4ec47de891edf40689ee9ccfc03f62c9022ea350197",
+    "pc": "8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad"
+  },
+  "method": "pb_pc_pa_four_question_theme_selection_v1",
+  "overall_pass": true,
+  "provenance": {
+    "command": "'/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python' scripts/run_research_direction_theme_selection.py",
+    "evidence_status": "local_dirty_worktree_not_externally_reproduced",
+    "generated_at_utc": "2026-09-25T05:19:36.755875+00:00",
+    "git_commit": "898da8487aca30a176ce5931d34a923c28c34ac9",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/research/prevalidation_catalog_evidence_map.md",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-25.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\226\\271\\346\\263\\225\\343\\203\\273\\350\\247\\243\\346\\236\\220\\346\\211\\213\\351\\240\\206.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\347\\233\\256\\347\\232\\204\\343\\203\\273\\347\\240\\224\\347\\251\\266\\350\\252\\262\\351\\241\\214.md\"",
+      " M docs/research_direction_full_opt2.md",
+      " M scripts/README.md",
+      " M src/trotterlib/README.md",
+      "?? artifacts/research_direction_full_opt2/2026-09-25/m06f_a0_proxy_lineage_reconciliation_v1.json",
+      "?? artifacts/research_direction_geometry_energy_difference_pilot/",
+      "?? artifacts/research_direction_joint_synthesis_pilot/",
+      "?? artifacts/research_direction_signal_weight_pilot/",
+      "?? docs/research_direction_geometry_energy_difference_pilot.md",
+      "?? docs/research_direction_signal_weight_pilot.md",
+      "?? partial_randomized_trotter_research_redesign_20260925.md",
+      "?? partial_randomized_trotter_validation_review_898da848.md",
+      "?? scripts/run_research_direction_geometry_energy_difference_pilot.py",
+      "?? scripts/run_research_direction_joint_synthesis_pilot.py",
+      "?? scripts/run_research_direction_proxy_lineage_reconciliation.py",
+      "?? scripts/run_research_direction_signal_weight_pilot.py",
+      "?? scripts/run_research_direction_theme_selection.py",
+      "?? src/trotterlib/research_direction_geometry_energy_difference_pilot.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_pilot.py",
+      "?? src/trotterlib/research_direction_proxy_lineage_reconciliation.py",
+      "?? src/trotterlib/research_direction_signal_weight_pilot.py",
+      "?? src/trotterlib/research_direction_theme_selection.py",
+      "?? src/trotterlib/research_direction_theme_selection.py.orig",
+      "?? tests/test_research_direction_geometry_energy_difference_pilot.py",
+      "?? tests/test_research_direction_joint_synthesis_pilot.py",
+      "?? tests/test_research_direction_proxy_lineage_reconciliation.py",
+      "?? tests/test_research_direction_signal_weight_pilot.py",
+      "?? tests/test_research_direction_theme_selection.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_theme_selection.py": "a9eea03fee3af3b73f1ae0c80ee74d7630f0b2e56d3a28eacd63dd00e0f7668c",
+      "src/trotterlib/research_direction_theme_selection.py": "c08aa0ed0d3128e6bf9282bcb4d619b1413652c2e2bec446ef14b20983cc60e4"
+    }
+  },
+  "quantitative_basis": {
+    "pa": {
+      "changed_trajectory_fraction": 0.875,
+      "compiled_oracle_regret_over_full_rz": 4.819277108433735e-05,
+      "holdout_sample_count": 24,
+      "holdout_sequence_lengths": [
+        3,
+        5,
+        8
+      ],
+      "maximum_operator_residual": 3.1259043582248395e-15,
+      "maximum_trajectory_rz_increase_vs_current": 0.002309468822170979,
+      "pooled_rz_relative_change_vs_current": -0.07193862496311598,
+      "pooled_rz_relative_change_vs_full": -0.24212048192771085
+    },
+    "pb": {
+      "meaningful_inversion_count": 0,
+      "selection_disagreement_count": 0
+    },
+    "pc": {
+      "combined_pair_error_normalized_by_endpoint_bias": 0.02538891968605435,
+      "maximum_delta_holdout_relative_error": 0.008395490077435343,
+      "maximum_geometry_coefficient_holdout_relative_error": 0.04408565409572596
+    }
+  },
+  "schema_version": "research_direction_theme_selection_v1",
+  "scope": {
+    "h12_evaluated": false,
+    "literature_novelty_established": false,
+    "new_circuit_compilation_performed": false,
+    "new_physical_simulation_performed": false,
+    "primary_theme_finalized": false,
+    "rpe_or_final_total_cost_evaluated": false,
+    "scientific_superiority_claimed": false
+  },
+  "selection_rule": {
+    "questions": [
+      "What differs from known or current strong baselines?",
+      "Was one clear counterexample, improvement, or prediction obtained?",
+      "Is prediction on an unused condition supported?",
+      "Can the completed research claim be stated in one sentence?"
+    ],
+    "tie_break": "Prefer the pilot with a direct effect against strong baselines and an unused-condition holdout; retain alternatives whose next missing mechanism is clearly identified."
+  },
+  "source_evidence": {
+    "pa": {
+      "content_fingerprint": "1a9840a4ee46daa6e3749272593acf3e8ae29be9fcecc1a05b0bd9ea817fbc37",
+      "path": "artifacts/research_direction_joint_synthesis_pilot/2026-09-25/pa_h4_interval_union_joint_synthesis_v1.json",
+      "sha256": "b5165af6561ca7b1ba8dfe6920bbdd01a2c2c3699d8fd79ed721eba000b8b64f"
+    },
+    "pb": {
+      "content_fingerprint": "e7b6e98d1a4049f5e061c4ec47de891edf40689ee9ccfc03f62c9022ea350197",
+      "path": "artifacts/research_direction_signal_weight_pilot/2026-09-25/pb_h4_s2_prefix_grid_v1.json",
+      "sha256": "13c5dd0217697334daa47cd7aacb8cd98ca81d793a1f9ad2e5a7490c5ed9f886"
+    },
+    "pc": {
+      "content_fingerprint": "8280564081b8a5b4a29f8a0f139ea9be2fa940c9e1e89d8219076304dce185ad",
+      "path": "artifacts/research_direction_geometry_energy_difference_pilot/2026-09-25/pc_h4_geometry_signed_error_v1.json",
+      "sha256": "03c541a49ec2601901c60be07f8192c5e5ef6ac064e39361ccd8c4699ced4765"
+    }
+  },
+  "stage": "theme-selection-PB-PC-PA",
+  "theme_assessment": [
+    {
+      "clear_counterexample_improvement_or_prediction": true,
+      "completion_statement": "Predict an interval basis plan from sequence support/run structure that preserves the operator and reduces compiled cost relative to strong baselines on unseen event sequences.",
+      "decision": "primary_provisional",
+      "difference_from_project_baselines": "Interval dynamic programming selects full or support-union basis representations over contiguous source-basis runs, beyond the fixed full, event-support, and support_run_le_1 baselines.",
+      "limitation": "Novelty relative to the broader circuit-synthesis literature is not yet established, and only one H4 topology-free compiler context was tested.",
+      "theme": "P-A_joint_sequence_synthesis",
+      "unused_condition_prediction_present": true
+    },
+    {
+      "clear_counterexample_improvement_or_prediction": true,
+      "completion_statement": "Predict when signed PF errors cancel or break across geometry pairs and select a decomposition for energy differences.",
+      "decision": "secondary_candidate",
+      "difference_from_project_baselines": "Use signed geometry-dependent PF bias to predict cancellation in energy differences rather than optimizing absolute energies alone.",
+      "limitation": "The current pilot shows smooth local H4 interpolation but not yet a breakdown mechanism or a controllable orbital/fragment-tracking design.",
+      "theme": "P-C_geometry_energy_difference",
+      "unused_condition_prediction_present": true
+    },
+    {
+      "clear_counterexample_improvement_or_prediction": false,
+      "completion_statement": "Would predict energy-only PF selection failures from a cheap state-action diagnostic if a practical failure were found.",
+      "decision": "stop_in_current_scope",
+      "difference_from_project_baselines": "Separate target phase bias from target weight and coherent signal.",
+      "limitation": "No practical selection disagreement occurs in the fixed H4 grid, so the proposed diagnostic cannot be validated as a selector.",
+      "theme": "P-B_signal_weight",
+      "unused_condition_prediction_present": false
+    }
+  ]
+}

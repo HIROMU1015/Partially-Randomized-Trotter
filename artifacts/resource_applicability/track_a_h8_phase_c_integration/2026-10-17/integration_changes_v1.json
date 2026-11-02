@@ -1,0 +1,64 @@
+{
+  "schema": "H8_PHASE_C_INTEGRATION_CHANGES_V1",
+  "snapshot": "h8-phase-c-preparation/phase-c-20261017-01 (unregistered; preserved unchanged)",
+  "snapshot_patch_sha256": "055848b618ecd913be5b94f518c250da99e56310869cfcef54474ca717774171",
+  "imported_verbatim_commit": "c38ec2cfe1f91fe779f10ece0c8bb66f7c13fd85",
+  "integration_SOURCE": "29ed76544441d534ad99e5c708a2ae17eec78c18",
+  "reused_unchanged": [
+    "exact rational G=N_real*RZ_cosine+N_imag*RZ_sine",
+    "measured-first unit order",
+    "eligibility tri-state from saved usual accounting",
+    "old32 vs strengthened184 comparison and percentage-point change",
+    "confirmation n32 only",
+    "exact tie by cell ID",
+    "UNRESOLVED_FULL_DOMAIN",
+    "call caps 1900/20/352",
+    "sealed config, grant, fresh gate, one-shot paths"
+  ],
+  "changed": [
+    {
+      "item": "B2 gate",
+      "reason": "final contract is PASS_REGISTERED_FOUR_AXES with per-axis SOURCEs 244c45e7/2e604e4a/f58da959; old gate required one SOURCE 244c45e7"
+    },
+    {
+      "item": "input contract v2 and Phase C registry file",
+      "reason": "B2 roles changed; references/registration_v1.json already denotes a different (bias-audit) file in another lineage"
+    },
+    {
+      "item": "noncancellation guard",
+      "reason": "Phase C uses saved usual signed-bias shots only; diagnostic rows are rejected"
+    },
+    {
+      "item": "lineage joins",
+      "reason": "D0 terminal->accounting, B0I file receipts, B1 native exit"
+    },
+    {
+      "item": "S2/S4 model labels",
+      "reason": "S4 validated only on four registered axes; S2 label no longer says S4"
+    },
+    {
+      "item": "runtime resource policy",
+      "reason": "current rule forbids agent-imposed CPU/RAM/worker/wall caps; removed AS/CPU/wall rlimits and the 2-idle-core gate"
+    },
+    {
+      "item": "supervision",
+      "reason": "reused Phase A observer STOPs on any cgroup PSI>0 (stopped B2 several times); B2 final SOURCE made PSI observational; replaced by wait4 launcher recording PSI/OOM"
+    },
+    {
+      "item": "preparation",
+      "reason": "drafts remain unsealed/unapproved; sealing with fresh protection lists belongs to the approved run"
+    }
+  ],
+  "reused_observer_sources_now_unused": [
+    "scripts/launch_h8_strengthened_phase_a.py",
+    "scripts/track_a_phase_a_parallel.py",
+    "scripts/h8_strengthened_runtime.py",
+    "scripts/h8_strengthened_contract.py"
+  ],
+  "diff": {
+    "files": 8,
+    "insertions": 819,
+    "deletions": 378
+  },
+  "scientific_conditions_changed": false
+}

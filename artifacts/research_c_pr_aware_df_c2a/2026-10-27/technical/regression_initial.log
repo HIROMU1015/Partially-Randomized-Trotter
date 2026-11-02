@@ -1,0 +1,58 @@
+................................................................F....... [ 84%]
+.............                                                            [100%]
+=================================== FAILURES ===================================
+______________ test_artificial_E2E_exact35calls_and_failure_stops ______________
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-516/test_artificial_E2E_exact35cal0')
+
+    def test_artificial_E2E_exact35calls_and_failure_stops(tmp_path):
+        from trottertracks.c1_stage3_integrated import Calls
+        root=tmp_path;out=root/'out';out.mkdir()
+        records=dict(C1_result=dict(status='C1_SAVED_SCALAR_SCENARIOS_COMPLETE'),C1_SOURCE=dict(execution_commit='b1c735da394d4b0a444cbc618ead9781ef4d9134'),baseline_tail=artificial_saved(),proposed_tail=artificial_saved())
+        c=dict(records={})
+        for k,v in records.items():m.io.save(root/(k+'.json'),v);c['records'][k]=k+'.json'
+        call=Calls(out,m.LIMITS,m.MAX_CALLS);r=m.execute(root,c,out,call)
+        assert m.MAX_CALLS==35 and dict(call.counts)==m.LIMITS and r['scientific_units']==35
+        assert r['guaranteed_shots'] is r['guaranteed_total'] is r['actual_implemented_law_error'] is None
+        assert len(r['arms'])==2
+        bad=deepcopy(records['baseline_tail']);bad['components'][0]['probability']*=2
+        m.io.save(root/'bad_table.json',bad);c['records']['baseline_tail']='bad_table.json'
+        out2=root/'bad';out2.mkdir();call=Calls(out2,m.LIMITS,m.MAX_CALLS)
+>       with pytest.raises(ValueError,match='REPLAY'):m.execute(root,c,out2,call)
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_pr_aware_df_stage_c2.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_pr_aware_df_stage_c2.py:269: in execute
+    arms=dict(f.result() for f in as_completed([pool.submit(arm_task,a) for a in ARMS]))
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_pr_aware_df_stage_c2.py:269: in <genexpr>
+    arms=dict(f.result() for f in as_completed([pool.submit(arm_task,a) for a in ARMS]))
+              ^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:449: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/concurrent/futures/thread.py:58: in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_pr_aware_df_stage_c2.py:257: in arm_task
+    packet=call('table_replay',arm,lambda:replay_saved_table(bundle[arm+'_tail']))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <trottertracks.c1_stage3_integrated.Calls object at 0x7f2a12e23b10>
+kind = 'table_replay', label = 'proposed'
+function = <function execute.<locals>.arm_task.<locals>.<lambda> at 0x7f2a12cf5c60>
+
+    def __call__(self, kind, label, function):
+        with self.lock:
+>           if self.stop.is_set(): raise Stopped('Dependent work stopped')
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           trottertracks.c1_stage3_integrated.Stopped: Dependent work stopped
+
+src/trottertracks/c1_stage3_integrated.py:102: Stopped
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_pr_aware_df_stage_c2.py::test_artificial_E2E_exact35calls_and_failure_stops
+1 failed, 84 passed in 14.32s

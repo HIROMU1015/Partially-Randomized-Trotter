@@ -1,0 +1,383 @@
+{
+  "schema_version": 1,
+  "id": "n13_redesign_limited_scope_v1_20261011",
+  "date_jst": "2026-10-11",
+  "status": "DESIGN_PREPARED_SCIENCE_NOT_AUTHORIZED",
+  "base_commit": "ae7434452450e80ec007d65417335e18a063fa1e",
+  "prior_science_source": "ed335a007bee6966a37f3026ac188534e526b5b9",
+  "branch": "n13-redesign-preparation-20261011",
+  "science_execution_authorized": false,
+  "next_scientific_stage_authorized": false,
+  "mandatory_stop": true,
+  "central_hypothesis_adopted": null,
+  "prior_gpt_scientific_review_complete": true,
+  "repeat_prior_review": false,
+  "review_input": "docs/research/n13_redesign_inputs/n123_feasibility_scientific_review_2026-10-11.md",
+  "review_sha256": "4b2d08be93b22aa75fafc68f2e6a1642cd2f38c8ee00772a968f01fa0be23a2a",
+  "counts_this_preparation": {
+    "scientific_batch_runs": 0,
+    "scientific_synthetic_checks": 0,
+    "compilations": 0,
+    "diagonalizations": 0,
+    "lp_solves": 0,
+    "algebra_replays": 0,
+    "scientific_tests_run": 0,
+    "quantum_shots": 0,
+    "gpu_calls": 0
+  },
+  "selector_information": {
+    "allowed": [
+      "Hamiltonian coefficients",
+      "bounded one-body algebra",
+      "coefficient-certified bounds",
+      "fixed-compiler circuit counts",
+      "coefficient trial-state Rayleigh upper bounds"
+    ],
+    "forbidden": [
+      "full or active many-body ground truth",
+      "true gap",
+      "true model or PF error",
+      "post-selection diagnostic files"
+    ],
+    "freeze_selection_before_truth_diagnostics": true
+  },
+  "numerical_certificate": {
+    "binary64_inputs": "exact rational as_integer_ratio; intentional decimal fixtures tagged separately",
+    "trigonometric_coefficients": "outward intervals for logical Gaussian and emitted phases",
+    "interval_bits": [
+      128,
+      256
+    ],
+    "rational_max_bits": 4096,
+    "diagnostic_tolerance_is_not_error_budget": true
+  },
+  "N1": {
+    "modes": 4,
+    "particles": 2,
+    "sector_dimension": 6,
+    "df_rank": 2,
+    "weights": [
+      0.7,
+      -0.4
+    ],
+    "geometry": null,
+    "chemical_basis": null,
+    "L_D": null,
+    "time": 0.6,
+    "q_grid": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "delta_grid": [
+      0.6,
+      0.3,
+      0.15,
+      0.075
+    ],
+    "model_budget": 0.02,
+    "epsilon_complex": 0.04,
+    "alpha_total": 0.05,
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "normalization": 1,
+    "preparation": "fixed X0 X1 included in measured-wrapper cost",
+    "domain_source": "artifacts/hamiltonian_algorithm_design/2026-10-11/run3_recovered/result.json",
+    "domain_source_sha256": "0db570b762d66eafa9893f9cb9cbd829cdf7c33df448af0c52071a7e49fe1ab5",
+    "contexts": [
+      {
+        "id": "planted_local_gauge",
+        "factor_candidate_counts": [
+          9,
+          9
+        ]
+      },
+      {
+        "id": "dense_group_frame",
+        "factor_candidate_counts": [
+          9,
+          9
+        ]
+      },
+      {
+        "id": "separated_spectrum",
+        "factor_candidate_counts": [
+          4,
+          4
+        ]
+      }
+    ],
+    "factor_candidates": 44,
+    "pair_combinations": 178,
+    "gauged_and_ungauged_max_constructions": 356,
+    "candidate_generators_frozen_to_old_domain": true,
+    "new_centers_or_angles": 0,
+    "new_q_or_precision_points": 0,
+    "model_bound": "commuting fixed-filling square-spectrum difference plus coefficient and implemented-frame residual enclosure",
+    "pf_bound": "Childs et al. arXiv:1912.08854v2 Proposition16; coefficient Pauli-L1 nested commutators; T^3 alpha2/q^2",
+    "bias": "T*model_bound+PF_bound+emitted_phase_rounding_bound",
+    "objective_metrics": [
+      "rz",
+      "cx"
+    ],
+    "objective": "safe integer Hoeffding shots times full XY wrapper metric",
+    "comparators": [
+      "native_exact",
+      "finite_shifted_cutoff",
+      "finite_zero_cutoff",
+      "same_approximation_ungauged",
+      "whole_Pauli_original",
+      "whole_Pauli_selected_N1_approximation"
+    ],
+    "exact_fallback": "retain exact in domain; if all exact q fail coefficient certificate return UNRESOLVED_PF_CERTIFICATE",
+    "guarantee_scope": "non-worsening certified objective within eligible finite domain; no guaranteed non-worsening true diagnostic work",
+    "selector_input": "artifacts/n13_redesign/2026-10-11/preparation/n1_candidate_input.json",
+    "selector_input_sha256": "70b2631b114983572cfc92527b2d569a4b48b03a6d88790b75dcf89f13614438",
+    "runtime_selector_may_load_old_full_result": false,
+    "certificate_scope": "ideal_gate_certificate_with_numerical_compile_validation unless an independent native-error enclosure is also available",
+    "native_error_policy": "Add b_native for any rigorous compiled-circuit claim; binary64 semantic residual is only numerical validation."
+  },
+  "N3": {
+    "modes": 6,
+    "particles": 2,
+    "initial_active": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "energy_error_goal": {
+      "numerator": 1,
+      "denominator": 250
+    },
+    "class": "number-preserving one-body plus nonnegative density; structural certificate only for one discarded empty orbital",
+    "certificate": "BBdag=dGamma(vvdag) <= kappa*(A-L); L=nu*lambda; kappa=vdag*(hA-lambdaI)^-1*v",
+    "trial_upper": "minimum of determinant diagonals and equal-weight directly connected two-determinant expectations",
+    "lambda_grid_fractions": [
+      [
+        "0",
+        "1"
+      ],
+      [
+        "1",
+        "20"
+      ],
+      [
+        "1",
+        "10"
+      ],
+      [
+        "3",
+        "20"
+      ],
+      [
+        "1",
+        "5"
+      ]
+    ],
+    "lambda_rule": "Gershgorin row lower r plus fraction times diagonal span; exact SPD LDL only",
+    "discarded_lower": "hdd+(nu-1)*ell, with ell the largest certified eligible one-body grid lower",
+    "acceptance": "c>U and t=kappa/(c-U+delta)<=1 and delta>=t*(U-L)",
+    "comparators": [
+      "legacy_scalar_coefficient",
+      "same_U_c_norm_only_coefficient",
+      "direction_preserving_coefficient"
+    ],
+    "promotion": "largest external active-coupling coefficient sum; ascending orbital id breaks ties; full-space fallback exact delta0",
+    "diagonal_base": [
+      -0.2,
+      -0.1,
+      0.1,
+      0.25
+    ],
+    "hopping_base": [
+      [
+        1,
+        2,
+        0.2
+      ],
+      [
+        0,
+        3,
+        0.1
+      ],
+      [
+        2,
+        4,
+        0.08
+      ],
+      [
+        3,
+        5,
+        0.04
+      ],
+      [
+        4,
+        5,
+        0.05
+      ]
+    ],
+    "density_base": [
+      [
+        0,
+        1,
+        0.3
+      ]
+    ],
+    "inputs": [
+      {
+        "id": "original_gapped",
+        "external_diagonal": [
+          6,
+          8
+        ],
+        "changes": []
+      },
+      {
+        "id": "original_small_gap",
+        "external_diagonal": [
+          0.4,
+          0.6
+        ],
+        "changes": []
+      },
+      {
+        "id": "strong_external_coupling",
+        "external_diagonal": [
+          0.4,
+          0.6
+        ],
+        "changes": [
+          {
+            "hopping": [
+              3,
+              5
+            ],
+            "value": 0.16
+          },
+          {
+            "hopping": [
+              4,
+              5
+            ],
+            "value": 0.2
+          }
+        ]
+      },
+      {
+        "id": "near_external_energy",
+        "external_diagonal": [
+          0.4,
+          -0.1
+        ],
+        "changes": []
+      }
+    ],
+    "input_count": 4,
+    "comparators_count": 3,
+    "active_stages_per_method_max": 3,
+    "certificate_records_max": 36,
+    "trial_determinants_max": 10,
+    "lambda_shifts_max": 5,
+    "uses_true_active_ground": false,
+    "uses_true_gap": false,
+    "forces_five_modes": false,
+    "new_circuit_compilations": 0,
+    "claims_excluded": [
+      "general two-body active-space theorem",
+      "active solver or QPE cost",
+      "T delta evolution error",
+      "central-theme or novelty adoption"
+    ]
+  },
+  "N2": {
+    "scope": "one fixed 4x2 S from supplied review; weighted symmetric-entry L1 LP; primal and dual certificate",
+    "fixed_S": [
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        -1,
+        0
+      ]
+    ],
+    "fixture_count": 1,
+    "entry_L1_budget": 0.0021,
+    "diagonal_weight": 1,
+    "off_diagonal_weight": 2,
+    "large_S_searches": 0,
+    "legacy_820_candidate_lp_rescans": 0,
+    "new_circuit_compilations": 0,
+    "known_decimal_optimum_source": "supplied review 1/500; not a new solve or unqualified binary64 optimum"
+  },
+  "resources": {
+    "backend_proposal": "CPU",
+    "online_cpus_observed": 32,
+    "mem_available_kib_observed": 54311700,
+    "gpu_observation": "nvidia-smi executable present; no /dev/nvidia*; usable GPU not established",
+    "workers_max": 2,
+    "worker_start_method": "spawn",
+    "threads_per_worker": 1,
+    "qiskit_parallel": false,
+    "transpile_num_processes": 1,
+    "qubits_initially_zero": false,
+    "seed_transpiler": 20261011,
+    "optimization_level": 1,
+    "native_basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "worker_address_space_bytes": 4294967296,
+    "aggregate_worker_memory_bytes": 8589934592,
+    "wrapper_compiles_max": 3072,
+    "additional_basis_compiles_max": 44,
+    "total_compiles_max": 3116,
+    "qubits_per_circuit_max": 5,
+    "native_gates_per_circuit_max": 20000,
+    "pauli_dictionary_terms_max": 256,
+    "ir_shard_bytes_max": 33554432,
+    "output_bytes_max": 536870912,
+    "log_bytes_max": 16777216,
+    "wall_seconds": null,
+    "cpu_seconds": null,
+    "performance_speedup_measured": false,
+    "recheck_resources_and_reference_before_launch": true
+  },
+  "implementation": {
+    "status": "not_implemented",
+    "module": "src/trottertracks/representation_exploration/n13_redesign.py",
+    "runner": "scripts/run_n13_redesign.py",
+    "test": "tests/test_n13_redesign.py",
+    "saved_verifier": "scripts/verify_n13_redesign.py",
+    "source_commit": null,
+    "source_bound_plan": null,
+    "execution_authorization": null
+  },
+  "terminal_policy": {
+    "all_statuses_stop": true,
+    "no_same_family_success_retry": true,
+    "save_negative_or_unresolved_result": true,
+    "new_result_gpt_review_after_execution": true
+  },
+  "publication": {
+    "preparation_commit": null,
+    "science_result_commit": null,
+    "remote_retrieval_receipt": null,
+    "allowed_remote_owner": "HIROMU1015",
+    "next_action": "Implement and freeze new source/plan; scientific execution remains pending an explicit instruction."
+  }
+}

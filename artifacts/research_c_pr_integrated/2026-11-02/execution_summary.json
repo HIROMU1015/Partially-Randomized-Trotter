@@ -1,0 +1,1990 @@
+{
+  "scientific_SOURCE": "980b514c81eb415fe053f558d7d3c0b8cfb5b9b4",
+  "contract_sha256": "b5fdbe049e611864be84680d6c513fde94dc7019ccf1be1e71c19b75d1c20c3a",
+  "source_manifest_sha256": "7eda4aa319b9b861cfa2b5e8c25e3381b4670c275bdad2bdb073335df550aff5",
+  "status": "FINITE_STEP_GRID_NO_ACCEPT",
+  "failed": false,
+  "maximum_logical_units": 1759,
+  "attempts": 543,
+  "COMPLETE": 543,
+  "FAIL": 0,
+  "parent_journal": {
+    "events": {
+      "attempt": 81,
+      "COMPLETE": 81
+    },
+    "attempt_counts": {
+      "saved_load": 1,
+      "initial_identity": 1,
+      "physical_context": 1,
+      "phase_A_assessment": 1,
+      "objective_setup": 1,
+      "optimization_driver": 1,
+      "inner_J_solve": 30,
+      "precision_state": 20,
+      "reduced_admission": 10,
+      "physical_assessment": 6,
+      "independent_terminal_assessment": 5,
+      "selection": 1,
+      "reference_comparison": 1,
+      "performance_driver": 1,
+      "export": 1
+    },
+    "attempts": 81,
+    "COMPLETE": 81,
+    "FAIL": 0
+  },
+  "performance_journal": {
+    "events": {
+      "attempt": 462,
+      "COMPLETE": 462
+    },
+    "attempt_counts": {
+      "model_prepare": 1,
+      "sector_factor_gate": 9,
+      "law_prepare": 1,
+      "sector_law_gate": 1,
+      "ground_reference": 2,
+      "kernel_reference": 1,
+      "exact_evolution": 13,
+      "round_reference": 13,
+      "round_classification": 13,
+      "feasibility_summary": 1,
+      "shell_metrics_load": 1,
+      "signal_qualification": 3,
+      "round_accuracy": 39,
+      "energy_assessment": 3,
+      "shots_summary": 3,
+      "car_context": 1,
+      "raw_factor": 9,
+      "full_sector_gate": 1,
+      "reference_context": 1,
+      "full_law_gate": 1,
+      "gaussian_build": 9,
+      "relative_gaussian": 4,
+      "shell_load": 6,
+      "shell_assessment": 3,
+      "trajectory_sample": 32,
+      "kernel_build": 32,
+      "trajectory_reference": 32,
+      "raw_operator_gate": 32,
+      "compile": 32,
+      "compiled_operator_gate": 32,
+      "adjoint_pair_gate": 32,
+      "XY_gate": 32,
+      "kernel_metrics": 32,
+      "calibration_summary": 1,
+      "cost_calibration": 1,
+      "serial_cost": 26,
+      "total_aggregation": 3,
+      "calibration_uncertainty": 3,
+      "resource_comparison": 1
+    },
+    "attempts": 462,
+    "COMPLETE": 462,
+    "FAIL": 0
+  },
+  "phase_A": {
+    "rank": 8,
+    "actual_rank": 8,
+    "status": "NUMERICAL_DF_ASSESSED",
+    "sector_error": 8.40106811676679e-09,
+    "numerical_guard": 3.2251240167072668e-09,
+    "evidence_kind": "numerical_pilot",
+    "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+    "rigorous_enclosure": null,
+    "representation": {
+      "label": "sector raw-CAR vs general-K",
+      "max_entry": 3.3306690738754696e-15,
+      "frobenius": 6.957774385821703e-15,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    "tensor_frobenius": 9.776496611062808e-09,
+    "tensor_max_entry": 1.4901161971003773e-09,
+    "exact_tail_lambda_Ha": 0.7258193873157349,
+    "budget_Ha": 0.00019875,
+    "budget_PASS": true,
+    "candidate_sha256": "3e73dc698a05c94a3a68ff36f065618ad2d7e063e62e5a737727c7c5bd2ce51b",
+    "kappa": "original_g_corrected",
+    "scalar": "nuclear_once",
+    "optimizer_success_inferred": false
+  },
+  "history": [
+    {
+      "id": "B_initial",
+      "update": 0,
+      "F": 0.010792467936921136,
+      "exact_tail_lambda_Ha": 0.7258193873157348,
+      "smooth_tail_mass_Ha": 0.7258197420238186,
+      "J_infinity": 1.222707730341721e-07,
+      "J_status": "MET",
+      "physical_U_l2": 2.669694288051786,
+      "U_status": "NOT_MET",
+      "first_order_met": false,
+      "latest_pair_U_shift": 2.785699511615289e-10,
+      "admission_gates": {
+        "final_inner_J": true,
+        "final_independent_J": true,
+        "rank_nullspace": true,
+        "full_numeric_rank": true,
+        "latest_pair_stability": true,
+        "block_nonincrease": true,
+        "refinement_nonincrease": true
+      },
+      "physical": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "NUMERICAL_DF_ASSESSED",
+        "sector_error": 8.40106811676679e-09,
+        "numerical_guard": 3.2251240167072668e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 3.3306690738754696e-15,
+          "frobenius": 6.957774385821703e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "tensor_frobenius": 9.776496611062808e-09,
+        "tensor_max_entry": 1.4901161971003773e-09,
+        "exact_tail_lambda_Ha": 0.7258193873157349,
+        "budget_Ha": 0.00019875,
+        "budget_PASS": true,
+        "candidate_sha256": "3e73dc698a05c94a3a68ff36f065618ad2d7e063e62e5a737727c7c5bd2ce51b",
+        "kappa": "original_g_corrected",
+        "scalar": "nuclear_once",
+        "optimizer_success_inferred": false
+      },
+      "step": null
+    },
+    {
+      "id": "update001",
+      "update": 1,
+      "F": 0.009533833471550006,
+      "exact_tail_lambda_Ha": 0.6821848239585907,
+      "smooth_tail_mass_Ha": 0.6821851235780967,
+      "J_infinity": 1.541740420403192e-07,
+      "J_status": "MET",
+      "physical_U_l2": 2.302719650565806,
+      "U_status": "NOT_MET",
+      "first_order_met": false,
+      "latest_pair_U_shift": 3.78538311861979e-09,
+      "admission_gates": {
+        "final_inner_J": true,
+        "final_independent_J": true,
+        "rank_nullspace": true,
+        "full_numeric_rank": true,
+        "latest_pair_stability": true,
+        "block_nonincrease": true,
+        "refinement_nonincrease": true
+      },
+      "physical": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "NUMERICAL_DF_ASSESSED",
+        "sector_error": 7.865345428405729e-09,
+        "numerical_guard": 3.224807324625989e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 3.552713678800501e-15,
+          "frobenius": 1.0954006867484021e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "tensor_frobenius": 8.421128506276027e-09,
+        "tensor_max_entry": 1.2501081558813354e-09,
+        "exact_tail_lambda_Ha": 0.6821848239585908,
+        "budget_Ha": 0.00019875,
+        "budget_PASS": true,
+        "candidate_sha256": "0a8d179f3ae16ee60dac336d6a295771cfcca3d9d7e7e437e9553c7f23299a41",
+        "kappa": "original_g_corrected",
+        "scalar": "nuclear_once",
+        "optimizer_success_inferred": false
+      },
+      "step": {
+        "fraction": 0.125,
+        "alpha": 0.00018928130237377952,
+        "Armijo_bound": 0.010792333031071924,
+        "comparison_scale": 2.0792467936921135e-10,
+        "actual_decrease": 0.0012586344653711303
+      }
+    },
+    {
+      "id": "update002",
+      "update": 2,
+      "F": 0.008442683683071727,
+      "exact_tail_lambda_Ha": 0.6419608711394025,
+      "smooth_tail_mass_Ha": 0.6419611795180807,
+      "J_infinity": 1.1587822611527909e-07,
+      "J_status": "MET",
+      "physical_U_l2": 2.001664884563688,
+      "U_status": "NOT_MET",
+      "first_order_met": false,
+      "latest_pair_U_shift": 2.30824690639794e-09,
+      "admission_gates": {
+        "final_inner_J": true,
+        "final_independent_J": true,
+        "rank_nullspace": true,
+        "full_numeric_rank": true,
+        "latest_pair_stability": true,
+        "block_nonincrease": true,
+        "refinement_nonincrease": true
+      },
+      "physical": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "NUMERICAL_DF_ASSESSED",
+        "sector_error": 6.627568917591607e-09,
+        "numerical_guard": 3.2251708797050648e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 2.7478019859472624e-15,
+          "frobenius": 7.809708135379256e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "tensor_frobenius": 7.442063457869825e-09,
+        "tensor_max_entry": 1.0558215551847994e-09,
+        "exact_tail_lambda_Ha": 0.6419608711394024,
+        "budget_Ha": 0.00019875,
+        "budget_PASS": true,
+        "candidate_sha256": "d05d9229f4667c5720f3d161f649643c00dc9111ee66b3d9a68b986a7fde579a",
+        "kappa": "original_g_corrected",
+        "scalar": "nuclear_once",
+        "optimizer_success_inferred": false
+      },
+      "step": {
+        "fraction": 0.125,
+        "alpha": 0.00022474779554593354,
+        "Armijo_bound": 0.009533714298631611,
+        "comparison_scale": 1.9533833471550006e-10,
+        "actual_decrease": 0.0010911497884782788
+      }
+    },
+    {
+      "id": "update003",
+      "update": 3,
+      "F": 0.007419263533961724,
+      "exact_tail_lambda_Ha": 0.6017951616191677,
+      "smooth_tail_mass_Ha": 0.6017954849253944,
+      "J_infinity": 1.0920130873829491e-07,
+      "J_status": "MET",
+      "physical_U_l2": 1.7734164842848918,
+      "U_status": "NOT_MET",
+      "first_order_met": false,
+      "latest_pair_U_shift": 4.901540295022566e-09,
+      "admission_gates": {
+        "final_inner_J": true,
+        "final_independent_J": true,
+        "rank_nullspace": true,
+        "full_numeric_rank": true,
+        "latest_pair_stability": true,
+        "block_nonincrease": true,
+        "refinement_nonincrease": true
+      },
+      "physical": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "NUMERICAL_DF_ASSESSED",
+        "sector_error": 6.045969556100894e-09,
+        "numerical_guard": 3.22588652700798e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 2.9976021664879227e-15,
+          "frobenius": 8.51038888717953e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "tensor_frobenius": 6.7704379275541664e-09,
+        "tensor_max_entry": 1.0143862833045247e-09,
+        "exact_tail_lambda_Ha": 0.6017951616191677,
+        "budget_Ha": 0.00019875,
+        "budget_PASS": true,
+        "candidate_sha256": "c1cb395e6047a01a6536525ce69624dfb621fb062cf495547f0732cb16f27f4d",
+        "kappa": "original_g_corrected",
+        "scalar": "nuclear_once",
+        "optimizer_success_inferred": false
+      },
+      "step": {
+        "fraction": 0.125,
+        "alpha": 0.0002633951623804387,
+        "Armijo_bound": 0.008442578149525688,
+        "comparison_scale": 1.8442683683071729e-10,
+        "actual_decrease": 0.0010234201491100027
+      }
+    },
+    {
+      "id": "update004",
+      "update": 4,
+      "F": 0.006800111326852205,
+      "exact_tail_lambda_Ha": 0.5761378806366672,
+      "smooth_tail_mass_Ha": 0.5761382220100929,
+      "J_infinity": 7.784242331771194e-08,
+      "J_status": "MET",
+      "physical_U_l2": 1.2331484420604326,
+      "U_status": "NOT_MET",
+      "first_order_met": false,
+      "latest_pair_U_shift": 3.939233911618005e-10,
+      "admission_gates": {
+        "final_inner_J": true,
+        "final_independent_J": true,
+        "rank_nullspace": true,
+        "full_numeric_rank": true,
+        "latest_pair_stability": true,
+        "block_nonincrease": true,
+        "refinement_nonincrease": true
+      },
+      "physical": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "NUMERICAL_DF_ASSESSED",
+        "sector_error": 6.484478147562217e-09,
+        "numerical_guard": 3.2284646885146027e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 3.9968028886505635e-15,
+          "frobenius": 9.355031897086453e-15,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "tensor_frobenius": 4.630272267325355e-09,
+        "tensor_max_entry": 1.0624465245369117e-09,
+        "exact_tail_lambda_Ha": 0.5761378806366672,
+        "budget_Ha": 0.00019875,
+        "budget_PASS": true,
+        "candidate_sha256": "c34de7eb184335ee89400af92f563c6230cf0109ec47a7dbe4c46385b43d1d0c",
+        "kappa": "original_g_corrected",
+        "scalar": "nuclear_once",
+        "optimizer_success_inferred": false
+      },
+      "step": {
+        "fraction": 0.125,
+        "alpha": 0.00029488273101584714,
+        "Armijo_bound": 0.00741917079316755,
+        "comparison_scale": 1.7419263533961725e-10,
+        "actual_decrease": 0.0006191522071095192
+      }
+    },
+    {
+      "id": "update005",
+      "update": 5,
+      "F": 0.006617509794531903,
+      "exact_tail_lambda_Ha": 0.5683498546862645,
+      "smooth_tail_mass_Ha": 0.5683502409185051,
+      "J_infinity": 9.593267159303809e-08,
+      "J_status": "MET",
+      "physical_U_l2": 0.6589358142770088,
+      "U_status": "NOT_MET",
+      "first_order_met": false,
+      "latest_pair_U_shift": 2.421434607547991e-10,
+      "admission_gates": {
+        "final_inner_J": true,
+        "final_independent_J": true,
+        "rank_nullspace": true,
+        "full_numeric_rank": true,
+        "latest_pair_stability": true,
+        "block_nonincrease": true,
+        "refinement_nonincrease": true
+      },
+      "physical": {
+        "rank": 8,
+        "actual_rank": 8,
+        "status": "NUMERICAL_DF_ASSESSED",
+        "sector_error": 5.233373518021879e-09,
+        "numerical_guard": 3.227392702910976e-09,
+        "evidence_kind": "numerical_pilot",
+        "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+        "rigorous_enclosure": null,
+        "representation": {
+          "label": "sector raw-CAR vs general-K",
+          "max_entry": 3.552713678800501e-15,
+          "frobenius": 1.0818789695744575e-14,
+          "tolerance": 1e-10,
+          "rtol": 0
+        },
+        "tensor_frobenius": 3.2909099775605303e-09,
+        "tensor_max_entry": 7.998633243176693e-10,
+        "exact_tail_lambda_Ha": 0.5683498546862645,
+        "budget_Ha": 0.00019875,
+        "budget_PASS": true,
+        "candidate_sha256": "938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+        "kappa": "original_g_corrected",
+        "scalar": "nuclear_once",
+        "optimizer_success_inferred": false
+      },
+      "step": {
+        "fraction": 0.03125,
+        "alpha": 0.00013974469407113753,
+        "Armijo_bound": 0.006800090076504309,
+        "comparison_scale": 1.6800111326852206e-10,
+        "actual_decrease": 0.00018260153232030254
+      }
+    }
+  ],
+  "trajectory": {
+    "status": "FINITE_STEP_GRID_NO_ACCEPT",
+    "can_performance": true,
+    "point_evaluations": 10,
+    "inner_solves": 30,
+    "refinement_solves": 20,
+    "optimization_accepted_updates": 5,
+    "physically_qualified_updates": 5
+  },
+  "trial_decisions": [
+    {
+      "label": "k000_0",
+      "update_attempt": 0,
+      "trial_index": 0,
+      "fraction": 0.125,
+      "alpha": 0.00018928130237377952,
+      "initial_slope": -7.127267591656334,
+      "objective": 0.009533833471550006,
+      "decision": "ASSESS_BEFORE_ACCEPTANCE",
+      "status": "PROVISIONAL_SMALL_ARMIJO_PASS",
+      "Armijo_bound": 0.010792333031071924,
+      "comparison_scale": 2.0792467936921135e-10,
+      "actual_decrease": 0.0012586344653711303
+    },
+    {
+      "label": "k001_0",
+      "update_attempt": 1,
+      "trial_index": 0,
+      "fraction": 0.125,
+      "alpha": 0.00022474779554593354,
+      "initial_slope": -5.302517789101906,
+      "objective": 0.008442683683071727,
+      "decision": "ASSESS_BEFORE_ACCEPTANCE",
+      "status": "PROVISIONAL_SMALL_ARMIJO_PASS",
+      "Armijo_bound": 0.009533714298631611,
+      "comparison_scale": 1.9533833471550006e-10,
+      "actual_decrease": 0.0010911497884782788
+    },
+    {
+      "label": "k002_0",
+      "update_attempt": 2,
+      "trial_index": 0,
+      "fraction": 0.125,
+      "alpha": 0.0002633951623804387,
+      "initial_slope": -4.006662274456189,
+      "objective": 0.007419263533961724,
+      "decision": "ASSESS_BEFORE_ACCEPTANCE",
+      "status": "PROVISIONAL_SMALL_ARMIJO_PASS",
+      "Armijo_bound": 0.008442578149525688,
+      "comparison_scale": 1.8442683683071729e-10,
+      "actual_decrease": 0.0010234201491100027
+    },
+    {
+      "label": "k003_0",
+      "update_attempt": 3,
+      "trial_index": 0,
+      "fraction": 0.125,
+      "alpha": 0.00029488273101584714,
+      "initial_slope": -3.1450059437199673,
+      "objective": 0.006800111326852205,
+      "decision": "ASSESS_BEFORE_ACCEPTANCE",
+      "status": "PROVISIONAL_SMALL_ARMIJO_PASS",
+      "Armijo_bound": 0.00741917079316755,
+      "comparison_scale": 1.7419263533961725e-10,
+      "actual_decrease": 0.0006191522071095192
+    },
+    {
+      "label": "k004_0",
+      "update_attempt": 4,
+      "trial_index": 0,
+      "fraction": 0.125,
+      "alpha": 0.0005589787762845501,
+      "initial_slope": -1.520655080156072,
+      "objective": 0.006930489997004956,
+      "decision": "REJECT_ARMIJO_OR_VALUE_SCALE",
+      "status": "SMALL_STEP_REJECTED_ARMIJO_OR_VALUE_SCALE",
+      "Armijo_bound": 0.006800026325460619,
+      "comparison_scale": 1.6930489997004956e-10,
+      "actual_decrease": -0.00013037867015275057
+    },
+    {
+      "label": "k004_1",
+      "update_attempt": 4,
+      "trial_index": 1,
+      "fraction": 0.03125,
+      "alpha": 0.00013974469407113753,
+      "initial_slope": -1.520655080156072,
+      "objective": 0.006617509794531903,
+      "decision": "ASSESS_BEFORE_ACCEPTANCE",
+      "status": "PROVISIONAL_SMALL_ARMIJO_PASS",
+      "Armijo_bound": 0.006800090076504309,
+      "comparison_scale": 1.6800111326852206e-10,
+      "actual_decrease": 0.00018260153232030254
+    },
+    {
+      "label": "k005_0",
+      "update_attempt": 5,
+      "trial_index": 0,
+      "fraction": 0.125,
+      "alpha": 0.0019051026455745176,
+      "initial_slope": -0.4341964073369046,
+      "objective": 0.007286085065733529,
+      "decision": "REJECT_ARMIJO_OR_VALUE_SCALE",
+      "status": "SMALL_STEP_REJECTED_ARMIJO_OR_VALUE_SCALE",
+      "Armijo_bound": 0.006617427075659471,
+      "comparison_scale": 1.7286085065733528e-10,
+      "actual_decrease": -0.0006685752712016265
+    },
+    {
+      "label": "k005_1",
+      "update_attempt": 5,
+      "trial_index": 1,
+      "fraction": 0.03125,
+      "alpha": 0.0004762756613936294,
+      "initial_slope": -0.4341964073369046,
+      "objective": 0.006747901738004476,
+      "decision": "REJECT_ARMIJO_OR_VALUE_SCALE",
+      "status": "SMALL_STEP_REJECTED_ARMIJO_OR_VALUE_SCALE",
+      "Armijo_bound": 0.006617489114813795,
+      "comparison_scale": 1.6747901738004477e-10,
+      "actual_decrease": -0.00013039194347257317
+    },
+    {
+      "label": "k005_2",
+      "update_attempt": 5,
+      "trial_index": 2,
+      "fraction": 0.0078125,
+      "alpha": 0.00011906891534840735,
+      "initial_slope": -0.4341964073369046,
+      "objective": 0.006627228199986897,
+      "decision": "REJECT_ARMIJO_OR_VALUE_SCALE",
+      "status": "SMALL_STEP_REJECTED_ARMIJO_OR_VALUE_SCALE",
+      "Armijo_bound": 0.006617504624602376,
+      "comparison_scale": 1.6627228199986897e-10,
+      "actual_decrease": -9.718405454993938e-06
+    }
+  ],
+  "envelope_statuses": {
+    "NUMERICAL_PILOT_ADMITTED": 10
+  },
+  "solver": {
+    "invocations": 30,
+    "status_counts": {
+      "0": 28,
+      "2": 2
+    },
+    "J_status_counts": {
+      "MET": 30
+    },
+    "nit": 4075,
+    "nfev": 8259,
+    "njev": 8259,
+    "nhev": 4077,
+    "value_gradient_calls_in_block": 8349,
+    "hessian_calls_in_block": 4077,
+    "independent_adjoint_calls_in_block": 60,
+    "binary64_same_array_calls_in_block": 30,
+    "wall_seconds": 16.14066853094846,
+    "CPU_seconds": 16.139190002000014
+  },
+  "selected_id": "update005",
+  "selected_unconverged": true,
+  "references": {
+    "provenance": {
+      "StageA": "artifacts/research_c_pr_aware_df/2026-10-27/run01/result.json",
+      "RC2_PR": "artifacts/research_c_common_convergence_export_repair/2026-11-01/run01/result.json"
+    },
+    "scope": "saved finite endpoints,not paired convergence comparison",
+    "old_PR_exact_lambda_Ha": 1.4424298855756243,
+    "new_exact_lambda_Ha": 0.5683498546862645,
+    "lambda_decrease_Ha": 0.8740800308893598,
+    "new_over_old_lambda": 0.39402251739914246,
+    "RC2_PR": {
+      "status": "ONE_OR_BOTH_UNQUALIFIED",
+      "DF_budget": {
+        "rc2": true,
+        "pr": true
+      },
+      "qualified": {
+        "rc2": false,
+        "pr": false
+      },
+      "sectors": {
+        "rc2": {
+          "rank": 8,
+          "actual_rank": 8,
+          "status": "CONVERGED",
+          "sector_error": 7.117616656640366e-10,
+          "numerical_guard": 3.1689528454574227e-09,
+          "evidence_kind": "numerical_pilot",
+          "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+          "rigorous_enclosure": null,
+          "representation": {
+            "label": "sector raw-CAR vs general-K",
+            "max_entry": 1.887379141862766e-15,
+            "frobenius": 4.715976330668177e-15,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        },
+        "pr": {
+          "rank": 8,
+          "actual_rank": 8,
+          "status": "CONVERGED",
+          "sector_error": 3.989173927332953e-09,
+          "numerical_guard": 3.2276640612719506e-09,
+          "evidence_kind": "numerical_pilot",
+          "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+          "rigorous_enclosure": null,
+          "representation": {
+            "label": "sector raw-CAR vs general-K",
+            "max_entry": 2.8033131371785203e-15,
+            "frobenius": 7.016950121135026e-15,
+            "tolerance": 1e-10,
+            "rtol": 0
+          }
+        }
+      }
+    }
+  },
+  "performance": {
+    "status": "PERFORMANCE_NATIVE_COMPLETE",
+    "feasibility": {
+      "status": "POTENTIALLY_FEASIBLE",
+      "reason": "PF/RTE and saved DF reserve fit; synthesis unknown"
+    },
+    "rounds": [
+      {
+        "m": 0,
+        "reference": {
+          "pf_operator_error": 6.315746023025175e-05,
+          "rte_corrected_operator_error": 5.062187778786345e-06,
+          "attenuation": 0.9999873820512677,
+          "raw_signal_parts": [
+            0.9766171234116036,
+            0.21492975708814924
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 1,
+        "reference": {
+          "pf_operator_error": 0.00012593274552745044,
+          "rte_corrected_operator_error": 1.0114774658514288e-05,
+          "attenuation": 0.999974764261748,
+          "raw_signal_parts": [
+            0.9075862037044715,
+            0.419808161794897
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 2,
+        "reference": {
+          "pf_operator_error": 0.00024885202102640613,
+          "rte_corrected_operator_error": 2.0153119633659165e-05,
+          "attenuation": 0.9999495291603384,
+          "raw_signal_parts": [
+            0.6474738189121494,
+            0.7620241886349508
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 3,
+        "reference": {
+          "pf_operator_error": 0.0004749462737232506,
+          "rte_corrected_operator_error": 3.97093875251657e-05,
+          "attenuation": 0.9998990608679825,
+          "raw_signal_parts": [
+            -0.16145853057958548,
+            0.9867814030826483
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 4,
+        "reference": {
+          "pf_operator_error": 0.0008041303063396812,
+          "rte_corrected_operator_error": 7.508089525782479e-05,
+          "attenuation": 0.9997981319246735,
+          "raw_signal_parts": [
+            -0.9476686468743538,
+            -0.3186486149423607
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 5,
+        "reference": {
+          "pf_operator_error": 0.0010832944683009532,
+          "rte_corrected_operator_error": 0.00012598031198075897,
+          "attenuation": 0.9995963046000668,
+          "raw_signal_parts": [
+            0.796538933533465,
+            0.6039467178872471
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 6,
+        "reference": {
+          "pf_operator_error": 0.001557628145690909,
+          "rte_corrected_operator_error": 0.00022134403379323308,
+          "attenuation": 0.9991927721701095,
+          "raw_signal_parts": [
+            0.269722627613238,
+            0.9621343151471943
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 7,
+        "reference": {
+          "pf_operator_error": 0.0030207525090005117,
+          "rte_corrected_operator_error": 0.0004029537352298197,
+          "attenuation": 0.9983861959569883,
+          "raw_signal_parts": [
+            -0.8529521611414854,
+            0.5190188446690344
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 8,
+        "reference": {
+          "pf_operator_error": 0.005939657638390663,
+          "rte_corrected_operator_error": 0.0007544104537675821,
+          "attenuation": 0.9967749962774658,
+          "raw_signal_parts": [
+            0.4581468318056707,
+            -0.8853965889437307
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 9,
+        "reference": {
+          "pf_operator_error": 0.011836658209622231,
+          "rte_corrected_operator_error": 0.0015033197236082325,
+          "attenuation": 0.993560393203942,
+          "raw_signal_parts": [
+            -0.5740286221107692,
+            -0.8112834212806622
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 10,
+        "reference": {
+          "pf_operator_error": 0.02365817899642589,
+          "rte_corrected_operator_error": 0.003005501034877236,
+          "attenuation": 0.9871622549435717,
+          "raw_signal_parts": [
+            -0.3286718842639304,
+            0.931399807631554
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 11,
+        "reference": {
+          "pf_operator_error": 0.04729185113884173,
+          "rte_corrected_operator_error": 0.006014202298691521,
+          "attenuation": 0.9744893175852771,
+          "raw_signal_parts": [
+            -0.7594805699385215,
+            -0.6122499252285462
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      },
+      {
+        "m": 12,
+        "reference": {
+          "pf_operator_error": 0.09454680459446346,
+          "rte_corrected_operator_error": 0.012063601599069072,
+          "attenuation": 0.9496294300878192,
+          "raw_signal_parts": [
+            0.20196076027349938,
+            0.9299838386799868
+          ]
+        },
+        "feasibility": {
+          "status": "POTENTIALLY_FEASIBLE",
+          "synthesis_error_unknown": true
+        }
+      }
+    ],
+    "lanes": {
+      "evidence": {
+        "qualification": {
+          "kind": "UNQUALIFIED",
+          "law_model": "actual_implemented_law",
+          "round_errors": [
+            {
+              "m": 0,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 1,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 2,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 3,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 4,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 5,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 6,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 7,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 8,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 9,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 10,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 11,
+              "synthesis": null,
+              "law": null
+            },
+            {
+              "m": 12,
+              "synthesis": null,
+              "law": null
+            }
+          ],
+          "reason": "No all-law synthesis or implemented-law raw signal bound;B2 sample residuals are not bounds",
+          "evidence_promoted": false,
+          "all_law_bound_qualified": false
+        },
+        "rounds": [
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 0,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 1,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 2,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 3,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 4,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 5,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 6,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 7,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 8,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 9,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 10,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 11,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "UNRESOLVED_SIGNAL_ERROR",
+            "m": 12,
+            "shots": null,
+            "reason": "Unknown synthesis/actual-law error cannot be assigned zero",
+            "qualification": "UNQUALIFIED",
+            "assumption_applied": false,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          }
+        ],
+        "energy": {
+          "status": "UNQUALIFIED_ROUNDS",
+          "same_accuracy": false
+        },
+        "total_shots": null,
+        "conditional_totals": {
+          "status": "NO_TOTAL_UNQUALIFIED_ACCURACY",
+          "totals": null
+        },
+        "weighted_SE": {
+          "status": "UNRESOLVED_ACCURACY",
+          "weighted_SE": null
+        }
+      },
+      "ideal_exact_native": {
+        "qualification": {
+          "kind": "ASSUMED_SCENARIO",
+          "law_model": "ideal_finite_RTE_law",
+          "round_errors": [
+            {
+              "m": 0,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 1,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 2,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 3,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 4,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 5,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 6,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 7,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 8,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 9,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 10,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 11,
+              "synthesis": 0.0,
+              "law": 0.0
+            },
+            {
+              "m": 12,
+              "synthesis": 0.0,
+              "law": 0.0
+            }
+          ],
+          "assumptions": [
+            "exact native synthesis",
+            "ideal finite-RTE IID law",
+            "finite-bit B2 sample mean is a proxy for ideal-law kernel cost"
+          ],
+          "evidence_promoted": false,
+          "all_law_bound_qualified": false
+        },
+        "rounds": [
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 0,
+            "shots": 512,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 6.821878721701697e-05,
+            "radius_lower": 0.9999191632640507,
+            "beta_deterministic": 6.821964806195289e-05,
+            "beta_total": 0.2618676074472114,
+            "epsilon_coordinate": 0.18299790774276106,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 1,
+            "shots": 512,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0001360440869263555,
+            "radius_lower": 0.9998387201748217,
+            "beta_deterministic": 0.00013604752060564706,
+            "beta_total": 0.26193543531975505,
+            "epsilon_coordinate": 0.1829831856356527,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 2,
+            "shots": 512,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0002689915637447429,
+            "radius_lower": 0.9996805375965937,
+            "beta_deterministic": 0.0002690051439044362,
+            "beta_total": 0.26206839294305384,
+            "epsilon_coordinate": 0.18295423621461893,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 512,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.000514603712352682,
+            "radius_lower": 0.9993844571556298,
+            "beta_deterministic": 0.0005146556839679317,
+            "beta_total": 0.2623140434831173,
+            "epsilon_coordinate": 0.1829000497331407,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 4,
+            "shots": 513,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.000879033716924434,
+            "radius_lower": 0.998919098207749,
+            "beta_deterministic": 0.000879211314871063,
+            "beta_total": 0.2626785991140205,
+            "epsilon_coordinate": 0.1828148831347393,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 5,
+            "shots": 513,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0012087866016156571,
+            "radius_lower": 0.9983875179984512,
+            "beta_deterministic": 0.0012092750750114937,
+            "beta_total": 0.2630086628741609,
+            "epsilon_coordinate": 0.18271759720436326,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 6,
+            "shots": 514,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0017775361436322614,
+            "radius_lower": 0.9974152360264772,
+            "beta_deterministic": 0.0017789731178168117,
+            "beta_total": 0.26357836091696624,
+            "epsilon_coordinate": 0.18253965725367122,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 7,
+            "shots": 517,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.003418181053251308,
+            "radius_lower": 0.994968014903737,
+            "beta_deterministic": 0.0034237129329119675,
+            "beta_total": 0.2652231007320614,
+            "epsilon_coordinate": 0.18209178470387083,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 8,
+            "shots": 522,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.006672479697642137,
+            "radius_lower": 0.9901025165798236,
+            "beta_deterministic": 0.006694118087309229,
+            "beta_total": 0.26849350588645865,
+            "epsilon_coordinate": 0.18120133670955935,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 9,
+            "shots": 532,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.013254073720672367,
+            "radius_lower": 0.9803063194832696,
+            "beta_deterministic": 0.01334037361757147,
+            "beta_total": 0.27513976141672086,
+            "epsilon_coordinate": 0.17940850821065032,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 10,
+            "shots": 554,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.026321378504795077,
+            "radius_lower": 0.9608408764387766,
+            "beta_deterministic": 0.026666840474554174,
+            "beta_total": 0.2884662282737036,
+            "epsilon_coordinate": 0.17584608488554854,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 11,
+            "shots": 601,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0519461796375061,
+            "radius_lower": 0.922543137947771,
+            "beta_deterministic": 0.053331330945395654,
+            "beta_total": 0.31513071874454507,
+            "epsilon_coordinate": 0.16883711228794795,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 12,
+            "shots": 710,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.10124037927499521,
+            "radius_lower": 0.848389050812824,
+            "beta_deterministic": 0.10681339785244368,
+            "beta_total": 0.36861278565159306,
+            "epsilon_coordinate": 0.15526597244503024,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          }
+        ],
+        "energy": {
+          "status": "CONDITIONAL_CA_PASS",
+          "same_accuracy": true,
+          "energy_error_bound_ha": 0.001278325784004255,
+          "statistical_failure_upper": 0.01,
+          "state_preparation": "ORACLE_COST_EXCLUDED",
+          "guarantee": "conditional_on_declared_deterministic_error_evidence",
+          "numerical_pilot": true
+        },
+        "total_shots": 14048,
+        "conditional_totals": {
+          "status": "CONDITIONAL_TOTAL_AVAILABLE",
+          "totals": {
+            "rz_count": 207919150188.0,
+            "rz_depth": 59067007298.0,
+            "cx_count": 77599490718.0,
+            "cx_depth": 43549878473.0,
+            "total_depth": 129972306754.0,
+            "circuit_size": 415342108618.0
+          },
+          "intervals": null,
+          "shots": 14048,
+          "executions": 14048,
+          "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+          "state_preparation_cost": null,
+          "classical_cost_samples_are_shot_multipliers": false,
+          "unconditional_total_resource_claim": false
+        },
+        "weighted_SE": {
+          "status": "DESCRIPTIVE_SHARED_CALIBRATION_ONLY",
+          "kernel_reuse_weight": 10487392,
+          "weighted_SE": {
+            "rz_count": 2249141484.1402245,
+            "rz_depth": 603930504.2455356,
+            "cx_count": 698751162.667634,
+            "cx_depth": 313541161.6263278,
+            "total_depth": 1303974975.3496904,
+            "circuit_size": 4547122940.652773
+          },
+          "samples": 32,
+          "independent_round_calibrations": 1,
+          "paired_with_old": false,
+          "guaranteed_CI": null,
+          "ideal_law_cost_transfer_qualified": false
+        },
+        "new_over_old_PR": {
+          "rz_count": 0.888096337507285,
+          "rz_depth": 0.8178716008154732,
+          "cx_count": 0.8362322302177968,
+          "cx_depth": 0.7645408064040874,
+          "total_depth": 0.8161903759529606,
+          "circuit_size": 0.8914200695777996
+        },
+        "comparison_kind": "conditional finite-cohort point estimates;no mean/support guarantee",
+        "new_over_strong_D_benchmark": {
+          "rz_count": 2.041907707602962,
+          "rz_depth": 1.1486961005433847,
+          "cx_count": 1.2003852197268519,
+          "cx_depth": 0.7513872490513744,
+          "total_depth": 1.1633133477605064,
+          "circuit_size": 2.14993164893338
+        }
+      },
+      "assumed_raw_signal_budget": {
+        "qualification": {
+          "kind": "ASSUMED_SCENARIO",
+          "law_model": "actual_implemented_law",
+          "round_errors": [
+            {
+              "m": 0,
+              "synthesis": 0.0009999873820512677,
+              "law": 0.0009999873820512677
+            },
+            {
+              "m": 1,
+              "synthesis": 0.0009999747642617481,
+              "law": 0.0009999747642617481
+            },
+            {
+              "m": 2,
+              "synthesis": 0.0009999495291603384,
+              "law": 0.0009999495291603384
+            },
+            {
+              "m": 3,
+              "synthesis": 0.0009998990608679826,
+              "law": 0.0009998990608679826
+            },
+            {
+              "m": 4,
+              "synthesis": 0.0009997981319246735,
+              "law": 0.0009997981319246735
+            },
+            {
+              "m": 5,
+              "synthesis": 0.0009995963046000667,
+              "law": 0.0009995963046000667
+            },
+            {
+              "m": 6,
+              "synthesis": 0.0009991927721701094,
+              "law": 0.0009991927721701094
+            },
+            {
+              "m": 7,
+              "synthesis": 0.0009983861959569882,
+              "law": 0.0009983861959569882
+            },
+            {
+              "m": 8,
+              "synthesis": 0.0009967749962774659,
+              "law": 0.0009967749962774659
+            },
+            {
+              "m": 9,
+              "synthesis": 0.000993560393203942,
+              "law": 0.000993560393203942
+            },
+            {
+              "m": 10,
+              "synthesis": 0.0009871622549435717,
+              "law": 0.0009871622549435717
+            },
+            {
+              "m": 11,
+              "synthesis": 0.0009744893175852771,
+              "law": 0.0009744893175852771
+            },
+            {
+              "m": 12,
+              "synthesis": 0.0009496294300878192,
+              "law": 0.0009496294300878192
+            }
+          ],
+          "assumptions": [
+            "all-law synthesis raw-signal error <= .001*A_m",
+            "implemented-vs-ideal raw-signal law error <= .001*A_m",
+            "B2 finite-bit sample mean is a descriptive cost proxy for fresh independent occurrences"
+          ],
+          "evidence_promoted": false,
+          "all_law_bound_qualified": false
+        },
+        "rounds": [
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 0,
+            "shots": 514,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0020681935513195524,
+            "radius_lower": 0.9979191884999481,
+            "beta_deterministic": 0.0020682211224913407,
+            "beta_total": 0.26386760892164074,
+            "epsilon_coordinate": 0.1826318869574664,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 1,
+            "shots": 514,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0021359936154498518,
+            "radius_lower": 0.9978387706462982,
+            "beta_deterministic": 0.002136049144546284,
+            "beta_total": 0.2639354369436957,
+            "epsilon_coordinate": 0.18261716946878956,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 2,
+            "shots": 514,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0022688906220654195,
+            "radius_lower": 0.997680638538273,
+            "beta_deterministic": 0.002269007087616327,
+            "beta_total": 0.26406839488676576,
+            "epsilon_coordinate": 0.18258822928444393,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 514,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.002514401834088647,
+            "radius_lower": 0.9973846590338938,
+            "beta_deterministic": 0.002514658311490576,
+            "beta_total": 0.26431404611063997,
+            "epsilon_coordinate": 0.1825340612756428,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 4,
+            "shots": 515,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.002878629980773781,
+            "radius_lower": 0.9969195019438997,
+            "beta_deterministic": 0.002879215179653937,
+            "beta_total": 0.26467860297880336,
+            "epsilon_coordinate": 0.18244893161979867,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 5,
+            "shots": 515,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.0032079792108157903,
+            "radius_lower": 0.9963883253892509,
+            "beta_deterministic": 0.0032092802892652204,
+            "beta_total": 0.2650086680884146,
+            "epsilon_coordinate": 0.18235171956335058,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 6,
+            "shots": 516,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.00377592168797248,
+            "radius_lower": 0.995416850482137,
+            "beta_deterministic": 0.0037789811738929836,
+            "beta_total": 0.2655783689730424,
+            "epsilon_coordinate": 0.1821739273157792,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 7,
+            "shots": 519,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.005414953445165285,
+            "radius_lower": 0.992971242511823,
+            "beta_deterministic": 0.005423732835738961,
+            "beta_total": 0.26722312063488834,
+            "epsilon_coordinate": 0.18172634999336287,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 8,
+            "shots": 524,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.008666029690197068,
+            "radius_lower": 0.9881089665872688,
+            "beta_deterministic": 0.00869417762204382,
+            "beta_total": 0.27049356542119324,
+            "epsilon_coordinate": 0.1808364917390647,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 9,
+            "shots": 534,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.01524119450708025,
+            "radius_lower": 0.9783191986968617,
+            "beta_deterministic": 0.015340579617900403,
+            "beta_total": 0.2771399674170498,
+            "epsilon_coordinate": 0.1790448398665436,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 10,
+            "shots": 556,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.028295703014682223,
+            "radius_lower": 0.9588665519288895,
+            "beta_deterministic": 0.028667606527749776,
+            "beta_total": 0.2904669943268992,
+            "epsilon_coordinate": 0.17548475842258207,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 11,
+            "shots": 603,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.05389515827267665,
+            "radius_lower": 0.9205941593126005,
+            "beta_deterministic": 0.0553342869697959,
+            "beta_total": 0.31713367476894533,
+            "epsilon_coordinate": 0.1684804244419952,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          },
+          {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 12,
+            "shots": 714,
+            "target_id": "integrated:938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+            "raw_signal_error": 0.10313963813517085,
+            "radius_lower": 0.8464897919526484,
+            "beta_deterministic": 0.10882507975584708,
+            "beta_total": 0.3706244675549965,
+            "epsilon_coordinate": 0.15491838394943677,
+            "alpha_axis": 0.0003846153846153846,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "actual_implemented_law",
+            "quantum_shots_drawn": 0,
+            "qualification": "ASSUMED_SCENARIO",
+            "assumption_applied": true,
+            "actual_CA_achieved": null,
+            "rigorous_shots": null
+          }
+        ],
+        "energy": {
+          "status": "CONDITIONAL_CA_PASS",
+          "same_accuracy": true,
+          "energy_error_bound_ha": 0.001278325784004255,
+          "statistical_failure_upper": 0.01,
+          "state_preparation": "ORACLE_COST_EXCLUDED",
+          "guarantee": "conditional_on_declared_deterministic_error_evidence",
+          "numerical_pilot": true
+        },
+        "total_shots": 14104,
+        "conditional_totals": {
+          "status": "CONDITIONAL_TOTAL_AVAILABLE",
+          "totals": {
+            "rz_count": 208893540201.5,
+            "rz_depth": 59343818245.25,
+            "cx_count": 77963152128.75,
+            "cx_depth": 43753970150.625,
+            "total_depth": 130581407497.25,
+            "circuit_size": 417288563302.25
+          },
+          "intervals": null,
+          "shots": 14104,
+          "executions": 14104,
+          "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+          "state_preparation_cost": null,
+          "classical_cost_samples_are_shot_multipliers": false,
+          "unconditional_total_resource_claim": false
+        },
+        "weighted_SE": {
+          "status": "DESCRIPTIVE_SHARED_CALIBRATION_ONLY",
+          "kernel_reuse_weight": 10536540,
+          "weighted_SE": {
+            "rz_count": 2259681836.371029,
+            "rz_depth": 606760757.6033447,
+            "cx_count": 702025782.5295395,
+            "cx_depth": 315010537.52184224,
+            "total_depth": 1310085909.5160196,
+            "circuit_size": 4568432528.230619
+          },
+          "samples": 32,
+          "independent_round_calibrations": 1,
+          "paired_with_old": false,
+          "guaranteed_CI": null,
+          "ideal_law_cost_transfer_qualified": false
+        },
+        "new_over_old_PR": {
+          "rz_count": 0.8883206526085895,
+          "rz_depth": 0.8180781784303038,
+          "cx_count": 0.8364434455472912,
+          "cx_depth": 0.7647339139315198,
+          "total_depth": 0.8163965289541398,
+          "circuit_size": 0.8916452241903041
+        },
+        "comparison_kind": "conditional finite-cohort point estimates;no mean/support guarantee",
+        "new_over_strong_D_benchmark": {
+          "rz_count": 2.05147688137545,
+          "rz_depth": 1.1540793368074058,
+          "cx_count": 1.206010691987175,
+          "cx_depth": 0.7549085420970028,
+          "total_depth": 1.168765086230415,
+          "circuit_size": 2.1600070649387737
+        }
+      }
+    },
+    "calibration": {
+      "status": "FINITE_BIT_POINT_ESTIMATE_ONLY",
+      "samples": 32,
+      "sample_mean": {
+        "rz_count": 19825.625,
+        "rz_depth": 5632.1875,
+        "cx_count": 7399.3125,
+        "cx_depth": 4152.59375,
+        "total_depth": 12393.1875,
+        "circuit_size": 39603.9375
+      },
+      "sample_mean_standard_error": {
+        "rz_count": 214.46146803134891,
+        "rz_depth": 57.586338361866865,
+        "cx_count": 66.62773382244451,
+        "cx_depth": 29.896962145243336,
+        "total_depth": 124.33739249469177,
+        "circuit_size": 433.5799539726152
+      },
+      "ideal_law_expectation": null,
+      "cost_support": null,
+      "lower": null,
+      "upper": null,
+      "simultaneous_interval_qualified": false,
+      "guaranteed_resource_superiority": null,
+      "sample_variance": {
+        "rz_count": 1471799.0806451612,
+        "rz_depth": 106117.96370967742,
+        "cx_count": 142056.15725806452,
+        "cx_depth": 28602.507056451614,
+        "total_depth": 494713.18951612903,
+        "circuit_size": 6015730.447580645
+      },
+      "observed_min": {
+        "rz_count": 17668,
+        "rz_depth": 5093,
+        "cx_count": 6754,
+        "cx_depth": 3878,
+        "total_depth": 11227,
+        "circuit_size": 35320
+      },
+      "observed_max": {
+        "rz_count": 22066,
+        "rz_depth": 6314,
+        "cx_count": 8114,
+        "cx_depth": 4502,
+        "total_depth": 13870,
+        "circuit_size": 44214
+      },
+      "uncertainty": "descriptive SE only; rare trajectories can be missed; observed extrema are not support bounds",
+      "finite_bit_law_error": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null
+    },
+    "actual_CA_achieved": null,
+    "whole_law_synthesis": null,
+    "implemented_law_error": null,
+    "cost_support": null,
+    "calibration_samples": 32,
+    "QPY_files": 128
+  },
+  "resources": {
+    "wall_seconds": 1360.0893757930025,
+    "CPU_seconds": 20.675034497,
+    "parent_peak_RSS_KiB": 452988,
+    "child_peak_RSS_KiB": 3415152
+  },
+  "C_resources": {
+    "wall_seconds": 1339.6200579591095,
+    "CPU_seconds": 15875.304788084,
+    "peak_RSS_KiB": 3415152
+  },
+  "new_ffsim_fits": 0,
+  "outer_BFGS_invocations": 0,
+  "RC2_continuation": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "post_STOP_scientific_evaluations": 0,
+  "native_validation": {
+    "raw": {
+      "reports": 32,
+      "component_comparisons": 64,
+      "maximum_max_entry": 5.728750807065808e-14,
+      "PASS": true,
+      "numerical_pilot_only": true
+    },
+    "compiled": {
+      "reports": 32,
+      "component_comparisons": 96,
+      "maximum_max_entry": 4.287896155607988e-12,
+      "PASS": true,
+      "numerical_pilot_only": true
+    },
+    "adjoint": {
+      "reports": 32,
+      "component_comparisons": 128,
+      "maximum_max_entry": 4.292285521790214e-12,
+      "PASS": true,
+      "numerical_pilot_only": true
+    },
+    "XY": {
+      "reports": 32,
+      "maximum_raw_complex_error": 1.6627883293318834e-14,
+      "maximum_compiled_complex_error": 1.206424885450065e-13,
+      "maximum_norm_error": 1.1257661469699087e-13,
+      "PASS": true
+    }
+  }
+}

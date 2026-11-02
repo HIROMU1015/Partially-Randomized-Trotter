@@ -1,0 +1,51 @@
+{
+  "attempts": [
+    {
+      "arguments": [
+        "--issue-grant",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/artifacts/non_df_h4_c_production/2026-10-23/C_execution_contract.json",
+        "--seal",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/artifacts/non_df_h4_c_production/2026-10-23/SOURCE.json",
+        "--namespace",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/artifacts/non_df_h4_c_evidence/NEXT_EXPLICIT_APPROVAL/run01"
+      ],
+      "exit_code": 1,
+      "expected": "C_EXECUTION_NOT_AUTHORIZED",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 64, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 28, in main\n    print(json.dumps(ctl.issue_grant(args.issue_grant,args.seal,args.namespace)));return\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 101, in issue_grant\n    c=validate_contract(read(contract_path),active=True);seal=read(seal_path);verify_seal(seal)\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 75, in validate_contract\n    require(all(c[k] is True for k in ('execution_authorized','grant_valid','dispatch_enabled')),'C_EXECUTION_NOT_AUTHORIZED')\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 32, in require\n    raise ValueError(reason)\nValueError: C_EXECUTION_NOT_AUTHORIZED\n"
+    },
+    {
+      "arguments": [
+        "--execute",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/artifacts/non_df_h4_c_production/2026-10-23/negative_authority_fixture"
+      ],
+      "exit_code": 1,
+      "expected": "C_EXECUTION_NOT_AUTHORIZED",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 64, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 29, in main\n    if args.execute:print(json.dumps(ctl.launch(args.execute)));return\n                                     ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 221, in launch\n    ns=Path(namespace).resolve();c,seal=authorize(ns)\n                                        ^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 115, in authorize\n    ns=Path(namespace).resolve();c=validate_contract(read(ns/'contract.json'),active=True)\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 75, in validate_contract\n    require(all(c[k] is True for k in ('execution_authorized','grant_valid','dispatch_enabled')),'C_EXECUTION_NOT_AUTHORIZED')\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 32, in require\n    raise ValueError(reason)\nValueError: C_EXECUTION_NOT_AUTHORIZED\n"
+    },
+    {
+      "arguments": [
+        "--worker",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/artifacts/non_df_h4_c_production/2026-10-23/negative_authority_fixture",
+        "--representation",
+        "pauli_jw"
+      ],
+      "exit_code": 1,
+      "expected": "C_EXECUTION_NOT_AUTHORIZED",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 64, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 36, in main\n    c,seal=ctl.worker_authorize(ns,args.representation)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 253, in worker_authorize\n    c=validate_contract(read(ns/'contract.json'),active=True);grant=read(ns/'grant.json');seal=read(ns/'seal.json')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 75, in validate_contract\n    require(all(c[k] is True for k in ('execution_authorized','grant_valid','dispatch_enabled')),'C_EXECUTION_NOT_AUTHORIZED')\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 32, in require\n    raise ValueError(reason)\nValueError: C_EXECUTION_NOT_AUTHORIZED\n"
+    },
+    {
+      "arguments": [
+        "--bridge",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/artifacts/non_df_h4_c_production/2026-10-23/negative_authority_fixture",
+        "--representation",
+        "df_native"
+      ],
+      "exit_code": 1,
+      "expected": "C_EXECUTION_NOT_AUTHORIZED",
+      "stderr": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 64, in <module>\n    if __name__=='__main__':main()\n                            ^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/scripts/run_h4_numerical_evidence.py\", line 34, in main\n    model=bridge.export(ns,args.representation,ctl)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_legacy_export.py\", line 14, in export\n    c,seal=control.worker_authorize(namespace,representation,bridge=True)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 253, in worker_authorize\n    c=validate_contract(read(ns/'contract.json'),active=True);grant=read(ns/'grant.json');seal=read(ns/'seal.json')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 75, in validate_contract\n    require(all(c[k] is True for k in ('execution_authorized','grant_valid','dispatch_enabled')),'C_EXECUTION_NOT_AUTHORIZED')\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-production-20261023/src/trotterlib/h4_certificate_control.py\", line 32, in require\n    raise ValueError(reason)\nValueError: C_EXECUTION_NOT_AUTHORIZED\n"
+    }
+  ],
+  "real_H4_C_calls": 0,
+  "science_grants_issued": 0,
+  "status": "PASS_DISABLED_ACTUAL_CLI"
+}

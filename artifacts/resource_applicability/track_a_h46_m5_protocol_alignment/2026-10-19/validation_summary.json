@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "python": "3.12.3",
+  "author_checks": true,
+  "independent_reviewer": false,
+  "checks": [
+    {
+      "command": "python3 -B scripts/check_h46_m5_protocol_alignment.py",
+      "exit_code": 0,
+      "scope": "plan metadata; 124 proposed rows; 18 gaps; 23 fixed Git objects"
+    },
+    {
+      "command": "python3 -B -m unittest discover -s tests -p test_h46_m5_protocol_alignment.py -v",
+      "exit_code": 0,
+      "artificial_tests": 12
+    },
+    {
+      "check": "local Markdown links",
+      "status": "PASS"
+    },
+    {
+      "check": "git diff --check",
+      "status": "PASS"
+    },
+    {
+      "check": "immutable old m5 files plus existing manifest entries",
+      "status": "PASS",
+      "files": 40
+    }
+  ],
+  "old_120_science_or_artificial_tests_rerun": false,
+  "scientific_modules_imported": false,
+  "real_numerical_values_recomputed": false
+}

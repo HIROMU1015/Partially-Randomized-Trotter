@@ -1,0 +1,138 @@
+{
+  "schema_version": "track_a_ax2b_technical_pilot_draft_v1",
+  "status": "DRAFT_NOT_AUTHORIZATION",
+  "science_authorized": false,
+  "ax2b_authorized": false,
+  "next_stage_authorized": false,
+  "mandatory_stop": true,
+  "task_selection": "structural/model-independent before reference results",
+  "H4_tasks": [
+    {
+      "id": "H4_LEGACY_STATE_ACTION",
+      "scope": "legacy rank12 saved snapshot",
+      "checks": [
+        "dense versus action",
+        "Qiskit/OpenFermion ordering",
+        "scalar phase",
+        "primitive sector"
+      ]
+    },
+    {
+      "id": "H4_FINITE_AND_B0",
+      "scope": "same legacy target",
+      "checks": [
+        "K2/K4/K6",
+        "corrected/raw",
+        "signed discard/PF decomposition",
+        "empty tail"
+      ]
+    },
+    {
+      "id": "H4_STRONG_BASELINES",
+      "scope": "same legacy target",
+      "checks": [
+        "global S4",
+        "negative time",
+        "ordinary control versus directional IR",
+        "B2 backbone fairness"
+      ]
+    }
+  ],
+  "H6_tasks": [
+    {
+      "id": "H6_B1_2nd_q1",
+      "method": "B1",
+      "order": "2nd",
+      "prefix_fraction": 1.0,
+      "q": 1,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B1_2nd_q8",
+      "method": "B1",
+      "order": "2nd",
+      "prefix_fraction": 1.0,
+      "q": 8,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B1_4th_q1",
+      "method": "B1",
+      "order": "4th",
+      "prefix_fraction": 1.0,
+      "q": 1,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B1_4th_q8",
+      "method": "B1",
+      "order": "4th",
+      "prefix_fraction": 1.0,
+      "q": 8,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B2_short",
+      "method": "B2",
+      "order": "2nd",
+      "prefix_fraction": 0.5,
+      "q": 1,
+      "R": 1,
+      "K": 2
+    },
+    {
+      "id": "H6_B3_long",
+      "method": "B3",
+      "order": "2nd",
+      "prefix_fraction": 0.0,
+      "q": 8,
+      "R": 64,
+      "K": 6
+    }
+  ],
+  "H8_tasks": [],
+  "proposed_target": {
+    "model": "linear H-chain",
+    "basis": "STO-3G",
+    "geometry_angstrom": 1.0,
+    "T": 0.8,
+    "epsilon_min": 0.001,
+    "H6_df_rank": null,
+    "H6_df_tol": null,
+    "state_identity": null
+  },
+  "proposed_caps": {
+    "cpu_cores": 1,
+    "blas_threads": 1,
+    "processes": 1,
+    "gpu": false,
+    "address_space_bytes": 8589934592,
+    "wall_seconds_per_H4_task": 900,
+    "wall_seconds_per_H6_task": 1800,
+    "total_wall_seconds": 14400,
+    "output_bytes": 536870912,
+    "total_wrappers": 64,
+    "cost_trajectories_per_random_cell": 2,
+    "tail_matvecs_per_signal_path": 448,
+    "tail_matvecs_corrected_and_raw_total": 896
+  },
+  "assigned_resources": null,
+  "unresolved_before_launch": [
+    "snapshot hash and creation allowance",
+    "DF tolerance semantics and actual rank",
+    "primitive sector certification",
+    "H4 callback/wrapper lowering",
+    "reference numerical allowance",
+    "state and seed identities",
+    "actual CPU/RAM allocation",
+    "per-circuit gate and matvec caps",
+    "source/plan freeze",
+    "separate explicit launch authorization"
+  ],
+  "information_scope": "all exposed H6 science values are development; no H8 truth access",
+  "cap_scope": "technical profiling only; not an adequate main-campaign search bound"
+}

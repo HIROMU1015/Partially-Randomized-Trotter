@@ -1,0 +1,381 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:track-b:sp1:result:v1",
+  "title": "SP-1 result with mandatory STOP",
+  "type": "object",
+  "description": "Shape contract. Runtime additionally checks inventory/duplicates/shot cap via wrapper_result.py; no JSON Schema package is imported. Incomplete results retain partial rows or a bounded failure receipt.",
+  "required": [
+    "source_commit",
+    "authorization_commit",
+    "authorization_sha256",
+    "contract_sha256",
+    "stored_input_sha256",
+    "tool_identity_sha256",
+    "status",
+    "runs",
+    "retries",
+    "mandatory_STOP",
+    "next_stage_authorized",
+    "explicit_execution_instruction",
+    "resources"
+  ],
+  "properties": {
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "authorization_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "status": {
+      "enum": [
+        "SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW",
+        "INCONCLUSIVE_MANDATORY_STOP_NO_RETRY"
+      ]
+    },
+    "runs": {
+      "const": 1
+    },
+    "retries": {
+      "const": 0
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "next_stage_authorized": {
+      "const": false
+    },
+    "actual_compiled_wrapper_T_claim": {
+      "const": false
+    },
+    "synthesis_calls": {
+      "const": 0
+    },
+    "sampling_calls": {
+      "const": 0
+    },
+    "GPU_query_use": {
+      "const": 0
+    },
+    "rows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "wrapper_id",
+          "template",
+          "n",
+          "mask",
+          "paths",
+          "axes",
+          "eligible",
+          "G_T_add",
+          "G_T_add_over_NONE",
+          "classification",
+          "duplicate_of_mask",
+          "independent_comparison",
+          "count_as_independent_positive",
+          "placement_evidence_scope",
+          "diagnostic_point_only"
+        ],
+        "properties": {
+          "template": {
+            "enum": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "n": {
+            "enum": [
+              8,
+              16,
+              32,
+              64
+            ]
+          },
+          "mask": {
+            "enum": [
+              "NONE",
+              "D",
+              "R",
+              "DR"
+            ]
+          },
+          "paths": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "path_id",
+                "probability",
+                "outer_weight",
+                "native_spec_ids_in_order",
+                "native_rotations",
+                "selected_native_rotations",
+                "Gamma",
+                "abs_outer_weight_times_Gamma",
+                "conditional_weight_second_moment",
+                "conditional_expected_C_T_add",
+                "conditional_E_W2_C_T_add",
+                "conditional_synthesis_bias_upper"
+              ],
+              "properties": {
+                "probability": {
+                  "type": "string"
+                },
+                "outer_weight": {
+                  "type": "string"
+                },
+                "Gamma": {
+                  "type": "object",
+                  "required": [
+                    "lo",
+                    "hi"
+                  ],
+                  "properties": {
+                    "lo": {
+                      "type": "string"
+                    },
+                    "hi": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "native_spec_ids_in_order": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{64}$"
+                  }
+                }
+              }
+            }
+          },
+          "axes": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "object",
+              "required": [
+                "axis",
+                "status",
+                "shots_sufficient",
+                "margin_lower",
+                "alpha_exact",
+                "epsilon_axis_lower",
+                "second_moment",
+                "range_upper",
+                "expected_C_T_add",
+                "joint_E_W2_C_T_add",
+                "synthesis_bias_upper",
+                "coefficient_numeric_bias_upper"
+              ],
+              "properties": {
+                "axis": {
+                  "enum": [
+                    "Re",
+                    "Im"
+                  ]
+                },
+                "status": {
+                  "enum": [
+                    "ELIGIBLE",
+                    "SHOT_CAP_EXCEEDED",
+                    "BIAS_BUDGET_EXHAUSTED"
+                  ]
+                },
+                "shots_sufficient": {
+                  "type": [
+                    "integer",
+                    "null"
+                  ]
+                },
+                "second_moment": {
+                  "type": "object",
+                  "required": [
+                    "lo",
+                    "hi"
+                  ],
+                  "properties": {
+                    "lo": {
+                      "type": "string"
+                    },
+                    "hi": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "expected_C_T_add": {
+                  "type": "object",
+                  "required": [
+                    "lo",
+                    "hi"
+                  ],
+                  "properties": {
+                    "lo": {
+                      "type": "string"
+                    },
+                    "hi": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "joint_E_W2_C_T_add": {
+                  "type": "object",
+                  "required": [
+                    "lo",
+                    "hi"
+                  ],
+                  "properties": {
+                    "lo": {
+                      "type": "string"
+                    },
+                    "hi": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "G_T_add": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "lo",
+                  "hi"
+                ],
+                "properties": {
+                  "lo": {
+                    "type": "string"
+                  },
+                  "hi": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "G_T_add_over_NONE": {
+            "anyOf": [
+              {
+                "type": "object",
+                "required": [
+                  "lo",
+                  "hi"
+                ],
+                "properties": {
+                  "lo": {
+                    "type": "string"
+                  },
+                  "hi": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "classification": {
+            "enum": [
+              "BASELINE",
+              "MATERIAL_GAIN",
+              "MATERIAL_LOSS",
+              "NO_MATERIAL_SEPARATION",
+              "NUMERIC_INCONCLUSIVE",
+              "REFERENCE_INELIGIBLE",
+              "ZERO_COST_REFERENCE_NO_POSITIVE_WITNESS",
+              "SHOT_CAP_EXCEEDED",
+              "BIAS_BUDGET_EXHAUSTED"
+            ]
+          },
+          "count_as_independent_positive": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "resources": {
+      "type": "object",
+      "required": [
+        "wall_seconds",
+        "cpu_seconds",
+        "peak_RSS_KiB",
+        "processes"
+      ]
+    },
+    "cost_metric": {
+      "const": "fusion-normalized additive synthesized-primitive T cost"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "SP1_RESOURCE_MAP_COMPLETE_AWAITING_REVIEW"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "runtime_identity",
+          "static_plan",
+          "fusion_audit",
+          "cost_metric",
+          "rows",
+          "native_spec_library",
+          "stored_sequence_library",
+          "summary",
+          "actual_compiled_wrapper_T_claim",
+          "synthesis_calls",
+          "sampling_calls",
+          "GPU_query_use"
+        ],
+        "properties": {
+          "rows": {
+            "minItems": 48,
+            "maxItems": 48
+          },
+          "summary": {
+            "type": "object",
+            "required": [
+              "mask_rows",
+              "axis_rows",
+              "research_GO",
+              "automatic_next_stage"
+            ],
+            "properties": {
+              "mask_rows": {
+                "const": 48
+              },
+              "axis_rows": {
+                "const": 96
+              },
+              "research_GO": {
+                "type": "null"
+              },
+              "automatic_next_stage": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

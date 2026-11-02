@@ -1,0 +1,158 @@
+{
+  "schema_version": "h4-contract-review-decisions-v2",
+  "status": "H4_GEOMETRY_CONTRACT_V2_PREPARED_AWAITING_REVIEW_SCIENCE_NOT_AUTHORIZED",
+  "all_values_are_review_proposals": true,
+  "decisions": {
+    "D1_SCF_DF": {
+      "status": "REVIEW_PROPOSAL_NOT_APPROVED",
+      "method": "RHF",
+      "charge": 0,
+      "multiplicity": 1,
+      "spin": 0,
+      "basis": "STO-3G",
+      "unit": "Angstrom",
+      "symmetry": false,
+      "initial_guess": "minao",
+      "dm0": null,
+      "conv_tol_Ha": 1e-09,
+      "max_cycle": 50,
+      "conv_tol_grad": 3.1622776601683795e-05,
+      "tight_gradient_norm": true,
+      "check_convergence": null,
+      "conv_check": true,
+      "ordinary_DIIS": {
+        "enabled": true,
+        "class": "pyscf.scf.diis.CDIIS",
+        "space": 8,
+        "start_cycle_zero_based": 1,
+        "damp": 0,
+        "rollback": 0,
+        "file": null
+      },
+      "damp": 0,
+      "level_shift": 0,
+      "direct_scf": true,
+      "direct_scf_tol": 1e-13,
+      "pyscf_advisory_max_memory_MB": 4000,
+      "checkpoint": null,
+      "convergence_acceptance": "mf.converged AND a main cycle has abs(delta_E)<1e-9 and raw orbital-gradient L2<sqrt(1e-9); after normal extra confirmation, final raw gradient<sqrt(1e-9), finite energies/integrals/MOs. Built-in relaxed extra-cycle OR is not sufficient by itself.",
+      "guess_fallback": "minao internal atom fallback, unavailable projection/basis, missing source verification => STOP; no alternative guess after results",
+      "rescue": {
+        "Newton": false,
+        "restart": false,
+        "different_guess": false,
+        "change_DIIS_after_failure": false,
+        "cycle_extension": false
+      },
+      "coordinates": "H_i=(0,0,(i-1.5)*d) Angstrom, i=0..3; decimal d string converted once to binary64; preserve ordered atom IDs",
+      "integrals": "real nonrelativistic all-electron RHF; AO hcore=T+V_nuc, overlap S, Coulomb ERI; C.T@hcore@C; ao2mo.kernel then restore(1), transpose(0,2,3,1) to OpenFermion (ps|qr); include nuclear repulsion; all 4 spatial orbitals, no frozen core/active-space reduction",
+      "MO_order_phase": "ascending canonical orbital energies; PySCF generalized scipy.linalg.eigh(h,S), first maximum-absolute real AO component positive; no localization or geometry tracking. MO degeneracy with relative gap<=1e-12 => STOP, no eigenspace rotation",
+      "spin_orbitals": "2p=alpha,2p+1=beta; OpenFermion spinorb_from_spatial incl EQ_TOLERANCE=1e-8 zeroing, InteractionOperator two-body factor 1/2; no new screening",
+      "DF": {
+        "package": "openfermion",
+        "version": "1.6.1",
+        "spin_basis": true,
+        "final_rank": 12,
+        "truncation_threshold": 1e-08,
+        "tolerance_overridden_by_final_rank": true,
+        "source_tensor_symmetry_absolute_L1": 1e-08,
+        "rank_acceptance": "returned lambda/G count exactly12, finite arrays; actual rank means returned fragment count, not number of eigenvalues above a numerical threshold; retain small/zero lambda unchanged; no padding, rank/threshold/geometry rescue",
+        "rank_shortfall": "STOP"
+      },
+      "untested": "proposed explicit controls are source-audited, not molecularly exercised; existing run_pyscf saves data and hides controls, so later separate source must expose controls and disable implicit checkpoint/save",
+      "cart": false,
+      "incore_anyway": false
+    },
+    "D2_ORDER_SOLVER_GATES": {
+      "status": "REVIEW_PROPOSAL_NOT_APPROVED",
+      "fragment_order": "preserve OpenFermion generated order exactly; S0/M1 generation_ranked_fragments enumerates it; no generic Frobenius reranking",
+      "generation_weight": "abs(lambda)*(sum(abs(G_spin)))**2",
+      "weight_tie": "retain installed numpy.argsort(weights)[::-1] emitted order and full returned permutation; do not claim stable equal-weight tie sorting. Exact equal nonzero-significant weights crossing any planned prefix 3/4/5/6/9/12 => STOP before science signal/cost; null ties and other ties retain emitted index, frozen once with no rerun",
+      "DF_sign": "first maximum-absolute C-flattened real spatial eigenvector element positive; same sign applied to G; record raw eigenpair index and returned permutation; G squared unchanged, new bytes not claimed identical to legacy",
+      "DF_degeneracy": "using full 16 eigenpairs, relative gap |lambda_i-lambda_j|/max(1,max|lambda|)<=1e-12, at least one pair retained and at least one |lambda|/max(1,max|lambda|)>1e-12 => STOP. Null eigenspaces retain the pinned solver single invocation basis/permutation, sign-canonicalized and frozen; never rotate/rerun/substitute, and retain exact small coefficients. No cross-host basis reproducibility claimed",
+      "degeneracy_relative_threshold": 1e-12,
+      "sector": {
+        "electrons": 4,
+        "Nalpha": 2,
+        "Nbeta": 2,
+        "dimension": 36,
+        "basis": "OpenFermion JW spin-orbital bit p at integer bit (7-p); choose alpha2/beta2 occupations, ascending 8-bit integer indices; Qiskit state conversion is explicit 8-bit reversal, qubit p little-endian; no reordered sector after results"
+      },
+      "solver": {
+        "name": "numpy.linalg.eigh",
+        "UPLO": "L",
+        "dtype": "complex128",
+        "matrix": "dense 36x36 sector DF H; check original Hermiticity then use (H+H.conj().T)/2; ascending eigenvalues; choose index0 only"
+      },
+      "phase": "first maximum-absolute component in ordered sector basis; multiply by exp(-i*angle(pivot)) and ensure positive real pivot; apply same phase to full state; no selection among degenerate states",
+      "gates": {
+        "state_norm_absolute_max": 1e-12,
+        "reference_residual_L2_Ha_max": 1e-09,
+        "relative_Hermiticity_max": 1e-12,
+        "imaginary_energy_Ha_max": 1e-11,
+        "minimum_sector_gap_Ha_STOP_if_le": 1e-10
+      },
+      "norm_definitions": "abs(norm2(psi)-1); residual against original H and Rayleigh real E; Hermiticity spectral-norm(H-H†)/max(1,spectral-norm(H)); abs(Im(psi†Hpsi)); gap=E1-E0. Outside-sector amplitude and full/sector consistency absolute max<=1e-12",
+      "gate_failure": "STOP; no state/prefix/rank substitution, threshold relaxation, retry or resume"
+    },
+    "D3_MASTER_SEED": {
+      "status": "REVIEW_PROPOSAL_NOT_APPROVED",
+      "proposed_master_seed": 20261006,
+      "actual_master_seed": null,
+      "seed_rules": {
+        "encoding": "UTF-8 sorted-key compact JSON; integer literals; floats as canonical float.hex tagged real64_hex; complex as [real_hex,imag_hex]; signed zero retained; NaN/infinity/symbolic rejected",
+        "trajectory": "SHA256(domain=h4-trajectory-v1,master_seed,geometry,H,DF,state,template,source,compiler,environment,wrapper_semantics,index); first8 bytes unsigned big-endian; no axis/epsilon",
+        "step_occurrence": "future sampler domain h4-step-occurrence-v1, parent trajectory seed, outer_step=0..q-1, short_step=0..r-1, occurrence=0..K-1, draw_kind; independent derived RNG stream per occurrence; no axis/epsilon",
+        "duplicate_seed": "STOP; no replacement seed, extension or implicit retry",
+        "wrapper_key": "SHA256(domain=h4-wrapper-v1,all identity fields including axis,trajectory_seed,index); baseline seed/index both null",
+        "sample_weight": "random each 1/32; baseline 1; reuse never deduplicates logical samples"
+      },
+      "actual_trajectory_seeds_created": 0,
+      "rule": "derive science seeds only after actual source/input identities fixed and separate science launch; no placeholder hash seed fixation; artificial tests reuse seed7 records only"
+    },
+    "D4_MEMORY_WALL_OUTPUT": {
+      "status": "REVIEW_PROPOSAL_NOT_APPROVED",
+      "unit_bytes_per_GiB": 1073741824,
+      "worker_address_space_budget_bytes": 8589934592,
+      "driver_address_space_budget_bytes": 8589934592,
+      "worker_RSS_stop_bytes": 8589934592,
+      "driver_RSS_stop_bytes": 8589934592,
+      "fixed_host_headroom_bytes": 17179869184,
+      "worker_max": 12,
+      "worker_min": 1,
+      "owned_address_space_sum_at_max_bytes": 111669149696,
+      "required_available_at_max_bytes": 128849018880,
+      "required_available_formula": "driver_budget + w * worker_budget + fixed_host_headroom",
+      "selection": "largest integer w in [1,min(requested,12,allowed_cpu_count)] satisfying effective_available_bytes>=required_available(w); reduce before launch only; if w=1 cannot fit STOP",
+      "admission_observation": "fresh<=5s host /proc/meminfo MemAvailable (kB*1024); effective available=min(host,finite current cgroup memory.max-memory.current). Missing/malformed/negative/stale values STOP. /proc/self/status Cpus_allowed_list intersects explicitly permitted CPU set; permission count null now, cannot infer permission from nproc",
+      "RSS_vs_AS": "future own-process RLIMIT_AS hard/soft8GiB for each worker and driver, not host/cgroup change; RSS separately from own /proc/<pid>/status VmRSS and tree, monitor every<=5s; sum budget104GiB is neither RSS guarantee nor reserved physical memory; advisory PySCF max_memory4000MB is separate",
+      "pressure_stop": "host/effective available<16GiB, own RSS>per-role budget or total admitted own budget, allocation/AS limit failure, memory PSI full avg10>0, or cgroup OOM event delta>0 => stop own run, preserve audit and STOP for review. No automatic worker restart/retry/resume or host swap/cgroup/job change",
+      "wall_stop_seconds": 259200,
+      "wall_clock": "time.monotonic from first stage launch; total generation+map<=72h, persisted consumed seconds, downtime not reset; wall is stop ceiling not ETA",
+      "output_cap_bytes": 10737418240,
+      "output_accounting": "all own-run snapshots/logs/records/manifests/temp files included; reserve bytes before write, stop if next write exceeds10GiB; symlink escapes rejected; no output eviction to free budget or overwritten evidence",
+      "proposed_run_id": "track-a-h4-geometry-v2-20261006-run01",
+      "proposed_absolute_project_root": "/home/AbeHiromu/projects/partially-randomized-trotter",
+      "proposed_absolute_output_root": "/home/AbeHiromu/projects/partially-randomized-trotter/artifacts/resource_applicability/track_a_h4_geometry_execution/track-a-h4-geometry-v2-20261006-run01",
+      "run_registration": "future exclusive fixed run ID, no existing output overwrite; generation closes at frozen inputs STOP, separate map launch references same frozen inputs with different authorization; no automatic resume",
+      "output_directory_created": false,
+      "registry_created": false,
+      "resource_reservation_claimed": false,
+      "shared_environment_or_other_jobs_changed": false
+    }
+  },
+  "pending_reviews": [
+    "D1 controls/final SCF gate",
+    "D2 weight ties/degeneracy STOP thresholds/solver gates",
+    "D3 seed proposal",
+    "D4 headroom/admission/stop budgets/run roots"
+  ],
+  "implementation_gates_deferred": [
+    "explicit SCF controls and no implicit save",
+    "full DF permutation and eigenspace gate",
+    "source synthetic serializer/operator tests",
+    "owned memory/output/atomic accounting"
+  ],
+  "contract_final_approval": false,
+  "next_stage_authorized": false
+}

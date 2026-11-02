@@ -1,0 +1,45 @@
+{
+  "schema_version": "h4-host-pressure-grace-contract-draft-v1",
+  "source_commit": "736bdc15ccfec6b2a715e1723850a481f0f2ff6b",
+  "current_policy": {
+    "profile": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+    "host_stop_percent": 1.0,
+    "host_stop_behavior": "IMMEDIATE"
+  },
+  "proposed_policy": {
+    "host_warning_percent": 1.0,
+    "host_warning_continuous_seconds": 30.0,
+    "host_immediate_stop_percent": 5.0,
+    "host_only_min_available_bytes": 163477192704,
+    "nonroot_stop_percent": 0.0,
+    "observation_max_age_seconds": 5,
+    "observation_interval_max_seconds": 5,
+    "reset_warning_below_percent": 1.0,
+    "fresh_launch_host_required_below_percent": 1.0
+  },
+  "unchanged": {
+    "workers": 4,
+    "worker_AS_RSS": 34359738368,
+    "driver_AS_RSS": 8589934592,
+    "observer_AS": 268435456,
+    "observer_RSS": 67108864,
+    "headroom": 17179869184,
+    "monitor_max_seconds": 5,
+    "output_bytes": 18253611008,
+    "actual_invocations": 74805,
+    "wall_seconds": 259200,
+    "carry": {
+      "actual_invocations": 0,
+      "charged_bytes": 0,
+      "wall_seconds": 0.0
+    },
+    "next_stage_authorized": false
+  },
+  "approved": false,
+  "runtime_authorization": false,
+  "production_wiring_present": false,
+  "allowed_cpus": [],
+  "sealed": false,
+  "absolute_launch_command": null,
+  "required_authorization": "Adopt host-only PSI grace30s at1% with immediate5% stop, keep all cgroup/OOM/own-role/freshness gates, wire approved policy and fresh rebind then restart signal/compile map."
+}

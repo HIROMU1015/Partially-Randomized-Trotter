@@ -1,0 +1,185 @@
+{
+  "B_diagnostic_SOURCE": "2bd212288e8530e519c4a8135257df37f7608662",
+  "B_input_sha256": "c2931f6604405a7324bf04c096c2d2fe1cc950acc396500c3b75f606b3951180",
+  "B_outputs_sha256": "a304575b69617430fe937fe90aacbd7669af1212a68377c7cef208e1a25a7985",
+  "C_artificial_test_sha256": "eb6b74eb76f11081f3f0fc223b00f100936b9c5a91a05a8bb4ab2e965de26843",
+  "C_design_spec_sha256": "35d0a8617fbe6b192762819f55e7c299d93dc83c38a4cfc4b68630520d2cfb57",
+  "C_production_implementation_SOURCE": null,
+  "C_production_runner_implemented": false,
+  "acceptance": {
+    "certificate_scope": "Fixed encoded model and explicitly stated IID-uniform statistical assumptions, not exact chemistry or PCG64 independence proof",
+    "full_state_operator_law_and_probability_defects_must_be_enclosed": true,
+    "model_inputs_and_original_preparation_hash_match": true,
+    "nominal_model_not_silently_replaced": true,
+    "normalization": "Stored log_B_upper must enclose validated fixed-law log_B; otherwise report that bound unverified. Implementation-law closure is a separate gate.",
+    "numerical_component_budget": "Four declared proof buckets share total target; unused budget transferable only with an explicit proved sum, without changing total",
+    "old_status": "Do not overwrite original UNDETERMINED/N/G null; certificate is a separate version and does not authorize accounting",
+    "total_axis_error_upper": "<= B axis C_design_target_only (half of necessary budget); rigorous endpoint comparison"
+  },
+  "activation_requirements": [
+    "Implement full production assembly/controller exactly under this frozen design",
+    "Pass artificial/regression/authority failure gates",
+    "Commit and seal the actual implementation and both runtime manifests",
+    "Obtain explicit C real-data evidence-generation approval",
+    "Create new C namespace and nonrefundable C grant; never reuse B or original science grant"
+  ],
+  "algorithms": {
+    "bias": "Complex interval difference plus all reconstruction, state and law defects; distance to saved point bias",
+    "error_propagation": "Validated outward balls; preserve nonunitary polynomial norms and temporal factor order",
+    "implemented_law": "2 additional PR actions using sum_k pi_k (-1)^(k/2) R_k M^k and frozen angles/basis/CDF",
+    "input_conversion": "Exact binary integer ratios into real/complex balls; preserve old values",
+    "nominal_law": "4 ordered fixed S2 state actions with finite P5 tail for PR, never exact tail exponential replacement",
+    "normalization": "K=4 positive finite weights via rational powers/factorials + outward sqrt/log; B_K^(q*r)",
+    "probability": "Two probability-table batches reconstruct NumPy1.26.4 frozen CDF and bound the 53-bit mapping; zero RNG draws",
+    "reconstruction": "Two representation batches from frozen snapshot/Pauli; full component registry and preparation hash validation",
+    "reference": "2 full-H ball matrix exponentials per precision tier, reused for PF and PR"
+  },
+  "axes": [
+    "cosine",
+    "sine"
+  ],
+  "backend": {
+    "FLINT": "3.6.0",
+    "disallowed": [
+      "approx numerical routines",
+      "midpoint/radius-dropping acceptance",
+      "Shared mutable precision context across threads",
+      "Changed basis/eigenvectors accepted without original preparation hash or defect proof"
+    ],
+    "frozen_preparation_runtime": "Original SOURCE environment: numpy1.26.4/scipy1.14.1/qiskit1.3.0; read-only or own equivalent private environment with matching hashes",
+    "private_runtime_manifest": "C_artificial_checks_final.json:runtime_files",
+    "production_runtime_must_be_resealed": true,
+    "python_flint": "0.9.0",
+    "wheel": {
+      "archive_info": {
+        "hash": "sha256=376b88cacd30612479e839ffdba887599d3f9c8c0e214852bf80bb2b194e4d76",
+        "hashes": {
+          "sha256": "376b88cacd30612479e839ffdba887599d3f9c8c0e214852bf80bb2b194e4d76"
+        }
+      },
+      "url": "https://files.pythonhosted.org/packages/db/3f/5f57004f9f43ac6508f874cc97123f11b27b6811b5bb0d320c43f600f0cb/python_flint-0.9.0-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl"
+    }
+  },
+  "cases": [
+    "pauli_jw_PF",
+    "pauli_jw_PR",
+    "df_native_PF",
+    "df_native_PR"
+  ],
+  "consumed": false,
+  "dispatch_enabled": false,
+  "epsilon_sig": [
+    0.05,
+    0.01,
+    0.005,
+    0.001,
+    0.0005
+  ],
+  "execution_audit": {
+    "automatic_retry": false,
+    "durable_per_worker_exit_record_when_each_worker_finishes": true,
+    "final_batch_native_exit_and_reap_required": true,
+    "fresh_processes": true,
+    "one_shot": true,
+    "partial_results_preserved": true,
+    "source_input_runtime_hash_checks": true,
+    "stop_on_actual_OOM_or_input_corruption": true,
+    "temporary_PSI_or_unrelated_worktree_changes_do_not_stop_workers": true
+  },
+  "execution_authorized": false,
+  "failure_states": [
+    "MISSING_FROZEN_PREPARATION",
+    "FROZEN_PREPARATION_HASH_MISMATCH",
+    "STATE_NORMALIZATION_UNRESOLVED",
+    "OPERATOR_OR_LAW_CLOSURE_UNRESOLVED",
+    "PROBABILITY_MAPPING_UNRESOLVED",
+    "PRECISION_TIERS_EXHAUSTED_UNDETERMINED",
+    "NONFINITE_ENCLOSURE",
+    "SOURCE_OR_INPUT_CHANGED",
+    "NATIVE_FAILURE_NO_RETRY"
+  ],
+  "fixed_model": {
+    "DF_PR_prefix": 1,
+    "DF_one_body_retained": true,
+    "DF_policy": "tol-only1e-8/rank10",
+    "K": 4,
+    "Pauli_PR_prefix": 27,
+    "T": 0.8,
+    "adjacent_distance_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "delta": 0.1,
+    "molecule": "linear H4",
+    "n_system_qubits": 8,
+    "ordinary_Taylor_degree": 5,
+    "q": 8,
+    "r": 4,
+    "state": "Original saved non-DF state; no new solve or silent normalization"
+  },
+  "grant_id": null,
+  "grant_valid": false,
+  "historical_scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+  "input_files_sha256": {
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/SOURCE.json": "35550ccc759a78adb36d23b63f01d75873a5b7b753558f4db8751e1e2fc3b2ed",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/contract.json": "8d92a59d1fbaaf32a1aff3deb777c32363198d6fc08da247bb67d166f0db8b7a",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/grant.json": "eecfd8c9f37e047b72a36746ded48987b2e89a10d2839b42591bb4bbe5051492",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/pauli.json": "49e2f0b86cba9933eee20a03a05934d950caafb5044401bca50d3aa79a518175",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PF/result.json": "b59846b4c8c32ccbb50d08f3d89ce344f570bb42bf0a6fb3430a55546fdf9aa3",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json": "19446f2800109af37960f8d00809a81142837d732010a36e7d537108ffdd80c9",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/result.json": "277feb92bf99f982536f8a456b3bf73a192c70797b4c0dbadf4ed7c143af949e",
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json": "75508723fa1c31abaaff5a4629975495142cb85bab8435f723d223867cc42f3b"
+  },
+  "launch_command": null,
+  "mandatory_STOP": true,
+  "old_grants_reused": false,
+  "original_native_completion_verified": false,
+  "original_supervisor_cause": "UNKNOWN",
+  "output_namespace": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-precision-bc-20261023/artifacts/non_df_h4_precision_bc/next_C_UNAUTHORIZED",
+  "per_tier_max": {
+    "PR_normalization_enclosures": 2,
+    "dense_matrix_exponential_requests": 13,
+    "implemented_PR_law_mean_enclosures": 2,
+    "nominal_law_mean_enclosures": 4,
+    "reference_signal_enclosures": 2
+  },
+  "precision_advancement": "Only after a finite valid enclosure is too wide; never after an exception, hash/model failure, or actual resource failure",
+  "precision_schedule_bits": [
+    64,
+    96,
+    128
+  ],
+  "push": false,
+  "resource_policy": "Follow shared AGENTS/2026-10-17 section8.4; use sufficient independent process parallelism and private caches; no arbitrary low CPU/RAM caps or shared settings changes",
+  "schema": "H4_numerical_enclosure_C_approval_candidate_v1",
+  "status": "DESIGN_COMPLETE_AWAITING_IMPLEMENTATION_SOURCE_AND_EXECUTION_APPROVAL",
+  "tests_required": [
+    "Exact binary conversion and outward rounding",
+    "Toy diagonal/nilpotent/noncommuting exp and rigorous remainder",
+    "K4 degree5 finite law and complete toy enumeration",
+    "Finite-grid CDF endpoint counts",
+    "State norm defect and illegal sector projection",
+    "Model/preparation hash and input tamper refusal",
+    "Failure partial/no automatic retry",
+    "Separate C authority; B/original science grant rejection",
+    "Native exit/reap/STOP audit for new C only"
+  ],
+  "total_call_budget_max": {
+    "FCI": 0,
+    "G_accounting": 0,
+    "MC_sampling": 0,
+    "PR_normalization_enclosures": 6,
+    "RNG_replay": 0,
+    "SCF": 0,
+    "circuit_compilation": 0,
+    "dense_matrix_exponential_requests": 39,
+    "implemented_PR_law_mean_enclosures": 6,
+    "new_molecular_DF_generation": 0,
+    "new_state_optimization": 0,
+    "nominal_law_mean_enclosures": 12,
+    "operator_preparation_reconstruction_batches": 2,
+    "probability_mapping_batches": 2,
+    "reference_signal_enclosures": 6,
+    "shot_calculation": 0
+  }
+}

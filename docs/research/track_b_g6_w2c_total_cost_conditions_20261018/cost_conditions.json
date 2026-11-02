@@ -1,0 +1,179 @@
+{
+  "schema": "g6_w2c_nonexecutable_cost_condition_index_v1",
+  "technical_status": "W2C_CONDITIONAL_WITH_EVIDENCE_GAPS",
+  "base_commit": "ed26d1c85cf7ad80625f7abbc662b70abd690a97",
+  "arms": [
+    "ordinary",
+    "partial_return_tail",
+    "closed_P3_tail",
+    "full_return"
+  ],
+  "common_domain": {
+    "p": "same ordered positive explicit rationals summing to 1",
+    "x": "same rational 0<x<=1",
+    "m": "same odd m>=5",
+    "operator": "same finite P_m(-i sigma x R)",
+    "precision": "same eta/rho/H/K_root/outward roots/angle/provider error",
+    "targets": "same state/readout/epsilon_axis; original G7 16 axes only",
+    "N": "W2b certified all-trial N per axis; ceil unchanged"
+  },
+  "layers": {
+    "A": "Frozen G7 standard F2 bit model",
+    "B": "F3 audited Full nonidentity; canonical counterpart unimplemented, cost UNKNOWN not 0"
+  },
+  "conditions": [
+    {
+      "id": "CL1",
+      "relation": "Delta_a + N_F*mu_F - N_a*mu_a <= 0",
+      "type": "necessary_and_sufficient_for_same_unit_layer_cost",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "CL2",
+      "relation": "(N_a-N_F)*mu_a >= N_F*(mu_F-mu_a)+Delta_a",
+      "type": "equivalent_to_CL1",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "CL3",
+      "relation": "mu_F <= (N_a*mu_a-Delta_a)/N_F",
+      "assumption": "N_F>0",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "Q1",
+      "relation": "N_F*sum(pi_F*c_F,d) <= N_a*sum(pi_a*c_a,d)",
+      "type": "necessary_and_sufficient_per_coordinate",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "Q2",
+      "relation": "N_F*z_F*nu_F,d <= N_a*z_a*nu_a,d",
+      "assumption": "z>0 for conditional nu; otherwise use Q1",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "Q3",
+      "relation": "nu_F,d/nu_a,d <= N_a/(N_F*z_F)",
+      "assumption": "canonical z_a=1; z_F>0; nu_a,d>0",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "AFF",
+      "relation": "Delta_t + sum(Delta_A_k*v_k) <= 0",
+      "scope": "same literal additive acquired-price model; nonnegative common prices",
+      "parameters_evaluated": false
+    },
+    {
+      "id": "ENC",
+      "relation": "C_F_upper <= C_a_lower",
+      "type": "sufficient_nonworse_only; strict < for better; upper-vs-upper insufficient",
+      "parameters_evaluated": false
+    }
+  ],
+  "cost_classifications": [
+    "CERTIFIED_FULL_BETTER",
+    "CERTIFIED_FULL_NONWORSE",
+    "CERTIFIED_TIE",
+    "CERTIFIED_COMPARATOR_BETTER",
+    "CONDITIONAL_BREAK_EVEN",
+    "INSUFFICIENT_CERTIFIED_INFORMATION",
+    "NOT_COMPARABLE_UNDER_CURRENT_CONTRACT"
+  ],
+  "relations_closed_without_new_numeric_evaluation": [
+    {
+      "comparison": "F_vs_O",
+      "coordinates": [
+        "expected accepted logical executions",
+        "expected total logical CQ calls",
+        "helper H/RZ counts",
+        "skeleton CX count",
+        "outer phase Z count",
+        "word-only label forward CQ counts"
+      ],
+      "status": "CERTIFIED_FULL_NONWORSE",
+      "conditions": [
+        "same actual digital order and label law",
+        "nonnegative child/angle-independent structural event price",
+        "W2b N_F<=N_O",
+        "registered no-fault conditional query-model"
+      ],
+      "native_total_cost_claim": false,
+      "pathwise_measured_count_claim": false
+    },
+    {
+      "comparison": "all_four_arms",
+      "coordinates": [
+        "explicit outer plus helper workspace only"
+      ],
+      "status": "CERTIFIED_TIE",
+      "provider_workspace_included": false
+    }
+  ],
+  "historical_quote": {
+    "reference": "G7R",
+    "scope": "Registered P5 development case, old literal helper/exact-query/acquired-RZ affine expected T model",
+    "status": "CERTIFIED_FULL_BETTER",
+    "new_ranking_or_numeric_evaluation": false,
+    "general_CPU_or_physical_native_claim": false
+  },
+  "general_actual_classical_or_native_rank": "INSUFFICIENT_CERTIFIED_INFORMATION",
+  "F3_finished_implementation_comparison": "NOT_COMPARABLE_UNDER_CURRENT_CONTRACT",
+  "partial_or_closed3_general_relation": "CONDITIONAL_BREAK_EVEN",
+  "P5Closed": {
+    "main_G7_comparison": "NOT_COMPARABLE_UNDER_CURRENT_CONTRACT",
+    "reason": "Different G9 bias/confidence/log/axes policy",
+    "formal_P5_plus_tail_is_implemented_sampler": false,
+    "new_common_budget_created": false
+  },
+  "missing_evidence_groups": [
+    "B1",
+    "B2",
+    "B3",
+    "C1",
+    "C2"
+  ],
+  "preserved_states": {
+    "track_B_D_plus_E_20261015": "UNCHANGED_ADOPTED_LIMITED_RESULTS_RETAINED_CURRENT_NUMERICAL_EXPLORATION_CONCLUDED",
+    "track_B_current_exploration_STOP": "UNCHANGED",
+    "next_concrete_algorithm_experiment_direction": "NOT_ADOPTED",
+    "track_IV_new_theme_selection": "ON_HOLD_FOR_NOW_UNCHANGED",
+    "A2": "NOT_ADOPTED",
+    "A2_current_practical_route": "NO_FURTHER_INVESTMENT_AFTER_PHASE_B",
+    "A1": "CLOSED",
+    "K1_F": "UNAPPROVED_NOT_EXECUTED",
+    "N1": "STOP",
+    "N2": "HOLD",
+    "N3": "CLOSED",
+    "THRIFT_current_template": "CLOSED",
+    "other_STOP_CLOSED_PAUSED_HOLD_and_tracks_I_II_III": "UNCHANGED"
+  },
+  "counts_this_task": {
+    "new_scientific_calculations": 0,
+    "saved_scientific_value_reanalysis": 0,
+    "scientific_SOURCE_changes": 0,
+    "scientific_SOURCE_imports": 0,
+    "scientific_SOURCE_calls_or_execution": 0,
+    "new_scientific_SOURCE_implementation": 0,
+    "new_tests_created_or_executed": 0,
+    "new_numeric_N_evaluations": 0,
+    "new_acceptance_or_event_expectation_evaluations": 0,
+    "new_resource_rankings": 0,
+    "event_enumeration_or_Monte_Carlo": 0,
+    "new_nontrivial_proofs_or_complexity_bounds": 0,
+    "new_scientific_contracts": 0,
+    "new_contract_adoptions": 0,
+    "execution_authorization_grant_marker_claim": 0,
+    "circuit_build_compile_synthesis_backend": 0,
+    "DF_PR_RTE_adapter": 0,
+    "independent_scientific_reviews": 0,
+    "paper_writing": 0,
+    "W2c_B_C_execution": 0
+  },
+  "scientific_or_research_contract_adopted": false,
+  "contract_grants_execution": false,
+  "new_nontrivial_proof_required_for_this_condition_closure": false,
+  "scalar_weighting_adopted": false,
+  "automatic_W2c_B_C_or_next_work": false,
+  "mandatory_STOP": true
+}

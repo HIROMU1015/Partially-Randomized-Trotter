@@ -1,0 +1,468 @@
+{
+  "status": "H4_SAVED_CA_RPE_SERIAL_RESOURCES_COMPLETE",
+  "scope": "C1_H4_CDF8_XDF8_SAVED_CA_RPE_SERIAL_RESOURCES_V1",
+  "SOURCE_commit": "18045333a1438740160d7b9e44e78139ad59f2b5",
+  "SOURCE_tree": "dd53c67efa51027ed1084f88134fdd55e6dba5ea",
+  "branch": "codex/research-c-c1-h4-ca-resources-execution-20261026",
+  "contract": "docs/research/research_c_c1_h4_ca_resources_contract_unapproved_20261026.json",
+  "contract_sha256": "7540af39daec4e1584f2805a8338c4ab91d2042923d83830dcaef183f5fb4edb",
+  "source_manifest_sha256": "fc03dae7a2db264d4aa4a92abf0ff0e6c812dd6b25879afd8cddfd56d299d521",
+  "conditions": {
+    "atoms": 4,
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "system_dimension": 256,
+    "controlled_dimension": 512,
+    "CDF_rank": 8,
+    "XDF_rank": 8,
+    "XDF_order": "original saved OpenFermion1.6.1 eigh prefix8",
+    "number_representation": true,
+    "original_g_kappa": true,
+    "scalar": "nuclear once",
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "PF": "all-frame ordered symmetric S2",
+    "substeps": [
+      1,
+      4
+    ],
+    "base_time": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "route": "existing adjacent identical-basis sharing and fsum angles",
+    "serial_policy": "separate head/kernel/readout with all-wire fences; no long-round compile",
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "candidate_failure": 0.01,
+    "axis_failure": 0.0003846153846153846,
+    "PR_split": null
+  },
+  "accuracy_target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+  "scientific_units": 119,
+  "maximum_logical_units": 119,
+  "scientific_COMPLETE": 119,
+  "scientific_FAIL": 0,
+  "inflight_calls": 0,
+  "call_counts": {
+    "saved_bundle_load": 1,
+    "evidence_attachment": 4,
+    "round_accuracy": 52,
+    "energy_assessment": 4,
+    "round_serial_cost": 52,
+    "cost_aggregation": 4,
+    "cost_comparison": 2
+  },
+  "candidate_status_counts": {
+    "NUMERICAL_PILOT_CA_PASS": 4
+  },
+  "round_status_counts": {
+    "CONDITIONAL_ROUND_PASS": 52
+  },
+  "rounds": 52,
+  "axis_shot_records": 104,
+  "axis_cost_records": 104,
+  "candidates": {
+    "CDF:s1": {
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "arm": "CDF",
+      "s": 1,
+      "DF_norm_plus_guard_Ha": 7.666215916301914e-05,
+      "round_status_counts": {
+        "CONDITIONAL_ROUND_PASS": 13
+      },
+      "numerical_energy_assessment": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0013549794824010532,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 113219727909.0,
+          "rz_depth": 54183488163.0,
+          "cx_count": 68160609352.0,
+          "cx_depth": 59414499760.0,
+          "total_depth": 118146374763.0,
+          "circuit_size": 217204369161.0
+        },
+        "intervals": {
+          "rz_count": [
+            113219727909.0,
+            113219727909.0
+          ],
+          "rz_depth": [
+            54183488163.0,
+            54183488163.0
+          ],
+          "cx_count": [
+            68160609352.0,
+            68160609352.0
+          ],
+          "cx_depth": [
+            59414499760.0,
+            59414499760.0
+          ],
+          "total_depth": [
+            118146374763.0,
+            118146374763.0
+          ],
+          "circuit_size": [
+            217204369161.0,
+            217204369161.0
+          ]
+        },
+        "shots": 13606,
+        "executions": 13606,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13606
+      },
+      "shots_per_axis_first": 511,
+      "shots_per_axis_last": 590,
+      "minimum_fixed_statistical_margin": 2.1669614452823893e-06,
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "guaranteed_total_resource_superiority": false
+    },
+    "CDF:s4": {
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "arm": "CDF",
+      "s": 4,
+      "DF_norm_plus_guard_Ha": 7.666215916301914e-05,
+      "round_status_counts": {
+        "CONDITIONAL_ROUND_PASS": 13
+      },
+      "numerical_energy_assessment": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0013549794824010532,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 413834761607.0,
+          "rz_depth": 198048553871.0,
+          "cx_count": 249137131232.0,
+          "cx_depth": 217168804160.0,
+          "total_depth": 431842276925.0,
+          "circuit_size": 793913930693.0
+        },
+        "intervals": {
+          "rz_count": [
+            413834761607.0,
+            413834761607.0
+          ],
+          "rz_depth": [
+            198048553871.0,
+            198048553871.0
+          ],
+          "cx_count": [
+            249137131232.0,
+            249137131232.0
+          ],
+          "cx_depth": [
+            217168804160.0,
+            217168804160.0
+          ],
+          "total_depth": [
+            431842276925.0,
+            431842276925.0
+          ],
+          "circuit_size": [
+            793913930693.0,
+            793913930693.0
+          ]
+        },
+        "shots": 13314,
+        "executions": 13314,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13314
+      },
+      "shots_per_axis_first": 511,
+      "shots_per_axis_last": 516,
+      "minimum_fixed_statistical_margin": 2.6301409625228978e-06,
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "guaranteed_total_resource_superiority": false
+    },
+    "XDF:s1": {
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "arm": "XDF",
+      "s": 1,
+      "DF_norm_plus_guard_Ha": 9.533901455091894e-05,
+      "round_status_counts": {
+        "CONDITIONAL_ROUND_PASS": 13
+      },
+      "numerical_energy_assessment": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.001373656337788953,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 128445454592.0,
+          "rz_depth": 55315213190.0,
+          "cx_count": 71444533608.0,
+          "cx_depth": 59580098424.0,
+          "total_depth": 120790723934.0,
+          "circuit_size": 246316079720.0
+        },
+        "intervals": {
+          "rz_count": [
+            128445454592.0,
+            128445454592.0
+          ],
+          "rz_depth": [
+            55315213190.0,
+            55315213190.0
+          ],
+          "cx_count": [
+            71444533608.0,
+            71444533608.0
+          ],
+          "cx_depth": [
+            59580098424.0,
+            59580098424.0
+          ],
+          "total_depth": [
+            120790723934.0,
+            120790723934.0
+          ],
+          "circuit_size": [
+            246316079720.0,
+            246316079720.0
+          ]
+        },
+        "shots": 13600,
+        "executions": 13600,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13600
+      },
+      "shots_per_axis_first": 511,
+      "shots_per_axis_last": 589,
+      "minimum_fixed_statistical_margin": 2.185144104938086e-06,
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "guaranteed_total_resource_superiority": false
+    },
+    "XDF:s4": {
+      "status": "NUMERICAL_PILOT_CA_PASS",
+      "arm": "XDF",
+      "s": 4,
+      "DF_norm_plus_guard_Ha": 9.533901455091894e-05,
+      "round_status_counts": {
+        "CONDITIONAL_ROUND_PASS": 13
+      },
+      "numerical_energy_assessment": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.001373656337788953,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 470217718215.0,
+          "rz_depth": 202499839919.0,
+          "cx_count": 261546777184.0,
+          "cx_depth": 218113016352.0,
+          "total_depth": 442194889173.0,
+          "circuit_size": 901722729901.0
+        },
+        "intervals": {
+          "rz_count": [
+            470217718215.0,
+            470217718215.0
+          ],
+          "rz_depth": [
+            202499839919.0,
+            202499839919.0
+          ],
+          "cx_count": [
+            261546777184.0,
+            261546777184.0
+          ],
+          "cx_depth": [
+            218113016352.0,
+            218113016352.0
+          ],
+          "total_depth": [
+            442194889173.0,
+            442194889173.0
+          ],
+          "circuit_size": [
+            901722729901.0,
+            901722729901.0
+          ]
+        },
+        "shots": 13314,
+        "executions": 13314,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13314
+      },
+      "shots_per_axis_first": 511,
+      "shots_per_axis_last": 516,
+      "minimum_fixed_statistical_margin": 2.6791828496852688e-06,
+      "evidence_level": "B_NUMERICAL_OPERATOR_UPPER_BOUND",
+      "rigorous_enclosure": null,
+      "CA_achieved": null,
+      "guaranteed_actual_shots": null,
+      "guaranteed_total_resource_superiority": false
+    }
+  },
+  "comparisons": {
+    "1": {
+      "s": 1,
+      "comparison": {
+        "verdict": "CDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+        "unconditional_total_resource_claim": false
+      },
+      "qualification": "conditional numerical pilot only",
+      "rigorous_same_accuracy": null,
+      "guaranteed_total_resource_superiority": false
+    },
+    "4": {
+      "s": 4,
+      "comparison": {
+        "verdict": "CDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+        "unconditional_total_resource_claim": false
+      },
+      "qualification": "conditional numerical pilot only",
+      "rigorous_same_accuracy": null,
+      "guaranteed_total_resource_superiority": false
+    }
+  },
+  "comparison_display_ratios_from_saved_totals": [
+    {
+      "s": 1,
+      "verdict": "CDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+      "CDF_total_RZ": 113219727909,
+      "XDF_total_RZ": 128445454592,
+      "RZ_ratio_CDF_over_XDF": 0.8814615376514202,
+      "CDF_RZ_reduction_percent": 11.85384623485798,
+      "qualification": "conditional numerical pilot only",
+      "guaranteed_total_resource_superiority": false
+    },
+    {
+      "s": 4,
+      "verdict": "CDF_LOWER_CONDITIONAL_INTERROGATION_COST",
+      "CDF_total_RZ": 413834761607,
+      "XDF_total_RZ": 470217718215,
+      "RZ_ratio_CDF_over_XDF": 0.8800918076374575,
+      "CDF_RZ_reduction_percent": 11.990819236254247,
+      "qualification": "conditional numerical pilot only",
+      "guaranteed_total_resource_superiority": false
+    }
+  ],
+  "resources": {
+    "wall_seconds": 1.484674159437418,
+    "CPU_seconds": 9.775655109,
+    "peak_RSS_KiB": 349844
+  },
+  "resource_plan": {
+    "workers": 4,
+    "available_affinity_cpus": 32,
+    "available_memory_bytes": 56372772864,
+    "quota_cpus": null,
+    "estimated_bytes_per_candidate": 4096,
+    "BLAS_threads_per_worker": null,
+    "policy": "Independent scalar candidates; no BLAS kernels or shared settings changed"
+  },
+  "source_files": 24,
+  "saved_inputs": 12,
+  "protected_files": 36,
+  "old_protected_unchanged": 62,
+  "old_raw_unchanged": 109,
+  "artificial_tests": {
+    "passed": 21,
+    "failed": 0,
+    "seconds": 1.91
+  },
+  "new_fit": 0,
+  "optimizer": 0,
+  "rank_search": 0,
+  "DF_recomputation": 0,
+  "PF_recomputation": 0,
+  "synthesis_recomputation": 0,
+  "state_action": 0,
+  "build_compile": 0,
+  "quantum_shots_drawn": 0,
+  "retry": 0,
+  "resume": 0,
+  "CA_achieved": null,
+  "rigorous_enclosure": null,
+  "guaranteed_actual_shots": null,
+  "guaranteed_total_resource_superiority": false,
+  "qualification": "Conditional numerical common-CA pilot; level B saved errors,ideal IID Born,own-DF oracle,preparation excluded,explicit serial native model; not strict CA or unconditional resource superiority",
+  "mandatory_stop": true
+}

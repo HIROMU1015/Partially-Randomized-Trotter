@@ -1,0 +1,43 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 3.2253305073827505,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 695000,
+      "pid": 695000,
+      "ppid": 694871,
+      "reaped": true,
+      "sid": 695000,
+      "start_ticks": 446202305,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [],
+  "reason": {
+    "reason": "WORKER_EXITED_BEFORE_RELEASE:case0",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 257, in run_supervised\n    if released is None: raise RuntimeError(\"WORKER_EXITED_BEFORE_RELEASE:\"+c[\"job\"][\"case\"])\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: WORKER_EXITED_BEFORE_RELEASE:case0\n",
+    "type": "RuntimeError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 3.1710368813946843,
+      "exit_code": 1,
+      "finished_monotonic": 4462026.12554943,
+      "launched_monotonic": 4462023.059080717,
+      "pid": 695000
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

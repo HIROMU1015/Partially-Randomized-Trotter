@@ -1,0 +1,163 @@
+{
+  "PASS_requires": "All A01-A10 proof obligations resolved for their stated ideal class; declared numerical/quantization limits retained. Supplemental substitutions alone do not yield PASS.",
+  "audit_tasks": [
+    {
+      "id": "A01_INPUT_MAPPING",
+      "required": "Read the frozen table.py prototype expressions as text only; independently identify the seven pre-normalization degree vectors and their phase/degree convention. Do not import extract_saved_table or open saved science/resource tables."
+    },
+    {
+      "id": "A02_PARAMETER_ELIMINATION",
+      "required": "Derive all nonnegative solutions of V gamma=t for formal x>0 independently. Compare with the proposed s,r,b parameterization; check rho>0 and x-rho>0 and all exceptional divisions."
+    },
+    {
+      "id": "A03_POLYTOPE_DIMENSION_BOUNDEDNESS",
+      "required": "Prove the displayed inequalities describe a bounded 3-dimensional polytope; distinguish actual mu in (1/3,1) from the stronger abstract claim 0<mu<1."
+    },
+    {
+      "id": "A04_VERTEX_COMPLETENESS",
+      "required": "Enumerate all 20 triples of the six boundary planes symbolically; record determinant-zero cases, intersections, feasibility sign conditions and duplicate vertices. Prove completeness, not just membership of the six proposed vertices."
+    },
+    {
+      "id": "A05_VERTEX_MEAN_PRESERVATION",
+      "required": "For each independently obtained vertex, prove V gamma=t as a formal identity. Identify ordinary/PTSC-K0/A/J1/J2/J3 only after enumeration; no registered-x cost scoring."
+    },
+    {
+      "id": "A06_B2_EMBEDDING",
+      "required": "Prove the original three-representation mixture is r=1-s, 0<=b<=s; identify the degree coupling relaxed by B3. Do not add J1-J3 to old B2."
+    },
+    {
+      "id": "A07_PRECISION_RESTORATION",
+      "required": "Construct a convex vertex decomposition of gamma and restore arbitrary nonnegative gamma_gp shares; prove the zero-group case without division by zero. No fixed-precision vertex enumeration is claimed to solve capped optimization."
+    },
+    {
+      "id": "A08_V4_VARIABLE_AND_SAMPLER_SCOPE",
+      "required": "Check gamma_g=(sum_p u_gp)/y with y>0 and the ideal weight c_g gamma_g; separate exact ideal norms from midpoint enclosures. Explain normalization-weighted component sampling and why choosing by theta alone is a different estimator; do not build or sample a circuit."
+    },
+    {
+      "id": "A09_LIMITS",
+      "required": "Separate ideal matching from original numerical-tolerance K3 and separate re-decoded/quantized laws from exact coefficient convex mixing. Record restrictions to fixed P3, x>0, fixed dictionary, and no general resource/novelty optimality claim."
+    },
+    {
+      "id": "A10_COUNTEREXAMPLES_AND_HANDOFF",
+      "required": "Save a concrete symbolic counterexample if a required claim fails; do not repair frozen source or change the proposed family. Major counterexample or acquisition failure stops the packet for GPT G1."
+    }
+  ],
+  "backend_stage_after": "G1_STRUCTURE_PASS_WITH_DECLARED_LIMITS only",
+  "classifications": [
+    "G1_STRUCTURE_PASS_WITH_DECLARED_LIMITS",
+    "G1_STRUCTURE_COUNTEREXAMPLE",
+    "G1_STRUCTURE_TECHNICAL_INCONCLUSIVE"
+  ],
+  "degree_target": [
+    "1",
+    "x",
+    "x^2/2",
+    "x^3/6"
+  ],
+  "domain": {
+    "abstract_vertex_completeness_range": "0<mu<1",
+    "actual_mu_range": "1/3<mu<1",
+    "mu": "(x^2+2)/(x^2+6)",
+    "rho": "(x+x^3/6)/(1+x^2/2)",
+    "x": "formal real x>0",
+    "x_equals_zero": "OUT_OF_SCOPE; identity case"
+  },
+  "execution_authorized": false,
+  "independence": "Derive from the frozen coefficient vectors. No assertion that the GPT self-check is independent evidence; do not reuse an assumed vertex list as the enumeration output.",
+  "mandatory_STOP_on_counterexample_or_technical_inconclusive": true,
+  "math_resource_limit": {
+    "RSS_bytes": 268435456,
+    "address_space_bytes": 268435456,
+    "retries": 0,
+    "symbolic_audit_invocations": 1,
+    "wall_seconds": 60
+  },
+  "policy_commit": "86df033cea392664cf365a80e5f068091dc8f5e8",
+  "policy_document": "docs/research/track_b_reassessment_and_gpt_checkpoints_20261009.md",
+  "prohibited": [
+    "registered LP",
+    "registered x={1/8,1/4} resource or signal evaluation",
+    "J1/J2/J3 cost scoring",
+    "read/import saved implementation tables",
+    "synthesis",
+    "quantum matrix evaluation",
+    "new scientific conditions",
+    "source or baseline changes"
+  ],
+  "proposed_parameterization": [
+    "s",
+    "b",
+    "mu+(1-mu)*s-mu*r-b",
+    "1-r-b",
+    "1-s",
+    "1-s",
+    "r"
+  ],
+  "proposed_polytope_inequalities": [
+    "s>=0",
+    "s<=1",
+    "r>=0",
+    "b>=0",
+    "r+b<=1",
+    "b+mu*r<=mu+(1-mu)*s"
+  ],
+  "proposed_vertices": {
+    "A": [
+      "0",
+      "1",
+      "0"
+    ],
+    "J1": [
+      "0",
+      "0",
+      "0"
+    ],
+    "J2": [
+      "0",
+      "0",
+      "mu"
+    ],
+    "J3": [
+      "1",
+      "1",
+      "0"
+    ],
+    "PTSC_K0": [
+      "1",
+      "0",
+      "0"
+    ],
+    "ordinary": [
+      "1",
+      "0",
+      "1"
+    ]
+  },
+  "prototype_order": [
+    "O0",
+    "O2",
+    "P2",
+    "P3",
+    "A0",
+    "A1",
+    "A2"
+  ],
+  "schema": "g1_structure_audit_contract_v1",
+  "source_implementation_status": "NOT_IMPLEMENTED_IN_THIS_PREPARATION; future limited audit script requires source identity and off-domain checks before launch.",
+  "source_prototype_file": "src/trottertracks/algorithm_codesign/ra_d0/table.py",
+  "status": "RESULT_PRIOR_PREPARATION_ONLY",
+  "supplemental_off_domain_points": {
+    "mu": [
+      "1/5",
+      "1/2",
+      "4/5"
+    ],
+    "only_supplement": "Exact rational substitutions may check algebra code but cannot replace the symbolic completeness proof.",
+    "x": [
+      "1/3",
+      "2/3",
+      "1",
+      "2"
+    ]
+  }
+}

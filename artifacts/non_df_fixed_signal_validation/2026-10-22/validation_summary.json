@@ -1,0 +1,95 @@
+{
+  "SOURCE": "d94437b46086c2eaa3ff1eeb111daba683d8aaf1",
+  "artificial_CLI": {
+    "compiled_signal_checks": "all sampled wrappers; max probability error < 1e-9",
+    "conditional_CNG": 12,
+    "receipt": "cli_execution_receipt.json",
+    "runs": 14,
+    "undefined_N_G": 2
+  },
+  "date_JST": "2026-10-22",
+  "environment_skip": {
+    "initial_attempt": "16 numerical cases passed before original runtime assertion failed; fixture and thresholds unchanged",
+    "observed_python": "3.12.3",
+    "required_python": "3.11.0rc1",
+    "test": "tests/test_df_partial_s2_repeated_cost.py::test_level5r_q1_q4_compiled_cost_reference"
+  },
+  "excluded_molecular_tests": {
+    "tests/test_df_partial_randomized_pf.py::test_optimize_df_screening_cost_uses_anchor_cgs_table": "indirect build_rank_ordered_df_cost_blocks -> H3 SCF/DF construction (guard blocked before SCF in initial technical run)",
+    "tests/test_df_rte_tail.py::test_h2_df_tail_reconstructs_selected_conjugated_fragments": "new H2 SCF/DF Hamiltonian construction",
+    "tests/test_pauli_partial_cgs_validation.py::test_h3_target_is_sector_unique_but_full_space_degenerate": "new H3 molecular JW Hamiltonian and eigensimulation",
+    "tests/test_rte_h2.py::test_h2_k2_enumeration_and_seeded_sample_mean": "new H2 molecular JW Hamiltonian and sampling simulation",
+    "tests/test_rte_h2.py::test_h2_pauli_tail_finite_rte_matches_dense_exponential": "new H2 molecular JW Hamiltonian and evolution"
+  },
+  "existing_regression": {
+    "DF_named_tests_passed": 124,
+    "collected_before_deselection": 229,
+    "deselected": 5,
+    "errors": 0,
+    "failures": 0,
+    "junit": "technical_attempts/non-df-regression-final.xml",
+    "passed": 223,
+    "passed_by_module": {
+      "tests.test_analytic_baseline_models": 12,
+      "tests.test_analytic_circuit_cng": 4,
+      "tests.test_df_partial_randomized_pf": 18,
+      "tests.test_df_partial_s2": 19,
+      "tests.test_df_partial_s2_repeated": 22,
+      "tests.test_df_partial_s2_repeated_cost": 25,
+      "tests.test_df_rpe_hadamard_compiled_cost": 15,
+      "tests.test_df_rpe_resource": 7,
+      "tests.test_df_rte_event_preparation": 5,
+      "tests.test_df_rte_qiskit_builder": 10,
+      "tests.test_df_rte_tail": 3,
+      "tests.test_pauli_partial_cgs_validation": 7,
+      "tests.test_rte": 16,
+      "tests.test_rte_compiled_cost": 17,
+      "tests.test_rte_integer_counts": 38,
+      "tests.test_rte_truncation_budget": 5
+    },
+    "selected_modules": 17,
+    "skipped": 1,
+    "tests": 224,
+    "wall_seconds": 33.002
+  },
+  "independent_scientific_review": false,
+  "initial_technical_failures": [
+    {
+      "artifact": "technical_attempts/non-df-first-tests.xml",
+      "reason": "test expected ValueError but inherited strict integer API raises TypeError for bool; test corrected"
+    },
+    {
+      "artifact": "technical_attempts/non-df-new-tests.xml",
+      "reason": "Qiskit Statevector global-phase evolution could mutate shared test input; test copies the vector"
+    },
+    {
+      "artifact": "technical_attempts/non-df-regression.xml",
+      "reason": "guard blocked indirect H3 SCF before execution; added exclusion. Original pinned-runtime test passed numerical cases then failed Python assertion"
+    }
+  ],
+  "limitations": [
+    "declared empirical numerical allowance, not certified",
+    "finite cost MC and nominal t interval do not guarantee rare-event population mean",
+    "no real molecule validation or scientific superiority conclusion",
+    "no new RPE model, S4 or qDRIFT connection"
+  ],
+  "mandatory_stop": true,
+  "new_artificial_tests": {
+    "errors": 0,
+    "failures": 0,
+    "junit": "technical_attempts/non-df-source-new-tests.xml",
+    "passed": 71,
+    "skipped": 0,
+    "tests": 71,
+    "wall_seconds": 12.091
+  },
+  "new_fits": 0,
+  "new_molecular_DF": 0,
+  "new_molecular_Hamiltonian_generation": 0,
+  "new_molecular_SCF": 0,
+  "new_molecular_scientific_simulations": 0,
+  "new_scientific_candidate_search": 0,
+  "old_failed_science_units_retried": 0,
+  "push": false,
+  "validation_scope": "artificial technical validation and selected non-molecular existing regressions only"
+}

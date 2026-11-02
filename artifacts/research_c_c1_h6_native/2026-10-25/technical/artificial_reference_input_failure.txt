@@ -1,0 +1,90 @@
+.FF......................                                                [100%]
+=================================== FAILURES ===================================
+__ test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[0.37] __
+
+phase = 0.37
+
+    @pytest.mark.parametrize('phase',[0.,.37,-2.1])
+    def test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase(phase):
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        nested=QuantumCircuit(4);nested.global_phase=phase;nested.h(0);nested.cx(0,3)
+        nested.crz(.29,2,1);nested.rzz(-.4,0,2)
+        qc=QuantumCircuit(4);qc.global_phase=-.13;qc.append(nested.to_gate(),range(4));qc.sdg(2)
+        rng=np.random.default_rng(97);states=rng.normal(size=(3,16))+1j*rng.normal(size=(3,16));states/=np.linalg.norm(states,axis=1)[:,None]
+        expected=np.asarray([simulate_statevector(qc,s) for s in states])
+        actual=a.StateActions(1).apply(qc,states)
+>       np.testing.assert_allclose(actual,expected,atol=3e-14,rtol=0)
+
+tests/management/test_research_c_c1_h6_state_action.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x7dfa222f7920>, array([[ 0.20362845-0.04168108j,  0.15415757+0.3641430...
+         0.05865692+0.24236987j, -0.24382677-0.0985963j ,
+        -0.0786407 -0.0521273j , -0.16966597+0.28396252j]]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=3e-14', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=3e-14
+E           
+E           Mismatched elements: 48 / 48 (100%)
+E           Max absolute difference: 0.20583314
+E           Max relative difference: 0.36789307
+E            x: array([[ 0.203628-0.041681j,  0.154158+0.364143j, -0.04894 -0.192085j,
+E                    0.139849+0.152638j, -0.226873+0.216636j, -0.16918 -0.318313j,
+E                   -0.256764+0.10544j , -0.080626-0.020325j, -0.219952+0.154868j,...
+E            y: array([[ 0.174776-0.112496j,  0.275405+0.283755j, -0.115089-0.161388j,
+E                    0.185582+0.091737j, -0.133181+0.284017j, -0.272838-0.235594j,
+E                   -0.201259+0.191155j, -0.082519+0.010206j, -0.149065+0.223926j,...
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+__ test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[-2.1] __
+
+phase = -2.1
+
+    @pytest.mark.parametrize('phase',[0.,.37,-2.1])
+    def test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase(phase):
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        nested=QuantumCircuit(4);nested.global_phase=phase;nested.h(0);nested.cx(0,3)
+        nested.crz(.29,2,1);nested.rzz(-.4,0,2)
+        qc=QuantumCircuit(4);qc.global_phase=-.13;qc.append(nested.to_gate(),range(4));qc.sdg(2)
+        rng=np.random.default_rng(97);states=rng.normal(size=(3,16))+1j*rng.normal(size=(3,16));states/=np.linalg.norm(states,axis=1)[:,None]
+        expected=np.asarray([simulate_statevector(qc,s) for s in states])
+        actual=a.StateActions(1).apply(qc,states)
+>       np.testing.assert_allclose(actual,expected,atol=3e-14,rtol=0)
+
+tests/management/test_research_c_c1_h6_state_action.py:22: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (<function assert_allclose.<locals>.compare at 0x7dfa2171f7e0>, array([[ 0.08655498+0.18897115j, -0.31996541+0.2323507...
+         0.10489217-0.22623311j,  0.12952539+0.2289015j ,
+         0.02912707+0.08973978j,  0.3095109 -0.11672299j]]))
+kwds = {'equal_nan': True, 'err_msg': '', 'header': 'Not equal to tolerance rtol=0, atol=3e-14', 'verbose': True}
+
+    @wraps(func)
+    def inner(*args, **kwds):
+        with self._recreate_cm():
+>           return func(*args, **kwds)
+                   ^^^^^^^^^^^^^^^^^^^
+E           AssertionError: 
+E           Not equal to tolerance rtol=0, atol=3e-14
+E           
+E           Mismatched elements: 48 / 48 (100%)
+E           Max absolute difference: 0.97063231
+E           Max relative difference: 1.73484645
+E            x: array([[ 0.086555+0.188971j, -0.319965+0.232351j,  0.176087-0.091022j,
+E                   -0.117145+0.170685j, -0.262243-0.172137j,  0.271927-0.236644j,
+E                   -0.16066 -0.226349j,  0.001607-0.083132j, -0.200506-0.179333j,...
+E            y: array([[-0.206819-0.020686j, -0.039034-0.393499j, -0.010326+0.197952j,
+E                   -0.088197-0.18729j ,  0.280983-0.139468j,  0.066992+0.354199j,
+E                    0.276495-0.024412j,  0.070949+0.043356j,  0.256027-0.082543j,...
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/contextlib.py:81: AssertionError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_h6_state_action.py::test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[0.37]
+FAILED tests/management/test_research_c_c1_h6_state_action.py::test_Aer_actions_match_independent_existing_Qiskit_with_nested_phase[-2.1]
+2 failed, 23 passed in 7.68s

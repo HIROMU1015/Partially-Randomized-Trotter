@@ -1,0 +1,1404 @@
+{
+  "schema_version": "track_a_ax2b_technical_pilot_draft_v2",
+  "status": "DRAFT_NOT_AUTHORIZATION",
+  "science_authorized": false,
+  "ax2b_authorized": false,
+  "next_stage_authorized": false,
+  "mandatory_stop": true,
+  "task_selection": "structural/model-independent before reference results",
+  "H4_tasks": [
+    {
+      "id": "H4_LEGACY_STATE_ACTION",
+      "scope": "legacy rank12 saved snapshot",
+      "checks": [
+        "dense versus action",
+        "Qiskit/OpenFermion ordering",
+        "scalar phase",
+        "primitive sector"
+      ]
+    },
+    {
+      "id": "H4_FINITE_AND_B0",
+      "scope": "same legacy target",
+      "checks": [
+        "K2/K4/K6",
+        "corrected/raw",
+        "signed discard/PF decomposition",
+        "empty tail"
+      ]
+    },
+    {
+      "id": "H4_STRONG_BASELINES",
+      "scope": "same legacy target",
+      "checks": [
+        "global S4",
+        "negative time",
+        "ordinary control versus directional IR",
+        "B2 backbone fairness"
+      ]
+    }
+  ],
+  "H6_tasks": [
+    {
+      "id": "H6_B1_2nd_q1",
+      "method": "B1",
+      "order": "2nd",
+      "prefix_fraction": 1.0,
+      "q": 1,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B1_2nd_q8",
+      "method": "B1",
+      "order": "2nd",
+      "prefix_fraction": 1.0,
+      "q": 8,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B1_4th_q1",
+      "method": "B1",
+      "order": "4th",
+      "prefix_fraction": 1.0,
+      "q": 1,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B1_4th_q8",
+      "method": "B1",
+      "order": "4th",
+      "prefix_fraction": 1.0,
+      "q": 8,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H6_B2_short",
+      "method": "B2",
+      "order": "2nd",
+      "prefix_fraction": 0.5,
+      "q": 1,
+      "R": 1,
+      "K": 2
+    },
+    {
+      "id": "H6_B3_long",
+      "method": "B3",
+      "order": "2nd",
+      "prefix_fraction": 0.0,
+      "q": 8,
+      "R": 64,
+      "K": 6
+    }
+  ],
+  "H8_tasks": [],
+  "proposed_target": {
+    "model": "linear H-chain",
+    "basis": "STO-3G",
+    "geometry_angstrom": 1.0,
+    "T": 0.8,
+    "epsilon_min": 0.001,
+    "H6_df_rank": null,
+    "H6_df_tol": null,
+    "state_identity": null
+  },
+  "proposed_caps": {
+    "cpu_cores": 1,
+    "blas_threads": 1,
+    "processes": 1,
+    "gpu": false,
+    "address_space_bytes": 8589934592,
+    "wall_seconds_per_H4_task": 900,
+    "wall_seconds_per_H6_task": 1800,
+    "total_wall_seconds": 14400,
+    "output_bytes": 536870912,
+    "total_wrappers": 64,
+    "cost_trajectories_per_random_cell": 2,
+    "tail_matvecs_per_signal_path": 448,
+    "tail_matvecs_corrected_and_raw_total": 896,
+    "max_untranspiled_instructions_per_wrapper": 1000000,
+    "max_transpiled_instructions_per_wrapper": 5000000,
+    "max_deterministic_actions_per_signal": 100000,
+    "max_ground_solver_matvecs_per_system": 20000,
+    "max_reference_matvecs_per_action": 20000,
+    "max_H4_qubits": 8,
+    "max_H6_qubits": 12,
+    "max_outer_steps": 8
+  },
+  "assigned_resources": null,
+  "unresolved_before_launch": [
+    "snapshot hash and creation allowance",
+    "DF tolerance semantics and actual rank",
+    "primitive sector certification",
+    "H4 callback/wrapper lowering",
+    "reference numerical allowance",
+    "state and seed identities",
+    "actual CPU/RAM allocation",
+    "per-circuit gate and matvec caps",
+    "source/plan freeze",
+    "separate explicit launch authorization"
+  ],
+  "information_scope": "all exposed H6 science values are development; no H8 truth access",
+  "cap_scope": "technical profiling only; not an adequate main-campaign search bound",
+  "H4_correctness_cells": [
+    {
+      "id": "H4_B1_S2_q1",
+      "method": "B1",
+      "order": "2nd",
+      "prefix": 12,
+      "q": 1,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H4_B1_S2_q4",
+      "method": "B1",
+      "order": "2nd",
+      "prefix": 12,
+      "q": 4,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H4_B0_q4",
+      "method": "B0",
+      "order": "2nd",
+      "prefix": 6,
+      "q": 4,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H4_B2_K2",
+      "method": "B2",
+      "order": "2nd",
+      "prefix": 6,
+      "q": 4,
+      "R": 8,
+      "K": 2
+    },
+    {
+      "id": "H4_B2_K4",
+      "method": "B2",
+      "order": "2nd",
+      "prefix": 6,
+      "q": 4,
+      "R": 8,
+      "K": 4
+    },
+    {
+      "id": "H4_B3_K6",
+      "method": "B3",
+      "order": "2nd",
+      "prefix": 0,
+      "q": 4,
+      "R": 8,
+      "K": 6
+    },
+    {
+      "id": "H4_B1_S4_q1",
+      "method": "B1",
+      "order": "4th",
+      "prefix": 12,
+      "q": 1,
+      "R": null,
+      "K": null
+    },
+    {
+      "id": "H4_B1_S4_q4",
+      "method": "B1",
+      "order": "4th",
+      "prefix": 12,
+      "q": 4,
+      "R": null,
+      "K": null
+    }
+  ],
+  "wrapper_tasks": [
+    {
+      "id": "H4_B0_q4_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H4_B0_q4",
+        "method": "B0",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B0_q4_rep0_ordinary_sine",
+      "cell": {
+        "id": "H4_B0_q4",
+        "method": "B0",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B0_q4_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B0_q4",
+        "method": "B0",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B0_q4_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B0_q4",
+        "method": "B0",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 2343775440,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep0_ordinary_sine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 2343775440,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 2343775440,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 2343775440,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep1_ordinary_cosine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 676112600,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep1_ordinary_sine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 676112600,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep1_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 676112600,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B2_K2_rep1_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B2_K2",
+        "method": "B2",
+        "order": "2nd",
+        "prefix": 6,
+        "q": 4,
+        "R": 8,
+        "K": 2,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 676112600,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 687370785,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep0_ordinary_sine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 687370785,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 687370785,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": 687370785,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep1_ordinary_cosine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 340967279,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep1_ordinary_sine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 340967279,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep1_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 340967279,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B3_K6_rep1_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B3_K6",
+        "method": "B3",
+        "order": "2nd",
+        "prefix": 0,
+        "q": 4,
+        "R": 8,
+        "K": 6,
+        "system": "H4"
+      },
+      "replica": 1,
+      "trajectory_seed": 340967279,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q1_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H4_B1_S4_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q1_rep0_ordinary_sine",
+      "cell": {
+        "id": "H4_B1_S4_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q1_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B1_S4_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q1_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B1_S4_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q4_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H4_B1_S4_q4",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q4_rep0_ordinary_sine",
+      "cell": {
+        "id": "H4_B1_S4_q4",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q4_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H4_B1_S4_q4",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H4_B1_S4_q4_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H4_B1_S4_q4",
+        "method": "B1",
+        "order": "4th",
+        "prefix": 12,
+        "q": 4,
+        "R": null,
+        "K": null,
+        "system": "H4"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q1_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H6_B1_2nd_q1",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q1_rep0_ordinary_sine",
+      "cell": {
+        "id": "H6_B1_2nd_q1",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q1_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B1_2nd_q1",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q1_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B1_2nd_q1",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q8_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H6_B1_2nd_q8",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q8_rep0_ordinary_sine",
+      "cell": {
+        "id": "H6_B1_2nd_q8",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q8_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B1_2nd_q8",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_2nd_q8_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B1_2nd_q8",
+        "method": "B1",
+        "order": "2nd",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q1_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H6_B1_4th_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q1_rep0_ordinary_sine",
+      "cell": {
+        "id": "H6_B1_4th_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q1_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B1_4th_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q1_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B1_4th_q1",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 1,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q8_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H6_B1_4th_q8",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q8_rep0_ordinary_sine",
+      "cell": {
+        "id": "H6_B1_4th_q8",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q8_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B1_4th_q8",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B1_4th_q8_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B1_4th_q8",
+        "method": "B1",
+        "order": "4th",
+        "prefix_fraction": 1.0,
+        "q": 8,
+        "R": null,
+        "K": null,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": null,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2598558621,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep0_ordinary_sine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2598558621,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2598558621,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2598558621,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep1_ordinary_cosine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 3288118135,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep1_ordinary_sine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 3288118135,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep1_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 3288118135,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B2_short_rep1_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B2_short",
+        "method": "B2",
+        "order": "2nd",
+        "prefix_fraction": 0.5,
+        "q": 1,
+        "R": 1,
+        "K": 2,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 3288118135,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep0_ordinary_cosine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2807319122,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep0_ordinary_sine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2807319122,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep0_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2807319122,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep0_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 0,
+      "trajectory_seed": 2807319122,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep1_ordinary_cosine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 2302675206,
+      "control_policy": "ordinary",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep1_ordinary_sine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 2302675206,
+      "control_policy": "ordinary",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep1_symmetric_directional_cosine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 2302675206,
+      "control_policy": "symmetric_directional",
+      "axis": "cosine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    },
+    {
+      "id": "H6_B3_long_rep1_symmetric_directional_sine",
+      "cell": {
+        "id": "H6_B3_long",
+        "method": "B3",
+        "order": "2nd",
+        "prefix_fraction": 0.0,
+        "q": 8,
+        "R": 64,
+        "K": 6,
+        "system": "H6"
+      },
+      "replica": 1,
+      "trajectory_seed": 2302675206,
+      "control_policy": "symmetric_directional",
+      "axis": "sine",
+      "scope": "measured full wrapper without state preparation",
+      "draw_reuse": "same explicit trajectory across axes and control policies"
+    }
+  ],
+  "planned_wrapper_calls": 60,
+  "planned_wrapper_calls_by_system": {
+    "H4": 28,
+    "H6": 32
+  },
+  "unique_random_trajectory_count": 8,
+  "proposed_df_tolerance": 1e-08,
+  "df_tolerance_adopted": false,
+  "actual_df_rank": null,
+  "compiler_proposal": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "coupling_map": null,
+    "installed_version_must_be_recorded": true
+  },
+  "proposed_state_policy": {
+    "H4": "same legacy saved normalized state",
+    "H6": "normalized DF state with recorded energy/residual and ground-state status"
+  },
+  "control_correctness_scope": "native lowering synthetic-validated; molecular verification pending",
+  "instruction_cap_scope": "Qiskit instruction counts; primitive depth/gates and memory require watchdog/profile",
+  "reference_cap_scope": "separate hard caps for solver/reference actions; tolerance is not an allowance certificate",
+  "task_binding_requirements": [
+    "H4_snapshot_sha256",
+    "H4_state_identity",
+    "H6_snapshot_sha256",
+    "H6_state_identity",
+    "adopted_df_policy",
+    "primitive_sector_certificate",
+    "basis_order_certificate",
+    "reference_numerical_allowance",
+    "compiler_identity",
+    "assigned_resources",
+    "scientific_source_freeze"
+  ],
+  "scientific_runner_implemented": false
+}

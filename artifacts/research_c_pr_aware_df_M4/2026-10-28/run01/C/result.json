@@ -1,0 +1,868 @@
+{
+  "status": "M4_AFFINE_BREAKEVEN_COMPLETE",
+  "affine": {
+    "evidence": {
+      "status": "UNQUALIFIED_OR_INFEASIBLE",
+      "W": null,
+      "S": null,
+      "mu": null,
+      "total_resources": null
+    },
+    "ideal_exact_native": {
+      "status": "AFFINE_COST_ONLY_UNKNOWN_PRICE",
+      "W": 16631888,
+      "S": {
+        "rz_count": 56196.0,
+        "rz_depth": 56196.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "total_depth": 104364.0,
+        "circuit_size": 104364.0
+      },
+      "mu": null,
+      "total_resources": null,
+      "formula": "C_k(mu_k)=W*mu_k+S_k",
+      "shell_once_per_interrogation": true,
+      "substeps": 1,
+      "old_M3_shots_accounting": {
+        "W": 32417320,
+        "S": {
+          "rz_count": 72569.0,
+          "rz_depth": 72569.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 134771.0,
+          "circuit_size": 134771.0
+        }
+      },
+      "high_m_only_shots_swap": {
+        "W": 16711208,
+        "S": {
+          "rz_count": 57001.0,
+          "rz_depth": 57001.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 105859.0,
+          "circuit_size": 105859.0
+        }
+      },
+      "counterfactual_kind": "accounting substitution only;no extra candidate",
+      "groups": {
+        "m0_to9": {
+          "new_shots": 10486,
+          "old_shots": 10716,
+          "new_weight": 1132624,
+          "old_weight": 1211944
+        },
+        "m10_to12": {
+          "new_shots": 5570,
+          "old_shots": 10018,
+          "new_weight": 15499264,
+          "old_weight": 31205376
+        },
+        "m12": {
+          "new_shots": 2644,
+          "old_shots": 6006,
+          "new_weight": 10829824,
+          "old_weight": 24600576
+        }
+      }
+    },
+    "assumed_raw_signal_budget": {
+      "status": "AFFINE_COST_ONLY_UNKNOWN_PRICE",
+      "W": 16705612,
+      "S": {
+        "rz_count": 56420.0,
+        "rz_depth": 56420.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "total_depth": 104780.0,
+        "circuit_size": 104780.0
+      },
+      "mu": null,
+      "total_resources": null,
+      "formula": "C_k(mu_k)=W*mu_k+S_k",
+      "shell_once_per_interrogation": true,
+      "substeps": 1,
+      "old_M3_shots_accounting": {
+        "W": 32578340,
+        "S": {
+          "rz_count": 72898.0,
+          "rz_depth": 72898.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 135382.0,
+          "circuit_size": 135382.0
+        }
+      },
+      "high_m_only_shots_swap": {
+        "W": 16786212,
+        "S": {
+          "rz_count": 57239.0,
+          "rz_depth": 57239.0,
+          "cx_count": 0.0,
+          "cx_depth": 0.0,
+          "total_depth": 106301.0,
+          "circuit_size": 106301.0
+        }
+      },
+      "counterfactual_kind": "accounting substitution only;no extra candidate",
+      "groups": {
+        "m0_to9": {
+          "new_shots": 10526,
+          "old_shots": 10760,
+          "new_weight": 1136716,
+          "old_weight": 1217316
+        },
+        "m10_to12": {
+          "new_shots": 5594,
+          "old_shots": 10068,
+          "new_weight": 15568896,
+          "old_weight": 31361024
+        },
+        "m12": {
+          "new_shots": 2656,
+          "old_shots": 6036,
+          "new_weight": 10878976,
+          "old_weight": 24723456
+        }
+      }
+    }
+  },
+  "comparisons": {
+    "ideal_exact_native:M3_r64": {
+      "status": "CONDITIONAL_POINT_BREAKEVEN_ONLY",
+      "label": "ideal_exact_native:M3_r64",
+      "thresholds": {
+        "rz_count": {
+          "mu_break_even": 17747.772397021312,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 9105.59375,
+          "headroom_above_r64_kernel": 8642.178647021312,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 9105.59375,
+          "break_even_with_only_m10_to12_shots_changed": 17663.532280356394,
+          "high_m_shots_threshold_change": 8557.938530356394,
+          "all_shots_threshold_change": 8642.178647021312,
+          "equality_means_tie": true
+        },
+        "rz_depth": {
+          "mu_break_even": 5955.678438716639,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3055.59375,
+          "headroom_above_r64_kernel": 2900.084688716639,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3055.59375,
+          "break_even_with_only_m10_to12_shots_changed": 5927.409673301296,
+          "high_m_shots_threshold_change": 2871.8159233012957,
+          "all_shots_threshold_change": 2900.084688716639,
+          "equality_means_tie": true
+        },
+        "cx_count": {
+          "mu_break_even": 7625.391667500407,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3912.25,
+          "headroom_above_r64_kernel": 3713.1416675004066,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3912.25,
+          "break_even_with_only_m10_to12_shots_changed": 7589.197631314265,
+          "high_m_shots_threshold_change": 3676.947631314265,
+          "all_shots_threshold_change": 3713.1416675004066,
+          "equality_means_tie": true
+        },
+        "cx_depth": {
+          "mu_break_even": 5127.4290366944515,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 2630.65625,
+          "headroom_above_r64_kernel": 2496.7727866944515,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 2630.65625,
+          "break_even_with_only_m10_to12_shots_changed": 5103.091617688559,
+          "high_m_shots_threshold_change": 2472.4353676885594,
+          "all_shots_threshold_change": 2496.7727866944515,
+          "equality_means_tie": true
+        },
+        "total_depth": {
+          "mu_break_even": 13081.79515365303,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 6711.6875,
+          "headroom_above_r64_kernel": 6370.107653653031,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 6711.6875,
+          "break_even_with_only_m10_to12_shots_changed": 13019.702126830089,
+          "high_m_shots_threshold_change": 6308.014626830089,
+          "all_shots_threshold_change": 6370.107653653031,
+          "equality_means_tie": true
+        },
+        "circuit_size": {
+          "mu_break_even": 35054.74205022605,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 17985.03125,
+          "headroom_above_r64_kernel": 17069.71080022605,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 17985.03125,
+          "break_even_with_only_m10_to12_shots_changed": 34888.35410062815,
+          "high_m_shots_threshold_change": 16903.322850628152,
+          "all_shots_threshold_change": 17069.71080022605,
+          "equality_means_tie": true
+        }
+      },
+      "target_cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 295179018952.75,
+          "rz_depth": 99054232952.75,
+          "cx_count": 126824660170.0,
+          "cx_depth": 85278825466.25,
+          "total_depth": 217575056198.5,
+          "circuit_size": 583026648012.25
+        },
+        "intervals": null,
+        "shots": 20734,
+        "executions": 20734,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false
+      },
+      "actual_r128_kernel_price": null,
+      "actual_r128_total_cost": null,
+      "ideal_law_population_advantage": null,
+      "guaranteed_advantage": null,
+      "cost_support": null
+    },
+    "ideal_exact_native:M2_deterministic": {
+      "status": "CONDITIONAL_POINT_BREAKEVEN_ONLY",
+      "label": "ideal_exact_native:M2_deterministic",
+      "thresholds": {
+        "rz_count": {
+          "mu_break_even": 6122.3279797819705,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 9105.59375,
+          "headroom_above_r64_kernel": -2983.2657702180295,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3141.09423252755,
+          "break_even_with_only_m10_to12_shots_changed": 6093.268209814634,
+          "high_m_shots_threshold_change": 2952.173977287084,
+          "all_shots_threshold_change": 2981.2337472544205,
+          "equality_means_tie": true
+        },
+        "rz_depth": {
+          "mu_break_even": 3091.703190822353,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3055.59375,
+          "headroom_above_r64_kernel": 36.10944082235301,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 1586.215172198072,
+          "break_even_with_only_m10_to12_shots_changed": 3077.0283269767215,
+          "high_m_shots_threshold_change": 1490.8131547786495,
+          "all_shots_threshold_change": 1505.488018624281,
+          "equality_means_tie": true
+        },
+        "cx_count": {
+          "mu_break_even": 3886.8401470716976,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3912.25,
+          "headroom_above_r64_kernel": -25.40985292830237,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 1994.1651561572642,
+          "break_even_with_only_m10_to12_shots_changed": 3868.391201880798,
+          "high_m_shots_threshold_change": 1874.2260457235336,
+          "all_shots_threshold_change": 1892.6749909144335,
+          "equality_means_tie": true
+        },
+        "cx_depth": {
+          "mu_break_even": 3484.8298232888533,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 2630.65625,
+          "headroom_above_r64_kernel": 854.1735732888533,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 1787.911502863284,
+          "break_even_with_only_m10_to12_shots_changed": 3468.2890261434122,
+          "high_m_shots_threshold_change": 1680.3775232801281,
+          "all_shots_threshold_change": 1696.9183204255692,
+          "equality_means_tie": true
+        },
+        "total_depth": {
+          "mu_break_even": 6717.5693439614315,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 6711.6875,
+          "headroom_above_r64_kernel": 5.881843961431514,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3446.4857228790042,
+          "break_even_with_only_m10_to12_shots_changed": 6685.6842106208005,
+          "high_m_shots_threshold_change": 3239.1984877417963,
+          "all_shots_threshold_change": 3271.0836210824273,
+          "equality_means_tie": true
+        },
+        "circuit_size": {
+          "mu_break_even": 11615.543192149924,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 17985.03125,
+          "headroom_above_r64_kernel": -6369.488057850076,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 5959.418700373751,
+          "break_even_with_only_m10_to12_shots_changed": 11560.409752305159,
+          "high_m_shots_threshold_change": 5600.991051931408,
+          "all_shots_threshold_change": 5656.124491776173,
+          "equality_means_tie": true
+        }
+      },
+      "target_cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 101825929455.0,
+          "rz_depth": 51420917395.0,
+          "cx_count": 64645490000.0,
+          "cx_depth": 57959299320.0,
+          "total_depth": 111725965325.0,
+          "circuit_size": 193188517795.0
+        },
+        "intervals": {
+          "rz_count": [
+            101825929455.0,
+            101825929455.0
+          ],
+          "rz_depth": [
+            51420917395.0,
+            51420917395.0
+          ],
+          "cx_count": [
+            64645490000.0,
+            64645490000.0
+          ],
+          "cx_depth": [
+            57959299320.0,
+            57959299320.0
+          ],
+          "total_depth": [
+            111725965325.0,
+            111725965325.0
+          ],
+          "circuit_size": [
+            193188517795.0,
+            193188517795.0
+          ]
+        },
+        "shots": 13610,
+        "executions": 13610,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13610
+      },
+      "actual_r128_kernel_price": null,
+      "actual_r128_total_cost": null,
+      "ideal_law_population_advantage": null,
+      "guaranteed_advantage": null,
+      "cost_support": null
+    },
+    "ideal_exact_native:old_PR_s4": {
+      "status": "CONDITIONAL_POINT_BREAKEVEN_ONLY",
+      "label": "ideal_exact_native:old_PR_s4",
+      "thresholds": {
+        "rz_count": {
+          "mu_break_even": 32485.193738257498,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 9105.59375,
+          "headroom_above_r64_kernel": 23379.599988257498,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 16666.710497351414,
+          "break_even_with_only_m10_to12_shots_changed": 32331.00222964133,
+          "high_m_shots_threshold_change": 15664.291732289916,
+          "all_shots_threshold_change": 15818.483240906084,
+          "equality_means_tie": true
+        },
+        "rz_depth": {
+          "mu_break_even": 13194.68744696934,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3055.59375,
+          "headroom_above_r64_kernel": 10139.09369696934,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 6769.607957721366,
+          "break_even_with_only_m10_to12_shots_changed": 13132.05861646866,
+          "high_m_shots_threshold_change": 6362.450658747293,
+          "all_shots_threshold_change": 6425.0794892479735,
+          "equality_means_tie": true
+        },
+        "cx_count": {
+          "mu_break_even": 16855.629162485944,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3912.25,
+          "headroom_above_r64_kernel": 12943.379162485944,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 8647.875160562317,
+          "break_even_with_only_m10_to12_shots_changed": 16775.62366526705,
+          "high_m_shots_threshold_change": 8127.748504704732,
+          "all_shots_threshold_change": 8207.754001923628,
+          "equality_means_tie": true
+        },
+        "cx_depth": {
+          "mu_break_even": 13304.59805284884,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 2630.65625,
+          "headroom_above_r64_kernel": 10673.94180284884,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 6825.998716118421,
+          "break_even_with_only_m10_to12_shots_changed": 13241.447578176276,
+          "high_m_shots_threshold_change": 6415.448862057855,
+          "all_shots_threshold_change": 6478.599336730419,
+          "equality_means_tie": true
+        },
+        "total_depth": {
+          "mu_break_even": 28791.874931276594,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 6711.6875,
+          "headroom_above_r64_kernel": 22080.187431276594,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 14771.832118139315,
+          "break_even_with_only_m10_to12_shots_changed": 28655.213774611624,
+          "high_m_shots_threshold_change": 13883.38165647231,
+          "all_shots_threshold_change": 14020.04281313728,
+          "equality_means_tie": true
+        },
+        "circuit_size": {
+          "mu_break_even": 62888.035974448605,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 17985.03125,
+          "headroom_above_r64_kernel": 44903.004724448605,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 32265.0589394805,
+          "break_even_with_only_m10_to12_shots_changed": 62589.53687680747,
+          "high_m_shots_threshold_change": 30324.47793732697,
+          "all_shots_threshold_change": 30622.977034968106,
+          "equality_means_tie": true
+        }
+      },
+      "target_cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 540290160109.0,
+          "rz_depth": 219452620009.0,
+          "cx_count": 280340936400.0,
+          "cx_depth": 221280584700.0,
+          "total_depth": 478863343531.0,
+          "circuit_size": 1045946875231.0
+        },
+        "intervals": null,
+        "shots": 19574,
+        "executions": 19574,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false
+      },
+      "actual_r128_kernel_price": null,
+      "actual_r128_total_cost": null,
+      "ideal_law_population_advantage": null,
+      "guaranteed_advantage": null,
+      "cost_support": null
+    },
+    "assumed_raw_signal_budget:M3_r64": {
+      "status": "CONDITIONAL_POINT_BREAKEVEN_ONLY",
+      "label": "assumed_raw_signal_budget:M3_r64",
+      "thresholds": {
+        "rz_count": {
+          "mu_break_even": 17757.215094387142,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 9105.59375,
+          "headroom_above_r64_kernel": 8651.621344387142,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 9105.59375,
+          "break_even_with_only_m10_to12_shots_changed": 17671.952716215845,
+          "high_m_shots_threshold_change": 8566.358966215845,
+          "all_shots_threshold_change": 8651.621344387142,
+          "equality_means_tie": true
+        },
+        "rz_depth": {
+          "mu_break_even": 5958.8471567144625,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3055.59375,
+          "headroom_above_r64_kernel": 2903.2534067144625,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3055.59375,
+          "break_even_with_only_m10_to12_shots_changed": 5930.235347222769,
+          "high_m_shots_threshold_change": 2874.6415972227687,
+          "all_shots_threshold_change": 2903.2534067144625,
+          "equality_means_tie": true
+        },
+        "cx_count": {
+          "mu_break_even": 7629.448754406603,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3912.25,
+          "headroom_above_r64_kernel": 3717.1987544066033,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3912.25,
+          "break_even_with_only_m10_to12_shots_changed": 7592.815500304655,
+          "high_m_shots_threshold_change": 3680.565500304655,
+          "all_shots_threshold_change": 3717.1987544066033,
+          "equality_means_tie": true
+        },
+        "cx_depth": {
+          "mu_break_even": 5130.157083477397,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 2630.65625,
+          "headroom_above_r64_kernel": 2499.5008334773966,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 2630.65625,
+          "break_even_with_only_m10_to12_shots_changed": 5105.52432768185,
+          "high_m_shots_threshold_change": 2474.86807768185,
+          "all_shots_threshold_change": 2499.5008334773966,
+          "equality_means_tie": true
+        },
+        "total_depth": {
+          "mu_break_even": 13088.755320711985,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 6711.6875,
+          "headroom_above_r64_kernel": 6377.067820711985,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 6711.6875,
+          "break_even_with_only_m10_to12_shots_changed": 13025.908789293857,
+          "high_m_shots_threshold_change": 6314.221289293857,
+          "all_shots_threshold_change": 6377.067820711985,
+          "equality_means_tie": true
+        },
+        "circuit_size": {
+          "mu_break_even": 35073.39291581326,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 17985.03125,
+          "headroom_above_r64_kernel": 17088.36166581326,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 17985.03125,
+          "break_even_with_only_m10_to12_shots_changed": 34904.98583326155,
+          "high_m_shots_threshold_change": 16919.954583261548,
+          "all_shots_threshold_change": 17088.36166581326,
+          "equality_means_tie": true
+        }
+      },
+      "target_cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 296645201987.375,
+          "rz_depth": 99546244987.375,
+          "cx_count": 127454610665.0,
+          "cx_depth": 85702413735.625,
+          "total_depth": 218655772730.75,
+          "circuit_size": 585922598355.125
+        },
+        "intervals": null,
+        "shots": 20828,
+        "executions": 20828,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false
+      },
+      "actual_r128_kernel_price": null,
+      "actual_r128_total_cost": null,
+      "ideal_law_population_advantage": null,
+      "guaranteed_advantage": null,
+      "cost_support": null
+    },
+    "assumed_raw_signal_budget:M2_deterministic": {
+      "status": "CONDITIONAL_POINT_BREAKEVEN_ONLY",
+      "label": "assumed_raw_signal_budget:M2_deterministic",
+      "thresholds": {
+        "rz_count": {
+          "mu_break_even": 6095.30935083372,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 9105.59375,
+          "headroom_above_r64_kernel": -3010.2843991662803,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3125.5692143000533,
+          "break_even_with_only_m10_to12_shots_changed": 6066.042309962486,
+          "high_m_shots_threshold_change": 2940.4730956624326,
+          "all_shots_threshold_change": 2969.7401365336664,
+          "equality_means_tie": true
+        },
+        "rz_depth": {
+          "mu_break_even": 3078.059096248614,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3055.59375,
+          "headroom_above_r64_kernel": 22.46534624861397,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 1578.375217920864,
+          "break_even_with_only_m10_to12_shots_changed": 3063.2795627744963,
+          "high_m_shots_threshold_change": 1484.9043448536322,
+          "all_shots_threshold_change": 1499.6838783277499,
+          "equality_means_tie": true
+        },
+        "cx_count": {
+          "mu_break_even": 3869.6870249350936,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3912.25,
+          "headroom_above_r64_kernel": -42.56297506490637,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 1984.3088997168056,
+          "break_even_with_only_m10_to12_shots_changed": 3851.1064914466706,
+          "high_m_shots_threshold_change": 1866.797591729865,
+          "all_shots_threshold_change": 1885.378125218288,
+          "equality_means_tie": true
+        },
+        "cx_depth": {
+          "mu_break_even": 3469.450824070378,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 2630.65625,
+          "headroom_above_r64_kernel": 838.7945740703781,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 1779.0746649460962,
+          "break_even_with_only_m10_to12_shots_changed": 3452.7920486170437,
+          "high_m_shots_threshold_change": 1673.7173836709476,
+          "all_shots_threshold_change": 1690.376159124282,
+          "equality_means_tie": true
+        },
+        "total_depth": {
+          "mu_break_even": 6687.923827334192,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 6711.6875,
+          "headroom_above_r64_kernel": -23.76367266580837,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 3429.451283981934,
+          "break_even_with_only_m10_to12_shots_changed": 6655.811270821553,
+          "high_m_shots_threshold_change": 3226.359986839619,
+          "all_shots_threshold_change": 3258.4725433522576,
+          "equality_means_tie": true
+        },
+        "circuit_size": {
+          "mu_break_even": 11564.282291184543,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 17985.03125,
+          "headroom_above_r64_kernel": -6420.748958815457,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 5929.963970325069,
+          "break_even_with_only_m10_to12_shots_changed": 11508.755608114565,
+          "high_m_shots_threshold_change": 5578.791637789496,
+          "all_shots_threshold_change": 5634.318320859475,
+          "equality_means_tie": true
+        }
+      },
+      "target_cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 101825929455.0,
+          "rz_depth": 51420917395.0,
+          "cx_count": 64645490000.0,
+          "cx_depth": 57959299320.0,
+          "total_depth": 111725965325.0,
+          "circuit_size": 193188517795.0
+        },
+        "intervals": {
+          "rz_count": [
+            101825929455.0,
+            101825929455.0
+          ],
+          "rz_depth": [
+            51420917395.0,
+            51420917395.0
+          ],
+          "cx_count": [
+            64645490000.0,
+            64645490000.0
+          ],
+          "cx_depth": [
+            57959299320.0,
+            57959299320.0
+          ],
+          "total_depth": [
+            111725965325.0,
+            111725965325.0
+          ],
+          "circuit_size": [
+            193188517795.0,
+            193188517795.0
+          ]
+        },
+        "shots": 13610,
+        "executions": 13610,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false,
+        "measurement_count": 13610
+      },
+      "actual_r128_kernel_price": null,
+      "actual_r128_total_cost": null,
+      "ideal_law_population_advantage": null,
+      "guaranteed_advantage": null,
+      "cost_support": null
+    },
+    "assumed_raw_signal_budget:old_PR_s4": {
+      "status": "CONDITIONAL_POINT_BREAKEVEN_ONLY",
+      "label": "assumed_raw_signal_budget:old_PR_s4",
+      "thresholds": {
+        "rz_count": {
+          "mu_break_even": 32490.240422499937,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 9105.59375,
+          "headroom_above_r64_kernel": 23384.646672499937,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 16660.435547268524,
+          "break_even_with_only_m10_to12_shots_changed": 32334.23654282455,
+          "high_m_shots_threshold_change": 15673.800995556026,
+          "all_shots_threshold_change": 15829.804875231413,
+          "equality_means_tie": true
+        },
+        "rz_depth": {
+          "mu_break_even": 13196.737286577709,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3055.59375,
+          "headroom_above_r64_kernel": 10141.143536577709,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 6767.059227004814,
+          "break_even_with_only_m10_to12_shots_changed": 13133.372315117907,
+          "high_m_shots_threshold_change": 6366.313088113094,
+          "all_shots_threshold_change": 6429.678059572895,
+          "equality_means_tie": true
+        },
+        "cx_count": {
+          "mu_break_even": 16858.24774081907,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 3912.25,
+          "headroom_above_r64_kernel": 12945.997740819072,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 8644.619270288173,
+          "break_even_with_only_m10_to12_shots_changed": 16777.30185690494,
+          "high_m_shots_threshold_change": 8132.682586616769,
+          "all_shots_threshold_change": 8213.628470530899,
+          "equality_means_tie": true
+        },
+        "cx_depth": {
+          "mu_break_even": 13306.664966629178,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 2630.65625,
+          "headroom_above_r64_kernel": 10676.008716629178,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 6823.428755010231,
+          "break_even_with_only_m10_to12_shots_changed": 13242.77221963478,
+          "high_m_shots_threshold_change": 6419.34346462455,
+          "all_shots_threshold_change": 6483.236211618947,
+          "equality_means_tie": true
+        },
+        "total_depth": {
+          "mu_break_even": 28796.34784678945,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 6711.6875,
+          "headroom_above_r64_kernel": 22084.66034678945,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 14766.270581727,
+          "break_even_with_only_m10_to12_shots_changed": 28658.080371229673,
+          "high_m_shots_threshold_change": 13891.809789502673,
+          "all_shots_threshold_change": 14030.07726506245,
+          "equality_means_tie": true
+        },
+        "circuit_size": {
+          "mu_break_even": 62897.80584255159,
+          "strict_advantage_condition": "nonnegative mu < threshold",
+          "nonnegative_price_can_strictly_win": true,
+          "zero_or_negative_threshold": false,
+          "existing_r64_mean": 17985.03125,
+          "headroom_above_r64_kernel": 44912.77459255159,
+          "headroom_interpretation": "accounting allowance for all64additional events and changed compilation;not measured event unit price",
+          "break_even_with_old_M3_shots": 32252.911273410493,
+          "break_even_with_only_m10_to12_shots_changed": 62595.798178648045,
+          "high_m_shots_threshold_change": 30342.886905237552,
+          "all_shots_threshold_change": 30644.8945691411,
+          "equality_means_tie": true
+        }
+      },
+      "target_cost": {
+        "status": "CONDITIONAL_TOTAL_AVAILABLE",
+        "totals": {
+          "rz_count": 542769406705.0,
+          "rz_depth": 220459629195.5,
+          "cx_count": 281627345758.0,
+          "cx_depth": 222295981946.5,
+          "total_depth": 481060718925.5,
+          "circuit_size": 1050746444837.0
+        },
+        "intervals": null,
+        "shots": 19658,
+        "executions": 19658,
+        "cost_scope": "serial_native_kernel_composition_without_state_preparation",
+        "state_preparation_cost": null,
+        "classical_cost_samples_are_shot_multipliers": false,
+        "unconditional_total_resource_claim": false
+      },
+      "actual_r128_kernel_price": null,
+      "actual_r128_total_cost": null,
+      "ideal_law_population_advantage": null,
+      "guaranteed_advantage": null,
+      "cost_support": null
+    }
+  },
+  "native_price": null,
+  "r128_total_resources": null,
+  "actual_CA_achieved": null,
+  "cost_support": null
+}

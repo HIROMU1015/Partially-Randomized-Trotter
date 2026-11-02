@@ -1,0 +1,208 @@
+{
+  "schema": "C2B_K0_TABLE_QUALIFICATION_CONTRACT_V1",
+  "status": "UNAPPROVED_SCIENCE_CONTRACT_DRAFT",
+  "scope": "C_PR_AWARE_DF_C2B_K0_TABLE_IID_GRID_V1",
+  "implementation": "C2_K0_exact_choice_grid_table_v1",
+  "base_commit": "99fcaca44f6b015ec64714a8552641dd044b246a",
+  "entry": "scripts/run_research_c_pr_aware_df_stage_c2.py",
+  "source_manifest": "artifacts/research_c_pr_aware_df_stage_c2/2026-10-27/technical/SOURCE.json",
+  "source_manifest_sha256": "2cfb05ea3764c220fdc5ffdc3eae1f1bc54bfc107b45a6ffacac0c6a09e3b45b",
+  "records": {
+    "C1_result": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/result.json",
+    "C1_STOP": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/STOP.json",
+    "C1_SOURCE": "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/SOURCE.json",
+    "baseline_tail": "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/baseline_tail.json",
+    "proposed_tail": "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/proposed_tail.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final.npz": "f3a3141059e29f79f39c3f6d3721562abfa7221ad97ce06a118331f6583e1a02",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final.npz": "f47a9fbf86918458ea0db6549468f2041b3b87bba6649ff70234467a442cd227",
+    "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/SOURCE.json": "e4720e17afdfceda1e23027e5623b07c0fb588f87462229633939b09d2ac8ac1",
+    "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/baseline_tail.json": "c1ead156a101a77470d005c3fd5e9a231470d342c088a944bca015421c57e81c",
+    "artifacts/research_c_pr_aware_df_stage_b/2026-10-27/B1-run01/proposed_tail.json": "b8ac37bb622982d8347a8b52e8ba03cf2177b2b112d57e7af9cfc706baf0e72c",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/SOURCE.json": "9cdabfe801c76085d45cacd4188196ee3715438dff3828a031efb78bdb0db4c9",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/baseline_law_gate.json": "88ab3bc62d49173bdf7e041480cf1548f45a72d8638c803a46a820f7cbdc03a7",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/proposed_law_gate.json": "a8eb6c609766b5536be54013761dab1754b24ce51d2a5f1cb1b578462b92e32b",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/SOURCE.json": "c54cdb26f9d3090a3caed6a61a2e12dc88f828d9fa1fdf1aafa33f4cfc39d99b",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/STOP.json": "4c46fcaadb682fca68504e2c1f48c405dea1258b4105b9f4299521fa38bb0300",
+    "artifacts/research_c_pr_aware_df_stage_c/2026-10-27/C1-run01/result.json": "a8268020dcf6ed40d9325b049b0df64167009492c9b6c879907fdfb9a3132c71",
+    "docs/research/research_c_pr_aware_df_stage_c1_contract_draft_20261027.json": "d2256190c1b0e5c5daf4a51e90e13d727e5836f7a0218321356f2eab85fd08ee"
+  },
+  "physical": {
+    "molecule": "linear H4",
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "representation": "normal number CDF",
+    "rank": 8,
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "ld": 2,
+    "delta": "1/10",
+    "s": 4,
+    "r": 16,
+    "K": 0,
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "atoms_per_arm": 216,
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875,
+    "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+  },
+  "original_H4_input_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "original_input_decode": false,
+  "compiler": {
+    "qiskit": "1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false,
+    "new_compilation": false
+  },
+  "random_model": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+  "source_model": {
+    "numpy": "1.26.4",
+    "mapping": "p.cumsum();cdf/=cdf[-1];searchsorted(random,side=right)",
+    "uniform": "(uint64>>11)/2**53",
+    "replace": true,
+    "K0_order": "probability1;discarded order draws included in IID assumption",
+    "PCG64_independence_proven": false
+  },
+  "ideal_target": "exact normalized absolute saved binary64-derived atom coefficients,216 per arm;not exact original molecular tensor",
+  "evaluation": [
+    "load fixed C1 provenance and2 saved B1 tables",
+    "confirm fixed C1 execution SOURCE/status and prior STOP",
+    "reuse existing MixedAtom/make_tail to replay every component field exactly",
+    "reproduce sampler scalar normalization and NumPy choice CDF without random draws",
+    "compute exact rational grid counts and direct TV;separate table-rounding/CDF/grid stages",
+    "propagate2*rs*2**m*eta capped2 for26 registered arm/rounds under declared IID grid and same-unitary-map assumptions",
+    "write UNQUALIFIED C1 preview with actual synthesis/law/shots/total null;save all evidence,STOP and publish"
+  ],
+  "reused_functions": [
+    "pr_dictionary_validation.prototype.MixedAtom/make_tail",
+    "NumPy Generator.choice(size=0) argument validator",
+    "NumPy cumsum/searchsorted semantics",
+    "c1_stage3_integrated.Calls/resource_plan"
+  ],
+  "numerical_allowance": {
+    "coefficient_and_component_replay": "exact rational and binary64 equality;no fitted tolerance",
+    "probability_acceptance": "fixed NumPy1.26.4 implementation;size0 consumes0 random words",
+    "arithmetic": "Fraction exact finite-grid counting/TV;outward-rounded binary64 display",
+    "CDF": "actual binary64 cumulative sum and division retained as exact rationals",
+    "allowance_change": false,
+    "CA_phase_failure_conditions": "inherited metadata only,no CA/shots reevaluation"
+  },
+  "classification": {
+    "success": "exact categorical table distance under explicitly assumed IID uniform53bit model",
+    "unresolved": "PCG64 IID/reference bridge/angle-normalization/native-P0 synthesis/cost support remain unknown;not an overall evidence GO",
+    "FAIL": "SOURCE/input/role/schema or component replay/normalization/order mismatch;STOP dependent work",
+    "no_go": "large conditional bound is lack of usefulness of this sufficient estimate,not physical impossibility or PR-aware DF hypothesis failure"
+  },
+  "call_limits": {
+    "saved_load": 1,
+    "identity_gate": 1,
+    "table_replay": 2,
+    "choice_grid_analysis": 2,
+    "law_round": 26,
+    "arm_qualification": 2,
+    "output_summary": 1
+  },
+  "maximum_logical_units": 35,
+  "call_definition": {
+    "saved_load": "grouped scalar JSON load1",
+    "identity_gate": "fixed C1 SOURCE/status1",
+    "table_replay": "one exact existing make_tail replay per arm2",
+    "choice_grid_analysis": "one vector table operation per arm2;216 atoms/arm,includingall normalization/TV stages",
+    "law_round": "2arms*13rounds26,not extra axiscalls;raw complex norm",
+    "arm_qualification": "2 null C1-preview outputs,no shots/resources call",
+    "output_summary": "one status serialization/summary1"
+  },
+  "output_files": [
+    "contract.json",
+    "SOURCE.json",
+    "identity.json",
+    "resource_plan.json",
+    "{arm}_replay.json",
+    "{arm}_table.json",
+    "{arm}_qualification.json including13rounds",
+    "result.json",
+    "science_calls.jsonl",
+    "resources.json",
+    "STOP.json",
+    "failure.json if needed"
+  ],
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "threadpoolctl": "3.6.0",
+    "symengine": "0.13.0"
+  },
+  "new_fit": 0,
+  "optimizer": 0,
+  "rank_search": 0,
+  "sampling": 0,
+  "build_compile": 0,
+  "NPZ_QPY_decode": 0,
+  "DF_PF_RTE_operator_evaluation": 0,
+  "shot_recalculation": 0,
+  "total_resource_recalculation": 0,
+  "C1_evidence_upgrade": false,
+  "C2A_C_executed": false,
+  "retry": 0,
+  "resume": 0,
+  "fresh_output": "artifacts/research_c_pr_aware_df_stage_c2/2026-10-27/C2B-run01",
+  "mandatory_stop": true,
+  "stop": [
+    "SOURCE/input/replay/correctness mismatch:preserve partial evidence,stop dependent calls",
+    "no fallback,posthoc tolerance change,rank change,extra sampling or retry/resume",
+    "unknown PCG64/synthesis/reference/support retainsnull;continue onlyregistered table cells",
+    "publish and remote verify,mandatory STOP;C1 reevaluation and C2A/C need separate instructions/permission"
+  ],
+  "resources": {
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "wall_cap": null,
+    "parallelism": "2 independent small rational probability tables using actual resource_plan;no large operator work",
+    "shared_environment_changes": false
+  },
+  "limits_of_conclusion": [
+    "law-table bound does not enclose missing CAR-to-atom/angle/normalization defects",
+    "IID uniform bits are a model,not a theorem about fixed PCG64 seeds",
+    "no actual same-CA/guaranteed shots/population-cost advantage follows",
+    "B1/DF/reference remain binary64 numerical pilot"
+  ],
+  "execution_permission": "Separate explicit user chat permission is required for this fixed35-call saved-H4 table analysis;no approval proof/record/grant"
+}

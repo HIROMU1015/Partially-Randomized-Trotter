@@ -1,0 +1,116 @@
+{
+  "original_exploration_confirmation_conditional_pilot": {
+    "budget_reset": false,
+    "failed_calls_refunded": false,
+    "historical_unknown_actual_totals": null,
+    "known_calls": {
+      "compile": 1716,
+      "control_probe": 360,
+      "occurrence": 3200,
+      "primitive": 1470,
+      "reference_matvec": 400,
+      "trajectory": 842
+    },
+    "reservations": {
+      "compile": 20,
+      "control_probe": 4,
+      "occurrence": 64,
+      "trajectory": 10
+    },
+    "reservations_are_not_actual_totals": true,
+    "unaccepted_new_task_actual_totals": {},
+    "unaccepted_new_tasks_fully_reserved": 0
+  },
+  "subsequent_native_B0I": {
+    "known_compile_entered_or_completed": 24,
+    "unknown_compile_reserved": 6,
+    "parts": [
+      {
+        "scope": "pilot_run03_failed",
+        "compile": 6
+      },
+      {
+        "scope": "pilot6_complete",
+        "compile": 6
+      },
+      {
+        "scope": "family_run03_unknown_held",
+        "compile": 6
+      },
+      {
+        "scope": "family_run04_complete",
+        "compile": 12
+      }
+    ],
+    "other_old_operations_and_unknown_preserved": true
+  },
+  "conservative_carry": {
+    "compile": 1766,
+    "trajectory": 852,
+    "sampling_calls": 3264
+  },
+  "new_stage": {
+    "groups": 72,
+    "compile": 144,
+    "trajectory": 64,
+    "sampling_calls": 320,
+    "rte_events": 1280,
+    "control_probe": 40
+  },
+  "proposed_cumulative_caps": {
+    "compile": 1910,
+    "trajectory": 916,
+    "sampling_calls": 3584
+  },
+  "unknown_actual_totals": null,
+  "reservations_are_actual_totals": false,
+  "refund": 0,
+  "reset": false,
+  "carry_digest": "0bbcbd5c8d3b64b293d2172613d4e65a18f1983f1509be114fc81001f1e720dd",
+  "additional_signal": {
+    "T_values": [
+      0.4,
+      1.6
+    ],
+    "full_reference": 2,
+    "full_reference_matvec": 800,
+    "base_signal_paths": 8,
+    "B0I_analytic_overlay": 2,
+    "primitive_probes": 750,
+    "control_probes": 40,
+    "SCF": 0,
+    "DF_generation": 0,
+    "state_generation": 0
+  },
+  "output": {
+    "root_cap_GiB": 8,
+    "stage_output_cap_GiB": 2,
+    "control_cap_MiB": 16,
+    "worker_cap_MiB": 64,
+    "active_worker_reserved_MiB": 512,
+    "monitor_journal_cap_MiB_per_stage": 128,
+    "log_cap_MiB_per_stage": 8,
+    "block_allocation_allowance_GiB": 1,
+    "admission_free_GiB": 10,
+    "admission_free_inodes": 100000,
+    "completed_checkpoints_and_trajectory_json": true,
+    "full_QPY_cache": false,
+    "temp_locations": "private per-task .runtime_cache under HOME; no shared/venv cache",
+    "expected_inode_count": 30000,
+    "conservative_inode_bound": 90000,
+    "inode_basis": "74 tasks * diagnostic cap1024 + bounded progress/receipts/cache/directories; admission100000"
+  },
+  "wall": {
+    "new_T_unmeasured": true,
+    "engineering_range_hours": [
+      2,
+      8
+    ],
+    "completion_guaranteed": false,
+    "assumed_worker_utilization": "normal <=8; 2 heavy groups serial; 2 signal jobs parallel",
+    "role_CPU_seconds_cap": 86400,
+    "total_wall_cap": null,
+    "no_automatic_retry": true
+  },
+  "approved": false
+}

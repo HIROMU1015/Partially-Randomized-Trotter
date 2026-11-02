@@ -1,0 +1,38 @@
+{
+  "status": "STRUCTURAL_REQUIREMENTS_NOT_A_BOUND",
+  "per_arm": {
+    "Gaussian_bases": 9,
+    "head_relative_transitions": 4,
+    "tail_frames": 6,
+    "supports_per_frame": 36,
+    "signed_atoms": 216,
+    "events_per_kernel": 16,
+    "tail_basis_runs": "1..16;sharing exact basis keys only",
+    "head_basis_transitions": "two independent3-factor halves;no head-tail fusion",
+    "scalar_phase": "nuclear scalar once plus extracted tail identity",
+    "shells": [
+      "ancilla H",
+      "X H",
+      "Y Sdg then H"
+    ],
+    "actual_inverse": "reverse sequence and actual gate inverses"
+  },
+  "finite_inputs": [
+    "9 basis U matrices and4 directed relative products per arm",
+    "216 atom supports/signs and K0 common unsigned angle per arm",
+    "2 deterministic half-heads,scalar/identity phase and3 common shells",
+    "all generated primitive gate definitions and full P0 numerical transformations"
+  ],
+  "raw_route": "local operator error enclosures plus unitary telescoping could cover all words",
+  "P0_obstacle": "finite primitive alphabet does not bound numeric1q run resynthesis across variable event boundaries",
+  "needed_proofs": [
+    "uniform Gaussian/relative phase/operator enclosures",
+    "whole-P0 translation/resynthesis/mod2pi/declared-phase arithmetic coverage",
+    "reference errors and shell error in same raw complex norm",
+    "actual-adjoint proof with identical shared-state handling"
+  ],
+  "all_law_synthesis_bound": null,
+  "cost_support": null,
+  "sampled_residual_is_bound": false,
+  "event_P0_sum_is_whole_P0_bound": false
+}

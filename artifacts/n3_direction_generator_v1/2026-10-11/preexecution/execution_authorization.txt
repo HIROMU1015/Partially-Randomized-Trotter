@@ -1,0 +1,447 @@
+# Codexへの指示：N3保証生成・限定移送／N1技術復旧・一回再実行
+
+## 1. 今回の目的と実行認可
+
+前回のGPT科学レビューに基づき、準備済みのN3・N1契約に従って、実装・限定検証・独立監査・GitHub公開を実施してください。
+
+対象Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+準備branch：
+
+`n3-generator-n1-recovery-preparation-20261011`
+
+準備固定commit：
+
+`ba4530678df9d665d2e6005fb08179b0f7a7921f`
+
+以下を正本とします。
+
+**N3契約**
+
+- `docs/research/n3_generator_transfer_contract_v1_20261011.md`
+- `docs/research/n3_generator_transfer_contract_v1_20261011.json`
+
+**N1契約**
+
+- `docs/research/n1_decode_recovery_contract_v1_20261011.md`
+- `docs/research/n1_decode_recovery_contract_v1_20261011.json`
+
+共通入口：
+
+`docs/research/n3_generator_n1_recovery_preparation_20261011.md`
+
+**本指示は、次の二つをそれぞれ独立して明示的に認可するものです。**
+
+1. N3：契約v1で固定した新保証生成器の実装と、12入力に対する限定科学batchを一回だけ実行する。
+2. N1：契約v1で固定したdecode技術修正と、元の科学条件を変更しないN1専用科学batchを一回だけ再実行する。
+
+N3とN1について、**別々のauthorization receipt、source-bound plan、実行source commit、run directory、結果・監査・STOP**を作成してください。
+
+この指示だけで、契約外の追加検証、条件変更、中心テーマの採択、他Trackへの統合を認可したとは扱わないでください。
+
+既存の準備記録にある「未認可」は、当時の履歴としてそのまま残してください。
+
+## 2. 作業開始時の共通確認
+
+最初に次を確認してください。
+
+1. 指定された準備commitと正本契約の全文を読む。
+2. 現在のbranch・HEAD・worktree状態を確認する。
+3. 元rootのdirty/untrackedファイルを保護する。
+4. N3用とN1用に、互いの科学source・結果を混在させない作業領域を用意する。
+5. 旧source、旧結果、旧failure、GPTレビュー、既存STOPの取得と保全を確認する。
+6. N3の固定12入力とN1の固定保存packについて、GitHub上の入力identity・hashを確認する。
+7. 実装前に数学契約、比較対象、資源上限、失敗時STOP条件を読み込み、作業計画に反映する。
+
+既存の科学結果を再レビュー・再実行しないでください。
+
+正本契約と実際の入力・sourceに重大な不整合があれば、科学実行前に報告してSTOPしてください。
+
+---
+
+# Part A：N3保証生成アルゴリズム
+
+## 3. N3の目的
+
+前回のN3では、一外部軌道の方向付き係数保証が、従来のscalar・norm-only保証では認められなかった縮約を受理しました。
+
+今回は、**固定した5点のλ探索に依存せず、Hamiltonianの係数から有効な保証witnessを生成できるか**を調べます。
+
+さらに、結果を見ずに固定済みの12入力について、旧手法と比較し、保証生成法が別入力へ移送できるか判別してください。
+
+これは保証生成法の検証であり、新規定理、一般分子への有用性、量子資源改善を認定する作業ではありません。
+
+## 4. N3の数学契約
+
+適用対象は、正本契約に指定された実対称one-body係数と非負density相互作用、固定粒子数、一外部軌道です。
+
+一般二体Hamiltonian、多外部軌道、exchange、pair hopping、逐次削減へ勝手に拡張しないでください。
+
+係数から取得する共通量を
+
+\[
+U,\quad c,\quad \delta=1/250,\quad D=c-U+\delta
+\]
+
+とし、c>Uのとき、
+
+\[
+M(\kappa)
+=
+\kappa\left(h_A-\frac{U}{\nu}I\right)
++\frac{\delta D}{\nu}I-vv^T
+\]
+
+について、
+
+\[
+0\le\kappa\le D,\qquad M(\kappa)\succeq0
+\]
+
+を満たすwitnessを生成してください。
+
+対応する
+
+\[
+\mu=\frac{\kappa U-\delta D}{\nu}
+\]
+
+も保存し、元の三条件と一致することを独立に確認してください。
+
+### 候補生成
+
+正本契約v1に従い、
+
+- \(x=\kappa/D\in[0,1]\)
+- 最小固有値を使う数値候補探索
+- 最大128回の小行列固有値評価／入力
+- 固定のgolden-section探索
+- dyadic分母 \(2^{16},2^{24},2^{32},2^{40}\)
+- 両端点を含め最大10有理候補／入力
+
+を使用してください。
+
+**数値solverの成功はcertificateではありません。**
+
+### 独立した有理数証明
+
+候補witnessについて、別checkerで以下を確認してください。
+
+- κの範囲
+- μと第三条件
+- 一体LMIの有理PSD
+- 正pivot・負pivot・zero pivotの適切な処理
+- zero pivot時の該当行の条件
+- 数式・証拠・元行列の一致
+- rational bit長上限
+
+負pivotを数値toleranceでzeroへ置き換えないでください。
+
+有理数witnessが見つからない場合は、`UNRESOLVED_NOT_CERTIFIED`とし、物理的に縮約不能とは結論しないでください。
+
+元の五点λによるfallbackを、新生成法の成功として混ぜないでください。
+
+## 5. N3の比較対象
+
+全方法へ共通のU・c・trial情報を適用し、改善がどこから生じたかを切り分けてください。
+
+Primary比較は契約で固定した次の五つです。
+
+1. `legacy_scalar`
+2. `common_norm_only`
+3. `strengthened_scalar`
+4. `five_point_common`
+5. `direct_one_variable`
+
+Secondary比較：
+
+`five_point_legacy_c`
+
+旧scalarの元定義は別途保持し、U/cの改善と方向情報・証拠生成の改善を混同しないでください。
+
+個別手法の受理と、有効certificateのunionによる運用上の受理は別々に報告してください。
+
+## 6. N3の限定移送
+
+入力は準備済みの次のファイルに固定します。
+
+`artifacts/n3_generator_n1_recovery/2026-10-11/preparation/n3_transfer_inputs.json`
+
+SHA-256：
+
+`9e99bda0d98ede7a5eea97002f36ab00378655884f35b0b0aec9af7692078d12`
+
+三つのbase、二つの結合振幅、二つの方向からなる**計12入力**だけを使用してください。
+
+active modes、粒子数、外部位置、相互作用係数、精度、試行状態集合は正本契約どおりに固定してください。
+
+設計に用いた旧4入力を、holdoutの成功例として再計上しないでください。
+
+### 情報分離
+
+保証生成器・selectorには、以下を渡さないでください。
+
+- 真の基底状態
+- 真の基底エネルギー
+- 真のgap
+- 真の縮約誤差
+- 結果確定後の診断ファイル
+
+先に**全12入力のcertificate ledgerを閉じ、hashで固定**してください。
+
+その後に限り、正本契約で許可されたfull/active sectorの真値診断を行ってください。
+
+### 検証の判定
+
+正本契約で定義済みの次の判定を使用してください。
+
+- `GENERATED_TRANSFER_GAIN`
+- `TRANSFER_CERTIFIED_NO_NEW_GRID_GAIN`
+- `NO_TRANSFER_ADVANTAGE_IN_FROZEN_SCOPE`
+- `TECHNICAL_STOP`
+- `SOUNDNESS_STOP`
+
+未使用base群の数、norm-onlyとの違い、共通五点との違いに関する判定条件も、正本契約から変更しないでください。
+
+有効witnessが見つからなくても、入力を追加したり、探索回数やδを変更したりせず、限定結果として記録してください。
+
+## 7. N3の実行上限とSTOP
+
+新規synthetic fixturesは最大24件。
+
+科学batchは、source・入力・authorization・planを固定した後、**一回だけ**実行してください。
+
+正本契約の上限を維持します。
+
+- 12入力、最大72 method records
+- 数値探索最大128 calls／入力
+- 有理witness最大10件／入力
+- 既定λ5点＋下界追加候補最大6点／入力
+- 試行状態最大128件／入力
+- rational最大4096 bits
+- 真値診断最大24 solves、sector dimension最大56
+- CPU最大2 workers、各thread 1
+- worker memory 4 GiB、aggregate 8 GiB
+- JSON shard 32 MiB、全output 512 MiB、log 16 MiB
+- GPU使用なし
+
+wall/CPUの科学上限は契約どおりとし、ツールのpolling timeoutを科学的STOP条件へ置き換えないでください。
+
+Soundness違反や、改変された証拠が受理される場合は`SOUNDNESS_STOP`です。
+
+技術停止時は、失敗記録を保存し、無断retryしないでください。
+
+---
+
+# Part B：N1入力decode復旧
+
+## 8. N1の目的
+
+前回N1は、`ungauged_eta`の保存形式のdecode不備で停止しました。
+
+科学的な性能判断は未取得です。
+
+今回は、**入力境界の技術的不備だけを修正し、元の科学条件を変更せず、N1専用で一回だけ再実行**してください。
+
+N3・N2の科学関数は呼び出さないでください。
+
+## 9. Decoder修正
+
+元のsource：
+
+`bbcb0176d43bfd1f7a10a87fa8f38e200d61ec46`
+
+入力pack：
+
+`artifacts/n13_redesign/2026-10-11/preparation/n1_candidate_input.json`
+
+SHA-256：
+
+`70b2631b114983572cfc92527b2d569a4b48b03a6d88790b75dcf89f13614438`
+
+`ungauged_eta`は、plain listではなく、
+
+```json
+{
+  "real": [0, 0, 0, 0],
+  "imag": [0, 0, 0, 0]
+}
+```
+
+の形式です。上記の数値は形式説明用であり、実際の入力値を置き換えてはいけません。
+
+新versionのdecoderでは、実際の入力形式を厳密に処理してください。
+
+- vector/matrixの型・shape・長さを確認する。
+- real/imag各成分のfinite性・数値型を確認する。
+- spectrumの非zero虚部を拒否する。
+- bool、NaN、Infinity、ragged、unknown/oracle fieldを拒否する。
+- 元binary64値の`as_integer_ratio`を保持する。
+- 元packを再生成・再丸め・上書きしない。
+- 原Hamiltonianを勝手にHermitian化しない。
+- 既存の非Hermitian微小成分の誤差会計を保持する。
+
+### 必須preflight
+
+**実保存packの全contextを、新decoderで検査してください。**
+
+- 三contextすべて
+- Factor候補44件
+- Pair178件
+- Gauged/ungauged
+- Candidate ID・順序・family・group
+- 元の係数・frame・factor
+- q、時間、精度、粒子数の契約
+
+合成fixtureだけでなく、実保存packで回帰testをPASSさせてください。
+
+実行前preflightでは、PF・cost・compile・真値を計算しないでください。
+
+## 10. N1科学条件の維持
+
+元の条件を一切変更しないでください。
+
+- JW 4 modes、2粒子、sector dimension 6
+- Signed DF rank2
+- Weights (0.7, −0.4)
+- T=0.6
+- q=1,2,4,8
+- Model budget 0.02
+- Complex signal epsilon 0.04
+- X/Y合計failure 0.05
+- 決定論S2
+- 既存の係数PF上界・モデル誤差上界・位相誤差会計
+- 128-bit外向き区間と既定の一回256-bit refinement
+- Safe integer Hoeffding shots
+- 元の比較対象とtie-break
+
+回路側も、Qiskit 1.3.0、固定seed、compiler条件、ordinary control、relative scalar phase、full measured wrapperを保持してください。
+
+特に`qubits_initially_zero=False`を維持してください。
+
+RZ/CXそれぞれについて、shot数×X/Y full-wrapper費用で判断し、exact fallbackを保持してください。
+
+未知の真の誤差をselectorに使用せず、selection ledgerを閉じてから診断してください。
+
+保証scopeは`ideal_gate_certificate_with_numerical_compile_validation`です。数値的なnative operator照合を厳密な機械certificateと呼ばないでください。
+
+## 11. N1専用の一回再実行
+
+Decoder修正・回帰test・全context preflightを完了した後、sourceを固定してください。
+
+N1専用の新authorization、source-bound plan、新しい空run directoryを作成してください。
+
+**旧N13の混合runnerは再実行しないでください。**
+
+科学batchはN1専用で一回のみです。
+
+N3・N2科学実行はゼロとしてください。
+
+既定上限：
+
+- Wrapper requests 2,920
+- Wrapper compile hard cap 3,072
+- Basis compile最大44
+- 全compile最大3,116
+- CPU最大2 workers、各thread 1
+- Worker memory 4 GiB、aggregate 8 GiB
+- JSON/IR shard 32 MiB、output 512 MiB、log 16 MiB
+- Native回路最大20,000 operations
+- Pauli dictionary最大256
+- Rational最大4096 bits
+
+入力や候補を増やさず、resume・retry・旧結果の上書きを行わないでください。
+
+全exact候補が係数PF上界で不適格な場合は`UNRESOLVED_PF_CERTIFICATE`としてください。
+
+改善なし、exact fallback、認証不能は、それぞれの意味を区別して保存してください。
+
+---
+
+# Part C：共通の監査・保存・引継ぎ
+
+## 12. 実行履歴と独立監査
+
+N3・N1それぞれについて、以下を保存してください。
+
+1. Source commit・input hash・plan fingerprint
+2. Authorization receipt
+3. 使用環境・依存version
+4. 全候補と比較対象
+5. 数学的証拠・不受理理由
+6. 実際の実行結果・数値診断
+7. テスト・失敗・警告・修正履歴
+8. Wall/CPU/RSS・workers・計算回数
+9. 独立保存監査
+10. Mandatory STOPと次stage未認可
+
+数学的証拠、浮動小数点診断、回路費用の推定、実際の量子shot実行を混同しないでください。
+
+独立checkerは、できる限り科学実行の実装をそのまま呼び出さず、保存値から再構成・検証してください。
+
+## 13. GitHub保存と保全
+
+N3とN1は、**別々の科学結果として追跡できる状態**でGitHubへ保存してください。
+
+結果報告には、各作業のsource・結果・監査・STOPへの固定commit URLを明記してください。
+
+Commit・push後、GitHubから独立して取得し、実際のremote SHA、blob identity、source・結果・監査の一致を確認してください。
+
+既存rootのdirty/untracked、旧Track A/B、過去のA/B′/C/N1/N2/N3科学結果、元failure、元STOPを変更しないでください。
+
+既存global manifestの`description`欠落は保守事項です。今回の作業で修復せず、全体checkerの失敗と新entry・局所監査の結果を分けて報告してください。
+
+Force push、無関係な一括stage、旧結果の上書きは禁止です。
+
+## 14. Mandatory STOP
+
+N3・N1それぞれの限定作業が完了、またはSTOP条件に到達したら、結果を保存して停止してください。
+
+N3が完了したことを理由に、N1の条件を変更しないでください。N1の技術的結果を理由に、N3の新入力・探索を追加しないでください。
+
+**Codexは以下を決定しないでください。**
+
+- N3を中心研究に採択すること
+- N1の新規性・総資源優位を確定すること
+- 一般の分子への優位を主張すること
+- 次の科学batchを認可すること
+- 他Trackへ統合すること
+
+完了後、科学的判断をGPTへ戻してください。
+
+### 最終報告に必要な内容
+
+**N3**
+- 12入力の全結果とvalid witness
+- 旧scalar・norm-only・共通五点・直接生成の比較
+- 生成法による追加受理の有無
+- 不受理・未認証・境界例
+- 有理PSDの独立照合
+- 証拠生成の計算量・bit長・実資源
+- 契約に基づく判別status
+
+**N1**
+- Decoder修正内容
+- 実pack全contextの回帰・preflight
+- 科学batch実行成否
+- 係数PF上界によるselectorの判定
+- Basis-onlyとの違い
+- Exact・shift/cutoff・whole-Pauli対照との差
+- RZ/CXの総費用と、その要因
+- 契約に基づく判別status
+
+**共通**
+- Branch
+- Source commit
+- Result commit
+- Test/audit結果
+- GitHub固定URL
+- Remote再取得結果
+- 技術停止・科学的否定結果の区別
+- 次stage未認可・Mandatory STOP
+
+**今回の目的は、N3の保証生成法が別入力でも新しい判断を生むか、そしてN1の未取得科学結果を固定条件のまま回収できるかを判別することです。**
+
+有利な結果を得るための事後的な条件変更は行わず、成功・失敗・未判定をすべて科学的証拠として保存してください。

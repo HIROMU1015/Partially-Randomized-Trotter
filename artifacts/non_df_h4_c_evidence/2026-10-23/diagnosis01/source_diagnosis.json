@@ -1,0 +1,43 @@
+{
+  "status": "CONFIRMED_IMPLEMENTATION_DEFECT_REFERENCE_STATE_ACTION_MISSING",
+  "SOURCE": "49c18ccc35f14041df45bfeff455ba5e67543182",
+  "source_file": "src/trotterlib/h4_ball_evidence.py",
+  "reference_call_line": 322,
+  "signal_definition_line": 216,
+  "observed_saved_result": {
+    "file": "run01/pauli_jw_result.json",
+    "reference_real_lower": "0",
+    "reference_real_upper": "0",
+    "reference_imag_lower": "0",
+    "reference_imag_upper": "0",
+    "raw_axis_status": "TARGET_NOT_MET",
+    "raw_axis_count": 20,
+    "scientific_acceptance": "REJECTED_IMPLEMENTATION_DEFECT_NOT_SCIENTIFIC_INFEASIBILITY"
+  },
+  "actual_expression": "(state_dagger * exponential_matrix)[0,0]",
+  "required_expression": "(state_dagger * exponential_matrix * state)[0,0]",
+  "shape_error": "The helper accepts a square matrix and selects the first entry of a 1-by-dimension row instead of requiring an evolved column vector.",
+  "why_prior_tests_missed_it": "Production end-to-end artificial fixtures used the first basis vector; for that state the erroneous first-column contraction agrees with the required expectation. Direct exponential tests did not test the reference call with non-vacuum or superposition states.",
+  "independent_artificial_counterexample": "One-qubit state [0,1] and identity matrix: expected reference 1, sealed call returns 0. New regression failed once, with no H4 input loaded.",
+  "impact": [
+    "Pauli-PF and Pauli-PR reference and signed bias derived from the incorrect reference are invalid.",
+    "All 20 Pauli target judgments based on that reference are invalid for scientific interpretation.",
+    "DF uses the same reference call; its ongoing worker was stopped through its owned witness before any final tier result was saved.",
+    "Normalization and preparation artifacts are retained as raw evidence; no independent scientific acceptance is performed.",
+    "Original pilot and B diagnostics remain unchanged; no original N/G or status is revised."
+  ],
+  "proposed_fix": "proposed_reference_fix.patch",
+  "patch_applied": false,
+  "required_new_regressions_before_any_retry": [
+    "Non-vacuum state identity reference equals 1.",
+    "Complex superposition and noncommuting Hamiltonian reference equals the full scalar contraction.",
+    "signal helper refuses matrix-valued output and mismatched shapes.",
+    "Both Pauli and DF supplied-input production paths use evolved state vectors for the reference."
+  ],
+  "scientific_run_retry": 0,
+  "source_modified_during_run": false,
+  "formal_certificate_accepted": false,
+  "N_G_reaccounting": false,
+  "original_H4_native_completion_verified": false,
+  "original_supervisor_cause": "UNKNOWN"
+}

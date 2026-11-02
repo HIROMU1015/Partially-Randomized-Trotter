@@ -1,0 +1,79 @@
+{
+  "AD03": "DEFERRED",
+  "SOURCE": "68ee03a7cef019daa0e6cf917b6104bb645884f7",
+  "accepted_cost_rows": 0,
+  "artifacts": {
+    "compiled_qpy": {
+      "bytes": 229820541,
+      "file": "compiled.qpy",
+      "sha256": "52a24d64c5db054d35a70cef7d69357d0f4fda7b9967d5c012ed7e127ba7dcbd"
+    },
+    "compiled_vector": {
+      "bytes": 131338,
+      "file": "compiled_vector.npz",
+      "sha256": "a971ed8e97edc7f688e42e07ca942756bf43f8b914d6c8ef86d8258cbd0c4554"
+    }
+  },
+  "checks": [
+    {
+      "PASS": true,
+      "check": "lowered_vs_saved_wrapper_vector",
+      "new_action": 0,
+      "origin_gate_sha256": "9f9495cf671e9af19aa50ed6746ff9250860f958e0d885f03cc6b5627311fff1",
+      "origin_vector_sha256": "a971ed8e97edc7f688e42e07ca942756bf43f8b914d6c8ef86d8258cbd0c4554",
+      "phase_alignment": false,
+      "raw_error": 2.326360070803798e-11,
+      "reused": true,
+      "strictly_below": 1e-09
+    },
+    {
+      "PASS": true,
+      "check": "compiled_vs_lowered",
+      "phase_alignment": false,
+      "raw_error": 0.0,
+      "strictly_below": 1e-09
+    },
+    {
+      "PASS": true,
+      "check": "compiled_vs_saved_wrapper_vector",
+      "phase_alignment": false,
+      "raw_error": 2.326360070803798e-11,
+      "strictly_below": 1e-09
+    }
+  ],
+  "compiled_schema": {
+    "ancilla": 12,
+    "final_measurements_removed_only": true,
+    "gate_counts": {
+      "cx": 408244,
+      "measure": 1,
+      "rz": 2855001,
+      "sx": 696962,
+      "x": 116160
+    },
+    "global_phase": 1.7007329412166725,
+    "layout": "None",
+    "nqubits": 13
+  },
+  "compiler_policy": "M5_OPT1_PRESERVE_ONEQ_RUNS_CONTROL_V1",
+  "mandatory_STOP": true,
+  "new_compile": 1,
+  "new_lowered_replay": 0,
+  "new_lowering": 0,
+  "next_phase_started": false,
+  "old_58_axes_preserved": true,
+  "old_STOP_remains_STOP": true,
+  "old_cost_compatibility": false,
+  "oneq_policy_journal_sha256": "a6fbf96f04e8aee5caa79086b64a11b91672fd5ffc76fd55646b53bf479a90bc",
+  "phase_alignment_for_acceptance": false,
+  "pipeline_identity": "8745dcd7ab19e852f13fb67cc2423f87836b566f957ff4624128b6873ae24174",
+  "plan_sha256": "7ab2b57e6a70a138de66ae29acfd3e84d148518474d89c857cebd5b6b3447c3c",
+  "postcompile_phase_correction": false,
+  "retry": false,
+  "reused_initial_raw_gate": 1,
+  "sampling": 0,
+  "sine": 0,
+  "statevector_replays": 1,
+  "status": "PRESERVE_ONEQ_SINGLE_STATE_PASS_MANDATORY_STOP",
+  "wall_seconds": 484.5563461314887
+}

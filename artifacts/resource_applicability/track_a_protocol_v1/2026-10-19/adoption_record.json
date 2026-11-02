@@ -1,0 +1,99 @@
+{
+  "schema": "TRACK_A_PROTOCOL_ADOPTION_V1",
+  "protocol_status": "ADOPTED_V1_DOCUMENT_ONLY",
+  "version": "v1",
+  "draft_commit": "9c54d89f6154525e3c7c814a4da5ecdc37453b8a",
+  "decision_authority": "USER_MESSAGE_CURRENT_SESSION",
+  "adoption_scope": "PROTOCOL_DOCUMENT_POLICY_ONLY",
+  "new_science_authorized": false,
+  "numerical_reanalysis_authorized": false,
+  "push_authorized": false,
+  "automatic_application_to_existing_contracts": false,
+  "certifies_all_series_core_complete": false,
+  "decisions": [
+    {
+      "id": "AD01",
+      "status": "ADOPTED_BASIC_POLICY",
+      "subject": "共通DF政策",
+      "adopted_scope": "tol-only 1e-8・rank自動決定を採択。H4 legacy DF12は独立した既存成果として保全。",
+      "conditions": "rank数は統一しない。legacyをtol-onlyへ読み替えず、全生成規則同一性は未認定。"
+    },
+    {
+      "id": "AD02",
+      "status": "ADOPTED_BASIC_POLICY",
+      "subject": "入力manifestと来歴",
+      "adopted_scope": "SCF・軌道・積分・DF・状態・runtimeをmanifestで照合する基本方針を採択。",
+      "conditions": "未照合をPASSへ変更しない。solver差等の個別同等性や再生成は今回認定・承認しない。"
+    },
+    {
+      "id": "AD03",
+      "status": "DEFERRED_ADDITIONAL_PF",
+      "subject": "追加PF公式",
+      "adopted_scope": "既存S2/S4の比較条件を維持。m5_best等の追加公式を主比較へ採用する判断は保留。",
+      "conditions": "m5 pilotは再開しない。保留は非ZERO残差だけによる棄却や既存S4の無効化を意味しない。"
+    },
+    {
+      "id": "AD04",
+      "status": "ADOPTED_BASIC_POLICY",
+      "subject": "共通比較・会計条件",
+      "adopted_scope": "線形1 Å/STO-3G/T=.8/P=0/5ε/通常signed・倍率1/full wrapper/directional/固定compilerと、既存ε/√2・α_axis=.025の基本会計を採択。",
+      "conditions": "SOURCE固有のallowance・数値診断・guardを維持。shot αと標本推論のαを分離し、厳密bias保証は付けない。"
+    },
+    {
+      "id": "AD05",
+      "status": "CONDITIONALLY_ADOPTED",
+      "subject": "実測・model・欠測区分",
+      "adopted_scope": "既存DIRECT_MEASURED/VALIDATED_MODEL_ESTIMATE/MISSING区分と適用scopeを明示する条件で採択。",
+      "conditions": "全候補や全P対照の新規直接compileを一律必須化しない。model条件付き最良を実測最良へ改称しない。"
+    },
+    {
+      "id": "AD06",
+      "status": "ADOPTED_BASIC_POLICY",
+      "subject": "探索規則・境界",
+      "adopted_scope": "系別の根拠ある疎な事前登録domain、5ε評価、有限標本・選択効果・境界の明示を採択。",
+      "conditions": "同候補数・同直積格子を強制せず、既存強化集合を弱めない。新候補数や境界拡張は個別契約。"
+    },
+    {
+      "id": "AD07",
+      "status": "ADOPTED_BASIC_POLICY",
+      "subject": "独立確認P",
+      "adopted_scope": "H8型の事前固定・新cohort・新seed・標本非混合を共通手順とし、原則両端ε=.05/.0005を対象とする。",
+      "conditions": "n=48は強制しない。分散・差・希少event・目的から個別設計。n・power・CI/多重比較は別固定、母平均保証とは区別。"
+    },
+    {
+      "id": "AD08",
+      "status": "CONDITIONALLY_ADOPTED",
+      "subject": "技術・model閾値",
+      "adopted_scope": "既存SOURCE/契約のnative tolerance・closure・guard・model閾値を明示して維持する条件で採択。",
+      "conditions": "過去2%等は該当契約の基準。一律の新共通閾値は制定しない。既存STOP・受入条件の緩和なし。"
+    },
+    {
+      "id": "AD09",
+      "status": "CONDITIONALLY_ADOPTED",
+      "subject": "機構分解と説明欠測",
+      "adopted_scope": "exact両軸費用分解と説明側statusを分け、説明欠測を明示する条件で採択。",
+      "conditions": "説明未検証の点は費用coreまでに限定。A82回収を説明完了としない。新cohortの説明も自動接続しない。"
+    },
+    {
+      "id": "AD10",
+      "status": "CONDITIONALLY_ADOPTED",
+      "subject": "legacy・掲載例外",
+      "adopted_scope": "legacy/model/profile未確認/限定集合/探索点の例外ID・scope・caption表示を条件として採択。",
+      "conditions": "個別主図・主表の最終採否や全系COMMON_CORE_READYを自動認定しない。条件付き掲載と完全共通条件を区別。"
+    },
+    {
+      "id": "AD11",
+      "status": "CONDITIONALLY_ADOPTED",
+      "subject": "完了・主張範囲",
+      "adopted_scope": "証拠範囲を限定したCore/条件付きbenchmarkで一区切りにできる方針を採択。",
+      "conditions": "Extended/Guaranteeへ自動進行せず、PR不利・非再現も有効結果。母平均・tail・厳密biasの保証は未取得。"
+    },
+    {
+      "id": "AD12",
+      "status": "ADOPTED_BASIC_POLICY",
+      "subject": "移行・担当",
+      "adopted_scope": "正式文書と個別実行承認を分離し、既存契約へは自動適用しない方針を採択。",
+      "conditions": "Codex A/Bを含む既存SOURCE/結果/grant/ledger/marker/STOPは不変。将来移行は担当と対象差分を別承認。"
+    }
+  ]
+}

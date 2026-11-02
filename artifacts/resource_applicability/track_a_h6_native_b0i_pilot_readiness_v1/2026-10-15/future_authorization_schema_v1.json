@@ -1,0 +1,38 @@
+{
+  "schema": "future_h6_pilot_authorization_schema_v1",
+  "is_authorization": false,
+  "issue_only_after_explicit_new_user_approval": true,
+  "required": [
+    "scope",
+    "approved_by_user",
+    "runtime_authorization",
+    "contract_sha256",
+    "SOURCE",
+    "automatic_retry",
+    "exclusive_output",
+    "approval_evidence_sha256",
+    "review_commit",
+    "synthetic_only",
+    "input_receipts_digest",
+    "budget_digest",
+    "binding_digest",
+    "profile_digest",
+    "source_hashes_digest",
+    "allowed_cpus_digest",
+    "carry_digest"
+  ],
+  "fixed": {
+    "scope": "H6_NATIVE_B0I_PILOT6_V1",
+    "SOURCE": "b4c12d7a71dec57751ce21ebd434d797577ab450",
+    "automatic_retry": false,
+    "synthetic_only": false
+  },
+  "semantics": {
+    "contract_sha256": "SHA256 exact final sealed contract bytes",
+    "approval_evidence_sha256": "actual explicit user approval bytes SHA256; never fabricate",
+    "review_commit": "independent final technical binding review immutable 40-character commit",
+    "field_digests": "existing guard d0.digest(c[field]) exact",
+    "exclusive_output": "new unused home output; sibling .oneshot durable consumed marker",
+    "approved_booleans": "set true only after explicit user approval; this file creates no receipt or grant"
+  }
+}

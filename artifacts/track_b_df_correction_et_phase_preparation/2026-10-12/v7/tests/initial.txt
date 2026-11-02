@@ -1,0 +1,28 @@
+.F...................................................................... [ 79%]
+...................                                                      [100%]
+=================================== FAILURES ===================================
+_ test_unsupported_raw_phase_preserved_not_rounded_and_T_remains_unknown[-0.043] _
+
+phase = -0.043
+
+    @pytest.mark.parametrize('phase', [.073, -.043, .19])
+    def test_unsupported_raw_phase_preserved_not_rounded_and_T_remains_unknown(phase):
+        from qiskit import QuantumCircuit
+        from qiskit.quantum_info import Operator
+        qc = QuantumCircuit(2)
+        qc.x(0);qc.cx(0, 1);qc.global_phase = phase
+        target = Operator(qc).data.copy()
+        previous = old.native_inventory(qc)
+        current = acceptance.native_inventory(qc)
+        assert not current['phase_supported']
+        assert current['ordered_native_ir'] == previous['ordered_native_ir']
+>       assert current['global_phase_raw'] == str(F(phase))
+E       AssertionError: assert '702582405603...5899906842624' == '-30984765436...7594037927936'
+E         
+E         - -3098476543630901/72057594037927936
+E         + 7025824056034207/1125899906842624
+
+tests/tracks/algorithm_codesign/test_df_correction_et_v7_phase_accounting.py:32: AssertionError
+=========================== short test summary info ============================
+FAILED tests/tracks/algorithm_codesign/test_df_correction_et_v7_phase_accounting.py::test_unsupported_raw_phase_preserved_not_rounded_and_T_remains_unknown[-0.043]
+1 failed, 90 passed in 3.01s

@@ -1,0 +1,108 @@
+{
+  "classification": "TECHNICAL_INCONCLUSIVE",
+  "technical_reason": "CapFailure: Output/log cap at metadata boundary",
+  "source_S": "016e02b486cd4b182b654af18743ef1ef50fe7e6",
+  "authorization_A": "111199c45a9c37ac81821512ea8a44e6093f50cc",
+  "execution_branch": "track-b-df-correction-et-v4-one-shot-execution-20261012",
+  "marker_sha256": "446d97e0f1744285ed21fbfff6e349b3f06c65ee0959af0f605dff9bb0c19cbb",
+  "completed_stages": [
+    "CD_SAVED_REFERENCE_ONLY"
+  ],
+  "completed_workers": [
+    "E-r3"
+  ],
+  "worker_exit_statuses": [
+    {
+      "label": "E-r3",
+      "exit_status": 0,
+      "wall_seconds": 2.0475805359892547,
+      "retry": 0
+    },
+    {
+      "label": "E-r6",
+      "exit_status": -9,
+      "guard_terminated": true,
+      "retry": 0
+    }
+  ],
+  "outer_exit_status": 2,
+  "compile_reservations_saved": 10,
+  "native_cost_return_observations": 9,
+  "E_r3_saved_native_rows": 8,
+  "E_r6_saved_native_rows": 1,
+  "E_r6_controlled_transpile_reached": false,
+  "E_r6_controlled_internal_recursive_definition_acquired": true,
+  "synthesis_keys": 0,
+  "synthesis_inventory_created": false,
+  "CD_recomputed": false,
+  "saved_CD_rows": 6,
+  "source_guard_resource_receipt": {
+    "wall_seconds": 33.526425684802234,
+    "CPU_seconds_parent_and_reaped_children": 41.716667,
+    "peak_sampled_aggregate_RSS_MiB": 734.015625,
+    "RSS_poll_seconds": 0.05,
+    "instantaneous_memory_ceiling_claim": false,
+    "overshoot_policy": "kill_process_groups_on_detection; record sampled peak",
+    "child_receipts": [
+      {
+        "label": "E-r3",
+        "exit_status": 0,
+        "wall_seconds": 2.0475805359892547,
+        "retry": 0
+      },
+      {
+        "label": "E-r6",
+        "exit_status": -9,
+        "guard_terminated": true,
+        "retry": 0
+      }
+    ],
+    "completed_labels": [
+      "E-r3"
+    ],
+    "last_phase": {
+      "completed_labels": [
+        "E-r3"
+      ],
+      "pending_not_launched": [],
+      "failure": "Output/log cap at metadata boundary",
+      "retry": 0
+    },
+    "retries": 0
+  },
+  "outer_process_receipt": {
+    "command": [
+      "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+      "-B",
+      "scripts/tracks/algorithm_codesign/run_df_correction_et_resumption_v4.py"
+    ],
+    "cwd": "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-et-v4-one-shot-execution-20261012",
+    "runner_PID": 2235256,
+    "exit_status": 2,
+    "wall_seconds": 36.09776426712051,
+    "CPU_seconds_reaped_runner_tree": 42.243528,
+    "peak_sampled_runner_tree_RSS_MiB": 734.015625,
+    "peak_sampled_live_tree_CPU_seconds": 39.83,
+    "sample_count": 646,
+    "RSS_sample_seconds": 0.05,
+    "RSS_scope": "runner plus observed descendants; sampled, not instantaneous ceiling",
+    "stdout_bytes": 130,
+    "stdout_sha256": "9940c162c279a9546314fa5b2dd64e9e5f3a51b7fb05acb739b2adadbb3bd88b",
+    "run_invocations": 1,
+    "retries": 0,
+    "mandatory_STOP": true,
+    "source": "016e02b486cd4b182b654af18743ef1ef50fe7e6",
+    "authorization": "111199c45a9c37ac81821512ea8a44e6093f50cc"
+  },
+  "original_output_bytes": 67637141,
+  "numeric_or_fingerprint_error_recorded": false,
+  "original_run_retry": 0,
+  "this_run_retry": 0,
+  "runner_invocations": 1,
+  "mandatory_STOP": true,
+  "scientific_winner": null,
+  "prefix_as_final_positive_or_negative_evidence": false,
+  "source_contract_manifest_authorization_marker_unchanged": true,
+  "G10_RA_D0_molecule_NPZ_GPU_LP_sampling_trajectory": 0,
+  "interpretation": "technical output failure only; no A/B research acceptance or further execution authorized"
+}

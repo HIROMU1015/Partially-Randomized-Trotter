@@ -1,0 +1,72 @@
+{
+  "development_failure": "tests01:1 ERROR from unbounded rational denominator growth/string conversion. tests02/03:per-step fixed128 outward rounding retains enclosure and avoids growth; initial evidence preserved.",
+  "new_implementation_reason": "Existing C evaluates full-H/reference/law and uses C-specific authority/precision schedule. L needs analytic small gates, fixed128 and148/148/11/324 budgets, so a separate narrow kernel/controller calls shared frozen primitives without changing them.",
+  "performance": "Deduplicate148 local hashes instead of repeating all basis occurrences; scalar product bounds avoid256x256 work. Ordered small local calls and durable first-failure reservations favor an in-process kernel; no CPU/RAM/worker cap is imposed. No real-H4 runtime estimate asserted.",
+  "policy": "2026-10-23 sections8.4 and10",
+  "precision_compatibility": "Existing validated Arb/Acb backend, exact binary64 inputs and outward endpoints; fixed128 only for L",
+  "reused": [
+    {
+      "SOURCE": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "changed": false,
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "symbols": [
+        "real",
+        "matrix",
+        "phase",
+        "frobenius",
+        "dyadic",
+        "endpoints"
+      ],
+      "use": "Validated binary64 import, Acb local matrices and outward norm endpoints; no full-H functions called"
+    },
+    {
+      "SOURCE": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "changed": false,
+      "path": "src/trotterlib/h4_enclosure_prototype.py",
+      "symbols": [
+        "product_error_bound",
+        "exponential_prototype"
+      ],
+      "use": "Exact rational two-factor telescoping and independent tiny artificial interval oracle"
+    },
+    {
+      "SOURCE": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "changed": false,
+      "path": "src/trotterlib/h4_certificate_control.py",
+      "symbols": [
+        "save",
+        "hashes",
+        "CallBudget",
+        "witness"
+      ],
+      "use": "Fsync/exclusive artifacts, SHA, locked nonrefundable reservations, owned native subreaper. Witness scope label adapted before NEW artifact creation inside isolated process"
+    },
+    {
+      "SOURCE": "14c0f8b0adda6160d507807334b82da0531a0e35",
+      "changed": false,
+      "path": "scripts/verify_h4_evidence_binding.py",
+      "symbols": [
+        "inspect_compiler"
+      ],
+      "use": "Bounded historical program/source audit extended with pass-specific conditions and proof gaps"
+    },
+    {
+      "SOURCE": "a66cefb497cb83c13158c9d4ab926202f791309f",
+      "changed": false,
+      "path": "tests/test_h4_certificate_gates.py",
+      "symbols": [
+        "67 regressions"
+      ],
+      "use": "Existing phase/control/basis/schema failures preserved"
+    },
+    {
+      "SOURCE": "14c0f8b0adda6160d507807334b82da0531a0e35",
+      "changed": false,
+      "path": "tests/test_h4_evidence_binding.py",
+      "symbols": [
+        "33 regressions"
+      ],
+      "use": "Scope/source/claim integrity, overlap and unsupported compiler rejection"
+    }
+  ]
+}

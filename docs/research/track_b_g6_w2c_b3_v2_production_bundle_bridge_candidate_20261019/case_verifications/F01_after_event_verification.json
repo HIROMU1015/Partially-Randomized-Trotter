@@ -1,0 +1,499 @@
+{
+  "schema": "b3_bundle_offline_acceptance_v1",
+  "status": "TECHNICAL_FAILURE",
+  "issues": [],
+  "evidence_gaps": [],
+  "scientific_GO": false,
+  "mandatory_STOP": true,
+  "calls": {
+    "planned": 1536,
+    "reserved": 1,
+    "started": 1,
+    "completed": 0,
+    "unknown": 0,
+    "cancelled": 0
+  },
+  "state_physically_exact": true,
+  "history": {
+    "counts": {
+      "reserved": 1,
+      "entry_attempts": 1
+    },
+    "terminal": {
+      "FAILED": 1
+    },
+    "current": {},
+    "cursors": {
+      "S__correctness_baseline_ordinary_A": 1
+    },
+    "reserved_bytes": {
+      "log": 18198,
+      "result": 4237933
+    },
+    "ack_bytes": {
+      "log": 18198,
+      "result": 35437
+    },
+    "stopped": true,
+    "conditions_begun": [
+      "S"
+    ],
+    "conditions_ended": {
+      "S": false
+    }
+  },
+  "trace": {
+    "bytes": 15632,
+    "sha256": "a06082817d134ea45e479d29919503cd3c8eeb065dfd60a4509a60cb03d6705c",
+    "trusted_bytes": 15632,
+    "trusted_rows": 43,
+    "chain": "1e77c40344c68c50af8109c71e61eaa3c11c212c98b3002fbcc18c000a92b5b4",
+    "tail_bytes": 0,
+    "tail_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "untrusted_tail_used_as_history": false
+  },
+  "control": {
+    "started": 1,
+    "ended": 1,
+    "condition_begin": [
+      "S"
+    ],
+    "condition_end": {
+      "S": false
+    }
+  },
+  "output_budget": {
+    "result": {
+      "reserved": 4237933,
+      "observed_or_self_projected": 4237933,
+      "physical": 4237933,
+      "unknown_credit": 0,
+      "refunded": false
+    },
+    "log": {
+      "reserved": 33830,
+      "observed_or_self_projected": 33830,
+      "physical": 33830,
+      "unknown_credit": 0,
+      "refunded": false
+    }
+  },
+  "condition_byte_attribution": {
+    "SHARED": {
+      "reserved": {
+        "log": 16610,
+        "result": 4236039
+      },
+      "observed": {
+        "log": 16610,
+        "result": 4236039
+      }
+    },
+    "S": {
+      "reserved": {
+        "log": 17220,
+        "result": 1894
+      },
+      "observed": {
+        "log": 17220,
+        "result": 1894
+      }
+    },
+    "P1": {
+      "reserved": {},
+      "observed": {}
+    }
+  },
+  "conditions": [
+    {
+      "condition": "S",
+      "complete": false,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "planned": 768,
+      "parent_cpu_ns": 4613953,
+      "worker_cpu_ns": 159121000,
+      "wall_ns": 163032527,
+      "budget_before": {
+        "reserved": {
+          "log": 14526,
+          "result": 4234063
+        },
+        "observed": {
+          "log": 14526,
+          "result": 31567
+        }
+      },
+      "budget_after": {
+        "reserved": {
+          "log": 31746,
+          "result": 4235957
+        },
+        "observed": {
+          "log": 31746,
+          "result": 33461
+        }
+      },
+      "shared_setup_or_finalization_allocated": false
+    }
+  ],
+  "admission": {
+    "schema": "b3_FAKE_ONLY_snapshot_v1",
+    "claim": [
+      "ARTIFICIAL_ONLY/b3-bundle-artificial-cx5u9kwn",
+      "d9ba9fa45240f96763ae3a119ebc68f305bde2ac662748ccebf49fd545b3cd39",
+      "0381bd3b874d6d7281cf08a74be788b94f3e34bc848f0e87e022d56fbf569a61",
+      "STOPPED",
+      1
+    ],
+    "history": [
+      [
+        1,
+        "ARTIFICIAL_ONLY/b3-bundle-artificial-cx5u9kwn",
+        "CLAIM_COMMITTED",
+        "0381bd3b874d6d7281cf08a74be788b94f3e34bc848f0e87e022d56fbf569a61"
+      ],
+      [
+        2,
+        "ARTIFICIAL_ONLY/b3-bundle-artificial-cx5u9kwn",
+        "STOP_COMMITTED",
+        "0381bd3b874d6d7281cf08a74be788b94f3e34bc848f0e87e022d56fbf569a61"
+      ]
+    ],
+    "real_authority": false
+  },
+  "pairs": [
+    {
+      "pair": [
+        "correctness",
+        "baseline",
+        "ordinary",
+        "A"
+      ],
+      "status": "TECHNICAL_FAILURE",
+      "issues": [],
+      "evidence": {
+        "failure_prefix": {
+          "status": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+          "writer_snapshot": {
+            "complete_rows": 0,
+            "failure": null,
+            "file_hash_covers_written_bytes": true,
+            "fsync_durability_verified": false,
+            "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+            "readback_verified": false,
+            "written_bytes_including_possible_partial_tail": 0,
+            "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "verifier_readback_now": true,
+          "producer_readback_verified": false,
+          "producer_fsync_durability_verified": false
+        },
+        "envelope_chain_file": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "trial_identity_counts": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "full_trace": "INDEPENDENTLY_RECOMPUTED_FROM_RAW_BYTES",
+        "full_trace_limitation": null,
+        "candidate_trace": "INSUFFICIENT_INDEPENDENT_EVIDENCE"
+      },
+      "committed_trials": 0,
+      "visible_trial_rows": 0,
+      "nontrial_rows": 1,
+      "file": {
+        "rows": 1,
+        "bytes": 1894,
+        "chain_sha256": "7997e398b67d9618e780d3098b99360453ad02b8525de1e37d9e76a077972fe7",
+        "file_sha256": "5fa97f0ffb821594266ae419e499ee7feaf9d2abb0f1b55f1773920b34fc4e98",
+        "incomplete_tail_bytes": 0,
+        "peak_line_bytes": 1894
+      },
+      "failure": {
+        "candidate_trace_sha256": null,
+        "completed_axes": [],
+        "completed_prefix": {},
+        "current_attempt": {
+          "axis": "X",
+          "candidate_ready": false,
+          "event_present": true,
+          "record_constructed": false,
+          "result_acquired": true,
+          "stage": "EVENT_VALIDATION",
+          "stream_emit_returned": false,
+          "stream_emit_started": false,
+          "trial_completed": false,
+          "trial_id": "correctness/baseline/ordinary/A/X/0",
+          "trial_index": 0
+        },
+        "failure_provenance_schema": "g6_w2c_b3_f01_failure_v1",
+        "inflight_event": {
+          "child": 2,
+          "circuit_time_word": [],
+          "coefficient": "58748704/738198131",
+          "phase_i_power": 99,
+          "proposal": "1/2",
+          "provider_calls": {
+            "2": 2
+          },
+          "ratio": "16785344/67108921",
+          "raw_word": [
+            0,
+            0
+          ],
+          "weight": "117497408/738198131",
+          "word": []
+        },
+        "is_random_zero": false,
+        "kind": "TYPED_FAILURE",
+        "last_completed_trial": null,
+        "mandatory_STOP": true,
+        "reason": "phase or time word",
+        "resume": false,
+        "retry": 0,
+        "stream_prefix_before_failure_record": {
+          "complete_rows": 0,
+          "failure": null,
+          "file_hash_covers_written_bytes": true,
+          "fsync_durability_verified": false,
+          "last_complete_chain_sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "readback_verified": false,
+          "written_bytes_including_possible_partial_tail": 0,
+          "written_bytes_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "trace_scope": "COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN",
+        "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "type": "InvalidEvidence"
+      },
+      "counts": {
+        "ZERO_R": 0,
+        "ZERO_C": 0,
+        "EVENT": 0
+      },
+      "generator_exclusive_ns_by_kind": {
+        "ZERO_R": [
+          0,
+          0
+        ],
+        "ZERO_C": [
+          0,
+          0
+        ],
+        "EVENT": [
+          0,
+          0
+        ]
+      },
+      "axes": {
+        "X": {
+          "N_executed": 0,
+          "counts": {
+            "ZERO_R": 0,
+            "ZERO_C": 0,
+            "EVENT": 0
+          },
+          "event_trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "first_correctness_prefix_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "Y": {
+          "N_executed": 0,
+          "counts": {
+            "ZERO_R": 0,
+            "ZERO_C": 0,
+            "EVENT": 0
+          },
+          "event_trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "first_correctness_prefix_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      },
+      "trace_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "engine_committed_trials": 0,
+      "task_key": "S__correctness_baseline_ordinary_A"
+    }
+  ],
+  "cost": {
+    "parent_cpu_ns": 80519945,
+    "all_worker_cpu_ns": 159121000,
+    "total_cpu_ns": 239640945,
+    "global_wall_ns": 239920611,
+    "outer_through_final_slot": {
+      "schema": "b3_bundle_external_delivery_v1",
+      "run_id": "f600c80fc7413913d792e947f13f48478a97f83d05f2cd0d3f070c34e8e21814",
+      "manifest_binding": "0381bd3b874d6d7281cf08a74be788b94f3e34bc848f0e87e022d56fbf569a61",
+      "final_sha256": "3bfcbf33815f1e2ac6699d6799f8af7ecb27cf8ac227b26d35f1c32d60a9ab92",
+      "final_write_flush_close_observed": true,
+      "final_persistence_cpu_wall_ns": [
+        10584145,
+        10582962
+      ],
+      "outer_parent_cpu_ns": 64149088,
+      "outer_wall_ns": 223549692,
+      "worker_cpu_ns": 159121000,
+      "post_final_errors": [],
+      "production_permission": false,
+      "own_close_is_not_self_certified": true,
+      "fsync_durability_verified": false
+    },
+    "conditions": [
+      {
+        "condition": "S",
+        "complete": false,
+        "reserved": 1,
+        "started": 1,
+        "completed": 0,
+        "planned": 768,
+        "parent_cpu_ns": 4613953,
+        "worker_cpu_ns": 159121000,
+        "wall_ns": 163032527,
+        "budget_before": {
+          "reserved": {
+            "log": 14526,
+            "result": 4234063
+          },
+          "observed": {
+            "log": 14526,
+            "result": 31567
+          }
+        },
+        "budget_after": {
+          "reserved": {
+            "log": 31746,
+            "result": 4235957
+          },
+          "observed": {
+            "log": 31746,
+            "result": 33461
+          }
+        },
+        "shared_setup_or_finalization_allocated": false
+      }
+    ],
+    "shared_parent_unallocated_ns": 47258640,
+    "pairs": [
+      {
+        "key": "S__correctness_baseline_ordinary_A",
+        "condition": "S",
+        "total": [
+          56468173,
+          57687651
+        ],
+        "setup": [
+          50038711,
+          50038793
+        ],
+        "online": [
+          191930,
+          912265
+        ],
+        "output": [
+          163600,
+          290098
+        ],
+        "coarse": {
+          "exclusive_sum_ns": [
+            50411511,
+            51258246
+          ],
+          "outer_total_ns": [
+            56468173,
+            57687651
+          ],
+          "residual_ns": [
+            6056662,
+            6429405
+          ],
+          "rows": {
+            "setup.source_check": {
+              "calls": 1,
+              "cpu_ns": 49894691,
+              "wall_ns": 49895214
+            },
+            "setup.constructor_and_preflight": {
+              "calls": 1,
+              "cpu_ns": 35700,
+              "wall_ns": 35530
+            },
+            "setup.share_identity": {
+              "calls": 1,
+              "cpu_ns": 62360,
+              "wall_ns": 62050
+            },
+            "setup.axis_identity": {
+              "calls": 1,
+              "cpu_ns": 45960,
+              "wall_ns": 45999
+            },
+            "online.EVENT.generator_and_audit": {
+              "calls": 1,
+              "cpu_ns": 191930,
+              "wall_ns": 912265
+            },
+            "correctness.event_invariants": {
+              "calls": 1,
+              "cpu_ns": 17270,
+              "wall_ns": 17090
+            },
+            "save.serialize": {
+              "calls": 1,
+              "cpu_ns": 61560,
+              "wall_ns": 61649
+            },
+            "save.hash": {
+              "calls": 1,
+              "cpu_ns": 18290,
+              "wall_ns": 18310
+            },
+            "save.file_hash": {
+              "calls": 1,
+              "cpu_ns": 4140,
+              "wall_ns": 4050
+            },
+            "save.write": {
+              "calls": 1,
+              "cpu_ns": 71170,
+              "wall_ns": 197709
+            },
+            "save.flush": {
+              "calls": 1,
+              "cpu_ns": 3160,
+              "wall_ns": 3140
+            },
+            "save.finalize": {
+              "calls": 1,
+              "cpu_ns": 5280,
+              "wall_ns": 5240
+            }
+          }
+        },
+        "fine_alternative": null,
+        "IPC_contained": {
+          "calls": 4,
+          "cpu_ns": 172170,
+          "wall_ns": 1394272,
+          "coalesced_write_acks": 1
+        },
+        "memory": {
+          "VmHWM_bytes": 35651584,
+          "VmRSS_bytes": 28123136
+        },
+        "io": {
+          "rchar": 10084995,
+          "wchar": 2387,
+          "syscr": 324,
+          "syscw": 5,
+          "read_bytes": 0,
+          "write_bytes": 4096,
+          "cancelled_write_bytes": 0
+        }
+      }
+    ],
+    "observer_isolated_overhead_ns": null,
+    "parent_individual_IO_exclusive_cost_ns": null,
+    "unknown_cost_is_zero": false,
+    "coarse_and_fine_added": false,
+    "pair_or_IPC_added_to_outer": false,
+    "fixed_S_then_P1_order_confound": true,
+    "both_fused_gain_unidentifiable": true,
+    "scientific_CPU_extrapolation": false,
+    "boundary": "caller before bridge through delivery close; observation own persistence is postprocessing"
+  },
+  "consumer_forbidden_imports": []
+}

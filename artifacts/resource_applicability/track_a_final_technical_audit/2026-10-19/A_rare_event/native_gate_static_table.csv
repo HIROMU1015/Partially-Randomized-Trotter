@@ -1,0 +1,21 @@
+operation,emission_context,direct_template_or_route,literal_template_length,fully_translated_t_status,limits
+rz,Gaussian diagonal directional and inverse,already in rz/sx/x/cx basis,1,CONFIRMED_1,Gate-name count; angles not classified
+sx,translation intermediate,already in basis,1,CONFIRMED_1,Not a scientific circuit count
+x,translation intermediate,already in basis,1,CONFIRMED_1,Not a scientific circuit count
+cx,directional parity and decomposition,already in basis,1,CONFIRMED_1,No coupling/routing in frozen profile
+p,ancilla scalar and accumulated tail phase,P -> U1 -> RZ,1,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Global phase retained as metadata
+z,RTE uncontrolled product,Z -> P(pi) -> RZ,1,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Actual controlled products emit CZ instead
+h,Hadamard wrapper and intermediate,H -> S SX S,3,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,S and Sdg further map to one RZ through library
+s,XXPlusYY intermediate,S -> P(pi/2),1,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Intermediate gate
+sdg,sine wrapper and XXPlusYY intermediate,Sdg -> P(-pi/2),1,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Intermediate or wrapper gate
+sxdg,XXPlusYY intermediate and inverse,S H S,3,UNRESOLVED_SELECTED_BASIS_ROUTE,The theory model SX X route is not the declared Qiskit equivalence selection
+cz,ordinary-controlled RTE Z product,H CX H,3,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Literal three-gate template is not total gate count in final basis
+rzz,uncontrolled ZZ diagonal,CX RZ CX,3,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Multiple alternative equivalences exist
+crz,ordinary-controlled Z rotation,RZ CX RZ CX,4,EXHIBITED_ROUTE_NOT_SELECTED_RULE_CERTIFICATE,Other CRY CRX RZZ equivalence alternatives exist
+crzz,numeric ordinary-controlled ZZ rotation,CCX CRZ CCX,3,UNRESOLVED_COMPLETE_RECURSIVE_T,Generic add_control route; not theory parity CX CRZ CX
+ccx,intermediate from numeric RZZ control,H CX Tdg CX T CX Tdg CX T T H CX T Tdg CX,15,UNRESOLVED_SELECTED_BASIS_ROUTE,Alternative eight-operation CSX route; T/Tdg and H need lowering
+xx_plus_yy,number-conserving Gaussian basis,RZ RZ SX RZ S CX RY RY CX Sdg RZ SXdg RZ RZ,14,UNRESOLVED_COMPLETE_RECURSIVE_T,Symbolic template fixed; RY SXdg S Sdg need lowering
+xx_plus_yy inverse,Gaussian basis inverse,XXPlusYY(-theta beta),1,SAME_GATE_FAMILY_TEMPLATE,Angle sign change; no new family
+rxx or ryy,theory explicit lowering profile only,H-parity or SX-parity decomposition,,NOT_NATIVE_PRODUCER_PRIMITIVES_IN_INSPECTED_PATH,Do not confuse theory profile with actual Qiskit compiler
+measure,full Hadamard wrapper,measurement instruction,1,NOT_A_QUANTUM_GATE,Exclude from gate T or include as a harmless extra instruction consistently
+opaque/custom/controlled Gaussian,generic API acceptance only,user-supplied numeric Gate definition,,NOT_CLOSED_BY_GENERIC_VALIDATOR,No evidence these occur in intended archived standard Gaussian path

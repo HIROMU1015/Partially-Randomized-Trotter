@@ -1,0 +1,73 @@
+{
+  "base_commit": "b575ff1a4e659857367a266cb59acb958ba446fd",
+  "files": [
+    {
+      "path": "src/trottertracks/representation_exploration/qc_relative_block_v1.py",
+      "sha256": "2ff62d2156ecbc74d8add79716fb521aef91e5736a88bc8da7d2a3b2fef1d2dc",
+      "bytes": 6174
+    },
+    {
+      "path": "tests/test_qc_relative_block_v1.py",
+      "sha256": "17e332d13aba0ef9388e140dadaa72e858cf11948402410cbbce2c52ead3c96c",
+      "bytes": 8708
+    },
+    {
+      "path": "scripts/check_qc_relative_block_synthetic_v1.py",
+      "sha256": "17798278bf16fb9da23dfc988a6a5ba5b94259189d7d7a70192b66d6399c12ba",
+      "bytes": 2992
+    },
+    {
+      "path": "src/trotterlib/chemistry_hamiltonian.py",
+      "sha256": "dd4c87d3a35a551710c0f9f1945e3b2abf5c5594501b92e0616860dad488cf56",
+      "bytes": 19851
+    },
+    {
+      "path": "src/trotterlib/df_trotter/decompose.py",
+      "sha256": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+      "bytes": 8368
+    },
+    {
+      "path": "src/trotterlib/df_trotter/two_body.py",
+      "sha256": "d5f678f2533554b4b7f2b09626c169e3ca1b6dbdf6ac4ab0e603a50c8fc7353e",
+      "bytes": 2884
+    },
+    {
+      "path": "src/trotterlib/df_trotter/ops.py",
+      "sha256": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "bytes": 13557
+    },
+    {
+      "path": "src/trottertracks/representation_exploration/algorithm_design.py",
+      "sha256": "aac5ebd16eed22e0f162b087a25c230d7a090edea5316e6249116e43c6c7e39c",
+      "bytes": 31060
+    },
+    {
+      "path": "docs/research/qc_relative_block_method_cost_audit_v1_20261013.md",
+      "sha256": "2a53f4c62ad502eae87f98549447eb629a3e6f27358eccc4c2b61137367630b3",
+      "bytes": 30031
+    },
+    {
+      "path": "docs/research/qc_relative_block_method_cost_handoff_v1_20261013.md",
+      "sha256": "6950245d23cd1d6c39ba7ca978141b56706e4eb25c7177068df1ed9f9ee541b7",
+      "bytes": 3867
+    },
+    {
+      "path": "artifacts/qc_relative_block_prevalidation/2026-10-13/pilot_design_NOT_AUTHORIZED.json",
+      "sha256": "254ceac432c6452f15b83b41d57c92e680a83ea7b9c36f66f5c9265cc690bb2d",
+      "bytes": 5395
+    },
+    {
+      "path": "artifacts/qc_relative_block_prevalidation/2026-10-13/synthetic/report.json",
+      "sha256": "8d3115c4d9acde9c8507e1d6b75b8b09dd543dda24938f9b9d87a2dff866821d",
+      "bytes": 1186
+    }
+  ],
+  "imported_or_executed": false,
+  "source_findings": [
+    "chemistry_hamiltonian.run_pyscf uses run_fci=0;module contains eigsh;do not call ground routines",
+    "decompose.df_decompose_from_integrals uses spatial-to-spin factor0.5 and low-rank adapter;None tol is not an explicit no-truncation guarantee",
+    "ops uses shared diagonal primitives/scalar controlled phase;Givens resource description can be reused statically without Qiskit compile",
+    "algorithm_design imports Qiskit/SciPy and second_quantize_one_body is guarded to<=6 modes;do not import frozen runner or silently extend guard to8",
+    "qc_relative_block_v1 is classical scalar semantics,not quantum function backend;old13 tests not rerun"
+  ]
+}

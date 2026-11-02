@@ -1,0 +1,91 @@
+{
+  "checks": [
+    {
+      "claims_or_ledgers_created": false,
+      "command": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-venv/bin/python",
+        "-B",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py",
+        "--inspect",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/artifacts/non_df_h4_c_reference_fix/2026-10-23/C_execution_contract.json"
+      ],
+      "exit_code": 0,
+      "expected_reason": null,
+      "name": "inspect",
+      "namespace_created": false,
+      "status": "PASS"
+    },
+    {
+      "claims_or_ledgers_created": false,
+      "command": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-venv/bin/python",
+        "-B",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py",
+        "--issue-grant",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/artifacts/non_df_h4_c_reference_fix/2026-10-23/C_execution_contract.json",
+        "--seal",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/artifacts/non_df_h4_c_reference_fix/2026-10-23/SOURCE.json",
+        "--namespace",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/artifacts/non_df_h4_c_evidence/NEXT_EXPLICIT_APPROVAL/reference_fix_run01"
+      ],
+      "exit_code": 1,
+      "expected_reason": "C_EXECUTION_NOT_AUTHORIZED",
+      "name": "issue-grant",
+      "namespace_created": false,
+      "status": "PASS"
+    },
+    {
+      "claims_or_ledgers_created": false,
+      "command": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-venv/bin/python",
+        "-B",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py",
+        "--execute",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-cache/inactive-cli-o9kgimcn"
+      ],
+      "exit_code": 1,
+      "expected_reason": "C_EXECUTION_NOT_AUTHORIZED",
+      "name": "execute",
+      "namespace_created": false,
+      "status": "PASS"
+    },
+    {
+      "claims_or_ledgers_created": false,
+      "command": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-venv/bin/python",
+        "-B",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py",
+        "--worker",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-cache/inactive-cli-o9kgimcn",
+        "--representation",
+        "pauli_jw"
+      ],
+      "exit_code": 1,
+      "expected_reason": "C_EXECUTION_NOT_AUTHORIZED",
+      "name": "worker",
+      "namespace_created": false,
+      "status": "PASS"
+    },
+    {
+      "claims_or_ledgers_created": false,
+      "command": [
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-venv/bin/python",
+        "-B",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py",
+        "--bridge",
+        "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-cache/inactive-cli-o9kgimcn",
+        "--representation",
+        "df_native"
+      ],
+      "exit_code": 1,
+      "expected_reason": "C_EXECUTION_NOT_AUTHORIZED",
+      "name": "bridge",
+      "namespace_created": false,
+      "status": "PASS"
+    }
+  ],
+  "real_H4_calls": 0,
+  "science_grants_issued": 0,
+  "scientific_import_or_dispatch_reached": false,
+  "status": "PASS_INACTIVE_CLI_NO_SCIENCE"
+}

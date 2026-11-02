@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c1-stage1-science-20261025/scripts/run_research_c_c1_stage1.py", line 47, in <module>
+    main()
+  File "/tmp/prt-c1-stage1-science-20261025/scripts/run_research_c_c1_stage1.py", line 35, in main
+    run.worker_fit(v,args.output)
+  File "/tmp/prt-c1-stage1-science-20261025/src/trottertracks/c1_stage1_execution.py", line 169, in worker_fit
+    arrays,metadata=s.fit_once(a['one_mo'],a['eri_chemist'],a['nuclear_repulsion'],calls,raw_callback=raw)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-science-20261025/src/trottertracks/c1_stage1.py", line 74, in fit_once
+    J, U, result = fit_function(g, **FIT_SETTINGS)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-implementation-20261024/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/double_factorized_decomposition.py", line 263, in double_factorized
+    return _double_factorized_compressed(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-implementation-20261024/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/double_factorized_decomposition.py", line 415, in _double_factorized_compressed
+    x0 = df_tensors_to_params(
+         ^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-implementation-20261024/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/util.py", line 461, in df_tensors_to_params
+    orbital_rotation_params = unitaries_to_parameters(orbital_rotations, real=real)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-implementation-20261024/.venv-fit/lib/python3.11/site-packages/ffsim/linalg/util.py", line 207, in unitaries_to_parameters
+    return antihermitians_to_parameters(scipy.linalg.logm(mats), real=real)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-implementation-20261024/.venv-fit/lib/python3.11/site-packages/scipy/linalg/_matfuncs.py", line 197, in logm
+    A = _asarray_square(A)
+        ^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c1-stage1-implementation-20261024/.venv-fit/lib/python3.11/site-packages/scipy/linalg/_matfuncs.py", line 54, in _asarray_square
+    raise ValueError('expected square array_like input')
+ValueError: expected square array_like input

@@ -1,0 +1,169 @@
+{
+  "schema_version": "phase2db-schema-collection-v1",
+  "document_kind": "SCHEMA_ONLY_NOT_INPUT_OR_AUTHORIZATION",
+  "environment": {
+    "type": "object",
+    "required": [
+      "status",
+      "python_patch",
+      "numpy",
+      "dedicated_prefix_identity",
+      "wheel_sha256",
+      "package_file_hashes",
+      "native_runtime_hashes"
+    ],
+    "properties": {
+      "status": {
+        "const": "DEDICATED_FROZEN_ENVIRONMENT"
+      },
+      "python_patch": {
+        "const": "3.11.9"
+      },
+      "numpy": {
+        "const": "1.26.4"
+      },
+      "dedicated_prefix_identity": {
+        "type": "string",
+        "pattern": "[0-9a-f]{64}"
+      },
+      "wheel_sha256": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "pattern": "[0-9a-f]{64}"
+        }
+      },
+      "package_file_hashes": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "pattern": "[0-9a-f]{64}"
+        }
+      },
+      "native_runtime_hashes": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string",
+          "pattern": "[0-9a-f]{64}"
+        }
+      }
+    },
+    "additionalProperties": false
+  },
+  "output_record": {
+    "type": "object",
+    "required": [
+      "schema_version",
+      "kind",
+      "producer_case",
+      "payload"
+    ],
+    "properties": {
+      "schema_version": {
+        "const": "pr-dictionary-binding-v1"
+      },
+      "kind": {
+        "enum": [
+          "physical_fixture",
+          "catalog",
+          "arm",
+          "law_metadata",
+          "source_manifest",
+          "environment_summary",
+          "f1_handoff",
+          "binding_summary"
+        ]
+      },
+      "producer_case": {
+        "type": "string",
+        "pattern": "B[.][A-Za-z0-9_.]+"
+      },
+      "payload": {
+        "type": "object"
+      }
+    },
+    "additionalProperties": false
+  },
+  "fraction": {
+    "type": "string",
+    "pattern": "-?(0|[1-9][0-9]*)(/[1-9][0-9]*)?"
+  },
+  "binary64": {
+    "type": "object",
+    "required": [
+      "encoding",
+      "value"
+    ],
+    "properties": {
+      "encoding": {
+        "const": "ieee754-binary64-hex"
+      },
+      "value": {
+        "type": "string"
+      }
+    },
+    "additionalProperties": false
+  },
+  "authorization_required_fields": [
+    "stage",
+    "authority",
+    "status",
+    "contract_sha256",
+    "approval_sha256",
+    "source_closure_sha256",
+    "environment_sha256",
+    "approved_run_id",
+    "fresh_output_namespace",
+    "retry_allowed",
+    "mandatory_stop"
+  ],
+  "note": "Fraction grammar is supplemented by I canonical fraction()/Fraction serializer. Output payload kind fields are specified in B_OUTPUT_AND_IDENTITY_SCHEMA.md; no scientific instance is created here.",
+  "f1_handoff_record": {
+    "type": "object",
+    "required": [
+      "schema_version",
+      "kind",
+      "producer_case",
+      "specification",
+      "arms",
+      "rational_frames",
+      "catalog_atoms",
+      "literal_prices",
+      "score_intervals",
+      "status"
+    ],
+    "properties": {
+      "schema_version": {
+        "const": "pr-dictionary-f1-input-v1"
+      },
+      "kind": {
+        "const": "f1_handoff"
+      },
+      "producer_case": {
+        "const": "B.FINALIZE.handoff"
+      },
+      "specification": {
+        "type": "object"
+      },
+      "arms": {
+        "type": "object"
+      },
+      "rational_frames": {
+        "type": "object"
+      },
+      "catalog_atoms": {
+        "type": "array"
+      },
+      "literal_prices": {
+        "type": "object"
+      },
+      "score_intervals": {
+        "type": "object"
+      },
+      "status": {
+        "const": "INPUT_ONLY_PRICE_AND_F1_ENVIRONMENT_UNBOUND"
+      }
+    },
+    "additionalProperties": false
+  }
+}

@@ -1,0 +1,173 @@
+{
+  "schema_version": "pr2_s1_s3_dry_run_manifest_v2",
+  "status": "PR2_PREREG_AMENDMENT_V2_FIXED_S0_IMPLEMENTATION_ONLY",
+  "created_date": "2026-09-28",
+  "evidence_status": "documentation_and_read_only_review_audit_no_new_numerical_evidence",
+  "authorization": {
+    "s0_runner_test_schema_implementation": true,
+    "s0_input_or_identity_execution": false,
+    "s1_execution": false,
+    "s2_execution": false,
+    "s3_execution": false,
+    "automatic_next_stage": null
+  },
+  "executed_counts": {
+    "molecular_calculations": 0,
+    "signal_evaluations": 0,
+    "circuits_compiled": 0,
+    "trajectory_samples": 0,
+    "quantum_shots": 0
+  },
+  "provenance": {
+    "reviewed_git_commit": "d3e17239702b56e765ff0a2f8993135015332ea8",
+    "dirty_worktree": true,
+    "parent_contract_path": "docs/research/pr2_primary_research_contract.md",
+    "parent_contract_sha256": "4d325c0cc28dae08e975ab6311f77258f0cfdefa224e5dfcfb93c1b0a6e8a2b0",
+    "v1_preregistration_path": "docs/research/pr2_s1_s3_preregistration.md",
+    "v1_preregistration_sha256": "9cff2a38071c3779648ad6179679b425e7a2d63618ee28de8b3784898b91b97b",
+    "v1_dry_run_manifest_path": "artifacts/pr2_s1_s3_preregistration/2026-09-27/pr2_s1_s3_dry_run_manifest_v1.json",
+    "v1_dry_run_manifest_sha256": "07d1afa9fa9d2ee805573a9201ac482330b45c67a45f420d713bc28d6ea261f7",
+    "external_review_path": "docs/research/pr2_s0_s1_external_review_d3e1723.md",
+    "external_review_sha256": "748c3546fbacf06046fe5f0ee0457e96f7dfb9bb252ea4b20aa0afdc9e06942b",
+    "external_review_decision": "AMEND_BEFORE_S0",
+    "amendment_path": "docs/research/pr2_s1_s3_preregistration_amendment_v2.md",
+    "amendment_sha256": "e93eade73723939a727b87d4d43f680532afbea922cc45db15adf2c61e48914a"
+  },
+  "review_disposition": {
+    "A01_normalization_corrected_primary_estimator": "accepted",
+    "A02_B3_semantics": "accepted",
+    "A03_state_preparation_sensitivity": "accepted",
+    "A04_cost_uncertainty_to_materiality": "accepted_with_engineering_not_formal_interval",
+    "A05_bug_vs_scientific_stop": "accepted",
+    "A06_B2_family_terminal_decision": "accepted",
+    "S1_lightening": "accepted_with_exhaustive_distinct_primitive_structural_tests",
+    "O01_order_only_diagnostic": "made_required",
+    "O02_held_out_wording": "accepted",
+    "O03_exact_state_scope": "accepted"
+  },
+  "fixed_estimand": {
+    "model": "linear_H4_rank12_DF_reference",
+    "state_scope": "oracle_state_conditioned_hamiltonian_simulation_subroutine_benchmark",
+    "primary_random_estimator": "Y_axis_equals_normalization_multiplier_times_raw_plus_minus_one_outcome",
+    "corrected_mean": "nu_axis_equals_normalization_multiplier_times_raw_mean",
+    "primary_bias": "abs(corrected_mean_axis_minus_exact_rank12_target_axis)",
+    "normalization_attenuation_is_primary_systematic_bias": false,
+    "shot_formula": "ceil(2*normalization_multiplier^2/statistical_axis_allowance^2*log(2/0.025))",
+    "fresh_iid_trajectory_per_hadamard_shot": true,
+    "target_complex_l2_error": 0.05,
+    "axis_error_budget": "0.05/sqrt(2)",
+    "axis_failure_probability": 0.025,
+    "full_rpe_in_scope": false,
+    "end_to_end_state_preparation_in_scope": false
+  },
+  "baselines": {
+    "B0": "generation_prefix_rank_r_deterministic_discard_residual",
+    "B1": "rank12_deterministic_endpoint",
+    "B2_G": "generation_prefix_backbone_plus_exact_residual_finite_RTE",
+    "B2_W": "weight_ranked_ordinary_prefix_partial_randomization",
+    "B2_family": [
+      "B2_G",
+      "B2_W"
+    ],
+    "B3": "LD0_two_body_random_endpoint_with_deterministic_one_body_correction"
+  },
+  "prefix_identity_gate_additions": {
+    "dense_HD_and_HR_equality_required": true,
+    "hamiltonian_tolerance": "1e-10*max(1,norm(H_rank12,2))",
+    "separate_records": [
+      "split_hamiltonian_identity",
+      "deterministic_S2_application_order",
+      "compiled_circuit_cost",
+      "random_tail_components_and_probabilities",
+      "component_enumeration_hash_and_seed_mapping"
+    ],
+    "order_difference_alone_is_method_delta": false
+  },
+  "compiled_cost_uncertainty": {
+    "interval_name": "engineering_materiality_interval",
+    "formal_confidence_interval_claimed": false,
+    "axis_interval": "max(0,mean-2SE)_to_mean+2SE",
+    "total_work_interval": "sum_over_axes(shot_count_times_axis_cost_interval)",
+    "materially_cheaper_rule": "cost_ratio_interval_upper_less_than_0.9",
+    "unresolved_rule": "MATERIALITY_UNRESOLVED_if_ratio_interval_crosses_0.9",
+    "setting_uncertainty_rule": "SETTING_UNCERTAIN_if_another_setting_can_be_at_least_10_percent_cheaper_within_intervals",
+    "initial_trajectories_per_resource_cell": 32,
+    "single_fixed_extension_total_trajectories": 128,
+    "extension_triggers": [
+      "primary_RZ_relative_standard_error_greater_than_0.02",
+      "primary_10_percent_or_setting_decision_unresolved"
+    ],
+    "extension_after_128_allowed": false
+  },
+  "state_preparation_sensitivity": {
+    "primary_selection_includes_state_preparation": false,
+    "secondary_S2_S3_required": true,
+    "work_function": "G_j(P)=G_j_no_prep+P*N_j_total",
+    "break_even": "P_star=(G_B_no_prep-G_A_no_prep)/(N_A_total-N_B_total)",
+    "hardware_specific_P_fixed": false
+  },
+  "S1_correctness_only_plan": {
+    "development_distance_angstrom": 1.0,
+    "physical_time": 0.1,
+    "repetition_count": 1,
+    "primary_rank": 6,
+    "control_ranks": [
+      3,
+      9
+    ],
+    "r_values": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "finite_taylor_orders": [
+      2,
+      4
+    ],
+    "canonical_random_full_wrapper_trajectories_per_cell_axis": 1,
+    "distinct_primitives_structurally_exhaustive": true,
+    "control_rank_sentinel": {
+      "r": 4,
+      "K": 2
+    },
+    "planned_full_wrapper_compile_upper_bound_before_identity_collapse": {
+      "rank6_random_grid": 72,
+      "rank3_rank9_random_sentinels": 8,
+      "deterministic_wrappers": 8,
+      "total": 88
+    },
+    "resource_winner_computed_in_S1": false,
+    "expected_cost_32_or_128_trajectories_computed_in_S1": false,
+    "state_preparation_break_even_computed_in_S1": false,
+    "allowed_terminal_statuses": [
+      "S1_CORRECTNESS_PASS_AWAITING_EXTERNAL_REVIEW",
+      "BLOCKED_IMPLEMENTATION_INVALID",
+      "STOP_ESTIMAND_OR_SCOPE_INVALID"
+    ]
+  },
+  "stage_gates": [
+    "amendment_v2_freeze_then_STOP",
+    "S0_implementation_then_S0_artifact_and_STOP",
+    "S1_correctness_only_then_external_review_and_STOP",
+    "explicit_PROCEED_S2_then_S2_and_STOP",
+    "explicit_PROCEED_S3_HELD_OUT_TRANSFER_then_S3_and_terminal_STOP"
+  ],
+  "held_out_scope": {
+    "distance_angstrom": 1.3,
+    "name": "pre_frozen_held_out_geometry_transfer",
+    "external_independent_validation_claimed": false
+  },
+  "implementation_blockers_before_any_S1_execution": [
+    "development_and_held_out_snapshot_recipe_and_non_overwrite_guard_not_implemented",
+    "prefix_identity_record_not_implemented",
+    "generation_prefix_adapter_missing_if_identity_gate_fails",
+    "normalization_corrected_signal_and_shot_accounting_not_implemented",
+    "q1_q8_full_hadamard_wrapper_cost_runner_not_implemented",
+    "artifact_fingerprint_tamper_and_stage_stop_tests_not_implemented"
+  ],
+  "next_allowed_action": "implement_S0_runner_tests_schema_and_input_freeze_recipe_without_executing_S0_or_S1",
+  "automatic_next_stage": null
+}

@@ -1,0 +1,151 @@
+# Track A H4 v5後の科学レビュー案
+
+2026-10-10 JST。状態は `H4_POST_REVIEW_DRAFT_H6_NOT_AUTHORIZED`。
+
+H4 v5は、登録した回路と信号の技術検査を完了した。拡張研究のRQ-Rと補助RQ-P1を維持し、
+次は数値不確かさと公平な比較範囲を確定する段階である。H6の技術準備は検討できるが、
+H4の完走だけを根拠にH6本検証やH8独立評価を開始しない。
+本書の評価・変更案は独立科学レビュー待ちで、旧契約・結果・認定状態を変更しない。
+
+## 判断の根拠
+
+[H4 v5結果](track_a_ax2b_h4_pilot_v5_result.md)と
+[凍結保存監査](../../artifacts/resource_applicability/track_a_ax2b_h4_pilot_v5/2026-10-10/launch_v1/saved_evidence_audit_v5.json)を使用する。
+対象はlinear H4、1.00 Å、STO-3G、legacy DF rank12、8 system qubits、generation-prefix、
+T=0.8、DF prefix0/6/12、q1/q4（δ=T/q=0.8/0.2）、保存normalized state、Nα=Nβ=2の36-dimensional sector。
+B2/B3はcanonical finite-RTE、R=8、r=2、K=2/4/6である。
+
+| 到達点 | 証拠 | 科学的な扱い |
+|---|---|---|
+| 登録correctness | 8 cellがgate通過、旧v3/v4とJSON bytes一致 | 当該state・登録構成の実装整合性 |
+| measured wrapper | 28件完了、四次B1 q4の欠落を解消 | 5種類のcost cellを測った技術pilot |
+| primitiveとsector | Hamiltonianのsector全36列、native blockの±0.2と37 probeを検査 | 検査した作用の一致。全時間の数値誤差保証ではない |
+| control | ordinary/directionalを保存stateとfirst/last sector column等で比較 | 限定した分子probeの一致。全Hilbert空間の証明ではない |
+| 実行可能性 | 同じ8 GiB address-space上限内で完了 | 当該H4のlocal evidence。H6へのmemory外挿はしない |
+| 参照と精度 | direct exponential主参照、eigh差・残差を保存 | 総数値allowance未認定、accuracy UNDETERMINED |
+| random cost | 2 trajectory/cell、軸とcontrol間で共有 | 工程sample。母平均精度や方式順位の十分な証拠ではない |
+
+cost cellはB0 prefix6/q4、B2 prefix6/q4/R8/K2、B3 prefix0/q4/R8/K6、
+B1 global四次prefix12/q1,q4に限る。B2 K4と二次B1はcorrectnessのみである。
+保存監査は再計算ではなく、旧結果とのbytes一致も独立した数値精度認定ではない。
+証拠は未commitのlocal runで、immutable CIまたは外部再現ではない。
+
+## 研究上の寄与と主張の範囲
+
+PR原論文には部分ランダム化、single-ancilla phase estimation、化学benchmarkと具体的資源評価がある。
+「PRの初の資源評価」やH-chainへの適用自体を新規性にしない。
+原論文のenergy estimationと、今回の固定state・有限時間complex signal taskは別である。
+[Günther et al. arXiv v2](https://arxiv.org/pdf/2503.05647v2)のabstractとSec. I.Aを確認した。
+
+対称Trotterのcontrolled compilation改善も既知である。
+その方法をDF-native wrapperへ接続し、scalar phaseを保持して検査することは実装上の寄与であり、
+control法そのものの新規性ではない。[Simon–Love](https://arxiv.org/html/2511.13855v1)のSec. IIIを確認した。
+任意角rotationの理論会計を、現行compilerの最適化後RZ数へ一律1/2として適用しない。
+
+狙う寄与は、強い決定論対照とdiscardを含む同一signal taskで、回路費用・normalization・
+bias margin・DF政策が測定込み資源の競争力をどう変えるかを説明し、その説明を独立条件で確認すること。
+原論文との詳細対応は[AX-0対応表](track_a_ax0_model_correspondence.md)、採用RQは
+[研究目的](研究目的・研究課題.md)と[AX-2A追補](track_a_ax2a_research_amendment_v1.md)を維持する。
+旧 `paper_d6` の出典対応U01と、operational bias予測の不足は解消済みと扱わない。
+
+| 着地点 | 必要な証拠 | 現状 |
+|---|---|---|
+| 技術的成果 | 意味論・phase・sector・wrapper・bounded実行 | H4登録scopeで成立 |
+| 最小resource study | 同一target、数値不確かさ、強い対照、登録候補、期待costとshotの会計 | 未成立。pilotだけでは順位を出せない |
+| 目標の適用範囲研究 | H6 developmentで説明・予測を固定し、H8で独立確認 | 未実施、未認可 |
+
+PRが負ける、または既存modelがよく当たる場合も、成立条件と適用範囲を説明できれば成果になる。
+公平な比較と数値headroomを確保できない、既知trade-offとの科学的差分を説明できない場合は、
+主張をtechnical/resource studyへ縮小する。H4/H6/H8の3サイズだけで漸近則を主張しない。
+
+## 数値不確かさと精度判定
+
+軸aについて保存biasを b̂_a=|axis(ẑ−ẑ_ref)| とし、両信号の数値不確かさを含む u_a を別に記録する。
+契約案は ε_a=ε_sig/√2、h_a=ε_a−b̂_a−u_a とする。
+両軸の h_a>0 でELIGIBLE、max(0,b̂_a−u_a)≥ε_aなら当該軸はINELIGIBLE、
+u_a未確定または境界が重なる場合はUNDETERMINEDを維持する。
+PF・finite-RTE・discardのモデルbiasを、roundoffのuへ混ぜない。
+
+| uの成分 | H4にあるもの | 未確定なもの |
+|---|---|---|
+| target入力とstate | 保存bytes、norm、basis bridge | 厳密に指定するnormalized stateと丸め会計 |
+| reference | full dense expm/eigh差、Rayleigh residual | 参照作用のroundoff・backward errorの評価 |
+| deterministic作用 | native/denseと終端stateの一致 | 実際の全stage時間での誤差伝播 |
+| finite平均 | corrected/raw、Horner/dense、log Bの一致 | 非unitary中間normとtail matvecの誤差伝播 |
+| normalization | source-defined finite B | log B、指数化、shot会計の数値範囲 |
+
+finite平均と実際のsampled estimatorの接続には、有限分布の確率・event phase・normalizationの意味論も必要。
+既存RTEの平均operator helperとsampler検証を再利用し、native wrapperへの接続を点検する。
+量子shotごとに新しいtrajectoryをdrawする仮定と、cost測定用の少数trajectory共有は別の契約である。
+
+H4 primitive検査の±0.2は四次PFやq1の全実行時間集合を覆わない。
+終端state比較はその不足を診断できるが、全stageの一様誤差上界にはならない。
+`1e-9` gateを、そのままcell全体のuに代入しない。
+expm/eighは共通入力とbinary64演算を使うので、両者の差だけを厳密なuにしない。
+|T|ρはexact Hermitian evolutionに対するphase surrogateの評価で、ground-state証明やroundoff評価ではない。
+
+finite平均は非unitaryなので、作用誤差は各stageのnormを含めて伝播させる。
+rawからcorrectedを再構成する経路ではBによる誤差増幅を含める。
+直接corrected多項式経路にはrawの小ささを根拠に同じ誤差を代入せず、その経路自体を評価する。
+上述H4 B3はB≈4,952であり、gate数の小ささとshot負担を切り離して判断できない。
+
+追加検証の第一候補は、同じH4保存targetの参照と登録signalを、独立に構成したsector経路または
+高精度経路で照合し、実時間集合とfinite作用の誤差会計を点検すること。
+全wrapperの再compileやtrajectory追加はこの問題を解決しない。
+高精度比較だけでも厳密上界とは限らない。実証的な `u_empirical` と保証付きの `u_bound` を分ける。
+前者を使う場合、下流会計は明示した数値仮定への感度分析に限り、既存certified=falseをtrueへ変更しない。
+どの証拠強度で最小resource studyを閉じるかは独立レビューで決める。
+
+## 測定込み資源と公平な探索
+
+保証付きuが使える場合の十分shot会計は、各軸
+N_a=ceil(2 B² log(2/α_a)/h_a²)、primary α_real=α_imag=0.025とする案を維持する。
+B0/B1はB=1、B2/B3はexact finite normalization。
+保証付き会計ではBの計算誤差も検査し、必要なら妥当な上側値を使う。
+実機shotを実行した値ではなく、有限signal taskの会計である。
+旧shot helperは固定ε・u=0、AX-1b helperは可変ε・u=0なので、新しいu-aware会計への接続が必要。
+[不足検証一覧](track_a_ax2b_h4_validation_gaps_v1.md)に再利用先を示す。
+
+primaryは状態準備を除くmeasured wrapperのRZ、G=Σ_a N_a E[C_a]。
+CXとdepthは別の副指標、rotation synthesis・T/Toffoli・physical runtimeは別契約とする。
+古典wall/RSS・fingerprint費用を量子Gへ加算しない。
+cosine/sineの統計と同一trajectory共有を保ち、random costの標本数と量子shot数を分ける。
+
+本比較ではB0/B2へ同じprefix候補を与え、B1二次・global四次を含める。
+ordinaryとsymmetric_directionalを全方式へ提供し、primaryは後者、ordinaryは固定感度とする案を推奨する。
+control政策は両軸で共有し、axisごとに結果を見て選び直さない。
+部分方式全体の四次化は有限tailとの別導出が必要なので、本案に追加しない。
+qとR=qrは別に探索し、R mod q=0を要求する。同じRの異なるqを同一候補に潰さない。
+方式別quota、上限、独立confirmationを本結果を見る前に登録する。
+
+H4は既観測development。旧FEWは凍結し、今回の5 cost cellで再fitしない。
+初回H6の全出力もdevelopmentとして扱う。旧model移送はorder/control等の適用範囲を判定し、
+未対応構造への予測をNAとして残す。H6で修正したmodelはH8を見る前に固定する。
+参照biasを使うshot会計はconditional-oracleであり、operational予測とは表示しない。
+
+## 次の段階と情報価値
+
+| 検討する作業 | 解決する問題 | 優先度 |
+|---|---|---|
+| H4のu成分と独立照合の最小仕様 | 精度適格性を判断できるか | 最優先 |
+| 方式別探索・強いbaseline・cost標本規則 | 比較が公平か | 最優先 |
+| H6のDF/state/sectorと上限を固定 | 新サイズを安全に評価できるか | 次の準備 |
+| H8のfreezeと独立性規則 | 説明が移送するか | H6 review後 |
+| H4 wrapper全面再compile、FEW再fit、全geometry、H8先行profile | 上記の不足を直接解決しない | 今は実施しない |
+
+[H6技術pilot契約案](track_a_ax2b_h6_pilot_contract_draft_v1.md)は、旧q8中心の草案を
+q1/q2の短い構成へ縮小し、B0を追加する案である。これは最良候補探索ではない。
+技術GOと精度・測定込み比較のGOを分ける設計も、実行前にレビューする。
+厳密uがない技術pilotを許すなら、技術結果だけを保存しUNDETERMINEDを維持することを新契約へ明記する。
+本書はその例外を既存launch契約へ自動適用しない。
+
+独立レビューには次の四点の判断を依頼する。
+
+1. H4 technical acceptanceの範囲と、u_bound/u_empiricalの扱いは妥当か。
+2. 追加H4検証は参照・実時間集合・非unitary誤差会計のどこまで必要か。
+3. H6の7 cell/36 wrapper案、DF政策、state、参照と上限は情報価値に見合うか。
+4. 最小成果とH8独立検証の条件を満たす比較候補・標本規則は何か。
+
+今回の成果物はレビュー案・不足一覧・H6契約案と静的証拠。
+新しいsignal、sampling、回路compile、Hamiltonian/state生成、GPU実行、H4再実行はない。
+次段のsource実装・科学実行の認可は発行せず、独立レビューへmandatory STOPする。

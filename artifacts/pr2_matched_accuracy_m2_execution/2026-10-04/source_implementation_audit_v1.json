@@ -1,0 +1,93 @@
+{
+  "schema_version": "pr2_matched_accuracy_m2_source_implementation_audit_v1",
+  "status": "M2_SOURCE_IMPLEMENTED_EXECUTION_NOT_AUTHORIZED",
+  "performed_on": "2026-10-04",
+  "branch": "pr2-v4-s2-parallelization-20260928",
+  "contract_source_commit": "a529e9434d2e62fe752fdab5bd4c9a63fb15e830",
+  "contract_plan_commit": "40888b84b680ca726a603b677296cc97ec3534c4",
+  "contract_plan_sha256": "d2bb5c5e57002fac5e8045f89a048913f4dadd5177d6f6d1465cc40a8755af7c",
+  "contract_plan_fingerprint": "7880c8fed57a02f30a07ff7463eb65e423098ad9420e38410f365fad2e24cc4f",
+  "implementation_sources": {
+    "src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py": "3b0d1e76ca488a28cf81165df1b36bdd671d07b17c4c155476ce38162c30c35b",
+    "scripts/run_pr2_matched_accuracy_m2_transfer.py": "1783da8cbdb22b60e491d073c1bc3e77dbb41b470998fb9f19cf8d1cf045224c",
+    "tests/test_pr2_matched_accuracy_m2_transfer_execution.py": "e28a58f80d61b5b0f621aa8fb25b8f416fc272ac5abd5b660780b12574cd1234"
+  },
+  "local_tests": {
+    "python": "/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python",
+    "python_version": "3.11.0rc1",
+    "environment": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "PYTHONNOUSERSITE": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "src:."
+    },
+    "focused": {
+      "files": [
+        "tests/test_pr2_matched_accuracy_m2_transfer_execution.py",
+        "tests/test_pr2_matched_accuracy_m2_transfer_contract.py",
+        "tests/test_pr2_matched_accuracy_m1_b1_contract.py",
+        "tests/test_pr2_matched_accuracy_m1_b1_execution.py",
+        "tests/test_pr2_matched_accuracy_m1_b1_result_validation.py"
+      ],
+      "passed": 84,
+      "failed": 0,
+      "skipped": 0,
+      "wall_time_s": 6.54,
+      "execution_dedicated_passed": 35,
+      "flags": [
+        "-q",
+        "-rs",
+        "-p",
+        "no:cacheprovider"
+      ]
+    },
+    "library_regression": {
+      "files": [
+        "tests/test_df_partial_s2_repeated.py",
+        "tests/test_df_partial_s2_repeated_cost.py",
+        "tests/test_rpe_hadamard_interrogation.py",
+        "tests/test_df_rpe_hadamard_compiled_cost.py",
+        "tests/test_rpe_hadamard_compiled_cost_benchmark.py"
+      ],
+      "passed": 134,
+      "failed": 0,
+      "skipped": 0,
+      "wall_time_s": 18.42,
+      "flags": [
+        "-q",
+        "-rs",
+        "-p",
+        "no:cacheprovider"
+      ]
+    },
+    "evidence_kind": "local implementation checks, not immutable CI or scientific transfer",
+    "production_run_invoked": false,
+    "synthetic_qiskit_baseline_axes_compiled": 2,
+    "snapshot_loads_in_new_execution_tests": 0
+  },
+  "scientific_activity": {
+    "held_out_resolve_stat_hash_load": 0,
+    "H4_signal_evaluations": 0,
+    "H4_trajectory_samples": 0,
+    "H4_wrapper_compiles": 0,
+    "transfer_executions": 0,
+    "gpu_query_allocation_kernel": 0
+  },
+  "permissions": {
+    "execution_authorization_created": false,
+    "held_out_execution_authorized": false,
+    "next_stage_authorized": false
+  },
+  "frozen_future_limits": {
+    "candidate_count": 5,
+    "paired_random_trajectories": 96,
+    "full_wrappers": 196,
+    "maximum_workers": 5,
+    "blas_threads": 1,
+    "additional_trajectories": 0
+  },
+  "next_step": "Commit actual science sources and zero-compute source-bound plan, then STOP before separate authorization/final review.",
+  "user_document_cleanup_preserved": true
+}

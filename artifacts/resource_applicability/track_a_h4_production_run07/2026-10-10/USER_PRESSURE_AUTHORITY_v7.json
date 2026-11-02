@@ -1,0 +1,19 @@
+{
+  "accepted_profile": {
+    "host_full_avg10_stop_percent": 1.0,
+    "host_only_min_available_bytes": 129117454336,
+    "mode": "bounded_host_only",
+    "nonroot_full_avg10_stop_percent": 0.0,
+    "observation_max_age_seconds": 5,
+    "schema_version": "h4-memory-pressure-policy-v1",
+    "zero_host_headroom_bytes": 17179869184
+  },
+  "date": "2026-10-10",
+  "instruction": "この条件を承認して再実行",
+  "next_stage_authorized": false,
+  "other_caps_science_compiler_environment_CPU_unchanged": true,
+  "pressure_amendment_approved": true,
+  "question": "修正案は実装済みで、限定16検査と独立reviewに合格しています。元の固定契約（zero_compute_plan_v2.json:3208）の「PSIが非zeroなら即STOP」を変更するため、この一点だけ承認が必要です。host PSIが1%未満・全cgroup PSIが0・OOM増加なし・空きメモリ120.25GiB以上の場合だけ継続し、8GiB上限と5秒監視を維持する案を採用して、本計算へ接続・再review・再実行まで進めてよいですか？",
+  "runtime_source_fixed_before_launch": true,
+  "schema_version": "h4-user-pressure-authority-v1"
+}

@@ -1,0 +1,88 @@
+{
+  "CPU_roles": {
+    "driver": [
+      16
+    ],
+    "observer": [
+      18
+    ],
+    "workers": [
+      [
+        2
+      ],
+      [
+        4
+      ],
+      [
+        5
+      ],
+      [
+        6
+      ]
+    ]
+  },
+  "absolute_launch_command": "env MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 QISKIT_NUM_PROCS=1 QISKIT_PARALLEL=false RAYON_NUM_THREADS=1 /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -P -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run07-20261010/scripts/resource_applicability/run_h4_geometry_signal_compile.py --plan /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run07-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/plan_authorized_v17.json --authorization /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run07-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/authorization_v17.json --review /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-production-run07-20261010/artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/review_v17.json --explicit-launch-signal-compile",
+  "actual_cap": 74805,
+  "actual_worst_case": 74784,
+  "additional_transpiles": 0,
+  "allowed_cpus": [
+    2,
+    4,
+    5,
+    6,
+    16,
+    18
+  ],
+  "approved": true,
+  "authorization_digest": "b0faf0ca99be7048e996b3f6d5a01ee950b6a99158bba4521b04d8ca67046903",
+  "base_review": "08beb875ef233a1a9250c2cfd47faebc5b9f600a",
+  "carry": {
+    "actual_invocations": 0,
+    "charged_bytes": 0,
+    "wall_seconds": 0.0
+  },
+  "charge_bound_bytes": 8736971632,
+  "closure_count": 62,
+  "fresh_gate_required_at_launch": true,
+  "historical_carry_preserved_excluded": {
+    "actual_invocations": 22,
+    "charged_bytes": 12956511264,
+    "wall_seconds": 6004.111340102032
+  },
+  "independent_review": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/independent_authorized_run07_review_v1.json",
+    "sha256": "c57d1333eabbf99e0450495aed64ca1069496393ff91140e44346e408c8cc060",
+    "status": "PASS_READY_FOR_IMMUTABLE_ARTIFACT_AND_FRESH_RUN07_LAUNCH"
+  },
+  "memory_pressure_profile": {
+    "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+    "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+  },
+  "next_stage_authorized": false,
+  "old_partial_cache_reuse": false,
+  "output_cap_bytes": 18253611008,
+  "plan_fingerprint": "13e841da820ca6212feddbd5fc0d7763bf68460fa322b7697089268bac53e06b",
+  "pressure_amendment": {
+    "approved": true,
+    "authority": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/USER_PRESSURE_AUTHORITY_v7.json",
+      "sha256": "a4daf128221c61180ad0bc20476cd8b1779090535f5aa85907fedba7546a3662"
+    },
+    "from_host_stop_percent": 0.0,
+    "profile": {
+      "path": "artifacts/resource_applicability/track_a_h4_production_run07/2026-10-10/memory_pressure_profile_v1.json",
+      "sha256": "0d3f7742ea5ba722381cae5d622f70193471989801c7d4dfadfccfb33b8556e5"
+    },
+    "to_host_stop_percent": 1.0
+  },
+  "pressure_contract_amendment_user_approved": true,
+  "production_launches_at_artifact": 0,
+  "review_digest": "f99f871ce3db9fd936babe323d55488732b92ae2b11f627ae382591b858c0f14",
+  "runtime_authorization": true,
+  "sealed": true,
+  "source_commit": "1dbdd1be2133a59ab81c7b81a6074af0880f72a3",
+  "source_seed_rebinding_required": true,
+  "status": "PASS_AUTHORIZED_CARRY0_FRESH_GATE_REQUIRED",
+  "supervised_recovery_approved": true,
+  "unused_output_control_one_shot": true
+}

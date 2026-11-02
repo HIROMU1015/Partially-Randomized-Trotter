@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-et-v5-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/worker.py", line 112, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-et-v5-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/worker.py", line 102, in main
+    result=execute(root,job,contract,capability)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-et-v5-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/worker.py", line 90, in execute
+    return native_fixture(job['r'],deserialize_frames(job['frames']),prior['central_compilations'],on_compile,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-df-correction-et-v5-one-shot-execution-20261012/src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/native_evaluation.py", line 98, in native_fixture
+    if error>F(1,5000000):raise ArithmeticError('Whole native numerical allowance not certified')
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ArithmeticError: Whole native numerical allowance not certified

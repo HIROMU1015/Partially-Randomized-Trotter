@@ -1,0 +1,3427 @@
+{
+  "checks": {
+    "all_initial_proxy_cells_pass": false,
+    "all_selected_r_have_coherent_opt2_points": true,
+    "coherent_reoptimization_completed": false,
+    "complete_initial_batch_loaded": true,
+    "final_total_cost_and_scientific_superiority_not_claimed": true,
+    "focused_and_coherent_results_are_separate": true
+  },
+  "compute_manifest_fingerprint": "f8425939aec4387d4d89315190cee2e146e7fcfef7489de60f297d2896a654fa",
+  "configuration": {
+    "basis": "STO-3G",
+    "calibration_q": [
+      1,
+      2
+    ],
+    "candidate_ld_values": [
+      3,
+      12
+    ],
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 2,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "delta_values": [
+      0.01,
+      0.02
+    ],
+    "df_rank": 12,
+    "finite_taylor_order": 2,
+    "geometry_angstrom": 1.0,
+    "molecule": "H4_chain",
+    "n_qubits": 8,
+    "new_holdout_q": [
+      8
+    ],
+    "r_values": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ]
+  },
+  "content_fingerprint": "b256b47a83fb54657716d4d7f910a8772aa0f583c54ec9a63259f37784d0bcaf",
+  "deterministic_diagnostics": {
+    "delta0.01": {
+      "holdout_q": [
+        8
+      ],
+      "maximum_all_metrics_holdout_error": 0.0,
+      "maximum_rz_holdout_error": 0.0
+    },
+    "delta0.02": {
+      "holdout_q": [
+        16,
+        32
+      ],
+      "maximum_all_metrics_holdout_error": 0.0,
+      "maximum_rz_holdout_error": 0.0
+    }
+  },
+  "extension_required_cells": [
+    "delta0.01:r16",
+    "delta0.01:r32",
+    "delta0.02:r8",
+    "delta0.02:r16",
+    "delta0.02:r32"
+  ],
+  "method": "m06f_all_r_coherent_optimization_level_2_reoptimization_v1",
+  "overall_pass": false,
+  "provenance": {
+    "command": "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/bin/python scripts/run_research_direction_full_opt2_analysis.py --task-manifest artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_initial_20260924_023012.manifest.json --compute-output-dir artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_initial_20260924_023012 --output artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_analysis_20260924_222811.json --extension-manifest artifacts/research_direction_full_opt2/2026-09-24/wp11_all_r_opt2_extension_20260924_222811.manifest.json",
+    "evidence_status": "local_dirty_worktree_analysis_not_immutable_ci",
+    "generated_at_utc": "2026-09-24T13:28:38.005657+00:00",
+    "git_commit": "26aa95c7b3f5ecd1f358280e58073ca2ee44ea5c",
+    "git_status": [
+      " M .gitignore",
+      " M PROJECT_MAP.md",
+      " M docs/README.md",
+      " M scripts/README.md",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/parallel_validation_executor.py",
+      " M src/trotterlib/research_direction_full_scope.py",
+      "?? artifacts/research_direction_full_opt2/",
+      "?? docs/research_direction_full_opt2.md",
+      "?? scripts/run_research_direction_full_opt2_analysis.py",
+      "?? scripts/run_research_direction_full_opt2_compute.py",
+      "?? src/trotterlib/research_direction_full_opt2.py",
+      "?? tests/test_research_direction_full_opt2.py"
+    ],
+    "numpy_version": "1.26.4",
+    "python_version": "3.12.3",
+    "qiskit_version": "1.3.0",
+    "scipy_version": "1.14.1",
+    "source_sha256": {
+      "scripts/run_research_direction_full_opt2_analysis.py": "21f5ce9b69507b359ca58026964deeb0b56ef6e8a1688398288bf31b8278c59c",
+      "src/trotterlib/research_direction_full_opt2.py": "41a4066653c74a13090879355ce2f3cd0c9ee82df8cf414e2d2c98dc6c65b1a3"
+    }
+  },
+  "proxy_diagnostics": {
+    "delta0.01:r1": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.001119571429128104
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.001119571429128104
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.00045860271673006767
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.00045860271673006767
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.0020794544663076007
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.0020794544663076007
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.0015315192999423395
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.0015315192999423395
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0006867660298620469
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0006867660298620469
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.0005254852542813516
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.0005254852542813516
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.0038804322644826316,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0024766317807781418,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0012403800073295182,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007538049200727482,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0014082590249877222,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0040849287380639795,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0038804322644826316,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0024766317807781418,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0012403800073295182,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007538049200727482,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0014082590249877222,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0040849287380639795,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0019415269558127179,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0010469342604298357,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00036596523330283625,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0004305035695920979,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0005848298676748582,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.002089593638759188,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0019415269558127179,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0010469342604298357,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00036596523330283625,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0004305035695920979,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0005848298676748582,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.002089593638759188,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.0020794544663076007,
+      "maximum_full_basis_rz_holdout_error": 0.0019415269558127179,
+      "maximum_selected_all_metrics_holdout_error": 0.0040849287380639795,
+      "maximum_selected_rz_holdout_error": 0.0038804322644826316,
+      "pass": true
+    },
+    "delta0.01:r16": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": false,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.015167191277346252
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.015167191277346252
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.01949097471647897
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.01949097471647897
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.02910166754293691
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.02910166754293691
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.039110792394636364
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.039110792394636364
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.011976428783569634
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.011976428783569634
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.016564646007555542
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.016564646007555542
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.02515988864748929,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01425341505979041,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017149834421771225,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.009411297847467262,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02124469843547788,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.026916221940286745,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02515988864748929,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01425341505979041,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017149834421771225,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.009411297847467262,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02124469843547788,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.026916221940286745,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.04687665881053995,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02664467901658282,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.019684557265836424,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.010270351103942576,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.023691026357219033,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.050062734194552226,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.04687665881053995,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02664467901658282,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.019684557265836424,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.010270351103942576,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.023691026357219033,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.050062734194552226,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.039110792394636364,
+      "maximum_full_basis_rz_holdout_error": 0.04687665881053995,
+      "maximum_selected_all_metrics_holdout_error": 0.026916221940286745,
+      "maximum_selected_rz_holdout_error": 0.02515988864748929,
+      "pass": false
+    },
+    "delta0.01:r2": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.0006901844408669942
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.0006901844408669942
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.0006901844408669942
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.0006901844408669942
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.000998587601097913
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.000998587601097913
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.003890147417572144
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.003890147417572144
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0005991367930139135
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0005991367930139135
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.0025535042276462307
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.0025535042276462307
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.001598334018649441,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007457341065418543,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00012561411344350158,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 5.935281688468935e-06,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0002165914938081175,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0015459070162159682,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.001598334018649441,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007457341065418543,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00012561411344350158,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 5.935281688468935e-06,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0002165914938081175,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0015459070162159682,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007745399528055741,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00026343519494204424,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00018127688649975248,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0003025880175145064,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00026899876903824167,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007892624025328973,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007745399528055741,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00026343519494204424,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00018127688649975248,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0003025880175145064,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00026899876903824167,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0007892624025328973,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.003890147417572144,
+      "maximum_full_basis_rz_holdout_error": 0.0007745399528055741,
+      "maximum_selected_all_metrics_holdout_error": 0.001598334018649441,
+      "maximum_selected_rz_holdout_error": 0.001598334018649441,
+      "pass": true
+    },
+    "delta0.01:r32": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": false,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.01833338909436158
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.01833338909436158
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.024158303744115994
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.024158303744115994
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.00850944394585274
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.00850944394585274
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.011218210949806216
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.011218210949806216
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.01591170313868281
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.01591170313868281
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.016954358248444167
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.016954358248444167
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.02955587274573852,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017596614322307608,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.013303531707107902,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.009057892999153066,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01676592652935413,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.031161602572959204,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02955587274573852,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017596614322307608,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.013303531707107902,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.009057892999153066,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01676592652935413,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.031161602572959204,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.035905062011323804,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.022486809807296223,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015861342870596203,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.010551219257281577,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.019758093343992304,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.03788108531538734,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.035905062011323804,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.022486809807296223,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015861342870596203,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.010551219257281577,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.019758093343992304,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.03788108531538734,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.024158303744115994,
+      "maximum_full_basis_rz_holdout_error": 0.035905062011323804,
+      "maximum_selected_all_metrics_holdout_error": 0.031161602572959204,
+      "maximum_selected_rz_holdout_error": 0.02955587274573852,
+      "pass": false
+    },
+    "delta0.01:r4": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.006446494534286629
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.006446494534286629
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.011548434071099888
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.011548434071099888
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.008784909344050344
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.008784909344050344
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.018456544076264056
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.018456544076264056
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.002967368057477608
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.002967368057477608
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.00522288758550024
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.00522288758550024
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.007129526183572384,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00405134916663459,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006084900812005345,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.003385885710275783,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007123586476092073,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0075937958717472425,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007129526183572384,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00405134916663459,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006084900812005345,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.003385885710275783,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007123586476092073,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0075937958717472425,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015688157714801823,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008384684358128088,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005096003228608757,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0029269489624228827,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006062636745821735,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.016753542302877133,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015688157714801823,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008384684358128088,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005096003228608757,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0029269489624228827,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006062636745821735,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.016753542302877133,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.018456544076264056,
+      "maximum_full_basis_rz_holdout_error": 0.015688157714801823,
+      "maximum_selected_all_metrics_holdout_error": 0.0075937958717472425,
+      "maximum_selected_rz_holdout_error": 0.007129526183572384,
+      "pass": true
+    },
+    "delta0.01:r8": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0052567012173406905
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0052567012173406905
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.007116942883118205
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.007116942883118205
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.009472242208920302
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.009472242208920302
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.011494520738691949
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.011494520738691949
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.011553263577676897
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.011553263577676897
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.01944106634807061
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.01944106634807061
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.021342751458157935,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012652278884609005,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.011160361971905088,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006912912028806631,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.013821546465586077,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.023303334152169543,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.021342751458157935,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012652278884609005,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.011160361971905088,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006912912028806631,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.013821546465586077,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.023303334152169543,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.024809857909321383,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015464990990827848,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012227245920975035,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007182332930233609,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01472443912751348,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.027112012399617642,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.024809857909321383,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015464990990827848,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012227245920975035,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007182332930233609,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01472443912751348,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.027112012399617642,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.01944106634807061,
+      "maximum_full_basis_rz_holdout_error": 0.024809857909321383,
+      "maximum_selected_all_metrics_holdout_error": 0.023303334152169543,
+      "maximum_selected_rz_holdout_error": 0.021342751458157935,
+      "pass": true
+    },
+    "delta0.02:r1": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0006313720555138045
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.0006313720555138045
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.0006504891964861926
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.0006504891964861926
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.0013641459365952846
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.0013641459365952846
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.001905060820084771
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.001905060820084771
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.0011133699979244513
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.0011133699979244513
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.0005915875829980934
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.0005915875829980934
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.0021940508515574694,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0012982084723082146,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0016074790075932231,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0009693517310707148,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0019448111727477784,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0023078327781520967,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0021940508515574694,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0012982084723082146,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0016074790075932231,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0009693517310707148,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0019448111727477784,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0023078327781520967,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0013312283424534738,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0010078852196596904,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0005490792363574928,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00032286609427689954,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0003781567223266092,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0015671225101107167,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0013312283424534738,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0010078852196596904,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0005490792363574928,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00032286609427689954,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0003781567223266092,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0015671225101107167,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.001905060820084771,
+      "maximum_full_basis_rz_holdout_error": 0.0013312283424534738,
+      "maximum_selected_all_metrics_holdout_error": 0.0023078327781520967,
+      "maximum_selected_rz_holdout_error": 0.0021940508515574694,
+      "pass": true
+    },
+    "delta0.02:r16": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": false,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.014761777759968718
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.014761777759968718
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.0193763404255212
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.0193763404255212
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.019454537730864523
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.019454537730864523
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.02543113463800241
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.02543113463800241
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.010418542991305119
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.010418542991305119
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.015133609879570818
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.015133609879570818
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.015677321576952487,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.009150573196017616,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01174123856871049,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007203401160458836,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01573735736745812,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017345150177303172,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015677321576952487,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.009150573196017616,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01174123856871049,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007203401160458836,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01573735736745812,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017345150177303172,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.03529776414222073,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02069883527454243,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015130824940866639,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008498191137372327,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01908826078278292,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.03757407671074876,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.03529776414222073,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.02069883527454243,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.015130824940866639,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008498191137372327,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01908826078278292,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.03757407671074876,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.02543113463800241,
+      "maximum_full_basis_rz_holdout_error": 0.03529776414222073,
+      "maximum_selected_all_metrics_holdout_error": 0.017345150177303172,
+      "maximum_selected_rz_holdout_error": 0.015677321576952487,
+      "pass": false
+    },
+    "delta0.02:r2": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.002457469291695608
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.002457469291695608
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.008707583007192859
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.008707583007192859
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.0010614275749192051
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.0010614275749192051
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.0045544165750273265
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.0045544165750273265
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.00027746070449548304
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.00027746070449548304
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.002527564600891837
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.002527564600891837
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.00199740536379653,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0016979095102561586,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.004922840583758118,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0022148723034078155,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0061286608641646185,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0024694078011254623,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00199740536379653,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0016979095102561586,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.004922840583758118,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0022148723034078155,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0061286608641646185,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0024694078011254623,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017576357791735626,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008986217876712999,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006138350039410998,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0032818796327618235,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00797491091854825,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01870987789997044,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.017576357791735626,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008986217876712999,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006138350039410998,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0032818796327618235,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00797491091854825,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01870987789997044,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.008707583007192859,
+      "maximum_full_basis_rz_holdout_error": 0.017576357791735626,
+      "maximum_selected_all_metrics_holdout_error": 0.0061286608641646185,
+      "maximum_selected_rz_holdout_error": 0.00199740536379653,
+      "pass": true
+    },
+    "delta0.02:r32": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": false,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.016152462594470115
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.016152462594470115
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.02140980744928966
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.02140980744928966
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 16,
+          "relative_standard_error": 0.010238909766593298
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 16,
+          "relative_standard_error": 0.010238909766593298
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 16,
+          "relative_standard_error": 0.013865389739485829
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 16,
+          "relative_standard_error": 0.013865389739485829
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.009294429937699194
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.009294429937699194
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.012485329324321016
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.012485329324321016
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 32,
+          "relative_standard_error": 0.0032806389144373303
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 32,
+          "relative_standard_error": 0.0032806389144373303
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 32,
+          "relative_standard_error": 0.004946162453847221
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 32,
+          "relative_standard_error": 0.004946162453847221
+        }
+      ],
+      "holdout_q": [
+        16,
+        32
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.023395996738593692,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.011804336386623886,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.014008496423243894,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.007130441467658706,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.013618397364588539,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.007544102265023592,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.0077370795026411405,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.004021450141239708,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.015997737336597696,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.0087758981478799,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.024700975155849684,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.012507791326837827,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.023395996738593692,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.011804336386623886,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.014008496423243894,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.007130441467658706,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.013618397364588539,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.007544102265023592,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.0077370795026411405,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.004021450141239708,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.015997737336597696,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.0087758981478799,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.024700975155849684,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.012507791326837827,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.034203536597348344,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.01787814900974401,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.02112182854232324,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.010958798710245389,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.015871089750730726,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.008846833163306918,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.009338037554439658,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.0051331798750411045,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.019547348583650686,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.011008330168403536,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.03593866026765995,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.01868189460340474,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.034203536597348344,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.01787814900974401,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.02112182854232324,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.010958798710245389,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.015871089750730726,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.008846833163306918,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.009338037554439658,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.0051331798750411045,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.019547348583650686,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.011008330168403536,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 32
+        },
+        {
+          "absolute_relative_error": 0.03593866026765995,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 16
+        },
+        {
+          "absolute_relative_error": 0.01868189460340474,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 32
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.02140980744928966,
+      "maximum_full_basis_rz_holdout_error": 0.034203536597348344,
+      "maximum_selected_all_metrics_holdout_error": 0.024700975155849684,
+      "maximum_selected_rz_holdout_error": 0.023395996738593692,
+      "pass": false
+    },
+    "delta0.02:r4": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": true,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.004309675788374343
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.004309675788374343
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.007229641796637991
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.007229641796637991
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.009350397291850538
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.009350397291850538
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.01729277843689124
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.01729277843689124
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.003070584119586292
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.003070584119586292
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.006225414025755637
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.006225414025755637
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.011691514912184163,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006195261540240295,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005515008505734512,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0031068983675618745,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00756680949630281,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012509355924723199,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.011691514912184163,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006195261540240295,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005515008505734512,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0031068983675618745,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.00756680949630281,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012509355924723199,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.011756092125996785,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006686808230358395,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005373547088701176,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.003074243566590103,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007360992472754582,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012871439343470207,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.011756092125996785,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006686808230358395,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005373547088701176,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.003074243566590103,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007360992472754582,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.012871439343470207,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.01729277843689124,
+      "maximum_full_basis_rz_holdout_error": 0.011756092125996785,
+      "maximum_selected_all_metrics_holdout_error": 0.012509355924723199,
+      "maximum_selected_rz_holdout_error": 0.011691514912184163,
+      "pass": true
+    },
+    "delta0.02:r8": {
+      "checks": {
+        "direct_rz_relative_se_within_2_percent": false,
+        "selected_all_metrics_holdout_within_5_percent": true,
+        "selected_rz_holdout_within_5_percent": true
+      },
+      "direct_rz_relative_standard_error_rows": [
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.006723930635025785
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 2,
+          "relative_standard_error": 0.006723930635025785
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.011562597722653
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 2,
+          "relative_standard_error": 0.011562597722653
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.020179689152862005
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 1,
+          "relative_standard_error": 0.020179689152862005
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.027349389753566704
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 1,
+          "relative_standard_error": 0.027349389753566704
+        },
+        {
+          "axis": "cosine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.007874350101452791
+        },
+        {
+          "axis": "sine",
+          "policy": "support_run_le_1",
+          "q": 8,
+          "relative_standard_error": 0.007874350101452791
+        },
+        {
+          "axis": "cosine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.009897825002872042
+        },
+        {
+          "axis": "sine",
+          "policy": "full_basis_shared",
+          "q": 8,
+          "relative_standard_error": 0.009897825002872042
+        }
+      ],
+      "holdout_q": [
+        8
+      ],
+      "holdout_rows": [
+        {
+          "absolute_relative_error": 0.006538289840900602,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0038872512896094328,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007219337558323956,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.004497207653182595,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008151673867128815,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006944521915684021,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006538289840900602,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.0038872512896094328,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.007219337558323956,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.004497207653182595,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.008151673867128815,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.006944521915684021,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "support_run_le_1",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.023395161575970814,
+          "axis": "cosine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.013221447925256681,
+          "axis": "cosine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.010051009034762198,
+          "axis": "cosine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005494008591453764,
+          "axis": "cosine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01158986105834019,
+          "axis": "cosine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.024937878374103325,
+          "axis": "cosine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.023395161575970814,
+          "axis": "sine",
+          "metric": "rz_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.013221447925256681,
+          "axis": "sine",
+          "metric": "cx_count",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.010051009034762198,
+          "axis": "sine",
+          "metric": "rz_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.005494008591453764,
+          "axis": "sine",
+          "metric": "cx_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.01158986105834019,
+          "axis": "sine",
+          "metric": "total_depth",
+          "policy": "full_basis_shared",
+          "q": 8
+        },
+        {
+          "absolute_relative_error": 0.024937878374103325,
+          "axis": "sine",
+          "metric": "circuit_size",
+          "policy": "full_basis_shared",
+          "q": 8
+        }
+      ],
+      "maximum_direct_rz_relative_standard_error": 0.027349389753566704,
+      "maximum_full_basis_rz_holdout_error": 0.023395161575970814,
+      "maximum_selected_all_metrics_holdout_error": 0.008151673867128815,
+      "maximum_selected_rz_holdout_error": 0.006538289840900602,
+      "pass": false
+    }
+  },
+  "schema_version": "research_direction_full_opt2_analysis_v1",
+  "scope": {
+    "backend_execution_included": false,
+    "coherent_optimization_level_2_context": true,
+    "final_total_cost_evaluation_performed": false,
+    "q_above_32_directly_validated": false,
+    "scientific_superiority_claimed": false,
+    "state_preparation_included": false
+  },
+  "stage": "M06-F-analysis",
+  "status": "requires_fresh_32_trajectory_extension"
+}

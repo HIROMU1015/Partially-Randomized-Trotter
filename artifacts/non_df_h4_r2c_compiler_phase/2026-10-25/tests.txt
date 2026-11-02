@@ -1,0 +1,23 @@
+Synthetic-only test record, 2026-10-25
+
+Working directory:
+/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-r2c-compiler-phase-proof-20261025
+
+Executed command:
+env PYTHONDONTWRITEBYTECODE=1 /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/.c-reference-fix-venv/bin/python -B -m unittest discover -s tests -p 'test_h4_r2*.py' -v
+
+Observed final result: exit code 0, Ran 10 tests in 0.007s, OK.
+Existing R2 artificial tests: 7 PASS.
+New compiler/phase mathematical lemma tests: 3 PASS.
+
+New checks: two-qubit H native phase and CRZ control identity; exact
+dyadic winding identity and negative endpoint; mathematical exact Euler
+backward lemma near zero/pi singularities, on synthetic matrices only.
+
+Earlier new-test run: 2 PASS, 1 error from FLINT acb not accepting Python
+Fraction directly. Changed Fraction arguments to the existing C.real
+conversion, then all 10 tests passed. No scientific failure/retry occurred.
+
+No H4 operands/results were numerically evaluated by these tests. No
+Qiskit transpiler, scientific state action, sampling, or RNG replay ran.
+PASS is a synthetic check, not an all-input compiler certificate.

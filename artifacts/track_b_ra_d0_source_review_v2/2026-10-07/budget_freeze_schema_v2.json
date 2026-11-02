@@ -1,0 +1,80 @@
+{
+  "schema": "ra_d0_budget_freeze_policy_v2",
+  "batch_order": [
+    "P1_ANCHORS",
+    "P2_CONDITIONAL_COVERAGE if prescribed by anchor outcomes"
+  ],
+  "freeze_scope": "all points in selected batch; independent Phase A/B per batch",
+  "Phase_A": "BUDGET_FREEZE",
+  "Phase_A_B3_solver_calls": 0,
+  "sources": [
+    "up to 9 same-n confidence-feasible B0_saved complete vectors",
+    "complete vectors of 3 certified B2 single-resource minimum solve candidates"
+  ],
+  "maximum_vectors_per_point_before_dedup": 12,
+  "vector_fields": [
+    "T",
+    "CX",
+    "1Q"
+  ],
+  "dedup": "exact rational complete tuple; keep all source IDs",
+  "Cartesian_product": false,
+  "required_minima": [
+    "T",
+    "CX",
+    "1Q"
+  ],
+  "minimum_pipeline": [
+    "nominal inner solve",
+    "fixed q/y rounding",
+    "B2 membership",
+    "mean",
+    "confidence",
+    "workspace peak",
+    "resource upper"
+  ],
+  "uncertified_minimum": "TECHNICAL_INCONCLUSIVE_BUDGET_GENERATION; whole one-shot STOP; no skip/rescue",
+  "freeze_file": "<stage>/budget_freeze.json",
+  "receipt_file": "<stage>/budget_freeze.receipt.json",
+  "freeze_required_fields": [
+    "schema",
+    "stage",
+    "input_identities",
+    "points",
+    "number_of_vectors",
+    "number_of_queries",
+    "B3_solver_calls_in_this_phase"
+  ],
+  "point_required_fields": [
+    "x",
+    "n",
+    "tag",
+    "minima",
+    "budget_vectors",
+    "queries"
+  ],
+  "minimum_required_fields": [
+    "objective",
+    "certificate_sha256",
+    "resources"
+  ],
+  "budget_vector_required_fields": [
+    "budget_id",
+    "resources",
+    "sources"
+  ],
+  "query_required_fields": [
+    "query_id",
+    "x",
+    "n",
+    "tag",
+    "objective",
+    "budget_id",
+    "caps"
+  ],
+  "canonical_identity": "SHA256 of sorted compact JSON + newline; exact resource Fraction strings",
+  "write_policy": "exclusive create; both freeze and SHA receipt saved before any B3 in batch",
+  "Phase_B": "hash/input checks before solve, derived paired queries only, repeat hash check after batch",
+  "feedback": "no budget/grid/settings additions or deletions; P2 context selection only through fixed anchor gate",
+  "actual_registered_freeze_created": false
+}

@@ -1,0 +1,320 @@
+{
+  "schema_version": "track_a_geometry_precision_extension_proposal_v0",
+  "status": "DESIGN_PENDING_NO_SCIENCE_AUTHORIZATION",
+  "date_jst": "2026-10-05",
+  "manuscript_workflow": "PAUSED_PRESERVE_V0_1_AND_V0_2",
+  "existing_evidence_unchanged": true,
+  "existing_authorizations_reusable_for_extension": false,
+  "science_execution_authorized": false,
+  "scope": {
+    "first_stage": "H4_GEOMETRY_PRECISION_FULL_REGISTERED_DOMAIN",
+    "model": "linear_H4",
+    "basis": "sto-3g",
+    "system_qubits": 8,
+    "df_rank_requested": 12,
+    "df_rank_actual_required": 12,
+    "total_time": 0.8,
+    "reference_state_policy": "geometry_specific_rank12_DF_lowest_eigenstate_in_same_physical_sector_as_S0",
+    "target_signal_policy": "exp(-i*E_DF*T)_with_frozen_reference_state_and_residual_gate",
+    "new_snapshot_generation_requires_authorization": true,
+    "fresh_blind_claim_allowed": false,
+    "later_H6_H8_requires_separate_design": true
+  },
+  "geometry": {
+    "fixed_new_distances_angstrom": null,
+    "recommended_count": 6,
+    "draft_new_distances_angstrom": [
+      0.7,
+      0.8,
+      0.9,
+      1.1,
+      1.4,
+      1.6
+    ],
+    "user_confirmation_received": false,
+    "earlier_work_used_draft_distances": true,
+    "existing_1p00_domain_size": 218,
+    "existing_1p30_domain_size": 5,
+    "existing_1p30_is_consumed_held_out": true,
+    "existing_1p30_is_full_grid": false,
+    "one_p30_completion_not_in_current_draft_budget": true
+  },
+  "candidate_templates": {
+    "total_per_geometry": 218,
+    "B0": {
+      "deterministic_prefix_ranks": [
+        3,
+        4,
+        5,
+        6,
+        9
+      ],
+      "q": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "r": 0,
+      "K": 0,
+      "count": 20
+    },
+    "B1": {
+      "deterministic_prefix_ranks": [
+        12
+      ],
+      "q": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "r": 0,
+      "K": 0,
+      "count": 4
+    },
+    "B2_regular": {
+      "deterministic_prefix_ranks": [
+        3,
+        6,
+        9
+      ],
+      "q": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "r": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "K": [
+        2,
+        4
+      ],
+      "count": 144
+    },
+    "B3_regular": {
+      "deterministic_prefix_ranks": [
+        0
+      ],
+      "q": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "r": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ],
+      "K": [
+        2,
+        4
+      ],
+      "count": 48
+    },
+    "inherited_boundary_templates": [
+      {
+        "method": "B2",
+        "deterministic_prefix_rank": 3,
+        "q": 1,
+        "r": 64,
+        "K": 2
+      },
+      {
+        "method": "B3",
+        "deterministic_prefix_rank": 0,
+        "q": 8,
+        "r": 64,
+        "K": 2
+      }
+    ],
+    "random_count": 194,
+    "deterministic_discard_count": 24,
+    "copied_template_domain_not_copied_candidate_fingerprints": true,
+    "result_dependent_add_remove_replace": false,
+    "old_sixteen_cell_selector_reused": false
+  },
+  "resource_proposal": {
+    "trajectories_per_random_candidate": 32,
+    "axes": [
+      "cosine",
+      "sine"
+    ],
+    "same_trajectory_for_axes": true,
+    "random_wrapper_records_per_geometry": 12416,
+    "deterministic_discard_wrapper_records_per_geometry": 48,
+    "total_wrapper_records_per_geometry": 12464,
+    "six_geometry_wrapper_record_cap": 74784,
+    "eight_geometry_wrapper_record_cap": 99712,
+    "proposed_signal_evaluations_per_geometry": 218,
+    "classical_cost_samples_not_quantum_shots": true,
+    "full_grid_compile_ineligible_candidates_as_audit": true,
+    "ineligible_work_is_null_not_zero": true,
+    "actual_transpile_invocations_counted_separately": true,
+    "additional_96_trajectories_authorized": false,
+    "adaptive_extension_authorized": false,
+    "gpu_operations_authorized": false
+  },
+  "execution_location": {
+    "fixed_host": null,
+    "recommendation": "SERVER_CPU_CONDITIONAL_ON_ZERO_SCIENCE_ENVIRONMENT_AND_BENCHMARK",
+    "environment_preference": "SERVER_EXISTING_PYTHON_VENV_DEPENDENCIES_FIRST",
+    "exact_match_to_old_local_environment_required": false,
+    "server_existing_environment_not_yet_verified": true,
+    "compiler_difference_requires_separate_evidence_layer": true,
+    "new_environment_anchor_not_automatically_authorized": true,
+    "one_p00_anchor_wrapper_records_if_separately_authorized": 12464,
+    "six_new_geometry_plus_anchor_wrapper_records": 87248,
+    "new_campaign_semantic_synthetic_checks_required": true,
+    "server_preparation_handoff": "docs/research/gpu_server_track_a_h4_geometry_resource_preparation_prompt.md",
+    "proposed_server_workers_to_compare": [
+      1,
+      6,
+      12,
+      16
+    ],
+    "worker_cap_fixed": null,
+    "no_nested_process_parallelism": true,
+    "blas_threads_per_worker": 1,
+    "benchmark_executed_this_turn": false,
+    "environment_changes_authorized": false,
+    "previous_server_advantage_report_not_a_fresh_campaign_speed_measurement": true,
+    "identical_fixture_required_for_host_speedup_claim": true,
+    "local_benchmark_is_not_required_before_server_contract_draft": true,
+    "synthetic_benchmark_design_limit_transpiles_per_host": 128,
+    "synthetic_benchmark_design_limit_wall_minutes_per_host": 30
+  },
+  "postprocessing": {
+    "input": "saved_geometry_candidate_bias_normalization_axis_cost",
+    "draft_epsilon_range": [
+      0.005,
+      0.1
+    ],
+    "epsilon_display_grid": "reuse_PM2_definition_after_contract_freeze",
+    "alpha_axis": 0.025,
+    "primary": "N_real*E[C_cosine,RZ]+N_imag*E[C_sine,RZ]",
+    "pareto_metrics": [
+      "rz_count",
+      "rz_depth",
+      "cx_count",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "state_preparation_P": "secondary_common_nonnegative_sensitivity",
+    "no_new_signal_sampling_compile_per_epsilon": true,
+    "classification_rule_and_boundary_presentation_pending": true,
+    "precision_points_are_not_independent_experiments": true,
+    "uncertainty_is_engineering_not_formal_CI": true
+  },
+  "required_before_launch": [
+    "user_fixed_geometry_list",
+    "new_snapshot_and_reference_state_generation_contract",
+    "dependency_and_compiler_environment_identity",
+    "representative_identical_synthetic_benchmark_and_safe_host_worker_cap",
+    "prospective_comparison_boundary_and_uncertainty_reporting_rules",
+    "new_science_module_runner_synthetic_tests",
+    "actual_science_source_commit_then_sealed_plan",
+    "separate_result_prior_authorization_and_final_review",
+    "user_explicit_launch_of_fixed_command_output_and_root"
+  ],
+  "cache_identity_required": [
+    "geometry",
+    "snapshot_H_DF_state_hashes",
+    "candidate_fingerprint",
+    "axis",
+    "trajectory_index_seed",
+    "compiler_dependency_identity",
+    "source_commit",
+    "wrapper_semantics"
+  ],
+  "checkpoints": {
+    "cross_geometry_or_cross_cell_reuse": false,
+    "atomic_completed_identity_matched_records_only": true,
+    "ambiguous_or_incomplete_compile_retry_requires_review": true,
+    "old_runtime_migration_authorized": false
+  },
+  "completion_proposal": {
+    "terminal_status": "GEOMETRY_PRECISION_MAP_COMPLETE_AWAITING_REVIEW",
+    "implementation_failure_status": "IMPLEMENTATION_GATE_FAILED",
+    "automatic_research_decision_authorized": false,
+    "next_stage_authorized": false,
+    "mandatory_stop": true
+  },
+  "this_turn": {
+    "molecular_snapshot_access": 0,
+    "molecular_calculations": 0,
+    "reference_state_solves": 0,
+    "new_signals": 0,
+    "trajectory_sampling": 0,
+    "circuit_builds": 0,
+    "transpiles": 0,
+    "gpu_queries": 0,
+    "gpu_allocations": 0,
+    "gpu_kernels": 0,
+    "runtime_or_checkpoint_access": 0,
+    "environment_changes": 0,
+    "scientific_tests_run": 0,
+    "commit_push": 0
+  },
+  "preparation_verification": {
+    "status": "PLANNING_VERIFICATION_PASS",
+    "saved_218_template_set_exact_match": true,
+    "random_candidates": 194,
+    "baseline_candidates": 24,
+    "wrapper_caps": [
+      12464,
+      74784,
+      99712
+    ],
+    "saved_input_hash_and_commit_blob_matches": 4,
+    "frozen_evidence_files_unchanged": 46,
+    "v0_2_manifest_entries_unchanged": 6,
+    "proposal_local_links_checked": 4,
+    "git_diff_check": "PASS",
+    "science_executed": false,
+    "scientific_tests_run": 0
+  },
+  "server_handoff_verification": {
+    "status": "SERVER_HANDOFF_DOCUMENT_VERIFICATION_PASS",
+    "handoff_path": "docs/research/gpu_server_track_a_h4_geometry_resource_preparation_prompt.md",
+    "handoff_sha256": "00744fce0be0291159aab7a372b3d434a14ac93715448472eae51f77a3f3e57d",
+    "base_commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+    "base_commit_and_evidence_ancestry": "PASS",
+    "candidate_template_set": "SAVED_218_EXACT_MATCH",
+    "base_commit_inventory_and_identity_files_identical": 2,
+    "saved_json_hash_and_base_blob_matches": 4,
+    "old_evidence_files_unchanged": 46,
+    "v02_manifest_entries_unchanged": 6,
+    "local_links_checked": 4,
+    "server_native_environment_priority": true,
+    "old_local_exact_version_match_required": false,
+    "science_launch_authorized": false,
+    "server_connection_executed": false,
+    "benchmark_or_science_executed": false,
+    "commit_push": false,
+    "git_diff_check": "PASS"
+  },
+  "baseline": {
+    "manuscript_public_commit": "4c23453c541700c6a41ba71fc5ec9323b53858d6",
+    "M1_B1_source_relative_result": "artifacts/pr2_matched_accuracy_m1_b1_execution/2026-09-30/pr2_matched_accuracy_m1_b1_compile_map_result_v2.json",
+    "M1_B1_local_compile_workers": 6,
+    "M1_B1_local_compile_wall_s": 21021.267432730878,
+    "M1_B1_wrapper_records": 12448,
+    "M1_B1_actual_transpiles": 12128,
+    "extrapolation_six_geometry_compile_hours": 35.03544572121813,
+    "extrapolation_eight_geometry_compile_hours": 46.71392762829085,
+    "extrapolation_is_not_eta_and_excludes_snapshot_signal_overhead": true
+  }
+}

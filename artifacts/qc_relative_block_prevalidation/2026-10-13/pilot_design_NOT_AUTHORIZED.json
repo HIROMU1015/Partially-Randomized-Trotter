@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "status": "CONDITIONAL_MOLECULAR_PILOT_DESIGN_NOT_LAUNCHABLE",
+  "scope": "Ground-energy algorithm motivation;first pilot would test molecular primitive semantics and resource feasibility,not establish final QPE benefit.",
+  "molecular_execution_authorized": false,
+  "source_ready_for_scientific_execution": false,
+  "scientific_runner": null,
+  "input_pack_sha256": null,
+  "reversible_function_backend": "NOT_IMPLEMENTED",
+  "concrete_independent_method_delta": "NOT_ESTABLISHED",
+  "decision_needed_before_launch": "GPT judgement whether a distinct accuracy/construction contribution justifies closing the arithmetic backend and preparing a fixed pilot. Review start is separate authorization.",
+  "candidate_inputs": [
+    {
+      "molecule": "H2",
+      "geometry": "linear 0.74 Angstrom",
+      "basis": "STO-3G",
+      "spin_orbitals": 4,
+      "electrons": 2
+    },
+    {
+      "molecule": "H4",
+      "geometry": "linear equal spacings 1.00 Angstrom",
+      "basis": "STO-3G",
+      "spin_orbitals": 8,
+      "electrons": 4
+    }
+  ],
+  "input_policy": {
+    "origin": "Fresh integrals only after explicit authorization;existing snapshot reuse requires coefficient,basis,mode,constant,DF identity checks.",
+    "independence": "H4 1.00 Angstrom already used in project development;not held-out. H2 cannot alone support generality.",
+    "frozen_core": "none",
+    "integrals": "real RHF molecular orbitals,normal-ordered exact one/two body,all signed terms kept",
+    "DF_rank_policy": "full supplied decomposition with reconstructed coefficient equality;no model truncation or rank-scan in first pilot",
+    "L_D": "No PR split initially;deterministic decompositions.",
+    "steps_and_windows": "Future candidate h=0.25/0.125/0.0625 in atomic time;T=1 diagnostic. These are design candidates,not evaluated or execution-frozen inputs.",
+    "nuclear_and_scalar_phases": "retain and charge in controlled wrapper"
+  },
+  "baseline_design": [
+    "native untruncated excitation/density S2",
+    "native S4 with negative stages",
+    "DF-native S2/S4 using identical original H",
+    "explicit-global-A THRIFT (accounting comparator)",
+    "known compressed conditional-SU2/arithmetic relative block;give it the same cancellation and precision optimizations"
+  ],
+  "comparison_rule": "Permit each method its own admissible step count/order at equal total deterministic error and identical outputs. Never treat a weak global-A implementation as sole baseline.",
+  "future_outputs": [
+    "coefficient identity and counts/supports/detuning coefficient lengths",
+    "full-Fock operator checks and clean workspace/control semantics of compiled primitive",
+    "native RZ/CX/depth/ancilla and logical T/Toffoli at the same precision",
+    "classical adapter/function coefficient preprocessing cost",
+    "required-step/cost break-even conditions;ground-energy branch information diagnostic only"
+  ],
+  "resource_upper_limits_proposed": {
+    "integral_jobs": 2,
+    "FCI_reference_eigensolver_jobs": 2,
+    "molecular_primitive_reference_queries": 24,
+    "compiled_controlled_wrapper_records": 168,
+    "workers": 2,
+    "threads_per_worker": 1,
+    "aggregate_RSS_bytes": 8589934592,
+    "dense_reference_dimension": 512,
+    "output_total_bytes": 67108864,
+    "log_bytes": 4194304,
+    "wall_or_CPU_cap": null,
+    "attempts": 1,
+    "retries": 0
+  },
+  "future_energy_connection": {
+    "unitary": "Fix one approximate seed S(h) and use its powers for phase estimation. Independently approximated times need a separate estimator/branch argument.",
+    "state_preparation": "RHF as common available trial state;preparation costs charged,ground overlap not assumed or free.",
+    "energy_goal_candidate_Hartree": 0.001,
+    "success_probability_candidate": 0.95,
+    "allocation_candidate": {
+      "model": 0.0001,
+      "deterministic_phase_bias": 0.0004,
+      "statistical_phase_estimation": 0.0005
+    },
+    "qualification": "Candidates for later adoption;no method currently certifies these goals. Alias interval/time grid,overlap/branch and estimator must close before any energy-task execution.",
+    "no_free_ground_truth": "FCI/true gap may be post-hoc reference only,not generator or candidate-selector inputs.",
+    "logical_units": "CPU seconds,T count,CX,RZ,depth,qubits reported separately."
+  },
+  "STOP": [
+    "No concrete method delta or relevant common-quality benefit beyond known constructor.",
+    "Function uniform error/cost/workspace contract unresolved.",
+    "Exponentially many occupation or b-bit table entries assumed free.",
+    "Precision/control/uncompute invalid or actual access cost defeats admissible step savings.",
+    "Resource call/memory/output caps or evidence identity fails."
+  ],
+  "forbidden_in_current_task": [
+    "Molecular integrals/snapshots.",
+    "Ground/gap/eigensolver.",
+    "Scientific numerics.",
+    "Quantum circuit generation/compile benchmarks.",
+    "PR/THRIFT hybrid moment or sampling experiments.",
+    "N1/N2/N3 or old Track reopening."
+  ],
+  "mandatory_stop": true,
+  "next_stage_authorized": false,
+  "compile_design_accounting": "Upper cap 2 molecules ×7 method rows (native S2/S4,DF S2/S4,global-A THRIFT,known compressed arithmetic,candidate) ×3 h ×4 powers q=1/2/4/8 =168. Identical known/candidate rows may only share with required identity checks in a future frozen contract."
+}

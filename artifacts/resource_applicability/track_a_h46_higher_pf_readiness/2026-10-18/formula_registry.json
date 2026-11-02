@@ -1,0 +1,58 @@
+{
+  "status": "NO_NEW_FORMULA_ADOPTED",
+  "identities": [
+    {
+      "id": "S2-saved-v1",
+      "provider_label": "2nd",
+      "symbolic_reference_order": 2,
+      "implementation": "fixed provider binary64"
+    },
+    {
+      "id": "Yoshida4-saved-binary64-v1",
+      "provider_label": "4th",
+      "symbolic_reference_order": 4,
+      "symbolic_definition": "t=real_cuberoot(2); (1/(2-t), -t/(2-t), 1/(2-t))",
+      "binary64_exact_order_claim": false
+    },
+    {
+      "id": "new2-printed8-saved-binary64-v1",
+      "provider_label": "4th(new_2)",
+      "saved_decimal": [
+        "0.40899193",
+        "0.42008729",
+        "-0.65815844",
+        "0.42008729",
+        "0.40899193"
+      ],
+      "saved_decimal_cubic_moment": "7.346136322761508E-9",
+      "saved_binary64_cubic_moment": "7.3461363139118617570427919823377818817140659140309020643592483847293376686623815E-9",
+      "strict_fourth_order": false,
+      "moment_values_recomputed_for_real_study": false
+    },
+    {
+      "id": "new2-external-projected-numeric-NOT-ADOPTED-v1",
+      "status": "EXTERNAL_SAVED_NUMERIC_ONLY",
+      "external_compact_literal": [
+        -0.6581584493683974,
+        0.420087292300873,
+        0.4089919323833257
+      ],
+      "exact_certificate": false,
+      "solver_dependency_closure": "INCOMPLETE_AT_FIXED_EXTERNAL_COMMIT",
+      "PR_application_approved": false
+    },
+    {
+      "id": "new2-exact-algebraic-family-NOT-ADOPTED-v1",
+      "status": "REPRESENTATION_PROPOSAL_ONLY",
+      "definition": "(a,b,1-2a-2b,b,a); a rational, b an isolated real root of 2a^3+2b^3+(1-2a-2b)^3=0",
+      "a": null,
+      "isolating_interval": null,
+      "root_branch": null,
+      "binary_conversion_digits": null,
+      "PR_application_approved": false
+    }
+  ],
+  "original_high_precision_optimum": "NOT_RECOVERED",
+  "coefficient_optimization_executed": false,
+  "convergence_evidence": "Reuse prior saved 70-digit toy; no new sweep; symbolic order != binary64 implementation != empirical finite-q slope"
+}

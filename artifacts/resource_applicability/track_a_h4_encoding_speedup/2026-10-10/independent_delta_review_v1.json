@@ -1,0 +1,29 @@
+{
+  "status": "PASS_DELTA_ONLY",
+  "source_commit": "3beb3870369eeb8ef76b4ead965c886eba7d16e9",
+  "reviewer": "independent_final_review (different from implementation author)",
+  "scope": "changed source/tests and bounded reuse correctness only; no old campaign/final-launch repeat",
+  "P1": [],
+  "P2": [],
+  "checks": [
+    "value-keyed immutable snapshot: mutation, dtype, shape, C-order, endian and signed zero",
+    "finite exact encoding before insertion; symbolic/unsupported STOP preserved",
+    "4MiB/1024-entry LRU; array<=4096B/ndim<=8; per-candidate lifetime",
+    "cosine/sine and trajectory order unchanged; phase/control/labels/condition retained",
+    "canonical chunks<=65536 and yielding unchanged; independent monitoring code unchanged",
+    "local 12-test PASS artifact read, no additional test execution",
+    "run10 original source/worktree/processes and authorization unchanged"
+  ],
+  "source_freeze_sha256": "2b6757921e5a520e5168efde6ed74c58114bf2ab6384c54b1a0b3ae596904fbc",
+  "limited_tests_sha256": "c878531320345c09a45b9a9d814b562187d0870596635ad6b0f1b6c4b85f71fc",
+  "additional_transpile": 0,
+  "additional_input_reads": 0,
+  "additional_tests": 0,
+  "production_operations": 0,
+  "limitations": [
+    "2.29x measured for one artificial encoding fixture only; total production speedup unmeasured",
+    "memo is owned by one driver producer; not a cross-thread cache",
+    "new SOURCE requires future seed/binding rebinding; current run10 uses old SOURCE"
+  ],
+  "launch_authorization_issued": false
+}

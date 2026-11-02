@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "previous",
+    "sha256",
+    "payload"
+  ],
+  "properties": {
+    "previous": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "payload": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$comment": "SHA256(previous ASCII + exact canonical payload UTF8). Payload exact hex int/rat tags from fixed audit helper. Whole file SHA is separate. Trailing incomplete line is not completion."
+}

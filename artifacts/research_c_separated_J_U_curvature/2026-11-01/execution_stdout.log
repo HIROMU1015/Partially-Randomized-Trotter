@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py", line 55, in <module>
+    main()
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py", line 51, in main
+    m.run(ROOT, args.contract, args.output, args.fit_python)
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_separated_j_u_curvature_pilot.py", line 237, in run
+    common.launch_workers(root, path, output, c, fit_python, plan['workers'], calls)
+  File "/tmp/prt-c-separated-j-u-curvature-execution-20261101/src/trottertracks/c_common_convergence_pilot.py", line 168, in launch_workers
+    if failures:raise RuntimeError("TECHNICAL_WORKER_FAILURE: "+repr(failures))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: TECHNICAL_WORKER_FAILURE: ["Command '['/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py', '--contract', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/docs/research/research_c_separated_J_U_curvature_contract_unapproved_20261101.json', '--fit-worker', 'pr', '--output', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/artifacts/research_c_separated_J_U_curvature/2026-11-01/run01/pr']' returned non-zero exit status 1.", "Command '['/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/scripts/run_research_c_separated_J_U_curvature.py', '--contract', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/docs/research/research_c_separated_J_U_curvature_contract_unapproved_20261101.json', '--fit-worker', 'rc2', '--output', '/tmp/prt-c-separated-j-u-curvature-execution-20261101/artifacts/research_c_separated_J_U_curvature/2026-11-01/run01/rc2']' returned non-zero exit status 1."]

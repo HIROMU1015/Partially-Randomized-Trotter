@@ -1,0 +1,411 @@
+{
+  "status": "UNAPPROVED_SCIENTIFIC_PROPOSAL",
+  "execution_requires_separate_user_permission": true,
+  "base_commit": "f200e45afecc0a80b9f8a895b68c75ba4dda5dd5",
+  "candidate_commit": "ea54b9b8ba42ff993d803ec6f5c57e4e622fdee6",
+  "scope": "C_UPDATE064_R32_PR_SAME_JU_STRONG_D_V1",
+  "implementation": "saved_DF_new_ground_PF_RTE_native32_sameJU_D_v1",
+  "entry": "scripts/run_research_c_update064_r32_downstream.py",
+  "policy": {
+    "atoms": 4,
+    "distance_A": 1.0,
+    "basis": "STO-3G",
+    "rank": 8,
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "system_modes": 8,
+    "controlled_dimension": 512,
+    "ld": 2,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "PF": "partial ordered symmetric S2",
+    "delta": "1/10",
+    "h": "1/10",
+    "s": 1,
+    "K": 0,
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "original_g_kappa": true,
+    "scalar": "nuclear once",
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "candidate": "update064",
+    "r": 32,
+    "deterministic": "all9 factors ordered symmetric S2,s1,ld8;r/K not applicable",
+    "DF_error": "same-candidate saved numerical sector norm+engineering guard"
+  },
+  "sampling": {
+    "master": 2026110302,
+    "cohort": "update064_r32_fixed32_v1",
+    "axis": "UPDATE064_R32_NATIVE_ONLY",
+    "samples": 32,
+    "events_per_sample": 32,
+    "PRNG": "numpy.random.PCG64",
+    "paired": false,
+    "adaptive": false
+  },
+  "target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "allowances": {
+    "component_abs": 1e-10,
+    "unitarity_abs": 1e-10,
+    "signal_abs": 2e-10,
+    "normalization": 1e-12,
+    "ground_residual": 1e-10,
+    "mass_relative": 1e-12,
+    "mass_absolute": 1e-14,
+    "algebra_absolute": 1e-12,
+    "rtol": 0,
+    "global_phase_fit": false,
+    "strict_enclosure": null
+  },
+  "scenarios": [
+    {
+      "id": "ideal_exact_native",
+      "synthesis_fraction_of_A": 0.0,
+      "law_fraction_of_A": 0.0,
+      "law_model": "ideal_finite_RTE_law",
+      "assumptions": [
+        "exact native synthesis",
+        "ideal finite-RTE IID law",
+        "finite-bit B2 sample mean is a proxy for ideal-law kernel cost"
+      ]
+    },
+    {
+      "id": "assumed_raw_signal_budget",
+      "synthesis_fraction_of_A": 0.001,
+      "law_fraction_of_A": 0.001,
+      "law_model": "actual_implemented_law",
+      "assumptions": [
+        "all-law synthesis raw-signal error <= .001*A_m",
+        "implemented-vs-ideal raw-signal law error <= .001*A_m",
+        "B2 finite-bit sample mean is a descriptive cost proxy for fresh independent occurrences"
+      ]
+    }
+  ],
+  "source_manifest": "artifacts/research_c_update064_r32_downstream/2026-11-03/technical/SOURCE.json",
+  "source_manifest_sha256": "ab9eb265211c83a3836b2322b00b58249e1492b4bd28dd2748e5fe09b4e56434",
+  "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "records": {
+    "old_PR": "artifacts/research_c_rte_r_retuning/2026-11-03/run01/r32/result.json",
+    "old_STOP": "artifacts/research_c_rte_r_retuning/2026-11-03/run01/STOP.json",
+    "old_contract": "docs/research/research_c_rte_r_retuning_contract_unapproved_20261103.json",
+    "old_D": "artifacts/research_c_same_ju_strong_d/2026-11-02/run01/result.json",
+    "old_D_STOP": "artifacts/research_c_same_ju_strong_d/2026-11-02/run01/STOP.json",
+    "shells": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/shells.json"
+  },
+  "shells": {
+    "head": {
+      "raw": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/head_raw.qpy",
+      "compiled": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/head_compiled.qpy"
+    },
+    "X": {
+      "raw": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/X_raw.qpy",
+      "compiled": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/X_compiled.qpy"
+    },
+    "Y": {
+      "raw": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/Y_raw.qpy",
+      "compiled": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/Y_compiled.qpy"
+    }
+  },
+  "peer_paths": {
+    "candidate": "artifacts/research_c_u_step_control/2026-11-03/run01/terminal.npz",
+    "reference": "artifacts/research_c_u_step_control/2026-11-03/run01/physical/update064.npz",
+    "basis": "artifacts/research_c_u_step_control/2026-11-03/run01/physical_reference.npz",
+    "physical": "artifacts/research_c_u_step_control/2026-11-03/run01/physical/update064.json",
+    "result": "artifacts/research_c_u_step_control/2026-11-03/run01/result.json",
+    "STOP": "artifacts/research_c_u_step_control/2026-11-03/run01/STOP.json",
+    "contract": "artifacts/research_c_u_step_control/2026-11-03/run01/contract.json",
+    "SOURCE": "artifacts/research_c_u_step_control/2026-11-03/run01/SOURCE.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/X_compiled.qpy": "f1b858626a70549c2eedf01010931525f0da6be6b4d4717d74845517cba412ab",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/X_raw.qpy": "2bd78257406e8af447475ff11b35000b5d0366b50ae3e70622941e54ef75bdab",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/Y_compiled.qpy": "e08e7355580e1171fb28bcd4394c0b6593e6c9f7b3934b6f11ce7a5f6a118803",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/Y_raw.qpy": "8680c651e0b9ba37495b0a550df4277add399e6c3407367eb522cecb79cff354",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/head_compiled.qpy": "e832223caf172346ce0c21b09e726755f57e2364c04918aa41c9a06a1b3acbec",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/head_raw.qpy": "a7e4e32adca070f5de902aecc1b69b566473432aca707ab70adeea35b470e81b",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/shells.json": "3fd657c0a35a9ada092791c66b164b49d2e91aaa0527dad11461950ecdee834c",
+    "artifacts/research_c_rte_r_retuning/2026-11-03/run01/STOP.json": "4d6cd027a6e1f804e920c0c9aae59f865ec4db456ce8b13167d871cee19d7691",
+    "artifacts/research_c_rte_r_retuning/2026-11-03/run01/r32/result.json": "37966abaa683b90c1ea0fba3ca3ef35dc5a4aff0e298c6e5c09917615250a6bb",
+    "artifacts/research_c_same_ju_strong_d/2026-11-02/run01/STOP.json": "a4f11c9edcb61f0843360f74449a6dc939ee36d8b8b009992fe7e22cb2b2966e",
+    "artifacts/research_c_same_ju_strong_d/2026-11-02/run01/result.json": "a00b65d7ec0aa0275b03feb473b7db42fab3b0ccf190ad6f33ee3cad5636c86a",
+    "artifacts/research_c_update064_r32_downstream/2026-11-03/technical/evaluation-pins.txt": "5a933263b32827333df9bf328304041267c92e9d2ffd2c5a454eba3eb3dd321a",
+    "docs/research/research_c_rte_r_retuning_contract_unapproved_20261103.json": "657aa5439bf66d6a9b19e7e726bd558ad82e4c19827f5386a84221c006409fd6"
+  },
+  "peer_inputs": {
+    "artifacts/research_c_u_step_control/2026-11-03/run01/SOURCE.json": "a1b18ce895cbf88170571158c43ab024cc922dd913fccdcc8e6c007b130037e4",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/STOP.json": "d6a35359541cf7cd7c6d027d5887cc9075c21b5ecb167693450a7e73194b5fec",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/contract.json": "26b4e178dafda327c3570edf50adff28d500001240e56572b99c40380df17eae",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/physical/update064.json": "74626a443f093f95dfe9c0f413cbeb198970cc210bcaa2aba314fc8bc48a3c27",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/physical/update064.npz": "8591d0ca941137704b49914c2ca300a1c95391fdc8f97507db2b7e206ba2e6cd",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/physical_reference.npz": "92a8d27bdebb53937f6361c106a13ef90b9110930d4bf4ddb577796cfb208739",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/result.json": "3fd96624f714c0ded794b1db24d232c64fe77f1bd0f2ce3b797f312e90d6f461",
+    "artifacts/research_c_u_step_control/2026-11-03/run01/terminal.npz": "53d8f5027ce9e61bc72f6943c0268666bfcf87515154850a9a99326687b26ed3"
+  },
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0",
+    "symengine": "0.13.0",
+    "qiskit-aer": "0.15.1"
+  },
+  "evaluation_python": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+  "dependency_lock": "artifacts/research_c_update064_r32_downstream/2026-11-03/technical/evaluation-pins.txt",
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "call_limits": {
+    "A.evidence_load": 1,
+    "A.input_load": 1,
+    "A.selected_load": 1,
+    "A.reference_load": 1,
+    "A.candidate_binding": 1,
+    "A.sector_context": 1,
+    "A.physical_context": 1,
+    "A.native_model": 1,
+    "A.general_factor_gate": 9,
+    "A.ground_reference": 2,
+    "A.target_validation": 1,
+    "A.law_prepare": 1,
+    "A.law_gate": 1,
+    "A.normalization_gate": 1,
+    "B.kernel_reference": 1,
+    "B.exact_evolution": 13,
+    "B.round_reference": 13,
+    "B.round_classification": 13,
+    "B.feasibility_summary": 1,
+    "B.signal_qualification": 3,
+    "B.round_accuracy": 39,
+    "B.energy_assessment": 3,
+    "B.shots_summary": 3,
+    "B.native_admission": 1,
+    "C.car_context": 1,
+    "C.raw_factor": 9,
+    "C.full_sector_gate": 1,
+    "C.reference_context": 1,
+    "C.full_law_gate": 1,
+    "C.gaussian_build": 9,
+    "C.relative_gaussian": 4,
+    "C.shell_load": 6,
+    "C.shell_assessment": 3,
+    "C.trajectory_sample": 32,
+    "C.kernel_build": 32,
+    "C.trajectory_reference": 32,
+    "C.raw_operator_gate": 32,
+    "C.compile": 32,
+    "C.compiled_operator_gate": 32,
+    "C.adjoint_pair_gate": 32,
+    "C.XY_gate": 32,
+    "C.kernel_metrics": 32,
+    "C.calibration_summary": 1,
+    "C.cost_calibration": 1,
+    "C.serial_cost": 26,
+    "C.total_aggregation": 3,
+    "C.calibration_uncertainty": 3,
+    "D.car_context": 1,
+    "D.raw_factor": 9,
+    "D.sector_gate": 1,
+    "D.native_model": 1,
+    "D.PF_kernel": 1,
+    "D.PF_round": 13,
+    "D.full_reference": 1,
+    "D.reference_sector_gate": 1,
+    "D.gaussian_build": 9,
+    "D.relative_gaussian": 16,
+    "D.shell_load": 6,
+    "D.shell_decode": 6,
+    "D.shell_structure": 3,
+    "D.shell_segment": 3,
+    "D.kernel_build": 1,
+    "D.fusion_gate": 1,
+    "D.compile": 1,
+    "D.operator_decode": 2,
+    "D.segment_assessment": 1,
+    "D.adjoint_build": 2,
+    "D.adjoint_decode": 2,
+    "D.adjoint_gate": 2,
+    "D.XY_gate": 1,
+    "D.metrics": 1,
+    "D.round_synthesis": 13,
+    "D.round_accuracy": 13,
+    "D.energy": 1,
+    "D.round_serial_cost": 13,
+    "D.aggregate": 1,
+    "D.ideal_round_accuracy": 13,
+    "D.ideal_energy": 1,
+    "D.ideal_aggregate": 1,
+    "comparison": 5,
+    "result_summary": 1
+  },
+  "maximum_logical_units": 617,
+  "fresh_output": "artifacts/research_c_update064_r32_downstream/2026-11-03/run01",
+  "retry": 0,
+  "resume": 0,
+  "new_fit": 0,
+  "optimizer": 0,
+  "new_DF_error": 0,
+  "mandatory_stop": true,
+  "provenance": {
+    "update064_result_commit": "ea54b9b8ba42ff993d803ec6f5c57e4e622fdee6",
+    "update064_optimization_SOURCE": "025d495166311a58ec9c24c43f07ed6e40f65f42",
+    "candidate_sha256": "53d8f5027ce9e61bc72f6943c0268666bfcf87515154850a9a99326687b26ed3",
+    "update005_candidate_sha256": "938340b8e09c85f5f4021582501ba6d81fc79d5382c37c1824863939bdf6e56e",
+    "input_snapshot_sha256": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "original_P_H4_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "old_r32_result_commit": "f200e45afecc0a80b9f8a895b68c75ba4dda5dd5",
+    "old_r32_SOURCE": "1cdeaa8bd55eb07a1d5b8cf2080259e929d405d1",
+    "old_sameJU_D_SOURCE": "5f27539ae0ab88181d9cfcd45badb54daf855c28"
+  },
+  "stages": {
+    "A": {
+      "maximum_calls": 23,
+      "progression": "All identity/DF/representation/ground/alias/law gates PASS;otherwise stop all dependent work",
+      "description": "Read peer fixed ea54;load terminal/saved physical export;exact J/U match;reuse numerical DF bound only;generalK/CAR9;new physical and new candidate sector36 ground/alias;new r32 K0 signed law",
+      "new_eigensolves": 2,
+      "new_DF_norms": 0
+    },
+    "B": {
+      "maximum_calls": 90,
+      "progression": "All13 POTENTIALLY_FEASIBLE AND ideal energy same_accuracy;otherwise STOP_PR_UNQUALIFIED_NO_C_D,retain null costs",
+      "description": "Fresh partial S2 and finite-RTE kernels;13 exact exp/PF error/RTE error/A/raw complex signal/classifications;3 lanes x13 RPE sufficient assessments;no r search"
+    },
+    "C": {
+      "maximum_calls": 357,
+      "progression": "Every full512/raw/compiled/actual-adjoint/XY gate PASS;first failure stops D and comparisons",
+      "description": "Existing P0/native32 on update064/r32;fresh32 independent task-bound PCG64 trajectories;complete kernel;9 factors;Gaussian/head fusion/exact tail basis sharing;shell serial aggregation;descriptive mean/SE only"
+    },
+    "D": {
+      "maximum_calls": 141,
+      "progression": "Same A candidate/ground;all13 ideal D PF/energy qualify before D native;unqualified preserves D null costs and stops;no alternative policy",
+      "description": "Fresh full-frame S2/PF13 on same J/U;reuse fresh A eigenpair only;independent full256CAR/full-sector;one new P0 kernel;full512/adjoints/XY;numerical synthesis propagation+ideal lane;serial shell costs"
+    },
+    "comparison": {
+      "maximum_calls": 6,
+      "description": "2 new/old PR lane comparisons;new PR/D ideal and assumed/numerical;new/old D ideal;1 final summary;primary shell totalRZ,secondary5 metrics"
+    }
+  },
+  "call_contents": {
+    "A": "8 initial units+9 factor checks+2 eigensolve/alias+target+law+lawgate+normalization=23",
+    "B": "kernel1+exact13+round13+classification13+summary1+qualification3+accuracy39+energy3+shots3+admission1=90",
+    "C": "native common35+9 kinds x32+calibration summary1+cost calibration1+serial26+aggregates3+weighted SE3=357",
+    "D": "same-JU156 minus evidence/input/fit/reference/binding/old groundload/gate/duplicate eigenpair8,old comparisons6,old summary1=141;all remaining D ops unchanged",
+    "logical_unit": "Includes internal numerical operations of named call;not iteration or primitive exponentiation count;no transfer of old unused budgets"
+  },
+  "maxima": {
+    "PR_native_trajectories": 32,
+    "PR_kernel_builds": 32,
+    "PR_compiles": 32,
+    "D_kernel_builds": 1,
+    "D_compiles": 1,
+    "new_QPY": 132,
+    "new_ground_eigensolves": 2,
+    "new_PR_rounds": 13,
+    "new_D_PF_rounds": 13,
+    "new_round_accuracy_assessments": 65,
+    "new_quantum_measurements": 0,
+    "new_DF_error_norms": 0
+  },
+  "reuse": {
+    "DF": "Only exact candidate53d8 saved update064 physical norm+engineering guard;bind bytes and J/U arrays before use",
+    "shells": "Fixed ancillary-only head/X/Y raw+compiled QPY and metrics;new structural/correctness checks",
+    "ground": "A computes new update064 pair once;D may reuse same in-memory pair,H,J/U;old005 ground forbidden",
+    "references": "Old005 r32 and D JSON only for comparisons after new totals;never transferred prices/errors/shots"
+  },
+  "qualifications": {
+    "primary_metric": "shell-inclusive conditional total rz_count",
+    "secondary_metrics": [
+      "rz_depth",
+      "cx_count",
+      "cx_depth",
+      "total_depth",
+      "circuit_size"
+    ],
+    "DF": "saved numerical norm+engineering guard,not rigorous enclosure;update064 U first-order NOT_MET finite endpoint",
+    "evidence_lane": "unknown all-law synthesis and implemented-vs-ideal law error remain null;no actual CA claim",
+    "ideal_lane": "counterfactual exact native/ideal finite-RTE IID;finite-bit sampled cost proxy",
+    "assumed_lane": "unverified all-law synthesis<=.001*A and law error<=.001*A;not observed bounds",
+    "D_numerical": "existing level-B full512 Frobenius/norm-growth propagation;no rigorous rounding enclosure",
+    "sampling": "32 nonpaired/nonadaptive,no pooling with005,master+cohort+new SOURCE digest+arm+candidate+-1+axis+shot+occurrence seed;no new mean/support/CI guarantee",
+    "comparison": "J/U,law,PF,kernel price,shots,W can all change;no pure objective causality,universal DF advantage or r32 optimality"
+  },
+  "stop_rules": [
+    "Preparation does not execute this contract;future explicit user scientific permission is required,not proof-of-approval artifacts",
+    "Fresh run01 exclusive directory creation;retry=resume=0 even interruption;never edit/restart existing output",
+    "SOURCE/input/peer fixed commit/NPZ binding/nonfinite/phase/CAR/ground/alias/law correctness failure stops dependent work;drain started threads and preserve partial raw",
+    "A DF identity/qualification failure:do not replace with new DF norm or a different candidate",
+    "B any missing/unresolved/ineligible registered sufficient condition:save all13 and lanes,skip C and D;no alternative r or thresholds",
+    "Evidence lane null is expected,never treated as zero;ideal-qualified C/D remain counterfactual",
+    "C first correctness failure stops D,comparisons and all new scientific calls;no fallback/retry",
+    "D ideal PF/energy gate failure skips its native/price;retain registered PR result and no same-JU total ratio",
+    "D numerical synthesis/energy unqualified:its numerical total/ratio null;ideal counterfactual retained with label,no actual-CA promotion",
+    "Underflow/overflow/zeroA use existing unresolved/infeasible treatment,no clipping or unknown-zero fill",
+    "Completion or partial failure:publish authorized output and mandatory STOP;no extra candidate,r,fit,review,stats or science"
+  ],
+  "outputs": {
+    "JSON": "identity,DF provenance,law,ground,all rounds and lane evidence,metrics,costs,resources,Calls,STOP;preserve partials",
+    "QPY": "PR32 x raw/compiled/raw actualadjoint/compiled actualadjoint=128;D4;unmodified reused shell6",
+    "NPZ": "new grounds,PR PF/RTE reference,32 independent trajectory references,D actual full512 operators",
+    "old_raw": "read only;no candidate copy,no unconditional merge,no frozen source/contract/grant/ledger/marker/STOP edits"
+  },
+  "forbidden": [
+    "new J/U optimization,rank/LD/gamma/epsilon/frame/PF/compiler changes",
+    "new r exploration",
+    "old005 ground/PF/RTE/shots/native price transfer",
+    "real H4 work during preparation",
+    "new statistical guarantee/large calibration/Codex-A code or contract changes",
+    "new grant/approval-text/proof systems"
+  ],
+  "resources": {
+    "artificial_CPU_RAM_worker_wall_cap": null,
+    "strategy": "existing resource_plan from affinity/quota/memory;parallel13rounds and32native tasks;BLAS thread coordination;existing exclusive Qiskit mutation locks;sequential stages",
+    "noninterference": "read-only fixed peer and existing evaluation venv;task-local outputs/cache/tmp;no other jobs/global environment changes"
+  }
+}

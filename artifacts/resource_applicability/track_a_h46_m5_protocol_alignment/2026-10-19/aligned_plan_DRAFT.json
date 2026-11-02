@@ -1,0 +1,416 @@
+{
+  "schema": "M5_PROTOCOL_ALIGNMENT_PLAN_V1",
+  "status": "PLAN_REVISION_ONLY_NOT_LAUNCH_READY",
+  "base_m5_commit": "f9cd14984675fc81505e1c9bc7c1b506cdcb2021",
+  "protocol_commit": "9036d8a87ad1c38e83b9ff654b412dde7041e9d3",
+  "AD03_main_comparison_status": "DEFERRED_ADDITIONAL_PF",
+  "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+  "PF_commit": "20d64c2fea1ed2d2188777df4f3d962ee94df486",
+  "authorized_scope": "DOCUMENT_PLAN_AND_SYNTHETIC_STRUCTURE_ONLY",
+  "new_science_authorized": false,
+  "numerical_reanalysis_authorized": false,
+  "push_authorized": false,
+  "automatic_contract_application": false,
+  "old_four_contracts_modified": false,
+  "scientific_SOURCE": null,
+  "final_seeds": null,
+  "final_sample_sizes": null,
+  "evaluation": {
+    "systems": [
+      "H4",
+      "H6"
+    ],
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank_policy": "tol_only_1e-8",
+    "rank_auto": true,
+    "T": "0.8",
+    "P": 0,
+    "epsilon": [
+      "0.05",
+      "0.01",
+      "0.005",
+      "0.001",
+      "0.0005"
+    ],
+    "bias": "USUAL_SIGNED",
+    "allowance_factor": 1,
+    "epsilon_split": "epsilon/sqrt(2)",
+    "alpha_axis": "0.025",
+    "control": "symmetric_directional",
+    "compiler": {
+      "qiskit": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "metric": "sum_axis(saved_analytic_shots * compiled_RZ)",
+    "coefficient_reoptimization": false
+  },
+  "technical_pilot": {
+    "lanes": [
+      {
+        "id": "H4_TOL_PILOT_DET",
+        "system": "H4",
+        "kind": "DET",
+        "q": 2,
+        "cut_prefix": 3,
+        "full_prefix": 10,
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "K": null,
+        "r_policy": null,
+        "r_value": null,
+        "trajectories": 0,
+        "compile_axes": 18,
+        "full_H_reference_jobs": 1,
+        "role": "TECHNICAL_PILOT_ONLY",
+        "technical_sealed": false,
+        "scientific_SOURCE": null,
+        "plan_digest": null,
+        "grant_id": null,
+        "authorized": false,
+        "output_path": null,
+        "seed_registry": null
+      },
+      {
+        "id": "H4_TOL_PILOT_PR",
+        "system": "H4",
+        "kind": "PR",
+        "q": 2,
+        "cut_prefix": 3,
+        "full_prefix": 10,
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "K": 4,
+        "r_policy": "PER_SIGNED_S2_PIECE",
+        "r_value": 2,
+        "trajectories": 6,
+        "compile_axes": 12,
+        "full_H_reference_jobs": 0,
+        "role": "TECHNICAL_PILOT_ONLY",
+        "technical_sealed": false,
+        "scientific_SOURCE": null,
+        "plan_digest": null,
+        "grant_id": null,
+        "authorized": false,
+        "output_path": null,
+        "seed_registry": null
+      },
+      {
+        "id": "H6_TOL_PILOT_DET",
+        "system": "H6",
+        "kind": "DET",
+        "q": 2,
+        "cut_prefix": 5,
+        "full_prefix": 19,
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "K": null,
+        "r_policy": null,
+        "r_value": null,
+        "trajectories": 0,
+        "compile_axes": 18,
+        "full_H_reference_jobs": 1,
+        "role": "TECHNICAL_PILOT_ONLY",
+        "technical_sealed": false,
+        "scientific_SOURCE": null,
+        "plan_digest": null,
+        "grant_id": null,
+        "authorized": false,
+        "output_path": null,
+        "seed_registry": null
+      },
+      {
+        "id": "H6_TOL_PILOT_PR",
+        "system": "H6",
+        "kind": "PR",
+        "q": 2,
+        "cut_prefix": 5,
+        "full_prefix": 19,
+        "formulas": [
+          "2nd",
+          "4th",
+          "4th(m5_best)"
+        ],
+        "K": 4,
+        "r_policy": "PER_SIGNED_S2_PIECE",
+        "r_value": 2,
+        "trajectories": 6,
+        "compile_axes": 12,
+        "full_H_reference_jobs": 0,
+        "role": "TECHNICAL_PILOT_ONLY",
+        "technical_sealed": false,
+        "scientific_SOURCE": null,
+        "plan_digest": null,
+        "grant_id": null,
+        "authorized": false,
+        "output_path": null,
+        "seed_registry": null
+      }
+    ],
+    "shot_accounting": false,
+    "ranking": false,
+    "independent_confirmation": false,
+    "numeric_tolerance": "1e-9",
+    "allowance_adopted_for_shots": false
+  },
+  "stages": [
+    {
+      "id": "INPUT_SEAL",
+      "depends_on": [],
+      "role": "metadata join; new adapter validation and source seal",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_TOL_PILOT_DET",
+      "depends_on": [
+        "INPUT_SEAL"
+      ],
+      "role": "separate approved technical pilot",
+      "lane": "H4_TOL_PILOT_DET",
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_TOL_PILOT_PR",
+      "depends_on": [
+        "INPUT_SEAL"
+      ],
+      "role": "separate approved technical pilot",
+      "lane": "H4_TOL_PILOT_PR",
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_TOL_PILOT_DET",
+      "depends_on": [
+        "INPUT_SEAL"
+      ],
+      "role": "separate approved technical pilot",
+      "lane": "H6_TOL_PILOT_DET",
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_TOL_PILOT_PR",
+      "depends_on": [
+        "INPUT_SEAL"
+      ],
+      "role": "separate approved technical pilot",
+      "lane": "H6_TOL_PILOT_PR",
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_SIGNAL",
+      "depends_on": [
+        "H4_TOL_PILOT_DET",
+        "H4_TOL_PILOT_PR"
+      ],
+      "role": "registered sparse eligibility and allowance evidence; no cost winner",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_DET_COST",
+      "depends_on": [
+        "H4_SIGNAL"
+      ],
+      "role": "measured or independently validated model; same-series S2/S4 baseline closure",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_PR_COST",
+      "depends_on": [
+        "H4_SIGNAL"
+      ],
+      "role": "preregister cost-acquisition selection; paired unconditional trajectories",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_ACCOUNT",
+      "depends_on": [
+        "H4_DET_COST",
+        "H4_PR_COST"
+      ],
+      "role": "five precision accounting and finite-domain selection",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_P_DESIGN",
+      "depends_on": [
+        "H4_ACCOUNT"
+      ],
+      "role": "freeze important endpoints and individually design n; no sampling",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_P_ACQUIRE",
+      "depends_on": [
+        "H4_P_DESIGN"
+      ],
+      "role": "fresh independent cohort, never pool",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H4_MECHANISM",
+      "depends_on": [
+        "H4_P_ACQUIRE"
+      ],
+      "role": "same cohort exact cost decomposition and explanation guards",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_SIGNAL",
+      "depends_on": [
+        "H6_TOL_PILOT_DET",
+        "H6_TOL_PILOT_PR"
+      ],
+      "role": "registered sparse eligibility and allowance evidence; no cost winner",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_DET_COST",
+      "depends_on": [
+        "H6_SIGNAL"
+      ],
+      "role": "measured or independently validated model; same-series S2/S4 baseline closure",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_PR_COST",
+      "depends_on": [
+        "H6_SIGNAL"
+      ],
+      "role": "preregister cost-acquisition selection; paired unconditional trajectories",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_ACCOUNT",
+      "depends_on": [
+        "H6_DET_COST",
+        "H6_PR_COST"
+      ],
+      "role": "five precision accounting and finite-domain selection",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_P_DESIGN",
+      "depends_on": [
+        "H6_ACCOUNT"
+      ],
+      "role": "freeze important endpoints and individually design n; no sampling",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_P_ACQUIRE",
+      "depends_on": [
+        "H6_P_DESIGN"
+      ],
+      "role": "fresh independent cohort, never pool",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    },
+    {
+      "id": "H6_MECHANISM",
+      "depends_on": [
+        "H6_P_ACQUIRE"
+      ],
+      "role": "same cohort exact cost decomposition and explanation guards",
+      "lane": null,
+      "execution_approved": false,
+      "mandatory_STOP": true,
+      "auto_transition": false
+    }
+  ],
+  "parallel": {
+    "AI_subagents": false,
+    "independent_systems": true,
+    "DET_PR_lanes_parallel": true,
+    "candidate_trajectory_processes": true,
+    "paired_axis_evolution_shared": true,
+    "reference_one_per_system_if_verified_saved_reference_unavailable": true,
+    "nested_threads": "one inner thread as own-process anti-oversubscription setting",
+    "workers": "fresh effective CPU/RAM and measured own RSS; no historical fixed cap",
+    "unrelated_worktree_freeze": false,
+    "transient_PSI_CPU_only_stop": false,
+    "source_scope": "used source/input/compiler/runtime/result/grant/ledger/marker only"
+  },
+  "excluded_work": [
+    "H6 new A independent confirmation owned by other chat",
+    "A82 explanation owned by other chat",
+    "H8 extension",
+    "new SCF/DF/state",
+    "Extended/Guarantee auto expansion"
+  ],
+  "pending": [
+    "H4 tol-only restore/preparation adapter and private receipt byte join",
+    "complete input recipe equivalence or documented exception",
+    "S2/S4 comparison baseline from same input series and native identity",
+    "candidate domain preregistration and cost-selection rule",
+    "candidate-specific allowance evidence and roundoff policy",
+    "optional m5 model formula/anchors/threshold contract or measured subset scope",
+    "PR exploration n, confirmation targets/n/family/new seed inventory",
+    "new scientific SOURCE/runtime/plan/grant/output/ledger/marker seal",
+    "explicit execution approvals and separate main-comparison adoption"
+  ]
+}

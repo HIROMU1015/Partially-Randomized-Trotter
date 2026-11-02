@@ -1,0 +1,21 @@
+.....................................................F.................. [ 71%]
+.............................                                            [100%]
+=================================== FAILURES ===================================
+________ test_builder_gaussian_direction_control_phase_and_scalar_once _________
+
+    def test_builder_gaussian_direction_control_phase_and_scalar_once():
+        with bridges() as (ops, gaussian):
+            m = model(ops); builder = native.NativeBuilder()
+            qc = builder.local(m, 0, '1/10')
+            names = [row[0] for row in qc.records]
+            assert names[0].startswith('compose:B') and names[0].endswith('†')
+            assert names[-2].startswith('compose:B') and not names[-2].endswith('†')
+            rzz = [row for row in qc.records if row[0] == 'c-rzz']
+>           assert len(rzz) == 1 and rzz[0][2] == (2, 0, 1)
+E           assert (0 == 1)
+E            +  where 0 = len([])
+
+tests/management/test_research_c_c1_stage2_native.py:115: AssertionError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_c1_stage2_native.py::test_builder_gaussian_direction_control_phase_and_scalar_once
+1 failed, 100 passed in 37.67s

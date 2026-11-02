@@ -1,0 +1,180 @@
+{
+  "status": "FAIL_CLOSED_STOP_NO_RETRY",
+  "run_id": "h6-native-b0i-pilot6-20261015-run01",
+  "SOURCE": "7300b39df4c53d854d5bc8934430af19fbdb0085",
+  "first_stop": {
+    "reason": "Stop:B0_BLUEPRINT_FINGERPRINT_MISMATCH",
+    "phase": "A_INPUT_SCALAR_SIGNAL"
+  },
+  "native_exit_code": 2,
+  "wait_reaped": true,
+  "recorder_exit_code": 0,
+  "wall_seconds": 8.597542028874159,
+  "observed_peak_RSS_bytes": 565092352,
+  "observed_CPU_seconds": 7.3073060000000005,
+  "monitor_max_interval_seconds": 0.5140191502869129,
+  "monitor_max_observation_seconds": 0.0027995724231004715,
+  "operations_reserved_before_calls": {
+    "snapshot_load": 1,
+    "analytic_overlay": 1,
+    "native_evolution_build": 0,
+    "measured_wrapper_build": 0,
+    "probe_wrapper_copy": 0,
+    "control_probe": 0,
+    "compile": 0
+  },
+  "native_build_control_compile_started": false,
+  "compile_workers_created": 0,
+  "output_logical_bytes": 40045,
+  "output_allocated_file_blocks_bytes": 53248,
+  "output_files": 5,
+  "runtime_file_receipts": [
+    {
+      "name": "native_exit_v1.json",
+      "bytes": 321,
+      "sha256": "02cc2dd7989e7d879018d32874ef4b4e0c33f0e65cb76ca8551bb574aaf7e8bc"
+    },
+    {
+      "name": "operation_001.json",
+      "bytes": 221,
+      "sha256": "3f31866834ad6d85a4a0bb08521e868fc4dbb0f6c86d22f2fdad5ae34a5a032f"
+    },
+    {
+      "name": "operation_002.json",
+      "bytes": 224,
+      "sha256": "e966dd22536d9657785fbfe0bfc843ce7a264a9a7edb73fb58d17067c56cac12"
+    },
+    {
+      "name": "terminal_v1.json",
+      "bytes": 6541,
+      "sha256": "e2172412454e10c4022b618905bec3c71a843ac30c213b87c3ea8f7197dd8f2a"
+    }
+  ],
+  "one_shot_consumed": true,
+  "automatic_retry": false,
+  "next_stage_authorized": false,
+  "cleanup": {
+    "driver_identity_absent": true,
+    "launcher_proc_absent": true,
+    "compile_children": "NOT_CREATED_PHASE_A_STOP",
+    "exact_exit_timestamp": null
+  },
+  "input_after": [
+    {
+      "logical_name": "snapshot_receipt.json",
+      "bytes": 11286,
+      "sha256": "3dc5b1c695f1a042ee0c2b5e3762ae0032af90f03017667541ea470577f35e3f",
+      "unchanged": true
+    },
+    {
+      "logical_name": "df_receipt.json",
+      "bytes": 34000,
+      "sha256": "89cc00ab1c1b6ff65804781b5904b127e5d2e81acd15d66b0c87a86adb4c5f55",
+      "unchanged": true
+    },
+    {
+      "logical_name": "h6_input_snapshot.npz",
+      "bytes": 150052,
+      "sha256": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+      "unchanged": true
+    },
+    {
+      "logical_name": "signal_summary.json",
+      "bytes": 1382011,
+      "sha256": "b9f6cb3dc1a168ddc409833c78a617a7ddd05a3a41e0665e9dec47346d516dfe",
+      "unchanged": true
+    },
+    {
+      "logical_name": "legacy_wrapper_metrics.csv",
+      "bytes": 472642,
+      "sha256": "3fd1148500d6d29976cf137af65de1420e081571b793ba657e012137d5e1a790",
+      "unchanged": true
+    }
+  ],
+  "source_after": [
+    {
+      "path": "scripts/h6_b0i_pilot_adapter_v1.py",
+      "unchanged": true,
+      "sha256": "a6f211390c783a3bdd901006f9ec9c41eef74a90896f9329293395ee2c98cfee"
+    },
+    {
+      "path": "scripts/h6_b0i_pilot_runner_v1.py",
+      "unchanged": true,
+      "sha256": "08b9f717fc5e6ecb3f917523eb9f150ff3b60fe525455ea6176055b46836c53f"
+    },
+    {
+      "path": "scripts/h6_b0i_pilot_launcher_v1.py",
+      "unchanged": true,
+      "sha256": "f93f679f00b4f3dc1b342b29ef7731a34d82ce5bfa9922856cb5722ec0035dc0"
+    },
+    {
+      "path": "scripts/launch_h6_b0i_pilot_once_v1.sh",
+      "unchanged": true,
+      "sha256": "57d6a8ef40ecaaca1ad13f51bd0f0e5c6569fd72517110e610b8568eda794adb"
+    },
+    {
+      "path": "scripts/h6_native_b0i_bridge_v1.py",
+      "unchanged": true,
+      "sha256": "e9b6c3ca795801114b066cc74c0a7d8ad4d540351fd4358cd51af3d9b567e6ab"
+    },
+    {
+      "path": "scripts/pre_review_native_b0i_prototype_v1.py",
+      "unchanged": true,
+      "sha256": "408fb78a2401a36b0c11b7770fcc56186a40a2c3f7ce37ef9ce1180f50ed2220"
+    },
+    {
+      "path": "scripts/final_pre_review_execution_v1.py",
+      "unchanged": true,
+      "sha256": "2be5fb22e1a1c284f01f3691720ec107130264e2383ca03ab138338bee192a68"
+    },
+    {
+      "path": "scripts/d0_saved_value_reanalysis_v1.py",
+      "unchanged": true,
+      "sha256": "1ded644585bfabe4f8f28be26b92e8c09f00c4e8f9712b4cf45e0233cfc8737e"
+    },
+    {
+      "path": "scripts/d0_frozen_shot_rule_v1.py",
+      "unchanged": true,
+      "sha256": "ed3f57937a231719583c2893677b7e82f934dd98bda35cd37fc0f17f83d4279f"
+    },
+    {
+      "path": "scripts/h6_b0i_parallel_compile_v1.py",
+      "unchanged": true,
+      "sha256": "4cf7b8b37737c1a6d1e49af6f049a3e7216bd2ebb88b55a0e5e46b5ee5896a96"
+    }
+  ],
+  "carry": {
+    "original": {
+      "policy": "PRESERVE_EXISTING_HISTORY_AND_RESERVATIONS_NO_RESET_NO_REFUND",
+      "known_actual": null,
+      "historical_unknown_actual": null,
+      "reset": false,
+      "refund": 0,
+      "fresh_evidence_required": true,
+      "known_held_failed_unknown_policy": "bind original history/ledger before approval; null is UNKNOWN, never zero",
+      "history_receipt_sha256": "be01d0d0e0c7f1e47d2b3c334b2ea5e1e5d1fe112abd7b08d5d738468b50ec88",
+      "history_receipt_path": "/home/AbeHiromu/projects/h6-handoff-evidence/20261015/h6-native-b0i-pilot6-one-shot-v1/carry_binding_evidence_v1.json"
+    },
+    "new_scope_reservations": {
+      "snapshot_load": 1,
+      "analytic_overlay": 1,
+      "native_evolution_build": 0,
+      "measured_wrapper_build": 0,
+      "probe_wrapper_copy": 0,
+      "control_probe": 0,
+      "compile": 0
+    },
+    "failed_wall_seconds_retained": 8.597542028874159,
+    "refund": 0,
+    "reset": false
+  },
+  "diagnosis": {
+    "confirmed": "prepared B0 blueprint digest differs from frozen expected p5/q1 blueprint",
+    "expected_blueprint": "e955c9c6e25da2b73888727860c8e16ce935cc2f4189b0b679e513f4f95a8fcc",
+    "actual_digest_not_recorded": true,
+    "field_level_cause": "UNRESOLVED: current STOP message stores no actual blueprint/field diff; no new scientific reconstruction or bypass was performed",
+    "static_api": "_prepare_discard and old MatchedPort use same fixed native provider API; exact divergent field not inferred",
+    "compiler_result": false
+  },
+  "future_retry_requires": "new fixed evidence/source or contract repair, new one-shot authorization and fresh gates; old output/grant remain consumed"
+}

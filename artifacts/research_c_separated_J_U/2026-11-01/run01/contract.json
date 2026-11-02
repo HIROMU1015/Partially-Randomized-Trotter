@@ -1,0 +1,287 @@
+{
+  "schema": "C_SEPARATED_J_U_SCIENCE_CONTRACT_V1",
+  "scope": "C_SEPARATED_J_U_PR_RC2_H4_PILOT_V1",
+  "status": "UNAPPROVED_PROPOSAL",
+  "permission": "Separate explicit scientific chat permission required; this is a technical proposal. No certificate, stored permission text, new grant or authenticity check.",
+  "base_commit": "77b021802e0edbc330fae0387aa525637557f224",
+  "implementation_commit": "e75c6b66bfd7711ca93d3e3942b0dae6ece08be7",
+  "source_manifest": "artifacts/research_c_separated_J_U/2026-11-01/technical/SOURCE.json",
+  "source_manifest_sha256": "f2c3618c9e75bd7949a3824f9fed9213f537d3f58cea1f1616dd59198910c4f8",
+  "entry": "scripts/run_research_c_separated_J_U.py",
+  "conditions": {
+    "atoms": 4,
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "strength": 0.1,
+    "gamma": 0.1,
+    "epsilon": 1e-08,
+    "loss_scale": 2.1839632053132894e-09,
+    "l2_scale": 4.410884790420646,
+    "mass_scale": 2.2093719370722074,
+    "DF_budget_Ha": 0.00019875,
+    "kappa": "original_g_corrected_fixed",
+    "scalar": "original_once",
+    "original_frame_order": true,
+    "new_fit_maximum_per_arm": 1,
+    "new_fits_maximum": 2,
+    "warm_start": false,
+    "retry": 0,
+    "resume": 0,
+    "mass_comparison_allowance_Ha": 1e-10,
+    "algorithm": "alternating_isometric_J_local_orthogonal_U_v1",
+    "initialization": "same_original_qualified_J_U_x0_independent_arms",
+    "coefficient_variables": "all frames; signed symmetric; no tail preservation equality",
+    "ff_sim_fitter_invocations": 0
+  },
+  "algorithm_policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_solver_gtol": 1e-07,
+    "j_metric_singular_floor": 1.0,
+    "u_maxiter": 25,
+    "u_maxfun": 500,
+    "u_solver_gtol": 1e-07,
+    "u_ftol": 1e-14,
+    "u_maxls": 40,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10
+  },
+  "initialization_SOURCE": {
+    "record": "artifacts/research_c_pr_aware_df/2026-10-27/run01/SOURCE.json",
+    "metadata": {
+      "schema": "PR_AWARE_DF_X0_REPAIR_TECHNICAL_SOURCE_V2",
+      "base_commit": "4d7b88c7978604088de0a33f5aa0d2339c3301ba",
+      "implementation_commit": "5a185964090f2cb8d19d445d41cf520c4d8ed2c7",
+      "scope": "C_PR_AWARE_DF_PAIRED_STAGE_A_X0_V2",
+      "installed_packages_modified": false,
+      "initialization": "qualified_real_schur_snapshot_x0_v2",
+      "execution_commit": "e1085c95f5c01b68566e17d543ace5832cb94061"
+    }
+  },
+  "input_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "initial_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+  "initial_scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json",
+  "initial_sector": "artifacts/research_c_regularization_comparator/2026-11-01/run01/initial_sector.json",
+  "old_endpoints": {
+    "rc2": "artifacts/research_c_common_convergence/2026-11-01/run01/rc2/final.npz",
+    "pr": "artifacts/research_c_common_convergence/2026-11-01/run01/pr/final.npz"
+  },
+  "comparators": {
+    "rc2": {
+      "diagnostic": "artifacts/research_c_common_convergence/2026-11-01/run01/rc2/final_diagnostic.json",
+      "optimizer": "artifacts/research_c_common_convergence/2026-11-01/run01/rc2/optimizer.json",
+      "sector": "artifacts/research_c_common_convergence/2026-11-01/run01/rc2_sector.json"
+    },
+    "pr": {
+      "diagnostic": "artifacts/research_c_common_convergence/2026-11-01/run01/pr/final_diagnostic.json",
+      "optimizer": "artifacts/research_c_common_convergence/2026-11-01/run01/pr/optimizer.json",
+      "sector": "artifacts/research_c_common_convergence/2026-11-01/run01/pr_sector.json"
+    }
+  },
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "dependency_locks": {
+    "fit": {
+      "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt",
+      "sha256": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+    },
+    "evaluation": {
+      "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/evaluation-pins.txt",
+      "sha256": "3ef3f67e678777f7918333a4062e09b5dbeca8098aa759edde079c2ae19fdbc2"
+    }
+  },
+  "source_provenance": {
+    "initial_qualified_source": {
+      "schema": "PR_AWARE_DF_X0_REPAIR_TECHNICAL_SOURCE_V2",
+      "base_commit": "4d7b88c7978604088de0a33f5aa0d2339c3301ba",
+      "implementation_commit": "5a185964090f2cb8d19d445d41cf520c4d8ed2c7",
+      "scope": "C_PR_AWARE_DF_PAIRED_STAGE_A_X0_V2",
+      "installed_packages_modified": false,
+      "initialization": "qualified_real_schur_snapshot_x0_v2",
+      "execution_commit": "e1085c95f5c01b68566e17d543ace5832cb94061"
+    },
+    "joint_science_SOURCE": "e2f7dfd44357510d54ab9c6c9c5032e0072ab376",
+    "prior_LP_result_commit": "77b021802e0edbc330fae0387aa525637557f224",
+    "prior_LP": "artifacts/research_c_fixed_u_tail_lp_numerics/2026-11-01/run01",
+    "prior_LP_new_candidate_not_used_as_initialization": true,
+    "original_P_H4_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+  },
+  "mathematics": {
+    "j_coordinates": "x=D*upper(J);diag weights1,off-diagonal sqrt2. All8 frames,80 signed free coordinates. No preserved tail/full tensor equality.",
+    "PR": "0.5*||g-A(U)D^-1 x||F^2/f* + gamma*(sum sqrt((T_R D^-1 x)^2+epsilon^2)/M*)^2;identity excluded,head unpenalized",
+    "RC2": "0.5*||g-A(U)D^-1 x||F^2/f* + alpha*||x||2^2/P0;full ordered spatial Z=J",
+    "convexity": "Fixed U: PR convex C2, potentially nonunique; RC2 quadratic and strongly convex for alpha>0. No exact numerical optimum certificate.",
+    "J_PR_solver": "One SciPy1.14.1 BFGS call per fixed-U block; callable analytic gradient,unchanged exact smooth objective.",
+    "J_metric": "SVD B=[A_iso/sqrt(f*);sqrt(2gamma)*T_iso/M*]=L diag(s)V^T;Hinv0=V diag(1/max(s,1)^2)V^T. All80 directions retained. Metric ONLY, no term added to objective; no adaptive floor/solver/epsilon search.",
+    "J_RC2_solver": "scipy.linalg.lstsq([A_iso/sqrt(f*);sqrt(2alpha/P0)I],[vec(g)/sqrt(f*);0],lapack_driver=gelsd,cond=eps64*max(shape));no normal-equation solve;save full singular diagnostics and check original gradient",
+    "U": "Right product U_new=U*expm(skew(eta/sqrt2));existing ffsim real rotation exp pack. J fixed,local coordinates start0;one L-BFGS-B per cycle with analytic JAX64 gradient. No log/argmin differentiation,polar,gauge/permutation updates.",
+    "U_stationarity": "Recenter eta=0 at actual new U and current post-refit J;norm2 of gradient in Frobenius-isometric skew coordinates,not a possibly singular global exp-chart gradient."
+  },
+  "initialization_policy": "Two independent algorithm trajectories from same original qualified saved J/U/x0. No old endpoint/LP candidate warm start. Subsequent J blocks use only their own preceding trajectory state.",
+  "trajectory": "Initial state -> J0 solve -> state0;then up to64(Uk solve -> mandatory Jk solve -> statek). Never stop at a U update with stale J.",
+  "qualification": {
+    "J": "gradient infinity in isometric x <=1e-5 with declared engineering margin;unconstrained KKT stationarity. Check independent contraction/adjoint at states.",
+    "U": "Frobenius-isometric full local tangent gradient l2 <=1e-5 with margin. Old native gradient infinity recorded but not substituted.",
+    "margin": "1e-8+1e-7*max(measured norm,threshold);MET if norm+margin<=threshold;NOT_MET if norm-margin>threshold;otherwiseUNRESOLVED_MARGIN.",
+    "raw_flags": "Solver success/status/nit/nfev/njev/nhev saved separately. Finite precision-loss flag does not establish or refute independently measured stationarity.",
+    "stopping": "J block failing independent first order ends arm without another attempt. FIRST_ORDER_MET when both blocks MET. U status1 is a registered inexact block step;other finite U stops terminate after mandatory J refit unless joint first order already MET. Three stalled cycles or64-cycle limit remain UNQUALIFIED.",
+    "no_global_guarantee": "No convex suboptimality enclosure,global U optimum or strict CA proof. New endpoint may violate DF budget despite smaller objective."
+  },
+  "numerical_allowances": {
+    "value_absolute": 1e-10,
+    "value_relative": 1e-08,
+    "monotonicity": "Each block/cycle after-before <=value_absolute+value_relative*maxabs(values);record signed changes,never zero-fill them.",
+    "native_J_gradient_agreement_atol": 1e-06,
+    "native_J_gradient_agreement_rtol": 1e-07,
+    "native_gradient_note": "Fixed tiny f* amplifies reconstruction roundoff;this consistency tolerance is separate from first-order thresholds.",
+    "orthogonality": 1e-10,
+    "representation_component": 1e-10,
+    "representation_rtol": 0,
+    "DF": "Original g-corrected kappa and nuclear scalar once;existing sector36 operator norm plus inherited sector_operation_scale_guard8_proposal_v1 <=.00019875 Ha;engineering guard,not rigorous enclosure.",
+    "first_order_precision": "binary64 NumPy/SciPy;JAX x64;no post-result threshold changes"
+  },
+  "same_metric_old_endpoints": "Each saved joint endpoint is loaded once and evaluated once with the new J/isometric and U/physical-tangent metric under its SAME old objective. This is4 explicitly budgeted logical units total,not renewed optimization. Old saved sector/optimizer/scalars otherwise reused.",
+  "comparison": "Within each role compare new-vs-old objective and same-metric gradients;do not rank raw PR vsRC2 objective values. Tail lambda comparison qualified only if both new endpoints first-order MET and DF budget PASS. Old joint convergence flags remain unchanged.",
+  "classical_cost": "Record every block library invocation/raw vector/jac,iteration values,nfev/njev/nhev,inclusive block wall/CPU and actual VG calls,plus parent/child resources. Algorithm budgets differ from old joint run,so observed differences are not equal-effort speedup or causal superiority.",
+  "parent_limits": {
+    "saved_snapshots_load": 1,
+    "initial_qualification_gate": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "final_snapshot_load": 2,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "comparison": 1
+  },
+  "per_arm_limits": {
+    "fit_input_load": 1,
+    "objective_setup": 1,
+    "initial_identity_gate": 1,
+    "old_endpoint_load": 1,
+    "old_metric_diagnostic": 1,
+    "J_solve": 65,
+    "U_solve": 64,
+    "state_diagnostic": 66,
+    "terminal_independent": 1,
+    "final_tensor": 1,
+    "final_export": 1
+  },
+  "call_limits": {
+    "saved_snapshots_load": 1,
+    "initial_qualification_gate": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "final_snapshot_load": 2,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "comparison": 1,
+    "fit_input_load": 2,
+    "objective_setup": 2,
+    "initial_identity_gate": 2,
+    "old_endpoint_load": 2,
+    "old_metric_diagnostic": 2,
+    "J_solve": 130,
+    "U_solve": 128,
+    "state_diagnostic": 132,
+    "terminal_independent": 2,
+    "final_tensor": 2,
+    "final_export": 2
+  },
+  "maximum_logical_units": 417,
+  "call_definition": "One logical unit per named operation/block,not per internal objective callback. Library iterations/AD calls counted in block diagnostics. No entire multi-block trajectory hidden as one solve.",
+  "cap_derivation": "Per arm:(65 J+64 U+66 states)+8 setup/old-load-metric/terminal/tensor/export=203;two arms406+parent11=417.",
+  "maximum_trajectories": 2,
+  "ffsim_fitter_calls": 0,
+  "maximum_PR_J_BFGS_calls": 65,
+  "maximum_U_LBFGSB_calls": 128,
+  "maximum_RC2_augmented_solves": 65,
+  "execution_order": [
+    "passive source/input and both environment checks;fresh output;actual resource plan",
+    "parent:load original packet/snapshot;reuse saved initial DF qualification;sector context and original physical sector once",
+    "up to2 independent role workers:load/setup/initial x0 fidelity;one old-endpoint metric per role",
+    "counted alternating blocks with raw endpoints before numerical checks;complete pairU->J before termination;save finite unqualified endpoints too",
+    "native codec/full objective J-gradient consistency;independent tensor metrics;new candidate export",
+    "parent:each final sector DF norm/guard and independent rawCAR/generalK;no PF/RTE",
+    "same-metric convergence,DF eligibility and exactlambda comparison;saved scalar references;publish andSTOP"
+  ],
+  "outputs": [
+    "per-block rawx/jac/x0/metric or eta/jac",
+    "state J/U and physical gradients",
+    "optimization trace and summary",
+    "diagnostic native x/jac (not fake global optimizer output)",
+    "initial/final objective,tensor metrics and independent terminal validation",
+    "each final sector/representation/DF budget",
+    "SOURCE,input identities,call journals,resources,STOP,partial failure evidence"
+  ],
+  "fresh_output": "artifacts/research_c_separated_J_U/2026-11-01/run01",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "STOP": {
+    "correctness": "Source/input/shape/finite/objective-gradient/orthogonality/nonincrease/representation mismatch =>STOP dependent work,preservepartial. Existing launcher prevents queued launch and drains already-started independent arm under fixed limits.",
+    "unqualified": "Finite block/outer limit/stall first-order failure exported and DF-assessed as UNQUALIFIED;no retry,initial fallback,new start or solver switch.",
+    "budget": "DF NOT_MET separately;no strength/rank/scale changes or automatic candidate acceptance.",
+    "completion": "Commit,push,remote SHA/tree/source/raw checks then mandatorySTOP;no downstream scientific stage."
+  },
+  "exclusions": [
+    "actual science without separate explicit permission",
+    "prior LP equality solve/retry/resume",
+    "new penalty,strength/rank/seed/start search",
+    "U reinitialization,polar or new gauge operation",
+    "implicit differentiation/argmin differentiation",
+    "old endpoint optimization",
+    "PF/RTE/attenuation/ground/alias",
+    "shots/native build-compile/pricing/total resources/actualCA",
+    "important scientific review/novelty/publication judgment"
+  ],
+  "saved_inputs": {
+    "artifacts/research_c_common_convergence/2026-11-01/run01/pr/final.npz": "3fdb0cb77afc770294cbe7aebf47d8a4529e3567ef9e886895495f4490b7ee21",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/pr/final_diagnostic.json": "7969df14de5de60fae0fe0a42a9fe9c93b728eff316c258d93cdd045d380f990",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/pr/optimizer.json": "f8e99d09697bb9ecafa3f3b4a43c7be2b1c2c7148a670d2ef23eedc4040410b7",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/pr_sector.json": "99ff5992e77d412305a272e9522b1a9d4dca9956dc6c4ad449769bc211b8c070",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/rc2/final.npz": "d6cb5d56dfc6a83090a6ad1bc1207fdaee62a14cf120542fcb5a7d116644a798",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/rc2/final_diagnostic.json": "995622492f2d7398601ccff246cf53f8793e636aa32396c81a9a7cf0a23db38c",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/rc2/optimizer.json": "de5ed0ed838f86fbfb6510cdf43b208ba0ab4c90f24bcbb8b94deea57740c943",
+    "artifacts/research_c_common_convergence/2026-11-01/run01/rc2_sector.json": "725fa87b3bbb9b1fc518d30330484e504230a447231105d58083bd94b907e238",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/SOURCE.json": "da88d93f1dd41f7f3f0e4732e5b79552ba95eb6f96784611ee9df4cf3df733a9",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_regularization_comparator/2026-11-01/run01/initial_sector.json": "b4c57148b9735c7bec98b07b88a49a5e81890ac7074c66e3e41f9e54d5bc0f1f"
+  }
+}

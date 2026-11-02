@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pr2_matched_accuracy_m1_result_schema_v1",
+  "title": "PR-2 matched-accuracy M1 development result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "series_id",
+    "status",
+    "execution_authorization_sha256",
+    "implementation_source_hashes",
+    "development_snapshot",
+    "task",
+    "candidate_ledger",
+    "signal_records",
+    "compile_selection",
+    "compile_records",
+    "resource_analysis",
+    "decision",
+    "correctness_gates",
+    "counters",
+    "held_out",
+    "S3_authorized",
+    "automatic_next_stage",
+    "mandatory_stop_reached",
+    "result_fingerprint"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "pr2_matched_accuracy_m1_result_v1"
+    },
+    "series_id": {
+      "const": "pr2-rebaseline-de7a5492-v1"
+    },
+    "status": {
+      "enum": [
+        "CONTINUE_TO_FROZEN_TRANSFER_REVIEW",
+        "NARROW_TO_TECHNICAL_NOTE",
+        "STOP_DUPLICATIVE",
+        "SELECTION_LIMITED",
+        "IMPLEMENTATION_GATE_FAILED"
+      ]
+    },
+    "execution_authorization_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "implementation_source_hashes": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      }
+    },
+    "development_snapshot": {
+      "type": "object",
+      "required": [
+        "raw_file_sha256",
+        "hamiltonian_hash",
+        "state_hash",
+        "state_vector_hash"
+      ]
+    },
+    "task": {
+      "type": "object",
+      "required": [
+        "T",
+        "q_values",
+        "complex_signal_error",
+        "axis_error",
+        "axis_alpha"
+      ]
+    },
+    "candidate_ledger": {
+      "type": "array",
+      "minItems": 208,
+      "maxItems": 212
+    },
+    "signal_records": {
+      "type": "array",
+      "minItems": 208,
+      "maxItems": 212
+    },
+    "compile_selection": {
+      "type": "object",
+      "required": [
+        "random_compile_cap",
+        "selected_random_cells",
+        "unselected_random_cells",
+        "selection_limited"
+      ]
+    },
+    "compile_records": {
+      "type": "array"
+    },
+    "resource_analysis": {
+      "type": "object",
+      "required": [
+        "fixed_q8_comparison",
+        "matched_accuracy_comparison",
+        "no_preparation_lower_envelope",
+        "state_preparation_sensitivity"
+      ]
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "status",
+        "selection_limited_reasons",
+        "winner_claim_permitted",
+        "held_out_candidate_selection_permitted"
+      ]
+    },
+    "correctness_gates": {
+      "type": "object",
+      "required": [
+        "q_delta",
+        "outer_repetition_materialization",
+        "fresh_occurrence_seeds",
+        "normalization_composition",
+        "signal_cost_fingerprint_identity",
+        "controlled_re_im_semantics"
+      ]
+    },
+    "counters": {
+      "type": "object",
+      "required": [
+        "development_npz_loads",
+        "held_out_npz_loads",
+        "signal_evaluations",
+        "random_trajectories_compiled",
+        "full_wrappers_compiled",
+        "quantum_shots_executed"
+      ]
+    },
+    "held_out": {
+      "type": "object",
+      "required": [
+        "npz_loaded",
+        "signal_cost_ranking_evaluated"
+      ],
+      "properties": {
+        "npz_loaded": {"const": false},
+        "signal_cost_ranking_evaluated": {"const": false}
+      }
+    },
+    "S3_authorized": {"const": false},
+    "automatic_next_stage": {"type": "null"},
+    "mandatory_stop_reached": {"const": true},
+    "result_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

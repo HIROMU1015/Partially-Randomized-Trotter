@@ -1,0 +1,17 @@
+{
+  "absolute_launch_command": null,
+  "approved": false,
+  "authority_reference": null,
+  "existing_user_recovery_scope": "Routine repair and fresh restart approved; changing explicit PSI threshold is not inferred as approved.",
+  "old_contract": {
+    "line": 3208,
+    "path": "artifacts/resource_applicability/track_a_h4_geometry_contract_preparation/2026-10-06-v2/zero_compute_plan_v2.json",
+    "rule": "host/effective available<16GiB, own RSS>per-role budget or total admitted own budget, allocation/AS limit failure, memory PSI full avg10>0, or cgroup OOM event delta>0 => stop own run, preserve audit and STOP for review. No automatic worker restart/retry/resume or host swap/cgroup/job change",
+    "sha256": "18aa36a2776d38852657f154a88c381b3299fbc009007f20a2d95fcb865d9f7a"
+  },
+  "other_caps_science_compiler_environment_CPU_permissions_unchanged": true,
+  "requested_change": "Only host PSI immediate-zero STOP becomes bounded host-only<1% exception under complete nonroot0/OOM0delta/effective120.25GiB/fresh<=5sec/role8GiB guards; nonroot>0 or host>=1% remains STOP.",
+  "requires_final_SOURCE_seed_profile_plan_auth_review_rebinding_after_integration": true,
+  "runtime_authorization": false,
+  "schema_version": "h4-pressure-amendment-draft-v1"
+}

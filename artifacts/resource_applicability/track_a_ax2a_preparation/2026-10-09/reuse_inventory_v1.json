@@ -1,0 +1,1608 @@
+{
+  "schema_version": "track_a_ax2a_reuse_v1",
+  "base_commit": "b2e1bf65e21893b6c617223b42313623d3186f12",
+  "source_import_count": 0,
+  "sources": [
+    {
+      "path": "src/trotterlib/df_hamiltonian.py",
+      "sha256": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+      "definitions": [
+        {
+          "name": "DFHamiltonian",
+          "line": 327,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "PhysicalSector",
+          "line": 381,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFGroundStateResult",
+          "line": 455,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_ExcitationTable",
+          "line": 469,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "clear_df_integral_session_cache",
+          "line": 478,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_copy_integral_payload",
+          "line": 483,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_h_chain_integrals_session_cached",
+          "line": 494,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_df_h_d_from_molecule",
+          "line": 527,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_hamiltonian_from_integrals",
+          "line": 591,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "solve_df_ground_state",
+          "line": 635,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_linear_operator",
+          "line": 759,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_diagonal",
+          "line": 894,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_diagonal_preconditioner",
+          "line": 912,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "expand_sector_state",
+          "line": 938,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_sector_occupations",
+          "line": 947,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_df_matvec_python",
+          "line": 956,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_apply_one_body",
+          "line": 970,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_linear_operator_to_dense",
+          "line": 987,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_excitation_table",
+          "line": 993,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_before_mode_masks",
+          "line": 1044,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_hartree_fock_initial_vector",
+          "line": 1054,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_normalize_initial_vector",
+          "line": 1068,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_lobpcg_initial_block",
+          "line": 1090,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_low_rank_kwargs",
+          "line": 1103,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_as_hermitian",
+          "line": 1127,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/pf_c_system_size_validation.py",
+      "sha256": "723ecdac081689b99483deea37268f16b8980e926b5fe5ce5257b5dc5fa23df0",
+      "definitions": [
+        {
+          "name": "_canonical_json",
+          "line": 49,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fingerprint",
+          "line": 59,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "configured_qiskit_delta_times",
+          "line": 63,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "legacy_perturbation_conditioning",
+          "line": 90,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_random_tail_hamiltonian",
+          "line": 124,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_state_action_coefficient",
+          "line": 145,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "summarize_size_result",
+          "line": 478,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "make_system_size_payload",
+          "line": 713,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_system_size_payload",
+          "line": 807,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "write_system_size_validation",
+          "line": 836,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/df_gpu_statevector.py",
+      "sha256": "a200e7ef474091de1026c4d586e725da006540a7dc04654a09cf276164c51032",
+      "definitions": [
+        {
+          "name": "_collect_cuda_lib_dirs",
+          "line": 16,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_prepend_library_path",
+          "line": 40,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_preload_cuda_libraries",
+          "line": 50,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFGPUParameterizedTemplate",
+          "line": 123,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_contains_instruction_name",
+          "line": 139,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_xx_plus_yy_phase_correction",
+          "line": 143,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_apply_semantic_phase_correction",
+          "line": 152,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_get_cached_aer_simulator",
+          "line": 166,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_transpile_for_aer_gpu",
+          "line": 175,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_find_template_parameter",
+          "line": 197,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_bind_global_phase",
+          "line": 214,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_parameterized_gpu_template",
+          "line": 229,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_split_circuit",
+          "line": 324,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_emit_debug",
+          "line": 343,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_run_statevector_backend",
+          "line": 356,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "run_parameterized_gpu_template",
+          "line": 453,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "simulate_statevector_gpu",
+          "line": 578,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "definitions": [
+        {
+          "name": "require_integer_count",
+          "line": 38,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DeterministicOnlyRTETailError",
+          "line": 58,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTETailLike",
+          "line": 62,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "BasisChangeOperation",
+          "line": 72,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEComponent",
+          "line": 93,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "InvolutoryTailTerm",
+          "line": 123,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "TailNormalizationMetadata",
+          "line": 137,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "NormalizedRTETail",
+          "line": 150,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEFiniteDistribution",
+          "line": 173,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEConfig",
+          "line": 361,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "BasisReuseInterval",
+          "line": 485,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEEventApplication",
+          "line": 495,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEEvent",
+          "line": 549,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "EventOperatorSampleEstimate",
+          "line": 647,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEOperatorMoments",
+          "line": 678,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEOccurrenceParameters",
+          "line": 688,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RTEOccurrenceTruncation",
+          "line": 723,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPERoundTruncationBudget",
+          "line": 772,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPETruncationSummary",
+          "line": 825,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPERound",
+          "line": 835,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "CompilerSettings",
+          "line": 871,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "CircuitCost",
+          "line": 918,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_array_hash",
+          "line": 957,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "normalize_involutory_tail",
+          "line": 966,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_paired_order_weight",
+          "line": 1100,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_paper_normalization_upper_bound",
+          "line": 1117,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "step_taylor_truncation_residual_bound",
+          "line": 1127,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "taylor_truncation_residual_bound",
+          "line": 1174,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "choose_finite_taylor_order",
+          "line": 1185,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "occurrence_truncation_residual_bound",
+          "line": 1207,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "compose_truncation_residual_bounds",
+          "line": 1226,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_occurrence_truncation_record",
+          "line": 1251,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "rte_occurrence_truncation_from_config",
+          "line": 1288,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_rpe_round_context",
+          "line": 1311,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "summarize_rpe_round_truncation",
+          "line": 1329,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "select_rpe_round_taylor_orders",
+          "line": 1383,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_rte_distribution",
+          "line": 1460,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "make_rte_config",
+          "line": 1494,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_basis_reuse_intervals",
+          "line": 1543,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_validate_components",
+          "line": 1577,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_make_event",
+          "line": 1594,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "iter_rte_events",
+          "line": 1662,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "enumerate_rte_events",
+          "line": 1688,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "iter_sample_rte_events",
+          "line": 1704,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "sample_rte_events",
+          "line": 1733,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "event_unitary",
+          "line": 1751,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "exact_enumerated_event_mean_operator",
+          "line": 1770,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "sample_event_mean_operator",
+          "line": 1802,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_event_mean_operator",
+          "line": 1836,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_taylor_operator",
+          "line": 1854,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_rte_corrected_operator",
+          "line": 1876,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_rte_operator_moments",
+          "line": 1889,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "compose_finite_rte_occurrences",
+          "line": 1906,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_rte_multi_step_operator",
+          "line": 1938,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_rte_attenuation",
+          "line": 1952,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finite_rte_combined_attenuation",
+          "line": 1966,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/product_formula.py",
+      "sha256": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca",
+      "definitions": [
+        {
+          "name": "morales_8th_list",
+          "line": 6,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "yoshida_8th_list",
+          "line": 26,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "morales_10th_m15_list",
+          "line": 45,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "morales_10th_m16_list",
+          "line": 74,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "yoshida_4th_list",
+          "line": 102,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "trotter_2nd_list",
+          "line": 109,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "new_4th_m3_list",
+          "line": 116,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "new_4th_m2_list",
+          "line": 125,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_get_w_list",
+          "line": 134,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/pf_decomposition.py",
+      "sha256": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26",
+      "definitions": [
+        {
+          "name": "_iter_s2_steps",
+          "line": 6,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_iter_left_steps",
+          "line": 15,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_iter_middle_steps",
+          "line": 27,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_iter_right_steps",
+          "line": 39,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "iter_pf_steps",
+          "line": 48,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "definitions": [
+        {
+          "name": "_real_tuple",
+          "line": 62,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFDeterministicOneBodySpec",
+          "line": 70,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFDeterministicFragmentSpec",
+          "line": 90,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFPartialS2Preparation",
+          "line": 120,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_partition_hash",
+          "line": 210,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_validate_partition",
+          "line": 237,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_block_hash_payload",
+          "line": 306,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "prepare_df_partial_s2",
+          "line": 328,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFPartialS2StepRequest",
+          "line": 499,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "estimate_df_partial_s2_untranspiled_size_upper_bound",
+          "line": 646,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_df_partial_s2_deterministic_half_size_upper_bound",
+          "line": 672,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "estimate_df_partial_s2_structural_size_upper_bound",
+          "line": 693,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "make_df_partial_s2_step_request",
+          "line": 712,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFPartialS2AdditiveCircuits",
+          "line": 768,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFPartialS2CircuitResult",
+          "line": 778,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "QiskitDFPartialS2CircuitBuilder",
+          "line": 816,
+          "kind": "ClassDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "definitions": [
+        {
+          "name": "repetition_count_for_rpe_round",
+          "line": 50,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_event_fingerprint",
+          "line": 56,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFPartialS2TrajectoryStep",
+          "line": 66,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFPartialS2AttenuationMetadata",
+          "line": 78,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFPartialS2TruncationMetadata",
+          "line": 92,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFPartialS2RepeatedRequest",
+          "line": 114,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "make_df_partial_s2_repeated_request",
+          "line": 311,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFPartialS2RepeatedCircuitResult",
+          "line": 381,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "QiskitDFPartialS2RepeatedCircuitBuilder",
+          "line": 422,
+          "kind": "ClassDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/df_rpe_hadamard_compiled_cost.py",
+      "sha256": "2e6a026e3fbf6c6a6a91115dbba69018fdbb2b5eb5f36af90773e906b4c87715",
+      "definitions": [
+        {
+          "name": "DFRPEHadamardCompiledMetricValues",
+          "line": 86,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFRPEHadamardTrajectoryCostRecord",
+          "line": 98,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFRPEHadamardAxisCompiledCostEstimate",
+          "line": 121,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFRPEHadamardCompiledCostEstimate",
+          "line": 137,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_metric_values",
+          "line": 201,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_sha256_json",
+          "line": 212,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_digest_entries",
+          "line": 217,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_cost_from_statistics",
+          "line": 227,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "plan_compiled_rpe_hadamard_workload",
+          "line": 243,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_axis_evaluation_fingerprint",
+          "line": 286,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_preflight_hadamard_trajectory_stream_with_plan",
+          "line": 333,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_compile_hadamard_trajectory_stream_with_plan",
+          "line": 377,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "estimate_exact_compiled_rpe_hadamard_cost",
+          "line": 878,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "estimate_monte_carlo_compiled_rpe_hadamard_cost",
+          "line": 937,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "DFRPEHadamardCompiledCostProvider",
+          "line": 1001,
+          "kind": "ClassDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/pr2_matched_accuracy_m1_execution.py",
+      "sha256": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+      "definitions": [
+        {
+          "name": "_explicit_cutoff_tolerance",
+          "line": 81,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_package_version",
+          "line": 92,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "environment_record",
+          "line": 96,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_new_counters",
+          "line": 109,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_load_development_only",
+          "line": 127,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_prepare",
+          "line": 150,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_prepare_discard",
+          "line": 164,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_dense_block_operators",
+          "line": 179,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_eigendecomposition",
+          "line": 208,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_apply_exponential",
+          "line": 219,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_apply_spectral_values",
+          "line": 229,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_target_signal",
+          "line": 238,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_preparation_eigensystems",
+          "line": 253,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_apply_outer_step",
+          "line": 275,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_axis_record",
+          "line": 293,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fixed_action_count",
+          "line": 314,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_deterministic_fragment_count",
+          "line": 327,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_base_record",
+          "line": 338,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_deterministic_signal_record",
+          "line": 370,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_random_signal_record",
+          "line": 414,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_validate_authorization",
+          "line": 555,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "run_m1_a",
+          "line": 590,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_m1_a_result",
+          "line": 769,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "write_m1_a_result",
+          "line": 817,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/research_direction_energy_tail_pareto.py",
+      "sha256": "c9a3c5c4488be88bdb10b50d260939bfb7a1caf1f8699e3f45d6747c668558be",
+      "definitions": [
+        {
+          "name": "_log_slope",
+          "line": 153,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_pf_unitary",
+          "line": 161,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "composition_tail_weights",
+          "line": 186,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_matrix_payload",
+          "line": 195,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "formula_registry",
+          "line": 203,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_matched_eigenphase_biases",
+          "line": 251,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "evaluate_formula_order_registry",
+          "line": 271,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "evaluate_nested_vs_global_order",
+          "line": 367,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_integer_allocation",
+          "line": 432,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_finite_rte_burden",
+          "line": 462,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "evaluate_finite_rte_burden",
+          "line": 509,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_dominant_phase_metrics",
+          "line": 554,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_pareto_labels",
+          "line": 581,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_split_decision",
+          "line": 608,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_evaluate_h4_split",
+          "line": 705,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "expected_task_manifest_body",
+          "line": 815,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finalize_expected_task_manifest",
+          "line": 884,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_expected_task_manifest",
+          "line": 895,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "evaluate_energy_tail_pareto",
+          "line": 916,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "finalize_energy_tail_pareto_artifact",
+          "line": 1051,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_energy_tail_pareto_artifact",
+          "line": 1067,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "read_json_object",
+          "line": 1095,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "write_json_nonoverwriting",
+          "line": 1102,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/df_partial_randomized_pf.py",
+      "sha256": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb",
+      "definitions": [
+        {
+          "name": "_get_pool_context",
+          "line": 90,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "RankedDFFragment",
+          "line": 98,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFFragmentPartition",
+          "line": 109,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "DFCgsFitResult",
+          "line": 131,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_DFPhaseBiasSeries",
+          "line": 169,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "df_fragment_weight",
+          "line": 180,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "rank_df_fragments",
+          "line": 196,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "split_df_hamiltonian_by_ld",
+          "line": 234,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "select_df_h_d",
+          "line": 276,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_hamiltonian_to_model",
+          "line": 284,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "build_df_hd_trotter_blocks",
+          "line": 295,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_nonbasis_ops",
+          "line": 320,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_decompose_to_cost_basis",
+          "line": 332,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_rz_depth_from_circuit",
+          "line": 352,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_u_ops_rz_cost",
+          "line": 386,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_apply_d_block",
+          "line": 405,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_is_nonzero_cost_angle",
+          "line": 415,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_analytic_apply_rz",
+          "line": 419,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_analytic_apply_rzz",
+          "line": 423,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_real_float",
+          "line": 429,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_analytic_d_block_rz_cost",
+          "line": 433,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_analytic_d_only_rz_cost",
+          "line": 479,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_d_only_cost_circuit",
+          "line": 501,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_deterministic_step_rz_cost",
+          "line": 514,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_validate_phase_times",
+          "line": 589,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "default_df_phase_bias_t_values",
+          "line": 600,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_block_operator_norm_upper_bound",
+          "line": 614,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_pf_phase_rate_upper_bound",
+          "line": 625,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_phase_tracking_times",
+          "line": 642,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_collect_df_phase_bias_series",
+          "line": 684,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_classify_df_phase_bias_status",
+          "line": 770,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_collect_df_perturbation_errors",
+          "line": 804,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_bit_reverse_permutation",
+          "line": 819,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_to_qiskit_state_order",
+          "line": 832,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fit_errors",
+          "line": 840,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fit_window_coefficients",
+          "line": 869,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_assign_gpu_ids_to_times",
+          "line": 897,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_resolve_parallel_processes",
+          "line": 910,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_set_df_time_worker_template",
+          "line": 924,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_simulate_df_time_task",
+          "line": 931,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_df_hamiltonian_hash",
+          "line": 991,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "df_hamiltonian_hash",
+          "line": 1017,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_sector_hash",
+          "line": 1026,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_df_ground_state_cache_key_payload",
+          "line": 1041,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_df_ground_state_result_from_npz",
+          "line": 1076,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_save_df_ground_state_npz",
+          "line": 1120,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_or_compute_cached_df_ground_state",
+          "line": 1152,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_jsonable_metadata",
+          "line": 1216,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_json_hash",
+          "line": 1234,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_float_cache_value",
+          "line": 1239,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_resolve_evolution_backend",
+          "line": 1246,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_resolve_matrix_free_backend",
+          "line": 1262,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_array_hash_payload",
+          "line": 1270,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_default_cache_document",
+          "line": 1279,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "load_df_cgs_json_cache",
+          "line": 1288,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "save_df_cgs_json_cache",
+          "line": 1307,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_cache_key_payload",
+          "line": 1322,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fit_result_from_record",
+          "line": 1403,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_record_from_fit_result",
+          "line": 1457,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "fit_df_cgs_with_perturbation",
+          "line": 1461,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "get_or_compute_cached_df_cgs_fit",
+          "line": 1846,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    },
+    {
+      "path": "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py",
+      "sha256": "9c65a61b12d9f622734d37e13f3b8e49cee0822733d891705379c20a3c356067",
+      "definitions": [
+        {
+          "name": "_canonical_value",
+          "line": 53,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_sha256_json",
+          "line": 68,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_sha256",
+          "line": 77,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_backend_fingerprint",
+          "line": 89,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_boolean",
+          "line": 97,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_finite_float",
+          "line": 103,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_optional_finite_float",
+          "line": 119,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_axis",
+          "line": 130,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_metric",
+          "line": 136,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_positive_power_of_two",
+          "line": 142,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_set_or_validate_fingerprint",
+          "line": 152,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "RPEHadamardProxyReferencePoint",
+          "line": 166,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardCalibrationResidual",
+          "line": 281,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardAffineMetricModel",
+          "line": 359,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardCompiledCostProxy",
+          "line": 503,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardCompiledCostProxyFitRequest",
+          "line": 960,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardProxyMetricTolerance",
+          "line": 974,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardProxyValidationEntry",
+          "line": 1019,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardCompiledCostProxyValidationRequest",
+          "line": 1208,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "RPEHadamardCompiledCostProxyValidationResult",
+          "line": 1225,
+          "kind": "ClassDef"
+        },
+        {
+          "name": "_reference_subset_fingerprint",
+          "line": 1508,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_canonical_tolerances",
+          "line": 1514,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_require_complete_dataset",
+          "line": 1530,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_reference_points_from_dataset",
+          "line": 1549,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fit_affine_metric_model",
+          "line": 1589,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_fit_all_models",
+          "line": 1673,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_compiler_context_fingerprint",
+          "line": 1689,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "fit_rpe_hadamard_compiled_cost_proxy",
+          "line": 1701,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_configuration_mismatches",
+          "line": 1746,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_prediction_nonfinite_kind",
+          "line": 1806,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "_build_validation_entries",
+          "line": 1812,
+          "kind": "FunctionDef"
+        },
+        {
+          "name": "validate_rpe_hadamard_compiled_cost_proxy",
+          "line": 1896,
+          "kind": "FunctionDef"
+        }
+      ],
+      "audit": "static only; existing capability is not new molecular validation"
+    }
+  ]
+}

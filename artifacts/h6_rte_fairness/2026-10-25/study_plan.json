@@ -1,0 +1,88 @@
+{
+  "study": "H6 Pauli-JW Hybrid PR versus RTE fairness extension",
+  "base_commit": "90c1c60820d52ca7ddcd4fb5315e9d21bb4a86c3",
+  "conditions": {
+    "molecule": "linear H6",
+    "distance_A": "1.00",
+    "basis": "STO-3G",
+    "nonidentity_terms": 918,
+    "T": "0.8",
+    "formula": "S2",
+    "control": "central-rotation",
+    "compiler": "Qiskit1.3.0 rz/sx/x/cx opt1 seed17 no topology/layout override",
+    "state_reference": "same saved raw ray and full-H reference; no regeneration",
+    "rho": "hypothetical zero",
+    "metric": "G=N_cos*C_cos+N_sin*C_sin, state preparation excluded",
+    "epsilon_sig": [
+      "0.05",
+      "0.01",
+      "0.005",
+      "0.001",
+      "0.0005"
+    ]
+  },
+  "RTE_domain": {
+    "L_D": [
+      0
+    ],
+    "q": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "r": [
+      2,
+      4,
+      8
+    ],
+    "K": [
+      2,
+      4
+    ]
+  },
+  "initial_matched": [
+    "1:8:4",
+    "8:8:2"
+  ],
+  "existing_RTE_candidates": 7,
+  "new_candidates_max": 17,
+  "initial_target_actions_max": 17,
+  "initial_precision": "128-bit Arb scalars / binary64 vector centers, existing tight L2 contraction engine",
+  "ambiguous_precision_policy": "Do not silently increase allowance or change guards. Retain ambiguity, propose separately fixed necessary precision work within scope if justified.",
+  "exploration": {
+    "trajectories_per_candidate": 8,
+    "new_trajectories_max": 136,
+    "axes_per_trajectory": 2
+  },
+  "confirmation": {
+    "distinct_new_candidates_max": 7,
+    "nominees": "matched candidates if eligible plus union of per-epsilon expanded RTE exploration minima; preserve nomination view and post-confirmation family-min view",
+    "counts": [
+      48,
+      96,
+      192,
+      384
+    ],
+    "new_trajectories_max": 2688,
+    "extension_rule": "On any of the five eps: G gap<=2 combined SE AND new nominal t95 halfwidth>1%G AND new SE>saved Hybrid comparator SE; stop unresolved at384",
+    "reuse_existing_successful_confirmations": true,
+    "cohorts_not_pooled": true
+  },
+  "stage_policy": "First run only the two matched candidates. Inspect results before registering additional exact configs and reasons. No automatic rerun of a completed batch or failed science call.",
+  "integer_extension": "Same outward Fraction bounds/headroom/1%guard/confidence allocation; exact Python integer ceil and sufficient inequality verification only for former SAFE_INTEGER_LIMIT. Preserve old nulls.",
+  "forbidden": [
+    "new H2/H4 or DF science",
+    "new Hamiltonian/state/reference",
+    "new law or shot formula",
+    "new algorithm/geometry",
+    "old evidence or STOP modification",
+    "formal certificate acceptance",
+    "population-tail proof",
+    "major claim adoption",
+    "detailed GPT review",
+    "paper"
+  ],
+  "resources": "Workers chosen from observed available CPU; low priority own children; no arbitrary CPU/RAM cap, no shared changes",
+  "stop": "Preserve failed calls without automatic retry; after scientific results, provenance, publication and local/remote SHA verification mandatory STOP"
+}

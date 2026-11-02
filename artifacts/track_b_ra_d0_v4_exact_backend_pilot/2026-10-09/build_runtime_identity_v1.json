@@ -1,0 +1,160 @@
+{
+  "GMP_link_intended": "private static archive",
+  "backend": "SoPlex 7.0.0",
+  "binding": "C++ rational API harness, attempted but not compiled",
+  "build_retry": 0,
+  "build_steps": {
+    "harness_compile": {
+      "CPU_seconds": 0.0014380000000000003,
+      "child_high_water_RSS_KiB": 14336,
+      "command": [
+        "g++",
+        "-std=c++11",
+        "-O1",
+        "-DNDEBUG",
+        "-I/tmp/ra-d0-v4-exact-backend-20261009/soplex-6657fb3b27044bad7bf2bb58b16de2461de82109/src",
+        "-I/tmp/ra-d0-v4-exact-backend-20261009/deps/usr/include",
+        "-I/tmp/ra-d0-v4-exact-backend-20261009/deps/usr/include/x86_64-linux-gnu",
+        "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-b-ra-d0-v4-exact-backend-pilot-20261009/scripts/tracks/algorithm_codesign/exact_backend_pilot/harness.cpp",
+        "/tmp/ra-d0-v4-exact-backend-20261009/soplex-6657fb3b27044bad7bf2bb58b16de2461de82109/lib/libsoplex-7.0.0.0.linux.x86_64.gnu.opt.a",
+        "/tmp/ra-d0-v4-exact-backend-20261009/deps/usr/lib/x86_64-linux-gnu/libgmp.a",
+        "-o",
+        "/tmp/ra-d0-v4-exact-backend-20261009/pilot_harness"
+      ],
+      "cwd": "/tmp/ra-d0-v4-exact-backend-20261009",
+      "failure": "RSS_CAP",
+      "retries": 0,
+      "returncode": -9,
+      "sampled_tree_plus_supervisor_peak_RSS_bytes": 1612357632,
+      "stderr_bytes": 0,
+      "stdout_bytes": 0,
+      "wall_cap_seconds": 1200.0,
+      "wall_seconds": 6.260312781203538
+    },
+    "make": {
+      "CPU_seconds": 6.966789,
+      "child_high_water_RSS_KiB": 337284,
+      "command": [
+        "make",
+        "-j1",
+        "makelibfile",
+        "GMP=true",
+        "BOOST=true",
+        "ZLIB=false",
+        "QUADMATH=false",
+        "USRCPPFLAGS=-I/tmp/ra-d0-v4-exact-backend-20261009/deps/usr/include -I/tmp/ra-d0-v4-exact-backend-20261009/deps/usr/include/x86_64-linux-gnu",
+        "GMP_LDFLAGS=/tmp/ra-d0-v4-exact-backend-20261009/deps/usr/lib/x86_64-linux-gnu/libgmp.a",
+        "USRCXXFLAGS=-O1"
+      ],
+      "cwd": "/tmp/ra-d0-v4-exact-backend-20261009/soplex-6657fb3b27044bad7bf2bb58b16de2461de82109",
+      "failure": null,
+      "retries": 0,
+      "returncode": 0,
+      "sampled_tree_plus_supervisor_peak_RSS_bytes": 715661312,
+      "stderr_bytes": 107940,
+      "stdout_bytes": 789,
+      "wall_cap_seconds": 1800.0,
+      "wall_seconds": 7.071219131816179
+    }
+  },
+  "compiler": {
+    "binary_SHA256": "d7122fd9a7a8fe12d12c00c54d3a6fbebcb3e9285cf675709674e751d900fc63",
+    "cc1plus_SHA256": "7cc135650d8a849f7120d3a3758b775ad450fca494dd18073b4b683826eb121b",
+    "command": "/usr/bin/g++",
+    "version": "11.4.0"
+  },
+  "config_header": "#ifndef __SPXCONFIG_H__\n#define __SPXCONFIG_H__\n#define SOPLEX_WITH_GMP\n#define SOPLEX_WITH_BOOST\n#define SOPLEX_WITH_CPPMPF\n#endif\n",
+  "dependency_install_method": "download official Ubuntu .deb, verify cached apt metadata SHA256, dpkg-deb -x into /tmp; no dpkg/apt installation",
+  "downloads": {
+    "Boost_development": {
+      "SHA256": "4d9c90e43f0d25db6280d1ee326771cbb76462f73b9430f06bac1de8d05b7a78",
+      "URL": "https://archive.ubuntu.com/ubuntu/pool/main/b/boost1.74/libboost1.74-dev_1.74.0-14ubuntu3_amd64.deb",
+      "bytes": 9608510,
+      "expected_SHA256": "4d9c90e43f0d25db6280d1ee326771cbb76462f73b9430f06bac1de8d05b7a78",
+      "package_metadata_checksum_match": true,
+      "upstream_version": "1.74.0",
+      "version": "1.74.0-14ubuntu3"
+    },
+    "GMP_development": {
+      "SHA256": "e4ce547c5c5e4efd98854d06559349b3a03272eb343f1bd8e4ccac7b783229a3",
+      "URL": "https://archive.ubuntu.com/ubuntu/pool/main/g/gmp/libgmp-dev_6.2.1+dfsg-3ubuntu1_amd64.deb",
+      "bytes": 336684,
+      "expected_SHA256": "e4ce547c5c5e4efd98854d06559349b3a03272eb343f1bd8e4ccac7b783229a3",
+      "package_metadata_checksum_match": true,
+      "upstream_version": "6.2.1",
+      "version": "2:6.2.1+dfsg-3ubuntu1"
+    },
+    "SoPlex": {
+      "SHA256": "276290a48a177cb1793be19f169f0a1810d7c9903f7e8b05ffd4bb607cb9baf0",
+      "URL": "https://codeload.github.com/scipopt/soplex/tar.gz/6657fb3b27044bad7bf2bb58b16de2461de82109",
+      "bytes": 1170470,
+      "full_commit": "6657fb3b27044bad7bf2bb58b16de2461de82109",
+      "make_version": "7.0.0.0",
+      "published_checksum_verified": false,
+      "tag": "release-700",
+      "version": "7.0.0"
+    }
+  },
+  "exact_config_intended": {
+    "CHECKMODE": "RATIONAL",
+    "FEASTOL": 0,
+    "OBJSENSE": "MINIMIZE",
+    "OPTTOL": 0,
+    "READMODE": "RATIONAL",
+    "SOLVEMODE": "RATIONAL",
+    "SYNCMODE": "AUTO"
+  },
+  "exact_config_runtime_verified": false,
+  "existing_compiler_shared_libraries": [
+    {
+      "SHA256": "4a5c6ce131566c1adea6c4cf0206f19c7748b5d198e01c3b6463d5dc34ba87a9",
+      "path": "/lib/x86_64-linux-gnu/libisl.so.23",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libisl.so.23.1.0"
+    },
+    {
+      "SHA256": "5fbbb17e4ff06a9fcb22e3311fcbb022bcfe22eaa9f6f40f2f6676190868e5a0",
+      "path": "/lib/x86_64-linux-gnu/libmpc.so.3",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libmpc.so.3.2.1"
+    },
+    {
+      "SHA256": "ce9a4f2b97522cea4a4cf89cbe8a5fd5e1cc44ef25ef71d161ac109eac9bdcc6",
+      "path": "/lib/x86_64-linux-gnu/libmpfr.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libmpfr.so.6.1.0"
+    },
+    {
+      "SHA256": "4dc20a901c6951e678e216e959da2534bcef7053e6efdf1492509baf142282b0",
+      "path": "/lib/x86_64-linux-gnu/libgmp.so.10",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libgmp.so.10.4.1"
+    },
+    {
+      "SHA256": "64c206f0146cc58bbddc4f22054436f4ff278f5a554aa3ce6921ddf7e9133370",
+      "path": "/lib/x86_64-linux-gnu/libz.so.1",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libz.so.1.2.11"
+    },
+    {
+      "SHA256": "5df4f4df42d76270bb6981fabc7c1fdccd8ad28a23d84d67f73203fb3f537667",
+      "path": "/lib/x86_64-linux-gnu/libzstd.so.1",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libzstd.so.1.4.8"
+    },
+    {
+      "SHA256": "6e28ee37e8e1ee5ddb4292d58a668b8cd5bb5f928390b07021d842a91fff9f2b",
+      "path": "/lib/x86_64-linux-gnu/libc.so.6",
+      "resolved": "/usr/lib/x86_64-linux-gnu/libc.so.6"
+    },
+    {
+      "SHA256": "9739c1dc9bff2b11533a38d4218a1a926638a4d8262ef1c9d75c17290ac257e9",
+      "path": "/lib64/ld-linux-x86-64.so.2",
+      "resolved": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2"
+    }
+  ],
+  "existing_runtime_modified": false,
+  "external_source_or_binary_publication": false,
+  "harness_binary_SHA256": null,
+  "harness_executable_created": false,
+  "isolated_area": "/tmp/ra-d0-v4-exact-backend-20261009",
+  "runtime_shared_libraries": "UNAVAILABLE: harness was not linked",
+  "solver_threads_exercised": false,
+  "static_GMP_library_SHA256": "0837379f4487cd27836ba4163f5c986485395029c9e29d7218107582de9218b5",
+  "static_SoPlex_library_SHA256": "ddba4a66c04725977d28fcc70526add55d657774a6f683caf4c52c79b14fb3d4",
+  "threads_intended": 1
+}

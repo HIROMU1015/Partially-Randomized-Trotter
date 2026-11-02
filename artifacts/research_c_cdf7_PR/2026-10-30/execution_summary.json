@@ -1,0 +1,153 @@
+{
+  "status": "CDF7_PR_REFERENCE_RPE_PRICE_COMPLETE",
+  "SOURCE_commit": "3e75b16901f0f4a9966d2bd5b9ff6bde8e75f472",
+  "attempts": 119,
+  "complete": 119,
+  "FAIL": 0,
+  "inflight": 0,
+  "call_counts": {
+    "evidence_load": 1,
+    "input_load": 1,
+    "fit_load": 1,
+    "structure_gate": 1,
+    "native_model": 1,
+    "sector_context": 1,
+    "sector_generators": 1,
+    "factor_representation": 8,
+    "arm_sum": 1,
+    "own_ground": 1,
+    "ground_alias": 1,
+    "law_prepare": 1,
+    "tail_gate": 1,
+    "target_validation": 1,
+    "kernel_reference": 1,
+    "exact_evolution": 13,
+    "round_reference": 13,
+    "round_classification": 13,
+    "A_summary": 1,
+    "signal_qualification": 3,
+    "round_accuracy": 39,
+    "energy_assessment": 3,
+    "shots_summary": 3,
+    "affine_accounting": 3,
+    "threshold_comparison": 4,
+    "native_GO": 1,
+    "result_summary": 1
+  },
+  "reference_status": "POTENTIALLY_FEASIBLE",
+  "round_status_counts": {
+    "POTENTIALLY_FEASIBLE": 13
+  },
+  "factor_count": 8,
+  "factor_gate": "PASS",
+  "ground_alias": {
+    "status": "PASS",
+    "energy_Ha": -2.1663874400468766,
+    "residual": 2.876538565024285e-15,
+    "normalization_error": 5.551115123125783e-16,
+    "alias_margin": 1.6179938779914944,
+    "state": "own_DF_ground_state_oracle",
+    "physical_ground_overlap": null
+  },
+  "saved_DF_bound_Ha": 3.022641747295844e-07,
+  "lanes": {
+    "evidence": {
+      "qualification": "UNQUALIFIED",
+      "round_states": {
+        "UNRESOLVED_SIGNAL_ERROR": 13
+      },
+      "energy": {
+        "status": "UNQUALIFIED_ROUNDS",
+        "same_accuracy": false
+      },
+      "total_shots": null,
+      "W": null
+    },
+    "ideal_exact_native": {
+      "qualification": "ASSUMED_SCENARIO",
+      "round_states": {
+        "CONDITIONAL_ROUND_PASS": 13
+      },
+      "energy": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0012786195874127638,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "total_shots": 21768,
+      "W": 35983272
+    },
+    "assumed_raw_signal_budget": {
+      "qualification": "ASSUMED_SCENARIO",
+      "round_states": {
+        "CONDITIONAL_ROUND_PASS": 13
+      },
+      "energy": {
+        "status": "CONDITIONAL_CA_PASS",
+        "same_accuracy": true,
+        "energy_error_bound_ha": 0.0012786195874127638,
+        "statistical_failure_upper": 0.01,
+        "state_preparation": "ORACLE_COST_EXCLUDED",
+        "guarantee": "conditional_on_declared_deterministic_error_evidence",
+        "numerical_pilot": true
+      },
+      "total_shots": 21862,
+      "W": 36152228
+    }
+  },
+  "RZ_break_even": {
+    "ideal_exact_native:CDF8_gamma0": {
+      "mu_break_even": 17426.37199236634,
+      "positive": true,
+      "equality_means_tie": true
+    },
+    "ideal_exact_native:M4_r128": {
+      "mu_break_even": 6506.293033801929,
+      "positive": true,
+      "equality_means_tie": true
+    },
+    "assumed_raw_signal_budget:CDF8_gamma0": {
+      "mu_break_even": 17424.524450298057,
+      "positive": true,
+      "equality_means_tie": true
+    },
+    "assumed_raw_signal_budget:M4_r128": {
+      "mu_break_even": 6504.591725861266,
+      "positive": true,
+      "equality_means_tie": true
+    }
+  },
+  "native_recommendation": {
+    "status": "ELIGIBLE_FOR_SEPARATE_NATIVE_PROPOSAL",
+    "checks": {
+      "all13": true,
+      "ground": true,
+      "conditional_energy": true,
+      "shots": true,
+      "positive_W": true,
+      "positive_RZ_both": true
+    },
+    "positive_RZ_targets": {
+      "CDF8_gamma0": true,
+      "M4_r128": true
+    },
+    "native_execution_authorized": false,
+    "native_price": null,
+    "resource_superiority": null
+  },
+  "new_fit": 0,
+  "optimizer": 0,
+  "DF_error_recalculation": false,
+  "native_build_compile": 0,
+  "sampling": 0,
+  "retry": 0,
+  "resume": 0,
+  "actual_CA_achieved": null,
+  "own_native_price": null,
+  "total_resources": null,
+  "cost_support": null,
+  "mandatory_stop": true
+}

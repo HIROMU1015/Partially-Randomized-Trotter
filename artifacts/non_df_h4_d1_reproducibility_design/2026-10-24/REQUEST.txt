@@ -1,0 +1,396 @@
+# Codex指示：H4 D1のfingerprint不一致調査・科学的再現性基準の設計・再実行契約準備
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`
+
+基点branch：
+`codex/non-df-h4-d1-execution-20261024`
+
+基点commit：
+`a5f77bbb99e23f15a2a465e0ab485777e7a6f40d`
+
+今回のD1科学SOURCE：
+`48d4d27a05a529e05b11599f5f3c671302826617`
+
+元H4科学SOURCE：
+`0c329b30a81accb35c212be8defa66fee0dd0f12`
+
+主要資料：
+
+- `docs/non_df_h4_d1_execution_20261024.md`
+- `artifacts/non_df_h4_d1_execution/2026-10-24/result_summary.json`
+- `artifacts/non_df_h4_d1_execution/2026-10-24/run01/stage_A.json`
+- D1 Stage Aで保存された4つのinput QPY・descriptor・sidecar
+- 前回のD1実行契約・grant・ledger・STOP
+- 元H4の保存trajectory・event・input fingerprint・compiled価格
+
+## 1. 研究目的
+
+現在の研究では、固定H4について、PFとPRでPauli-JW／DF-nativeのcompiled RZ費用の優劣が逆転する原因を調べています。
+
+D1では、保持部・random event部・full回路を比較し、回路構造とコンパイル相互作用が費用差に与える影響を定量化する予定でした。
+
+しかし、Stage Aで以下の結果となりました。
+
+| Full回路 | 旧input fingerprint |
+|---|---|
+| Pauli-JW PF | PASS |
+| Pauli-JW PR index0 | FAIL |
+| DF-native PF | PASS |
+| DF-native PR index0 | PASS |
+
+Pauli-JW PRについて、
+
+- 旧hash：`8a8adeded83edfddead525494906ccbd2a3796b11ed038f1d53f113b61468986`
+- 新hash：`b677002ac37cd37a3f8a0ec84320963f7e44d3dcd29c271c369b1e6ab49fcd21`
+
+となっています。
+
+自動生成gate名の履歴差が原因候補ですが、名前だけが原因とは確認されていません。
+
+前回は4つのfull回路を再構成したものの、費用compileは0/9回で停止しました。
+
+**今回の目的は、この停止理由を必要十分な範囲で調査し、元の科学的条件を維持したままD1を再開できる判定基準を設計することです。**
+
+## 2. 今回の承認範囲
+
+以下を一括承認します。
+
+1. 前回D1の保存証拠・SOURCE・runtimeの確認
+2. Pauli-JW PRのfingerprint不一致の技術的原因調査
+3. 旧hashに依存しない科学的再現性基準の検討
+4. SOURCE・保存descriptor・制御回路・位相の対応整理
+5. 既存QPY・入力記録の再利用
+6. 人工回路による限定的な技術検証
+7. D1再実行のGO／STOP条件設計
+8. D1再実行用の非実行契約案作成
+9. 成果物保存・commit/push・mandatory STOP
+
+**新しい実H4回路の生成、H4を用いた数値演算、費用compile、sampling、N/G再解析は今回承認しません。**
+
+前回のone-shot grantは消費済みであり、再利用してはいけません。
+
+## 3. 最優先：fingerprint不一致の原因調査
+
+まず、元のfingerprint生成SOURCEと今回のreplay adapterを比較してください。
+
+特に確認する項目：
+
+- 元回路とreplayの構築順序
+- PauliEvolutionGateの生成
+- Pauli PR event列の復元
+- `to_gate()`によるgate名の継承
+- `.control(1)`の経路
+- QuantumCircuitの自動命名
+- Forced-order検証による回路生成履歴
+- Global phaseとancilla相対phase
+- Operation definitionの再帰構造
+- Recursive fingerprintに含まれるfield
+
+元の`h4_pilot_science.event_gates`では、PR trajectory生成前にforced-order検証用のQuantumCircuitを生成するため、自動命名counterの履歴が異なる可能性があります。
+
+ただし、これは仮説です。
+
+**今回の不一致が実際に自動gate名によるものか、それ以外の科学的に重要な差も含むのかを、SOURCEから可能な範囲で切り分けてください。**
+
+旧fingerprintのpreimageや旧QPYが保存されていない場合、その差を完全に特定できたと主張しないでください。
+
+### 旧payloadの回収
+
+元のgate名・QPY・hash payloadの有力な保存先が既に判明している場合は、限定的なread-only確認を行って構いません。
+
+ただし、旧program全体の広域探索や、失われたgate名の総当たり復元を必須工程にしないでください。
+
+**研究の目的はD1の費用構造解析であり、旧hashのpreimage回収そのものではありません。**
+
+## 4. 科学的再現性の判定基準
+
+旧recursive fingerprintの完全一致と、科学的な回路再現性を区別してください。
+
+次の2種類の判定を設計します。
+
+### A. Historical fingerprint一致
+
+元のrecursive input fingerprintとの完全一致です。
+
+旧3構成は既にPASSしています。
+
+Pauli-JW PR index0の旧hash不一致は、今回の設計変更によって消去しないでください。
+
+### B. SOURCEに基づく科学的再現性
+
+旧hashが不一致であっても、保存された科学的条件から生成される回路が元の定義と対応することを検証する判定です。
+
+最低限、以下を確認してください。
+
+1. 同じPauli Hamiltonian・係数・項順序
+2. 同じprefix27とrandom tail
+3. 同じ保存trajectory・event列
+4. 同じevent order・component・sign
+5. 同じrotation angle
+6. 同じqubit順序
+7. 同じforward／reverseの演算順序
+8. 同じconstant・identity・order phase
+9. 同じglobal／relative phaseの制御回路への反映
+10. 同じgeneric whole-body control
+11. 同じHadamard wrapper
+12. 同じQiskit runtime・compiler条件
+
+**単にgate名を無視して新しいhashが一致しただけでは、科学的同等性を認定しないでください。**
+
+また、今回生成したQPY内部での自己一致を、失われた旧回路との同一性の証明にしないでください。
+
+必要なのは、元SOURCEの構築規則と保存入力が、新しいreplayの構築規則に正しく接続されているという根拠です。
+
+## 5. 科学的な差と表記上の差の区別
+
+次のように不一致を分類できる仕組みを設計してください。
+
+**Class 1：科学的に重要な差**
+
+例えば、
+
+- Pauli label・係数の違い
+- Event列の違い
+- Rotation angleの違い
+- 演算順序の違い
+- Qubit配置の違い
+- Controlled unitaryの違い
+- Global／relative phaseの違い
+
+これらが解消できなければ、D1の旧結果対応を認定せずSTOPします。
+
+**Class 2：表記・実装メタデータの差**
+
+例えば、
+
+- 自動生成された回路名
+- 意味を変えない表示用のgate名
+
+ただし、名称の違いがcompilerの分解経路や出力に影響しないことは、無条件に仮定しないでください。
+
+SOURCE・runtimeと回路構造の対応を確認したうえで、研究目的に必要な再現性基準を定めてください。
+
+**Class 3：原因が特定できない差**
+
+重要な演算・位相・定義の対応が確認できない場合です。
+
+この場合は、理由を明示して比較不能・STOPとしてください。
+
+旧hashが不一致である事実を`PASS`に書き換えず、新たな判定statusを別に保存してください。
+
+例えば、
+
+- `LEGACY_FINGERPRINT_MATCH`
+- `SOURCE_SEMANTIC_CORRESPONDENCE`
+- `UNRESOLVED_CORRESPONDENCE`
+
+のように区別することを検討してください。
+
+具体的なschema設計はCodexに委ねます。
+
+## 6. 人工テストと既存証拠の再利用
+
+既存の`h4_d1_adapter`、fingerprint、RTE event、Pauli append、wrapper関連コードを再利用してください。
+
+人工テストでは、
+
+- 自動gate名だけを変更した場合
+- Phaseを変更した場合
+- Event順序を変更した場合
+- Controlled化を変更した場合
+- Gate definitionを変更した場合
+- 保存角度と実際のgate角度が異なる場合
+
+について、判定が正しく区別できるか確認してください。
+
+必要なら、人工小系のunitaryや両control branchの検証を使って構いません。
+
+ただし、**人工小系での同等性を、そのまま実H4全回路の同等性の証明として扱わないでください。**
+
+既存テストに適合するものがあれば再利用し、新しい検証器を過剰に実装しないでください。
+
+## 7. D1再実行契約の設計
+
+科学的再現性の新基準を採用する場合に備え、D1の新しい非実行契約案を作成してください。
+
+目的・代表回路・費用指標は元のD1から変更しません。
+
+### 固定条件
+
+- Linear H4、隣接1.00 Å、STO-3G
+- Pauli-JW PF/PR、DF-native PF/PR
+- S2、T=0.8、q=8、r=4、K=4
+- Cosine軸のみ
+- 元の保存trajectory_index=0
+- Qiskit 1.3.0
+- `rz/sx/x/cx`
+- Optimization level1、seed17
+- 元のfull Hadamard wrapper
+- 状態準備費用除外
+- DFは`raw_concatenation`
+
+### 診断対象
+
+元のD1と同じ9構成を維持します。
+
+- Full：4構成
+- PR retained-only：2構成
+- PR event-only：2構成
+- Empty wrapper：1構成
+
+最大費用compile数は9回です。
+
+### Stage A：科学的対応の確認
+
+新しい判定基準を使用し、元SOURCE・保存入力との対応を検証します。
+
+旧hash完全一致とSOURCEに基づく科学的対応は別々に記録してください。
+
+どちらも確認できない場合はSTOPします。
+
+### Stage B：Full4構成の費用再現
+
+Stage Aの新基準が成立し、別途ユーザーの実行承認を得た場合に限り、最大4回のfull回路compileを行う契約にしてください。
+
+比較する旧価格：
+
+- Pauli-JW PF：255,500 RZ
+- Pauli-JW PR index0：9,652 RZ
+- DF-native PF：135,355 RZ
+- DF-native PR index0：23,021 RZ
+
+旧RZ価格との一致を確認してください。
+
+**新しいfull回路の費用が旧価格と一致しなければ、旧研究結果の原因分解へ進まずSTOPします。**
+
+同じRZ数だけで完全な回路同等性が成立したと主張しないでください。
+
+### Stage C：保持部・event部の診断
+
+Full4構成の対応と価格再現が成立した場合のみ、残り5回のcompileを行う契約にしてください。
+
+取得対象：
+
+- RZ
+- CX
+- Depth
+- Pre/post gate histogram
+- Retained-only費用
+- Event-only費用
+- Empty wrapper費用
+- Fullとの非加法性
+
+元のD1で定義した解析式とphase所有規則を維持してください。
+
+## 8. 研究上のGO／STOP条件
+
+次の判断規則を明確にしてください。
+
+**GO候補**
+
+- 元SOURCEと保存入力の対応が確認できる
+- Event・angle・phase・control・演算順序が一致する
+- 名称などの相違が科学的対応を妨げないことを十分に説明できる
+- 使用するcompiler profileを固定できる
+- 別途実行承認が与えられている
+
+**STOP**
+
+- 科学的に重要な演算差がある
+- Phaseまたはcontrolの対応が未確定
+- 旧入力との差が重要なfieldに残る
+- 保存SOURCE・runtimeの対応が確認できない
+- 新しい基準でも十分な再現性を示せない
+- 元D1の科学条件を変更しないと進められない
+
+この段階では、GO候補と実際の実行承認を混同しないでください。
+
+**今回の作業で実行基準の設計が完了しても、その場で新しい科学grantを発行・使用しないでください。**
+
+## 9. 研究上の優先順位
+
+この作業では、以下の順で重要性を判断してください。
+
+1. 科学的に意味のある回路再現性
+2. 旧PF/PR価格との対応
+3. 保持部・event部の費用構造の識別
+4. 研究結果の再現性と適切な不確かさの表示
+5. 技術的な完全一致や形式的な管理記録
+
+旧hashの完全一致が科学的結論に必要でないと合理的に判断できる場合は、代替基準を設計してください。
+
+ただし、証拠不足による差を単なる命名差として片付けてはいけません。
+
+新しい基準でも旧回路の厳密な履歴同一性が証明されるわけではないため、判定statusと主張範囲を適切に限定してください。
+
+## 10. 保全・実行禁止事項
+
+今回禁止する作業：
+
+- 新しい実H4回路の生成
+- 新しい費用compile
+- 実H4のunitary／state計算
+- Sampling／RNG replay
+- SCF／FCI／DF再生成
+- N/G再会計
+- D1 Stage B/Cの実行
+- D2／D3
+- 消費済みgrantの再使用
+- 旧fingerprintの上書き
+- 元科学SOURCE・raw・ledger・marker・STOPの変更
+- 正式certificate受理
+
+既存Stage A出力の読み取り・静的構造比較と、人工テストは許可します。
+
+元のD1は消費済み・mandatory STOPのまま維持してください。
+
+## 11. 最新共通運用指示の適用
+
+`research_project_instructions_unified_2026-10-23.md`を最新版の正式指示として適用してください。
+
+特に、
+
+- §8.4：計算資源・共有環境の非干渉
+- §10：既存コード・スクリプト・検証資産の再利用
+- §10.3：研究成果を優先した必要十分な技術検証
+
+を守ってください。
+
+既存コードの適合性を確認し、不要な再実装を避けてください。
+
+CPU・RAM・worker数などに恣意的な低い上限を設けないでください。
+
+共有環境全体や他ユーザーのファイル・設定・process等へ影響する操作は禁止します。
+
+既存の固定科学契約・grant・結果・STOPは無断変更しません。
+
+## 12. 成果物・完了条件
+
+新しい専用branchに、必要十分な成果物を保存してください。
+
+1. Pauli-JW PR fingerprint不一致の限定調査報告
+2. 旧SOURCEと新replayの対応表
+3. 科学的再現性の判定基準
+4. 人工テスト結果
+5. 旧hash一致と新判定の区別
+6. D1再実行の非実行契約案
+7. 旧結果と新D1結果の対応・主張範囲
+8. 新実行前のGO／STOP条件
+9. SOURCE・commit・保全・終了記録
+
+報告書には、以下を明示してください。
+
+- Fingerprint不一致の原因をどこまで特定できたか
+- 自動gate名だけが原因だと判断できるか
+- 科学的再現性をどの程度まで確認できるか
+- 別基準によるD1実行が研究上妥当か
+- 何が未解決なら実行を止めるべきか
+- 次に承認が必要な具体的範囲
+
+専用branchへcommitし、既存のrepository運用規則に従ってpush・remote SHA照合を行ってください。
+
+既にremote HEADが一致する場合は再push不要です。
+
+**今回承認した技術調査・再現性基準の設計・人工検証・D1再実行契約の作成・保存までを一括で完了してください。**
+
+新しい実H4回路生成・compile・科学計算へは進まず、完了後は**mandatory STOP**してください。

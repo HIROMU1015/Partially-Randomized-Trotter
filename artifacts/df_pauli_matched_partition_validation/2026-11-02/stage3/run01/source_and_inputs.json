@@ -1,0 +1,185 @@
+{
+  "commit": "d3c258eb019e59234a874e1d8458e383f8317d68",
+  "contract_commit": "be3de04e6fb501fecc4a07f38ceea7c24ba10472",
+  "code_sha256": {
+    "docs/research/h4_p3_stage3_native_validation_20261102.md": "f5ffcbec68a2624749396b1ac2aa55d65e1a8ca8ec30e8d3b558967296e44328",
+    "scripts/run_h4_p3_stage1.py": "d3bb4a97988ff333531633b63319af5aadb63ec8b4f61402861f2ea1566eda67",
+    "scripts/run_h4_p3_stage3.py": "3e83e2f69de6a9e469e7f82ef70a510ed1a091b08636c12a8411e8e89b88cc4c",
+    "src/trotterlib/chemistry_hamiltonian.py": "dd4c87d3a35a551710c0f9f1945e3b2abf5c5594501b92e0616860dad488cf56",
+    "src/trotterlib/config.py": "15e12517f82ed3e9d56eac8a272693ced87226a8ae5e97351e1c2c9b4e3415ca",
+    "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+    "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+    "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+    "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+    "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+    "src/trotterlib/df_trotter/model.py": "ca8aa933fcbd5f7c2a0c1bb867a76bbd5b09a13cbddf5a2fda159f4adf625947",
+    "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+    "src/trotterlib/fixed_signal_accounting.py": "4e27bd062a27470728a43fe0b56404488961653d8d2d2030d4bd6972446dc098",
+    "src/trotterlib/fixed_signal_evaluation.py": "484ad98bd17ece8c8bf0ecbddf929a4682a7c426a7194935e57e920bc12ae54a",
+    "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6",
+    "src/trotterlib/h4_d2_pauli_control.py": "08e3a88b238f73214c99ce94eb197ed7ac8a730098c6ecbe70cad7f3ed95e370",
+    "src/trotterlib/matched_partition_stage1.py": "9bcdfcdb5bae59fac357fea5e836e02a8c6eca75eb11be5b66af2cb36c17431b",
+    "src/trotterlib/matched_partition_stage2.py": "9e9f21ad766d08bf46fe643b6409f9cdd01c8bd248921d0add935e5902d3db51",
+    "src/trotterlib/matched_partition_stage3.py": "964fed72ef5a229fe3544fd1dce314dc820a4ca08b3a7530037b805e07814e36",
+    "src/trotterlib/pauli_signal_adapter.py": "bbd8d0d3de3248c71f16bd86679c9673828b83dc435870da946c425ee199f95e",
+    "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+    "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+    "tests/test_matched_partition_stage3.py": "cb1e7438eb2bc7434b589f5b9634f0315afc99618f70fdabfc2278352c14d84e"
+  },
+  "runtime": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1"
+  },
+  "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+  "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+  "execution_JST": "2026-11-02T03:35:11.119187+09:00",
+  "conditions": {
+    "molecule": "linear H4",
+    "distance_A": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "multiplicity": 1,
+    "full_dimension": 256,
+    "system_qubits": 8,
+    "ancilla": 8,
+    "DF": "saved tol-only1e-8 rank10",
+    "partition": "A",
+    "arms": [
+      "M_B",
+      "M_C"
+    ],
+    "T_exact": "3602879701896397/4503599627370496",
+    "q": 8,
+    "r": 4,
+    "K": 4,
+    "events_per_trajectory": 32,
+    "seeds": {
+      "P": [
+        310201,
+        310202,
+        310203,
+        310204
+      ],
+      "DF": [
+        310301,
+        310302,
+        310303,
+        310304
+      ]
+    },
+    "state_preparation": "P=0; no state signal"
+  },
+  "resources": {
+    "available_affinity_cpus": 64,
+    "load": [
+      0.08837890625,
+      0.19970703125,
+      3.86083984375
+    ],
+    "workers": 36,
+    "BLAS_threads": "1",
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "517764020 kB"
+    },
+    "reason": "independent fixed native preflights and price targets; only own process settings"
+  },
+  "policy": "contract engineering gamma/scale policy; no phase alignment, no full-law guarantee",
+  "contracts": {
+    "docs/research/h4_p3_stage3_native_cost_design_20261102.md": "ae72294d92b57a6bc925c75055fe835f51ebdaefb0d505155839ded31e69f53d",
+    "docs/research/h4_p3_stage3_preflight_readiness_20261102.md": "262179655fc9c87a415377e9ad269372fe263f2a001d906becf09be420d546b2"
+  },
+  "inputs": {
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/REPORT.md": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "94521efef94ae0a1450623aaddae15315cfa355f2264361e9ec898322d744d4e"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/STOP.json": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "ad3c238820cc2bcb5d620e223e5b273e37acd82236fc449aea95672cfc9267a2"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/dictionaries.json": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "41594716f68e3d106d5be09b4746d506ab352c0e83fd09abac80e108b2fc27f6"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/common_operators.npz": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "fd6e4f8d7d37ebab2cd64a55580e0c2b7d6ffb9480add583ea906b8d83dc7fc2"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/results.json": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "398e43cff0c1a314994c337a08601aa80753482acd72b30541d4bc6a413d2a92"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/source_and_inputs.json": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "9a0acbab136fb8102e6cf44ee1211590ac7d4dacc38e5bef8ece107c540ed4fc"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage2/run01/operator_preflight.json": {
+      "ref": "8bcf5851f99f980dc08c5885ace54874b554c815",
+      "sha256": "f18e587743d655a4c5b39361c2c4b482ea18bc548e3133eaeb7e67d643200354"
+    },
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf"
+    },
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+    },
+    "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/pauli.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "49e2f0b86cba9933eee20a03a05934d950caafb5044401bca50d3aa79a518175"
+    },
+    "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_model.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "9ae8973b457cab26bb685a8fac9887dbc5e3be5db9059355822893d26cae2aa4"
+    },
+    "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_model.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "cc60f6dc3de885974cfe74ef822e49380edb6b9ca44777bf12e9654256cd322a"
+    },
+    "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/pauli_jw_result.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "b63d3da01269b2706a3fe185658188779d24f665f057b91367ac7c9254a83245"
+    },
+    "artifacts/non_df_h4_c_reference_evidence/2026-10-23/run01/df_native_result.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "612f646a233c6ecfa52d57f0c1bf969eb6cc940e2c60a691ca21a0c2276e7cb2"
+    },
+    "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/run01/signal_64.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "a8156ba7bebf8ca9ed2639bbdc74d9ce8ec8ba33f8fd890735cf9ae15d55cea6"
+    },
+    "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/input_binding.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "9458b317005cc17a7aacd508b6b3cd28eccd994b5b1f5bfb5d9fee2ff1639110"
+    },
+    "artifacts/non_df_h4_central_arb_pf_cosine/2026-10-25/inputs.json": {
+      "ref": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "sha256": "da86c8df2fe64d298967a48e26013d2f2daa3d2bd2cc1b667f404953ea4b7d67"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/REPORT.md": {
+      "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+      "sha256": "4e75f062cdcb66e65a08e1ba0e21e05f76d78c9874105cb7180a8a2d89bc1b9d"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/operator_comparisons.json": {
+      "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+      "sha256": "b7b158c6349659243298a7cac77ca2bf07e83e54788d5723746bc4f59b1f7c84"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/construction_paths.json": {
+      "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+      "sha256": "46b2fea7d631687dbbff430d72944a9a9e7633fabd20fec2b0f0d9847b45bd07"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/source_and_inputs.json": {
+      "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+      "sha256": "8dc388fdfd24eba358a26ec10553ae3b7877c438ebfb28f0c21f47702f92f53a"
+    },
+    "artifacts/df_pauli_matched_partition_validation/2026-11-02/stage1/run01/STOP.json": {
+      "ref": "5708e37080738c4ebf74590d799a3741246483b2",
+      "sha256": "e44f5bfc12f51aa8ef03693c0e342d55431bd3f6d77af9d579ce60965f9e2e05"
+    }
+  }
+}

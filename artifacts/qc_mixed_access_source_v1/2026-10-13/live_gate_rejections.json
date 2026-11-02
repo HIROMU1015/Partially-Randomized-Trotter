@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "options": [
+        "--execute"
+      ],
+      "return_code": 2,
+      "result": {
+        "status": "MANDATORY_STOP",
+        "reason": "EXPLICIT_SCIENCE_APPROVAL_REQUIRED"
+      }
+    },
+    {
+      "options": [
+        "--execute",
+        "--authorization",
+        "/home/abe/Project/Partially Randomized Trotter/.worktrees/qc-mixed-access-feasibility-source-v1-20261013/artifacts/qc_mixed_access_source_v1/2026-10-13/authorization_DRAFT_NOT_AUTHORIZED.json"
+      ],
+      "return_code": 2,
+      "result": {
+        "status": "MANDATORY_STOP",
+        "reason": "DRAFT_OR_MISSING_USER_APPROVAL"
+      }
+    }
+  ],
+  "molecular_jobs": 0,
+  "attempt_directory_created": false,
+  "mandatory_stop": true
+}

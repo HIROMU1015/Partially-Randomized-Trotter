@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py", line 64, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/scripts/run_h4_numerical_evidence.py", line 28, in main
+    print(json.dumps(ctl.issue_grant(args.issue_grant,args.seal,args.namespace)));return
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/src/trotterlib/h4_certificate_control.py", line 101, in issue_grant
+    c=validate_contract(read(contract_path),active=True);seal=read(seal_path);verify_seal(seal)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/src/trotterlib/h4_certificate_control.py", line 75, in validate_contract
+    require(all(c[k] is True for k in ('execution_authorized','grant_valid','dispatch_enabled')),'C_EXECUTION_NOT_AUTHORIZED')
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-c-reference-fix-20261023/src/trotterlib/h4_certificate_control.py", line 32, in require
+    raise ValueError(reason)
+ValueError: C_EXECUTION_NOT_AUTHORIZED

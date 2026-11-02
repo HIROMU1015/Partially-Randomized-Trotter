@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/scripts/run_research_c_df_basis_surrogate.py", line 13, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/scripts/run_research_c_df_basis_surrogate.py", line 10, in main
+    if a.execute:m.run(ROOT,a.contract)
+                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/src/trottertracks/c_df_basis_reanalysis.py", line 116, in run
+    return execute(root,c,out,call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/src/trottertracks/c_df_basis_reanalysis.py", line 94, in execute
+    atoms,distances,record=call('static_features',name,lambda:static(bundle));save(d/'static.json',record);static_records[name]=record
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/src/trottertracks/c_df_basis_reanalysis.py", line 94, in <lambda>
+    atoms,distances,record=call('static_features',name,lambda:static(bundle));save(d/'static.json',record);static_records[name]=record
+                                                              ^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/src/trottertracks/c_df_basis_reanalysis.py", line 55, in static
+    distances=features.geometry(atoms,U);law=features.law_features(atoms)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-basis-native-saved64-execution-20261029/src/trottertracks/c_df_basis_surrogate.py", line 68, in geometry
+    if key!=a.basis_key:raise ValueError('EXACT_SAVED_BASIS_KEY')
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: EXACT_SAVED_BASIS_KEY

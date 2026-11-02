@@ -1,0 +1,600 @@
+{
+  "candidate_followups": [
+    {
+      "id": "all_r_coherent_opt2_reoptimization",
+      "status": "selected",
+      "uncertainty_addressed": "unmeasured optimization-level-2 context for L_D=3 r<32",
+      "what_remains_afterward": [
+        "q_above_32_transfer",
+        "state_preparation",
+        "external_instance",
+        "backend_noise"
+      ],
+      "why_now": "It removes a known within-comparison asymmetry before testing transfer to another physical instance."
+    },
+    {
+      "id": "external_instance_pilot",
+      "reopen_condition": "complete or stop the selected coherent opt2 discriminator",
+      "status": "deferred_not_rejected",
+      "uncertainty_addressed": "physical-instance transfer",
+      "why_not_now": "It would inherit the unresolved mixed opt1/opt2 r context and make a changed ranking ambiguous."
+    },
+    {
+      "id": "state_preparation_measurement",
+      "reopen_condition": "a concrete candidate-specific preparation circuit is selected or plausible work approaches the 47,067,344 RZ-equivalent/shot point threshold",
+      "status": "conditional",
+      "uncertainty_addressed": "omitted per-shot work",
+      "why_not_now": "No preparation implementation is fixed, and the focused opt2 intervals overlap already at zero preparation work."
+    },
+    {
+      "id": "additional_q_above_32_holdout",
+      "reopen_condition": "the coherent opt2 reoptimization retains a close ranking or selects a proxy whose error budget requires longer-q evidence",
+      "status": "conditional",
+      "uncertainty_addressed": "long-q transfer",
+      "why_not_now": "The preregistered M08 q=64 trigger did not fire, while the missing opt2 r domain is a direct coherence defect."
+    }
+  ],
+  "checks": {
+    "all_artifact_schemas_and_fingerprints_validate": true,
+    "all_seven_directions_have_wp11_decisions": true,
+    "exactly_one_next_followup_is_selected": true,
+    "external_pilot_is_deferred_not_rejected": true,
+    "fixed_h4_instance_matches": true,
+    "independent_wp05br_followup_passes": true,
+    "initial_wp05b_failure_is_preserved": true,
+    "no_new_compute_or_final_claim_in_wp11": true,
+    "robust_direction_remains_undetermined": true,
+    "selected_followup_targets_all_missing_opt2_r_values": true,
+    "upstream_fingerprint_chain_matches": true
+  },
+  "comparison_contract": {
+    "basis": "STO-3G",
+    "candidate_ld_values": [
+      3,
+      12
+    ],
+    "cost_metric": "compiled_rz",
+    "delta_time": 0.02,
+    "df_rank": 12,
+    "geometry_angstrom": 1.0,
+    "molecule": "H4_chain",
+    "n_qubits": 8,
+    "precision_task": "CA_over_10"
+  },
+  "content_fingerprint": "45def7f696eddba574878cc7530837dfdfc5c6e9c2767ee3e115cf4a5f1ac092",
+  "current_decision": {
+    "held_directions": [
+      "T3"
+    ],
+    "no_preparation_point_preference": "L_D=3",
+    "primary_directions": [
+      "T4",
+      "T7"
+    ],
+    "rescoped_directions": [
+      "T1"
+    ],
+    "robust_directional_result": "undetermined_under_compiler_transfer_and_preparation_sensitivity",
+    "robust_interval_preference": "not_established",
+    "scoped_directions": [
+      "T2",
+      "T5",
+      "T6"
+    ],
+    "selected_next_followup": "all_r_coherent_opt2_reoptimization"
+  },
+  "direction_decisions": [
+    {
+      "additional_validation_value": "high_only_after_compiler_context_is_coherent",
+      "decision_change_condition": "Advance only if a coherent compiler-context comparison separates intervals; otherwise retain a conditional or negative result.",
+      "direction_id": "T1",
+      "newly_learned": "L_D=3 is the no-preparation point candidate after fair optimization, but its interval advantage is not invariant to compiler and transfer context.",
+      "relation_to_existing_work": "The defensible contribution is a conditional boundary and failure analysis, not a general partially-randomized superiority statement.",
+      "remaining_uncertainty": [
+        "coherent_opt2_all_r",
+        "q_above_32",
+        "state_preparation",
+        "external_instance"
+      ],
+      "supporting_evidence": [
+        "wp01d",
+        "m08_reaggregation",
+        "compiler_transfer",
+        "n07_p03"
+      ],
+      "topic": "superiority_region_and_limits",
+      "wp11_decision": "rescope"
+    },
+    {
+      "additional_validation_value": "low_for_current_H4_ranking",
+      "decision_change_condition": "Reopen when a candidate approaches the PF boundary or coefficient choice changes ranking.",
+      "direction_id": "T2",
+      "newly_learned": "Paper-D6 and dominant-eigenphase coefficient choices did not change the H4 shortlist.",
+      "relation_to_existing_work": "The result supports a cheaper coefficient surrogate in this window; it is not a new PF theorem.",
+      "remaining_uncertainty": [
+        "new_instance_transfer",
+        "near_pf_boundary_cases"
+      ],
+      "supporting_evidence": [
+        "gate_s1",
+        "wp01d"
+      ],
+      "topic": "state_specific_pf_error_and_partition_design",
+      "wp11_decision": "continue_scoped"
+    },
+    {
+      "additional_validation_value": "low_until_pf_error_becomes_dominant",
+      "decision_change_condition": "Reopen only if coherent full-scope accounting identifies PF error or round depth as dominant.",
+      "direction_id": "T3",
+      "newly_learned": "The current decision is dominated by compiled-cost context rather than second-order PF coefficient choice.",
+      "relation_to_existing_work": "No project-local evidence yet shows that a higher-order formula resolves the active bottleneck.",
+      "remaining_uncertainty": [
+        "higher_order_tail_cost_tradeoff"
+      ],
+      "supporting_evidence": [
+        "gate_s1",
+        "n07_p03"
+      ],
+      "topic": "higher_order_partial_randomized_pf",
+      "wp11_decision": "hold"
+    },
+    {
+      "additional_validation_value": "highest_for_coherent_opt2_all_r",
+      "decision_change_condition": "Reduce priority if the coherent all-r opt2 result still overlaps or if per-r compiler effects are uniform enough not to alter selection.",
+      "direction_id": "T4",
+      "newly_learned": "Sequence-aware circuit structure and compiler optimization materially change RZ cost; local affine q prediction works through q=32 but is not compiler invariant.",
+      "relation_to_existing_work": "The contribution is an auditable domain-aware proxy workflow rather than assuming short-q linearity transfers across circuit and compiler contexts.",
+      "remaining_uncertainty": [
+        "opt2_r_below_32",
+        "q_above_32",
+        "coupling_or_backend_context"
+      ],
+      "supporting_evidence": [
+        "wp06a",
+        "wp06b",
+        "wp05a",
+        "wp05br",
+        "m08_reaggregation",
+        "compiler_transfer"
+      ],
+      "topic": "long_random_circuit_cost_prediction",
+      "wp11_decision": "continue_primary"
+    },
+    {
+      "additional_validation_value": "high_as_part_of_selected_opt2_followup_not_as_separate_sweep",
+      "decision_change_condition": "Broaden schedule search only if coherent opt2 costs change the selected r or delta boundary.",
+      "direction_id": "T5",
+      "newly_learned": "Joint beta, alpha, shot, and round-schedule optimization changed the candidate gap; late rounds dominate cost but not RTE risk.",
+      "relation_to_existing_work": "The relevant result is coupled discrete resource allocation, not an additive sum of isolated improvements.",
+      "remaining_uncertainty": [
+        "compiler_consistent_reoptimization",
+        "state_preparation_weighting"
+      ],
+      "supporting_evidence": [
+        "gate_s1",
+        "wp01d",
+        "g08"
+      ],
+      "topic": "finite_rte_and_rpe_schedule_optimization",
+      "wp11_decision": "continue_scoped"
+    },
+    {
+      "additional_validation_value": "moderate_only_if_selected_followup_exposes_policy_instability",
+      "decision_change_condition": "Reopen broad design only if the fixed policy fails coherent opt2 holdouts or an external instance.",
+      "direction_id": "T6",
+      "newly_learned": "Universal support restriction failed; a training-fixed singleton-run policy passed holdouts and changed the point ranking.",
+      "relation_to_existing_work": "The evidence favors a sequence-conditioned implementation rule, not a universal basis-restriction claim or new sampling theorem.",
+      "remaining_uncertainty": [
+        "other_instances",
+        "coupling_context",
+        "broader_sequence_classes"
+      ],
+      "supporting_evidence": [
+        "wp06a",
+        "wp06b",
+        "wp05a",
+        "wp05br"
+      ],
+      "topic": "representation_and_sampling_joint_design",
+      "wp11_decision": "continue_scoped"
+    },
+    {
+      "additional_validation_value": "high_for_one_coherent_opt2_discriminator",
+      "decision_change_condition": "Retain as primary even for a negative opt2 result; narrow it if findings reduce to one code-specific defect.",
+      "direction_id": "T7",
+      "newly_learned": "Scope completion, fair reoptimization, direct holdouts, compiler change, and omitted preparation work each alter what can be claimed.",
+      "relation_to_existing_work": "The strongest current contribution is a reproducible account of when simplified screening gives an unstable research conclusion.",
+      "remaining_uncertainty": [
+        "immutable_reproduction",
+        "external_instance",
+        "backend_noise",
+        "final_total_cost"
+      ],
+      "supporting_evidence": [
+        "gate_s1",
+        "wp06a",
+        "wp06b",
+        "wp05a",
+        "wp05b",
+        "wp05br",
+        "wp01d",
+        "g08",
+        "m08_reaggregation",
+        "compiler_transfer",
+        "n07_p03"
+      ],
+      "topic": "reliable_resource_estimation_and_negative_results",
+      "wp11_decision": "continue_primary"
+    }
+  ],
+  "evidence_progression": [
+    {
+      "finding": "The screening comparison was undetermined rather than tied.",
+      "routing_effect": "T4 and T7 became primary; T3 was deferred.",
+      "stage": "Gate_S1"
+    },
+    {
+      "finding": "Basis restriction was sequence dependent; the fixed singleton-run policy reduced holdout RZ by 10.67% and reversed the additive-bridge point ranking.",
+      "routing_effect": "Circuit structure must be an explicit cost-model input.",
+      "stage": "WP06-a/WP06-b"
+    },
+    {
+      "finding": "The full controlled wrapper connected locally; an initial q=8 trigger was followed by an independent 32-trajectory replication with 0.52% selected RZ error.",
+      "routing_effect": "Proceed to candidate reoptimization while retaining the failed pilot.",
+      "stage": "WP05-a/b/R"
+    },
+    {
+      "finding": "After alpha, shots, and schedules were reoptimized, L_D=3 was 13.92% lower at the no-preparation optimization-level-1 point estimate.",
+      "routing_effect": "Retain L_D=3 and L_D=12; do not infer robust superiority.",
+      "stage": "WP01-D/C07"
+    },
+    {
+      "finding": "Late three rounds contained 90.94% of L_D=3 cost; q=16/32 direct holdouts passed, but q>32 transfer remained unmeasured.",
+      "routing_effect": "More local q precision was not the first discriminator.",
+      "stage": "G08/M08"
+    },
+    {
+      "finding": "Optimization level 2 passed q<=32 proxy checks, but the coherent-evidence domain covered L_D=3 only at r=32 and the focused intervals overlapped.",
+      "routing_effect": "Compiler context became the nearest removable comparison asymmetry.",
+      "stage": "M06/L08"
+    },
+    {
+      "finding": "L_D=3 used 2,376 more shots; positive common preparation work erodes its point advantage, and the opt2 focused interval overlaps already at P=0.",
+      "routing_effect": "Keep the robust result undetermined and avoid a superiority claim.",
+      "stage": "N07/P03"
+    }
+  ],
+  "input_fingerprints": {
+    "compiler_transfer": "7ebe8815a633a182b4afa4608b969df5c53d1b6d1efe6eeaf2ce4e653fcbbd95",
+    "g08": "e696ced27b06e871368f3afa164f507c240d4aa6693223f9f6abe7990b30d064",
+    "gate_s1": "68f7229df9f69d6f171f3a7616b874685348d622abce7d0df00398be1bb5c2eb",
+    "m08_reaggregation": "6aa69bc756a97aa025e26994f596f9ee3df999be2e64be870ce938dca5180b3e",
+    "n07_p03": "ff70308a64798c6ba8c9d20533c9e9e8c614e58c0d433dd861b7de45ac70c32d",
+    "wp01d": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+    "wp05a": "d8196ef1d8a576b7b7ab443c8613d2bd70b7a4fa57f43ac495be62bf2748f512",
+    "wp05b": "363ac90ace643556ff068ff7b22ed8e43c51c6dbd0085a2256dac29a0303bfda",
+    "wp05br": "7bfeddaccfe10f28b67bdf857ebd76cd43b0eb74b5af5d209a435ee9d8abb472",
+    "wp06a": "5faa9b596d22d1850c20d7cc2b755e3b7c4919365fdc28179aa33ae0fce7ac5f",
+    "wp06b": "6b9ec62e620f58ff5654de42a33085744e6b52efc49969a90eb58f001482f31a"
+  },
+  "limitations": [
+    "WP11 is a research-routing synthesis of local dirty-worktree artifacts, not a new numerical validation.",
+    "The selected follow-up removes the all-r compiler-context asymmetry but does not by itself validate q>32 transfer.",
+    "The existing physical evidence is one H4 snapshot, one geometry, one basis, and topology-free compiler contexts.",
+    "The relation-to-existing-work statements delimit contribution type; a separate literature novelty review was not performed.",
+    "State preparation, backend noise, fault-tolerant synthesis, external transfer, and final total cost remain outside scope."
+  ],
+  "method": "wp11_scoped_direction_and_single_followup_selection_v1",
+  "overall_pass": true,
+  "provenance": {
+    "command": ".venv311/bin/python scripts/run_research_direction_wp11_synthesis.py",
+    "evidence_status": "local_worktree_synthesis_not_externally_reproduced",
+    "generated_at_utc": "2026-09-23T14:41:46.516235+00:00",
+    "git_commit": "efa90e0b14a95c296b305bfeea37867e56c83a0d",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/pf_delta_validation.md",
+      " M \"docs/research/\\346\\225\\260\\345\\200\\244\\345\\256\\237\\351\\250\\223\\343\\203\\273\\350\\251\\225\\344\\276\\241\\350\\250\\210\\347\\224\\273.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M scripts/README.md",
+      " M scripts/run_pf_delta_validation.py",
+      " M src/trotterlib/README.md",
+      " M src/trotterlib/df_partial_s2.py",
+      " M src/trotterlib/df_partial_s2_repeated.py",
+      " M src/trotterlib/df_rte_circuit.py",
+      " M src/trotterlib/df_rte_qiskit.py",
+      " M src/trotterlib/pf_delta_validation.py",
+      " M tests/test_pf_delta_validation.py",
+      "?? artifacts/research_direction_ablation/",
+      "?? artifacts/research_direction_compiler_transfer/",
+      "?? artifacts/research_direction_decision_cost/",
+      "?? artifacts/research_direction_full_scope/",
+      "?? artifacts/research_direction_full_scope_extension/",
+      "?? artifacts/research_direction_full_scope_replication/",
+      "?? artifacts/research_direction_gate_s1/",
+      "?? artifacts/research_direction_pf_sensitivity/",
+      "?? artifacts/research_direction_prevalidation/",
+      "?? artifacts/research_direction_proxy_precision/",
+      "?? artifacts/research_direction_round_dominance/",
+      "?? artifacts/research_direction_sequence_policy/",
+      "?? artifacts/research_direction_structure_pilot/",
+      "?? artifacts/research_direction_uncertainty_break_even/",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-21.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-22.md\"",
+      "?? \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-23.md\"",
+      "?? docs/research_direction_ablation.md",
+      "?? docs/research_direction_compiler_transfer.md",
+      "?? docs/research_direction_decision_cost.md",
+      "?? docs/research_direction_full_scope.md",
+      "?? docs/research_direction_full_scope_extension.md",
+      "?? docs/research_direction_gate_s1.md",
+      "?? docs/research_direction_late_round_proxy.md",
+      "?? docs/research_direction_pf_sensitivity.md",
+      "?? docs/research_direction_prevalidation.md",
+      "?? docs/research_direction_sequence_policy.md",
+      "?? docs/research_direction_structure_pilot.md",
+      "?? docs/research_direction_uncertainty_break_even.md",
+      "?? partial_randomized_trotter_prevalidation_catalog.md",
+      "?? scripts/run_research_direction_ablation.py",
+      "?? scripts/run_research_direction_compiler_transfer_analysis.py",
+      "?? scripts/run_research_direction_compiler_transfer_compute.py",
+      "?? scripts/run_research_direction_decision_cost.py",
+      "?? scripts/run_research_direction_decision_synthesis.py",
+      "?? scripts/run_research_direction_full_scope.py",
+      "?? scripts/run_research_direction_full_scope_extension.py",
+      "?? scripts/run_research_direction_full_scope_replication.py",
+      "?? scripts/run_research_direction_gate_s1.py",
+      "?? scripts/run_research_direction_m08_reaggregation.py",
+      "?? scripts/run_research_direction_pf_sensitivity.py",
+      "?? scripts/run_research_direction_prevalidation.py",
+      "?? scripts/run_research_direction_proxy_precision.py",
+      "?? scripts/run_research_direction_round_dominance.py",
+      "?? scripts/run_research_direction_sequence_policy.py",
+      "?? scripts/run_research_direction_structure_pilot.py",
+      "?? scripts/run_research_direction_uncertainty_break_even.py",
+      "?? scripts/run_research_direction_wp11_synthesis.py",
+      "?? src/trotterlib/research_direction_ablation.py",
+      "?? src/trotterlib/research_direction_compiler_transfer_analysis.py",
+      "?? src/trotterlib/research_direction_compiler_transfer_compute.py",
+      "?? src/trotterlib/research_direction_decision_cost.py",
+      "?? src/trotterlib/research_direction_decision_synthesis.py",
+      "?? src/trotterlib/research_direction_full_scope.py",
+      "?? src/trotterlib/research_direction_full_scope_extension.py",
+      "?? src/trotterlib/research_direction_full_scope_replication.py",
+      "?? src/trotterlib/research_direction_gate_s1.py",
+      "?? src/trotterlib/research_direction_m08_reaggregation.py",
+      "?? src/trotterlib/research_direction_pf_sensitivity.py",
+      "?? src/trotterlib/research_direction_prevalidation.py",
+      "?? src/trotterlib/research_direction_proxy_precision.py",
+      "?? src/trotterlib/research_direction_round_dominance.py",
+      "?? src/trotterlib/research_direction_sequence_policy.py",
+      "?? src/trotterlib/research_direction_structure_pilot.py",
+      "?? src/trotterlib/research_direction_uncertainty_break_even.py",
+      "?? src/trotterlib/research_direction_wp11_synthesis.py",
+      "?? tests/test_research_direction_ablation.py",
+      "?? tests/test_research_direction_compiler_transfer_analysis.py",
+      "?? tests/test_research_direction_compiler_transfer_compute.py",
+      "?? tests/test_research_direction_decision_cost.py",
+      "?? tests/test_research_direction_decision_synthesis.py",
+      "?? tests/test_research_direction_full_scope.py",
+      "?? tests/test_research_direction_full_scope_extension.py",
+      "?? tests/test_research_direction_full_scope_replication.py",
+      "?? tests/test_research_direction_gate_s1.py",
+      "?? tests/test_research_direction_m08_reaggregation.py",
+      "?? tests/test_research_direction_pf_sensitivity.py",
+      "?? tests/test_research_direction_prevalidation.py",
+      "?? tests/test_research_direction_proxy_precision.py",
+      "?? tests/test_research_direction_round_dominance.py",
+      "?? tests/test_research_direction_sequence_policy.py",
+      "?? tests/test_research_direction_structure_pilot.py",
+      "?? tests/test_research_direction_uncertainty_break_even.py",
+      "?? tests/test_research_direction_wp11_synthesis.py"
+    ],
+    "python_version": "3.11.0rc1",
+    "source_sha256": {
+      "scripts/run_research_direction_wp11_synthesis.py": "13cb9de0e6a21f1913f269676db60cb776222db20eace71517d0bb63b0d2a325",
+      "src/trotterlib/research_direction_wp11_synthesis.py": "0539627d43a0ff271be9a1c7f1ee7dbb324f41cb4d9076387b1514e8406a6d26"
+    }
+  },
+  "quantitative_basis": {
+    "direct_opt2_ld3_r_values": [
+      32
+    ],
+    "ld3_last_three_round_cost_fraction": 0.9093508353709496,
+    "ld3_minus_ld12_shots": 2376,
+    "m08_selected_rz_discrepancy": 0.024655707009623114,
+    "missing_opt2_ld3_r_values": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "opt2_focused_intervals_overlap": true,
+    "opt2_focused_point_advantage_ld3": 0.0842221208062548,
+    "opt2_focused_preparation_point_break_even": 47067344.3364899,
+    "selected_ld3_r_values": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "selected_schedule_q_maximum": 131072,
+    "wp01d_ld3_point_reduction_relative_to_ld12": 0.13915674395954614
+  },
+  "schema_version": "research_direction_wp11_synthesis_v1",
+  "scope": {
+    "backend_execution_included": false,
+    "existing_artifacts_only": true,
+    "external_instance_validated": false,
+    "final_total_cost_evaluation_performed": false,
+    "full_opt2_reoptimization_performed": false,
+    "new_circuit_compilation_performed": false,
+    "new_physical_simulation_performed": false,
+    "noise_included": false,
+    "q_above_32_directly_validated_under_opt2": false,
+    "scientific_superiority_claimed": false,
+    "state_preparation_cost_measured": false
+  },
+  "selected_followup": {
+    "analysis_scope": [
+      "fit one optimization-level-2 proxy for every selected L_D=3 r value",
+      "rerun the L_D=3/12 delta=0.01/0.02 beta-alpha-shot-schedule optimization coherently",
+      "propagate measured per-r proxy discrepancy without averaging compiler contexts",
+      "repeat N07/P03 interval and preparation break-even accounting on the coherent result"
+    ],
+    "compute_platform": "CPU_parallel_transpilation; GPU_not_required",
+    "decision_rule": {
+      "advance_to_external_instance_pilot_if": "the coherent opt2 candidate remains feasible and the ranking or interval conclusion is scientifically worth testing for transfer",
+      "consider_long_q_followup_if": "q>32 transfer is the remaining ranking-changing uncertainty after coherent reoptimization",
+      "scientific_superiority_allowed_from_this_followup": false,
+      "stop_local_compiler_refinement_if": "measured-discrepancy intervals still overlap or the deterministic endpoint becomes preferred without a narrow unresolved compiler domain"
+    },
+    "evidence_reusable_without_recompile": {
+      "direct_q_values": [
+        1,
+        2,
+        16,
+        32
+      ],
+      "ld12_deterministic_provider": true,
+      "ld3_r_values": [
+        32
+      ]
+    },
+    "fixed_conditions": {
+      "basis": "STO-3G",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "candidate_ld_values": [
+        3,
+        12
+      ],
+      "circuit_scope": "complete controlled Hadamard wrapper",
+      "coupling_map": null,
+      "delta_values": [
+        0.01,
+        0.02
+      ],
+      "df_rank": 12,
+      "geometry_angstrom": 1.0,
+      "molecule": "H4_chain",
+      "n_qubits": 8,
+      "optimization_level": 2,
+      "sequence_policy": "support_run_le_1",
+      "transpiler_seed": 17
+    },
+    "id": "all_r_coherent_opt2_reoptimization",
+    "new_compute_scope": {
+      "calibration_q_values": [
+        1,
+        2
+      ],
+      "holdout_policy": "use q=4 or q=8 per r as a preregistered unused holdout; do not compile q>32 in the first batch",
+      "ld3_r_values": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "trajectory_policy": "reuse matched physical trajectories where available and keep holdout seeds disjoint"
+    },
+    "not_part_of_this_followup": [
+      "H12 or larger-system statevector simulation",
+      "state-preparation circuit implementation",
+      "backend or noise execution",
+      "coupling-map transfer",
+      "final total-cost evaluation"
+    ],
+    "title": "M06-F all-r coherent optimization-level-2 reoptimization"
+  },
+  "source_evidence": {
+    "compiler_transfer": {
+      "content_fingerprint": "7ebe8815a633a182b4afa4608b969df5c53d1b6d1efe6eeaf2ce4e653fcbbd95",
+      "path": "artifacts/research_direction_compiler_transfer/2026-09-23/m06_l08_opt2_focused_analysis_reaggregation_v1.json",
+      "sha256": "e7547aed984314ddc91a6e76d8a76a9c2882df81fed5f5b93e3f2c9d9030cb4a"
+    },
+    "g08": {
+      "content_fingerprint": "e696ced27b06e871368f3afa164f507c240d4aa6693223f9f6abe7990b30d064",
+      "path": "artifacts/research_direction_round_dominance/2026-09-22/g08_round_cost_risk_proxy_dominance_v1.json",
+      "sha256": "36fd5941747b1554e56e47d412ff88b9a42dfba47d4c093b0af46b32c8f40912"
+    },
+    "gate_s1": {
+      "content_fingerprint": "68f7229df9f69d6f171f3a7616b874685348d622abce7d0df00398be1bb5c2eb",
+      "path": "artifacts/research_direction_gate_s1/2026-09-22/gate_s1_research_direction_decision_v1.json",
+      "sha256": "c83bb7fe07579e157499b833b6bfe81cfda5f76a62bae6bcb8361d9930cae319"
+    },
+    "m08_reaggregation": {
+      "content_fingerprint": "6aa69bc756a97aa025e26994f596f9ee3df999be2e64be870ce938dca5180b3e",
+      "path": "artifacts/research_direction_proxy_precision/2026-09-22/wp01d_c07_m08_measured_discrepancy_reaggregation_v1.json",
+      "sha256": "920d38e452e96c83b7b128ebd2efe4b53edadd56d93ee5db900b2471b2d5b4ac"
+    },
+    "n07_p03": {
+      "content_fingerprint": "ff70308a64798c6ba8c9d20533c9e9e8c614e58c0d433dd861b7de45ac70c32d",
+      "path": "artifacts/research_direction_uncertainty_break_even/2026-09-23/n07_p03_uncertainty_break_even_v1.json",
+      "sha256": "d185a500c6e2900cdab67e3ab0d4c399258507bc47eff8a95da5c9ac4baf5e07"
+    },
+    "wp01d": {
+      "content_fingerprint": "709142f76a78232804cae9971a24bc5757b3ef2e5258adb7314fc42e91937474",
+      "path": "artifacts/research_direction_decision_cost/2026-09-22/wp01d_c07_full_scope_optimization_compute_v2.json",
+      "sha256": "718c79f8137913bf4690ac717a5c6a3c693114666bfded189fb44c9de540128d"
+    },
+    "wp05a": {
+      "content_fingerprint": "d8196ef1d8a576b7b7ab443c8613d2bd70b7a4fa57f43ac495be62bf2748f512",
+      "path": "artifacts/research_direction_full_scope/2026-09-22/wp05a_full_controlled_interrogation_connection_v1.json",
+      "sha256": "153980491e631217b2c2cf2ec6da3613d86f7ba28063d23e8dee227bd37d24b4"
+    },
+    "wp05b": {
+      "content_fingerprint": "363ac90ace643556ff068ff7b22ed8e43c51c6dbd0085a2256dac29a0303bfda",
+      "path": "artifacts/research_direction_full_scope_extension/2026-09-22/wp05b_q8_delta_0p01_full_scope_extension_v1.json",
+      "sha256": "239ecc986df08563988141eaf2cb4538246907bc60f710b942b3c0a45b862b76"
+    },
+    "wp05br": {
+      "content_fingerprint": "7bfeddaccfe10f28b67bdf857ebd76cd43b0eb74b5af5d209a435ee9d8abb472",
+      "path": "artifacts/research_direction_full_scope_replication/2026-09-22/wp05br_r32_32trajectory_replication_v1.json",
+      "sha256": "a390413914719c5784c6cb11603d4d00ed2a5d296b9c4b01a10dd4ab09e5ca64"
+    },
+    "wp06a": {
+      "content_fingerprint": "5faa9b596d22d1850c20d7cc2b755e3b7c4919365fdc28179aa33ae0fce7ac5f",
+      "path": "artifacts/research_direction_structure_pilot/2026-09-22/wp06a_circuit_structure_pilot_v1.json",
+      "sha256": "1c441250634faa6e56e7b833eac71816f3af82011d9fec0142f51012e3876367"
+    },
+    "wp06b": {
+      "content_fingerprint": "6b9ec62e620f58ff5654de42a33085744e6b52efc49969a90eb58f001482f31a",
+      "path": "artifacts/research_direction_sequence_policy/2026-09-22/wp06b_sequence_policy_proxy_bridge_v1.json",
+      "sha256": "cf35aa164a7af3a0c03823294c132c2f6988b370afbdea489d777250f02c7f5a"
+    }
+  },
+  "stage": "WP11-scoped-direction-synthesis",
+  "summary": {
+    "external_instance_pilot_status": "deferred_not_rejected",
+    "gpu_required_for_selected_followup": false,
+    "held_direction": "T3",
+    "new_opt2_ld3_r_values_required": [
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "primary_directions": [
+      "T4",
+      "T7"
+    ],
+    "rescoped_direction": "T1",
+    "robust_directional_result": "undetermined_under_compiler_transfer_and_preparation_sensitivity",
+    "selected_next_followup": "all_r_coherent_opt2_reoptimization",
+    "status": "WP11_scoped_direction_synthesis_complete"
+  }
+}

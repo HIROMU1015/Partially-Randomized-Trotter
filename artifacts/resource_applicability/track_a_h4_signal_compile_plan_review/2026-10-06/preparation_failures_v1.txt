@@ -1,0 +1,9 @@
+Preparation helper failures preserved (science operations0, runtime writes0)
+
+01 documentation helper: NameError: name 'true' is not defined. Did you mean: 'True'?
+Cause: a JSON object was embedded as a Python literal. Two new metadata source copies had been written; no indexes or runtime were changed. Corrected helper used json.loads; existing new copies were matched byte for byte and preserved.
+
+02 validation helper: RuntimeError: existing_changed_files_only_allowed_indexes
+Cause: git diff --name-only quoted Japanese file names, causing a false set mismatch. Read-only git -c core.quotepath=false diff confirmed exactly the eight permitted existing index/note paths. Final helper uses NUL-delimited paths. No source or scientific output change occurred.
+
+These failures were in preparation helpers; the executed metadata preparation script completed successfully. Final checks are recorded separately.

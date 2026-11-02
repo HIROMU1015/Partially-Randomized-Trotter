@@ -1,0 +1,345 @@
+{
+  "status": "SCHEMA_AND_METADATA_ONLY",
+  "cohorts": {
+    "M4_Proposed": {
+      "trajectory_schema": {
+        "sample": "int",
+        "seed": "int",
+        "cohort": "str",
+        "SOURCE_sha256": "str",
+        "final_JU_sha256": "str",
+        "microsteps": "int",
+        "trajectory_key": [
+          [
+            "int"
+          ]
+        ],
+        "events": [
+          {
+            "taylor_order": "int",
+            "rotation_component_id": "str",
+            "product_component_ids": [],
+            "selected_component_ids": [
+              "str"
+            ],
+            "df_fragment_ids": [
+              "NoneType"
+            ],
+            "event_probability": "float",
+            "event_coefficient": "float",
+            "phase": {
+              "real": "float",
+              "imag": "float"
+            },
+            "rotation_angle": "float",
+            "event_normalization": "float",
+            "basis_id": "str",
+            "basis_reuse_intervals": [],
+            "application_sequence": [
+              {
+                "application_index": "int",
+                "role": "str",
+                "component_id": "str",
+                "coefficient_abs": "float",
+                "coefficient_sign": "int",
+                "is_identity": "bool",
+                "df_fragment_id": "NoneType",
+                "basis_id": "str",
+                "diagonal_pauli_support": [
+                  "int"
+                ],
+                "basis_change_operations": [],
+                "basis_hash": "str"
+              }
+            ],
+            "basis_hash": "str"
+          }
+        ],
+        "quantum_shots": "int",
+        "paired": "bool",
+        "old_cohort_pooled": "bool"
+      },
+      "metrics_schema": {
+        "rz_count": "int",
+        "cx_count": "int",
+        "rz_depth": "int",
+        "cx_depth": "int",
+        "total_depth": "int",
+        "circuit_size": "int",
+        "measurement_count": "int",
+        "quantum_only_depth": "int"
+      },
+      "tail_schema": {
+        "status": "str",
+        "representation": {
+          "label": "str",
+          "max_entry": "float",
+          "frobenius": "float",
+          "tolerance": "float",
+          "rtol": "int"
+        },
+        "lambda_R": "float",
+        "objective_exact_mass": "float",
+        "identity": "float",
+        "atoms": "int",
+        "probability_sum": "float",
+        "ideal_law": "str",
+        "implemented_finite_bit_law_error": "NoneType",
+        "atoms_catalog": [
+          {
+            "atom_id": "str",
+            "kind": "str",
+            "coefficient": "str",
+            "origins": [
+              "str"
+            ],
+            "word": [
+              "str"
+            ],
+            "basis_key": "str",
+            "frame_id": "str"
+          }
+        ],
+        "components": [
+          {
+            "component_id": "str",
+            "probability": "float",
+            "coefficient_abs": "float",
+            "coefficient_sign": "int",
+            "basis_id": "str",
+            "df_fragment_id": "NoneType"
+          }
+        ],
+        "finite_distribution": {
+          "orders": [
+            "int"
+          ],
+          "order_probabilities": [
+            "float"
+          ],
+          "normalization": "float"
+        },
+        "configuration": {
+          "h": "float",
+          "r": "int",
+          "K": "int",
+          "tau": "float"
+        },
+        "native_policy": "str"
+      },
+      "export_headers": {
+        "J.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            8,
+            4,
+            4
+          ]
+        },
+        "U.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            8,
+            4,
+            4
+          ]
+        },
+        "x.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            128
+          ]
+        },
+        "jac.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            128
+          ]
+        }
+      },
+      "raw_qpy_magic": "QISKIT"
+    },
+    "tail_P4": {
+      "trajectory_schema": {
+        "sample": "int",
+        "seed": "int",
+        "cohort": "str",
+        "SOURCE_sha256": "str",
+        "role": "str",
+        "final_JU_sha256": "str",
+        "microsteps": "int",
+        "trajectory_key": [
+          [
+            "int"
+          ]
+        ],
+        "events": [
+          {
+            "taylor_order": "int",
+            "rotation_component_id": "str",
+            "product_component_ids": [],
+            "selected_component_ids": [
+              "str"
+            ],
+            "df_fragment_ids": [
+              "NoneType"
+            ],
+            "event_probability": "float",
+            "event_coefficient": "float",
+            "phase": {
+              "real": "float",
+              "imag": "float"
+            },
+            "rotation_angle": "float",
+            "event_normalization": "float",
+            "basis_id": "str",
+            "basis_reuse_intervals": [],
+            "application_sequence": [
+              {
+                "application_index": "int",
+                "role": "str",
+                "component_id": "str",
+                "coefficient_abs": "float",
+                "coefficient_sign": "int",
+                "is_identity": "bool",
+                "df_fragment_id": "NoneType",
+                "basis_id": "str",
+                "diagonal_pauli_support": [
+                  "int"
+                ],
+                "basis_change_operations": [],
+                "basis_hash": "str"
+              }
+            ],
+            "basis_hash": "str"
+          }
+        ],
+        "quantum_shots": "int",
+        "paired": "bool",
+        "old_cohort_pooled": "bool"
+      },
+      "metrics_schema": {
+        "rz_count": "int",
+        "cx_count": "int",
+        "rz_depth": "int",
+        "cx_depth": "int",
+        "total_depth": "int",
+        "circuit_size": "int",
+        "measurement_count": "int",
+        "quantum_only_depth": "int"
+      },
+      "tail_schema": {
+        "status": "str",
+        "representation": {
+          "label": "str",
+          "max_entry": "float",
+          "frobenius": "float",
+          "tolerance": "float",
+          "rtol": "int"
+        },
+        "lambda_R": "float",
+        "objective_exact_mass": "float",
+        "identity": "float",
+        "atoms": "int",
+        "probability_sum": "float",
+        "ideal_law": "str",
+        "implemented_finite_bit_law_error": "NoneType",
+        "atoms_catalog": [
+          {
+            "atom_id": "str",
+            "kind": "str",
+            "coefficient": "str",
+            "origins": [
+              "str"
+            ],
+            "word": [
+              "str"
+            ],
+            "basis_key": "str",
+            "frame_id": "str"
+          }
+        ],
+        "components": [
+          {
+            "component_id": "str",
+            "probability": "float",
+            "coefficient_abs": "float",
+            "coefficient_sign": "int",
+            "basis_id": "str",
+            "df_fragment_id": "NoneType"
+          }
+        ],
+        "configuration": {
+          "h": "float",
+          "r": "int",
+          "K": "int",
+          "tau": "float"
+        },
+        "finite_distribution": {
+          "orders": [
+            "int"
+          ],
+          "order_probabilities": [
+            "float"
+          ]
+        }
+      },
+      "export_headers": {
+        "J.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            8,
+            4,
+            4
+          ]
+        },
+        "U.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            8,
+            4,
+            4
+          ]
+        },
+        "x.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            128
+          ]
+        },
+        "projected_gradient.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            128
+          ]
+        },
+        "raw_optimizer_x.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            110
+          ]
+        },
+        "raw_optimizer_jac.npy": {
+          "descr": "<f8",
+          "fortran_order": false,
+          "shape": [
+            110
+          ]
+        }
+      },
+      "raw_qpy_magic": "QISKIT"
+    }
+  },
+  "numeric_feature_evaluation": false,
+  "NPZ_array_decode": false,
+  "QPY_decode": false
+}

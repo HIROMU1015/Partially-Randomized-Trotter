@@ -1,0 +1,27 @@
+test_active_flags_and_zero_residual_default_rejected (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_active_flags_and_zero_residual_default_rejected) ... ok
+test_empirical_accounting_can_be_conditional_without_certificate (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_empirical_accounting_can_be_conditional_without_certificate) ... ok
+test_guard_boundary_algebra (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_guard_boundary_algebra) ... ok
+test_original_guard_stays_separate (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_original_guard_stays_separate) ... ok
+test_paired_prices_keep_covariance (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_paired_prices_keep_covariance) ... ERROR
+test_unknown_evidence_keeps_null (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_unknown_evidence_keeps_null) ... ok
+test_unknown_residual_not_zero_filled (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_unknown_residual_not_zero_filled) ... ok
+test_unknown_tail_mean_is_not_zero (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_unknown_tail_mean_is_not_zero) ... ok
+
+======================================================================
+ERROR: test_paired_prices_keep_covariance (__main__.artificial_suite.<locals>.ArtificialPlanTests.test_paired_prices_keep_covariance)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-conditional-cng-plan-20261024/artifacts/non_df_h4_conditional_cng_plan/2026-10-24/check_plan.py", line 64, in test_paired_prices_keep_covariance
+    r=precision(toy_result(.0001),.2,plan)
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-conditional-cng-plan-20261024/src/trotterlib/h2_non_df_pilot.py", line 287, in precision_accounting
+    total = _statistics(values)
+            ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-conditional-cng-plan-20261024/src/trotterlib/fixed_signal_evaluation.py", line 189, in _statistics
+    from scipy.stats import t
+ModuleNotFoundError: No module named 'scipy'
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.002s
+
+FAILED (errors=1)

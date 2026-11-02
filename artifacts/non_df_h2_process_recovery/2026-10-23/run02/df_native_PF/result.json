@@ -1,0 +1,246 @@
+{
+  "circuit_cost": {
+    "axes": {
+      "cosine": {
+        "mean": 4047.0,
+        "mean_exact": "4047",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      },
+      "sine": {
+        "mean": 4047.0,
+        "mean_exact": "4047",
+        "nominal95_halfwidth": 0.0,
+        "standard_error": 0.0
+      }
+    },
+    "cache_hits": 0,
+    "cache_misses": 2,
+    "compiled_signal_max_error": 4.596323321948148e-14,
+    "kind": "deterministic",
+    "mc_samples_are_quantum_shots": false,
+    "paired_axes": true,
+    "sample_count": 1,
+    "samples": [
+      {
+        "RZ": {
+          "cosine": 4047,
+          "sine": 4047
+        },
+        "seed": 2107874800888762518
+      }
+    ],
+    "scope": "full_cosine_sine_hadamard_wrapper_no_state_preparation",
+    "uncertainty": "nominal_Student_t_95_not_rare_event_or_population_guarantee"
+  },
+  "compiler": {
+    "backend_name": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "layout_method": null,
+    "optimization_level": 1,
+    "qiskit_version": "1.3.0",
+    "routing_method": null,
+    "transpiler_seed": 17
+  },
+  "config": {
+    "K": 4,
+    "L_D": null,
+    "T": 0.8,
+    "cost_samples": 64,
+    "hamiltonian_type": "df_native",
+    "method": "PF",
+    "product_formula": "S2",
+    "q": 4,
+    "r": 2,
+    "randomization_law": "finite_rte_even_paired",
+    "seed": 966629776506931681
+  },
+  "model": {
+    "B0I_equivalent_to_B0": true,
+    "DF_rank": 3,
+    "L_D": 3,
+    "deterministic_block_order": [
+      "df-one-body-correction",
+      "df-fragment-0",
+      "df-fragment-1",
+      "df-fragment-2"
+    ],
+    "deterministic_fragment_indices": [
+      0,
+      1,
+      2
+    ],
+    "extracted_identity_coefficient": 0.0,
+    "generation": {
+      "SCF_converged": true,
+      "basis": "STO-3G",
+      "charge": 0,
+      "df_rank_actual": 3,
+      "df_rank_requested": null,
+      "df_tol_requested": 1e-08,
+      "df_truncation_value": 0.0,
+      "distance": 1.0,
+      "geometry": [
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          "H",
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "hermitized": true,
+      "hf_energy": -1.0661086493179366,
+      "input_origin": "new_one_shot_SCF_same_integrals_for_Pauli_and_DF",
+      "model_id": "H2_1.00A_STO-3G_NON_DF_PILOT",
+      "molecule_type": 2,
+      "multiplicity": 1
+    },
+    "hamiltonian_hash": "fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd",
+    "hamiltonian_type": "df_native",
+    "identity_policy": "extract_identity_phase",
+    "preparation_hash": "495873e808788f2010388209d52349f684f762ba616c4aa8da438317577a3cfd",
+    "split_unit": "DF_fragment"
+  },
+  "normalization": {
+    "B": 1.0,
+    "K": null,
+    "attenuation": 1.0,
+    "lambda_r": 0.0,
+    "law": "deterministic",
+    "log_B": 0.0,
+    "log_B_margin": 4.714834744845583e-08,
+    "log_B_upper": 4.714834744845583e-08,
+    "normalization_certificate_verified": false,
+    "r": null
+  },
+  "pilot_validation": {
+    "existing_DF_experiment_cohort_reproduced": false,
+    "fixed_case_only": true,
+    "molecular_system": "H2",
+    "new_Monte_Carlo_cohort": true,
+    "numerical_certificate": false,
+    "scientific_superiority_claimed": false
+  },
+  "primary_precision_status": "CONDITIONALLY_ELIGIBLE",
+  "provenance": {
+    "environment": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "python": "3.12.3",
+    "source": {
+      "SOURCE": "7a6c4263d96153ecbe721dcfb6941d0d2684b3b0",
+      "contract_digest": "17b0dc0571061c304833b53ea22d95a1ab8a8e115e617248633a357a04423da7",
+      "grant_id": "102d235ec47f37365370b7949e356302e6d1321b6f24f99b24f61d2fdd5726be",
+      "input_SOURCE": "b5ed2c6e2399b55a0c24eb8437f842892a6703ef",
+      "input_snapshot_sha256": "fb5ca11d7f0be73abd063ae7b67c6b72399c5a2336635f3764af1a7316e81175",
+      "run": "artifacts/non_df_h2_process_recovery/2026-10-23/run02",
+      "source_manifest_sha256": "69bc745142391c032d046b024e6329202be230ac688ee7071ca0a74011ca9773"
+    }
+  },
+  "reference": {
+    "T": 0.8,
+    "hamiltonian_hash": "fe05aa6b88aeab032cf9232c59309695375a83d26f1ed59aea031aeaa77647fd",
+    "method": "scipy_sparse_expm_multiply",
+    "signal": {
+      "imag": 0.7713248998313171,
+      "real": 0.6364415911143844
+    }
+  },
+  "schema": "fixed_signal_resource_evaluation_v1",
+  "shots": {
+    "N_total": 14082,
+    "alpha_union": 0.05,
+    "axes": {
+      "cosine": {
+        "allowance": 4.714834744845583e-08,
+        "alpha": 0.025,
+        "bias": 8.030438816297725e-05,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03527498752281695,
+        "log_shot_bound": 8.859820864121986,
+        "shots": 7044,
+        "status": "ELIGIBLE"
+      },
+      "sine": {
+        "allowance": 4.714834744845583e-08,
+        "alpha": 0.025,
+        "bias": 6.634622471124452e-05,
+        "epsilon": 0.035355339059327376,
+        "headroom": 0.03528894568626868,
+        "log_shot_bound": 8.859029629110047,
+        "shots": 7038,
+        "status": "ELIGIBLE"
+      }
+    },
+    "certificate_verified": false,
+    "epsilon_sig": 0.05,
+    "estimator": "B_times_fresh_independent_plus_minus_one_mean",
+    "evidence_kind": "EMPIRICAL",
+    "evidence_ref": "df_native_PF/numerical_evidence.json",
+    "interpretation": "CONDITIONAL_DIAGNOSTIC",
+    "log_B_upper": 4.714834744845583e-08,
+    "schema": "fixed_complex_signal_hoeffding_v1",
+    "usable": true
+  },
+  "signal": {
+    "absolute_error": 0.0001041662915326502,
+    "corrected": {
+      "imag": 0.7712585536066059,
+      "real": 0.6365218955025473
+    },
+    "mean_method": "independent_sparse_paired_polynomial_state_action",
+    "raw": {
+      "imag": 0.7712585536066059,
+      "real": 0.6365218955025473
+    },
+    "signed_bias": {
+      "imag": -6.634622471124452e-05,
+      "real": 8.030438816297725e-05
+    }
+  },
+  "state": {
+    "basis": "qiskit_little_endian",
+    "generation": {
+      "method": "exact lowest eigenvector in Nalpha=Nbeta=1; largest amplitude positive real",
+      "molecule": "H2",
+      "physical_sector": "Nalpha=Nbeta=1"
+    },
+    "hash": "4dc87df6c0466c1e5559ffcf3603b3a45ca7d1453b0657603188c120fe297b11"
+  },
+  "total_RZ": {
+    "mean": 56989854.0,
+    "mean_exact": "56989854",
+    "nominal95_halfwidth": 0.0,
+    "standard_error": 0.0
+  },
+  "validation": {
+    "RPE_rounds_evaluated": false,
+    "molecular_validation": true,
+    "molecular_validation_scope": "only H2 1.00A STO-3G T=.8 q4 delta=.2 executed technical gates",
+    "resource_status": "CONDITIONAL_CNG_AVAILABLE",
+    "scientific_superiority_claimed": false,
+    "status": "H2_FIXED_CASE_LOCAL_CONDITIONAL_EVIDENCE"
+  }
+}

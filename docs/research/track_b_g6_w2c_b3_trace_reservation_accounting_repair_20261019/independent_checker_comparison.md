@@ -1,0 +1,13 @@
+# 固定独立checkerとの比較
+
+独立SOURCEは`49a0dcc9c8ec6dfc96eba5bb862cfdcb3d0fc866`の4 modulesとその既存依存。原bytesをexternal_checker_import.jsonで照合し、修正していない。固定623回帰も全PASS。
+
+旧版の原再現では、固定のfull adapterがGLOBAL_STATE_COUNTER_BINDINGを検出した。新S/P1の同じ故障では、原statefileとreserved/call counterを同じ独立accounting関数で読み、reserved1・started0の一致を確認した。全108ケース中、物理statefileとreportをexact照合できる82件でこの固定関数を使用した。
+
+V2全体はcandidate/result/summary/receiptの新schemaと保存欠損表現を持つ。固定full adapterの固定templateはV1であり、新identityを拒否する。これはV2 full acceptanceが済んだという意味にも、新版で同じ予約不整合が再発したという意味にもしない。fixed_full_adapter_status/issuesを各caseにそのまま保存した。checker定数や参照templateをV2へ書換えてPASSにしていない。
+
+新しいstorage_verify_v2は主担当による**追加検証**である。producerをimportせず、固定のstate/pair/F01/ordered Decisions/control primitivesを使用する。保存が完全ならfull state/counter/trace/summary/receiptを照合し、失われたstate/trace transactionはINCOMPLETE_EVIDENCEとする。prefix hash/seqとphysical creditは欠損時にも別々に検査する。
+
+保存rawを再抽出した108件の検証processでもProducer/scheduler/Admission/科学moduleをimportしていない。主担当自身の実行であり、別人・別AIによる最終独立reviewとは呼ばない。
+
+**最終独立受入は後続ローカルCodex待ち。** 新schema/identity、RAM stateとphysical witnessの区別、trusted prefix、COMPLETE/ENTERの途中保存失敗、admission STOP後marker、診断file、close不確実性を独立に検査・受入する必要がある。旧47件/旧18件の歴史pendingは維持する。

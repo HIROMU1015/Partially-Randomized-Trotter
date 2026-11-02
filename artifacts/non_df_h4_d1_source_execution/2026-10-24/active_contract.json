@@ -1,0 +1,403 @@
+{
+  "D2_D3_authorized": false,
+  "N_G_authorized": false,
+  "ablation": {
+    "empty": "QuantumCircuit(9,1) ancilla8 H,H,measurement. No controlled identity body, system/ancilla phase, state preparation, or compiler-visible tags.",
+    "event": "Only the stored q groups of r events with order/negative-product/identity-rotation phases. No constant/extracted identity/deterministic primitive phase. Keep each occurrence's closing basis and phase before next occurrence; do not expand reuse across deleted gaps.",
+    "full": "Original full operation and float accumulation order, including per-step phase placement and raw concatenation. Audit scalar_phase.angle is a summary, never emit that as a replacement lumped phase.",
+    "phase_semantics": "A system-global phase of the controlled evolution is ancilla-relative. It is not discardable. Do not alter floating summation/mod2pi order of the original full circuit. Isolation changes unitary; no new valid simulation or accuracy claim.",
+    "policy": "Delete only designated high-level groups before original control/compile; phases have disjoint owners; full emitter is never rebuilt by multiplying separately aggregated R/E.",
+    "retained": "All forward and reverse retained blocks across all q steps plus constant, extracted identity and deterministic diagonal primitive phases. Remove all events. Do not merge boundaries or commuting terms manually."
+  },
+  "approval_sha256": "4638f82b82230812cec7f2bc96846b5c0e470bcd2d7475439988416c45975d32",
+  "automatic_retry": false,
+  "base_commit": "a5f77bbb99e23f15a2a465e0ab485777e7a6f40d",
+  "call_limits": {
+    "ablation_input_build": 5,
+    "cost_transpile": 9,
+    "full_QPY_validation": 4,
+    "full_input_build": 0
+  },
+  "comparisons": {
+    "H1": "Compare isolated retained prices/increments across Pauli/DF at index0 and their context dependence. Does not identify effect of Z/ZZ retention alone or a unique dominant share.",
+    "H2": "Compare whole stored event-stream prices and tags at index0. No event-mean or component frequency aggregation; laws/angles differ and comparison is not matched.",
+    "H3": "Locate basis tags in retained and event and report actual source counters; compiled cost attributable specifically to basis remains unidentified.",
+    "H4": "Exact nonzero interaction demonstrates nonadditivity for the selected case; report magnitude and signs, no invented significance threshold, no unique boundary/compiler causal split.",
+    "H5": "Generic-control source and histogram expansion motivate D2 if unresolved. D1 alone cannot estimate equivalent-central-control counterfactual cost.",
+    "claim_limit": "Four selected representatives, no revised means, statistical confidence, population guarantee, certificate or general Pauli/DF superiority. Old PF/PR costs remain unchanged.",
+    "contextual_event_increment": "C_full - C_retained",
+    "contextual_retained_increment": "C_full - C_event",
+    "count_metrics": [
+      "RZ",
+      "CX"
+    ],
+    "depth": "Report each depth; no additive depth budget or claimed causal depth contribution.",
+    "event_increment": "C_event - C_empty",
+    "interaction": "C_full - C_retained - C_event + C_empty",
+    "isolated_prediction": "C_retained + C_event - C_empty",
+    "retained_increment": "C_retained - C_empty",
+    "sign": "Keep signed integers, including negative increments/interactions. No clipping, fitting or additive allocation."
+  },
+  "criterion_adopted": true,
+  "dispatch_enabled": true,
+  "execution_authorized": true,
+  "execution_order": {
+    "A": "After explicit criterion and finite execution approval, bind new immutable controller SOURCE, used code/input/QPY/runtime and fresh one-shot grant in new namespace. Read four existing full QPY; record A and B separately; all four need (A or adopted B), with no Class1/meaningful Class3 discrepancy and fixed runtime/compiler/wrapper. Otherwise STOP before any cost compile.",
+    "B": "Only after Stage A and explicit execution approval. Compile full4 once each in existing fixed order; reserve each cost call before launch. Compare RZ exactly to old prices. First mismatch/error STOP; do not compile remaining targets, retry or refund.",
+    "C": "Only after all four full correspondence gates and four exact price gates PASS. Build/compile two PR retained-only, two PR event-only and one empty wrapper, once each, using unchanged original descriptor adapter and phase ownership. Independent tasks may parallelize after prerequisite gates.",
+    "budget": "Full4 plus later5 = maximum9 top-level cost calls. No uncharged probe, cache replay, alternative profile, replacement trajectory, retry/resume or D2/D3.",
+    "final": "Native exit and own worker reap audit, output/SHA inventory and immutable STOP. Numerical result integrity and lifecycle proof remain separate."
+  },
+  "existing_D1_science_SOURCE": "48d4d27a05a529e05b11599f5f3c671302826617",
+  "fixed": {
+    "K": 4,
+    "T": 0.8,
+    "ancilla": 8,
+    "axis": "cosine",
+    "compiler": {
+      "backend_name": null,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "coupling_map": null,
+      "layout_method": null,
+      "optimization_level": 1,
+      "qiskit_version": "1.3.0",
+      "routing_method": null,
+      "transpiler_seed": 17
+    },
+    "df": "tol-only1e-8 rank10; PR prefix1 plus one-body",
+    "df_repetition_policy": "raw_concatenation",
+    "formula": "S2",
+    "pauli": "184 nonidentity terms; PR prefix27",
+    "q": 8,
+    "qubit_order": "qiskit_little_endian",
+    "r": 4,
+    "scope": "Full H-controlledbody-H-measurement, no state preparation",
+    "system": "linear H4 adjacent1.00Angstrom STO-3G 8 system qubits; same saved state only as provenance, no state computation"
+  },
+  "full_inputs": {
+    "df_native_PF": {
+      "D1_input_fingerprint": "f6ae7f8009d80513df7c505ac7af5046234e840cf9aebfd0f555128bd4711bf8",
+      "historical_match": true,
+      "legacy_input_fingerprint": "f6ae7f8009d80513df7c505ac7af5046234e840cf9aebfd0f555128bd4711bf8",
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/df_native_PF_full/input.qpy",
+      "sha256": "b845beaad8570c5d1256834a3ea9493c0280b12cc619e18005adb83ef2e05d1d"
+    },
+    "df_native_PR": {
+      "D1_input_fingerprint": "b17c2ec962c33fc270c04c3ae9ee3173d177ed69b8f6a4f44755b73897d67f3d",
+      "historical_match": true,
+      "legacy_input_fingerprint": "b17c2ec962c33fc270c04c3ae9ee3173d177ed69b8f6a4f44755b73897d67f3d",
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/df_native_PR_full/input.qpy",
+      "sha256": "8049e1cb4e029c85beee107d99638a0f362f0c4538826441d27a535c438a0286"
+    },
+    "pauli_jw_PF": {
+      "D1_input_fingerprint": "d04d5593d3502fef29e3447261fc245c8e14660ac1ae5a5a2123799c19d93ee5",
+      "historical_match": true,
+      "legacy_input_fingerprint": "d04d5593d3502fef29e3447261fc245c8e14660ac1ae5a5a2123799c19d93ee5",
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/pauli_jw_PF_full/input.qpy",
+      "sha256": "f48a00583e99e04678012f7b9eecb7e7dd56221771ff34a69094fef2c00ac63a"
+    },
+    "pauli_jw_PR": {
+      "D1_input_fingerprint": "b677002ac37cd37a3f8a0ec84320963f7e44d3dcd29c271c369b1e6ab49fcd21",
+      "historical_match": false,
+      "legacy_input_fingerprint": "8a8adeded83edfddead525494906ccbd2a3796b11ed038f1d53f113b61468986",
+      "path": "artifacts/non_df_h4_d1_execution/2026-10-24/run01/variants/pauli_jw_PR_full/input.qpy",
+      "sha256": "f7ce1ba5e18bfbb2aa4353424f1590c57e4d6eec8d9245166daefd675a597853"
+    }
+  },
+  "grant": null,
+  "grant_location": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d1-source-execution-20261024/artifacts/non_df_h4_d1_source_execution/2026-10-24/run01/grant.json",
+  "grant_valid": true,
+  "historical_science_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+  "interpretation": {
+    "SOURCE_not_history": "If B is adopted and RZ reproduced, report SOURCE-defined selected representative mechanism diagnosis, with Pauli-PR old hash FAIL retained. No exact old recursive/compiled program identity.",
+    "quantitative_limit": "Four selected representatives, no revised means, statistical confidence, population guarantee, certificate or general Pauli/DF superiority. Old PF/PR costs remain unchanged.",
+    "same_RZ": "Price reproduction is separate from semantic correspondence; same RZ is not a unitary/program proof.",
+    "unmeasured": "All new RZ/CX/depth, isolation prices and interactions remain null until next approved execution. Never fill null as0."
+  },
+  "kind": "H4_D1_SOURCE_ACTIVE_ONE_SHOT_V1",
+  "launch_command": [
+    "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "-B",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d1-source-execution-20261024/scripts/run_h4_d1_source.py",
+    "--launch"
+  ],
+  "lifecycle": {
+    "new_authority": "Next approval must bind the future controller SOURCE, exact QPY/descriptors/runtime, finite calls and output namespace; new grant cannot reinterpret old unused calls as transferable.",
+    "old_grant": "b4a61a9064c687d00df10f49bbc24e90d62f47074dbc655727a6ab33e4e17ba8",
+    "old_records": "Preserve old SOURCE/grant/CONSUMED/ledger/STOP exactly. No grant issued or consumed in this design.",
+    "old_status": "CONSUMED; STAGE_A_FINGERPRINT_STOP_NO_RETRY",
+    "processes": "Only own processes monitored/reaped; native completion distinct from science gates. PSI/other worktree activity alone never kills valid workers."
+  },
+  "mandatory_STOP": true,
+  "maximum_ablation_input_build_calls": 5,
+  "maximum_cost_transpile_calls": 9,
+  "maximum_full_input_build_calls": 0,
+  "metrics": {
+    "before_control": "Pauli source body exists before wrapper. DF virtual source histogram and pre-control central tags are collected during same schedule emission, not another whole H4 counterfactual circuit. Mark native central-control path and unavailable global after-control ratio as not directly comparable.",
+    "measured": [
+      "RZ integer count",
+      "CX integer count",
+      "total depth",
+      "RZ/CX depth if existing function supplies them",
+      "source body before-control histogram",
+      "after-control pretranspile histogram",
+      "posttranspile histogram",
+      "input/output QPY and file SHA",
+      "recursive input/output fingerprints",
+      "DF returned application/basis-switch/reuse counters per occurrence",
+      "scheduled q-step boundary descriptors"
+    ],
+    "missing": "Unavailable optional metric is null with reason; required RZ/CX/depth/program/hash and full reproduction gate cannot be silently skipped.",
+    "tags": "Sidecar interval/range/group IDs only; no barriers, labels, gate names or metadata edits that change compiler input. Nested axes: role=retained/event/scalar/wrapper; kind=basis/Pauli/diagonal/control; do not double count nested categories or force assign every final RZ."
+  },
+  "new_grants_issued": 1,
+  "old_full_RZ": {
+    "df_native_PF": 135355,
+    "df_native_PR": 23021,
+    "pauli_jw_PF": 255500,
+    "pauli_jw_PR": 9652
+  },
+  "output_namespace": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/non-df-h4-d1-source-execution-20261024/artifacts/non_df_h4_d1_source_execution/2026-10-24/run01",
+  "production_controller_patch": "src/trotterlib/h4_d1_source_control.py",
+  "prohibited_now": [
+    "new full H4 generation",
+    "sampling/RNG replay",
+    "SCF/FCI/DF",
+    "H4 unitary/state/signal",
+    "N/G",
+    "D2/D3",
+    "certificate acceptance"
+  ],
+  "reproduction_gate": {
+    "A": "Retain exact historical match/fail independently. Three PASS and Pauli-PR FAIL remain immutable historical evidence.",
+    "B": "ADOPTED_SOURCE_SEMANTIC_CORRESPONDENCE; twelve documented links and actual saved tokens; no historical identity claim",
+    "current_QPY_integrity": "Recomputed actual current recursive fingerprint must match saved D1 fingerprint, not force Pauli-PR to old hash. This is self-integrity only, not scientific correspondence to old. Any discrepancy is STOP, no silent reserialization/rebuild.",
+    "metadata": "No blanket name removal, no normalized-hash substitute. Names of primitive/opaque gates or unresolved meaningful definition/control/phase changes are STOP. Generic composite names can be metadata only with SOURCE/recursive-body justification. Compiler sensitivity not presumed absent.",
+    "missing_preimage": "Historical-only unknown payload/name is retained as UNKNOWN. It may be tolerated only under explicitly adopted SOURCE criterion, never claimed recovered. An unknown scientifically important SOURCE edge is STOP."
+  },
+  "required_next_approval": [],
+  "resources": "No arbitrary low CPU/RAM/worker caps. Parallelize independent four baselines or five later diagnostics when useful; preserve dependencies and exact finite call budget. Own directories/processes only, no shared environment/system settings/other users touched.",
+  "reuse_policy": "Reuse all four saved full QPY byte-for-byte. No renaming/counter replay, additional full H4 build, alternate input, seed or sampling. The five isolation/empty builds require the next explicit execution approval.",
+  "schema": "h4_d1_SOURCE_reproducibility_rerun_DRAFT_v1",
+  "science_SOURCE": "9843b803878db6c3aee7ab5e7c6bb4818572c944",
+  "seal_sha256": "03598f219f0aa7c20422d92568f264cd4b5896a9349f6d3740982a5f0c3bf4eb",
+  "selected": [
+    {
+      "case": "pauli_jw_PF",
+      "component_descriptor_join": "PASS_TOKEN_EQUALITY_NO_BUILD",
+      "cost_is": "saved singleton/index0, not PR256 mean",
+      "event_record_hash": "00a8997f17a533d0e3b5382df5b807635a921e6364be3dadebd3123f01186583",
+      "events_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/trajectories/d761627d56a4454e644358fef8907b8a7db28c4feeb44130224c20e4e50aae4d/events.json",
+      "input_fingerprint": "d04d5593d3502fef29e3447261fc245c8e14660ac1ae5a5a2123799c19d93ee5",
+      "input_fingerprint_policy": "qiskit_recursive_numeric_circuit_v2",
+      "price_join": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/trajectories/d761627d56a4454e644358fef8907b8a7db28c4feeb44130224c20e4e50aae4d/price_join.json",
+      "result_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PF/result.json",
+      "saved_compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "saved_cosine_RZ": 255500,
+      "scalar_summary": {
+        "angle": 0.2651822507334482,
+        "policy": "original_scalar_once_per_outer_step; event phases separate"
+      },
+      "trajectory_id": "d761627d56a4454e644358fef8907b8a7db28c4feeb44130224c20e4e50aae4d",
+      "trajectory_index": 0,
+      "trajectory_record_hash": "a79c7df367ef8f68ccdcbb461460a7345910f5883cc416092144174c21292e5a"
+    },
+    {
+      "case": "pauli_jw_PR",
+      "component_descriptor_join": "PASS_TOKEN_EQUALITY_NO_BUILD",
+      "cost_is": "saved singleton/index0, not PR256 mean",
+      "event_record_hash": "a8b636d8fef0d7690cbf4f25ba45f37ccca819241ed3a6c4ba056520a183c4b1",
+      "events_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97/events.json",
+      "input_fingerprint": "8a8adeded83edfddead525494906ccbd2a3796b11ed038f1d53f113b61468986",
+      "input_fingerprint_policy": "qiskit_recursive_numeric_circuit_v2",
+      "price_join": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/trajectories/93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97/price_join.json",
+      "result_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/pauli_jw_PR/result.json",
+      "saved_compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "saved_cosine_RZ": 9652,
+      "scalar_summary": {
+        "angle": 0.2651822507334482,
+        "policy": "original_scalar_once_per_outer_step; event phases separate"
+      },
+      "trajectory_id": "93ef5e4e28b499472c8ba9329f6cb139f63c5de071279783b3cca3319793fc97",
+      "trajectory_index": 0,
+      "trajectory_record_hash": "bc9c3af880750f25d67ca7f3861802fff78b2a63fa5a336533ee2d04f2d767f8"
+    },
+    {
+      "case": "df_native_PF",
+      "component_descriptor_join": "PASS_TOKEN_EQUALITY_NO_BUILD",
+      "cost_is": "saved singleton/index0, not PR256 mean",
+      "event_record_hash": "28883cbee2f7c60152b7393b1b3021960b8d6ffe4e7e9d375edbafc1642ecdcc",
+      "events_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PF/trajectories/71567586d92a908244f28a7ed1339c7d93907f4d7e7f4912bf492421dea1b83f/events.json",
+      "input_fingerprint": "f6ae7f8009d80513df7c505ac7af5046234e840cf9aebfd0f555128bd4711bf8",
+      "input_fingerprint_policy": "qiskit_recursive_numeric_circuit_v2",
+      "price_join": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PF/trajectories/71567586d92a908244f28a7ed1339c7d93907f4d7e7f4912bf492421dea1b83f/price_join.json",
+      "result_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PF/result.json",
+      "saved_compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "saved_cosine_RZ": 135355,
+      "scalar_summary": {
+        "angle": -1.8344809978560002,
+        "policy": "original_scalar_once_per_outer_step; event phases separate"
+      },
+      "trajectory_id": "71567586d92a908244f28a7ed1339c7d93907f4d7e7f4912bf492421dea1b83f",
+      "trajectory_index": 0,
+      "trajectory_record_hash": "e01639e981d1f477668a5e45f7e10a5c96f1fc9215a8911f487f5e09317a7d31"
+    },
+    {
+      "case": "df_native_PR",
+      "component_descriptor_join": "PASS_TOKEN_EQUALITY_NO_BUILD",
+      "cost_is": "saved singleton/index0, not PR256 mean",
+      "event_record_hash": "4a4b3c739098a950012db1a1de088fee6da1ed20a73896e51044cf4538950389",
+      "events_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf/events.json",
+      "input_fingerprint": "b17c2ec962c33fc270c04c3ae9ee3173d177ed69b8f6a4f44755b73897d67f3d",
+      "input_fingerprint_policy": "qiskit_recursive_numeric_circuit_v2",
+      "price_join": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/trajectories/ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf/price_join.json",
+      "result_file": "artifacts/non_df_h4_pilot/2026-10-23/run01/run/df_native_PR/result.json",
+      "saved_compiler": {
+        "backend_name": null,
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "coupling_map": null,
+        "layout_method": null,
+        "optimization_level": 1,
+        "qiskit_version": "1.3.0",
+        "routing_method": null,
+        "transpiler_seed": 17
+      },
+      "saved_cosine_RZ": 23021,
+      "scalar_summary": {
+        "angle": -2.1686550075061564,
+        "policy": "original_scalar_once_per_outer_step; event phases separate"
+      },
+      "trajectory_id": "ee4b33ef3f4ee363ae4a3d4c1d8b468dbbc0fe20a269361b22d68f1799e274cf",
+      "trajectory_index": 0,
+      "trajectory_record_hash": "d794681ed85a8321fa8706e8e0b9944a88d6beda07c5dbf4a5573a063d74cf09"
+    }
+  ],
+  "selection": "Pauli PF and DF PF singleton; Pauli PR and DF PR saved trajectory_index0. No cost-min/max or replacement trajectory. No RNG, no seed replay.",
+  "status": "APPROVED_SOURCE_CRITERION_SEALED_ONE_SHOT",
+  "variants": [
+    {
+      "axis": "cosine",
+      "case": "pauli_jw_PF",
+      "historical_baseline": true,
+      "id": "pauli_jw_PF_full",
+      "part": "full",
+      "phase": "all_original"
+    },
+    {
+      "axis": "cosine",
+      "case": "pauli_jw_PR",
+      "historical_baseline": true,
+      "id": "pauli_jw_PR_full",
+      "part": "full",
+      "phase": "all_original"
+    },
+    {
+      "axis": "cosine",
+      "case": "df_native_PF",
+      "historical_baseline": true,
+      "id": "df_native_PF_full",
+      "part": "full",
+      "phase": "all_original"
+    },
+    {
+      "axis": "cosine",
+      "case": "df_native_PR",
+      "historical_baseline": true,
+      "id": "df_native_PR_full",
+      "part": "full",
+      "phase": "all_original"
+    },
+    {
+      "axis": "cosine",
+      "case": "pauli_jw_PR",
+      "historical_baseline": false,
+      "id": "pauli_jw_PR_retained",
+      "part": "retained",
+      "phase": "deterministic_scalar_and_block"
+    },
+    {
+      "axis": "cosine",
+      "case": "pauli_jw_PR",
+      "historical_baseline": false,
+      "id": "pauli_jw_PR_event",
+      "part": "event",
+      "phase": "all_RTE"
+    },
+    {
+      "axis": "cosine",
+      "case": "df_native_PR",
+      "historical_baseline": false,
+      "id": "df_native_PR_retained",
+      "part": "retained",
+      "phase": "deterministic_scalar_and_block"
+    },
+    {
+      "axis": "cosine",
+      "case": "df_native_PR",
+      "historical_baseline": false,
+      "id": "df_native_PR_event",
+      "part": "event",
+      "phase": "all_RTE"
+    },
+    {
+      "axis": "cosine",
+      "case": null,
+      "historical_baseline": false,
+      "id": "empty",
+      "part": "empty",
+      "phase": "none"
+    }
+  ]
+}

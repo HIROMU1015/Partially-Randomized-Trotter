@@ -1,0 +1,172 @@
+{
+  "schema": "H6_FIXED_P_FORMAL_ADOPTION_V1",
+  "status": "ADOPTED_COMPLETE_FIXED_SCOPE",
+  "authority": "USER_MESSAGE_CURRENT_SESSION",
+  "user_decision": "H6の固定2条件の独立確認結果を正式に採用。ε=.05/n48はPRが78.055%高費用、ε=.0005/n104は9.644%低費用、双方REPRODUCED。",
+  "SOURCE": "bf0c26dae4477de5fe7264a7c91e077661ef9b38",
+  "result_commit": "3cccfcb2051dacf29e91473e2e1152acef1574bd",
+  "protocol_version": "v1",
+  "protocol_commit": "9036d8a87ad1c38e83b9ff654b412dde7041e9d3",
+  "scope_ids": [
+    "H6_CONFIRM_P4_Q2",
+    "H6_CONFIRM_P4_Q8"
+  ],
+  "completed_scope": "TWO_FIXED_H6_INDEPENDENT_CONFIRMATIONS_ONLY",
+  "metric": "saved_shots_times_compiled_RZ_cosine_plus_sine",
+  "cohort": "H6_INDEPENDENT_UNCONDITIONAL_CONFIRMATION_V1",
+  "comparison_binding": {
+    "system": "H6",
+    "geometry": "linear_1Angstrom",
+    "basis": "STO-3G",
+    "rank": 19,
+    "rank_policy": "tol_only_1e-8",
+    "T": "0.8",
+    "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+    "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+    "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+    "control": "symmetric_directional"
+  },
+  "fixed_endpoints": [
+    {
+      "scope": "H6_CONFIRM_P4_Q2",
+      "epsilon": "0.05",
+      "PR": {
+        "id": "B2_p4_q2_2nd_r4_K2",
+        "method": "B2",
+        "prefix": 4,
+        "q": 2,
+        "r": 4,
+        "K": 2,
+        "R": 8,
+        "formula": "2nd"
+      },
+      "n": 48,
+      "PF": "B0I_p7_q1_2nd",
+      "PF_G_exact": "356097424",
+      "expected_direction": -1,
+      "expected_cost_order": "PR_MORE_EXPENSIVE",
+      "shots": {
+        "cosine": 13379,
+        "sine": 14076
+      },
+      "law": {
+        "schema_version": 1,
+        "dimensionless_step_time": "0.18965627569765375",
+        "finite_taylor_order": 2,
+        "orders": [
+          0,
+          2
+        ],
+        "unnormalized_order_weights": [
+          "1.0178258706240004",
+          "0.018020654650401965"
+        ],
+        "order_probabilities": [
+          "0.9826029684796903",
+          "0.01739703152030961"
+        ],
+        "exact_finite_distribution": "1.0358465252744025",
+        "truncation_residual_bound": "5.601979543669037e-05",
+        "truncation_residual_overflowed": false,
+        "paper_upper_bound": "1.0366242319879115",
+        "paper_upper_bound_overflowed": false
+      },
+      "preparation_sha256": "ce0c96f4774e07c8980d830056f012ab357b3c4db725b2d817f6deac49ef8319",
+      "technical_spec_sha256": "7f2c86663a9e88a22bb240ab214fe019171ea314b043de3344e492eeddc3c125",
+      "technical_digest": "5e54109abb4d8936d65164a050dc550307dd4e9e7ba5be820dc2b3625e5a8a11",
+      "calls": {
+        "trajectory": 48,
+        "occurrence": 96,
+        "RTE_event": 384,
+        "native_evolution": 48,
+        "wrapper_compile": 96,
+        "control_probe": 4,
+        "independent_event_oracle": 1
+      }
+    },
+    {
+      "scope": "H6_CONFIRM_P4_Q8",
+      "epsilon": "0.0005",
+      "PR": {
+        "id": "B2_p4_q8_2nd_r4_K2",
+        "method": "B2",
+        "prefix": 4,
+        "q": 8,
+        "r": 4,
+        "K": 2,
+        "R": 32,
+        "formula": "2nd"
+      },
+      "n": 104,
+      "PF": "B0I_p11_q4_4th",
+      "PF_G_exact": "36384720355183",
+      "expected_direction": 1,
+      "expected_cost_order": "PR_CHEAPER",
+      "shots": {
+        "cosine": 142701279,
+        "sine": 224627195
+      },
+      "law": {
+        "schema_version": 1,
+        "dimensionless_step_time": "0.04741406892441344",
+        "finite_taylor_order": 2,
+        "orders": [
+          0,
+          2
+        ],
+        "unnormalized_order_weights": [
+          "1.0011234159343039",
+          "0.0011241873440612801"
+        ],
+        "order_probabilities": [
+          "0.9988783337167542",
+          "0.0011216662832458251"
+        ],
+        "exact_finite_distribution": "1.0022476032783652",
+        "truncation_residual_bound": "2.1259304471295264e-07",
+        "truncation_residual_overflowed": false,
+        "paper_upper_bound": "1.002250622789814",
+        "paper_upper_bound_overflowed": false
+      },
+      "preparation_sha256": "ce0c96f4774e07c8980d830056f012ab357b3c4db725b2d817f6deac49ef8319",
+      "technical_spec_sha256": "47a2e8406a034a61c140d653e104cb12cc6e28635e295abd3c859f26255f7a22",
+      "technical_digest": "e0ae0879aeb9455f10d58ff69c1c5f9a092ad857ecd02dbeb014533f7afc448a",
+      "calls": {
+        "trajectory": 104,
+        "occurrence": 832,
+        "RTE_event": 3328,
+        "native_evolution": 104,
+        "wrapper_compile": 208,
+        "control_probe": 4,
+        "independent_event_oracle": 1
+      }
+    }
+  ],
+  "direction_definition": "sign(fixed_PF_G - paired_PR_mean)",
+  "reproduced_definition": "nonzero observed sign equals expected sign",
+  "PR_CHEAPER_definition": "observed sign is positive; null on exact tie",
+  "tie": "INCONCLUSIVE",
+  "supersedes_status_only": {
+    "commit": "9036d8a87ad1c38e83b9ff654b412dde7041e9d3",
+    "path": "artifacts/resource_applicability/track_a_protocol_v1/2026-10-19/evidence_update_status.json",
+    "key": "H6",
+    "historical_status": "PHASE0_ONLY;FINAL_N_AND_SOURCE_NULL;INDEPENDENT_P_NOT_COMPLETE",
+    "historical_file_modified": false
+  },
+  "new_science_authorized": false,
+  "new_scientific_calls": 0,
+  "new_numerical_analysis": false,
+  "new_science_modules_imported": 0,
+  "new_grants_issued": 0,
+  "existing_contracts_modified": false,
+  "other_cohorts_pooled": false,
+  "new_publication_authorization_confirmed": false,
+  "push": false,
+  "paper_snapshot_policy": "NEW_VERSIONED_SUCCESSOR_TABLES;ORIGINAL_ROWS_AND_SNAPSHOTS_PRESERVED",
+  "final_evidence_freeze": false,
+  "next_stage_authorized": false,
+  "mandatory_STOP": true,
+  "independent_review": false
+}

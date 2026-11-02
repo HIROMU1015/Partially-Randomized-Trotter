@@ -1,0 +1,54 @@
+{
+  "schema": "b3_adoption_readiness_evidence_index_v1",
+  "base_commit": "e4af6c064db805cbec611bcc8f0ff75a4754d38b",
+  "A1": [
+    {
+      "claim": "F3 input/domain, outward root, half-angle, alternating remainder and radius acceptance",
+      "source_commit": "1aea9b8c228c5b940f2fcba0f94493b3ffdec46e",
+      "paths": [
+        "src/trottertracks/algorithm_codesign/g6_f3_contract.py",
+        "src/trottertracks/algorithm_codesign/g6_f3_precision.py",
+        "src/trottertracks/algorithm_codesign/g6_f3_generator.py"
+      ]
+    },
+    {
+      "claim": "Existing exact half-angle argument <2/3 and finite-precision feasibility, not native certification",
+      "source_commit": "bc649c592c8c2b625b49094b85c27e380faa3cf4",
+      "path": "docs/tracks/algorithm_codesign/g6_finite_bit_and_access_audit_20261010.md",
+      "section": "6"
+    },
+    {
+      "claim": "Concrete parameter-only sufficient inequalities; not empirical event coverage",
+      "path": "angle_parameter_candidates.md"
+    }
+  ],
+  "A2": [
+    {
+      "claim": "Schedule/seed/setup/cache/retention and call budget remain unchanged",
+      "source_commit": "e4af6c064db805cbec611bcc8f0ff75a4754d38b",
+      "directory": "docs/research/track_b_g6_w2c_b3_driver_preparation_20261019/"
+    },
+    {
+      "claim": "Source/input/contract/schedule SHA binding with proposed choices kept separate",
+      "path": "execution_contract_candidate_refined.json"
+    }
+  ],
+  "A3": [
+    {
+      "claim": "Artificial atomic uniqueness, prefix/STOP and guard tests, not production authority",
+      "paths": [
+        "src/trottertracks/algorithm_codesign/g6_w2c_b3_readiness.py",
+        "tests/tracks/algorithm_codesign/test_g6_w2c_b3_readiness.py"
+      ],
+      "results": "artificial_test_results.json"
+    }
+  ],
+  "immutability": "All fixed evidence byte hashes and public retrieval are in source_inventory.json; no merge/rebase/live parallel source",
+  "unsupported": [
+    "real_G7_correctness",
+    "real_CPU_cost",
+    "fresh_IID",
+    "physical_RZ",
+    "native_or_End_to_End_total_cost"
+  ]
+}

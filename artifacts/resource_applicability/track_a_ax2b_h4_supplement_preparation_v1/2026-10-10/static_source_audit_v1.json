@@ -1,0 +1,19 @@
+{
+  "schema": "track_a_ax2b_supplement_static_audit_v1",
+  "old_port": "src/trottertracks/resource_applicability/ax2b_molecular_ports_v3.py",
+  "new_port": "src/trottertracks/resource_applicability/ax2b_h4_supplement_port_v1.py",
+  "normalized_numerical_statement_match": {
+    "primitives": true,
+    "correctness": true,
+    "control_and_measurement": true,
+    "explicit_estimator_probes": true
+  },
+  "removed_instrumentation": [
+    "progress updates/counters",
+    "call-budget charges",
+    "phase/prerequisite routing"
+  ],
+  "normalized_control_calls": "self.control_state -> original simulate_statevector",
+  "normalized_correctness_selection": "only registered S4 IDs -> original loop for comparison",
+  "limits": "AST audit of copied numerical bodies; not molecular execution, circuit equivalence or error certificate"
+}

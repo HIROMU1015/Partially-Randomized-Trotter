@@ -1,0 +1,100 @@
+{
+  "artificial_E2E": "technical/eight_qubit_final",
+  "ast_syntax_files": 10,
+  "broad_regression": {
+    "by_module": {
+      "tests.test_analytic_baseline_models": 12,
+      "tests.test_analytic_circuit_cng": 4,
+      "tests.test_df_partial_randomized_pf": 18,
+      "tests.test_df_partial_s2": 19,
+      "tests.test_df_partial_s2_repeated": 22,
+      "tests.test_df_partial_s2_repeated_cost": 26,
+      "tests.test_df_rpe_hadamard_compiled_cost": 15,
+      "tests.test_df_rpe_resource": 7,
+      "tests.test_df_rte_event_preparation": 5,
+      "tests.test_df_rte_qiskit_builder": 10,
+      "tests.test_df_rte_tail": 3,
+      "tests.test_fixed_signal_evaluation": 71,
+      "tests.test_h2_non_df_pilot": 16,
+      "tests.test_h2_non_df_process_recovery": 18,
+      "tests.test_h4_event_audit": 21,
+      "tests.test_h4_execution_foundation": 37,
+      "tests.test_isolated_qiskit_supervisor": 31,
+      "tests.test_non_df_h4_readiness": 11,
+      "tests.test_pauli_partial_cgs_validation": 7,
+      "tests.test_rte": 16,
+      "tests.test_rte_compiled_cost": 17,
+      "tests.test_rte_integer_counts": 38,
+      "tests.test_rte_truncation_budget": 5
+    },
+    "errors": 0,
+    "failures": 0,
+    "passed": 429,
+    "report": "final_tests.xml",
+    "seconds": 271.773,
+    "skip": 0,
+    "tests": 429
+  },
+  "dispatch_enabled": false,
+  "execution_authorized": false,
+  "execution_environment": {
+    "environment_assignments": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONPATH": "src:tests"
+    },
+    "python": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "python_version": "3.11.0rc1",
+    "shared_environment_modified": false
+  },
+  "final_new_features": {
+    "by_module": {
+      "tests.test_h4_event_audit": 21,
+      "tests.test_h4_execution_foundation": 44
+    },
+    "errors": 0,
+    "failures": 0,
+    "passed": 65,
+    "report": "final_new_tests.xml",
+    "seconds": 78.26,
+    "skip": 0,
+    "tests": 65
+  },
+  "final_unique": {
+    "deselected": 3,
+    "error": 0,
+    "existing_regression_pass": 371,
+    "fail": 0,
+    "new_feature_pass": 65,
+    "skip": 0,
+    "total_pass": 436
+  },
+  "grant_valid": false,
+  "guard_only_outside_selected_modules": [
+    "tests/test_rte_h2.py::test_h2_pauli_tail_finite_rte_matches_dense_exponential",
+    "tests/test_rte_h2.py::test_h2_k2_enumeration_and_seeded_sample_mean"
+  ],
+  "live_scientific_grants_issued": 0,
+  "mandatory_STOP": true,
+  "molecular_exclusions": [
+    {
+      "nodeid": "tests/test_df_partial_randomized_pf.py::test_optimize_df_screening_cost_uses_anchor_cgs_table",
+      "reason": "new H3 SCF/DF through cost blocks"
+    },
+    {
+      "nodeid": "tests/test_df_rte_tail.py::test_h2_df_tail_reconstructs_selected_conjugated_fragments",
+      "reason": "new H2 SCF/DF"
+    },
+    {
+      "nodeid": "tests/test_pauli_partial_cgs_validation.py::test_h3_target_is_sector_unique_but_full_space_degenerate",
+      "reason": "new H3 JW molecular calculation"
+    }
+  ],
+  "numerical_tolerances_changed": false,
+  "real_H4_scientific_calls": 0,
+  "schema": "h4_execution_foundation_technical_validation_v1",
+  "scope_note": "21 selected existing modules and two new modules; broad included 58 earlier new tests, superseded by final 65. Not full repository suite.",
+  "status": "PASS_TECHNICAL_ONLY",
+  "tests_guard": "tests/no_molecular_plugin.py; SCF/integral/DF builders prohibited except explicit all-provider mock"
+}

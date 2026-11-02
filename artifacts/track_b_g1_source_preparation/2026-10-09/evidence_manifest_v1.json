@@ -1,0 +1,181 @@
+{
+  "base_commit": "6c91d1b17a70f773080be9315fabd10e926dae44",
+  "branch": "track-b-g1-source-preparation-20261009",
+  "contract_identity": {
+    "artifacts/track_b_g1_result_prior_preparation/2026-10-09/decision_packet_contract_v1.json": "ab14e8944541691827980dadfe7a4529df44b979995785cd9d499dcc16162fe2",
+    "artifacts/track_b_g1_result_prior_preparation/2026-10-09/fixture_manifest_v1.json": "ab295de73a3a4001513419172982e9c0f9a2e809f658c4f14252b4be6f52f134",
+    "artifacts/track_b_g1_result_prior_preparation/2026-10-09/runtime_identity_v1.json": "2d9a838f2e97e77211617f72b5939bf5cef365d8f81708b25e55f64c0392cf7b",
+    "artifacts/track_b_g1_result_prior_preparation/2026-10-09/structure_audit_contract_v1.json": "49a7c19453d568d37da29e074fdbfb4142db53173701f57037f88e48a0a77044"
+  },
+  "date_JST": "2026-10-09",
+  "execution_authorized": false,
+  "files": {
+    "PROJECT_MAP.md": "f7703d52e9cd3f09ff359e604addd7fb818046f2659d3c5fa6b447092ad6d67d",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_execution_v1.json": "c5015663fc311215c78e66afc8fba8b04453b4587d0cfac8704cb7fcf3ac22a7",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_results_v1.json": "407fec804c04d6223acbe07d55659bd4dd0dae8701fec1b09780b5c96f4969ec",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_stderr_v1.txt": "9c84d75bdc8da06fc1c364d83cd828779a49e1458f4a45f36ca2fcc24cb16843",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_stdout_v1.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/source_manifest_v1.json": "cedd37e53f19831dde10b149468cd18ca9be96f4d9854e6b7c760d9c479b20e7",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/source_static_checks_v1.json": "8faa22b1bd8af1f52d118819ca3fbf776986b10ee2b63f72a566200c2d01523c",
+    "docs/README.md": "75bde7502efd3b7bbd767f8e9a2f759191bfe030c0116f883581c91864912bca",
+    "docs/research/研究ノート/2026-10-09_track_b_g1_source_preparation.md": "9b43d3fc019dbbfa85252afe48de5d9dab0be3307c50a9e3e3777e648cd89fea",
+    "docs/research/研究概要・現状.md": "21640659647ea3023a0fd63cbe6672f33ef570024892270ec8b65868d842ed91",
+    "docs/tracks/algorithm_codesign/README.md": "468d13927d4b0b2eb51b002738ddbac3d132d6967b8d54f131a0c8f85ef81fca",
+    "docs/tracks/algorithm_codesign/g1_source_review_20261009.md": "078e33af90ccbfb53de65c228291b693f6f4ece96a6625bc95a3764a4873632a",
+    "scripts/README.md": "b535a8a78981dcff57c422aa03918931de282f9d694fa9444eb78eb60413f613",
+    "scripts/tracks/algorithm_codesign/README.md": "aa51832f397e75579ef94c56bfbcd76c952b5fe37e7fc9c1a7b1f433d9c3de76",
+    "scripts/tracks/algorithm_codesign/audit_g1_structure.py": "9ec0df512d1d3eb0f0adaf528c6b44f12b6207c845b8cfb17dfb8dbee4c0d9a0",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/README.md": "87dac2c11fbba1b6f70b70d692e18f2a2911f85c74af0d0f1ea7a76b70c85e83",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/__init__.py": "1256f90fadc43631108073ea50f2635f5ba5b2402d1488d5757716677e1ff13e",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/controller.py": "2961eb0a8af0dda648eb7f51d16acdcf4cdac07678071ba76c1fd25e9ca027fd",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/rational_symbolic.py": "fa0429d84d90062eeace73b94ebf1ab1bc82586db1b4071d6f85ad9831c85d76",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/structure.py": "8172b8a65f063cb83a96aa32634e0b3b664708b43de9130ffac3177e4ea1bfdb",
+    "scripts/tracks/algorithm_codesign/run_g1_decision_packet.py": "9251d1b30acc47aec96f817d3fb0c488b7ee988ffa969538f2848d3204d98b7b",
+    "src/trotterlib/README.md": "4059d764321b9a88636f4a78c4c6d9a4bee7952ad9c3972691671ab9172f7194",
+    "tests/README.md": "0638a7eefcf51da2e6acb904499e7c731d2b74b6644868b21f5d84c59ce7f969",
+    "tests/tracks/algorithm_codesign/test_g1_source_preparation.py": "22fda9c8786342b8d540e89526a801d2063b46cfddf4a98067d0edfc56e47f36"
+  },
+  "instruction": {
+    "accepted_scope": "限定独立構造監査script・one-shot controllerの実装、off-domain launch tests、必要source/review資料のcommit・push。",
+    "boundary": "実backend・固定8入力solve・本model構造監査は今回未認可。資料公開後STOPし別の明示実行指示を待つ。",
+    "latest_user_text": "その方針で進めてください"
+  },
+  "new_science_authorization": false,
+  "next_boundary": "Source final review and separate explicit full-source-SHA one-shot instruction; future packet ends with mandatory STOP and GPT G1 on every outcome.",
+  "not_claimed": [
+    "independent six-vertex audit PASS",
+    "actual backend closure PASS",
+    "backend adoption",
+    "production readiness",
+    "registered B2/B3 resource comparison",
+    "algorithm novelty",
+    "scientific positive or negative result"
+  ],
+  "operations": {
+    "actual_backend_LP_calls": 0,
+    "actual_backend_binary_invocations": 0,
+    "actual_backend_echo_calls": 0,
+    "compile_build_install": 0,
+    "fixed_eight_input_solves": 0,
+    "full_structure_audit_calls": 0,
+    "mock_and_generic_Fraction_tests_only": true,
+    "new_science_synthesis_circuit_quantum_matrix_trajectory_DF_molecule_NPZ_GPU_IS_CTS": 0,
+    "new_scientific_authorization_created": 0,
+    "real_G1_one_shot_marker_created": 0,
+    "shared_API_or_Track_A_source_changes": 0,
+    "temporary_mock_markers_only": true
+  },
+  "previous_evidence": {
+    "all_append_only_docs": {
+      "PROJECT_MAP.md": {
+        "after_sha256": "f7703d52e9cd3f09ff359e604addd7fb818046f2659d3c5fa6b447092ad6d67d",
+        "appended_bytes": 747,
+        "before_sha256": "a3c4db5f337aca5f7f759b4a07baa05a4eebe6cc46dd63805ad6e8405720caa7",
+        "old_body_byte_prefix_preserved": true
+      },
+      "docs/README.md": {
+        "after_sha256": "75bde7502efd3b7bbd767f8e9a2f759191bfe030c0116f883581c91864912bca",
+        "appended_bytes": 693,
+        "before_sha256": "f397c33477792a796fb7a8e59aedbcf23b3a86a73b1ef494a2fde6aace620d9b",
+        "old_body_byte_prefix_preserved": true
+      },
+      "docs/research/研究概要・現状.md": {
+        "after_sha256": "21640659647ea3023a0fd63cbe6672f33ef570024892270ec8b65868d842ed91",
+        "appended_bytes": 909,
+        "before_sha256": "52dfd1f339b1c5cf5e4679d98f5f82841cd2825c96359c39c0b01ea769900359",
+        "old_body_byte_prefix_preserved": true
+      },
+      "docs/tracks/algorithm_codesign/README.md": {
+        "after_sha256": "468d13927d4b0b2eb51b002738ddbac3d132d6967b8d54f131a0c8f85ef81fca",
+        "appended_bytes": 837,
+        "before_sha256": "316011ed3ef6e36db93bab7d84f9187283262ba2ec93aca39c07147ca7f6341d",
+        "old_body_byte_prefix_preserved": true
+      },
+      "scripts/README.md": {
+        "after_sha256": "b535a8a78981dcff57c422aa03918931de282f9d694fa9444eb78eb60413f613",
+        "appended_bytes": 677,
+        "before_sha256": "88d020612336f18bc2b3e84ec7cbdd01097b12c3a18cde89fc823cefa47641fc",
+        "old_body_byte_prefix_preserved": true
+      },
+      "scripts/tracks/algorithm_codesign/README.md": {
+        "after_sha256": "aa51832f397e75579ef94c56bfbcd76c952b5fe37e7fc9c1a7b1f433d9c3de76",
+        "appended_bytes": 585,
+        "before_sha256": "ff7b23f3a5b5a55e80da10f9891d8429af59bbd6f7a13495cb6d09053bf4e526",
+        "old_body_byte_prefix_preserved": true
+      },
+      "src/trotterlib/README.md": {
+        "after_sha256": "4059d764321b9a88636f4a78c4c6d9a4bee7952ad9c3972691671ab9172f7194",
+        "appended_bytes": 760,
+        "before_sha256": "27a64cfb1290d5c7c0b023d773aef5b8bbf28313cadd8a1c010a76f085b88390",
+        "old_body_byte_prefix_preserved": true
+      },
+      "tests/README.md": {
+        "after_sha256": "0638a7eefcf51da2e6acb904499e7c731d2b74b6644868b21f5d84c59ce7f969",
+        "appended_bytes": 641,
+        "before_sha256": "10eb7614eaa671ce33ee918edb8a1627aea68cb0a2eb8b317c44d1b05d944198",
+        "old_body_byte_prefix_preserved": true
+      }
+    },
+    "append_only_prior_document_paths": [
+      "PROJECT_MAP.md",
+      "docs/README.md",
+      "docs/research/研究概要・現状.md",
+      "docs/tracks/algorithm_codesign/README.md",
+      "scripts/README.md",
+      "scripts/tracks/algorithm_codesign/README.md",
+      "src/trotterlib/README.md"
+    ],
+    "new_G1_state_absent": true,
+    "old_scientific_source_contract_authorization_results_marker_STOP_unchanged": true,
+    "prior_paths_checked": 478,
+    "reference_commit": "6c91d1b17a70f773080be9315fabd10e926dae44",
+    "runtime_binary_libraries_unchanged": true,
+    "unchanged_paths": 471
+  },
+  "publication_paths": [
+    "PROJECT_MAP.md",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/evidence_manifest_v1.json",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_execution_v1.json",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_results_v1.json",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_stderr_v1.txt",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_stdout_v1.txt",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/source_manifest_v1.json",
+    "artifacts/track_b_g1_source_preparation/2026-10-09/source_static_checks_v1.json",
+    "docs/README.md",
+    "docs/research/研究ノート/2026-10-09_track_b_g1_source_preparation.md",
+    "docs/research/研究概要・現状.md",
+    "docs/tracks/algorithm_codesign/README.md",
+    "docs/tracks/algorithm_codesign/g1_source_review_20261009.md",
+    "scripts/README.md",
+    "scripts/tracks/algorithm_codesign/README.md",
+    "scripts/tracks/algorithm_codesign/audit_g1_structure.py",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/README.md",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/__init__.py",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/controller.py",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/rational_symbolic.py",
+    "scripts/tracks/algorithm_codesign/g1_decision_packet/structure.py",
+    "scripts/tracks/algorithm_codesign/run_g1_decision_packet.py",
+    "src/trotterlib/README.md",
+    "tests/README.md",
+    "tests/tracks/algorithm_codesign/test_g1_source_preparation.py"
+  ],
+  "published_bytes_excluding_manifest": 525026,
+  "review_entry": "docs/tracks/algorithm_codesign/g1_source_review_20261009.md",
+  "schema": "track_b_g1_source_preparation_evidence_v1",
+  "self_identity": "Publication commit Git object; self SHA256 excluded.",
+  "source_manifest": "artifacts/track_b_g1_source_preparation/2026-10-09/source_manifest_v1.json",
+  "static_verification": "artifacts/track_b_g1_source_preparation/2026-10-09/source_static_checks_v1.json",
+  "status": "G1_SOURCE_PREPARED_FOCUSED_TESTS_PASS_AWAITING_SEPARATE_EXECUTION_INSTRUCTION",
+  "stop_after_source_publication": true,
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "full_structure_audit_blocked_by_test_patch": true,
+    "scope": "Local off-domain mock kernel/launch/guard/verifier tests; not immutable CI or external reproduction.",
+    "status": "PASS",
+    "test_execution": "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_execution_v1.json",
+    "test_report": "artifacts/track_b_g1_source_preparation/2026-10-09/focused_test_results_v1.json",
+    "tested_code_bytes_match_final_source": true,
+    "tests_run": 59
+  }
+}

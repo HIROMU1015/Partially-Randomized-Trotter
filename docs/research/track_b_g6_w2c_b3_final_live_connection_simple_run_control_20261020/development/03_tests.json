@@ -1,0 +1,47 @@
+{
+  "connection": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 15,
+    "SKIP": 0,
+    "failures": [],
+    "run": 15
+  },
+  "preflight": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 23,
+    "SKIP": 0,
+    "failures": [],
+    "run": 23
+  },
+  "regression": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 66,
+    "SKIP": 0,
+    "failures": [],
+    "run": 66
+  },
+  "store": {
+    "ERROR": 1,
+    "FAIL": 0,
+    "PASS": 15,
+    "SKIP": 0,
+    "failures": [
+      {
+        "id": "test_g6_w2c_b3_final_live_v1.SimpleState.test_state_symlink_denied",
+        "trace": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/tests/tracks/algorithm_codesign/test_g6_w2c_b3_final_live_v1.py\", line 139, in tearDown\n    value=dict(case=self._testMethodName,manifest=self.m,snapshot=self.store.snapshot(self.m),\n                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/run_control.py\", line 177, in snapshot\n    with self.connect() as db:\n         ^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/run_control.py\", line 73, in connect\n    self._locations();db=sqlite3.connect(self.path,timeout=60,isolation_level=None)\n    ^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/run_control.py\", line 70, in _locations\n    require(p.exists() and p.resolve()==p and not p.is_symlink()\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/g6-w2c-b3-final-live-connection-simple-run-control-20261020/src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/guard.py\", line 17, in require\n    raise Closed(reason)\ntrottertracks.algorithm_codesign.g6_w2c_b3_live_preflight_v1.guard.Closed: STATE_STORE_LOCATION\n"
+      }
+    ],
+    "run": 16
+  },
+  "unit": {
+    "ERROR": 0,
+    "FAIL": 0,
+    "PASS": 10,
+    "SKIP": 0,
+    "failures": [],
+    "run": 10
+  }
+}

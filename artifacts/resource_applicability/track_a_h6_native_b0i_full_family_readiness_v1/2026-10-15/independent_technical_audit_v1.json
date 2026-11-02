@@ -1,0 +1,40 @@
+{
+  "status": "PASS_WITH_LIMITS",
+  "SOURCE": "731826b3bb82dba18b31989a39607fe426d34960",
+  "reviewer": "Separate read-only Codex reviewer h6_family_readonly_audit",
+  "author_is_reviewer": false,
+  "scope": "LIMITED_STATIC_NEW_INTEGRATION_AND_CPU_FIX_RECHECK",
+  "science_review_repeated": false,
+  "reviewer_test_execution": 0,
+  "reviewer_scientific_imports": 0,
+  "reviewer_real_children": 0,
+  "P1_open": 0,
+  "P2_open": 0,
+  "findings": [
+    {
+      "severity": "P2",
+      "status": "FIXED_AND_REVIEWED",
+      "issue": "Completed child CPU omitted from Phase D/final stage cap",
+      "fix": "Keep wait4 child CPU in driver Monitor after cleanup; bind carry to contract/driver for independent observer; check parent+all children in PhaseD/final ticks",
+      "regressions": [
+        "test_child_CPU_persists_after_successful_cleanup",
+        "test_Phase_D_still_charges_completed_children",
+        "test_CPU_stop_does_not_replace_first_stop"
+      ]
+    }
+  ],
+  "reviewed_file_sha256": {
+    "scripts/h6_b0i_family_execution_guard_v1.py": "f4e1b41f6bd0eaae78ebabbc0f735c687b76d56c7ce018d3d7b4445141b01fff",
+    "scripts/h6_b0i_family_parallel_compile_v1.py": "b7eefa0b454fcdb297d936fee6ecbcfdda08567bb908df2981966643f7a8da8a",
+    "scripts/h6_b0i_family_external_monitor_v1.py": "3fea6aa7ddb82a4d7a340670f6228278f18b8b375c5a1cf7bd82f3856f2856ec",
+    "scripts/h6_b0i_family_accounting_v1.py": "4dacb89253119144be4fefdf6438d8e99defd7985ab2cc965c8bf42db6294a65",
+    "scripts/h6_b0i_family_runner_v1.py": "a5bc13f014771e70af3f533e40941bee6d9c9142d199a10bf38afcbe4431b69d",
+    "tests/test_h6_b0i_full_family_v1.py": "d570ed42367b23fda5127b6342e9aa540b1fa5007787fa9b8913d548a4cf9262"
+  },
+  "limits": [
+    "Static review; author artificial44 separately bound; native new9 unexecuted",
+    "Full temp/control-tree hard byte/inode cap not implemented; reservations and filesystem pressure caps distinguish actual accounting",
+    "No performance/correctness/compiled-bit-equivalence claim for actual new9",
+    "Future profile materialization and fresh CPU/quota/resource/output/seal approval required"
+  ]
+}

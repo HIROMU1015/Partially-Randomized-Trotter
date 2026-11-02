@@ -1,0 +1,67 @@
+{
+  "runtime_sources": [
+    {
+      "path": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/circuit/library/standard_gates/rz.py",
+      "SHA256": "2ee16adeac1dc3c9238b0d911913f58dba5f835ce2c3c9d8eb88a6b83b8c48b6",
+      "functions": [
+        {
+          "class_name": "RZGate",
+          "function": "_define",
+          "line": 74,
+          "end_line": 89
+        },
+        {
+          "class_name": "RZGate",
+          "function": "control",
+          "line": 91,
+          "end_line": 129
+        },
+        {
+          "class_name": "CRZGate",
+          "function": "_define",
+          "line": 256,
+          "end_line": 282
+        }
+      ],
+      "source_bytes_match_fixed_C_runtime": true
+    },
+    {
+      "path": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/circuit/library/standard_gates/rzz.py",
+      "SHA256": "e6cd317bd23de76a238b727e64907b3a627519671feff86eae70868f6dbfe101",
+      "functions": [
+        {
+          "class_name": "RZZGate",
+          "function": "_define",
+          "line": 99,
+          "end_line": 123
+        },
+        {
+          "class_name": "RZZGate",
+          "function": "control",
+          "line": 125,
+          "end_line": 156
+        }
+      ],
+      "source_bytes_match_fixed_C_runtime": true
+    },
+    {
+      "path": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/lib/python3.11/site-packages/qiskit/circuit/add_control.py",
+      "SHA256": "17597866266e9b70ad080b44fdb4a466f77474109c86a37cdc38abb41a010bd8",
+      "functions": [
+        {
+          "function": "control",
+          "line": 68,
+          "end_line": 250
+        }
+      ],
+      "source_bytes_match_fixed_C_runtime": true
+    }
+  ],
+  "CRZ_rule": "Actual fixed CRZGate._define lists RZ(theta/2),CX,RZ(-theta/2),CX; exact phase polynomial checked in transfer rules",
+  "RZZ_rule": "Actual RZZGate._define lists CX,RZ(theta),CX; exact parity identity checked",
+  "generic_control": "add_control unrolls, dispatches mcrz/mcx/equivalences and accumulates global_phase into ancilla P; complete lowering/pass path is unproved",
+  "status": "LIMITED_SOURCE_RULE_CORRESPONDENCE_NOT_WHOLE_LITERAL_OR_COMPILER_PROOF",
+  "numeric_parameter_halving_proved": false,
+  "old_program_or_pass_trace_recovered": false,
+  "new_compile_performed": false
+}

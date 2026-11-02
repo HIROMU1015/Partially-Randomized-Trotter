@@ -1,0 +1,253 @@
+{
+  "schema_version": "pr2_s1_s3_dry_run_manifest_v1",
+  "status": "FROZEN_FOR_EXTERNAL_REVIEW_EXECUTION_NOT_AUTHORIZED",
+  "created_date": "2026-09-27",
+  "evidence_status": "documentation_and_read_only_implementation_audit_no_new_numerical_evidence",
+  "execution_authorized": false,
+  "quantum_shots_executed": 0,
+  "molecular_calculations_executed": 0,
+  "signal_evaluations_executed": 0,
+  "circuits_compiled": 0,
+  "trajectory_samples_drawn": 0,
+  "provenance": {
+    "git_commit": "71169d817c165b76a9e25fc6f6a16ade28ffe069",
+    "dirty_worktree": true,
+    "preregistration_path": "docs/research/pr2_s1_s3_preregistration.md",
+    "preregistration_sha256": "9cff2a38071c3779648ad6179679b425e7a2d63618ee28de8b3784898b91b97b",
+    "parent_contract_path": "docs/research/pr2_primary_research_contract.md",
+    "parent_contract_sha256": "4d325c0cc28dae08e975ab6311f77258f0cfdefa224e5dfcfb93c1b0a6e8a2b0",
+    "superseded_parent_contract_sha256": "1bddb8d385d2ec3a6cdfb0bf025a3a6780b9917a3670526879151869e4fd553c",
+    "pilot_artifact_path": "artifacts/pr2_pr3_minimal_pilot/2026-09-27/pr2_pr3_minimal_pilot_v1.json",
+    "pilot_artifact_sha256": "65d5c12a129cd50f521b069b63be140f7bbee1eddf7ea8b859b18737dbb8d302",
+    "pilot_result_fingerprint": "0ee2c3b9bcb7ef433d429336d84c116eace3df150c2e6bd5747eb6850998b725"
+  },
+  "fixed_scope": {
+    "model": "linear_H4_rank12_DF_reference",
+    "basis": "sto-3g",
+    "num_qubits": 8,
+    "num_electrons": 4,
+    "development_distance_angstrom": 1.0,
+    "independent_distance_angstrom": 1.3,
+    "reference_rank": 12,
+    "primary_rank": 6,
+    "control_ranks": [3, 9],
+    "delta_time": 0.1,
+    "s1_repetition_count": 1,
+    "s1_physical_time": 0.1,
+    "s2_s3_repetition_count": 8,
+    "s2_s3_physical_time": 0.8,
+    "state": "rank12_reference_sector_ground_state",
+    "state_preparation_in_cost": false,
+    "full_rpe_in_scope": false
+  },
+  "input_freeze": {
+    "generation_call": "build_df_h_d_from_molecule(4, distance=d, basis='sto-3g', df_rank=12)",
+    "development_expected_hamiltonian_hash": "d8b4aaf21afcc3935d5b5aa4d0805b358c5ec670d8104d25807c7cd0620a3dc3",
+    "development_snapshot_path": null,
+    "development_snapshot_status": "missing_must_regenerate_and_match_pilot_hash_before_s1",
+    "independent_snapshot_path": null,
+    "independent_hamiltonian_hash": null,
+    "independent_snapshot_status": "missing_must_freeze_before_s1_results_and_keep_signal_cost_blind_until_s3",
+    "existing_snapshot_not_reused": {
+      "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+      "file_sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b",
+      "reason": "different provenance and no demonstrated identity with the pilot Hamiltonian hash"
+    }
+  },
+  "prefix_identity_gate": {
+    "status": "not_run",
+    "ranks": [3, 6, 9],
+    "generation_prefix": "original_fragment_indices_0_through_r_minus_1",
+    "ordinary_prefix": "rank_df_fragments_lambda_frobenius_squared_first_r",
+    "ordered_identity_required_for_collapse": true,
+    "if_identical": "collapse_B2_G_and_B2_W_without_double_counting",
+    "if_different": "retain_B2_G_and_B2_W_and_require_explicit_partition_adapter_tests",
+    "method_delta_claimed_from_order_difference": false
+  },
+  "baselines": [
+    "B0_discard_generation_prefix",
+    "B1_rank12_deterministic_reference",
+    "B2_G_generation_prefix_partial_randomization",
+    "B2_W_weight_ranked_ordinary_prefix_partial_randomization",
+    "B3_full_random_LD0"
+  ],
+  "finite_rte_grid": {
+    "r_values": [1, 2, 4, 8, 16, 32],
+    "finite_taylor_orders": [2, 4],
+    "coefficient_atol": 0.0,
+    "identity_policy": "extract_identity_phase",
+    "random_tail_occurrences_per_partial_s2_step": 1,
+    "selection_primary_metric": "shot_weighted_expected_full_wrapper_compiled_rz_without_state_preparation",
+    "tie_break": ["smaller_r", "smaller_K"]
+  },
+  "signal_accuracy": {
+    "target_complex_l2_error": 0.05,
+    "axis_error_budget": "0.05/sqrt(2)",
+    "total_failure_probability": 0.05,
+    "axis_failure_probability": 0.025,
+    "candidate_axis_bias": "abs(candidate_mean_axis_minus_exact_rank12_axis)",
+    "statistical_axis_allowance": "0.05/sqrt(2)_minus_candidate_axis_bias",
+    "shot_formula": "ceil(2/statistical_axis_allowance^2*log(2/0.025))",
+    "outcome_bound": "plus_or_minus_one",
+    "fresh_iid_rte_trajectory_per_hadamard_shot": true,
+    "finite_normalization_post_correction": false,
+    "quantum_shots_planned_for_execution": false,
+    "existing_rpe_unit_radius_shot_model_reused": false
+  },
+  "compiler": {
+    "qiskit_version": "1.3.0",
+    "basis_gates": ["rz", "sx", "x", "cx"],
+    "optimization_level": 1,
+    "transpiler_seed": 17,
+    "backend_name": null,
+    "coupling_map": null,
+    "layout_method": null,
+    "routing_method": null,
+    "primary_metric": "compiled_rz_count",
+    "secondary_metrics": ["compiled_cx_count", "compiled_size", "compiled_depth"],
+    "circuit_scope": "single_full_hadamard_interrogation_without_state_preparation",
+    "old_affine_proxy_values_reused": false
+  },
+  "classical_compiled_cost_sampling": {
+    "initial_trajectories_per_cell": 32,
+    "single_fixed_extension_total_trajectories": 128,
+    "extension_trigger_primary_rz_relative_standard_error": 0.02,
+    "additional_extension_after_128_allowed": false,
+    "master_seeds": {
+      "S1": 20260927101,
+      "S2": 20260927102,
+      "S3": 20260927130
+    },
+    "re_im_share_trajectory_sequence": true,
+    "classical_samples_are_quantum_shot_multipliers": false
+  },
+  "planned_work_upper_bounds_before_identity_collapse": {
+    "S1_random_method_grid_cells": 36,
+    "S1_initial_random_full_wrapper_compiles": 2304,
+    "S2_random_method_grid_cells": 36,
+    "S2_initial_random_full_wrapper_compiles": 2304,
+    "S3_random_cells_after_frozen_S2_selection_including_rank3_rank9_controls": 5,
+    "S3_initial_random_full_wrapper_compiles": 320,
+    "note": "Counts are planning upper bounds, not executed tasks. Identity collapse or ineligible correctness cells can reduce them. The 128-trajectory extension is not included."
+  },
+  "source_audit": [
+    {
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "2a9ff5483762ac7472ba49b0ed10c14e804ae3e2fbfb8a3979b7dce02a0d9444",
+      "reuse": "weight_ranked_partial_s2_and_controlled_one_step",
+      "limitation": "does_not_accept_the_pilot_generation_prefix_when_it_differs_from_the_weight_ranked_prefix"
+    },
+    {
+      "path": "src/trotterlib/df_partial_s2_repeated.py",
+      "sha256": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "reuse": "controlled_repeated_partial_s2_q1_q8",
+      "limitation": "no_signal_or_shot_execution"
+    },
+    {
+      "path": "src/trotterlib/rpe_hadamard_interrogation.py",
+      "sha256": "f1519d406c33465a7c0e42555d226b19237a87b464137bc7acfae80b8eae311d",
+      "reuse": "re_im_hadamard_wrapper_semantics",
+      "limitation": "standard_public_domain_is_q1_q2_q4"
+    },
+    {
+      "path": "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+      "sha256": "38cdd6f13fd8201516b455e6a167586cc5755f198d949e1a83d9ebe4e7345eca",
+      "reuse": "validation_only_power_of_two_wrapper_up_to_q8",
+      "limitation": "must_be_connected_and_tested_in_a_new_pr2_runner"
+    },
+    {
+      "path": "src/trotterlib/df_partial_s2_repeated_cost.py",
+      "sha256": "94171fe3b4d0f9215c624196a7b16181455c77f1da758df78da583dbfa16cd71",
+      "reuse": "exact_or_monte_carlo_repeated_controlled_cost",
+      "limitation": "full_wrapper_integration_and_new_snapshot_recompile_required"
+    },
+    {
+      "path": "src/trotterlib/df_rte_tail.py",
+      "sha256": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "reuse": "exact_tail_identity_probability_and_dense_small_system_checks",
+      "limitation": "none_for_the_audited_tail_extraction_scope"
+    },
+    {
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "reuse": "finite_distribution_normalization_attenuation_and_mean_operator",
+      "limitation": "pr2_composite_signal_adapter_required"
+    },
+    {
+      "path": "src/trotterlib/finite_rte_signal_validation.py",
+      "sha256": "88bd1b209bcaec057ccc56c742c900bab0de2d1eb183890726640760215b1dd7",
+      "reuse": "dense_small_system_composite_mean_signal_structure",
+      "limitation": "existing_provisional_shot_model_is_not_the_preregistered_pr2_complex_signal_model"
+    },
+    {
+      "path": "src/trotterlib/rpe_resource_accounting.py",
+      "sha256": "09c570a847ced735ae62cd4fb323a97caa2afb32fc548d41eed7a1c72ca52781",
+      "reuse": "fresh_iid_policy_and_cost_record_patterns_only",
+      "limitation": "unit_unattenuated_eigenphase_radius_and_phase_budget_assumptions_do_not_match_the_pr2_estimand"
+    },
+    {
+      "path": "src/trotterlib/research_direction_full_scope.py",
+      "sha256": "fd823967674da65f05d6f06048393437ad3b950018bf64469df001fc45a10bcf",
+      "reuse": "full_wrapper_operator_probe_and_compile_orchestration_pattern",
+      "limitation": "old_cost_values_and_proxy_coefficients_not_transferable"
+    },
+    {
+      "path": "src/trotterlib/research_direction_full_scope_extension.py",
+      "sha256": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+      "reuse": "q8_full_wrapper_orchestration_pattern",
+      "limitation": "old_rank_delta_snapshot_and_cost_values_not_transferable"
+    },
+    {
+      "path": "src/trotterlib/pr2_pr3_minimal_pilot.py",
+      "sha256": "8bc6d1e57af57341b3aead653f6477ae170c068de10d5d5b32bf628c5fbade6a",
+      "reuse": "pilot_input_recipe_generation_prefix_and_structural_checks",
+      "limitation": "does_not_save_the_input_snapshot_or_weight_ranked_prefix_identity"
+    }
+  ],
+  "existing_test_audit": [
+    {
+      "path": "tests/test_df_partial_s2.py",
+      "sha256": "54e1465768a3b1b6722b434444a51374ecfd815c88ed9ef7d77d3c16a867645b"
+    },
+    {
+      "path": "tests/test_df_partial_s2_repeated.py",
+      "sha256": "ff109f027b88344c2af1ec362a26742f0b6dbca8b4d44cec16efa6f79f05f772"
+    },
+    {
+      "path": "tests/test_rpe_hadamard_interrogation.py",
+      "sha256": "e8ae07e0dce9579258ea8033c0dac4ec0cc472993966bceeba1b6fd17ac90571"
+    },
+    {
+      "path": "tests/test_rpe_hadamard_compiled_cost_benchmark.py",
+      "sha256": "44bdfdc25d0c0ce7fda76f08950e66784fef61eaf78c519d5fd0545215d22c70"
+    },
+    {
+      "path": "tests/test_finite_rte_signal_validation.py",
+      "sha256": "f76c35be3706804c560c7482b854091416026ad91715009a3966fe59bbfc1ddc"
+    },
+    {
+      "path": "tests/test_rpe_resource_accounting.py",
+      "sha256": "dbf8393ae818961f83333523e79a3f392be3af3d141e8ab87a7f161f1ae1821d"
+    }
+  ],
+  "required_new_implementation": [
+    "snapshot_freeze_and_hash_only_S0_runner",
+    "generation_prefix_vs_weight_ranked_identity_record",
+    "explicit_generation_prefix_partition_adapter_if_identity_gate_fails",
+    "pr2_exact_and_finite_mean_complex_signal_record",
+    "pr2_bias_aware_complex_signal_shot_accounting",
+    "q1_q8_full_wrapper_cost_runner_with_frozen_seed_rules",
+    "artifact_schema_fingerprint_and_tamper_tests",
+    "stage_stop_guards_preventing_automatic_S2_or_S3_execution"
+  ],
+  "blockers": [
+    "development_snapshot_not_frozen_or_reproduced",
+    "independent_snapshot_not_frozen",
+    "prefix_identity_gate_not_run",
+    "generation_prefix_adapter_missing_if_prefixes_differ",
+    "pr2_specific_signal_and_shot_runner_missing",
+    "external_critical_review_pending"
+  ],
+  "next_allowed_action": "external_critical_review_of_preregistration_only",
+  "automatic_next_stage": null
+}

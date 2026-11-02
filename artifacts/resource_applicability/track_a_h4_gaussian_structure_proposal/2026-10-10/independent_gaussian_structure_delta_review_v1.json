@@ -1,0 +1,158 @@
+{
+  "accepted_limits": [
+    "Mode sizes6 and7 are supported by the algorithm but have no individual numerical fixture; 1..8 describes support range, not every size tested.",
+    "References compare artificial orbital/Fock matrices and preserve phase at tested tolerance; exact old compiled counts/compiler output and installed old dense wrapper execution are not established.",
+    "No Qiskit builder, actual Gaussian input or transpile test was run; future wire ordering is statically reviewed, not experimentally checked through Qiskit.",
+    "At most28 two-mode logical UnitGates is not at most28 compiled two-qubit basis gates. Gate counts/resource-cost semantics change.",
+    "Numerical tolerance checks are floating-point acceptance bounds, not a proof of exact arithmetic equality for every approximately unitary matrix.",
+    "Speedup180x, completion within72h, all-map equivalence and real-input success remain unmeasured/unproven."
+  ],
+  "affinity_changes": 0,
+  "approved": false,
+  "base_review": "82d1f43e97ee924f737a7b43a50b82a1d076297e",
+  "blocking_implementation_findings": [],
+  "compile_build_transpile": 0,
+  "initial_guard_rejection_retained": {
+    "actual_child_processes": 0,
+    "denied_child_attempts": 10,
+    "reason": "numpy.testing lazy CPU-detection imports; fixture assertion helper changed to direct finite absolute-error comparisons",
+    "reference": {
+      "bytes": 618,
+      "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-gaussian-structure-proposal-20261010/tests-01/test_result_v1.json",
+      "sha256": "9aeded6b848a5be9370c89e54c2ae12aeda68be5dfa4710aa2cd5d2a9b04a1b3"
+    }
+  },
+  "mathematical_findings": [
+    {
+      "finding": "For a,b the elimination G=[[conj(a),conj(b)],[-b,a]]/hypot(|a|,|b|) is SU2 and maps(a,b) to(r,0); factors operate on adjacent orbital rows.",
+      "line": 36,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py"
+    },
+    {
+      "finding": "If Gk...G1 U=D, circuit starts with D then inverse rotations reversed in time; total orbital product G1†...Gk†D=U. orbital_matrix reconstructs and checks the same order.",
+      "line": 45,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py"
+    },
+    {
+      "finding": "On local little-endian Fock states00,01(upper occupied),10(lower occupied),11, Gamma(G)=diag(1,G,detG); full occupancy determinant preserves fermionic swap sign. Adjacent pairs require no nonlocal JW parity string.",
+      "line": 61,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py"
+    },
+    {
+      "finding": "PhaseGate p(theta), rather than RZ(theta), implements occupation phase and leaves vacuum exactly1. Pair vacuum entry1 and default zero global phase preserve controlled relative phase.",
+      "line": 71,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py"
+    },
+    {
+      "finding": "Only exact b==0 skips elimination; only exact phase==0 skips PhaseGate. No approximate pruning. Finite/unitarity1e-12/QR residual/reconstruction guards reject malformed orbital rotations.",
+      "line": 34,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py"
+    },
+    {
+      "finding": "Builder imports Qiskit lazily, emits at most n(n-1)/2 adjacent4x4 UnitGates and n single-mode phases. It is not imported by production runtime and was not called or compiled.",
+      "line": 65,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py"
+    }
+  ],
+  "matrix_test_scope": {
+    "Qiskit_builder_executed": false,
+    "controlled_cosine_sine_fixture_modes": 3,
+    "entrywise_absolute_tolerance": 1e-12,
+    "full_Fock_sectors_at8_modes": true,
+    "independent_references": [
+      "exterior-power determinant minors",
+      "little-endian JW dGamma(antihermitian(logm(U))) dense expm reimplementation"
+    ],
+    "installed_OpenFermion_dense_path_executed": false,
+    "largest_Fock_matrix": [
+      256,
+      256
+    ],
+    "mode_sizes_actually_compared": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      8
+    ],
+    "negative_determinant_permutation_pi_vacuum": true,
+    "supported_mode_range": [
+      1,
+      8
+    ],
+    "test_cases": 12
+  },
+  "network_used": false,
+  "nonblocking_notes": [
+    "No additional artificial compile or broad regression requested; user waived it.",
+    "Keep numerical cost semantics change distinct from scientific-unitary equivalence when requesting adoption approval."
+  ],
+  "old_production_source_unchanged": "PASS_GIT_NAME_ONLY_DIFF_FROM_BASE",
+  "previous_production_source": "251993785ef1dab2a3891bdbb5d079f5d2184f4d",
+  "production_wiring_present": false,
+  "real_workers_observers": 0,
+  "remaining_approval": [
+    {
+      "approved": false,
+      "note": "This inactive math review does not authorize changing running run09 or reusing old partial records/cache for a future source.",
+      "scope": "Adopt structured Gaussian synthesis as a new circuit resource-cost series; preserve scientific operator intent while compiled gate metrics, circuit numerical identity and source-bound seeds change."
+    }
+  ],
+  "review_scope": "Two newly added inactive proposal/test files. Read only original gaussian_basis and one_body_operator/reverse_bits function bodies for convention comparison. No existing source/environment/input/proof campaign repetition.",
+  "reviewer": "/root/independent_final_review",
+  "reviewer_numpy_scipy_Qiskit_imports": 0,
+  "reviewer_test_reexecutions": 0,
+  "running_run09_unchanged": true,
+  "runtime_authorization": false,
+  "schema_version": "h4-independent-gaussian-structure-delta-review-v1",
+  "scientific_array_reads": 0,
+  "source_commit": "0cfdca65ed4a19d05e0cd886c9bbfe2bc26bee57",
+  "source_delta_files": [
+    {
+      "bytes": 3503,
+      "path": "src/trottertracks/resource_applicability/h4_geometry/gaussian_structure_proposal.py",
+      "sha256": "800df1d73c083c21aa12577fd4beb288f7e4368395cd3e8f599cbf11b925b025"
+    },
+    {
+      "bytes": 6178,
+      "path": "tests/tracks/resource_applicability/test_h4_gaussian_structure_proposal.py",
+      "sha256": "54b0d809abe3ebdeb8707a82d4d95e5da7e28e1478107223f6d8dabc82e7b384"
+    }
+  ],
+  "source_docs_modified": false,
+  "status": "PASS_INACTIVE_GAUSSIAN_MATH_PROPOSAL_DELTA_ONLY",
+  "test_log_reference": {
+    "bytes": 2416,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-gaussian-structure-proposal-20261010/tests-02/test.log",
+    "sha256": "b6793b109a23f1c67615c0afb1848cd8bf5b744583f2d75c9b361ff6b9136938"
+  },
+  "test_plan_reference": {
+    "bytes": 1618,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-gaussian-structure-proposal-20261010/BINDING_TEST_PLAN_v1.json",
+    "sha256": "d516b346200e0bf17715dea905b71ef52fb140ffaaa20b4983c10e56a840ce87"
+  },
+  "test_result": {
+    "additional_transpiles": 0,
+    "affinity_changes": 0,
+    "artificial_circuit_builds": 0,
+    "child_processes": 0,
+    "denied_attempts": [],
+    "errors": 0,
+    "failures": 0,
+    "output_bytes": 2075,
+    "peak_RSS_bytes": 78319616,
+    "production_launches": 0,
+    "scientific_array_reads": 0,
+    "skips": 0,
+    "status": "PASS",
+    "tests": 12,
+    "wall_seconds": 0.5380876716226339
+  },
+  "test_result_reference": {
+    "bytes": 373,
+    "path": "/home/AbeHiromu/projects/h4-handoff-evidence/20261010/h4-gaussian-structure-proposal-20261010/tests-02/test_result_v1.json",
+    "sha256": "cc691f21e316af9fe555902ead62478fb785a346bc8a152bcb398719fbdd6d07"
+  },
+  "unchanged_cost_or_performance_claimed": false
+}

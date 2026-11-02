@@ -1,0 +1,187 @@
+{
+  "schema": "C_PR_INNER_POINT_UNAPPROVED_CONTRACT_V1",
+  "status": "UNAPPROVED_SCIENTIFIC_EXECUTION",
+  "scope": "C_PR_FIXED_TRIAL2_U_ONE_INNER_SOLVE_V1",
+  "base_commit": "0e120c13672dce34d95352f10403939caa04c277",
+  "entry": "scripts/run_research_c_pr_inner_point.py",
+  "source_manifest": "artifacts/research_c_pr_inner_point/2026-11-02/technical/SOURCE.json",
+  "source_manifest_sha256": "ed011ca32bd1b5b0da2cc684746353c1e89ffee262a85ce9d61e414b2c9dcc11",
+  "objective": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "mass_scale": 2.2093719370722074,
+    "gamma": 0.1,
+    "epsilon": 1e-08
+  },
+  "policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_xtol": 1e-12,
+    "metric_singular_floor": 1.0,
+    "u_max_nfev": 25,
+    "u_solver_gtol": 1e-12,
+    "u_xtol": 1e-14,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10,
+    "outer_maxiter": 64,
+    "max_points": 128,
+    "outer_gtol": 1e-07,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "inner_refinements": 2
+  },
+  "conditions": {
+    "model": "saved linear H4,1.00Angstrom,STO-3G;number CDF8;original LD2/frame order",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "DF_budget_Ha": 0.00019875,
+    "kappa": "original_g_corrected_UNCHANGED_NOT_EVALUATED",
+    "scalar": "original_once_UNCHANGED_NOT_EVALUATED",
+    "initialization": "same original qualified J/U;no endpoint warmstart fit",
+    "signed_symmetric_J": true,
+    "real_orthogonal_U": true,
+    "U": "fixed saved identity-qualified trial2 U from10-call diagnostic",
+    "J_initialization": "same original qualified J,then existing isometric encoding,no endpoint warmstart",
+    "RC2": "not included",
+    "new_constraints": "none"
+  },
+  "input_paths": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "diagnostic": "artifacts/research_c_pr_coefficient_point/2026-11-02/run01/diagnostic.npz",
+    "saved_result": "artifacts/research_c_pr_coefficient_point/2026-11-02/run01/result.json",
+    "saved_identity": "artifacts/research_c_pr_coefficient_point/2026-11-02/run01/point_identity.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_coefficient_point/2026-11-02/run01/diagnostic.npz": "8bd146df4bb19a54251f215950e97d601cd0ff8a52bc778d66da7e3c3cef1d6c",
+    "artifacts/research_c_pr_coefficient_point/2026-11-02/run01/result.json": "c6fc22964f0cda8c8572706844c6230ec234b2cda738630d602767f76233e1ba",
+    "artifacts/research_c_pr_coefficient_point/2026-11-02/run01/point_identity.json": "413f32f3a7d69afb93321e69544147788ee29d746cb39e3f3668e291529a0966",
+    "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "dependency_lock": {
+    "path": "artifacts/research_c_regularization_comparator/2026-11-01/technical/fit-pins.txt",
+    "sha256": "6c22797539779fbeaa3410eebc6837f6f2150ad7b7fde2254bf1c5e02ee5b588"
+  },
+  "fresh_output": "artifacts/research_c_pr_inner_point/2026-11-02/run01",
+  "call_limits": {
+    "saved_load": 1,
+    "saved_point_identity": 1,
+    "objective_setup": 1,
+    "inner_solver": 1,
+    "independent_state": 1,
+    "tensor_metrics": 1,
+    "classification": 1,
+    "export": 1
+  },
+  "maximum_logical_units": 8,
+  "new_inner_solver_invocations": 1,
+  "new_fits_maximum": 1,
+  "new_refinements": 0,
+  "new_outer_optimizations": 0,
+  "new_U_updates": 0,
+  "ffsim_joint_fitter_invocations": 0,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "algorithm": {
+    "inner": "SciPy1.14.1 Newton-CG with existing analytic Hessian;maxiter1000,xtol1e-12;one call,no refinement/restart",
+    "value_gradient_Hessian": "verified c_pr_coefficient_point.CoefficientChart uses one decoded binary64 J at each z;extended residual/adjoint/contractions;original invertible W,no dropped directions",
+    "raw_jac": "preserve raw jac and last-step-start/accepted/endpoint points;require one matching permitted point,independent endpoint gradient decides J stationarity",
+    "independent": "same-array extended tensor-adjoint and chart path gate;inherited independent_state additionally uses JAX/NumPy partial U diagnostics,both binary64/extended J norms",
+    "reduced_connection": "PRReducedOracle artificial-tested only;not called by this8-unit fixed-U science",
+    "no_fallback": "no raw endpoint replacement,no alternate solver,rank or iteration change"
+  },
+  "numerical_allowances": {
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "J_gradient_infinity": 1e-05,
+    "physical_U_partial_gradient_l2": 1e-05,
+    "first_order_margin": "same gradient_atol+gradient_rtol*max(value,threshold),value+margin<=threshold",
+    "orthogonality": 1e-10,
+    "longdouble_minimum_significant_bits": 64,
+    "rigorous_gradient_error_bound": null
+  },
+  "calls": {
+    "saved_load": "1,read original g/J and saved U only plus saved result/identity JSON",
+    "saved_point_identity": "1,prior10-call qualification and original J/fixed U schema,orthogonality",
+    "objective_setup": "1,existing PR objective and coefficient maps,including ordinary Gram caches",
+    "inner_solver": "1,one full Newton-CG invocation,raw point checks,independent endpoint consistency/J stationarity;solver iterations/VG/Hessian counts recorded separately",
+    "independent_state": "1,existing same-array J/U diagnostic,partial U derivative only",
+    "tensor_metrics": "1,existing Frobenius/max residual,not sector DF norm",
+    "classification": "1,separate raw optimizer status,correctness and numerical J gate",
+    "export": "1,write already computed diagnostic J/U/gradients and STOP,not a DF-qualified new candidate"
+  },
+  "execution_order": [
+    "saved_load",
+    "saved_point_identity",
+    "objective_setup",
+    "inner_solver",
+    "independent_state",
+    "tensor_metrics",
+    "classification",
+    "export"
+  ],
+  "classifications": {
+    "correctness": "ANY source/input/point/nonfinite/chain/value mismatch:FAIL;preserve partial and STOP",
+    "endpoint": "INNER_CORRECTNESS_PASS_J_MET only if new inner and inherited J gates both MET;else INNER_CORRECTNESS_PASS_J_UNQUALIFIED",
+    "raw": "success/status/message/nit/nfev/njev/nhev independent from numerical J gate;raw precision loss is retained",
+    "U": "Fixed U is not optimized;partial U gradient is not a qualified envelope gradient",
+    "limitations": "Passing this fixed-U2 subproblem is not passing the old full BFGS trajectory or proving global reliability;DF_budget/reduced_gradient_qualification/PR_performance remain null"
+  },
+  "required_outputs": [
+    "raw x/J/z/jac/W and permitted pre-step/accepted/end point identities",
+    "full optimizer metadata and actual VG/Hessian/independent evaluation counts",
+    "new chart/physical-chain value and gradient consistency",
+    "J stationarity and partial U state",
+    "initial/terminal own objective and signed progress",
+    "tensor metrics and diagnostic endpoint",
+    "call journal,resources,SOURCE/contract and mandatory STOP"
+  ],
+  "forbidden": [
+    "new U or outer trajectory",
+    "second inner solve or refinement/retry/resume",
+    "RC2 continuation or modification",
+    "rank/strength/scale/PSD/sign/gauge change",
+    "sector/operator DF norm,PF/RTE/ground/native circuit/shots/total resources",
+    "automatic paired1563-call execution or important scientific review"
+  ],
+  "preserved_history": {
+    "point_diagnostic_commit": "0e120c13672dce34d95352f10403939caa04c277",
+    "point_diagnostic_calls": 10,
+    "old_partial_commit": "9c9eafe74493a5bd4bfa59e41db0e8bf80785e6f",
+    "old_partial_calls": 480,
+    "old_unused1083_not_reused": true
+  },
+  "resources": "Use actual free resources;one sequential fixed-U problem with existing SciPy/NumPy/JAX and extended CPU arithmetic;no artificial CPU/RAM/wall cap;local cache only;do not change shared environments",
+  "authorization": "Separate explicit chat permission required for this new8-unit PR one-inner-solve science;no approval certificate,approval-text record or grant",
+  "policy_field_scope": "Shared DEFAULT dataclass snapshot for compatibility with the artificial-tested reduced API.Outer/max_points/inner_refinements fields are inactive in this pilot;actual authorized scope is one inner call,zero refinement,zero outer/U update."
+}

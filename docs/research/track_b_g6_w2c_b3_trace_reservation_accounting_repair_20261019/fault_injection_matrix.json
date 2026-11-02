@@ -1,0 +1,2854 @@
+{
+  "source": "45bf46b4a833e71f138903fb511f2741e54043b7",
+  "specifications": [
+    {
+      "name": "normal",
+      "mode": "S",
+      "case_id": "S_normal"
+    },
+    {
+      "name": "original_reserve_writer",
+      "writer": "fail",
+      "mode": "S",
+      "case_id": "S_original_reserve_writer"
+    },
+    {
+      "name": "partial_complete_writer",
+      "writer": "partial",
+      "writer_op": "COMPLETE",
+      "mode": "S",
+      "case_id": "S_partial_complete_writer"
+    },
+    {
+      "name": "trace_write_RESERVE",
+      "point": "trace.write",
+      "match": {
+        "op": "RESERVE"
+      },
+      "mode": "S",
+      "case_id": "S_trace_write_RESERVE"
+    },
+    {
+      "name": "trace_write_ENTER",
+      "point": "trace.write",
+      "match": {
+        "op": "ENTER"
+      },
+      "mode": "S",
+      "case_id": "S_trace_write_ENTER"
+    },
+    {
+      "name": "trace_write_COMPLETE",
+      "point": "trace.write",
+      "match": {
+        "op": "COMPLETE"
+      },
+      "mode": "S",
+      "case_id": "S_trace_write_COMPLETE"
+    },
+    {
+      "name": "trace_write_STOP",
+      "point": "trace.write",
+      "match": {
+        "op": "STOP"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      },
+      "mode": "S",
+      "case_id": "S_trace_write_STOP"
+    },
+    {
+      "name": "trace_write_PHASE_BEGIN",
+      "point": "trace.write",
+      "match": {
+        "op": "PHASE_BEGIN"
+      },
+      "mode": "S",
+      "case_id": "S_trace_write_PHASE_BEGIN"
+    },
+    {
+      "name": "trace_write_PHASE_END",
+      "point": "trace.write",
+      "match": {
+        "op": "PHASE_END"
+      },
+      "mode": "S",
+      "case_id": "S_trace_write_PHASE_END"
+    },
+    {
+      "name": "trace_flush_RESERVE",
+      "point": "trace.flush",
+      "match": {
+        "op": "RESERVE"
+      },
+      "mode": "S",
+      "case_id": "S_trace_flush_RESERVE"
+    },
+    {
+      "name": "trace_hash_RESERVE",
+      "point": "trace.hash",
+      "match": {
+        "op": "RESERVE"
+      },
+      "mode": "S",
+      "case_id": "S_trace_hash_RESERVE"
+    },
+    {
+      "name": "trace_flush_COMPLETE",
+      "point": "trace.flush",
+      "match": {
+        "op": "COMPLETE"
+      },
+      "mode": "S",
+      "case_id": "S_trace_flush_COMPLETE"
+    },
+    {
+      "name": "trace_hash_COMPLETE",
+      "point": "trace.hash",
+      "match": {
+        "op": "COMPLETE"
+      },
+      "mode": "S",
+      "case_id": "S_trace_hash_COMPLETE"
+    },
+    {
+      "name": "trace_WRITE_RESERVE",
+      "point": "trace.write",
+      "match": {
+        "op": "WRITE_RESERVE",
+        "channel": "result"
+      },
+      "mode": "S",
+      "case_id": "S_trace_WRITE_RESERVE"
+    },
+    {
+      "name": "trace_WRITE_ACK",
+      "point": "trace.write",
+      "match": {
+        "op": "WRITE_ACK",
+        "channel": "result"
+      },
+      "mode": "S",
+      "case_id": "S_trace_WRITE_ACK"
+    },
+    {
+      "name": "state_write_START_RESERVED",
+      "point": "state.write",
+      "match": {
+        "state": "START_RESERVED"
+      },
+      "mode": "S",
+      "case_id": "S_state_write_START_RESERVED"
+    },
+    {
+      "name": "state_write_STARTED",
+      "point": "state.write",
+      "match": {
+        "state": "STARTED"
+      },
+      "mode": "S",
+      "case_id": "S_state_write_STARTED"
+    },
+    {
+      "name": "state_write_IN_FLIGHT",
+      "point": "state.write",
+      "match": {
+        "state": "IN_FLIGHT"
+      },
+      "mode": "S",
+      "case_id": "S_state_write_IN_FLIGHT"
+    },
+    {
+      "name": "state_write_COMPLETED",
+      "point": "state.write",
+      "match": {
+        "state": "COMPLETED"
+      },
+      "mode": "S",
+      "case_id": "S_state_write_COMPLETED"
+    },
+    {
+      "name": "state_write_FAILED",
+      "point": "state.write",
+      "match": {
+        "state": "FAILED"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      },
+      "mode": "S",
+      "case_id": "S_state_write_FAILED"
+    },
+    {
+      "name": "state_write_TERMINATED_WITH_UNKNOWN_RESULT",
+      "point": "state.write",
+      "match": {
+        "state": "TERMINATED_WITH_UNKNOWN_RESULT"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "exit",
+            0
+          ]
+        ]
+      },
+      "mode": "S",
+      "case_id": "S_state_write_TERMINATED_WITH_UNKNOWN_RESULT"
+    },
+    {
+      "name": "state_after_reserve",
+      "point": "state.after_write",
+      "match": {
+        "state": "START_RESERVED"
+      },
+      "mode": "S",
+      "case_id": "S_state_after_reserve"
+    },
+    {
+      "name": "trace_open",
+      "point": "trace.open",
+      "early": true,
+      "mode": "S",
+      "case_id": "S_trace_open"
+    },
+    {
+      "name": "state_open",
+      "point": "state.open",
+      "early": true,
+      "mode": "S",
+      "case_id": "S_state_open"
+    },
+    {
+      "name": "state_truncate",
+      "point": "state.truncate",
+      "early": true,
+      "mode": "S",
+      "case_id": "S_state_truncate"
+    },
+    {
+      "name": "journal_open",
+      "point": "journal.open",
+      "early": true,
+      "mode": "S",
+      "case_id": "S_journal_open"
+    },
+    {
+      "name": "journal_WORKER_END",
+      "point": "journal.write",
+      "match": {
+        "event": "WORKER_END"
+      },
+      "mode": "S",
+      "case_id": "S_journal_WORKER_END"
+    },
+    {
+      "name": "journal_FAILURE_OBSERVED",
+      "point": "journal.write",
+      "match": {
+        "event": "FAILURE_OBSERVED"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      },
+      "mode": "S",
+      "case_id": "S_journal_FAILURE_OBSERVED"
+    },
+    {
+      "name": "journal_PILOT_COMPLETION_RECEIPT",
+      "point": "journal.write",
+      "match": {
+        "event": "PILOT_COMPLETION_RECEIPT"
+      },
+      "mode": "S",
+      "case_id": "S_journal_PILOT_COMPLETION_RECEIPT"
+    },
+    {
+      "name": "summary_write",
+      "point": "summary.write",
+      "mode": "S",
+      "case_id": "S_summary_write"
+    },
+    {
+      "name": "summary_after_write",
+      "point": "summary.after_write",
+      "mode": "S",
+      "case_id": "S_summary_after_write"
+    },
+    {
+      "name": "summary_flush",
+      "point": "summary.flush",
+      "mode": "S",
+      "case_id": "S_summary_flush"
+    },
+    {
+      "name": "receipt_write",
+      "point": "receipt.write",
+      "mode": "S",
+      "case_id": "S_receipt_write"
+    },
+    {
+      "name": "receipt_after_write",
+      "point": "receipt.after_write",
+      "mode": "S",
+      "case_id": "S_receipt_after_write"
+    },
+    {
+      "name": "receipt_flush",
+      "point": "receipt.flush",
+      "mode": "S",
+      "case_id": "S_receipt_flush"
+    },
+    {
+      "name": "final_report_write",
+      "point": "final_report.write",
+      "mode": "S",
+      "case_id": "S_final_report_write"
+    },
+    {
+      "name": "final_report_after_write",
+      "point": "final_report.after_write",
+      "mode": "S",
+      "case_id": "S_final_report_after_write"
+    },
+    {
+      "name": "final_report_flush",
+      "point": "final_report.flush",
+      "mode": "S",
+      "case_id": "S_final_report_flush"
+    },
+    {
+      "name": "trace_close",
+      "point": "trace.close",
+      "mode": "S",
+      "case_id": "S_trace_close"
+    },
+    {
+      "name": "state_close",
+      "point": "state.close",
+      "mode": "S",
+      "case_id": "S_state_close"
+    },
+    {
+      "name": "journal_close",
+      "point": "journal.close",
+      "mode": "S",
+      "case_id": "S_journal_close"
+    },
+    {
+      "name": "worker_exit",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "exit",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_worker_exit"
+    },
+    {
+      "name": "reserved_exit",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "reserved_exit",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_reserved_exit"
+    },
+    {
+      "name": "unacked_exit",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "ack_exit",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_unacked_exit"
+    },
+    {
+      "name": "partial_pair_write",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "write",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_partial_pair_write"
+    },
+    {
+      "name": "pair_flush",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "flush",
+            0
+          ]
+        ],
+        "flush_rows": 1
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_pair_flush"
+    },
+    {
+      "name": "call_cap",
+      "settings": {
+        "call_limit": 2
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_call_cap"
+    },
+    {
+      "name": "result_cap",
+      "settings": {
+        "result_bytes": 100
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_result_cap"
+    },
+    {
+      "name": "log_cap",
+      "settings": {
+        "log_bytes": 100
+      },
+      "early": true,
+      "mode": "S",
+      "case_id": "S_log_cap"
+    },
+    {
+      "name": "cooperative_drain",
+      "settings": {
+        "sync_failure": "one"
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_cooperative_drain"
+    },
+    {
+      "name": "simultaneous",
+      "settings": {
+        "sync_failure": "all"
+      },
+      "early": false,
+      "mode": "S",
+      "case_id": "S_simultaneous"
+    },
+    {
+      "name": "parent_crash",
+      "settings": {
+        "parent_fault": "after_reserved"
+      },
+      "parent_crash": true,
+      "mode": "S",
+      "case_id": "S_parent_crash"
+    },
+    {
+      "name": "admission_failure_record_save",
+      "admission_point": "failure_record_save",
+      "mode": "S",
+      "case_id": "S_admission_failure_record_save"
+    },
+    {
+      "name": "admission_stop_record_save",
+      "admission_point": "stop_record_save",
+      "mode": "S",
+      "case_id": "S_admission_stop_record_save"
+    },
+    {
+      "name": "normal",
+      "mode": "P1",
+      "case_id": "P1_normal"
+    },
+    {
+      "name": "original_reserve_writer",
+      "writer": "fail",
+      "mode": "P1",
+      "case_id": "P1_original_reserve_writer"
+    },
+    {
+      "name": "partial_complete_writer",
+      "writer": "partial",
+      "writer_op": "COMPLETE",
+      "mode": "P1",
+      "case_id": "P1_partial_complete_writer"
+    },
+    {
+      "name": "trace_write_RESERVE",
+      "point": "trace.write",
+      "match": {
+        "op": "RESERVE"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_write_RESERVE"
+    },
+    {
+      "name": "trace_write_ENTER",
+      "point": "trace.write",
+      "match": {
+        "op": "ENTER"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_write_ENTER"
+    },
+    {
+      "name": "trace_write_COMPLETE",
+      "point": "trace.write",
+      "match": {
+        "op": "COMPLETE"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_write_COMPLETE"
+    },
+    {
+      "name": "trace_write_STOP",
+      "point": "trace.write",
+      "match": {
+        "op": "STOP"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_write_STOP"
+    },
+    {
+      "name": "trace_write_PHASE_BEGIN",
+      "point": "trace.write",
+      "match": {
+        "op": "PHASE_BEGIN"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_write_PHASE_BEGIN"
+    },
+    {
+      "name": "trace_write_PHASE_END",
+      "point": "trace.write",
+      "match": {
+        "op": "PHASE_END"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_write_PHASE_END"
+    },
+    {
+      "name": "trace_flush_RESERVE",
+      "point": "trace.flush",
+      "match": {
+        "op": "RESERVE"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_flush_RESERVE"
+    },
+    {
+      "name": "trace_hash_RESERVE",
+      "point": "trace.hash",
+      "match": {
+        "op": "RESERVE"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_hash_RESERVE"
+    },
+    {
+      "name": "trace_flush_COMPLETE",
+      "point": "trace.flush",
+      "match": {
+        "op": "COMPLETE"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_flush_COMPLETE"
+    },
+    {
+      "name": "trace_hash_COMPLETE",
+      "point": "trace.hash",
+      "match": {
+        "op": "COMPLETE"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_hash_COMPLETE"
+    },
+    {
+      "name": "trace_WRITE_RESERVE",
+      "point": "trace.write",
+      "match": {
+        "op": "WRITE_RESERVE",
+        "channel": "result"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_WRITE_RESERVE"
+    },
+    {
+      "name": "trace_WRITE_ACK",
+      "point": "trace.write",
+      "match": {
+        "op": "WRITE_ACK",
+        "channel": "result"
+      },
+      "mode": "P1",
+      "case_id": "P1_trace_WRITE_ACK"
+    },
+    {
+      "name": "state_write_START_RESERVED",
+      "point": "state.write",
+      "match": {
+        "state": "START_RESERVED"
+      },
+      "mode": "P1",
+      "case_id": "P1_state_write_START_RESERVED"
+    },
+    {
+      "name": "state_write_STARTED",
+      "point": "state.write",
+      "match": {
+        "state": "STARTED"
+      },
+      "mode": "P1",
+      "case_id": "P1_state_write_STARTED"
+    },
+    {
+      "name": "state_write_IN_FLIGHT",
+      "point": "state.write",
+      "match": {
+        "state": "IN_FLIGHT"
+      },
+      "mode": "P1",
+      "case_id": "P1_state_write_IN_FLIGHT"
+    },
+    {
+      "name": "state_write_COMPLETED",
+      "point": "state.write",
+      "match": {
+        "state": "COMPLETED"
+      },
+      "mode": "P1",
+      "case_id": "P1_state_write_COMPLETED"
+    },
+    {
+      "name": "state_write_FAILED",
+      "point": "state.write",
+      "match": {
+        "state": "FAILED"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      },
+      "mode": "P1",
+      "case_id": "P1_state_write_FAILED"
+    },
+    {
+      "name": "state_write_TERMINATED_WITH_UNKNOWN_RESULT",
+      "point": "state.write",
+      "match": {
+        "state": "TERMINATED_WITH_UNKNOWN_RESULT"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "exit",
+            0
+          ]
+        ]
+      },
+      "mode": "P1",
+      "case_id": "P1_state_write_TERMINATED_WITH_UNKNOWN_RESULT"
+    },
+    {
+      "name": "state_after_reserve",
+      "point": "state.after_write",
+      "match": {
+        "state": "START_RESERVED"
+      },
+      "mode": "P1",
+      "case_id": "P1_state_after_reserve"
+    },
+    {
+      "name": "trace_open",
+      "point": "trace.open",
+      "early": true,
+      "mode": "P1",
+      "case_id": "P1_trace_open"
+    },
+    {
+      "name": "state_open",
+      "point": "state.open",
+      "early": true,
+      "mode": "P1",
+      "case_id": "P1_state_open"
+    },
+    {
+      "name": "state_truncate",
+      "point": "state.truncate",
+      "early": true,
+      "mode": "P1",
+      "case_id": "P1_state_truncate"
+    },
+    {
+      "name": "journal_open",
+      "point": "journal.open",
+      "early": true,
+      "mode": "P1",
+      "case_id": "P1_journal_open"
+    },
+    {
+      "name": "journal_WORKER_END",
+      "point": "journal.write",
+      "match": {
+        "event": "WORKER_END"
+      },
+      "mode": "P1",
+      "case_id": "P1_journal_WORKER_END"
+    },
+    {
+      "name": "journal_FAILURE_OBSERVED",
+      "point": "journal.write",
+      "match": {
+        "event": "FAILURE_OBSERVED"
+      },
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "sample",
+            0
+          ]
+        ]
+      },
+      "mode": "P1",
+      "case_id": "P1_journal_FAILURE_OBSERVED"
+    },
+    {
+      "name": "journal_PILOT_COMPLETION_RECEIPT",
+      "point": "journal.write",
+      "match": {
+        "event": "PILOT_COMPLETION_RECEIPT"
+      },
+      "mode": "P1",
+      "case_id": "P1_journal_PILOT_COMPLETION_RECEIPT"
+    },
+    {
+      "name": "summary_write",
+      "point": "summary.write",
+      "mode": "P1",
+      "case_id": "P1_summary_write"
+    },
+    {
+      "name": "summary_after_write",
+      "point": "summary.after_write",
+      "mode": "P1",
+      "case_id": "P1_summary_after_write"
+    },
+    {
+      "name": "summary_flush",
+      "point": "summary.flush",
+      "mode": "P1",
+      "case_id": "P1_summary_flush"
+    },
+    {
+      "name": "receipt_write",
+      "point": "receipt.write",
+      "mode": "P1",
+      "case_id": "P1_receipt_write"
+    },
+    {
+      "name": "receipt_after_write",
+      "point": "receipt.after_write",
+      "mode": "P1",
+      "case_id": "P1_receipt_after_write"
+    },
+    {
+      "name": "receipt_flush",
+      "point": "receipt.flush",
+      "mode": "P1",
+      "case_id": "P1_receipt_flush"
+    },
+    {
+      "name": "final_report_write",
+      "point": "final_report.write",
+      "mode": "P1",
+      "case_id": "P1_final_report_write"
+    },
+    {
+      "name": "final_report_after_write",
+      "point": "final_report.after_write",
+      "mode": "P1",
+      "case_id": "P1_final_report_after_write"
+    },
+    {
+      "name": "final_report_flush",
+      "point": "final_report.flush",
+      "mode": "P1",
+      "case_id": "P1_final_report_flush"
+    },
+    {
+      "name": "trace_close",
+      "point": "trace.close",
+      "mode": "P1",
+      "case_id": "P1_trace_close"
+    },
+    {
+      "name": "state_close",
+      "point": "state.close",
+      "mode": "P1",
+      "case_id": "P1_state_close"
+    },
+    {
+      "name": "journal_close",
+      "point": "journal.close",
+      "mode": "P1",
+      "case_id": "P1_journal_close"
+    },
+    {
+      "name": "worker_exit",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "exit",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_worker_exit"
+    },
+    {
+      "name": "reserved_exit",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "reserved_exit",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_reserved_exit"
+    },
+    {
+      "name": "unacked_exit",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "ack_exit",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_unacked_exit"
+    },
+    {
+      "name": "partial_pair_write",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "write",
+            0
+          ]
+        ]
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_partial_pair_write"
+    },
+    {
+      "name": "pair_flush",
+      "settings": {
+        "faults": [
+          [
+            0,
+            0,
+            "flush",
+            0
+          ]
+        ],
+        "flush_rows": 1
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_pair_flush"
+    },
+    {
+      "name": "call_cap",
+      "settings": {
+        "call_limit": 2
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_call_cap"
+    },
+    {
+      "name": "result_cap",
+      "settings": {
+        "result_bytes": 100
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_result_cap"
+    },
+    {
+      "name": "log_cap",
+      "settings": {
+        "log_bytes": 100
+      },
+      "early": true,
+      "mode": "P1",
+      "case_id": "P1_log_cap"
+    },
+    {
+      "name": "cooperative_drain",
+      "settings": {
+        "sync_failure": "one"
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_cooperative_drain"
+    },
+    {
+      "name": "simultaneous",
+      "settings": {
+        "sync_failure": "all"
+      },
+      "early": false,
+      "mode": "P1",
+      "case_id": "P1_simultaneous"
+    },
+    {
+      "name": "parent_crash",
+      "settings": {
+        "parent_fault": "after_reserved"
+      },
+      "parent_crash": true,
+      "mode": "P1",
+      "case_id": "P1_parent_crash"
+    },
+    {
+      "name": "admission_failure_record_save",
+      "admission_point": "failure_record_save",
+      "mode": "P1",
+      "case_id": "P1_admission_failure_record_save"
+    },
+    {
+      "name": "admission_stop_record_save",
+      "admission_point": "stop_record_save",
+      "mode": "P1",
+      "case_id": "P1_admission_stop_record_save"
+    }
+  ],
+  "observations": [
+    {
+      "case": "S_normal",
+      "status": "VERIFIED_ARTIFICIAL_COMPLETE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_original_reserve_writer",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_partial_complete_writer",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_write_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_write_ENTER",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_write_COMPLETE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_write_STOP",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_write_PHASE_BEGIN",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 0,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_write_PHASE_END",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 256,
+      "started": 256,
+      "completed": 256,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_flush_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_hash_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_flush_COMPLETE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_hash_COMPLETE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_WRITE_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_WRITE_ACK",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_write_START_RESERVED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_write_STARTED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_write_IN_FLIGHT",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_write_COMPLETED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 1,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_write_FAILED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_write_TERMINATED_WITH_UNKNOWN_RESULT",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_after_reserve",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_open",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_open",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_truncate",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_journal_open",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_journal_WORKER_END",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 32,
+      "started": 32,
+      "completed": 32,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_journal_FAILURE_OBSERVED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_journal_PILOT_COMPLETION_RECEIPT",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_summary_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_summary_after_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_summary_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_receipt_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_receipt_after_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_receipt_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_final_report_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_final_report_after_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_final_report_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_trace_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_state_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_journal_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_worker_exit",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_reserved_exit",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_unacked_exit",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_partial_pair_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_pair_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_call_cap",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 2,
+      "started": 2,
+      "completed": 2,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_result_cap",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_log_cap",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_cooperative_drain",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_simultaneous",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_parent_crash",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "ADMITTED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_admission_failure_record_save",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "ADMITTED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "S_admission_stop_record_save",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_normal",
+      "status": "VERIFIED_ARTIFICIAL_COMPLETE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_original_reserve_writer",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_partial_complete_writer",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_write_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_write_ENTER",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_write_COMPLETE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_write_STOP",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 2,
+      "started": 2,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_write_PHASE_BEGIN",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 0,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_write_PHASE_END",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 256,
+      "started": 256,
+      "completed": 256,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_flush_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_hash_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_flush_COMPLETE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 2,
+      "started": 2,
+      "completed": 0,
+      "unknown": 2,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_hash_COMPLETE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 2,
+      "started": 2,
+      "completed": 0,
+      "unknown": 2,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_WRITE_RESERVE",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 2,
+      "started": 2,
+      "completed": 0,
+      "unknown": 2,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_WRITE_ACK",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 1,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_write_START_RESERVED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_write_STARTED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_write_IN_FLIGHT",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_write_COMPLETED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 3,
+      "started": 2,
+      "completed": 2,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_write_FAILED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 10,
+      "started": 9,
+      "completed": 8,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_write_TERMINATED_WITH_UNKNOWN_RESULT",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 9,
+      "started": 7,
+      "completed": 6,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_after_reserve",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 0,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_open",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_open",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_truncate",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_journal_open",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_journal_WORKER_END",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 173,
+      "started": 169,
+      "completed": 169,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_journal_FAILURE_OBSERVED",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_journal_PILOT_COMPLETION_RECEIPT",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_summary_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_summary_after_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_summary_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_receipt_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_receipt_after_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_receipt_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_final_report_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_final_report_after_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_final_report_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_trace_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_state_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_journal_close",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": false,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_worker_exit",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 9,
+      "started": 7,
+      "completed": 6,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_reserved_exit",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 7,
+      "started": 5,
+      "completed": 5,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_unacked_exit",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 7,
+      "started": 6,
+      "completed": 5,
+      "unknown": 1,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_partial_pair_write",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 26,
+      "started": 26,
+      "completed": 25,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_pair_flush",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 5,
+      "started": 5,
+      "completed": 4,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_call_cap",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 2,
+      "started": 2,
+      "completed": 2,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_result_cap",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 1,
+      "started": 1,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_log_cap",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_cooperative_drain",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 8,
+      "started": 8,
+      "completed": 7,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_simultaneous",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 8,
+      "started": 8,
+      "completed": 0,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_parent_crash",
+      "status": "INCOMPLETE_EVIDENCE",
+      "report_available": false,
+      "reserved": null,
+      "started": null,
+      "completed": null,
+      "unknown": null,
+      "trace_complete": false,
+      "statefile_complete": false,
+      "claim": "ADMITTED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_admission_failure_record_save",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "ADMITTED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    },
+    {
+      "case": "P1_admission_stop_record_save",
+      "status": "TECHNICAL_FAILURE",
+      "report_available": true,
+      "reserved": 768,
+      "started": 768,
+      "completed": 768,
+      "unknown": 0,
+      "trace_complete": true,
+      "statefile_complete": true,
+      "claim": "STOPPED",
+      "reuse_denied": true,
+      "forbidden_science_imports": [],
+      "scientific_calls": 0,
+      "successful": true,
+      "exit_code": 0
+    }
+  ],
+  "parallel_parent_cases": 8
+}

@@ -1,0 +1,3408 @@
+{
+  "baseline_contract": {
+    "adjacent_equal_basis_cancellation_enabled": true,
+    "baseline": "one_segment_per_source_run",
+    "candidate": "interval_union_dp",
+    "only_candidate_can_partition_within_a_source_run": true,
+    "same_four_level_proxy_objective": true
+  },
+  "blind_holdout": {
+    "changed_row_count": 0,
+    "improved_rz_row_count": 0,
+    "maximum_per_row_rz_relative_change": 0.0,
+    "metrics": {
+      "circuit_size": {
+        "baseline_sum": 8505.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 8505.0
+      },
+      "cx_count": {
+        "baseline_sum": 1476.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 1476.0
+      },
+      "cx_depth": {
+        "baseline_sum": 746.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 746.0
+      },
+      "rz_count": {
+        "baseline_sum": 4378.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 4378.0
+      },
+      "rz_depth": {
+        "baseline_sum": 1088.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 1088.0
+      },
+      "total_depth": {
+        "baseline_sum": 2395.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 2395.0
+      }
+    },
+    "minimum_per_row_rz_relative_change": 0.0,
+    "row_count": 15,
+    "split_basis_ids": [],
+    "split_profile_ids": [],
+    "split_row_count": 0
+  },
+  "checks": {
+    "all_task_digests_reproduced": true,
+    "expected_manifest_valid": true,
+    "expected_task_count_matches": true,
+    "training_blind_disjoint_fragments": true
+  },
+  "compiler": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "optimization_level": 1,
+    "qiskit_version": "1.3.0",
+    "transpiler_seed": 17
+  },
+  "configuration": {
+    "basis": "STO-3G",
+    "blind_fragments": [
+      4,
+      6,
+      8
+    ],
+    "delta_time": 0.02,
+    "df_rank": 12,
+    "finite_taylor_order": 2,
+    "geometry_angstrom": 1.0,
+    "ld": 3,
+    "molecule": "H4_linear_chain",
+    "n_qubits": 8,
+    "primary_gates": {
+      "equivalence_atol": 1e-10,
+      "maximum_per_row_rz_increase": 0.05,
+      "minimum_blind_split_basis_count": 2,
+      "minimum_blind_split_profile_count": 2,
+      "minimum_changed_blind_row_fraction": 0.25,
+      "minimum_pooled_rz_improvement": 0.02
+    },
+    "profiles": {
+      "mixed_local_far_blocks": [
+        [
+          [
+            0
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1
+          ]
+        ],
+        [
+          [
+            6
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            7
+          ]
+        ]
+      ],
+      "singleton_far_blocks": [
+        [
+          [
+            0
+          ],
+          [
+            0
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          [
+            7
+          ],
+          [
+            7
+          ],
+          [
+            7
+          ]
+        ]
+      ],
+      "singleton_pair_far_blocks": [
+        [
+          [
+            0
+          ],
+          [
+            1
+          ],
+          [
+            0
+          ]
+        ],
+        [
+          [
+            6
+          ],
+          [
+            7
+          ],
+          [
+            6
+          ]
+        ]
+      ],
+      "three_separated_zz_blocks": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            4
+          ]
+        ],
+        [
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ]
+        ]
+      ],
+      "zz_far_blocks": [
+        [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ],
+          [
+            6,
+            7
+          ]
+        ]
+      ]
+    },
+    "training_fragments": [
+      3,
+      5,
+      7
+    ]
+  },
+  "content_fingerprint": "fdc89974e89a4a6809cecd2c5608a36d684d40d76d9b3055fbbe6ec9276abbaf",
+  "decision": {
+    "next_action": "stop_interval_dp_primary_claim_and_continue_with_P-C",
+    "primary_theme": "P-C_geometry_energy_difference",
+    "status": "stop_pa_interval_dp_as_primary_and_return_to_pc",
+    "thresholds_changed_after_results": false
+  },
+  "expected_task_fingerprint": "e8b064e9821fae5c2e7a44d0c98d3f9a0ed973a4cd87945fb051151e446a96fc",
+  "gates": {
+    "all_blind_events_are_taylor_order_2": true,
+    "candidate_plan_differs_on_at_least_25pct_of_blind_rows": false,
+    "maximum_blind_row_rz_increase_is_at_most_5pct": true,
+    "operator_equivalence_and_relative_phase_pass": true,
+    "pooled_blind_rz_improves_by_at_least_2pct": false,
+    "within_run_split_transfers_to_at_least_2_blind_bases": false,
+    "within_run_split_transfers_to_at_least_2_blind_profiles": false
+  },
+  "method": "forced_support_order2_one_segment_baseline_blind_v1",
+  "operator_probes": [
+    {
+      "baseline_operator_max_abs_difference": 5.551115123125783e-16,
+      "baseline_relative_ancilla_phase_matches": true,
+      "candidate_operator_max_abs_difference": 5.551115123125783e-16,
+      "candidate_relative_ancilla_phase_matches": true,
+      "event_digest": "7fddd39a0da34cf257f5b5aa6c0c612772f07d93a897881ef8520d5f089748ac",
+      "fragment_index": 4,
+      "profile_id": "singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "baseline_operator_max_abs_difference": 8.326703076351824e-16,
+      "baseline_relative_ancilla_phase_matches": true,
+      "candidate_operator_max_abs_difference": 8.326703076351824e-16,
+      "candidate_relative_ancilla_phase_matches": true,
+      "event_digest": "5b14171ede389113a8d3577a17c1098b1cad4ead1a7a6518afaa43299d23dbce",
+      "fragment_index": 4,
+      "profile_id": "singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "baseline_operator_max_abs_difference": 5.551125711027526e-16,
+      "baseline_relative_ancilla_phase_matches": true,
+      "candidate_operator_max_abs_difference": 5.551125711027526e-16,
+      "candidate_relative_ancilla_phase_matches": true,
+      "event_digest": "257da4f57fa3d4e69e46372ca6acfba7f37b2d377e11019451993b11496ed659",
+      "fragment_index": 4,
+      "profile_id": "zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "baseline_operator_max_abs_difference": 7.221217857632632e-16,
+      "baseline_relative_ancilla_phase_matches": true,
+      "candidate_operator_max_abs_difference": 7.221217857632632e-16,
+      "candidate_relative_ancilla_phase_matches": true,
+      "event_digest": "216e180e2262485a62e1b75172b0a13bc00fa5585c4ab5b0b6dbda25699546cd",
+      "fragment_index": 4,
+      "profile_id": "mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "baseline_operator_max_abs_difference": 5.551115123125783e-16,
+      "baseline_relative_ancilla_phase_matches": true,
+      "candidate_operator_max_abs_difference": 5.551115123125783e-16,
+      "candidate_relative_ancilla_phase_matches": true,
+      "event_digest": "d36367645dd7d91823c000c7536119966a1b0bd59fa791d4e4564771a0490249",
+      "fragment_index": 4,
+      "profile_id": "three_separated_zz_blocks",
+      "within_run_split_count": 0
+    }
+  ],
+  "overall_pass": false,
+  "physical_instance": {
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "partition_hash": "9034397f5bde1f20cb712578d14245f4dac1236413d34642a75d83d867b52086",
+    "preparation_hash": "50c77f5455cc1a3c0710ed3c7588efc957b9cead7436bd0a6d851af61738a4bc",
+    "tail_hash": "c51e35da56f3de1646896339f38da3cb40dcb8405a24d781cef134a654bab642"
+  },
+  "provenance": {
+    "command": "'/home/abe/Project/Partially Randomized Trotter/.venv311/bin/python' scripts/run_research_direction_joint_synthesis_mechanism_validation.py",
+    "evidence_status": "local_dirty_worktree_not_externally_reproduced",
+    "expected_task_file": {
+      "content_fingerprint": "e8b064e9821fae5c2e7a44d0c98d3f9a0ed973a4cd87945fb051151e446a96fc",
+      "path": "/home/abe/Project/Partially Randomized Trotter/artifacts/research_direction_joint_synthesis_mechanism_validation/2026-09-25/pa_forced_support_order2_expected_tasks_v1.json",
+      "sha256": "437d905358419e284ed5ad4621be91e412e6d3939c4e213b6c10c4dd816fb2b4"
+    },
+    "generated_at_utc": "2026-09-25T07:51:03.882308+00:00",
+    "git_commit": "3336f030c56f4eb500b1bdf8f541619f9c445038",
+    "git_worktree_status_before_generation": [
+      " M PROJECT_MAP.md",
+      " M VALIDATION_STATUS.md",
+      " M artifacts/validation_manifest.json",
+      " M docs/README.md",
+      " M docs/research/README.md",
+      " M \"docs/research/\\345\\205\\210\\350\\241\\214\\347\\240\\224\\347\\251\\266\\343\\201\\250\\346\\234\\252\\350\\247\\243\\346\\261\\272\\347\\202\\271.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/2026-09-25.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\343\\203\\216\\343\\203\\274\\343\\203\\210/README.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\346\\246\\202\\350\\246\\201\\343\\203\\273\\347\\217\\276\\347\\212\\266.md\"",
+      " M \"docs/research/\\347\\240\\224\\347\\251\\266\\347\\233\\256\\347\\232\\204\\343\\203\\273\\347\\240\\224\\347\\251\\266\\350\\252\\262\\351\\241\\214.md\"",
+      " M docs/research_direction_joint_synthesis_pilot.md",
+      " M docs/research_direction_theme_selection.md",
+      " M scripts/README.md",
+      " M src/trotterlib/README.md",
+      " M tests/README.md",
+      "?? artifacts/research_direction_joint_synthesis_blind_validation/",
+      "?? artifacts/research_direction_joint_synthesis_formalization/",
+      "?? artifacts/research_direction_joint_synthesis_mechanism_validation/",
+      "?? docs/research/pa_joint_synthesis_blind_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_mechanism_validation_preregistration.md",
+      "?? docs/research/pa_joint_synthesis_prior_art_audit.md",
+      "?? docs/research/pa_joint_synthesis_v1_formalization.md",
+      "?? docs/research_direction_joint_synthesis_blind_validation.md",
+      "?? scripts/run_research_direction_joint_synthesis_blind_validation.py",
+      "?? scripts/run_research_direction_joint_synthesis_formalization.py",
+      "?? scripts/run_research_direction_joint_synthesis_mechanism_validation.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_blind_validation.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_formalization.py",
+      "?? src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_blind_validation.py",
+      "?? tests/test_research_direction_joint_synthesis_formalization.py"
+    ],
+    "numpy_version": "1.26.4",
+    "python_version": "3.11.0rc1",
+    "qiskit_version": "1.3.0",
+    "source_sha256": {
+      "scripts/run_research_direction_joint_synthesis_mechanism_validation.py": "94606639ed1e5762fd2885b30193b3a73e6e00b0b1429d4072f155fed0ffe7ef",
+      "src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py": "3c5c939862b63805fc9103c2f16649687c5c6a4a5c108ab28089c749f928513e"
+    }
+  },
+  "rows": [
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 26,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777",
+            "support_union": [
+              0,
+              7
+            ],
+            "support_union_size": 2
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "06b5d9fa2640a5646cfbd71dece6fdc8e3aeb3bf9fdeecedc3c9988aaeb84cb3",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "e3dd7981b8c4ab35ffb54f636553fdaab256c3b903e0eb4a5478ccb33cf29d95",
+                "basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777-interval-union-0-7-pa-v1",
+                "basis_operation_count": 26,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  7
+                ],
+                "support_union_size": 2
+              }
+            ],
+            "selected_proxy_basis_operation_count": 52,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "fe057411aae145ee1fd0a09337214a32f18c959875a212d1faa50ec9837e588f",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 408,
+          "cx_count": 64,
+          "cx_depth": 32,
+          "rz_count": 204,
+          "rz_depth": 59,
+          "total_depth": 131
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 408,
+          "cx_count": 64,
+          "cx_depth": 32,
+          "rz_count": 204,
+          "rz_depth": 59,
+          "total_depth": 131
+        }
+      },
+      "event_count": 2,
+      "event_digest": "63236017efa872d9d0c480714a1dbe5813560fc08380cde80f37dbf6c3b7f36f",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 35,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "75711a984a6e4efa6ee52ff1f62661a3a1026918211da15477debc118ea24202",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "0317ca1d75ed4a968a05872d0e60c370a48aff0e4965420260205494520d91dc",
+                "basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 35,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 70,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "d154952ab6926975b78ed6e867eda88a6592d0b346f198875705385d59c27e8c",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 767,
+          "cx_count": 112,
+          "cx_depth": 39,
+          "rz_count": 379,
+          "rz_depth": 67,
+          "total_depth": 149
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 767,
+          "cx_count": 112,
+          "cx_depth": 39,
+          "rz_count": 379,
+          "rz_depth": 67,
+          "total_depth": 149
+        }
+      },
+      "event_count": 2,
+      "event_digest": "47a281f16c5a36d2a220b50c6061d03aa301faaa8bf807cb921e59868e89b9b7",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 35,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "94ed455c76d0d81d7477766e33e198dd8c0bc818f2656e9ddd7d68b101bfa4d9",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "0317ca1d75ed4a968a05872d0e60c370a48aff0e4965420260205494520d91dc",
+                "basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 35,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 70,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "18113a2cd504b57dee3e0760256a8effc92256bbb06640dacc91b27c9c66c5e1",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 831,
+          "cx_count": 140,
+          "cx_depth": 67,
+          "rz_count": 411,
+          "rz_depth": 89,
+          "total_depth": 201
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 831,
+          "cx_count": 140,
+          "cx_depth": 67,
+          "rz_count": 411,
+          "rz_depth": 89,
+          "total_depth": 201
+        }
+      },
+      "event_count": 2,
+      "event_digest": "a2fe03dcafb0ae100c2ba5dd72a763c2d3034554bdb6d47914a309fdd2d5dca3",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 35,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "7bed9716cccc4da875e1f4bb0585b18b6df8ad691d3e61bcda4cc970c3f47859",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "0317ca1d75ed4a968a05872d0e60c370a48aff0e4965420260205494520d91dc",
+                "basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 35,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 70,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "3a4391ec090a1a4a82cbddbb64e05f3294dc801807ef1460f756a3e8a86379d7",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 698,
+          "cx_count": 102,
+          "cx_depth": 36,
+          "rz_count": 342,
+          "rz_depth": 65,
+          "total_depth": 148
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 698,
+          "cx_count": 102,
+          "cx_depth": 36,
+          "rz_count": 342,
+          "rz_depth": 65,
+          "total_depth": 148
+        }
+      },
+      "event_count": 2,
+      "event_digest": "28ff44d703228d6d8900043dc4b12b38b056d8b5d200cd253b7e3f5b69a9d07d",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_3__mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 9,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 35,
+            "mode": "support_union",
+            "run_length": 9,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777",
+            "support_union": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7
+            ],
+            "support_union_size": 6
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "9351ac63bda91589a32f35c9ba810f152dd56b47944d383b46ad1135a45cf811",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 90,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 9,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "c8985ef4ff80ecb0db70fcb779843ca4203a6c35bc4907122ae6f8826c3993a5",
+                "basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777-interval-union-0-1-3-4-6-7-pa-v1",
+                "basis_operation_count": 35,
+                "length": 9,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 9,
+                "support_union": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "support_union_size": 6
+              }
+            ],
+            "selected_proxy_basis_operation_count": 70,
+            "source_basis_id": "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "b2cd7101aa674f66a2f9e28384bfb3a68d1491bce8c6ca4b6f78e52c19f8022d",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 917,
+          "cx_count": 162,
+          "cx_depth": 85,
+          "rz_count": 453,
+          "rz_depth": 103,
+          "total_depth": 234
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 917,
+          "cx_count": 162,
+          "cx_depth": 85,
+          "rz_count": 453,
+          "rz_depth": 103,
+          "total_depth": 234
+        }
+      },
+      "event_count": 3,
+      "event_digest": "32a0bbb452abe878845cfbd74c8cfef89b40cb89682265b8cd075cfc77454d55",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 3,
+      "partition": "training_diagnostic",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_basis_ids": [
+        "df-basis-808ce2726f27610214dbb186924ec5688cf79901e4f142494a5fa40140725777"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "training_diagnostic__fragment_3__three_separated_zz_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 26,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb",
+            "support_union": [
+              0,
+              7
+            ],
+            "support_union_size": 2
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "082cd885133c48132a49d835d11b4ddab4c3e7926a024c15ef0a310e7e428fbb",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "42db4ee6cab9be64c8bd5c5ae8da913e8a3a7c7beeed08d9cd08936509231675",
+                "basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb-interval-union-0-7-pa-v1",
+                "basis_operation_count": 26,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  7
+                ],
+                "support_union_size": 2
+              }
+            ],
+            "selected_proxy_basis_operation_count": 52,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "89786dd16c3d06b341057ff5d9f47503bb47bb99f62666272d3ac1b5535eea67",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 385,
+          "cx_count": 64,
+          "cx_depth": 32,
+          "rz_count": 201,
+          "rz_depth": 58,
+          "total_depth": 123
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 385,
+          "cx_count": 64,
+          "cx_depth": 32,
+          "rz_count": 201,
+          "rz_depth": 58,
+          "total_depth": 123
+        }
+      },
+      "event_count": 2,
+      "event_digest": "c0af1014672a8455e11747687e32ff09e9081700dd50f6bb18623849f9ef31ba",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "9a5824e16fe3b733bc8b9ba721bfce2b106b9b3cfff041f83eabca7b07491734",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "3fbc712dbba26d99f321940bd563616c0993a7f306e7708d909d30733c2c4cc2",
+                "basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "9a07187d25eccdff9a88b87df524f05074b79936d64d47cbcb33e034022c19b7",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 689,
+          "cx_count": 108,
+          "cx_depth": 39,
+          "rz_count": 361,
+          "rz_depth": 67,
+          "total_depth": 143
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 689,
+          "cx_count": 108,
+          "cx_depth": 39,
+          "rz_count": 361,
+          "rz_depth": 67,
+          "total_depth": 143
+        }
+      },
+      "event_count": 2,
+      "event_digest": "47fb64d8be3e43593fc476ebf65967183331013549b0d2dbac51c0a59445c155",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "604c34cacf029f010c67e67ffcd3ffa3f4934c3d9b96d2cb01426ba950b4d0b6",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "3fbc712dbba26d99f321940bd563616c0993a7f306e7708d909d30733c2c4cc2",
+                "basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "0537bbf1e58ab020ab6828be4ed6fb5e38cbd71eb4ca9cab99f6b11a3abff606",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 754,
+          "cx_count": 136,
+          "cx_depth": 67,
+          "rz_count": 394,
+          "rz_depth": 89,
+          "total_depth": 195
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 754,
+          "cx_count": 136,
+          "cx_depth": 67,
+          "rz_count": 394,
+          "rz_depth": 89,
+          "total_depth": 195
+        }
+      },
+      "event_count": 2,
+      "event_digest": "e91d7231a845a0edcf8641dd71e139a28a1e7fa3face7e77eefa084711f90f50",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "a481eeb0575a457b4d1a013ea0dc92da0b2051893bac543d0608b14644a146a0",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "3fbc712dbba26d99f321940bd563616c0993a7f306e7708d909d30733c2c4cc2",
+                "basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "524238461e5db32f5b40c9b7b135e54e0e1c22d04b019c984fb4c079b303c7ef",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 620,
+          "cx_count": 98,
+          "cx_depth": 36,
+          "rz_count": 324,
+          "rz_depth": 65,
+          "total_depth": 142
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 620,
+          "cx_count": 98,
+          "cx_depth": 36,
+          "rz_count": 324,
+          "rz_depth": 65,
+          "total_depth": 142
+        }
+      },
+      "event_count": 2,
+      "event_digest": "b75c21bbe4c47c163aa3eaad8ac38f7c18ac44130ccdc8d34d562e6867ed8201",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_5__mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 9,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 36,
+            "mode": "support_union",
+            "run_length": 9,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb",
+            "support_union": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7
+            ],
+            "support_union_size": 6
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "7a46aa1068bb22b1d3dadcdb643875851428880137244584574ef80f6485ba51",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 90,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 9,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "d307edc81ace7e55b766443627a703bdefbec9ab73d859526f9ac116e699fce7",
+                "basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb-interval-union-0-1-3-4-6-7-pa-v1",
+                "basis_operation_count": 36,
+                "length": 9,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 9,
+                "support_union": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "support_union_size": 6
+              }
+            ],
+            "selected_proxy_basis_operation_count": 72,
+            "source_basis_id": "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "ac98c4385ff520f4fb20ed430f1619fa72b4c8d8cdd2acdafc399ebe1d053daf",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 944,
+          "cx_count": 166,
+          "cx_depth": 85,
+          "rz_count": 466,
+          "rz_depth": 102,
+          "total_depth": 234
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 944,
+          "cx_count": 166,
+          "cx_depth": 85,
+          "rz_count": 466,
+          "rz_depth": 102,
+          "total_depth": 234
+        }
+      },
+      "event_count": 3,
+      "event_digest": "065fc7c89a0a504d7d7169a7c2005cbab683e02737f9a94f6c8ef29068e97ad6",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 5,
+      "partition": "training_diagnostic",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_basis_ids": [
+        "df-basis-9b55baebfa2217d64d053692fa8c61eff0878386ae0ce4da17d3042f0784a9bb"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "training_diagnostic__fragment_5__three_separated_zz_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 19,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe",
+            "support_union": [
+              0,
+              7
+            ],
+            "support_union_size": 2
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "b2ae8836e9809ccdb60cfb0504b40200fdb5674d1d981af0e009721c0d6cd4c8",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "b71695e153a8f4e33292947e153741ad14e8550d45dbd2a3eb18c8fbab4f9d95",
+                "basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe-interval-union-0-7-pa-v1",
+                "basis_operation_count": 19,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  7
+                ],
+                "support_union_size": 2
+              }
+            ],
+            "selected_proxy_basis_operation_count": 38,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "e9fefd6c72c7bd4a89b5087499e93c5cdea30c1ccf083a69abc0a3b2255d1d6f",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 264,
+          "cx_count": 44,
+          "cx_depth": 30,
+          "rz_count": 140,
+          "rz_depth": 59,
+          "total_depth": 121
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 264,
+          "cx_count": 44,
+          "cx_depth": 30,
+          "rz_count": 140,
+          "rz_depth": 59,
+          "total_depth": 121
+        }
+      },
+      "event_count": 2,
+      "event_digest": "8944c00f6c63a37a5c2dff55a6d81ce5d92cc30448d88b285296e896aa88a73f",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "ecbc86a351ac80cf79020fa58e1e2a6575baedbbb244279e293e29bf545acf2f",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "50b399ee77a895c5df013a13ea86ad65375c763a388b86bff46a5abf557bb68f",
+                "basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "e641b7da7f6e00184275ee1a76409720608676b95484b921506d44b780d9184b",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 381,
+          "cx_count": 64,
+          "cx_depth": 35,
+          "rz_count": 199,
+          "rz_depth": 62,
+          "total_depth": 131
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 381,
+          "cx_count": 64,
+          "cx_depth": 35,
+          "rz_count": 199,
+          "rz_depth": 62,
+          "total_depth": 131
+        }
+      },
+      "event_count": 2,
+      "event_digest": "c542ce3307cf6ff2349dd07c4badd59a894ba17adaa6e1c2e3ee3d1ec9134834",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "6bef73348f2da32e4fdffb9ca0edc507401fc29f1967981aded0eb185c907f9d",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "50b399ee77a895c5df013a13ea86ad65375c763a388b86bff46a5abf557bb68f",
+                "basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "831a600eb61fbdfd148383a6f63856a648f594c5e41e51a98021d3c82a7be59d",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 446,
+          "cx_count": 92,
+          "cx_depth": 63,
+          "rz_count": 232,
+          "rz_depth": 80,
+          "total_depth": 175
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 446,
+          "cx_count": 92,
+          "cx_depth": 63,
+          "rz_count": 232,
+          "rz_depth": 80,
+          "total_depth": 175
+        }
+      },
+      "event_count": 2,
+      "event_digest": "bdd1539dd3b42501fe1cd403155f0e2b501fe9cbce3d43077024f461058084e9",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "eabaa46dd0bde9ae152f2cfdf546b83772dfd3726ac36ef182920ade66fbaa5d",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "50b399ee77a895c5df013a13ea86ad65375c763a388b86bff46a5abf557bb68f",
+                "basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "840390c29efdd6697411d30ee5c140d43cb1dc151ff63ccdef5185dab45a32fc",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 317,
+          "cx_count": 54,
+          "cx_depth": 35,
+          "rz_count": 166,
+          "rz_depth": 65,
+          "total_depth": 139
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 317,
+          "cx_count": 54,
+          "cx_depth": 35,
+          "rz_count": 166,
+          "rz_depth": 65,
+          "total_depth": 139
+        }
+      },
+      "event_count": 2,
+      "event_digest": "3cead6a8c20054fbc6a6e2e006f4f4825598417d9c388d9e43f8af24662c636b",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "training_diagnostic__fragment_7__mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 9,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 24,
+            "mode": "support_union",
+            "run_length": 9,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe",
+            "support_union": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7
+            ],
+            "support_union_size": 6
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "16c0456123a7b97a138ddbe7af2ef22427224c911628821577fd34e9ef4f87fb",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 90,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 9,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "677c0a25af78756d1506730205d09a63b6112efe1eb15f1f77f7d0586b1edd1e",
+                "basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe-interval-union-0-1-3-4-6-7-pa-v1",
+                "basis_operation_count": 24,
+                "length": 9,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 9,
+                "support_union": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "support_union_size": 6
+              }
+            ],
+            "selected_proxy_basis_operation_count": 48,
+            "source_basis_id": "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "530c5cf6d419e8b5ef6ce278d3792805137376dafc8aa61dbddfd4182c912499",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 556,
+          "cx_count": 118,
+          "cx_depth": 81,
+          "rz_count": 286,
+          "rz_depth": 94,
+          "total_depth": 207
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 556,
+          "cx_count": 118,
+          "cx_depth": 81,
+          "rz_count": 286,
+          "rz_depth": 94,
+          "total_depth": 207
+        }
+      },
+      "event_count": 3,
+      "event_digest": "3dbf355c5dcedc0fedf241197b3e6ce8df1a58d4ba7165f8ae3970768d415f63",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 7,
+      "partition": "training_diagnostic",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_basis_ids": [
+        "df-basis-8b103ae5327e20e021dcbb2eb64919b67de85b194d4d6c38b6093414f37e2fbe"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "training_diagnostic__fragment_7__three_separated_zz_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 20,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36",
+            "support_union": [
+              0,
+              7
+            ],
+            "support_union_size": 2
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "ef29989e22813e7f94cb1e9411337053c143fcb675a866e6ebe8c6dd4d2956c4",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "6a20f5010ec4c15142f8727a4c350bff454f89b81f110af075eeb206563166e4",
+                "basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36-interval-union-0-7-pa-v1",
+                "basis_operation_count": 20,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  7
+                ],
+                "support_union_size": 2
+              }
+            ],
+            "selected_proxy_basis_operation_count": 40,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "38ed19da9dd560b6f4a24e46232c3a947e0f87679da2ef9be2493fe5aafa8972",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 271,
+          "cx_count": 44,
+          "cx_depth": 30,
+          "rz_count": 139,
+          "rz_depth": 58,
+          "total_depth": 124
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 271,
+          "cx_count": 44,
+          "cx_depth": 30,
+          "rz_count": 139,
+          "rz_depth": 58,
+          "total_depth": 124
+        }
+      },
+      "event_count": 2,
+      "event_digest": "7fddd39a0da34cf257f5b5aa6c0c612772f07d93a897881ef8520d5f089748ac",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "fa156be40ca968cacff91b8369b037cf5946aa7505d8c4788505fb93e8ffe730",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "5c1494d186b4d0f1c7eff287ddc1c01360be46b1823844a510e8c2a5993f6c8e",
+                "basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "45d79d0e52ab9287d82c62da0bbb782670d73ed2052736113a2afa1ee9694c15",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 400,
+          "cx_count": 64,
+          "cx_depth": 35,
+          "rz_count": 200,
+          "rz_depth": 61,
+          "total_depth": 133
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 400,
+          "cx_count": 64,
+          "cx_depth": 35,
+          "rz_count": 200,
+          "rz_depth": 61,
+          "total_depth": 133
+        }
+      },
+      "event_count": 2,
+      "event_digest": "5b14171ede389113a8d3577a17c1098b1cad4ead1a7a6518afaa43299d23dbce",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "1485b477398bcfff83872bf5cdf9ea8fc4d17eaed3787672893036e08dbf79e7",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "5c1494d186b4d0f1c7eff287ddc1c01360be46b1823844a510e8c2a5993f6c8e",
+                "basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "5024346e11dd625a07c0c68d3a46dfda7a2b71227521a16ba6a941668a31e350",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 465,
+          "cx_count": 92,
+          "cx_depth": 63,
+          "rz_count": 233,
+          "rz_depth": 80,
+          "total_depth": 178
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 465,
+          "cx_count": 92,
+          "cx_depth": 63,
+          "rz_count": 233,
+          "rz_depth": 80,
+          "total_depth": 178
+        }
+      },
+      "event_count": 2,
+      "event_digest": "257da4f57fa3d4e69e46372ca6acfba7f37b2d377e11019451993b11496ed659",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "15ec0530e76c93bdcf81f01c204b6c5a9f7d18f8ef2ea1d6e9ab8622026ac837",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "5c1494d186b4d0f1c7eff287ddc1c01360be46b1823844a510e8c2a5993f6c8e",
+                "basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "65eb08af70e0fad7051b50666e7467a77d1fe4763cab8f390555332f9ffbfb04",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 335,
+          "cx_count": 54,
+          "cx_depth": 35,
+          "rz_count": 169,
+          "rz_depth": 65,
+          "total_depth": 142
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 335,
+          "cx_count": 54,
+          "cx_depth": 35,
+          "rz_count": 169,
+          "rz_depth": 65,
+          "total_depth": 142
+        }
+      },
+      "event_count": 2,
+      "event_digest": "216e180e2262485a62e1b75172b0a13bc00fa5585c4ab5b0b6dbda25699546cd",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_4__mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 9,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 25,
+            "mode": "support_union",
+            "run_length": 9,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36",
+            "support_union": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7
+            ],
+            "support_union_size": 6
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "84140b8682c857dd3dc71f88af4f5428e86154129a25988fdd39ea5660adf460",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 90,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 9,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "1b1bd6bde31194ae043541baea899cf5504c9373867031e01b011bf3c13ece8e",
+                "basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36-interval-union-0-1-3-4-6-7-pa-v1",
+                "basis_operation_count": 25,
+                "length": 9,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 9,
+                "support_union": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "support_union_size": 6
+              }
+            ],
+            "selected_proxy_basis_operation_count": 50,
+            "source_basis_id": "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "35c9f4f73b14acd8b9b9d475b291c2b6658316e400045a07b306f5a1dd96bba6",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 609,
+          "cx_count": 122,
+          "cx_depth": 81,
+          "rz_count": 309,
+          "rz_depth": 94,
+          "total_depth": 210
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 609,
+          "cx_count": 122,
+          "cx_depth": 81,
+          "rz_count": 309,
+          "rz_depth": 94,
+          "total_depth": 210
+        }
+      },
+      "event_count": 3,
+      "event_digest": "d36367645dd7d91823c000c7536119966a1b0bd59fa791d4e4564771a0490249",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 4,
+      "partition": "blind_holdout",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_basis_ids": [
+        "df-basis-e159b4a20b696f3b7b493b1fddfe0d522fb162189377b54dd6a3a30199113b36"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "blind_holdout__fragment_4__three_separated_zz_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 22,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f",
+            "support_union": [
+              0,
+              7
+            ],
+            "support_union_size": 2
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "e8406d590e9903d3363631412267bd35b1792976d9f4be18f0d0eb1abd38c34b",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "12bab8e27f8a756f7697ca956411a3b8949266f217c3301f52ea13639cab2116",
+                "basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f-interval-union-0-7-pa-v1",
+                "basis_operation_count": 22,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  7
+                ],
+                "support_union_size": 2
+              }
+            ],
+            "selected_proxy_basis_operation_count": 44,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "8e3a8b52b243d2b37d674f1472f471a7ac7a315a8b791092a37a5778c33a884d",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 298,
+          "cx_count": 52,
+          "cx_depth": 28,
+          "rz_count": 162,
+          "rz_depth": 51,
+          "total_depth": 103
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 298,
+          "cx_count": 52,
+          "cx_depth": 28,
+          "rz_count": 162,
+          "rz_depth": 51,
+          "total_depth": 103
+        }
+      },
+      "event_count": 2,
+      "event_digest": "ca899481cb4df66e5bcc8934ac4d3a1bcfdd985c13d309a5e13c3e335bd3f077",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 32,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "3b7d9189f495895672d33c3764b985864e87bc5eade8857fefca604ac8024f03",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "79022ac63b45b6b5ca596fda40e061551b08378f6eb3f094a33399db333a4acb",
+                "basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 32,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 64,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "5759461362f85ed619cee9aa94cf2def49c790bfddfe6cddb7436656516de7bf",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 600,
+          "cx_count": 100,
+          "cx_depth": 35,
+          "rz_count": 324,
+          "rz_depth": 58,
+          "total_depth": 122
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 600,
+          "cx_count": 100,
+          "cx_depth": 35,
+          "rz_count": 324,
+          "rz_depth": 58,
+          "total_depth": 122
+        }
+      },
+      "event_count": 2,
+      "event_digest": "269e94925db7bbe21b0f29977c895f56d02fa85558e01b113c044bdf832de853",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 32,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "f46a932086b1ccb285cecec7ed902507daee7f656288baec8f461781c2815834",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "79022ac63b45b6b5ca596fda40e061551b08378f6eb3f094a33399db333a4acb",
+                "basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 32,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 64,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "92597255255ff35332b757501be3b477ed3383f02a2983f3987a6d6cd18dcbb3",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 665,
+          "cx_count": 128,
+          "cx_depth": 63,
+          "rz_count": 357,
+          "rz_depth": 80,
+          "total_depth": 173
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 665,
+          "cx_count": 128,
+          "cx_depth": 63,
+          "rz_count": 357,
+          "rz_depth": 80,
+          "total_depth": 173
+        }
+      },
+      "event_count": 2,
+      "event_digest": "6abe9f9ae89256544203ddeed5f2b24cd12954de358b88658fd66d119eba06db",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 32,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "89b448188f54ea44552f111fe5e8e89ba465cd641f1f89c98e8ca3f54cc15422",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "79022ac63b45b6b5ca596fda40e061551b08378f6eb3f094a33399db333a4acb",
+                "basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 32,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 64,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "38e747d4fbc6d51b937ebaddbf36fd9b1d7007410f0cfd6a268105f265d3ae9d",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 537,
+          "cx_count": 90,
+          "cx_depth": 32,
+          "rz_count": 289,
+          "rz_depth": 57,
+          "total_depth": 120
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 537,
+          "cx_count": 90,
+          "cx_depth": 32,
+          "rz_count": 289,
+          "rz_depth": 57,
+          "total_depth": 120
+        }
+      },
+      "event_count": 2,
+      "event_digest": "2f630c8f27998f189536f617625cfda72ac65cbd0b4faf64f93cf146115e0b5a",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_6__mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 9,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 9,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f",
+            "support_union": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7
+            ],
+            "support_union_size": 6
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "7a758fb24e1f16754023f0ef82302bbd4ff321029d005efb0d3e7f8b5797ce18",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 90,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 9,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "bb666b86859d42ecb98cde20afcadcd60b6a56bbe256cbc17240acfc6f2c13e6",
+                "basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f-interval-union-0-1-3-4-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 9,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 9,
+                "support_union": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "support_union_size": 6
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "f3a809d6366182c407d575ae7cffd7aaf527e5294ad205d861b285e35000edf1",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 813,
+          "cx_count": 158,
+          "cx_depth": 85,
+          "rz_count": 433,
+          "rz_depth": 103,
+          "total_depth": 226
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 813,
+          "cx_count": 158,
+          "cx_depth": 85,
+          "rz_count": 433,
+          "rz_depth": 103,
+          "total_depth": 226
+        }
+      },
+      "event_count": 3,
+      "event_digest": "4353b1b56d3c0590553ddb1dc6a0cab22a6fa8da3102edbbfec6f34103bee7d1",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 6,
+      "partition": "blind_holdout",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_basis_ids": [
+        "df-basis-52f0155e6e44596da79ae63c8729e4c52881a2de55a93de9203fd279279ee22f"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "blind_holdout__fragment_6__three_separated_zz_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 26,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414",
+            "support_union": [
+              0,
+              7
+            ],
+            "support_union_size": 2
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "42ba00e89b90f565a4de4e45ff5b15f3b9e68f0a551e6e61acceb02b945b32b9",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "c404bb7a4151bbe69ba130851fa4fbc3d09c031b7053253e2241b4da127c155e",
+                "basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414-interval-union-0-7-pa-v1",
+                "basis_operation_count": 26,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  7
+                ],
+                "support_union_size": 2
+              }
+            ],
+            "selected_proxy_basis_operation_count": 52,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "9788f9026e299b9f4fb46236659ac432921efb87844018f1a35b4a1bf25425f5",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 409,
+          "cx_count": 64,
+          "cx_depth": 32,
+          "rz_count": 205,
+          "rz_depth": 59,
+          "total_depth": 131
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 409,
+          "cx_count": 64,
+          "cx_depth": 32,
+          "rz_count": 205,
+          "rz_depth": 59,
+          "total_depth": 131
+        }
+      },
+      "event_count": 2,
+      "event_digest": "2c622cfa2941a3c0f336070fa9660460e4c0ff8a57aa4e34a35c1ec9f799b2f4",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__singleton_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "5709a6beed5b4e65eb9e43007758592cc7a7ee076158a308b0e04e688b1c21e8",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "32b51190ea57f5ca3c92df87760f0493438d659a9c9bfe6ea587c641ec79c734",
+                "basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "3cf4a143182c97c7e512b8fff3f5e07c8df8bd47a5e0168b93a96e037ac35789",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 717,
+          "cx_count": 108,
+          "cx_depth": 39,
+          "rz_count": 363,
+          "rz_depth": 66,
+          "total_depth": 149
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 717,
+          "cx_count": 108,
+          "cx_depth": 39,
+          "rz_count": 363,
+          "rz_depth": 66,
+          "total_depth": 149
+        }
+      },
+      "event_count": 2,
+      "event_digest": "dfd17dd978fb6046bfce0bb4172387343d952c106d242e1a2a4233de04047d50",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "singleton_pair_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__singleton_pair_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "21b03ff4cb042d72ee7189d114fb0cb4f80f220b57c841f9eb809b6ea8f8adbb",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "32b51190ea57f5ca3c92df87760f0493438d659a9c9bfe6ea587c641ec79c734",
+                "basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "2c00de52bed139cbf14bcef90121bca2108a787691fadd2e2a294f993d2211de",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 782,
+          "cx_count": 136,
+          "cx_depth": 67,
+          "rz_count": 396,
+          "rz_depth": 88,
+          "total_depth": 201
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 782,
+          "cx_count": 136,
+          "cx_depth": 67,
+          "rz_count": 396,
+          "rz_depth": 88,
+          "total_depth": 201
+        }
+      },
+      "event_count": 2,
+      "event_digest": "7eecf62336335d8e84e566da7d13853f4a55df7d0710674b88831ed8d43ea5ea",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "zz_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__zz_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 6,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 34,
+            "mode": "support_union",
+            "run_length": 6,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414",
+            "support_union": [
+              0,
+              1,
+              6,
+              7
+            ],
+            "support_union_size": 4
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "0056db91846e7c8d4698aed04a71ff698b7551f0e369895e701601584e399242",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 42,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 6,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "32b51190ea57f5ca3c92df87760f0493438d659a9c9bfe6ea587c641ec79c734",
+                "basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414-interval-union-0-1-6-7-pa-v1",
+                "basis_operation_count": 34,
+                "length": 6,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 6,
+                "support_union": [
+                  0,
+                  1,
+                  6,
+                  7
+                ],
+                "support_union_size": 4
+              }
+            ],
+            "selected_proxy_basis_operation_count": 68,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "0d66c17611df5859a2fa1452c09d5425ca102efd98bab911420ad0eb28a4ef76",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 647,
+          "cx_count": 98,
+          "cx_depth": 36,
+          "rz_count": 326,
+          "rz_depth": 65,
+          "total_depth": 149
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 647,
+          "cx_count": 98,
+          "cx_depth": 36,
+          "rz_count": 326,
+          "rz_depth": 65,
+          "total_depth": 149
+        }
+      },
+      "event_count": 2,
+      "event_digest": "3899aba3b9d46106bfd1cf61a9925c1879eb20ff068e1514ff1a7cd7b08d2cdd",
+      "event_orders": [
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "mixed_local_far_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        6
+      ],
+      "task_key": "blind_holdout__fragment_8__mixed_local_far_blocks",
+      "within_run_split_count": 0
+    },
+    {
+      "application_count": 9,
+      "baseline_metadata": {
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "basis_operation_count": 36,
+            "mode": "support_union",
+            "run_length": 9,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414",
+            "support_union": [
+              0,
+              1,
+              3,
+              4,
+              6,
+              7
+            ],
+            "support_union_size": 6
+          }
+        ],
+        "selected_segment_count": 1
+      },
+      "baseline_plan_fingerprint": "6da723332524b848ed898f3bf7ea66430cb7abb42b1b95da52cc44a5c3db1b98",
+      "candidate_differs_from_baseline": false,
+      "candidate_metadata": {
+        "dp_transition_count": 90,
+        "maximum_preserved_column_residual": 0.0,
+        "run_count": 1,
+        "runs": [
+          {
+            "run_length": 9,
+            "segment_count": 1,
+            "segments": [
+              {
+                "basis_hash": "4ac547706cfb1c978dd5f812f385787581850c07872441009f0c83f0703f1eff",
+                "basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414-interval-union-0-1-3-4-6-7-pa-v1",
+                "basis_operation_count": 36,
+                "length": 9,
+                "mode": "support_union",
+                "start": 0,
+                "stop": 9,
+                "support_union": [
+                  0,
+                  1,
+                  3,
+                  4,
+                  6,
+                  7
+                ],
+                "support_union_size": 6
+              }
+            ],
+            "selected_proxy_basis_operation_count": 72,
+            "source_basis_id": "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+          }
+        ],
+        "selected_multi_application_interval_count": 1,
+        "selected_segment_count": 1,
+        "selected_support_union_interval_count": 1
+      },
+      "candidate_plan_fingerprint": "a4415d37bc668549d2e951fc1ab6ad5508ff57dedf629804800da4a5f9418d03",
+      "costs": {
+        "interval_union_dp": {
+          "circuit_size": 957,
+          "cx_count": 166,
+          "cx_depth": 85,
+          "rz_count": 473,
+          "rz_depth": 103,
+          "total_depth": 234
+        },
+        "one_segment_per_source_run": {
+          "circuit_size": 957,
+          "cx_count": 166,
+          "cx_depth": 85,
+          "rz_count": 473,
+          "rz_depth": 103,
+          "total_depth": 234
+        }
+      },
+      "event_count": 3,
+      "event_digest": "612f4f99d14813a391ac77d79d6505754d714da81503bda6597cf04b55ad1993",
+      "event_orders": [
+        2,
+        2,
+        2
+      ],
+      "fragment_index": 8,
+      "partition": "blind_holdout",
+      "profile_id": "three_separated_zz_blocks",
+      "source_basis_hashes": [
+        "7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_basis_ids": [
+        "df-basis-7764075d8d78d0030cecb2d1bfd95667ea6e59b4c3380d2455f6c7533d3b8414"
+      ],
+      "source_run_count": 1,
+      "source_run_lengths": [
+        9
+      ],
+      "task_key": "blind_holdout__fragment_8__three_separated_zz_blocks",
+      "within_run_split_count": 0
+    }
+  ],
+  "schema_version": "pa_joint_synthesis_mechanism_validation_v1",
+  "scope": {
+    "forced_legal_order2_event_streams": true,
+    "full_wrapper_or_rpe_total_cost_evaluated": false,
+    "global_circuit_optimality_established": false,
+    "h12_evaluated": false,
+    "literature_novelty_established": false,
+    "natural_sampling_frequency_estimated": false,
+    "new_physical_system_evaluated": false,
+    "routed_or_noisy_backend_evaluated": false,
+    "scientific_superiority_claimed": false
+  },
+  "stage": "P-A-nondegenerate-mechanism-validation",
+  "training_diagnostic": {
+    "changed_row_count": 0,
+    "improved_rz_row_count": 0,
+    "maximum_per_row_rz_relative_change": 0.0,
+    "metrics": {
+      "circuit_size": {
+        "baseline_sum": 8977.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 8977.0
+      },
+      "cx_count": {
+        "baseline_sum": 1524.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 1524.0
+      },
+      "cx_depth": {
+        "baseline_sum": 762.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 762.0
+      },
+      "rz_count": {
+        "baseline_sum": 4558.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 4558.0
+      },
+      "rz_depth": {
+        "baseline_sum": 1124.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 1124.0
+      },
+      "total_depth": {
+        "baseline_sum": 2473.0,
+        "candidate_relative_to_baseline": 0.0,
+        "candidate_sum": 2473.0
+      }
+    },
+    "minimum_per_row_rz_relative_change": 0.0,
+    "row_count": 15,
+    "split_basis_ids": [],
+    "split_profile_ids": [],
+    "split_row_count": 0
+  }
+}

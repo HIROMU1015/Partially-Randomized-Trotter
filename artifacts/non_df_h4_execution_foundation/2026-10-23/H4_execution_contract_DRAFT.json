@@ -1,0 +1,308 @@
+{
+  "DF": {
+    "decomposition_calls": 1,
+    "df_tol": 1e-08,
+    "final_rank": null,
+    "generation": "existing OpenFermion low_rank_two_body_decomposition; original indices retained",
+    "identity_policy": "extract_identity_phase",
+    "one_body": "always deterministic",
+    "prefix": "first prefix covering >=50% ranking weight, with positive nonempty tail; structural rule only",
+    "rank": null,
+    "rank_policy": "tol_only; actual rank recorded, never copied from H2 or historical H4",
+    "ranking": "descending abs(lambda)*Frobenius(g)^2, original index tie-break",
+    "ranking_weight_is_involution_lambda": false
+  },
+  "MC": {
+    "adaptive_samples": false,
+    "event_audit": "serialize the exact events returned by the production sampler before circuit generation, including position/order/component IDs and scalar/rotation phase, then join compiler price by immutable trajectory_id; no second sampling",
+    "model_or_estimator_adopted": false,
+    "paired_cosine_sine": true,
+    "proposal_reason": "fixed finite pilot cohort larger than H2; 256 is not justified as a rare-order or population-precision guarantee",
+    "rare_orders": "record law probabilities, observed positions, all per-trajectory event records; unobserved costs unknown",
+    "seed_namespace_fixed_before_execution": true,
+    "seed_rule": "sha256(NON_DF_H4_PILOT_V1/<representation>/<method>)[:8] little-endian; trajectory PCG64 order then components v2 unchanged",
+    "trajectories_per_PR": 256,
+    "uncertainty": "existing paired covariance SE and nominal Student-t95 only"
+  },
+  "Pauli": {
+    "coefficient_cutoff": 0.0,
+    "mapping": "existing unthresholded supplied-MO JW conversion",
+    "nonidentity_term_count": null,
+    "ordering": "descending abs(coefficient), label tie-break",
+    "prefix": "first prefix covering >=50% nonidentity abs-coefficient sum, with positive nonempty tail; structural rule only"
+  },
+  "compiler": {
+    "backend": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "cost_scope": "full Hadamard wrapper ordinary diag(I,U), phases and measurement; no preparation",
+    "coupling_map": null,
+    "optimization_level": 1,
+    "transpiler_seed": 17
+  },
+  "dispatch_enabled": false,
+  "environment": {
+    "numpy": "1.26.4",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "scipy": "1.14.1"
+  },
+  "evolution": {
+    "K": 4,
+    "T": 0.8,
+    "delta": 0.1,
+    "law": "existing finite_rte_even_paired; no new randomization or estimator",
+    "normalization": "each actual involutory tail lambda; q*r log(B_K); identity/event phases preserved",
+    "product_formula": "S2",
+    "proposal_reason": "single smaller step than H2 for a larger system, no tuning or expected accuracy guarantee",
+    "q": 8,
+    "r": 4
+  },
+  "execution": {
+    "SOURCE": "future clean implementation commit + all scientific code, runner, tests, contract, environment and user approval hashes",
+    "approved_future_call_budget": {
+      "DF_decomposition": 1,
+      "DF_sector_crosscheck": 1,
+      "FCI": 1,
+      "SCF": 1,
+      "fixed_cases": 4,
+      "nonDF_sector_ground": 1
+    },
+    "automatic_retry": false,
+    "batch_approval": "one explicit approval for the fully sealed H4 execution contract covers all listed stages; no per-stage confirmations",
+    "case_claims": "fixed grant-specific claim directory and case_id with SOURCE/input/grant binding; changing run ID cannot refund a claim",
+    "deduplication": "share immutable hashed input files, per-case single adapter and cache for identical circuits; never drop repeated gates or change random draw order",
+    "evidence": "case SOURCE/input/grant, claim/marker, complete event logs, compiler counts and paired prices, stdout/stderr/exit, numerical gates, ledger, STOP; supervisor own descendants only",
+    "input_binding": "SCF/integral/DF/state receipts and hashes sealed before launching four cases; actual rank and prefix numbers resolved by frozen rules, no search",
+    "mandatory_STOP": true,
+    "new_namespace": "must be chosen unused and sealed once before approved execution",
+    "old_grants_reusable": false,
+    "one_shot": true,
+    "partial_failure": "stop peer processes, persist pending/failed/complete states; do not retry any case or regenerate inputs",
+    "resources": "four fresh case interpreters; no shared Qiskit session; small dense BLAS avoids nested oversubscription; no CPU/RAM caps",
+    "resume": false,
+    "watch_policy": {
+      "heartbeat_timeout": null,
+      "kill_grace": 5.0,
+      "poll_seconds": 0.05,
+      "ready_timeout": null,
+      "run_timeout": null,
+      "terminate_grace": 5.0
+    },
+    "watchdog_semantics": "no artificial compute deadline; future per-stage contracts may set measured deadlines or independent heartbeat; no thread heartbeat used to declare a busy compiler hung",
+    "seed_namespace": "NON_DF_H4_PILOT_V1",
+    "call_budget": {
+      "SCF": 1,
+      "MO_integral_build": 1,
+      "Pauli_JW_build": 1,
+      "DF_decomposition": 1,
+      "nonDF_sector_ground": 1,
+      "DF_sector_crosscheck": 1,
+      "FCI": 1,
+      "input_dense_reference_signals": 2,
+      "DF_sector_matvec_columns": 36,
+      "case_evaluations": 4,
+      "deterministic_trajectories": 2,
+      "PR_paired_trajectories": 512,
+      "full_wrapper_compile_axes": 1028,
+      "production_RTE_events": 16384,
+      "Pauli_sampler_batches": 256,
+      "DF_occurrence_sampler_batches": 2048,
+      "independent_trajectory_checks_per_PR": 3,
+      "forced_orders_per_PR": [
+        0,
+        2,
+        4
+      ],
+      "case_numerical_evidence": "one dense/sparse/Horner evidence evaluation per fixed case; frozen H2 path",
+      "case_evaluation": "one sparse reference/mean and one cost loop per case; five precision projections, no refit"
+    },
+    "activation": "approval names exact SOURCE/contract digest/pack namespace; immutable grant and case claims; no automatic retry"
+  },
+  "execution_authorized": false,
+  "fixed_candidates": {
+    "PF": "all terms/fragments; deterministic one-body also retained",
+    "PR": "one structural prefix per representation; actual labels/indices/weights bound to input receipt before release",
+    "adaptive_candidates": false,
+    "count": 4,
+    "empty_tail_policy": "STOP_SCOPE_NOT_SATISFIED; do not substitute PF or change prefix",
+    "methods": [
+      "PF",
+      "PR"
+    ],
+    "representations": [
+      "pauli_jw",
+      "df_native"
+    ],
+    "same_L_D_is_same_partition": false,
+    "search": false
+  },
+  "gates": [
+    "SCF convergence and orbital orthonormality; expected 4 spatial/8 spin dimensions",
+    "Pauli vs independent JW, DF full operator and existing DF physical-sector operator",
+    "common state norm/residual/energy, DF state crosscheck, independent PySCF FCI",
+    "dense/sparse reference, independent law mean and raw/normalization closure",
+    "forced order0/2/4 algebra checks separate from cost MC; first3 independent trajectories",
+    "ordinary controlled phases and all sampled cosine/sine compiled probabilities",
+    "per-axis C/N/G, exact rational mean identity, paired covariance SE, event log/price join",
+    "SOURCE/input/compiler/version/hash binding, no B0/B0I mixing"
+  ],
+  "grant_valid": false,
+  "numerical": {
+    "Hamiltonian_operator_agreement": 1e-09,
+    "Hermiticity": 1e-10,
+    "allowance_policy": "existing empirical_allowance formula; no certification",
+    "allowance_settings": {
+      "floor": 1e-12,
+      "roundoff_multiplier": 64.0,
+      "safety_factor": 10.0
+    },
+    "compiled_probability_agreement": 1e-09,
+    "failure_policy": "any technical gate failure stops run; ineligible precision row remains null without changing parameters",
+    "law_mean_agreement": 1e-10,
+    "maximum_u_over_headroom": 0.01,
+    "orthonormality": 1e-10,
+    "reference_signal_agreement": 1e-10,
+    "state_energy_agreement": 1e-09,
+    "state_norm": 1e-12,
+    "state_residual": 1e-10,
+    "trajectory_unitary_agreement": 1e-09
+  },
+  "precision": {
+    "allowance_is_certified": false,
+    "alpha_axis": 0.025,
+    "epsilon_axis": "epsilon_sig/sqrt(2)",
+    "epsilon_sig": [
+      0.05,
+      0.01,
+      0.005,
+      0.001,
+      0.0005
+    ],
+    "ineligible_policy": "N/G null with reason; do not lower allowance or change parameters to obtain eligibility",
+    "large_dimension_caveat": "the dense operation proxy may dominate tight precision rows; no guarantee of non-null H4 N/G",
+    "maximum_u_over_headroom": 0.01,
+    "numerical_allowance": "same frozen empirical 64*eps operation proxy, safety10, floor1e-12, dense/sparse/Horner closure",
+    "statistical_model": "existing fresh IID corrected +/-1 Hoeffding sufficient N"
+  },
+  "readiness": {
+    "H4_inputs_generated": false,
+    "missing_before_execution": [
+      "one explicit adoption/batch approval bound to SOURCE/contract/namespace",
+      "automatic clean SOURCE/environment seal and fresh one-shot grant",
+      "fresh resource observation"
+    ],
+    "permitted_now": "artificial process and synthetic eight-qubit circuit tests; saved H2 read-only evidence only",
+    "scientific_dispatch_implemented": true
+  },
+  "schema": "non_df_h4_execution_candidate_v1",
+  "state": {
+    "DF_sector_crosscheck_calls": 1,
+    "FCI_crosscheck_calls": 1,
+    "dimension": 36,
+    "method": "full non-DF Nalpha=Nbeta=2 sector ground eigenvector; canonical largest amplitude positive real",
+    "preparation_cost": 0.0,
+    "preparation_excluded": true,
+    "reference": "each representation own full-H at fixed T on the common non-DF state",
+    "same_state_for_four_cases": true,
+    "solve_calls": 1
+  },
+  "status": "IMPLEMENTED_AWAITING_BATCH_APPROVAL",
+  "system": {
+    "SCF": {
+      "calls": 1,
+      "conv_tol": 1e-12,
+      "init_guess": "minao",
+      "max_cycle": 100,
+      "method": "canonical real RHF"
+    },
+    "active_space": null,
+    "adjacent_distance_Angstrom": 1.0,
+    "basis": "sto-3g",
+    "charge": 0,
+    "coefficient_atol": 0.0,
+    "frozen_core": null,
+    "geometry_Angstrom": [
+      [
+        "H",
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        "H",
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      [
+        "H",
+        [
+          0.0,
+          0.0,
+          2.0
+        ]
+      ],
+      [
+        "H",
+        [
+          0.0,
+          0.0,
+          3.0
+        ]
+      ]
+    ],
+    "identity": "retained exactly once including nuclear phase",
+    "integrals": "same unthresholded real orthonormal MO h, chemist eri for both representations; interleaved alpha/beta; spin lift and 1/2 exactly as frozen H2",
+    "molecule": "linear H4",
+    "qubit_order": "qiskit_little_endian",
+    "spatial_orbitals": 4,
+    "spin_2S": 0,
+    "spin_orbitals": 8,
+    "symmetry": false
+  },
+  "event_audit": {
+    "schema": "production_rte_trajectory_v1",
+    "actual_returned_events": true,
+    "additional_RNG_draws": 0,
+    "replay": false,
+    "fields": [
+      "case_id",
+      "representation",
+      "method",
+      "trajectory_id",
+      "seed",
+      "step_seeds",
+      "outer_step_index",
+      "inner_RTE_position",
+      "taylor_order",
+      "application_sequence",
+      "selected_component_ids",
+      "coefficient_sign",
+      "rotation_angle",
+      "phase",
+      "scalar_phase",
+      "event_probability",
+      "distribution_id",
+      "normalization",
+      "compiled_RZ",
+      "compiler",
+      "event_record_hash",
+      "trajectory_record_hash"
+    ],
+    "absent_information": "null plus information_missing; no inference",
+    "additive_event_cost": false,
+    "population_cost_guarantee": false
+  }
+}

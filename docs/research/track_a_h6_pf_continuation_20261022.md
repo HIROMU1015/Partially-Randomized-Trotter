@@ -1,0 +1,9 @@
+# H6 metadata取得・共通PF探索の継続承認
+
+2026-10-22 JST。利用者が「先ほどの続きを行って、また意図しないところで停止したら修正して」と指示した。これは修正版loaderを使う新SOURCE・新pack・新grantでの継続と、科学条件を変えない技術修正の承認として記録する。消費済みgrantのretry/resumeはしない。旧METADATA63_run02のsnapshot_restore1・STOP・原SOURCEを保持する。
+
+63候補は旧H6_INPUT_STOPと完全一致。独立したMETADATA予算は元の18736 native primitive作用・9368 forward作用・closure63・旧signal照合52・新signal11・context各1を維持する。今回のfresh contextはこの継続承認へ結合し、前回のsnapshot_restore1を返却しない。科学callを消費した技術失敗は旧stageのSTOPと消費を保全し、修正内容・残り対象・追加context等の必要量を新SOURCE/新契約へ事前記録する。同grantを再使用しない。科学条件・候補・数値gateや独立forwardの同等性・総予算を暗黙変更しない。
+
+METADATA成功後、旧原観測111と63新観測の174候補を結合し、既存の不足102候補=基礎51+overlay51、forward51、1380 endpoint、必要なcompile最大224候補448軸と固定PR/PF会計へ進む。H2/H4は参照結合だけ、再計算しない。詳細条件は[原実行契約](track_a_h6_pf_metadata_execution_20261022.md)、[共通域](track_a_pf_common_domain_preparation_20261022.md)を継承する。
+
+人工26件・保存H6の8配列のstdlib byte照合は修正SOURCE f942a5f66482db797902d4c88c262a70da6a8492でPASS済み。今回のSOURCEは本記録を含む専用branch commitとし、pack作成直前に入力・provider/runtime sealと実空き資源を再照合する。既存H2/H4結果・旧STOP不変。新しいPR sampling、q16、候補追加、費用モデル代用、pushは行わない。取得・比較・終了監査・結果統合を保存しローカルcommit後mandatory STOP。

@@ -1,0 +1,392 @@
+# Codexへの指示：Track B 新アルゴリズム候補の独立監査
+
+## 0. 今回の目的
+
+Track Bの新研究候補「DF少数軌道・希薄三次補正付きPR」について、GPTが作成した数理設計を独立に検証してください。
+
+今回の目的は、**この候補が数学的に正しく、既存DF実装から構成でき、既存アルゴリズムと区別できる研究候補として残るかを判定するための証拠を作ること**です。
+
+GPTの導出を正しいものとして実装するだけでは不十分です。誤りや未証明の仮定を積極的に探索し、独立導出・独立テスト・既存sourceとの照合を行ってください。
+
+ただし、科学的な採択判断、研究方針の変更、次の実験の認可はCodexでは行わず、結果をGPTへ返してください。
+
+## 1. 対象リポジトリと作業環境
+
+Repository：
+
+`HIROMU1015/Partially-Randomized-Trotter`
+
+既存研究の参照commit：
+
+`22a0d032717b4139cdfa806850643e93ba25624f`
+
+新しい独立branch/worktreeを使用してください。
+
+推奨branch：
+
+`track-b-df-sparse-correction-independent-audit-20261011`
+
+既存branch、原science source、保存結果、authorization、STOP markerは変更しないでください。
+
+特に、終了済みG10系列を再開しないでください。
+
+## 2. 入力資料の取得と固定
+
+以下の2ファイルを監査入力として使用します。
+
+1. `track_b_df_sparse_correction_design_review_20261011.md`
+2. `track_b_df_sparse_correction_design_20261011_reproducibility.zip`
+
+最初に実施すること：
+
+- 2ファイルがCodex実行環境から読めることを確認する。
+- SHA256とファイルサイズを記録する。
+- ZIP内のコード、入力、検算結果、修正履歴を確認する。
+- GPTによる導出、自己検算、未証明事項を区別する。
+- リポジトリへ原本を不変のまま保存する。
+- commit・pushし、GitHub remoteから同一ファイルを取得できることを確認する。
+
+これらの資料は**監査対象であって、正当性が確定した証拠ではありません**。
+
+資料が取得できない場合、推測で再構成せず、欠けているファイルと取得失敗の原因を報告してSTOPしてください。ChatGPT側のファイルがGitHubに存在しないことだけを理由に、未pushと断定しないでください。
+
+## 3. Phase A：三次数学構成の独立監査
+
+既存partial-S2の実際のブロック順序を確認し、次の構成を独立に導出してください。
+
+\[
+H=\sum_{j=0}^{L-1}H_j+R
+\]
+
+\[
+B_j=\sum_{\ell>j}H_\ell,\quad H_L=R
+\]
+
+GPTの候補式：
+
+\[
+\log S_2(\delta)
+=-i\delta H-i\delta^3K_3+O(\delta^5)
+\]
+
+\[
+K_3=
+\sum_j\left(
+\frac{[H_j,[H_j,B_j]]}{24}
++\frac{[B_j,[H_j,B_j]]}{12}
+\right)
+\]
+
+検証事項：
+
+- BCH係数と符号が正しいか。
+- 実際の回路適用順序に一致するか。
+- 一般ブロック数への再帰導出が成立するか。
+- D内部の非可換誤差が正しく含まれているか。
+- 可換、非可換、R=0、少数ブロックなどのcontrolで整合するか。
+- 対称補正によって三次項が相殺されるか。
+- 中央RTEがP3の場合に残る四次誤差を正しく扱っているか。
+- finite RTEのcutoffと平均多項式の次数を、既存実装に基づいて正確に対応付けているか。
+
+GPT付属の検算コードを再実行するだけでPASSにしないでください。可能な範囲で別の導出・独立した検査実装を用いてください。
+
+反例を発見した場合は、それを隠さず最小反例として保存してください。
+
+## 4. Phase B：最大6軌道への縮約の検証
+
+候補の中心となる
+
+\[
+T_{abc}=[Q_a,[Q_b,Q_c]]
+\]
+
+について、各primitiveが高々2軌道の占有数に由来する場合、三重交換子を最大6軌道へ閉じ込められるという主張を検証してください。
+
+特に以下を確認してください。
+
+1. 異なるDF fragmentのGaussian基底間で、必要な軌道部分空間を正確に構成できるか。
+2. 軌道集合が直交していない場合にも成立するか。
+3. Gaussian基底変換の向き、符号、fermionic ordering、Jordan–Wigner規約が正しいか。
+4. 局所operatorのliftが全Fock空間のoperatorと一致するか。
+5. 恒等成分とglobal phase、controlled回路のrelative phaseを正しく保持するか。
+6. 既存sourceから必要な軌道情報を取得できるか。
+7. 大規模な全系行列を作らずに、縮約operatorを構成できるか。
+
+次の形が本当に成立するかを調べてください。
+
+\[
+T_{abc}
+=
+G_{abc}
+(T_{abc}^{(r)}\otimes I)
+G_{abc}^{\dagger},
+\qquad r\le6
+\]
+
+**6軌道へ縮約できることと、6軌道の非Gaussian回転が安価に合成できることは別問題**として扱ってください。
+
+必要に応じて小規模の合成Hamiltonian・fermionic operatorによる独立テストを追加して構いません。
+
+ただし、分子production計算は実行しないでください。
+
+## 5. Phase C：確率的補正samplerの独立監査
+
+設計書の補正samplerについて、以下を独立に検証してください。
+
+\[
+K_3=\sum_\tau c_\tau T_\tau,
+\quad c_\tau\ge0
+\]
+
+\[
+A=\sum_\tau c_\tau,\qquad \mathcal B=4A
+\]
+
+\[
+\eta_\delta=\min(1,\gamma\delta),
+\qquad
+\theta_\delta=\frac{\mathcal B\delta^3}{2\eta_\delta}
+\]
+
+ここでは、まず設計書の想定する正のstep幅を対象にしてください。負時間への対応は未証明なら未証明と分類してください。
+
+補正の選択確率と局所回転
+
+\[
+V_\tau=
+\exp(i\theta_\delta T_\tau/\kappa_\tau)
+\]
+
+から、平均
+
+\[
+\bar C_\delta
+=
+I+\frac{i\delta^3K_3}{2}+O(\delta^5)
+\]
+
+が成立するかを確認してください。
+
+さらに、設計書にある有限step上界
+
+\[
+\left\|
+\bar C_\delta-e^{i\delta^3K_3/2}
+\right\|
+\le
+\frac{\delta^6}{8}
+\left(
+\frac{\mathcal B\Lambda_3}{\eta_\delta}
++\|K_3\|^2
+\right)
+\]
+
+を独立に導出・確認してください。
+
+重点事項：
+
+- 係数が非負となる条件。
+- 確率分布の正規化。
+- \(A=0\)、\(\Lambda_3=0\) などの退化ケース。
+- \(\eta_\delta\) が極小の場合の数値安定性。
+- 補正の左右・step間の独立性。
+- identity選択を含む平均の正確さ。
+- finite-bit確率の扱いとbiasの区別。
+- 全三重項を列挙しないsampling生成の成立条件。
+- 古典的な係数・軌道情報の取得費用。
+
+また、補正回路の追加sampling正規化が1であるという主張を、元のRTEのnormalization、実際の量子回路平均、推定量の重みを明確に区別して確認してください。
+
+## 6. Phase D：有限時間誤差と精度次数
+
+補正付き一stepについて、
+
+\[
+\bar M_\delta=e^{-i\delta H}+O(\delta^5)
+\]
+
+が成立するための仮定を明確にしてください。
+
+さらに固定時間 \(t=n\delta\) に対して、
+
+\[
+\|\bar M_\delta^n-e^{-itH}\|
+=O(t\delta^4)
+\]
+
+が成立する範囲を確認してください。
+
+以下の誤差を別々に扱ってください。
+
+- 決定論PF誤差。
+- finite RTE truncation誤差。
+- stochastic corrector平均の誤差。
+- finite-bit sampling誤差。
+- 回転のgate synthesis誤差。
+- DF thresholding等、既存入力に由来する誤差。
+
+平均operator、物理channel、個別sample回路を混同しないでください。
+
+一回の複素信号精度とRPE/QPE全体のenergy精度も区別してください。
+
+## 7. Phase E：実装可能性とnative資源の最小調査
+
+数学監査で致命的な問題がない場合のみ、局所回転の実装可能性を調べてください。
+
+対象：
+
+\[
+e^{i\theta T_{abc}^{(r)}/\kappa},
+\qquad r\le6
+\]
+
+確認事項：
+
+- 局所operator生成の古典計算量。
+- Gaussian embeddingに必要な回路。
+- 中央の非Gaussian unitaryの実装方法。
+- controlled実装の構成。
+- 必要なancillaとworkspace。
+- 回転精度に伴うsynthesis費用。
+- T、CX、RZ、回路depthの費用。
+- 一回の補正費用と平均実行頻度。
+- 期待費用だけでなく、補正回数のtailやhard cap。
+
+既存sourceの回路・cost APIを参照してください。
+
+ただし、現段階で要求するのは**限定的な実装可能性の確認と資源上の障害の特定**です。
+
+小規模な代表例についてのみ、実際の回路構築やコンパイルによる検証を行って構いません。
+
+大規模な分子計算、GPU production、全パラメータ探索、最適化された新しいcompilerの開発は実行しないでください。
+
+実装できても非常に高価な場合には、その事実を明確に報告してください。
+
+## 8. Phase F：先行研究との独立差分監査
+
+次の既存手法と、具体的な構成を比較してください。
+
+- NCC / HNCC
+- Corrected product formulas
+- Trotter-LCU
+- qDRIFTおよび確率的Hamiltonian疎化
+- Cost-aware importance sampling
+- Fermionic Gaussian変換を利用する既存手法
+- 低rank Hamiltonian simulation関連手法
+
+単なる名称や研究目的の比較ではなく、
+
+- 入力情報
+- 実装する演算子・平均・channel
+- 補正項の構成
+- 回路生成方法
+- 必要な古典前処理
+- quantum resource
+- 精度保証
+- 既知法に還元される特殊条件
+
+を対応させてください。
+
+一次文献の該当定理・式・アルゴリズムを示してください。
+
+単に一般LCUとして表現可能というだけで新規性を否定しない一方、既知手法を同じDF入力に適用すると同じ処理になる場合は、独立した新手法と認定しないでください。
+
+先行研究に同一手法が見つからない場合も、それだけで新規性確定とはしないでください。
+
+## 9. 判定・STOP条件
+
+各Phaseで次を区別してください。
+
+- 独立検証PASS
+- 条件付きPASS
+- 数学的反例
+- 数学的未解決
+- DFアクセス未解決
+- native実装未解決
+- 既知手法との同値性
+- 先行研究比較未完了
+
+**数学的反例が見つかった場合、元の主張を勝手に修正して次のPhaseへ進まないでください。**
+
+反例と影響範囲を保存し、mandatory STOPしてください。
+
+その他のPhaseで重要な未解決事項が生じた場合も、その状態をPASSへ丸めないでください。以後の検証が有効でなくなる場合はそこで停止してください。
+
+全PhaseがPASSしても、それを新規性・資源優位・科学的GOと認定してはいけません。
+
+## 10. 成果物
+
+次の文書・監査結果をGitHubへ保存してください。
+
+推奨配置：
+
+`docs/tracks/algorithm_codesign/`
+
+- `df_sparse_correction_independent_audit_20261011.md`
+- `df_sparse_correction_prior_art_comparison_20261011.md`
+- `df_sparse_correction_gpt_handoff_20261011.md`
+
+`artifacts/track_b_df_sparse_correction_audit/2026-10-11/`
+
+- 入力資料のSHA256・取得元・source identity
+- 数式検算結果
+- 小規模operator/circuit照合結果
+- DFアクセス検証結果
+- native費用screening結果
+- テスト結果と実行監査
+- manifest / provenance
+
+必要な検証script・testsも保存してください。
+
+計算不能、未実装、未検証の項目は、そのまま明記してください。
+
+保存資料だけから、第三者が実施範囲と未実施範囲を区別できるようにしてください。
+
+## 11. GitHub公開と最終報告
+
+作業終了後は以下を実施してください。
+
+1. 変更ファイルと既存原証拠の不変性を確認。
+2. focused testsの結果を保存。
+3. 新branchへcommit。
+4. remoteへpush。
+5. remote SHA一致を確認。
+6. GPTのレビューに必要な主要資料をremoteから実際に再取得。
+7. 必要資料がすべて再取得できることを確認。
+8. worktree cleanを確認。
+9. mandatory STOP。
+
+GitHubに資料が取得できない場合、原因を分類してください。
+
+特に、実際の未push、branch/commit指定誤り、権限不足、GitHub接続障害を混同しないでください。
+
+最終報告には、以下を必ず記載してください。
+
+- Branchとfull commit SHA
+- 実施した監査範囲
+- 各Phaseの結果
+- 数学的反例・重大な未解決事項
+- native実装上の障害
+- 既存手法との差が成立したかどうか
+- 実施したテストとその結果
+- 未実施の科学検証
+- GitHub remote確認結果
+- GPT向け引き継ぎ資料へのリンク
+
+## 12. 最重要制約
+
+今回の作業は、**新アルゴリズムの独立監査まで**です。
+
+以下は実施しないでください。
+
+- 新アルゴリズムのscientific GO宣言
+- 大規模分子計算
+- 新規parameter最適化
+- G10／RA-D0等の旧実験再開
+- 本番PR/QPE比較
+- 既存STOPの解除
+- 追加研究計画の自動実行
+
+監査結果が得られたら、研究上の採択判断をGPTへ返してください。
+
+**必要な監査証拠をcommit・pushし、GitHubから取得可能であることを確認した時点でmandatory STOPしてください。**

@@ -1,0 +1,625 @@
+{
+  "schema_version": "phase2db-basic-call-inventory-v1",
+  "document_kind": "CONTRACT_PREPARATION_NOT_AUTHORIZATION",
+  "execution_authorized": false,
+  "scope": "NO_BUILD_NO_EVENTS_F1_LAWS_ONLY_PRICE_UNBOUND",
+  "logical_counts": {
+    "B.INPUT": 2,
+    "B.ARMS": 4,
+    "B.CONTEXTS": 5
+  },
+  "logical_total": 11,
+  "call_plan": [
+    {
+      "id": "B.INPUT.physical",
+      "family": "B.INPUT",
+      "requires": []
+    },
+    {
+      "id": "B.INPUT.catalog",
+      "family": "B.INPUT",
+      "requires": [
+        "B.INPUT.physical"
+      ]
+    },
+    {
+      "id": "B.ARMS.SS",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ]
+    },
+    {
+      "id": "B.ARMS.SP",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ]
+    },
+    {
+      "id": "B.ARMS.PS",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ]
+    },
+    {
+      "id": "B.ARMS.PP",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ]
+    },
+    {
+      "id": "B.CONTEXTS.SS",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.SS"
+      ]
+    },
+    {
+      "id": "B.CONTEXTS.SP",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.SP"
+      ]
+    },
+    {
+      "id": "B.CONTEXTS.PS",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.PS"
+      ]
+    },
+    {
+      "id": "B.CONTEXTS.PP",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.PP"
+      ]
+    },
+    {
+      "id": "B.CONTEXTS.catalog",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.INPUT.catalog"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "B.INPUT.physical",
+      "family": "B.INPUT",
+      "requires": [],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "I fixture.py:p0_candidate exact static specification",
+        "B_INPUT_SPECIFICATION.md"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "p0_candidate": 1,
+        "materialize_alternatives": 1,
+        "make_fragment_alternatives": 1,
+        "rational_frame_including_nested_pauli_calls": 4,
+        "frame_coefficients": 2,
+        "pauli_coefficients": 2,
+        "annihilator_inside_pauli_coefficients": 8
+      },
+      "outputs": [
+        "inputs/physical.json"
+      ],
+      "expected_products": [
+        "exact rational orbital frames",
+        "S/P alternatives",
+        "typed alternative metadata",
+        "state specification only"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.INPUT.catalog",
+      "family": "B.INPUT",
+      "requires": [
+        "B.INPUT.physical"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.INPUT.physical F0 basis identity",
+        "P0 four-label catalog definition"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "catalog_atoms": 1,
+        "exact_lambda": 1
+      },
+      "outputs": [
+        "inputs/catalog.json"
+      ],
+      "expected_products": [
+        "four atoms A/B/C/I",
+        "exact lambda",
+        "fixed catalog context specification"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.ARMS.SS",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.INPUT.physical typed alternatives",
+        "SS"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "canonicalize_arm": 1,
+        "bind_motif_labels_no_events": 1,
+        "exact_lambda": 1
+      },
+      "outputs": [
+        "arms/SS.json"
+      ],
+      "expected_products": [
+        "ordered atom map",
+        "exact sign/zero/provenance",
+        "L",
+        "exact lambda",
+        "I/u/s/v coverage",
+        "derived future call counts only"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.ARMS.SP",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.INPUT.physical typed alternatives",
+        "SP"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "canonicalize_arm": 1,
+        "bind_motif_labels_no_events": 1,
+        "exact_lambda": 1
+      },
+      "outputs": [
+        "arms/SP.json"
+      ],
+      "expected_products": [
+        "ordered atom map",
+        "exact sign/zero/provenance",
+        "L",
+        "exact lambda",
+        "I/u/s/v coverage",
+        "derived future call counts only"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.ARMS.PS",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.INPUT.physical typed alternatives",
+        "PS"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "canonicalize_arm": 1,
+        "bind_motif_labels_no_events": 1,
+        "exact_lambda": 1
+      },
+      "outputs": [
+        "arms/PS.json"
+      ],
+      "expected_products": [
+        "ordered atom map",
+        "exact sign/zero/provenance",
+        "L",
+        "exact lambda",
+        "I/u/s/v coverage",
+        "derived future call counts only"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.ARMS.PP",
+      "family": "B.ARMS",
+      "requires": [
+        "B.INPUT.physical"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.INPUT.physical typed alternatives",
+        "PP"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "canonicalize_arm": 1,
+        "bind_motif_labels_no_events": 1,
+        "exact_lambda": 1
+      },
+      "outputs": [
+        "arms/PP.json"
+      ],
+      "expected_products": [
+        "ordered atom map",
+        "exact sign/zero/provenance",
+        "L",
+        "exact lambda",
+        "I/u/s/v coverage",
+        "derived future call counts only"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.CONTEXTS.SS",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.SS"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.ARMS.SS",
+        "K2 fixed canonical finite law",
+        "API tolerance policy"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "law_record": 1,
+        "tail_bridge": 1,
+        "exact_lambda": 1,
+        "make_rte_config": 1,
+        "finite_rte_distribution_including_config_validation": 2,
+        "RTEFiniteDistribution": 2,
+        "_paired_order_weight_including_distribution_validation": 8,
+        "step_taylor_truncation_residual_bound_including_all_validation": 5,
+        "_paper_normalization_upper_bound_including_validation": 4,
+        "RTEComponent": "L_SS",
+        "math_atan": 2,
+        "B_total_scalar_power": 1
+      },
+      "outputs": [
+        "laws/SS.json"
+      ],
+      "expected_products": [
+        "canonical finite-RTE metadata",
+        "probabilities/angles/normalization fields",
+        "API residual tolerance",
+        "unbound price/interval/shot status"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.CONTEXTS.SP",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.SP"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.ARMS.SP",
+        "K2 fixed canonical finite law",
+        "API tolerance policy"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "law_record": 1,
+        "tail_bridge": 1,
+        "exact_lambda": 1,
+        "make_rte_config": 1,
+        "finite_rte_distribution_including_config_validation": 2,
+        "RTEFiniteDistribution": 2,
+        "_paired_order_weight_including_distribution_validation": 8,
+        "step_taylor_truncation_residual_bound_including_all_validation": 5,
+        "_paper_normalization_upper_bound_including_validation": 4,
+        "RTEComponent": "L_SP",
+        "math_atan": 2,
+        "B_total_scalar_power": 1
+      },
+      "outputs": [
+        "laws/SP.json"
+      ],
+      "expected_products": [
+        "canonical finite-RTE metadata",
+        "probabilities/angles/normalization fields",
+        "API residual tolerance",
+        "unbound price/interval/shot status"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.CONTEXTS.PS",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.PS"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.ARMS.PS",
+        "K2 fixed canonical finite law",
+        "API tolerance policy"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "law_record": 1,
+        "tail_bridge": 1,
+        "exact_lambda": 1,
+        "make_rte_config": 1,
+        "finite_rte_distribution_including_config_validation": 2,
+        "RTEFiniteDistribution": 2,
+        "_paired_order_weight_including_distribution_validation": 8,
+        "step_taylor_truncation_residual_bound_including_all_validation": 5,
+        "_paper_normalization_upper_bound_including_validation": 4,
+        "RTEComponent": "L_PS",
+        "math_atan": 2,
+        "B_total_scalar_power": 1
+      },
+      "outputs": [
+        "laws/PS.json"
+      ],
+      "expected_products": [
+        "canonical finite-RTE metadata",
+        "probabilities/angles/normalization fields",
+        "API residual tolerance",
+        "unbound price/interval/shot status"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.CONTEXTS.PP",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.ARMS.PP"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.ARMS.PP",
+        "K2 fixed canonical finite law",
+        "API tolerance policy"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "law_record": 1,
+        "tail_bridge": 1,
+        "exact_lambda": 1,
+        "make_rte_config": 1,
+        "finite_rte_distribution_including_config_validation": 2,
+        "RTEFiniteDistribution": 2,
+        "_paired_order_weight_including_distribution_validation": 8,
+        "step_taylor_truncation_residual_bound_including_all_validation": 5,
+        "_paper_normalization_upper_bound_including_validation": 4,
+        "RTEComponent": "L_PP",
+        "math_atan": 2,
+        "B_total_scalar_power": 1
+      },
+      "outputs": [
+        "laws/PP.json"
+      ],
+      "expected_products": [
+        "canonical finite-RTE metadata",
+        "probabilities/angles/normalization fields",
+        "API residual tolerance",
+        "unbound price/interval/shot status"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    },
+    {
+      "id": "B.CONTEXTS.catalog",
+      "family": "B.CONTEXTS",
+      "requires": [
+        "B.INPUT.catalog"
+      ],
+      "logical_execution_count": 1,
+      "execution_authorized": false,
+      "inputs": [
+        "B.INPUT.catalog",
+        "K2 fixed canonical finite law",
+        "API tolerance policy"
+      ],
+      "source": [
+        "src/trottertracks/pr_dictionary_binding/engine.py",
+        "SOURCE_CLOSURE.json pinned active functions"
+      ],
+      "major_runtime_function_invocations": {
+        "law_record": 1,
+        "tail_bridge": 1,
+        "exact_lambda": 1,
+        "make_rte_config": 1,
+        "finite_rte_distribution_including_config_validation": 2,
+        "RTEFiniteDistribution": 2,
+        "_paired_order_weight_including_distribution_validation": 8,
+        "step_taylor_truncation_residual_bound_including_all_validation": 5,
+        "_paper_normalization_upper_bound_including_validation": 4,
+        "RTEComponent": "4",
+        "math_atan": 2,
+        "B_total_scalar_power": 1
+      },
+      "outputs": [
+        "laws/catalog.json"
+      ],
+      "expected_products": [
+        "canonical finite-RTE metadata",
+        "probabilities/angles/normalization fields",
+        "API residual tolerance",
+        "unbound price/interval/shot status"
+      ],
+      "identity": "SHA256 over exact canonical output bytes; content digest in manifest, not embedded into itself",
+      "precision": "exact reduced fractions for coefficient algebra; explicit binary64 hex for law scalars",
+      "failure_condition": "source/spec/env mismatch; exact algebra/sign/zero/scalar/convention/coverage failure; nonfinite/underflow; unregistered case; output collision",
+      "retry_policy": "one attempt; any failure mandatory STOP; no retry/resume",
+      "duplicate_prevention": "exact plan ID + dependency completion + immutable attempt file + fresh output + consumed authorization",
+      "mandatory_stop": "first failure immediately, or after all11 cases and IO finalization"
+    }
+  ],
+  "aggregate_major_invocations": {
+    "materialize_alternatives": 1,
+    "rational_frame": 4,
+    "frame_coefficients": 2,
+    "pauli_coefficients": 2,
+    "make_fragment_alternatives": 1,
+    "catalog_atoms": 1,
+    "canonicalize_arm": 4,
+    "bind_motif_labels": 4,
+    "exact_lambda": 10,
+    "law_record": 5,
+    "tail_bridge": 5,
+    "make_rte_config": 5,
+    "finite_rte_distribution": 10,
+    "RTEFiniteDistribution": 10,
+    "paired_order_weight": 40,
+    "step_taylor_truncation_residual_bound": 25,
+    "paper_normalization_upper_bound": 20,
+    "RTEComponent": "sum_a L_a + 4",
+    "frozen_rte_module_import": 1,
+    "numpy_module_import": 1,
+    "math_atan_for_base_angles": 10,
+    "B_total_scalar_power": 5
+  },
+  "invocation_count_scope": "Major callable entries, including dataclass validation recursion; scalar arithmetic and sparse-map internal loops depend on bound map sizes and are not hidden as extra logical cases. No independent pilot or validation case.",
+  "derived_values_currently_unbound": {
+    "fixture_input_sha256": null,
+    "catalog_input_sha256": null,
+    "L_SS": null,
+    "L_SP": null,
+    "L_PS": null,
+    "L_PP": null,
+    "lambda_values": null,
+    "B_values": null,
+    "sum_E": null,
+    "Q": null,
+    "U_F2": null,
+    "approved_run_id": null,
+    "environment_lock_sha256": null
+  },
+  "io_finalization": {
+    "scientific_logical_cases": 0,
+    "record_count": 4,
+    "outputs": [
+      "manifests/source.json",
+      "manifests/environment_public.json",
+      "handoff/f1_bundle.json",
+      "binding_summary.json"
+    ],
+    "other_outputs": [
+      "manifest.json",
+      "run.log",
+      "STOP.json"
+    ],
+    "immutable_attempt_records": 11,
+    "immutable_completion_records": 11
+  },
+  "explicit_zero_operations": [
+    "Qiskit build/transpile/compile",
+    "sampling",
+    "event object generation",
+    "finite trajectory enumeration",
+    "F1 operator/mean/signal validation",
+    "interval/price/shot qualification",
+    "F2 numerical law generation",
+    "native synthesis"
+  ],
+  "protocol_difference_from_P0": "No change to 2/4/5 logical counts. Recipe metadata is policy/source identity plus PRICE_PROVIDER_UNBOUND; no gate recipe generation. Numeric contexts are F1 four arms plus catalog only.",
+  "resource_policy": "No artificial CPU/RAM/GPU/worker/wall-time cap; dependency and first-failure STOP determine scheduling. No scientific tasks run in B-PRE."
+}

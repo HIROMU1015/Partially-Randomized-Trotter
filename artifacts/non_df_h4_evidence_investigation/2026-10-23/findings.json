@@ -1,0 +1,135 @@
+{
+  "evidence_commit": "6892e95ffdfc78e75425e7432e9e4ccdb9958df1",
+  "independent_questions": [
+    "N/G numerical evidence sufficiency",
+    "original case supervisor native exit/reap/STOP completeness"
+  ],
+  "issues": [
+    {
+      "classification": "A",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/precision_rows.json",
+        "src/trotterlib/fixed_signal_accounting.py:54-80",
+        "src/trotterlib/h2_non_df_pilot.py:269-293"
+      ],
+      "finding": "Stored statuses and scientific SOURCE identify 22 axes rejected by the extra u/headroom guard and 18 axes left UNDETERMINED by nonpositive saved headroom.",
+      "id": "A_NG_CONTROL_FLOW",
+      "original_N_G_null_preserved": true,
+      "status": "RESOLVED_CAUSE_ONLY"
+    },
+    {
+      "classification": "A",
+      "evidence": [
+        "src/trotterlib/fixed_signal_accounting.py:48-80",
+        "src/trotterlib/h4_audited_evaluation.py:121-125"
+      ],
+      "finding": "Both verified flags are fixed False output metadata. They are not the direct null predicate. CERTIFIED is accepted as a label, without a certificate verifier.",
+      "id": "A_CERTIFICATE_FLAGS",
+      "status": "RESOLVED_SEMANTICS_ONLY"
+    },
+    {
+      "classification": "A",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/result.json",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/numerical_evidence.json",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/contract.json"
+      ],
+      "finding": "normalization, signed bias, empirical allowance, headroom and confidence allocation are saved; certificates are not thereby proven.",
+      "id": "A_VALUE_RECOVERY",
+      "status": "RECOVERED_EXISTING_FIELDS_ONLY"
+    },
+    {
+      "classification": "A",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/STOP.json",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/process.json"
+      ],
+      "finding": "Input generation native exit_code=0, reaped=true and COMPLETE_MANDATORY_STOP exist. They do not establish the case-stage native completion.",
+      "id": "A_INPUT_NATIVE_COMPLETION",
+      "status": "EXISTING_NATIVE_EVIDENCE_FOUND"
+    },
+    {
+      "classification": "A",
+      "evidence": [
+        "preservation_before.json",
+        "verification.json",
+        "github_retrieval.json"
+      ],
+      "finding": "738 scientific SOURCE files and 1147 committed evidence/claim files match. GitHub fixed files and commit provenance match local objects.",
+      "id": "A_PRESERVATION",
+      "status": "HASH_VERIFIED"
+    },
+    {
+      "classification": "B",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/precision_rows.json"
+      ],
+      "finding": "Saved inputs permit a new sensitivity/required-accuracy numerical analysis, but no ratios, replacement allowances, shots or G were computed in this investigation.",
+      "id": "B_REQUIRED_NUMERICAL_ACCURACY",
+      "status": "NOT_AUTHORIZED_NOT_PERFORMED"
+    },
+    {
+      "classification": "C",
+      "evidence": [
+        "src/trotterlib/h2_non_df_pilot.py:236-266",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/numerical_evidence.json"
+      ],
+      "finding": "A validated numerical error/bias enclosure requires additional method design and possibly fixed-input signal/matrix diagnostics. Dense/sparse agreement and an operation proxy are empirical evidence, not a proof.",
+      "id": "C_NUMERICAL_BIAS_ERROR_CERTIFICATE",
+      "status": "NOT_AUTHORIZED_NOT_PERFORMED"
+    },
+    {
+      "classification": "C",
+      "evidence": [
+        "src/trotterlib/rte.py:217-245",
+        "src/trotterlib/pauli_signal_adapter.py:193-205",
+        "src/trotterlib/fixed_signal_evaluation.py:94-105",
+        "src/trotterlib/h4_audited_evaluation.py:46-58"
+      ],
+      "finding": "Finite-law weights and floating log_B/margin exist; no verified numerical enclosure and bound-propagation certificate is saved. Proof design must be explicit before activation.",
+      "id": "C_PR_NORMALIZATION_CERTIFICATE",
+      "status": "NOT_AUTHORIZED_NOT_PERFORMED"
+    },
+    {
+      "classification": "D",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/postprocessing_recovery01/terminal_observation.json",
+        "src/trotterlib/isolated_qiskit_supervisor.py:319-362"
+      ],
+      "finding": "All four process.json files and original run/STOP.json and run01/STOP.json are missing. Popen/wait/reap records are not recoverable from the known saved set. New observations or a new run do not prove the historical completion.",
+      "id": "D_CASE_NATIVE_COMPLETION",
+      "status": "UNPROVEN_NO_RETROACTIVE_REPLACEMENT"
+    },
+    {
+      "classification": "E",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/progress_observations.jsonl",
+        "artifacts/non_df_h4_pilot/2026-10-23/postprocessing_recovery01/original_finalizer_log_preserved.log",
+        "artifacts/non_df_h4_pilot/2026-10-23/postprocessing_recovery01/recovery_authorization.json"
+      ],
+      "finding": "Last logs and later absence do not identify a signal, OOM, scheduler or launcher/session cause. Availability of external original audit records is unknown.",
+      "id": "E_MONITOR_DISAPPEARANCE_CAUSE",
+      "status": "UNKNOWN"
+    },
+    {
+      "classification": "E",
+      "evidence": [
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/contract.json",
+        "artifacts/non_df_h4_pilot/2026-10-23/run01/run/*/precision_rows.json"
+      ],
+      "finding": "No conclusion is available that new evidence will make any fixed precision eligible. Thresholds/models/candidates remain unchanged.",
+      "id": "E_FUTURE_NG_ACCEPTANCE",
+      "status": "UNDETERMINED"
+    }
+  ],
+  "mandatory_STOP": true,
+  "normalization_certificate_verified": false,
+  "numerical_reanalysis": false,
+  "original_N_G_null_preserved": true,
+  "original_native_completion_verified": false,
+  "original_supervisor_cause": "UNKNOWN",
+  "schema": "h4_static_evidence_investigation_v1",
+  "scientific_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+  "scientific_calls": 0
+}

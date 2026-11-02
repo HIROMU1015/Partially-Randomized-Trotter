@@ -1,0 +1,9 @@
+# 不一致と自己検証の限界
+
+Development初回unitは期待bit合計の誤記1799→1699を修正。障害summaryのFraction JSON化はdefault=strへ修正した。raw exact文書の科学的な変更ではない。development_record.jsonを保持し、初回を最終PASSとして扱わない。
+
+Producerとofflineは別process・別人工replayで照合するが、新codec/result validatorsと既存storage algorithmを共有する同一作者の自己検証である。独立したローカルCodex受入は未実施。旧独立1,038 PASSは固定参照であり今回へ合算しない。
+
+旧公開26 evidence-incompleteを再分類/修復していない。今回の人工障害も証拠不足と技術失敗を区別し、missing evidenceを補完しない。最終case別status・残る不一致はartificial_acceptance_matrix.json/verification.jsonに記録する。
+
+固定SOURCE 8d5135eeの22ケースは旧来歴として保全した。その後の自己点検でCanonical固有のAudit Seal/angle context変換を補い、最終測定SOURCEをb7ad3444へ更新した。delivery close例外時にfault_hitsが未返却となるテストは、原例外のinjection point確認へ修正した。旧ケースを新SOURCEの検証として数えず、新scopeで最終実行する。

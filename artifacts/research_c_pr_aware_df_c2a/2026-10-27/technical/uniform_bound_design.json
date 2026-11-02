@@ -1,0 +1,100 @@
+{
+  "status": "CONDITIONAL_STRUCTURE_NOT_AN_ENCLOSURE",
+  "target": "phase-sensitive exact controlled trajectories;same atom target;CAR bridge is separate",
+  "raw_coverage": {
+    "status": "RAW_GRAMMAR_REQUIREMENTS",
+    "modes": 8,
+    "events": 16,
+    "atom_alphabet": 216,
+    "tail_frames": 6,
+    "bases": 9,
+    "directed_head_transitions": 4,
+    "head_factors": 6,
+    "tail_basis_runs": [
+      1,
+      16
+    ],
+    "gaussian_occurrences_upper": 40,
+    "gaussian_RZ_upper": 8,
+    "gaussian_XXPlusYY_upper": 28,
+    "head_RZ_upper_per_factor": 8,
+    "head_RZZ_upper_per_factor": 28,
+    "tail_RZ_upper_per_event": 2,
+    "tail_CX_upper_per_event": 4,
+    "scalar_identity_P_upper": 7,
+    "arbitrary_tail_relative_fusion": false,
+    "head_tail_fusion": false,
+    "primitive_ids": [
+      "gaussian_basis",
+      "relative_gaussian",
+      "head_diagonal",
+      "signed_event",
+      "scalar_identity"
+    ],
+    "compiler_ids": [
+      "official_unroll",
+      "basis_translation",
+      "run_product",
+      "ZSXX_angles",
+      "ZSXX_simplification",
+      "mod2pi_phase",
+      "phase_accumulation"
+    ],
+    "shells": [
+      "head",
+      "X",
+      "Y"
+    ],
+    "adjoint": "actual inverse construction;separate rounding coverage required",
+    "input_restrictions": "finite numeric,unitary target,no measure/reset/delay/control-flow/calibration",
+    "H4_numeric_decode": false,
+    "worst_case_translated_nodes": null,
+    "all_law_synthesis": null
+  },
+  "P0_counts": {
+    "N": "nodes after initial translation to rz/sx/x/cx;not measured on H4",
+    "accepted_rewrites": "R<=N",
+    "accepted_matrix_gate_visits": "N+5R<=6N",
+    "loop_iterations": "<=N+1",
+    "max_run_length": "<=N",
+    "phase_additions": "<=N"
+  },
+  "conditions": [
+    "target=None,error_map=None,no calibrations",
+    "only ZSXX,in-basis strictly shorter substitutions",
+    "initial translation coverage must be proved separately",
+    "parameter-free inverse cancellation",
+    "GatesInBasis closes,so loop translation is inactive"
+  ],
+  "error_model": {
+    "raw": "sum multiplicity*valid local full-controlled operator enclosure",
+    "compiler": "sum valid run/phase/unroll/translation errors over covered paths",
+    "reference": "outward numerical verification uncertainty,not raw-CAR Bridge twice",
+    "shells": "head/X/Y once per round"
+  },
+  "branch_requirements": [
+    "uniform2x2 product backward error including gate-matrix evaluation",
+    "near-zero/near-pi theta branches and phase coupling",
+    "all ZSXX angle/mod2pi/drop/X shortcut branches",
+    "platform Rust transcendental error bounds",
+    "MPFR160 expression accumulation plus final float/mod2pi",
+    "official-definition and initial BasisTranslator parameter arithmetic"
+  ],
+  "precision_options": [
+    "validated small-matrix interval/analytic branch proof",
+    "high precision cross-check is diagnostic only",
+    "directed rounding alone does not bound the existing f64 transcendental implementation"
+  ],
+  "propagation": {
+    "n": "4*2^m",
+    "axis": "min(2,n*(epsilon_raw+epsilon_P0+epsilon_reference)+epsilon_head+epsilon_axis)",
+    "raw_complex": "2*(axis_X+axis_Y);existing exact L1 preview",
+    "m12_kernel_multiplier": "4*n=65536 before caps;available raw budget is not evaluated",
+    "attenuation": "no automatic multiplication/division;native unitary error is raw",
+    "averaging": "pointwise uniform bound survives any joint word law;IID assumptions remain separate for B1/C2B reference"
+  },
+  "missing_uniform_ZSXX_enclosure": null,
+  "missing_reference_enclosure": null,
+  "actual_H4_bound": null,
+  "scientific_calls": 0
+}

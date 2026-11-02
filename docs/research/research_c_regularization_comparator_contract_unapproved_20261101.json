@@ -1,0 +1,234 @@
+{
+  "schema": "C_RCDF_COMPARATOR_STAGE_A_CONTRACT_V1",
+  "status": "UNAPPROVED_PROPOSAL",
+  "scope": "C_RCDF_COMMON_OPTIMIZER_STAGE_A_V1",
+  "base_commit": "354a090da388c6d9718624bb4525ff3c72a22022",
+  "implementation_commit": "25e4c3c8e9a2a949fd4f626f502089ca2d8c6332",
+  "entry": "scripts/run_research_c_regularization_comparator.py",
+  "source_manifest": "artifacts/research_c_regularization_comparator/2026-11-01/technical/SOURCE.json",
+  "source_manifest_sha256": "4074644f94b8b4af64601e86a87bb5114bcd0735d3d584bbd0e8e7b9b3e901ec",
+  "objective": "rcdf_full_ordered_Z_l2_initial_value_matched_v1",
+  "initialization": "qualified_real_schur_snapshot_x0_v2",
+  "conditions": {
+    "atoms": 4,
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "ld": 2,
+    "representation": "number",
+    "optimizer": "L-BFGS-B",
+    "options": null,
+    "tol": 1e-08,
+    "strength": 0.1,
+    "epsilon_Ha": 1e-08,
+    "loss_scale_Ha_squared": 2.1839632053132894e-09,
+    "DF_budget_Ha": 0.00019875,
+    "kappa": "original_g_corrected_fixed",
+    "scalar": "original_once",
+    "original_frame_order": true,
+    "mass_comparison_allowance_Ha": 1e-10,
+    "new_fits": 1,
+    "retry": 0,
+    "resume": 0
+  },
+  "input_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "initial_snapshot": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+  "initial_scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json",
+  "original_input_provenance": {
+    "P_H4_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+    "fit_scientific_SOURCE": "e1085c95f5c01b68566e17d543ace5832cb94061",
+    "snapshot_sha256": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "original_g_kappa_retained": true
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/codec.json": "871097d995127a35120fda7ff4768834bf329bddb42959d2427a225a2d4d3096",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/initial_gate.json": "041dff8cee4c14767a03435eb9f84a05152b2dc00e322d74a702b6f6944a4bdf",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/initial_sector.json": "fe141d00d9ed6207ebde2f83f13d1440444b0f63a17aafee95cba052859d2c60",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/SOURCE.json": "da88d93f1dd41f7f3f0e4732e5b79552ba95eb6f96784611ee9df4cf3df733a9",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final.npz": "f3a3141059e29f79f39c3f6d3721562abfa7221ad97ce06a118331f6583e1a02",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final.npz": "f47a9fbf86918458ea0db6549468f2041b3b87bba6649ff70234467a442cd227",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final_diagnostic.json": "6a06967a6b02a4084677de0721fe67ce1fe9f83c43eb3b0a1f4431dec9b7c434",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final_diagnostic.json": "650021f8ef64d7bd73eb11f3ee1a0ef7d151eb63c0ad07901f0a99a1b7f010ad",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline_sector.json": "95aea3565fe157aeaa8912c28e5a02f7e5bda36c1d618c3795633ace2ac2f0cf",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed_sector.json": "f885b9e36d02129e88e9ea047c54d4feb31bc52661b468a4d97c2a298f991eba",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/optimizer.json": "bf134fdb475bf9f0d802e7d7caf564dc76f5eb2d4ecb337b99c219591d31bf96",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/optimizer.json": "c975d3ebeedf1e7787088e2363034dc5e006efa4ceea7dac300f7ba8449c371f"
+  },
+  "comparators": {
+    "baseline": {
+      "optimizer": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/optimizer.json",
+      "diagnostic": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final_diagnostic.json",
+      "sector": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline_sector.json"
+    },
+    "proposed": {
+      "optimizer": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/optimizer.json",
+      "diagnostic": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final_diagnostic.json",
+      "sector": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed_sector.json"
+    }
+  },
+  "comparator_provenance": {
+    "baseline": {
+      "export": "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final.npz",
+      "sha256": "f3a3141059e29f79f39c3f6d3721562abfa7221ad97ce06a118331f6583e1a02",
+      "scientific_SOURCE": "e1085c95f5c01b68566e17d543ace5832cb94061",
+      "new_numerical_evaluation": false
+    },
+    "proposed": {
+      "export": "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final.npz",
+      "sha256": "f47a9fbf86918458ea0db6549468f2041b3b87bba6649ff70234467a442cd227",
+      "scientific_SOURCE": "e1085c95f5c01b68566e17d543ace5832cb94061",
+      "new_numerical_evaluation": false
+    }
+  },
+  "objective_definition": {
+    "paper": "https://arxiv.org/html/2212.07957v3",
+    "paper_definition": "Eq17 f+rho sum_tkl |Z_tkl|^2, full ordered spatial indices",
+    "Z_equals": "J",
+    "spin_K_equals": "J/2; not the penalty variable",
+    "normalized": "f/fstar + alpha P/P0",
+    "P": "sum_all_frames_ordered_spatial_indices J_tij^2",
+    "P0": "P at same qualified initial J",
+    "alpha": 0.1,
+    "raw_rho_rule": "alpha*fstar/P0",
+    "strength_selection": "Equal initial penalty value to saved gamma0.1; not equal gradients/final errors/global minima",
+    "coefficient_multiplicity": "diag once/offdiagonal twice; packed gradient diag2J/off4J",
+    "optimizer_label": "RC-DF-type objective under common ffsim optimizer; not paper alternating implementation",
+    "fit_parameter_vector": "48 real rotation parameters then80 real symmetric upper triangle parameters;128 binary64 total",
+    "SCDF_comparison": "Excluded: rank-one WW and symmetry shifts alter the variable/model scope"
+  },
+  "call_limits": {
+    "saved_snapshots_load": 1,
+    "initial_tensor_assessment": 1,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "initial_gate": 1,
+    "final_snapshot_load": 1,
+    "comparison": 1,
+    "fit_input_load": 1,
+    "objective_setup": 1,
+    "optimized_fitter": 1,
+    "fit_initial_diagnostic": 1,
+    "fit_final_diagnostic": 1,
+    "final_tensor_assessment": 1
+  },
+  "call_definitions": {
+    "saved_snapshots_load": "Read fixed original h/g/c, qualified J/U/x0 and scale metadata as one packet",
+    "initial_tensor_assessment": "Independent original g minus initial DF tensor: Frobenius/max-entry",
+    "sector_context": "One SectorCAR(4), sector36",
+    "physical_sector": "One original physical sector Hamiltonian; original-g kappa",
+    "sector_assessment": "Initial/final norm and inherited engineering guard, once each",
+    "representation_assessment": "Initial/final general-K versus raw CAR, once each",
+    "initial_gate": "Representation and initial DF budget before optimizer",
+    "fit_input_load": "Dedicated fit process reads the same fixed packet",
+    "objective_setup": "P0=sum all ordered initial J squared; compute raw rho; verify fstar",
+    "optimized_fitter": "One existing ffsim invocation and one L-BFGS-B; options=None",
+    "fit_initial_diagnostic": "Initial objective, gradient, exact/smooth tail mass before iterations",
+    "fit_final_diagnostic": "Finite terminal objective/gradient/mass even if success=false",
+    "final_tensor_assessment": "Independent final Frobenius/max-entry",
+    "final_snapshot_load": "New final J/U/x/jac plus saved gamma0/.1 scalar references only",
+    "comparison": "Separate optimizer/DF decisions; descriptive tail mass; resource fields null"
+  },
+  "maximum_logical_units": 17,
+  "new_fits_maximum": 1,
+  "execution_order": [
+    "Passive SOURCE/input/environment/fresh preflight",
+    "Saved packet and initial tensor",
+    "Sector36 physical reference and initial sector/general-K",
+    "Initial DF gate",
+    "Dedicated fit: load, P0/setup, one fitter with before/after diagnostics",
+    "Final tensor and x/jac/optimizer export",
+    "Final sector/general-K",
+    "Saved scalar comparison",
+    "Mandatory STOP"
+  ],
+  "numerical_conditions": {
+    "dtype": "binary64/JAX x64",
+    "general_K_and_codec_component_atol": 1e-10,
+    "component_rtol": 0,
+    "initial_normalized_loss_atol": 1e-08,
+    "objective_export_atol": 1e-10,
+    "objective_export_rtol": 1e-08,
+    "DF_guard": "sector_operation_scale_guard8_proposal_v1",
+    "DF_budget_Ha": 0.00019875,
+    "mass_comparison_allowance_Ha": 1e-10,
+    "allowance_qualification": "Fixed engineering numerical pilot, not validated enclosure or strict CA"
+  },
+  "decision": {
+    "optimizer_success_independent_of_DF_budget": true,
+    "eligible_requires": [
+      "finite result",
+      "representation correctness",
+      "optimizer success",
+      "sector norm plus guard <= .00019875 Ha"
+    ],
+    "mass_relation": "Descriptive only; within1e-10 unresolved; no resource verdict",
+    "failed_optimizer": "Finite terminal diagnostics and sector evaluation only; no extra fit",
+    "budget_NOT_MET": "Record fixed-strength failure; no rho adjustment/rank change/initial-value fallback",
+    "all_resource_fields": "null"
+  },
+  "fresh_output": "artifacts/research_c_regularization_comparator/2026-11-01/run01",
+  "retry": 0,
+  "resume": 0,
+  "stages_B_C_authorized": false,
+  "later_stages": {
+    "B": "Only after Stage A research decision and separate fixed scope/permission: own-ground/alias, tail law, PF/RTE/A all13 rounds; no evidence transferred across DF",
+    "C": "Only if resources change the decision and separately permitted: own shots/native cohort, same-JU strong deterministic S2; no saved prices/shots transferred"
+  },
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "ffsim_commit": "558d3517385778c733f1aa226bb61b8f30f4b0f3",
+  "resources": {
+    "phase_wall_cap": null,
+    "total_wall_cap": null,
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "configuration": "One fit in dedicated process because of one-fit scientific scope and process-local hooks; cached existing JAX value/gradient; choose threads from actual resources; sector36 reference reused once",
+    "noninterference": "No shared settings/environment/cache/other-user job changes; task-local cache/output only"
+  },
+  "stop": [
+    "SOURCE/input/environment mismatch: no dependent science",
+    "Nonfinite or representation/codec correctness FAIL: preserve partial evidence and STOP",
+    "Initial DF budget NOT_MET: no optimizer",
+    "Unsuccessful optimizer: only registered finite terminal diagnostics then STOP",
+    "Final DF budget NOT_MET: no B/C",
+    "Normal completion: publish evidence, remote verification, mandatory STOP"
+  ],
+  "forbidden": [
+    "new integrals/physical input",
+    "new initialization/altered x0",
+    "additional fit/changed rho/rank or gamma search",
+    "old runner/grant/call leftover reuse",
+    "PF/RTE, ground/alias, shots, sampling, actual circuit build/compile or total cost",
+    "new approval proof/text/grant"
+  ]
+}

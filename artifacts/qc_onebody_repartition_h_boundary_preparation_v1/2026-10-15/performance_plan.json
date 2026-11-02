@@ -1,0 +1,42 @@
+{
+  "backend": "single process/single BLAS thread;36dim cached sector;reuse v1 sealed actor frames,spectrum,state and ground truth;no new eigensolver/RDM/selector",
+  "dominant_work": "PF small dense multiply/Schur and independent Padé;bounded512entry LRU spectral/Padé cache;stream one cell at a time instead of holding all eigenvectors",
+  "parallel_decision": "one small matrix and common sorted continuation/cache;1worker1thread preserves deterministic chain and avoids IPC/cache duplication;no usable GPU asserted",
+  "hardware": {
+    "logical_cpus": 32,
+    "memory_reference": "64GB prior hardware inspection;fresh /proc/meminfo recorded separately",
+    "GPU": "previous nvidia-smi driver unavailable;not assumed usable"
+  },
+  "previous_authorized_timing": "v1 producer36cells 1.01109s/68.56MB RSS;independent36PF/705expm 0.79s/~79.4MB RSS;not a promised speedup or run-time cap",
+  "call_caps": {
+    "attempts": 1,
+    "retry": 0,
+    "workers": 1,
+    "threads": 1,
+    "aggregate_RSS_bytes": 536870912,
+    "output_bytes": 536870912,
+    "log_bytes": 2097152,
+    "wall_time_seconds": null,
+    "CPU_time_seconds": null,
+    "saved_science_array_loads": 1,
+    "PF_seed_evaluations": 5172,
+    "PF_Schur_calls": 5172,
+    "independent_PF_recompositions": 5184,
+    "independent_expm_calls": 648000,
+    "new_H_truth_eigh_calls": 0,
+    "spatial_eigh_calls": 0,
+    "RDM_acquisitions": 0,
+    "direct_leading_evaluations": 0,
+    "selector_calls": 0,
+    "iterative_optimizer_calls": 0,
+    "molecular_generation_calls": 0,
+    "new_ground_state_preparations": 0,
+    "compiler_calls": 0,
+    "T_synthesis_calls": 0,
+    "method_records": 5184,
+    "cost_rows": 20736
+  },
+  "wall_time_cap": null,
+  "no_measured_speedup_claim": true,
+  "native_accounting": "v1 exact affine repeated-query vector grammar cached once/config/order;both target and price projections reuse it;synthetic comparison to v1 QR/fusion across h/query counts required"
+}

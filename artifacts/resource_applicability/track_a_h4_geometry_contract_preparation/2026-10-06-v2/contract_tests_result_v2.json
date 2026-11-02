@@ -1,0 +1,2204 @@
+{
+  "schema_version": "h4-contract-synthetic-tests-v2",
+  "status": "SYNTHETIC_CONTRACT_V2_TESTS_PASS",
+  "evidence_scope": "local synthetic JSON only; not scientific, CI or independent external reproduction",
+  "passed": 320,
+  "failed": 0,
+  "skipped": 0,
+  "case_groups": {
+    "schema": 8,
+    "scope": 11,
+    "plan": 29,
+    "stage": 14,
+    "stage_preauthorization": 96,
+    "stage_skip": 17,
+    "stage_prerequisite": 12,
+    "input_freeze": 6,
+    "stage_binding": 21,
+    "memory_admission": 40,
+    "memory_pressure": 6,
+    "numerical_gates": 12,
+    "v1_identity_cache": 25,
+    "v1_foreign_owner": 18,
+    "v1_accounting": 5
+  },
+  "historical_v1_cases_saved_not_rerun": 129,
+  "historical_v1_runner_executions": 0,
+  "actual_authorizations_issued": 0,
+  "real_trajectory_seeds_generated": 0,
+  "new_synthetic_transpiles": 0,
+  "scientific_import_attempts": [],
+  "protected_access_attempts": [],
+  "elapsed_seconds": 0.47394563630223274,
+  "python_executable": "/home/AbeHiromu/venvs/trotter-common/bin/python",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 /home/AbeHiromu/venvs/trotter-common/bin/python -B run_contract_tests_v2.py",
+  "new_test_source_sha256": "1677ae5e6d2d08b7164ed8d207eb907635165d7fd28a9d11ba4fd19b7da7ae2c",
+  "cases": [
+    {
+      "group": "schema",
+      "name": "scope structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "plan structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "stage_contract structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "memory_observation structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "checkpoint structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "completion_ledger structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "numerical_circuit structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "schema",
+      "name": "result structure",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "scope",
+      "name": "exact v2 scope",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "plan",
+      "name": "exact v2 plan+digest+coverage",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "exact stage contract",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "plan and stage JSON agree",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "plan",
+      "name": "reject changed distances_angstrom",
+      "expected": "reject",
+      "passed": true,
+      "reason": "['0.70', '0.80', '0.90', '1.10', '1.40', '1.60'] was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed source_port_authorized",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed input_generation_authorized",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed science_execution_authorized",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed execution_plan_sealed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed input_generation_plan_sealed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed next_stage_authorized",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed automatic_research_decision_authorized",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed research_decision",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed mandatory_stop",
+      "expected": "reject",
+      "passed": true,
+      "reason": "True was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed master_seed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed actual_science_source_commit",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed actual_science_source_hashes",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed new_snapshot_identities",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed execution_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed input_generation_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed signal_compile_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed science_output_root",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed science_output_directory_created",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed runtime_cache_registry_created",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed contract_conditions_fully_closed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed actual_run_id",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed actual_allowed_cpu_count",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed observed_memory_reserved",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed unresolved_decisions",
+      "expected": "reject",
+      "passed": true,
+      "reason": "['REVIEW_APPROVAL_D1', 'REVIEW_APPROVAL_D2', 'REVIEW_APPROVAL_D3', 'REVIEW_APPROVAL_D4'] was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed additional_candidate",
+      "expected": "reject",
+      "passed": true,
+      "reason": "Additional properties are not allowed ('additional_candidate' was unexpected)"
+    },
+    {
+      "group": "plan",
+      "name": "reject changed stage",
+      "expected": "reject",
+      "passed": true,
+      "reason": "'CONTRACT_V2_AWAITING_REVIEW' was expected"
+    },
+    {
+      "group": "plan",
+      "name": "reject plan digest mismatch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "plan digest mismatch"
+    },
+    {
+      "group": "scope",
+      "name": "remove template",
+      "expected": "reject",
+      "passed": true,
+      "reason": "[{'template_id': 'B0-rank3-q1-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q2-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q4-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q8-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q1-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q2-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q4-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q8-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q1-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q2-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q4-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q8-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q1-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q2-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q4-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q8-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r64-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 64, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r64-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 64, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q1-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q2-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q4-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q8-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q1-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q2-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q4-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q8-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}] was expected"
+    },
+    {
+      "group": "scope",
+      "name": "duplicate template",
+      "expected": "reject",
+      "passed": true,
+      "reason": "[{'template_id': 'B0-rank3-q1-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q2-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q4-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q8-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q1-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q2-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q4-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q8-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q1-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q2-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q4-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q8-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q1-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q2-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q4-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q8-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r64-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 64, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r64-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 64, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q1-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q2-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q4-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q8-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q1-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q2-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q4-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q8-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}] was expected"
+    },
+    {
+      "group": "scope",
+      "name": "replace template",
+      "expected": "reject",
+      "passed": true,
+      "reason": "[{'template_id': 'B0-rank3-q1-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q2-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q4-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank3-q8-r0-K0', 'method': 'B0', 'L_D': 3, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q1-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q2-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q4-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank6-q8-r0-K0', 'method': 'B0', 'L_D': 6, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q1-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q2-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q4-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B0-rank9-q8-r0-K0', 'method': 'B0', 'L_D': 9, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q1-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q2-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q4-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B1-rank12-q8-r0-K0', 'method': 'B1', 'L_D': 12, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q2-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q4-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r1-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r1-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r2-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r2-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r4-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r4-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r8-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r8-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r16-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r16-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r32-K2', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q8-r32-K4', 'method': 'B2', 'L_D': 3, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q1-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q2-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q4-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r1-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r1-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r2-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r2-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r4-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r4-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r8-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r8-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r16-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r16-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r32-K2', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank6-q8-r32-K4', 'method': 'B2', 'L_D': 6, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q1-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q2-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q4-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r1-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r1-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r2-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r2-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r4-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r4-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r8-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r8-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r16-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r16-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r32-K2', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank9-q8-r32-K4', 'method': 'B2', 'L_D': 9, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q1-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 1, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q2-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 2, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q4-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 4, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r1-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 1, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r1-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 1, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r2-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 2, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r2-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 2, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r4-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 4, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r4-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 4, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r8-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 8, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r8-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 8, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r16-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 16, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r16-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 16, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r32-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 32, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r32-K4', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 32, 'K': 4, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B3-rank0-q8-r64-K2', 'method': 'B3', 'L_D': 0, 'q': 8, 'r': 64, 'K': 2, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'B2-rank3-q1-r64-K2', 'method': 'B2', 'L_D': 3, 'q': 1, 'r': 64, 'K': 2, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q1-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q2-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q4-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank4-q8-r0-K0', 'method': 'B0', 'L_D': 4, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q1-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 1, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.8, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q2-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 2, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.4, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q4-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 4, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.2, 'new_candidate_fingerprint': None}, {'template_id': 'PM1-B0-rank5-q8-r0-K0', 'method': 'B0', 'L_D': 5, 'q': 8, 'r': 0, 'K': 0, 'T': 0.8, 'delta': 0.1, 'new_candidate_fingerprint': None}] was expected"
+    },
+    {
+      "group": "scope",
+      "name": "compile cap 74785",
+      "expected": "reject",
+      "passed": true,
+      "reason": "{'cpu_worker_max': 12, 'blas_threads_per_worker': 1, 'qiskit_internal_processes': 1, 'rayon_threads_per_worker': 1, 'random_trajectories_per_cell': 32, 'paired_axes': ['cosine', 'sine'], 'signal_records_per_geometry': 218, 'total_signal_records': 1308, 'random_wrappers_per_geometry': 12416, 'baseline_wrappers_per_geometry': 48, 'logical_wrapper_records_per_geometry': 12464, 'total_logical_wrapper_records': 74784, 'actual_science_transpile_invocation_cap': 74784, 'additional_trajectories': 0, 'science_memory_cap': None, 'science_wall_cap': None, 'science_output_root': None, 'total_qubits': 9, 'ancilla_count': 1} was expected"
+    },
+    {
+      "group": "scope",
+      "name": "trajectory 96",
+      "expected": "reject",
+      "passed": true,
+      "reason": "{'cpu_worker_max': 12, 'blas_threads_per_worker': 1, 'qiskit_internal_processes': 1, 'rayon_threads_per_worker': 1, 'random_trajectories_per_cell': 32, 'paired_axes': ['cosine', 'sine'], 'signal_records_per_geometry': 218, 'total_signal_records': 1308, 'random_wrappers_per_geometry': 12416, 'baseline_wrappers_per_geometry': 48, 'logical_wrapper_records_per_geometry': 12464, 'total_logical_wrapper_records': 74784, 'actual_science_transpile_invocation_cap': 74784, 'additional_trajectories': 0, 'science_memory_cap': None, 'science_wall_cap': None, 'science_output_root': None, 'total_qubits': 9, 'ancilla_count': 1} was expected"
+    },
+    {
+      "group": "scope",
+      "name": "ancilla count8",
+      "expected": "reject",
+      "passed": true,
+      "reason": "{'molecule': 'H4 linear', 'basis': 'STO-3G', 'requested_df_rank': 12, 'required_actual_df_rank': 12, 'system_qubits': 8, 'T': 0.8, 'delta_rule': 'T/q', 'pf_order': 2, 'sampling_policy': 'canonical finite-RTE', 'reference_target': 'Lowest eigenstate of the geometry-specific DF Hamiltonian in the fixed physical sector; not exact untruncated chemistry energy.', 'ancilla_count': 1, 'ancilla_index': 8, 'total_qubits': 9} was expected"
+    },
+    {
+      "group": "scope",
+      "name": "memory headroom0",
+      "expected": "reject",
+      "passed": true,
+      "reason": "{'D1_SCF_DF': {'status': 'REVIEW_PROPOSAL_NOT_APPROVED', 'method': 'RHF', 'charge': 0, 'multiplicity': 1, 'spin': 0, 'basis': 'STO-3G', 'unit': 'Angstrom', 'symmetry': False, 'initial_guess': 'minao', 'dm0': None, 'conv_tol_Ha': 1e-09, 'max_cycle': 50, 'conv_tol_grad': 3.1622776601683795e-05, 'tight_gradient_norm': True, 'check_convergence': None, 'conv_check': True, 'ordinary_DIIS': {'enabled': True, 'class': 'pyscf.scf.diis.CDIIS', 'space': 8, 'start_cycle_zero_based': 1, 'damp': 0, 'rollback': 0, 'file': None}, 'damp': 0, 'level_shift': 0, 'direct_scf': True, 'direct_scf_tol': 1e-13, 'pyscf_advisory_max_memory_MB': 4000, 'checkpoint': None, 'convergence_acceptance': 'mf.converged AND a main cycle has abs(delta_E)<1e-9 and raw orbital-gradient L2<sqrt(1e-9); after normal extra confirmation, final raw gradient<sqrt(1e-9), finite energies/integrals/MOs. Built-in relaxed extra-cycle OR is not sufficient by itself.', 'guess_fallback': 'minao internal atom fallback, unavailable projection/basis, missing source verification => STOP; no alternative guess after results', 'rescue': {'Newton': False, 'restart': False, 'different_guess': False, 'change_DIIS_after_failure': False, 'cycle_extension': False}, 'coordinates': 'H_i=(0,0,(i-1.5)*d) Angstrom, i=0..3; decimal d string converted once to binary64; preserve ordered atom IDs', 'integrals': 'real nonrelativistic all-electron RHF; AO hcore=T+V_nuc, overlap S, Coulomb ERI; C.T@hcore@C; ao2mo.kernel then restore(1), transpose(0,2,3,1) to OpenFermion (ps|qr); include nuclear repulsion; all 4 spatial orbitals, no frozen core/active-space reduction', 'MO_order_phase': 'ascending canonical orbital energies; PySCF generalized scipy.linalg.eigh(h,S), first maximum-absolute real AO component positive; no localization or geometry tracking. MO degeneracy with relative gap<=1e-12 => STOP, no eigenspace rotation', 'spin_orbitals': '2p=alpha,2p+1=beta; OpenFermion spinorb_from_spatial incl EQ_TOLERANCE=1e-8 zeroing, InteractionOperator two-body factor 1/2; no new screening', 'DF': {'package': 'openfermion', 'version': '1.6.1', 'spin_basis': True, 'final_rank': 12, 'truncation_threshold': 1e-08, 'tolerance_overridden_by_final_rank': True, 'source_tensor_symmetry_absolute_L1': 1e-08, 'rank_acceptance': 'returned lambda/G count exactly12, finite arrays; actual rank means returned fragment count, not number of eigenvalues above a numerical threshold; retain small/zero lambda unchanged; no padding, rank/threshold/geometry rescue', 'rank_shortfall': 'STOP'}, 'untested': 'proposed explicit controls are source-audited, not molecularly exercised; existing run_pyscf saves data and hides controls, so later separate source must expose controls and disable implicit checkpoint/save', 'cart': False, 'incore_anyway': False}, 'D2_ORDER_SOLVER_GATES': {'status': 'REVIEW_PROPOSAL_NOT_APPROVED', 'fragment_order': 'preserve OpenFermion generated order exactly; S0/M1 generation_ranked_fragments enumerates it; no generic Frobenius reranking', 'generation_weight': 'abs(lambda)*(sum(abs(G_spin)))**2', 'weight_tie': 'retain installed numpy.argsort(weights)[::-1] emitted order and full returned permutation; do not claim stable equal-weight tie sorting. Exact equal nonzero-significant weights crossing any planned prefix 3/4/5/6/9/12 => STOP before science signal/cost; null ties and other ties retain emitted index, frozen once with no rerun', 'DF_sign': 'first maximum-absolute C-flattened real spatial eigenvector element positive; same sign applied to G; record raw eigenpair index and returned permutation; G squared unchanged, new bytes not claimed identical to legacy', 'DF_degeneracy': 'using full 16 eigenpairs, relative gap |lambda_i-lambda_j|/max(1,max|lambda|)<=1e-12, at least one pair retained and at least one |lambda|/max(1,max|lambda|)>1e-12 => STOP. Null eigenspaces retain the pinned solver single invocation basis/permutation, sign-canonicalized and frozen; never rotate/rerun/substitute, and retain exact small coefficients. No cross-host basis reproducibility claimed', 'degeneracy_relative_threshold': 1e-12, 'sector': {'electrons': 4, 'Nalpha': 2, 'Nbeta': 2, 'dimension': 36, 'basis': 'OpenFermion JW spin-orbital bit p at integer bit (7-p); choose alpha2/beta2 occupations, ascending 8-bit integer indices; Qiskit state conversion is explicit 8-bit reversal, qubit p little-endian; no reordered sector after results'}, 'solver': {'name': 'numpy.linalg.eigh', 'UPLO': 'L', 'dtype': 'complex128', 'matrix': 'dense 36x36 sector DF H; check original Hermiticity then use (H+H.conj().T)/2; ascending eigenvalues; choose index0 only'}, 'phase': 'first maximum-absolute component in ordered sector basis; multiply by exp(-i*angle(pivot)) and ensure positive real pivot; apply same phase to full state; no selection among degenerate states', 'gates': {'state_norm_absolute_max': 1e-12, 'reference_residual_L2_Ha_max': 1e-09, 'relative_Hermiticity_max': 1e-12, 'imaginary_energy_Ha_max': 1e-11, 'minimum_sector_gap_Ha_STOP_if_le': 1e-10}, 'norm_definitions': 'abs(norm2(psi)-1); residual against original H and Rayleigh real E; Hermiticity spectral-norm(H-H†)/max(1,spectral-norm(H)); abs(Im(psi†Hpsi)); gap=E1-E0. Outside-sector amplitude and full/sector consistency absolute max<=1e-12', 'gate_failure': 'STOP; no state/prefix/rank substitution, threshold relaxation, retry or resume'}, 'D3_MASTER_SEED': {'status': 'REVIEW_PROPOSAL_NOT_APPROVED', 'proposed_master_seed': 20261006, 'actual_master_seed': None, 'seed_rules': {'encoding': 'UTF-8 sorted-key compact JSON; integer literals; floats as canonical float.hex tagged real64_hex; complex as [real_hex,imag_hex]; signed zero retained; NaN/infinity/symbolic rejected', 'trajectory': 'SHA256(domain=h4-trajectory-v1,master_seed,geometry,H,DF,state,template,source,compiler,environment,wrapper_semantics,index); first8 bytes unsigned big-endian; no axis/epsilon', 'step_occurrence': 'future sampler domain h4-step-occurrence-v1, parent trajectory seed, outer_step=0..q-1, short_step=0..r-1, occurrence=0..K-1, draw_kind; independent derived RNG stream per occurrence; no axis/epsilon', 'duplicate_seed': 'STOP; no replacement seed, extension or implicit retry', 'wrapper_key': 'SHA256(domain=h4-wrapper-v1,all identity fields including axis,trajectory_seed,index); baseline seed/index both null', 'sample_weight': 'random each 1/32; baseline 1; reuse never deduplicates logical samples'}, 'actual_trajectory_seeds_created': 0, 'rule': 'derive science seeds only after actual source/input identities fixed and separate science launch; no placeholder hash seed fixation; artificial tests reuse seed7 records only'}, 'D4_MEMORY_WALL_OUTPUT': {'status': 'REVIEW_PROPOSAL_NOT_APPROVED', 'unit_bytes_per_GiB': 1073741824, 'worker_address_space_budget_bytes': 8589934592, 'driver_address_space_budget_bytes': 8589934592, 'worker_RSS_stop_bytes': 8589934592, 'driver_RSS_stop_bytes': 8589934592, 'fixed_host_headroom_bytes': 17179869184, 'worker_max': 12, 'worker_min': 1, 'owned_address_space_sum_at_max_bytes': 111669149696, 'required_available_at_max_bytes': 128849018880, 'required_available_formula': 'driver_budget + w * worker_budget + fixed_host_headroom', 'selection': 'largest integer w in [1,min(requested,12,allowed_cpu_count)] satisfying effective_available_bytes>=required_available(w); reduce before launch only; if w=1 cannot fit STOP', 'admission_observation': 'fresh<=5s host /proc/meminfo MemAvailable (kB*1024); effective available=min(host,finite current cgroup memory.max-memory.current). Missing/malformed/negative/stale values STOP. /proc/self/status Cpus_allowed_list intersects explicitly permitted CPU set; permission count null now, cannot infer permission from nproc', 'RSS_vs_AS': 'future own-process RLIMIT_AS hard/soft8GiB for each worker and driver, not host/cgroup change; RSS separately from own /proc/<pid>/status VmRSS and tree, monitor every<=5s; sum budget104GiB is neither RSS guarantee nor reserved physical memory; advisory PySCF max_memory4000MB is separate', 'pressure_stop': 'host/effective available<16GiB, own RSS>per-role budget or total admitted own budget, allocation/AS limit failure, memory PSI full avg10>0, or cgroup OOM event delta>0 => stop own run, preserve audit and STOP for review. No automatic worker restart/retry/resume or host swap/cgroup/job change', 'wall_stop_seconds': 259200, 'wall_clock': 'time.monotonic from first stage launch; total generation+map<=72h, persisted consumed seconds, downtime not reset; wall is stop ceiling not ETA', 'output_cap_bytes': 10737418240, 'output_accounting': 'all own-run snapshots/logs/records/manifests/temp files included; reserve bytes before write, stop if next write exceeds10GiB; symlink escapes rejected; no output eviction to free budget or overwritten evidence', 'proposed_run_id': 'track-a-h4-geometry-v2-20261006-run01', 'proposed_absolute_project_root': '/home/AbeHiromu/projects/partially-randomized-trotter', 'proposed_absolute_output_root': '/home/AbeHiromu/projects/partially-randomized-trotter/artifacts/resource_applicability/track_a_h4_geometry_execution/track-a-h4-geometry-v2-20261006-run01', 'run_registration': 'future exclusive fixed run ID, no existing output overwrite; generation closes at frozen inputs STOP, separate map launch references same frozen inputs with different authorization; no automatic resume', 'output_directory_created': False, 'registry_created': False, 'resource_reservation_claimed': False, 'shared_environment_or_other_jobs_changed': False}} was expected"
+    },
+    {
+      "group": "scope",
+      "name": "generation can compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "{'schema_version': 'h4-two-stage-authorization-contract-v2', 'artifact_scope': 'REVIEW_CONTRACT_ONLY_NOT_AUTHORIZATION', 'stages': ['CONTRACT_V2_AWAITING_REVIEW', 'CONTRACT_CONDITIONS_APPROVED', 'SCIENCE_SOURCE_IMPLEMENTED', 'SCIENCE_SOURCE_FROZEN', 'INPUT_GENERATION_PLAN_READY', 'INPUT_GENERATION_AUTHORIZATION_REVIEWED', 'INPUT_GENERATION_LAUNCH_APPROVED', 'INPUTS_FROZEN_STOP', 'INPUT_BOUND_SIGNAL_PLAN_SEALED', 'SIGNAL_AUTHORIZATION_REVIEWED', 'SIGNAL_LAUNCH_APPROVED', 'MAP_COMPLETE_STOP'], 'transitions': [{'from': 'CONTRACT_V2_AWAITING_REVIEW', 'action': 'approve_contract', 'to': 'CONTRACT_CONDITIONS_APPROVED'}, {'from': 'CONTRACT_CONDITIONS_APPROVED', 'action': 'implement_source', 'to': 'SCIENCE_SOURCE_IMPLEMENTED'}, {'from': 'SCIENCE_SOURCE_IMPLEMENTED', 'action': 'freeze_source', 'to': 'SCIENCE_SOURCE_FROZEN'}, {'from': 'SCIENCE_SOURCE_FROZEN', 'action': 'prepare_generation_plan', 'to': 'INPUT_GENERATION_PLAN_READY'}, {'from': 'INPUT_GENERATION_PLAN_READY', 'action': 'review_generation_authorization', 'to': 'INPUT_GENERATION_AUTHORIZATION_REVIEWED'}, {'from': 'INPUT_GENERATION_AUTHORIZATION_REVIEWED', 'action': 'explicit_generation_launch', 'to': 'INPUT_GENERATION_LAUNCH_APPROVED'}, {'from': 'INPUT_GENERATION_LAUNCH_APPROVED', 'action': 'generate_freeze_inputs_then_stop', 'to': 'INPUTS_FROZEN_STOP'}, {'from': 'INPUTS_FROZEN_STOP', 'action': 'seal_input_bound_signal_plan', 'to': 'INPUT_BOUND_SIGNAL_PLAN_SEALED'}, {'from': 'INPUT_BOUND_SIGNAL_PLAN_SEALED', 'action': 'review_signal_authorization', 'to': 'SIGNAL_AUTHORIZATION_REVIEWED'}, {'from': 'SIGNAL_AUTHORIZATION_REVIEWED', 'action': 'explicit_signal_launch', 'to': 'SIGNAL_LAUNCH_APPROVED'}, {'from': 'SIGNAL_LAUNCH_APPROVED', 'action': 'signal_compile_map_then_stop', 'to': 'MAP_COMPLETE_STOP'}], 'input_generation': {'separate_source_bound_plan': True, 'new_input_hashes_required_before_generation': False, 'separate_authorization': True, 'review_and_explicit_launch_required': True, 'only_six_distances': True, 'freeze_bytes_then_STOP': True, 'signal_sampling_build_compile_permitted': False}, 'signal_compile': {'input_hashes_required_for_seal': True, 'all_six_frozen_inputs_required': True, 'separate_result_prior_authorization': True, 'review_and_explicit_launch_required': True, 'must_not_reuse_generation_authorization': True, 'mandatory_STOP_after_map': True}, 'semantic_gates': {'source_stage': 'synthetic semantic tests only, no molecular import or actual signal/cost', 'generation_stage': 'SCF/DF/state/sector/order/coordinate gates only under generation authorization; no signal/cost', 'science_stage': 'actual input-bound signal/cost gates only after signal authorization and explicit launch; never before authorization'}, 'authorization_issued_now': 0, 'current_stage': 'CONTRACT_V2_AWAITING_REVIEW', 'synthetic_validator_is_an_execution_controller': False} was expected"
+    },
+    {
+      "group": "scope",
+      "name": "seal null inputs",
+      "expected": "reject",
+      "passed": true,
+      "reason": "False was expected"
+    },
+    {
+      "group": "scope",
+      "name": "workers13",
+      "expected": "reject",
+      "passed": true,
+      "reason": "{'cpu_worker_max': 12, 'blas_threads_per_worker': 1, 'qiskit_internal_processes': 1, 'rayon_threads_per_worker': 1, 'random_trajectories_per_cell': 32, 'paired_axes': ['cosine', 'sine'], 'signal_records_per_geometry': 218, 'total_signal_records': 1308, 'random_wrappers_per_geometry': 12416, 'baseline_wrappers_per_geometry': 48, 'logical_wrapper_records_per_geometry': 12464, 'total_logical_wrapper_records': 74784, 'actual_science_transpile_invocation_cap': 74784, 'additional_trajectories': 0, 'science_memory_cap': None, 'science_wall_cap': None, 'science_output_root': None, 'total_qubits': 9, 'ancilla_count': 1} was expected"
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical approve_contract",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical implement_source",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical freeze_source",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical prepare_generation_plan",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical review_generation_authorization",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical explicit_generation_launch",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical generate_freeze_inputs_then_stop",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical seal_input_bound_signal_plan",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical review_signal_authorization",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical explicit_signal_launch",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage",
+      "name": "valid hypothetical signal_compile_map_then_stop",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects freeze_source",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "CONTRACT_V2_AWAITING_REVIEW rejects prepare_generation_plan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects prepare_generation_plan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "CONTRACT_CONDITIONS_APPROVED rejects review_generation_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects review_generation_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "SCIENCE_SOURCE_IMPLEMENTED rejects explicit_generation_launch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SCIENCE_SOURCE_FROZEN rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "SCIENCE_SOURCE_FROZEN rejects explicit_generation_launch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "SCIENCE_SOURCE_FROZEN rejects generate_freeze_inputs_then_stop",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_PLAN_READY rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_GENERATION_PLAN_READY rejects generate_freeze_inputs_then_stop",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_GENERATION_PLAN_READY rejects seal_input_bound_signal_plan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects seal_input_bound_signal_plan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_GENERATION_AUTHORIZATION_REVIEWED rejects review_signal_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects review_signal_authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_GENERATION_LAUNCH_APPROVED rejects explicit_signal_launch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUTS_FROZEN_STOP rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUTS_FROZEN_STOP rejects explicit_signal_launch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUTS_FROZEN_STOP rejects signal_compile_map_then_stop",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_skip",
+      "name": "INPUT_BOUND_SIGNAL_PLAN_SEALED rejects signal_compile_map_then_stop",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_AUTHORIZATION_REVIEWED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "SIGNAL_LAUNCH_APPROVED rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "stage skip or operation before authorization"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects input_generation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects sampling",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects build",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects compile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects transpile",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects retry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_preauthorization",
+      "name": "MAP_COMPLETE_STOP rejects resume",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unknown or terminal stage"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing contract_conditions_approved",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: contract_conditions_approved"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing separate_implementation_instruction",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: separate_implementation_instruction"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing synthetic_source_gates_passed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: synthetic_source_gates_passed"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing generation_plan_source_bound",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: generation_plan_source_bound"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing generation_authorization_reviewed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: generation_authorization_reviewed"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing generation_explicit_launch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: generation_explicit_launch"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing resources_admitted",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: resources_admitted"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing generation_numerical_gates_passed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: generation_numerical_gates_passed"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing generation_complete_stop",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: generation_complete_stop"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing input_bound_signal_plan_sealed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: input_bound_signal_plan_sealed"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing signal_authorization_reviewed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: signal_authorization_reviewed"
+    },
+    {
+      "group": "stage_prerequisite",
+      "name": "missing signal_explicit_launch",
+      "expected": "reject",
+      "passed": true,
+      "reason": "missing prerequisite: signal_explicit_launch"
+    },
+    {
+      "group": "input_freeze",
+      "name": "null hamiltonian_sha256 cannot seal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "null or invalid frozen input: hamiltonian_sha256"
+    },
+    {
+      "group": "input_freeze",
+      "name": "null df_sha256 cannot seal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "null or invalid frozen input: df_sha256"
+    },
+    {
+      "group": "input_freeze",
+      "name": "null state_sha256 cannot seal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "null or invalid frozen input: state_sha256"
+    },
+    {
+      "group": "input_freeze",
+      "name": "null sector_sha256 cannot seal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "null or invalid frozen input: sector_sha256"
+    },
+    {
+      "group": "input_freeze",
+      "name": "null order_sha256 cannot seal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "null or invalid frozen input: order_sha256"
+    },
+    {
+      "group": "input_freeze",
+      "name": "null coordinate_sha256 cannot seal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "null or invalid frozen input: coordinate_sha256"
+    },
+    {
+      "group": "stage_binding",
+      "name": "missing one distance",
+      "expected": "reject",
+      "passed": true,
+      "reason": "six frozen inputs required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "duplicate distance",
+      "expected": "reject",
+      "passed": true,
+      "reason": "input geometry coverage/order"
+    },
+    {
+      "group": "stage_binding",
+      "name": "null source",
+      "expected": "reject",
+      "passed": true,
+      "reason": "actual source commit required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "foreign source",
+      "expected": "reject",
+      "passed": true,
+      "reason": "independent source binding"
+    },
+    {
+      "group": "stage_binding",
+      "name": "missing source hashes",
+      "expected": "reject",
+      "passed": true,
+      "reason": "source hashes required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "foreign generation plan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "independent generation plan binding"
+    },
+    {
+      "group": "stage_binding",
+      "name": "foreign input-bound plan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "independent input-bound plan binding"
+    },
+    {
+      "group": "stage_binding",
+      "name": "generation authorization used for signal",
+      "expected": "reject",
+      "passed": true,
+      "reason": "separate authorization scope"
+    },
+    {
+      "group": "stage_binding",
+      "name": "actual signal before authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "actual signal/cost cannot be used to pass preauthorization gates"
+    },
+    {
+      "group": "stage_binding",
+      "name": "attempt real authorization",
+      "expected": "reject",
+      "passed": true,
+      "reason": "actual authorization forbidden"
+    },
+    {
+      "group": "stage_binding",
+      "name": "missing synthetic marker",
+      "expected": "reject",
+      "passed": true,
+      "reason": "fictional scope required"
+    },
+    {
+      "group": "stage",
+      "name": "generation plan can precede new input hashes",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "stage_binding",
+      "name": "generation example rejects result_prior",
+      "expected": "reject",
+      "passed": true,
+      "reason": "result-prior authorization example required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "generation example rejects source_commit",
+      "expected": "reject",
+      "passed": true,
+      "reason": "authorization source mismatch"
+    },
+    {
+      "group": "stage_binding",
+      "name": "generation example rejects plan_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "authorization plan mismatch"
+    },
+    {
+      "group": "stage_binding",
+      "name": "generation example rejects marker",
+      "expected": "reject",
+      "passed": true,
+      "reason": "fictional authorization required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "generation example rejects scope",
+      "expected": "reject",
+      "passed": true,
+      "reason": "separate authorization scope"
+    },
+    {
+      "group": "stage_binding",
+      "name": "signal example rejects result_prior",
+      "expected": "reject",
+      "passed": true,
+      "reason": "result-prior authorization example required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "signal example rejects source_commit",
+      "expected": "reject",
+      "passed": true,
+      "reason": "authorization source mismatch"
+    },
+    {
+      "group": "stage_binding",
+      "name": "signal example rejects plan_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "authorization plan mismatch"
+    },
+    {
+      "group": "stage_binding",
+      "name": "signal example rejects marker",
+      "expected": "reject",
+      "passed": true,
+      "reason": "fictional authorization required"
+    },
+    {
+      "group": "stage_binding",
+      "name": "signal example rejects scope",
+      "expected": "reject",
+      "passed": true,
+      "reason": "separate authorization scope"
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 1",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below minimum STOP",
+      "expected": "reject",
+      "passed": true,
+      "reason": "minimum worker cannot be admitted: STOP"
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 2",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 2 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 3",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 3 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 4",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 4 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 5",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 5 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 6",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 6 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 7",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 7 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 8",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 8 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 9",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 9 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 10",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 10 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 11",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 11 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "exact boundary admits 12",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "one byte below 12 lowers worker",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "64GiB CPU12 requested12 => 5",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "120GiB CPU12 requested12 => 12",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "1024GiB CPU3 requested12 => 3",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "120GiB CPU12 requested4 => 4",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "32GiB CPU1 requested12 => 1",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "120GiB CPU1 requested12 => 1",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject available_bytes=-1",
+      "expected": "reject",
+      "passed": true,
+      "reason": "-1 is less than the minimum of 0"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject available_bytes=True",
+      "expected": "reject",
+      "passed": true,
+      "reason": "True is not of type 'integer'"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject allowed_cpu_count=0",
+      "expected": "reject",
+      "passed": true,
+      "reason": "minimum worker cannot be admitted: STOP"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject allowed_cpu_count=True",
+      "expected": "reject",
+      "passed": true,
+      "reason": "True is not of type 'integer'"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject requested_workers=13",
+      "expected": "reject",
+      "passed": true,
+      "reason": "13 is greater than the maximum of 12"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject requested_workers=0",
+      "expected": "reject",
+      "passed": true,
+      "reason": "0 is less than the minimum of 1"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject observation_age_seconds=6",
+      "expected": "reject",
+      "passed": true,
+      "reason": "6 is greater than the maximum of 5"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject observation_age_seconds=True",
+      "expected": "reject",
+      "passed": true,
+      "reason": "True is not of type 'integer'"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject memory_pressure=True",
+      "expected": "reject",
+      "passed": true,
+      "reason": "memory pressure: STOP"
+    },
+    {
+      "group": "memory_admission",
+      "name": "reject artifact_scope=REAL",
+      "expected": "reject",
+      "passed": true,
+      "reason": "'SYNTHETIC_CONTRACT_TEST_ONLY' was expected"
+    },
+    {
+      "group": "memory_pressure",
+      "name": "exact RSS/headroom boundaries healthy",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_pressure",
+      "name": "available below headroom => STOP",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_pressure",
+      "name": "worker RSS exceeded => STOP",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_pressure",
+      "name": "driver RSS exceeded => STOP",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_pressure",
+      "name": "PSI full positive => STOP",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "memory_pressure",
+      "name": "OOM event => STOP",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "numerical_gates",
+      "name": "inclusive maxima, gap strictly greater",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation state_norm_absolute",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical gate STOP: state_norm_absolute"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation reference_residual_L2_Ha",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical gate STOP: reference_residual_L2_Ha"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation relative_Hermiticity",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical gate STOP: relative_Hermiticity"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation imaginary_energy_Ha",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical gate STOP: imaginary_energy_Ha"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation outside_sector_max",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical gate STOP: outside_sector_max"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation full_sector_consistency_max",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical gate STOP: full_sector_consistency_max"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "boundary violation sector_gap_Ha",
+      "expected": "reject",
+      "passed": true,
+      "reason": "degenerate sector: STOP"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "nonfinite/invalid observation nan",
+      "expected": "reject",
+      "passed": true,
+      "reason": "finite nonnegative gate observation"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "nonfinite/invalid observation inf",
+      "expected": "reject",
+      "passed": true,
+      "reason": "finite nonnegative gate observation"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "nonfinite/invalid observation -1",
+      "expected": "reject",
+      "passed": true,
+      "reason": "finite nonnegative gate observation"
+    },
+    {
+      "group": "numerical_gates",
+      "name": "nonfinite/invalid observation True",
+      "expected": "reject",
+      "passed": true,
+      "reason": "finite nonnegative gate observation"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "owner accepted by unchanged verifier",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reuse accepted by unchanged verifier",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "baseline accepted by unchanged verifier",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity geometry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not one of ['0.70', '0.80', '0.90', '1.10', '1.40', '1.60']"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity hamiltonian_sha256",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity df_sha256",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity state_sha256",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity candidate_template",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'object'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity candidate_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity axis",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not one of ['cosine', 'sine']"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity trajectory_seed",
+      "expected": "reject",
+      "passed": true,
+      "reason": "seed binding"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity trajectory_index",
+      "expected": "reject",
+      "passed": true,
+      "reason": "trajectory index scope"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity compiler_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity environment_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity source_commit",
+      "expected": "reject",
+      "passed": true,
+      "reason": "None is not of type 'string'"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "reject null identity wrapper_semantics",
+      "expected": "reject",
+      "passed": true,
+      "reason": "'ordinary_controlled_diag(I,U);T=0.8;DF-prefix-S2;canonical-finite-RTE;no-state-prep;bit0=+1;bit1=-1;real=cosine;imag=sine' was expected"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "wrapper key",
+      "expected": "reject",
+      "passed": true,
+      "reason": "wrapper key binding"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "numerical circuit",
+      "expected": "reject",
+      "passed": true,
+      "reason": "numerical circuit binding"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "logical sample weight",
+      "expected": "reject",
+      "passed": true,
+      "reason": "preserve logical sample weight"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "compile invocation",
+      "expected": "reject",
+      "passed": true,
+      "reason": "external record digest mismatch"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "unsupported wrapper semantics",
+      "expected": "reject",
+      "passed": true,
+      "reason": "'ordinary_controlled_diag(I,U);T=0.8;DF-prefix-S2;canonical-finite-RTE;no-state-prep;bit0=+1;bit1=-1;real=cosine;imag=sine' was expected"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "changed metric invalidates external digest",
+      "expected": "reject",
+      "passed": true,
+      "reason": "external record digest mismatch"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "external ledger digest altered",
+      "expected": "reject",
+      "passed": true,
+      "reason": "external record digest mismatch"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "independent numerical registry altered",
+      "expected": "reject",
+      "passed": true,
+      "reason": "independent numerical registry"
+    },
+    {
+      "group": "v1_identity_cache",
+      "name": "missing owner",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cache owner missing"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid geometry",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse geometry",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid candidate_template",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse candidate_template",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid axis",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse axis",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid hamiltonian_sha256",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse hamiltonian_sha256",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid df_sha256",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse df_sha256",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid state_sha256",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse state_sha256",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid source_commit",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse source_commit",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid compiler_fingerprint",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse compiler_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "independently valid environment_fingerprint",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_foreign_owner",
+      "name": "cross-scope reuse environment_fingerprint",
+      "expected": "reject",
+      "passed": true,
+      "reason": "cross-identity reuse"
+    },
+    {
+      "group": "v1_accounting",
+      "name": "unchanged accounting",
+      "expected": "accept",
+      "passed": true
+    },
+    {
+      "group": "v1_accounting",
+      "name": "duplicate logical records",
+      "expected": "reject",
+      "passed": true,
+      "reason": "duplicate logical wrapper key"
+    },
+    {
+      "group": "v1_accounting",
+      "name": "unresolved reservation STOP",
+      "expected": "reject",
+      "passed": true,
+      "reason": "unresolved reservation: mandatory STOP, no automatic retry/resume"
+    },
+    {
+      "group": "v1_accounting",
+      "name": "duplicate trajectory seed STOP",
+      "expected": "reject",
+      "passed": true,
+      "reason": "duplicate seed across trajectories"
+    },
+    {
+      "group": "v1_accounting",
+      "name": "paired axes share seed",
+      "expected": "accept",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,158 @@
+[
+  {
+    "id": "C_bias_distance",
+    "definition": "abs(Re/Im((S_encoded-reference)/state_norm)-saved_signed_bias)",
+    "source": {
+      "role": "C_ball_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "_tier",
+      "line": 322,
+      "end_line": 431
+    },
+    "quantity": "NORMALIZED_RAY_AXIS_DISTANCE",
+    "nature": "Arb enclosure of the stated encoded-model scalar; no literal transfer implied",
+    "overlap": "Different observable/units from unscaled L operator delta",
+    "missing": "Preparation and literal transfer; axis/source binding retained"
+  },
+  {
+    "id": "C_basis_reuse",
+    "definition": "N*d*c^(2N), d=max||J_b F_b-I||_F; c=max(1,||F_b||,||J_b||)",
+    "source": {
+      "role": "C_ball_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "semantic_bound",
+      "line": 287,
+      "end_line": 315
+    },
+    "quantity": "COLLAPSE_VS_EXPLICIT_ROUNDED_WORD_CANDIDATE",
+    "nature": "Analytical cancellation bound for rounded factors with explicit norm amplification",
+    "overlap": "Same label as L does not establish the same operator pair",
+    "missing": "Concrete reduced/expanded word endpoint mapping and all event-family multiplicities"
+  },
+  {
+    "id": "C_phase_accumulation",
+    "definition": "gamma_m*(1+A)+m*2^(-1074), gamma_m=m*u/(1-m*u),u=2^(-52)",
+    "source": {
+      "role": "C_ball_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "semantic_bound",
+      "line": 287,
+      "end_line": 315
+    },
+    "quantity": "FINITE_STRAIGHT_LINE_PHASE_ERROR_CANDIDATE",
+    "nature": "Analytical floating-point candidate, not an empirical fitted allowance",
+    "overlap": "No equality to local RZ/XXPlusYY matrix discrepancy proved",
+    "missing": "Map m and intermediate absolute magnitudes to actual builder/control DAG and exceptional cases"
+  },
+  {
+    "id": "C_pi_rounding",
+    "definition": "2*q*r*abs(binary64_pi-exact_pi) for PR; zero for PF",
+    "source": {
+      "role": "C_ball_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "semantic_bound",
+      "line": 287,
+      "end_line": 315
+    },
+    "quantity": "RTE_RELATIVE_PI_PHASE_CANDIDATE",
+    "nature": "Arb interval includes exact pi; multiplicity/source-family transfer still a proposition",
+    "overlap": "L retains symbolic same-angle phases; does not certify literal pi accumulation",
+    "missing": "Prove count of negative product/event phases for every order0/2/4 path"
+  },
+  {
+    "id": "C_semantic_total",
+    "definition": "((reuse+phase_rounding+pi_difference)*c^(2N))*state_norm*abs(B_saved)",
+    "source": {
+      "role": "C_ball_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "_tier",
+      "line": 322,
+      "end_line": 431
+    },
+    "quantity": "SAVED_SEMANTIC_SIGNAL_ALLOWANCE",
+    "nature": "Analytical aggregate already included in C axis total; primitive numeric pieces not separately saved",
+    "overlap": "Aggregation and differing endpoint/normalization prevent subtraction or replacement",
+    "missing": "Normalized-ray factor reconciliation: operator->raw expectation has n, then dividing by n cancels; saved n*B*delta needs separately proved dominance or a revised joint proof"
+  },
+  {
+    "id": "C_total",
+    "definition": "upper(bias_distance)+upper(circuit_semantic_allowance)",
+    "source": {
+      "role": "C_ball_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_ball_evidence.py",
+      "sha256": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "_tier",
+      "line": 322,
+      "end_line": 431
+    },
+    "quantity": "SAVED_C_AXIS_ALLOWANCE",
+    "nature": "Existing C numeric design-target evidence only",
+    "overlap": "Semantic allowance is already inside; do not add it again",
+    "missing": "No new aggregation or target/headroom evaluation authorized"
+  },
+  {
+    "id": "L_local_forward_inverse",
+    "definition": "||rounded_gate-exact_RZ_or_XXPlusYY(binary64_parameters)||_F",
+    "source": {
+      "role": "L_kernel",
+      "path": "src/trotterlib/h4_local_enclosure.py",
+      "sha256": "44ec2c6f0cafc770188d53b97ce84796ba8bbf97285775c60d33d390e507d6f8",
+      "source_commit": "de94417e7e1a0b984b93b81aba673b5ef94fdf98",
+      "domain": "SAVED_H4"
+    },
+    "quantity": "LOCAL_OPERATOR_NORM",
+    "nature": "Existing128-bit outward Acb discrepancy,148 forward/148 inverse",
+    "overlap": "Local idealization differs from cancellation defect JF-I",
+    "missing": "Attach correct operator endpoints and literal parameter/decomposition identities"
+  },
+  {
+    "id": "L_basis_uniform",
+    "definition": "Telescoping local errors; conjugation f+i+fi; uniform PF/PR word propagation",
+    "source": {
+      "role": "L_kernel",
+      "path": "src/trotterlib/h4_local_enclosure.py",
+      "sha256": "44ec2c6f0cafc770188d53b97ce84796ba8bbf97285775c60d33d390e507d6f8",
+      "source_commit": "de94417e7e1a0b984b93b81aba673b5ef94fdf98",
+      "domain": "SAVED_H4"
+    },
+    "quantity": "UNSCALED_UNIFORM_BASIS_OPERATOR_DELTA",
+    "nature": "Existing128-bit independent L bounds; phase/sign/angles held fixed",
+    "overlap": "Physical primitive effects can be shared; consecutive triangle edges could still be valid if proved",
+    "missing": "Prove source-word reduction family, diagonal/control/phase gap and B_saved transfer; no multiplication performed"
+  },
+  {
+    "id": "export_flags",
+    "definition": "semantic_error_bound_exact=0 and circuit_correspondence_proved=true",
+    "source": {
+      "role": "C_export_source",
+      "domain": "SAVED_H4",
+      "path": "src/trotterlib/h4_legacy_export.py",
+      "sha256": "671a6228a11fd3b39d4e8e6e57d936c03044120d9ea95ffc700a765fcba8a6b6",
+      "source_commit": "e80d7510880f8db993b777c627bb8e95b05a070d",
+      "function": "build_export",
+      "line": 33,
+      "end_line": 116
+    },
+    "quantity": "SAVED_DECLARATION_ONLY",
+    "nature": "Exporter declaration; _tier actually recomputes semantic_bound",
+    "overlap": "Flag/string zero is not mathematical evidence of zero literal error",
+    "missing": "Never infer certificate or zero allowance from these flags"
+  }
+]

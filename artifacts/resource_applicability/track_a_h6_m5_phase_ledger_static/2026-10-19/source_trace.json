@@ -1,0 +1,110 @@
+{
+  "sites": [
+    {
+      "finding": "P/U1 to RZ equivalence has a theta/2 scalar phase; selected actual equivalence route not recorded.",
+      "id": "P_TO_RZ_PHASE",
+      "lines": [
+        148,
+        163,
+        1216,
+        1226
+      ],
+      "path": "qiskit/circuit/library/standard_gates/equivalence_library.py",
+      "sha256": "c0290fa2fa58cee0e905394226e1c9b1bcb127ab52a9d222ab9f4727fea1706b",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/qiskit/circuit/library/standard_gates/equivalence_library.py#L148"
+    },
+    {
+      "finding": "Default opt1 has one-qubit resynthesis and inverse cancellation; actual pass invocations/iteration counts unavailable.",
+      "id": "OPT1_OPTIMIZATION",
+      "lines": [
+        536,
+        568,
+        571
+      ],
+      "path": "qiskit/transpiler/preset_passmanagers/builtin_plugins.py",
+      "sha256": "1fde1fb2188f380f1cf8cd167e4bd5dcb9a376045b41859b8bbc8ff0f813974f",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/qiskit/transpiler/preset_passmanagers/builtin_plugins.py#L536"
+    },
+    {
+      "finding": "Complex64 (f64 real/imag; NumPy complex128 equivalent) run matrix, f64 angle/phase sequence and DAG phase propagation.",
+      "id": "BINARY64_RESYNTHESIS",
+      "lines": [
+        81,
+        83,
+        1174,
+        1204,
+        1238,
+        942,
+        950
+      ],
+      "path": "crates/accelerate/src/euler_one_qubit_decomposer.rs",
+      "sha256": "15d9f65eaf6de4f8e569c661db2df9c0e1115eea9e4788a863a9a86dc01d8ce6",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/accelerate/src/euler_one_qubit_decomposer.rs#L81"
+    },
+    {
+      "finding": "Float addition followed by the phase setter modulo a binary64 2*pi. No compensated sum in these functions.",
+      "id": "BINARY64_PHASE_ADD_WRAP",
+      "lines": [
+        821,
+        824,
+        6310,
+        6317,
+        7012,
+        7014
+      ],
+      "path": "crates/circuit/src/dag_circuit.rs",
+      "sha256": "c4f5cb8297ac429daff250ff0de264d35fba90a106766282312264ba21cd9e8f",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/circuit/src/dag_circuit.rs#L821"
+    },
+    {
+      "finding": "Replacement phase is propagated and parameter-bound before adding to DAG.",
+      "id": "BASIS_TRANSLATOR_PHASE",
+      "lines": [
+        665,
+        770,
+        801
+      ],
+      "path": "crates/accelerate/src/basis/basis_translator/mod.rs",
+      "sha256": "d2b287ce03ebd9a6ec9f18321cab3d1eb33e8b10464d7f5c0b80d9a4e0979c61",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/accelerate/src/basis/basis_translator/mod.rs#L665"
+    },
+    {
+      "finding": "Numeric stored operation parameter uses f64.",
+      "id": "BINARY64_PARAM_TYPE",
+      "lines": [
+        34,
+        36
+      ],
+      "path": "crates/circuit/src/operations.rs",
+      "sha256": "08ef6433f4ff50fe8943fb9713e06c30790393be9aa30f67fadd3d9ab754af24",
+      "url": "https://github.com/Qiskit/qiskit/blob/896d1c8b72888a52a46081a6d1f4de8c56db8aea/crates/circuit/src/operations.rs#L34"
+    },
+    {
+      "finding": "Signed pieces use scalar zero; outer scalar P is appended once. Saved wrapper has one ancilla P.",
+      "id": "SCALAR_ONCE",
+      "lines": [
+        34,
+        55,
+        58,
+        60
+      ],
+      "origin_SOURCE": "f743a88225f7cb2c8d2c91d7e19813a5780f803b",
+      "path": "scripts/h46_m5_native.py",
+      "sha256": "774cdab3d394b555e0e46f334e1994c112dad0709876140bd8cb59e5aca32cc7"
+    },
+    {
+      "finding": "Explicit XY with opposite local phases. Distinct-qubit P gates are not canceling operators.",
+      "id": "EXPLICIT_GAUSSIAN",
+      "lines": [
+        13,
+        41,
+        48,
+        53
+      ],
+      "origin_SOURCE": "f743a88225f7cb2c8d2c91d7e19813a5780f803b",
+      "path": "scripts/h46_new2_native.py",
+      "sha256": "a3fd7dd09fe4f16493f2d582d933eb5fe6d6d25257863e22f740573dcc5e0a83"
+    }
+  ],
+  "status": "STATIC_TRACE_NOT_RUNTIME_PASS_PROOF"
+}

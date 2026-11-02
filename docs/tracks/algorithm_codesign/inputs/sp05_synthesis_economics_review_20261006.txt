@@ -1,0 +1,394 @@
+結論は、**研究方針の全面的な練り直しはまだ行わず、非常に狭い「合成器の経済性gate」を先に検証する**のがよいです。
+
+ただし、現在の16-cell pilotをそのまま実行するのはまだ早いです。
+
+判定を付けるなら、
+
+> **`PROCEED_TO_SYNTHESIS_ECONOMICS_GATE_BEFORE_PRIMITIVE_PILOT`**
+
+です。
+
+## なぜ今は全面再設計しないか
+
+commit `3861e6b...` では、前段階までと違って研究上の問いがかなり具体化されています。
+
+現在は、
+
+- B-Fは限定negativeとしてclosure
+- B-M現adapterもnew-method routeをclosure
+- 固定simulation列に対して
+  - NONE
+  - D
+  - R
+  - DR
+  の4 placementを比較
+- ancilla込みwrapperでPAIを扱う
+- weightの二次モーメントを保持
+- finite synthesis biasを別会計
+- 全mask共通Bernstein規則
+- primaryをactual Clifford+TのT/T† countにする
+- PAI、TE-PAI、PR rounding、resource-optimal ISを既知対照として認識
+
+まで進んでいます。
+
+これは、もう「研究テーマが曖昧だから方針を再設計する」状態ではありません。
+
+一方で、現packet自身が
+
+- synthesizer未選択
+- notch catalogue未選択
+- bit resolution未固定
+- materiality未固定
+- CPU/RSS/output cap未固定
+
+として`RUN_READY=false`にしているのも適切です。
+
+---
+
+# ただし、16-cell pilotより先に確認すべき本質的な問題がある
+
+今回最も重要なのはここです。
+
+PAIの元々の設定では、連続角度を直接使えず、**有限個の利用可能なrotation settingから3つを確率的に選ぶ**ことで任意角度の期待値を再現します。その代償がsampling overheadです。:chatgpt-content-reference{index="0"}
+
+一方、Ross–Selinger型のClifford+T合成では、一般の \(R_z(\theta)\) の典型的T-countは主に要求精度 \(\epsilon\) に依存し、
+
+\[
+3\log_2(1/\epsilon)+O(\log\log(1/\epsilon))
+\]
+
+程度です。:chatgpt-content-reference{index="1"}
+
+したがって、現仕様のように
+
+> 通常角もPAI notch角も、同じancilla-free Clifford+T synthesizerで同じ精度へ合成する
+
+だけだと、
+
+\[
+\boxed{\text{PAIを入れてもT-countが安くなる理由がない可能性がある}}
+\]
+
+わけです。
+
+これはかなり重要です。
+
+PAIでshot数だけ増え、各notch rotationも通常角とほぼ同じT-countなら、研究全体を大きく実行する前に負けます。
+
+---
+
+# なので、次は「合成器＋catalogueが本当にtrade-offを作るか」だけを調べる
+
+これを仮に **SP-0.5 synthesis-economics gate** とします。
+
+分子、DF、H4、trajectoryは使いません。
+
+一つのtarget rotationについて、
+
+- deterministic synthesisのT-count
+- PAI 3-notchの各T-count
+- PAI係数 \(g_j\)
+- sampling probability \(p_j\)
+- normalization
+
+だけを実際の合成器で求めます。
+
+PAIの一つのrotationについて、
+
+\[
+\gamma=\sum_j |g_j|
+\]
+
+で、canonical samplingならweight絶対値は \(\gamma\) です。
+
+そこで、単純な必要条件として、
+
+\[
+J_{\rm prim}
+=
+\frac{
+\mathbb E[W^2 C_T]
+}{
+C_{T,\rm deterministic}
+}
+\]
+
+を評価します。
+
+PAI branchでweight絶対値が一定 \(\gamma\) なら、
+
+\[
+J_{\rm prim}
+=
+\gamma^2
+\frac{\sum_j p_j C_{T,j}}
+     {C_{T,\rm deterministic}}.
+\]
+
+この段階では、
+
+\[
+\boxed{J_{\rm prim}<1}
+\]
+
+となる角度が存在するかを見るだけで十分です。
+
+これは最終的なGO条件ではありません。
+
+- wrapper内の複数gate
+- initialization
+- synthesis bias
+- range項
+- finite-RTE
+- shot ceiling
+
+をまだ戻していないからです。
+
+しかし、
+
+\[
+J_{\rm prim}\ge1
+\]
+
+が登録した全targetで成立するなら、**PAIを追加するほどprimitive levelですでに不利**なので、16-cell pilotへ進む情報価値はかなり低くなります。
+
+---
+
+# controlled rotationではさらに厳しい
+
+今回の仕様では、
+
+\[
+C(R_P(\theta))
+=
+e^{-i\theta(I\otimes P)/4}
+e^{+i\theta(Z\otimes P)/4}
+\]
+
+と2つのjoint-space Pauli rotationへloweringします。
+
+これは意味論として妥当な方向です。
+
+ただし両方を独立にPAI化すると、weightは積になります。
+
+例えば各rotationのnormalizationがそれぞれ \(\gamma_1,\gamma_2\) なら、
+
+\[
+|W|\propto \gamma_1\gamma_2,
+\]
+
+二次モーメントには
+
+\[
+\gamma_1^2\gamma_2^2
+\]
+
+が入ります。
+
+さらにwrapper中に多数の対象rotationがあれば、その積が効いてきます。
+
+つまり、
+
+> **1 gateあたり少しT-countが下がる**
+
+だけでは不十分です。
+
+このため、最初にprimitive economicsを見るのが重要です。
+
+---
+
+# notch catalogueも、単なるbit gridにしない方がよい
+
+現packetではnotch catalogueは最大2、bit resolutionは未固定です。
+
+ここは、**最初は1 catalogueだけ**にすることを勧めます。
+
+そしてcatalogueは、
+
+> 「PAI論文で7 bitが使われているから7 bit」
+
+ではなく、
+
+> **選択したClifford+T resource modelで、notch angleが実際に安い**
+
+という理由で固定すべきです。
+
+例えば候補は、
+
+- exactly synthesizableな低T rotation
+- 同じ精度でも通常角より明確にT-countが小さい角
+- resource stateのreuseでamortized costが小さい角
+
+などです。
+
+ただしRUS/catalystまで最初から入れるとresource modelが増えるので、**第一pilotではancilla-freeの1 catalogueだけ**でよいです。
+
+もし「通常角とnotch角のT-countがほぼ同じ」なら、それ自体が重要なSTOP情報です。
+
+---
+
+# 現在の16-cell pilotは、そのgateを通った後なら価値がある
+
+primitive economicsでtrade-offが実在すると確認できたら、現在の4 template × 4 placementを実行する価値があります。
+
+その場合は今の設計を大きく変えなくてよいです。
+
+### T1
+single controlled Pauli rotation  
+→ weight、mean、bias、T-countの最小確認。
+
+### T2
+two noncommuting controlled rotations  
+→ compositionしてもunbiasednessとphase semanticsを保つか。
+
+### T3
+同じ平均長だが異なるlength distribution  
+→
+
+\[
+E[\Gamma^2]
+\neq
+\Gamma(E[L])^2
+\]
+
+の影響を実際に確認。
+
+### T4
+phase/basis inverse control  
+→ global phaseとrelative phase、誤った乱数共有を検出。
+
+この4つは妥当です。
+
+---
+
+# pilot scopeは少し縮める
+
+現在は最大2 catalogueなので、
+
+- branch-axis evaluations: 20,736
+- synthesis keys: 768
+
+まで想定しています。
+
+最初は**1 catalogueのみ**にすることを勧めます。
+
+すると概ね、
+
+- 4 templates
+- 4 masks
+- 1 catalogue
+- synthesis keys ≤ 384
+- branch-axis evaluations ≤ 10,368
+
+程度に半減できます。
+
+ここでmechanismが成立しなければ、2個目catalogueを「救済用」に追加しません。
+
+2個目を使うなら、
+
+> 第1catalogueとは異なるresource mechanismを調べる
+
+という独立した理由を結果前に固定します。
+
+---
+
+# したがって順序はこうなる
+
+\[
+\boxed{
+\begin{aligned}
+&\text{現在のsynthesis-placement方針を維持}\\
+&\downarrow\\
+&\text{合成器を1つ固定}\\
+&\downarrow\\
+&\text{1つの低cost notch catalogueを固定}\\
+&\downarrow\\
+&\textbf{primitive synthesis-economics gate}\\
+&\downarrow\\
+&\begin{cases}
+\text{trade-offなし} &\rightarrow \textbf{ここで方針を再設計}\\
+\text{trade-offあり} &\rightarrow \text{4-template placement pilot}
+\end{cases}\\
+&\downarrow\\
+&\text{mandatory STOP}\\
+&\downarrow\\
+&\textbf{研究Bを再評価}
+\end{aligned}
+}
+\]
+
+です。
+
+---
+
+## 何を結果前に固定すべきか
+
+SP-0.5を実行する前に、最低限これだけ閉じれば十分です。
+
+1. **実際に呼べるsynthesizer**
+   - 実装名
+   - version / source SHA
+   - precision norm
+   - seed
+   - timeout
+   - T/T† counting rule
+
+2. **primary notch catalogue 1個**
+   - notch angle集合
+   - なぜそのangleが安いのか
+   - exactかapproximateか
+   - 各notchにも同じerror rule
+
+3. **target angle set**
+   - 事前固定した小さい集合
+   - 結果後に安いangleだけ追加しない
+
+4. **primitive gate**
+   - ordinary \(R_z\)
+   - controlled Pauli lowering後の2 rotation
+   の両方
+
+5. **gate判定**
+   - semantics pass
+   - synthesis error bound pass
+   - \(J_{\rm prim}<1\) の有無
+   - 数値不確定ならINCONCLUSIVE
+
+6. **resource caps**
+   - CPU / wall / RSS / output
+   - synthesis keys
+   - retries 0
+
+この段階で「5%以上」などのmaterialityを入れる必要はありません。
+
+SP-0.5は**存在可能性gate**だからです。
+
+> 少なくとも一つの登録targetで、有限精度・実T-countを用いてstrictなcost–second-moment trade-offがあるか
+
+だけを見ます。
+
+publication materialityは、その後のwrapper pilotで決めるべきです。
+
+---
+
+# 今回の質問への答え
+
+二択なら、
+
+> **検証を行ってから練り直す**
+
+です。
+
+ただし、**今の大きめのpilotではありません。**
+
+まず、
+
+\[
+\boxed{\text{PAI notchがClifford+Tで本当に安いのか}}
+\]
+
+という、もっと根本的で安い検証を行います。
+
+現在の研究方針は十分具体化されているので、ここでもう一度全面再設計する必要はありません。一方、このtrade-off自体が存在しないまま16-cell wrapper pilotへ進むのも非効率です。
+
+したがって現在の最適な一手は、**合成器とnotch catalogueを固定したprimitive synthesis-economics gate**です。これが通れば現在の4-placement設計を検証し、通らなければその時点でsynthesis-placement路線を止めて、研究Bを再設計するのが最もきれいです。

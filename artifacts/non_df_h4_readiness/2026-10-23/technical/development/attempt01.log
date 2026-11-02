@@ -1,0 +1,67 @@
+...F.........F.............                                              [100%]
+=================================== FAILURES ===================================
+________ test_failure_modes_stop_and_reap[nonzero-NONZERO_WORKER_EXIT] _________
+
+area = PosixPath('artifacts/non_df_h4_readiness/2026-10-23/technical/development/attempt01/test_failure_modes_stop_and_reap[nonzero-NONZERO_WORKER_EXIT]')
+mode = 'nonzero', reason = 'NONZERO_WORKER_EXIT'
+
+    @pytest.mark.parametrize("mode,reason",[("noready","READY_TIMEOUT"),("earlyexit","WORKER_EXITED_BEFORE_RELEASE"),
+        ("nonzero","NONZERO_WORKER_EXIT"),("hang","RUN_TIMEOUT"),("ignoreterm","RUN_TIMEOUT"),
+        ("badready","INVALID_READY_IDENTITY")])
+    def test_failure_modes_stop_and_reap(area,mode,reason):
+        watch=policy(ready_timeout=.5 if mode=="noready" else 3.,run_timeout=.3)
+        code,result=finish(launch(area,[mode],watch=watch))
+        assert code==1 and result["status"]=="FAILED_NO_RETRY_MANDATORY_STOP"
+>       assert reason in result["reason"]["reason"]
+E       AssertionError: assert 'NONZERO_WORKER_EXIT' in 'RUN_TIMEOUT'
+
+tests/test_isolated_qiskit_supervisor.py:91: AssertionError
+________ test_detached_descendants_and_grandchild_are_killed_and_reaped ________
+
+area = PosixPath('artifacts/non_df_h4_readiness/2026-10-23/technical/development/attempt01/test_detached_descendants_and_grandchild_are_killed_and_reaped')
+
+    def test_detached_descendants_and_grandchild_are_killed_and_reaped(area):
+        h=launch(area,["descendants"],watch=policy(run_timeout=.8))
+>       wait_path(h[1]/"case0/family.json",h[0])
+
+tests/test_isolated_qiskit_supervisor.py:139: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+path = PosixPath('artifacts/non_df_h4_readiness/2026-10-23/technical/development/attempt01/test_detached_descendants_and_grandchild_are_killed_and_reaped/run/case0/family.json')
+process = <Popen: returncode: 1 args: ['/home/AbeHiromu/venvs/trotter-common/bin/pytho...>
+
+    def wait_path(path,process):
+        end=time.monotonic()+8.
+        while not path.exists():
+>           assert process.poll() is None
+E           AssertionError: assert 1 is None
+E            +  where 1 = poll()
+E            +    where poll = <Popen: returncode: 1 args: ['/home/AbeHiromu/venvs/trotter-common/bin/pytho...>.poll
+
+tests/test_isolated_qiskit_supervisor.py:67: AssertionError
+=============================== warnings summary ===============================
+src/trotterlib/Almost_optimal_grouping.py:222
+  /home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/Almost_optimal_grouping.py:222: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:382
+  /home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/Almost_optimal_grouping.py:382: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:636
+  /home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/Almost_optimal_grouping.py:636: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:747
+  /home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/Almost_optimal_grouping.py:747: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+src/trotterlib/Almost_optimal_grouping.py:792
+  /home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/Almost_optimal_grouping.py:792: SyntaxWarning: invalid escape sequence '\s'
+    """
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_isolated_qiskit_supervisor.py::test_failure_modes_stop_and_reap[nonzero-NONZERO_WORKER_EXIT]
+FAILED tests/test_isolated_qiskit_supervisor.py::test_detached_descendants_and_grandchild_are_killed_and_reaped
+2 failed, 25 passed, 5 warnings in 126.16s (0:02:06)

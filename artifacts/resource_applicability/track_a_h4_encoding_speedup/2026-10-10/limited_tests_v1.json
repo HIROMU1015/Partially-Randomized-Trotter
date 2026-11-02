@@ -1,0 +1,70 @@
+{
+  "status": "PASS",
+  "tests": 12,
+  "errors": 0,
+  "failures": 0,
+  "skipped": 0,
+  "wall_seconds": 0.6043737791478634,
+  "max_RSS_bytes": 371695616,
+  "measurements": {
+    "encoding_timing": {
+      "old_seconds": 0.3095375392585993,
+      "new_seconds": 0.1350873801857233,
+      "ratio": 2.2913875362231115,
+      "instructions": 1803,
+      "digest": "f101a9ac1f30dfc9e6a66a61bf8cc459b01ef82b0c79083b046893965c3657e6",
+      "cache_hits": 596,
+      "cache_misses": 4,
+      "retained_bytes": 7680,
+      "scope": "single uncompiled artificial fixture; not production speedup"
+    },
+    "paired_circuit": [
+      {
+        "axis": "cosine",
+        "bytes": 23534,
+        "sha256": "a2d15f5dc840ddbad795d4f083be83c52240048c53f3e6a2084d0b99884e74e4",
+        "counts": {
+          "unitary": 16,
+          "rz": 16,
+          "cx": 16,
+          "h": 2,
+          "measure": 1
+        },
+        "depth": 20
+      },
+      {
+        "axis": "sine",
+        "bytes": 23729,
+        "sha256": "c8e86fc8242e59d2f1ab9ac1d0c67b2d78df386c9af5685dcbbfa0367384bf24",
+        "counts": {
+          "unitary": 16,
+          "rz": 16,
+          "cx": 16,
+          "h": 2,
+          "sdg": 1,
+          "measure": 1
+        },
+        "depth": 21
+      }
+    ]
+  },
+  "processes": 1,
+  "transpile_invocations": 0,
+  "real_inputs": 0,
+  "production_launches": 0,
+  "affinity_changes": 0,
+  "plan_sha256": "ad1853280dbc25d1c00a02c25b9668212d5c485de66c799bb13453eb397c44c1",
+  "source_commit": "3beb3870369eeb8ef76b4ead965c886eba7d16e9",
+  "source_test_hashes": {
+    "scripts/resource_applicability/run_h4_encoding_speedup_tests.py": "75d47a1d5135c47963ee194024536498d80205053e323f9e122a0abec53ecdce",
+    "src/trottertracks/resource_applicability/h4_geometry/circuits.py": "87760e127346af910ccf127591bd03281028202a86491e07a25a3386863d042e",
+    "src/trottertracks/resource_applicability/h4_geometry/encoding_memo.py": "5a6ad63d26d8f101967a3d8b3fd5cd25911210a721bb3041e8e206a1691c493a",
+    "src/trottertracks/resource_applicability/h4_geometry/execution.py": "0731f4fccf071b6b6ea00f49709f93d33131c7e6220851b40eb7389c89ed537e",
+    "src/trottertracks/resource_applicability/h4_geometry/identity.py": "798fd23d91aa0b473c52608fe2b74c4dca56981935bbfce8d3011b83cdb8eea4",
+    "tests/tracks/resource_applicability/test_h4_encoding_speedup.py": "5a5ccfde0e175d91d8d90fbf160ad8248616543f8134d83b5b2d564fee39e160"
+  },
+  "test_log_sha256": "762ae54e57e334742da7ba690434a5346e7aeedc77d1fec5f4639828501adbe6",
+  "output_bytes": 3198,
+  "scope": "Local artificial uncompiled encoding tests, not CI or production performance; measured before SOURCE commit with identical source/tests blobs.",
+  "initial_harness_bootstrap": "First harness run denied dill /dev/null file-type probe before tests. Harness corrected to allow /dev/null; no compiler invocation or scientific input access."
+}

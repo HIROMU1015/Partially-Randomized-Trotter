@@ -1,0 +1,343 @@
+{
+  "schema": "research_C_DF_structural_stageDF_v1",
+  "scope": "C_DF_TAIL_PATH_SUPPORT_STAGE_DF_V1",
+  "status": "UNAPPROVED_PROPOSAL",
+  "executable_after_separate_permission": true,
+  "implementation": "tail_J_path_support_compact_parameters_v1",
+  "base_commit": "64accf4d9eda87ae4bb229469ad05f3d5ac97f11",
+  "conditions": {
+    "atoms": 4,
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "ld": 2,
+    "representation": "number",
+    "tail_J_support": "diagonal_plus_path_01_12_23",
+    "head_J_support": "full_symmetric",
+    "gamma": 0.1,
+    "epsilon": 1e-08,
+    "original_frame_order": true,
+    "kappa": "original_g_corrected_fixed",
+    "scalar": "original_once",
+    "optimizer": "L-BFGS-B",
+    "options": null,
+    "DF_budget_Ha": 0.00019875,
+    "new_fits": 1,
+    "retry": 0,
+    "resume": 0
+  },
+  "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+  "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+  "scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json",
+  "controls": "artifacts/research_c_pr_aware_df/2026-10-27/run01/result.json",
+  "original_input_provenance_sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50",
+  "entry": "scripts/run_research_c_df_structural_support.py",
+  "source_manifest": "artifacts/research_c_df_structural_support/2026-10-28/technical/SOURCE.json",
+  "source_manifest_sha256": "406b5ce36cf626501b8732da8b82c321e60c9f610854c0fa8b085f982f4e7f48",
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial_tensor.json": "5d2956ece3a83b6c0ac76c5f9698ba2f5cebd25920a03c2a6f3a0bac76758a7c",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/initial_gate.json": "041dff8cee4c14767a03435eb9f84a05152b2dc00e322d74a702b6f6944a4bdf",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/result.json": "804f0a0bb943959febf8af607fab09a2923ab089f4f9b200e65622ad361060f9",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/SOURCE.json": "da88d93f1dd41f7f3f0e4732e5b79552ba95eb6f96784611ee9df4cf3df733a9",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/baseline/final.npz": "f3a3141059e29f79f39c3f6d3721562abfa7221ad97ce06a118331f6583e1a02",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/proposed/final.npz": "f47a9fbf86918458ea0db6549468f2041b3b87bba6649ff70234467a442cd227",
+    "docs/research/research_c_pr_aware_df_pilot_contract_x0_v2_unapproved_20261027.json": "610be0acc2357f3e9fb0e618d67825ea8d7039292a0fe34fcd81b021e9a9fc5d",
+    "artifacts/research_c_pr_aware_df/2026-10-27/technical/SOURCE.json": "5deabdfab70029ba6ef784e326908fb7a8d8ffdef6b90e0142887c0e59e9a600",
+    "artifacts/research_c_pr_aware_df_M4/2026-10-28/run01/result.json": "65965f9695948649ef80bf5412314774c307a3172b0519262395abd6986e5826",
+    "artifacts/research_c_pr_aware_df_M4_native/2026-10-28/run01/result.json": "bb5c44fd3a5d58ffeff89e7e78d60335af3664db745caf71759f576ba8a4f674",
+    "artifacts/research_c_pr_aware_df_M2/2026-10-28/run01/result.json": "fdbf8d792c214e8a65942fd81ffbab201b3dc013a82659751c8f87db5f53ed4c"
+  },
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "objective": {
+    "formula": "existing f/f_star + 0.1*(M_epsilon/M_star)^2 restricted to a fixed linear parameter subspace",
+    "reuse": "c_pr_aware_df.make_value_and_grad;no new tensor loss or optimizer",
+    "gamma": 0.1,
+    "epsilon_Ha": 1e-08,
+    "shared_scales_source": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json",
+    "smooth_sum": "all original216tail coefficientpositions,includingfixedzero epsilon contributions",
+    "unsupported_parameters": "exact0 throughout fit,not posthoc thresholding"
+  },
+  "support": {
+    "head_frames": [
+      0,
+      1
+    ],
+    "tail_frames": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "allowed_tail_upper": [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        3
+      ]
+    ],
+    "forbidden_tail_upper": [
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        1,
+        3
+      ]
+    ],
+    "rotations": "all48 old real-antisymmetric parameters retained",
+    "full_parameters": 128,
+    "compact_parameters": 110,
+    "interpretation": "column-index graphP4,not assumed spatialorbital locality;general indefinite full-inner-rank J allowed",
+    "frame_ids": "F0..F7 unchanged;onebody separate;no merge/sort/rankdrop",
+    "matrixrank": "diagnostic NumPydefaultSVD;no pruning or selection",
+    "nonidentity_support_max": "24/frame*6tail=144 vs original36*6=216;not a kernelprice or shot reduction"
+  },
+  "initialization": {
+    "source": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "policy": "project savedqualifiedx0 onto fixedsupport once;unpack existingffsim codec;do not take anotherlogm",
+    "same_as_unconstrained_initial": false,
+    "mask_changes_tensor": true,
+    "initial_sector_budget": "measure andreport;not an initial admission gate",
+    "admission": "finite/symmetric/support/rotation and independent CAR-generalK representation correctness",
+    "same_scale_as_saved_controls": true,
+    "no_automatic_fallback": true,
+    "causal_scope": "one constrained ansatz with its fixed projected start;not initial-point-controlled ablation"
+  },
+  "stage_call_limits": {
+    "prepare": {
+      "saved_initial_load": 1,
+      "support_projection": 1,
+      "structure_assessment": 1,
+      "tensor_assessment": 1
+    },
+    "fit": {
+      "fit_input_load": 1,
+      "optimized_fitter": 1,
+      "fit_initial_diagnostic": 1,
+      "fit_final_diagnostic": 1,
+      "tensor_assessment": 1,
+      "structure_assessment": 1
+    },
+    "evaluation": {
+      "saved_evidence_load": 1,
+      "snapshots_load": 2,
+      "sector_context": 1,
+      "physical_sector": 1,
+      "sector_assessment": 2,
+      "representation_assessment": 2,
+      "initial_gate": 1,
+      "comparison": 1
+    }
+  },
+  "call_limits": {
+    "saved_initial_load": 1,
+    "support_projection": 1,
+    "structure_assessment": 2,
+    "tensor_assessment": 2,
+    "fit_input_load": 1,
+    "optimized_fitter": 1,
+    "fit_initial_diagnostic": 1,
+    "fit_final_diagnostic": 1,
+    "saved_evidence_load": 1,
+    "snapshots_load": 2,
+    "sector_context": 1,
+    "physical_sector": 1,
+    "sector_assessment": 2,
+    "representation_assessment": 2,
+    "initial_gate": 1,
+    "comparison": 1
+  },
+  "maximum_logical_units": 21,
+  "logical_unit_contents": {
+    "saved_initial_load": "one saved originalpacket,qualifiedinitialvector and sharedscales bundle",
+    "support_projection": "one deterministic fixed-mask projection;oneunpack,no retained-H assertion",
+    "structure_assessment": "one initial/final support,Jzero count,activePauli count,numericalinner rank diagnostic each",
+    "tensor_assessment": "one initial/final existing tensor Frobenius/maxabs/objective each",
+    "fit_input_load": "one candidate originalpacket/projectedinitial/oldscales load",
+    "optimized_fitter": "one real ffsim solve through compactparameter injection;existingSciPy L-BFGS-B;no newoptimizer",
+    "fit_initial_diagnostic": "one full and projected value/gradient diagnostic;no extra optimization",
+    "fit_final_diagnostic": "one final diagnostic andraw compactx/jac preservation",
+    "saved_evidence_load": "one savedStageA γ0/.1 controls JSON;no new old-fit evaluation",
+    "snapshots_load": "originalpacket+newinitial and newfinal loads",
+    "sector_context": "oneSectorCAR sector36",
+    "physical_sector": "one originalh/g/c physicalsector",
+    "sector_assessment": "initial/final operator2norm+unchangedguard;not full512 circuit",
+    "representation_assessment": "initial/final independentrawCAR/generalK comparison",
+    "initial_gate": "structural/representation correctness;initialbudgetdiagnostic only",
+    "comparison": "finaloptimizer andDF eligibility separate;no cost/performanceGO"
+  },
+  "numerical_conditions": {
+    "CA_Ha": 0.00159,
+    "DF_budget_Ha": 0.00019875,
+    "representation_component_abs": 1e-10,
+    "rtol": 0,
+    "guard": "sector_operation_scale_guard8_proposal_v1",
+    "rigorous_enclosure": null,
+    "keep_original_g_kappa": true,
+    "nuclear_scalar_once": true,
+    "spin_order": "interleaved2i+sigma"
+  },
+  "scientific_GO": {
+    "condition": "optimizer success AND final sectorerror+guard<=CA/8 AND support/representation gates PASS",
+    "meaning": "DF eligible for next registered evaluation only;not λ/performance/CA GO"
+  },
+  "STOP": {
+    "correctness": "preservepartial/failure/journals;stop dependent work on source/input/nonfinite/support/codec/reference mismatch",
+    "optimizer_or_DF_not_met": "finish permitted diagnostics and STOP;no retry/start fallback/rank ormaskchange",
+    "completion": "mandatorySTOP evenifeligible;no automaticPF/RTE/native/shots"
+  },
+  "fresh_output": "artifacts/research_c_df_structural_support/2026-10-28/run01",
+  "retry": 0,
+  "resume": 0,
+  "new_fits": 1,
+  "optimizer_invocations_max": 1,
+  "rank_search": 0,
+  "PF_RTE_shots_native": 0,
+  "resources": {
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "wall_cap": null,
+    "planner": "one fit task;existingJAXx64 vectorized loss/AD and sector36;actualaffinity/quota/freeRAM plan recorded",
+    "noninterference": "task-localfit/evalvenvs andcaches;dependenciesreadonly;no sharedsettings/otherjobs"
+  },
+  "downstream_design_only": {
+    "status": "NOT_EXECUTABLE_NOT_IN_21_CALL_SCOPE",
+    "PR": {
+      "PF": "partial ordered symmetric S2",
+      "ld": 2,
+      "delta": "1/10",
+      "s": 1,
+      "r": 128,
+      "K": 0,
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "oracle": "ownDFground",
+      "state_preparation": "excluded"
+    },
+    "RPE": {
+      "CA_Ha": 0.00159,
+      "beta_total": "pi/6",
+      "beta_stat": "pi/12",
+      "alpha_total": 0.01,
+      "alpha_axis": ".01/26",
+      "law": "idealfiniteRTE IID conditional scenario;actual law/synthesis unknown"
+    },
+    "compiler": {
+      "qiskit": "1.3.0",
+      "profile": "P0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false,
+      "phase": "MPFR160declaredphase",
+      "native": "samePrecisionBuilder/StrongBuilder;relativehead;identicalbasistail;no crossheadtailrelative"
+    },
+    "controls": [
+      "saved ordinaryCDFγ0",
+      "saved PR-awareCDFγ.1",
+      "one newfixed-support CDF",
+      "saved M2 sameProposedJU deterministicS2s1;not newcandidate ownJU baseline"
+    ],
+    "evaluation_order": [
+      "eligibleDFonly",
+      "rebuild newbasisregistry/atoms/identity/finiteRTEtarget",
+      "generalK/rawCAR/groundalias",
+      "all13PF/RTE/A",
+      "existingRPE/energy/scenario qualifications",
+      "separatefixed32nativecalibration onlyifneeded and separately permitted",
+      "newWmu+S conditionalpointcomparison"
+    ],
+    "missing_conditions": [
+      "ordinaryγ0 hasno saved r128/s1 PR calibration;new matching evaluation needed",
+      "newcandidate cannot reuse oldPF/RTE/ground/shots/price",
+      "candidate ownJU strongdeterministic control needed before claimingPR-specific superiority"
+    ],
+    "additional_scientific_call_limit": null,
+    "reason": "new immutableJ/U thenbind evaluationSOURCE/input/cohorts in separatecontract;do not invent executablecallidentity now"
+  },
+  "independent_novelty": null,
+  "performance_advantage": null,
+  "actual_CA_achieved": null,
+  "all_law_synthesis": null,
+  "implemented_law_error": null,
+  "cost_support": null,
+  "mandatory_stop": true
+}

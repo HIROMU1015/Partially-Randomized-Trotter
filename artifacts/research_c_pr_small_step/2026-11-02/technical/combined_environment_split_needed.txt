@@ -1,0 +1,851 @@
+..........................FF...............................FF........... [ 24%]
+........................................................................ [ 48%]
+........................................................................ [ 72%]
+........................................FF............................FF [ 96%]
+......FF.                                                                [100%]
+=================================== FAILURES ===================================
+____ test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[None] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_real_artificial_workers_g0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c9c2fb0d0>
+fault = None
+
+    @pytest.mark.parametrize('fault',[None,'representation'])
+    def test_real_artificial_workers_guarded_PR_and_physical_parent_STOP(tmp_path,monkeypatch,fault):
+        c=fixture(tmp_path);out=tmp_path/m.FRESH
+        code="import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_j_u_reduced_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root,path,output,contract,python,workers,calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',JAX_ENABLE_X64='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON),'-B','-c',code,str(ROOT/'src'),str(root),str(output/role),role],
+                                   env=env,stdout=log,stderr=log,check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one,k) for k in m.ROLES]:f.result()
+        monkeypatch.setattr(m.common,'launch_workers',launch)
+        original=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw:'SYNTHETIC\n' if args==['git','rev-parse','HEAD'] else original(args,**kw))
+        if fault:
+            def bad(*a,**k):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule,'representation_gate',bad)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError,match='ARTIFICIAL_REPRESENTATION_FAIL'):
+                    m.run(tmp_path,tmp_path/'contract.json',out,FIT_PYTHON)
+            else:
+>               r=m.run(tmp_path,tmp_path/'contract.json',out,FIT_PYTHON)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_j_u_reduced_pilot.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_j_u_reduced_pilot.py:193: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_j_u_reduced_pilot.py:193: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_ test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[representation] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_real_artificial_workers_g1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c96110290>
+fault = 'representation'
+
+    @pytest.mark.parametrize('fault',[None,'representation'])
+    def test_real_artificial_workers_guarded_PR_and_physical_parent_STOP(tmp_path,monkeypatch,fault):
+        c=fixture(tmp_path);out=tmp_path/m.FRESH
+        code="import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_j_u_reduced_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root,path,output,contract,python,workers,calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',JAX_ENABLE_X64='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON),'-B','-c',code,str(ROOT/'src'),str(root),str(output/role),role],
+                                   env=env,stdout=log,stderr=log,check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one,k) for k in m.ROLES]:f.result()
+        monkeypatch.setattr(m.common,'launch_workers',launch)
+        original=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw:'SYNTHETIC\n' if args==['git','rev-parse','HEAD'] else original(args,**kw))
+        if fault:
+            def bad(*a,**k):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule,'representation_gate',bad)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError,match='ARTIFICIAL_REPRESENTATION_FAIL'):
+>                   m.run(tmp_path,tmp_path/'contract.json',out,FIT_PYTHON)
+
+tests/management/test_research_c_j_u_reduced_pilot.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_j_u_reduced_pilot.py:193: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_j_u_reduced_pilot.py:193: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+____ test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[None] ____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_real_artificial_workers_g2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c94a229d0>
+fault = None
+
+    @pytest.mark.parametrize('fault',[None,'representation'])
+    def test_real_artificial_workers_guarded_PR_and_physical_parent_STOP(tmp_path,monkeypatch,fault):
+        c=fixture(tmp_path);out=tmp_path/m.FRESH
+        code="import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_j_u_stable_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root,path,output,contract,python,workers,calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',JAX_ENABLE_X64='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON),'-B','-c',code,str(ROOT/'src'),str(root),str(output/role),role],
+                                   env=env,stdout=log,stderr=log,check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one,k) for k in m.ROLES]:f.result()
+        monkeypatch.setattr(m.common,'launch_workers',launch)
+        original=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw:'SYNTHETIC\n' if args==['git','rev-parse','HEAD'] else original(args,**kw))
+        if fault:
+            def bad(*a,**k):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule,'representation_gate',bad)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError,match='ARTIFICIAL_REPRESENTATION_FAIL'):
+                    m.run(tmp_path,tmp_path/'contract.json',out,FIT_PYTHON)
+            else:
+>               r=m.run(tmp_path,tmp_path/'contract.json',out,FIT_PYTHON)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_j_u_stable_pilot.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_j_u_stable_pilot.py:208: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_j_u_stable_pilot.py:208: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_ test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[representation] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_real_artificial_workers_g3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c97f9a110>
+fault = 'representation'
+
+    @pytest.mark.parametrize('fault',[None,'representation'])
+    def test_real_artificial_workers_guarded_PR_and_physical_parent_STOP(tmp_path,monkeypatch,fault):
+        c=fixture(tmp_path);out=tmp_path/m.FRESH
+        code="import sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_j_u_stable_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root,path,output,contract,python,workers,calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env=dict(os.environ,PYTHONDONTWRITEBYTECODE='1',JAX_ENABLE_X64='1',OPENBLAS_NUM_THREADS='1',MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON),'-B','-c',code,str(ROOT/'src'),str(root),str(output/role),role],
+                                   env=env,stdout=log,stderr=log,check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one,k) for k in m.ROLES]:f.result()
+        monkeypatch.setattr(m.common,'launch_workers',launch)
+        original=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw:'SYNTHETIC\n' if args==['git','rev-parse','HEAD'] else original(args,**kw))
+        if fault:
+            def bad(*a,**k):raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule,'representation_gate',bad)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError,match='ARTIFICIAL_REPRESENTATION_FAIL'):
+>                   m.run(tmp_path,tmp_path/'contract.json',out,FIT_PYTHON)
+
+tests/management/test_research_c_j_u_stable_pilot.py:67: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_j_u_stable_pilot.py:208: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_j_u_stable_pilot.py:208: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_____ test_artificial_full_parent_real_block_workers_sector_and_STOP[None] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_artificial_full_parent_re0')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c88dda510>
+fault = None
+
+    @pytest.mark.parametrize('fault', [None, 'representation'])
+    def test_artificial_full_parent_real_block_workers_sector_and_STOP(tmp_path, monkeypatch, fault):
+        if not FIT_PYTHON.exists():
+            pytest.skip('Dedicated synthetic fit environment unavailable')
+        c = fixture(tmp_path)
+        protected = dict(c['saved_inputs'])
+        out = tmp_path/m.FRESH
+        # The fixture root is not a checkout. Load code from this fixed worktree,
+        # but pass ONLY invented input paths and a fresh pytest directory.
+        code = "import json,sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_separated_j_u_consistent_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root, path, output, contract, python, workers, calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', JAX_ENABLE_X64='1',
+                           OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON), '-B', '-c', code, str(ROOT/'src'),
+                        str(root), str(output/role), role], env=env, stdout=log,
+                        stderr=log, check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one, k) for k in m.ROLES]:
+                    f.result()
+        monkeypatch.setattr(m.common, 'launch_workers', launch)
+        original_check_output=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw: 'SYNTHETIC_ONLY\n' if args==['git','rev-parse','HEAD'] else original_check_output(args,**kw))
+        if fault:
+            def mismatch(*args):
+                raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule, 'representation_gate', mismatch)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError, match='ARTIFICIAL_REPRESENTATION_FAIL'):
+                    m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+            else:
+>               result = m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_separated_J_U_consistent_pilot.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_separated_j_u_consistent_pilot.py:252: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_separated_j_u_consistent_pilot.py:252: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_ test_artificial_full_parent_real_block_workers_sector_and_STOP[representation] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_artificial_full_parent_re1')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c882f3810>
+fault = 'representation'
+
+    @pytest.mark.parametrize('fault', [None, 'representation'])
+    def test_artificial_full_parent_real_block_workers_sector_and_STOP(tmp_path, monkeypatch, fault):
+        if not FIT_PYTHON.exists():
+            pytest.skip('Dedicated synthetic fit environment unavailable')
+        c = fixture(tmp_path)
+        protected = dict(c['saved_inputs'])
+        out = tmp_path/m.FRESH
+        # The fixture root is not a checkout. Load code from this fixed worktree,
+        # but pass ONLY invented input paths and a fresh pytest directory.
+        code = "import json,sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_separated_j_u_consistent_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root, path, output, contract, python, workers, calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', JAX_ENABLE_X64='1',
+                           OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON), '-B', '-c', code, str(ROOT/'src'),
+                        str(root), str(output/role), role], env=env, stdout=log,
+                        stderr=log, check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one, k) for k in m.ROLES]:
+                    f.result()
+        monkeypatch.setattr(m.common, 'launch_workers', launch)
+        original_check_output=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw: 'SYNTHETIC_ONLY\n' if args==['git','rev-parse','HEAD'] else original_check_output(args,**kw))
+        if fault:
+            def mismatch(*args):
+                raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule, 'representation_gate', mismatch)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError, match='ARTIFICIAL_REPRESENTATION_FAIL'):
+>                   m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+
+tests/management/test_research_c_separated_J_U_consistent_pilot.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_separated_j_u_consistent_pilot.py:252: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_separated_j_u_consistent_pilot.py:252: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_____ test_artificial_full_parent_real_block_workers_sector_and_STOP[None] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_artificial_full_parent_re2')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c88396f50>
+fault = None
+
+    @pytest.mark.parametrize('fault', [None, 'representation'])
+    def test_artificial_full_parent_real_block_workers_sector_and_STOP(tmp_path, monkeypatch, fault):
+        if not FIT_PYTHON.exists():
+            pytest.skip('Dedicated synthetic fit environment unavailable')
+        c = fixture(tmp_path)
+        protected = dict(c['saved_inputs'])
+        out = tmp_path/m.FRESH
+        # The fixture root is not a checkout. Load code from this fixed worktree,
+        # but pass ONLY invented input paths and a fresh pytest directory.
+        code = "import json,sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_separated_j_u_curvature_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root, path, output, contract, python, workers, calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', JAX_ENABLE_X64='1',
+                           OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON), '-B', '-c', code, str(ROOT/'src'),
+                        str(root), str(output/role), role], env=env, stdout=log,
+                        stderr=log, check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one, k) for k in m.ROLES]:
+                    f.result()
+        monkeypatch.setattr(m.common, 'launch_workers', launch)
+        original_check_output=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw: 'SYNTHETIC_ONLY\n' if args==['git','rev-parse','HEAD'] else original_check_output(args,**kw))
+        if fault:
+            def mismatch(*args):
+                raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule, 'representation_gate', mismatch)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError, match='ARTIFICIAL_REPRESENTATION_FAIL'):
+                    m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+            else:
+>               result = m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_separated_J_U_curvature_pilot.py:152: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_separated_j_u_curvature_pilot.py:234: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_separated_j_u_curvature_pilot.py:234: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_ test_artificial_full_parent_real_block_workers_sector_and_STOP[representation] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_artificial_full_parent_re3')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c88225950>
+fault = 'representation'
+
+    @pytest.mark.parametrize('fault', [None, 'representation'])
+    def test_artificial_full_parent_real_block_workers_sector_and_STOP(tmp_path, monkeypatch, fault):
+        if not FIT_PYTHON.exists():
+            pytest.skip('Dedicated synthetic fit environment unavailable')
+        c = fixture(tmp_path)
+        protected = dict(c['saved_inputs'])
+        out = tmp_path/m.FRESH
+        # The fixture root is not a checkout. Load code from this fixed worktree,
+        # but pass ONLY invented input paths and a fresh pytest directory.
+        code = "import json,sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_separated_j_u_curvature_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root, path, output, contract, python, workers, calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', JAX_ENABLE_X64='1',
+                           OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON), '-B', '-c', code, str(ROOT/'src'),
+                        str(root), str(output/role), role], env=env, stdout=log,
+                        stderr=log, check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one, k) for k in m.ROLES]:
+                    f.result()
+        monkeypatch.setattr(m.common, 'launch_workers', launch)
+        original_check_output=m.subprocess.check_output
+        monkeypatch.setattr(m.subprocess,'check_output',lambda args,**kw: 'SYNTHETIC_ONLY\n' if args==['git','rev-parse','HEAD'] else original_check_output(args,**kw))
+        if fault:
+            def mismatch(*args):
+                raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule, 'representation_gate', mismatch)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError, match='ARTIFICIAL_REPRESENTATION_FAIL'):
+>                   m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+
+tests/management/test_research_c_separated_J_U_curvature_pilot.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_separated_j_u_curvature_pilot.py:234: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_separated_j_u_curvature_pilot.py:234: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_____ test_artificial_full_parent_real_block_workers_sector_and_STOP[None] _____
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_artificial_full_parent_re4')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c882b6750>
+fault = None
+
+    @pytest.mark.parametrize('fault', [None, 'representation'])
+    def test_artificial_full_parent_real_block_workers_sector_and_STOP(tmp_path, monkeypatch, fault):
+        if not FIT_PYTHON.exists():
+            pytest.skip('Dedicated synthetic fit environment unavailable')
+        c = fixture(tmp_path)
+        protected = dict(c['saved_inputs'])
+        out = tmp_path/m.FRESH
+        # The fixture root is not a checkout. Load code from this fixed worktree,
+        # but pass ONLY invented input paths and a fresh pytest directory.
+        code = "import json,sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_separated_j_u_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root, path, output, contract, python, workers, calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', JAX_ENABLE_X64='1',
+                           OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON), '-B', '-c', code, str(ROOT/'src'),
+                        str(root), str(output/role), role], env=env, stdout=log,
+                        stderr=log, check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one, k) for k in m.ROLES]:
+                    f.result()
+        monkeypatch.setattr(m.common, 'launch_workers', launch)
+        monkeypatch.setattr(m.subprocess, 'check_output', lambda *a, **kw: 'SYNTHETIC_ONLY\n')
+        if fault:
+            def mismatch(*args):
+                raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule, 'representation_gate', mismatch)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError, match='ARTIFICIAL_REPRESENTATION_FAIL'):
+                    m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+            else:
+>               result = m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_separated_J_U_pilot.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_separated_j_u_pilot.py:238: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_separated_j_u_pilot.py:238: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+_ test_artificial_full_parent_real_block_workers_sector_and_STOP[representation] _
+
+tmp_path = PosixPath('/tmp/pytest-of-abe/pytest-699/test_artificial_full_parent_re5')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x745c882e88d0>
+fault = 'representation'
+
+    @pytest.mark.parametrize('fault', [None, 'representation'])
+    def test_artificial_full_parent_real_block_workers_sector_and_STOP(tmp_path, monkeypatch, fault):
+        if not FIT_PYTHON.exists():
+            pytest.skip('Dedicated synthetic fit environment unavailable')
+        c = fixture(tmp_path)
+        protected = dict(c['saved_inputs'])
+        out = tmp_path/m.FRESH
+        # The fixture root is not a checkout. Load code from this fixed worktree,
+        # but pass ONLY invented input paths and a fresh pytest directory.
+        code = "import json,sys;from pathlib import Path;sys.path.insert(0,sys.argv[1]);from trottertracks import c_separated_j_u_pilot as m;r=Path(sys.argv[2]);c=m.preflight(r,r/'contract.json',fit=True);m.fit_worker(r,Path(sys.argv[3]),c,sys.argv[4])"
+        def launch(root, path, output, contract, python, workers, calls):
+            from concurrent.futures import ThreadPoolExecutor
+            def one(role):
+                env = dict(os.environ, PYTHONDONTWRITEBYTECODE='1', JAX_ENABLE_X64='1',
+                           OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1')
+                with (output/(role+'_worker.txt')).open('x') as log:
+                    subprocess.run([str(FIT_PYTHON), '-B', '-c', code, str(ROOT/'src'),
+                        str(root), str(output/role), role], env=env, stdout=log,
+                        stderr=log, check=True)
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                for f in [pool.submit(one, k) for k in m.ROLES]:
+                    f.result()
+        monkeypatch.setattr(m.common, 'launch_workers', launch)
+        monkeypatch.setattr(m.subprocess, 'check_output', lambda *a, **kw: 'SYNTHETIC_ONLY\n')
+        if fault:
+            def mismatch(*args):
+                raise ValueError('ARTIFICIAL_REPRESENTATION_FAIL')
+            monkeypatch.setattr(m.molecule, 'representation_gate', mismatch)
+        with threadpool_limits(limits=1):
+            if fault:
+                with pytest.raises(ValueError, match='ARTIFICIAL_REPRESENTATION_FAIL'):
+>                   m.run(tmp_path, tmp_path/'contract.json', out, FIT_PYTHON)
+
+tests/management/test_research_c_separated_J_U_pilot.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c_separated_j_u_pilot.py:238: in run
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage3_integrated.py:108: in __call__
+    value = function()
+            ^^^^^^^^^^
+src/trottertracks/c_separated_j_u_pilot.py:238: in <lambda>
+    ctx = calls('sector_context', 'sector36', lambda: molecule.SectorCAR(4))
+                                                      ^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_molecule_extension.py:156: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1206: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1178: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1149: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:690: in _load_unlocked
+    ???
+<frozen importlib._bootstrap_external>:940: in exec_module
+    ???
+<frozen importlib._bootstrap>:241: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+>   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_j_u_reduced_pilot.py::test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[None]
+FAILED tests/management/test_research_c_j_u_reduced_pilot.py::test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[representation]
+FAILED tests/management/test_research_c_j_u_stable_pilot.py::test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[None]
+FAILED tests/management/test_research_c_j_u_stable_pilot.py::test_real_artificial_workers_guarded_PR_and_physical_parent_STOP[representation]
+FAILED tests/management/test_research_c_separated_J_U_consistent_pilot.py::test_artificial_full_parent_real_block_workers_sector_and_STOP[None]
+FAILED tests/management/test_research_c_separated_J_U_consistent_pilot.py::test_artificial_full_parent_real_block_workers_sector_and_STOP[representation]
+FAILED tests/management/test_research_c_separated_J_U_curvature_pilot.py::test_artificial_full_parent_real_block_workers_sector_and_STOP[None]
+FAILED tests/management/test_research_c_separated_J_U_curvature_pilot.py::test_artificial_full_parent_real_block_workers_sector_and_STOP[representation]
+FAILED tests/management/test_research_c_separated_J_U_pilot.py::test_artificial_full_parent_real_block_workers_sector_and_STOP[None]
+FAILED tests/management/test_research_c_separated_J_U_pilot.py::test_artificial_full_parent_real_block_workers_sector_and_STOP[representation]
+10 failed, 287 passed in 29.92s

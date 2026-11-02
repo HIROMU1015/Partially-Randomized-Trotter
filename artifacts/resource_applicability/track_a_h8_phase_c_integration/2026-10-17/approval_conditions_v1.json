@@ -1,0 +1,43 @@
+{
+  "schema": "H8_PHASE_C_APPROVAL_CONDITIONS_V1",
+  "executable_after_approval": true,
+  "missing_scientific_prerequisites": [],
+  "user_must_explicitly_approve": {
+    "stage": "H8 Phase C saved-value five-epsilon usual signed-bias RZ re-accounting (P=0), one shot",
+    "SOURCE": "29ed76544441d534ad99e5c708a2ae17eec78c18",
+    "plan_digest": "9e42fc76078568c9aaad4945539ffc46293214f71d4d36db1f0f53beea20d132",
+    "B2_binding": "fef2db7a b2_full_pass_binding_v1.json (PASS_REGISTERED_FOUR_AXES)",
+    "outputs": [
+      "deterministic best per epsilon/factor for old32 and strengthened184",
+      "PR confirmation union6 n32 finite-sample cost",
+      "PR reduction percent and percentage-point change",
+      "measured vs model unit labels",
+      "unresolved/ineligible/missing effects"
+    ],
+    "excluded": [
+      "noncancellation cost comparison (separate stage)",
+      "new signal/compile/sampling/fit",
+      "B2 rerun",
+      "refit or S4 model change"
+    ]
+  },
+  "executor_steps_after_approval": [
+    "check out SOURCE exactly (runtime requires HEAD == SOURCE)",
+    "re-run prepare with seal=True: fresh protection lists of all registered worktrees and protected evidence",
+    "issue a new one-shot grant H8_PHASE_C_NEW_GRANT_V2 with the approval text, config digest, allowed CPUs",
+    "launch run_h8_phase_c.py --launch-approved (fresh gate <=30 s, wait4, native exit receipt)",
+    "save outputs, terminal, native exit, final gate; publish redacted projections; mandatory STOP"
+  ],
+  "not_required": [
+    "B2 rerun",
+    "new compile",
+    "agent-imposed resource caps"
+  ],
+  "interpretation_limits": [
+    "S4 model passed only on four registered axes; not a full-grid guarantee",
+    "old full PF unit costs keep the original/unknown runtime profile",
+    "PR cost is a finite-sample mean of n32 with paired SE, not a population guarantee; unobserved Taylor layers stay unbounded",
+    "empirical allowance; no rigorous bias guarantee"
+  ],
+  "valid_grant_issued": false
+}

@@ -1,0 +1,128 @@
+{
+  "BF2_authorized": false,
+  "automatic_next_stage": null,
+  "branch": "track-b-bf1-serialization-repair",
+  "changed_technical_files": [
+    {
+      "bytes": 4973,
+      "path": "src/trottertracks/algorithm_codesign/cross_objectives.py",
+      "sha256": "2e71b5c5bf5e9e88b3f6be97f237709ba13206733f8d2fb6e24c9b808d41c07f"
+    },
+    {
+      "bytes": 7049,
+      "path": "tests/tracks/algorithm_codesign/test_bf1_cross_objectives.py",
+      "sha256": "3c0cfa4558817398c3edce10b03d63064206a7df6c5c5720e2e98b8db8336f89"
+    }
+  ],
+  "created_at_utc": "2026-10-05T10:56:30.470951+00:00",
+  "evidence_scope": "local synthetic checks; not immutable CI, scientific result or independent replication",
+  "fix_scope": "native Python int for cross-objective union_rank; ordering/objectives/search/primary unchanged",
+  "mandatory_stop": true,
+  "one_shot": {
+    "consumed": true,
+    "marker_relative_to_git_common": "track-b-bf1-one-shot/bf1-20261005-development-v1.json",
+    "marker_sha256": "9cbbb0df7bd5c20a6ba10f23544d4f322722a711e3a17e182c46102032e6bed5",
+    "retry_authorized": false,
+    "unchanged_from_result_audit": true
+  },
+  "operations": {
+    "circuits": 0,
+    "compilations": 0,
+    "gpu_queries_or_use": 0,
+    "molecular_NPZ_resolve_stat_hash_load": 0,
+    "molecular_generation": 0,
+    "original_result_reclassifications": 0,
+    "science_cell_rescores": 0,
+    "science_coefficient_searches": 0,
+    "science_runner_launches": 0,
+    "science_signal_acquisitions": 0,
+    "trajectories": 0
+  },
+  "original_authorization_commit": "cc971e4a2bff9b0c5708003fde7b9519eed27241",
+  "original_result_outcome": "INCONCLUSIVE",
+  "original_science_source_commit": "e59344a564e70d64dc3ea39d640581c72676df31",
+  "parent_result_commit": "09c9e89555032213b52a6a60b38f55563d07a34d",
+  "persistence_inventory": {
+    "bridge_persisted": false,
+    "coefficient_definitions_persisted": false,
+    "cross_objectives_persisted": false,
+    "primary_decision_persisted": false,
+    "reconstruction_impossibility_claimed": false,
+    "reconstruction_performed": false,
+    "result_keys": [
+      "BF2_authorized",
+      "authorization_commit",
+      "automatic_next_stage",
+      "counters",
+      "cpu_seconds",
+      "exception_type",
+      "execution_id",
+      "input_audit",
+      "mandatory_stop",
+      "outcome",
+      "peak_rss_bytes",
+      "plan_fingerprint",
+      "publication_scheme",
+      "reason",
+      "retry_authorized",
+      "schema",
+      "source_commit",
+      "status",
+      "wall_seconds"
+    ],
+    "searches_persisted": false
+  },
+  "preserved": {
+    "A_synthesis_body_unchanged": true,
+    "old_artifacts_and_receipts_checked": 21,
+    "original_artifacts_modified": false,
+    "preparation_files": 14,
+    "raw_artifact_identities": [
+      {
+        "bytes": 4834,
+        "path": "artifacts/track_b_bf1_execution/2026-10-05/v1/result.json",
+        "sha256": "99ef73f93f6303dbb1c85ac887dbfd66d02e006305938da0623f880493ea8250"
+      },
+      {
+        "bytes": 750629,
+        "path": "artifacts/track_b_bf1_execution/2026-10-05/v1/cells.jsonl",
+        "sha256": "a2974de79d454e062b41c4485e58ef07a0152ba5bf7163912575f0d2af1da0a6"
+      }
+    ],
+    "shared_source_paths_checked": 37
+  },
+  "reports": [
+    {
+      "bytes": 6762,
+      "path": "artifacts/track_b_bf1_serialization_repair/2026-10-05/before_fix_report.json",
+      "sha256": "708d1dbb2985d7be0446708667964d28aaac102131e1799789199dfb1e21d074"
+    },
+    {
+      "bytes": 1155,
+      "path": "artifacts/track_b_bf1_serialization_repair/2026-10-05/after_fix_report.json",
+      "sha256": "df05b09e3c59d262dc06b337fb7bf1e03ee034d24d455ec9d2dab2bb2ea4abdc"
+    }
+  ],
+  "role_boundary": {
+    "fine_implementation_validation": "Codex",
+    "research_direction": "user/GPT review"
+  },
+  "schema": "bf1_serialization_repair_audit_v1",
+  "science_execution_authorized": false,
+  "science_retry_authorized": false,
+  "science_run_exact_throw_site_confirmed": false,
+  "status": "SYNTHETIC_SERIALIZATION_CHECKS_PASSED_SCIENCE_STOPPED",
+  "tests": {
+    "after_fix": {
+      "added_regression_cases": 3,
+      "focused_passed": 49,
+      "repository_full_suite": false
+    },
+    "before_fix": {
+      "deselected": 6,
+      "exception": "Object of type int64 is not JSON serializable",
+      "new_cases_failed": 3
+    }
+  },
+  "worktree": "/home/abe/Project/prt-worktrees/track-b-bf1-serialization-repair"
+}

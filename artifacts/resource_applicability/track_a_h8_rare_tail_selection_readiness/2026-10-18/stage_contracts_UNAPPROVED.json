@@ -1,0 +1,692 @@
+{
+  "schema": "H8_RARE_TAIL_SELECTION_DRAFTS_V1",
+  "authorization_status": "UNAPPROVED",
+  "stages": [
+    {
+      "science_scope": {
+        "system": "linear H8",
+        "separation_A": "1.00",
+        "basis": "STO-3G",
+        "saved_DF_rank": 28,
+        "modes": 16,
+        "sector_dimension": 4900,
+        "T": "0.8",
+        "prefix": 7,
+        "formula": "S2",
+        "r": 4,
+        "K": 4,
+        "q": [
+          4,
+          8
+        ],
+        "R": {
+          "4": 16,
+          "8": 32
+        },
+        "delta": {
+          "4": "0.2",
+          "8": "0.1"
+        },
+        "law": "original finite-RTE",
+        "control": "symmetric_directional",
+        "wrapper": "native full Hadamard cosine/sine paired",
+        "P": 0
+      },
+      "SOURCE_closure": {
+        "preparation_SOURCE": "432b76e0b915c6b145a7d275b4cdd42953b762bd",
+        "path": "SOURCE_closure_v1.json",
+        "production_SOURCE": null,
+        "production_SOURCE_status": "NOT_SEALED_FUTURE_BINDING_REQUIRED"
+      },
+      "input_manifest": {
+        "path": "../../../../references/h8_rare_tail_selection_inputs_v1.json",
+        "sha256": "ba612d24c6cad10516abd351ccdde590639a62a9a8aa2977d0a97924a6566226",
+        "public_fixed_evidence_files": 36,
+        "private_input_bytes_fresh_status": "NOT_VERIFIED_IN_THIS_PREPARATION",
+        "saved_science_receipt": {
+          "path": "science_inputs_saved_receipt_v1.json",
+          "sha256": "af474bf88976ca0d9ec79d2399053b285a6f65f8eba1061099aca447b8905011",
+          "files": 16
+        }
+      },
+      "compiler_profile": {
+        "compiler_sha256": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "profile_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "topology": null
+      },
+      "seed_policy": {
+        "status": "PROPOSAL_NO_REAL_SEEDS_GENERATED",
+        "namespace": "H8_RARE_TAIL_SELECTION_DRAFT_20261018",
+        "keys": [
+          "stage",
+          "candidate",
+          "replica"
+        ],
+        "avoid": "all prior master/order/step seeds including consumed STOP grants and run02",
+        "generator": "future pinned PCG64; not the built-in synthetic Random fixture"
+      },
+      "existing_ledger_binding": "existing_ledger_binding_v1.json",
+      "resource_and_noninterference_policy": {
+        "policy": "current user policy; no arbitrary new CPU/RAM/worker/wall cap; do not amend existing authorized contracts",
+        "parallelization": "future native: independent trajectories, same-pair evolution reuse; count table cache; actual available resources at fresh gate",
+        "actual_resource_gate": "NOT_RUN_FOR_SCIENCE",
+        "immutable_protected": "actual SOURCE/input/compiler/runtime/result/grant/ledger/marker only",
+        "other_worktree_changes": "READ_ONLY_OBSERVATION_NOT_A_GLOBAL_FREEZE",
+        "transient_PSI_CPU_delay": "diagnostic; reestablish monitoring and check integrity",
+        "real_OOM_noncontinuable_owned_error_input_corruption": "STOP",
+        "shared_OS_cgroup_scheduler_venv_other_jobs_changes": false
+      },
+      "failure_STOP_conditions": [
+        "unapproved execution",
+        "SOURCE/input/compiler/profile/normalization/control/seed/event mismatch",
+        "conditional support unrepresentable; do not truncate support silently",
+        "duplicate/reused seed/trajectory/grant/one-shot/output",
+        "native failure, actual OOM or noncontinuable resource shortage",
+        "missing/invalid metrics or pairing",
+        "budget cannot bind without resetting old carry",
+        "control discrepancy >= inherited 1e-8 limit",
+        "no automatic retry/refit/extra sampling/compile; preserve first STOP and owned native exit/reap"
+      ],
+      "mandatory_STOP": true,
+      "authorization_status": "UNAPPROVED",
+      "runtime_authorization": false,
+      "sealed": false,
+      "launch_command": null,
+      "claim_adoption": false,
+      "stage_id": "S4_PILOT",
+      "candidate_set": [
+        "B2_p7_q4_2nd_r4_K4",
+        "B2_p7_q8_2nd_r4_K4"
+      ],
+      "sampling_stratum": "N4>=1; N2 arbitrary",
+      "sampling_law": "conditional multinomial(R;p0,p2,p4) restricted to N4>=1",
+      "sampling_count_proposal": {
+        "minimum_each_q": 2,
+        "minimum_total": 4,
+        "extension_each_q": 8,
+        "extension_total": 16,
+        "rationale": "operational descriptive pilot only, not power/coverage guarantee; user selects one scope before sampling"
+      },
+      "compile_count_proposal": {
+        "minimum": 8,
+        "extension": 32,
+        "axes": [
+          "cosine",
+          "sine"
+        ],
+        "pair_same_events": true
+      },
+      "cost_metrics": [
+        "native measured RZ/CX/depth/RZ_depth/CX_depth/size per full-wrapper axis",
+        "conditional paired cost descriptive mean/SD/SE only under approved stage"
+      ],
+      "statistical_estimand": "conditional full-wrapper cost mean of the declared stratum, not unconditional PR mean or winner",
+      "expected_outputs": [
+        "count/position/component/seed/event receipt",
+        "both axes measured metrics/fingerprint",
+        "SOURCE/input/compiler/profile",
+        "descriptive n/SD/SE with missing-tail null",
+        "call reservation/actual ledger",
+        "native exit0/reap/absence proof",
+        "final gate/STOP"
+      ],
+      "call_budget_proposal": {
+        "minimum": {
+          "trajectory": 4,
+          "compile": 8,
+          "occurrence_outer_q": 24,
+          "event_occurrences_R": 96,
+          "control_probe": 8,
+          "signal": 0,
+          "SCF_DF_state": 0,
+          "fit": 0,
+          "reaccount": 0
+        },
+        "extension": {
+          "trajectory": 16,
+          "compile": 32,
+          "occurrence_outer_q": 96,
+          "event_occurrences_R": 384,
+          "control_probe": 8,
+          "signal": 0,
+          "SCF_DF_state": 0,
+          "fit": 0,
+          "reaccount": 0
+        },
+        "adopted": false,
+        "old_control_budget_has_headroom": false,
+        "new_explicit_budget_decision_required": true
+      },
+      "success_conditions": [
+        "exact approved scope",
+        "complete paired output for all registered trajectories",
+        "source/input/control/fingerprint gate PASS",
+        "budget and native termination/reap complete; cost magnitude is NOT a scientific acceptance gate"
+      ],
+      "limitations": [
+        "small conditional n does not certify population mean/variance",
+        "unobserved other strata stay null",
+        "do not append to original n32",
+        "do not auto reaccount PR or choose a new winner"
+      ]
+    },
+    {
+      "science_scope": {
+        "system": "linear H8",
+        "separation_A": "1.00",
+        "basis": "STO-3G",
+        "saved_DF_rank": 28,
+        "modes": 16,
+        "sector_dimension": 4900,
+        "T": "0.8",
+        "prefix": 7,
+        "formula": "S2",
+        "r": 4,
+        "K": 4,
+        "q": [
+          4,
+          8
+        ],
+        "R": {
+          "4": 16,
+          "8": 32
+        },
+        "delta": {
+          "4": "0.2",
+          "8": "0.1"
+        },
+        "law": "original finite-RTE",
+        "control": "symmetric_directional",
+        "wrapper": "native full Hadamard cosine/sine paired",
+        "P": 0
+      },
+      "SOURCE_closure": {
+        "preparation_SOURCE": "432b76e0b915c6b145a7d275b4cdd42953b762bd",
+        "path": "SOURCE_closure_v1.json",
+        "production_SOURCE": null,
+        "production_SOURCE_status": "NOT_SEALED_FUTURE_BINDING_REQUIRED"
+      },
+      "input_manifest": {
+        "path": "../../../../references/h8_rare_tail_selection_inputs_v1.json",
+        "sha256": "ba612d24c6cad10516abd351ccdde590639a62a9a8aa2977d0a97924a6566226",
+        "public_fixed_evidence_files": 36,
+        "private_input_bytes_fresh_status": "NOT_VERIFIED_IN_THIS_PREPARATION",
+        "saved_science_receipt": {
+          "path": "science_inputs_saved_receipt_v1.json",
+          "sha256": "af474bf88976ca0d9ec79d2399053b285a6f65f8eba1061099aca447b8905011",
+          "files": 16
+        }
+      },
+      "compiler_profile": {
+        "compiler_sha256": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "profile_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "topology": null
+      },
+      "seed_policy": {
+        "status": "PROPOSAL_NO_REAL_SEEDS_GENERATED",
+        "namespace": "H8_RARE_TAIL_SELECTION_DRAFT_20261018",
+        "keys": [
+          "stage",
+          "candidate",
+          "replica"
+        ],
+        "avoid": "all prior master/order/step seeds including consumed STOP grants and run02",
+        "generator": "future pinned PCG64; not the built-in synthetic Random fixture"
+      },
+      "existing_ledger_binding": "existing_ledger_binding_v1.json",
+      "resource_and_noninterference_policy": {
+        "policy": "current user policy; no arbitrary new CPU/RAM/worker/wall cap; do not amend existing authorized contracts",
+        "parallelization": "future native: independent trajectories, same-pair evolution reuse; count table cache; actual available resources at fresh gate",
+        "actual_resource_gate": "NOT_RUN_FOR_SCIENCE",
+        "immutable_protected": "actual SOURCE/input/compiler/runtime/result/grant/ledger/marker only",
+        "other_worktree_changes": "READ_ONLY_OBSERVATION_NOT_A_GLOBAL_FREEZE",
+        "transient_PSI_CPU_delay": "diagnostic; reestablish monitoring and check integrity",
+        "real_OOM_noncontinuable_owned_error_input_corruption": "STOP",
+        "shared_OS_cgroup_scheduler_venv_other_jobs_changes": false
+      },
+      "failure_STOP_conditions": [
+        "unapproved execution",
+        "SOURCE/input/compiler/profile/normalization/control/seed/event mismatch",
+        "conditional support unrepresentable; do not truncate support silently",
+        "duplicate/reused seed/trajectory/grant/one-shot/output",
+        "native failure, actual OOM or noncontinuable resource shortage",
+        "missing/invalid metrics or pairing",
+        "budget cannot bind without resetting old carry",
+        "control discrepancy >= inherited 1e-8 limit",
+        "no automatic retry/refit/extra sampling/compile; preserve first STOP and owned native exit/reap"
+      ],
+      "mandatory_STOP": true,
+      "authorization_status": "UNAPPROVED",
+      "runtime_authorization": false,
+      "sealed": false,
+      "launch_command": null,
+      "claim_adoption": false,
+      "stage_id": "S2_MULTI_PILOT",
+      "candidate_set": [
+        "B2_p7_q4_2nd_r4_K4",
+        "B2_p7_q8_2nd_r4_K4"
+      ],
+      "sampling_stratum": "N2>=2; N4=0; internal sub-stratum of s2",
+      "sampling_law": "conditional multinomial restricted to N2>=2,N4=0",
+      "sampling_count_proposal": {
+        "minimum_each_q": 2,
+        "minimum_total": 4,
+        "extension_each_q": 8,
+        "extension_total": 16,
+        "rationale": "operational descriptive pilot only, not power/coverage guarantee; user selects one scope before sampling"
+      },
+      "compile_count_proposal": {
+        "minimum": 8,
+        "extension": 32,
+        "axes": [
+          "cosine",
+          "sine"
+        ],
+        "pair_same_events": true
+      },
+      "cost_metrics": [
+        "native measured RZ/CX/depth/RZ_depth/CX_depth/size per full-wrapper axis",
+        "conditional paired cost descriptive mean/SD/SE only under approved stage"
+      ],
+      "statistical_estimand": "conditional full-wrapper cost mean of the declared stratum, not unconditional PR mean or winner",
+      "expected_outputs": [
+        "count/position/component/seed/event receipt",
+        "both axes measured metrics/fingerprint",
+        "SOURCE/input/compiler/profile",
+        "descriptive n/SD/SE with missing-tail null",
+        "call reservation/actual ledger",
+        "native exit0/reap/absence proof",
+        "final gate/STOP"
+      ],
+      "call_budget_proposal": {
+        "minimum": {
+          "trajectory": 4,
+          "compile": 8,
+          "occurrence_outer_q": 24,
+          "event_occurrences_R": 96,
+          "control_probe": 8,
+          "signal": 0,
+          "SCF_DF_state": 0,
+          "fit": 0,
+          "reaccount": 0
+        },
+        "extension": {
+          "trajectory": 16,
+          "compile": 32,
+          "occurrence_outer_q": 96,
+          "event_occurrences_R": 384,
+          "control_probe": 8,
+          "signal": 0,
+          "SCF_DF_state": 0,
+          "fit": 0,
+          "reaccount": 0
+        },
+        "adopted": false,
+        "old_control_budget_has_headroom": false,
+        "new_explicit_budget_decision_required": true
+      },
+      "success_conditions": [
+        "exact approved scope",
+        "complete paired output for all registered trajectories",
+        "source/input/control/fingerprint gate PASS",
+        "budget and native termination/reap complete; cost magnitude is NOT a scientific acceptance gate"
+      ],
+      "limitations": [
+        "small conditional n does not certify population mean/variance",
+        "unobserved other strata stay null",
+        "do not append to original n32",
+        "do not auto reaccount PR or choose a new winner"
+      ]
+    },
+    {
+      "science_scope": {
+        "system": "linear H8",
+        "separation_A": "1.00",
+        "basis": "STO-3G",
+        "saved_DF_rank": 28,
+        "modes": 16,
+        "sector_dimension": 4900,
+        "T": "0.8",
+        "prefix": 7,
+        "formula": "S2",
+        "r": 4,
+        "K": [
+          2,
+          4
+        ],
+        "q": [
+          2,
+          4,
+          8
+        ],
+        "R": {
+          "2": 8,
+          "4": 16,
+          "8": 32
+        },
+        "delta": {
+          "2": "0.4",
+          "4": "0.2",
+          "8": "0.1"
+        },
+        "law": "original finite-RTE",
+        "control": "symmetric_directional",
+        "wrapper": "native full Hadamard cosine/sine paired",
+        "P": 0
+      },
+      "SOURCE_closure": {
+        "preparation_SOURCE": "432b76e0b915c6b145a7d275b4cdd42953b762bd",
+        "path": "SOURCE_closure_v1.json",
+        "production_SOURCE": null,
+        "production_SOURCE_status": "NOT_SEALED_FUTURE_BINDING_REQUIRED"
+      },
+      "input_manifest": {
+        "path": "../../../../references/h8_rare_tail_selection_inputs_v1.json",
+        "sha256": "ba612d24c6cad10516abd351ccdde590639a62a9a8aa2977d0a97924a6566226",
+        "public_fixed_evidence_files": 36,
+        "private_input_bytes_fresh_status": "NOT_VERIFIED_IN_THIS_PREPARATION",
+        "saved_science_receipt": {
+          "path": "science_inputs_saved_receipt_v1.json",
+          "sha256": "af474bf88976ca0d9ec79d2399053b285a6f65f8eba1061099aca447b8905011",
+          "files": 16
+        }
+      },
+      "compiler_profile": {
+        "compiler_sha256": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "profile_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "topology": null
+      },
+      "seed_policy": {
+        "status": "PROPOSAL_NO_REAL_SEEDS_GENERATED",
+        "namespace": "H8_RARE_TAIL_SELECTION_DRAFT_20261018",
+        "keys": [
+          "stage",
+          "candidate",
+          "replica"
+        ],
+        "avoid": "all prior master/order/step seeds including consumed STOP grants and run02",
+        "generator": "future pinned PCG64; not the built-in synthetic Random fixture"
+      },
+      "existing_ledger_binding": "existing_ledger_binding_v1.json",
+      "resource_and_noninterference_policy": {
+        "policy": "current user policy; no arbitrary new CPU/RAM/worker/wall cap; do not amend existing authorized contracts",
+        "parallelization": "future native: independent trajectories, same-pair evolution reuse; count table cache; actual available resources at fresh gate",
+        "actual_resource_gate": "NOT_RUN_FOR_SCIENCE",
+        "immutable_protected": "actual SOURCE/input/compiler/runtime/result/grant/ledger/marker only",
+        "other_worktree_changes": "READ_ONLY_OBSERVATION_NOT_A_GLOBAL_FREEZE",
+        "transient_PSI_CPU_delay": "diagnostic; reestablish monitoring and check integrity",
+        "real_OOM_noncontinuable_owned_error_input_corruption": "STOP",
+        "shared_OS_cgroup_scheduler_venv_other_jobs_changes": false
+      },
+      "failure_STOP_conditions": [
+        "unapproved execution",
+        "SOURCE/input/compiler/profile/normalization/control/seed/event mismatch",
+        "conditional support unrepresentable; do not truncate support silently",
+        "duplicate/reused seed/trajectory/grant/one-shot/output",
+        "native failure, actual OOM or noncontinuable resource shortage",
+        "missing/invalid metrics or pairing",
+        "budget cannot bind without resetting old carry",
+        "control discrepancy >= inherited 1e-8 limit",
+        "no automatic retry/refit/extra sampling/compile; preserve first STOP and owned native exit/reap"
+      ],
+      "mandatory_STOP": true,
+      "authorization_status": "UNAPPROVED",
+      "runtime_authorization": false,
+      "sealed": false,
+      "launch_command": null,
+      "claim_adoption": false,
+      "stage_id": "SELECTION_SAVED",
+      "candidate_set": [
+        "B2_p7_q2_2nd_r4_K2",
+        "B2_p7_q2_2nd_r4_K4",
+        "B2_p7_q4_2nd_r4_K2",
+        "B2_p7_q4_2nd_r4_K4",
+        "B2_p7_q8_2nd_r4_K2",
+        "B2_p7_q8_2nd_r4_K4"
+      ],
+      "sampling_stratum": "unconditional original confirmation only",
+      "sampling_law": "no new draws; keep original candidate and phase streams",
+      "sampling_count_proposal": {
+        "new": 0,
+        "reuse_candidates": 6,
+        "reuse_each_n": 32,
+        "reuse_total_trajectories": 192
+      },
+      "compile_count_proposal": {
+        "new": 0
+      },
+      "cost_metrics": [
+        "saved paired shot-weighted RZ",
+        "fixed candidate confirmation estimate",
+        "post-confirmation candidate descriptor; no formal winner certification"
+      ],
+      "statistical_estimand": [
+        "mean of exploration-fixed candidate",
+        "selected candidate population mean with explicit method assumptions",
+        "finite union minimum is a distinct estimand"
+      ],
+      "methods_proposal": {
+        "minimum": "paired descriptive fixed-vs-selected evaluation; marginal interval method must be chosen before numerical run",
+        "expansion": "exploratory trajectory cluster bootstrap with all endpoints tied to same per-candidate resampling indices",
+        "bootstrap_replicates_proposal": 2000,
+        "family_alpha_proposal": "0.05",
+        "no_all_support_H8_bound": true,
+        "bounded_simultaneous_inference_status": "BLOCKED_WITHOUT_PROVEN_ALL_SUPPORT_BOUND",
+        "candidate_covariance": null,
+        "independent_stream_assumption": "source supported, mathematical PRNG independence not proved",
+        "independent_holdout": "optional NEW separate sampling/compile contract; count chosen from precision requirement, no launch grant here"
+      },
+      "expected_outputs": [
+        "fixed/selected estimands side-by-side",
+        "family/assumptions/interval labels",
+        "sample reuse map",
+        "tail missing/null",
+        "no guarantee from bootstrap winner frequencies",
+        "STOP"
+      ],
+      "call_budget_proposal": {
+        "native_compile": 0,
+        "new_trajectory": 0,
+        "signal": 0,
+        "fit": 0,
+        "reaccount": 0,
+        "numerical_statistics_execution": 1,
+        "bootstrap_replicates_proposal": 2000,
+        "adopted": false
+      },
+      "success_conditions": [
+        "schema/phase/pair/dependence gates",
+        "approved method and family",
+        "no input mutation or cost reranking outside scope"
+      ],
+      "limitations": [
+        "selection uncertainty separate from missing rare support",
+        "no rigorous H8 bound presently",
+        "n32 cannot become unused holdout after viewing it"
+      ]
+    },
+    {
+      "science_scope": {
+        "system": "linear H8",
+        "separation_A": "1.00",
+        "basis": "STO-3G",
+        "saved_DF_rank": 28,
+        "modes": 16,
+        "sector_dimension": 4900,
+        "T": "0.8",
+        "prefix": 7,
+        "formula": "S2",
+        "r": 4,
+        "K": 4,
+        "q": [
+          4,
+          8
+        ],
+        "R": {
+          "4": 16,
+          "8": 32
+        },
+        "delta": {
+          "4": "0.2",
+          "8": "0.1"
+        },
+        "law": "original finite-RTE",
+        "control": "symmetric_directional",
+        "wrapper": "native full Hadamard cosine/sine paired",
+        "P": 0
+      },
+      "SOURCE_closure": {
+        "preparation_SOURCE": "432b76e0b915c6b145a7d275b4cdd42953b762bd",
+        "path": "SOURCE_closure_v1.json",
+        "production_SOURCE": null,
+        "production_SOURCE_status": "NOT_SEALED_FUTURE_BINDING_REQUIRED"
+      },
+      "input_manifest": {
+        "path": "../../../../references/h8_rare_tail_selection_inputs_v1.json",
+        "sha256": "ba612d24c6cad10516abd351ccdde590639a62a9a8aa2977d0a97924a6566226",
+        "public_fixed_evidence_files": 36,
+        "private_input_bytes_fresh_status": "NOT_VERIFIED_IN_THIS_PREPARATION",
+        "saved_science_receipt": {
+          "path": "science_inputs_saved_receipt_v1.json",
+          "sha256": "af474bf88976ca0d9ec79d2399053b285a6f65f8eba1061099aca447b8905011",
+          "files": 16
+        }
+      },
+      "compiler_profile": {
+        "compiler_sha256": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "profile_sha256": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "provider": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+        "qiskit": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17,
+        "topology": null
+      },
+      "seed_policy": {
+        "status": "PROPOSAL_NO_REAL_SEEDS_GENERATED",
+        "namespace": "H8_RARE_TAIL_SELECTION_DRAFT_20261018",
+        "keys": [
+          "stage",
+          "candidate",
+          "replica"
+        ],
+        "avoid": "all prior master/order/step seeds including consumed STOP grants and run02",
+        "generator": "future pinned PCG64; not the built-in synthetic Random fixture"
+      },
+      "existing_ledger_binding": "existing_ledger_binding_v1.json",
+      "resource_and_noninterference_policy": {
+        "policy": "current user policy; no arbitrary new CPU/RAM/worker/wall cap; do not amend existing authorized contracts",
+        "parallelization": "future native: independent trajectories, same-pair evolution reuse; count table cache; actual available resources at fresh gate",
+        "actual_resource_gate": "NOT_RUN_FOR_SCIENCE",
+        "immutable_protected": "actual SOURCE/input/compiler/runtime/result/grant/ledger/marker only",
+        "other_worktree_changes": "READ_ONLY_OBSERVATION_NOT_A_GLOBAL_FREEZE",
+        "transient_PSI_CPU_delay": "diagnostic; reestablish monitoring and check integrity",
+        "real_OOM_noncontinuable_owned_error_input_corruption": "STOP",
+        "shared_OS_cgroup_scheduler_venv_other_jobs_changes": false
+      },
+      "failure_STOP_conditions": [
+        "unapproved execution",
+        "SOURCE/input/compiler/profile/normalization/control/seed/event mismatch",
+        "conditional support unrepresentable; do not truncate support silently",
+        "duplicate/reused seed/trajectory/grant/one-shot/output",
+        "native failure, actual OOM or noncontinuable resource shortage",
+        "missing/invalid metrics or pairing",
+        "budget cannot bind without resetting old carry",
+        "control discrepancy >= inherited 1e-8 limit",
+        "no automatic retry/refit/extra sampling/compile; preserve first STOP and owned native exit/reap"
+      ],
+      "mandatory_STOP": true,
+      "authorization_status": "UNAPPROVED",
+      "runtime_authorization": false,
+      "sealed": false,
+      "launch_command": null,
+      "claim_adoption": false,
+      "stage_id": "RARE_SENSITIVITY",
+      "candidate_set": [
+        "B2_p7_q4_2nd_r4_K4",
+        "B2_p7_q8_2nd_r4_K4"
+      ],
+      "sampling_stratum": [
+        "s0",
+        "s2_single",
+        "s2_multi",
+        "s4"
+      ],
+      "sampling_law": "no new sampling; use saved mass literals and explicit assumed cost ranges",
+      "sampling_count_proposal": {
+        "new": 0
+      },
+      "compile_count_proposal": {
+        "new": 0
+      },
+      "cost_metrics": [
+        "symbolic/conditional numeric thresholds for shot-weighted full-wrapper RZ"
+      ],
+      "statistical_estimand": "assumption-dependent reversal threshold, NOT an estimate or upper bound",
+      "expected_outputs": [
+        "inputs labeled measured/model/assumed/missing",
+        "thresholds or NOT_EVALUABLE",
+        "no baseline or ranking overwrite",
+        "STOP"
+      ],
+      "call_budget_proposal": {
+        "new_trajectory": 0,
+        "native_compile": 0,
+        "numerical_sensitivity_execution": 1,
+        "fit": 0,
+        "reaccount": 0,
+        "adopted": false
+      },
+      "required_before_approval": [
+        "explicit strata cost assumption ranges",
+        "epsilon/allowance/bias/fixed baseline choice",
+        "missing input refusal"
+      ],
+      "success_conditions": [
+        "approved assumptions maintained",
+        "zero unknown-cost imputation forbidden",
+        "zero probabilities handled without divide-by-zero"
+      ],
+      "limitations": [
+        "threshold does not identify missing cost",
+        "finite s2 pilot not a population guarantee",
+        "does not update saved PR costs"
+      ]
+    }
+  ]
+}

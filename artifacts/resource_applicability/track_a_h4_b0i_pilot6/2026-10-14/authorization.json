@@ -1,0 +1,24 @@
+{
+  "schema_version": "h4-b0i-pilot6-authorization-v1",
+  "namespace": "h4-b0i-pilot6-validation-20261013",
+  "source_commit": "8f6c1bc8ceeeffddbecf170ef6ddb0fe6d18b63b",
+  "plan_digest": "f306ba03cceeb21bd515db84c975baa792bf3f6657a87cf58a994c13b0386395",
+  "approved": true,
+  "runtime_authorization": true,
+  "allowed_cpus": [
+    0,
+    1,
+    2
+  ],
+  "role_cpus": {
+    "worker": 0,
+    "driver": 1,
+    "observer": 2
+  },
+  "absolute_launch_command": "env BLIS_NUM_THREADS=1 MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 QISKIT_NUM_PROCS=1 QISKIT_PARALLEL=false RAYON_NUM_THREADS=1 VECLIB_MAXIMUM_THREADS=1 /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python -P -B /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-pilot6-20261014/scripts/resource_applicability/run_h4_b0i_pilot6.py --plan /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-pilot6-20261014/artifacts/resource_applicability/track_a_h4_b0i_pilot6/2026-10-14/plan.json --authorization /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-pilot6-20261014/artifacts/resource_applicability/track_a_h4_b0i_pilot6/2026-10-14/authorization.json --review /home/AbeHiromu/projects/partially-randomized-trotter-worktrees/h4-b0i-pilot6-20261014/artifacts/resource_applicability/track_a_h4_b0i_pilot6/2026-10-14/review.json",
+  "user_approval_evidence_sha256": "6d649baf518fc5866ed51ed43ed2aa00dee536bcdc2f6de96364d7e824e0ad2b",
+  "retry": false,
+  "automatic_scope_expansion": false,
+  "next_stage_authorized": false,
+  "mandatory_stop": true
+}

@@ -1,0 +1,39 @@
+# 管理費用の改善と意味論
+
+非採択・人工専用。直接基点は `7b6f526b5563ee1a6401baec131e5eb290f00fb8`。以前の最終人工SOURCE ef57714bと同じ旧P1ファイルを対照として使い、以前のb1dba4b6測定値を今回の新SOURCEの値として流用しない。既存driver/admission/host/readiness、P1 prototype、fixture、科学SOURCEは変更しない。追加module `g6_w2c_b3_parallel_overhead.py` と新runner/testだけを利用する。
+
+## CachedObserver
+
+原FunctionObserverと同じPython call/return、同じpath集合、同じqualified function名・除外規則、同じexclusive CPU/wall partitionを保持する。code identityからpath判定・labelをcacheし、毎callbackのPath生成、文字列生成、Meter/contextmanager生成を取り除く。正負両方のcode判定をcacheする。CodeTypeの値の等価性とfilenameの同一性を混同しないよう、id(code)をkeyにしcode参照も保持する。
+
+第2版では、集計rowの参照もcacheしてreturnごとの一時dict生成を除去する。selfを含まないcodeではframe localsへアクセスしない。判定にはvarnamesだけでなくfreevars/cellvarsも含め、closure内のself除外を維持する。異なるcode objectが同じlabelを持つ場合は原実装同様に一つのrowへ集計する。これらの境界も追加unit testで原observerと照合する。
+
+cacheはcode/label/統計rowだけを保持し、law・angle・eventの計算結果を保存しない。旧S0のcache欄は科学cacheの方針であり、新しいobserver bookkeepingが0 byteという意味ではない。新メタデータのメモリ費用はworker HWM/RSSとbundleのsampled RSSへ含まれる。
+
+各選択callbackは原実装と同じくclockを1回読む。callで開始値、returnで子spanを引いた費用とcall数を直接集計する。pre-existing profiler拒否、stack照合、未閉鎖stack拒否、原Meterによるfine/outer reconciliationは維持する。clockを含む観測器の実装費用もhost/worker外側の総CPUへ入る。削減した費用を別領域へ隠していない。samplingや関数の省略ではない。
+
+fake clockのnested spanでは原observerと数値・call数まで一致する。実workloadでもobserverだけを変更した場合は全fine key/call数が一致する。全測定で旧driver/人工endpointのcore call数を照合する。IPC削減に伴って減る `delta.<locals>.<genexpr>` 3種はclock検査の管理処理であり、core同値性の比較からだけ除外する。**fine観測・保存からは除外しない**。新module内の管理関数もfine対象へ含める。
+
+fine費用の実測値にはobserver自身の影響があるため、旧observerと各functionのns値が等しいとは要求しない。同じ操作範囲をより少ない実装費用で観測する技術候補である。S0にも同じcached observerを使った別対照を設け、並列化とobserver改善の利益を混同しない。observer OFFは診断専用で研究用の等価候補にしない。
+
+## CoalescedClient
+
+旧P1は通常trialごとにRESERVE、ENTER、WRITE_RESERVE、WRITE_ACK、COMPLETEの5往復を行う。新方式は、前trialのF01 commitを次のRESERVEへ、OS writeのACKを次の通信へ同梱する。通常3往復＋axis/bundle末のCOMPLETEで済む。通信内容の削減であり、未来trialや未来出力をblockで先取り予約する方式ではない。
+
+RESERVEとENTERの2段階は残す。親が一意ID・順序・call capを検査してSTART_RESERVEDをpwrite保存し、ENTER時もSTOPを検査する。statefileは原1byte/trial、原4状態更新/trialのまま。親STOP後に新しい開始許可を出さず、既に開始したcallは協調drainする。P2の追加START_CHECKも保持する。
+
+前trialのCOMPLETEは、原EngineStream.emit正常return後、次のengine境界でのみ同梱する。親はcurrent ticketのID/stateを照合し、前trialをCOMPLETEDにしてから次のRESERVEを扱う。次予約がSTOP/call capで拒否されても前trialのcommitを失わない。axis末・run_pair末のconfirmは即座のCOMPLETE通信を維持する。flush途中で原emitがreturnしなければpendingを置かず、完全行が残っても論理完了にしない。
+
+各write前には引き続き全体result budgetから**そのwriteの正確なbytes**を予約する。WRITE_ACKだけをworker内に短く保持して次のmessageで親へ送る。正常終端ではCOMPLETE/FAILが最後のACKをflushする。worker死亡でACKが未到着なら、親のobserved bytesは不完全になり得るがreserved creditは返却しない。raw完全行があっても、結果/commit未確認ならunknownとして扱う。ACK再送・未知credit返却・retry APIは作らない。
+
+## 維持する条件と変わる観測
+
+3phase barrier、8 pair、fresh process、同一pair内X→Y共有、分類/bit/event/trace、全N/予算、F01 current/last/candidate/committed、原Stream canonical/hash/unbuffered/retention、64GiB result・256MiB log、全体one-shot、SQLite spent、retry0/resumeなしを保持する。pwriteをmmap storeへ変更していない。最初のsmokeで状態更新費よりobserverの寄与が大きかったため、優先して改善した。
+
+親が完了/bytesを観測するmessage単位は変わる。物理write成功から親ACK記録までの区間が長くなり、worker喪失時に未ACK creditが残り得る。親到着順、同時失敗、in-flight結果不明、cooperative STOPは旧P1同様に記録する。実関数本体のentry瞬間をprocess間で完全同期できる保証は追加しない。既存逐次R1と同じSTOPだとは主張しない。
+
+AccountingCoordinatorのmessage Counterと少数のvalidationは全P1比較へ共通に加える。対照にも同じ管理観測費用を含む。追加状態timingはobserver OFF診断だけで有効化し、主性能表には入れない。結果監査・tar圧縮はtimed host範囲外。outer計測には実host、fake admission/SQLite fsync、worker起動/setup、全trial、IPC、保存、join、finalization、外側STOPが入る。coarse/fine、RPC/outer、重なるparent/worker wallを二重加算しない。
+
+さらに `before_exact8` はCounter/新ACK validationを含む親subclassも外し、固定旧P1の親そのものを使う対照。主改善率はこの対照で算出し、共通Counter付きのbefore8はfactorial分析用として区別する。
+
+新moduleは明示的な人工portのみを通る既存prototypeへprivate process内で接続する。科学import blockerを継承し、fake authorityのinput pinsへ新moduleのbytes・policyを束縛する。本番entrypoint/正式schema/実authorityを提供しない。ローカルfused canonical候補やGMP/native serialization、angle冪漸化式は取り込まない。

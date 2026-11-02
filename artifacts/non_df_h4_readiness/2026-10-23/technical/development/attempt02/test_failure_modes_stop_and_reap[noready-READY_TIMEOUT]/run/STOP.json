@@ -1,0 +1,43 @@
+{
+  "all_children_reaped": true,
+  "automatic_next_stage": false,
+  "automatic_retry": false,
+  "elapsed_seconds": 0.7753705186769366,
+  "errors": [],
+  "identities": [
+    {
+      "case": "case0",
+      "pgid": 694743,
+      "pid": 694743,
+      "ppid": 694613,
+      "reaped": true,
+      "sid": 694743,
+      "start_ticks": 446201922,
+      "state": "R"
+    }
+  ],
+  "pending_owned_processes": [],
+  "persistence_errors": [],
+  "reason": {
+    "reason": "READY_TIMEOUT:case0",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/non-df-h4-readiness-20261023/src/trotterlib/isolated_qiskit_supervisor.py\", line 274, in run_supervised\n    raise TimeoutError(\"READY_TIMEOUT:\"+c[\"job\"][\"case\"])\nTimeoutError: READY_TIMEOUT:case0\n",
+    "type": "TimeoutError"
+  },
+  "reports": [
+    {
+      "aborted": true,
+      "binding": {
+        "SOURCE": null,
+        "input_hash": null,
+        "scope": "ARTIFICIAL_ONLY"
+      },
+      "case": "case0",
+      "elapsed_until_reaped": 0.7210131837055087,
+      "exit_code": -15,
+      "finished_monotonic": null,
+      "launched_monotonic": 4462019.223492668,
+      "pid": 694743
+    }
+  ],
+  "status": "FAILED_NO_RETRY_MANDATORY_STOP"
+}

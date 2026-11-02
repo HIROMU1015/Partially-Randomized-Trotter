@@ -1,0 +1,127 @@
+{
+  "schema": "g6_w2c_b3_c1_candidate_v1",
+  "adopted": false,
+  "contract_grants_execution": false,
+  "separate_execution_approval": false,
+  "base_commit": "864097c1285f1f06399040cf0f7c0f42334d9252",
+  "arms": [
+    "ordinary",
+    "partial_return_tail",
+    "closed_P3_tail",
+    "full_return"
+  ],
+  "input": {
+    "id": "P5_general_order",
+    "m": 5,
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "x": "5/7"
+  },
+  "fixed_science_policy": {
+    "root_bits": 256,
+    "probability_bits": 160,
+    "eta": "1/1000000000000",
+    "rho": "1/1000000000000",
+    "epsilon_axis": "1/200",
+    "primitive_error": "1/1000000",
+    "common_bias": "2*(3*rho+3*(1+rho)*2*primitive_error)",
+    "alpha_axis": "1/320",
+    "alpha_familywise_16_axes": "1/20",
+    "confidence_rule": "Bernstein with certified m2/range/common remaining error, ln640 outward rational upper; independent-uniform-bit law, no truth",
+    "negative_Rz": "actual adjoint of acquired positive sequence, including W scalar; same counts, no new key",
+    "normalizer_rule": "full_return uses ordinary B envelope times U; no enumerated B_new or measured m2 for N"
+  },
+  "original_source_commits": {
+    "G7": "ab2549f41b3546fb3940342a2162dd9ee93699c4",
+    "K": "28cfabb1d47e0e1824bce1e154a9c289738fa2b9",
+    "F3": "1aea9b8c228c5b940f2fcba0f94493b3ffdec46e"
+  },
+  "auxiliary_sources": [
+    {
+      "path": "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py",
+      "bytes": 17708,
+      "sha256": "35a4a0d8b28fd1a50791cc2afd09ac86800a1f37b488dc4cee5906864ea7f0e1"
+    },
+    {
+      "path": "tests/tracks/algorithm_codesign/test_g6_w2c_cost_preparation.py",
+      "bytes": 14304,
+      "sha256": "b99208905fceb20a74c6baf4841570fef3d7957d77575933dd6ac76e32586766"
+    }
+  ],
+  "source_commit_binding": "Use the future fixed payload commit recorded by publication_receipt; formal adoption must name its full SHA. No self-hash cycle.",
+  "reuse": {
+    "path": "existing_evidence_reuse.json",
+    "B1_B2_recalculation_calls": 0,
+    "new_RZ_synthesis_calls_proposed": 0,
+    "fresh_source_or_input_search": false
+  },
+  "decisions_required": {
+    "B3_cost_estimand_and_uncertainty_policy": null,
+    "B3_layer_axis_setup_cache_output_schedule": null,
+    "B3_angle_tau_Kphi_J_and_error_allocation": null,
+    "physical_Q_encoding_sector_basis": null,
+    "C1_gate_set_compiler_ancilla_optimization": null,
+    "C1_physical_provider_error_compatibility": null,
+    "C1_price_granularity_and_optional_B2_contraction": null
+  },
+  "B3_proposal": {
+    "estimand": "Descriptive complete fixed workload; no population-mean certificate",
+    "layers": [
+      "A_frozen_G7",
+      "B_existing_F3_Full_plus_new_canonical_audit"
+    ],
+    "axes": [
+      "X",
+      "Y"
+    ],
+    "trial_count": "Use each saved P5 budget.N_per_axis verbatim, once per chosen layer/axis",
+    "bitstream_seed_proposal": "G7-development-bitstream-v1",
+    "setup_proposal": "One construction per arm/layer, X/Y share only after state identity validation",
+    "timers": "Injected process CPU ns and monotonic wall ns in future driver; artificial tests use fake clocks only",
+    "measurement_status": "NOT_EXECUTED",
+    "bit_operations": "Existing F2 symbolic envelope; not inferred from CPU",
+    "cost_confidence_policy": null,
+    "angle_policy": null
+  },
+  "C1_proposal": {
+    "price_model": "Common literal primitive pool first; no automatic whole-event optimizer",
+    "physical_Q": null,
+    "provider_error_allowance": "0 under unchanged G7 exact-CQ query assumption; positive physical error blocks compatibility",
+    "RZ": "Reuse only exact matching historical saved strict-phase rows; no new synthesis proposed",
+    "new_compile_calls": "Only named physical provider keys after adoption; currently unresolved and blocked",
+    "new_B2_contraction": "Separate approval if control/direction/word/depth price granularity exceeds saved coefficients",
+    "state_preparation": null,
+    "readout": null,
+    "backend": null,
+    "C2_executed": false
+  },
+  "limits_proposal": {
+    "one_shot_runs": 1,
+    "automatic_retries": 0,
+    "resume": false,
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "wall_time_cap": null,
+    "result_bytes": "68719476736",
+    "log_bytes": "268435456",
+    "call_bounds": "Saved N per adopted layer/axis; finite approved provider-key list; no budget/reference rerun. Formal schedule required."
+  },
+  "result_schemas": [
+    "schemas/cost_record.schema.json",
+    "schemas/provider_price.schema.json"
+  ],
+  "execution_scope_excludes": [
+    "new p/x/m/Hamiltonian",
+    "G9/P5Closed comparison",
+    "state/backend measurements",
+    "C2 E2E",
+    "new scientific review",
+    "unapproved provider or budget change"
+  ],
+  "failure_policy": "Preserve prefix and spent resources, fail closed, one shot consumed from first authorized correctness call, no automatic retry, mandatory STOP",
+  "mandatory_STOP": true
+}

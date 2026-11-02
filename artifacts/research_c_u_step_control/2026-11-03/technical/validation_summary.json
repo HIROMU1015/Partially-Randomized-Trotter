@@ -1,0 +1,69 @@
+{
+  "schema": "C_U_STEP_CONTROL_TECHNICAL_VALIDATION_V1",
+  "date": "2026-11-03 JST",
+  "status": "TECHNICAL_GO",
+  "unique_passed": 194,
+  "new_tests": 46,
+  "existing_regressions": 148,
+  "failed": 0,
+  "skipped": 0,
+  "fit_deselected_but_run_in_evaluation": "tests/management/test_research_c_u_step_control.py::test_real_invented_evaluation_worker_pipe",
+  "groups": [
+    {
+      "log": "step_and_orchestration_tests.log",
+      "passed": 107,
+      "pytest_arguments": [
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "-k",
+        "not test_real_invented_evaluation_worker_pipe",
+        "tests/management/test_research_c_u_step_control.py",
+        "tests/management/test_research_c_u_step_control_pilot.py",
+        "tests/management/test_research_c_pr_guarded_step.py",
+        "tests/management/test_research_c_pr_local_direction.py",
+        "tests/management/test_research_c_pr_small_step.py",
+        "tests/management/test_research_c_pr_integrated.py",
+        "tests/management/test_research_c_pr_reduced_limited.py"
+      ]
+    },
+    {
+      "log": "inner_and_geometry_tests.log",
+      "passed": 84,
+      "pytest_arguments": [
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "tests/management/test_research_c_pr_coefficient_point.py",
+        "tests/management/test_research_c_pr_inner_point_solver.py",
+        "tests/management/test_research_c_j_u_reduced.py",
+        "tests/management/test_research_c_separated_J_U.py",
+        "tests/management/test_research_c_separated_J_U_consistent.py"
+      ]
+    },
+    {
+      "log": "physical_synthetic_tests.log",
+      "passed": 3,
+      "pytest_arguments": [
+        "-q",
+        "-p",
+        "no:cacheprovider",
+        "tests/management/test_research_c_pr_integrated_pipeline.py::test_real_synthetic_sector_generalK_and_original_kappa",
+        "tests/management/test_research_c_pr_integrated_pipeline.py::test_real_synthetic_worker_pipe",
+        "tests/management/test_research_c_u_step_control.py::test_real_invented_evaluation_worker_pipe"
+      ]
+    }
+  ],
+  "passive_preflight": "PASSIVE_PROPOSAL_VALID",
+  "scientific_calls": 0,
+  "real_H4_NPZ_QPY_numerical_decodes": 0,
+  "new_scientific_run_directory_exists": false,
+  "original_tracked_files_modified": false,
+  "inherited_SOURCE_files_verified": 207,
+  "saved_inputs_verified": 9,
+  "current_preparation_SOURCE_manifest_sha256": "a1b18ce895cbf88170571158c43ab024cc922dd913fccdcc8e6c007b130037e4",
+  "proposed_scientific_maximum_logical_units": 12430,
+  "proposed_scientific_execution": "UNAPPROVED_NOT_RUN",
+  "important_scientific_review_started": false,
+  "mandatory_stop": true
+}

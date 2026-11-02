@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "B3 host admission v2 structural requirements; runtime checks are stricter",
+  "type": "object",
+  "required": [
+    "schema",
+    "content_adopted",
+    "contract_grants_execution",
+    "retry",
+    "resume",
+    "mandatory_STOP",
+    "release",
+    "adoption",
+    "candidate",
+    "source_pins",
+    "source_roles",
+    "entrypoint",
+    "input_pins",
+    "scope",
+    "claim_id"
+  ],
+  "properties": {
+    "schema": {
+      "const": "b3_formal_admission_v2"
+    },
+    "content_adopted": {
+      "const": true
+    },
+    "contract_grants_execution": {
+      "const": false
+    },
+    "retry": {
+      "const": 0
+    },
+    "resume": {
+      "const": false
+    },
+    "mandatory_STOP": {
+      "const": true
+    },
+    "release": {
+      "type": "object",
+      "required": [
+        "commit",
+        "f01_status",
+        "failure_provenance_regression_sha256"
+      ],
+      "properties": {
+        "commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "f01_status": {
+          "const": "F01_INTEGRATED_REGRESSION_PASS"
+        },
+        "failure_provenance_regression_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "source_roles": {
+      "type": "object",
+      "required": [
+        "science",
+        "driver",
+        "guard",
+        "admission",
+        "host"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "science": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "driver": {
+          "const": [
+            "src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py"
+          ]
+        },
+        "guard": {
+          "const": [
+            "src/trottertracks/algorithm_codesign/g6_w2c_b3_readiness.py"
+          ]
+        },
+        "admission": {
+          "const": [
+            "src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py"
+          ]
+        },
+        "host": {
+          "const": [
+            "src/trottertracks/algorithm_codesign/g6_w2c_b3_host.py"
+          ]
+        }
+      }
+    },
+    "entrypoint": {
+      "type": "object",
+      "required": [
+        "path",
+        "sha256",
+        "api"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "const": "src/trottertracks/algorithm_codesign/g6_w2c_b3_host.py"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "api": {
+          "const": "execute_approved_v1"
+        }
+      }
+    },
+    "scope": {
+      "type": "string",
+      "minLength": 1
+    },
+    "claim_id": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

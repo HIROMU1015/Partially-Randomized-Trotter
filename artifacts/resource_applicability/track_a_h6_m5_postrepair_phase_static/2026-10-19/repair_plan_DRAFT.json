@@ -1,0 +1,65 @@
+{
+  "AD03": "DEFERRED",
+  "acceptance_override": false,
+  "automatic_next_phase": false,
+  "candidate_change": [
+    "Retain existing run collection, matrix-to-sequence algorithm, gate order and replacement decisions for the first candidate.",
+    "Accumulate initial DAG phase and each accepted sequence.global_phase in a compensated or exact binary64 sum; reduce and round once at the pass boundary.",
+    "Record replacement count, increment digest, exact/compensated accumulator receipt and unchanged gate-metadata hash; never use measured H6 error as a correction.",
+    "If phase batching fails, investigate matrix/Euler generation and local simplification separately; do not silently alter tolerance, opt level or formulas."
+  ],
+  "execution_authorized": false,
+  "future_minimum_molecular_scope": {
+    "accepted_cost_rows": 0,
+    "mandatory_STOP": true,
+    "new_compile_maximum": 1,
+    "numerical_checks": [
+      "lowered_vs_saved_wrapper_vector",
+      "compiled_vs_lowered",
+      "compiled_vs_saved_wrapper_vector"
+    ],
+    "phase_alignment_for_acceptance": false,
+    "postcompile_phase_correction": false,
+    "raw_strictly_below": 1e-09,
+    "retry": false,
+    "sampling": 0,
+    "sine": 0,
+    "statevector_replays_maximum": 2,
+    "target": {
+      "DF_policy": "SAVED_TOL_ONLY_1e-8",
+      "P": 0,
+      "T": 0.8,
+      "axis": "cosine",
+      "basis": "STO-3G",
+      "control": "symmetric_directional",
+      "formula": "PF_M5_BEST_20D64C2_BINARY64_V1",
+      "geometry": "LINEAR_ADJACENT_1_ANGSTROM",
+      "method": "FULL",
+      "observed_rank": 19,
+      "prefix": 19,
+      "q": 2,
+      "state": "SAVED_LOW_ONLY",
+      "system": "H6",
+      "wrapper": "FULL_HADAMARD"
+    }
+  },
+  "implementation_completed": false,
+  "implementation_route": "Project-private accelerated pass/build or isolated adapter; never replace shared Qiskit files.",
+  "new_grant_issued": false,
+  "old_STOP_remains_STOP": true,
+  "old_cost_compatibility": false,
+  "preparation_tests": [
+    "Synthetic whole-operator and controlled comparisons with original and candidate pass; phase addition/wrap controls.",
+    "Verify identical replacement decisions and gates for phase-only change; record any difference instead of claiming compatibility.",
+    "New SOURCE, runtime closure, one-shot contract, metadata refusals and fresh gate; retain old STOP/58 axes/AD03."
+  ],
+  "priority_site": "Optimize1qGatesDecomposition: accepted-replacement phase accumulation before DAG update",
+  "proposed_policy_id": "M5_OPT1Q_PHASE_BATCH_DRAFT_V1",
+  "remaining_uncertainties": [
+    "Individual phase increments, intermediate circuit/state snapshots and local reconstruction errors were not captured in the existing run.",
+    "The 65 phase-bit changes include legitimate representation changes and do not locate the first numerical error.",
+    "The scalar counterexample does not explain or bound the H6 residual."
+  ],
+  "shared_install_changed": false,
+  "status": "DRAFT_NOT_IMPLEMENTED_NOT_AUTHORIZED_FOR_MOLECULES"
+}

@@ -1,0 +1,48 @@
+{
+  "status": "FROZEN_RESOURCE_CONFIGURATION_CONFIRMED_BEFORE_ONE_DIAGNOSTIC",
+  "CPUs": 32,
+  "affinity": 32,
+  "memory_bytes": {
+    "MemTotal": 67095019520,
+    "MemAvailable": 55426924544
+  },
+  "environment": {
+    "python": "3.12.3",
+    "numpy": "1.26.4"
+  },
+  "workers": 2,
+  "numeric_threads": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "NUMBA_NUM_THREADS": "1",
+    "RAYON_NUM_THREADS": "1"
+  },
+  "acceleration": "analytic rays/mixes first, cached endpoint traces and abscissas, two spawn workers; old exact Audit and MemoryWatch reused",
+  "dominant_work": "saved rational proof replay and small rational PSD matrices; NumPy for proposals only",
+  "reference_validation_reused": "23 archived synthetic PASS including exact reference dense9 and two-worker path; source13 unchanged",
+  "resources": {
+    "workers": 2,
+    "numeric_threads_per_worker": 1,
+    "worker_AS_bytes": 2147483648,
+    "aggregate_sampled_RSS_bytes": 4294967296,
+    "minimum_available_bytes": 6442450944,
+    "output_shard_bytes": 33554432,
+    "total_output_bytes": 67108864,
+    "log_bytes": 8388608,
+    "failure_bytes": 65536,
+    "wall_time_cap_seconds": null,
+    "cpu_time_cap_seconds": null,
+    "caps_per_case": {
+      "rational_bits": 4096,
+      "arithmetic_operations": 2000000,
+      "numeric_eigh_calls": 64,
+      "primal_PSD_probes": 96,
+      "ray_probes": 80,
+      "mixture_probes": 1024
+    }
+  },
+  "GPU_calls": 0,
+  "speedup_claim": null,
+  "S1_new_diagnostic_calls_before_launch": 0
+}
