@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Claimと科学的貢献候補の統合（2026-11-02）
+
+[最新Evidence Map](docs/research/research_c_evidence_map_updated_20261102.md) ／ [科学的貢献候補・論文構成案](docs/research/research_c_contribution_positioning_20261102.md) ／ [24 Claimと貢献候補の対応・固定証拠照合](docs/research/research_c_claim_contribution_alignment_20261102.md)。A/B原本を保持した文書統合であり、新科学計算・証拠資格の変更・新規性や論文化の正式判断は行っていない。
+
 ## 研究C：native価格改善機構の統合技術判断（2026-11-02）
 
 [統合報告・Q1〜Q10・再検討条件](docs/research/research_c_pr_native_cost_improvement_feasibility_20261102.md)。**TECHNICAL_NO_GO_CURRENT_EVIDENCE**。同一新J/Uの強D比較（38b8d0df）と別branchのPR寄与分析（2639221a）を接続し、旧surrogate・第三DF転移・P4 support・native融合の負結果を整理した。λ以外のbasis確率・U構造情報は存在するが、新selectedのcomplete P0価格を下げる操作は未特定。新目的・runner・科学契約は追加せず、保存scalarの損益分岐照合以外の新規科学計算0。これは技術的な実験準備判断で、研究C全体の終了・一般的不可能性を採択しない。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
