@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：PR局所対称診断・3尺度でF低下を観測（2026-11-02）
+
+[49-call結果・全7点・FDと未資格事項](docs/research/research_c_pr_local_direction_execution_20261102.md)。固定SOURCEe06913a23/49-call契約を無変更で一度実行し49/49 COMPLETE・correctness FAIL/retry/resume0。保存直鎖H4/1Å/STO-3G、number CDF8/元順LD2・γ=.1、元qualified J/U開始。初期＋6側点すべて数値資格PASS、h=1.75616e-4/4.39039e-5/1.09760e-5で正方向Fがすべて低下。最小hの中央FD−候補s=-8.10735e-6、工程的FD尺度1.01876e-5。真のgradient/inner誤差/truncation/降下保証は未資格null。Inner21/refinement14、raw precision loss3、外側最適化/U受理0、J/U同時一次未達。DF物理予算/PR性能/下流は未評価。旧raw2495/SOURCE/STOP保全、新raw59、公開照合後mandatory STOP。以下は各時点の履歴。
+
 ## 研究C：局所step幅・reduced勾配精度の技術切り分け（2026-11-02）
 
 [保存scalar・人工反例・局所FD・269人工/回帰PASS](docs/research/research_c_pr_local_step_accuracy_preparation_20261102.md)／[未承認49-call診断](docs/research/research_c_pr_local_direction_contract_unapproved_20261102.json)。旧最小αでも一次予測減少/F0=1.90066。Step不足とinner由来のenvelope微分誤差、F比較尺度を人工で分離。新案は元初期候補方向の3段階±probe、各点でJを解き直し、U受理/optimizer0。FD一致は真の勾配資格や誤差enclosureにしない。実H4追加query/NPZ数値再解析0、旧raw2495/SOURCE/60-call STOP保全、別許可までmandatory STOP。以下は各時点の履歴。
