@@ -77,6 +77,7 @@
 
 | script | 用途 |
 |---|---|
+| `retire_archived_remote_branches.py prepare / tags / delete` | 固定済みの承認済みbranch整理計画を段階実行する。先に完全バックアップと保存tagを検証し、公開台帳とSHAが一致する旧branchだけを削除する。[引き継ぎ](../docs/research/branch_archive_20261102/HANDOFF.md)を読む |
 | `check_validation_manifest.py` | manifestのschemaと参照パスを検査 |
 | `check_partial_randomized_diagnostics.py` | partial-randomized計算の診断値を確認 |
 | `analyze_df_ld_direction_trend.py` | $L_D$方向の傾向を解析 |

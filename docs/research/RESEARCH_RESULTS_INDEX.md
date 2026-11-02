@@ -79,6 +79,12 @@
 上表より前のSOURCE・結果commitも、その出典文書に記録されたidentityを使う。
 新しい閲覧snapshotのcommitを、過去に実行した科学SOURCEへ付け替えない。
 
+## 旧リモートブランチ名から探す
+
+[保存台帳](branch_archive_20261102/README.md)で、旧branch名から固定SHA・資料path・成果物root・保存tagを確認できる。
+過去のbranch名を削除しても、原記録のidentityと履歴をこの台帳から辿る。
+tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更しない。
+
 ## 更新する範囲
 
 新しい実行報告・総括が公開された場合は、該当する系列の総括、結果・SOURCE・raw・検証記録、保持先snapshotを対応させて更新する。
