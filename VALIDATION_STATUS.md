@@ -1,3 +1,7 @@
+## 2026-11-02 H6 A-1：全law Native接続の限定技術調査完了
+
+[保持角度・scalar/product/order位相・remainder/winding・条件付きNative式](docs/research/h6_native_bridge_scalar_phase_feasibility_20261102.md)。固定R64/H32/H64、元SOURCE AST22比較・model/3 law hash・prefix bitsと入力域を技術照合。保持角度項はRN条件下で共通式に整理でき、Hybrid間共有/R64空和。Nativeのactual remainder全域誤差・winding根拠は未完了、全law上界/予算所属は未取得。新科学数値評価/状態作用/QPY decode/sampling/compile/N/G/価格解析/tests0、Aと全旧証拠/STOPを保全。Compilerと独立B価格tailは扱わず、公開照合後mandatory STOP。
+
 ## 2026-11-02 H6全lawへの誤差転送：非実行の実現可能性調査完了
 
 [SOURCE対応・転送式・未証明条件・代替の限定scope](docs/research/h6_whole_law_transfer_feasibility_20261102.md)。R64/H32/H64のみ。既存R2/R2-Cの条件付き転送式は再利用可能だが、native相対phase/remainder・compiler binding/actual 1Q再合成の一様誤差が未証明で、全lawρ上界と予算所属は未確定。既存局所値を外挿せず、新状態作用/QPY deserialize/誤差数値評価/人工数値tests/sampling/compile/N/G/価格解析0。局所STOP・全旧科学証拠/manifest entriesを保全。大規模実行へは進まない。

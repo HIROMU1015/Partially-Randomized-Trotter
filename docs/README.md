@@ -1,3 +1,7 @@
+## H6 A-1：全law Native接続のscalar/phase条件
+
+[保持角度のSOURCE対応・位相所有・Python/Rust remainder・未証明条件と次の限定scope](research/h6_native_bridge_scalar_phase_feasibility_20261102.md)。新科学計算なし、独立worktreeで文書だけを公開しSTOP。
+
 ## H6全lawへの実装誤差転送：SOURCE読取調査
 
 [既存R2/R2-Cの再利用条件・全law保証に不足するnative/compiler辺・次の限定範囲](research/h6_whole_law_transfer_feasibility_20261102.md)。新科学計算・人工数値testsなし、局所STOP維持。
