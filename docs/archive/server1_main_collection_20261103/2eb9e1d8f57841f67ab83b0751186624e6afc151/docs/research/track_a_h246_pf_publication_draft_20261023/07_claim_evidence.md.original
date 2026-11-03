@@ -1,0 +1,23 @@
+# 7. 掲載提案のClaim–Evidence対応（DRAFT）
+
+新しい科学的採択は行わない。正式採用commit f75a7c25の既存主張を、本文またはSIへ配置する案である。
+[67行の対応CSV](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/claim_evidence_DRAFT.csv)は、比較B15行とA45行の各掲載ID、および既存採用claim7件に、正本commit/path/SHA/pointer、PF分母域、cohort、採用済みclaim IDを対応させる。CSV正本への`/rows/i`はヘッダを除く0始まりの論理record indexである。
+[完全な保存行への60参照](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/comparison_reference_60.json)で、転記表の各値を照合できる。
+
+| 既存採用claim | 掲載候補 | 固定証拠・限定 |
+|---|---|---|
+| COMMON588_DOMAIN | Methods/SIに588候補・2940 endpoint・未解決0 | 採用dataset・全候補参照・保存終了監査。不適格までcompile済みではない |
+| COMMON588_H2 | 本文の固定域の保存点要約、SIの5行 | 比較B H2。rank3、L_D0..2/Full3、q≤8。旧q16域の最良ではない |
+| COMMON588_H4 | ε=.001/.0005でPR、それ以外PFの保存点要約 | 比較B H4。tol-only DF10でありlegacy DF12でない |
+| COMMON588_H6 | ε=.001/.0005でPR、それ以外PFの保存点要約 | 比較B H6。rank19・旧COST中断の限定を保持 |
+| COMMON588_WITHIN | SIの同一公式45行 | 分母は該当公式のみ。全公式比較の代替にしない |
+| COMMON588_H6_DENOMINATOR | SIの旧疎m5→共通m5→3公式の保存分解 | [10行DRAFT](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/denominator_decomposition_10_DRAFT.csv)。H6 prefix拡張比1、単独因果・母平均の主張なし |
+| COMMON588_SCOPE | Methods/limitations/監査の限定 | 保存SOURCE・有限探索・経験的allowance・rare bound null・旧exit/reap null |
+
+共通科学条件：linear H2/H4/H6、1 Å/STO-3G/tol-only DF1e-8 rank3/10/19、B0/B0I L_D0..2/1..9/5..15・Full3/10/19、q1/2/4/8・δ=.8/.4/.2/.1、T=.8/P=0、通常signed・指定compilerのanalytic-shot込みcompiled RZ。
+
+原CEM14行・旧台帳316行・採用CEM21行・採用台帳391行とpaper manifestは固定SHAで参照し、本文を上書きしない。
+旧CEMの独立確認やmodel依存の主張を、新探索cohortの独立確認・全域直接実測の主張へ読み替えない。
+旧main-table H8の2観測はFigure2Bと同一で、追加独立証拠として重複計数しない。
+
+全体最良は有限登録域の保存点に限る。新しい母平均保証、選択後補正、bias certificate、rare上界、最適PF公式の一般的推奨、AD03の採択を行わない。

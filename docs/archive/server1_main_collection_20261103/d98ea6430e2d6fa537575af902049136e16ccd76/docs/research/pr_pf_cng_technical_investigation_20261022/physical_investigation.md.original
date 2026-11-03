@@ -1,0 +1,65 @@
+# A：H6/H8のone_G不合格をどう解釈するか
+
+## 確認できたこと
+
+旧FAILは、比較した二つのbinary64数値出力が固定閾値を超えて異なったという証拠である。どちらの経路が正しいか、差が測定信号にどう伝播するかまでは確定しない。Hamiltonian primitiveのPASSとone_GのFAILは、異なる生成子を検査しているため矛盾しない。
+
+科学SOURCEは4ec95cd461804cf6513efd83608445f06c0fadb4。SOURCE_physics_validation.jsonの278 fileは現在のbyteと一致する。旧SOURCE/SOURCE_v2もそれぞれ270/274 file一致。固定providerはc31ef424175c02379eafebe8fc6c7548c1d9aabe由来であり、headの同名libraryではなく、runtime_v2.bootstrapが登録するfixed_provider/srcが実際のimport先になる。
+
+## 数学的対象と呼出経路
+
+生成順j番目のDF行列をg_j、第二量子化した一体演算子を G_j = sum_pq (g_j)_pq a†_p a_q とする。Hamiltonianは定数、修正一体項、およびsigned lambda_j G_j²の和である。one_Gは e^(-it G_j) の補助診断、squared_Gは e^(-it lambda_j G_j²) の診断である。one_Gにはlambda_jも抽出scalarも入らない。Gの符号とlambdaの符号を混同しない。
+
+実装は [check_block](../../../src/trotterlib/recomputed_s2_physics_validation.py:21)。index=0は修正一体項、それ以外は g_matrices[index-1] と FULL.deterministic_blocks[index] のdiagonal_etaを対応付ける。_prepareはgeneration_partitionとexplicit_ordered_partitionを使うため、今回のindexはweight順位ではない。
+
+|側|実装と演算|
+|---|---|
+|actual|Qiskit circuitに保存runtime_basis_operationsの逆順inverse、対角primitive、正順basisをappend。作用する演算子は Q exp(-it D) Q†。one_GのDはsum eta_k n_k、squared_Gではlambda(sum eta_k n_k)²|
+|expected|[SpinPrimitive](../../../artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/fixed_provider/src/trottertracks/resource_applicability/h8_sparse_reference_v1.py:123)。alpha/betaの同一spin行列を独立にFock化し、numpy.linalg.eighで対角化。二つのspinの固有値の和、またはその二乗×lambdaを用いて指数作用|
+|比較|actualと、sector出力をfull Fockへliftしてbit reverseしたexpectedとのEuclidean状態差norm。正規化し直さず、位相推定・phase alignment・overlapによる補正をしない。strict error < 1e-9|
+
+対角primitiveの符号は [ops.py](../../../artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/fixed_provider/src/trotterlib/df_trotter/ops.py:241) のRZとglobal phaseの両方で e^(-it D) を実装する。simulate_statevectorは回路global_phaseを一度だけ明示的に掛ける。basisのglobal phase自体はQとQ†で相殺するが、対角発展のglobal phaseを省略してよいことにはならない。
+
+OpenFermion側はmode 0を上位bitとするinterleaved alpha/beta。SpinPrimitiveはalpha/beta tensorへの移動にfermionic交換符号を含め、side²個のsector indexの全単射を検査する。Qiskit側はbit reversalしたlittle endian状態。eighの行列・state・Fock liftはcomplex128、実係数・角度・lambda・timeはbinary64。H2/H4/H6/H8のsystem qubit数は4/8/12/16。Spin側の一spin行列はそれぞれ2/6/20/70次元、全sectorは4/36/400/4900次元。これらは基底の組合せによる構造寸法であり、今回新たに配列をロードして測った値ではない。
+
+## 保存された3件：転記のみ
+
+|系|block /元fragment index|basis hash|time|保存one_G error|旧判定|
+|---|---|---|---|---|---|
+|H6|18 /17|2a5e8dc6d8d3c1ff4508d7fca45419e88bfc112c4375172b28cc5c0d390077e9|.4|3.375329763318796e-9|FAIL|
+|H8|26 /25|f822e86e12749c5a3972d16ecc041a79b431f338bd3a334125e33e3c149872f4|.4|1.3074065209570388e-9|FAIL|
+|H8|28 /27|9fc3672a682695ee3b3f7df3bce8db1a3eab55101be8d885c5b406feb12344d1|.4|1.268080050276896e-9|FAIL|
+
+同じblockの保存squared_G error（time .4）は順に1.908701358500214e-15、2.2163584337781e-15、2.0854957846995557e-15。小timeのone_GはH6 .05、H8 .025でPASS。ここでは比、時間fit、丸め幅、再計算した残差を生成していない。元result/STOPのhashと転記は機械可読auditに保存する。
+
+## 原因仮説と証拠の対応
+
+|仮説|H6 18 /H8 26 /H8 28に共通する証拠|現時点の判定|必要な区別|
+|---|---|---|---|
+|H01 Gaussian分解の微小成分省略|BogoliubovTransformのnumber-conserving分解とgivens_matrixがnp.isclose(x,0)を使う。numpy1.26.4の既定atol=1e-8。ops.pyはU.Tを渡し、この経路を使用|実装経路を確認。人工反例で機構を再現。3 blockそれぞれへの原因帰属は未確定|保存runtime gateの一粒子行列と元gの残差、および実際に省略されたentryが必要|
+|H02 小角の復元の悪条件性|Givensのcosineからarccosを用いる。cosineが1に近いとsineより角度情報を失いやすい|人工2e-8角で情報喪失を確認。3 blockの使用角は未読・未評価|対象Givensのsmall-angle情報と残差の対応が必要|
+|H03 Spin側の誤差・診断の偏り|SpinPrimitiveのeighは対角化残差を保存しない。既存Spin/CSR比較はone-bodyとlambda G²であり、unweighted Gの第三経路検査ではない|未排除|新しい一spin eigensystem残差とCSR生成子との三者比較が必要|
+|H04 位相・符号・basis順序の不一致|両経路に明示的bit reverse、fermionic sign、inverse/forward順がある。scalarはこの診断には入らない。H2/H4と同じコード|広範な順序不具合の証拠は見つからないが、対象blockについて完全否定はできない|新しい行列対応診断。旧出力へのphase alignmentは不可|
+|H05 block・fragmentのjoin違い|generation順のindex対応とfull/prefix/tailのbasis hash bindingが保存PASS|metadata上のjoin不整合なし。内容の数値同値性の証明ではない|block_id/original_fragment_indexとgate hashを新診断で記録|
+|H06 入力/SOURCEの差|278 SOURCE fileと旧plan/result/STOP hashが一致。H8は元cohortから再生成した別入力と明記されている|現在の固定file不整合は認めない|過去依存package byteまでSOURCEに含まれているわけではない|
+|H07 compilerの位相処理|check_blockにtranspile・Aer・Hadamard wrapper・recomputed_s2_phase_guardの呼出がない|このone_G FAILの直接原因経路には該当しない|compile前後1e-7検査と物理生成子1e-9検査を別に扱う|
+
+H01/H02を単なる演算加算の丸めと一括りにしない。前者は実装が小entryを省略する近似、後者は角度復元の数値感度である。旧FAILのどの成分がこれらに由来するか、機械イプシロンだけから保証してはいけない。
+
+現在のNature0.7.2ソースは [dependency_sources](../../../artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22/dependency_sources/) へlicense/header付きで保存した。number-conserving経路は [bogoliubov_transform.py](../../../artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22/dependency_sources/bogoliubov_transform.py:198)、givens_matrixは [nature_linalg.py](../../../artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22/dependency_sources/nature_linalg.py:56)。同じversionであることと、過去実行時package全byteを照合できたことは別である。旧SOURCEには該当site-packagesのhashがなく、後者は主張しない。
+
+## 人工入力で確定した機構と修正候補
+
+人工2 mode行列Uを7e-9の回転、固有値を+1,-1とする。旧Bogoliubov経路では e^(-it G) の比較が1e-9を超える一方、G²は一粒子sectorで縮退して回転に依存せず一致する。実分子の固有値がこの形だと主張するものではない。この反例は「G² PASSならone_GもPASSのはず」という推論を否定する。
+
+新しい未採用候補はhypotを使ったexact-zero QRとvacuum固定の4×4 two-mode liftを使い、arccosと近似zero判定を避ける。17人工テストで微小角、複素4 mode、全Fock基底のexterior-minor、fermionic sign、inverse/negative time、scalar phaseへの感度、ceil境界、rare法則の代表例不足を確認した。compileも実分子計算も実行していない。
+
+生産系をpatchせず独立moduleにした理由は、保存basis hash・費用・SOURCEを保全するためである。new gateのcost profileやproductionでの速度は未評価。候補を使えば旧費用値のまま科学的PASSに変更できる、という結論にはならない。
+
+## H2/H4との違い、影響範囲、残るSTOP
+
+H2/H4の保存full diagnosticはPASSだが、同じ近似処理を使うため、一般的な誤差上界を証明したことにはならない。行列寸法、固有ベクトル、微小成分、固有値の縮退、入力状態が異なり得る。どれが3 blockで支配的かは静的解析だけでは決められない。
+
+問題のblockは各系の固定PF prefixの外にあり、PRではtail側のbasisに対応する。したがって固定PF回路が当該one_G診断を直接使ったと決め付けない。一方、PRのPauli component法則・正規化を含む平均信号への影響を、lambda G²の一状態検査だけで除外もしない。系全体の科学的再受入がないため、PR/PF両側を含むH6/H8の10図条件の表示区分は変えない。
+
+原因を絞る最小案は [DのP1](additional_science_contract_DRAFT.md)。保存gと保存gate列の一粒子表現の新しい行列診断で、旧check_blockの再実行ではない。P1で原因が判明しても科学的再受入は別問題であり、旧FAIL/STOPは保持する。

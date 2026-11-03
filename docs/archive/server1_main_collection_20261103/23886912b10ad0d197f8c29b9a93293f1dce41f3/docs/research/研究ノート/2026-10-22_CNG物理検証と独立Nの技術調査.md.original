@@ -1,0 +1,11 @@
+# 2026-10-22 CNG物理検証と独立Nの技術調査
+
+利用者の技術調査指示に基づき、b81d4096から専用branchを分け、[調査packet](../pr_pf_cng_technical_investigation_20261022/README.md)を追加した。
+
+旧one_Gはe^(-it G)、Hamiltonian primitiveはe^(-it lambda G²)である。固定Gaussian経路でnp.iscloseによる微小成分省略とarccosによる小角情報喪失の可能性を確認し、one_Gだけが不合格となる人工反例を再現した。近似zero/arccosを使わないQR候補を独立moduleに実装し、人工17件PASS。実分子3件への原因帰属は未確定であり、旧provider、1e-9閾値、H6/H8 FAILと10図条件の留保は保持した。
+
+独立Nは保存compiled費用から取得できない。全測定法則の同値性なら同じHoeffding式から同じNが出る条件付き命題と、compiled信号による独立数値評価を区別した。PF一点の独立評価は新科学stageとして設計可能。PRは全compiled法則の平均または誤差移送の証拠が不足し、実行可能なseal済み計画に至っていない。N_circuit/N比/G10/G11はnullのまま。
+
+新規実分子計算・保存科学値の数値再解析・compile・sampling・shot再計算は未承認のため実施0。P1の3 block行列診断とH4 PF一点の独立N案を対象/call予算/受入/STOP付きDRAFTとして保存し、launch/grant/markerは無効のままとした。図の説明・レイアウト案のみを作り、旧30図90ファイル・スライドを保全する。
+
+主担当自身の技術確認であり、独立科学レビューは開始していない。旧記録を上書きせず、専用branchにlocal commitしてmandatory STOP。push・PR作成なし。

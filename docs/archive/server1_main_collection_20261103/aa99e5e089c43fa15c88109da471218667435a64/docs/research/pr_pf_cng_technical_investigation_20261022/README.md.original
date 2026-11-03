@@ -1,0 +1,26 @@
+# PR/PF C・N・G：物理検証と独立Nの技術調査
+
+基準は b81d4096e806efb6523304764d3a0680b7663320。専用branchは codex/pr-pf-cng-technical-investigation-20261022。
+
+**Gaussian分解で微小成分を省略する経路を特定し、one_Gだけが失敗し得る機構を人工入力で再現した。実分子の失敗3件の原因は未確定で、H6/H8の10条件は条件付き参考値を維持する。独立Nは引き続き未取得である。**
+
+今回の範囲は静的追跡、保存receiptの転記、SOURCEのbyte照合、人工テスト、未採用修正候補、実行しない契約案である。実分子配列・contextのロード、保存科学値の数値再解析、signal、compile、sampling、shot再計算、科学的再受入、再ランキングは実施していない。既存30図・90ファイルとスライドも変更していない。
+
+|成果物|内容|
+|---|---|
+|[A：物理検証](physical_investigation.md)|one_Gの定義、両数値経路、原因仮説、3件の証拠対応、未確定事項|
+|[B：独立N](N_feasibility.md)|法則同値性と独立数値評価の区別、必要な誤差予算、ceil、実装可能性|
+|[C：図の改訂案](figure_revision_proposal.md)|20条件の表示区分、C/N/Gの意味、凡例、caption、限界の配置|
+|[D：追加検証案](additional_science_contract_DRAFT.md)|3 blockの新しい行列診断、PFの独立N最小例、PRが未sealである理由|
+|[機械可読記録](../../../artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22/)|SOURCE、保全baseline、旧receipt照合、人工テスト、未認可契約、STOP|
+|[技術検証文書](../../cng_technical_investigation_validation.md)|実装・テスト・索引の対応と確認範囲|
+
+人工テスト17件PASS。修正候補は [cng_gaussian_diagnostics.py](../../../src/trotterlib/cng_gaussian_diagnostics.py)。旧provider・科学runnerは変更しておらず、この候補を旧回路費用に結び付けない。新しい2 mode行列gateを使うため、採用すれば別の回路構成・SOURCE・費用系列になる。
+
+Nについては、理想回路の全測定法則が同じなら、同じbias・u・B_upper・誤差配分を同じHoeffding式に入れると同じ十分Nになる。しかし既存証拠はその全法則の検証を完了していない。決定論PFの独立評価は小規模に設計可能、PRは全compiled法則の証明または独立平均信号が不足している。既存の N_circuit・N比・G10・G11 はnullのまま。
+
+対象の共通条件はlinear H2/H4/H6/H8、隣接1.00 Å、STO-3G、signed tol-only DF 1e-8、rank 3/10/19/28、generation順、T=.8、外側S2、旧compiled最良候補固定、通常signed bias・経験的allowance倍率1、P=0。L_D/q/r/K・delta=.8/q・候補・cohortは [元coverage](../../progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022/coverage_matrix.md) を保つ。H2の図は回収元cohort n8であり、新H2の物理診断receiptだけで図のcohortを置き換えない。H4/H6/H8は再計算cohort。native DF/symmetric-directional/original_plus_tail_once、reference_rotated=false、Qiskit1.3.0/Nature0.7.2、rz/sx/x/cx・opt1・seed17・topologyなし。全RPE最終費用や一般的優位性の結論ではない。
+
+主担当自身の技術確認であり、別担当による独立レビューや詳細GPT/Claude科学レビューではない。専用worktreeのAGENTS.mdがAIへの委任を禁じるため、主担当でA〜Dを扱い、独立した読取・hash照合を並列化した。共有環境・依存ライブラリ・他jobは変更していない。
+
+完了物をローカルcommitしてmandatory STOP。新科学実行、旧runのretry/resume、push、PR作成、スライド変更、詳細科学レビューは行わない。追加検証案のlaunchは未認可で、有効grant・科学markerは発行していない。

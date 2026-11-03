@@ -1,0 +1,73 @@
+> 固定資料の閲覧用copy。元: [71432728ee01:docs/research/h4_p3_finite_bit_execution_20261102.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/h4_p3_finite_bit_execution_20261102.md)。相対リンクのみ固定SHAへ変換。本文の科学的状態・採否は再判定していない。
+
+# P3：H4有限bit law・角度誤差の限定実行
+
+2026-11-02 JST。ユーザーの「実行してよい」により、[設計](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/h4_p3_finite_bit_law_design_20261102.md)
+commit `c52bbf2a76708079075f01f57af76676a6d5e7ff`の2方式×3平均を実装・人工検査・限定実行する。
+設計文書の「実行許可は未取得」は作成時点の履歴である。科学条件・旧STOPを上書きしない。
+
+固定linear H4/1Å/STO-3G/中性singlet/system8/full256、保存DF tol-only1e-8/rank10、案Aの共通T_eff/V_square残差、
+M_B=Pauli184・M_C=rotated Z/ZZ360/10 basis、T=exact binary64 .8、S2/q8/r4/K4、P=0、cosine/+Im。
+保存raw stateを変更せず、exact νで一度除算する。B_savedをraw平均へ一度だけ掛ける。
+
+## 接続と固定入力
+
+[kernel](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/src/trotterlib/matched_partition_finite_bit.py)、[runner](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/scripts/run_h4_p3_finite_bit.py)、
+[人工検査](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/tests/test_matched_partition_finite_bit.py)。固定入力は[18ファイルのref/SHA定義](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/h4_p3_finite_bit_inputs_20261102.json)。
+Stage 2保存辞書/normalization/nominal/T/referenceと、run02 law/native来歴、run04再利用来歴、Stage 4保存精度operandを使う。
+run04のpilot_result_commitはrun03完了結果`90bc02d458299212d3a1aa7c4bd34a0b98d1e0b5`であり、
+run02 native SOURCE `9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c`と保存run02ファイルhashを継承している。
+その対応を確認し、run02の旧partial STOPは改変しない。
+
+`h4_conditional_cng.extract`を再利用し、既存`h4_ball_evidence.cdf_binary64/grid_masses`の純関数だけを読み込む。
+旧flint backendやcontrollerをimportせず、専用環境・共有libraryを変更しない。
+component choiceには保存probabilityをfsumで割ったbinary64 vector、order choiceには保存order probabilityを使う。
+NumPy1.26.4のsequential cumsum/末尾除算を照合し、53-bit区間のceilをexact Fractionで評価する。
+base lawはchoice入力binary64のexact実数和による正規化。IID uniform-wordは仮定で、PCG64独立性証明は行わない。
+
+scalar rotationには既存`h4_enclosure_prototype.sqrt_point(bits=96)`と、固定binary64角度の2×2 rotationに対する
+`exponential_prototype(degree=24)`を再利用し、cos/sin係数とその差を有理区間で囲む。
+これは6角度のscalar係数評価であり、full signalやfinite Taylor biasの高精度再計算ではない。
+主matrix/vector評価はcomplex128のまま。operator norm・signal誤差はengineering評価で、full保証ではない。
+
+DF成分はStage 2と同じnative occupation作用と保存U/supportから構成し、再対角化・Gaussian合成を行わない。
+`Z=I−2 a†(u)a(u)`のexact encoded列normから成分normを評価し、2成分積へ転送する。
+再構成丸めは別u_bind、確率/scalar/matrix丸めはu_numへ伝播する。物理的な辞書差を再度u_bindへ足さない。
+成分は逐次Wへ加算し、大きな成分matrix全体を保持しない。DFのZだけをbasisごとにcacheする。
+
+## 件数・不確かさ・報告
+
+保存Tの共通half exponential1個＋同精度spectral照合1個を評価する。新full-H物理referenceは作らない。
+各方式でbase/CDF/gridの3複素平均、計6を取得し、CDF差・角度差・Stage 2 nominalへのbridge・grid差を保存する。
+全次数0/2/4をmomentで含め、W²/W⁴をcacheする。巨大event集合は列挙せず、sampling/replayもしない。
+同じbase/CDF/gridの作用素と誤差を用い、係数摂動から短step差を求め、実norm＋不確かさによるr/q積の差へ転送する。
+差が数値分解能以下でも0にせずUNRESOLVED。上側評価候補とその適用範囲を併記し、certified_gap_upperはnullを維持する。
+
+grid信号と保存reference端点からbiasを直接評価する。旧nominal/split/Δ診断の不確かさを加算しない。
+保存Stage 4のepsilon operandから20軸のheadroom previewだけを得る。
+native bridge=0/compiled ρ=0はこのpreviewの追加仮定で、actual implemented headroomは未取得のまま。
+Stage 3 preflightの局所証拠を全law一様保証に変換しない。
+
+人工検査は小bit全列挙、非可換signed moment、非直交DF basis、nonunitary上側評価、+Im/ν/B/scalar、
+数値不確かさ一回計上/null、6信号toy pipeline、run03経由のnative継承schemaを対象とする。
+SOURCE固定前の人工debugで実数入力に対する複素出力dtypeとscalar誤差の上向き丸めを修正した。
+最終人工9 tests PASS。科学H4 batchはこれらの検査に含めない。
+
+## SOURCE・実行・STOP
+
+実装/入力定義/人工検査をcommit固定し、対象SOURCEと入力bytesを照合してからfreshな
+`artifacts/df_pauli_matched_partition_validation/2026-11-02/finite_bit/run01/`へ1 batchだけ実行する。
+2つの独立armを2 threadで処理し、利用可能64 CPUに対して各BLAS32 threadを実行process内で設定する。
+これは2armの過剰thread競合を避けるワークロード配分であり、恒常的な資源上限ではない。共有設定を変更しない。
+
+新sampling/RNG replay/native回路生成・compile/Gaussian合成/DF再対角化/物理reference生成/
+finite Taylor bias高精度化/N/G評価は0。既存科学SOURCE・raw結果・全STOPを保全する。
+途中結果、SOURCE/入力来歴、CDF count/角度区間、6信号、差と上側評価、20 headroom、検査・STOPを保存する。
+bridge非整合時はMODEL_UNRESOLVEDとし、gapの「小さい」判定を行わない。
+失敗は`STOP_FINITE_BIT_EXECUTION_FAILURE_NO_RETRY`、未解決modelは`STOP_FINITE_BIT_MODEL_UNRESOLVED_NO_AUTOMATIC_FOLLOWUP`、
+通常完了は`STOP_FINITE_BIT_ENGINEERING_DIAGNOSTIC_COMPLETE_NO_AUTOMATIC_FOLLOWUP`。
+自動retry、solver/precision/tuple切替、追加科学callは行わない。
+
+結果は[REPORT](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/artifacts/df_pauli_matched_partition_validation/2026-11-02/finite_bit/run01/REPORT.md)へ記録する。
+SOURCE固定時点でこのリンクは将来の出力先であり、完了を先取りしない。
+結果の公開・照合後mandatory STOPし、compiled検証・価格tail・N/G更新へ自動進行しない。

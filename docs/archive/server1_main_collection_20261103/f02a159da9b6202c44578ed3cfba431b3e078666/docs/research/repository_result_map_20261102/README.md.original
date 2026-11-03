@@ -1,0 +1,59 @@
+# 研究結果マップ：旧ブランチ名に依存しない入口
+
+2026-11-02 JST。ローカルに取得済みの固定コミット・既存の研究カードと証拠索引を使った案内。新規の科学計算・科学的採択は行っていない。
+
+研究系列 → 固定資料 → 元の条件・status → 成果物をたどる。旧branch名は検索用の別名として残す。本文のstatusは元資料の主張であり、このマップ作成による科学的再認定ではない。
+
+## 研究内容から探す
+
+|研究系列・用途|入口|読む際の区分|
+|---|---|---|
+|全体の科学的到達点|[全体の科学的到達点](overview_overall.md)|DF・RPE・Track B・Pauli-JW・研究Cの横断入口。条件付き結果と未解決事項を確認する。|
+|主張・証拠・不足の対応|[主張・証拠・不足の対応](overview_claims.md)|何が支持され、何が未確認かを元の対応表で読む。|
+|DF / Track A|[DF / Track A](overview_df.md)|matched-accuracy、共通決定論対照、独立確認、状態・価格・shotの条件を58件の索引へ接続。|
+|DF長時間・B3|[DF長時間・B3](overview_longtime.md)|保存された長時間比較とB3の限定負結果。有限候補・取得域の結果を維持する。|
+|RPE全roundモデルの後続|[RPE全roundモデルの後続](overview_rpe.md)|全roundのモデル会計と、長roundへの移送・最終精度保証を分けて読む。|
+|Pauli-JW|[Pauli-JW](overview_pauli.md)|純RTE・Hybrid・決定論の有限候補比較。DFとの表現比較を別扱いにする。|
+|H6局所実装診断|[H6局所実装診断](overview_h6.md)|保存trajectoryに対する局所診断。全lawの誤差・母平均・最終総コスト保証へ格上げしない。|
+|H4 DF/Pauli対応|[H4 DF/Pauli対応](overview_p3.md)|有限bit・角度・保存lawの診断。実装全体の精度保証とは分ける。|
+|研究C：既存成果|[研究C：既存成果](overview_research_c.md)|PR-aware DF、精度予算、条件付きPR内部改善、強い決定論対照、限定負結果を区分。|
+|研究C：11/02統合準備|[研究C：11/02統合準備](overview_research_c_new.md)|固定snapshotに含まれる準備文書。後続の実行完了・成功を先取りしない。|
+|Track Bの結果利用可能性|[Track Bの結果利用可能性](overview_track_b.md)|return集約、有限bit、生成器、限定負結果・未定義の案を元のclaim別にたどる。|
+|Track Bの後続claim対応|[Track Bの後続claim対応](overview_track_b_later.md)|v1.2/C1等の後続を含む対応。数学構成・人工検証・分子pilot・性能保証を分離する。|
+|mainの基礎検証|[mainの基礎検証](overview_base.md)|main時点の規範・限定検証。別系列の後続結果との時点差を保持する。|
+
+## 詳細を検索する
+
+- [70研究カードを読む](STUDIES.md) / [CSV](study_map.csv)：問い・固定条件・元の結果・限界・固定SHA・元資料。外部リポジトリは別扱い。
+- [Track Aの58アクセス行](track_a_study_index.csv)：モデル、geometry、basis、DF rank政策、L_D、時間窓、比較、metric、結果と採否の元記録。58個の独立実験ではない。
+- [Track Aの主張と条件](track_a_claim_usage.csv)、[論文用候補データ](track_a_paper_data_index.csv)、[未解決事項](track_a_unresolved_issues.csv)：採用・資格を元の台帳へ照会する。
+- [旧ブランチ別に読む](BRANCHES.md) / [CSV](branch_map.csv) / [JSON](branch_map.json)：snapshotの全branch。元名は`old_branch`で検索し、`navigation_paths`と`artifact_roots`を読む。
+- [元manifestの検証記録](validation_records.csv) / [完全な元record](validation_records.json)：同じkeyでも内容が異なる版を別recordとして保持。`catalog_commit`と`condition_literal`で時点・条件を確認する。
+- [成果物・資料のpath確認](evidence_paths.csv)：固定SHAで実在したpathと、存在しない/まだ出力予定のpathを区別。存在確認は科学的検証ではない。
+- [固定SHAに存在しない参照だけを見る](unresolved_evidence_paths.csv)：未確認・予定・欠落・別scope等の調査入口。存在しないという理由だけで元の研究結果を失効させない。
+- [変更された文書・receiptのpath](changed_document_and_receipt_paths.csv)：各tipからfirst-parentを遡り、直前のsnapshot内named tipとの差分を記録。branch全歴史や科学結果の網羅表ではない。
+
+## ブランチ名を削除した後の読み方
+
+1. このマップから研究系列を選ぶ。旧名しか分からないときはbranch_map.csvで検索する。
+2. 固定資料の条件・statusとvalidation_recordsを読み、肯定結果、限定負結果、実装のみ、計画/未検証を元の記録で区分する。
+3. 成果物は固定SHAリンク、または `git show <commit>:<path>` で読む。元branch名の復元が必要ならbranch_map.csvのrestore_commandを使う。
+4. `NOT_PRESENT_AT_CATALOG_COMMIT` は欠落/予定/別scope等の可能性を残す。元報告と照合し、存在しないデータを検証済みにしない。
+
+## 履歴の保存と削除条件
+
+このsnapshotはリモート追跡branch 902本。保存anchorは100点（リモート由来95、追加のlocal-only 5）。[保存計画](archive_anchors.csv)に完全SHAと提案tagを記録した。
+
+**SHAをマップに書くだけではデータの保存にならない。** 既存の後続branchを維持するか、これらの保存点をtag/bundleとして実際に保管する必要がある。tag/bundleは今回未作成。リモート削除前の現況照合・公開先へのマップ保存も未実施。
+
+ユーザーの方針により、worktree記録があるという理由だけで旧リモートbranch名の保存を必須にしない。研究資料・成果物と履歴をこのマップからたどれることを優先する。既存worktreeや未追跡データの削除は別操作で、ここでは行っていない。
+
+未追跡raw・他環境だけのデータ・外部リポジトリの完全保存は保証しない。元資料のraw所在/可用性/STOPを維持する。mainと各研究系列の時点差があり、先端が新しいだけで元の規範や採否を置き換えない。
+
+## 収録範囲と再生成
+
+70概念カード、Track A 58アクセス行、元manifestの969内容版、固定path 2974参照。これらの件数を研究結果数・独立実験数・検証成功数として使わない。
+
+入力snapshotはref_snapshot.json、集計と限界はsummary.json、コピーした索引の出典はcopied_catalog_sources.json。固定pathのローカル存在確認と履歴被覆をverification.jsonに記録する。
+
+`python3 scripts/build_repository_result_map.py --build`（リポジトリrootから）。同梱snapshotと固定資料から再生成する。初回だけ既存auditを入力とする。ネットワーク・科学関数・Git参照変更なし。

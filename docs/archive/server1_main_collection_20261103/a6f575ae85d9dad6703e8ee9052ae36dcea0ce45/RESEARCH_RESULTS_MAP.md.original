@@ -1,0 +1,40 @@
+# 研究結果マップ
+
+2026-11-02 JST。**研究系列・固定コミットSHA・元の条件とstatus・成果物**を結ぶ入口。
+旧リモートブランチ名を削除しても研究結果を探せるようにするための資料である。
+このマップの作成によって、科学的結果の採否や保証水準を変更していない。
+
+[全体の入口と使い方](docs/research/repository_result_map_20261102/README.md)から読む。
+研究設計の正本は引き続き `docs/research/` の規範文書、各結果の条件・状態は元の固定資料と台帳による。
+
+| 探したい内容 | 固定資料への入口 |
+|---|---|
+| 研究全体の到達点 | [全体の科学的到達点](docs/research/repository_result_map_20261102/overview_overall.md)、[主張・証拠・不足の対応](docs/research/repository_result_map_20261102/overview_claims.md) |
+| DF / Track Aの比較・独立確認 | [既存証拠索引の説明](docs/research/repository_result_map_20261102/overview_df.md)、[条件付きの58アクセス行](docs/research/repository_result_map_20261102/track_a_study_index.csv) |
+| 長時間DFとB3 | [固定報告](docs/research/repository_result_map_20261102/overview_longtime.md) |
+| RPEの基礎と後続モデル | [mainの基礎検証](docs/research/repository_result_map_20261102/overview_base.md)、[全roundモデルの後続](docs/research/repository_result_map_20261102/overview_rpe.md) |
+| Pauli-JW / 純RTE / Hybrid | [統合資料](docs/research/repository_result_map_20261102/overview_pauli.md)、[H6の局所実装診断](docs/research/repository_result_map_20261102/overview_h6.md) |
+| H4のDF/Pauli対応・有限bit | [固定診断資料](docs/research/repository_result_map_20261102/overview_p3.md) |
+| Track B / return集約 / 有限bit・生成器 | [結果利用可能性](docs/research/repository_result_map_20261102/overview_track_b.md)、[後続claim対応](docs/research/repository_result_map_20261102/overview_track_b_later.md) |
+| 研究C / PR-aware DF | [既存成果のEvidence Map](docs/research/repository_result_map_20261102/overview_research_c.md)、[11/02の統合準備](docs/research/repository_result_map_20261102/overview_research_c_new.md) |
+| 初期案・負結果・実装・未検証の研究経路 | [70研究カードの入口](docs/research/repository_result_map_20261102/STUDIES.md) |
+
+旧ブランチ名だけが分かる場合は、[ブランチ別の資料一覧](docs/research/repository_result_map_20261102/BRANCHES.md)
+または[CSV](docs/research/repository_result_map_20261102/branch_map.csv)で検索する。
+全902本のsnapshotについて、完全SHA、当時の資料・成果物root、履歴の保存点、ローカルbranchの復元コマンドを記録した。
+掲載件数は研究結果数・独立実験数・成功数ではない。
+
+元の検証記録は[検証項目と内容版の一覧](docs/research/repository_result_map_20261102/validation_records.csv)、
+完全な条件とstatusは[元recordのJSON](docs/research/repository_result_map_20261102/validation_records.json)、
+実際のpath確認は[成果物索引](docs/research/repository_result_map_20261102/evidence_paths.csv)へ接続する。
+同じ検証名でも条件・statusが異なる版を統合していない。肯定結果・限定負結果・STOP・未検証を元の状態で保持する。
+
+**マップにSHAを記録するだけでは、履歴そのものの保存にはならない。**
+[保存点一覧](docs/research/repository_result_map_20261102/archive_anchors.csv)は、固定したリモート履歴95点と
+追加のlocal-only履歴5点を示す。既存の後続branchを残すか、tag/bundleで保管する必要がある。
+今回、tag/bundle作成・リモート削除・マップの公開は行っていない。
+
+資料の閲覧用copyは相対リンクと既知の旧branch URLを固定SHAリンクへ変換した。
+原本のblob・hash・commit・pathは各出典JSONに記録している。HTTP到達性は未照会であり、
+ローカルでは `git show <commit>:<path>` で原本を取得できる。
+他環境だけのraw、未追跡データ、外部リポジトリの完全保存を保証するものではない。

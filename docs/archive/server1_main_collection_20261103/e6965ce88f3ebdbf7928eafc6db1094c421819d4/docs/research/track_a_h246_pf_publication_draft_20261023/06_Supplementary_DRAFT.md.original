@@ -1,0 +1,60 @@
+# 6. Supplementary Information構成・表DRAFT
+
+**未採択・未適用。** 既存SIを変更せず、新しい共通域ベンチマークの節として配置する案。
+[採用済みプロトコル補足](../track_a_h246_pf_common_protocol_v2_supplement_20261022.md)の科学条件を変更しない。
+
+## S-common-1: conditions and registered domain
+
+linear H2/H4/H6、隣接1 Å、STO-3G、tol-only DF1e-8、保存rank3/10/19、T=.8/P=0。
+S2/Yoshida4/m5_best、B0/B0I L_D0..2/1..9/5..15とFull3/10/19、q1/2/4/8、δ=.8/.4/.2/.1。
+通常signed bias・経験的allowance・α_axis=.025、full cos/sin wrapper・symmetric-directional・元scalar一回、Qiskit1.3.0 rz/sx/x/cx opt1 seed17。
+H2 prefix0/Fullを別登録として保持し、q16とH4 legacy DF12を除外する。
+各系のHamiltonian/state/snapshot/compiler/native/preparationの固定参照を採用datasetの`systems`と各候補に結ぶ。
+H2/H4は科学配列hash一致の再生成容器、H6は原snapshot復元であり、同じrankだけを同一入力の証明にしない。
+
+## S-common-2: all-formula comparison B
+
+[15行の編集用CSV](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/comparison_B_15_DRAFT.csv)をそのまま表にする。
+3系×5精度で、保存PR集合の最良と、3公式を含む固定PF共通格子最良を比較する。
+PF候補・式・prefix/q、両軸RZ・shot、G exact、PR候補と保存n/平均分子分母/不偏分散/paired SE、保存削減率・方向を含む。
+転記元のcommit・SHA・JSON pointerを列として保持し、全15行を掲載候補から落とさない。
+
+保存点の方向はH2が5精度ともPF、H4/H6はε=.001/.0005がPR、それ以外はPF。
+PFは決定論的会計、PRは標本費用平均。PRの保存SEを量子測定shotの誤差やPFのMonte Carlo SEと呼ばない。
+
+## S-common-3: within-formula comparison A
+
+[45行のCSV](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/comparison_A_45_DRAFT.csv)を3公式ごとに分割した表として置く。
+PF分母のformula_scopeはその公式だけ。比較BのALL_FORMULASと取り替えない。
+m5内でPRが低費用でも、S2/Yoshida4を含むPF全体に対して同じ方向とは限らない。
+PRの候補・n・統計・科学SOURCEは保存値を維持し、pilotや旧cohortをpoolしない。
+
+## S-common-4: candidate/endpoint status and denominator changes
+
+[588候補参照](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/candidate_reference_588.csv)は採用済み候補CSVのbyte同一コピー。
+[2940 endpoint参照](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/endpoint_reference_2940.csv)は採用dataset内の各5精度endpointを一意に指す。
+数値本体は採用datasetを固定commit/SHAで参照し、別の数値解析datasetを作らない。
+
+候補の`cost_kind`、`eligible_epsilons`、endpointの保存status、単価や総費用の存在を分ける。
+全精度不適格でcompile不要な候補はUNRESOLVEDではない。一方、適格なのに費用がない状態は欠測として拒否する。
+保存同native単価があっても今回の全精度で不適格なら、取得済み価格の不使用として記録する。単価の存在と費用比較への使用を同一視しない。
+H4保存28 pairのうち使用22/不使用6、H6保存36のうち使用30/不使用6という取得状態を保持する。
+旧legacy217価格はidentity未証明のため使用0。旧model単価を今回の直接実測へ代用しない。
+
+[保存分母分解10行](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/denominator_decomposition_10_DRAFT.csv)はH4/H6を含む。
+政策・保存算術、m5 prefix拡張、公式集合拡張のexact保存因子を引用し、新しい積・比を計算しない。
+H6のprefix拡張因子1と、S2/Yoshida4を含む公式拡張の影響を区別する。単独の因果効果や母平均保証にはしない。
+
+## S-common-5: acquisition, audits and inference limits
+
+保存探索PRはouter32/K4/prefix1/3/5。outer32は費用標本数n=32ではない。各行に元nを残す。
+PR対PRの118独立確認、旧主表H4/H6/H8の独立P、Figure2の機構cohortは別証拠として参照し、今回の新PF分母を独立確認したものとしない。
+
+H6 metadata63の別観測、旧52signalの維持と11rawの新取得、共通signal102、COST旧187受入と新grant22正常終了を区別する。
+旧parentのexit/reap・原因・正確な終了時刻は不明。旧STOP・非返却予約を保持する。
+固定SOURCE・input SHA・成功stage receipt・旧中断controlsは採用source catalogから参照し、有効grantを新たに発行しない。
+H2/H4の再計算や新しいPR samplingは行わない。
+
+選択後補正・母平均順位・全prefix/q最適性・rare-event上界・厳密bias certificate・全energy/QPE/RPE費用優位は保証しない。
+全588候補の未解決0はこれらの一般的保証や、旧H6 parentの終了証明を意味しない。
+既存H8独立PRの詳細終了receiptや原profileの公開再監査不足も、このH246補足で解消したことにはしない。

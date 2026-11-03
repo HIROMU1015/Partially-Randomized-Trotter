@@ -1,0 +1,99 @@
+> 固定資料の閲覧用copy。元: [71432728ee01:docs/research/h6_selected_implementation_execution_20261102.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/h6_selected_implementation_execution_20261102.md)。相対リンクのみ固定SHAへ変換。本文の科学的状態・採否は再判定していない。
+
+# H6純RTE/Hybrid：保存3 trajectoryの局所実装診断
+
+2026-11-02 JST。ユーザーの「実行してよい」により、[調査書§8](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/h6_pure_rte_hybrid_implementation_evidence_inventory_20261102.md)
+commit `b3bab573cf17b9dd8ddc1dca5f1a6a6c935ef6d1`の最大15状態作用を実装・人工検査・限定実行する。
+旧文書の未承認は作成時の履歴。P3は区切ったままとし、新sampling/compile・N/G更新や全law保証を本scopeへ加えない。
+
+## 固定対象
+
+linear H6、隣接1Å、STO-3G、中性singlet、保存Pauli-JW918非identity項＋constant、system12/full4096。
+T=.8/S2/q8/K2、P=0、central-rotation、Full13qubit/ancilla wire12、cosine/+Im sine。
+Qiskit1.3.0/NumPy1.26.4/SciPy1.14.1、保存compiler rz,sx,x,cx/opt1/seed17、追加routingなし。
+
+| ID | 固定candidate | L_D/r | 固定標本 |
+|---|---|---|---|
+| R64 | H6_p000_q8_r64_K2 | 0/64 | confirmation/0000 |
+| H32 | PR_p0078_q8_r32_K2 | 78/32 | confirmation/0000 |
+| H64 | PR_p0078_q8_r64_K2 | 78/64 | confirmation/0000 |
+
+R64をfamily比較と同q/r/K比較で二重実行しない。H32はorder2を1個含み、H64/R64はorder0だけ。
+全law、母平均、一般的方式優位の診断標本としては扱わない。
+保存raw stateをbit-copyし、exact νで一度だけ除算する。B_savedは差の会計時に一度だけ乗算する。
+
+## 入力・再利用・最小実装
+
+[kernel](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/src/trotterlib/h6_selected_implementation.py)、[runner](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/scripts/run_h6_selected_implementation.py)、
+[人工tests](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/tests/test_h6_selected_implementation.py)。
+[固定INVENTORY](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/artifacts/h6_pure_rte_hybrid_evidence_audit/2026-11-02/INVENTORY.json)を上記baseのbytesと照合する。
+H32/H64は結果`00958ae1945c780718b2deef07d5dab1096a5cd8`/SOURCE`887b69e449cb3c378286f09d0d7626599850fb67`、
+R64は結果`10cb3e5cca7834ebf75301bd91bd093ca51d4a6b`/SOURCE`e755ecf581600192fd2745d7066e410cebd933d3`。
+P2の`inputs/verify_full`を再利用し、archive part/member、12 QPY raw/gzip、6 Fullの意味論・保存metricsを状態作用前に確認する。
+元law・event列・angle・QPYを再生成しない。
+
+旧`h4_r0_empirical.propagate/compare_signals`、`pauli_vector_enclosure.mapping/permute`を
+既存`h4_conditional_cng.extract`で純関数として再利用する。旧H4 controller/contract/grantやflint backendを呼ばない。
+P2の`recipe`でcompact/full eventを同じapplication viewへ復元する。
+
+selected C_iは保存eventを順に作用するmatrix-free Pauli vector処理。
+保持角度はexact binary64 coefficient×exact saved delta/2、event rotationは保存binary64角度、
+product sign/order phaseは数学的±1、scalar_step_binary64は各q stepに一回とする。
+これはlaw平均やfull-H referenceではなく、固定trajectoryの理想selected作用である。
+個別C_iを保存平均targetから代用しない。
+
+native/compiledは保存QPYをdecodeして末尾測定だけを除いた同じgate列をStatevectorで作用する。
+measurement observableはraw p0−p1を元のexact νで割る。probabilities()のclipや出力normでの再正規化をしない。
+Fullの再生成/synthesis/compileは0。QPY decodeと測定を除く評価用copyは新しい科学programの構築ではない。
+full-wrapper global phaseを保持し、事後phase alignmentはしない。bodyのancilla-relative phaseを除去しない。
+
+## 15作用・精度・数値不確かさ
+
+固定3 selected C_iの複素値を各1作用（3）、保存native両軸各1（6）、保存compiled両軸各1（6）、計15まで。
+run内QPY decodeはpreflight12＋state-action workerのrestore12。追加作用・別trajectory・高精度retryはしない。
+独立15 taskをspawn processで並列に処理し、各taskはfresh workerで1作用。全workerをjoinする。
+各gateの局所幅が最大4という小さい演算に対し、worker内BLAS1 threadを使用し、process並列へ資源を配分する。
+worker数は15 taskと実CPU affinityから決め、共有設定・他ユーザー・他worktreeを変更しない。
+
+初期matrix/vectorはcomplex128。厳密なsignal/ρ包含ではなく、演算に応じたengineering resolutionを付ける。
+ε=2^-52、γ_k=kε/(1−kε)を用いる。
+
+- selected Pauli rotation：exact角度→binary64の差と`2*γ16*(1+|angle|)`、線形和の`γ8*(|cos|+|sin|)`をfresh局所誤差候補とし、unitaryに相関する入力誤差を伝播する。signed permutationはexact sign/swapとして扱う。
+- native/compiled gate列：局所幅w=2^arityに対し、`γ_(32w)*(1+Σ|params|)+γ_(8w)*sqrt(w)`をfresh局所誤差候補として伝播する。full global phaseの数値作用も候補に含む。
+- 内積・raw observable・exact νのbinary64変換にはvector長に応じたγとnorm候補を用いる。入力raw stateや出力rayのnormを変更しない。
+
+libm・Qiskit内部全演算を包含する証明ではなく、固定絶対誤差1e-10なども導入しない。
+`engineering_signal_uncertainty`と厳密な`numerical_error_upper=null`を別fieldにする。
+旧law平均のtight L2包含やP1の分解能を、この局所gate列の誤差上界として流用しない。
+
+## 比較・保存許容幅・停止
+
+各軸のraw observableをm_C/m_input/m_compiledとして、
+`eta=B_saved*|m_input−m_C|`、`delta=B_saved*|m_compiled−m_input|`、`d=B_saved*|m_compiled−m_C|`。
+既存純scalar比較でexact Fractionのtriangleを確認し、各差の両側resolutionをBで一度scaledして上側候補を報告する。
+最厳の保存ε_sig=.0005の軸別rho_guardをINVENTORYからそのまま引用する。
+新しいrho許容幅・感度・N/Gは計算しない。
+
+上側候補≤保存guardならENGINEERING_UPPER_WITHIN_SAVED_LOCAL_BUDGET、下側候補>guardなら
+ENGINEERING_LOWER_EXCEEDS_SAVED_LOCAL_BUDGET、それ以外/分解能欠測ならUNRESOLVEDとする。
+直接差の解像と上側候補のbudget所属は別の状態である。
+どの判定でも`actual_compiled_rho/whole_law_rho/rho_upper/certified_upper=null`、旧N/Gは不変。
+既存比較関数のLOCAL_BUDGET_MET=falseは正式保証の非認定を表し、engineering判定と混同しない。
+
+人工9 tests PASS：signed Pauli little endian、非可換product/rotation順・order phase・scalarと非unit norm、
+retained exact operand/L0、両測定軸/global phase、人工compile対照とgate境界拒否、
+B一回/triangle/未認定、欠測/大resolution、15 unique jobs/R64共有を確認した。
+人工compileは2qubitの1件だけで、新H6 compileではない。
+
+SOURCE・固定入力・意味論に不一致、非有限値、worker失敗なら停止し、自動retryしない。
+完了時も分解能不足ならUNRESOLVEDのSTOPを保持する。
+fresh出力`artifacts/h6_selected_implementation/2026-11-02/run01/`にsource/preflight/actions/6比較/CSV/verification/STOPを保存する。
+結果は[REPORT](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/artifacts/h6_selected_implementation/2026-11-02/run01/REPORT.md)へ記録する。
+SOURCE固定時点では将来の出力先で、結果を先取りしない。
+
+全15作用正常完了・6組すべてengineering上側候補内なら
+`STOP_H6_SELECTED_IMPLEMENTATION_LOCAL_DIAGNOSTIC_COMPLETE_NO_AUTOMATIC_FOLLOWUP`。
+未解像/超過を含む場合は`STOP_H6_SELECTED_IMPLEMENTATION_UNRESOLVED_OR_EXCEEDS_BUDGET_NO_AUTOMATIC_FOLLOWUP`、
+実行失敗は`STOP_H6_SELECTED_IMPLEMENTATION_FAILURE_NO_RETRY`。
+新sampling/RNG replay/compile/Full再生成/law平均/full-H reference/N/G/price tailは0のまま。
+全lawへの誤差転送、P3精密化、費用再会計へ自動移行しない。公開・remote照合後mandatory STOP。

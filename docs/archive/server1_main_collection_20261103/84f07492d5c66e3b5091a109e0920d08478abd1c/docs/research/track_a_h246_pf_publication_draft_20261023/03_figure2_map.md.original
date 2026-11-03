@@ -1,0 +1,25 @@
+# 3. Figure2対応表と別図仕様（DRAFT）
+
+[対応CSV](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/figure2_correspondence.csv)と
+[原図34fileの固定SHA](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/paper_manifest_DRAFT.json)を正本とする。
+PNGのFigure2A/2Bを固定Git objectから取得し、仕様・captionと合わせて目視確認した。再描画・原図変更は0。
+
+| 旧panel | 意味・cohort | 今回の結果との関係 | 提案 |
+|---|---|---|---|
+| 2A上段 | 軸別R_C,a、H4 legacy DF12/H6 DF19/H8 DF28、旧n32/新探索n8、直接/modelを区別 | outer32共通588比較の単価分解ではない | 点・色・cos/sin記号・塗り/中抜きを保持 |
+| 2A中段 | 保存analytic shotのR_N,a | 今回の新政策によるshot比へ置換しない | 元のshot政策とpointを保持 |
+| 2A下段 | 旧分母のR_G、ε=.05/.005/.0005の18表示比較 | 全3公式の共通PF最良分母とは異なる | 旧総費用比を維持し、別SIへの参照だけ提案 |
+| 2B上段 | H8独立n48の2固定比較、Table1と同じ観測 | H8は共通588候補の対象外 | 重複した独立証拠として数えない |
+| 2B下段 | 同じH8観測のnormalization/margin/headroom/alpha/rounding | 新H2/H4/H6 cohortへ因子を移送できない | 全因子・値を保持 |
+| A82原図注記 | 描画時点の欠測注記。後に既存32比較64軸の説明表が別途完了 | 共通588の未解決候補を意味しない | 原図注記と既存captionの歴史説明を維持 |
+
+Figure2への変更候補は、caption末尾の別共通格子SIへの参照文だけとする。そのDRAFTは[本文・caption案](05_text_and_captions_DRAFT.md)に分離した。
+新cohortのC/N因子やPR/PF比を旧panelへ追加しない。旧H4 DF12をDF10へラベル変更しない。
+
+別図を設ける場合の[Figure S-common仕様](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/figure_common_domain_spec_DRAFT.json)を用意した。
+H2/H4/H6の3panel、横軸は5精度のカテゴリ、縦軸は保存済み`PR_reduction_percent`、0の参照線、各点のPF候補・PR公式/q/nをデータ表へ対応させる。
+精度間の補間・切替精度推定・新しい比の算出・新たな百分率CIを行わない。PRの保存SEは原費用単位のまま表に残す。
+比較A45点を比較B15点の図に重ねず、必要なら同一公式の別SI panelにする。
+
+今回は別図の完全な入力対応・仕様・captionを作成し、レンダリングは行っていない。
+案3では補助図候補、案2採択後はFigure3候補となる。番号と主図昇格は未採択。

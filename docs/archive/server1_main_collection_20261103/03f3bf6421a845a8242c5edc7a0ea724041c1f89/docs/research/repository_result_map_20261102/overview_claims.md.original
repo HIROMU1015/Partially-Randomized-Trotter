@@ -1,0 +1,279 @@
+> 固定資料の閲覧用copy。元: [71432728ee01:docs/research/pr_repository_claim_evidence_gap_matrix_20261101.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/pr_repository_claim_evidence_gap_matrix_20261101.md)。相対リンクのみ固定SHAへ変換。本文の科学的状態・採否は再判定していない。
+
+# PR研究：主張・直接証拠・未解決課題の対応表
+
+2026-11-01 JST。Codexの文書・SOURCE調査。研究上の採否、数値再解析、追加実行を含まない。[研究全体の再整理](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/pr_repository_scientific_landscape_20261101.md)と併読する。表中の数値・順位・式は既存保存結果の引用であり、今回の再評価ではない。
+
+## 1. 読み方と主張の強さ
+
+各行は、研究課題、条件、実施検証、観測、未知、現在状態、固定証拠、研究上の意味、追加判別の必要性を対応させる。状態は本調査の読み分けであり、元result/status/STOPを変更しない。
+
+- **現行・限定結果**：その固定taskの観測を支持する。一般的な方法優越ではない。
+- **理論／構成**：記載前提内の既存数理成果。数値性能・新規性・物理費用とは別。
+- **負結果／終了**：登録範囲の改善なし、強い対照への還元、採択済みの終了を保持。
+- **技術完成／準備のみ**：実装・人工検査・局所correctnessの完成度を表す。
+- **歴史的／失効／資料不足**：旧条件として保持するもの、利用禁止の結果、取得不能を分ける。
+
+固定commitは[§6の参照表](#evidence)と各リンクを参照する。旧70カードのsecondary整理、一次結果の読取、科学SOURCEの静的確認、今回の文書検査を独立実験回数に数えない。
+
+## 2. 研究領域別のclaim・証拠・限界
+
+### A. DF基礎・Track A・RPE
+
+| ID・研究課題 | 対象条件／実施した検証 | 直接支持する結果 | 現在の状態・分かっていないこと | 研究上の意味／次に判別するなら何か |
+|---|---|---|---|---|
+| A01 PF係数は何を近似するか | H2〜H5 dense/state-action、H4 prefix全分割、H6旧DF11/L_D5、各実行δ窓。D6と支配固有位相比較 | 小系の作用整合、窓限定経験係数を取得。[係数][COEFF] | 現行の限定基盤。C_Dはscreening、C_useは厳密boundでない。H12係数未取得 | PF biasとQPE統計を分離できる。H12は主claimが要求する場合のみ別計算 |
+| A02 finite RTEの補正信号は正しいか | H4 DF12、L_D0/1/3/6等の保存grid。operator/signal/radius/phase比較 | 記載gridで解析bound・平均信号の整合。[有限RTE][FINITE] | 限定数値確認。finite biasとpositive normalization/attenuationは別。全実装law/compiled誤差へ自動転送不可 | 新lawへ流用する前に元入力・符号・cutoff・B適用回数を合わせる |
+| A03 ランダム回路価格を安く予測できるか | H4/H5 snapshot別・compiler別、pair/triple/cluster/affineと未使用列長 | 条件付き移送成功、L_D6等の不通過とK4改善例。[価格統合][COST] | 経験的proxy、全support厳密上界でない。稀次数未観測と独立係数推定誤差を区別 | 実測を補うが全格子保証にしない。既存holdout再利用を先に確認 |
+| A04 B2はdiscard/fullより安いか | H4 1Å/STO-3G/DF12/T.8、M1 210→PM含218候補、full Hadamard/RZ、n32 | 有限域ParetoのB2 rank3/q1、近接discard追加後も元精度の点利得。[M1][M1] | 現行の旧条件限定。16cell selectorはPareto1件を落とし、精度細点は同標本共有。一般最適なし | 同精度・強い対照・選抜coverageが結論を変える証拠 |
+| A05 移送可能か | H4 1.30Å、同DF12、development固定5構成・196wrapper、別実行SOURCE | TRANSFER_SUPPORTED、B2二構成がpoint Pareto。[M2][M2] | 固定候補の移送成功。geometry上の全最適化・厳密winnerでない。大PでB1が入る | 「再最適化可能性」と「固定構成移送」を分離して報告 |
+| A06 geometry地図はB2一様優位か | legacy H4 DF12、追加6距離、S2/218構成、302精度点；後続B0I120構成240軸 | 元B2全点最小→B0I397/B21415点最小。[geometry][GEOM]、[B0I][B0I] | 比較集合拡張で更新。1812点は独立実験でない。旧event/未丸めB/親exit等の履歴不足 | B0I対照の重要性。全距離同じ係数・generatorへ移送しない |
+| A07 H6/H8へサイズ拡張できたか | 1Å/STO-3G/tol-onlyDF19/28、T.8、強化136/184、通常/非相殺 | H6粗精度p7実測でPR不利。H8通常は両端精度で不利、中間でPR低費用。[H6][H6STRONG]、[H8][H8STRONG] | 現行の条件付き点結果。一部model単価残存。H4/6/8の入力生成・solver・正規化差あり | 「サイズ増でPR利益が単調増」を支えない。全model点の再compileは既定作業にしない |
+| A08 別seedで方向を確認したか | H4DF10/H6DF19/H8DF28、T.8、ε.05/.0005、6固定比較 | H4粗はNOT_REPRODUCED/PF低G、H6粗はPF低G方向REPRODUCED、厳精度はPR低G。[6主表][A6TABLE] | 有限確認平均。H8は同一Mechanism cohortのalias、詳細公開監査制約 | 非再現を正常結果として採用。過去採択を「PRが勝った」と置換しない |
+| A09 高次PFは不利か | H2/4/6 rank3/10/19、固定prefix1/3/5、K4/R32、ε.0005、118確認trajectory | 4次PR対S2の点改善方向を3系で再現。[高次確認][HIGHCONF] | 条件付き有限確認。S4未観測、旧全seed非衝突は未保証。最良強化PF対照への勝利とは別 | 高次一律棄却は不適切。公式を双方へ同等に与える必要 |
+| A10 公平な決定論familyと比べたか | H2/4/6共通588、q≤8、S2/Y4/m5、T.8、旧PR探索固定 | H2全精度PF低G、H4/H6は厳しい2精度でPR低G。[588結果][PF588] | 有限共通grid・PR探索cohortの点比較。後続長時間/拡張域をこの表で代用しない | 次数・prefix・精度のどれも比較集合へ必要 |
+| A11 長時間でB2利益は残るか | H4/H6 DF10/19、T.8/1.2/1.6/2、ε5点、S2/Y4/m5、q/r/K拡張 | 価格取得域の33/40でB2低G、33方向を別標本で再現。高次の一部探索方向は反転。[LONG][LONG] | 現行の限定結果。11,632signalと642価格候補は別。q32はS2一部、全方式対称全域探索ではない | 固定δpanelの不利を全長時間PRの否定にしない |
+| A12 DF B3は純RTEの有効対照か | A11と同入力/reference、二体L_D0＋一体保持、q≤64/R≤512/K2,4,6 | 取得域でB3はB2/PFより低G0/40。m5対S2確認0/8低G。[B3][B3]、[SOURCE][B3SRC] | 現行DF負結果。全H純RTEではない。local最終/public版の可用性差あり | Pauli L0との結論差は分割・law・実装を含む未分離問題 |
+| A13 希少eventは全て未確認か | H8DF28、p8q2/p7q16、r4/K4、ε.05/.0005 | S0別seed48とS2_SINGLE条件付き43ずつ。残余費用の条件付き感度まで採択・終了。[H8 rare][H8TAIL] | 現scope完了。S2_MULTI/S4費・全母平均上界は未知。追加sampling不要という既存決定を維持 | 不足を全部再実行義務にしない。母平均claimへ強める場合だけ再判断 |
+| R01 RPEへ精度・成功率を接続したか | H4 DF12/L_D3、q1/2/4/8、δ.1/r4/K2、β/α配分、二項診断と分枝復元 | 短4段の1572shot会計・物理信号・復元が整合。[RPE4][RPE4] | local4段完成。目標energyに必要な全roundではない | 単一TのGより進んだ証拠だが、全RPE完成とは区別 |
+| R02 全RPE総費用は既に計算したか | H4 DF12、L_D3/12、δ.01/.02、coherent opt2、51cell、18round model | 配分/r/K/N再最適化、partial1.263314e12/full1.327822e12、点4.858%差。[M06-F][RPEMODEL]、[JSON][RPEJSON] | モデル総集計は完成、直接q≤32/long-q外挿。全不確かさ区間重複、最終保証なし | 「未集計」は古い。「最終同energy精度の費用実証」はなお未達 |
+
+H5/H7の中性doublet pilotは[既存19系列監査][AUDITA]の別条件結果を保持する。小n・q1の限定改善と厳精度不適格があり、H4/H6/H8の一般サイズ則には使用しない。
+
+### B. 方法論・表現・回路
+
+| ID・研究課題 | 条件／検証・結果 | 現在の状態・交絡・未知 | 研究上の意味／必要なら次に判別すること |
+|---|---|---|---|
+| B01 新しい高次係数・BCH設計か | BFはH4DF12固定5-stage/同予算でF固有gainなし。BMはcompact BCH同値。[横断][BSTRUCT] | 固定family不支持／方法差なし。高次公式一般の不能でない | 同一演算列のscore変更を新アルゴリズムと数えない |
+| B02 安い合成で総Tが減るか | SP0.5 primitive witness、SP1短wrapper改善・長wrapper反転/cap；R1は2qubitP3でN/価格交換。[B構造][BSTRUCT] | synthetic限定、角度・本数・lawが交絡。全分子総資源未確認 | 単価とweight/moment/range/biasを戻す |
+| B03 return辞書拡張に独立利益があるか | G1係数構造/G2保存診断/G3有限law/G4限定分離、G4 matched CTSがJ1より低T/CX/1Q、G5 closure。[G4][G4] | 指定辞書・confidence policyの結果。旧RA-D0技術停止を成功にしない | 強い同情報対照後の独立差が必要。固定辞書救済を再開しない |
+| B04 RAは生成できるか | G6：正有理p、involution、奇数m、0<x≤1。局所query・zero-fill・finite-bit correction。[数理][G6]、[kernel][G6SRC]、[生成器][G7SRC] | 構成完成。Green/Euler/ISは既知。全bit/API・物理provider・一般資源利益・独立性は別 | 非列挙だけでは普通RTEとの差にならない。現在v1.2のclaim境界を継承。[BLATEST][BLATEST] |
+| B05 native利益と強い対照 | G7条件付きモデル、G8短on-demand trace、G9P5、G10m3/5/7の3qubit synthetic。[G9][G9]、[横断][BSURVEY] | T利点とCTSのCX利点。全資源優位・異なるmで同exp精度・一般Full優位なし | provider/normalizer/拒否/合成取得も費用。既済matched対照を未実施扱いしない |
+| B06 保証と価格で選択が変わるか | D1〜3：同P5/τ5/7/r1,2の6方式。D2 literal取消、D3保証×price4case。[D3][D3] | 固定synthetic診断。price精度変更はnative bias budget変更と同義でない | 新しいselector・独立入力での予測保証は未成立 |
+| B07 Parent配分が役立つか | 訂正20＋旧control50law、P5/r1、3qubit、strict native、T約14/19%best-to-best利益・N/CX増。[S4][PARENT] | 限定成果・同入力探索終了。proposal/角度が変わり配分単独因果未分離 | commonはL1最小。辞書変更＋既知ISを独立新規性としない |
+| B08 DF sparse correction／Gaussian積 | synthetic少数modeで固定generic whole plan3条件負、1未確定；積生成は追加規則不足。[利用可能性][BSURVEY] | 費用負結果と未定義案を分離。全Gaussian不能ではない | 新しい具体生成差がないまま再提案しない |
+| B09 shared-labelでattenuation改善か | M1-S固定有限次元C-sec理論、H4DF12/G3,6,9、δ1/8,1/16・R2,4・T1,4、TaskA局所整数witness。[M1-S][M1S] | visibility増とphase bias増を両方保持。TaskB全RPE/native費用/priority未確立、旧H/HD未保存 | 理論的減衰比を総資源比にしない。最新StageS完了を反映 |
+| B10 位相と半径の分離で新しい実用boundか | FR scalar分離、2×2→非一様4×4、strict同情報gain例だが固定予算片側認証差0。[後続記録][FR] | 技術ノートとして整理、T3未解決。FR-R2未実施、実用GOなし | 既知帰結・反例と未解決finite-RTE到達可能性を区別 |
+| B11 RAは実分子へ接続できたか | H4DF12/prefix3、T4/5/q1/r4/m5、Ordinary/Full/P5各1024path完成。[C1][C1] | tail-only logical・CPU観測。共通認証N/native/full-wrapper・physical model binding未完成。現C1一時凍結 | 「実分子未実施」は修正するが、全PR費用優位には格上げしない |
+| B12 辞書・表現選択の費用 | 混在辞書F1正しさPASS、F2 K0/r2の4mode2粒子fixture、PP＜SP＜PS＜SSの単回期待価格。[機構][MIXCAUSE] | 合成条件の価格結果。λ/BとCの交換、γ/認証N未取得。分子Pauli比較へ転用不可 | Gaussian往復とPauli局所基底の構造差は確認。一意寄与率は未分離 |
+| B13 Gaussian singletonを安くできるか | PS48同operator/law・48wrapper、correctness全PASS、等case平均RZ/CX増、局所改善例。[PS48][PS48] | 研究方向一時終了済み。[終了][MIX]。全F2 law重み改善・選択規則一般化なし | compile成功や部分例改善を全資源削減にしない |
+| B14 PF/表現のその他の理論 | N3のSchur/OCC/SDP/SOS関係、QC A2相対有限step/checker、QC C4既知IS対応。[N3][N3]、[A2][QC]、[C4][C4] | N3元task追加縮約0、A2強いcentered対照が有利、C4具体圧縮生成差なし。各終了/保留を維持 | 科学的負結果、既知法同値、保証理論成立を区別。QC全14系列・REP全9系列は旧カードへ接続。[CARDS][CARDS] |
+| F01 実回路はどの段階まで完成か | AX nativeDF/control/S4、後続DF/Pauli full-wrapper compile、6局所Arb。[AX][AX]、[Arb][ARB] | 実装／人工／分子correctness／native価格／科学比較の5層を分離。全law実ρはR2未完。[R2][R2] | 全compiler監査を有限条件付き報告の前提へ増やさない |
+
+### C. Pauli-JW最新比較
+
+| ID・問い | 条件と直接証拠 | 結果・状態 | 未解決と研究上の意味 |
+|---|---|---|---|
+| P01 四方式の費用地図 | H2/4/6、linear1Å/STO-3G、Pauli14/184/918、S2/T.8、central/Qiskit1.3 opt1 seed17、P0・ρ0。[四方式表][PAULI] | 最新確認集合で純RTEがHybridより14/15セル低G。H4.05のみHybrid。Full/B0は各保存family値 | 有限候補・事後選抜・共有価格標本。実ρ、母平均winner、全parameter最適性、他geometryは未保証 |
+| P02 H2の旧Hybrid勝利は現行か | 有望8既存純RTE候補を追加確認、保存target/Nを再利用、逐次n延長。[H2][H2PAULI] | 全5精度純RTE低Gへ更新、s4。大sでの改善なし | 追加確認範囲の改善であり一意な機構変化でない |
+| P03 H4は切り捨てに負けるか | 決定論106・PR141構成、探索nomineeを固定した確認主表。[H4][H4PAULI] | PR主表は全5精度で最良保存決定論値より低G。粗精度B0対旧固定PRの勝利は旧比較 | PR familyにはL0が入る。Hybridを残すこと自体の優位でない |
+| P04 H6のevent機会は偏っていたか | RTE r≤4→r8→q8/s512、Hybrid p78/q8/r16/32/64/K2等追加。[event][EVENT]、[最新][H6HYB] | 大s拡張で旧Hybrid優位が逆転。Hybrid r32まで補っても純RTE低G | 全prefix/q/r/K対称探索ではない。matched q/r/Kとfamily bestの問いは別 |
+| P05 Pauli対DFが安い理由は同じか | 旧H4共通入力・stateでのgeneric/central/DF比較、D1/D2対照。[表現比較][PX] | 固定保存単回価格・ρ条件付きGは比較可能な範囲がある | 最新分子別純RTE対DF最良の完全matched対照ではない。§3の二問を分離 |
+
+## 3. 純RTE低費用の原因：会計と因果を分ける
+
+### 3.1 問い1：Pauli-JW内部の純RTE対Hybrid
+
+保存会計は `h_a = ε_axis − |bias_a| − u_a − ρ_a`、`N_a = ceil(A_upper,a / h_a²)`、`G = Σ_a N_a C_a`。A_upperはBとlogの保存上端を含む。ここでは式を評価しない。uは数値allowance、ρは実compiled残差、Bは補正／range会計で、一つの誤差ではない。[SOURCE][SHOT]
+
+| 既存対照・観測 | 会計上説明できること | 独立因果として未分離なこと |
+|---|---|---|
+| H2 ε.05、純RTE q1/r4/K2対Hybrid p1/q1/r4/K4 | RTE N=14906/14903、C=907/48；Hybrid N=12920/12920、C=775/32。RTEは大Nでも低C・低G | Kとtail/lawが違う。「B低下が原因」ではない。[保存内訳][MECH] |
+| H4 ε.0005、両者q8/r8/K4、L0対L1 | RTEのNは大きいがCは124901/384、Hybridは17797/48。保存GはRTE低 | q/r/K一致は保持回路だけの効果ではない。tail係数、law、B、bias、compile入力が変わる |
+| H6 ε.0005、L0/q8/r64/K2対p78/q8/r32/K2 | RTEは大Bでも小bias・広h、N=152683318/152680785、C149519/48。Hybrid N=177727546/247950732、C299249/64 | 保持S2、split相互作用、finite-tail bias別の寄与は未分離。q/r/Kも異なる。[最新CSV][H6CSV]、[RTE内訳][EVENTCSV] |
+| H4 ε.05 | RTEの低CをHybridのshot節約が上回る | 全分子・全精度に一つの原因を採らない |
+| H6 RTE s64→512→1024、Hybrid r16→32→64 | B/N低下とC増加の競合、取得grid内の低G点を説明 | 同一eventを長く並べるだけの対照ではなく、角度・order確率・law/biasも変わる |
+| 確認標本と希少event | paired両軸SE、探索と別seed確認、H2逐次延長、H6事前固定nを追跡できる | 名目SEは選抜後同時保証・未観測tail母平均boundではない |
+
+数値は[機構調査§2〜4][MECH]の保存exact文字列・既存順位の引用。同一q/r/KのH6旧fairness対照もあり、旧s64域ではHybridが低い。現在のs512 family比較へ旧matched順位を持ち越さない。
+
+| 原因候補 | SOURCE・既存対照で確認できた範囲 | 今回結論にできないこと |
+|---|---|---|
+| 決定論prefixの価格 | 各stepの保持half／reverse halfがL0ではない。[adapter][PAULISRC] | 保持除去だけでGが何%下がるか |
+| tail・law | L0は全非identity項、Hybridはtail。rもτ・B・order lawを変える | どの項の重み/support/可換性が何割寄与するか |
+| finite bias | 候補別bias/h/Nは保存され、H6厳精度の説明に必要 | 保持PF・tail truncation・相互作用の独立寄与 |
+| compiler | whole Cの差、D1非加法性、D2control差は実測 | 最新central最良候補の部品価格、pass別寄与・最適化の因果割合 |
+
+### 3.2 問い2：Pauli純RTE対保存DF-native
+
+| 比較軸 | 既存証拠が支持する範囲 | 残る交絡・不足証拠 |
+|---|---|---|
+| Hamiltonianの数値的一致 | 旧H4は同MO積分、Pauli184とDF tol1e-8/rank10のfull-H差約8.46e-15、共通raw state。[PX][PX] | 厳密同一の証明ではない。H6旧DF weighted completionや別分子stateへ一般化しない |
+| 分割単位 | Pauli項prefixとDF fragment prefixは異なる。DF random成分はrotated Z/ZZでfragment丸ごと指数ではない | 同数L_D・50%prefix・同sを同じHamiltonian分割としない |
+| 一体項・scalar | DF B3でもH_oneをGaussian blockで保持、constant＋tail identityは一回。[B3SOURCE][B3SRC] | Pauli L0は全非identity項をrandom化しconstantだけ保持。科学的に同一の純RTEでない |
+| event/law・normalization | 異なるunitary辞書、係数norm、order/label分布、角度、B・biasがある | 表現だけを変えて同lawを保持した因果比較ではない |
+| Gaussian基底 | DFに基底移動／復帰と隣接equal-basis共有がある。Pauliは局所basis/parity | 基底往復単独のcompiled価格・reuse無効化のmatched差は未取得 |
+| controlled回路 | DFはGaussian非制御＋central制御。Pauli旧genericはwhole body、後続centralは基底/parity非制御 | control recipe差をHamiltonian表現の数学的効果へ帰属しない |
+| D1部品対照 | 旧generic PR0：Pauli full/retained/event=9652/6524/3110、DF23021/13483/5773、非加法性+18/+3765。[CSV][D1CSV] | 固定cosine/index0の操作的ablation。母平均・最新central保持費・Gaussianだけの価格でない |
+| D2同body対照 | PF255500→15028、PR0 9652→1145 RZ。[CSV][D2CSV] | control＋compilerの合成効果。最新RTE対Hybrid差への代入、pass別配賦不可 |
+| CとN | 旧H4 central PR平均1140.8046875対DF23678.44140625 RZ。両者のB・bias・Nも別。[PX][PX] | 単価比較を同精度Gや全energy費用へ置換しない。Pauli最新最良とDF保存最良のNを混用しない |
+| 状態/reference/精度/標本 | 各研究内でraw ray・exact norm・full-H reference・cohortは追跡可能 | 異なるbranchの未結合入力、経験的u対包含u、実ρ、価格標本/選抜範囲が一致しない。必要なら保存tupleの追加照合から始める |
+| 合成混在辞書F2 | 同fixture4armでGaussian往復不要のPPが低単価。central中心部は共通。[SOURCE][MIXSRC]、[機構][MIXCAUSE] | 分子純RTEへ同じ改善率を移さない。law/collect/support/角度も変わり認証N未取得 |
+
+この二問について既存証拠だけで言えるのは、**固定条件の価格差とN/C競合、実装の具体的な構造、既済D1/D2対照の限定効果**までである。Hamiltonian表現・一体保持・law・Gaussian・control・compilerの一意な寄与率や、一般的Pauli優位は未実証。報告scopeをこの範囲に保つなら、原因ablationの追加計算は必須ではない。
+
+## 4. 追加検証の要否を判断するための表
+
+以下は未採択・未実行の選択肢。重要度は「そのclaimを求める場合に結論へ与える影響」であり、研究の正式順位ではない。保存rawの新集計も科学的再解析として別実行許可を要する。
+
+| Gap | 影響する主張／重要性 | 追加資料調査・静的検査で済む範囲 | 新科学計算を選ぶなら判別すること | 維持する比較条件・再利用資産 |
+|---|---|---|---|---|
+| U01 Pauli内部biasの由来 | prefix除去を主原因とするclaim／高 | 保存q/r/K、tail、演算順、B補正、u・ρ定義、既存matched行の照合 | 保持PF・tail有限近似・split相互作用のどこでbiasが残るか。新bias評価が必要 | 同H/raw ray/reference/T、prefix、precision政策、phase。既存adapter・target evaluatorを再利用。q変更はlawとsも記録 |
+| U02 central部品費 | prefix価格を量的主因とするclaim／中〜高 | 現full保存QPY/descriptorの存在・SOURCE・既済D1/D2との対応 | 同保存event列のfull/retained/event/emptyと非加法性。新build/compileや差の再解析は別許可 | 代表候補を限定、同角/phase/q/r/K/wrapper/compiler。既存full・D1/D2基盤を再利用。ablationを有効性能候補にしない |
+| U03 DF対Pauliのmatched tuple | 表現一般の低費用claim／高 | 保存H/state/reference、completion、scalar、u/ρ/選抜cohortを文書・hash metadataで追加join | 本当に必要なら同taskで分割/law/controlを一因子ずつ定義した対照。単なる表現ラベルの比較で済まない | 旧H4同入力比較を先に再利用。B3≠Pauli L0を保持。新H/compileを既定にしない |
+| U04 全law実ρ | 実精度を保証するG／高、条件付き報告には非必須 | 6局所Arb、R2-Cの未証明辺、compiler/phase契約の静的確認 | claimに必要な対象law/精度の実装残差転送。局所selectedと全lawを区別 | 既存enclosure/保存programを再利用。law/precision/compiler変更は新scope。形式証明を全研究へ一律要求しない |
+| U05 母平均価格tail | 母平均winner／高、有限平均報告には非必須 | support外・未観測・float到達不能・条件付き費未取得を確認 | 必要な場合のみtail上界または対象層の価格確認を設計。Nの測定統計と価格nの不確かさを分離 | H8は現scopeで終了済み。元cohort/law/候補を維持。条件付き標本を無条件標本へpoolしない |
+| U06 探索・選抜の影響 | 全parameter最適、方式一般優位／高 | 既存grid/nominee/family範囲・確認後選抜・逐次延長を追跡 | 広いclaimを選ぶ場合だけ独立確認設計。全格子再探索は既定にしない | 旧成果・n・seed/cohortを保持、対照にも同じ探索機会。5精度を5独立実験としない |
+| U07 全RPE/energy接続 | 当初の最終応用目的／高だが別研究scope | 18round modelと直接proxy domain、energy prior/state/radius/成功条件の既存定義を整理 | 必要なlong-round移送・分枝復元・精度/失敗確率・全wrapperを揃える検証 | M06-F、round accounting、後続M1-S TaskA/B境界を再利用。固定TのG・T≤2のDFを全RPEへ外挿しない |
+| U08 RA独立性と実用性 | 新アルゴリズム/論文化中心claim／高 | 既存G6/G7/G9/C1、partial-sum/canonical/CTS/SPS対応を同情報で再照合 | 新計算前に具体的な独立手順が必要。構成差が残り資源判別に必要な場合のみ限定計算 | kernel/finite-bit/P5/強い対照/価格providerを再利用。cheap query・normalizerを無料oracleにしない。現在C1凍結維持 |
+| U09 古い失効・欠落 | UWC・旧screeningの科学的利用／当該claimには高 | 既知原本・Git履歴・別環境資料の読取回収だけで解ける可能性 | 原本がなければ値を推定しない。再fit/再生成は別研究許可 | GAP-001/008後続探索を再利用。無効旧37表を現行入力へ復活させない |
+| U10 保証・proxy・表現の方法差 | FR/N3/QC/混在辞書の独立寄与／claim次第 | 既存終了理由・強い対照・出力品質/意味論を読む | 現負結果を救済するだけの無目的再実行は不要。新しい具体用途/理論差がある場合だけ再判断 | 固定STOPと採択記録を維持。保存幅改善、単回価格、γ、N、全task利益を分離 |
+
+### 純RTE原因分離の限定対照案（提案だけ）
+
+1. **保存tupleの文書照合**：旧H4の同入力比較を入口に、最新Pauli候補と保存DF対照のH/state/reference・scalar・cohort・precision政策を照合する。静的に不一致が分かれば、そのままでは因果比較でないことを確定できる。新科学値は不要。
+2. **固定trajectoryのcentral回路診断**：同じ保存event列・角度・phase・compilerでfullと保持/event/emptyを対照する。full価格は適合すれば再利用。保持部分の操作的価格と非加法性を測れるが、Nや物理的なprefix選択効果は分離しない。新build/compileの明示承認が必要。
+3. **固定H/state/referenceのbias対照**：代表H6一点で、保持scheduleとtail近似を明示して別々に診断する。qを変える場合はs・law/Bも変わるため、その変化を記録する。S2誤差とtail誤差の区分を確認できるが、新しいsignal/bias評価であり別科学実行許可が必要。
+4. **必要な場合だけ基底/controlの対照**：同じoperator列を保つrecipe変更とwhole wrapperを比較する。D1/D2・混在F2・PS48の既存対照を先に使い、同じ既知結果を取り直さない。表現変更でlawまで変わる比較と、回路recipeだけの対照を分ける。
+
+これらを全て実施する提案ではない。会計上の説明で足りるなら追加科学計算なし。機構を中心claimにする場合に何を識別したいかをユーザー/GPTが先に判断する。寄与率・新G・新rankingは今回作成していない。
+
+## 5. 証拠の可用性・欠落と影響
+
+| 証拠 | 取得・確認できた範囲 | 未取得／現在の制約・影響 |
+|---|---|---|
+| Pauli11/01統合・原因調査、H6追加 | 指定4591b8d7、5432857bと個別結果00958ae1等を固定Gitから読取。主要入口をGitHub connectorでも取得 | 旧latest15はH6追加前。今回の表は後続H6を反映した11/01本文を引用。全raw再解析0 |
+| DF長時間B2 | 公開155529e2のREPORTと固定SOURCE/provenance・確認表 | private全event/seed/QPY/checkpointを今回取得・再認証していない。保存要約・標本表の読取と区別 |
+| DF長時間B3 | 公開ebe9e2aaのREPORT・scientific_provenance・比較CSVをconnector取得。local f794a2aaも読取 | f794a2aaはGitHubでNo commit found、remote branchはebe9e2aa。2版のdiffは6files：REPORTのprivate locator表記、2圧縮価格データ、completion_provenance、interruption_run03、PUBLICATION。主要比較/選択/公式表・科学SOURCE来歴は同一。原科学branchへpush・修正を行わず、公開版を引用 |
+| B3中断・event復元 | 公開報告に失敗・欠損原本・同seed復旧・1件event-only再構成の来歴がある | 失われた元event byteの同一性は不明。fingerprint/価格一致を元byte復元としない。母平均保証とも無関係 |
+| H4/H6/H8独立主表 | 公開6表、H4/H6の保存終了監査、SOURCEがある | H8詳細監査は公開制約あり。6比較の有限確認をCI/外部機関再現へ格上げしない |
+| H8 rare | S0/S2_SINGLEと残余感度の完成・正式採択が保存される | 母平均価格tailの保証が未知を理由に現scopeを未完了へ戻さない。S2_MULTI/S4新取得は承認されていない |
+| 旧H4・M1-S | 旧H4 event→価格join/未丸めB/親exit、M1-S全scopeの欠測を既存索引で特定 | 新しいrunの正常終了では旧native UNKNOWNを補えない。H/HD未保存を新生成で復元したことにしない |
+| UWC | prose、historical SOURCE、GAP-001後続限定探索を取得 | 指定原JSON・theta/sector診断rawはNOT_FOUND_IN_SEARCH_SCOPE。小改善/悪化を科学結果として確定しない |
+| 旧DF screening | 元入力無効化・stale結果、後続探索で37旧表のhistorical bytes一致 | GAP-008はFOUND_UNVERIFIED、修正canonical/anchor raw/run来歴は未解消。単純「元表不存在」は更新するがDO NOT USEは維持 |
+| 別PF repository固有系列 | 既存70カード・SOURCE索引による二次的coverage | 今回新たに当該repo全SOURCE/rawを取得していない。第一/第二研究等は背景、対象PR repoの実証数に含めない |
+
+[GAP後続調査][GAPS]、[旧coverage][COVER]、[SOURCE索引][ALLSRC]を再利用した。別host・他ユーザー・未知cache・削除ref・未push全履歴の広域検索は行っていない。値の欠測を0、過去のtechnical STOPを科学的負結果、技術完成を性能positiveへ置換しない。
+
+<a id="evidence"></a>
+
+## 6. 主要主張をSOURCE・一次結果へ追跡する固定参照
+
+commitはリンク先の固定40桁refであり、公開用の統合carrierと科学実行SOURCEを区別する。長い原履歴は既存索引へ委ね、ここでは結論を支える入口を示す。
+
+| 系列 | 固定結果・科学SOURCE | 一次結果／監査への到達先 |
+|---|---|---|
+| 初期DF・RPE | main `0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf` と起点 `4591b8d75a2a6a55c74a51225f0c61648023c8ee` | [元目的][ORIGIN]、[方法][METHOD]、[VALIDATION_STATUS][STATUS]、[manifest][MANIFEST]。各result_setのartifact・source hashを継承 |
+| 全体70カード | `a9bdcf1d44061daceffe896637e2c92fcb3353b4` | [研究地図][ALL]、[研究カード][CARDS]、[211資料等の元SOURCE索引][ALLSRC]。この数を今回の一次全文読解数にしない |
+| RPEモデル全round | 起点4591の保存M06-F、元snapshotは同文書の固定SHA | [プロトコル・結果・SOURCE/worker来歴][RPEMODEL]→[coherent全round JSON][RPEJSON]。`run_research_direction_full_opt2_*`は静的参照のみ |
+| M1/M2 | M2 result `e3531956af6a6d359e2f1fb320e9a5179f41eb98`、M1実行33f436bb…、M2科学SOURCE `2978e2fea672b7a1ff20cac74269ec9a610159dc` | [M1結果][M1]、[M2結果・196wrapper・監査][M2]、[M2実行SOURCE][M2SRC] |
+| Geometry/B0I | 結果 `7c4483378047b57f514c47dad98905e3f2a9a756` / `98cdb35cd08469714f20d6cc3b982d9c80908f46` | [geometry要約・input/source/結果][GEOM]、[240軸・費用地図][B0I] |
+| H6/H8強化 | 結果 `f89c40af73289af9f4c2b70ed0b3966d95d47b06` / `96e69a01d1fae7a402aac2c4efa570a59f8cc7a0` | [H6 p7実測会計][H6STRONG]、[H8 exact比較/終了監査][H8STRONG]、[横断source catalog][AUDITA] |
+| 独立主表6比較 | H4結果821cc0f6…/SOURCE3c664ca4…；H6結果3cccfcb2…/SOURCEbf0c26da…；H8結果e6eea538…/SOURCE745a6745… | 各full SHA・元CSV/JSONpointer・監査は[統合固定資料表][A6]、[literal主表][A6TABLE]。alias・公開限界も同資料 |
+| H8 rare後続 | StageB結果3d5ab5bb…/SOURCEe16c3be8…、C1 pilot f377f886…/SOURCE383dd906…、統合145b438c…/SOURCE1e1e1c82… | full SHAと結果・completion auditは[採択政策の固定対応表][H8TAIL] |
+| 共通588PF・高次確認 | carrier `155529e20a8fac39e00786c40b57830b71203c4f`、共通SOURCE H2 1b35f9ac…/H4 e2179f68…/H6 bdf6772a…；確認取得c028f1c2… | [全条件・5精度表・取得監査][PF588]、[118標本・固定評価・各SOURCE full SHA][HIGHCONF] |
+| 長時間B2 | 結果155529e2…、signal `e417ffc9f52b13c18f5493193ce510d858664259`、native `27ebabdd2943a4de787ec8b976c38e06fda5a497` | [REPORT][LONG]、[SOURCE/input/hash・継続履歴][LONGPROV]、[確認比較CSV][LONGCSV] |
+| 長時間B3 | public `ebe9e2aa2c83cd71a6da0a885b78f32274bfb6ed`、signal e47696e86c2f98f52f390ed084bb1bfeff4bd197、native638e0a989b4471a075549ccb58617b1030e6748f、確認ae3d301e2318a3f9f1331c047c68d310771b6849 | [REPORT][B3]、[scientific_provenance][B3PROV]、[一体保持SOURCE][B3SRC]、[確認比較CSV][B3CSV]。local最終差は§5 |
+| Track B横断 | `aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14`、carrier bc649c59…を元実行SOURCEと区別 | [利用可能性][BSURVEY]、[既知法対応][BPRIOR]、[資源構造][BSTRUCT]。G1〜10/D/Parent/DFの各原SOURCE・結果・rawへのリンクを再利用 |
+| RA構成 | kernel SOURCE `28cfabb1d47e0e1824bce1e154a9c289738fa2b9`、後続生成SOURCE保存 `243eea8e840f3c472753f7935e510391626fd325` | [数理監査][G6]、[ReturnKernel][G6SRC]、[FullReturnGenerator][G7SRC]、[後続v1.2の14claim/前提][BLATEST] |
+| G9/D3/Parent | G9 SOURCE0ef2b927…、D3 SOURCEdceccaa7…、Parent S4 SOURCE4ccc1832…/A4 71cf1b76… | full SHA・契約・原結果へのリンクは[G9][G9]、[D3v2][D3]、[訂正S4証拠][PARENT]。異なるconfidenceを混合しない |
+| C1実分子 | R1 input/source `2937e6b655ba3cd77f982d6901d766355a8b92c1`、旧O/Full結果b022f2ea…、P5R結果bb9059ba… | [3方式資源と限界][C1]、[P5R summary][C1JSON]、[model binding/全SOURCEの現行claim表][BLATEST] |
+| M1-S | 統合 `5f079dbe67bb35eff35613857b169fdf812af4b8`、StageS最終f2bfb8770e6858de56a63e50e68f07ff2d6464b6 | [理論・TaskA/B・旧レビュー時点差][M1S]、[各科学SOURCE/原結果/監査索引][M1SINDEX] |
+| FR/N3/QC | FRは後続root技術記録の保存snapshot。N3結果ccc575ee…、A2結果f7e103bf… | [FR技術記録][FR]、[N3確定claimと一次証拠][N3]、[RF0/RF1/EW2・checker・pilotSOURCE][QC]、[C4既知法還元][C4] |
+| AX | 保存ref `d6510db9326e9335bedd03d0d07c490561e23112` | [H4 v5結果/入力/terminal][AX]、[native lowering SOURCE][AXSRC] |
+| Pauli元比較・精密化 | 科学SOURCE `0c329b30a81accb35c212be8defa66fee0dd0f12`、C SOURCEe80d7510…、D1 SOURCE9843b803…、D2 SOURCE74515d8e… | full SHA・40軸/C・両軸価格・条件付き会計・監査は[H4固定比較][PX]。初回D1STOPと後続D1完了は別 |
+| H2/H4 Pauli探索・確認 | H2 SOURCEbf5f2339…、H4 worker52865921…/選択4a7f91fa… | [H2結果・SOURCE・verification][H2PAULI]、[H4探索/nominee/確認表][H4PAULI]、full SHAは[11/01§3][PAULI] |
+| H4/H6 event追加 | SOURCE `e755ecf581600192fd2745d7066e410cebd933d3`、結果 `10cb3e5cca7834ebf75301bd91bd093ca51d4a6b` | [報告・CURRENT_SOURCE→個別SOURCE・verification][EVENT]、[保存内訳CSV][EVENTCSV]。汎用SOURCE.jsonの架空pathを作らない |
+| H6 Hybrid追加 | 科学SOURCE `887b69e449cb3c378286f09d0d7626599850fb67`、解析af891fd45805454c6592bbee5441266f14235ffd、結果00958ae1… | [REPORT][H6HYB]、[SOURCE][H6SOURCE]、[candidate CSV][H6CSV]、[adapter][PAULISRC]、[shot関数][SHOT] |
+| Pauli論文統合・機構 | 指定 `4591b8d75a2a6a55c74a51225f0c61648023c8ee` / `5432857b94c3714ea9f4d6031e493e8dfc308a91` | [最新4方式][PAULI]、[claim/図対応][PAULIFIG]、[原因調査][MECH]。研究全体の正本へ昇格しない |
+| 混在辞書/PS48 | F2 SOURCE9468c7089727f5648d9f59cddbaebe0a42f5f0a0、PS48 SOURCE770e53addda63a03fa8c6c5d5168f7062067c572 | [F2機構と元RESULT_SUMMARY][MIXCAUSE]、[回路SOURCE][MIXSRC]、[48case/残差/価格][PS48]、[終了記録][MIX] |
+| 失効・欠損 | 後続探索 `8dfdfa6460f9e7d25a9595132a672e8de2a5dc7e` | [GAP-001/008報告とprovenance][GAPS]。無効化旧表発見と修正科学入力回収を分離 |
+
+主要主張の科学SOURCEと結果の所在を追跡したが、全sourceを実行・全rawを再認証したわけではない。旧レビュー・先行文献の判断は既存記録の帰属として利用し、今回新たな詳細科学レビューや文献priority監査を行っていない。
+
+## 7. 文書検証・保全・停止
+
+既存の文書専用`one`・`source_rows`・`check_links`を再利用し、保存行を文字列として参照し、固定Git pathと文書リンク・引用・変更範囲を確認した。参照辞書83件の固定GitHubファイルを取得し、local Git blobとの一致も確認した。この照合は引用先の可用性と同一性を調べる技術検査であり、全raw再解析・全科学SOURCE監査ではない。科学runner、accounting/law生成、NumPy/Qiskit/FLINT等の科学処理は呼び出さない。主agent自身の技術検査であり、別担当の独立科学レビューではない。
+
+公開対象はこの対応表と[全体地図](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/71432728ee0140fb3c1f8bf30ecf51b2faba86ec/docs/research/pr_repository_scientific_landscape_20261101.md)の2資料のみ。既存main/概要/manifest/論文、科学SOURCE/input/raw/result/grant/ledger/marker/STOPは変更しない。B3既存研究branchへのpushも行わない。今回の新branchのremote SHAと2本文を照合し、成否は最終チャットに報告する。
+
+**Mandatory STOP：新科学計算・再解析・候補再選択・主要claim採択・研究方向の正式決定・詳細科学レビュー・既存論文改訂へ自動移行しない。次の担当はユーザー/GPT：必要なclaim範囲と追加検証の要否を判断する。Codexの次の実行作業なし。**
+
+<!-- 固定commitの参照。科学実行SOURCEは本文の対応表を参照。 -->
+[ORIGIN]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/研究目的・研究課題.md
+[STATUS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/VALIDATION_STATUS.md
+[MANIFEST]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/artifacts/validation_manifest.json
+[METHOD]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/research/研究方法・解析手順.md
+[FINITE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/finite_rte_signal_validation.md
+[COEFF]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/pf_c_system_size_validation.md
+[COST]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/rte_compiled_cost_validation_summary.md
+[RPE4]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/rpe_four_round_phase_validation.md
+[RPEMODEL]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/research_direction_full_opt2.md
+[RPEJSON]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/artifacts/research_direction_full_opt2/2026-09-25/wp11_all_r_opt2_coherent_analysis_20260925_065827.json
+[AUDITA]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/research/track_a_h4_h8_cross_system_evidence_inventory_20261017.md
+[A6]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/research/track_a_h468_paper_evidence_integration_20261019.md
+[A6TABLE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/artifacts/resource_applicability/track_a_h468_paper_evidence_integration/2026-10-19/main_table_proposed.md
+[PX]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/non_df_h4_comparison_synthesis_20261025.md
+[D1CSV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/artifacts/non_df_h4_d1_source_execution/2026-10-24/interaction_table.csv
+[D2CSV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/artifacts/non_df_h4_d2_execution/2026-10-24/comparison_table.csv
+[ARB]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/non_df_h4_central_arb_pf_pr0_sine_20261025.md
+[R2]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/non_df_h4_r2c_compiler_phase_proof_20261025.md
+[PAULI]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/research/pauli_h2_h4_h6_paper_evidence_synthesis_20261101.md
+[PAULIFIG]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4591b8d75a2a6a55c74a51225f0c61648023c8ee/docs/research/pauli_h2_h4_h6_claim_figure_map_20261101.md
+[M1]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e3531956af6a6d359e2f1fb320e9a5179f41eb98/docs/pr2_matched_accuracy_m1_b1_result_validation.md
+[M2]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e3531956af6a6d359e2f1fb320e9a5179f41eb98/docs/pr2_matched_accuracy_m2_transfer_result_validation.md
+[M2SRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2978e2fea672b7a1ff20cac74269ec9a610159dc/src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py
+[GEOM]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7c4483378047b57f514c47dad98905e3f2a9a756/docs/research/track_a_h4_geometry_results_20261013.md
+[B0I]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/98cdb35cd08469714f20d6cc3b982d9c80908f46/docs/research/track_a_h4_b0i_map_results_20261014.md
+[H6STRONG]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f89c40af73289af9f4c2b70ed0b3966d95d47b06/docs/research/track_a_v1_p7_measured_reaccount_results_20261016.md
+[H8STRONG]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/96e69a01d1fae7a402aac2c4efa570a59f8cc7a0/docs/research/track_a_h8_six_axis_reaccount_run01_results_20261017.md
+[H8TAIL]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/862d732fba0a5f353c522a9219dec78ae2f21a4b/docs/research/h8_rare_rte_closure_policy_20261021.md
+[PF588]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/docs/research/track_a_h246_pf_common_final_20261022.md
+[HIGHCONF]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/docs/research/track_a_h246_reconstructed_confirmation_results_20261022.md
+[LONG]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/REPORT.md
+[LONGPROV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/scientific_provenance.json
+[LONGCSV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/independent_comparisons.csv
+[B3]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ebe9e2aa2c83cd71a6da0a885b78f32274bfb6ed/artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/REPORT.md
+[B3PROV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ebe9e2aa2c83cd71a6da0a885b78f32274bfb6ed/artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/scientific_provenance.json
+[B3CSV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ebe9e2aa2c83cd71a6da0a885b78f32274bfb6ed/artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/independent_comparisons.csv
+[B3SRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/638e0a989b4471a075549ccb58617b1030e6748f/scripts/h46_b3.py
+[ALL]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a9bdcf1d44061daceffe896637e2c92fcb3353b4/docs/research/pr_algorithm_improvement_landscape_20261023/RESEARCH_MAP.md
+[CARDS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a9bdcf1d44061daceffe896637e2c92fcb3353b4/docs/research/pr_algorithm_improvement_landscape_20261023/STUDY_CARDS.md
+[COVER]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a9bdcf1d44061daceffe896637e2c92fcb3353b4/docs/research/pr_algorithm_improvement_landscape_20261023/COVERAGE.md
+[ALLSRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a9bdcf1d44061daceffe896637e2c92fcb3353b4/docs/research/pr_algorithm_improvement_landscape_20261023/SOURCE_AND_PROVENANCE_INDEX.json
+[GAPS]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8dfdfa6460f9e7d25a9595132a672e8de2a5dc7e/docs/research/pr_algorithm_improvement_landscape_20261023/local_environment_search_20261023/SEARCH_REPORT.md
+[BSURVEY]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14/docs/research/track_b_paper_claim_survey_20261018/results_usability_map.md
+[BPRIOR]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14/docs/research/track_b_paper_claim_survey_20261018/prior_art_method_comparison.md
+[BSTRUCT]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14/docs/tracks/algorithm_codesign/track_b_resource_structure_and_bottlenecks_20261015.md
+[G4]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14/docs/tracks/algorithm_codesign/g4_results_and_gpt_handoff_20261009.md
+[G6]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14/docs/tracks/algorithm_codesign/g6_independent_mathematical_audit_20261010.md
+[FR]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14/docs/tracks/algorithm_codesign/inputs/fr_research_technical_record_root_snapshot_20261005.md
+[G6SRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py
+[G7SRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/243eea8e840f3c472753f7935e510391626fd325/src/trottertracks/algorithm_codesign/g7_generator.py
+[BLATEST]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5f750a23f023d75c8c4fbcabc6937d6953ce61f2/docs/research/track_b_g6_v1_2_draft_review_integration_20261022/CLAIM_EVIDENCE_MATRIX.md
+[G9]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/78cb65be373b0808641b5a5e44d9b69913bf84e9/docs/tracks/algorithm_codesign/g9_v2_results_and_gpt_handoff_20261010.md
+[D3]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f0df9a3b36bc3540f0c83941871fa0d3110ddbf7/docs/tracks/algorithm_codesign/d3_v2_results_and_gpt_handoff_20261014.md
+[PARENT]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/53c48317d16851333c0e0354b0dfd8ef91e1d524/docs/tracks/algorithm_codesign/parent_allocation_s4_final_comparison_evidence_packet_20261015.md
+[C1]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/185ec4e9d6591f4ee8d7b047c2697bed7be7bc2e/docs/research/track_b_c1_freeze_synthesis_20261021/C1_RESOURCE_EVIDENCE_AND_LIMITATIONS.md
+[C1JSON]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/bb9059bacb697e1105e63c1b3826b0c34886ad15/docs/research/track_b_c1_5a_p5_worker_recovery_20261021/result/summary.json
+[M1S]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5f079dbe67bb35eff35613857b169fdf812af4b8/docs/research/m1s_integration_20261017/integrated_research_summary.md
+[M1SINDEX]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5f079dbe67bb35eff35613857b169fdf812af4b8/docs/research/m1s_integration_20261017/evidence_and_results_index.md
+[AX]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d6510db9326e9335bedd03d0d07c490561e23112/docs/research/track_a_ax2b_h4_pilot_v5_result.md
+[AXSRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d6510db9326e9335bedd03d0d07c490561e23112/src/trottertracks/resource_applicability/ax2b_native_df_v5.py
+[N3]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ccc575ee339be091fd4031272c38bee13866f097/docs/research/n3_saved_attribution_v1_claim_and_observability_20261013.md
+[QC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f7e103bf3a0ffcee6162bd4b8d244f9a2f4502c5/docs/research/qc_a2_current_route_handoff_20261018/achievements_and_limits.md
+[C4]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/60da5738d48e0faaedd3de125b0350301935dc3a/docs/research/qc_c4_finite_rte_method_efficiency_technical_audit_v1_20261014.md
+[MIX]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/69f8e1cac23a4924ab81aebe399657a705024f6a/docs/research/pr_gaussian_singleton_closeout_handoff_20261024.md
+[MIXCAUSE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/3a782bd79967d23c47f27e75907027e2c2e87bf4/docs/research/pr_algorithm_improvement_phase2d_f2_resource_causes_20261024.md
+[PS48]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/1e20458d742a8fac62ce0d0264188b1a7772ee28/docs/research/pr_rectangular_givens_ps48_execution_20261024.md
+[MIXSRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/9468c7089727f5648d9f59cddbaebe0a42f5f0a0/src/trottertracks/pr_dictionary_validation/circuits.py
+[MECH]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5432857b94c3714ea9f4d6031e493e8dfc308a91/docs/research/pauli_pure_rte_cost_mechanism_inventory_20261101.md
+[H6HYB]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/00958ae1945c780718b2deef07d5dab1096a5cd8/artifacts/h6_hybrid_fairness_extension/2026-10-27/REPORT.md
+[H6CSV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/00958ae1945c780718b2deef07d5dab1096a5cd8/artifacts/h6_hybrid_fairness_extension/2026-10-27/CANDIDATE_RESULTS.csv
+[H6SOURCE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/00958ae1945c780718b2deef07d5dab1096a5cd8/artifacts/h6_hybrid_fairness_extension/2026-10-27/SOURCE.json
+[H2PAULI]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4aea054b3369709bc0d35ff081071e62b5f77cbe/docs/h2_pauli_rte_validation_20261026.md
+[H4PAULI]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d3fdfad880902b7ff35b710d22e1c9759f7087c2/docs/non_df_h4_pauli_pr_search_20261025.md
+[EVENT]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/10cb3e5cca7834ebf75301bd91bd093ca51d4a6b/docs/pauli_rte_event_extension_20261026.md
+[EVENTCSV]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/10cb3e5cca7834ebf75301bd91bd093ca51d4a6b/artifacts/pauli_rte_event_extension/2026-10-26/selected_cost_breakdown.csv
+[PAULISRC]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/887b69e449cb3c378286f09d0d7626599850fb67/src/trotterlib/pauli_signal_adapter.py
+[SHOT]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/887b69e449cb3c378286f09d0d7626599850fb67/src/trotterlib/h4_conditional_cng.py

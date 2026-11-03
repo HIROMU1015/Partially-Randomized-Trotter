@@ -1,0 +1,467 @@
+#!/usr/bin/env python3
+"""Prepare a publication DRAFT from fixed saved bytes, with no science kernels.
+
+The default action checks exact transcriptions, identities, references and scope.
+No shot/cost/ratio/statistics/ranking formula or scientific import is used.
+Existing paper files and all execution controls are read-only.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import gzip
+import io
+import json
+from pathlib import Path
+import re
+import subprocess
+from concurrent.futures import ThreadPoolExecutor
+
+from adopt_h246_pf_common_results import git_bytes, candidate_key, EPS, FORMULAS, DOMAINS
+from h46_higher_pf_dataset import digest, json_bytes, csv_bytes, require, unique
+
+ROOT = Path(__file__).resolve().parents[1]
+BASE = 'f75a7c25d584b69d90de454731a7f343a421e059'
+RESULT = '90f1cd55a0d963953696bd0a27d9d041ff939bb7'
+PAPER = '1923fce8f7461513d1bc47b5061e87cd70917e87'
+ADOPT = 'artifacts/resource_applicability/track_a_h246_pf_common_adopted/2026-10-22'
+OUT = Path('artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23')
+DOC = Path('docs/research/track_a_h246_pf_publication_draft_20261023')
+REPORT = 'docs/research/track_a_h246_pf_publication_plan_20261023.md'
+URL = 'https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/'
+LATEST = {
+    'CNG': ('b81d4096e806efb6523304764d3a0680b7663320', 'docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022/README.md'),
+    'CNG_investigation': ('c4cb5f3c9007f84b8d3798be17398ee2ea498e0f', 'docs/research/pr_pf_cng_technical_investigation_20261022/README.md'),
+    'all_methods': ('5d53698534a1f325c8b7ed7be1bca6fa5192a77d', 'docs/progress/track_a/figures/all_methods_hchain_20261022/publication/README.md'),
+    'higher_PR': ('ee160395e87ed6d46cd4993572457afd0aa18590', 'docs/progress/track_a/figures/all_methods_hchain_with_higher_pr_20261022/publication/README.md'),
+}
+INDEXES = ('PROJECT_MAP.md', 'VALIDATION_STATUS.md', 'docs/README.md', 'docs/research/README.md',
+           'scripts/README.md', 'src/trotterlib/README.md', 'docs/research/研究概要・現状.md')
+NOTE = 'docs/research/研究ノート/2026-10-23_pf_common_publication_draft.md'
+
+
+def csv_rows(raw):
+    return list(csv.DictReader(io.StringIO(raw.decode())))
+
+
+def source_specs(root=ROOT):
+    prior = json.loads(git_bytes(BASE, ADOPT + '/source_catalog.json', root))
+    refs = {key: (e['commit'], e['path'], e['sha256']) for key, e in prior.items()
+            if key.startswith('Figure2_') or key in (
+                'prior_CEM', 'prior_CEM_overlay', 'prior_ledger', 'prior_paper_manifest',
+                'prior_paper_data_manifest', 'display_manifest', 'main_table', 'main_table_text',
+                'figure_caption', 'methods', 'H6_interrupted_controls', 'saved_numerical_audit')}
+    for key, name in {
+        'adopted_manifest': 'paper_manifest.json', 'dataset': 'dataset.json.gz',
+        'global15': 'comparisons_all_formulas_15.json', 'within45': 'comparisons_within_formula_45.json',
+        'decomposition': 'denominator_decomposition_10.json', 'adopted_CEM': 'claim_evidence_matrix_v2.csv',
+        'adopted_ledger': 'evidence_ledger_v4.csv', 'adopted_catalog': 'source_catalog.json',
+        'candidate_index': 'candidate_index.csv', 'old_vs_common': 'old_vs_common_15.json',
+        'adoption_record': 'adoption_record.json'}.items():
+        refs[key] = BASE, ADOPT + '/' + name, None
+    for key, path in {
+        'adoption_report': 'docs/research/track_a_h246_pf_common_adoption_20261022.md',
+        'protocol_supplement': 'docs/research/track_a_h246_pf_common_protocol_v2_supplement_20261022.md',
+        'protocol_v2': 'docs/research/track_a_pr_resource_evaluation_protocol_v2.md',
+        'PR_PR_confirmation_report': 'docs/research/track_a_h246_reconstructed_confirmation_results_20261022.md',
+        'PR_PR_confirmation_audit': 'artifacts/resource_applicability/track_a_h246_reconstructed_confirmation/2026-10-22/end_audit.json',
+    }.items():
+        refs[key] = BASE, path, None
+    refs['original_result_60'] = RESULT, 'artifacts/resource_applicability/track_a_h246_pf_common_final/2026-10-22/comparisons_60.json', None
+    for key, path in {
+        'body_v04': 'docs/manuscripts/track_a_resource_study_geometry_native_v0_4.md',
+        'old_SI': 'docs/manuscripts/track_a_resource_study_supplement_v0_1.md',
+        'body_index': 'docs/manuscripts/README.md',
+        'old_figure_spec': 'artifacts/resource_applicability/track_a_mechanism_figure2_a82_readiness/2026-10-19/figure2_specification_and_captions.md',
+    }.items():
+        refs[key] = PAPER, path, None
+    for key, (commit, path) in LATEST.items():
+        refs['latest_' + key] = commit, path, None
+    # Read the actual independent result files named by the six immutable rows.
+    main = csv_rows(git_bytes(prior['main_table']['commit'], prior['main_table']['path'], root))
+    for row in main:
+        refs['independent_' + row['comparison_id']] = row['result_commit'], row['source_file'], None
+    return refs
+
+
+def load_sources(root=ROOT):
+    def read(item):
+        key, (commit, path, expected_sha) = item
+        raw = git_bytes(commit, path, root)
+        require(expected_sha is None or digest(raw) == expected_sha, 'ADOPTED_SOURCE_SHA_' + key)
+        blob = subprocess.check_output(['git', 'rev-parse', commit + ':' + path], cwd=root, text=True).strip()
+        meta = dict(commit=commit, path=path, sha256=digest(raw), git_blob=blob,
+                    bytes=len(raw), acquired_via='LOCAL_FIXED_GIT_OBJECT',
+                    url=None if key == 'latest_CNG_investigation' else URL + commit + '/' + path)
+        data = gzip.decompress(raw) if path.endswith('.json.gz') else raw
+        value = json.loads(data) if path.endswith(('.json', '.json.gz')) else raw
+        return key, meta, value, raw
+    with ThreadPoolExecutor() as pool:
+        rows = list(pool.map(read, source_specs(root).items()))
+    return ({k: m for k, m, _, _ in rows}, {k: v for k, _, v, _ in rows}, {k: b for k, _, _, b in rows})
+
+
+def validate_saved(s):
+    ds = s['dataset']; candidates = ds['candidates']
+    require(len(candidates) == 588, 'ALL588_REFERENCED')
+    statuses = [r['candidate_status_saved'] for r in candidates]
+    cm = unique(statuses, candidate_key, 'DOMAIN')
+    endpoints = unique([e for r in candidates for e in r['endpoints_saved']],
+                       lambda e: (candidate_key(e['candidate']), e['epsilon']), 'ENDPOINT')
+    require(len(endpoints) == 2940, 'ALL2940_REFERENCED')
+    for r in candidates:
+        status = r['candidate_status_saved']
+        require(status['status'] == 'COMPLETE' and
+                [e['epsilon'] for e in r['endpoints_saved'] if e['status'] == 'ELIGIBLE'] == status['eligible_epsilons'],
+                'SAVED_ELIGIBILITY_STATUS')
+        for e in r['endpoints_saved']:
+            if e['status'] == 'ELIGIBLE':
+                require(e.get('price') is not None and e.get('total_RZ_exact') is not None, 'ELIGIBLE_PRICE_PRESENT')
+                require(status['cost_kind'] != 'NOT_REQUIRED_INELIGIBLE', 'ACQUISITION_STATUS')
+    for system, (rank, prefixes, count) in DOMAINS.items():
+        binding = ds['systems'][system]['scientific_identity_saved']['binding']
+        require(binding['rank'] == rank and binding['rank_policy'] == 'tol_only_1e-8', 'SCIENTIFIC_INPUT_' + system)
+        expected = {(system, m, p, q, f) for m in ('B0', 'B0I') for p in prefixes
+                    for q in (1, 2, 4, 8) for f in FORMULAS}
+        expected |= {(system, 'FULL', rank, q, f) for q in (1, 2, 4, 8) for f in FORMULAS}
+        require({k for k in cm if k[0] == system} == expected and len(expected) == count, 'REGISTERED_DOMAIN_' + system)
+    require(set(endpoints) == {(k, ep) for k in cm for ep in EPS}, 'ENDPOINT_GRID')
+    original = unique(s['original_result_60'], lambda r: (r['system'], r['epsilon'], r['formula']), 'ORIGINAL_COMPARISON')
+    require(len(s['global15']) == 15 and len(s['within45']) == 45, 'COMPARISON_COUNTS')
+    combined = s['global15'] + s['within45']
+    require(unique(combined, lambda r: (r['system'], r['epsilon'], r['formula']), 'COMPARISON') == original,
+            'ADOPTED_RESULT_EXACT_EQUALITY')
+    for group, rows in [('B', s['global15']), ('A', s['within45'])]:
+        for r in rows:
+            require((r['formula'] == 'ALL_FORMULAS') == (group == 'B'), 'A_B_NOT_MIXED')
+            require(r['independent_confirmation'] is False and r['PR_saved']['independent_confirmation'] == 'False', 'EXPLORATION_NOT_CONFIRMATION')
+            require(r['PR_saved']['mode'] == 'USUAL_SIGNED' and r['PR_saved']['prefix'] == {'H2': '1', 'H4': '3', 'H6': '5'}[r['system']], 'PR_COHORT')
+            require(r['PF']['status'] == 'COMPLETE_REGISTERED_GRID', 'SAVED_COMPLETE_STATUS')
+            best = r['PF']['best']; key = candidate_key(best['candidate'])
+            require(key[0] == r['system'] and key in cm, 'PF_DENOMINATOR_MEMBERSHIP')
+            require(group == 'B' or best['candidate']['formula'] == r['formula'], 'PF_DENOMINATOR_FORMULA')
+            require(best == endpoints[(key, r['epsilon'])], 'SAVED_PF_ENDPOINT_IDENTITY')
+    require(ds['saved_execution_summary']['H6_original_parent_exit_reap'] is None, 'H6_UNKNOWN_EXIT')
+    require(s['H6_interrupted_controls']['STOP']['original_native_exit_codes'] is None, 'H6_STOP_PRESERVED')
+    require(ds['saved_execution_summary']['unobserved_rare_event_bound'] is None, 'RARE_NOT_ZERO')
+    main = csv_rows(s['main_table'])
+    require(len(main) == 6 and all('INDEPENDENT' in r['cohort'] for r in main), 'OLD_MAIN_SIX_COHORTS')
+    require([r['DF_rank'] for r in main] == ['10', '10', '19', '19', '28', '28'], 'OLD_MAIN_INPUT_SCOPE')
+    return cm, endpoints
+
+
+def row_id(r, group):
+    return 'PUB_' + group + '_' + r['system'] + '_' + str(r['epsilon']).replace('.', 'p') + '_' + r['formula']
+
+
+def saved_tables(s, catalog):
+    cm, _ = validate_saved(s)
+    tables, refs, claims = {}, [], []
+    for group, key in [('B', 'global15'), ('A', 'within45')]:
+        rows = []
+        for i, r in enumerate(s[key]):
+            pf = r['PF']['best']; pr = r['PR_saved']; sys = r['system']; cid = row_id(r, group)
+            source = catalog[key]
+            row = dict(publication_id=cid, proposal_status='DRAFT_NOT_APPLIED', comparison_group=group,
+                       system=sys, DF_rank=s['dataset']['systems'][sys]['scientific_identity_saved']['binding']['rank'],
+                       epsilon=r['epsilon'], formula_scope=r['formula'],
+                       PF_domain_id='COMMON588_' + sys + '_' + r['formula'],
+                       PF_candidate_id=cm[candidate_key(pf['candidate'])]['id'],
+                       PF_formula=pf['candidate']['formula'], PF_method=pf['candidate']['method'],
+                       PF_prefix=pf['candidate']['prefix'], PF_q=pf['candidate']['q'],
+                       PF_G_exact=pf['total_RZ_exact'], PF_N_cos=pf['N_cos'], PF_N_sin=pf['N_sin'],
+                       PF_RZ_cos=pf['price']['cosine'], PF_RZ_sin=pf['price']['sine'], PF_price_kind=pf['price']['kind'],
+                       PR_candidate_id=pr['candidate_id'], PR_formula=pr['formula'], PR_prefix=pr['prefix'], PR_q=pr['q'],
+                       PR_n=pr['n'], PR_G_numerator=pr['total_RZ_numerator'], PR_G_denominator=pr['total_RZ_denominator'],
+                       PR_G_decimal_saved=pr['total_RZ'], PR_variance_saved=pr['total_RZ_variance'], PR_paired_SE_saved=pr['total_RZ_SE'],
+                       PR_N_cos_saved=pr['N_cos'], PR_N_sin_saved=pr['N_sin'],
+                       PR_reduction_percent_saved=r['PR_reduction_percent'], PR_over_PF_exact_saved=r['PR_over_PF_exact'],
+                       point_direction_saved=r['point_direction'], PR_role='SAVED_EXPLORATION_OUTER32_K4',
+                       independent_confirmation=False, adopted_commit=BASE, result_commit=RESULT,
+                       source_path=source['path'], source_sha256=source['sha256'], source_pointer='/' + str(i))
+            rows.append(row)
+            refs.append(dict(publication_id=cid, group=group, source=key, pointer='/' + str(i), saved_record=r))
+            claims.append(dict(claim_id=cid, status='PROPOSED_PLACEMENT_OF_ALREADY_ADOPTED_POINT_RESULT',
+                               claim_literal=f"{sys};epsilon={r['epsilon']};scope={r['formula']};saved_point_direction={r['point_direction']}",
+                               adopted_claim='COMMON588_' + sys if group == 'B' else 'COMMON588_WITHIN',
+                               source_commit=source['commit'], source_path=source['path'], source_sha256=source['sha256'],
+                               source_pointer='/' + str(i), denominator_domain=row['PF_domain_id'],
+                               cohort=row['PR_role'], AD03='DEFERRED_SEPARATE_MAIN_COMPARISON_DECISION',
+                               inference='FINITE_SAVED_POINT_NOT_POPULATION_OR_GLOBAL_OPTIMUM'))
+        tables[f'comparison_{group}_{len(rows)}_DRAFT.csv'] = csv_bytes(rows)
+    endpoint_refs = []
+    for i, r in enumerate(s['dataset']['candidates']):
+        status = r['candidate_status_saved']
+        for j, endpoint in enumerate(r['endpoints_saved']):
+            endpoint_refs.append(dict(candidate_id=status['id'], system=status['system'], epsilon=endpoint['epsilon'],
+                                      status_saved=endpoint['status'], acquisition_kind_saved=status['cost_kind'],
+                                      eligible_epsilons_saved=status['eligible_epsilons'],
+                                      saved_cost_present=endpoint.get('total_RZ_exact') is not None,
+                                      unit_price_present_in_endpoint=endpoint.get('price') is not None,
+                                      source='dataset', source_sha256=catalog['dataset']['sha256'],
+                                      source_pointer=f'/candidates/{i}/endpoints_saved/{j}'))
+    tables['endpoint_reference_2940.csv'] = csv_bytes(endpoint_refs)
+    tables['comparison_reference_60.json'] = json_bytes(refs)
+    for i, row in enumerate(csv_rows(s['adopted_CEM'])):
+        if not row['id'].startswith('COMMON588_'):
+            continue
+        source = catalog['adopted_CEM']
+        claims.append(dict(claim_id='PUB_SCOPE_' + row['id'],
+                           status='PROPOSED_PLACEMENT_OF_ALREADY_ADOPTED_SCOPED_RESULT',
+                           claim_literal=row['claim_candidate'], adopted_claim=row['id'],
+                           source_commit=source['commit'], source_path=source['path'], source_sha256=source['sha256'],
+                           source_pointer='/rows/' + str(i), denominator_domain='SAVED_CEM_SCOPE_AS_WRITTEN',
+                           cohort='SCOPED_SAVED_EVIDENCE_NO_POOLING', AD03='DEFERRED_SEPARATE_MAIN_COMPARISON_DECISION',
+                           inference='FINITE_SAVED_POINT_NOT_POPULATION_OR_GLOBAL_OPTIMUM'))
+    require(len(claims) == 67, 'SIXTY_COMPARISONS_AND_SEVEN_ADOPTED_CLAIMS')
+    tables['claim_evidence_DRAFT.csv'] = csv_bytes(claims)
+    tables['denominator_decomposition_10_DRAFT.csv'] = csv_bytes([
+        dict(system=r['system'], epsilon=r['epsilon'], old_sparse_saved_cost=r['old_sparse_saved_cost'],
+             policy_factor_exact=r['policy_and_saved_arithmetic_factor_exact'],
+             m5_prefix_expansion_factor_exact=r['m5_prefix_expansion_factor_exact'],
+             formula_expansion_factor_exact=r['formula_expansion_factor_exact'], exact_product_saved=r['exact_product'],
+             source='decomposition', source_pointer='/' + str(i), status='DRAFT_LITERAL_SAVED_FACTORS_NOT_CAUSAL')
+        for i, r in enumerate(s['decomposition'])])
+    return tables
+
+
+def target_change(catalog, s, cid, key, anchor, action, destination, reason, evidence, decision):
+    source = catalog[key]; text = s[key].decode()
+    lines = [i + 1 for i, line in enumerate(text.splitlines()) if anchor in line]
+    require(bool(lines), 'TARGET_ANCHOR_' + cid)
+    return dict(change_id=cid, status='DRAFT_NOT_APPLIED', target_path=source['path'],
+                current_commit=source['commit'], current_sha256=source['sha256'], anchor_line=lines[0], anchor=anchor,
+                proposed_action=action, draft_destination=destination, reason=reason,
+                adopted_evidence_ids=evidence, pending_decision=decision, original_file_modified=False)
+
+
+def policy(s, catalog):
+    return dict(status='PUBLICATION_DRAFT_NOT_ADOPTED_NOT_APPLIED', base_commit=BASE,
+                result_commit=RESULT, recommendation='OPTION3_MAIN_RESULTS_SUMMARY_PLUS_SI',
+                placement_adopted=False, AD03='DEFERRED_SEPARATE_DECISION',
+                final_evidence_freeze=False, new_scientific_calls=0, new_numerical_analysis=False,
+                new_ranking=False, new_ratios=False, new_shots=False, sampling=False, compile=False,
+                existing_main_table_numeric_action='KEEP_ALL_SIX_ROWS_AND_VALUES',
+                existing_Figure2_action='KEEP_ALL34_BYTES_MECHANISM_ROLE',
+                existing_main_table=catalog['main_table'],
+                main_table_fixed_ids=[r['comparison_id'] for r in csv_rows(s['main_table'])],
+                proposed_main_table_footnote_only=True, common588_rows_added_to_existing_main_table=0,
+                conditional_main_promotion_requires_AD03_decision=True,
+                PR_role='SAVED_EXPLORATION_OUTER32_K4_PREFIX1_3_5',
+                PR_vs_PR_confirmation_is_new_PR_vs_PF_confirmation=False,
+                H6_original_parent_exit_reap=None, old_H6_STOP_success_claimed=False,
+                population_mean_guarantee=False, rigorous_bias_certificate=False,
+                unobserved_rare_event_bound=None, GitHub_push=False, PR_creation=False,
+                original_paper_files_modified=False, detailed_scientific_review=False,
+                mandatory_STOP=True)
+
+
+def validate_policy(p):
+    require(p['status'] == 'PUBLICATION_DRAFT_NOT_ADOPTED_NOT_APPLIED' and not p['placement_adopted'], 'DRAFT_ONLY')
+    require(p['AD03'] == 'DEFERRED_SEPARATE_DECISION' and not p['final_evidence_freeze'], 'NO_AD03_OR_FREEZE')
+    require(p['existing_main_table_numeric_action'] == 'KEEP_ALL_SIX_ROWS_AND_VALUES'
+            and p['common588_rows_added_to_existing_main_table'] == 0, 'NO_MAIN_TABLE_REBASELINE')
+    require(p['existing_Figure2_action'] == 'KEEP_ALL34_BYTES_MECHANISM_ROLE', 'NO_FIGURE2_REPLACEMENT')
+    require(p['H6_original_parent_exit_reap'] is None and not p['old_H6_STOP_success_claimed'], 'H6_OLD_EXIT_UNKNOWN')
+    require(p['unobserved_rare_event_bound'] is None, 'UNOBSERVED_NOT_ZERO')
+    for flag in ('new_numerical_analysis', 'new_ranking', 'new_ratios', 'new_shots', 'sampling', 'compile',
+                 'GitHub_push', 'PR_creation', 'original_paper_files_modified', 'detailed_scientific_review',
+                 'PR_vs_PR_confirmation_is_new_PR_vs_PF_confirmation'):
+        require(p[flag] is False, 'FORBIDDEN_' + flag)
+    require(p['new_scientific_calls'] == 0, 'NO_SCIENTIFIC_CALLS')
+
+
+def expected_files(root=ROOT):
+    catalog, s, raw = load_sources(root)
+    files = saved_tables(s, catalog)
+    p = policy(s, catalog); validate_policy(p)
+    files['publication_policy_DRAFT.json'] = json_bytes(p)
+    files['source_catalog.json'] = json_bytes(catalog)
+    files['candidate_reference_588.csv'] = raw['candidate_index']
+    changes = []
+    textdraft = str(DOC / '05_text_and_captions_DRAFT.md')
+    for args in [
+        ('TABLE1_KEEP', 'main_table', 'comparison_id,', 'KEEP_SIX_NUMERIC_ROWS', str(DOC / '04_main_table_spec.md'), '独立固定確認と探索格子の分母・cohortを保持', 'OLD_MAIN_SIX', 'NONE_FOR_PRESERVATION'),
+        ('TABLE1_FOOTNOTE', 'main_table_text', '# Table 1', 'PROPOSE_SEPARATE_SCOPE_FOOTNOTE', textdraft, '新15行を独立確認6行へ混ぜない', 'COMMON588_DOMAIN', 'EDITORIAL_PLACEMENT'),
+        ('FIG2_CAPTION', 'figure_caption', 'Editorial status:', 'PROPOSE_CROSS_REFERENCE_ADDENDUM_ONLY', textdraft, '機構図の既存点・分母・cohortを変更しない', 'COMMON588_DOMAIN;OLD_FIGURE2', 'EDITORIAL_PLACEMENT'),
+        ('METHODS_SCOPE', 'methods', 'H2 is outside', 'PROPOSE_SCOPE_PARAGRAPH_QUALIFICATION', textdraft, 'H2は旧主表外、新共通域補足の対象', 'COMMON588_DOMAIN', 'EDITORIAL_PLACEMENT'),
+        ('METHODS_COMMON', 'methods', '## Circuits, compiler', 'PROPOSE_SEPARATE_COMMON_DOMAIN_SUBSECTION', textdraft, '旧u/shot政策へ遡及適用しない', 'COMMON588_DOMAIN;COMMON588_SCOPE', 'EDITORIAL_PLACEMENT'),
+        ('RESULTS_COMMON', 'body_v04', '## 8.', 'PROPOSE_SEPARATE_RESULTS_BLOCK_NOT_REWRITE_LEGACY', textdraft, '旧DF12 geometry原稿をDF10/H246原稿と偽らない', 'COMMON588_H2;COMMON588_H4;COMMON588_H6', 'MASTER_MANUSCRIPT_SCOPE_AND_PLACEMENT'),
+        ('BODY_LIMITS', 'body_v04', '## 9.', 'PROPOSE_ADDITIONAL_SCOPE_AND_AUDIT_LIMITS', textdraft, '有限点・H6未知終了・rare event限界を明記', 'COMMON588_SCOPE', 'EDITORIAL_PLACEMENT'),
+        ('ABSTRACT_HOLD', 'body_v04', '## Abstract', 'KEEP_NO_NEW_HEADLINE', textdraft, '主題やm5主比較を自動昇格しない', 'COMMON588_DOMAIN', 'AD03_AND_MAIN_CLAIM_DECISION_IF_PROMOTED'),
+        ('SI_COMMON', 'old_SI', '# ', 'PROPOSE_NEW_SEPARATE_COMMON_DOMAIN_SI', str(DOC / '06_Supplementary_DRAFT.md'), '歴史的SIを上書きせず新節を用意', 'ALL588;B15;A45;DECOMP10', 'EDITORIAL_PLACEMENT_AND_NUMBERING'),
+        ('PAPER_MANIFEST', 'adopted_manifest', '"schema"', 'NEW_DRAFT_MANIFEST_ONLY', str(OUT / 'paper_manifest_DRAFT.json'), '正式採用と掲載提案を区別', 'COMMON588_DOMAIN', 'NO_FINAL_FREEZE'),
+    ]:
+        changes.append(target_change(catalog, raw, *args))
+    files['publication_change_list.csv'] = csv_bytes(changes)
+    fig_rows = [
+        dict(panel='2A unit-cost', meaning='R_C,a;old n32/new A n8;PF direct/model', systems='H4_DF12_LEGACY;H6_DF19;H8_DF28',
+             relationship_to_common588='NOT_SAME_COHORT_OR_FULL_PF_DOMAIN', proposed_action='KEEP_BYTES;NO_NEW_FACTORS', figure_source='old_figure_spec'),
+        dict(panel='2A shot', meaning='R_N,a;cosine/sine;old analytic shot policy', systems='H4_DF12_LEGACY;H6_DF19;H8_DF28',
+             relationship_to_common588='NO_SHOT_TRANSFER_OR_NEW_N_COMPARISON', proposed_action='KEEP_BYTES', figure_source='old_figure_spec'),
+        dict(panel='2A total', meaning='R_G;18 legacy/exploratory comparisons displayed', systems='H4_DF12_LEGACY;H6_DF19;H8_DF28',
+             relationship_to_common588='DENOMINATORS_NOT_COMMON588', proposed_action='KEEP_POINTS_AND_MODEL_MARKERS', figure_source='old_figure_spec'),
+        dict(panel='2B upper', meaning='H8 independent n48 cost/shot factors;Table1 same observations', systems='H8_DF28',
+             relationship_to_common588='H8_OUTSIDE_COMMON588;NOT_EXTRA_CONFIRMATION', proposed_action='KEEP_BYTES_AND_COHORT', figure_source='figure_caption'),
+        dict(panel='2B lower', meaning='normalization/margin/headroom/alpha/rounding factors', systems='H8_DF28',
+             relationship_to_common588='NO_FACTOR_TRANSFER_TO_NEW_H2_H4_H6', proposed_action='KEEP_BYTES', figure_source='figure_caption'),
+        dict(panel='2A A82 note', meaning='historical render-time note;later32/64 factor completion separate', systems='H8_OLD_N32',
+             relationship_to_common588='NOT_COMMON588_MISSING_METADATA', proposed_action='KEEP_ARTWORK;KEEP_EXISTING_CAPTION_ADDENDUM', figure_source='figure_caption'),
+        dict(panel='v0.4 Figure2', meaning='H4 geometry B0I/B2 cost ratio;different figure numbering', systems='H4_DF12_LEGACY_GEOMETRY',
+             relationship_to_common588='DIFFERENT_PAPER_LAYER_NOT_MECHANISM_2A_2B', proposed_action='KEEP;RESOLVE_NUMBERING_BEFORE_EDIT', figure_source='body_v04'),
+    ]
+    for row in fig_rows:
+        if row['panel'] == 'v0.4 Figure2':
+            ref = catalog['body_v04']
+        else:
+            panel = 'figure2B.png' if row['panel'].startswith('2B') else 'figure2A.png'
+            ref = next(v for k, v in catalog.items() if k.startswith('Figure2_') and v['path'].endswith('/' + panel))
+        row.update(current_path=ref['path'], current_commit=ref['commit'], current_sha256=ref['sha256'],
+                   caption_source_ref='figure_caption', status='DRAFT_NOT_APPLIED')
+    files['figure2_correspondence.csv'] = csv_bytes(fig_rows)
+    files['main_table_spec_DRAFT.json'] = json_bytes(dict(
+        status='DRAFT_NOT_APPLIED', recommended_action='KEEP_SIX_ROWS_VALUES_AND_COLUMN_NAMES',
+        existing_header=list(csv_rows(raw['main_table'])[0]), existing_row_ids=p['main_table_fixed_ids'],
+        proposed_numeric_replacements=[], proposed_new_common_rows_in_Table1=[],
+        proposed_footnote=textdraft + '#table-1-footnote-draft',
+        optional_future_columns=['evidence_role', 'baseline_domain_id'],
+        optional_future_columns_require='EDITORIAL_APPROVAL;M5_MAIN_PROMOTION_REQUIRES_SEPARATE_AD03_DECISION',
+        conditional_Table2_source='comparison_B_15_DRAFT.csv',
+        current_Supplementary_tables={'S_common_B': 15, 'S_common_A': 45, 'S_common_candidates': 588,
+                                      'S_common_endpoints': 2940, 'S_common_decomposition': 10}))
+    files['figure_common_domain_spec_DRAFT.json'] = json_bytes(dict(
+        status='SPECIFICATION_ONLY_NOT_RENDERED_NOT_ADOPTED', proposed_id='Figure_S_common',
+        conditional_main_id='Figure3_ONLY_AFTER_EDITORIAL_AND_AD03_MAIN_SCOPE_DECISIONS',
+        source=catalog['global15'], panels=['H2', 'H4', 'H6'], categorical_epsilon=list(EPS),
+        y_field='PR_reduction_percent', y_units='percent_as_saved', zero_reference=0,
+        continuous_interpolation=False, recompute_ratios=False, new_uncertainty_bars=False,
+        uncertainty_note='Saved SE remains in source cost units; do not compute a new percentage CI.',
+        point_references=[dict(publication_id=row_id(r, 'B'), source_pointer='/' + str(i),
+                               saved_reduction=r['PR_reduction_percent'], saved_direction=r['point_direction'])
+                          for i, r in enumerate(s['global15'])],
+        original_Figure2_34_files_changed=False, caption_draft=textdraft))
+    files['paper_manifest_DRAFT.json'] = json_bytes(dict(
+        status='PUBLICATION_PLACEMENT_DRAFT_NOT_FORMAL_REVISION', base_commit=BASE,
+        recommendation=p['recommendation'], recommendation_adopted=False, AD03=p['AD03'],
+        original_main_table=catalog['main_table'], original_caption=catalog['figure_caption'],
+        original_figure2=[v for k, v in catalog.items() if k.startswith('Figure2_')],
+        original_paper_CEM=catalog['prior_CEM'], original_paper_ledger=catalog['prior_ledger'],
+        original_paper_data_manifest=catalog['prior_paper_data_manifest'], adopted_manifest=catalog['adopted_manifest'],
+        draft_tables=['comparison_B_15_DRAFT.csv', 'comparison_A_45_DRAFT.csv', 'candidate_reference_588.csv', 'endpoint_reference_2940.csv'],
+        draft_claims='claim_evidence_DRAFT.csv', final_evidence_freeze=False,
+        new_scientific_calls=0, new_statistics=False, new_ranking=False,
+        main_table_modified=False, Figure2_modified=False, manuscript_modified=False,
+        independent_confirmation_modified=False, GitHub_push=False, PR_creation=False))
+    files['evidence_freeze_readiness_DRAFT.json'] = json_bytes(dict(
+        status='PREPARATION_CHECKLIST_NOT_A_FREEZE_RECEIPT', final_evidence_freeze=False,
+        checklist=[
+            dict(id='PLACEMENT', status='PENDING_USER_DECISION', action='Choose option3 or alternative; recommendation is not adoption'),
+            dict(id='AD03', status='DEFERRED', action='Separate main-comparison scope decision if promoting m5 to primary table/figure'),
+            dict(id='MASTER_TEXT_NUMBERING', status='PENDING_EDITORIAL_DECISION', action='Resolve legacy v0.4 Figure2 versus mechanism Figure2A/B; choose master manuscript'),
+            dict(id='FIXED_SAVED_GRID', status='STRUCTURAL_CHECKS_REQUIRED', evidence='candidate588/endpoint2940/B15/A45 source references'),
+            dict(id='FIGURE2_SHA34', status='PRESERVE_FIXED_HASHES', evidence='paper_manifest_DRAFT.json'),
+            dict(id='H6_OLD_PARENT', status='UNRESOLVED_PROVENANCE_EXCEPTION', action='Retain individual187 acceptance and fresh22 completion; never fabricate exit/reap'),
+            dict(id='H8_PUBLIC_WITNESSES', status='REPORTED_NOT_FULLY_REVERIFIED', action='Inherit old Methods qualification; decide evidence needs if claiming full public re-audit'),
+            dict(id='POPULATION_GLOBAL_CERTIFICATE', status='OUTSIDE_ADOPTED_CLAIM_SCOPE', action='Disclose limits, do not automatically add science'),
+            dict(id='RARE_BOUND', status='UNKNOWN_NOT_ZERO', action='Keep null and finite-sample qualification'),
+            dict(id='DETAILED_SCIENTIFIC_REVIEW', status='NOT_STARTED', action='Separate instruction required'),
+            dict(id='FINAL_FREEZE', status='NOT_EXECUTED', action='Separate instruction required')],
+        new_scientific_calls=0, automatic_next_stage=False))
+    files['MANDATORY_STOP.json'] = json_bytes(dict(status='PUBLICATION_PREPARATION_COMPLETE_MANDATORY_STOP',
+        scientific_calls=0, old_paper_file_writes=0, automatic_next_stage=False, GitHub_push=False,
+        PR_creation=False, AD03_adopted=False, final_evidence_freeze=False, detailed_scientific_review=False))
+    return files, catalog, s
+
+
+def check(root=ROOT):
+    files, catalog, s = expected_files(root)
+    for name, value in files.items():
+        require((root / OUT / name).read_bytes() == value, 'EXACT_DRAFT_TRANSCRIPTION_' + name)
+    allowed_modifications = set(INDEXES) | {'artifacts/validation_manifest.json'}
+    changed = subprocess.check_output(['git', 'diff', '--name-status', '-z', BASE], cwd=root).decode().split('\0')
+    for i in range(0, len(changed) - 1, 2):
+        status, path = changed[i:i + 2]
+        require((status == 'M' and path in allowed_modifications) or
+                (status == 'A' and (path.startswith(str(OUT) + '/') or path.startswith(str(DOC) + '/') or
+                 path in {REPORT, NOTE, 'scripts/prepare_h246_pf_publication.py', 'tests/test_h246_pf_publication.py'})),
+                'OLD_PAPER_SCIENCE_OR_CONTROLS_CHANGED_' + path)
+    for key, ref in catalog.items():
+        if ref['commit'] == BASE and (root / ref['path']).exists():
+            require(digest((root / ref['path']).read_bytes()) == ref['sha256'], 'BASE_PRESERVATION_' + key)
+    original_manifest = json.loads(git_bytes(BASE, 'artifacts/validation_manifest.json', root))
+    manifest = json.loads((root / 'artifacts/validation_manifest.json').read_bytes())
+    require(all(manifest[k] == v for k, v in original_manifest.items()), 'PRIOR_MANIFEST_ENTRIES_PRESERVED')
+    entry = manifest['h246_pf_publication_draft_20261023']
+    require(entry['status'] == 'DRAFT_NOT_APPLIED_NOT_ADOPTED' and entry['base_commit'] == BASE
+            and entry['new_scientific_calls'] == 0 and not entry['GitHub_push'] and not entry['final_evidence_freeze'],
+            'DRAFT_MANIFEST_ALIGNMENT')
+    for path in INDEXES:
+        require((root / path).read_bytes().endswith(git_bytes(BASE, path, root)), 'INDEX_HISTORY_PRESERVED')
+    inv = json.loads((root / OUT / 'artifact_manifest.json').read_bytes())
+    for path, sha in inv.items():
+        require(digest((root / path).read_bytes()) == sha, 'NEW_ARTIFACT_SHA_' + path)
+    tests = json.loads((root / OUT / 'artificial_test_receipt.json').read_bytes())
+    require(tests['status'] == 'PASS' and tests['tests_run'] == 12
+            and all(tests[k] == 0 for k in ('failures', 'errors', 'skipped')),
+            'ARTIFICIAL_TEST_RECEIPT')
+    require(tests['test_file_sha256'] == digest((root / 'tests/test_h246_pf_publication.py').read_bytes())
+            and tests['implementation_sha256'] == digest((root / 'scripts/prepare_h246_pf_publication.py').read_bytes()),
+            'TESTED_IMPLEMENTATION_SHA')
+    audit = json.loads((root / OUT / 'ending_audit.json').read_bytes())
+    require(audit['status'] == 'PASS_LOCAL_PUBLICATION_PREPARATION_AUDIT'
+            and audit['base_commit'] == BASE and audit['result_commit'] == RESULT
+            and audit['new_scientific_calls'] == 0 and audit['old_paper_file_writes'] == 0
+            and audit['original_Figure2_SHA_files'] == 34 and audit['old_main_table_rows_preserved'] == 6
+            and audit['AD03'] == 'DEFERRED' and audit['mandatory_STOP'] is True
+            and all(audit[k] is False for k in ('reranking', 'saved_value_numerical_reanalysis',
+                'GitHub_push', 'PR_creation', 'final_evidence_freeze', 'publication_layout_adopted')),
+            'ENDING_AUDIT_SCOPE')
+    links = 0
+    for path in [root / REPORT, *sorted((root / DOC).glob('*.md'))]:
+        for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
+            if target.startswith('#'):
+                continue
+            if target.startswith(URL):
+                relative = target[len(URL):]; commit, sourcepath = relative.split('/', 1)
+                git_bytes(commit, sourcepath.split('#')[0], root)
+            elif target.startswith('https://'):
+                raise ValueError('Unregistered external source link: ' + target)
+            else:
+                require((path.parent / target.split('#')[0]).exists(), 'DOCUMENT_LINK_' + target)
+            links += 1
+    require(len([k for k in catalog if k.startswith('Figure2_')]) == 34, 'ORIGINAL_FIGURE34')
+    return dict(status='PASS_LOCAL_DOCUMENT_STRUCTURE_SHA_PRESERVATION', base_commit=BASE,
+                fixed_sources_retrieved=len(catalog), candidate_references=588, endpoint_references=2940,
+                all_formula_comparisons=15, same_formula_comparisons=45,
+                publication_claim_references=67,
+                old_main_table_rows_preserved=6, original_Figure2_SHA_files=34, document_links_checked=links,
+                new_scientific_calls=0, saved_value_numerical_reanalysis=False, reranking=False,
+                old_paper_file_writes=0, AD03='DEFERRED', placement_adopted=False, final_evidence_freeze=False,
+                H6_original_parent_exit_reap=None, GitHub_push=False, PR_creation=False,
+                verification='PRIMARY_AUTHOR_LOCAL_TECHNICAL_CHECK_NOT_EXTERNAL_SCIENTIFIC_REVIEW', mandatory_STOP=True)
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--build', action='store_true', help='write separate DRAFT projections only')
+    parser.add_argument('--receipt', action='store_true')
+    args = parser.parse_args()
+    if args.build:
+        files, _, _ = expected_files()
+        (ROOT / OUT).mkdir(parents=True, exist_ok=True)
+        for name, data in files.items():
+            (ROOT / OUT / name).write_bytes(data)
+        paths = [p for p in (ROOT / OUT).iterdir() if p.name not in ('artifact_manifest.json', 'technical_validation.json')]
+        paths += list((ROOT / DOC).glob('*.md'))
+        paths += [ROOT / p for p in (*INDEXES, REPORT, NOTE, 'artifacts/validation_manifest.json',
+                   'scripts/prepare_h246_pf_publication.py', 'tests/test_h246_pf_publication.py')]
+        (ROOT / OUT / 'artifact_manifest.json').write_bytes(json_bytes(
+            {str(p.relative_to(ROOT)): digest(p.read_bytes()) for p in sorted(paths)}))
+    report = check()
+    if args.receipt:
+        (ROOT / OUT / 'technical_validation.json').write_bytes(json_bytes(report))
+    print(json.dumps(report, ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    main()

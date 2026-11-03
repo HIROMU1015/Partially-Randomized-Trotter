@@ -1,0 +1,54 @@
+> 固定資料の閲覧用copy。元: [980b514c81eb:docs/research/research_c_pr_integrated_preparation_20261102.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/980b514c81eb415fe053f558d7d3c0b8cfb5b9b4/docs/research/research_c_pr_integrated_preparation_20261102.md)。相対リンクのみ固定SHAへ変換。本文の科学的状態・採否は再判定していない。
+
+# 研究C：PR-aware DF統合実験の固定条件・技術準備
+
+2026-11-02 JST。起点 `b8f1429887af5e1255c0801908a7bc31123d15dd`。今回の一括指示の範囲で、技術準備からPhase A/B/条件付きCまで進める。技術準備だけで中間承認を要求せず、統合契約の完了またはSTOP条件到達時にmandatory STOPする。
+
+[固定統合契約](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/980b514c81eb415fe053f558d7d3c0b8cfb5b9b4/docs/research/research_c_pr_integrated_contract_20261102.json)。最大 **1,759 logical units＝親A/B等1,297＋条件付きC462**。新規分子・rank・目的・solver/law/compiler探索は行わない。
+
+## 入力と最初のgate
+
+保存直鎖H4・1Å・STO-3G、number CDF8/元順LD2、Nα=Nβ=2/sector36、γ=.1/ε1e-8、元f*/M*、κ/scalar・全数値閾値を維持する。
+
+指定の`accepted_U_update_1.npz`はηだけを保存する受理eventである。J/Uは同じrunの`diagnostic_terminal.npz`にあり、`independent_terminal_state_1.npz`のJ/U/ηと結び付く。新契約にすべてのhashを固定し、元Uとηからのgeometry・旧19-call result/STOPも照合する。この入出力整理は新しい初期点の選択ではない。
+
+Phase Aではこの受理J/Uをまず既存SectorCAR、rank_assessment、general-K/raw CAR、tensor再構成、元g補正κ/scalarの規約で評価する。`sector norm+既存guard <= CA/8=.00019875Ha`とcorrectnessがPASSするまでBを始めない。
+
+## 複数更新と物理評価
+
+既存の同一decoded J Newton-CG、各新Uで元のcold Jから初回solve＋2 refinement、独立state・rank/nullspace/tail injectivity・stability・same-point検査を再利用する。初期Uだけが19-call受理点で、trialのJをwarm-startしない。
+
+各受理点を新しい指数写像chartの中心とし、独立に評価済みのphysical tangentを新中心eta0の勾配として再利用する。この恒等性と、中心/方向が実際に変わることを人工検証した。既に資格を確認した中心でJを重複solveしない。
+
+各更新ではd=-g、αF=F/|gᵀd|、q={1/8,1/32,1/128}の順で最大3 trial。既存小stepの値尺度を含むArmijoを使う。数値未資格は未受理のまま次の登録qへ進めるが、correctness FAILはSTOP。最初のprovisional passで独立終端を1回確認し、post J未資格なら停止する。
+
+最大64の最適化上の受理更新を計画する。初期＋最大192 trial＝193 U評価、inner579/refinement386/precision state386/admission193、独立終端64が上限。Phase AとB初期・各受理点を合わせ物理評価最大66件。最適化上の受理と物理適格性は別記し、物理FAILでは次の更新とCを止め、前の適格点を保全する。
+
+選定規則はBの数値・物理適格履歴からexact λ最小、同値ならF最小、さらに早いindex。未収束を明記する。有限探索不成立、元stall3回、J/U一次MET、最大64到達は登録した限定終了であり、追加探索しない。
+
+## PR性能への条件付き接続
+
+正常な限定B終了後に適格な正λ候補があれば、候補固有のpartial S2/δ=h=.1/s1/r128/K0/m0..12、own-DF ground oracle・準備除外へ接続する。新しいground/alias、PF/RTE誤差・減衰、既存RPE/Hoeffding十分shotsを計算する。旧J/UのPF・shots・価格を転用しない。
+
+既存のevidence laneは全law合成/law誤差未資格ならnull。既存ideal-native/ideal-IIDおよび.001A合成＋.001A law仮定scenarioは反実条件として別記し、未知誤差0の認定にしない。
+
+Ideal scenarioが登録same-accuracy十分条件を満たす場合、既存full256CAR/full512 raw/compiled/actual-adjoint/X/Y検査と固定P0を使い、新候補の独立32 trajectoryを校正する。128 events、32 compile、128 QPY、同じbasis/relative-head/合法tail共有、cross-head/tail追加融合なし。PCG64の新cohort/固定seed、sourceと新J/U identityを含む独立substreamを事前固定する。
+
+既存serial費用合成を使い、各occurrence独立という法則の期待費用を新32標本平均で近似する。1 trajectoryをcoherent反復する価格に置換しない。SEは同じ校正平均を共有する重みWで伝播する。標本min/maxや有限probeを全law boundに昇格せず、厳密CA・保証shots・support・母平均優位は未資格のまま。
+
+保存M4 PR、強い全frame決定論S2、RC2 finite endpointを参照する。共通CA/time/failure/serial metrics/preparationの条件と、PR/Dの回路・合成誤差資格の違い、RC2の未収束と計算政策差を明示する。条件付き点benchmarkと、同じ証拠水準での保証付き優位・公平な収束optimizer比較を区別する。
+
+## 技術検証・資源・固定
+
+[テスト集計](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/980b514c81eb415fe053f558d7d3c0b8cfb5b9b4/artifacts/research_c_pr_integrated/2026-11-02/technical/test_results.json)は **312 unique PASS（新15＋既存297）**。Fit297、評価15、重複なし。人工multistep/cold-J/recenter、物理FAIL/未資格/correctness STOP、実人工sector/generalK/PF/RTE/RPE、mock32-native/compile FAIL/128QPYを含む。人工PASSは実H4の科学的GOではない。
+
+Evaluation側のtest収集にfit用JAX helperを持ち込んだ問題をlazy importで分離した。また、反復native進捗をexclusive-create JSONへ保存する不具合を人工検証で検出し、追記JSONLへ修正した。失敗logを保全し、修正後の全回帰を通した。実H4科学実行前の修正で、旧SOURCEは変更していない。
+
+[準備照合](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/980b514c81eb415fe053f558d7d3c0b8cfb5b9b4/artifacts/research_c_pr_integrated/2026-11-02/technical/preparation_checks.json)で新SOURCE207/input35、fit/evaluation環境、旧SOURCE19組・raw2579件と137科学recordsを確認した。GitHub固定b8f142988のcommitと旧報告を取得し、ローカルと本文bytesも一致。現時点で実分子decode/新科学call0、fresh run01未作成。
+
+固定SOURCE manifest SHA256：`7eda4aa319b9b861cfa2b5e8c25e3381b4670c275bdad2bdb073335df550aff5`。
+契約SHA256：`b5fdbe049e611864be84680d6c513fde94dc7019ccf1be1e71c19b75d1c20c3a`。
+
+既存fit/evaluation venvはread-only再利用し、task-local cache/tempを使う。資源確認時affinity32、MemAvailable約53.8GB、load約2.08。逐次U/inner/refinementを維持し、Cの13round/32nativeは既存resource_planとQiskit排他制御で並列化する。小行列BLASを調整するが、恣意的なCPU/RAM/worker/wall上限を加えない。過去の同規模native32は約920秒で、今回の時間保証・speedupの主張ではない。
+
+本SOURCE/契約をcommit・push・remote照合後、今回許可された統合実行へ進む。Source/input mismatchや科学的STOP後に、新SOURCEで無断再実行しない。Branch `codex/research-c-pr-integrated-20261102`。

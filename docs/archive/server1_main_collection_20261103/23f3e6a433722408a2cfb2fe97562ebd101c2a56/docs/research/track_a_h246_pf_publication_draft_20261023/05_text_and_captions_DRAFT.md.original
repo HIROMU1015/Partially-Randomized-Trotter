@@ -1,0 +1,49 @@
+# 5. 本文・captionの編集用DRAFT（未適用）
+
+以下は採用済み保存結果の掲載文案。掲載構成・m5主比較AD03・主張の新規採択・正式改訂を意味しない。
+元の本文、Methods、caption、数値は変更しない。
+
+## Methods scope paragraph DRAFT
+
+> Table 1 reports six fixed independent-confirmation comparisons for H4, H6 and H8. H2 is excluded from that confirmation table. A separate supplementary benchmark reports the already adopted common-domain results for H2, H4 and H6. Its saved exploratory PR samples, deterministic candidate domain and accounting policy are distinct from the fixed-confirmation comparisons and from the legacy/exploratory mechanism series in Figure 2. No samples or mechanism factors are pooled across these evidence units.
+
+元Methodsの「H2 is outside this manuscript integration」を、主表の対象と補足ベンチマークの対象を区別するこの文へ限定する候補。旧入力手順差・H8公開監査の限定は削除しない。
+
+## Methods common-domain subsection DRAFT
+
+> The common-domain benchmark uses saved DF Hamiltonians and states for linear H2, H4 and H6 at an adjacent separation of 1 Å in STO-3G, with tol-only DF threshold 1e-8 and saved ranks 3, 10 and 19. Evolution time is T = 0.8 and the state-preparation charge is P = 0. Each of S2, Yoshida4 and m5_best is evaluated on q = 1, 2, 4, 8, with outer time widths δ = 0.8, 0.4, 0.2, 0.1. B0/B0I prefixes are 0–2, 1–9 and 5–15 for H2, H4 and H6, respectively; Full uses prefixes 3, 10 and 19. The registered domain contains 84, 228 and 276 candidates. Prefix-zero and Full registrations are retained separately. Legacy H4 DF12, q16 and unregistered prefixes are excluded.
+
+> Signals use the original signed schedules and scalar convention, full cosine/sine Hadamard wrappers and symmetric-directional control. Compiled RZ prices use Qiskit 1.3.0, rz/sx/x/cx, optimization level 1 and transpiler seed 17 without topology constraints. The common policy uses usual signed bias, allowance factor 1, α_axis = 0.025 and the adopted empirical allowance, never below saved u. The five registered signal accuracies are ε = 0.05, 0.01, 0.005, 0.001 and 0.0005. Costs combine saved analytic shots with compiled-axis RZ prices. These are analytic resource predictions for a finite-time signal, not executed quantum shots or a complete energy-estimation cost.
+
+> The PR side retains the saved exploration set with outer32/K4 and prefixes 1, 3 and 5. “outer32” identifies the internal RTE prescription, not the cost-sample size. The original n, mean, unbiased variance and paired-trajectory standard error are reported for each selected comparison. Comparison A fixes the formula and uses its registered PF domain; comparison B uses the complete three-formula PF domain. The saved selections, costs, reductions and ranks are transcribed without new arithmetic or reranking. A complete candidate evaluation does not require compiling candidates that are ineligible at every registered accuracy.
+
+## Results subsection DRAFT: separate common-domain benchmark
+
+> Within the registered common domain, all 588 candidates have completed evaluations and no unresolved candidate remains. The saved all-formula point comparison favours deterministic PF at all five accuracies for H2. For H4 and H6, it favours PR at ε = 0.001 and 0.0005 and PF at the other three registered accuracies. These statements concern the selected saved point costs. The 15 all-formula comparisons and 45 within-formula comparisons are reported separately in Supplementary Tables S-common-B and S-common-A, with exact PF costs and the unchanged PR means, variances, standard errors and sample sizes.
+
+> The earlier sparse-m5 comparison uses a different PF denominator. In the saved H6 nested-domain decomposition, the m5 prefix-expansion factor equals 1 at each registered accuracy, whereas the addition of S2 and Yoshida4 changes the PF denominator at the four coarser accuracies. Thus the saved change in point ranking is associated primarily with the formula set rather than with m5 prefix expansion in this nested comparison. This is not an isolated causal effect of search breadth and does not certify a population-mean ranking. It is also distinct from the independently sampled PR-versus-PR comparisons.
+
+ここから母平均winner、連続εの切替境界、分子サイズscaling、m5の一般的推奨を導かない。
+比・削減率の具体的数値を本文に足す際は保存15行または分母分解10行からのliteral引用に限る。別の計算・丸め・再選択は今回行わない。
+
+## Limitations and provenance paragraph DRAFT
+
+> The benchmark is restricted to a finite registered domain, saved scientific inputs, P = 0 and the specified compiler. The PR costs are finite exploratory sample estimates, with uncorrected selection effects; their saved standard errors are not selection-adjusted confidence intervals or population-mean guarantees. Unobserved higher-order and rare-event costs, variances and tail bounds remain unknown rather than zero. The adopted empirical allowance is not a rigorous bias certificate. The independent PR-versus-PR confirmation does not independently confirm the new PR-versus-common-PF comparison. No global optimum over prefixes/q, general PR advantage, or total energy/QPE/RPE execution advantage is claimed.
+
+> For H6, 187 completed price pairs from an interrupted COST stage were accepted through their individual saved-byte, vector and gate audits. The original parent exit/reap status, stopping cause and exact stopping time remain unresolved. A separate grant completed 22 further pairs normally. Acceptance of the saved completed pairs and normal completion of the new grant do not establish successful completion of the interrupted parent stage; its original STOP and nonrefunded ledger are retained.
+
+## Table 1 footnote DRAFT
+
+> Table 1 retains its fixed PF controls and independent-confirmation cohorts. The separate common-domain benchmark in Supplementary Tables S-common-B/A uses saved exploratory PR samples and a registered three-formula PF domain; it does not replace the controls or observations in this table. The two H8 observations are also shown in Figure 2B and are not additional independent evidence.
+
+## Figure 2 caption cross-reference DRAFT
+
+> A separate common-domain benchmark is reported in Supplementary Tables S-common-B/A. Its candidate domain, accounting policy and saved exploratory cohort differ from the mechanism comparisons shown here. No points, denominators, samples or explanatory factors in panels A/B are replaced by that benchmark. The original artwork and its historical A82 annotation are retained, together with the existing caption explanation of the later factor-table completion.
+
+元caption全文を置き換える案ではない。この参照文を追加するかどうかも掲載先の判断事項。
+
+## Figure S-common caption DRAFT
+
+> Figure S-common | Saved exploratory PR costs relative to the best deterministic PF in the registered common domain. The three panels show H2/H4/H6 under the common conditions specified in Supplementary Section S-common-1 (linear 1 Å, STO-3G, tol-only DF1e-8 ranks 3/10/19, T = 0.8, P = 0, prefixes 0–2/1–9/5–15 plus Full3/10/19, q = 1/2/4/8, δ = 0.8/0.4/0.2/0.1). Each point uses the saved PR_reduction_percent field from the all-formula comparison. Positive values denote lower PR point cost and negative values lower PF point cost. Accuracies are categorical and are not interpolated. Candidate identities and unchanged PR statistics are provided in Table S-common-B. No new ratios, rankings or uncertainty intervals are calculated for this proposal. These finite selected point costs do not certify population-mean superiority or rigorous bias; unobserved rare-event contributions remain unknown. The H6 interrupted-stage provenance is retained as described in Section S-common-5.
+
+別図は仕様のみで未描画。原Figure2のcaption・数値・主張の意味は保全する。Abstract/Conclusionの新主張化と主図昇格は、AD03・論文scope・掲載先の別判断後の作業。

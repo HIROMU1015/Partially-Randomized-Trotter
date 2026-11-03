@@ -1,0 +1,31 @@
+# 9. 技術検証・終了監査
+
+**掲載準備DRAFTの技術検査。科学的な新規受入・独立科学レビュー・最終freezeではない。**
+
+固定Git objectから、採用報告・v2補足・dataset・15/45比較・分母分解・CEM・台帳・manifest・source catalogを実取得する。
+元結果90f1cd55、既存論文1923fce8、原Figure2仕様/caption/図34file、Methods、旧CEM/台帳/paper data manifest、元主表に記載された独立確認結果を取得する。
+各入力のcommit・blob・SHA256・byte数は[source catalog](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/source_catalog.json)に記録する。
+原Figure2A/2BはPNGを一時領域で目視確認し、仕様とcaptionの機構・cohort区分を確認した。科学配列や回路はロードしていない。
+
+既存のstdlib-only転記helperと固定Git読取を再利用する。
+[reader](../../../scripts/prepare_h246_pf_publication.py)は、588候補・2940 endpoint・15/45比較key、PF候補の所属域・公式、保存PF endpointとの完全同一性、保存PR統計・cohort、H4 rank10、旧主表6行、未知H6 exit/rare boundを検査する。
+最良性を再計算せず、採用元60行との完全一致と元の保存数値監査への参照で検証する。新しいmin、比、shot、平均、分散、SE、CI、順位を算出しない。
+
+[人工改変拒否tests](../../../tests/test_h246_pf_publication.py)では、候補/精度欠落、DF12誤接続、比較A/B混合、PF分母差替え、PR SE変更、確認cohort誤表示、適格費用欠測、未知終了/rare boundの0補完、AD03/freeze/主表変更/pushへの昇格、Figure2原byte破損を拒否する。
+
+`technical_validation.json`が最終の機械判定、[artifact inventory](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/artifact_manifest.json)が新規成果物のSHA目録。
+readerは変更範囲を新しいDRAFT資料・索引・別ノート・manifestの新規項目に限定する。
+旧原稿・主表・Figure2・採用済みdataset/CEM/台帳/manifest・独立確認・SOURCE/raw/grant/ledger/marker/STOPは変更しない。
+他worktree・共有環境・依存ライブラリ・他ユーザーのprocessへの操作は行わない。
+準備時の読取観測はaffinity128 CPU、MemAvailable 1029647512 kB、disk空き120747360256 byte。重い科学workerは起動せず、独立した固定Git読取のみ並行化した。
+
+実行：`python scripts/prepare_h246_pf_publication.py`。DRAFT転記の再生成だけは`--build --receipt`。
+これは科学stageや消費済みgrantのretry/resumeではなく、新しい科学callを発行しない。
+検証は主担当自身によるローカル技術確認で、外部再現・immutable CI・別担当の科学レビューとは呼ばない。
+
+固定77資料の取得・SHA照合と、12件の人工テストがPASS。
+試験receiptには検査実装とテストファイルのSHAを結び、[終了監査](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/ending_audit.json)に今回の実行境界と原本保全を記録する。
+SHA目録は自己参照を避けるため目録自身と最終機械判定receiptを除く。機械判定は同じcheckerで再検査でき、最終ローカルcommitが全ファイルを固定する。
+
+[mandatory STOP](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/MANDATORY_STOP.json)。
+専用branchへのローカルcommit後停止し、GitHub push・PR作成・正式論文改訂・AD03採択・詳細科学レビュー・最終freezeへ進まない。

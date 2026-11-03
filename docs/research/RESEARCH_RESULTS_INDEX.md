@@ -148,3 +148,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## ローカルに残っていた原稿・受領レビュー・SOURCE
 
 [ローカル資料の収録と原版対応](main_local_results_collection_20261103.md)から、Track A原稿v0.2、Track B・研究C等の受領レビュー、研究ノート、SOURCE入口と保存別版へ進める。未コミット原本の収録であり、元の科学SOURCE・条件・status・STOPを維持する。
+
+## サーバー1の準備済み原本からの追補
+
+[過去の草稿・技術SOURCE・索引の保存原版](server1_onsite_collection_20261103.md)から今回の出典対応へ進める。現在の仕様・科学的採否・実行許可は変更しない。

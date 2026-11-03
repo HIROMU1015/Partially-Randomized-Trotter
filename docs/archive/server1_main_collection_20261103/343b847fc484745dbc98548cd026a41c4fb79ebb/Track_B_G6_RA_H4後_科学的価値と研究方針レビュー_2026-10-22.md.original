@@ -1,0 +1,525 @@
+# Track B / G6 Return Aggregation：H4後の科学的価値・新規性・研究方針レビュー
+
+- 作成日：2026-10-22 JST
+- 対象：G6のReturn Aggregation（RA）、General Full生成、Closed P5、C1のH4探索結果、および論文化・研究投資の判断
+- 開始承認：ユーザー「レビューを開始して　丁寧に考えて」
+- 区分：重要な科学レビュー。今回の担当モデルによる資料読解・数理的検討であり、別エージェント／外部機関の独立再現ではない。
+- 実施範囲：固定GitHub文書・関連SOURCEの静的読解、保存された比較値の引用、関連一次文献の確認、既存式の紙上整理。
+- 実施していないこと：科学SOURCEのimport／実行、H4の新計算、raw trajectoryの再集計、追加統計解析、係数・normalizer・必要N・資源順位の再計算、回路生成・合成、GitHub書込み。
+- 本書は研究上の提案・評価であり、新規実行承認でもrepository上の正式な方針変更でもない。既存SOURCE・結果・grant・claim・ledger・marker・mandatory STOPは変更していない。
+
+## 0. 結論
+
+**C1の追加分子計算・native保証整備の一時凍結は維持する。一方、今回のH4結果を根拠に「RA全体に意味がない」「Closed P5があるからG6全体は既知」と結論することは支持しない。**
+
+今後の主線として推奨するのは、General Fullの実用的優位を求めて実験を増やすことではなく、**G6・Closed P5・既存の正負の資源結果を、構成と適用限界が明確な一つの方法論的成果へ整理して区切ること**である。
+
+現状で支持する中心は、一般Hermitian involutionの同じ有限Taylor operatorに対して、形式returnを集約し、正値性・局所係数取得・全集約normalizer不要の生成・有限bit補正・費用の条件を具体化した構成である。新しいGreen理論、Euler pairing、importance samplingの原理、普遍的な量子資源優位を主張するものではない。[G01–G05]
+
+| 判断対象 | 本レビューの評価 |
+|---|---|
+| 指定short-step域の理想RA構成 | 中心的恒等式・正値性・生成規則は、明示された前提の下で支持する |
+| G6の有限bit仕様 | 条件付き保証として保持。物理モデル・native・RNG・完走を自動認証するものではない |
+| 現在のH4条件でRAを実用採用する理由 | 明確な総資源改善は示されておらず、追加投資の優先度は低い |
+| H4によるRA全般の無効性 | 示されていない |
+| General FullのClosed P5に対する固有の量子優位 | 同じ理想accepted ensembleを使うm=5では支持しない。取得・古典生成の違いは別問題 |
+| G6とP5を合わせた方法論の研究価値 | 保持する。既知要素の結合だけで自動的に無価値とはならない |
+| 独立新規性・原著としての十分性 | 未確定。主張の単位と先行研究との差を厳密に限定する必要がある |
+| 高インパクトな分子資源削減論文としての採択 | 現資料では支持しない |
+| 次の作業 | 既に依頼した凍結・総括・原稿挿入候補へ本レビューの訂正を反映。別の保証整備段階や新実験を自動追加しない |
+
+## 1. 評価対象を四つに分ける
+
+### 1.1 RAという表現
+
+RAは、有限Taylor展開中の語を、隣接する同一labelの消去 `Q_i Q_i=I` による同じreduced wordへ集約する表現である。符号付きのTaylor寄与を集め、その後parent/child pairingによってランダムユニタリの重み付き平均へ戻す。[G01,G02]
+
+### 1.2 General Fullという生成器
+
+General Fullは、そのRA表現からeventを生成する一つの方法である。局所Green係数query、ordinary envelope、量子実行前の棄却を用い、全集約normalizerを事前に求めない。RA表現そのものと、この特定の生成・監査実装の性能は同一ではない。[G01,G02,G04]
+
+### 1.3 Closed P5という低次数特殊化
+
+Closed P5は本研究のG9系列で具体化されたm=5のRA特殊化であり、General Fullと同じ理想full-return accepted ensembleを別経路で生成する。root・ordered pair・長さ4のfirst-label群とcompletionを使う。[G06]
+
+したがって、「Closed P5という強い比較対象がある」は正しいが、「外部で既に完成していた同一アルゴリズムがG6を不要にした」とは今回の資料からいえない。Closed P5の構成要素や独立新規性も検討対象ではあるが、**同一研究内の特殊化が一般生成器を上回ることは、RA研究全体の否定ではない**。
+
+### 1.4 C1という応用検証
+
+C1はG6/RAを保存H4・DF入力へ接続し、実装・古典処理・logical回路構造を確認した応用系列である。現在の完走結果は、同じ有限targetに対する固定trial数の探索的診断であり、最終分子energy・同精度の指数時間発展・全RPEの比較ではない。[G10–G12]
+
+この四つを区別せず「RAが勝った／負けた」とまとめると、研究判断が過大にも過小にもなる。
+
+## 2. H4が実際に示したこと
+
+### 2.1 固定条件と測定対象
+
+Linear H4、1.00 Å、STO-3G、DF rank12、R1新partition（generation-prefix L_D=3）、8 system qubit、13 basis、324 label。T=4/5、q=1、r=4、m=5。各方式1024 whole-path、各pathは4 microstepである。[G10]
+
+資源測定の範囲は `TAIL_ONLY_PLUS_SCALAR`。deterministic halves、native費用、物理state preparation/readout、必要試行数、量子shot、coherent signalの推定を含まない。1024は探索試行数であり、共通の誤差・confidenceを満たすと認証したNではない。[G10,G11]
+
+### 2.2 保存値の引用
+
+以下は既存比較表の表示値を引用した。新しい比、信頼区間、順位、改善率は計算していない。[G10]
+
+| 指標 | Ordinary | General Full | Closed P5 |
+|---|---:|---:|---:|
+| 完走path | 1024 | 1024 | 1024 |
+| accepted path | 1024 | 1024 | 1024 |
+| valid zero path | 0 | 0 | 0 |
+| logical instructions／classical trial | 285.125 | 284.6494141 | 284.7666016 |
+| logical depth／classical trial | 76.67382812 | 76.61914062 | 76.64550781 |
+| 経験的weight二乗平均 | 1.114104966 | 1.114104966 | 1.110527923 |
+| normalizer/completion CPU秒 | 0.026659721 | 0.203877525 | 283.9931603 |
+| sampling/checks/Evidence CPU秒 | 21.57383098 | 4410.007132 | 400.6340313 |
+| 全hierarchy CPU秒 | 71.138041 | 4523.42039 | 998.71687 |
+
+この条件でlogical命令数とdepthの観測差は小さく、zeroによる回路回避は観測されなかった。これは追加実装投資に対する積極的な材料が弱い、という判断を支える。
+
+一方、logical instructionはopaqueなcontrolled rotationも一命令として数え得る。角度合成、T数、実backend費用を同じ精度で評価したものではない。logical費用の近さからnative費用の同一性を証明することはできない。
+
+### 2.3 CPUの比較に残る交絡
+
+旧Ordinary/Fullは、NumPy/Qiskit初期化後のfork、各21 worker、3 method coordinatorの同時実行である。P5Rは単一producer、累積整数selector、global cache、後段32 fresh exec provider、job-local BLAS threads=1、fsync・監視・Evidence再読込を使った。[G10,G11]
+
+Fullのsampling/checks/Evidence stageには局所parent query、有限bit検査、保存処理が含まれる。Green係数演算単独のCPUではない。P5だけに加えたselector/cacheの利点を、最適化機会が同じ対照との速度優位と扱うこともできない。
+
+**CPU値は、現実の実装負担が大きかったという証拠であるが、方式固有の最速性能順位や根本的計算量差の実証ではない。**
+
+### 2.4 標本が答えていないこと
+
+方法ごとのPRNG keyは異なり、paired比較ではない。zeroが観測されなかったことは母集団の棄却確率が0であることを意味しない。経験的weight二乗平均は認証moment/range・十分Nではない。量子shotsがないため実測の信号分散も取得していない。[G10]
+
+ただし、量子shotsがないこと自体が理論的資源見積りを禁止するわけではない。理想的なHadamard ±1測定なら、Z=WYに対してY²=1なのでE[Z²]=E[W²]である。必要なのは、その法則・bias・誤差幅・保証を同じtaskに結び付けることであって、必ず実量子測定を行うことではない。この恒等式を今回の有限標本から新しいNや分散値へ評価してはいない。
+
+## 3. 過去の説明で訂正する点
+
+### 3.1 「次数0なのでRAに出番がない」は言い過ぎ
+
+保存表のdegreeはparent側の偶数次数である。Ordinaryのdegree0 eventでもchild rotationを一つ含み、恒等操作だけを実行するわけではない。RAの空parentは、さらに高次returnから戻る寄与も係数へ吸収している。[G01,G06]
+
+P5の保存式では
+
+\[
+a_\emptyset=1-\chi t_2+(2\chi^2-\mu_4)t_4,
+\]
+
+であり、rootのchild係数にもt_1、t_3、t_5が入る。したがって、長い語が実際の標本に現れなくても、集約はroot係数・回転角・normalizerを変更できる。
+
+正しい解釈は、**「非空parentが少ないので回路長短縮の機会は少ない。ただし、係数・角度・統計weightの改善までゼロとはいえない」**である。
+
+### 3.2 「RAは回路からQ_iQ_iを消すだけ」ではない
+
+Ordinaryにも同じ合法な回路簡約・基底共有を与えるべきである。RAの独自の比較対象は、その簡約後にも残る、異なるraw語の係数集約・phase・normalizer・lawの変更である。[G01,G06]
+
+またGeneral Fullの実生成は、raw非reduced語をreduce先へ再配分するのではなくzero trialとして棄却する。形式的なreturn寄与は事前の係数queryで集約される。この二つを同じ操作と説明してはいけない。[G02]
+
+### 3.3 Closed P5はRAに対する外部の反証ではない
+
+Closed P5は同じRA表現を実現する内部の低次数特殊化である。m=5で比較すべき強い対照には違いないが、General Fullの追加利益がなくてもRA全体の表現上の利益は残り得る。[G06]
+
+### 3.4 「数学的に成立する」から新規性・論文価値は自動的に出ない
+
+逆方向にも注意が必要である。既知Green式、Euler pairing、棄却、importance weightingを用いることだけで新しい重要な原著になるわけではない。しかし、それぞれの部品が既知であることだけで、組合せ全体の科学的価値を否定することもできない。[G01,G05]
+
+### 3.5 H4の限定結果から既存の正結果を消してはいけない
+
+G7–G10には、別の固定synthetic条件・同有限target・nativeモデルの下でOrdinaryを上回る保存結果がある。H4のlogical差が小さいことは、それらの固定結果の撤回理由にならない。対象と費用層が異なる。[G06,G07]
+
+## 4. 小さい時間刻みで効果が弱くなりやすい理由
+
+本節は既存式の紙上整理であり、新たなH4係数解析や数値実験ではない。前提は有限の固定p、奇数m≥3、x→0、既存のideal ensembleである。[G01,G02,G13]
+
+\[
+\chi=\sum_i p_i^2
+\]
+
+は、独立に選んだ二つのlabelが一致する確率である。均一なら1/Lだが、一般には偏りに依存する。**324 labelという個数だけからH4のχを1/324と置いてはいけない。** 今回H4のχは再計算していない。
+
+Ordinaryのnormalizerは
+
+\[
+B_o=\sum_{l=0,2,\dots,m-1}\sqrt{t_l^2+t_{l+1}^2},\qquad t_n=x^n/n!,
+\]
+
+なので
+
+\[
+B_o=1+x^2+O(x^4).
+\]
+
+RAではrootについて
+
+\[
+a_\emptyset=1-\tfrac12\chi x^2+O(x^4),\qquad
+s_\emptyset=x+O(x^3),
+\]
+
+\[
+d_\emptyset=1+\tfrac12(1-\chi)x^2+O(x^4).
+\]
+
+長さ2のreduced parent全体は、先頭次数の総質量が
+
+\[
+\tfrac{x^2}{2}\sum_{j\ne k}p_jp_k=\tfrac12(1-\chi)x^2
+\]
+
+である。従って
+
+\[
+\boxed{B_{RA}=1+(1-\chi)x^2+O(x^4)},\qquad
+\boxed{B_o-B_{RA}=\chi x^2+O(x^4)}.
+\]
+
+これは、短時間・低いlabel衝突率ではnormalizationの改善自体も小さくなりやすいことを示す。回路長だけを見た説明より適切である。ただしO項の一様定数、H4の実値、native総費用差はこの式から取得していない。
+
+さらに既存 `quartic_coefficients` ではPartialとFullのx²係数は同じであり、追加のfull-return収集の差は次の次数以降に現れる。従って、Ordinaryに対する利益と、既に低次数returnを取り込んだ強い対照への追加利益は区別する必要がある。[G13]
+
+今回のscheduleではx=λ_R/5である。小さいxは「H4という分子名」だけでは決まらず、分解・split・時間・分割数にも依存する。xを大きくすれば改善が見えやすくなる可能性はあるが、同じ最終taskではTaylor誤差、試行数、決定論部の費用も変わる。mだけを増やしても低次数の支配が自動的に解消されるわけではない。
+
+**この機構は現在のH4点の限定性を説明するが、RAが一般に無効だというno-go定理ではない。**
+
+## 5. General FullとClosed P5：何が本当の競争点か
+
+### 5.1 同じideal accepted law
+
+同じm=5 ideal RA eventをe、その正係数をα_eとし、B=Σ_e α_e、ordinary envelopeをOとする。理想General Fullは
+
+\[
+\Pr_F(e)=\alpha_e/O,\qquad Z=B/O,
+\]
+
+Closed P5のcanonical抽出は
+
+\[
+\Pr_C(e)=\alpha_e/B.
+\]
+
+従って
+
+\[
+\Pr_F(e\mid accepted)=\Pr_C(e).
+\]
+
+同じprovider・compile規約・精度を与える限り、条件付きの量子回路分布も同じである。高価なDF basisへ移しただけで、Fullにだけ新しい量子event単価利益が現れるわけではない。[G02,G06]
+
+### 5.2 拒否と統計費用の交換
+
+理想±1測定に対し、Fullは受理時OY・その他0、canonicalはBYを出力する。二次momentは
+
+\[
+M_{2,F}=OB,\qquad M_{2,C}=B^2.
+\]
+
+受理後の同じ回路の平均量子費用をc̄とすると、全古典trial当たりの量子費用はZc̄とc̄である。従って
+
+\[
+\boxed{M_{2,F}(Z\bar c)=M_{2,C}\bar c=B^2\bar c}.
+\]
+
+つまり、このideal二次moment型の費用指標では、Fullの量子前棄却の利点はweight側の負担と釣り合う。同一の仮定は独立microstepの全pathにも適用できる。境界相殺を含む共通path費用を使っても、同じaccepted path分布という根拠は変わらない。[G02,G06、過去C1レビュー§4]
+
+これは実finite-bit、整数ceil、認証上界の緩さ、古典費用、hard cap、terminal failureまで含む普遍的同率の主張ではない。実分散を使う議論と二次moment上界も同じではない。
+
+### 5.3 General Fullに残る役割
+
+General Fullの役割は、同じideal eventをより安い量子回路にすることより、**Bを事前取得せず、一般次数に対して局所的にeventを生成できること**にある。
+
+したがって、本当に比較すべきものは
+
+\[
+C_\mathrm{cl}=S_\mathrm{setup}+N\mu_\mathrm{online}+\Omega_\mathrm{storage/terminal}
+\]
+
+と、認証上界から決まるtrial・量子callの費用である。P5の群構築setupとFullの毎trial局所queryの交換関係が、利用回数・次数・入力・精度で変わる。[G01,G04,G06]
+
+現在のH4比較はこの交換関係の一観測点であり、最適化後の損益分岐や一般scalingは測っていない。だからといって、今すぐその測定を新たな必須課題にする必要はない。
+
+## 6. 既存の正結果・負結果を統合する
+
+### 6.1 固定synthetic native結果は残る
+
+G10 v3のm=5同有限target比較には、次の保存値がある。p=(1/5,3/10,1/2)、x=5/7、明示3-qubit provider、固定native・精度・confidence契約である。[G07]
+
+| 方式 | 二axisの期待native T切片（保存値） |
+|---|---:|
+| Ordinary | 371085419.8 |
+| Partial Return | 275437398.9 |
+| General Full | 273991325.7 |
+| Closed P5 | 272239830.7 |
+| Matched CTS | 387633441.2 |
+
+この例ではRA系列にOrdinary比の正結果が存在する。一方、General FullはClosed P5を上回っていない。CTSは別資源座標、特にCXで強い結果を持つため、T表から全資源の支配やCTS family全体への勝利をいわない。これらの数値はH4や同精度の指数taskの結果ではない。[G06,G07]
+
+従って正しい統合は、**「RAの効果は一度も示されていない」ではなく、「固定条件の正結果はあるが、強い特殊化を超えるGeneral Fullの追加利益と実分子への移転は未確立」**である。
+
+### 6.2 P_U反例の射程
+
+既存の解析的反例はL=2、p=(1/2,1/2)、x=1、m=7で、認証上界U_7が形式P5+tailのbenchmark以下になるという全量化命題を反証する。[G08]
+
+これは重要な制約である。しかしUは真のB_RAではなく上界であり、その反証を「真のRA normalizerが常に悪い」「RAはすべての量子資源で不利」へ拡張できない。
+
+同時に、高次mへ進めば一般Fullが自動的に強い対照へ勝つ、という救済も支持できない。低次数特殊化＋tailとの比較や、実際に用いる保証の緩さが残る。
+
+## 7. 数学的構成の評価
+
+### 7.1 支持する核
+
+固定p、奇数m、0<x≤1、Q_i†=Q_i、Q_i²=Iの下で、以下の筋道は整合している。[G01,G02]
+
+- 同じreduced wordへの有限Taylor寄与の集約は、非可換語を並べ替えずに行える。
+- 隣接ii挿入による確率上界から、集約係数の正値性とenvelopeが得られる。
+- Green/first-passage級数の切断再帰から必要なparent・child係数を取得できる。
+- 偶数parentと単一involution回転をpairし、operator first momentを再現できる。
+- raw非reducedとcoin rejectを全trialのzeroとして保持し、未知B_RAをweightに無料注入しない生成ができる。
+
+今回の紙上確認では、この理想層に中心主張を覆す明白な矛盾は見つからなかった。ただし、全SOURCEの形式検証や全既存定数の機械検算を実施したという意味ではない。
+
+### 7.2 重要な条件
+
+正値性はshort-step域付きである。一般x>1へ自動延長しない。一般の奇数word自体をinvolutionとしない。operator平均とrandom-unitary channelの一致は別であり、controlled相対位相を捨てない。
+
+有限bitではπW̃=α̃の有理恒等式は保持できるが、α̃は根号近似を含み、角度・native誤差も別である。従って「確率補正をしたので元P_mと厳密に同じ」は誤りである。[G01,G03]
+
+F1は与えられたH/Kへの十分条件、F2はbit費用の条件付き会計である。必要最小precision、最速runtime、物理providerやfresh IIDを実証したものではない。これらを未取得として全て後退させる必要も、完成したend-to-end保証へ格上げする必要もない。[G03,G04]
+
+### 7.3 Exact入力の意味
+
+R1は保存・再抽出binary64係数をexact dyadicとして採用した新入力であり、旧PR-2と135係数が異なる。これは新しい固定モデルの正確な定義であるが、元のDF Hamiltonianとのrigorous operator norm bindingを自動的に与えない。[G12]
+
+H4の数値再構成残差が既存許容差内であることと、最終energy/task精度保証は別である。方法論の主張をR1 finite targetへ限定する場合、その限定自体を失敗とみなす必要はない。
+
+## 8. 古典費用と案A/Bの位置付け
+
+### 8.1 「局所query」は「安価な全処理」と同義ではない
+
+G6の局所係数queryは全word表を必要としない。一方、現SOURCEには全child law、law検査・sort、parent.sumの反復、F3のquery/検証・hash・Evidence保存などが残る。F2はその費用を分けて記述している。[G04]
+
+特にH4ではrootが繰り返し現れるのにFullの局所packet・監査費用を4096 microstepで負担している。cacheやselector等で改善できる余地はあるが、実際の最適化後speedupを今回測ったわけではない。Fullだけを最適化した比較、あるいは対照に全語列挙を強制した比較は不公正である。[G10,G11]
+
+古典処理の改善で消せるのは実装上の負担であり、それだけでideal accepted回路分布が新しく良くなるわけではない。
+
+### 8.2 案A/Bを過大にも過小にも扱わない
+
+案Aは部分和queryとinverse-CDF、案Bはexact係数型の計数・completionを用いる。監査では数学的に成立する範囲が確認された一方、計算量の計上範囲の修正と、標準手法との重なりが指摘された。[G09A,G09B]
+
+このため、A/Bそれぞれを新しい論文の中心にする投資を保留した判断は維持する。ただし「標準手法の適用だからG6の実装改善としても無価値」とは判断しない。必要な実装改善と、独立した科学的発見は別である。
+
+今回はA/Bの再開や新しいsamplerの考案を推奨しない。まず既存の成果単位を確定する方がよい。
+
+## 9. 一次文献との比較と新規性
+
+以下は今回確認した関連箇所の範囲に基づく。完全なpriority調査や、全関連文献に同じ構成が存在しないことの証明ではない。
+
+| 一次研究 | 既知と確認できる接点 | G6について残る比較点 |
+|---|---|---|
+| Wan–Berta–Campbell [P1] | 隣接Taylor次数のpairing、次数・labelの効率的sampling、単一Pauli回転を含むrandom unitary構成 | 全formal-return集約後の局所係数・受理law・finite-bit全仕様の取得まで同一と確認したわけではない |
+| Aomoto–Kato [P2] | 自由積のGreen multiplierと再帰 | 有限Taylor、正値性、量子event・weight・費用への接続は別の構成問題 |
+| Zhao–Yuan [P3] | 高次寄与の吸収・cancellationを利用するmodified Taylor | 追加代数情報・modified targetと、一般involutionの同じ有限P_mのlawを区別 |
+| Zeng–Sun–Jiang–Zhao [P4] | Taylor/LCU補償とorder pairing | 既存pairingを新原理にしない。General Fullの全joint lawへの同一性は未確認 |
+| Peetz–Smart–Narang [P5] | SCU/CTS、Pauli収集、全高次展開を避けるlayer sampling | RAだけを非列挙と主張しない。同じaccess・target・費用の対応が必要 |
+| Cugini–Atif–Subaşı [P6] | 費用と統計負担を合わせたimportance sampling、ZeroFill/Discardの区別 | 補正weightやcost-aware samplingだけを新規性にしない。量子前拒否とerror-detection後処理は異なる |
+| Partially randomized time evolution原論文 [P7] | 二乗がidentityの演算子によるRTEと部分ランダム化の文脈 | 非Pauli involution・DFへ接続したことだけを新原理にしない |
+
+### 9.1 既知要素の寄せ集めか
+
+「全要素が既知だから研究全体も既知」という推論は成立しない。同じ入力条件で、指定した出力law・精度保証・取得費用を実現する結合自体が、新しい方法論となる場合はある。
+
+逆に、既存研究にG6と全く同じコードや用語がないことは、独立新規性の十分な根拠ではない。[G05]
+
+**今回残る貢献候補は、一般奇数次数の有限P_mについて、全formal-returnを対象とする局所生成を、正値性・normalizer取得条件・有限bit・古典費用まで一体の仕様として与えること**である。各部品の新規性ではなく、この成果単位で比較すべきである。
+
+### 9.2 原著としての十分性
+
+現資料から「既知法への完全還元が証明された」とは判断しない。一方、一般的な量子高速化や大きな実用効果を主張する証拠もない。
+
+理論・方法論の限定的な原著／技術報告としての可能性は残る。しかし、研究の重要性を支えるのはファイル数・テスト数・監査量ではない。**どの入力から何を従来より扱いやすく得るのか、その適用域・費用・限界が読者に明確であること**が必要である。
+
+単独原著のために全構成要素が独立に新しいこと、非還元性の一般定理、全方式に勝つnative実験、完全な全RPE実装を新たな必須条件として課すこともしない。
+
+## 10. 推奨する論文化の着地点
+
+### 10.1 採らない中心claim
+
+> 「一般Full Returnにより、分子の基底状態energy推定に必要な総量子資源を削減した。」
+
+現データはこのclaimを支えない。H4はfinite targetのlogical探索であり、必要N・native・全schedule・energyの対応が閉じていない。
+
+> 「Closed P5等の既知法より一般Fullが本質的に優れる。」
+
+m=5の同ideal accepted ensemble、強い低次数対照、P_U反例、取得費用の違いに反する過大な表現である。
+
+> 「H4で差が小さいのでRAは無意味である。」
+
+限定条件と費用層を超えており、既存のconditional positive結果も落としてしまう。
+
+### 10.2 支持する中心statement候補
+
+> 一般Hermitian involutionからなるshort-step有限Taylor operatorに対し、形式的returnの集約を局所係数queryと重み付きrandom-unitary生成へ接続する。全集約normalizerを事前取得しない生成、有限bitの補正・誤差・費用、および低次数canonical特殊化との交換関係を明示する。固定native例とDF分子例により、その有効範囲と資源上の限界を示す。
+
+これは**本レビューが推奨する原稿上の焦点**であり、独立新規性・採録・投稿GOを認定した文言ではない。
+
+英語の題名候補：
+
+**Locally generated return-aggregated Taylor ensembles: finite-precision construction and resource trade-offs**
+
+### 10.3 原稿の骨格
+
+1. 対象と問題設定：同finite operator、controlled access、形式returnの範囲。
+2. 中心構成：正値性、Green query、parent pairing、normalizer-free生成。
+3. Finite-bitと取得費用：理想／digital／nativeを分離。
+4. Closed P5：同じRA familyの低次数特殊化、一般法とのsetup/online交換。
+5. 固定資源例：G9/G10の正結果と強い対照による制限。
+6. H4：DFへの接続と、小さい資源差・古典負担の限定観測。
+7. 限界：優位の保証範囲、物理実装・最適化・最終taskの未確立事項。
+
+工程上の失敗と修正は再現性資料に残すが、それを論文の中心的科学貢献と混同しない。G6、M1-S、DF補正、親配分等の異なるtaskを一つの総改善率へ統合しない。
+
+## 11. 継続・縮小・終了の判断
+
+### C1の追加実計算：一時凍結を維持
+
+同じH4条件でtrial数だけを増やす、CPU順位を整えるためだけに全方式を再実行する、native certificateを全supportで完成させる、という追加投資は今は推奨しない。
+
+理由は「準備が難しいから」ではなく、**取得済みの点で大きな量子側改善を示唆する証拠が弱く、その不足を次の大きな技術作業が直接解決するとは限らないから**である。CPU交絡が存在することと、その交絡を今すぐ必ず解消すべきことは別である。
+
+### G6方法論：無期限に発展させず、既存成果をまとめる
+
+General Full、Closed P5、finite-bit仕様、費用条件を一つの成果として保持する。ただし、次々に新しいsampler・canonical拡張・保証整備を足して研究価値を探し続ける主線は止める。
+
+**「構成と限界の明確な方法論的成果として完結へ向かう」という限定継続**を推奨する。高インパクト原著として不足する点を、実装量で埋めようとしない。
+
+### Track B全体：本レビューだけで終了・転換を決めない
+
+M1-S等の別系列は異なるtask・保証・費用を持つ。C1の結果だけでその価値を否定しない。同様に、G6が伸び悩んだことだけを理由に別系列の優位を認定しない。
+
+## 12. 再開するとしたら何が判断を変えるか
+
+再開条件は、単に「xやmを大きくしたい」「別分子も試したい」では不十分である。少なくとも次の論点が具体化される必要がある。
+
+- 同じ最終task・許容誤差の下で、normalization／必要trial／量子回路費用に改善を期待できる機構がある。
+- 低次数特殊化や合法なOrdinary簡約を含む強い対照に対し、追加価値が残る問いになっている。
+- 取得・古典setup・online・償却を含めた費用のどこを改善するのかが明確である。
+- その検証結果が、継続・縮小・原稿claimのどの判断を変更するかが決まっている。
+
+これらは新しい実験条件の採択ではない。計算、数値再解析、native取得、主要contract変更には別の明示承認が必要である。今回、対象・trial数・precision等を新たに設定していない。
+
+## 13. 次に必要な作業を増やさない
+
+既にCodexへ依頼した**C1の凍結・研究成果総括・原稿挿入候補**へ、次の点を反映すればよい。
+
+1. Closed P5をRA familyの内部特殊化として位置付ける。
+2. Degree0をidentity-onlyと説明しない。
+3. H4を同精度総資源の敗北証明とせず、限定logical探索として表記する。
+4. 既存G9/G10の条件付き正結果と強い対照による制約を同時に保持する。
+5. G6の中心statementを、一般高速化ではなく局所生成・有限精度・取得費用の方法論へ絞る。
+
+このためにC1-4.6等の新しいcertificate closure段階、別の大規模レビュー、追加H4 runを自動追加する必要はない。元サーバーが利用不能でも、固定GitHub資料に基づく文書作業は可能である。確認できない旧サーバー内の状態を保全確認済みと報告しない。
+
+### 13.1 研究運営上の反省
+
+以前の進行提案では、探索的な投資判断に必要な準備と、最終論文の強い資源claimに必要な保証を近づけすぎた。入力・phase・operatorの不具合を解消することは必要だったが、初回の有望性判断の前にcanonical全認証・全support native価格・物理準備/readoutまで完成させる必要はなかった。
+
+今後は「何を主張する実験か」を先に固定し、未取得条件を適切に分離する。探索結果の証拠範囲を狭く保つことと、計算の基本的な正しさを緩めることは別である。過去のone-shot・STOP契約をこの反省だけで変更することはしない。
+
+## 14. 確信度・未確認事項
+
+**高い確信**：H4比較の限定範囲、Closed P5とFullのideal accepted ensemble関係、degree0 eventにchild rotationが残ること、既知式からのsmall-x leading-order整理、C1の追加大規模投資を現時点で優先しない判断。
+
+**条件付き・中程度の確信**：G6構成を一つの限定的方法論原著にできる見込み。数学の核は支持するが、重要性・priority・読者への追加価値は原稿claim次第である。
+
+**未確定**：全関連文献に対する独立新規性、最適化済みCPU順位、別条件の分子/native優位、旧P5 workerの根本原因、rigorous DF/model binding、全RPE改善。
+
+今回のGitHub確認は指定資料の読解であり、全公開ファイルのbytes/SHA256やraw archive全memberを独立に再照合したものではない。H4のsummary・comparisonは保存記録として用い、科学的再計算はしていない。外部一次文献は関連部分を確認し、全文全証明の完全監査とはしない。
+
+Aomoto–KatoのPDF本文は解析textで関連節を確認した。webの頁画像取得と作業環境へのダウンロードは失敗し、該当頁の完全な視覚照合は未実施。Zeng等でもPDF頁画像取得に失敗した箇所があり、関連本文の確認範囲を超えない。版指定のないarXiv取得では解析textとPDF画像の表示差があり得るため、本レビューは未確認の式番号・版同一性を細部の結論の根拠にしない。
+
+ローカルの過去3レビューは見出し・関連節を参照した。今回の主要結論はそれらの追認ではなく、固定研究資料と一次文献に戻して判断した。旧私的レビューの全原本や元サーバーの現状態を新たに取得・検証したとは主張しない。
+
+## 15. 参照資料と確認範囲
+
+### 固定GitHub資料
+
+**[G01] 方法ノートv1.1**：対象・数式・先行研究対応・既存結果・限界。主要節と末尾参照を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/243eea8e840f3c472753f7935e510391626fd325/docs/manuscripts/track_b_return_aggregation_native_resource_note_v1_1.md
+
+**[G02] G6数学監査**：§§1–8の仮定、集約、正値性、Green、pairing、envelope、zero-fillを確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/243eea8e840f3c472753f7935e510391626fd325/docs/tracks/algorithm_codesign/g6_independent_mathematical_audit_20261010.md
+
+**[G03] F1精度契約**：入口条件・P0–P5・canonicalとの差を確認。実行していない。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/dd03eb08b6d768f5578d743ab5ad390bd9c93b07/docs/research/track_b_g6_f1_f2_precision_bit_cost_20261018/preflight_precision_contract.md
+
+**[G04] F2 bit費用会計**：算術・bit長・selector・Full setup/onlineの計上範囲を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/dd03eb08b6d768f5578d743ab5ad390bd9c93b07/docs/research/track_b_g6_f1_f2_precision_bit_cost_20261018/full_bit_complexity_accounting.md
+
+**[G05] 全生成手順の先行研究対応監査**：12工程と既知要素／未確立の結合を確認。全セルの独立再証明ではない。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/243eea8e840f3c472753f7935e510391626fd325/docs/research/track_b_g6_full_generation_prior_art_audit_20261018/generation_pipeline_alignment.md
+
+**[G06] G9 v2結果**：P5特殊化、same ideal ensemble、native比較、限定条件を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/243eea8e840f3c472753f7935e510391626fd325/docs/tracks/algorithm_codesign/g9_v2_results_and_gpt_handoff_20261010.md
+
+**[G07] G10 v3結果**：登録17行、同次数比較、保存native値、証拠の限界を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fcd3ea6217bc00b667180cec149a70102d75f07e/docs/tracks/algorithm_codesign/g10_v3_results_and_gpt_handoff_20261010.md
+
+**[G08] P_U反例certificate**：対象と紙上不等式を確認。科学CODE・検算を再実行していない。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/850ac89e1a6ea955def805e5462b8694ec0840b4/docs/research/track_b_g6_pu_analytic_proof_20261018/proof_or_counterexample_certificate.md
+
+**[G09A] 案A監査**：数式成立と計算量・新規性の留保を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/df90ed8c8e847f8ea1861d9761b9515e7a895916/docs/research/track_b_partial_sum_query_sampler_audit_20261020/README.md
+
+**[G09B] 案B監査**：exact係数型構成、計数・completion、計上範囲の修正を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f823e909cb7049a612f1bf2c247f3bbe15fc184d/docs/research/track_b_coefficient_type_canonical_audit_20261020/README.md
+
+**[G10] H4三方式比較**：既存比較表・実行条件差・測定限界を確認。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/bb9059bacb697e1105e63c1b3826b0c34886ad15/docs/research/track_b_c1_5a_p5_worker_recovery_20261021/comparison.md
+
+**[G11] H4 P5R handoff／費用補足**：handoffは今回直接再取得。費用補足は会話で取得済みの固定記録を補助参照。数値根拠は直接再取得した[G10]を優先。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/bb9059bacb697e1105e63c1b3826b0c34886ad15/docs/research/track_b_c1_5a_p5_worker_recovery_20261021/handoff.md
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/bb9059bacb697e1105e63c1b3826b0c34886ad15/docs/research/track_b_c1_5a_p5_worker_recovery_20261021/RESOURCE_REPORT.md
+
+**[G12] R1入力・モデルbinding**：model_binding.jsonは今回直接再取得。入力・係数差は会話内の固定結果と過去C1レビューも参照。新しい行列評価・全入力再照合はしていない。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2937e6b655ba3cd77f982d6901d766355a8b92c1/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/README.md
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/2937e6b655ba3cd77f982d6901d766355a8b92c1/docs/research/track_b_c1_1_r1_new_partition_exact_model_20261021/result/model_binding.json
+
+**[G13] G7 SOURCEのsmall-step係数**：`quartic_coefficients`を含む19–56行の静的読解。
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/243eea8e840f3c472753f7935e510391626fd325/src/trottertracks/algorithm_codesign/g7_generator.py
+
+### 外部一次文献
+
+**[P1] Wan, Berta, Campbell.** *A randomized quantum algorithm for statistical phase estimation.* arXiv:2110.12071、Appendix C、Algorithm 2。関連PDF頁を視覚確認。
+https://arxiv.org/abs/2110.12071
+
+**[P2] Aomoto, Kato.** *Green functions and spectra on free products of cyclic groups.* Ann. Inst. Fourier 38(1),59–85 (1988)。§1、Eq.(1.6)、Lemma1.1等を解析textで確認。頁画像取得は失敗。
+https://www.numdam.org/item/AIF_1988__38_1_59_0.pdf
+
+**[P3] Zhao, Yuan.** *Exploiting anticommutation in Hamiltonian simulation.* Quantum5,534 (2021)、arXiv:2103.07988。§4.2と関連PDF頁を確認。
+https://arxiv.org/abs/2103.07988
+
+**[P4] Zeng, Sun, Jiang, Zhao.** *Simple and high-precision Hamiltonian simulation by compensating Trotter error with linear combination of unitary operations.* arXiv:2212.04566。order-pairingとIV.Aの関連本文を確認。
+https://arxiv.org/abs/2212.04566
+
+**[P5] Peetz, Smart, Narang.** *Quantum Simulation via Stochastic Combination of Unitaries.* arXiv:2407.21095、出版論文と取得可能な本文。Methods、Supplementary Note3のlayer sampling、Note5の構成を確認。
+https://arxiv.org/abs/2407.21095
+https://www.nature.com/articles/s41534-025-01168-w
+
+**[P6] Cugini, Atif, Subaşı.** *Resource-Optimal Importance Sampling for Randomized Quantum Algorithms.* arXiv:2603.13495v1。Theorem1、費用・variance、ZeroFill/Discardの関連節を確認。
+https://arxiv.org/html/2603.13495v1
+
+**[P7]** *Phase estimation with partially randomized time evolution.* arXiv:2503.05647。RTE・部分ランダム化・二乗identity演算子の記載を確認。今回必要な一般的接点のみを使用し、未確認の版・式番号の同一性は仮定しない。
+https://arxiv.org/abs/2503.05647
+
+### ローカル参考資料
+
+- `research_project_instructions_unified_2026-10-17.md`：実際に全文確認。
+- `Track_B_統合科学レビュー_2026-10-20.md`：研究の区分・数学・論文化の関連節を参照。
+- `Track_B_インパクト向上_研究再設計レビュー_2026-10-20.md`：案A/Bの提案範囲・留保を参照。
+- `Track_B_C1_応用接続_研究価値レビュー_2026-10-20.md`：特に§§3–5の同target・Full/P5・費用恒等式を参照。
+
+---
+
+## 最終判断
+
+**C1を現在の条件で拡張する理由は弱く、一時凍結を維持する。General Fullの資源優位を追う実装・保証整備の連鎖も主線にはしない。一方、RAの構成、Closed P5特殊化、finite-bit仕様と資源上の限界は、一体の研究成果として保持し、限定的方法論として整理・完結する方向を推奨する。**
+
+これはRAの無価値認定でも、高インパクト原著の成功認定でもない。H4が支持する範囲、既存理論が支持する範囲、先行研究との差が未確定な範囲を分けた判断である。

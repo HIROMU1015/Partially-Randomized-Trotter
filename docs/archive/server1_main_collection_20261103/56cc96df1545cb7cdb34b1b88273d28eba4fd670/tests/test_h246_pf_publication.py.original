@@ -1,0 +1,81 @@
+"""Technical scope/identity mutation tests; no science or numerical reranking."""
+import copy
+import csv
+import io
+from pathlib import Path
+import sys
+import unittest
+from unittest.mock import patch
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+import prepare_h246_pf_publication as prep
+from h46_higher_pf_dataset import DatasetError
+
+
+class PublicationDraftGuards(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.catalog, cls.saved, cls.raw = prep.load_sources()
+
+    def reject_saved(self, mutation):
+        saved = copy.deepcopy(self.saved)
+        mutation(saved)
+        with self.assertRaises(DatasetError):
+            prep.validate_saved(saved)
+
+    def test_complete_reference_grid_and_literal_tables(self):
+        prep.validate_saved(self.saved)
+        tables = prep.saved_tables(self.saved, self.catalog)
+        for file, count in [('comparison_B_15_DRAFT.csv', 15), ('comparison_A_45_DRAFT.csv', 45),
+                            ('endpoint_reference_2940.csv', 2940), ('claim_evidence_DRAFT.csv', 67)]:
+            self.assertEqual(len(list(csv.DictReader(io.StringIO(tables[file].decode())))), count)
+
+    def test_missing_candidate_cannot_be_subset_optimum(self):
+        self.reject_saved(lambda d: d['dataset']['candidates'].pop())
+
+    def test_missing_precision_reference_rejected(self):
+        self.reject_saved(lambda d: d['dataset']['candidates'][0]['endpoints_saved'].pop())
+
+    def test_legacy_DF12_cannot_be_joined(self):
+        self.reject_saved(lambda d: d['dataset']['systems']['H4']['scientific_identity_saved']['binding'].update(rank=12))
+
+    def test_all_formula_and_within_formula_not_mixed(self):
+        self.reject_saved(lambda d: d['within45'][0].update(formula='ALL_FORMULAS'))
+
+    def test_PF_denominator_cannot_be_substituted(self):
+        self.reject_saved(lambda d: d['global15'][0]['PF'].update(best=d['within45'][1]['PF']['best']))
+
+    def test_saved_PR_statistics_cannot_change(self):
+        self.reject_saved(lambda d: d['global15'][0]['PR_saved'].update(total_RZ_SE='0'))
+
+    def test_PR_PR_confirmation_not_new_PF_confirmation(self):
+        self.reject_saved(lambda d: d['global15'][0].update(independent_confirmation=True))
+
+    def test_eligible_but_missing_price_is_not_ineligible(self):
+        self.reject_saved(lambda d: d['dataset']['candidates'][0]['endpoints_saved'][0].update(price=None))
+
+    def test_unknown_old_H6_exit_and_rare_bound_not_zero(self):
+        self.reject_saved(lambda d: d['dataset']['saved_execution_summary'].update(H6_original_parent_exit_reap=0))
+        self.reject_saved(lambda d: d['dataset']['saved_execution_summary'].update(unobserved_rare_event_bound=0))
+
+    def test_AD03_freeze_and_main_rebaseline_rejected(self):
+        base = prep.policy(self.saved, self.catalog)
+        for field, value in [('AD03', 'ADOPTED'), ('final_evidence_freeze', True),
+                             ('common588_rows_added_to_existing_main_table', 15),
+                             ('existing_Figure2_action', 'REPLACE'), ('GitHub_push', True)]:
+            p = copy.deepcopy(base); p[field] = value
+            with self.assertRaises(DatasetError):
+                prep.validate_policy(p)
+
+    def test_corrupted_original_Figure2_bytes_rejected_by_fixed_SHA(self):
+        reader = prep.git_bytes
+        def corrupt(commit, path, root=prep.ROOT):
+            raw = reader(commit, path, root)
+            return raw + b'corrupted' if path.endswith('/figure2A.png') else raw
+        with patch.object(prep, 'git_bytes', side_effect=corrupt):
+            with self.assertRaises(DatasetError):
+                prep.load_sources()
+
+
+if __name__ == '__main__':
+    unittest.main()

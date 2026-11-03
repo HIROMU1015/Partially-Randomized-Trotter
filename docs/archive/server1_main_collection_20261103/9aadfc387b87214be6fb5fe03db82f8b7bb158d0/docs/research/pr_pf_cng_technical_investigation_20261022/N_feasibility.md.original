@@ -1,0 +1,57 @@
+# B：独立N_circuitの評価可能性
+
+## 判定
+
+現存compiled費用receiptから、独立N_circuitを復元することはできない。compile_oneはRZ計数、有限法則の抽選次数、代表trajectoryのstatevector差などを返すが、全compiled平均測定信号を保存しない。代表検査は各stageのindex=0だけであり、全抽選列の証明ではない。現在の20条件についてN_circuit、N比、G10、G11、N変更寄与はnullを保持する。
+
+|経路|数学的には何が可能か|既存証拠による状態|
+|---|---|---|
+|A：全測定法則の同値性|全drawで同じ測定法則・同じ推定器、同じbias/u/B_upper/epsilon/alphaなら、同じ式は同じ十分Nを返す|条件付き命題は成り立つ。実装の全法則同値性は未検証。独立数値評価とは表示しない|
+|B-PF：compiled信号の独立評価|決定論wrapperの両軸を直接評価できる|実装可能。保存signalの再利用を独立compiled評価に見せず、新しい未承認科学stageが必要|
+|B-PR：compiled平均信号の独立評価|有限全法則を平均すれば定義可能|全trajectory列挙は非現実的。compiled全法則を保つ分解証明・別の独立平均法・誤差予算が未実装。現在は実行可能なseal済み計画なし|
+
+## 現行Nの統計契約
+
+各軸aでfresh IIDなHadamard結果X_a∈{-1,+1}を使う。PRでは量子shotごとにRTE列を新たに抽選する。Cの古典MC trajectoryを固定して量子shotを繰り返す法則は同じではない。古典MC標本数を量子shot数に掛けることもしない。
+
+推定器はB×標本平均。corrected signalの軸biasをb_a、candidate/reference両方を含む数値allowanceをu_aとし、
+
+    h_a = epsilon/sqrt(2) - |b_a| - u_a
+    N_a = ceil( 2 B_upper² log(2/alpha_axis) / h_a² )
+
+alpha_axis=.025、2軸合計の失敗率上限はunion boundで.05。h_a>0が必要で、実装はu_a/h_a<=.01も使用適格条件にする。B_upperはbinary64 log_Bに経験的log_B_marginを加えたものから得る。PFの数学的正規化は1だが、保存会計の経験的marginを無断で除去しない。
+
+元uはfloor、binary64 work×最大normのrounding proxy、Horner/forward、raw/corrected閉包、full-H参照の検査から作るEMPIRICAL allowanceであり、厳密誤差証明ではない。候補/referenceの誤差を両方含める仕様だが、Gaussian近似の全法則誤差を測って自動的に含める実装ではない。compiled側のuに元uをそのまま流用して保証済みとしない。
+
+根拠は [runtime_v2.signal/shots](../../../scripts/recomputed_s2_runtime_v2.py:284)、[u_aware_shots](../../../artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/fixed_provider/src/trottertracks/resource_applicability/ax2b_numerical_accounting.py:21)、[empirical_allowance](../../../artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22/fixed_provider/src/trottertracks/resource_applicability/h6_matched_accounting_v1.py:17)。
+
+## A：同値性で済む条件と証拠不足
+
+必要なのは、同一Hamiltonian・状態・preparation・candidate・time、同じ全抽選確率と順序、component符号、Taylor phase、scalar、Gaussianの作用、ancilla convention、cos/sin readout、および推定器の一致である。全operatorの一致は十分条件だが、固定状態に対する全測定分布の一致でも数学的には足りる。どちらも代表1 drawの一致からは導けない。
+
+有限RTEはk=0,2,...,Kのpaired Taylor法則。order weightは |tau|^k/k! × sqrt(1+(tau/(k+1))²)、正規化bで割り、各eventはk+1個のcomponentをIIDに選ぶ。operatorの実行順はproductsの後にrotation、角はatan(tau/(k+1))、phaseは(-1)^(k/2)、coefficient_signを保持する。全q r eventの法則、scalarのoriginal_plus_tail_once、正規化B=b^(q r)を結び付ける必要がある。
+
+native symmetric-directionalは左halfをuncontrolled、右halfをdirectionalに変換し、tailはordinary controlである。さらにwhole-trajectory transpileを行う。抽象operatorとしての変換恒等式、有限RTE生成、Gaussian数値表現、全compiler出力の意味保存をそれぞれ検証する必要がある。代表wrapperのraw state差<1e-7は限定的な実装証拠である。固定1e-9のone_G FAILや数値allowanceへの影響をこの1e-7で受理し直さない。
+
+bias/u/B_upperまで同じに置くことを先に仮定したNは「条件付き移送値」であり、「独立取得したN_circuit」ではない。同値性を証明した将来の結果も、独立数値評価とは別のstatusとprovenanceを使う。現時点ではどちらの不足もnullで表す。
+
+## B：独立評価の必要量
+
+1. compiled各軸平均信号 mu_a,c = E_omega <Z_ancilla> を、符号・global/relative phaseを保持して取得する。ノイズのない理想回路が対象で、実機必要最小shotの測定ではない。
+2. 同じ有限法則のBでcorrected signalを作り、同じfull-H referenceに対するsigned biasを評価する。reference_rotated=false、same state/hashを保持する。
+3. 候補の状態作用、reference、normalization、平均計算・有限法則全体、浮動小数点・compiler/Gaussian意味差の誤差をuにどう含めるか固定する。元uと同等の経験的強度を使う結果はEMPIRICALのままであり、CERTIFIEDへ格上げしない。
+4. BとB_upperを区別する。candidate側normalizationの誤差はbiasと出力範囲の両方に影響する。任意のMC drawでBが変わる推定器へ変更しない。
+5. 同じepsilon、alpha_axis、誤差配分、u/headroom gate、Hoeffding式、演算順序を用いる。Nが同じか異なるかは達成条件にしない。
+6. 新しい入力hash・SOURCE・seed・単位・grant/marker/STOPと既存cohortとの対応を保存する。新Nを旧Gへ黙って挿入せず、新結果packetに保存する。
+
+PRではcompiled whole-trajectoryの最適化が全gate列に依存する。保存Cの有限MC平均は平均signalの推定ではなく、signal推定の標本として自動流用できない。未観測rare eventの費用寄与と信号寄与も別物である。信号が有界であることを利用するには、その法則質量と誤差予算を明示した新契約が必要で、未観測を0に置けない。
+
+法則の因数分解を使ってprecompileしたprimitiveの平均channelを計算する案は、全trajectory compilerの測定法則を保つ証明があって初めて同じ対象になる。uncompiled有限Taylor/Horner信号を独立compiled信号に改名しない。symmetric-directionalの両ancilla branchの干渉を扱う必要があり、平均unitaryを密度行列や干渉項に機械的に代入してはいけない。
+
+## ceil境界と保証強度
+
+旧整数はbinary64の既定演算順によるBINARY64_DIAGNOSTICであり、厳密な整数確定ではない。入力誤差を含む実数shot boundの区間[L,U]についてceil(L)=ceil(U)のときだけ同一整数が確定する。境界をまたぐなら、NやN比を一致・不一致と断定せずnull/CEIL_UNRESOLVEDにする。区間自体が経験的なら整数安定性も条件付きである。今回この区間を保存科学値から新たに計算していない。
+
+Bernstein、分散適応shot、exact-binomial最小shotの導入は別統計契約であり、未採用。compiled信号をMCで推定する場合の追加failure allocationも自動採用しない。Hoeffdingの量子測定失敗率だけで古典信号推定誤差を保証したことにはならない。
+
+次に設計できる最小実例は [DのN-PF1](additional_science_contract_DRAFT.md)。それだけでPR/PFの独立N比較や20条件のG11が完成するとは扱わない。

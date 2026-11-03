@@ -1,0 +1,166 @@
+"""Metadata/byte audit only. No molecular arrays, science runner or arithmetic."""
+from __future__ import annotations
+
+import argparse
+import concurrent.futures
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+from urllib.parse import unquote
+
+ROOT = Path(__file__).resolve().parents[1]
+BASE_COMMIT = "b81d4096e806efb6523304764d3a0680b7663320"
+NEW = ROOT/"artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22"
+DOC = ROOT/"docs/research/pr_pf_cng_technical_investigation_20261022"
+OLD = ROOT/"artifacts/resource_applicability/pr_pf_s2_recomputed/2026-10-22"
+CNG = ROOT/"docs/progress/track_a/figures/pr_pf_analytic_vs_circuit_CNG_20261022"
+
+
+def sha(path):
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def read(path):
+    return json.loads(Path(path).read_text())
+
+
+def require(condition, message):
+    if not condition:
+        raise ValueError(message)
+
+
+def audit():
+    baseline = read(NEW/"protected_baseline.json")
+    def unchanged(row):
+        name, expected = row
+        require(sha(ROOT/name) == expected, "PROTECTED_CHANGED:"+name)
+        return name
+    with concurrent.futures.ThreadPoolExecutor() as pool:
+        protected = list(pool.map(unchanged, baseline["protected_files"].items()))
+    for name in baseline["allowed_append_only_indexes"]:
+        before = subprocess.check_output(["git", "show", BASE_COMMIT+":"+name], cwd=ROOT)
+        after = (ROOT/name).read_bytes()
+        if name == "artifacts/validation_manifest.json":
+            old, new = json.loads(before), json.loads(after)
+            require(all(new.get(k) == v for k, v in old.items()), "OLD_MANIFEST_ENTRY_CHANGED")
+        else:
+            require(after.startswith(before), "INDEX_NOT_APPEND_ONLY:"+name)
+
+    manifests = [OLD/name for name in ("SOURCE.json", "SOURCE_v2.json", "SOURCE_physics_validation.json")]
+    manifests.append(ROOT/"artifacts/resource_applicability/pr_pf_analytic_vs_circuit_CNG/2026-10-22/SOURCE.json")
+    sources = []
+    for path in manifests:
+        value = read(path)
+        for name, expected in value["files"].items():
+            require(sha(ROOT/name) == expected, "OLD_SOURCE_CHANGED:"+name)
+        sources.append({"path": str(path.relative_to(ROOT)), "commit": value["commit"],
+                        "sha256": sha(path), "files_checked": len(value["files"])})
+
+    mandatory = [CNG/name for name in (
+        "README.md", "N_comparability_audit.json", "N_comparison_contract_DRAFT.md",
+        "CNG_decomposition_verification.json", "coverage_matrix.md", "verification.json")]
+    mandatory += [ROOT/"docs/progress/track_a/figures/pr_pf_s2_recomputed_20261022"/name
+                  for name in ("physical_validation_audit.json", "rare_event_summary.json")]
+    required = {str(path.relative_to(ROOT)): sha(path) for path in mandatory}
+
+    old_audit = read(mandatory[-2])
+    receipts = {}
+    for system in ("H2", "H4", "H6", "H8"):
+        folder = OLD/"units"/system/"SYSTEM/native_physics_validation"
+        result, stop = read(folder/"result.json"), read(folder/"STOP.json")
+        saved = old_audit[system]
+        require(sha(folder/"result.json") == saved["result_sha256"], "RESULT_AUDIT_JOIN:"+system)
+        require(sha(folder/"STOP.json") == saved["STOP_sha256"], "STOP_AUDIT_JOIN:"+system)
+        failed = [dict(block=row["block"], **check) for row in result["blocks"]
+                  for check in row["checks"] if check["PASS"] is False]
+        require(failed == saved["failed_checks"], "FAIL_AUDIT_JOIN:"+system)
+        require(all(check["phase_alignment"] is False for row in result["blocks"]
+                    for check in row["checks"]), "PHASE_ALIGNMENT_CHANGED")
+        receipts[system] = {
+            "SOURCE": read(folder/"plan.json")["SOURCE"],
+            "result_status": result["status"], "STOP_status": stop["status"],
+            "result_sha256": sha(folder/"result.json"), "STOP_sha256": sha(folder/"STOP.json"),
+            "full_preparation_hash": result["full_preparation_hash"], "times": result["times"],
+            "failed_checks_transcribed": failed,
+            "interpretation": "OLD_STATUS_PRESERVED_NO_RECOMPUTATION"}
+
+    figures = read(CNG/"figure_data.json")
+    for row in figures["rows"]:
+        require(all(row[key] is None for key in ("G10", "G11", "N_circuit_total",
+                    "N_ratio_total", "delta_G_N")), "NULL_REPLACED")
+        require(row["N_independent"] is False, "INDEPENDENT_N_UPGRADED")
+        for axis in row["axes"].values():
+            require(axis["N_circuit"] is None and axis["N_ratio"] is None, "AXIS_NULL_REPLACED")
+    for row in read(CNG/"CNG_decomposition_verification.json")["rows"]:
+        require(all(row[key] is None for key in ("G10", "G11", "delta_G_N")), "DECOMPOSITION_NULL_CHANGED")
+    require(read(CNG/"N_comparability_audit.json")["N_circuit"] is None, "N_AUDIT_CHANGED")
+    exports = list((CNG/"all_conditional").glob("*"))+list((CNG/"confirmed_H2_H4").glob("*"))
+    exports = [p for p in exports if p.suffix in (".png", ".svg", ".pdf")]
+    require(len(exports) == 90, "OLD_EXPORT_COUNT_CHANGED")
+
+    proposal = read(NEW/"proposed_science_contract.json")
+    require(proposal["launch_authorized"] is False and proposal["sealed"] is False, "DRAFT_ACTIVATED")
+    require(proposal["allowed_scientific_units"] == [] and proposal["launch_command"] is None,
+            "SCIENTIFIC_DISPATCH_ENABLED")
+    require(proposal["automatic_retry"] is False, "RETRY_ENABLED")
+    for name, expected in proposal["candidate_source_sha256"].items():
+        require(sha(ROOT/name) == expected, "CANDIDATE_SOURCE_CHANGED:"+name)
+    for item in proposal["proposals"]:
+        require(item["launch_authorized"] is False, "PROPOSAL_ACTIVATED")
+    for name in proposal["fixed_old_inputs_sha256"]:
+        require(sha(ROOT/name) == proposal["fixed_old_inputs_sha256"][name], "FIXED_INPUT_CHANGED")
+    require(not list(NEW.glob("**/grant.json")) and not list(NEW.glob("**/marker.json")),
+            "UNAUTHORIZED_SCIENTIFIC_GRANT_OR_MARKER")
+
+    dependency = read(NEW/"dependency_sources/manifest.json")
+    for entry in dependency["files"]:
+        require(sha(NEW/entry["snapshot_relative"]) == entry["sha256"], "DEPENDENCY_SNAPSHOT_CHANGED")
+    tests = read(NEW/"artificial_tests.json")
+    require(tests["passed"] == 17 and tests["molecular_inputs_loaded"] == 0, "TEST_RECEIPT_SCOPE")
+    links = []
+    paths = list(DOC.glob("*.md"))+[ROOT/"docs/cng_technical_investigation_validation.md"]
+    for path in paths:
+        for target in re.findall(r"\]\(([^)]+)\)", path.read_text()):
+            if "://" in target or target.startswith("#"):
+                continue
+            target = re.sub(r":\d+$", "", unquote(target.split("#")[0]))
+            require((path.parent/target).exists(), "MISSING_LINK:"+str(path)+":"+target)
+            links.append(target)
+
+    return {
+        "status": "PASS_TECHNICAL_METADATA_ONLY_WITH_SCIENTIFIC_GAPS",
+        "base_commit": BASE_COMMIT, "protected_existing_files_unchanged": len(protected),
+        "append_only_indexes_checked": baseline["allowed_append_only_indexes"],
+        "old_SOURCE_manifests": sources, "mandatory_material_sha256": required,
+        "old_physics_receipts": receipts,
+        "old_90_figure_files_preserved": True,
+        "independent_N_nulls_preserved": True, "physical_status_upgraded": False,
+        "new_molecular_computation": 0, "saved_scientific_numerical_reanalysis": 0,
+        "new_scientific_compile": 0, "new_sampling": 0, "new_shot_recalculation": 0,
+        "old_retries_or_resumes": 0, "new_scientific_grants": 0,
+        "new_scientific_markers": 0, "new_figures": 0, "slide_changes": 0,
+        "detailed_scientific_review_started": False, "push_or_PR_executed": False,
+        "artificial_tests": tests, "local_links_checked": len(links),
+        "local_author_technical_check": True, "independent_reviewer": False,
+        "limits": ["Molecular cause not confirmed", "PR independent N unresolved",
+                   "Draft science adapter not sealed", "No scientific reacceptance"],
+    }
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--write", action="store_true",
+                        help="Create a fresh technical verification receipt before STOP")
+    args = parser.parse_args()
+    if args.write:
+        require(not (NEW/"STOP.json").exists(), "MANDATORY_STOP_ALREADY_RECORDED")
+    result = audit()
+    if args.write:
+        with (NEW/"verification.json").open("x") as stream:
+            json.dump(result, stream, indent=2, ensure_ascii=False, allow_nan=False)
+            stream.write("\n")
+    print(json.dumps({key:result[key] for key in (
+        "status", "protected_existing_files_unchanged", "old_90_figure_files_preserved",
+        "independent_N_nulls_preserved", "local_links_checked")}, ensure_ascii=False))

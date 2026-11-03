@@ -1,0 +1,83 @@
+# D：追加科学検証の固定契約案 — 未認可・未実行
+
+新規grant、marker、科学dispatchは0。この文書の具体化は実行承認を意味しない。旧native_physics_validation、MC、shot、compile単位を再投入するrunnerは作らず、旧FAIL/STOP/消費は保持する。新IDだけで同じ旧計算を再試行することも禁止する。
+
+機械可読案は [proposed_science_contract.json](../../../artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22/proposed_science_contract.json)。現在のSOURCEは基準b81d4096、旧physics SOURCE4ec95cd4、固定provider c31ef424、新技術candidateのbyte hashで結ぶ。実行用adapterは未実装・未sealで、runner SOURCE commit、実行環境、入力復元binding、fresh resource gate、grantが揃うまでlaunch不可。
+
+## P1：3 blockの一粒子行列forensics
+
+目的は「旧actual/expected状態差の再試行」ではなく、保存Gaussian gate列が表す一粒子生成子の残差と、独立eigensystemの残差を新たに取得することである。旧check_block/runは呼び出さない。full-H signal、状態の時間発展、compile、抽選、shot、費用解析は予算0。
+
+固定対象：
+
+|単位|対象|入力とhash|時間の扱い|
+|---|---|---|---|
+|H6 / fragment17 / gaussian_matrix_forensics|旧block18、g_matrices[17]、保存diagonal_eta・runtime gate|旧context SHA 3e4365bf179daf84e9fc25429a4e299ed9a38c2c46b58ba24175b1faf1786c52、basis 2a5e8dc6…|旧FAIL time=.4、小time=.05は照合metadata。時間発展callは0|
+|H8 / fragment25 / gaussian_matrix_forensics|旧block26、g_matrices[25]|旧context SHA a0cdee43364ee9012cd2ef84db72dc090df657d95a955537512f128a0843edaf、basis f822e86e…|旧FAIL time=.4、小time=.025。時間発展callは0|
+|H8 / fragment27 / gaussian_matrix_forensics|旧block28、g_matrices[27]|同H8 context、basis 9fc3672a…|同上|
+
+cohortはCNG_GAUSSIAN_MATRIX_FORENSICS_DRAFT_20261022。共有入力復元はsystem単位、計2。保存context.pkl.gzは別の未使用出力へbyte復元し、解凍後hashを旧planと照合してからロードする。旧artifactにcontext.pklを書き戻さない。g・lambda・stateを再生成せず、npzを使った新DFや新eigensolverによる分子状態構築もしない。
+
+各対象で保存1/2 qubit gate列から一粒子Vを小行列積で再構成する。RZのvacuum位相も含むraw Vを保持し、V diag(eta) V†を比較するのでbasis全体のphaseは代数的に相殺される。出力状態に合わせたphase alignmentではない。number conservationを満たさないgate、未知のgate、2 qubit超のgateがあれば即STOPし、dense full-Fock fallbackを自動実行しない。
+
+元gのHermitian/固有対残差、保存Vのunitarity・V diag(eta) V†−g、one-particle上のlambda G²残差を記録する。inverseは既に取得したgate行列の逆順conjugate-transposeから代数的に構成し、そのclosureを記録する。これはQiskit gate.inverse実装の独立数値検証ではない。新QR候補は元gの新しい一粒子eighから作り、同じ残差を別結果として記録する。新eighの縮退gaugeが過去Uと同じだと仮定せず、保存gate hashが一致しないreplayから過去の省略entryを断定しない。G²の一粒子診断を全物理sectorの検証に読み替えない。
+
+固定call上限（数学的な処理予算でありCPU/RAM制限ではない）：
+
+- context復元/ロード各system 1、計2。分子SCF/integral/DF/state-solverは0。
+- 保存basis一粒子再構成3、新QR candidate構築3、新candidate一粒子再構成3。
+- gのn×n Hermitian eigh 3。full sectorのeigh、expm、Statevector/Aer、full-H参照は0。
+- gateの1×1/2×2/4×4局所行列取得は全体で最大700。旧と候補それぞれ、12 modeでは最大78、16 modeでは最大136ずつの構造上限。未知gateや上限超過でSTOPし、探索範囲を増やさない。V†は再構成済みVから導出し、新しいinverse gate列の行列取得callを追加しない。
+- generator/unitarity/inverse残差各対象一式。3対象以外のblock・timeは追加しない。sampling/compile/signal/shot/cost更新は0。
+
+新候補のmatrix残差・unitarityはFrobenius norm <1e-12を技術目標とする。旧残差を1e-12で科学的に受理し直すものではない。nonfinite、SOURCE/hash/basis不一致、gate scope違反、資源干渉、call予算超過で対象STOP。共有SOURCE問題は関連単位すべてSTOP。一つの局所残差が不成立でも独立blockの記録は続けられるが、自動修正・再実行・新seedは禁止する。
+
+P1は原因を絞るための計画であり、H6/H8の科学的再受入を完了する計画ではない。新候補の採用や旧costの更新、全RTE法則の誤差移送、N評価への接続は別契約。状態作用の三者比較が必要なら、P1後に対象とcall数を別途固定し、旧one_G診断を再試行してPASSへ上書きしない。
+
+## N-PF1：H4固定PF一候補の独立compiled信号とN
+
+目的は独立Nの実装可能性を一候補で確認すること。H4（linear1 Å/STO-3G、DF10、generation順）、candidate B0I_p5_q1_2nd、L_D=5、q=1、T=.8、delta=.8、外側S2、epsilon=.05、alpha_axis=.025、P=0を固定する。PRや他epsilonは自動追加しない。
+
+cohortはCNG_INDEPENDENT_PF_N_DRAFT_20261022。単位は共通入力（H4）、compiled_signal（H4×当該candidate）、independent_shots（同×epsilon .05）に分離する。入力のHamiltonian/state/preparation hashは旧identity/resultの保存値を必須とし、H4図cohortとの一致を確認する。新cohort名だけで別入力を混ぜない。
+
+固定処理・call予算：
+
+|処理|最大call|条件|
+|---|---:|---|
+|保存context復元/ロード|1|hash照合。分子再生成0|
+|native deterministic evolution構築|1|旧scalar・symmetric-directional・original_plus_tail_onceを保持|
+|cosine/sine wrapper構築|2|H/U/(Sdg)/H、ancilla=8、P=0|
+|guarded_transpile API|2|basis rz/sx/x/cx、opt1、seed17、num_processes1、topologyなし。gate stream/phase metadata照合を保持|
+|compiled statevector作用|4|各軸QiskitとAer各1。実分子の新計算なので現在は実行しない|
+|full-H reference expm action|3|T=.8一回、.4二回のsplit-time。DF Hamiltonian/stateは同一保存入力|
+|bias/normalization/allowance評価|1候補一式|全誤差源を両軸へ含める。元EMPIRICAL policy 64/10/1e-12を固定し、保証を強めない|
+|paired-axis Hoeffding shot会計|1|epsilon=.05だけ。整数区間が境界をまたぐ場合はnull|
+|sampling/PR列挙/費用再会計/順位付け|0|科学scopeの拡張なし|
+
+guarded_transpileの内部BasisTranslatorはgate stream監査のためbaseline/fixed両経路を評価する。予算2は外側API call数であり、内部pass数を2と表示しない。内部pass回数と演算workはreceiptで記録し、意味契約を無断で変更しない。
+
+full-H参照の3はexponential-action API call数であり、expm_multiply内部のadaptive matvec回数ではない。内部workの計測・予算規則は実行adapterのseal時に明示し、外側3を内部3へ読み替えない。現段階ではこの規則も未sealのため実行不可。
+
+compiled平均信号は各軸ancillaのZ期待値を直接抽出し、full-H参照と比較する。candidate誤差はcompiled回路の二つの数値実装の差とwork-based roundoff proxy、reference誤差はsplit-timeと元の固定operator接続証拠を使う。候補・参照・normalization両方をuへ結び付けた明示的receiptがなければUNDETERMINED。候補信号は新取得だが、この検査だけで厳密な誤差上界にはならない。
+
+PFの数学的B=1を使い、会計上のB_upperは同一候補の保存normalization/marginを保持する案とする。この移送の意味を実行前receiptで固定し、保存B_upperを純粋な厳密証明と呼ばない。uの再評価は同じ統計式に対する新しい数値入力であり、biasやNが旧値と等しいことを受入条件にしない。
+
+受入：candidateの二数値実装の状態差<1e-9、full-H split-time差<1e-10、全数値finite、同一hash・scalar・readout、u/h<=.01、同じHoeffding式。phase alignmentなし。値が不適格・整数不確定ならN_circuit=nullのままSTOP。旧signal/shotを置換せず新packetに保存する。ここで取得できてもH4 PF一候補の一点であり、PR/PFの独立N比較や20条件G11を完了扱いにしない。
+
+実行adapter・combined-u receipt・整数区間の実装は未seal。現在あるcompiled-cost runnerをそのまま再利用して2compileすることは旧科学単位のretryになり得るので禁止する。新しい問い（compiled signal）の専用adapterと新SOURCEが必要。
+
+## N-PR：実行計画をsealできない条件
+
+固定検討候補はH4 B2_p3_q1_2nd_r4_K2、epsilon=.05。保存lawにはcomponent数252、order0/2、trajectory当たりevent4がある。全軌道を素朴列挙するなら各軸 (252+252³)^4 wrapperが必要となる。これはcall予算設計の組合せ式であり、新しい分子費用値や確率を計算した結果ではない。raw enumerationを「可能な最小実行」として承認候補にしない。
+
+compositionalな全law測定同値性の証明を使うA経路、または同じcompiled全法則を保つ独立平均法が必要である。現native DPは費用モデルであり、compiled signal oracleではない。whole-trajectory compilerの意味保存を未確認のまま、precompiled primitive平均へ対象を置換しない。
+
+PRの新MC信号推定を導入するなら、古典平均の数値/統計不確かさ、rare event、追加failure allocation、ceil感度を別途固定する必要がある。今回はそれを無断採用しない。N-PRの科学call予算は0、runnable=false、launch command=null。PRのN_circuitをnullから埋める達成条件は未成立である。
+
+## 資源・one-shot・停止
+
+現在の技術作業開始時にaffinity128 CPU、MemAvailable約1 TB、load低値を読取確認した。これは将来実行の予約ではない。科学実行の直前に実空きCPU/RAM/他jobとの非干渉を再観測する。
+
+P1は独立3対象を可能な範囲で並列化し、N-PF1は独立2軸を並列化できる。worker数は自然なtask数と実空き資源から決め、恣意的な低いCPU/RAM上限は設定しない。compileのnum_processes1は元compiler意味契約を保つ条件であり、系/軸単位の並列化を禁止するものではない。共有依存の更新、global thread/OS設定変更、他ユーザーprocessへの操作は禁止。
+
+すべて未使用のnamespace/grant/markerを必要とし、一単位一回。SOURCE・input hash・seed（deterministic処理はnull、compilerは17）・条件・予算・結果・STOPを記録する。失敗後の自動retry、別ID/seedへの付け替え、既存STOP/使用済みgrantの再利用なし。最後はmandatory STOPし、次stageへ自動進行しない。

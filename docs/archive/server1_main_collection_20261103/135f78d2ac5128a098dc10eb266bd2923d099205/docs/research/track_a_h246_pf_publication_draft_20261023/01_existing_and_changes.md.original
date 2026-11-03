@@ -1,0 +1,27 @@
+# 1. 現在の掲載内容と変更差分（DRAFT）
+
+この一覧は編集計画であり、元ファイルへの適用は0。
+[差分CSV](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/publication_change_list.csv)に、各変更IDの正確なtarget path・commit・SHA256・行anchor・変更予定内容・保存データID・未判断条件を記録する。
+[source catalog](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/source_catalog.json)は実取得したGit blobの目録である。
+
+| 現在の資料 | 現在の役割・科学系列 | 共通588候補との対応 | 提案 |
+|---|---|---|---|
+| `track_a_h468_paper_display_methods/2026-10-19/main_table.csv` | H4 DF10/H6 DF19/H8 DF28、独立固定6比較。PFは各固定control | 新PF格子最良や新探索PRではない。候補名が同じでも新政策の費用を移送しない | 全6行・費用・n・SE・direction保持。補足比較への脚注のみ別案 |
+| 同bundle `methods.md` | 旧6比較とFigure2を分離、H2は旧掲載対象外 | 共通域はH2を含む別cohort・3公式・新共通政策 | scope段落の限定と、別の共通域小節をDRAFT化 |
+| 同bundle `figure2_caption.md` | legacy/exploratory機構とH8独立確認の説明 | 新しいPF分母の機構分解ではない | 既存caption保持。別補足比較への参照文を提案 |
+| `track_a_mechanism_figure2_a82_readiness/2026-10-19/` 全34file | Figure2AはH4 legacy DF12/H6/H8旧n32と探索n8、2BはH8 n48 | H4 DF10やouter32探索の新結果に置換できない | 原図・全34SHA保持。別図の仕様のみ作成 |
+| `docs/manuscripts/track_a_resource_study_geometry_native_v0_4.md` | H4 legacy DF12・6距離の通し原稿。§8に旧native H6/H8の分離記述 | 最新のH468掲載パッケージを反映した通し本文ではない | §8相当の別Results blockと§9相当のlimitationsを提案。Abstract/Conclusionは保留 |
+| `docs/manuscripts/track_a_resource_study_supplement_v0_1.md` | 以前の固定scopeのSI | 新共通588候補のSIとして出来上がってはいない | 原SIを残し、新共通域節を別ファイルとして提案 |
+| f75a7c25の採用manifest・CEM21行・台帳391行 | 固定共通域の正式研究採用 | 今回の正本 | 掲載位置を付けたDRAFT manifest/CEMを追加し、正式版を変更しない |
+
+旧通し原稿の「図2」はH4 geometryの費用比図で、H468パッケージのFigure2A/2Bと番号が重複する。
+本準備では後者をユーザー指定のFigure2として扱い、両者を同一図と認定しない。統合本文・図番号の最終割当は掲載先判断時に必要。
+
+旧CEMのH6 model依存の中間精度PR利益、旧m5疎格子に対するPR利益、今回の全公式PF共通格子比較は、それぞれ分母・政策・cohort付きで残す。
+旧主表のPF Gを新格子の最良費用で差し替えると、固定確認した比較自体が変わるため実施しない。
+
+照合した別branchは、CNG `b81d4096`、その技術調査 `c4cb5f3c`、旧全方式図 `5d536985`、高次PR図 `ee160395`。
+高次PR図のC群はm5決定論部分集合との比較、CNGはS2・別cohortのN固定C置換比較であり、いずれも新588格子の全公式比較ではない。
+H6/H8のCNG補助診断は留保、独立Nはnull。これらを今回の全域最良や新独立確認の証拠に昇格しない。
+
+**掲載提案・AD03保留。既存の数値・採否・契約は変更しない。**

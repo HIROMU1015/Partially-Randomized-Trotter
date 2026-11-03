@@ -1,0 +1,9 @@
+# CNGの物理診断と独立N：技術調査の検証範囲
+
+[報告packet](research/pr_pf_cng_technical_investigation_20261022/README.md)はb81d4096基準の静的・人工入力による技術調査である。旧科学SOURCE、結果、grant/marker/STOP、90図ファイル、スライドを保全する。H6/H8 FAILと独立N欠測は変更しない。
+
+新libraryは src/trotterlib/cng_gaussian_diagnostics.py、人工testは tests/test_cng_gaussian_diagnostics.py、metadata-only確認入口は scripts/check_cng_technical_investigation.py、新artifactは artifacts/resource_applicability/pr_pf_cng_technical_investigation/2026-10-22/。
+
+Gaussian近似の人工反例と、近似zero/arccosを使わない未採用QR候補を17件のsynthetic testで検証した。実分子配列・pickleのload、production runner・compile・sampling・signal・shotの実行は0。保存数値の算術検算も今回の対象外。checkスクリプトはbyte/hash、既存metadata、null、旧FAILの照合だけで、科学数値の再評価をしない。
+
+既存研究概要には新しい技術調査への入口のみ追記し、過去履歴・科学statusを保持した。manifestは新項目だけ追加し旧項目を維持する。詳細科学レビューを開始せずlocal commit後mandatory STOP。新科学実行契約はDRAFT、未seal、allowed_scientific_units=[]、有効grantなし。

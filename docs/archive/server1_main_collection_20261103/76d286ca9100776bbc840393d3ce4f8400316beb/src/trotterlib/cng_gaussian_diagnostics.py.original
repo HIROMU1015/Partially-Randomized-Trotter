@@ -1,0 +1,95 @@
+"""Unadopted Gaussian diagnostic candidate, with no molecular I/O or dispatch.
+
+This module is never imported by the frozen scientific runners.  Its two-mode
+matrix lift preserves tiny rotations and the vacuum phase without arccos or
+approximate-zero pruning.  Its compiled cost profile has not been evaluated.
+"""
+from __future__ import annotations
+
+import math
+
+import numpy as np
+
+
+def stable_givens(a: complex, b: complex) -> np.ndarray:
+    """Return a unitary row rotation taking (a,b) to (hypot(|a|,|b|),0)."""
+    a, b = complex(a), complex(b)
+    if not all(math.isfinite(v) for v in (a.real, a.imag, b.real, b.imag)):
+        raise ValueError("NONFINITE_GIVENS_INPUT")
+    radius = math.hypot(abs(a), abs(b))
+    if not math.isfinite(radius):
+        raise ValueError("GIVENS_RADIUS_OVERFLOW")
+    if radius == 0:
+        return np.eye(2, dtype=complex)
+    return np.array([[a.conjugate()/radius, b.conjugate()/radius],
+                     [-b/radius, a/radius]], dtype=complex)
+
+
+def two_mode_lift(matrix: np.ndarray) -> np.ndarray:
+    """Vacuum-fixed Fock lift; qargs are (left mode, right mode), adjacent."""
+    matrix = np.asarray(matrix, dtype=complex)
+    if (matrix.shape != (2, 2) or not np.isfinite(matrix).all()
+            or np.linalg.norm(matrix.conj().T@matrix-np.eye(2)) > 1e-12):
+        raise ValueError("TWO_MODE_UNITARY_REQUIRED")
+    lifted = np.zeros((4, 4), dtype=complex)
+    lifted[0, 0] = 1
+    lifted[1:3, 1:3] = matrix
+    lifted[3, 3] = np.linalg.det(matrix)
+    return lifted
+
+
+def diagnostic_gaussian_candidate(orbital_matrix: np.ndarray):
+    """QR candidate for Gamma(U). NOT an adopted production basis builder.
+
+    Row elimination uses exact-zero pruning and hypot.  Only 4x4 gates are
+    allocated; there is no 2**n square unitary, sampling, or transpilation.
+    The 1e-12 checks here apply to this new synthetic candidate's inputs and
+    QR residual, and do not change any old 1e-9 scientific acceptance rule.
+    """
+    from qiskit import QuantumCircuit
+    from qiskit.circuit.library import UnitaryGate
+
+    matrix = np.asarray(orbital_matrix, dtype=complex)
+    if (matrix.ndim != 2 or matrix.shape[0] != matrix.shape[1]
+            or matrix.shape[0] == 0 or not np.isfinite(matrix).all()
+            or np.linalg.norm(matrix.conj().T@matrix-np.eye(len(matrix))) > 1e-12):
+        raise ValueError("ORBITAL_UNITARY_REQUIRED")
+    n = len(matrix)
+    current = matrix.copy()
+    rotations = []
+    for col in range(n-1):
+        for row in range(n-1, col, -1):
+            if current[row, col] == 0:
+                continue
+            pair = (row-1, row)
+            g = stable_givens(current[row-1, col], current[row, col])
+            current[list(pair), :] = g@current[list(pair), :]
+            rotations.append((pair, g))
+    diagonal = np.diag(current).copy()
+    if np.linalg.norm(current-np.diag(diagonal)) > 1e-12:
+        raise ValueError("QR_OFF_DIAGONAL_RESIDUAL")
+    circuit = QuantumCircuit(n, name="UNADOPTED_CNG_GAUSSIAN_QR")
+    for mode, phase in enumerate(np.angle(diagonal)):
+        if phase != 0:
+            circuit.p(float(phase), mode)
+    for pair, g in reversed(rotations):
+        circuit.append(UnitaryGate(two_mode_lift(g.conj().T)), list(pair))
+    circuit.metadata = {"production_adopted": False,
+                        "scientific_acceptance_changed": False,
+                        "vacuum_fixed": True,
+                        "approximate_zero_pruning": False}
+    return circuit
+
+
+def ceil_interval(lower, upper):
+    """Classify an already bounded real quantity; never compute scientific N.
+
+    Intended for synthetic tests and future contract checks. Bounds must be
+    supplied by the caller; this function provides no numerical certificate.
+    """
+    if lower <= 0 or upper < lower:
+        raise ValueError("POSITIVE_ORDERED_INTERVAL_REQUIRED")
+    low, high = math.ceil(lower), math.ceil(upper)
+    return {"integer": low if low == high else None,
+            "status": "UNIQUE_CEIL" if low == high else "CEIL_UNRESOLVED",
+            "certificate_verified": False}

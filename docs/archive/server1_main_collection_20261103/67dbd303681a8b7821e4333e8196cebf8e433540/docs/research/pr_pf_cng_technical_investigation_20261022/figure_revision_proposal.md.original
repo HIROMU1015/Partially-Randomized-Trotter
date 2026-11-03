@@ -1,0 +1,57 @@
+# C：C・N・Gの説明と表示の改訂案
+
+この文書はレイアウトと文言の提案である。既存30図・PNG/SVG/PDF90ファイルとスライドは保全し、新しい科学数値・順位・比・区間は作らない。今回、実データによる図の再描画も実施していない。
+
+## パネルが答える問い
+
+|図|タイトル案|軸・captionで必須の説明|
+|---|---|---|
+|C|解析的native単価とcompiled回路単価|cos/sin別のC_circuit/C_theory。PRは法則期待単価と有限MC標本平均の比較、PFは決定論計数。理論lower/upperはMC区間と別の線種で示す|
+|N|保存されたHoeffding十分shot配分|「独立N_circuit未取得」を上部固定表示。N_theoryの保存値だけを各軸に表示。回路側系列・N比・unity基準線は作らない|
+|G|保存N固定でCだけを置換した総費用会計|タイトル内に「N固定」。G00=sum N_theory,a C_theory,a、G01=sum N_theory,a C_circuit,a。G10/G11は未解決と枠内に表示|
+
+N_theoryには古典数値信号、bias、finite-RTE正規化、経験的allowanceが入るため、「解析式だけで決まる必要最小shot」と呼ばない。C図も原PR論文のToffoli式の直接検証としない。費用指標はnative RZ、P=0。
+
+## 20条件の科学的表示区分
+
+|系|5精度共通の区分|図中の処理|
+|---|---|---|
+|H2|回収元cohort n8。実施済み検査PASS範囲、独立Nなし|塗りつぶしmarker、H2列にcohort帯。新1%MC目標を適用せず、H4とpoolしない|
+|H4|再計算cohort。実施済み検査PASS範囲、独立Nなし|塗りつぶしmarker。主パネルはH2/H4。一般的な科学的保証やCI再現の表現を付けない|
+|H6|再計算cohort。one_G FAILの留保付き参考値、独立Nなし|別の薄い橙帯、空抜きmarker、軸labelに「条件付き」。平均を主パネルへ連結しない|
+|H8|同上。元cohortから再生成した入力であることも保持|H6と同じ条件付き帯、空抜き、短いFAIL脚注|
+
+epsilonは.05/.01/.005/.001/.0005。各L_D/q/r/K/deltaとcandidateは既存coverage/figure_dataの転記に固定する。H6/H8を1e-9閾値の変更や人工テストの成功によって塗りつぶしへ変えない。
+
+## レイアウト
+
+各epsilonのC/N/Gに同じ縦位置の2段を使う。上段はH2/H4、下段はH6/H8の条件付き参考値で、下段全体に薄い背景帯と「科学的再受入未完了」を付ける。主・参考を別exportにする場合も同じ凡例、条件脚注、SOURCE参照を付ける。上下の軸scaleは同じにし、Nの桁差が読めない場合はlog軸案を検討するが、ゼロやnullを擬似点へ置換しない。
+
+色はPR/PF、形は測定軸、塗りつぶしは検証区分に割り当てる。N図でPR/PFを別panelにする場合も、cos/sin色を使うなら凡例で明示し、C/Gと色の意味が変わることを図中で説明する。より一貫した案は全図で色=方式、形=cos/sin、Gの集約点はdiamondsとする。
+
+Gの正規化表示には「各方式自身のG00=1。PR/PFの絶対順位はこの高さだけでは判定できない」と添える。PFの低下率が大きくても、G01_PFがG01_PRより小さいとは限らない。逆も同じ。絶対費用を併置する場合は、すでに保存されているG00/G01または保存PR/PF比をそのまま使い、新しい順位・有意差を算出しない。
+
+理論model幅は細い灰帯、PRの保存名目95%MC区間は誤差棒として凡例を分離する。両者を一種類の「95%保証区間」に合成しない。GのMC区間は保存されたcos/sin paired共分散を保持する。新しいerrorbar計算は今回の承認範囲外。
+
+## 図内の短い説明とcaption案
+
+図内固定文：
+
+- C：「PRは法則期待値と有限MC平均の比較。全差をcompiler最適化に帰属しない」
+- N：「保存十分shot数のみ。独立N_circuit・N比は未取得」
+- G：「G01はN_theory固定。G10/G11は未取得」
+- 共通：「H6/H8は条件付き参考。旧one_G FAILを保持」
+
+caption共通案：
+
+「linear H2/H4/H6/H8、隣接1 Å、STO-3G、tol-only DF 1e-8（rank 3/10/19/28、generation順）、T=.8、固定S2候補、P=0。Cはnative RZ単価モデルと保存compiled単価の比較、Nは経験的allowanceを含むHoeffding十分shot配分の保存値、G00→G01は保存N固定でCだけを置換した会計比較である。独立N_circuit、N比、G10/G11は未取得。H2は元cohort n8、H4/H6/H8は再計算cohortで、H6/H8は補助one_G不合格の留保を付す。PRの誤差棒は有限MC標本の名目95%区間であり、未観測rare eventを含む母平均保証ではない。Nの量子測定統計とCの古典MC誤差を区別する。」
+
+長いMethodsへ移す項目：全candidate L_D/q/r/K、入力hash、signed DFとscalar、native symmetric-directional、Qiskit1.3.0/Nature0.7.2・basis rz/sx/x/cx・opt1・seed17・topologyなし、B_upper/uの経験的強度、H2回収同一性、SOURCE・STOP。
+
+rare event脚注には、元診断の「未観測positive-order candidate層5、compiled母平均寄与の上界未取得」をそのまま使う。epsilonごとの行を重複した独立5検証と数えず、同一candidateの複数精度への再利用を保持する。層は重なり得るので、保存された各層費用の単純和をtail寄与にしない。
+
+## 実装変更リストと受入条件
+
+新rendererを作る場合は旧plot_analytic_circuit_cng.pyを変更せず、新出力先を指定する。読み込めるものは保存figure_dataとcoverage/provenanceのみ。保存数値のbyteまたはfield完全一致、nullの維持、旧90ファイルhash不変、candidate/cohortの一致、H6/H8条件付き表示、paired intervalの転記を受入条件にする。既存STOPで拒否する旧rendererを再起動しない。
+
+今回は説明案だけを保存し、rendererの採用、実図の置換、スライドへの採用、科学的な強い解釈の採択を行わない。

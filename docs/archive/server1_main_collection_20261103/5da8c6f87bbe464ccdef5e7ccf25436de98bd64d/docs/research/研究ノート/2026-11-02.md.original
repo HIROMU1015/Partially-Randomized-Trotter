@@ -1,0 +1,40 @@
+# 2026-11-02：旧ブランチ名に依存しない研究結果マップ
+
+## 方針と理由
+
+利用者は「リモートブランチがなくなっても研究結果についてのマップが整理されていればよい」と指定した。
+旧リモートbranch名の維持を資料保全の目的にせず、研究系列・固定SHA・条件/status・成果物への参照を整える。
+worktree記録があることだけで旧リモートbranch名を必須とする以前の整理案は、この方針に更新する。
+
+既存の70研究カード、Track Aの58アクセス行、11/01の全体地図・claim対応表、11/02までの固定資料を再利用した。
+科学runnerは実行せず、原本の数値・status・STOP・採否を変更していない。
+
+## 実装と範囲
+
+- 入口：[研究結果マップ](../../../RESEARCH_RESULTS_MAP.md)。索引・出典・確認結果は
+  `docs/research/repository_result_map_20261102/`。
+- 基準：`main=0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf`、同梱した2026-11-02のローカル参照snapshot。
+  リモート追跡902本とローカルbranch48本の履歴を保存点100個で覆う計画。
+- 再生成：`python3 scripts/build_repository_result_map.py --build`。
+  `result_sets`内の各項目と追加の検証項目を分け、管理情報を科学的検証記録として数えない。
+- 既存validation manifestの科学的な証拠在庫・statusは変更しない。
+  新しい案内の機械可読な在庫は、このマップの`summary.json`と各出典JSONに記録する。
+
+## 状態
+
+確認済み：固定ローカルGitオブジェクトからの索引生成、原本条件/statusの保持。
+path・履歴被覆の技術照合はマップ内の`verification.json`に記録する。
+これは科学的再検証・独立再現・最終総cost評価ではない。
+
+未確認：実リモートの最新性、HTTP到達性、他環境だけのraw・未追跡データの完全保管。
+tag/bundle作成、リモートbranch削除、マップの公開は未実行。
+SHAだけを残してもデータの保存にはならないため、整理時に保存点を実際のGit参照またはbundleで保持する。
+
+## 技術照合の記録
+
+`python3 scripts/build_repository_result_map.py --check` はPASS。
+902本のbranch→保存点の祖先関係、全snapshot履歴の未被覆commit 0、既存索引7件の完全一致、
+70カードの条件/status/結果の保持、969検証recordの元manifestとの一致を確認した。
+成果物参照2,974件と資料入口を含む固定Git path 17,553件を照合した。
+元の準備commitに未作成だった出力path 1件は明示したまま保持し、欠測を成功や0へ置換していない。
+`git diff --check`もPASS。いずれもローカルの索引・参照の技術確認であり、新しい科学的検証ではない。

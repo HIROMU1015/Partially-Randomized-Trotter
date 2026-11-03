@@ -1,0 +1,529 @@
+#!/usr/bin/env python3
+"""Build a branch-independent, metadata-only research navigation map.
+
+Reads fixed local Git objects and existing catalogues; never imports scientific
+code, fetches, executes experiments, or changes refs. Existing catalogue fields
+and original validation records are copied without scientific reinterpretation.
+"""
+import argparse
+import csv
+import hashlib
+import io
+import json
+import posixpath
+import re
+import subprocess
+from collections import Counter, defaultdict
+from pathlib import Path
+from urllib.parse import quote, unquote, urlsplit
+
+ROOT = Path(__file__).resolve().parents[1]
+OUT = ROOT / 'docs/research/repository_result_map_20261102'
+AUDIT = ROOT / '.server-preparation/reports/remote-branch-audit-20261102'
+REPO = 'HIROMU1015/Partially-Randomized-Trotter'
+URL = 'https://github.com/' + REPO
+TRACK_A = '731b3d6f3572c6aa7950a579b68251fec9a5218b'
+RECENT = '71432728ee01'  # Resolved locally to the full immutable commit below.
+C = '980b514c81eb'
+CATALOG_PATH = 'docs/research/pr_algorithm_improvement_landscape_20261023/'
+TRACK_A_PATH = 'docs/data_collection/2026-10-24_track_a_research_data/'
+
+
+def git(*args, data=None):
+    return subprocess.check_output(['git', '-C', str(ROOT), *args], input=data)
+
+
+def dump(name, value):
+    (OUT / name).write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
+def write_csv(name, rows, fields=None):
+    fields = fields or list(rows[0])
+    with (OUT / name).open('w', encoding='utf-8-sig', newline='') as f:
+        w = csv.DictWriter(f, fields, extrasaction='ignore')
+        w.writeheader()
+        for row in rows:
+            w.writerow({k: json.dumps(v, ensure_ascii=False) if isinstance(v, (dict, list)) else v for k, v in row.items()})
+
+
+class Blobs:
+    def __init__(self):
+        self.proc = subprocess.Popen(['git', '-C', str(ROOT), 'cat-file', '--batch'], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        self.cache = {}
+
+    def get(self, spec):
+        if spec in self.cache:
+            return self.cache[spec]
+        self.proc.stdin.write(spec.encode() + b'\n')
+        self.proc.stdin.flush()
+        header = self.proc.stdout.readline().decode().strip().split()
+        if header[-1] == 'missing':
+            value = None
+        else:
+            raw = self.proc.stdout.read(int(header[2]))
+            assert self.proc.stdout.read(1) == b'\n'
+            value = (header[0], header[1], raw)
+        self.cache[spec] = value
+        return value
+
+    def close(self):
+        self.proc.stdin.close()
+        assert self.proc.wait() == 0
+
+
+def fixed_url(sha, path, repository=REPO):
+    return 'https://github.com/' + repository + '/blob/' + sha + '/' + quote(path, safe='/')
+
+
+def first(value, keys):
+    if isinstance(value, dict):
+        for key in keys:
+            if key in value:
+                return value[key]
+    return 'NOT_RECORDED_IN_THIS_ENTRY'
+
+
+def referenced_paths(value):
+    found = set()
+    if isinstance(value, dict):
+        for v in value.values():
+            found.update(referenced_paths(v))
+    elif isinstance(value, list):
+        for v in value:
+            found.update(referenced_paths(v))
+    elif isinstance(value, str):
+        # Only literal repository paths, not values inferred from scientific prose.
+        s = value.split('#', 1)[0].rstrip('/')
+        if re.fullmatch(r'(?:artifacts|docs|src|scripts|tests|notes)/[^\s;\[\]{}<>]+', s):
+            if '..' not in Path(s).parts:
+                found.add(s)
+    return found
+
+
+def role(path):
+    if path.startswith('artifacts/'):
+        return 'artifact_or_metadata'
+    if path.startswith('docs/') or path.endswith('.md'):
+        return 'document'
+    if path.startswith('src/'):
+        return 'implementation'
+    if path.startswith('scripts/'):
+        return 'runner_or_maintenance'
+    if path.startswith('tests/'):
+        return 'regression_test'
+    return 'other_tracked_file'
+
+
+def manifest_entries(manifest):
+    """Keep validation entries separate from schema, custody, and audit metadata."""
+    administrative = {'schema_version', 'repository', 'audit', 'relevant_commits',
+                      'artifact_inventory', 'repository_completion_criteria', 'navigation_catalogs'}
+    for key, value in manifest.items():
+        if key in administrative:
+            continue
+        if key == 'result_sets' and isinstance(value, list):
+            for i, entry in enumerate(value):
+                yield 'result_sets/' + str(entry.get('id', i)), entry, '/result_sets/' + str(i)
+        else:
+            yield key, value, '/' + key.replace('~', '~0').replace('/', '~1')
+
+
+def escaped(s):
+    return str(s).replace('|', '\\|').replace('\n', ' ')
+
+
+def build():
+    OUT.mkdir(parents=True, exist_ok=True)
+    # This audit snapshot, rather than a moving origin/*, is the inventory boundary.
+    input_dir = OUT if (OUT / 'input_branches.json').exists() else AUDIT
+    snapshot = json.loads((input_dir / 'ref_snapshot.json').read_text())
+    branch_input = input_dir / ('input_branches.json' if input_dir == OUT else 'branches.json')
+    branches = json.loads(branch_input.read_text())
+    branches = [{k: r[k] for k in ('branch', 'sha', 'commit_date', 'subject', 'family_by_name', 'is_maximal_tip')} for r in branches]
+    dump('input_branches.json', branches)
+    snapshot_bytes = (input_dir / 'ref_snapshot.json').read_bytes()
+    (OUT / 'ref_snapshot.json').write_bytes(snapshot_bytes)
+    snapshot_digest = hashlib.sha256(snapshot_bytes).hexdigest()
+    refs = [r for r in snapshot if not r['symref'] and not r['ref'].startswith('refs/tags/')]
+    tips = sorted({r['sha'] for r in refs})
+    tip_index = {sha: i for i, sha in enumerate(tips)}
+    masks = defaultdict(int)
+    for sha, i in tip_index.items():
+        masks[sha] |= 1 << i
+    graph = []
+    for line in git('rev-list', '--topo-order', '--parents', '--stdin', data=('\n'.join(tips) + '\n').encode()).decode().splitlines():
+        fields = line.split()
+        graph.append((fields[0], fields[1:]))
+    parents = dict(graph)
+    for sha, ps in graph:
+        for p in ps:
+            masks[p] |= masks[sha]
+    maximal = [sha for sha in tips if masks[sha] == (1 << tip_index[sha])]
+    remote_frontiers = {r['sha'] for r in branches if r['is_maximal_tip']}
+    remote_mask = sum(1 << tip_index[sha] for sha in remote_frontiers)
+    anchors = sorted(remote_frontiers | {sha for sha in maximal if not masks[sha] & remote_mask})
+    anchor_rows = [dict(anchor_id='A' + str(i + 1).zfill(3), commit=sha,
+                        proposed_archive_tag='archive/research-map-20261102/' + sha[:12],
+                        kind='CACHED_REMOTE_TIP' if sha in remote_frontiers else 'LOCAL_ONLY_HISTORY',
+                        archive_tag_created=False,
+                        current_refs=[r['ref'] for r in refs if r['sha'] == sha]) for i, sha in enumerate(anchors)]
+    anchor_ids = {r['commit']: r['anchor_id'] for r in anchor_rows}
+
+    def covering(sha):
+        return [anchor_ids[a] for a in anchors if masks.get(sha, 0) & (1 << tip_index[a])]
+
+    assert all(covering(sha) for sha in tips)
+    write_csv('archive_anchors.csv', anchor_rows)
+    dump('archive_anchors.json', anchor_rows)
+    blobs = Blobs()
+    # Exact source bytes from previously produced catalogues are reused, not their runners.
+    exports = [
+        ('study_catalog.json', C, CATALOG_PATH + 'STUDY_CATALOG.json'),
+        ('source_provenance.json', C, CATALOG_PATH + 'SOURCE_AND_PROVENANCE_INDEX.json'),
+        ('track_a_study_index.csv', TRACK_A, TRACK_A_PATH + 'study_index.csv'),
+        ('track_a_source_catalog.json', TRACK_A, TRACK_A_PATH + 'source_catalog.json'),
+        ('track_a_claim_usage.csv', TRACK_A, TRACK_A_PATH + 'claim_usage.csv'),
+        ('track_a_paper_data_index.csv', TRACK_A, TRACK_A_PATH + 'paper_data_index.csv'),
+        ('track_a_unresolved_issues.csv', TRACK_A, TRACK_A_PATH + 'unresolved_issues.csv'),
+    ]
+    sources = []
+    for filename, sha, path in exports:
+        sha = git('rev-parse', sha + '^{commit}').decode().strip()
+        obj = blobs.get(sha + ':' + path)
+        assert obj and obj[1] == 'blob', (sha, path)
+        (OUT / filename).write_bytes(obj[2])
+        sources.append(dict(local_file=filename, commit=sha, path=path, blob=obj[0], sha256=hashlib.sha256(obj[2]).hexdigest(), anchor_ids=covering(sha), url=fixed_url(sha, path)))
+    catalog = json.loads((OUT / 'study_catalog.json').read_text())
+    studies = catalog['studies']
+    study_rows = []
+    for r in studies:
+        sha = r.get('fixed_result_or_document_commit', '')
+        path = r.get('primary_document', '')
+        repository = r.get('repository', REPO)
+        obj = blobs.get(sha + ':' + path) if repository == REPO else None
+        study_rows.append(dict(study_id=r['study_id'], name=r['name'], category=r['category'], objective=r['objective'],
+                               recorded_status=r['recorded_status_description'], outcome=r['outcome'],
+                               conditions=r['scientific_conditions'], recorded_result=r['actual_result'],
+                               limitations=r.get('open_questions', ''), repository=repository, commit=sha,
+                               path=path, anchor_ids=covering(sha) if repository == REPO else [],
+                               availability='LOCAL_GIT_BLOB' if obj else ('EXTERNAL_REPOSITORY_NOT_CHECKED' if repository != REPO else 'MISSING_AT_RECORDED_COMMIT'),
+                               url=fixed_url(sha, path, repository)))
+    write_csv('study_map.csv', study_rows)
+    study_lines = ['# 研究カードの入口', '', '元の70概念カードの問い・条件・状態を転記した案内。科学的結果・採否の更新ではない。数値・根拠・限界は固定資料本文とstudy_catalog.jsonで確認する。', '', '|ID・研究|問い|条件（元記録）|状態（元記録）|資料・可用性|', '|---|---|---|---|---|']
+    for r in study_rows:
+        study_lines.append(f"|{escaped(r['study_id'])} {escaped(r['name'])}|{escaped(r['objective'])}|{escaped(r['conditions'])}|{escaped(r['recorded_status'])}|[固定資料]({r['url']}) / {r['availability']}|")
+    (OUT / 'STUDIES.md').write_text('\n'.join(study_lines) + '\n')
+    print('Reused', len(study_rows), 'study cards and fixed Track A access views', flush=True)
+
+    # Historical validation entry variants remain separate, including STOP/FAIL and pending records.
+    variants = {}
+    manifest_counts = {}
+    branch_rows = []
+    files = []
+    all_tip_set = set(tips)
+    main_sha = next(r['sha'] for r in branches if r['branch'] == 'main')
+    for n, row in enumerate(sorted(branches, key=lambda r: (r['commit_date'], r['branch'])), 1):
+        sha = row['sha']
+        base = parents[sha][0] if parents.get(sha) else None
+        while base and base not in all_tip_set:
+            base = parents[base][0] if parents.get(base) else None
+        args = ['diff-tree', '--no-commit-id', '--no-renames', '--name-status', '-r', '-z']
+        if base:
+            args += [base, sha]
+        else:
+            args += ['--root', sha]
+        parts = git(*args).decode().rstrip('\0').split('\0')
+        changed = [(parts[i], parts[i + 1]) for i in range(0, len(parts) - 1, 2)]
+        documents = [p for status, p in changed if status != 'D' and role(p) == 'document' and '研究ノート/' not in p]
+        artifact_roots = sorted({'/'.join(p.split('/')[:2]) for status, p in changed if status != 'D' and p.startswith('artifacts/')})
+        navigation = documents[:]
+        if not navigation:
+            navigation = [p for status, p in changed if status != 'D' and p.startswith(('src/', 'scripts/', 'tests/'))]
+        if not navigation:
+            navigation = ['PROJECT_MAP.md'] if blobs.get(sha + ':PROJECT_MAP.md') else []
+        for status, p in changed:
+            if status != 'D' and (role(p) == 'document' or p.endswith(('manifest.json', 'REPORT.md', 'STOP.json', 'summary.json', 'results.json'))):
+                files.append(dict(branch=row['branch'], commit=sha, change=status, role=role(p), path=p, url=fixed_url(sha, p)))
+        obj = blobs.get(sha + ':artifacts/validation_manifest.json')
+        ids = []
+        if obj:
+            value = json.loads(obj[2])
+            manifest_counts[row['branch']] = len(value)
+            for key, entry, pointer in manifest_entries(value):
+                digest = hashlib.sha256(json.dumps(entry, ensure_ascii=False, sort_keys=True).encode()).hexdigest()
+                vid = key + '@' + digest[:12]
+                if vid not in variants:
+                    ids.append(vid)
+                    variants[vid] = dict(record_id=vid, validation_key=key, payload_sha256=digest,
+                                         catalog_commit=sha, first_observed_branch=row['branch'],
+                                         manifest_json_pointer=pointer,
+                                         status_literal=first(entry, ['status', 'validation_status', 'result_status']),
+                                         condition_literal=first(entry, ['condition', 'conditions', 'scope', 'model']),
+                                         source_literal=first(entry, ['scientific_SOURCE', 'SOURCE', 'source_commit', 'source']),
+                                         raw_entry=entry, observed_in_branch_count=0)
+                variants[vid]['observed_in_branch_count'] += 1
+        branch_rows.append(dict(old_branch=row['branch'], commit=sha, commit_date=row['commit_date'],
+                                subject=row['subject'], family_hint=row['family_by_name'], family_hint_is_scientific_classification=False,
+                                anchor_ids=covering(sha), first_parent_named_base=base or '',
+                                navigation_paths=navigation, artifact_roots=artifact_roots,
+                                newly_observed_validation_record_ids=ids,
+                                validation_manifest_url=fixed_url(sha, 'artifacts/validation_manifest.json') if obj else '',
+                                study_ids=[r['study_id'] for r in studies if r.get('branch') == row['branch']],
+                                restore_command='git branch ' + row['branch'] + ' ' + sha,
+                                fixed_tree_url=URL + '/tree/' + sha,
+                                mapping_status='FIXED_COMMIT_WITH_NAVIGATION' if navigation else 'FIXED_COMMIT_ONLY_REVIEW_CONTENT'))
+        if n % 200 == 0:
+            print('Indexed', n, '/', len(branches), 'cached remote branches', flush=True)
+    write_csv('branch_map.csv', branch_rows)
+    dump('branch_map.json', branch_rows)
+    branch_lines = ['# 旧ブランチ名から研究資料・成果物へ', '', '研究名による区分は名称からの検索補助。branchやcommitの件数を独立した研究結果数として使わない。資料は固定SHAを参照する。', '']
+    grouped = defaultdict(list)
+    for r in branch_rows:
+        grouped[r['family_hint']].append(r)
+    for group in sorted(grouped):
+        branch_lines += ['## ' + group, '', '|旧branch|当時のcommit件名|固定資料の入口|成果物のroot|保存点|', '|---|---|---|---|---|']
+        for r in sorted(grouped[group], key=lambda r: r['old_branch']):
+            links = '<br>'.join('[' + escaped(Path(p).name) + '](' + fixed_url(r['commit'], p) + ')' for p in r['navigation_paths'][:3])
+            branch_lines.append('|' + escaped(r['old_branch']) + '|' + escaped(r['subject']) + '|' + links + '|'+ '<br>'.join(escaped(p) for p in r['artifact_roots']) + '|' + ', '.join(r['anchor_ids']) + '|')
+        branch_lines.append('')
+    (OUT / 'BRANCHES.md').write_text('\n'.join(branch_lines) + '\n')
+    write_csv('changed_document_and_receipt_paths.csv', files, ['branch', 'commit', 'change', 'role', 'path', 'url'])
+    records = list(variants.values())
+    references = []
+    for row in records:
+        sha = row['catalog_commit']
+        row['anchor_ids'] = covering(sha)
+        row['path_references'] = []
+        for p in sorted(referenced_paths(row['raw_entry'])):
+            obj = blobs.get(sha + ':' + p)
+            ref = dict(record_id=row['record_id'], commit=sha, path=p,
+                       availability='LOCAL_GIT_' + obj[1].upper() if obj else 'NOT_PRESENT_AT_CATALOG_COMMIT',
+                       blob_or_tree=obj[0] if obj else '', url=fixed_url(sha, p))
+            row['path_references'].append(ref)
+            references.append(ref)
+    dump('validation_records.json', records)
+    write_csv('validation_records.csv', [{k: v for k, v in r.items() if k not in ('raw_entry', 'path_references')} for r in records])
+    write_csv('evidence_paths.csv', references, ['record_id', 'commit', 'path', 'availability', 'blob_or_tree', 'url'])
+    write_csv('unresolved_evidence_paths.csv', [r for r in references if r['availability'] == 'NOT_PRESENT_AT_CATALOG_COMMIT'], ['record_id', 'commit', 'path', 'availability', 'blob_or_tree', 'url'])
+    print('Indexed', len(records), 'distinct original validation-record versions', flush=True)
+
+    overview_specs = [
+        ('overall', RECENT, 'docs/research/pr_repository_scientific_landscape_20261101.md', '全体の科学的到達点', 'DF・RPE・Track B・Pauli-JW・研究Cの横断入口。条件付き結果と未解決事項を確認する。'),
+        ('claims', RECENT, 'docs/research/pr_repository_claim_evidence_gap_matrix_20261101.md', '主張・証拠・不足の対応', '何が支持され、何が未確認かを元の対応表で読む。'),
+        ('df', TRACK_A, TRACK_A_PATH + 'README.md', 'DF / Track A', 'matched-accuracy、共通決定論対照、独立確認、状態・価格・shotの条件を58件の索引へ接続。'),
+        ('longtime', 'ebe9e2aa2c83', 'artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/REPORT.md', 'DF長時間・B3', '保存された長時間比較とB3の限定負結果。有限候補・取得域の結果を維持する。'),
+        ('rpe', '4591b8d75a2a6a55c74a51225f0c61648023c8ee', 'docs/research_direction_full_opt2.md', 'RPE全roundモデルの後続', '全roundのモデル会計と、長roundへの移送・最終精度保証を分けて読む。'),
+        ('pauli', RECENT, 'docs/research/pauli_h2_h4_h6_paper_evidence_synthesis_20261101.md', 'Pauli-JW', '純RTE・Hybrid・決定論の有限候補比較。DFとの表現比較を別扱いにする。'),
+        ('h6', RECENT, 'docs/research/h6_selected_implementation_execution_20261102.md', 'H6局所実装診断', '保存trajectoryに対する局所診断。全lawの誤差・母平均・最終総コスト保証へ格上げしない。'),
+        ('p3', RECENT, 'docs/research/h4_p3_finite_bit_execution_20261102.md', 'H4 DF/Pauli対応', '有限bit・角度・保存lawの診断。実装全体の精度保証とは分ける。'),
+        ('research_c', C, 'docs/research/research_c_evidence_synthesis_and_decision_readiness_20261031.md', '研究C：既存成果', 'PR-aware DF、精度予算、条件付きPR内部改善、強い決定論対照、限定負結果を区分。'),
+        ('research_c_new', C, 'docs/research/research_c_pr_integrated_preparation_20261102.md', '研究C：11/02統合準備', '固定snapshotに含まれる準備文書。後続の実行完了・成功を先取りしない。'),
+        ('track_b', 'aafa0f4a42fc0b5780e0716c4bd7c7710bfa4d14', 'docs/research/track_b_paper_claim_survey_20261018/results_usability_map.md', 'Track Bの結果利用可能性', 'return集約、有限bit、生成器、限定負結果・未定義の案を元のclaim別にたどる。'),
+        ('track_b_later', '5f750a23f023d75c8c4fbcabc6937d6953ce61f2', 'docs/research/track_b_g6_v1_2_draft_review_integration_20261022/CLAIM_EVIDENCE_MATRIX.md', 'Track Bの後続claim対応', 'v1.2/C1等の後続を含む対応。数学構成・人工検証・分子pilot・性能保証を分離する。'),
+        ('base', main_sha, 'docs/research/研究概要・現状.md', 'mainの基礎検証', 'main時点の規範・限定検証。別系列の後続結果との時点差を保持する。'),
+    ]
+    overviews = []
+    for key, sha, path, name, scope in overview_specs:
+        # Resolve fixed abbreviated commits, never a moving branch name.
+        sha = git('rev-parse', sha + '^{commit}').decode().strip()
+        obj = blobs.get(sha + ':' + path)
+        if not obj:
+            overviews.append(dict(id=key, name=name, scope=scope, commit=sha, path=path, availability='PATH_NOT_FOUND_REVIEW_MANIFEST', anchor_ids=covering(sha)))
+            continue
+        text = obj[2].decode()
+
+        def rewrite(match):
+            target = match.group(2)
+            if re.match(r'\w+://|mailto:|#', target):
+                return match.group(0)
+            parsed = urlsplit(unquote(target))
+            dest = posixpath.normpath(posixpath.join(posixpath.dirname(path), parsed.path))
+            return match.group(1) + fixed_url(sha, dest) + ('#' + parsed.fragment if parsed.fragment else '') + match.group(3)
+
+        view = re.sub(r'(\]\()([^\s)]+)(\))', rewrite, text)
+        view = re.sub(r'(?m)^(\[[^\]]+\]:\s*)(?!https?://)([^\s]+)(.*)$', rewrite, view)
+        for branch in sorted(branches, key=lambda r: -len(r['branch'])):
+            for old_name in {branch['branch'], quote(branch['branch'], safe='')}:
+                for mode in ('blob', 'tree'):
+                    view = view.replace(URL + '/' + mode + '/' + old_name + '/', URL + '/' + mode + '/' + branch['sha'] + '/')
+        filename = 'overview_' + key + '.md'
+        header = f'> 固定資料の閲覧用copy。元: [{sha[:12]}:{path}]({fixed_url(sha, path)})。相対リンクのみ固定SHAへ変換。本文の科学的状態・採否は再判定していない。\n\n'
+        (OUT / filename).write_text(header + view)
+        overviews.append(dict(id=key, name=name, scope=scope, commit=sha, path=path, local_file=filename,
+                              availability='LOCAL_GIT_BLOB', blob=obj[0], original_sha256=hashlib.sha256(obj[2]).hexdigest(),
+                              url=fixed_url(sha, path), anchor_ids=covering(sha)))
+    dump('overview_sources.json', overviews)
+    dump('copied_catalog_sources.json', sources)
+    blobs.close()
+    summary = dict(schema='REPOSITORY_RESULT_NAVIGATION_V1', snapshot_label_jst='2026-11-02',
+                   snapshot_sha256=snapshot_digest, cached_remote_branches=len(branch_rows), local_branches=sum(r['ref'].startswith('refs/heads/') for r in refs),
+                   reused_conceptual_study_cards=len(studies), reused_track_a_access_rows=58,
+                   validation_entry_variants=len(records), literal_evidence_path_references=len(references),
+                   evidence_path_availability=dict(Counter(r['availability'] for r in references)),
+                   archive_anchor_count=len(anchors), cached_remote_anchor_count=len(remote_frontiers),
+                   additional_local_only_anchor_count=len(set(anchors) - remote_frontiers),
+                   scientific_execution=False, new_claim_adoption=False, refs_modified=False,
+                   archive_tags_created=False, bundle_created=False, remote_verified=False,
+                   policy='Research results must be navigable without former branch names. Recorded worktree usage is context, not by itself a requirement to preserve a remote branch name.',
+                   limitations=['Counts describe catalog/navigation records, not independent experiments.',
+                                'Availability means local Git object existence, not scientific revalidation or complete raw-data custody.',
+                                'Absent files and external repositories are explicit; no absent value is imputed as success or zero.',
+                                'Snapshot is fixed; later commits and untracked results are not exhaustively inventoried.',
+                                'SHA references need reachable Git objects. Archive tags/bundle are proposed, not created.',
+                                'Numerical values and statuses are copied original records, not recomputed conclusions.'])
+    dump('summary.json', summary)
+    lines = ['# 研究結果マップ：旧ブランチ名に依存しない入口', '',
+             '2026-11-02 JST。ローカルに取得済みの固定コミット・既存の研究カードと証拠索引を使った案内。新規の科学計算・科学的採択は行っていない。', '',
+             '研究系列 → 固定資料 → 元の条件・status → 成果物をたどる。旧branch名は検索用の別名として残す。本文のstatusは元資料の主張であり、このマップ作成による科学的再認定ではない。', '',
+             '## 研究内容から探す', '', '|研究系列・用途|入口|読む際の区分|', '|---|---|---|']
+    for r in overviews:
+        link = '[' + escaped(r['name']) + '](' + r['local_file'] + ')' if r.get('local_file') else 'path未確認：evidence_paths.csvを参照'
+        lines.append('|' + escaped(r['name']) + '|' + link + '|' + escaped(r['scope']) + '|')
+    lines += ['', '## 詳細を検索する', '',
+              '- [70研究カードを読む](STUDIES.md) / [CSV](study_map.csv)：問い・固定条件・元の結果・限界・固定SHA・元資料。外部リポジトリは別扱い。',
+              '- [Track Aの58アクセス行](track_a_study_index.csv)：モデル、geometry、basis、DF rank政策、L_D、時間窓、比較、metric、結果と採否の元記録。58個の独立実験ではない。',
+              '- [Track Aの主張と条件](track_a_claim_usage.csv)、[論文用候補データ](track_a_paper_data_index.csv)、[未解決事項](track_a_unresolved_issues.csv)：採用・資格を元の台帳へ照会する。',
+              '- [旧ブランチ別に読む](BRANCHES.md) / [CSV](branch_map.csv) / [JSON](branch_map.json)：snapshotの全branch。元名は`old_branch`で検索し、`navigation_paths`と`artifact_roots`を読む。',
+              '- [元manifestの検証記録](validation_records.csv) / [完全な元record](validation_records.json)：同じkeyでも内容が異なる版を別recordとして保持。`catalog_commit`と`condition_literal`で時点・条件を確認する。',
+              '- [成果物・資料のpath確認](evidence_paths.csv)：固定SHAで実在したpathと、存在しない/まだ出力予定のpathを区別。存在確認は科学的検証ではない。',
+              '- [固定SHAに存在しない参照だけを見る](unresolved_evidence_paths.csv)：未確認・予定・欠落・別scope等の調査入口。存在しないという理由だけで元の研究結果を失効させない。',
+              '- [変更された文書・receiptのpath](changed_document_and_receipt_paths.csv)：各tipからfirst-parentを遡り、直前のsnapshot内named tipとの差分を記録。branch全歴史や科学結果の網羅表ではない。',
+              '', '## ブランチ名を削除した後の読み方', '',
+              '1. このマップから研究系列を選ぶ。旧名しか分からないときはbranch_map.csvで検索する。',
+              '2. 固定資料の条件・statusとvalidation_recordsを読み、肯定結果、限定負結果、実装のみ、計画/未検証を元の記録で区分する。',
+              '3. 成果物は固定SHAリンク、または `git show <commit>:<path>` で読む。元branch名の復元が必要ならbranch_map.csvのrestore_commandを使う。',
+              '4. `NOT_PRESENT_AT_CATALOG_COMMIT` は欠落/予定/別scope等の可能性を残す。元報告と照合し、存在しないデータを検証済みにしない。',
+              '', '## 履歴の保存と削除条件', '',
+              f'このsnapshotはリモート追跡branch {len(branches)}本。保存anchorは{len(anchors)}点（リモート由来{len(remote_frontiers)}、追加のlocal-only {len(set(anchors) - remote_frontiers)}）。[保存計画](archive_anchors.csv)に完全SHAと提案tagを記録した。', '',
+              '**SHAをマップに書くだけではデータの保存にならない。** 既存の後続branchを維持するか、これらの保存点をtag/bundleとして実際に保管する必要がある。tag/bundleは今回未作成。リモート削除前の現況照合・公開先へのマップ保存も未実施。', '',
+              'ユーザーの方針により、worktree記録があるという理由だけで旧リモートbranch名の保存を必須にしない。研究資料・成果物と履歴をこのマップからたどれることを優先する。既存worktreeや未追跡データの削除は別操作で、ここでは行っていない。', '',
+              '未追跡raw・他環境だけのデータ・外部リポジトリの完全保存は保証しない。元資料のraw所在/可用性/STOPを維持する。mainと各研究系列の時点差があり、先端が新しいだけで元の規範や採否を置き換えない。', '',
+              '## 収録範囲と再生成', '',
+              f'70概念カード、Track A 58アクセス行、元manifestの{len(records)}内容版、固定path {len(references)}参照。これらの件数を研究結果数・独立実験数・検証成功数として使わない。', '',
+              '入力snapshotはref_snapshot.json、集計と限界はsummary.json、コピーした索引の出典はcopied_catalog_sources.json。固定pathのローカル存在確認と履歴被覆をverification.jsonに記録する。', '',
+              '`python3 scripts/build_repository_result_map.py --build`（リポジトリrootから）。同梱snapshotと固定資料から再生成する。初回だけ既存auditを入力とする。ネットワーク・科学関数・Git参照変更なし。']
+    (OUT / 'README.md').write_text('\n'.join(lines) + '\n')
+    dump('map_manifest.json', {
+        'schema': 'RESEARCH_NAVIGATION_FILE_MANIFEST_V1',
+        'snapshot_sha256': snapshot_digest,
+        'files': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(OUT.iterdir())
+                  if p.is_file() and p.name not in ('map_manifest.json', 'verification.json')},
+        'scope': 'Generated navigation records and copied sources; no scientific evidence status is changed.',
+    })
+    print(json.dumps(summary, ensure_ascii=False, indent=2), flush=True)
+    return summary
+
+
+def check():
+    summary = json.loads((OUT / 'summary.json').read_text())
+    manifest = json.loads((OUT / 'map_manifest.json').read_text())
+    for name, digest in manifest['files'].items():
+        assert hashlib.sha256((OUT / name).read_bytes()).hexdigest() == digest, name
+    snapshot = json.loads((OUT / 'ref_snapshot.json').read_text())
+    assert hashlib.sha256((OUT / 'ref_snapshot.json').read_bytes()).hexdigest() == summary['snapshot_sha256']
+    branches = json.loads((OUT / 'branch_map.json').read_text())
+    expected = {r['ref'].removeprefix('refs/remotes/origin/'): r['sha'] for r in snapshot
+                if r['ref'].startswith('refs/remotes/origin/') and not r['symref']}
+    assert {r['old_branch']: r['commit'] for r in branches} == expected
+    anchors = json.loads((OUT / 'archive_anchors.json').read_text())
+    anchor_map = {r['anchor_id']: r['commit'] for r in anchors}
+    refs = [r['sha'] for r in snapshot if not r['symref'] and not r['ref'].startswith('refs/tags/')]
+    uncovered = int(git('rev-list', '--count', '--stdin', data=('\n'.join(refs + ['^' + r['commit'] for r in anchors]) + '\n').encode()))
+    assert uncovered == 0
+    for row in branches:
+        assert row['anchor_ids'] and re.fullmatch('[0-9a-f]{40}', row['commit'])
+        subprocess.run(['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', row['commit'], anchor_map[row['anchor_ids'][0]]], check=True)
+    blobs = Blobs()
+    copied = json.loads((OUT / 'copied_catalog_sources.json').read_text())
+    for row in copied:
+        obj = blobs.get(row['commit'] + ':' + row['path'])
+        assert obj and obj[2] == (OUT / row['local_file']).read_bytes()
+        assert hashlib.sha256(obj[2]).hexdigest() == row['sha256']
+        assert row['anchor_ids']
+    original = json.loads((OUT / 'study_catalog.json').read_text())['studies']
+    with (OUT / 'study_map.csv').open(encoding='utf-8-sig', newline='') as f:
+        study_rows = list(csv.DictReader(f))
+    by_id = {r['study_id']: r for r in original}
+    assert len(study_rows) == len(by_id) == 70
+    for row in study_rows:
+        source = by_id[row['study_id']]
+        assert row['conditions'] == source['scientific_conditions']
+        assert row['recorded_status'] == source['recorded_status_description']
+        assert row['recorded_result'] == source['actual_result']
+        assert row['limitations'] == source.get('open_questions', '')
+    records = json.loads((OUT / 'validation_records.json').read_text())
+    parsed_manifests = {}
+    for row in records:
+        sha = row['catalog_commit']
+        if sha not in parsed_manifests:
+            parsed_manifests[sha] = json.loads(blobs.get(sha + ':artifacts/validation_manifest.json')[2])
+        value = parsed_manifests[sha]
+        for token in row['manifest_json_pointer'].split('/')[1:]:
+            token = token.replace('~1', '/').replace('~0', '~')
+            value = value[int(token)] if isinstance(value, list) else value[token]
+        assert value == row['raw_entry'], row['record_id']
+        assert hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True).encode()).hexdigest() == row['payload_sha256']
+        assert row['anchor_ids']
+    with (OUT / 'evidence_paths.csv').open(encoding='utf-8-sig', newline='') as f:
+        paths = list(csv.DictReader(f))
+    specs = {r['commit'] + ':' + r['path'] for r in paths}
+    specs.update(r['commit'] + ':' + p for r in branches for p in r['navigation_paths'])
+    ordered = sorted(specs)
+    checked = git('cat-file', '--batch-check=%(objectname) %(objecttype)', data=('\n'.join(ordered) + '\n').encode()).decode().splitlines()
+    assert len(checked) == len(ordered)
+    objects = dict(zip(ordered, checked))
+    for row in paths:
+        result = objects[row['commit'] + ':' + row['path']]
+        if row['availability'] == 'NOT_PRESENT_AT_CATALOG_COMMIT':
+            assert result.endswith(' missing')
+        else:
+            sha, kind = result.split()
+            assert sha == row['blob_or_tree'] and row['availability'] == 'LOCAL_GIT_' + kind.upper()
+    for row in branches:
+        assert all(not objects[row['commit'] + ':' + p].endswith(' missing') for p in row['navigation_paths'])
+    overviews = json.loads((OUT / 'overview_sources.json').read_text())
+    assert all(r['availability'] == 'LOCAL_GIT_BLOB' and r['anchor_ids'] for r in overviews)
+    for r in overviews:
+        obj = blobs.get(r['commit'] + ':' + r['path'])
+        assert hashlib.sha256(obj[2]).hexdigest() == r['original_sha256']
+    blobs.close()
+    local_link_count = 0
+    moving_urls = []
+    for path in [ROOT / 'RESEARCH_RESULTS_MAP.md', *OUT.glob('*.md')]:
+        text = path.read_text()
+        for target in re.findall(r'\]\(([^\s)]+)\)', text):
+            if re.match(r'\w+://|mailto:|#', target):
+                continue
+            target_path = unquote(urlsplit(target).path)
+            assert (path.parent / target_path).exists(), (str(path), target)
+            local_link_count += 1
+        for target in re.findall(re.escape(URL) + r'/(?:blob|tree)/([^\s)<>]+)', text):
+            if not re.match('[0-9a-f]{40}(?:/|$|#)', target):
+                moving_urls.append(dict(file=path.name, target=target))
+    assert not moving_urls, moving_urls[:10]
+    result = dict(status='PASS', scope='LOCAL_METADATA_AND_GIT_PATH_ANCESTRY_CHECKS_ONLY_NOT_SCIENTIFIC_REVALIDATION',
+                  snapshot_branches_checked=len(branches), branch_to_anchor_ancestry_checks=len(branches),
+                  uncovered_commits=uncovered, exact_source_copies_checked=len(copied),
+                  study_condition_status_result_preservation_checks=len(study_rows),
+                  validation_record_literal_preservation_checks=len(records),
+                  evidence_path_checks=len(paths), unique_git_path_checks=len(ordered),
+                  overview_source_checks=len(overviews), local_markdown_links_checked=local_link_count,
+                  generated_moving_branch_blob_tree_links=0,
+                  observed_missing_path_records=sum(r['availability'] == 'NOT_PRESENT_AT_CATALOG_COMMIT' for r in paths),
+                  source_availability_limits='External repositories, untracked/raw data, and remote HTTP not checked.',
+                  remote_changes=False, scientific_execution=False)
+    dump('verification.json', result)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return result
+
+
+if __name__ == '__main__':
+    ap = argparse.ArgumentParser(description=__doc__)
+    mode = ap.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--build', action='store_true')
+    mode.add_argument('--check', action='store_true')
+    args = ap.parse_args()
+    if args.build:
+        build()
+    else:
+        check()

@@ -1,0 +1,7 @@
+# PR境界拡張：固定範囲の取得終了
+
+## 2026-10-27 PR境界拡張・固定3候補
+
+[固定結果](../../../analysis/pr_boundary_execution_20261027/REPORT.md)。linear H4/H6・1Å・STO-3G・tol-only rank10/19、H6保存completion、T=2/δ=2、m5/prefix3・7/q1、R16K2・R128K2・R11K6、P=0。新signal2候補・5精度判定、paired trajectory 2808本、実compile 5616軸を取得・保存値監査。元33/40は不変。H8は正確なA_signal原記録不足で停止し、新signal/sampling/compileなし。有限標本・経験的allowance条件付きで、全域最適性・母平均順位・全QPE/RPE費用は未確定。旧SOURCE/raw/grant/STOP保全、mandatory STOP。
+
+既存kernel・保存T2 reference・追加7候補pipelineを再利用。E/Cはpoolせず、n_Cを固定規則で決め、確認後top-upを実施しない。

@@ -1,0 +1,31 @@
+# 4. 主表変更仕様（DRAFT・元主表への適用0）
+
+既存正本はcommit `1923fce8f7461513d1bc47b5061e87cd70917e87` の
+`artifacts/resource_applicability/track_a_h468_paper_display_methods/2026-10-19/main_table.csv`、
+SHA256 `2d910a62451d6a0b3247751625e85c8aebd181b4dea6b493b94a469d4e49d86c`。
+[仕様JSON](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/main_table_spec_DRAFT.json)に元の全列名・6行IDを保存する。
+
+推奨案ではH4_DF10_P_1/2、H6_DF19_P_1/2、H8_DF28_P_1/2を保持する。
+追加する共通探索行は0、置換する数値列は0。
+特に`PF_id`/`G_PF_exact`を共通格子最良へ、`PR_id`/`n`/`G_PR_exact`/`paired_SE`をouter32探索へ差し替えない。
+`saved_direction_status`と`lower_saved_point_cost`は別項目で、H6粗精度のREPRODUCEDはPF低費用の事前方向の再現である。
+H4粗精度NOT_REPRODUCEDも保持する。
+
+追加候補はTable1脚注に「固定独立確認と別の共通域探索比較」を明示する一文のみ。
+[そのまま利用できる脚注DRAFT](05_text_and_captions_DRAFT.md#table-1-footnote-draft)を別保存する。
+将来、混在が避けられない表示を選ぶ場合には`evidence_role`と`baseline_domain_id`を列候補にするが、今回の元表へ列を追加しない。
+
+新しい15行は[比較B表DRAFT](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/comparison_B_15_DRAFT.csv)として独立させる。
+SIではS-common-B、案2が正式に選ばれた後はTable2候補。
+
+| 列群 | 必須列・表示 |
+|---|---|
+| 比較identity | publication_id、系・DF rank、ε、comparison_group=B、formula_scope=ALL_FORMULAS、PF_domain_id |
+| PF選択 | 保存PF候補ID、公式、Full/B0/B0I、prefix、q、両軸RZ、両軸analytic shot、整数G exact |
+| PR選択と統計 | 保存候補ID、公式/prefix/q、n、Gの保存分子/分母、保存decimal mean、不偏分散、paired SE |
+| 比較結果 | 保存削減率、保存PR/PF exact比、保存point_direction。新しい比・丸め・順位は算出しない |
+| 来歴・限定 | 保存探索cohort、元結果commit、採用commit、source SHA/pointer。独立確認=false |
+
+45行の[比較A表](../../../artifacts/resource_applicability/track_a_h246_pf_publication_draft/2026-10-23/comparison_A_45_DRAFT.csv)も同じ列構造だが、`comparison_group=A`・公式固定のPF分母を使う。
+PR平均とPFの整数費用を同じ統計量と呼ばず、PFにMonte Carlo SEを付けない。
+独立Pの6行、探索の15/45行、PR対PR確認118標本は別表・別cohortのまま保持する。

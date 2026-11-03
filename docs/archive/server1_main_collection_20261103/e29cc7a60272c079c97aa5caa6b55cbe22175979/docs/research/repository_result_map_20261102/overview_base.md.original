@@ -1,0 +1,362 @@
+> 固定資料の閲覧用copy。元: [0babed07006c:docs/research/研究概要・現状.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E6%A6%82%E8%A6%81%E3%83%BB%E7%8F%BE%E7%8A%B6.md)。相対リンクのみ固定SHAへ変換。本文の科学的状態・採否は再判定していない。
+
+# 研究概要・現状
+
+最終更新：2026-09-20 JST
+
+この文書は、研究内容を初めて確認する共同研究者またはCodexが、発表資料、進捗報告、
+研究計画書などを作る前に読むための入口である。研究背景、目的、現時点の決定、主要な
+検証結果、未解決事項を一か所にまとめる。
+
+数式や評価手順の正本は[研究資料の索引](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/README.md)、再現可能性と証拠statusの正本は
+[VALIDATION_STATUS.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/VALIDATION_STATUS.md)および
+[validation manifest](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/validation_manifest.json)である。本書の数値は、
+特に断らない限り2026-09-20時点のdirty local worktreeで得た検証結果であり、最終的な
+科学的結論やimmutable CI evidenceではない。
+
+## 1. 一文で表した研究
+
+Double Factorization（DF）した量子化学Hamiltonianを決定論部分とランダム部分へ分け、
+二次Product Formula（PF）、有限Randomized Taylor Expansion（RTE）、Robust Phase
+Estimation（RPE）を接続したときに、所定のエネルギー精度と成功確率を満たす期待
+compiled総コストを最小にする分割と近似条件を明らかにする研究である。
+
+## 2. 背景と着眼点
+
+基底状態エネルギーを位相推定で求めるにはHamiltonian時間発展を繰り返し実装する必要が
+あり、時間発展の近似誤差だけでなく、回路深さ、測定shot数、近似による信号減衰が総コスト
+を左右する。
+
+本研究では、固定したDF fragment列に対して
+
+$$
+H=H_D(L_D)+H_R(L_D)
+$$
+
+と分割する。先頭$L_D$個のfragmentとone-body correctionを決定論側$H_D$へ置き、残りを
+ランダム側$H_R$へ置く。理想的なpartial-$S_2$ one stepは概念的に
+
+$$
+U_{\mathrm{partial}}(\delta)
+=S_D^{\mathrm{rev}}(\delta/2)
+e^{-iH_R\delta}
+S_D(\delta/2)
+$$
+
+である。実際には中央の$e^{-iH_R\delta}$を有限RTEで実装する。
+
+$L_D$を増やすとランダムtailのnormとRTE負担は減るが、決定論回路は重くなる。したがって
+$\lambda_R$やPF誤差だけを最小化するのではなく、信号減衰によるshot増加も含む総コストで
+比較する必要がある。
+
+## 3. 研究目的と現在の段階
+
+最終的な目的関数は、状態準備を除いたRPE interrogationについて、各round・各測定軸の
+1 shot当たりの期待compiled costと必要shot数を掛けて合計した
+
+$$
+G_{\mathrm{total}}
+=
+\sum_{m=0}^{M}\sum_{b\in\{c,s\}}
+N_{m,b}\,\mathbb E[C_{m,b}^{\mathrm{no\text{-}prep}}]
+$$
+
+である。探索対象は主に$L_D$、時間刻み$\delta_{\mathrm{time}}$、roundごとのRTE short-step
+数$r_m$、Taylor cutoff $K_m$、位相誤差予算、失敗確率配分である。
+
+ただし、現在は最終コスト評価を保留し、その入力となる近似の妥当性を検証している。
+優先順位は次のとおりである。
+
+1. PF誤差係数$C$の定義と大規模系で使える推定経路を検証する。
+2. finite-RTEの誤差上界、attenuation、信号半径、位相換算を検証する。
+3. ランダム回路のcompiled-cost近似を検証し、検証済み単位でcost proxyを構成する。
+4. 検証済み近似をRPEのshot数とcompiled costへ接続する。H4の$q\leq4$直接評価は接続済み。
+5. 仮想Hadamard測定で短roundの失敗確率配分を検証した。
+6. 未使用$q=8$ Hadamard一体回路で1 shot cost proxyを検証し、1 roundのresource accountingへ接続した。
+7. 検証済み$q=1,2,4,8$で$\beta,\alpha$配分感度を比較し、次段階の暫定配分を定めた。
+8. 暫定配分で$q=1,2,4,8$の限定4段集計と短段の厳密二項失敗率を確認した。
+9. $q=8$の物理信号と$q=1,2,4,8$の分枝選択・位相復元を確認した。
+10. 目標精度から必要round数を計算した。既存設定`CA/10`を暫定主条件とすると
+    $M=15,q_{\max}=32768$で、固定$\delta=0.1,r=4,K=2$は長roundで不適格だった。
+11. 既存PF検証で実行済みの$\delta$候補とround別$(r_m,K_m)$を再探索した。
+    `CA/10`の暫定条件で$\delta=0.01,0.0125,0.02$に行列検証を通るscheduleを構成した。
+12. scheduleで使う短時間幅0.02--0.000390625の局所回路指標とイベント列長8、16、32を
+    追加検証した。$r\leq16$では1--3イベント、$r=32$では4イベント補正を使う中央RTE
+    ブロックproxyを接続し、全6指標で$\delta=0.02$が最小となった。
+13. 次は$\delta=0.02$と比較対照0.01について、制御付きpartial-$S_2$反復とHadamard
+    1 shot costへ接続する。その後に誤差・失敗確率配分を含む総コスト最適化へ進む。
+
+## 4. 現段階で固定している範囲
+
+| 項目 | 現在の扱い |
+|---|---|
+| 分子モデル | H-chain |
+| geometry | 原子間距離1.0 Å。現段階では距離掃引を行わない |
+| basis | STO-3G |
+| PF | 二次partial-$S_2$ |
+| DF | 問題ごとにDF表現、rank、fragment順位、thresholdを固定 |
+| 分割変数 | 固定fragment列のprefix長$L_D$ |
+| 入力状態 | 必要な状態を利用できると仮定 |
+| 状態準備 | 研究範囲外で、総コストから除外 |
+| controlled evolution | `ordinary_controlled = diag(I,U)` |
+| QPE/RPE統計誤差 | PFの決定論的biasとは分離して配分 |
+| 証拠の範囲 | 現在の新規結果はlocal validation。量子backend shot、ノイズ、immutable CIは未実施 |
+
+従来の代表的な近似検証では暫定的に
+$\beta_{\mathrm{RPE}}=0.40$ rad、
+$\overline\beta_{\mathrm{PF}}=0.08$ rad、
+$\overline\beta_{\mathrm{RTE}}=0.08$ rad、
+$\overline\beta_{\mathrm{stat}}=0.24$ rad、
+$\alpha_{\mathrm{tot}}=0.05$を用いた。検証した3 roundのcosine・sine計6軸には
+$\alpha_{m,b}=0.05/6$を均等配分した。その後の$q=1,2,4,8$配分感度検証では、次段階の
+暫定入力として$(\overline\beta_{\mathrm{PF}},\overline\beta_{\mathrm{RTE}},
+\overline\beta_{\mathrm{stat}})=(0.02,0.02,0.36)$ radとcost感度重み$\alpha$配分を選んだ。
+いずれも明示条件内の暫定値であり、最終的な最適配分ではない。
+
+## 5. PF誤差係数Cについて採用した方針
+
+### 5.1 役割を分けた三つの係数
+
+- $C_D$：$H_D$だけから得る安価なsurrogate。広い$L_D$候補のscreeningにだけ使う。
+- $C_{\mathrm{PF,eig}}$：full-$H$基底状態に連続する支配固有位相分枝のPF bias係数。
+  小規模系での主たる基準値とする。
+- $C_{\mathrm{partial}}$：full-$H$基底状態へpartial-$S_2$を作用させ、論文
+  Eq. (D6)から得る摂動係数。PF演算子を対角化できない大規模系で
+  $C_{\mathrm{PF,eig}}$を推定する。shift-invariant survival推定量は診断量として残す。
+
+$C_D$は最終係数の上界ではない。H4では分割によって1.2倍marginでも不足したため、
+二段階方針として、$C_D$で候補を絞った後に各候補の$C_{\mathrm{partial}}$を直接計算する。
+
+### 5.2 単一支配固有位相モデル
+
+現在の主評価では、full-$H$基底状態に連続する単一の支配固有位相を仮定する。H4の
+$L_D=0,\ldots,11$では、支配分枝重み、位相汚染、実信号bias、摂動係数の事前受理条件を
+全分割が通過した。この条件を満たす間、QPE RMSE係数と非支配分枝重みは主コスト入力に
+せず、モデルの妥当性を監視する診断量とする。
+
+QPE/RPEのfinite-shot・有限分解能による統計誤差は$C$へ混ぜない。別問題や大きい$q$で
+単一位相条件を外れた場合は、この近似を停止してmulti-phaseまたはRMSE評価へ戻る。
+
+### 5.3 実行可能delta窓での運用係数
+
+最終的に使用する係数はsmall-$\delta$極限からの外挿だけで決めず、対象系で実際に回路を
+作用できる窓$\mathcal D_n$に対して
+
+$$
+C_{\mathrm{use}}(H_n,L_D)
+=\max_{\delta\in\mathcal D_n}
+\frac{|\Delta E_{\mathrm{pert}}(\delta)|}{\delta^2}
+$$
+
+とする。これは実行窓内の経験的上包絡であり、数学的な厳密上界ではない。
+
+## 6. 2026-09-20時点の主要結果
+
+| 対象 | 条件と結果 | 判定・限界 | 詳細 |
+|---|---|---|---|
+| finite-RTE信号近似 | H4、$L_D=0,1,3,6$の各48点でoperator・signal・radius・適用可能なphase上界が成立 | local検証済み。下記の短round直接costへ接続したが、全round総costは未評価 | [finite-RTE検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/finite_rte_signal_validation.md) |
+| finite-RTEの$\delta$感度 | $L_D=3$の375点中374点が暫定0.08 rad配分内。残る1点も$r$または$K$の小変更で配分内 | 上界の妥当性確認であり、最小コスト条件の決定ではない | [finite-RTE検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/finite_rte_signal_validation.md) |
+| RPE短roundの信号・shot・cost接続 | H4、1.0 Å、STO-3G、rank 12、$L_D=3$、$\delta=0.1,r=4,K=2$、$q=1,2,4$。物理基底状態のPF信号半径は1から最大$1.11\times10^{-8}$ずれ、単位半径と実半径の各軸shot数は389、390、391で一致した。Hadamard interrogationのRZはtime-evolution部分より各軸+2で、全接続checkを通過 | 同一snapshot・1 compilerのshort-round local検証。古典MCは各$q$で8 trajectoryの接続検査用で、全round総costと精密な候補順位は未評価。$q=8$ proxyは別検証で接続済み。短round失敗率は次行で別途検証 | [接続検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_round_cost_connection_validation.md) |
+| 仮想Hadamard測定と失敗確率 | 同じH4、rank 12、$L_D=3$、$\delta=0.1,r=4,K=2$、$q=1,2,4$。各軸389、390、391 shotの厳密二項計算で、6軸合成座標失敗率0.0010363、3 round合成統計位相失敗率$1.48\times10^{-6}$。10万反復は座標111件・位相0件。明示したfresh IID RTE trajectory 2340本はseed重複なし、解析信号との差は最大2.063標準誤差 | short-roundの測定統計・sampler実装をlocal検証済み。全roundのbranch selection・位相復元、実backend、noise、一般の基準半径下界、最終costは未評価 | [失敗確率検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_hadamard_failure_validation.md) |
+| $q=8$ Hadamard cost proxy・1 round接続 | 同じH4、rank 12、$L_D=3$、$\delta=0.1,r=4,K=2$、各$q$ 8 trajectory。$q=1,2,4$でaxis・metric別affine proxyを較正し、未使用$q=8$の状態準備なしHadamard一体compileを全6指標・両軸で最大0.726%で予測。RZ入力平均の最大相対SEは0.732%。固定proxyを$q=8$のみresource accountingへ接続し、各軸414 shot、RZ round cost $3.9856\times10^7$の再計算と未検証$q=16$の拒否を確認 | 同一snapshot・同一compiler・$q=8$のlocal検証。$q>8$、proxy係数共分散、$q=8$の物理信号・位相、複数round合計、最終costは未評価 | [$q=8$ proxy接続検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_hadamard_proxy_resource_validation.md) |
+| $\beta,\alpha$配分感度 | 同じH4固定条件と$q=1,2,4$直接cost、$q=8$検証済みproxyを固定し、5種類の$\beta$配分と一様／cost感度重み$\alpha$の10 scenarioを比較。全制約・cost恒等式が通過した。暫定100倍headroom規則では$(0.02,0.02,0.36)$と重み配分を選択し、現行$(0.08,0.08,0.24)$・一様$\alpha$比でRZ comparison costが56.35%小さかった。$\alpha$変更単独は4.35% | 配分感度のlocal diagnostic。100倍guardは理論値でなく、選択はRZ指標・1 snapshot・固定$(L_D,\delta,r,K)$に限定。最終総cost削減率ではない | [配分感度検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_allocation_sensitivity_validation.md) |
+| 限定4段資源集計と新配分の短段失敗率 | 同じH4、1.0 Å、STO-3G、rank 12、$L_D=3,\delta=0.1,r=4,K=2$で$q=1,2,4$直接costと$q=8$検証済みproxyを混合し、各軸のshot×1 shot RZを集計。総1,572 shot、RZ $3.2673961\times10^7$、8軸の$\alpha$和0.05で厳格なunion判定を通過。$q=1,2,4$の新配分での厳密二項座標失敗率は合成$2.2246\times10^{-4}$、統計位相失敗率は$7.7444\times10^{-8}$ | この成果物自体は$q=8$物理信号・branch復元を含まないが、次行の追試で確認した。PF係数が経験値のため`empirical_screening`であり、最終全round costは未評価 | [限定4段検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_four_round_accounting_validation.md) |
+| 4段の物理信号・分枝復元 | 同じ固定H4条件と暫定配分で$q=8$の物理信号半径0.9932198、統計位相失敗率$2.0713\times10^{-6}$を確認。4段合成の座標失敗率は$1.3363\times10^{-3}$、統計位相失敗率は$2.1487\times10^{-6}$。1,572 fresh-IID trajectoryを明示実行し、10万回の周辺分布復元で分枝失敗・最終位相失敗0件、片側95%上限$2.9957\times10^{-5}$ | 固定H4・4段のlocal end-to-end検証を通過。この成果物単独では目標roundを決めず、後続の次行で評価した。$q>8$回路、他条件、実backend、noise、最終総costは未評価 | [4段分枝復元検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_four_round_phase_validation.md) |
+| 目標精度からのround範囲 | 同じH4・$\delta=0.1$で、化学精度は$M=12,q_{\max}=4096$、既存設定`CA/10`を暫定主条件にすると$M=15,q_{\max}=32768$。固定$r=4,K=2$の行列診断では$q=32768$のPF位相誤差0.4373 radが0.02 rad予算を超え、attenuationは$7.91\times10^{-13}$ | 必要round範囲の算術と固定設定の棄却をlocal確認。`CA/10`は最終採用値ではなく、$q>8$回路cost proxy・fresh-IID測定・総costは未評価 | [round範囲診断](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_target_round_horizon_validation.md) |
+| $\delta$とround別有限RTE schedule | 同じH4固定snapshot、rank 12、$L_D=3$、暫定`CA/10`、$C=0.01342567$。PF検証で実行済みの10個の$\delta$をscreeningし、$0.01,0.0125,0.02$が0.02 rad PF予算を通過。各候補の18--19 roundで$(r_m,K_m)$を構成し、全56点のH4行列検査を通過した。最小観測半径0.572701、最大実PF位相誤差0.0139884 rad、最大有限RTE位相上界0.0176405 rad | 成分作用数とshot数の暫定proxyでは$\delta=0.02$が最小だが、$0.01$との差は約0.87%のため両方をshortlistとする。$q>8$一体compile、compiled-cost比較、fresh-IID実験、総costは未評価 | [$\delta$/round schedule検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_delta_round_schedule_validation.md) |
+| $\delta$ scheduleの中央RTE compiled-cost proxy | 同じH4固定snapshot・compiler、$L_D=3$。短時間幅0.02--0.000390625の12点で1--4イベント局所回路を個別compileし、全6指標の角度差は0。短時間幅0.02の固定係数を未使用$L=8,16,32$へ適用し、K1--K3は$L=8$で全指標最大2.319%、$L=16$で3.556%以下だが、$L=32$は7.966%で不通過。K1--K4は$L=32$を4.175%へ改善した。これを各roundの解析Taylor確率、$q_m$、shot数へ接続するとRZ代理値は$\delta=0.02$で$7.9877\times10^{11}$、0.01で$9.2021\times10^{11}$、0.0125で$1.2626\times10^{12}$ | 全6指標で0.02が最小、0.01はRZで15.203%増。中央RTEブロックだけのlocal dirty-worktree proxyで、決定論half sweep、外側境界、制御化、Hadamard wrapper、$q>8$一体compile、最終総costを含まない。K4の95%診断も5%保証には未達 | [中央RTE cost検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rpe_delta_compiled_cost_validation.md) |
+| ランダム回路cost近似 | H4、距離1.0 Å、STO-3G、rank 12、$L_D=3$、$\delta=0.1$、$K=0$。共有DF表現の$r=2$・100標本でevent別compile和はRTE occurrence一体compileを全指標で48--58%過大評価し、別DF表現の300標本でも53--61%。RTE occurrenceを一部分とするpartial-$S_2$の3部分和は最大0.96% | 補正なしのevent単位加法モデルは不採用。補正なしならRTE occurrence以上を最小単位とし、event単位を使う場合は下記の境界補正を含める。process間でDF表現が非canonicalなので、gridはHamiltonian共有batchで実行する | [compiled-cost加法モデル検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/random_circuit_cost_validation.md) |
+| RTE境界補正cost model | 同じH4条件・共通DF表現の独立2 seedで$C_2,C_3,C_4,C_6$を各1000標本。pair補正の最大誤差8.07%、8.18%、最大z 2.96、3.02。triple補正は2.33%、3.73%、最大z 0.79、0.97。same/different-fragmentを1500標本で較正し別seedの1500標本へ予測すると最大0.849%、z 0.587 | pair-onlyの系統差はcount/sizeで確認、depthでは未確認。count/sizeはtriple候補だが$\mu_3$自体は最大1.40標準誤差。same-onlyは不十分でdifferent境界も必要。1条件限定で受理閾値は未決定 | [高統計・層別検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rte_boundary_pair_validation.md) |
+| 階層cost modelの拡張holdout | 同じH4、距離1.0 Å、STO-3G、rank 12、$L_D=3$、$\delta=0.1,r=4$。$K=0$の2000標本$L=8$ holdoutでtriple最大誤差1.744%、最大z 0.521。旧$K=2$ IID runは8000 event位置中order-2が1回だけで根拠から除外。共通DF表現上のTaylor次数条件付き・対応あり局所残差では$L=4,6$、all-order-0/order-2が1回の全条件・全metricで最大1.373%、RZ countの点ごとの正規近似95%診断は最大1.796%。controlled partial-$S_2$は$q=1,2$の各300標本から未使用$q=4$を全metric最大0.307%、最大z 0.925、同診断0.958%以内で予測 | $K=0$はcount/sizeにtriple、depthにpairの候補を支持。$K=2$の3-event局所式とcontrolled affine候補は代表条件の暫定5%を通過。ただし$K=2$の独立500標本係数推定は最大9.119%で不十分なので、運用時は解析次数重みと対応ありconnected-cluster推定を使う。4-event以上の残差は非ゼロだが現条件で1.373%以内 | [拡張holdout検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/hierarchical_cost_validation.md) |
+| $K=2$ connected-cluster運用推定 | 同じH4条件で、Taylor次数を条件付きsampleし、order-0単eventを厳密列挙、pairをsame/different基底で層別、K1--K3をpilot/Neyman配分で推定した。固定DF snapshot上の未使用$L=4,6,8$ full回路は、全order-0を各1500、order-2が1回を各位置375標本。RZ count・全6 metricとも最大点誤差2.936%、RZ最大z 2.074、予測側95%半幅1.537% | 事前の点誤差5%と予測精度2%は通過。正規近似95%上側診断は5.724%で未達、order-2 K1は要求1535に対しcap 1500。別processで再構築したDF表現のholdoutは最大11.68%、z 5.215ずれたため結合せず、正確なHamiltonian snapshotを再現単位とする。代表1条件の暫定候補でありrigorous保証ではない | [運用connected-cluster検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rte_connected_cluster_cost_validation.md) |
+| connected-cluster移送holdout | 同じH4固定snapshot、rank 12、$K=2$、同一compilerで各条件を較正し、未使用$L=4,6$へ移送した。1500/500標本の全metric最大点誤差は$(L_D,s)=(0,0.025)$で2.043%、$(3,0.020)$で2.140%、$(3,0.025)$で3.777%、$(3,0.030)$で3.541%、$(6,0.025)$で6.119% | 前4条件は5%点基準と2%予測精度を通過。$L_D=6$はz 5.213を伴い不通過。L4残差fitのK4診断はL6を2.990%へ改善したが共分散未評価。$L_D=3,s=0.030$の予備7.138%超過は、holdout増加とcalibration目標1.0%→0.8%を合わせた再開runで維持されなかった。RZ最大z 3.037、95%上側診断5.738%なのでrigorous保証ではない | [移送holdout](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rte_connected_cluster_cost_validation.md#固定snapshot上の移送holdout) |
+| connected-cluster軽量運用API | calibration、Qiskitを呼ばないprediction、固定calibrationのtransfer holdoutを分離した。pattern内を固定sample chunkへ分割し、十分統計量の増分合成、atomic checkpoint、標本追加時のfull chunk再利用、精度未達層へのadaptive再配分を実装した。直接条件付きpair sample、決定論的cost-aware配分、数値回路を厳密keyとするSQLite metric cache、角度不変性validatorも含む | chunk範囲・合成・旧checkpoint互換・並列不変性・改変拒否をlocal testで確認。H4の低標本角度smokeでは差0だったが、角度を除外したcache再利用は無効のまま。新しい大規模・transfer科学結果ではない | [運用connected-cluster検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rte_connected_cluster_cost_validation.md#総コスト探索向けの軽量運用実装) |
+| 2026-08-25回路cost追加batch | Batch Aの$L_D=0$独立K1--K3は主誤差12.376%、全metric最大21.426%で不通過したが最大zは1.787で、複数order-2固有の破綻と独立係数の統計誤差を分離できない。Batch Bの$L_D=6$独立paired K4は最大点誤差を1.281%へ下げたがRZの95%上側診断は5.714%。Batch Cの$q=1,2$ affineから未使用$q=8$への予測は全metric最大0.0529%、RZの95%上側診断1.091% | Aは複数order-2の対応あり残差で再検証する。BはK4を500標本へ増やし、固定K1--K4を未使用L8で検証する。CはこのH4・1 compiler条件で通過。いずれも最終costではない | [実行履歴](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E3%83%8E%E3%83%BC%E3%83%88/2026-08-25.md) |
+| 2026-08-25回路cost follow-up | 同じH4 fixed snapshot、$K=2$。$L_D=0$の全Taylor patternをpaired再検証すると全metric最大1.679%、主RZ 95%診断3.201%。$L_D=6$の固定K1--K4未使用L8は最大3.750%だがRZ 95%診断7.045%。同一trajectoryのpaired K1--K4 L8は最大4.008%、RZ 95%診断4.902% | 独立係数推定の大きな誤差とcluster構造破綻を分離した。K1--K3を既定とし、不通過条件だけK4へ進む。全job完走・validator通過。rigorousな5%保証または最終costではない | [実行履歴](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E3%83%8E%E3%83%BC%E3%83%88/2026-08-25.md) |
+| H5 paired系サイズ検証 | H5 chain、距離1.0 Å、STO-3G、10 qubit、project設定rank 9、$L_D=4$、short-step 0.025、$K=2$、$L=4,6,8$。all-order-0各100、single-order-2各位置20でK1--K3最大1.665%、K1--K4最大0.551% | 5%を満たす最小cluster長としてK1--K3を選択。paired構造検証であり独立運用推定ではない | [H5検証ノート](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E3%83%8E%E3%83%BC%E3%83%88/2026-08-26.md) |
+| H5独立運用holdout | 同じH5 snapshot/compilerでpilot/Neyman K1--K3 calibrationの最大RZ相対SE 0.745%。未使用$L=4,6,8$のall-order-0各500、single-order-2各位置125で全metric最大点誤差3.776%、最大z 2.009、予測側95%半幅1.459% | 事前5%点誤差・2%予測精度を通過。95%上側診断7.461%は硬い判定ではなくrigorous保証ではない。回路costの広いpilotを一旦区切る | [統合結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/rte_compiled_cost_validation_summary.md) |
+| H4のPF係数 | 全$L_D=0,\ldots,11$でEq. (D6)係数と支配位相係数のfit差が最大0.288%。代表的に$C_{\mathrm{peak}}\simeq0.01339$、$C_{\mathrm{partial,D6}}\simeq0.01343$ | H4内のlocal経験結果。各分割で$|\sin(E_0\delta)|<0.1$の2点はD6 fitから除外 | [PF・QPE分枝検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/pf_delta_validation.md) |
+| 小規模の支配位相比較 | H2--H5でEq. (D6)上包絡と支配位相上包絡の差が0.45--1.14%で、全系が2%基準内 | H3の従来のsurvival-signal対支配分枝条件は2.076%で引き続き不通過 | [系サイズ検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/pf_c_system_size_validation.md) |
+| state-action経路 | H2--H5でdense参照との差が最大$7.94\times10^{-15}$ | 大規模系へつなぐ実装経路を確認 | [系サイズ検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/pf_c_system_size_validation.md) |
+| H6の運用係数 | 12 qubit、DF rank 11、$L_D=5$、$\delta=0.250$--0.256でEq. (D6)による$C_{\mathrm{use}}=0.02086663$。shift-invariant値は0.02088853 | PF演算子は構築・対角化していない。D6とsurvival phaseの最大相対差は0.105% | [系サイズ検証](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/pf_c_system_size_validation.md) |
+| H12の係数 | 未計算 | GPUで候補$L_D$ごとに$\delta=0.120,0.122,0.124$を実行するまで未決定 | [H12採用規則](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/pf_c_system_size_validation.md#h12での採用規則) |
+
+現在採用する論文Eq. (D6)は
+
+$$
+\Delta E_{\mathrm{pert,D6}}
+=
+\frac{\operatorname{Re}\langle\psi_0|
+[U_{\mathrm{partial}}(\delta)-e^{-iE_0\delta}]|\psi_0\rangle}
+{\delta\sin(E_0\delta)}
+$$
+
+である。$|\sin(E_0\delta)|<0.1$の点は補正式へ置換せずD6係数fitから除外する。
+H2--H6の実行可能窓では最小値が0.72で、悪条件点は0だった。位相を基準回転する
+shift-invariant式は比較診断として成果物に残す。
+
+### 6.1 主要なmachine-readable evidence
+
+| result set | 主な成果物 | 生成・検証コード |
+|---|---|---|
+| finite-RTE信号検証 | [`artifacts/finite_rte_signal_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/finite_rte_signal_validation) | `scripts/run_finite_rte_signal_validation.py`、`tests/test_finite_rte_signal_validation.py` |
+| RPE短roundの信号・shot・cost接続 | [`artifacts/rpe_round_cost_connection_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_round_cost_connection_validation) | `scripts/run_rpe_round_cost_connection_validation.py`、`tests/test_rpe_round_cost_connection_validation.py` |
+| 仮想Hadamard測定・失敗確率 | [`artifacts/rpe_hadamard_failure_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_hadamard_failure_validation) | `scripts/run_rpe_hadamard_failure_validation.py`、`tests/test_rpe_hadamard_failure_validation.py` |
+| $q=8$ Hadamard cost proxy・resource接続 | [`artifacts/rpe_hadamard_proxy_resource_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_hadamard_proxy_resource_validation) | `scripts/run_rpe_hadamard_proxy_resource_validation.py`、`tests/test_rpe_hadamard_compiled_cost_proxy.py`、`tests/test_rpe_hadamard_proxy_resource_validation.py` |
+| $\beta,\alpha$配分感度 | [`artifacts/rpe_allocation_sensitivity_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_allocation_sensitivity_validation) | `scripts/run_rpe_allocation_sensitivity_validation.py`、`tests/test_rpe_allocation_sensitivity_validation.py` |
+| 限定4段資源集計 | [`artifacts/rpe_four_round_accounting_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_four_round_accounting_validation) | `scripts/run_rpe_four_round_accounting_validation.py`、`tests/test_rpe_four_round_accounting_validation.py` |
+| 4段の物理信号・分枝復元 | [`artifacts/rpe_four_round_phase_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_four_round_phase_validation) | `scripts/run_rpe_four_round_phase_validation.py`、`tests/test_rpe_four_round_phase_validation.py` |
+| 目標精度からのRPE round範囲 | [`artifacts/rpe_target_round_horizon_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_target_round_horizon_validation) | `scripts/run_rpe_target_round_horizon_validation.py`、`tests/test_rpe_target_round_horizon_validation.py` |
+| $\delta$ scheduleの中央RTE compiled cost | [`artifacts/rpe_delta_compiled_cost_validation/2026-09-20/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rpe_delta_compiled_cost_validation/2026-09-20) | `scripts/run_rpe_delta_compiled_cost_validation.py`、`scripts/run_rte_cost_angle_invariance_validation.py`、`tests/test_rpe_delta_compiled_cost_validation.py` |
+| PF・単一位相検証 | [`artifacts/pf_delta_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/pf_delta_validation) | `scripts/run_pf_delta_validation.py`、`tests/test_pf_delta_validation.py` |
+| Cの系サイズ検証 | [`h2_h6_paper_d6_c_v1.json`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/pf_c_system_size_validation/h2_h6_paper_d6_c_v1.json) | `scripts/run_pf_c_system_size_validation.py`、`tests/test_pf_c_system_size_validation.py` |
+| ランダム回路cost近似 | [`artifacts/random_circuit_cost_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/random_circuit_cost_validation) | `scripts/run_random_circuit_cost_validation.py`、`tests/test_random_circuit_cost_validation.py` |
+| RTE境界補正cost model | [`artifacts/rte_boundary_cost_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_boundary_cost_validation) | `scripts/run_rte_boundary_cost_validation.py`、`tests/test_rte_boundary_cost_validation.py` |
+| fragment層別境界補正 | [`artifacts/rte_boundary_pair_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_boundary_pair_validation) | `scripts/run_rte_boundary_cost_replication.py`、`tests/test_rte_boundary_pair_validation.py` |
+| 階層cost model拡張 | [`artifacts/hierarchical_cost_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/hierarchical_cost_validation) | `scripts/run_hierarchical_cost_validation.py`、`tests/test_hierarchical_cost_validation.py` |
+| $K=2$ Taylor次数条件付きcost再検証 | [`artifacts/rte_order_stratified_cost_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_order_stratified_cost_validation) | `scripts/run_rte_order_stratified_cost_validation.py`、`tests/test_rte_order_stratified_cost_validation.py` |
+| $K=2$ connected-cluster運用推定 | [`artifacts/rte_connected_cluster_cost_validation/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_connected_cluster_cost_validation) | `scripts/run_rte_connected_cluster_cost_validation.py`、`tests/test_rte_connected_cluster_cost_validation.py` |
+| 回路cost追加batch | [`artifacts/rte_cost_data_batch/2026-08-25/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_cost_data_batch/2026-08-25) | `scripts/run_rte_cost_data_batch.py`。全3 job完走・validator通過 |
+| 回路cost follow-up batch | [`artifacts/rte_cost_followup_batch/2026-08-25/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_cost_followup_batch/2026-08-25)、[`paired K4 L8`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_cost_paired_k4_l8/2026-08-25) | `scripts/run_rte_cost_followup_batch.py`、`scripts/run_rte_paired_k4_l8_validation.py`。全job完走・validator通過 |
+| H5 paired系サイズ検証 | [`artifacts/rte_cost_system_size_h5/2026-08-25/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_cost_system_size_h5/2026-08-25) | `scripts/run_h5_system_size_cost_validation.py`、`tests/test_rte_system_size_cost_validation.py` |
+| H5独立運用holdout | [`artifacts/rte_cost_system_size_h5_independent/2026-08-26/`](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/rte_cost_system_size_h5_independent/2026-08-26) | `scripts/run_h5_independent_cost_validation_batch.py`と既存calibration/transfer validator |
+
+各JSONのschema、fingerprint、生成条件およびsource hashは対応するloader/testで検査する。
+ただし、現時点の成果物はdirty-worktree evidenceであり、commitに固定されたCI成果物ではない。
+
+## 7. 現時点で主張してよいこと／いけないこと
+
+### 主張してよいこと
+
+- 小規模H-chainでは、finite-RTEの解析上界と実誤差の関係を指定grid上で確認した。
+- H2--H5では、Qiskit/state-actionによるEq. (D6)係数計算をdense参照と照合した。
+- H6では、PF演算子を構築しない経路で実行窓上の経験的$C$を計算できた。
+- H4の検証範囲では、単一支配固有位相を主近似に使う受理条件を満たした。
+- $C_D$だけでは最終係数を決めず、候補ごとの$C_{\mathrm{partial}}$が必要である。
+- H4のpilot条件では、個々のRTE eventを別compileしたコスト和は一体compileを大幅に
+  過大評価するため、補正なしのcost proxyでは最小単位をRTE occurrence以上に置く必要がある。
+- 同じH4条件では、same/different-fragmentの二分類pair補正が別seedのpair holdoutを
+  最大0.849%、absolute z-score 0.587以内で予測した。
+- 4・6 event列ではpair-onlyのcount/size残差が独立2 seedで最大約8%、z約3となり、
+  triple補正では最大3.73%、z 0.97以内だった。depthではpair-onlyの不適合は未確認である。
+- 未使用の8 event列でも、pair-onlyのcount/size誤差は最大8.85%残った一方、triple補正は
+  全metricを1.744%、absolute z-score 0.521以内で予測した。
+- controlled partial-$S_2$では、$q=1,2$からのaffine modelが未使用$q=4$の一体compile期待値を
+  全metricで0.307%、点ごとの正規近似95%上側診断0.958%以内に予測した。
+- $K=2$では、Taylor次数を強制した対応あり局所残差により、all-order-0とorder-2が1回の
+  $L=4,6$を全metric最大1.373%以内で予測した。旧IID runはorder-2を実質的に観測していない。
+- H4固定snapshot・同一compilerのconnected K1--K3移送では、$L_D=0,3$の検証4条件が
+  全metric最大3.777%以内で5%点基準を通過した一方、$L_D=6$は6.119%、z 5.213で不通過だった。
+- $L_D=3$、short-step 0.030の予備7.138%超過は、1500/500標本とcalibration目標0.8%を
+  組み合わせた再開runでは3.541%へ下がった。改善をholdout標本数だけには帰属しない。
+  ただしRZ最大z 3.037、点wise正規近似95%上側診断5.738%なので、残差ゼロや厳密保証ではない。
+- H4の$L_D=0$では複数order-2を含むpaired residualが全metric最大1.679%、$L_D=6$では
+  paired K1--K4の未使用$L=8$が最大4.008%となり、条件別にcluster次数を上げる方針を支持した。
+- H4のcontrolled partial-$S_2$では$q=1,2$ affine modelが未使用$q=8$を全metric最大0.0529%で
+  予測した。ただしordinary controlled time-evolution subcircuitと1 compiler条件に限る。
+- H5、距離1.0 Å、STO-3G、rank 9、$L_D=4$、short-step 0.025、$K=2$では、独立K1--K3
+  calibration/holdoutが未使用$L=4,6,8$を全metric最大3.776%、予測半幅1.459%で再現した。
+- H4、rank 12、$L_D=3$、$\delta=0.1,r=4,K=2$の$q=1,2,4$では、finite-RTE信号、
+  単位半径shot式、状態準備なしHadamard interrogation cost、round costの接続が整合した。
+  実信号半径を使っても整数shot数は変わらなかったが、この結論は同条件のshort roundに限る。
+- 同じ短roundで389、390、391 shotを用いた厳密二項評価では、6軸合成座標失敗率0.0010363、
+  3 round合成統計位相失敗率$1.48\times10^{-6}$となり、暫定$\alpha_{\mathrm{tot}}=0.05$内だった。
+  fresh IID trajectoryを明示生成するsampler検査も通過したが、全RPEの成功率検証ではない。
+- 同じH4条件では、$q=1,2,4$で較正した状態準備なしHadamard compiled-cost
+  affine proxyが、未使用$q=8$の一体compile期待値を全指標最大0.726%で再現した。
+  この検証にfingerprintで固定したproxyは$q=8$ 1 round accountingに接続し、
+  未検証$q=16$を拒否する。ただし$q>8$への外挿根拠ではない。
+- 同じ固定条件で暫定$(\beta_{\rm PF},\beta_{\rm RTE},\beta_{\rm stat})=(0.02,0.02,0.36)$と
+  重み付き$\alpha$配分を用いた限定4段集計は、1,572 shot、RZ数$3.2673961\times10^7$となり、
+  8軸の$\alpha$和は0.05以内だった。$q=1,2,4$の厳密二項座標失敗率は合成
+  $2.2246\times10^{-4}$で、割当額内だった。
+- 同じ4段について$q=8$の物理信号を追加し、4段合成の厳密座標失敗率
+  $1.3363\times10^{-3}$、統計位相失敗率$2.1487\times10^{-6}$を得た。10万回の
+  周辺分布復元で分枝失敗と最終位相失敗は0件だった。ただし固定4段のlocal検証であり、
+  目標精度に必要な全roundを検証した結果ではない。
+- $\epsilon_E=CA/10$を暫定主条件、$\beta_{\rm RPE}=0.4,\delta=0.1$とすると
+  必要範囲は$M=15,q_{\max}=32768$になる。固定$r=4,K=2$は同$q$でPF予算を超え、
+  attenuationもほぼゼロになるため、$q=8$設定の単純外挿は不採用とした。
+- 同じH4、rank 12、$L_D=3$でPF検証済み$\delta$を再探索し、暫定`CA/10`に対し
+  $\delta=0.01,0.0125,0.02$のround別$(r_m,K_m)$ scheduleがPF、有限RTE、正半径の
+  行列検査を通過した。
+- 同じH4固定snapshot・compilerの中央RTEブロックproxyでは、短時間幅を変えた局所回路の
+  6指標に差がなく、$r\leq16$のK1--K3と$r=32$のK1--K4を使った全round合計で
+  $\delta=0.02$が全6指標で最小だった。RZでは0.01より15.203%小さいが、これは
+  制御付きpartial-$S_2$またはHadamard 1 shot全体の最終順位ではない。
+
+### まだ主張してはいけないこと
+
+- H12の$C$が既知である、またはH4/H6から外挿できる。
+- $C_{\mathrm{use}}$が全$\delta$に対する厳密上界である。
+- 単一位相条件が全分子・全サイズ・全$q$で常に成立する。
+- 誤差・失敗確率配分が一般条件について最適化済みである。
+- full RPE interrogationの最終総コストや部分ランダム化の優位性が確定した。
+- 状態準備、量子shot実行、ノイズ、実backend性能まで評価済みである。
+- staleな旧DF screeningまたはmachine-readable artifactのないUWC表が現行結果である。
+- connected-cluster係数がH4/H5で共有可能、またはH4/H5以外の系、別snapshot、別compiler、
+  coupling map付き条件へ無条件に移送できる。
+- $K=2$のconnected-cluster運用推定が全$L_D,\delta,r$や別compiler条件へ無条件に移送できる、
+  または点wise正規近似診断がrigorousな5%保証である。現gridでも$L_D=6$は不通過である。
+- Hadamard wrapper affine modelが$q>8$、別$L_D$、別short-step、別compilerまたは
+  coupling map付き条件でも検証済みである。
+
+## 8. 次に行う研究
+
+1. GPU state-action経路をH8、H10で確認してH12へ拡張する。
+2. H12では$C_D$で絞った複数の$L_D$候補とその近傍を実行し、各候補の
+   $C_{\mathrm{use}}$を直接求める。
+3. 各点でground-state residual、survival radius、phase continuity、Eq. (D6)値と
+   phaseの整合性、$|\sin(E_0\delta)|$のconditioningを検査する。
+4. 回路costはexact Hamiltonian snapshot・compiler条件ごとにK1--K3を較正し、代表full回路holdoutが
+   5%点誤差または2%予測精度を外れた条件だけK4または追加境界classを検証する。
+5. 実際の総cost探索で必要なevent列長が8を超える場合だけ、最大使用長付近の独立holdoutを追加する。
+6. coupling map、compiler、backendまたはexact snapshotを変更するときは、短い再較正と少数の独立
+   holdoutを行う。現H4/H5係数そのものは移送しない。
+7. 現行の検証済み範囲での$\beta,\alpha$配分感度は確認した。暫定入力として
+   $(0.02,0.02,0.36)$とcost感度重み$\alpha$を使用するが、別条件へは移送しない。
+8. Hadamard affine modelは必要な$q>8$または回路scope・compiler条件を変更するときだけ追加holdoutする。
+9. 大規模系でもfinite-RTE近似の受理条件を確認する。
+10. $q=8$物理信号とbranch復元まで確認済み。`CA/10`を暫定主条件とするround計算では
+    $q_{\max}=32768$が必要で、固定$\delta=0.1,r=4,K=2$はPF予算とattenuationの点で不適格だった。
+11. 候補$\delta_{\rm time}$とround別$(r_m,K_m)$の行列検証はH4の明示条件で完了。
+    中央RTEブロックの局所compiled-cost modelも同条件で追加検証し、0.02を優先候補、
+    0.01を比較対照、0.0125を感度候補とした。次は0.02と0.01の制御付きpartial-$S_2$
+    反復proxyを検証し、決定論部分とHadamard wrapperを含む1 shot costへ接続する。
+12. 近似入力が固まった後に必要な全roundを集計し、最終総コストを評価する。
+13. 代表artifactと実行環境を固定し、clean checkoutまたはCIから再生成できる証拠へ移す。
+
+## 9. 資料作成時の証拠の読み順
+
+| 優先順 | 資料 | 用途 |
+|---:|---|---|
+| 1 | 本書 | 背景、現在地、採用方針、主要結果を把握する |
+| 2 | [研究目的・研究課題](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E7%9B%AE%E7%9A%84%E3%83%BB%E7%A0%94%E7%A9%B6%E8%AA%B2%E9%A1%8C.md) | 目的関数、研究範囲、Research Questionsを確認する |
+| 3 | [先行研究と未解決点](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E5%85%88%E8%A1%8C%E7%A0%94%E7%A9%B6%E3%81%A8%E6%9C%AA%E8%A7%A3%E6%B1%BA%E7%82%B9.md) | PR論文との差分と本研究の新規性を確認する |
+| 4 | [研究方法・解析手順](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E6%96%B9%E6%B3%95%E3%83%BB%E8%A7%A3%E6%9E%90%E6%89%8B%E9%A0%86.md) | 数式、依存関係、最適化手順を確認する |
+| 5 | [数値実験・評価計画](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E6%95%B0%E5%80%A4%E5%AE%9F%E9%A8%93%E3%83%BB%E8%A9%95%E4%BE%A1%E8%A8%88%E7%94%BB.md) | 固定条件、比較条件、判定基準を確認する |
+| 6 | [VALIDATION_STATUS.md](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/VALIDATION_STATUS.md) | 外部再現性と利用禁止結果を確認する |
+| 7 | [validation manifest](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/artifacts/validation_manifest.json) | artifactの有無とresult-set statusを機械的に確認する |
+| 8 | 各検証文書と`artifacts/` | 数値、生成条件、fingerprintを確認する |
+| 9 | [研究ノート](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf/docs/research/%E7%A0%94%E7%A9%B6%E3%83%8E%E3%83%BC%E3%83%88/README.md) | 判断の経緯と途中で置き換えられた案を確認する |
+
+資料では、結果を少なくとも「理論・定義」「local検証済み」「実装のみ確認」「未検証」
+「最終結論」のいずれかに分類する。数値を引用するときは、系、geometry、basis、DF rank、
+$L_D$、$\delta$窓、判定条件を併記する。
+
+## 10. 用語の最小対応表
+
+| 記号・用語 | 意味 |
+|---|---|
+| DF | 二体Hamiltonianをrank付きfragment列へ分解するDouble Factorization |
+| $L_D$ | 決定論側へ置くDF fragment prefixの長さ |
+| $H_D,H_R$ | 決定論部分とランダム部分 |
+| $\lambda_R$ | finite RTEに使うrandom tailの係数$\ell_1$ norm |
+| PF / partial-$S_2$ | $H_D$のsymmetric sweepと中央の$H_R$ evolutionからなる二次積公式 |
+| finite RTE | $e^{-iH_R\delta}$を有限Taylor次数とランダムeventで近似する方法 |
+| RPE | 複数roundのcosine/sine信号から位相を推定するRobust Phase Estimation |
+| attenuation | RTE normalizationにより観測信号振幅が低下する係数 |
+| $C_D$ | 安価な決定論側PF誤差surrogate。screening専用 |
+| $C_{\mathrm{PF,eig}}$ | 支配固有位相のPF energy-bias係数 |
+| $C_{\mathrm{partial}}$ | full-$H$基底状態と論文Eq. (D6)を使う大規模系向け摂動推定係数 |
+| $C_{\mathrm{use}}$ | 実行可能$\delta$窓内のpoint coefficient最大値 |
