@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17の局所周辺平均：runner・人工検証・固定実行計画](research/rpe_m17_mean_validation_preparation_20261103/IMPLEMENTATION_REPORT.md)
+（2026-11-03）。m17/q131072/r32/K2、両軸の決定論的照合を準備、人工13 PASS。
+H4数値処理・保存値の新残余評価は未実施。数値診断1e-10と未確立u_numを区別し、公開後STOP。
+
 [RPE測定平均の精度要件・round・検証方式の設計](research/rpe_mean_tolerance_validation_selection_20261103/NEXT_STAGE_DECISION.md)
 （2026-11-03）。同directoryに精度式、18roundの保存値転記、sampling/決定論的平均の比較、次科学検証案。
 第一候補m17/r32の両軸、具体の許容差は新規計算せず未確定。人工8 PASS、新科学実行・数値再解析なし、STOP維持。

@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：決定論的周辺平均照合の実行準備（2026-11-03）](docs/research/rpe_m17_mean_validation_preparation_20261103/IMPLEMENTATION_REPORT.md)：
+固定1セルのliteral-law平均/Taylor参照と保存meanのrunner、人工13 PASS、数値誤差の扱いと実行計画。
+H4の新平均・保存scalar残余は未計算。SOURCEへの別科学実行許可を待ち、既存status/STOPを保持。
+
 [RPE測定平均：必要精度・対象round・追加検証方式の設計（2026-11-03）](docs/research/rpe_mean_tolerance_validation_selection_20261103/NEXT_STAGE_DECISION.md)：
 既存N/alpha/epsilonの残余条件を静的導出。第一候補m17/q131072/r32の両軸、sampler-lawの決定論的平均照合を推奨。
 4文書・人工8 PASS。新しい許容差/確率の数値再解析・H4作用・samplingなし、旧status/STOPを保持した未実行計画。
