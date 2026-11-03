@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：数値精度切り分けの実行準備（2026-11-03）](docs/research/rpe_m17_numerical_precision_preparation_20261103/NEXT_STAGE_DECISION.md)：
+保存S64固定とF/R/tail固定を分け、q乗・期待値とstep組立ての丸めを調べるadapter・人工18 PASS。
+96/160、必要時224 bitの条件付きTask A計画。実H4の新累乗/mean/誤差評価なし、旧INCONSISTENT/STOPを保持。
+
 [RPE m17：局所平均計算完了・数値診断INCONSISTENT（2026-11-03）](docs/research/rpe_m17_mean_validation_execution_20261103/REPORT.md)：
 H4/DF12/L_D3/δ=.02/q131072/r32/K2のlaw対参照差6.26e-10が固定1e-10を超過。
 統計予算残余約8.60e-5、u_num未確立のため科学判定UNDETERMINED。原RESULT/7行列を保存し再実行なしでSTOP。
