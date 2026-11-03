@@ -171,7 +171,12 @@ class ArtificialNumerics(unittest.TestCase):
         import numpy as np
         class Native:
             @staticmethod
+            def block_instruction_bound(block, mode):
+                assert mode == 'UNCONTROLLED'
+                return 23
+            @staticmethod
             def make_native_block_action(block, **kw):
+                assert type(kw['max_instructions']) is int and kw['max_instructions'] == 23
                 return lambda v, t: v * np.exp(-1j * block * t)
         row = a.candidate('PR', '4th(m5_best)', 7, 2, 16, 4)
         prep = NS(deterministic_blocks=(.2,), rte_preparation=NS(basis_registry='mock'))

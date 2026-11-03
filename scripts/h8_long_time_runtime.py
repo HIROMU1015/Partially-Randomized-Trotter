@@ -204,7 +204,7 @@ def independent_trajectory(ctx, row, requests):
     np = ctx.np
     from trottertracks.resource_applicability.ax2b_molecular_ports_v3 import explicit_event_action
     prep = ctx.preps[row['prefix']]
-    actions = [ctx.native.make_native_block_action(b, max_instructions=math.inf) for b in prep.deterministic_blocks]
+    actions = [ctx.native.make_native_block_action(b, max_instructions=ctx.native.block_instruction_bound(b, "UNCONTROLLED")) for b in prep.deterministic_blocks]
     v = ctx.qstate.copy()
     for index, piece in enumerate(a.schedule(row)):
         for action in actions:
@@ -329,7 +329,7 @@ def run_stage(stage, config, scope, output):
             a.require(a.sha(scope['stage_A']) == scope['stage_A_sha256'], 'STAGE_A_BYTES')
             prior = a.read(scope['stage_A'])
             a.require(prior['status'] == 'PASS' and prior['binding'] == config['binding']
-                      and prior['source_files'] == config['source_files'], 'STAGE_A_SOURCE_INPUT')
+                      and prior['source_files'] == config.get('signal_source_files', config['source_files']), 'STAGE_A_SOURCE_INPUT')
             a.check_reference(prior['reference'], config['binding'])
             endpoints = {r['endpoint']['candidate']['id']: r['endpoint'] for r in prior['results']}
             a.require(all(r['id'] in endpoints and endpoints[r['id']]['status'] == 'ELIGIBLE'
@@ -405,7 +405,8 @@ def run_stage(stage, config, scope, output):
                 value['confirmation'] = a.confirmation_comparison(summaries, scope['comparison_ids'],
                     scope['comparison_direction'], scope['absolute_SE_G_target'])
         a.save(output / 'result.json', dict(status='PASS', stage=stage, binding=config['binding'],
-            source_files=config['source_files'], SOURCE=config['SOURCE'], scope_digest=a.digest(scope),
+            source_files=config['source_files'], SOURCE=config['SOURCE'],
+            signal_SOURCE=config['SOURCE'] if stage == 'A' else prior['SOURCE'], scope_digest=a.digest(scope),
             environment={name: importlib.metadata.version(name) for name in ('qiskit', 'numpy', 'scipy', 'numba')}, **value))
     except BaseException as exc:
         a.save(output / 'HOLD.json', dict(reason=type(exc).__name__ + ':' + str(exc), automatic_retry=False))
