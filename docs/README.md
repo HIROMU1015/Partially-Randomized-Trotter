@@ -1,5 +1,8 @@
 # 文書の現在の入口
 
+[RPE m17 B-1：入力境界・構成精度adapter・最小実行計画](research/rpe_m17_b1_construction_precision_preparation_20261103/NEXT_STAGE_DECISION.md)
+（2026-11-03、準備・人工試験のみ。実H4計算なし、別承認までSTOP）。
+
 [RPE m17 Task A：保存行列の高精度評価結果](research/rpe_m17_numerical_precision_execution_20261103/REPORT.md)
 （2026-11-03）。基準2平均・高精度8平均、96/160 bitで収束してもgapは約6.24e-10。
 保存tail以前の構成・入力・定義は未分離。原RESULT/S64を保存し、旧status保持・B未実行でSTOP。
