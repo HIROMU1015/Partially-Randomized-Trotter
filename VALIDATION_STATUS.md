@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-11-03：研究C近接目的比較II・645-call限定実行
+
+研究C近接目的比較II：共通保存H4・直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、初期penalty寄与.1、各arm最大16更新の固定政策でPR/weighted L1を実行。645/1,629 units COMPLETE、correctness FAIL/retry/resume0、両arm16更新・DF予算PASS。終端exact λはPR .500044243591Ha、ENTRY .941312847393Ha。両J一次MET/U一次NOT_METで有限endpointの比較。PRの量子資源優位・厳密CAは未判定。 [実行報告](docs/research/research_c_near_objective_practical_comparison_execution_20261103.md)
+
+固定SOURCE70a98adfb/実装9e9fc8391・元契約無変更。全35 physical/General-K-CARと34独立assessmentを確認。数値pilotであり、全law/actual CA/総資源はnull。
+
 ## 2026-11-03：研究Cの既存公開証拠統合（新科学実行なし）
 
 [最新Evidence Map](docs/research/research_c_evidence_map_updated_20261103.md)／[静的照合記録](artifacts/research_c_latest_evidence_integration/2026-11-03/static_verification.json)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。

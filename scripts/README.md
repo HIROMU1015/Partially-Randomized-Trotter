@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：近接目的比較IIの実行結果（2026-11-03）
+
+[645-call結果・PR/L1終端・制約](../docs/research/research_c_near_objective_practical_comparison_execution_20261103.md)。両arm16更新/DF予算PASS、J MET/U NOT_MET。Exact λはPR .500044243591Ha/ENTRY .941312847393Ha。下流資源は未評価、mandatory STOP。
+
 `run_research_c_near_practical.py`：既定はbyte preflightのみ。[比較II・未承認1,629-call条件](../docs/research/research_c_near_objective_practical_comparison_preparation_20261103.md)。科学実行は別途の明示許可後。
 
 ## 研究C：同じ新J/Uでも主RZは強決定論が低費用（2026-11-02）

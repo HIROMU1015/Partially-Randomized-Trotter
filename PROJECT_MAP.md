@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：近接目的比較IIの実行結果（2026-11-03）
+
+[645-call結果・PR/L1終端・制約](docs/research/research_c_near_objective_practical_comparison_execution_20261103.md)。両arm16更新/DF予算PASS、J MET/U NOT_MET。Exact λはPR .500044243591Ha/ENTRY .941312847393Ha。下流資源は未評価、mandatory STOP。
+
 研究Cの近接weighted L1比較II：[技術準備・未承認1,629-call Stage O](docs/research/research_c_near_objective_practical_comparison_preparation_20261103.md)。`c_near_stable.py`/`c_near_practical.py`、人工tests、SOURCE、passive runnerを接続。新実H4計算0。
 
 ## 研究C：11月3日成果統合・nominal価格比較（2026-11-03）

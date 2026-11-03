@@ -255,6 +255,11 @@
       "commit": "24a7268359506abd171686132f12b4876f9e62bf",
       "role": "point_consistent_J_U_paired_reexecution_SOURCE",
       "description": "Same science/allowances;328 units;terminal andDF PASS;both first-order unqualified"
+    },
+    {
+      "sha": "70a98adfb701a209db2c65ea60fb789ff62b1fe7",
+      "role": "near_objective_practical_comparison_fixed_scientific_SOURCE",
+      "description": "Unchanged1629-unit Stage O contract,executed645 units,16 acceptedU per arm,DFbudgetPASS,J MET/U NOT_MET,no downstream"
     }
   ],
   "artifact_inventory": {
@@ -1670,6 +1675,14 @@
           "research_c_latest_evidence_integration_20261103"
         ],
         "reason": "Technical integration of five already published studies; no new scientific execution or qualification"
+      },
+      {
+        "path": "artifacts/research_c_near_practical/2026-11-03/run01",
+        "kind": "directory",
+        "supports": [
+          "research_c_near_practical_comparison_execution_20261103"
+        ],
+        "reason": "New fixed paired Stage O raw results,source,call journal,physical assessments,endpoint arrays and STOP;no old-run reuse"
       }
     ],
     "quarantined": [
@@ -13752,6 +13765,58 @@
       "static_verification": "artifacts/research_c_latest_evidence_integration/2026-11-03/static_verification.json",
       "inherited_manifest_checker_failure": "relevant_commits[37]: missing sha/description; unexpected commit; unchanged from clean base",
       "mandatory_stop": true
+    },
+    {
+      "id": "research_c_near_practical_comparison_execution_20261103",
+      "status": "NUMERICAL_FINITE_RECIPE_COMPARISON_ENDPOINTS",
+      "report": "docs/research/research_c_near_objective_practical_comparison_execution_20261103.md",
+      "artifacts": "artifacts/research_c_near_practical/2026-11-03/run01",
+      "scientific_SOURCE_commit": "70a98adfb701a209db2c65ea60fb789ff62b1fe7",
+      "implementation_commit": "9e9fc8391590aeb7f9d36b76d90b5a25bbe2fe5e",
+      "scope": "Saved linear H4/1Angstrom/STO-3G,number CDF8,sector36,original LD2,PR versus weighted tail entry L1 squared;common neutral initialization,one matched initial-penalty strength and finite budget;no downstream science",
+      "contract_sha256": "4a40d894a21710a3fcc65b4fef2f94ff5c4271711081aa9b6c3c7856cd7be1f0",
+      "source_manifest_sha256": "6442b2061e0be7533344d96a13e5059d738af343ffa98122841a405e0457e8fb",
+      "scientific_units": 645,
+      "maximum_scientific_units": 1629,
+      "COMPLETE": 645,
+      "call_FAIL": 0,
+      "accepted_U_updates_per_arm": 16,
+      "arms": {
+        "PR": {
+          "status": "MAXIMUM_ACCEPTED_UPDATES",
+          "points": 46,
+          "inner_solves": 138,
+          "exact_tail_lambda_Ha": 0.5000442435909976,
+          "sector_error_Ha": 4.843671019084795e-09,
+          "numerical_guard_Ha": 3.2165809758004982e-09,
+          "DF_budget_PASS": true,
+          "J_stationarity": "MET",
+          "U_stationarity": "NOT_MET",
+          "endpoint_sha256": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a"
+        },
+        "ENTRY": {
+          "status": "MAXIMUM_ACCEPTED_UPDATES",
+          "points": 48,
+          "inner_solves": 144,
+          "exact_tail_lambda_Ha": 0.941312847392674,
+          "sector_error_Ha": 1.1103767028872703e-08,
+          "numerical_guard_Ha": 3.319720100873118e-09,
+          "DF_budget_PASS": true,
+          "J_stationarity": "MET",
+          "U_stationarity": "NOT_MET",
+          "endpoint_sha256": "345dd11a14a281bf716f42009565b2d1875fdcf9845b928a15c102164208cb3f"
+        }
+      },
+      "raw_files": 844,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true,
+      "new_ffsim_full_fitter": 0,
+      "PF_RTE_RPE_native_shots_total_resources": null,
+      "actual_CA_achieved": null,
+      "rigorous_guarantee": null,
+      "important_scientific_review": false,
+      "interpretation": "Comparison II finite-recipe tail-mass observation;not objective capability,strictCA,or resource superiority"
     }
   ],
   "repository_completion_criteria": [
