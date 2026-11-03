@@ -1,0 +1,73 @@
+"""Verify H6 by the existing separate arithmetic path; reuse finished H2/H4.
+
+No new shots, candidates, sampling or pooled trajectory statistics. Old H6 STOP
+is retained as historical evidence, never converted into a successful old run.
+"""
+import argparse
+import json
+from pathlib import Path
+import subprocess
+import h6_confirmation_recovery_contract as c
+from h246_confirmation_runtime import rebind
+import finalize_h246_confirmation_results as original
+
+PREVIOUS = 'artifacts/resource_applicability/track_a_h246_higher_pf_confirmation_run01/2026-10-21/confirmation_results.json'
+PREVIOUS_COMMIT = '0d3578a4584a924ed10bdd124db6093e02d90c94'
+
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument('--config', required=True)
+    p.add_argument('--output', required=True)
+    args = p.parse_args()
+    cfg = c.read(args.config)
+    verifier, _ = rebind(original, dict(c=c))
+    recovered, trajectories = verifier.project(cfg)
+    prior_path = c.ROOT / PREVIOUS
+    frozen = subprocess.check_output(['git', 'show', PREVIOUS_COMMIT + ':' + PREVIOUS], cwd=c.ROOT)
+    c.require(prior_path.read_bytes() == frozen, 'UNCHANGED_PREVIOUS_PUBLIC_RESULTS')
+    prior = c.read(prior_path)
+    completed = [s for s in prior['stages'] if s['system'] in ('H2', 'H4')]
+    c.require(len(completed) == 2 and all(s['comparison'] is not None and s['independent_numerical_check'].startswith('PASS')
+        for s in completed), 'REUSE_ONLY_FINISHED_H2_H4_PROJECTIONS')
+    stopped = next(s for s in prior['stages'] if s['system'] == 'H6')
+    c.require(stopped['status'] == 'STOP_NO_CONFIRMATION_STATISTICS' and stopped['completed_trajectories'] == 0,
+        'OLD_H6_STOP_PRESERVED')
+    dest = Path(args.output)
+    dest.mkdir(parents=True, exist_ok=False)
+    c.save(dest / 'confirmation_results.json', dict(
+        status='THREE_FIXED_CONFIRMATIONS_COMPLETE_AFTER_SEPARATELY_APPROVED_H6_RECOVERY_MANDATORY_STOP',
+        stages=completed + [recovered], H2_H4_reused_without_recalculation=True,
+        previous_results=dict(commit=PREVIOUS_COMMIT, path=PREVIOUS, sha256=c.sha(prior_path)),
+        old_H6_STOP=stopped, H6_old_partial_results_pooled=False,
+        new_shot_calculation=0, candidate_reselection=False, pooling=False,
+        AD03='DEFERRED', mandatory_STOP=True))
+    c.save(dest / 'H6_recovery_result.json', recovered)
+    original.csv_write(dest / 'H6_trajectory_costs_32.csv', trajectories)
+    candidates = []
+    comparisons = []
+    for stage in completed + [recovered]:
+        for group in stage['groups']:
+            s = group['statistics']
+            candidates.append(dict(system=stage['system'], candidate_id=group['candidate']['id'],
+                formula=group['candidate']['formula'], q=group['candidate']['q'], epsilon=.0005,
+                n=group['n_C'], N_cos=group['N_cos'], N_sin=group['N_sin'],
+                cosine_RZ_mean=s['axis_means'][0], sine_RZ_mean=s['axis_means'][1],
+                paired_covariance=s['covariance'], total_RZ_mean=s['mean'],
+                total_RZ_variance=s['variance'], total_RZ_SE=s['SE'],
+                observed_strata=json.dumps(group['observed_strata'], sort_keys=True),
+                unobserved_cost=None, SOURCE=stage['SOURCE']))
+        s = stage['comparison']
+        comparisons.append(dict(system=stage['system'], epsilon=.0005, difference=s['difference'],
+            difference_SE=s['difference_SE'], improvement_fraction=s['relative_point_improvement'],
+            point_status=s['point_status'], normal_Bonferroni_low=s['approximate_interval'][0],
+            normal_Bonferroni_high=s['approximate_interval'][1],
+            approximate_direction=s['approximate_direction'], population_rank=s['population_rank'],
+            SOURCE=stage['SOURCE'], reuses_finished_previous_result=stage['system'] != 'H6'))
+    original.csv_write(dest / 'candidate_statistics_6.csv', candidates)
+    original.csv_write(dest / 'fixed_comparisons_3.csv', comparisons)
+    print(json.dumps(comparisons))
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,33 @@
+"""Worker CLI argument handling does not dispatch science or issue grants."""
+import json
+from pathlib import Path
+import subprocess
+import sys
+import pytest
+
+ROOT=Path(__file__).resolve().parents[1]
+SCRIPT=ROOT/'scripts/run_h4_non_df_pilot.py'
+
+
+@pytest.mark.parametrize('value',['0','-1','two','2.5'])
+def test_invalid_workers_rejected_before_creating_pack(tmp_path,value):
+    p=subprocess.run([sys.executable,'-B',str(SCRIPT),'--synthetic','--pack',str(tmp_path/'never'),
+        '--trajectory-workers',value],capture_output=True,text=True)
+    assert p.returncode!=0 and 'positive integer' in p.stderr
+    assert not (tmp_path/'never').exists()
+
+
+def test_contract_display_binds_explicit_worker_count_and_remains_inactive():
+    p=subprocess.run([sys.executable,'-B',str(SCRIPT),'--contract','--trajectory-workers','8'],capture_output=True,text=True,check=True)
+    plan=json.loads(p.stdout)
+    assert plan['execution']['trajectory_workers']==8
+    assert not any(plan[k] for k in ['execution_authorized','grant_valid','dispatch_enabled'])
+
+
+def test_activation_refuses_cli_contract_worker_mismatch_before_writes(tmp_path):
+    plan=tmp_path/'candidate.json';plan.write_text(json.dumps({'execution':{'trajectory_workers':2}}))
+    approval=tmp_path/'approval.json';approval.write_text('{}')
+    p=subprocess.run([sys.executable,'-B',str(SCRIPT),'--activate','--pack',str(tmp_path/'never'),
+        '--contract-file',str(plan),'--approval-file',str(approval),'--trajectory-workers','8'],capture_output=True,text=True)
+    assert p.returncode!=0 and 'differs from the supplied contract' in p.stderr
+    assert not (tmp_path/'never').exists()

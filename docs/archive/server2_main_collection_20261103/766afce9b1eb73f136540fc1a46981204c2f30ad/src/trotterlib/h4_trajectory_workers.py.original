@@ -1,0 +1,181 @@
+"""Trajectory dispatch using the existing isolated Qiskit process supervisor.
+
+This module imports control/stdlib only. Scientific imports happen in authorized
+fresh interpreters. Worker shards are disjoint, one-shot, and never retried.
+"""
+from dataclasses import asdict
+import os
+from pathlib import Path
+import sys
+from types import SimpleNamespace
+
+from .isolated_qiskit_execution import digest, read, save, sha
+from .isolated_qiskit_supervisor import run_supervised, worker_ready, WatchPolicy
+
+ROOT = Path(__file__).resolve().parents[2]
+SCRIPT = ROOT/'scripts/run_h4_trajectory_worker.py'
+
+
+def worker_count(requested, tasks, *, concurrent_cases=1):
+    if type(tasks) is not int or tasks < 1:
+        raise ValueError('POSITIVE_TRAJECTORY_COUNT_REQUIRED')
+    if type(concurrent_cases) is not int or concurrent_cases < 1:
+        raise ValueError('POSITIVE_CONCURRENT_CASE_COUNT_REQUIRED')
+    if requested == 'auto':
+        count = max(1, len(os.sched_getaffinity(0))//concurrent_cases)
+    elif type(requested) is int and requested > 0:
+        count = requested
+    else:
+        raise ValueError('WORKERS_MUST_BE_AUTO_OR_POSITIVE_INTEGER')
+    return min(count, tasks)
+
+
+def partition(seeds, workers):
+    tasks = [dict(index=i, seed=int(seed)) for i,seed in enumerate(seeds)]
+    chunks = [tasks[i::workers] for i in range(workers)]
+    validate_partition(tasks, chunks)
+    return tasks, chunks
+
+
+def validate_partition(tasks, chunks):
+    flat = [task for chunk in chunks for task in chunk]
+    if (not chunks or any(not chunk for chunk in chunks) or
+            [t['index'] for t in tasks] != list(range(len(tasks))) or
+            sorted(flat,key=lambda t:t['index']) != tasks):
+        raise ValueError('TRAJECTORY_PARTITION_MISSING_DUPLICATE_OR_CHANGED')
+
+
+def validate_real_dispatch(spec, manifest):
+    """Bind shard settings to the approved case, receipt, compiler and namespace."""
+    from .h4_execution_contract import checked_pack
+    from .h4_pilot_execution import case_binding
+    auth=spec['authority'];pack=Path(auth['pack']).absolute()
+    plan,source,grant=checked_pack(pack,allow_consumed=True)
+    case=spec['case_id']
+    if case not in grant['authorized_cases']:
+        raise PermissionError('TRAJECTORY_UNAUTHORIZED_CASE')
+    expected=case_binding(pack,source,grant)
+    if (expected!=spec['binding'] or spec['destination']!=str(pack/'run'/case)
+            or Path(manifest)!=pack/'run'/case/'trajectory_dispatch/manifest.json'
+            or auth['claim_directory']!=grant['claim_directory'] or plan!=spec['plan']
+            or spec['requested_workers']!=plan['execution']['trajectory_workers']
+            or not (pack/'CONSUMED.json').exists() or (pack/'STOP.json').exists()):
+        raise PermissionError('TRAJECTORY_GRANT_CONTRACT_BINDING')
+    receipt=read(pack/'input_run/input_generation/data/receipt.json')
+    representation,method=case.rsplit('_',1)
+    e=plan['evolution'];cfg=spec['config']
+    count=plan['MC']['trajectories_per_PR'] if method=='PR' else 1
+    from .h4_execution_contract import seed_for
+    expected_config=dict(hamiltonian_type=representation,method=method,T=e['T'],q=e['q'],
+        L_D=receipt['prefixes'][representation]['L_D'] if method=='PR' else None,
+        r=e['r'],K=e['K'],seed=seed_for(representation,method),
+        cost_samples=plan['MC']['trajectories_per_PR'],product_formula='S2',randomization_law='finite_rte_even_paired')
+    compiler=plan['compiler']
+    expected_compiler=dict(basis_gates=compiler['basis_gates'],backend_name=compiler['backend'],
+        coupling_map=compiler['coupling_map'],optimization_level=compiler['optimization_level'],
+        layout_method=None,routing_method=None,transpiler_seed=compiler['transpiler_seed'],qiskit_version=plan['environment']['qiskit'])
+    model_hash=receipt['Pauli_hamiltonian_hash'] if representation=='pauli_jw' else receipt['DF_hamiltonian_hash']
+    if (cfg!=expected_config or digest(spec['compiler'])!=digest(expected_compiler)
+            or spec['model_hash']!=model_hash or len(spec['tasks'])!=count
+            or not spec['verify_compiled'] or not spec['validate_trajectories']
+            or spec['workers']!=worker_count(spec['requested_workers'],count,concurrent_cases=2)):
+        raise PermissionError('TRAJECTORY_APPROVED_SCIENTIFIC_SETTINGS')
+
+
+def make_executor(destination, *, workers, authority, plan=None, operator_checks=None, concurrent_cases=1):
+    """Build the opt-in executor accepted by evaluate_audited_signal."""
+    destination = Path(destination).absolute()
+    if not authority or type(authority.get('artificial_only')) is not bool:
+        raise PermissionError('TRAJECTORY_AUTHORITY_REQUIRED')
+
+    def execute(adapter, state, config, compiler, audit, seeds, verify_compiled):
+        if audit is None or audit.current is not None or audit.rows:
+            raise ValueError('PARALLEL_EXECUTION_REQUIRES_FRESH_EVENT_AUDIT')
+        if audit.directory is None or audit.directory.absolute()!=destination/'trajectories':
+            raise ValueError('PARALLEL_AUDIT_REQUIRES_PRIVATE_TRAJECTORY_DIRECTORY')
+        if audit.max_trajectories is not None and len(seeds)!=audit.max_trajectories:
+            raise ValueError('PARALLEL_AUDIT_TRAJECTORY_BUDGET')
+        count = worker_count(workers, len(seeds), concurrent_cases=concurrent_cases)
+        tasks, chunks = partition(seeds, count)
+        folder = destination/'trajectory_dispatch'
+        folder.mkdir()  # No overwrite/resume/refunded claim.
+        from .h4_trajectory_science import store_model
+        model = store_model(folder, adapter.hamiltonian, state, config.hamiltonian_type)
+        spec = dict(schema='h4_trajectory_dispatch_v1',case_id=audit.case_id,binding=audit.binding,
+            authority=authority,config=asdict(config),compiler=asdict(compiler),model=model,
+            model_hash=adapter.metadata()['hamiltonian_hash'],tasks=tasks,chunks=chunks,
+            workers=count,requested_workers=workers,verify_compiled=verify_compiled,
+            plan=plan,validate_trajectories=audit.validator is not None,
+            audit_directory=str(audit.directory.absolute()),destination=str(destination))
+        manifest = folder/'manifest.json';save(manifest,spec)
+        control_binding = dict(audit.binding,dispatch_digest=digest(spec),manifest_sha256=sha(manifest))
+        jobs = []
+        for i in range(count):
+            name = f'worker_{i:04d}'
+            jobs.append(dict(case=name,case_id=audit.case_id+'/'+name,
+                output=folder/'run'/name,binding=control_binding,
+                argv=[sys.executable,'-B',str(SCRIPT),'--manifest',str(manifest),'--shard',str(i),
+                    '--output',str(folder/'run'/name),'--release',str(folder/'run/release.json')]))
+        claims = folder/'claims' if authority['artificial_only'] else Path(authority['claim_directory'])/'trajectories'/audit.case_id
+        stop = run_supervised(jobs,folder/'run',cwd=ROOT,policy=WatchPolicy(),
+            claim_directory=claims,stop_request=Path(authority['pack'])/'STOP.request' if not authority['artificial_only'] else None)
+        if stop['status'] != 'COMPLETE_MANDATORY_STOP':
+            raise RuntimeError('TRAJECTORY_WORKER_FAILED_NO_RETRY_PARTIAL_EVIDENCE_PRESERVED')
+        from .rte_event_audit import verify_join
+        rows_by_index = {}; errors = []; hits = misses = 0; child_checks = []
+        for i, chunk in enumerate(chunks):
+            result = read(folder/'run'/f'worker_{i:04d}'/'shard_result.json')
+            if result['tasks'] != chunk or result['dispatch_digest'] != digest(spec):
+                raise ValueError('WORKER_SHARD_IDENTITY')
+            hits += result['cache_hits'];misses += result['cache_misses']
+            child_checks.extend(result['operator_checks'])
+            for value in result['samples']:
+                index=value['index'];sample=value['sample']
+                if index in rows_by_index or dict(index=index,seed=sample['seed']) not in chunk:
+                    raise ValueError('WORKER_RESULT_DUPLICATE_OR_UNASSIGNED')
+                joined=read(audit.directory/sample['trajectory_id']/'price_join.json')
+                verify_join(joined,expected_case=audit.case_id,expected_binding=audit.binding)
+                if (joined['trajectory_index']!=index or joined['seed']!=seeds[index] or
+                        joined['compiled_RZ']!=sample['RZ'] or joined['trajectory_record_hash']!=sample['trajectory_record_hash']):
+                    raise ValueError('PARALLEL_EVENT_PRICE_JOIN')
+                rows_by_index[index]=(sample,joined)
+                errors.extend(value['compiled_errors'])
+        if sorted(rows_by_index)!=list(range(len(tasks))):
+            raise ValueError('PARALLEL_RESULT_INCOMPLETE')
+        ordered=[rows_by_index[i] for i in range(len(tasks))]
+        audit.rows.extend(joined for sample,joined in ordered)
+        if operator_checks is not None:
+            operator_checks.extend(sorted(child_checks,key=lambda c:c['trajectory_index']))
+        rows=[sample for sample,joined in ordered]
+        prices={axis:[row['RZ'][axis] for row in rows] for axis in ['cosine','sine']}
+        save(folder/'aggregation.json',dict(status='COMPLETE_CANONICAL_TRAJECTORY_ORDER',
+            workers=count,worker_pids=[r['pid'] for r in stop['reports']],tasks=tasks,
+            all_children_reaped=stop['all_children_reaped'],automatic_retry=False,
+            cache_hits=hits,cache_misses=misses,scientific_sampling_replayed=False))
+        return rows,prices,errors,SimpleNamespace(hit_count=hits,miss_count=misses)
+    return execute
+
+
+def trajectory_worker(manifest, shard, output, release):
+    manifest,output,release=Path(manifest).absolute(),Path(output).absolute(),Path(release).absolute()
+    spec=read(manifest);validate_partition(spec['tasks'],spec['chunks'])
+    if type(shard) is not int or not 0<=shard<len(spec['chunks']):
+        raise ValueError('UNASSIGNED_TRAJECTORY_WORKER')
+    expected_output=manifest.parent/'run'/f'worker_{shard:04d}'
+    if (output!=expected_output or release!=manifest.parent/'run/release.json' or manifest.is_symlink()
+            or spec['destination']!=str(manifest.parent.parent)
+            or spec['audit_directory']!=str(manifest.parent.parent/'trajectories')):
+        raise PermissionError('TRAJECTORY_WORKER_NAMESPACE')
+    auth=spec['authority']
+    if auth.get('artificial_only') is not True:
+        validate_real_dispatch(spec,manifest)
+    binding=dict(spec['binding'],dispatch_digest=digest(spec),manifest_sha256=sha(manifest))
+    if read(output/'marker.json')['binding']!=binding:
+        raise PermissionError('TRAJECTORY_MARKER_BINDING')
+    for key in ['arrays','metadata']:
+        path=manifest.parent/spec['model'][key]
+        if path.is_symlink() or sha(path)!=spec['model'][key+'_sha256']:
+            raise ValueError('TRAJECTORY_INPUT_CHANGED')
+    worker_ready(output,release)
+    from .h4_trajectory_science import process_shard
+    process_shard(spec,manifest.parent,shard,output)

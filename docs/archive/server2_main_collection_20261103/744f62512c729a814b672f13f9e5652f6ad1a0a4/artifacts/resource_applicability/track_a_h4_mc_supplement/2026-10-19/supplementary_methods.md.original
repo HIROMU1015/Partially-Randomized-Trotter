@@ -1,0 +1,23 @@
+# Supplementary Methods: empirical MC variability of H4 PR mean cost
+
+## Scope and estimand
+
+We adopted the PR-only presentation at commit `295b93d50662a0f8af3ec469df43099a3f04af60` for supplementary reporting. It transcribes the completed saved-data MC analysis `defa5f6dbc72910c0a46ae2fef304a584ae408e0`, whose numerical SOURCE is `78352b861b3047f6af2d432535e23cc88b439bbe`. The underlying independent H4 P observations were acquired under SOURCE `3c664ca4a9f003880b9f6d56f2a0e55ed5b56603` and reported at `821cc0f6ced57168293ea166644024867b064ffb`. These stages have distinct roles; the PR-only renderer and this document integration did not acquire new observations.
+
+The conditions are linear H4, nearest-neighbour spacing 1 Å, STO-3G, tol-only 1e-8 DF rank 10, T=0.8, P=0, usual signed bias and allowance factor 1. At ε=0.05, `B2_p3_q1_2nd_r4_K2` uses L_D=3, q=1, r=4, K=2, δ=0.8 and N=1,108. At ε=0.0005, `B2_p2_q8_2nd_r2_K4` uses L_D=2, q=8, r=2, K=4, δ=0.1 and N=78. The original compiled RZ metric used the fixed Qiskit 1.3.0, rz/sx/x/cx, optimization level 1, seed_transpiler 17 and symmetric_directional wrapper conventions. No compiler was invoked for this integration.
+
+For one saved paired trajectory i, cost is `G_i = N_cos RZ_cos,i + N_sin RZ_sin,i`. Both compiled axis counts refer to full Hadamard wrappers that contain the deterministic prefix and stochastic RTE tail. The saved cosine/sine shot counts are 12,305/8,258 and 174,919,953/95,102,971 for the two precisions, respectively. They stay fixed as MC sample size n changes. This is an RZ resource proxy; it is not a measurement of CPU runtime, executed quantum shots, fault-tolerant T resources or final energy/RPE cost.
+
+The estimand is variation of the PR **mean-cost estimate**, not the aggregate cost of n executions. We did not multiply the mean by n, derive a total-cost distribution or infer a total-cost SE. The same H4 P cohort is used in the main-table H4 rows and in this supplement; the supplement must not be counted as an additional independent confirmation.
+
+## Reuse of the completed MC analysis
+
+The original analysis reconstructed paired costs and matched its saved full-sample exact mean, sample variance and paired SE before generating the stored bootstrap. Each original resample drew n complete trajectories, with replacement, from the full saved empirical distribution of N trajectories; cosine/sine and the stratum label shared one index. The original bootstrap used seed 20261019 and 2,000 replicates per n with separate deterministic endpoint/n streams. At ε=0.05, the stored n grid is 4,8,12,16,32,64,128,256,512,1024,1108; at ε=0.0005 it is 4,8,12,16,32,64,78. The cumulative MC series uses ascending saved replica order.
+
+All means, standard errors, quantiles and group summaries in this supplement were already stored in the cited CSV files. We did not recompute them, invoke the original scientific analysis, rerun bootstrap or redraw the figures. The saved 2.5th–97.5th percentile range is conditional on these saved pairs and is not a population confidence interval. The approximate 1/√n dependence is a descriptive comparison with an already saved reference column, not a new fit or a finite-n guarantee.
+
+## Event interpretation and limits
+
+S0_ONLY and S2_SINGLE classify complete saved trajectories; their cost summaries include all PR prefix/tail/wrapper operations. Group means do not identify additive standalone S2-event costs. Multiple-S2 trajectories were not observed in these two cohorts. Taylor order 4 lies outside K2 support; it is supported but unobserved for K4. Blank costs/variances for unobserved strata remain unknown. Resampling cannot recover unobserved rare support or certify the true population mean or variance.
+
+This supplement changes no main-table values, Figure 2 assets/caption, original data, scientific SOURCE, grant, execution ledger, marker or STOP. It records the user's adoption of three scoped supplementary claims and their existing evidence. No new scientific execution, detailed scientific review or final evidence freeze was started.

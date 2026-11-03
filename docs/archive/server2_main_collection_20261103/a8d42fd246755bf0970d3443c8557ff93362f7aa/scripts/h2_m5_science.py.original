@@ -1,0 +1,266 @@
+"""Authorized H2 saved-input means, native acquisition and original shot rule."""
+from fractions import Fraction
+import math
+from pathlib import Path
+import resource
+import sys
+import time
+from types import SimpleNamespace
+import h2_m5_contract as c
+
+CACHE={}
+
+def array_record(a):
+    """Exact original H2 metadata convention, including scalar -> shape [1]."""
+    import numpy as np
+    import hashlib
+    a=np.ascontiguousarray(a)
+    return dict(shape=list(a.shape),dtype=a.dtype.str,sha256=hashlib.sha256(a.tobytes()).hexdigest())
+
+def install(cfg):
+    root=Path(cfg['provider_root'])/'src'
+    if str(root) not in sys.path:sys.path.insert(0,str(root))
+    import numpy as np,qiskit
+    c.require(np.__version__=='1.26.4' and qiskit.__version__=='1.3.0','FIXED_NUMPY_QISKIT')
+    from functools import partial
+    import trotterlib.rte_compiled_cost as cost
+    from h2_m5_compiler_phase_guard import transpile
+    cost.transpile=partial(transpile,num_processes=1)
+    for name,mod in list(sys.modules.items()):
+        if name.startswith(('trotterlib.','trottertracks.')) and getattr(mod,'__file__',None):
+            c.require(Path(mod.__file__).resolve().is_relative_to(root),'LOADED_PROVIDER_ORIGIN')
+
+def context(cfg):
+    if cfg['SOURCE'] in CACHE:return CACHE[cfg['SOURCE']]
+    install(cfg)
+    import numpy as np
+    from scipy.linalg import expm
+    from trotterlib.df_hamiltonian import DFHamiltonian,PhysicalSector
+    from trotterlib.df_partial_s2 import df_hamiltonian_hash
+    from trotterlib.pr2_s0_s1_validation import _state_hash
+    from trotterlib.pr2_matched_accuracy_m1_execution import _prepare,_prepare_discard
+    from trottertracks.resource_applicability.h48_preflight_contract_v1 import h4_plan
+    from h46_new2_native import OccupationOracle
+    snapshot=cfg['inputs']['snapshot']['path'];receipt=c.read(cfg['inputs']['snapshot_receipt']['path'])
+    c.require(c.sha(snapshot)==receipt['sha256']==cfg['binding']['snapshot'],'ORIGINAL_H2_SNAPSHOT')
+    with np.load(snapshot,allow_pickle=False) as z:arrays={k:z[k] for k in z.files}
+    # Same identity check as the original H2 loader; no normalization/regeneration.
+    for key,value in arrays.items():
+        saved=receipt['arrays'][key]
+        a=array_record(value)
+        c.require(all(a[k]==saved[k] for k in a),'ORIGINAL_ARRAY:'+key)
+    ham=DFHamiltonian(float(arrays['constant']),arrays['one_body'],arrays['lambdas'],
+      tuple(arrays['g_matrices']),receipt['hamiltonian_metadata'])
+    sector=PhysicalSector.spin_sector(n_qubits=4,nelec_alpha=1,nelec_beta=1)
+    full,state=arrays['state_vector'],arrays['sector_state_vector']
+    c.require(np.array_equal(arrays['sector_basis_indices'],sector.basis_indices)
+      and np.array_equal(full[sector.basis_indices],state),'ORIGINAL_SPIN_SECTOR')
+    c.require(df_hamiltonian_hash(ham)==cfg['binding']['hamiltonian'] and _state_hash(full,state)==cfg['binding']['state']
+      and abs(np.linalg.norm(state)-1)<1e-12,'HAMILTONIAN_STATE_IDENTITY')
+    oracle=OccupationOracle(ham,full,prefix=3)
+    matrices=[(s[1]*s[0])@s[2] for s in oracle.specs]
+    qstate=np.zeros(16,complex);qstate[oracle.qindices]=oracle.initial
+    oldD=c.read(cfg['inputs']['D_result']['path']);oldA=c.read(cfg['inputs']['A_result']['path'])
+    oldFP=c.read(cfg['inputs']['FP_result']['path'])
+    preps={};identities={}
+    for p in range(4):
+        preps['B0',p]=_prepare_discard(ham,p)
+        preps['PR',p]=_prepare(ham,p)
+        for key,old in [('B0',oldD),('PR',oldA)]:
+            method='B2' if key=='PR' else 'B0'
+            match=next((v for cid,v in old['preparation_identities'].items() if cid.startswith(method+'_p'+str(p)+'_')),None)
+            if match is not None:c.require(preps[key,p].preparation_hash==match,'EXISTING_H2_PREPARATION:'+key+str(p))
+        identities[str(p)]={k:preps[k,p].preparation_hash for k in ('B0','PR')}
+    reference=complex(oldFP['reference']['reference']['real'],oldFP['reference']['reference']['imag'])
+    check=complex(np.vdot(oracle.initial,expm(-.8j*(sum(matrices)+ham.constant*np.eye(len(oracle.initial))))@oracle.initial))
+    c.require(abs(check-reference)<1e-9,'SAVED_REFERENCE_INDEPENDENT_DENSE_CHECK')
+    scalar={p:next(s['scalar_receipt']['scalar'] for s in oldD['signals']
+      if s['cell']['method']=='B0I' and s['cell']['prefix']==p) for p in range(3)}
+    plan=h4_plan('H4_SIGNAL');plan['epsilons']=list(c.d.EPS);plan['numerical']['sensitivity_factors']=[1.]
+    CACHE[cfg['SOURCE']]=SimpleNamespace(np=np,ham=ham,oracle=oracle,matrices=matrices,qstate=qstate,
+      preps=preps,reference=reference,reference_error=oldFP['reference']['error'],overlay_scalars=scalar,
+      accounting_plan=plan,preparation_identities=identities,reference_check_error=abs(check-reference))
+    return CACHE[cfg['SOURCE']]
+
+def preparation(ctx,cell):
+    return ctx.preps['PR' if cell['method'] in ('B2','B1') else 'B0',cell['prefix']]
+
+def scalar(ctx,cell):
+    if cell['method']=='B0I':return ctx.overlay_scalars[cell['prefix']]
+    p=preparation(ctx,cell)
+    return p.constant_coefficient+(p.extracted_identity_coefficient if cell['method']=='B2' else 0.)
+
+def mean_signal(ctx,cell):
+    import numpy as np
+    from scipy.linalg import expm
+    from h46_new2_core import polynomial,spectrum
+    from trotterlib.rte import finite_rte_distribution
+    from trottertracks.resource_applicability.h6_matched_accounting_v1 import empirical_allowance,precision_rows
+    started=time.monotonic();prep=preparation(ctx,cell);sc=scalar(ctx,cell)
+    specs=ctx.oracle.specs[:cell['prefix']+1];mats=ctx.matrices[:cell['prefix']+1]
+    n=len(ctx.oracle.initial);eye=np.eye(n);pr=cell['method']=='B2';lam=prep.exact_rte_lambda_r if pr else 0.
+    if pr and lam==0:
+        return dict(cell=cell,status='DEGENERATE_EMPTY_TAIL',precision_rows={str(e):{'1.0':dict(
+          cost_acquisition_eligible=False,eligibility_under_declared_allowance='INELIGIBLE',axes={},N_total=None)} for e in c.d.EPS},
+          new_sampling=0,new_compile=0,strict_bias_certificate=None)
+    tail=sum(ctx.matrices[cell['prefix']+1:],np.zeros((n,n),complex))-prep.extracted_identity_coefficient*eye
+    ts=spectrum(tail)
+    primary=np.repeat(ctx.oracle.initial[:,None],3,axis=1);forward=primary.copy()
+    logs=[];forward_logs=[];maximum=1.;work=0
+    for step in c.d.schedule(cell):
+        t=step['signed_time'];r=step['rte_steps']
+        for spec,mat in zip(specs,mats):
+            primary=spec[1]@(np.exp(-.5j*t*spec[0])[:,None]*(spec[2]@primary))
+            forward=expm(-.5j*t*mat)@forward;work+=6
+        if pr:
+            b=finite_rte_distribution(lam*t/r,cell['K']).exact_finite_distribution
+            factor=polynomial(ts[0],t/r,cell['K'])**r
+            primary=ts[1]@(np.column_stack((np.exp(-1j*t*ts[0]),factor,factor/b**r))*(ts[2]@primary))
+            forward[:,0]=expm(-1j*t*tail)@forward[:,0]
+            # Independent ascending matrix-polynomial path (no diagonal tail).
+            for _ in range(r):
+                terms=forward[:,1:].copy();total=terms.copy()
+                for degree in range(1,cell['K']+2):
+                    terms=(-1j*t/(r*degree))*(tail@terms);total+=terms;work+=2
+                forward[:,1:]=total;forward[:,2]/=b
+            tau=lam*t/r
+            independent_b=math.fsum(abs(tau)**k/math.factorial(k)*math.hypot(1.,tau/(k+1)) for k in range(0,cell['K']+1,2))
+            logs.append(r*math.log(b));forward_logs.append(r*math.log(independent_b))
+        for spec,mat in reversed(list(zip(specs,mats))):
+            primary=spec[1]@(np.exp(-.5j*t*spec[0])[:,None]*(spec[2]@primary))
+            forward=expm(-.5j*t*mat)@forward;work+=6
+        maximum=max(maximum,float(np.max(np.linalg.norm(primary,axis=0))),float(np.max(np.linalg.norm(forward,axis=0))))
+        c.require(np.isfinite(primary).all() and np.isfinite(forward).all(),'FINITE_SIGNAL_STAGES')
+    primary*=np.exp(-.8j*sc);forward*=np.exp(-.8j*sc)
+    logB=math.fsum(logs);normalization_error=abs(logB-math.fsum(forward_logs))
+    errors=[float(np.linalg.norm(primary[:,i]-forward[:,i])) for i in range(3)]
+    rawclosure=float(np.linalg.norm(primary[:,2]-math.exp(-logB)*primary[:,1]))
+    c.require(max(errors+[rawclosure,normalization_error])<1e-9,'SIGNAL_FORWARD_NORMALIZATION_AGREEMENT')
+    z=[complex(np.vdot(ctx.oracle.initial,primary[:,i])) for i in range(3)]
+    def zrec(x):return dict(real=float(x.real),imag=float(x.imag))
+    allowance=empirical_allowance(reference_error=ctx.reference_error,path_errors=errors,
+      normalization_error=normalization_error,raw_closure=rawclosure,maximum_norm=maximum,
+      work=work,settings=ctx.accounting_plan['numerical'])
+    record=dict(cell=cell,status='SIGNAL_PASS_EMPIRICAL_ONLY',reference=zrec(ctx.reference),
+      signals=dict(exact_tail=zrec(z[0]),corrected=zrec(z[1]),raw=zrec(z[2])),
+      error_decomposition=dict(total_signed=zrec(z[1]-ctx.reference),
+        signed_parts=dict(outer_PF_or_discard=zrec(z[0]-ctx.reference),finite_RTE=zrec(z[1]-z[0]))),
+      log_B=logB,allowance=allowance,raw_corrected_vector_closure=rawclosure,
+      independent_forward_vector_errors=errors,normalization_error=normalization_error,
+      intermediate_norm_max=maximum,work=work,scalar=sc,preparation_hash=prep.preparation_hash,
+      actual_RTE_events=cell['R'],r_policy=cell['r_policy'],strict_bias_certificate=None,
+      wall_seconds=time.monotonic()-started)
+    record['precision_rows']=precision_rows(record,ctx.accounting_plan)
+    return record
+
+def check(path,name,value,tolerance):
+    value=float(value)
+    row=dict(check=name,error=float(value),threshold=tolerance,PASS=math.isfinite(value) and 0<=value<tolerance,phase_alignment=False)
+    c.save(Path(path)/(name+'.json'),row);c.require(row['PASS'],'NUMERIC_FAIL:'+name);return row
+
+def compose(ctx,cell,requests,fp):
+    from qiskit import QuantumCircuit
+    from trottertracks.resource_applicability import ax2b_native_df_v5 as api
+    from trotterlib.df_rte_qiskit import QiskitDFRTEEventCircuitBuilder
+    prep=preparation(ctx,cell);qc=QuantumCircuit(5);bound=1
+    builder=QiskitDFRTEEventCircuitBuilder(basis_registry=prep.rte_preparation.basis_registry) if requests else None
+    for i,step in enumerate(c.d.schedule(cell)):
+        base=sum(api.block_instruction_bound(b,mode) for b in prep.deterministic_blocks for mode in ('UNCONTROLLED','DIRECTIONAL'))
+        if requests:
+            tail=builder.build_sequence(requests[i].rte_occurrence,basis_plan=requests[i].rte_basis_plan).circuit
+            part=api.build_partial_native(prep.deterministic_blocks,num_system_qubits=4,T=step['signed_time'],q=1,
+              scalar=0.,controlled_tails=[tail],control_policy='symmetric_directional',max_instructions=base+len(tail.data)+1)
+        else:
+            part=api.build_deterministic_native(prep.deterministic_blocks,num_system_qubits=4,
+              T=step['signed_time'],q=1,formula='2nd',scalar=0.,control_policy='symmetric_directional',max_instructions=base+1)
+        qc.compose(part.circuit,inplace=True);bound+=part.instruction_upper_bound
+    if scalar(ctx,cell)*.8!=0:qc.p(-scalar(ctx,cell)*.8,4)
+    return api.NativeEvolution(qc,4,.8,cell['q'],cell['formula'],'symmetric_directional',bound,fp(qc))
+
+def acquire(cfg,task,stop):
+    c.consumed(cfg);c.require(task in cfg['tasks'] and not stop.is_set(),'REGISTERED_ACTIVE_OWN_H2_TASK')
+    out=Path(cfg['output'])/task['id'];out.mkdir(exist_ok=False)
+    ctx=context(cfg);np=ctx.np;cell=task['cell'];prep=preparation(ctx,cell);start=time.monotonic()
+    def checkpoint(phase):
+        c.require(not stop.is_set(),'OWN_H2_STOP')
+        with (out/'progress.jsonl').open('a') as f:f.write(__import__('json').dumps(dict(phase=phase,elapsed=time.monotonic()-start))+'\n')
+    def reserve(kind,i=0):c.reserve(cfg,'ACQUIRE',task['id'],kind,i)
+    try:
+        from qiskit import qpy
+        from trotterlib.df_partial_s2 import make_df_partial_s2_step_request
+        from trotterlib.pr2_matched_accuracy_m1_execution import _explicit_cutoff_tolerance
+        from trotterlib.rte import CompilerSettings
+        from trotterlib.rte_compiled_cost import transpile_and_measure_cost
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        from trottertracks.resource_applicability.ax2b_native_df_v5 import build_native_hadamard_wrapper
+        from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
+        requests=[];events=[];checks=[];seeds=[]
+        if cell['method']=='B2':
+            reserve('trajectory');seeds=c.read(cfg['registry_path'])[task['id']]
+            for i,step in enumerate(c.d.schedule(cell)):
+                checkpoint('sampling_piece');reserve('sampling_piece',i)
+                t=step['signed_time'];r=step['rte_steps']
+                req=make_df_partial_s2_step_request(prep,step_time=t,rte_steps=r,
+                  truncation_tolerance=_explicit_cutoff_tolerance(prep.exact_rte_lambda_r*t/r,cell['K']),
+                  finite_taylor_order=cell['K'],seed=seeds[i],controlled=True,ancilla_qubit=4,pf_label='2nd')
+                requests.append(req);events.append([e.to_dict() for e in req.rte_occurrence.events])
+                c.save(out/f'piece_{i}_PRIVATE.json',dict(step=step,seed=seeds[i],law=req.rte_distribution.to_dict(),
+                  events=events[-1],conditional=False))
+            c.require(sum(map(len,events))==cell['R'],'ACTUAL_REGISTERED_EVENT_COUNT')
+        event_digest=c.digest(events)
+        c.save(out/'events_PRIVATE.json',dict(events=events,event_digest=event_digest,**c.d.stratum(events),
+          cohort=task['cohort'],conditional=False,pooling=False))
+        sig=c.read(Path(cfg['run_root'])/'SIGNAL'/cell['id']/'signal.json')
+        logB=math.fsum(len(r.rte_occurrence.events)*math.log(r.rte_distribution.exact_finite_distribution) for r in requests)
+        checks.append(check(out,'saved_log_B',abs(logB-sig['log_B']),1e-9))
+        with use_fingerprint_reuse() as cache:
+            reserve('native_evolution');checkpoint('native_build');evolution=compose(ctx,cell,requests,cache.fingerprint)
+            low=np.r_[ctx.qstate,np.zeros_like(ctx.qstate)];high=np.r_[np.zeros_like(ctx.qstate),ctx.qstate]
+            reserve('native_low');checkpoint('native_low');checks.append(check(out,'native_low',np.linalg.norm(simulate_statevector(evolution.circuit,low)-low),1e-9))
+            reserve('native_high');checkpoint('native_high');actual=simulate_statevector(evolution.circuit,high)
+            checks.append(check(out,'native_leakage',np.linalg.norm(actual[:16]),1e-9))
+            reserve('oracle')
+            if requests:expected=ctx.oracle.trajectory(requests)
+            else:
+                v=ctx.oracle.initial.copy()
+                for step in c.d.schedule(cell):
+                    for spec in list(ctx.oracle.specs[:cell['prefix']+1])+list(reversed(ctx.oracle.specs[:cell['prefix']+1])):
+                        v=spec[1]@(np.exp(-.5j*step['signed_time']*spec[0])*(spec[2]@v))
+                v*=np.exp(-.8j*scalar(ctx,cell));expected=np.zeros(16,complex);expected[ctx.oracle.qindices]=v
+            checks.append(check(out,'independent_occupation_vector',np.linalg.norm(actual[16:]-expected),1e-9))
+            z=complex(np.vdot(ctx.qstate,expected));axes={}
+            for i,axis in enumerate(('cosine','sine')):
+                checkpoint('wrapper_'+axis);wrapper=build_native_hadamard_wrapper(evolution,axis=axis,include_measurement=True,max_instructions=len(evolution.circuit.data)+4)
+                reserve('uncompiled_action',i);before=simulate_statevector(wrapper.remove_final_measurements(inplace=False),low)
+                value=float(np.vdot(before[:16],before[:16]).real-np.vdot(before[16:],before[16:]).real)
+                checks.append(check(out,'hadamard_'+axis,abs(value-(z.real if axis=='cosine' else z.imag)),1e-9))
+                fp=cache.fingerprint(wrapper);reserve('compile',i);checkpoint('compile_'+axis)
+                measured=transpile_and_measure_cost(wrapper,CompilerSettings(('rz','sx','x','cx'),None,None,1,None,None,17,'1.3.0'),actual_circuit_fingerprint=fp)
+                c.require(measured.compiler_settings_hash==cfg['binding']['compiler'] and measured.actual_circuit_fingerprint==fp==cache.fingerprint(wrapper),'COMPILER_WRAPPER_IDENTITY')
+                guard=measured.transpiled_circuit.metadata.get('H2_phase_guard')
+                c.require(guard and guard['unchanged_gate_stream'] and not guard['state_fit'],'PHASE_GUARD_RECEIPT')
+                c.save(out/('compiler_phase_guard_'+axis+'.json'),guard)
+                qdir=out/('quarantine_'+axis);qdir.mkdir()
+                w=c.storage.write_binary(cfg,qdir/'wrapper.qpy',lambda f:qpy.dump(wrapper,f))
+                comp=c.storage.write_binary(cfg,qdir/'compiled.qpy',lambda f:qpy.dump(measured.transpiled_circuit,f))
+                reserve('compiled_action',i);checkpoint('compiled_action_'+axis)
+                after=simulate_statevector(measured.transpiled_circuit.remove_final_measurements(inplace=False),low)
+                c.storage.write_binary(cfg,qdir/'vectors.npz',lambda f:np.savez(f,low=low,before=before,after=after))
+                checks.append(check(out,'compiled_vector_'+axis,np.linalg.norm(after-before),1e-7))
+                metrics={k:getattr(measured,v) for k,v in dict(RZ='rz_count',CX='cx_count',depth='total_depth',RZ_depth='rz_depth',CX_depth='cx_depth',size='circuit_size').items()}
+                c.require(all(type(v) is int and v>=0 for v in metrics.values()),'INTEGER_GATE_METRICS')
+                axes[axis]=dict(metrics,seed=None,event_digest=event_digest,compiler_hash=measured.compiler_settings_hash,
+                  compiler_phase_policy=guard['policy'],translator_gate_stream_unchanged=True,
+                  fingerprint=fp,compiled_raw_SHA=comp['sha256'],compiled_archive_SHA=comp['archive_sha256'])
+                c.save(out/('measured_'+axis+'.json'),axes[axis]);del measured,wrapper,before,after
+        checkpoint('archive_audit');sa=c.storage.audit_task(cfg,task);c.save(out/'storage_audit.json',sa)
+        result=dict(status='H2_M5_NATIVE_PAIR_PASS',SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],
+          task=task,cell_id=cell['id'],replica=task['replica'],seed=None,piece_seeds_private=True,
+          event_digest=event_digest,axes=axes,checks=checks,preparation_hash=prep.preparation_hash,
+          cohort=task['cohort'],r_policy=cell['r_policy'],actual_RTE_events=cell['R'],
+          storage_audit_sha256=c.sha(out/'storage_audit.json'),strict_bias_certificate=None,
+          wall_seconds=time.monotonic()-start,peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
+        c.save(out/'result_PRIVATE.json',result)
+        return dict(id=task['id'],result_sha256=c.sha(out/'result_PRIVATE.json'))
+    except BaseException as exc:
+        stop.set();c.save(out/'STOP.json',dict(reason=str(exc),retry=False,mandatory_STOP=True));raise

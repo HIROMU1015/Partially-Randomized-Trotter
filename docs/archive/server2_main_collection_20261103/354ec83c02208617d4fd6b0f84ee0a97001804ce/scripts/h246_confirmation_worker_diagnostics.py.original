@@ -1,0 +1,16 @@
+"""Future worker-initializer diagnostic component; NOT installed in run01.
+
+Reset inherited launcher signal handlers inside OWN forked workers only and
+capture fatal native stacks. This fixes a cleanup hazard, not SIGBUS's unknown
+scientific/native root cause. Existing sealed execution SOURCE is untouched.
+"""
+import faulthandler
+import signal
+
+
+def initialize_owned_worker_diagnostics():
+    signal.signal(signal.SIGTERM,signal.SIG_DFL)
+    signal.signal(signal.SIGINT,signal.SIG_IGN)
+    faulthandler.enable(all_threads=True)
+    return dict(SIGTERM='DEFAULT_TERMINATE',SIGINT='IGNORE_PARENT_HANDLES_INTERRUPT',
+      fatal_native_stack_logging=True,science_conditions_changed=False,scope='OWN_WORKER_PROCESS_ONLY')

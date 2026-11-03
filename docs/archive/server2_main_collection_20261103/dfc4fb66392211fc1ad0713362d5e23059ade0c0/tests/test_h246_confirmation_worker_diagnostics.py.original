@@ -1,0 +1,39 @@
+"""Small owned child processes, no scientific calls or shared settings."""
+import multiprocessing as mp
+import os
+from pathlib import Path
+import signal
+import sys
+import time
+import unittest
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+from h246_confirmation_worker_diagnostics import initialize_owned_worker_diagnostics
+
+
+def wait_child(conn,repair):
+    if repair:initialize_owned_worker_diagnostics()
+    conn.send('READY')
+    signal.pause()
+    # The inherited no-op SIGTERM handler returns from pause. Preserve a live
+    # child so the parent can directly see that terminate() did not terminate.
+    while True:signal.pause()
+
+
+class OwnedWorkerTests(unittest.TestCase):
+    def exercise(self,repair):
+        ctx=mp.get_context('fork');parent,child=ctx.Pipe(duplex=False)
+        prior=signal.signal(signal.SIGTERM,lambda *_:None)
+        proc=ctx.Process(target=wait_child,args=(child,repair))
+        try:
+            proc.start();child.close();self.assertTrue(parent.poll(5));self.assertEqual(parent.recv(),'READY')
+            proc.terminate();proc.join(.25 if not repair else 5)
+            self.assertEqual(proc.is_alive(),not repair)
+            if repair:self.assertEqual(proc.exitcode,-signal.SIGTERM)
+        finally:
+            if proc.is_alive():proc.kill()
+            proc.join(5);self.assertFalse(proc.is_alive());parent.close();signal.signal(signal.SIGTERM,prior)
+        self.assertIs(signal.getsignal(signal.SIGTERM),prior)
+    def test_inherited_launcher_handler_causes_cleanup_hazard(self):self.exercise(False)
+    def test_own_worker_default_sigterm_allows_reap(self):self.exercise(True)
+
+if __name__=='__main__':unittest.main()

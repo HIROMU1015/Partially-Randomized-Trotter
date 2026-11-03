@@ -1,0 +1,91 @@
+#!/usr/bin/env python3
+"""Stdlib verification of saved artificial worker evidence; no science calls."""
+import argparse
+import hashlib
+import json
+from pathlib import Path
+import xml.etree.ElementTree as ET
+
+BASE=Path(__file__).resolve().parent
+ROOT=BASE.parents[2]
+
+
+def read(path):return json.loads(Path(path).read_text())
+def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def digest(value):return hashlib.sha256(json.dumps(value,sort_keys=True,separators=(',',':'),ensure_ascii=False,allow_nan=False).encode()).hexdigest()
+def require(condition,reason):
+    if not condition:raise ValueError(reason)
+
+
+def verify(original_worktree=None):
+    plan=read(BASE/'H4_execution_contract_DRAFT.json')
+    require(all(plan[k] is False for k in ['execution_authorized','grant_valid','dispatch_enabled']),'ACTIVE_CANDIDATE')
+    tests={}
+    for name in ['final_tests.xml','authority_seed_checks.xml','cli_checks.xml']:
+        suite=ET.parse(BASE/'technical'/name).getroot().find('testsuite')
+        require(all(suite.get(k)=='0' for k in ['errors','failures','skipped']),'TEST_FAILURE_OR_SKIP')
+        tests[name]=int(suite.get('tests'))
+    comparison=read(BASE/'serial_comparison_final.json')
+    require(all(all(checks.values()) for checks in comparison['comparisons'].values()),'SERIAL_DIFFERENCE')
+    run=BASE/'technical/eight_qubit_final'
+    require(read(run/'STOP.json')['status']=='ARTIFICIAL_COMPLETE_MANDATORY_STOP','ARTIFICIAL_STOP')
+    summary=read(run/'summary.json')
+    require(summary['status']=='FOUR_CASES_COMPLETE' and len(summary['rows'])==20,'TWENTY_ROWS')
+    require(all(r['total_RZ'] is None and r['shots']['N_total'] is None for r in summary['rows']),'NULL_N_G')
+    records=events=0;workers={};errors=[]
+    for case in ['pauli_jw_PF','pauli_jw_PR','df_native_PF','df_native_PR']:
+        folder=run/'run'/case
+        result=read(folder/'result.json');binding=result['provenance']['source']
+        errors.append(result['circuit_cost']['compiled_signal_max_error'])
+        require(read(folder/'status.json')['artificial_only'],'MOLECULAR_RESULT')
+        for sample in result['circuit_cost']['samples']:
+            tid=sample['trajectory_id'];j=read(folder/'trajectories'/tid/'price_join.json')
+            h=j.pop('trajectory_record_hash')
+            require(digest(j)==h==sample['trajectory_record_hash'],'TRAJECTORY_HASH')
+            e=read(folder/'trajectories'/tid/'events.json');eh=e.pop('event_record_hash')
+            require(digest(e)==eh==j['event_record_hash']==sample['event_record_hash'],'EVENT_HASH')
+            require(j['binding']==binding and j['compiled_RZ']==sample['RZ'],'PRICE_BINDING')
+            require(all(j[k]==v for k,v in e.items()),'PRECOMPILE_RECORD_CHANGED')
+            records+=1;events+=j['event_count']
+        if case.endswith('_PR'):
+            a=read(folder/'trajectory_dispatch/aggregation.json')
+            stop=read(folder/'trajectory_dispatch/run/STOP.json')
+            require(a['workers']==len(set(a['worker_pids']))==2,'TWO_INDEPENDENT_WORKERS')
+            require(stop['all_children_reaped'] and not stop['automatic_retry'],'CHILD_REAPING')
+            manifest=read(folder/'trajectory_dispatch/manifest.json')
+            flat=[t for chunk in manifest['chunks'] for t in chunk]
+            require(sorted(flat,key=lambda t:t['index'])==manifest['tasks'],'UNIQUE_TASKS')
+            workers[case]=a['worker_pids']
+    require((records,events)==(6,128),'ARTIFICIAL_CALL_COUNTS')
+    source_files=0
+    if original_worktree is not None:
+        origin=Path(original_worktree)
+        source=read(origin/'artifacts/non_df_h4_pilot/2026-10-23/run01/SOURCE.json')
+        for name,expected in source['files'].items():
+            require(sha(origin/name)==expected,'ORIGINAL_RUNNING_SOURCE_CHANGED:'+name)
+            source_files+=1
+    if (BASE/'SOURCE.json').exists():
+        for name,expected in read(BASE/'SOURCE.json')['files'].items():
+            require(sha(ROOT/name)==expected,'NEW_SOURCE_FILE_CHANGED:'+name)
+    if (BASE/'evidence_inventory.json').exists():
+        for name,expected in read(BASE/'evidence_inventory.json')['files'].items():
+            path=BASE/name
+            observed={'symlink':str(path.readlink())} if path.is_symlink() else {'sha256':sha(path)}
+            require(observed==expected,'SAVED_EVIDENCE_CHANGED:'+name)
+    return dict(status='PASS_ARTIFICIAL_PARALLEL_SAVED_EVIDENCE',passed=sum(tests.values()),failed=0,skipped=0,
+        tests=tests,artificial_cases=4,precision_rows=20,artificial_N_G_null=20,
+        independent_worker_pids=workers,captured_events=events,joined_trajectories=records,
+        maximum_compiled_probability_error=max(errors),serial_events_prices_accounting_equal=True,
+        original_scientific_SOURCE_files_unchanged=source_files,
+        new_real_molecular_runs=0,new_scientific_grants=0,verification_scientific_calls=0,push=False)
+
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--original-worktree',type=Path)
+    p.add_argument('--output',type=Path)
+    args=p.parse_args();result=verify(args.original_worktree)
+    text=json.dumps(result,ensure_ascii=False,indent=2,sort_keys=True)+'\n'
+    if args.output:
+        with args.output.open('x') as stream:stream.write(text)
+    else:print(text,end='')

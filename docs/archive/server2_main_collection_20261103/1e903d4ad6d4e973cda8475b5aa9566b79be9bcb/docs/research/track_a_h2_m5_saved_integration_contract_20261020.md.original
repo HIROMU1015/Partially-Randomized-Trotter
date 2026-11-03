@@ -1,0 +1,13 @@
+# H2 m5：保存取得全543pairを使う統合のみの別契約
+
+利用者の段階6までの実行承認に基づく。新signal/sampling/compile/shot式呼出しは0、保存shotと直接実測単価の会計・統合を1回だけ実施する。独立P・AD03は保留。
+
+取得SOURCE `5d0be1699dcef8f09f3bdcd8bb00511640571809` のm5決定論15＋PR528＝543pair/1086軸は全native/compiled/byte検査にPASSし、ACQUIRE段階のPASSと全60worker回収を保存した。ただし同runは統合時の `COMPLETE_REGISTERED_N_NO_TOPUP_OR_PARTIAL_ACCOUNTING` により全体STOP/native exit1で終了した。このSTOPをPASSに書き換えない。
+
+原因は新統合adapterが旧Dの `measurements` だけを読んだ点である。旧Dは元FPの決定論4pairを別に再利用していた。うちfull B1 q1 S2/S4の2候補は費用適格である。旧Dの保存会計はこの2候補を含むため、新adapterでも同じ再利用経路を復元する必要がある。
+
+元SOURCE `h2_panels_science.py` のD段階と同じく、FPのうちD候補集合内の決定論pairだけをpreparation hash照合付きで結合する。FP PR n1を混ぜず、重複・preparation違いを拒否する。旧D/Aのeligible・exact平均・SEが全保存行と完全一致することを必須gateにする。shot式・shot数の再選択や費用による候補除外は行わない。
+
+新統合専用SOURCE、入力/SOURCE/archive SHA seal、独立grant/CONSUMED/非返還ledgerを使用する。旧取得SOURCE・計画・grant・ledger・全pair結果・native検査・元byte復元・終了証拠を読み取り専用で再照合する。元run全体の正常終了を偽って要求/認定せず、全取得段階の証拠を新契約が受け入れる。再sampling・不足標本のtop-up・再compileは0。原本は変更しない。
+
+段階6の統合結果は新SOURCEと取得SOURCEを別欄で記録する。成功・失敗とも新契約をmandatory STOPし、段階7へ進まない。次の担当：Codexが統合を完了し保存/報告、ユーザーがその後の独立確認を判断する。

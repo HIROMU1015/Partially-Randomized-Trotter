@@ -1,0 +1,15 @@
+# 2026-10-19 H8固定2候補・独立n48の完了と公開
+
+SOURCE745a674546f2cb6258526fbfde1d9a00601689f8の完了結果を保存証拠と照合し、結果資料を作成した。
+linear H8/1Å/STO-3G/tol-only1e-8 DF28/T=.8/P=0、二次PR p8/q2とp7/q16、r4/K4、通常signed bias・倍率1。
+各48軌道の主比較は固定直接実測PFより2.935924%・3.302597%低い点費用を再現した。
+副評価p8は固定PF不適格のため比較null、p7経験的非相殺は17.463471%の点削減。
+
+元p8の完全1軌道/2軸と元seedを別受入manifestで保持し、新190compileで最終96軌道/192軸が完了。
+旧p7未完了2予約を含む累積task-level予約194と、元STOPは保持。両driver exit0・全owned children回収・最終byte gate PASS。
+高次event未観測（order0=384/3072、order2/4=0）なので母平均優位は未確定。有限標本・SE・厳密保証を区別する。
+
+[完了報告](../track_a_h8_new_pr_confirmation_results_20261019.md)と公開projectionを入口へ追加した。
+旧起動snapshot、SOURCE、科学原本、grant/ledger/marker、他worktree・共有環境・venvは不変。
+今回の公開作業による新科学call・人工compile・独立科学レビューは0。
+次はユーザーによる科学的解釈・追加検証の要否判断。mandatory STOP、次stageの実行認可なし。

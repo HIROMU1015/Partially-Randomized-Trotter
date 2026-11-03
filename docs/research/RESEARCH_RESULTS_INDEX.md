@@ -152,3 +152,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## サーバー1の準備済み原本からの追補
 
 [過去の草稿・技術SOURCE・索引の保存原版](server1_onsite_collection_20261103.md)から今回の出典対応へ進める。現在の仕様・科学的採否・実行許可は変更しない。
+
+## サーバー2の追加収録（2026-11-03）
+
+[固定SOURCE・保存成果の追加収録と版対応](server2_main_collection_20261103.md)。保存原版と現行実行pathへの採用を分け、元の科学SOURCE・入力・status・STOPを維持する。

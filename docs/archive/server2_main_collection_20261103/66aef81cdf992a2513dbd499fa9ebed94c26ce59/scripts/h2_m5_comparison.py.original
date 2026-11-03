@@ -1,0 +1,130 @@
+"""H2 existing-grid extension: metadata, exact paired accounting, no imports of science."""
+from fractions import Fraction
+import hashlib
+import importlib.util
+import json
+import math
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+EPS=(.05,.01,.005,.001,.0005)
+FORMULA='4th(m5_best)'
+SCOPE='H2_M5_EXISTING_PF_GRID_EXTENSION_V1'
+
+def require(ok,reason):
+    if not ok:raise ValueError(reason)
+
+def digest(v):return hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':'),allow_nan=False).encode()).hexdigest()
+
+def formula_core():
+    p=ROOT/'src/trotterlib/h46_m5_plan.py'
+    spec=importlib.util.spec_from_file_location('_h2_fixed_m5_coefficients',p)
+    m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);return m
+
+def cell(method,prefix,q,r=None,K=None):
+    ident=f'{method}_p{prefix}_q{q}_{FORMULA}'
+    if r is not None:ident+=f'_r{r}_K{K}_PER_PIECE'
+    return dict(id=ident,method=method,prefix=prefix,q=q,formula=FORMULA,r=r,K=K,
+      R=None if r is None else q*11*r,r_policy=None if r is None else 'PER_PIECE')
+
+def domain():
+    det=[cell(m,p,q) for p in (0,1,2) for q in (1,2,4,8,16) for m in ('B0','B0I')]
+    det +=[cell('B1',3,q) for q in (1,2,4,8,16)]
+    pr=[cell('B2',p,q,4,k) for p in (0,1,2) for q in (1,2,4,8,16) for k in (2,4)]
+    pr +=[cell('B2',p,q,r,k) for p in (0,1,2) for q in (1,4,16) for r in (2,8) for k in (2,4)]
+    require(len(det)==35 and len(pr)==66 and len({x['id'] for x in det+pr})==101,'EXACT_H2_EXTENSION_GRID')
+    return dict(deterministic=det,PR=pr)
+
+def schedule(c):
+    return formula_core().schedule(c['formula'],c['q'],'PER_PIECE',c['r'] or 1)
+
+def tasks_for(signals):
+    tasks=[]
+    for row in signals:
+        c=row['cell']
+        flags=[row['precision_rows'][str(e)]['1.0']['cost_acquisition_eligible'] for e in EPS]
+        require(all(type(f) is bool for f in flags),'RESOLVED_BOTH_AXIS_ELIGIBILITY')
+        for e,flag in zip(EPS,flags):
+            if not flag:require(row['precision_rows'][str(e)]['1.0'].get('eligibility_under_declared_allowance')=='INELIGIBLE',
+              'UNRESOLVED_IS_NOT_INELIGIBLE')
+        if not any(flags):continue
+        for i in range(8 if c['method']=='B2' else 1):
+            tasks.append(dict(id=c['id']+'__'+str(i),cell=c,replica=i,
+              cohort='H2_M5_EXPLORATION_N8' if c['method']=='B2' else 'H2_M5_DETERMINISTIC'))
+    return tasks
+
+def seeds_for(tasks,source,excluded):
+    used=set(excluded);registry={}
+    require(len(used)==len(excluded),'UNIQUE_KNOWN_SEED_EXCLUSIONS')
+    for t in tasks:
+        if t['cell']['method']!='B2':continue
+        entries=[]
+        for i,s in enumerate(schedule(t['cell'])):
+            seed=int(digest([SCOPE,'EXPLORATION',source,t['id'],s['outer'],s['piece']])[:16],16)
+            require(seed not in used,'SEED_COLLISION_NO_REHASH')
+            used.add(seed);entries.append(seed)
+        registry[t['id']]=entries
+    return registry
+
+def stratum(events):
+    orders=[e['taylor_order'] for p in events for e in p]
+    require(all(type(k) is int and k in (0,2,4) for k in orders),'FIXED_TAYLOR_SUPPORT')
+    return dict(N0=orders.count(0),N2=orders.count(2),N4=orders.count(4),
+      stratum='S4_PRESENT' if 4 in orders else 'S2_MULTI' if orders.count(2)>1 else 'S2_SINGLE' if 2 in orders else 'S0_ONLY')
+
+def pair_summary(pairs,shots,expected_n):
+    require(len(pairs)==expected_n and {p['replica'] for p in pairs}==set(range(expected_n)),
+      'COMPLETE_REGISTERED_N_NO_TOPUP_OR_PARTIAL_ACCOUNTING')
+    require(set(shots)=={'cosine','sine'} and all(type(v) is int and v>0 for v in shots.values()),'POSITIVE_AXIS_SHOTS')
+    for p in pairs:
+        require(set(p['axes'])==set(shots),'PAIRED_AXES_REQUIRED')
+        for a in shots:
+            require(type(p['axes'][a]['RZ']) is int and p['axes'][a]['RZ']>=0,'INTEGER_RZ')
+            if 'event_digest' in p:require(p['axes'][a]['event_digest']==p['event_digest'],'UNCHANGED_PAIRED_EVENTS')
+            if p.get('seed') is not None:
+                require(p['axes'][a]['seed']==p['seed'] and p['axes'][a]['event_digest']==p['event_digest'],'SAME_TRAJECTORY_PAIR')
+    values=[sum(shots[a]*p['axes'][a]['RZ'] for a in ('cosine','sine')) for p in pairs]
+    mean=Fraction(sum(values),len(values))
+    variance=sum((Fraction(v)-mean)**2 for v in values)/(len(values)-1) if len(values)>1 else None
+    return dict(G_RZ_exact=str(mean),G_RZ_SE=None if variance is None else math.sqrt(variance/len(values)),
+      sample_variance_exact=None if variance is None else str(variance),n=len(values),shots=shots,
+      population_mean_certified=False,rare_tail_cost_bound=None)
+
+def account(signals,pairs,*,origin=False):
+    rows=[];by_id={}
+    for p in pairs:by_id.setdefault(p['cell_id'],[]).append(p)
+    for s in signals:
+        c=s['cell'];n=8 if c['method']=='B2' else 1
+        for e in EPS:
+            ep=s['precision_rows'][str(e)]['1.0'];eligible=ep['cost_acquisition_eligible']
+            row=dict(cell_id=c['id'],formula=c['formula'],method=c['method'],prefix=c['prefix'],q=c['q'],
+              r=c.get('r'),K=c.get('K'),R=c.get('R'),epsilon=e,eligible=eligible,
+              cohort='ORIGINAL_H2_EXPLORATION_OR_DETERMINISTIC' if origin else 'H2_M5_NEW_EXTENSION',
+              status='INELIGIBLE',G_RZ_exact=None,G_RZ_SE=None,n=None,
+              measurement='SAVED_DIRECT_MEASURED' if origin else 'NEW_DIRECT_MEASURED',
+              population_mean_certified=False,independent_confirmation=False)
+            if eligible:
+                weights={a:ep['axes'][b]['shots'] for a,b in [('cosine','real'),('sine','imag')]}
+                row.update(pair_summary(sorted(by_id.get(c['id'],[]),key=lambda p:p['replica']),weights,n),status='FINITE_SAMPLE_POINT')
+            rows.append(row)
+    return rows
+
+def best(rows,*,method=None,formula=None):
+    if any(r['eligible'] and r['G_RZ_exact'] is None for r in rows):return None
+    valid=[r for r in rows if r['eligible'] and r['G_RZ_exact'] is not None
+      and (method is None or r['method'] in method) and (formula is None or r['formula']==formula)]
+    return min(valid,key=lambda r:(Fraction(r['G_RZ_exact']),r['cell_id'])) if valid else None
+
+def compare(rows):
+    out=[]
+    for e in EPS:
+        endpoint=[r for r in rows if r['epsilon']==e]
+        d=best(endpoint,method=('B0','B0I','B1'));pr=best(endpoint,method=('B2',))
+        ratio=None if d is None or pr is None or Fraction(d['G_RZ_exact'])==0 else float(Fraction(pr['G_RZ_exact'])/Fraction(d['G_RZ_exact']))
+        out.append(dict(epsilon=e,deterministic=d,PR=pr,PR_to_det_ratio=ratio,
+          PR_reduction=None if ratio is None else 1-ratio,
+          by_formula={f:dict(deterministic=best(endpoint,method=('B0','B0I','B1'),formula=f),
+            PR=best(endpoint,method=('B2',),formula=f)) for f in ('2nd','4th',FORMULA)},
+          status='FINITE_REGISTERED_GRID_EXPLORATORY_POINT_ONLY',global_optimum=False,
+          population_mean_guarantee=False,independent_confirmation=False))
+    return out

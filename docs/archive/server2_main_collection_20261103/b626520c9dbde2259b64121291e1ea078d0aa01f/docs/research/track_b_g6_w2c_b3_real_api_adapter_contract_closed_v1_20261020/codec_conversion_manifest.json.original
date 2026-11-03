@@ -1,0 +1,19 @@
+{
+  "schema": "b3_codec_conversion_v1",
+  "source": "F3 $int/$rat/$tuple/$map canonical exact JSON",
+  "target": "driver rat/int, tuple/list collapse, str map keys",
+  "lossless": "original document/digest/source identity retained in typed sidecar",
+  "rejection": [
+    "noncanonical hex/rational",
+    "bool as int",
+    "unknown reserved tag",
+    "duplicate key",
+    "str-key collision",
+    "missing/unexpected field",
+    "wrong digest/source",
+    "unsupported type"
+  ],
+  "signed_values": true,
+  "map_order": "F3 json.dumps(packed key,sort_keys=True); string maps sorted in canonical JSON",
+  "scientific_compatibility": "NOT_ESTABLISHED"
+}

@@ -1,0 +1,125 @@
+"""Science leaf for authorized trajectory workers; frozen sampler/builders reused."""
+from dataclasses import asdict
+from pathlib import Path
+import traceback
+import numpy as np
+from qiskit.quantum_info import Operator, Statevector
+
+from .fixed_signal_evaluation import FixedSignalConfig,DFSignalAdapter,hadamard_wrapper
+from .h2_non_df_pilot import check, dense_law_mean
+from .h2_non_df_pilot_validation import event_context,trajectory_reference
+from .isolated_qiskit_execution import digest,read,save,sha
+from .rte import CompilerSettings
+from .rte_compiled_cost import TranspiledCircuitCostCache
+from .rte_event_audit import TrajectoryAudit,audited_adapter
+
+
+def store_model(folder, hamiltonian, state, representation):
+    arrays=folder/'arrays.npz';metadata=folder/'model.json'
+    values=dict(state=state)
+    if representation=='pauli_jw':
+        meta=dict(representation=representation,num_qubits=hamiltonian.num_qubits,
+            constant=hamiltonian.constant,terms=hamiltonian.terms,metadata_json=hamiltonian.metadata_json)
+    else:
+        meta=dict(representation=representation,constant=hamiltonian.constant,metadata=hamiltonian.metadata)
+        values.update(one_body=hamiltonian.one_body,lambdas=hamiltonian.lambdas,g=np.asarray(hamiltonian.g_matrices))
+    with arrays.open('xb') as stream:np.savez(stream,**values)
+    save(metadata,meta)
+    return dict(arrays=arrays.name,arrays_sha256=sha(arrays),metadata=metadata.name,metadata_sha256=sha(metadata))
+
+
+class IndexedAudit(TrajectoryAudit):
+    def __init__(self,*args,tasks,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.tasks=tasks
+    def begin(self,seed,index):
+        if len(self.rows)>=len(self.tasks) or self.tasks[len(self.rows)]!=dict(index=index,seed=seed):
+            raise ValueError('WORKER_UNASSIGNED_OR_REPEATED_TRAJECTORY')
+        super().begin(seed,index)
+
+
+def price_trajectory(adapter,state,config,compiler,cache,audit,index,seed,verify_compiled):
+    errors=[]
+    audit.begin(seed,index)
+    native_controlled=isinstance(adapter,DFSignalAdapter)
+    evolution=(adapter.trajectory(q=config.q,seed=seed,controlled=True) if native_controlled
+               else adapter.trajectory(q=config.q,seed=seed))
+    audit.validate_evolution(adapter,config,evolution)
+    evolution.name='h4_fixed_evolution'
+    fingerprints={};row=dict(seed=seed,RZ={})
+    for axis in ['cosine','sine']:
+        wrapped=hadamard_wrapper(evolution,axis,already_controlled=native_controlled)
+        cost,key,hit=cache.get_or_transpile(wrapped,compiler,
+            circuit_fingerprint=digest(dict(config=asdict(config),seed=seed,axis=axis,
+                hamiltonian=adapter.metadata()['hamiltonian_hash'])))
+        fingerprints[axis]=cost.actual_circuit_fingerprint
+        row['RZ'][axis]=cost.rz_count
+        if verify_compiled:
+            if cost.transpiled_circuit is None:
+                raise ValueError('Compiled verification requires retained circuits')
+            initial=Statevector(np.concatenate((state,np.zeros_like(state))))
+            measured=cost.transpiled_circuit.remove_final_measurements(inplace=False)
+            if measured.num_qubits!=adapter.num_qubits+1 or measured.layout is not None:
+                raise NotImplementedError('Compiled-signal check requires unchanged wire layout')
+            before=initial.evolve(wrapped.remove_final_measurements(inplace=False)).probabilities([adapter.num_qubits])
+            after=initial.evolve(measured).probabilities([adapter.num_qubits])
+            error=float(np.max(np.abs(before-after)));errors.append(error)
+            if error>1e-9:raise ValueError('COMPILED_WRAPPER_SIGNAL_MISMATCH')
+    joined=audit.join(row['RZ'],compiler,fingerprints)
+    row.update(trajectory_id=joined['trajectory_id'],event_record_hash=joined['event_record_hash'],
+        trajectory_record_hash=joined['trajectory_record_hash'])
+    return row,errors
+
+
+def process_shard(spec, folder, shard, output):
+    try:
+        meta=read(folder/spec['model']['metadata'])
+        from .pauli_signal_adapter import PauliHamiltonian
+        from .df_hamiltonian import DFHamiltonian
+        with np.load(folder/spec['model']['arrays'],allow_pickle=False) as z:
+            state=z['state'].copy()
+            if meta['representation']=='pauli_jw':
+                h=PauliHamiltonian(meta['num_qubits'],meta['constant'],tuple(map(tuple,meta['terms'])),meta['metadata_json'])
+            else:
+                h=DFHamiltonian(meta['constant'],z['one_body'].copy(),z['lambdas'].copy(),tuple(x.copy() for x in z['g']),meta['metadata'])
+        config=FixedSignalConfig(**spec['config']);compiler=CompilerSettings(**spec['compiler'])
+        count=config.cost_samples if config.method=='PR' else 1
+        children=np.random.SeedSequence(config.seed).spawn(count)
+        expected_tasks=[dict(index=i,seed=int(c.generate_state(1,dtype=np.uint64)[0])) for i,c in enumerate(children)]
+        if spec['tasks']!=expected_tasks:
+            raise ValueError('WORKER_ORIGINAL_SEED_REGISTRY_CHANGED')
+        if spec['authority']['artificial_only'] is not True:
+            from .pauli_signal_adapter import array_hash
+            receipt=read(Path(spec['authority']['pack'])/'input_run/input_generation/data/receipt.json')
+            if array_hash(state)!=receipt['state_hash']:
+                raise ValueError('WORKER_APPROVED_STATE_CHANGED')
+        checks=[];matrices=None
+        def validate(adapter,cfg,sequences,circuit,index):
+            nonlocal matrices
+            if not spec['validate_trajectories'] or index>=3:return
+            if matrices is None:components,matrices=event_context(adapter)
+            expected=trajectory_reference(adapter,cfg,sequences,matrices) if adapter.randomized else dense_law_mean(adapter,q=cfg.q)
+            if adapter.representation=='df_native':
+                n=len(expected);expected=np.block([[np.eye(n),np.zeros((n,n))],[np.zeros((n,n)),expected]])
+            gate=check(np.linalg.norm(Operator(circuit).data-expected,2),spec['plan']['numerical']['trajectory_unitary_agreement'],'H4_CAPTURED_PRODUCTION_TRAJECTORY')
+            checks.append(dict(trajectory_index=index,gate=gate,replayed_sampling=False,phase_alignment=False))
+        tasks=spec['chunks'][shard]
+        audit=IndexedAudit(spec['case_id'],spec['binding'],tasks=tasks,
+            directory=Path(spec['audit_directory']),validator=validate)
+        adapter=audited_adapter(h,config,audit)
+        if adapter.metadata()['hamiltonian_hash']!=spec['model_hash']:
+            raise ValueError('WORKER_HAMILTONIAN_CHANGED')
+        cache=TranspiledCircuitCostCache(retain_transpiled_circuits=spec['verify_compiled'])
+        save(output/'reserved_calls.json',dict(tasks=tasks,trajectories=len(tasks),wrapper_compile_axes=2*len(tasks),
+            production_RTE_events=len(tasks)*config.q*config.r if adapter.randomized else 0,nonrefundable=True,automatic_retry=False))
+        samples=[]
+        for task in tasks:
+            row,errors=price_trajectory(adapter,state,config,compiler,cache,audit,task['index'],task['seed'],spec['verify_compiled'])
+            value=dict(index=task['index'],sample=row,compiled_errors=errors)
+            save(Path(spec['audit_directory'])/row['trajectory_id']/'sample_result.json',value)
+            samples.append(value)
+        save(output/'shard_result.json',dict(dispatch_digest=digest(spec),tasks=tasks,samples=samples,
+            cache_hits=cache.hit_count,cache_misses=cache.miss_count,operator_checks=checks))
+    except BaseException as exc:
+        save(output/'FAILED.json',dict(reason=str(exc),traceback=traceback.format_exc(),automatic_retry=False))
+        raise

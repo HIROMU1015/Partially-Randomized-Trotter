@@ -1,0 +1,48 @@
+# H2既存PF条件に合わせたm5追加・統合比較の実行契約
+
+利用者の「6の統合比較まで、私の承認はとらなくてよいので一気に進めてよい」に基づく。条件照合・範囲固定・実装/人工検証・signal・費用取得・統合比較の段階1〜6を実行し、途中の再承認を求めない。段階7の独立確認は未承認であり、段階6または異常終了時にmandatory STOPする。
+
+## 既存H2を基準にする
+
+H2 tol-only 1e-8、自動rank3、4 qubits、Nα=Nβ=1のsector4、1 Å直鎖、STO-3G、T=.8、P=0。既存Fのsnapshot・Hamiltonian/state・full-H reference、既存native preparation、Python3.11.0rc1・NumPy1.26.4・Qiskit1.3.0を再利用する。H4/H6の入力、outer32、33本案は移さない。新SCF/DF/state生成は0。
+
+固定証拠はF `7ea6df2d…`、FP `af724928…`、D_run02 `7b202a1a…`、A `1d2f67ec…`。private原結果とこれらのGit bytes/SHAを照合する。旧D_run01 STOP、既存独立P、旧grant/ledger/markerは保持する。
+
+既存D70はB0/B0I prefix0/1/2とfull B1 prefix3、q1/2/4/8/16、S2/S4。旧S4はSOURCE上Yoshidaの3段S2合成である。既存A66はS2 PRだけであり、Yoshida4 PRが既に取得済みとは表示しない。
+
+## 新規m5範囲
+
+- 決定論35候補：B0/B0I prefix0/1/2、full B1 prefix3、q1/2/4/8/16。
+- PR66群：prefix0/1/2、r4では全5q・K2/4。r2/8ではq1/4/16・K2/4。
+- PRは各群n8の有限標本探索。同一H2の既存探索n8と目的を揃えるための固定量であり、power/MCSE/rare tail保証に基づく標本数ではない。新cohort・新seedを使用し、旧探索・FP・独立確認・H4/H6とpoolしない。
+- 5精度 ε=.05/.01/.005/.001/.0005、通常signed bias、経験的allowance倍率1、同一精度で両軸適格な候補だけ費用取得する。欠測やUNDETERMINEDを不適格へ置換しない。
+
+m5係数版は `PF_M5_BEST_20D64C2_BINARY64_V1`、11 signed S2 pieces、保存tailリテラルと中央係数 `1-2*sum(tail)` を保持する。再最適化・旧new_2との混合はしない。
+
+**rの比較上の意味を明記する。** H2の既存S2 PRで1 outerに適用したrを、新m5では各signed S2 pieceへ適用する `PER_PIECE` とする。各要素に同じ有限Taylor生成則を使い、負時間の符号を保持する。既存S2の総event数はq×r、新m5は11×q×rであり、同一の総event数ではない。実際の全回路費用とnormalizationを計上し、この増加を隠さない。r2/4/8を、11pieceへ配れない総step数と解釈して無断増量・0 step化しない。これはH2既存格子に対する追加合成政策で、旧契約を書き換えるものではない。
+
+## signal・shot・native
+
+保存Hamiltonianからのoccupation oracle、保存状態、保存full-H複素referenceを使用する。新規入力/状態生成はない。小さい独立dense伝播で保存referenceを照合する。signalはスペクトル伝播と独立したdense expm/昇順多項式伝播を照合し、exact-tail/corrected/raw、signed bias、log_B、vector closureを保持する。
+
+allowanceとshotはH2既存providerの `empirical_allowance` / `precision_rows` / `u_aware_shots` をそのまま呼ぶ。新m5の実work・独立差を入力するため、旧候補のallowance値を無条件にコピーしない。経験的allowanceは厳密bias certificateではない。既存H2の保存shot会計と、新たな全体shot政策の正式採択を区別する。
+
+回路は元H2のdeterministic blocks/preparationを使ったsymmetric-directional full Hadamard wrapper。scalarは全時間の後に一回、cosine受入後sine、paired trajectory。compilerはrz/sx/x/cx・opt1・seed17・num_processes1、hash `1239304c…`。compiled raw状態差は共通CT01の1e-7未満、native/control/oracle/Hadamard/log_Bは1e-9未満、位相合わせなし。各新trajectoryで検査する。元H2の受入範囲より強い全状態保証を称しない。
+
+新規QPY/NPZはlevel1のbyte可逆archive、元SHAとarchive SHAを別々に記録する。manifest永続化・原byte復元SHA照合後に、新run内の登録raw一時fileだけを解放する。旧raw・private原本を削除しない。byte復元とnative受入は別gateである。
+
+## 並列・契約・終了
+
+H4/H6と独立したbranch・SOURCE・承認receipt・grant・run・段階marker・非返還ledgerを使用する。実空きCPU/RAMをfreshに観測し、残資源からworker数を決める。H4/H6の37workerや他jobを停止・変更せず、共有設定・環境を変えない。独立signalはthread、取得はprocess、nested BLAS/Qiskitは1、登録qの長い順にdispatchする。worker数の恒常的上限は設けない。RAM/disk proxyは起動計画であり実出力上界ではない。
+
+SOURCE/input/runtime/provider/seed/byte整合、finite値、数値gate、容量、exact call ledger、worker native exit/reapを検査する。失敗時は新H2契約をSTOPし、partialを成功へ昇格しない。科学retry/top-up・無断領域拡張はない。一時的PSIや無関係worktreeの更新だけでH4/H6やH2の正常workerを停止しない。
+
+## 統合比較
+
+最初に既存D/Aの保存pairと保存shotから、全eligible行のexact平均費用・paired SEが保存会計と完全一致することをgateにする。その後にm5の新実測と新shotを結合する。総RZは両軸単価×analytic shotの合計、PRはpaired n8のexact標本平均とSE、決定論は直接実測単価である。
+
+各精度で旧強化S2/S4対照を残した固定集合内最良、公式別最良、PR/PF比を報告する。探索上の候補選択効果と未知rare tailを明記し、母平均winner・全格子最適性・独立確認済みとは呼ばない。H2既存にないYoshida4 PRや他formulaの費用を補完しない。
+
+既存結果の来歴と新取得を分離して統合資料・local commitを作る。private原本/seed一覧/認証情報は公開しない。AD03のm5主比較採用は保留、正式プロトコルや既存Pを書き換えない。
+
+次の担当：Codexが承認済み段階1〜6を完了して結果・終了監査を報告しmandatory STOP。ユーザーが段階7の新しい独立確認と論文採用を別途判断する。

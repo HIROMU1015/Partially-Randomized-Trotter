@@ -1,0 +1,163 @@
+"""Artificial H2-extension tests; never open H2/H4/H6 saved arrays."""
+import copy
+from fractions import Fraction
+import json
+import math
+import os
+from pathlib import Path
+import sys
+import tempfile
+import threading
+from types import SimpleNamespace
+import unittest
+from unittest.mock import patch
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+import h2_m5_comparison as d
+import h2_m5_contract as c
+
+class MetadataTests(unittest.TestCase):
+    def test_original_H2_domain_not_H46(self):
+        grid=d.domain();self.assertEqual(len(grid['deterministic']),35);self.assertEqual(len(grid['PR']),66)
+        self.assertEqual({x['q'] for x in grid['PR']},{1,2,4,8,16})
+        self.assertEqual({x['prefix'] for x in grid['PR']},{0,1,2})
+        self.assertEqual({x['K'] for x in grid['PR']},{2,4})
+        self.assertTrue(all(x['prefix']==3 for x in grid['deterministic'] if x['method']=='B1'))
+    def test_signed_schedule_and_actual_event_budget(self):
+        x=d.cell('B2',1,4,2,4);s=d.schedule(x)
+        self.assertEqual(len(s),44);self.assertEqual(sum(p['rte_steps'] for p in s),88)
+        self.assertTrue(any(p['signed_time']<0 for p in s))
+        self.assertAlmostEqual(math.fsum(p['signed_time'] for p in s),.8)
+    def test_n8_not_n33_and_both_axis_selection(self):
+        x=d.cell('B2',1,1,2,4);r=dict(cell=x,precision_rows={str(e):{'1.0':{'cost_acquisition_eligible':e==.05,'eligibility_under_declared_allowance':'ELIGIBLE' if e==.05 else 'INELIGIBLE'}} for e in d.EPS})
+        ts=d.tasks_for([r]);self.assertEqual(len(ts),8);self.assertEqual({t['replica'] for t in ts},set(range(8)))
+        for e in d.EPS:r['precision_rows'][str(e)]['1.0'].update(cost_acquisition_eligible=False,eligibility_under_declared_allowance='INELIGIBLE')
+        self.assertEqual(d.tasks_for([r]),[])
+    def test_new_cohort_seed_collision_refused_no_redraw(self):
+        t=dict(id='ARTIFICIAL',cell=d.cell('B2',1,1,2,4),replica=0)
+        a=d.seeds_for([t],'a'*40,[]);b=d.seeds_for([t],'b'*40,[])
+        self.assertNotEqual(a,b)
+        with self.assertRaisesRegex(ValueError,'COLLISION'):d.seeds_for([t],'a'*40,[a['ARTIFICIAL'][0]])
+    def test_draft_refused_before_input_access(self):
+        with patch.object(c,'verify',side_effect=AssertionError('NO_INPUTS')):
+            with self.assertRaisesRegex(ValueError,'APPROVAL_REQUIRED'):c.authorize({'authorized':False,'grant':{'valid':False}})
+    def test_final_scope_excludes_independent_confirmation(self):
+        p=c.scope();self.assertFalse(p['independent_confirmation']);self.assertFalse(p['stage7_authorized'])
+        self.assertFalse(p['outer32_imported']);self.assertFalse(p['n33_imported'])
+    def test_unresolved_cannot_be_silently_excluded(self):
+        r=dict(cell=d.cell('B2',1,1,2,4),precision_rows={str(e):{'1.0':dict(
+          cost_acquisition_eligible=False,eligibility_under_declared_allowance='UNDETERMINED')} for e in d.EPS})
+        with self.assertRaisesRegex(ValueError,'UNRESOLVED'):d.tasks_for([r])
+    def test_exact_call_ledger_limits(self):
+        x=d.cell('B2',1,1,2,4);task=dict(id='T',cell=x)
+        cfg=dict(domains={'PR':[x],'deterministic':[]})
+        a=c.expected_ledger(cfg,[task],integrated=False);b=c.expected_ledger(cfg,[task],integrated=True)
+        self.assertEqual(len(b-a),1);self.assertIn('ACQUIRE__T__sampling_piece__10.json',a)
+        self.assertNotIn('ACQUIRE__T__sampling_piece__11.json',a)
+
+def pair(i,x,y):return dict(replica=i,seed=None,axes={'cosine':{'RZ':x},'sine':{'RZ':y}})
+
+class AccountingTests(unittest.TestCase):
+    def test_exact_mean_and_paired_variance(self):
+        rows=[pair(0,10,20),pair(1,20,10)]
+        r=d.pair_summary(rows,{'cosine':2,'sine':2},2)
+        self.assertEqual(r['G_RZ_exact'],'60');self.assertEqual(r['G_RZ_SE'],0)
+        self.assertFalse(r['population_mean_certified']);self.assertIsNone(r['rare_tail_cost_bound'])
+    def test_nonzero_variance_matches_H2_fraction_formula(self):
+        rows=[pair(i,x,2*x) for i,x in enumerate((10,12,14,16,18,20,22,24))]
+        weights={'cosine':3,'sine':4};r=d.pair_summary(rows,weights,8)
+        v=[11*x for x in (10,12,14,16,18,20,22,24)];m=Fraction(sum(v),8)
+        var=sum((Fraction(x)-m)**2 for x in v)/7
+        self.assertEqual(r['G_RZ_exact'],str(m));self.assertEqual(r['G_RZ_SE'],math.sqrt(var/8))
+    def test_missing_pair_and_partial_n_refused(self):
+        with self.assertRaises(ValueError):d.pair_summary([pair(0,1,2)],{'cosine':1,'sine':1},8)
+        p=pair(0,1,2);del p['axes']['sine']
+        with self.assertRaises(ValueError):d.pair_summary([p],{'cosine':1,'sine':1},1)
+    def test_seed_event_pair_mismatch_refused(self):
+        p=pair(0,1,2);p.update(seed=1,event_digest='a')
+        for a in p['axes'].values():a.update(seed=1,event_digest='b')
+        with self.assertRaises(ValueError):d.pair_summary([p],{'cosine':1,'sine':1},1)
+    def test_missing_eligible_cost_prevents_best(self):
+        rows=[dict(eligible=True,G_RZ_exact=None,cell_id='UNKNOWN',method='B1',formula=d.FORMULA)]
+        self.assertIsNone(d.best(rows))
+    def test_tie_break_is_fixed_id(self):
+        rows=[dict(eligible=True,G_RZ_exact='5',cell_id=v,method='B1',formula=d.FORMULA) for v in ('B','A')]
+        self.assertEqual(d.best(rows)['cell_id'],'A')
+    def test_no_eligible_candidate_remains_null(self):
+        out=d.compare([]);self.assertEqual(len(out),5)
+        self.assertTrue(all(r['PR'] is None and r['deterministic'] is None and r['PR_reduction'] is None for r in out))
+
+@unittest.skipUnless(os.environ.get('M5_TEST_PROVIDER'),'explicit artificial scientific runtime required')
+class ArtificialNativeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):sys.path.insert(0,str(Path(os.environ['M5_TEST_PROVIDER'])/'src'))
+    def ctx(self):
+        from test_h46_m5_cost_readiness import NativeToyTests
+        from trottertracks.resource_applicability.h48_preflight_contract_v1 import h4_plan
+        original=NativeToyTests.toy(self);p=h4_plan('H4_SIGNAL');p['epsilons']=list(d.EPS);p['numerical']['sensitivity_factors']=[1.]
+        return SimpleNamespace(np=original.np,ham=original.ham,oracle=original.oracle,
+          qstate=original.qstate,matrices=[(s[1]*s[0])@s[2] for s in original.oracle.specs],
+          preps={('PR',1):original.cut,('B0',1):original.cut},reference=complex(original.np.vdot(original.oracle.initial,original.reference)),
+          reference_error=1e-15,overlay_scalars={1:original.scalar+original.tail_identity},accounting_plan=p)
+    def test_original_H2_scalar_metadata_convention(self):
+        import numpy as np
+        from h2_m5_science import array_record
+        self.assertEqual(array_record(np.asarray(.25)),array_record(np.asarray([.25])))
+        self.assertEqual(array_record(np.asarray(.25))['shape'],[1])
+    def test_original_H2_noncontiguous_metadata_convention(self):
+        import numpy as np
+        from h2_m5_science import array_record
+        a=np.arange(24).reshape(4,6)[:,::2]
+        self.assertEqual(array_record(a),array_record(np.ascontiguousarray(a)))
+    def test_K2_K4_signal_independent_forward_and_shots(self):
+        import h2_m5_science as science
+        ctx=self.ctx()
+        for k in (2,4):
+            r=science.mean_signal(ctx,d.cell('B2',1,1,2,k))
+            self.assertLess(max(r['independent_forward_vector_errors']),1e-9)
+            self.assertEqual(r['actual_RTE_events'],22);self.assertEqual(len(r['precision_rows']),5)
+            self.assertFalse(r['allowance']['certified'])
+    def test_native_pair_lossless_and_compiled_PASS(self):
+        import h2_m5_science as science
+        ctx=self.ctx();cell=d.cell('B2',1,1,2,2);task=dict(id='ARTIFICIAL_ONLY',cell=cell,replica=0,cohort='H2_M5_EXPLORATION_N8')
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);(root/'ACQUIRE/output').mkdir(parents=True);(root/'SIGNAL'/cell['id']).mkdir(parents=True);(root/'ledger').mkdir()
+            cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage='H2_M5_THROUGH_COMPARISON',run_root=str(root),
+              output=str(root/'ACQUIRE/output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),tasks=[task],
+              grant={},storage=c.storage.storage_policy(),registry_path=str(root/'seeds.json'),binding={'compiler':'1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b'})
+            c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant={}))
+            c.save(cfg['registry_path'],d.seeds_for([task],cfg['SOURCE'],[]))
+            c.save(root/'SIGNAL'/cell['id']/'signal.json',science.mean_signal(ctx,cell))
+            with patch.object(science,'context',return_value=ctx):r=science.acquire(cfg,task,threading.Event())
+            out=root/'ACQUIRE/output'/task['id'];v=c.read(out/'result_PRIVATE.json')
+            self.assertEqual(v['status'],'H2_M5_NATIVE_PAIR_PASS');self.assertTrue(all(x['PASS'] for x in v['checks']))
+            self.assertEqual(len(v['checks']),8);self.assertEqual(c.storage.audit_task(cfg,task)['archive_count'],6)
+            self.assertEqual(r['result_sha256'],c.sha(out/'result_PRIVATE.json'))
+            with self.assertRaises(FileExistsError):science.acquire(cfg,task,threading.Event())
+
+    def test_deterministic_prefix0_identity_and_full_endpoint(self):
+        import h2_m5_science as science
+        from trotterlib.pr2_matched_accuracy_m1_execution import _prepare,_prepare_discard
+        from trotterlib.df_trotter.circuit import simulate_statevector
+        from trottertracks.resource_applicability.h6_hash_reuse_v1 import use_fingerprint_reuse
+        ctx=self.ctx();np=ctx.np
+        for p in (0,1,2):
+            ctx.preps['B0',p]=_prepare_discard(ctx.ham,p);ctx.preps['PR',p]=_prepare(ctx.ham,p)
+            ctx.overlay_scalars[p]=ctx.ham.constant+ctx.preps['PR',p].extracted_identity_coefficient
+        for method,p in [('B0',0),('B0I',0),('B0',1),('B0I',1),('B1',2)]:
+            with self.subTest(method=method,prefix=p),use_fingerprint_reuse() as cache:
+                row=d.cell(method,p,1);r=science.mean_signal(ctx,row)
+                ev=science.compose(ctx,row,[],cache.fingerprint)
+                high=np.r_[np.zeros_like(ctx.qstate),ctx.qstate]
+                result=simulate_statevector(ev.circuit,high)
+                z=complex(np.vdot(ctx.qstate,result[16:]))
+                saved=complex(r['signals']['corrected']['real'],r['signals']['corrected']['imag'])
+                self.assertLess(abs(z-saved),1e-9);self.assertEqual(r['log_B'],0)
+
+    def test_numeric_fail_never_accepts_sine_or_pair(self):
+        import h2_m5_science as science
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError,'NUMERIC_FAIL'):
+                science.check(tmp,'compiled_vector_cosine',1e-7,1e-7)
+            self.assertFalse(c.read(Path(tmp)/'compiled_vector_cosine.json')['PASS'])
+
+if __name__=='__main__':unittest.main()

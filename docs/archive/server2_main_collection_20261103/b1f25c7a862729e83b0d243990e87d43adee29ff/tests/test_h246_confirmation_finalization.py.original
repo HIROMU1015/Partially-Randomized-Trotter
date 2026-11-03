@@ -1,0 +1,29 @@
+"""Artificial independent raw-moment checks only; no real molecular calls."""
+from pathlib import Path
+import sys,unittest
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+import finalize_h246_confirmation_results as f
+import h246_confirmation_evaluation as primary
+
+class ArithmeticTests(unittest.TestCase):
+    def test_paired_anticorrelation_and_exact_match(self):
+        pairs=[(3,9),(5,4),(7,2),(9,1)]
+        a=primary.paired_statistics(pairs,117,213);b=f.independent_moments(pairs,117,213)
+        f.check_stat(a,b);self.assertLess(b['covariance'],0)
+    def test_large_integer_values_and_small_variance(self):
+        pairs=[(10**9+i,10**9-i) for i in range(9)]
+        a=primary.paired_statistics(pairs,10**9,10**9+1);b=f.independent_moments(pairs,10**9,10**9+1)
+        f.check_stat(a,b);self.assertEqual(b['variance_exact'],dict(numerator=15,denominator=2))
+    def test_zero_observed_variance_stays_zero_not_population_bound(self):
+        pairs=[(7,11)]*9;b=f.independent_moments(pairs,5,9)
+        self.assertEqual(b['variance'],0);self.assertEqual(b['SE'],0)
+    def test_mismatched_variance_refused(self):
+        pairs=[(3,9),(5,4),(7,2)];a=primary.paired_statistics(pairs,11,17);a['variance_exact']['numerator']+=1
+        with self.assertRaises(ValueError):f.check_stat(a,f.independent_moments(pairs,11,17))
+    def test_nonfinite_mismatch_refused(self):
+        with self.assertRaises(ValueError):f.close(float('nan'),1,'NAN')
+    def test_relative_roundoff_only(self):
+        f.close(1,1+1e-15,'ROUNDING')
+        with self.assertRaises(ValueError):f.close(1,1.001,'MISMATCH')
+
+if __name__=='__main__':unittest.main()

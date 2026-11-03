@@ -1,0 +1,171 @@
+"""Process trajectory equivalence on supplied artificial models only."""
+from dataclasses import replace
+import json
+import os
+from pathlib import Path
+import numpy as np
+import pytest
+
+from trotterlib.fixed_signal_evaluation import FixedSignalConfig,default_compiler
+from trotterlib.h4_audited_evaluation import evaluate_audited_signal
+from trotterlib.h4_trajectory_workers import make_executor,partition,validate_partition,worker_count
+from trotterlib.isolated_qiskit_execution import read
+from trotterlib.rte_event_audit import TrajectoryAudit
+
+
+def model(rep):
+    if rep=='pauli_jw':
+        from trotterlib.pauli_signal_adapter import PauliHamiltonian
+        h=PauliHamiltonian.from_terms([('I',.1),('Z',.7),('X',-.2)])
+    else:
+        from trotterlib.df_hamiltonian import DFHamiltonian
+        h=DFHamiltonian(.1,np.array([[.2,.03],[.03,-.1]]),np.array([.4,-.2]),
+            (np.array([[.5,.1],[.1,.2]]),np.diag([.1,.6])),{'model_id':'artificial_df'})
+    return h
+
+
+@pytest.mark.parametrize('requested',[0,-1,True,1.5,'two'])
+def test_invalid_worker_count(requested):
+    with pytest.raises(ValueError):worker_count(requested,8)
+
+
+def test_worker_auto_uses_affinity_without_historical_cap(monkeypatch):
+    monkeypatch.setattr(os,'sched_getaffinity',lambda pid:set(range(48)))
+    assert worker_count('auto',256,concurrent_cases=2)==24
+    assert worker_count(40,256)==40
+    assert worker_count(40,3)==3
+
+
+@pytest.mark.parametrize('damage',['duplicate','missing','seed','empty'])
+def test_registry_partition_refuses_duplicate_missing_or_changed_tasks(damage):
+    tasks,chunks=partition([10,20,30,40],2)
+    if damage=='duplicate':chunks[0].append(chunks[0][0])
+    if damage=='missing':chunks[0].pop()
+    if damage=='seed':chunks[0][0]=dict(index=0,seed=11)
+    if damage=='empty':chunks.append([])
+    with pytest.raises(ValueError):validate_partition(tasks,chunks)
+
+
+def test_authority_required_before_dispatch(tmp_path):
+    with pytest.raises(PermissionError):make_executor(tmp_path,workers=2,authority=None)
+    assert not list(tmp_path.iterdir())
+
+
+@pytest.mark.parametrize('field',['config','compiler','model_hash','tasks','verify_compiled','validate_trajectories','workers',
+    'binding','destination','claim_directory','STOP'])
+def test_real_dispatch_settings_mutations_refused_without_issuing_grant(tmp_path,monkeypatch,field):
+    from dataclasses import asdict
+    from copy import deepcopy
+    import trotterlib.h4_trajectory_workers as dispatch
+    import trotterlib.h4_execution_contract as contract
+    import trotterlib.h4_pilot_execution as execution
+    from trotterlib.h4_pilot_science import case_config
+    plan=contract.completed_contract(2)
+    binding={'SOURCE':'TEST_ONLY_NOT_A_GIT_COMMIT','receipt_sha256':'IN_MEMORY_TEST_HASH'}
+    receipt=dict(prefixes={'df_native':{'L_D':1}},DF_hamiltonian_hash='IN_MEMORY_MODEL')
+    data=tmp_path/'input_run/input_generation/data';data.mkdir(parents=True)
+    (data/'receipt.json').write_text(json.dumps(receipt));(tmp_path/'CONSUMED.json').touch()
+    grant=dict(authorized_cases=['df_native_PR'],claim_directory=str(tmp_path/'claims'))
+    monkeypatch.setattr(contract,'checked_pack',lambda *a,**kw:(plan,{},grant))
+    monkeypatch.setattr(execution,'case_binding',lambda *a:binding)
+    destination=tmp_path/'run/df_native_PR';manifest=destination/'trajectory_dispatch/manifest.json'
+    spec=dict(authority={'pack':str(tmp_path),'claim_directory':grant['claim_directory']},
+        case_id='df_native_PR',binding=binding,destination=str(destination),plan=plan,requested_workers=2,
+        config=asdict(case_config(None,'df_native','PR',plan,receipt)),compiler=asdict(default_compiler()),
+        model_hash=receipt['DF_hamiltonian_hash'],tasks=[{} for _ in range(256)],verify_compiled=True,validate_trajectories=True,workers=2)
+    dispatch.validate_real_dispatch(spec,manifest)
+    bad=deepcopy(spec)
+    if field=='config':bad['config']['q']=4
+    elif field=='compiler':bad['compiler']['transpiler_seed']=18
+    elif field=='tasks':bad['tasks'].pop()
+    elif field in ['verify_compiled','validate_trajectories']:bad[field]=False
+    elif field=='workers':bad['workers']=3
+    elif field=='binding':bad['binding']['SOURCE']='CHANGED'
+    elif field=='claim_directory':bad['authority']['claim_directory']='DIFFERENT'
+    elif field=='STOP':(tmp_path/'STOP.json').touch()
+    else:bad[field]='CHANGED'
+    with pytest.raises(PermissionError):dispatch.validate_real_dispatch(bad,manifest)
+    assert not (tmp_path/'grant.json').exists()
+
+
+def test_parallel_budget_rejection_precedes_dispatch(tmp_path):
+    h=model('pauli_jw');cfg=FixedSignalConfig('pauli_jw',method='PR',L_D=1,cost_samples=4)
+    audit=TrajectoryAudit('pauli_jw_PR',{},directory=tmp_path/'trajectories',max_trajectories=3)
+    with pytest.raises(ValueError,match='TRAJECTORY_BUDGET'):
+        evaluate_audited_signal(h,np.array([1.,0.]),cfg,epsilon_sig=.05,event_audit=audit,
+            trajectory_executor=make_executor(tmp_path,workers=2,authority={'artificial_only':True}))
+    assert not (tmp_path/'trajectory_dispatch').exists()
+
+
+def test_worker_refuses_real_mode_without_grant_before_ready_or_sampling(tmp_path):
+    from trotterlib.h4_trajectory_workers import trajectory_worker
+    from trotterlib.isolated_qiskit_execution import save
+    folder=tmp_path/'trajectory_dispatch';folder.mkdir()
+    spec=dict(tasks=[dict(index=0,seed=17)],chunks=[[dict(index=0,seed=17)]],
+        destination=str(tmp_path),audit_directory=str(tmp_path/'trajectories'),
+        authority={'artificial_only':False,'pack':str(tmp_path/'no_grant')})
+    manifest=folder/'manifest.json';save(manifest,spec)
+    with pytest.raises(PermissionError,match='NO_VALID_GRANT'):
+        trajectory_worker(manifest,0,folder/'run/worker_0000',folder/'run/release.json')
+    assert not (folder/'run').exists() and not (tmp_path/'trajectories').exists()
+
+
+def test_worker_rejects_changed_seed_registry_before_production_calls(tmp_path,monkeypatch):
+    from dataclasses import asdict
+    from trotterlib.h4_trajectory_science import store_model,process_shard
+    import trotterlib.h4_trajectory_science as leaf
+    h=model('pauli_jw');cfg=FixedSignalConfig('pauli_jw',method='PR',L_D=1,cost_samples=2)
+    spec=dict(model=store_model(tmp_path,h,np.array([1.,0.]),'pauli_jw'),
+        config=asdict(cfg),compiler=asdict(default_compiler()),tasks=[dict(index=0,seed=0)],
+        authority={'artificial_only':True})
+    def never(*a,**kw):raise AssertionError('SAMPLING_BEFORE_SEED_VALIDATION')
+    monkeypatch.setattr(leaf,'price_trajectory',never)
+    output=tmp_path/'worker';output.mkdir()
+    with pytest.raises(ValueError,match='SEED_REGISTRY_CHANGED'):process_shard(spec,tmp_path,0,output)
+    assert not (tmp_path/'trajectories').exists()
+
+
+@pytest.mark.parametrize('rep',['pauli_jw','df_native'])
+@pytest.mark.parametrize('workers',[1,2])
+def test_parallel_matches_serial_actual_events_circuits_prices_and_accounting(tmp_path,rep,workers):
+    h=model(rep);n=h.num_qubits if rep=='pauli_jw' else h.n_qubits
+    state=np.zeros(2**n,complex);state[0]=1/np.sqrt(2);state[-1]=1j/np.sqrt(2)
+    cfg=FixedSignalConfig(rep,method='PR',T=.1,q=2,r=2,K=4,L_D=1,seed=1701,cost_samples=4)
+    kwargs=dict(epsilon_sig=.05,numerical_allowance={'cosine':1e-9,'sine':1e-9},
+        log_B_margin=1e-12,evidence_kind='EMPIRICAL',evidence_ref='ARTIFICIAL',verify_compiled=True)
+    binding={'SOURCE':'ARTIFICIAL_TEST_ONLY'};case=rep+'_PR'
+    serial_audit=TrajectoryAudit(case,binding,directory=tmp_path/'serial/trajectories',max_trajectories=4)
+    serial=evaluate_audited_signal(h,state,cfg,event_audit=serial_audit,**kwargs)
+    dest=tmp_path/'parallel';dest.mkdir()
+    parallel_audit=TrajectoryAudit(case,binding,directory=dest/'trajectories',max_trajectories=4)
+    parallel=evaluate_audited_signal(h,state,cfg,event_audit=parallel_audit,
+        trajectory_executor=make_executor(dest,workers=workers,authority={'artificial_only':True}),**kwargs)
+    for key in ['reference','signal','normalization','shots','total_RZ','compiler','config','state','model']:
+        assert parallel[key]==serial[key]
+    assert parallel['shots']['usable'] and parallel['total_RZ']['mean']>0
+    assert parallel['circuit_cost']['samples']==serial['circuit_cost']['samples']
+    assert parallel['circuit_cost']['axes']==serial['circuit_cost']['axes']
+    assert json.loads(json.dumps(parallel_audit.rows))==json.loads(json.dumps(serial_audit.rows))
+    aggregation=read(dest/'trajectory_dispatch/aggregation.json')
+    assert len(set(aggregation['worker_pids']))==workers
+    assert aggregation['all_children_reaped'] and not aggregation['automatic_retry']
+    assert [r['index'] for r in aggregation['tasks']]==list(range(4))
+    assert sum(r['event_count'] for r in parallel_audit.rows)==16
+    assert read(dest/'trajectory_dispatch/run/STOP.json')['status']=='COMPLETE_MANDATORY_STOP'
+
+
+def test_failed_compile_preserves_events_and_reaps_workers_without_retry(tmp_path):
+    h=model('pauli_jw');state=np.array([1.,0.],complex)
+    cfg=FixedSignalConfig('pauli_jw',method='PR',T=.1,q=1,r=2,K=4,L_D=1,cost_samples=4)
+    audit=TrajectoryAudit('pauli_jw_PR',{'SOURCE':'ARTIFICIAL_FAILURE'},directory=tmp_path/'trajectories')
+    with pytest.raises(RuntimeError,match='WORKER_FAILED_NO_RETRY'):
+        evaluate_audited_signal(h,state,cfg,epsilon_sig=.05,event_audit=audit,
+            compiler=replace(default_compiler(),basis_gates=('intentionally_invalid_gate',)),
+            trajectory_executor=make_executor(tmp_path,workers=2,authority={'artificial_only':True}))
+    stop=read(tmp_path/'trajectory_dispatch/run/STOP.json')
+    assert stop['all_children_reaped'] and not stop['automatic_retry']
+    assert list((tmp_path/'trajectories').glob('*/events.json'))
+    assert not (tmp_path/'trajectory_dispatch/aggregation.json').exists()
+    with pytest.raises(FileExistsError):
+        evaluate_audited_signal(h,state,cfg,epsilon_sig=.05,event_audit=TrajectoryAudit('pauli_jw_PR',{},directory=tmp_path/'trajectories'),
+            trajectory_executor=make_executor(tmp_path,workers=2,authority={'artificial_only':True}))

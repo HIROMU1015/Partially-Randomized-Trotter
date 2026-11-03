@@ -1,0 +1,23 @@
+#!/usr/bin/env python3
+"""Private fresh-interpreter trajectory worker; launched by the supervisor."""
+import argparse
+import os
+
+# Process-local nested-library settings, before scientific imports. Parallelism
+# comes from independent worker processes, not shared compiler/session threads.
+for key in ['OPENBLAS_NUM_THREADS','OMP_NUM_THREADS','MKL_NUM_THREADS','RAYON_NUM_THREADS']:
+    os.environ[key]='1'
+
+
+def main():
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--manifest',required=True)
+    p.add_argument('--shard',type=int,required=True)
+    p.add_argument('--output',required=True)
+    p.add_argument('--release',required=True)
+    a=p.parse_args()
+    from trotterlib.h4_trajectory_workers import trajectory_worker
+    trajectory_worker(a.manifest,a.shard,a.output,a.release)
+
+
+if __name__=='__main__':main()

@@ -1,0 +1,45 @@
+# Supplementary captions: adopted H4 PR mean-cost variability
+
+These supplement-local identifiers preserve the existing main-table layout and Figure 2 numbering. All four figures are the original assets from commit `295b93d50662a0f8af3ec469df43099a3f04af60`, reused without redrawing. They use the same H4 P cohort as the H4 rows of the main table; they are not additional independent observations.
+
+Common scope: a linear H4 chain with 1 Å nearest-neighbour spacing, STO-3G, tol-only 1e-8 DF rank 10, T=0.8, P=0, usual signed bias and allowance factor 1. The two fixed PR configurations are `B2_p3_q1_2nd_r4_K2` at ε=0.05 (L_D=3, δ=0.8, N=1,108) and `B2_p2_q8_2nd_r2_K4` at ε=0.0005 (L_D=2, δ=0.1, N=78). Cost is saved shot count multiplied by the compiled RZ count of the full cosine/sine Hadamard wrappers, including the deterministic prefix, stochastic RTE tail and wrapper operations. This is variation of the **mean-cost estimator**, not the aggregate cost of executing n trajectories. The saved percentile band is not a population confidence interval. Neither the true population mean/variance nor unobserved rare-event costs are certified.
+
+## H4_MC_S1 — MC sample size and the PR mean-cost estimate
+
+[PNG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_mean_cost_vs_n.png) · [SVG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_mean_cost_vs_n.svg) · [PDF](../../track_a_h4_pr_cost_variability/2026-10-19/pr_mean_cost_vs_n.pdf)
+
+**Supplementary Figure H4_MC_S1. Conditional variation of the H4 PR mean-cost estimator with Monte Carlo sample size.** The blue curve and shaded region show, respectively, the saved average of 2,000 bootstrap mean-cost estimates and their saved 2.5th–97.5th percentiles at each n. Each original bootstrap replicate resampled complete paired cosine/sine trajectories, with replacement, from all N saved trajectories of that configuration. The green curve shows the saved cumulative mean of the first n trajectories in replica order; the grey dotted line marks the mean of all N saved trajectories. The cumulative sequence and the full-sample reference share observations. The percentile spread narrows with n within the fixed empirical distribution; this does not establish convergence to the true population mean. Panels use different cost units, indicated on their vertical axes. No costs, shots, bootstrap replicates or quantiles were recomputed for this supplement. Data: H4_MC_D1 and H4_MC_D2. Claim: CE_H4_MC_MEAN.
+
+## H4_MC_S2 — Standard error versus n
+
+[PNG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_standard_error_vs_n.png) · [SVG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_standard_error_vs_n.svg) · [PDF](../../track_a_h4_pr_cost_variability/2026-10-19/pr_standard_error_vs_n.pdf)
+
+**Supplementary Figure H4_MC_S2. Saved standard errors of the PR mean-cost estimator on logarithmic axes.** The blue curve is the saved standard deviation of the original 2,000 bootstrap mean-cost estimates at each n. The dashed grey curve is the pre-existing saved empirical-distribution SD/√n reference, and the green dotted curve is the pre-existing paired SE for the cumulative MC sample. The bootstrap SE decreases approximately as 1/√n over the saved n grid; no exponent, regression or new theoretical curve was fitted. The cumulative SE need not decrease at every step because its underlying sample changes with n. The full-sample paired SE and the bootstrap SE have different definitions and finite-resampling variability; they are not forced to agree. These are uncertainties of a mean estimate rather than fluctuations of a total cost for n executions. Data: H4_MC_D1 and H4_MC_D2. Claim: CE_H4_MC_SE.
+
+## H4_MC_S3 — Full PR costs within observed S0/S2 strata
+
+[PNG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_observed_strata_cost.png) · [SVG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_observed_strata_cost.svg) · [PDF](../../track_a_h4_pr_cost_variability/2026-10-19/pr_observed_strata_cost.pdf)
+
+**Supplementary Figure H4_MC_S3. Observed trajectory strata and full shot-weighted PR cost.** Diamonds are the saved mean costs within S0_ONLY and S2_SINGLE; vertical lines are the saved minimum–maximum ranges of individual trajectory costs, not SE bars or confidence intervals. Counts above the ranges are saved trajectory counts: 1,071/37 at ε=0.05 and 71/7 at ε=0.0005. The observed S2_SINGLE mean exceeds the S0_ONLY mean in both configurations, while the cost ranges overlap and the S0_ONLY group itself varies. Event composition therefore does not determine full PR cost by itself. Every plotted value includes the deterministic prefix, stochastic tail and full wrapper; these are not isolated costs of a single Taylor-order-2 event. Multiple-S2 trajectories were unobserved. Taylor-order-4 events are outside the K2 support and were unobserved within the K4 support. No zero-cost points are assigned to unobserved strata. Data: H4_MC_D3. Claim: CE_H4_MC_EVENTS.
+
+## H4_MC_S4 — Observed S2 counts in saved bootstrap groups
+
+[PNG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_saved_S2_groups.png) · [SVG](../../track_a_h4_pr_cost_variability/2026-10-19/pr_saved_S2_groups.svg) · [PDF](../../track_a_h4_pr_cost_variability/2026-10-19/pr_saved_S2_groups.pdf)
+
+**Supplementary Figure H4_MC_S4. Saved PR mean-cost summaries grouped by observed S2_SINGLE trajectory counts.** Columns show n=4, n=32 and the full saved N for each precision. The horizontal coordinate is the number of S2_SINGLE trajectory draws in a resample, not an event probability. Connected points and shading are the stored group mean and minimum–maximum range of the bootstrap mean-cost estimates. Connections are visual guides, not a fitted response; the bands are not confidence intervals. Groups can contain few replicates, and their saved replicate counts are retained in the companion table. A resampled trajectory can appear more than once, so these counts do not represent new physical event observations. The plot documents a conditional association within saved data; it is not a causal estimate or an extrapolation to unseen rare support. Data: H4_MC_D4. Claim: CE_H4_MC_EVENTS.
+
+## H4_MC_D1 — Sample-size summaries
+
+[CSV](../../track_a_h4_pr_cost_variability/2026-10-19/pr_bootstrap_summary.csv). Eighteen pre-existing n-specific records of cumulative MC mean/SE, bootstrap mean/SE, empirical-reference SE, saved quantiles and saved event-count summaries. Values are literal transcriptions of stored columns. No new SE or confidence interval is computed.
+
+## H4_MC_D2 — Full-sample references
+
+[CSV](../../track_a_h4_pr_cost_variability/2026-10-19/pr_full_sample_reference.csv). Two records containing candidate ID, N, the exact saved mean, saved paired SE/SD and fixed cosine/sine shot counts. These are finite-sample reference values rather than certified population parameters.
+
+## H4_MC_D3 — Observed trajectory strata
+
+[CSV](../../track_a_h4_pr_cost_variability/2026-10-19/pr_observed_strata.csv). Eight saved precision/stratum records with counts, exact observed mean, observed minimum/maximum and saved empirical cost share. Blank unobserved costs remain unknown; count zero is not interpreted as zero cost or zero population probability.
+
+## H4_MC_D4 — Saved S2-count groups
+
+[CSV](../../track_a_h4_pr_cost_variability/2026-10-19/pr_bootstrap_S2_groups.csv). The 236 previously saved group records, indexed by precision, n and S2_SINGLE trajectory count, with saved group replicate count and saved mean/minimum/maximum of bootstrap mean cost. No grouping, statistics or bootstrap generation was rerun during integration.

@@ -1,0 +1,192 @@
+"""Read-only independent arithmetic audit and public projection of fixed P.
+
+No native inputs decoded, new shots, sampling, simulation, compile or ranking.
+The three predeclared comparisons are checked by integer raw moments/Decimal,
+separately from the acquisition evaluator's centered Fraction/covariance path.
+"""
+import argparse
+import csv
+from decimal import Decimal as D,localcontext
+from fractions import Fraction
+import json
+import math
+from pathlib import Path
+from statistics import NormalDist
+import sys
+import h246_confirmation_contract as c
+
+
+def close(a,b,label):
+    c.require(math.isfinite(float(a)) and math.isfinite(float(b)),label+':FINITE')
+    c.require(abs(float(a)-float(b))<=128*sys.float_info.epsilon*max(1,abs(float(a)),abs(float(b))),label+':ROUND_OFF')
+
+
+def independent_moments(pairs,ncos,nsin):
+    c.require(len(pairs)>=2 and all(len(p)==2 and all(type(v) is int and v>0 for v in p) for p in pairs),'INDEPENDENT_INTEGER_PAIRS')
+    n=len(pairs);xs,ys=zip(*pairs);gs=[ncos*x+nsin*y for x,y in pairs]
+    sg,sq=sum(gs),sum(g*g for g in gs)
+    mean=Fraction(sg,n);variance=Fraction(n*sq-sg*sg,n*(n-1))
+    with localcontext() as ctx:
+        ctx.prec=80
+        nd=D(n);mx,my=D(sum(xs))/nd,D(sum(ys))/nd
+        vx=(D(sum(x*x for x in xs))-D(sum(xs))**2/nd)/(nd-1)
+        vy=(D(sum(y*y for y in ys))-D(sum(ys))**2/nd)/(nd-1)
+        covariance=(D(sum(x*y for x,y in pairs))-D(sum(xs))*D(sum(ys))/nd)/(nd-1)
+        var=(D(sq)-D(sg)**2/nd)/(nd-1);me=D(sg)/nd
+        close(var,D(variance.numerator)/D(variance.denominator),'INDEPENDENT_RAW_MOMENT_VARIANCE')
+        return dict(n=n,mean=float(me),variance=float(var),SE=float((var/nd).sqrt()),covariance=float(covariance),
+          axis_means=[float(mx),float(my)],axis_variances=[float(vx),float(vy)],
+          mean_exact=dict(numerator=mean.numerator,denominator=mean.denominator),
+          variance_exact=dict(numerator=variance.numerator,denominator=variance.denominator))
+
+
+def check_stat(stored,independent):
+    c.require(stored['n']==independent['n'] and stored['mean_exact']==independent['mean_exact']
+      and stored['variance_exact']==independent['variance_exact'],'INDEPENDENT_EXACT_MOMENTS')
+    for k in ('mean','variance','SE','covariance'):close(stored[k],independent[k],'INDEPENDENT_'+k)
+    for a,b in zip(stored['axis_means'],independent['axis_means']):close(a,b,'INDEPENDENT_AXIS_MEAN')
+
+
+def project(cfg):
+    """One fixed comparison, after native and fixed-analysis completion."""
+    c.authorize(cfg);c.consumed(cfg);root=Path(cfg['run_root'])
+    audit=c.read(root/'end_audit.json');completion=c.read(root/'completion_witness.json')
+    external=c.read(cfg['supervisor']['exit']);result=c.read(root/'fixed_comparison.json')
+    c.require(audit['status']=='ACQUISITION_AND_END_AUDIT_PASS_MANDATORY_STOP' and not audit['errors']
+      and result['status']=='FIXED_CONFIRMATION_COMPARISON_COMPLETE','FULL_COMPLETION_FOR_INDEPENDENT_CHECK')
+    c.require(result['end_audit_sha256']==c.sha(root/'end_audit.json') and audit['completion_sha256']==c.sha(root/'completion_witness.json'),
+      'END_SHA_CHAIN')
+    c.require(external['native_exit']==0 and external['reaped'] and all(w['exit']==0 and w['reaped'] for w in completion['workers'].values()),'ALL_NATIVE_EXIT_REAP')
+    c.require(c.read(root/'COMPARISON_CONSUMED.json')==dict(SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],grant_id=cfg['grant']['grant_id'],retry=False),'ONE_FIXED_EVALUATION')
+    expected={t['id']+'__'+kind+'__'+str(i)+'.json' for t in cfg['tasks'] for kind,n in c.task_limits(t).items() for i in range(n)}
+    c.require({p.name for p in Path(cfg['ledger']).glob('*.json')}==expected,'EXACT_SCIENTIFIC_CALL_SET')
+    allowed={r['id']:r['result_sha256'] for r in audit['results']};groups=[];per_trajectory=[];max_errors={}
+    for saved,planned in zip(cfg['comparison']['groups'],cfg['comparison']['recommended']['n_C']):
+        candidate=saved['candidate'];tasks=[t for t in cfg['tasks'] if t['candidate']==candidate]
+        c.require(len(tasks)==planned,'FIXED_N_INDEPENDENT_AUDIT');pairs=[];strata={s:0 for s in c.law.STRATA}
+        for t in tasks:
+            p=Path(cfg['output'])/t['id']/'result.json';r=c.read(p)
+            c.require(c.sha(p)==allowed[t['id']] and r['task']==t and r['seed_cohort']=='CONFIRMATION'
+              and r['SOURCE']==cfg['SOURCE'] and r['plan_sha256']==cfg['plan_sha256'],'INDEPENDENT_RESULT_SHA_COHORT')
+            c.require(len(r['checks'])==8 and all(g['PASS'] and not g['phase_alignment']
+              and 0<=g['error']<g['strictly_below'] for g in r['checks']),'NATIVE_GATES')
+            c.require([a['axis'] for a in r['axis_costs']]==['cosine','sine'],'PAIRED_AXIS_ORDER')
+            pair=[a['metrics']['rz_count'] for a in r['axis_costs']];pairs.append(pair);strata[r['events']['stratum']]+=1
+            for g in r['checks']:max_errors[g['check']]=max(max_errors.get(g['check'],0),g['error'])
+            per_trajectory.append(dict(stage=cfg['stage'],candidate_id=candidate['id'],trajectory_id=t['id'],sample=t['sample'],
+              cosine_RZ=pair[0],sine_RZ=pair[1],stratum=r['events']['stratum'],result_sha256=c.sha(p)))
+        shot=saved['cost_row']['shot'];stats=independent_moments(pairs,shot['N_cos'],shot['N_sin'])
+        original=next(g for g in result['groups'] if g['candidate']==candidate)
+        check_stat(original['statistics'],stats);c.require(strata==original['observed_strata'],'INDEPENDENT_STRATUM_COUNTS')
+        groups.append(dict(candidate=candidate,n_C=planned,N_cos=shot['N_cos'],N_sin=shot['N_sin'],statistics=original['statistics'],
+          independent_statistics=stats,observed_strata=strata,unobserved_costs=None,
+          saved_exploration_G_mean=saved['cost_row']['total_RZ'],saved_exploration_n=saved['unit_statistics']['cosine']['n']))
+    with localcontext() as ctx:
+        ctx.prec=80
+        means=[D(g['independent_statistics']['mean_exact']['numerator'])/D(g['independent_statistics']['mean_exact']['denominator']) for g in groups]
+        delta=means[0]-means[1]
+        se=(sum(D(g['independent_statistics']['variance_exact']['numerator'])/D(g['independent_statistics']['variance_exact']['denominator'])/D(g['n_C']) for g in groups)).sqrt()
+        z=NormalDist().inv_cdf(1-.05/(2*3));bounds=[float(delta-D(str(z))*se),float(delta+D(str(z))*se)]
+        expected_status='REPRODUCED' if delta>0 else 'REVERSED' if delta<0 else 'TIED'
+        close(result['difference'],delta,'INDEPENDENT_FIXED_DIFFERENCE');close(result['difference_SE'],se,'INDEPENDENT_FIXED_SE')
+        for a,b in zip(result['approximate_interval'],bounds):close(a,b,'INDEPENDENT_BONFERRONI_NORMAL_INTERVAL')
+        close(result['relative_point_improvement'],delta/means[0],'INDEPENDENT_IMPROVEMENT')
+        c.require(result['point_status']==expected_status,'FIXED_DIRECTION_NO_RESELECTION')
+    peak=audit['own_aggregate_RAM_peak_sampled_bytes']
+    native_guard=None
+    if cfg['stage']=='H2_CONFIRMATION':
+        guard=c.read(root/'compiler_policy_end_audit.json');c.require(guard['status']=='PASS'
+          and guard['end_audit_sha256']==c.sha(root/'end_audit.json'),'H2_GUARD_AUDIT')
+        native_guard=dict(policy=guard['policy'],axes=guard['axes'],sha256=c.sha(root/'compiler_policy_end_audit.json'))
+    projection=dict(stage=cfg['stage'],system=cfg['stage'][:2],epsilon=.0005,mode='USUAL_SIGNED',allowance_multiplier=1,
+      SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],grant_id=cfg['grant']['grant_id'],
+      call_scope=cfg['call_scope'],analysis_scope=cfg['analysis_scope'],completed_trajectories=len(cfg['tasks']),
+      completed_compile_axes=cfg['call_scope']['compile_axes'],failed_or_incomplete=0,ledger_entries=len(expected),
+      groups=groups,comparison={k:result[k] for k in ('difference','difference_SE','relative_point_improvement','point_status',
+        'approximate_interval','approximate_direction','interval','family_size','family_alpha','population_rank','population_guarantee')},
+      independent_numerical_check='PASS_EXACT_INTEGER_RAW_MOMENTS_DECIMAL80_VS_CENTERED_FRACTION',
+      acquisition_wall_seconds=completion['wall_seconds'],external_wall_seconds=external['wall_seconds'],
+      worker_count=len(completion['workers']),all_workers_exit0_reaped=True,native_exit=external['native_exit'],
+      native_max_errors=max_errors,original_byte_total=audit['original_byte_total'],compressed_byte_total=audit['compressed_byte_total'],
+      allocated_run_bytes=audit['allocated_run_bytes'],byte_SHA_roundtrip_PASS=audit['byte_SHA_roundtrip_PASS'],
+      own_aggregate_RAM_peak_sampled_bytes=peak,scratch_peak_sampled_bytes=audit['owned_scratch_peak_sampled_bytes'],
+      worker_peak_RSS_KiB=audit['worker_peak_RSS_KiB'],peaks_are_sampled_not_bounds=True,H2_compiler_guard=native_guard,
+      SHA=dict(end_audit=c.sha(root/'end_audit.json'),completion=c.sha(root/'completion_witness.json'),
+        external_exit=c.sha(cfg['supervisor']['exit']),comparison=c.sha(root/'fixed_comparison.json'),
+        grant=c.sha(Path(cfg['run_root']).parent/'grant_APPROVED_PRIVATE.json'),marker=c.sha(cfg['marker'])),
+      unknown_rare_costs=None,strict_bias_certificate=None,AD03='DEFERRED',retry=False,next_phase_started=False,mandatory_STOP=True)
+    return projection,per_trajectory
+
+
+def project_stop(cfg):
+    """Technical STOP projection only, no partial-cohort scientific statistics."""
+    from collections import Counter
+    c.authorize(cfg);c.consumed(cfg);root=Path(cfg['run_root'])
+    audit=c.read(root/'end_audit.json');completion=c.read(root/'completion_witness.json');external=c.read(cfg['supervisor']['exit'])
+    c.require(audit['status']=='STOP' and bool(audit['errors']) and completion['status']=='STOP','FAILED_STAGE_RECORDS_REQUIRED')
+    c.require(external['reaped'] and all(w['reaped'] for w in completion['workers'].values()),'FAILED_WORKERS_MUST_BE_REAPED')
+    c.require(not (root/'fixed_comparison.json').exists() and not (root/'COMPARISON_CONSUMED.json').exists(),'NO_SCIENCE_EVALUATION_OF_STOPPED_COHORT')
+    limits={t['id']:c.task_limits(t) for t in cfg['tasks']};reservations=Counter()
+    ledger_rows=[]
+    for path in (root/'ledger').glob('*.json'):
+        v=c.read(path)
+        c.require(v['task'] in limits and v['kind'] in limits[v['task']] and 0<=v['index']<limits[v['task']][v['kind']], 'FAILED_CALL_WITHIN_FIXED_SCOPE')
+        c.require(v['SOURCE']==cfg['SOURCE'] and v['stage']==cfg['stage'],'FAILED_CALL_IDENTITY')
+        reservations[v['kind']]+=1;ledger_rows.append(dict(name=path.name,sha256=c.sha(path)))
+    c.require(audit['completed_trajectories']==0 and audit['reserved_compile_calls']==0,'THIS_PARTIAL_PROJECTION_HAS_NO_ACCEPTED_PAIRS_OR_COMPILE')
+    return dict(stage=cfg['stage'],system=cfg['stage'][:2],status='STOP_NO_CONFIRMATION_STATISTICS',SOURCE=cfg['SOURCE'],
+      plan_sha256=cfg['plan_sha256'],grant_id=cfg['grant']['grant_id'],call_scope=cfg['call_scope'],analysis_scope=cfg['analysis_scope'],
+      completed_trajectories=0,completed_compile_axes=0,failed_or_incomplete=len(cfg['tasks']),
+      reserved_scientific_calls=dict(reservations),reservations_are_not_completion_proof=True,ledger_entries=len(ledger_rows),
+      ledger_inventory_sha256=c.digest(sorted(ledger_rows,key=lambda r:r['name'])),
+      saved_event_trajectory_records=len(list((root/'output').glob('*/events_PRIVATE.json'))),
+      saved_piece_law_records=len(list((root/'output').glob('*/piece_law_*.json'))),
+      technical_status='FAILED_SIGBUS_DURING_NATIVE_BUILD;ROOT_CAUSE_UNRESOLVED',
+      native_exit=external['native_exit'],worker_exit_counts=dict(Counter(str(w['exit']) for w in completion['workers'].values())),
+      all_workers_reaped=True,worker_count=len(completion['workers']),all_workers_exit0_reaped=False,
+      acquisition_wall_seconds=completion['wall_seconds'],external_wall_seconds=external['wall_seconds'],
+      own_aggregate_RAM_peak_sampled_bytes=audit['own_aggregate_RAM_peak_sampled_bytes'],
+      scratch_peak_sampled_bytes=audit['owned_scratch_peak_sampled_bytes'],allocated_run_bytes=audit['allocated_run_bytes'],
+      compressed_byte_total=None,original_byte_total=None,byte_SHA_roundtrip_PASS=False,
+      SHA=dict(end_audit=c.sha(root/'end_audit.json'),completion=c.sha(root/'completion_witness.json'),
+        external_exit=c.sha(cfg['supervisor']['exit']),marker=c.sha(cfg['marker'])),
+      groups=None,comparison=None,independent_numerical_check='NOT_APPLICABLE_NO_COMPLETE_CONFIRMATION_COHORT',
+      unknown_rare_costs=None,strict_bias_certificate=None,AD03='DEFERRED',retry=False,next_phase_started=False,mandatory_STOP=True),[]
+
+
+def csv_write(path,rows):
+    with Path(path).open('x',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');w.writeheader();w.writerows(rows)
+
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--config',action='append',required=True);p.add_argument('--output',required=True)
+    a=p.parse_args();configs=[c.read(p) for p in a.config]
+    c.require(len(configs)==3 and {x['stage'] for x in configs}==set(c.STAGES),'THREE_FIXED_COMPARISONS_ONLY')
+    dest=Path(a.output);c.require(not dest.exists(),'NEW_PUBLIC_PROJECTION_DESTINATION')
+    values=[project(cfg) if c.read(Path(cfg['run_root'])/'end_audit.json')['status']=='ACQUISITION_AND_END_AUDIT_PASS_MANDATORY_STOP' else project_stop(cfg) for cfg in configs]
+    dest.mkdir(parents=True)
+    complete=all(x[0].get('comparison') is not None for x in values)
+    c.save(dest/'confirmation_results.json',dict(status='THREE_INDEPENDENT_CONFIRMATIONS_COMPLETE_MANDATORY_STOP' if complete else 'PARTIAL_CONFIRMATION_COMPLETION_WITH_INDEPENDENT_STOP_MANDATORY_STOP',
+      stages=[x[0] for x in values],new_shot_calculation=0,candidate_reselection=False,pooling=False,AD03='DEFERRED',mandatory_STOP=True))
+    trajectory_rows=[r for _,rows in values for r in rows]
+    csv_write(dest/('trajectory_costs_'+str(len(trajectory_rows))+'.csv'),trajectory_rows)
+    candidate=[];comparisons=[]
+    for value,_ in values:
+        if value.get('comparison') is None:
+            comparisons.append(dict(system=value['system'],epsilon=.0005,difference=None,difference_SE=None,improvement_fraction=None,point_status='NOT_EVALUATED_STOP',normal_Bonferroni_low=None,normal_Bonferroni_high=None,approximate_direction=None,population_rank='NOT_CERTIFIED',independent_arithmetic='NOT_APPLICABLE_STOP'))
+            continue
+        for g in value['groups']:
+            s=g['statistics'];candidate.append(dict(system=value['system'],candidate_id=g['candidate']['id'],formula=g['candidate']['formula'],
+              q=g['candidate']['q'],epsilon=.0005,n=g['n_C'],N_cos=g['N_cos'],N_sin=g['N_sin'],cosine_RZ_mean=s['axis_means'][0],sine_RZ_mean=s['axis_means'][1],
+              cosine_variance=g['independent_statistics']['axis_variances'][0],sine_variance=g['independent_statistics']['axis_variances'][1],
+              paired_covariance=s['covariance'],total_RZ_mean=s['mean'],total_RZ_variance=s['variance'],total_RZ_SE=s['SE'],
+              S0=g['observed_strata']['S0'],S2_SINGLE=g['observed_strata']['S2_single'],S2_MULTI=g['observed_strata']['S2_multi'],
+              S4_PRESENT=g['observed_strata']['S4'],unobserved_cost=None,exploration_n=g['saved_exploration_n'],exploration_total_RZ_mean=g['saved_exploration_G_mean']))
+        q=value['comparison'];comparisons.append(dict(system=value['system'],epsilon=.0005,difference=q['difference'],difference_SE=q['difference_SE'],
+          improvement_fraction=q['relative_point_improvement'],point_status=q['point_status'],normal_Bonferroni_low=q['approximate_interval'][0],normal_Bonferroni_high=q['approximate_interval'][1],
+          approximate_direction=q['approximate_direction'],population_rank=q['population_rank'],independent_arithmetic='PASS'))
+    csv_write(dest/('candidate_statistics_'+str(len(candidate))+'.csv'),candidate);csv_write(dest/'fixed_comparisons_3.csv',comparisons)
+    print(json.dumps(comparisons))
+
+if __name__=='__main__':main()

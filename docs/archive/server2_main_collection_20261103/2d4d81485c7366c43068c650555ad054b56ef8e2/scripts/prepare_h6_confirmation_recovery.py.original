@@ -1,0 +1,56 @@
+"""New H6 recovery pack from immutable stopped run01, never a spent grant reuse."""
+import argparse
+import copy
+import json
+from pathlib import Path
+import subprocess
+import h6_confirmation_recovery_contract as c
+
+
+def prepare(source,stopped_path,destination):
+    source=subprocess.check_output(['git','rev-parse',source+'^{commit}'],cwd=c.ROOT,text=True).strip()
+    stopped_path=Path(stopped_path).resolve();old=c.read(stopped_path);cfg=copy.deepcopy(old)
+    c.require(old['stage']=='H6_CONFIRMATION' and old['SOURCE']=='8825391ff73b531be5834bf852b9bf2479d1799b','EXPECTED_OLD_STOPPED_H6')
+    oldroot=Path(old['run_root']);stop=c.read(oldroot/'end_audit.json')
+    c.require(stop['status']=='STOP' and stop['completed_trajectories']==0 and stop['reserved_compile_calls']==0,'OLD_SIGBUS_NO_COMPLETE_PAIRS')
+    c.require(all(r['reaped'] for r in c.read(oldroot/'completion_witness.json')['workers'].values()),'OLD_ALL_WORKERS_REAPED')
+    dest=Path(destination).resolve();dest.mkdir(parents=True,exist_ok=False);root=dest/'future_run02'
+    closure={r['path']:r for r in old['sealed_files'] if r['path']!=old['approval_receipt_path'] and r['path']!=old.get('approval_activation_path')}
+    def add(path,role):
+        item=c.seal(Path(path).resolve(),role);closure[item['path']]=item
+    for rel,blob in c.source_blobs(source).items():
+        c.require((c.ROOT/rel).read_bytes()==blob,'NEW_COMMITTED_RECOVERY_SOURCE:'+rel);add(c.ROOT/rel,'recovery_SOURCE:'+rel)
+    for path,role in [(stopped_path,'old_stopped_config'),(oldroot/'end_audit.json','old_STOP'),
+       (oldroot/'completion_witness.json','old_failed_completion'),(old['supervisor']['exit'],'old_native_exit'),
+       (old['marker'],'old_consumed_marker')]:add(path,role)
+    signal=str(c.ROOT/c.SIGNAL_RECORDS);add(signal,'fixed_saved_signal_same_bytes')
+    c.require(c.sha(signal)==c.sha(old['signal_path']),'SAVED_SIGNAL_UNCHANGED')
+    recovery=dict(stopped_config_path=str(stopped_path),stopped_SOURCE=old['SOURCE'],
+      stopped_completion_path=str(oldroot/'completion_witness.json'),stopped_end_audit_path=str(oldroot/'end_audit.json'),
+      stopped_plan_sha256=old['plan_sha256'],partial_pooling=False,new_scientific_samples_beyond_32=False,
+      same_registered_seeds=True,transport='SPAWN_NO_PARENT_NATIVE_STATE',fatal_stack=True,reset_worker_signals=True,
+      user_new_execution_authorized=True,old_retry_or_resume=False)
+    resources=dict(old['resources'],process_start_method='spawn',prewarm_readonly_contexts=False,
+      fatal_stack_logging=True,reset_worker_signals=True,fresh_joint_admission_required=False,
+      worker_context_policy='ONE_PRIVATE_NATIVE_CONTEXT_PER_SPAWNED_WORKER_NO_FORK_INHERITANCE')
+    decisions=c.decisions();approval=dest/'approval_REQUIRED_PRIVATE.json'
+    cfg.update(SOURCE=source,recovery=recovery,resources=resources,authorized=False,signal_path=signal,
+      approval_activation_path=None,decisions=decisions,run_root=str(root),output=str(root/'output'),
+      ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),supervisor={k:str(dest/n) for k,n in
+      [('entered','SUPERVISOR_ENTERED.json'),('exit','external_exit_witness_PRIVATE.json'),('log','native_PRIVATE.log')]})
+    c.save(approval,dict(execution_authorized=False,**{k:cfg[k] for k in
+      ('SOURCE','stage','cohort','comparison','call_scope','analysis_scope','storage','decisions','recovery')}))
+    cfg.update(approval_receipt_path=str(approval),approval_receipt_sha256=c.sha(approval));add(approval,'new_recovery_approval_required')
+    cfg['sealed_files']=list(closure.values());plan=dict(status='H6_RECOVERY_DRAFT_NOT_YET_EXECUTABLE',
+      **{k:cfg[k] for k in c.PLAN_KEYS},closure_digest=c.digest(cfg['sealed_files']))
+    pp=dest/'plan_DRAFT_PRIVATE.json';c.save(pp,plan);cfg.update(plan=plan,plan_path=str(pp),plan_sha256=c.sha(pp))
+    cfg['grant']=dict(valid=False,grant_id=None,retry=False,next_phase_authorized=False,approval_reference=None,
+      **{k:cfg[k] for k in ('SOURCE','stage','cohort','plan_sha256','call_scope','analysis_scope','output','ledger','marker','supervisor')})
+    c.verify(cfg);cp=dest/'config_DRAFT_PRIVATE.json';c.save(cp,cfg);return cp
+
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--stopped-config',required=True)
+    p.add_argument('--destination',required=True);a=p.parse_args();print(prepare(a.source,a.stopped_config,a.destination))
+
+if __name__=='__main__':main()

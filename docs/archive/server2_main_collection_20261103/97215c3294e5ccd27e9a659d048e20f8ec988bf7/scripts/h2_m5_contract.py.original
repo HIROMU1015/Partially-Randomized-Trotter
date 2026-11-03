@@ -1,0 +1,98 @@
+"""Scoped one-shot authorization for H2 extension through comparison only."""
+from pathlib import Path
+import subprocess
+import sys
+import h2_m5_comparison as d
+import h46_pr_pilot_storage_runtime as storage
+
+ROOT=d.ROOT
+require=d.require
+read=storage.read
+save=storage.save
+digest=d.digest
+sha=lambda p:storage.codec.digest_file(p)['sha256']
+SOURCE_PATHS=('scripts/h2_m5_comparison.py','scripts/h2_m5_contract.py','scripts/h2_m5_science.py',
+ 'scripts/run_h2_m5_comparison.py','scripts/prepare_h2_m5_comparison.py','tests/test_h2_m5_comparison.py',
+ 'scripts/h46_pr_pilot_storage_runtime.py','scripts/h46_pilot_lossless_storage.py',
+ 'scripts/h46_new2_native.py','src/trotterlib/h46_m5_plan.py','scripts/h46_new2_core.py')
+SOURCE_PATHS+=('scripts/run_h6_m5_saved_phase.py','scripts/run_h46_m5_signal.py',)
+
+def seal(path,role):
+    p=Path(path).resolve();return dict(path=str(p),role=role,bytes=p.stat().st_size,sha256=sha(p))
+
+def scope():
+    domain=d.domain()
+    return dict(scope=d.SCOPE,stages=['SIGNAL','ACQUIRE','INTEGRATE'],
+      new_deterministic_candidates=35,new_PR_groups=66,PR_n_exploration=8,
+      q=[1,2,4,8,16],prefix=[0,1,2],full_prefix=3,r=[2,4,8],K=[2,4],
+      r_policy='PER_SIGNED_S2_PIECE_ORIGINAL_H2_ELEMENTARY_LAW',
+      total_PR_events='11*q*r',RTE_per_outer_is_not_equal_across_formula=True,
+      formula=d.FORMULA,coefficient_ID=d.formula_core().FORMULA_ID,
+      maximum_trajectories=66*8,maximum_det_pairs=35,maximum_compile_axes=2*(66*8+35),
+      original_D_A_reused=True,new_SCF_DF_state=0,outer32_imported=False,
+      n33_imported=False,independent_confirmation=False,AD03='DEFERRED',retry=False,
+      stages_1_through_6_explicitly_authorized=True,stage7_authorized=False,mandatory_STOP_at_end=True)
+
+def verify(cfg,*,full=True):
+    require(cfg['plan']==read(cfg['plan_path']) and sha(cfg['plan_path'])==cfg['plan_sha256'],'FIXED_PLAN_SHA')
+    require(cfg['plan']['scope']==scope() and cfg['scope']==d.SCOPE,'FIXED_H2_EXTENSION_SCOPE')
+    require(cfg['plan']['SOURCE']==cfg['SOURCE'] and cfg['plan']['stage']==cfg['stage'],'SOURCE_STAGE')
+    require(cfg['stage']=='H2_M5_THROUGH_COMPARISON' and cfg['storage']==storage.storage_policy(),'SCOPED_STORAGE')
+    require(cfg['supervisor']==cfg['plan']['supervisor'],'SUPERVISOR_BOUND')
+    require(cfg['tasks']==cfg['plan']['tasks'] and cfg['domains']==d.domain(),'FIXED_TASK_DOMAIN')
+    require(cfg['plan']['closure_digest']==digest(cfg['sealed_files']),'CLOSURE_DIGEST')
+    indexed={r['path']:r for r in cfg['sealed_files']}
+    require(len(indexed)==len(cfg['sealed_files']),'UNIQUE_SEALS')
+    for r in cfg['sealed_files']:
+        if not full and r['role'].startswith(('runtime:','provider:')):continue
+        p=Path(r['path']);require(str(p.resolve())==r['path'] and p.stat().st_size==r['bytes'] and sha(p)==r['sha256'],'SEALED_BYTES:'+r['role'])
+    for rel in SOURCE_PATHS:
+        p=ROOT/rel;require(str(p.resolve()) in indexed and p.read_bytes()==subprocess.check_output(
+          ['git','show',cfg['SOURCE']+':'+rel],cwd=ROOT),'COMMITTED_SOURCE:'+rel)
+    for key in ('runtime','provider_root','inputs','binding','resources','registry_path','excluded_path','storage'):
+        require(cfg[key]==cfg['plan'][key],'PLAN_BINDING:'+key)
+
+def authorize(cfg,*,full=True):
+    require(cfg.get('authorized') is True and cfg.get('grant',{}).get('valid') is True,
+      'EXPLICIT_H2_THROUGH_COMPARISON_APPROVAL_REQUIRED')
+    require(cfg['grant']['SOURCE']==cfg['SOURCE'] and cfg['grant']['plan_sha256']==cfg['plan_sha256']
+      and cfg['grant']['scope']==d.SCOPE and cfg['grant']['retry'] is False
+      and cfg['grant']['independent_confirmation'] is False,'EXACT_NEW_H2_GRANT')
+    root=Path(cfg['run_root'])
+    require(root==root.resolve() and not root.is_relative_to(ROOT),'PRIVATE_NEW_RUN')
+    require(cfg['output']==str(root/'ACQUIRE/output') and cfg['ledger']==str(root/'ledger')
+      and cfg['marker']==str(root/'CONSUMED.json'),'OWN_OUTPUT_PATHS')
+    require(not any(Path(r['path']).is_relative_to(root) for r in cfg['sealed_files']),'INPUT_OUTPUT_DISJOINT')
+    a=read(cfg['approval_path']);require(a['stages_1_through_6_authorized'] is True
+      and a['SOURCE']==cfg['SOURCE'] and a['independent_confirmation'] is False,'USER_AUTHORITY')
+    verify(cfg,full=full)
+    require(sys.executable==cfg['runtime']['python'],'ORIGINAL_H2_PYTHON')
+
+def consumed(cfg):
+    require(read(cfg['marker'])==dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant=cfg['grant']),'ONE_SHOT_CONSUMED')
+
+def reserve(cfg,stage,task,kind,index=0):
+    consumed(cfg);require(stage in ('SIGNAL','ACQUIRE','INTEGRATE'),'REGISTERED_PHASE')
+    require(task in {t['id'] for t in cfg['tasks']} if stage=='ACQUIRE'
+      else task in {x['id'] for rows in cfg['domains'].values() for x in rows} if stage=='SIGNAL'
+      else task=='FIXED_COMPARISON','REGISTERED_CALL')
+    allowed={'SIGNAL':{'finite_mean'},'ACQUIRE':{'trajectory','sampling_piece','native_evolution',
+      'native_low','native_high','oracle','uncompiled_action','compile','compiled_action'},'INTEGRATE':{'accounting'}}
+    require(kind in allowed[stage] and type(index) is int and index>=0,'REGISTERED_CALL_KIND')
+    if stage=='ACQUIRE':
+        t=next(t for t in cfg['tasks'] if t['id']==task)
+        limit=len(d.schedule(t['cell'])) if kind=='sampling_piece' else 2 if kind in ('uncompiled_action','compile','compiled_action') else 1
+        require(index<limit,'CALL_INDEX_BUDGET')
+    else:require(index==0,'SINGLE_PHASE_CALL')
+    save(Path(cfg['ledger'])/(stage+'__'+task+'__'+kind+'__'+str(index)+'.json'),
+      dict(SOURCE=cfg['SOURCE'],stage=stage,task=task,kind=kind,index=index,nonrefundable=True))
+
+def expected_ledger(cfg,selected,*,integrated):
+    entries={'SIGNAL__'+x['id']+'__finite_mean__0.json' for rows in cfg['domains'].values() for x in rows}
+    for t in selected:
+        limits=dict(native_evolution=1,native_low=1,native_high=1,oracle=1,
+          uncompiled_action=2,compile=2,compiled_action=2)
+        if t['cell']['method']=='B2':limits.update(trajectory=1,sampling_piece=len(d.schedule(t['cell'])))
+        entries.update('ACQUIRE__'+t['id']+'__'+kind+'__'+str(i)+'.json' for kind,n in limits.items() for i in range(n))
+    if integrated:entries.add('INTEGRATE__FIXED_COMPARISON__accounting__0.json')
+    return entries

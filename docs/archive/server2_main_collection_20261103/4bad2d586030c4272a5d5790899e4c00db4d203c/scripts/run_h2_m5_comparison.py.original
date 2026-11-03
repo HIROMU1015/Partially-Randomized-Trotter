@@ -1,0 +1,209 @@
+"""One-shot H2 extension through exploratory comparison, independent P disabled."""
+import argparse
+from concurrent.futures import ThreadPoolExecutor,ProcessPoolExecutor,as_completed
+import json
+import math
+import multiprocessing as mp
+import os
+from pathlib import Path
+import shutil
+import signal
+import sys
+import threading
+import time
+import traceback
+from types import FunctionType
+import h2_m5_contract as c
+import run_h6_m5_saved_phase as observed
+
+supervise=FunctionType(observed.supervise.__code__,dict(observed.__dict__,c=c,__file__=__file__),
+  'supervise',observed.supervise.__defaults__,observed.supervise.__closure__)
+
+WORKER_CFG=None
+WORKER_STOP=None
+
+def initialize(cfg,stop):
+    global WORKER_CFG,WORKER_STOP
+    WORKER_CFG,WORKER_STOP=cfg,stop
+    c.authorize(cfg,full=False)
+
+def worker(task):
+    from h2_m5_science import acquire
+    return acquire(WORKER_CFG,task,WORKER_STOP)
+
+def fresh(cfg):
+    from run_h46_m5_signal import fresh_resources
+    probe=dict(run_root=cfg['run_root'],systems={'H2':{}},resources=dict(system_RSS_proxy_bytes={'H2':1},disk_proxy_bytes=cfg['resources']['planned_storage_bytes']))
+    row=fresh_resources(probe)
+    count=min(math.floor(row['idle_CPU_equivalents']),row['effective_available_RAM_bytes']//cfg['resources']['worker_RSS_proxy_bytes'],len(cfg['tasks']))
+    c.require(count>=1,'NO_FREE_H2_WORKER_RESOURCES')
+    fs=os.statvfs(Path(cfg['run_root']).parent);c.require(fs.f_favail>=100000,'H2_FRESH_INODES')
+    return dict(workers=count,observation=row,free_inodes=fs.f_favail,IO_PSI_observation_only=Path('/proc/pressure/io').read_text(),
+      runtime_caps=False,host_PSI_kill=False)
+
+def phase_marker(cfg,phase):
+    root=Path(cfg['run_root'])/phase;root.mkdir(exist_ok=False)
+    c.save(root/'CONSUMED.json',dict(stage=phase,SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],grant_id=cfg['grant']['grant_id'],retry=False))
+    return root
+
+def integrate(cfg,signals,pairs):
+    root=phase_marker(cfg,'INTEGRATE');c.reserve(cfg,'INTEGRATE','FIXED_COMPARISON','accounting')
+    oldD=c.read(cfg['inputs']['D_result']['path']);oldA=c.read(cfg['inputs']['A_result']['path'])
+    # Reproduce every eligible saved mean/SE exactly before integrating m5.
+    baseline=[]
+    for old in (oldD,oldA):
+        rows=c.d.account(old['signals'],old['measurements'],origin=True)
+        original={(r['cell_id'],r['epsilon']):r for r in old['accounting']['rows']}
+        for row in rows:
+            saved=original[row['cell_id'],row['epsilon']]
+            c.require(row['eligible']==saved['eligible'] and row['G_RZ_exact']==saved['G_RZ_exact']
+              and row['G_RZ_SE']==saved['G_RZ_SE'],'ORIGINAL_H2_ACCOUNTING_EXACT_REPRODUCTION')
+        baseline.extend(rows)
+    extension=c.d.account(signals,pairs)
+    table=baseline+extension;comparisons=c.d.compare(table)
+    result=dict(status='INTEGRATED_EXPLORATORY_COMPARISON_COMPLETE_MANDATORY_STOP',SOURCE=cfg['SOURCE'],
+      plan_sha256=cfg['plan_sha256'],binding=cfg['binding'],rows=table,comparisons=comparisons,
+      baseline_accounting_exact_reproduction=True,old_D_candidates=70,old_A_groups=66,
+      new_m5_D_candidates=35,new_m5_PR_groups=66,PR_n_exploration=8,
+      new_cohort_not_pooled=True,rare_tail_costs_unobserved_remain_unknown=True,
+      r_interpretation='PER_SIGNED_S2_PIECE;M5_11_Q_R_EVENTS;S2_Q_R_EVENTS',
+      Yoshida4_PR='NOT_IN_EXISTING_H2_A_NO_NEW_PR_FORMULA_SCOPE_ADDED',
+      independent_confirmation=False,population_mean_certified=False,global_optimum=False,
+      formal_shot_policy_changed=False,AD03='DEFERRED',next_phase_started=False,mandatory_STOP=True)
+    c.save(root/'result.json',result)
+    return result
+
+def public_finalize(cfg,completion,integration):
+    bundle=c.ROOT/'artifacts/resource_applicability/track_a_h2_m5_existing_pf_comparison/2026-10-20'
+    bundle.mkdir(parents=True,exist_ok=True)
+    # All private seeds, events, QPY/NPZ, absolute input/runtime paths stay private.
+    summary={k:v for k,v in completion.items() if k not in ('errors','workers','task_results')}
+    summary['errors_private']=bool(completion['errors'])
+    c.save(bundle/'execution_summary.json',summary)
+    if integration is not None:
+        c.save(bundle/'comparison.json',integration)
+    report=c.ROOT/'docs/research/track_a_h2_m5_existing_pf_comparison_results_20261020.md'
+    report.write_text('# H2既存PF条件に合わせたm5追加検証・統合比較\n\n科学SOURCE `'+cfg['SOURCE']+'`。取得状態は **'+completion['status']+'**。\n\n'
+      'H2 tol-only DF3・sector4・1 Å・STO-3G、T=.8/P=0、既存D70/A66を保全・再利用し、m5のD35/PR66群を追加した。rはsigned S2 pieceごとの値で、m5の総event数は11×q×r、既存S2はq×r。outer32/33本は輸入しない。新PRは独立探索n8で、確認標本と混合しない。\n\n'
+      '[取得・終了監査summary](../../artifacts/resource_applicability/track_a_h2_m5_existing_pf_comparison/2026-10-20/execution_summary.json)を参照する。統合比較ファイルはINTEGRATE完了時だけ作成する。STOP時の欠測を0や不適格として補完しない。\n\n'
+      '既存H2の通常signed bias・経験的allowance倍率1・両軸analytic shot式を使用し、旧会計のexact平均/SE再現をgateとした。母平均・希少tail・全格子最適性や厳密biasは保証しない。Yoshida4は既存決定論S4の区分を保持し、既存H2にないYoshida4 PRを作成したとは表示しない。\n\n'
+      '新compileはnative/occupation oracle・Hadamard・compiled保存状態・byte復元を検証した。CT01のcompiled差1e-7、その他1e-9未満、位相合わせなし。private原本・seed・認証情報は公開しない。\n\n'
+      '**mandatory STOP。** 次の担当はユーザー：結果を確認し、段階7の独立確認を行うか判断する。今回、独立確認・AD03主比較採用・詳細科学レビュー・final freezeは行わない。\n')
+
+def execute(cfg):
+    c.authorize(cfg);root=Path(cfg['run_root']);c.require(not root.exists(),'UNUSED_ONE_SHOT_RUN')
+    resources=fresh(cfg);root.mkdir();Path(cfg['ledger']).mkdir()
+    c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant=cfg['grant']))
+    c.save(root/'fresh_gate.json',resources)
+    start=time.monotonic();ctxmp=mp.get_context('fork');stop=ctxmp.Event();monitor_done=threading.Event()
+    errors={};workers={};results=[];integration=None;signals=[];handlers={};pids={}
+    def interrupt(sig,frame):errors.setdefault('OWN_SIGNAL',sig);stop.set()
+    def monitor():
+        with (root/'resource_observation.jsonl').open('x') as f:
+            while not monitor_done.is_set():
+                try:
+                    own={}
+                    for pid in (os.getpid(),*pids):
+                        try:
+                            ls=Path('/proc/'+str(pid)+'/status').read_text().splitlines()
+                            own[str(pid)]={x.split(':')[0]:int(x.split()[1])*1024 for x in ls if x.startswith(('VmRSS:','VmHWM:'))}
+                        except FileNotFoundError:pass
+                    r=dict(elapsed=time.monotonic()-start,own_process_RAM=own,disk_free_bytes=shutil.disk_usage(root).free,
+                      host_PSI_observation_only=Path('/proc/pressure/memory').read_text())
+                except Exception as exc:r=dict(observation_error=str(exc),kill=False)
+                f.write(json.dumps(r)+'\n');f.flush();monitor_done.wait(5)
+    thread=threading.Thread(target=monitor,daemon=True);thread.start()
+    for sig in (signal.SIGINT,signal.SIGTERM):handlers[sig]=signal.signal(sig,interrupt)
+    selected=[]
+    try:
+        from h2_m5_science import context,mean_signal
+        ctx=context(cfg);signalroot=phase_marker(cfg,'SIGNAL')
+        c.save(signalroot/'context.json',dict(preparation_identities=ctx.preparation_identities,
+          reference_check_error=ctx.reference_check_error,new_SCF_DF_state=0,
+          reference_saved_complex_reused=True,independent_saved_input_dense_check=True))
+        cells=cfg['domains']['deterministic']+cfg['domains']['PR']
+        def evaluate(cell):
+            c.require(not stop.is_set(),'OWN_H2_STOP');c.reserve(cfg,'SIGNAL',cell['id'],'finite_mean')
+            out=signalroot/cell['id'];out.mkdir();record=mean_signal(ctx,cell);c.save(out/'signal.json',record);return record
+        with ThreadPoolExecutor(max_workers=min(len(cells),resources['workers'])) as pool:
+            futures={pool.submit(evaluate,cell):cell for cell in cells}
+            for f in as_completed(futures):
+                try:signals.append(f.result())
+                except BaseException as exc:errors[futures[f]['id']]=str(exc);stop.set()
+        c.require(not errors and len(signals)==101,'H2_SIGNAL_COMPLETE:'+str(errors))
+        signals.sort(key=lambda r:r['cell']['id']);c.save(signalroot/'signals.json',dict(signals=signals,SOURCE=cfg['SOURCE']))
+        selected=c.d.tasks_for(signals);c.save(signalroot/'cost_selection.json',dict(tasks=selected,
+          selection='ANY_COMMON_EPSILON_BOTH_AXES_ELIGIBLE_NO_COST_OUTCOME_USED',maximum_scope=cfg['plan']['scope']))
+        c.save(signalroot/'completion.json',dict(status='PASS_MANDATORY_STOP_WITH_PREAUTHORIZED_NEXT_STAGE',
+          SOURCE=cfg['SOURCE'],signals=101,next_stage_preapproved=True))
+        acq=phase_marker(cfg,'ACQUIRE');Path(cfg['output']).mkdir()
+        dispatch=sorted(selected,key=lambda t:t['cell']['q']*11,reverse=True)
+        # Fork preserves the small immutable H2 context. No nested BLAS/Qiskit
+        # pools; no affinity or shared scheduler settings are modified.
+        with ProcessPoolExecutor(max_workers=min(resources['workers'],max(1,len(dispatch))),mp_context=ctxmp,
+          initializer=initialize,initargs=(cfg,stop)) as pool:
+            futures={pool.submit(worker,t):t for t in dispatch};pids={p.pid:p for p in pool._processes.values()}
+            with (acq/'task_completion.jsonl').open('x') as journal:
+                for f in as_completed(futures):
+                    task=futures[f]
+                    try:
+                        entry=f.result();path=Path(cfg['output'])/task['id']/'result_PRIVATE.json'
+                        c.require(entry['id']==task['id'] and entry['result_sha256']==c.sha(path),'RESULT_SHA')
+                        v=c.read(path);c.require(v['task']==task and v['SOURCE']==cfg['SOURCE'] and v['status']=='H2_M5_NATIVE_PAIR_PASS','RESULT_BINDING')
+                        results.append(entry)
+                    except BaseException as exc:
+                        errors[task['id']]=str(exc);stop.set()
+                        for q in futures:q.cancel()
+                    journal.write(json.dumps(dict(completed=len(results),errors=errors,elapsed=time.monotonic()-start))+'\n');journal.flush()
+        workers={str(pid):dict(exit=p.exitcode,reaped=not p.is_alive()) for pid,p in pids.items()}
+        c.require(not errors and len(results)==len(selected),'H2_ACQUIRE_COMPLETE')
+        c.require(workers and all(v['exit']==0 and v['reaped'] for v in workers.values()),'WORKER_EXIT_REAP')
+        pairs=[]
+        for task in selected:
+            out=Path(cfg['output'])/task['id'];v=c.read(out/'result_PRIVATE.json')
+            c.require(len(v['checks'])==8 and all(x['PASS'] for x in v['checks']),'ALL_NATIVE_GATES')
+            sa=c.storage.audit_task(cfg,task)
+            c.require(sa==c.read(out/'storage_audit.json') and c.sha(out/'storage_audit.json')==v['storage_audit_sha256'],'BYTE_FINAL_AUDIT')
+            if task['cell']['method']=='B2':
+                steps=c.d.schedule(task['cell']);seeds=c.read(cfg['registry_path'])[task['id']]
+                for i,step in enumerate(steps):
+                    piece=c.read(out/f'piece_{i}_PRIVATE.json')
+                    c.require(piece['seed']==seeds[i] and piece['step']==step
+                      and len(piece['events'])==step['rte_steps'] and not piece['conditional'],'ACTUAL_PIECE_LAW_SEED_SCHEDULE')
+            c.require(c.d.stratum(c.read(out/'events_PRIVATE.json')['events'])['N0']+
+              c.d.stratum(c.read(out/'events_PRIVATE.json')['events'])['N2']+
+              c.d.stratum(c.read(out/'events_PRIVATE.json')['events'])['N4']==(task['cell']['R'] or 0),'TOTAL_RTE_EVENT_AUDIT')
+            pairs.append(v)
+        c.save(acq/'completion.json',dict(status='PASS_MANDATORY_STOP_WITH_PREAUTHORIZED_NEXT_STAGE',
+          task_results=results,workers=workers,next_stage_preapproved=True))
+        c.require({p.name for p in Path(cfg['ledger']).glob('*.json')}==c.expected_ledger(cfg,selected,integrated=False),'EXACT_ACQUISITION_CALL_LEDGER')
+        c.verify(cfg);integration=integrate(cfg,signals,pairs)
+        c.require({p.name for p in Path(cfg['ledger']).glob('*.json')}==c.expected_ledger(cfg,selected,integrated=True),'EXACT_FINAL_CALL_LEDGER')
+    except BaseException as exc:
+        errors.setdefault('pipeline',str(exc));stop.set()
+        c.save(root/'STOP_PRIVATE.json',dict(reason=str(exc),traceback=traceback.format_exc(),retry=False,mandatory_STOP=True))
+    finally:
+        monitor_done.set();thread.join()
+        for sig,h in handlers.items():signal.signal(sig,h)
+    try:c.verify(cfg)
+    except Exception as exc:errors.setdefault('end_seals',str(exc))
+    completion=dict(status='STOP' if errors else 'H2_M5_THROUGH_COMPARISON_COMPLETE_MANDATORY_STOP',
+      SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],errors=errors,workers=workers,task_results=results,
+      signal_candidates_completed=len(signals),selected_native_pairs=len(selected),completed_native_pairs=len(results),
+      accepted_compile_axes=2*len(results),wall_seconds=time.monotonic()-start,
+      integrated_comparison_complete=integration is not None,independent_confirmation=False,
+      retry=False,AD03='DEFERRED',mandatory_STOP=True)
+    c.save(root/'completion_witness.json',completion)
+    public_finalize(cfg,completion,integration)
+    return 1 if errors else 0
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--config',required=True);g=p.add_mutually_exclusive_group()
+    g.add_argument('--execute',action='store_true');g.add_argument('--supervise',action='store_true');a=p.parse_args()
+    cfg=c.read(a.config);c.authorize(cfg)
+    if a.supervise:return supervise(cfg,a.config)
+    if not a.execute:print(json.dumps(dict(status='PREFLIGHT_PASS_NO_SCIENCE',SOURCE=cfg['SOURCE'])));return 0
+    c.require(c.read(cfg['supervisor']['entered'])==dict(SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],grant_id=cfg['grant']['grant_id'],retry=False),'EXTERNAL_H2_SUPERVISOR_REQUIRED')
+    return execute(cfg)
+
+if __name__=='__main__':raise SystemExit(main())

@@ -1,0 +1,268 @@
+"""Adopt saved H4 MC evidence into a supplemental document packet.
+
+Standard-library metadata/transcription only. No plotting, molecular imports,
+statistics, bootstrap, scientific grants or raw trajectory access.
+"""
+import argparse
+from datetime import datetime, timezone
+import hashlib
+import json
+from pathlib import Path
+import re
+import subprocess
+
+import integrate_h468_paper_evidence as prior
+import check_h468_paper_display as display_check
+
+ROOT=Path(__file__).resolve().parents[1]
+B='artifacts/resource_applicability/'
+OUT=B+'track_a_h4_mc_supplement/2026-10-19/'
+DISPLAY=B+'track_a_h4_pr_cost_variability/2026-10-19/'
+MC=B+'track_a_h4_mc_sample_size/2026-10-19/'
+OLD=B+'track_a_h468_paper_evidence_integration/2026-10-19/'
+PAPER=B+'track_a_h468_paper_display_methods/2026-10-19/'
+BASE='1f001cfc4e8e0531279a26613be29a52c7c0640c'
+RESULT='295b93d50662a0f8af3ec469df43099a3f04af60'
+MC_RESULT='defa5f6dbc72910c0a46ae2fef304a584ae408e0'
+MC_SOURCE='78352b861b3047f6af2d432535e23cc88b439bbe'
+P_SOURCE='3c664ca4a9f003880b9f6d56f2a0e55ed5b56603'
+P_RESULT='821cc0f6ced57168293ea166644024867b064ffb'
+REPORT='docs/research/track_a_h4_pr_cost_variability_20261019.md'
+DOC='docs/research/track_a_h4_mc_supplement_20261019.md'
+FIGURES=[('H4_MC_S1','pr_mean_cost_vs_n','CE_H4_MC_MEAN'),
+         ('H4_MC_S2','pr_standard_error_vs_n','CE_H4_MC_SE'),
+         ('H4_MC_S3','pr_observed_strata_cost','CE_H4_MC_EVENTS'),
+         ('H4_MC_S4','pr_saved_S2_groups','CE_H4_MC_EVENTS')]
+TABLES=[('H4_MC_D1','pr_bootstrap_summary.csv','CE_H4_MC_MEAN;CE_H4_MC_SE',18),
+        ('H4_MC_D2','pr_full_sample_reference.csv','CE_H4_MC_MEAN;CE_H4_MC_SE',2),
+        ('H4_MC_D3','pr_observed_strata.csv','CE_H4_MC_EVENTS',8),
+        ('H4_MC_D4','pr_bootstrap_S2_groups.csv','CE_H4_MC_EVENTS',236)]
+CLAIMS={
+    'CE_H4_MC_MEAN':'固定保存経験分布におけるPR平均費用推定値の揺れを、MC標本数n別の保存分位幅と累積平均で示す。',
+    'CE_H4_MC_SE':'保存bootstrap SEはn増加に伴い概ね1/√nで減少し、保存された経験分布SD/√n列と概ね対応する。新しい指数fitではない。',
+    'CE_H4_MC_EVENTS':'観測S2_SINGLE群のfull PR費用平均はS0_ONLY群より高いが、群内変動と範囲の重なりがあり、S2件数だけで費用は決まらない。',
+}
+LIMITS='CONDITIONAL_SAVED_EMPIRICAL_DISTRIBUTION;NO_POPULATION_MEAN_OR_VARIANCE_GUARANTEE;UNOBSERVED_RARE_COST_UNKNOWN;NOT_RIGOROUS_CI;MEAN_ESTIMATOR_NOT_N_RUN_TOTAL;SAME_H4_P_COHORT_NOT_NEW_INDEPENDENT_EVIDENCE;NOT_FINAL_FREEZE'
+
+
+def require(ok,reason):
+    if not ok:raise ValueError(reason)
+
+
+def j(path):return prior.read_json(path)
+def c(path):return prior.read_csv(path)
+def sha(path):return prior.sha(path)
+def ref(path):return dict(path=path,sha256=sha(path))
+def save(name,value):(ROOT/OUT/name).write_text(prior.json_text(value))
+def csv_save(name,rows):(ROOT/OUT/name).write_text(prior.csv_text(rows))
+
+
+def git_blob(commit,path):
+    return subprocess.check_output(['git','show',commit+':'+path],cwd=ROOT)
+
+
+def imported_inventory():
+    files={str(p.relative_to(ROOT)):RESULT for p in (ROOT/DISPLAY).iterdir() if p.is_file()}
+    files[REPORT]=RESULT
+    files.update({MC+name:MC_RESULT for name in ('result.json','bootstrap_summary.csv','observed_strata.csv','bootstrap_S2_groups.csv')})
+    return [dict(commit=commit,path=path,sha256=sha(path),git_blob_sha=subprocess.check_output(
+        ['git','rev-parse',commit+':'+path],cwd=ROOT,text=True).strip()) for path,commit in sorted(files.items())]
+
+
+def source_inventory():
+    rows=[]
+    for label,source,result,path in [
+        ('ORIGINAL_P_ACQUISITION',P_SOURCE,P_RESULT,'scripts/h4_tol_p_science.py'),
+        ('SAVED_DATA_MC_ANALYSIS',MC_SOURCE,MC_RESULT,'scripts/analyze_h4_mc_sample_size.py'),
+        ('PR_ONLY_REDISPLAY',RESULT,RESULT,'scripts/render_h4_pr_cost_variability.py')]:
+        raw=git_blob(source,path)
+        rows.append(dict(role=label,SOURCE=source,result_commit=result,code_path=path,
+            git_blob_sha=subprocess.check_output(['git','rev-parse',source+':'+path],cwd=ROOT,text=True).strip(),
+            sha256=hashlib.sha256(raw).hexdigest(),
+            url=f'https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/{source}/{path}',
+            executed_this_task=False))
+    return rows
+
+
+def asset_inventory():
+    rows=[]
+    for item,stem,claim in FIGURES:
+        for ext in ('png','svg','pdf'):
+            rows.append(dict(item_id=item,kind='SUPPLEMENTARY_FIGURE',format=ext,
+                path=DISPLAY+stem+'.'+ext,sha256=sha(DISPLAY+stem+'.'+ext),result_commit=RESULT,
+                MC_result_commit=MC_RESULT,MC_SOURCE=MC_SOURCE,original_P_SOURCE=P_SOURCE,
+                claim_ids=claim,role='SUPPLEMENT_ONLY_ORIGINAL_ASSET_UNCHANGED'))
+    for item,name,claims,_ in TABLES:
+        rows.append(dict(item_id=item,kind='SUPPLEMENTARY_DATA_TABLE',format='csv',path=DISPLAY+name,
+            sha256=sha(DISPLAY+name),result_commit=RESULT,MC_result_commit=MC_RESULT,
+            MC_SOURCE=MC_SOURCE,original_P_SOURCE=P_SOURCE,claim_ids=claims,
+            role='SUPPLEMENT_ONLY_LITERAL_SAVED_FIELDS'))
+    return rows
+
+
+def ledger_additions(assets):
+    fields=list(c(OLD+'evidence_ledger_v3.csv')[0]);rows=[]
+    def add(identifier,path,field,value,scope,metric,unit='G_RZ',claim=''):
+        row={k:'' for k in fields}
+        row.update(evidence_row_id=identifier,study_id='H4_PR_MC_VARIABILITY',metric=metric,
+            value_literal=value,unit=unit,comparison_scope=scope,baseline_denominator='NOT_A_PF_COMPARISON',
+            cost_evidence='SAVED_VALUE_TRANSCRIPTION_ONLY',scientific_guarantee=LIMITS,evidence_id=claim,
+            source_excerpt=value,source_field=field,SOURCE_commit=MC_SOURCE,result_commit=RESULT,
+            evidence_path=path,evidence_file_sha256=sha(path),reported_precision='EXACT_SAVED_TOKEN_NO_RECALCULATION')
+        rows.append(row)
+    for i,row in enumerate(c(DISPLAY+'pr_bootstrap_summary.csv')):
+        scope=f"H4/tol-onlyDF10/epsilon={row['epsilon']}/{row['cell_id']}/n={row['n']}/B={row['B']}"
+        for field in ('bootstrap_mean','bootstrap_SE','q025','q975'):
+            claim='CE_H4_MC_SE' if field=='bootstrap_SE' else 'CE_H4_MC_MEAN'
+            add(f'H4MC_B{i+1}_{field}',DISPLAY+'pr_bootstrap_summary.csv',f'CSV_RECORD:{i+1}/{field}',
+                row[field],scope,field,claim=claim)
+    for i,row in enumerate(c(DISPLAY+'pr_full_sample_reference.csv')):
+        for field in ('G_exact','paired_SE'):
+            add(f'H4MC_FULL{i+1}_{field}',DISPLAY+'pr_full_sample_reference.csv',f'CSV_RECORD:{i+1}/{field}',
+                row[field],f"H4/epsilon={row['epsilon']}/{row['cell_id']}/N={row['N']}",field,
+                claim='CE_H4_MC_MEAN' if field=='G_exact' else 'CE_H4_MC_SE')
+    for i,row in enumerate(c(DISPLAY+'pr_observed_strata.csv')):
+        for field in ('count','observed_mean_G_exact','observed_min_G','observed_max_G'):
+            add(f'H4MC_STRATUM{i+1}_{field}',DISPLAY+'pr_observed_strata.csv',f'CSV_RECORD:{i+1}/{field}',
+                row[field],f"H4/epsilon={row['epsilon']}/{row['cell_id']}/{row['stratum']}",field,
+                unit='TRAJECTORIES' if field=='count' else 'G_RZ',claim='CE_H4_MC_EVENTS')
+    for i,a in enumerate(assets):
+        add('H4MC_ASSET_'+str(i+1),a['path'],'FILE_PATH',a['path'],a['item_id'],
+            'IMMUTABLE_SUPPLEMENT_ASSET','FILE_REFERENCE',a['claim_ids'])
+        rows[-1]['SOURCE_commit']=RESULT
+    return rows
+
+
+def cem_additions():
+    rows=[]
+    for key,claim in CLAIMS.items():
+        rows.append(dict(id=key,claim_candidate=claim,fixed_commits=RESULT+';'+MC_RESULT+';'+P_RESULT,
+            result_files=DISPLAY+'pr_bootstrap_summary.csv;'+DISPLAY+'pr_full_sample_reference.csv;'+
+                         DISPLAY+'pr_observed_strata.csv;'+DISPLAY+'pr_bootstrap_S2_groups.csv',
+            SOURCE=MC_SOURCE+';'+P_SOURCE+';'+RESULT,
+            conditions='H4/linear1Angstrom/STO-3G/tol-only1e-8DF10/T0.8/P0;epsilon0.05:L_D3/q1/r4/K2/delta0.8/N1108;epsilon0.0005:L_D2/q8/r2/K4/delta0.1/N78;fixed_saved_shots/full_Hadamard_wrapper',
+            existing_value_quote='SEE_LITERAL_SAVED_COLUMNS_AND_SUPPLEMENT_ASSET_REGISTRY',
+            measured_or_model='SAVED_SHOT_WEIGHTED_COMPILED_RZ;CONDITIONAL_EMPIRICAL_BOOTSTRAP',
+            search_or_confirmation='REANALYSIS_OF_SAME_INDEPENDENT_H4_P_COHORT_NO_NEW_INDEPENDENT_DATA',
+            unresolved=LIMITS,evidence_strength='USER_ADOPTED_EMPIRICAL_SUPPLEMENT_NOT_FINAL_FREEZE',
+            audit_links=DISPLAY+'structural_audit.json;'+OUT+'structural_audit.json'))
+    return rows
+
+
+def build():
+    require(not (ROOT/OUT/'paper_manifest.json').exists() or
+        j(OUT+'paper_manifest.json')['base_commit']==BASE,'ONLY_OWNED_DOCUMENT_PACKET')
+    (ROOT/OUT).mkdir(parents=True,exist_ok=True)
+    imported=imported_inventory()
+    for item in imported:
+        require((ROOT/item['path']).read_bytes()==git_blob(item['commit'],item['path']),'IMMUTABLE_IMPORT:'+item['path'])
+    protected={x['path']:x['sha256'] for x in j(PAPER+'preservation.json')['files']}
+    for directory in (PAPER,OLD,B+'track_a_protocol_v2_adopted/2026-10-19/'):
+        protected.update({str(p.relative_to(ROOT)):sha(str(p.relative_to(ROOT))) for p in (ROOT/directory).iterdir() if p.is_file()})
+    protected.update({x['path']:x['sha256'] for x in imported})
+    protected['docs/research/track_a_pr_resource_evaluation_protocol_v2.md']=sha('docs/research/track_a_pr_resource_evaluation_protocol_v2.md')
+    save('preservation.json',dict(policy='main table, Figure2, prior papers, scientific records and imported MC assets remain byte-identical',files=protected))
+    save('adoption_record.json',dict(status='USER_ADOPTED_H4_MC_SUPPLEMENT',recorded_at_UTC=datetime.now(timezone.utc).isoformat(),
+        instruction='H4のPR単独のMC費用変動検証を正式採用し、論文の補足資料へ統合してください。',
+        adopted_result_commit=RESULT,MC_result_commit=MC_RESULT,MC_SOURCE=MC_SOURCE,original_P_SOURCE=P_SOURCE,
+        allowed_claim_ids=list(CLAIMS),same_P_cohort_not_new_independent_evidence=True,
+        new_scientific_execution=False,final_evidence_freeze=False,detailed_scientific_review=False))
+    save('import_receipt.json',dict(kind='EXACT_LOCAL_GIT_OBJECT_BYTES',files=imported,
+        remote_bytes_retrieved_this_task=False,scientific_modules_imported=False))
+    assets=asset_inventory();csv_save('supplement_assets.csv',assets);csv_save('source_registry.csv',source_inventory())
+    old_cem=c(OLD+'claim_evidence_matrix.csv');old_ledger=c(OLD+'evidence_ledger_v3.csv')
+    added=ledger_additions(assets);csv_save('claim_evidence_matrix.csv',old_cem+cem_additions())
+    csv_save('evidence_ledger_v4.csv',old_ledger+added)
+    save('claim_evidence_matrix_overlay.json',dict(base_overlay=ref(OLD+'claim_evidence_matrix_current_overlay.json'),
+        historical_claims_unchanged=True,adopted_claims=[dict(id=k,claim=v,status='USER_ADOPTED_EMPIRICAL_SUPPLEMENT',
+            limits=LIMITS) for k,v in CLAIMS.items()],independent_new_cohorts=0))
+    links=[]
+    for key in CLAIMS:
+        links.append(dict(claim_id=key,item_ids=';'.join(sorted({a['item_id'] for a in assets if key in a['claim_ids'].split(';')})),
+            evidence_row_ids=';'.join(r['evidence_row_id'] for r in added if key in r['evidence_id'].split(';')),
+            captions=OUT+'supplementary_captions.md',methods=OUT+'supplementary_methods.md',
+            source_registry=OUT+'source_registry.csv',sampling_cohort='INDEPENDENT_H4_CONFIRMATION',
+            reuses_main_table_H4_rows='H4_DF10_P_1;H4_DF10_P_2',counts_as_new_independent_evidence=False))
+    csv_save('evidence_linkage.csv',links)
+    publication=j(PAPER+'publication_manifest.json')
+    save('paper_manifest.json',dict(schema='H468_PAPER_WITH_ADOPTED_H4_MC_SUPPLEMENT_V2',status='SUPPLEMENT_ADOPTED_NOT_FINAL_EVIDENCE_FREEZE',
+        base_commit=BASE,base_paper_manifest=ref(OLD+'paper_manifest.json'),base_publication_manifest=ref(PAPER+'publication_manifest.json'),
+        protocol_reference_at_base=ref('docs/research/track_a_pr_resource_evaluation_protocol_v2.md'),
+        main_table=publication['main_table'],figure2=publication['figure2'],main_table_or_Figure2_changed=False,
+        paper_data_manifest=ref(OLD+'paper_data_manifest.csv'),
+        claim_evidence_matrix=dict(**ref(OUT+'claim_evidence_matrix.csv'),rows=len(old_cem)+len(CLAIMS),
+            preserved_prefix_rows=len(old_cem),adopted_supplement_ids=list(CLAIMS),overlay=ref(OUT+'claim_evidence_matrix_overlay.json')),
+        evidence_ledger=dict(**ref(OUT+'evidence_ledger_v4.csv'),rows=len(old_ledger)+len(added),preserved_prefix_rows=len(old_ledger)),
+        supplement=dict(asset_registry=ref(OUT+'supplement_assets.csv'),source_registry=ref(OUT+'source_registry.csv'),
+            figures=[x[0] for x in FIGURES],data_tables=[x[0] for x in TABLES],
+            captions=ref(OUT+'supplementary_captions.md'),methods=ref(OUT+'supplementary_methods.md'),
+            original_report=ref(REPORT),adoption=ref(OUT+'adoption_record.json'),evidence_linkage=ref(OUT+'evidence_linkage.csv'),
+            adopted_result_commit=RESULT,MC_result_commit=MC_RESULT,MC_SOURCE=MC_SOURCE,original_P_result=P_RESULT,original_P_SOURCE=P_SOURCE,
+            numbering='Stable supplement-local IDs; global manuscript numbering is not reassigned'),
+        original_numeric_values_recomputed=False,new_statistics=False,new_scientific_calls=0,
+        population_mean_or_variance_certified=False,unobserved_rare_event_guarantee=False,
+        detailed_scientific_review_started=False,final_evidence_freeze=False,next_scientific_stage_authorized=False))
+    save('MANDATORY_STOP.json',dict(status='MANDATORY_STOP',new_grant_issued=False,new_scientific_calls=0,
+        next_scientific_stage_authorized=False,final_evidence_freeze=False,detailed_scientific_review_started=False))
+    save('structural_audit.json',check(building=True))
+    save('artifact_manifest.json',dict(status='ADOPTED_SUPPLEMENT_DOCUMENT_PACKET_NOT_FINAL_FREEZE',
+        files={p.name:sha(str(p.relative_to(ROOT))) for p in sorted((ROOT/OUT).iterdir()) if p.is_file() and p.name!='artifact_manifest.json'},
+        builder=ref('scripts/integrate_h4_mc_supplement.py')))
+    check()
+    print('H4_MC_SUPPLEMENT_ADOPTED',len(old_cem),'->',len(old_cem)+len(CLAIMS),'claims;',len(old_ledger),'->',len(old_ledger)+len(added),'ledger rows')
+
+
+def check(building=False):
+    for path,digest in j(OUT+'preservation.json')['files'].items():require(sha(path)==digest,'PRESERVED:'+path)
+    for item in j(OUT+'import_receipt.json')['files']:
+        require((ROOT/item['path']).read_bytes()==git_blob(item['commit'],item['path']),'IMPORT:'+item['path'])
+    old_check=display_check.check()
+    manifest=j(OUT+'paper_manifest.json');publication=j(PAPER+'publication_manifest.json')
+    require(manifest['main_table']==publication['main_table'] and manifest['figure2']==publication['figure2'],'UNCHANGED_MAIN_TABLE_AND_FIGURE2')
+    for item in [manifest['base_paper_manifest'],manifest['base_publication_manifest'],manifest['paper_data_manifest'],manifest['protocol_reference_at_base']]:
+        require(sha(item['path'])==item['sha256'],'BOUND_PREVIOUS_MANIFEST')
+    assets=c(OUT+'supplement_assets.csv');require(len(assets)==16,'TWELVE_IMAGES_FOUR_TABLES')
+    require({(a['item_id'],a['format']) for a in assets}=={(k,e) for k,_,_ in FIGURES for e in ('png','svg','pdf')}|{(k,'csv') for k,_,_,_ in TABLES},'EXACT_ASSET_IDS')
+    for a in assets:require(sha(a['path'])==a['sha256'] and a['result_commit']==RESULT,'ASSET_BINDING')
+    for _,name,_,n in TABLES:require(len(c(DISPLAY+name))==n,'FIXED_SAVED_TABLE_DIMENSIONS')
+    old_cem=c(OLD+'claim_evidence_matrix.csv');cem=c(OUT+'claim_evidence_matrix.csv')
+    old_ledger=c(OLD+'evidence_ledger_v3.csv');ledger=c(OUT+'evidence_ledger_v4.csv')
+    require(cem[:len(old_cem)]==old_cem and ledger[:len(old_ledger)]==old_ledger,'HISTORICAL_ROWS_UNCHANGED')
+    require([r['id'] for r in cem[len(old_cem):]]==list(CLAIMS),'ONLY_THREE_ADOPTED_CLAIMS')
+    require(ledger[len(old_ledger):]==ledger_additions(assets),'EXACT_TOKEN_TRANSCRIPTION_NOT_STATISTICS')
+    ids={r['evidence_row_id'] for r in ledger};require(len(ids)==len(ledger),'UNIQUE_EVIDENCE_IDS')
+    for link in c(OUT+'evidence_linkage.csv'):
+        require(link['claim_id'] in CLAIMS and set(link['evidence_row_ids'].split(';'))<=ids,'CEM_LEDGER_LINKAGE')
+    for name in ('supplementary_captions.md','supplementary_methods.md'):
+        text=(ROOT/OUT/name).read_text()
+        for token in ('not the aggregate cost','not a population confidence interval','same H4 P cohort'):
+            require(token in text,'SCOPE_CAPTION_METHODS:'+token)
+    captions=(ROOT/OUT/'supplementary_captions.md').read_text()
+    require(all(key in captions for key,_,_ in FIGURES) and all(key in captions for key,_,_,_ in TABLES),'ALL_CAPTIONS')
+    for path in (ROOT/OUT).glob('*.md'):
+        for link in re.findall(r'\]\(([^)]+)\)',path.read_text()):
+            if '://' not in link and not link.startswith('#'):
+                if building and link in ('structural_audit.json','artifact_manifest.json'):continue
+                require((path.parent/link.split('#')[0]).resolve().is_file(),'RELATIVE_LINK:'+link)
+    for key in ('new_statistics','original_numeric_values_recomputed','final_evidence_freeze',
+                'detailed_scientific_review_started','population_mean_or_variance_certified','unobserved_rare_event_guarantee'):
+        require(manifest[key] is False,'NO_SCOPE_EXTENSION:'+key)
+    require(manifest['new_scientific_calls']==0,'ZERO_SCIENTIFIC_CALLS')
+    if not building:
+        artifact=j(OUT+'artifact_manifest.json')
+        for name,digest in artifact['files'].items():require(sha(OUT+name)==digest,'PACKET_HASH:'+name)
+        require(sha(artifact['builder']['path'])==artifact['builder']['sha256'],'BUILDER_HASH')
+    return dict(status='PASS_DOCUMENT_STRUCTURE_ONLY',preserved_files=len(j(OUT+'preservation.json')['files']),
+        original_Figure2_files=old_check['original_Figure2_files'],unchanged_main_table_rows=6,
+        imported_immutable_files=len(j(OUT+'import_receipt.json')['files']),figures=4,image_assets=12,tables=4,
+        CEM_rows=len(cem),CEM_historical_rows_preserved=len(old_cem),new_claims=list(CLAIMS),
+        evidence_ledger_rows=len(ledger),ledger_historical_rows_preserved=len(old_ledger),
+        same_H4_P_cohort_not_new_independent_evidence=True,scientific_calls=0,new_statistics=False,
+        final_evidence_freeze=False,detailed_scientific_review=False,separate_AI_reviewer_used=False)
+
+
+if __name__=='__main__':
+    parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--build',action='store_true')
+    args=parser.parse_args()
+    if args.build:build()
+    else:print(prior.json_text(check()),end='')

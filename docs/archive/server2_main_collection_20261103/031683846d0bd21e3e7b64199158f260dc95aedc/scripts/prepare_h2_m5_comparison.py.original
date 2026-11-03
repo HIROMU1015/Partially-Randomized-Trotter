@@ -1,0 +1,100 @@
+"""Private seal of existing H2 evidence and explicitly approved extension."""
+import argparse
+import json
+from pathlib import Path
+import random
+import subprocess
+import sys
+import h2_m5_contract as c
+
+FIXED={'F_result':('7ea6df2dbe34e64a34f468c343bb12922d3e2829','F_completed_run01/result.json','attempts/F_run01/output/result.json'),
+ 'FP_result':('af724928689be3592b391fab3a14538bf4752b76','FP_completed_run01/result.json','attempts/FP_run01/output/result.json'),
+ 'D_result':('7b202a1a569c6839c4c7a5dfb18b6ff51ec3f3eb','D_completed_run02/result.json','attempts/D_run02/output/result.json'),
+ 'A_result':('1d2f67ec285956ef4090ea26520d64b11e925f9c','A_completed_run01/result.json','attempts/A_run01/output/result.json')}
+
+def prepare(source,old_root,private,pilot_auth):
+    private=Path(private).resolve();private.mkdir(parents=True,exist_ok=False)
+    old=Path(old_root).resolve();origin=old/'.h2_pr_resource_private/2026-10-19'
+    f=c.read(origin/'activation01/F_spec_EXECUTION.json');a=c.read(origin/'fp_d_a_preparation01/A_spec_PENDING.json')
+    require=c.require
+    require(sys.executable==f['python'],'EXACT_OLD_H2_PYTHON')
+    files={};inputs={}
+    for role,(commit,rel,path) in FIXED.items():
+        raw=origin/path;blob=subprocess.check_output(['git','show',commit+':artifacts/resource_applicability/track_a_h2_pr_resource/2026-10-19/'+rel],cwd=c.ROOT)
+        require(c.storage.codec.hashlib.sha256(blob).hexdigest()==c.sha(raw),'FIXED_ORIGINAL_RESULT:'+role)
+        item=c.seal(raw,'input:'+role);inputs[role]=item;files[item['path']]=item
+    for role,path in [('snapshot',origin/'attempts/F_run01/output/tol_only_snapshot.npz'),
+      ('snapshot_receipt',origin/'attempts/F_run01/output/tol_only_receipt.json')]:
+        item=c.seal(path,'input:'+role);inputs[role]=item;files[item['path']]=item
+    for rel,h in f['provider_hashes'].items():
+        item=c.seal(Path(f['provider_root'])/rel,'provider:'+rel)
+        require(item['sha256']==h,'ORIGINAL_PROVIDER_BYTES');files[item['path']]=item
+    require(c.sha(f['runtime_manifest'])==f['runtime_manifest_sha256'],'ORIGINAL_RUNTIME_MANIFEST')
+    for path,h in c.read(f['runtime_manifest']).items():
+        item=c.seal(path,'runtime:'+Path(path).name);require(item['sha256']==h,'ORIGINAL_RUNTIME_BYTES:'+path);files[item['path']]=item
+    item=c.seal(f['python'],'runtime:python');require(item['sha256']==f['python_sha256'],'ORIGINAL_PYTHON_BYTES');files[item['path']]=item
+    for rel in c.SOURCE_PATHS:
+        path=c.ROOT/rel;require(path.read_bytes()==subprocess.check_output(['git','show',source+':'+rel],cwd=c.ROOT),'COMMITTED_NEW_SOURCE:'+rel)
+        item=c.seal(path,'new_SOURCE:'+rel);files[item['path']]=item
+    # Preserve and exclude all explicitly known old H2 FP/A/P registry seeds,
+    # their original master/step hierarchy, and active H4/H6 pilot seeds.
+    exclusion_paths=[origin/'P_seal02/seed_exclusions_PRIVATE.json',origin/'fp_d_a_preparation01/old_seed_values.json']
+    values=set()
+    for path in exclusion_paths:
+        ex=c.read(path)
+        if isinstance(ex,dict):ex=ex.get('values',ex.get('seeds',[]))
+        require(isinstance(ex,list),'KNOWN_EXCLUSION_FORMAT');values.update(ex)
+        item=c.seal(path,'old_seed_exclusions');files[item['path']]=item
+    for path in [origin/'fp_d_a_preparation01/FP_seeds.json',origin/'fp_d_a_preparation01/A_seeds.json',origin/'P_seal02/seed_registry_PRIVATE.json']:
+        ex=c.read(path)
+        for task in ex['tasks']:
+            values.add(task['seed']);values.update(task.get('step_seeds',[]))
+        item=c.seal(path,'old_H2_seed_registry');files[item['path']]=item
+    for stage in ('H4_DESIGN_PILOT','H6_DESIGN_PILOT'):
+        path=Path(pilot_auth)/stage/'registry_PRIVATE.json'
+        for row in c.read(path).values():values.update(row.values())
+        item=c.seal(path,'active_H46_seed_registry_observation');files[item['path']]=item
+    ep=private/'known_excluded_seeds_PRIVATE.json';c.save(ep,dict(values=sorted(values),finite_known_registry_coverage=True))
+    domain=c.d.domain();potential=[]
+    for rows in domain.values():
+        for cell in rows:
+            for i in range(8 if cell['method']=='B2' else 1):
+                potential.append(dict(id=cell['id']+'__'+str(i),cell=cell,replica=i,
+                  cohort='H2_M5_EXPLORATION_N8' if cell['method']=='B2' else 'H2_M5_DETERMINISTIC'))
+    registry=c.d.seeds_for(potential,source,sorted(values));rp=private/'registry_PRIVATE.json';c.save(rp,registry)
+    for path,role in [(ep,'new_excluded_seeds'),(rp,'new_H2_seed_registry')]:
+        item=c.seal(path,role);files[item['path']]=item
+    approval=private/'approval_PRIVATE.json';c.save(approval,dict(SOURCE=source,stages_1_through_6_authorized=True,
+      verbatim_user_message='6の統合比較まで、私の承認はとらなくてよいので一気に進めてよい',
+      independent_confirmation=False,new_standard_protocol_adoption=False,AD03='DEFERRED',
+      basis='EXISTING_H2_GRID_AND_N8_EXPLORATORY_PURPOSE_NOT_POWER_OR_TAIL_GUARANTEE'))
+    item=c.seal(approval,'user_approval');files[item['path']]=item
+    root=private/'run01'
+    cfg=dict(SOURCE=source,scope=c.d.SCOPE,stage='H2_M5_THROUGH_COMPARISON',domains=domain,tasks=potential,
+      runtime=dict(python=f['python'],python_sha256=f['python_sha256'],manifest_sha256=f['runtime_manifest_sha256']),
+      provider_root=f['provider_root'],binding=a['native_config']['binding'],inputs=inputs,sealed_files=list(files.values()),
+      run_root=str(root),output=str(root/'ACQUIRE/output'),ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),
+      registry_path=str(rp),excluded_path=str(ep),storage=c.storage.storage_policy(),approval_path=str(approval),authorized=True,
+      resources=dict(worker_RSS_proxy_bytes=2*1024**3,worker_proxy_basis='HEADROOM_OVER_EXISTING_H2_DENSE_5Q_AND_SOURCE_PROBE_NOT_CAP',
+        planned_storage_bytes=16*1024**3,storage_proxy_is_bound=False,runtime_caps=False,host_PSI_kill=False,
+        proxy_basis='H2_PREVIOUS_EVIDENCE_SMALL_5Q_PLUS_LOSSLESS_ARCHIVE_AND_RAW_HEADROOM'))
+    cfg['supervisor']={k:str(private/name) for k,name in [('entered','SUPERVISOR_ENTERED.json'),
+      ('log','native_PRIVATE.log'),('exit','external_exit_witness_PRIVATE.json')]}
+    plan={k:cfg[k] for k in ('SOURCE','stage','tasks','runtime','provider_root','binding','inputs','resources','registry_path','excluded_path','storage')}
+    plan.update(scope=c.scope(),closure_digest=c.digest(cfg['sealed_files']),approval_sha256=c.sha(approval))
+    plan['supervisor']=cfg['supervisor']
+    pp=private/'plan_PRIVATE.json';c.save(pp,plan);cfg.update(plan=plan,plan_path=str(pp),plan_sha256=c.sha(pp))
+    cfg['grant']=dict(valid=True,SOURCE=source,scope=c.d.SCOPE,plan_sha256=cfg['plan_sha256'],
+      grant_id='H2_M5_RUN01_'+c.digest(plan),retry=False,independent_confirmation=False)
+    c.authorize(cfg);cp=private/'config_APPROVED_PRIVATE.json';c.save(cp,cfg)
+    c.save(private/'grant_APPROVED_PRIVATE.json',cfg['grant'])
+    print(json.dumps(dict(config=str(cp),SOURCE=source,plan_sha256=cfg['plan_sha256'],
+      sealed_files=len(files),new_seed_count=sum(map(len,registry.values())),known_excluded_seeds=len(values),
+      collisions=0,potential_tasks=len(potential),science_started=False)))
+
+def main():
+    p=argparse.ArgumentParser();p.add_argument('--source',required=True);p.add_argument('--old-root',required=True)
+    p.add_argument('--private',required=True);p.add_argument('--pilot-auth',required=True);a=p.parse_args()
+    prepare(a.source,a.old_root,a.private,a.pilot_auth)
+
+if __name__=='__main__':main()

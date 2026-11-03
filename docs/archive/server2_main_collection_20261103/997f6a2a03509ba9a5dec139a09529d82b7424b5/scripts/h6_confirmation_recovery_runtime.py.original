@@ -1,0 +1,79 @@
+"""H6 recovery transport: fresh spawned native state, unchanged science bytecode."""
+import os
+from pathlib import Path
+from types import FunctionType,SimpleNamespace
+import h6_confirmation_recovery_contract as c
+from h246_confirmation_runtime import rebind
+from h246_confirmation_worker_diagnostics import initialize_owned_worker_diagnostics
+from h46_pr_pilot_repair import BoundJSON
+
+RUNTIME=None
+
+
+def enabled(cfg):
+    c.require(cfg['resources']['process_start_method']=='spawn' and cfg['resources']['worker_input_cache'],'H6_SPAWN_CACHE')
+    return True
+
+
+def fresh(cfg):
+    from run_h46_m5_signal import fresh_resources
+    from h46_pr_pilot_repair import worker_count
+    r=cfg['resources'];obs=fresh_resources(dict(run_root=cfg['run_root'],systems={'H6':{}},
+      resources=dict(system_RSS_proxy_bytes={'H6':1},disk_proxy_bytes=0)))
+    workers=worker_count(len(cfg['tasks']),obs['idle_CPU_equivalents'],obs['effective_available_RAM_bytes'],r['worker_RSS_proxy_bytes'])
+    raw=r['raw_pair_proxy_bytes'];final=r['final_growth_proxy_bytes'];disk=obs['disk_free_bytes']
+    # Admit as many actual available workers as RAM/CPU/scratch allow. Preserve
+    # final output and one restoration pair; no byte truncation or runtime cap.
+    scratch_workers=(disk-final-raw)//(2*raw)
+    workers=min(workers,scratch_workers);c.require(workers>=1,'FRESH_CPU_RAM_SCRATCH_CANNOT_ADMIT_ONE')
+    fs=os.statvfs(Path(cfg['run_root']).parent);c.require(fs.f_favail>=r['inode_proxy'],'FRESH_RECOVERY_INODES')
+    return dict(workers=int(workers),observation=obs,process_start_method='spawn',shared_parent_native_state=False,
+      worker_RSS_proxy_bytes=r['worker_RSS_proxy_bytes'],storage_peak_proxy_bytes=final+2*workers*raw+raw,
+      inode_free=fs.f_favail,runtime_caps=False,proxy_is_upper_bound=False,host_PSI_kill=False)
+
+
+def initialize(cfg,stop):
+    initialize_owned_worker_diagnostics()
+    rt=get_runtime(cfg);rt.runner_namespace['WORKER_CFG']=cfg;rt.runner_namespace['WORKER_STOP']=stop
+    folder=Path(cfg['run_root'])/'native_diagnostics';folder.mkdir(exist_ok=True)
+    c.save(folder/('worker_'+str(os.getpid())+'.json'),dict(pid=os.getpid(),parent=os.getppid(),
+      SOURCE=cfg['SOURCE'],plan_sha256=cfg['plan_sha256'],SIGTERM='DEFAULT',fatal_stack=True,
+      process_start_method='spawn',preexisting_native_context=False))
+
+
+def worker(task):
+    cfg=RUNTIME.runner_namespace['WORKER_CFG'];stop=RUNTIME.runner_namespace['WORKER_STOP']
+    p=Path('/proc')/str(os.getpid())/'stat';raw=p.read_text();stat=raw[raw.rindex(')')+2:].split()
+    c.save(Path(cfg['run_root'])/'native_diagnostics'/('task_'+task['id']+'.json'),
+      dict(task_id=task['id'],pid=os.getpid(),ppid=os.getppid(),starttime=stat[19],SOURCE=cfg['SOURCE'],
+        plan_sha256=cfg['plan_sha256'],science_call_not_yet_reserved=True))
+    return RUNTIME.native.run_task(cfg,task,stop)
+
+
+def runtime(cfg):
+    import h46_pr_pilot_native as native
+    import run_h46_pr_design_pilot as runner
+    import audit_h46_pr_pilot_execution as audit
+    view=c.native_contract(cfg)
+    nat,ns=rebind(native,dict(c=view,enabled=enabled,CACHE={},INPUT_CACHE=BoundJSON()))
+    cli=str(Path(__file__).with_name('run_h6_confirmation_recovery.py'))
+    # False means the legacy FORK prewarm branch is intentionally not used.
+    # Trajectory parallelism, per-worker context and SHA caches remain enabled.
+    run,rns=rebind(runner,dict(c=view,__file__=cli,repair=SimpleNamespace(enabled=lambda cfg:False),
+      fresh=fresh,initialize=initialize,worker=worker))
+    run.execute.__kwdefaults__={'target':worker}
+    run.supervise=FunctionType(runner.supervise.__code__,dict(runner.supervise.__globals__,c=view,__file__=cli),
+      'supervise',runner.supervise.__defaults__,runner.supervise.__closure__)
+    aud,ans=rebind(audit,dict(c=view))
+    return SimpleNamespace(native=nat,native_namespace=ns,runner=run,runner_namespace=rns,auditor=aud,audit_namespace=ans)
+
+
+def get_runtime(cfg):
+    global RUNTIME
+    if RUNTIME is None:RUNTIME=runtime(cfg)
+    return RUNTIME
+
+
+def evaluate(cfg):
+    import h246_confirmation_evaluation as original
+    ev,_=rebind(original,dict(c=c));return ev.evaluate(cfg)

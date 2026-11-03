@@ -1,0 +1,101 @@
+"""Artificial checks of spawn transport, unchanged numerical calls and refusal."""
+from concurrent.futures import ProcessPoolExecutor
+import importlib
+import multiprocessing as mp
+import os
+from pathlib import Path
+import signal
+import subprocess
+import sys
+import tempfile
+import threading
+from types import CodeType
+import unittest
+from unittest.mock import patch
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'scripts'))
+import h6_confirmation_recovery_contract as c
+import h6_confirmation_recovery_runtime as runtime
+
+
+def synthetic_spawn_worker(value):
+    from h246_confirmation_worker_diagnostics import initialize_owned_worker_diagnostics
+    receipt=initialize_owned_worker_diagnostics()
+    return dict(result=value*value,pid=os.getpid(),SIGTERM_default=signal.getsignal(signal.SIGTERM)==signal.SIG_DFL,
+      fatal=receipt['fatal_native_stack_logging'])
+
+
+class RecoveryTests(unittest.TestCase):
+    def test_H6_counts_fixed(self):
+        self.assertEqual(c.STAGES,('H6_CONFIRMATION',));tasks=c.tasks_for('H6_CONFIRMATION')
+        self.assertEqual(len(tasks),32);self.assertEqual(c.law.call_scope(tasks,'PR')['compile_axes'],64)
+        self.assertEqual([sum(t['candidate']['formula']==formula for t in tasks) for formula in ('2nd','4th(m5_best)')],[23,9])
+        for stage in ('H2_CONFIRMATION','H4_CONFIRMATION'):
+            with self.assertRaises(ValueError):c.tasks_for(stage)
+    def test_invalid_grant_refused_before_inputs(self):
+        with patch.object(c,'read',side_effect=AssertionError('INPUT_READ')):
+            with self.assertRaisesRegex(ValueError,'EXPLICIT_NEW_H6'):c.authorize({'authorized':False,'grant':{'valid':False}})
+    def test_cli_drafts_refused_all_modes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/'draft';p.write_text('{"authorized":false,"grant":{"valid":false}}')
+            for flag in ('--execute','--supervise','--audit','--evaluate'):
+                r=subprocess.run([sys.executable,'-B',str(c.ROOT/'scripts/run_h6_confirmation_recovery.py'),flag,'--config',str(p)],capture_output=True,text=True)
+                self.assertEqual(r.returncode,2);self.assertIn('EXPLICIT_NEW_H6',r.stdout)
+    def identical(self,a,b):
+        self.assertEqual(a.co_code,b.co_code);self.assertEqual(a.co_names,b.co_names)
+        for x,y in zip(a.co_consts,b.co_consts):
+            if isinstance(x,CodeType):self.identical(x,y)
+            else:self.assertEqual('CONFIRMATION' if x=='DESIGN_PILOT' else x,y)
+    def test_numerical_adapter_bytecode_unchanged(self):
+        import h46_pr_pilot_native as previous
+        r=runtime.runtime(dict(signal_path='ARTIFICIAL'))
+        for name in ('run_task','context','gate','atomic_binary'):
+            self.identical(getattr(previous,name).__code__,getattr(r.native,name).__code__)
+        self.assertIs(r.runner_namespace['initialize'],runtime.initialize)
+        self.assertFalse(r.runner_namespace['repair'].enabled({}))
+    def test_real_spawned_children_with_default_signals(self):
+        ctx=mp.get_context('spawn')
+        prior=signal.signal(signal.SIGTERM,lambda *_:None)
+        try:
+            with ProcessPoolExecutor(max_workers=2,mp_context=ctx) as pool:
+                futures=[pool.submit(synthetic_spawn_worker,i) for i in range(4)]
+                processes=list(pool._processes.values());rows=[f.result() for f in futures]
+            self.assertEqual([x['result'] for x in rows],[0,1,4,9])
+            self.assertTrue(all(x['SIGTERM_default'] and x['fatal'] for x in rows))
+            self.assertTrue(all(p.exitcode==0 and not p.is_alive() for p in processes))
+        finally:signal.signal(signal.SIGTERM,prior)
+    def test_fresh_uses_available_resources_not_old_25(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            cfg=dict(run_root=str(Path(tmp)/'future'),tasks=[{}]*32,resources=dict(worker_RSS_proxy_bytes=1,raw_pair_proxy_bytes=1,
+              final_growth_proxy_bytes=10,inode_proxy=1))
+            with patch('run_h46_m5_signal.fresh_resources',return_value=dict(idle_CPU_equivalents=64,effective_available_RAM_bytes=1000,disk_free_bytes=1000)):
+                result=runtime.fresh(cfg)
+            self.assertEqual(result['workers'],32);self.assertEqual(result['process_start_method'],'spawn')
+            self.assertFalse(result['shared_parent_native_state'])
+
+@unittest.skipUnless(os.environ.get('M5_TEST_PROVIDER'),'artificial native provider')
+class NativeTests(unittest.TestCase):
+    def test_both_formulas_native_and_byte_audit(self):
+        sys.path.insert(0,str(Path(os.environ['M5_TEST_PROVIDER'])/'src'))
+        from test_h46_m5_cost_readiness import NativeToyTests
+        from test_h46_pr_design_pilot import toy_task
+        import h46_m5_native as previous
+        for formula in ('2nd','4th(m5_best)'):
+            with self.subTest(formula=formula),tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp);(root/'output').mkdir();(root/'ledger').mkdir();toy=NativeToyTests.toy(self)
+                t=toy_task(formula=formula);t['stage']='H6_CONFIRMATION';t['candidate']['system']='H6'
+                cfg=dict(SOURCE='a'*40,plan_sha256='b'*64,stage=t['stage'],tasks=[t],run_root=tmp,output=str(root/'output'),
+                  ledger=str(root/'ledger'),marker=str(root/'CONSUMED.json'),grant={},storage=c.storage.storage_policy(),
+                  systems={'H6':{'binding':{'artificial':True}}},resources=dict(process_start_method='spawn',worker_input_cache=True),
+                  registry_path=str(root/'registry'),signal_path=str(root/'signal'),sealed_files=[])
+                c.save(cfg['marker'],dict(state='CONSUMED_NO_RETRY_NO_REFUND',grant={}))
+                c.save(cfg['registry_path'],c.law.registry([t],cfg['SOURCE'],'ARTIFICIAL','CONFIRMATION',[]))
+                c.save(cfg['signal_path'],dict(records=[dict(candidate=t['candidate'],signal=previous.signal(toy,dict(t['candidate'],policy=t['candidate']['r_policy'])))]))
+                cfg['sealed_files']=[c.seal(p,'artificial') for p in (cfg['registry_path'],cfg['signal_path'])]
+                r=runtime.runtime(cfg);view=r.native_namespace['c']
+                with patch.object(view,'authorize'),patch.object(view,'verify'),patch.dict(r.native_namespace,{'context':lambda *a:toy}):
+                    r.native.run_task(cfg,t,threading.Event())
+                result=c.read(root/'output'/t['id']/'result.json')
+                self.assertTrue(all(g['PASS'] for g in result['checks']));self.assertEqual(result['seed_cohort'],'CONFIRMATION')
+                self.assertEqual(r.auditor.task_audit(cfg,t)['archives'],6)
+
+if __name__=='__main__':unittest.main()
