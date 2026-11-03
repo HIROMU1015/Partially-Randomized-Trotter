@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE固定request B：実回路・測定平均の局所照合（2026-11-03）](docs/research/rpe_fixed_request_measurement_b_20261103/REPORT.md)：
+H4/1Å/STO-3G/legacy DF12、L_D3/12、δ=.02、q1/q8の6request・12axisが1e-10内。
+SOURCE・runner・人工testsとraw/state artifactへ同報告から辿る。sampling/compile/費用再解析0、mandatory STOP。
+
 [RPE 18roundの測定・実回路接続準備（2026-11-03）](docs/research/rpe_18round_measurement_connection_20261103/IMPLEMENTATION_CONNECTION_REPORT.md)：
 SOURCE対応、前提・証拠表、薄いadapterと人工tests、次の限定科学検証案。
 新H4計算・sampling・build/compile・保存signal再解析なし。V1/V2/V3/R1の判定とSTOPを維持。

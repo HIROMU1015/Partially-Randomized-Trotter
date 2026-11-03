@@ -1,3 +1,14 @@
+## 2026-11-03 RPE固定request B：局所実回路平均の整合
+
+[報告・SOURCE・raw](docs/research/rpe_fixed_request_measurement_b_20261103/REPORT.md)。
+H4 linear 1.00Å/STO-3G/legacy DF12、8qubit・4電子sector、物理H基底状態、
+L_D3/12、δ=.02、q1/q8（Partial r1/K2、Full r0/K0）の固定6request・12axis。
+既存atol1e-10で全点整合、最大mean残差8.66e-15、control作用残差1.84e-14。
+SOURCE4d7c455db3ed7d3e4bc9e2e1fd4dbeba9f46b272の1実行、state solve1、sampling/compile/費用評価0。
+再構成stateは保存physical fingerprintと一致するが、原Full18round診断の欠測欄は変更しない。
+局所idealな条件付き平均の検証であり、fresh-IID/marginal・18round成功率・厳密半径・compiled correctnessの保証ではない。
+V1/V2/V3/R1を維持し、`LOCAL_FIXED_REQUEST_MEANS_CONSISTENT_MANDATORY_STOP`。
+
 文書索引：[Pauli-JW H2/H4/H6の最新総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)。文書転記・出典への案内であり、以下の科学status・certificate未受理を更新しない。既存manifestとvalidatorのschema不整合は[保守報告](docs/maintenance/pauli_jw_repository_integration_20261026.md)に記載。
 
 ## 2026-10-25 H4 Pauli B0/B0I prefix/q比較

@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE固定request B：physical入力・controlled/Hadamard平均の局所照合](research/rpe_fixed_request_measurement_b_20261103/REPORT.md)
+（2026-11-03）。保存q1/q8の6request・12axisで数値整合。sampling・compile・費用評価なし。
+同directoryの固定runner/testと、新artifact/stateへのリンクを参照。旧判定を維持してmandatory STOP。
+
 [RPE 18round：測定・実回路への接続準備](research/rpe_18round_measurement_connection_20261103/IMPLEMENTATION_CONNECTION_REPORT.md)
 （2026-11-03）。同directoryに前提表、科学検証案、次段判断、adapter、人工testsと検査記録。
 科学runnerは追加せず、V2条件付き成功・R1費用UNDETERMINEDと既存STOPを維持。
