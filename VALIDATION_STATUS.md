@@ -1,3 +1,13 @@
+## 2026-11-03 RPE m17：正常完了・固定数値診断INCONSISTENT
+
+[報告・SOURCE・原RESULT/7行列](docs/research/rpe_m17_mean_validation_execution_20261103/REPORT.md)。
+SOURCE128e9a5bf2630cd0333ec5f69b81b25def78eb79、linear H4/1Å/STO-3G/legacy DF12、
+B physical state、8qubit・4電子sector70、Partial L_D3/単一δ=.02/m17 q131072/r32 K2。
+law対reference6.2594202981e-10、law対保存μ5.6886265843e-10、reference対保存μ8.2130502275e-11。
+前二つが固定1e-10を超えINCONSISTENT。統計予算残余約8.6006522009e-5、u_num未確立で科学判定UNDETERMINED。
+RPE必要精度への不適合や丸め誤差の寄与を特定した結果ではない。
+scalar行1/DF preparation1/mean2を完了し、sampling/compile/価格0。正常完了後の再試行なし、mandatory STOP。
+
 ## 2026-11-03 RPE候補A run02：限定sampling・仮想測定診断の完了
 
 [報告・SOURCE・raw](docs/research/rpe_fresh_iid_measurement_a_run02_20261103/REPORT.md)。
