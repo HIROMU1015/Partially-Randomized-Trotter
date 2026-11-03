@@ -384,7 +384,7 @@ A2は`NOT_ADOPTED`、A1は`CLOSED`、K1-Fは未承認・未実行、SPEC-08未�
 - [E3] [raw result](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c1b80c0fabc1706d69585d993cbecfa12e4d09a6/artifacts/qc_a2_phase_b_execution/2026-10-18/attempt_1/ledger/result.json)。直接取得したが長文表示上限あり。科学値・費用・context・記録一覧を確認、全JSONの独立再認証なし。報告raw SHA256は`1c66113d8e18626a7e682879682fdde221ff1495e16e8d4271ffaa5d0b69f281`。
 - [E4] [実行承認記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c1b80c0fabc1706d69585d993cbecfa12e4d09a6/docs/research/qc_a2_phase_b_execution_20261018/execution_authorization_record.md)。実行許可と、技術中断時の限定対応、旧claim保護の記録。今回実際には修正・retryなし。
 - [E5] [正式契約Cの意味論](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a7f8307123f6ba5bbb8d8b84e124400ac04a60ce/docs/research/qc_a2_phase_b_contract_adoption_20261018/formal_contract.md)。採択時点で実行未承認という履歴を、後続実行と混同しない。
-- [E6] [実行branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/qc-a2-phase-b-execution-20261018)。本レビュー時のGitHub APIでHEAD=c1b80c0fabc1706d69585d993cbecfa12e4d09a6を確認。
+- [E6] [当時の公開commit（固定snapshot）](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/c1b80c0fabc1706d69585d993cbecfa12e4d09a6)。本レビュー時のGitHub APIでHEAD=c1b80c0fabc1706d69585d993cbecfa12e4d09a6を確認。
 
 ### 科学仕様・SOURCE
 

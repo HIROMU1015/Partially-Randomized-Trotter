@@ -435,7 +435,7 @@ sourceが実行可能という技術判断と、別途のユーザー実行承�
 - [R10] [比較実行計画v2](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ef0b2419df2d25187ad14e865ae0a38d17a04628/docs/tracks/algorithm_codesign/df_correction_comparison_execution_plan_v2_20261011.md)。全文取得。資源上限、strict phase、T coverage、CD/E区別。
 - [R11] [CD保存field summary](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ef0b2419df2d25187ad14e865ae0a38d17a04628/artifacts/track_b_df_correction_comparison_execution_audit/2026-10-12/CD_saved_summary_v1.json)。今回は先頭65行取得。原値を再算せず、保存substageの位置付けを確認。
 - [R12] [共通fingerprint source](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ef0b2419df2d25187ad14e865ae0a38d17a04628/src/trotterlib/rte_compiled_cost.py)。今回は277–430行を取得。名前・recursive definition・phase・wireを含むpayload規則。
-- [R13] [対象branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/track-b-e-r3-identity-only-v2-one-shot-execution-20261012)。レビュー時にGitHub branch endpointからHEADが対象公開commitと一致すると確認。
+- [R13] [当時の対象公開commit（固定snapshot）](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ef0b2419df2d25187ad14e865ae0a38d17a04628)。レビュー時にGitHub branch endpointからHEADが対象公開commitと一致すると確認。
 - [E1] [IBM Quantum：Qiskit 1.3 QuantumCircuit](https://docs.quantum.ibm.com/api/qiskit/1.3/qiskit.circuit.QuantumCircuit)。外部補助資料。`name`からinstruction/gate名への対応、global phaseのcontrolled利用への注意。
 
 ### 参照上の留意点

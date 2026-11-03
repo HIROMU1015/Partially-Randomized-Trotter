@@ -1,5 +1,7 @@
 # docs/tracks/algorithm_codesign：資料とSOURCEの統合入口
 
+当時のbranch URLや凍結文書v2のR12は、[固定commitの閲覧案内](../../research/branch_reference_navigation_20261103.md)を併用する。科学SOURCE・実行認可本文は原文の指定を保持する。
+
 2026-11-03。公開版の索引にあった資料リンクをまとめた。元の索引は全版を保存している。
 当時の「次段階」「承認済み」「最新」は原snapshotの記録として読み、現在の実行指示へ移さない。
 

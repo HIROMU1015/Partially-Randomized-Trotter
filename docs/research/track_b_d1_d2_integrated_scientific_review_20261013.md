@@ -447,8 +447,8 @@ GPTへ戻すのは、coherent semantics・保証の前提・比較の公平性�
   https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/874ca12d347f8f35e5d8d64f65f24abc4a2df523/src/trottertracks/algorithm_codesign/rte_development/accounting.py
 - [R9] 最終保存値分析の検証記録。
   https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4cf2827c14fec96613a60bb1427287b30766d5da/artifacts/track_b_d2_final_saved_integration/2026-10-13/v1/validation_summary_v1.json
-- [R10] branch metadata。取得時HEADが上記最新commitと一致。
-  https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/branches/track-b-d2-final-saved-integration-analysis-20261013
+- [R10] 当時確認したcommitの固定metadata。取得時のbranch HEADが上記最新commitと一致した記録は保存原版を参照。
+  https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/commits/4cf2827c14fec96613a60bb1427287b30766d5da
 - [R11] 前回D1科学レビュー原本。現在の添付原本も参照した。
   https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/4cf2827c14fec96613a60bb1427287b30766d5da/docs/research/track_b_d1_results_and_resource_mechanisms_scientific_review_20261013.md
 

@@ -655,7 +655,7 @@ result SHA256：`3a4ed36214e34670a8224a0589be2587176148f2c655d3efd57a9c396f3c233
 - [R5] [Prototype source](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/src/trottertracks/algorithm_codesign/return_aggregation.py)
 - [R6] [G6 raw result](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/artifacts/track_b_g6_return_generator_audit/2026-10-10/result_v1.json) ／ [tests source](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/tests/tracks/algorithm_codesign/test_g6_return_aggregation.py)
 - [R7] [G6 manifest](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/artifacts/track_b_g6_return_generator_audit/2026-10-10/evidence_manifest_v1.json)
-- [R8] [G6 branch ref（照合時点のlive endpoint）](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/ref/heads/track-b-g6-return-generator-audit-20261010)
+- [R8] [G6照合時のresult commit（固定metadata）](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/commits/28cfabb1d47e0e1824bce1e154a9c289738fa2b9)
 - [R9] [R0 independent proof：既知partial-return](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/672d6bc667eaa7b9ca4979b012f1530499d701b8/docs/tracks/algorithm_codesign/rte_reallocation_r0_independent_proof_v1.md)
 - [R10] [G5 reviewのrepository snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/28cfabb1d47e0e1824bce1e154a9c289738fa2b9/docs/research/track_b_G5_research_direction_review_20261010.md)
 

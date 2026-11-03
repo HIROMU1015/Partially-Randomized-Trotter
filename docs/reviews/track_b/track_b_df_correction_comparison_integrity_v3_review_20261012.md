@@ -183,4 +183,4 @@ Python 3.13.5のreview環境で、**独立に書いたmetadata/mock 30件が全�
 - [R9] [不変性・metadata監査](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/41349b73157c7781e0b534cf0fe61e06bf439954/artifacts/track_b_df_correction_comparison_integrity_v3/2026-10-11/source_integrity_verification_v3.json)
 - [R10] [source manifest v3](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/41349b73157c7781e0b534cf0fe61e06bf439954/artifacts/track_b_df_correction_comparison_integrity_v3/2026-10-11/source_manifest_v3.json)
 - [R11] [S→S' commit比較](https://github.com/HIROMU1015/Partially-Randomized-Trotter/compare/b4aba2b698cdc81710dbdbb5769a1686f716ffe2...41349b73157c7781e0b534cf0fe61e06bf439954)
-- [R12] [公開HEADのmetadata・親source](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/branches/track-b-df-correction-comparison-v3-integrity-preparation-20261011)（branchは可変。本文の固定SHAを正本とする。）
+- [R12] [確認時の公開HEAD（固定metadata）・親source](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/commits/a1ec59e6b2d1c25f10daabfc752755bda317f718)（科学SOURCEは本文の固定S'を正本とする。）

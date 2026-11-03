@@ -1,5 +1,7 @@
 # 受領科学レビュー
 
+受領原文中の過去のbranch URLは、[固定commitと保存原版の案内](../research/branch_reference_navigation_20261103.md)から辿れる。
+
 ## 2026-10-15 finite-step準備のGitHub照合・Mandatory STOP
 
 payload `fd44510328d8ab3068634a9906d40de16ca3ec43` をGitHubから再取得し、47変更blobs/1,859,892bytes、固定source21files/417保護files/6参照/受領原文34,108bytesを照合した。[receipt](../../artifacts/qc_onebody_repartition_finite_step_preparation_v1/2026-10-15/publication/receipt.json)。source19d5bd74、contract/source/inputは不変。旧150manifest/non-result/global FAIL/root137pathsを保持。人工37tests・identity-only preflightの技術証拠であり、分子eig/RDM/expectation/PF/compileの新規取得0、承認発行0、attempt消費0。

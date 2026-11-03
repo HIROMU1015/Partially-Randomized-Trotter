@@ -152,7 +152,7 @@ rootの既存dirty/untracked、旧Track A/B、旧representationのsource/input/r
 結果commit: **`e8eff10260f337ad0e957f31e7f7d36bfb0be719`**。
 [結果・失敗・監査の固定tree](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e8eff10260f337ad0e957f31e7f7d36bfb0be719/artifacts/n13_redesign/2026-10-11)、
 [科学source固定commit](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/bbcb0176d43bfd1f7a10a87fa8f38e200d61ec46)、
-[公開branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/n13-redesign-preparation-20261011)。
+[公開snapshot（固定commit）](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/10d91e518520e6f3fd853c85d8eff078357b7edb)。
 別のbare repositoryへGitHubから直接fetchし、local object alternatesなしで218 blobs・5335702bytesを取得して照合した。
 一次N3/N2、N1 failure/log、元scope、179 source/input bindings、新しい監査source・報告を含む。
 remote exportから保存監査660、別diagnostic監査411、new-entry manifest validatorが再度PASS。

@@ -472,7 +472,7 @@ source Sへfreezeし、commit・push・remote再取得後にSTOP。新しい比�
 - [R8 R1 strict numeric.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/73b2102a305f018d22348418adc7939cae63f0b2/src/trottertracks/algorithm_codesign/rte_reallocation/numeric.py)
 - [R9 SP economics.py](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/73b2102a305f018d22348418adc7939cae63f0b2/src/trottertracks/algorithm_codesign/synthesis_placement/economics.py)
 - [R10 runtime identity](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/73b2102a305f018d22348418adc7939cae63f0b2/artifacts/track_b_df_correction_comparison_preparation/2026-10-11/runtime_identity_preparation.json)
-- [R11 branch確認](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/branches/track-b-df-correction-comparison-preregistration-20261011)
+- [R11 確認時commitの固定metadata](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/commits/73b2102a305f018d22348418adc7939cae63f0b2)
 - [W1 pygridsynth 2.0.0（公式配布・仕様）](https://pypi.org/project/pygridsynth/2.0.0/)
 - [W2 mpmath 1.3.0 contexts](https://mpmath.org/doc/current/contexts.html)
 - [W3 mpmath 1.3.0 basic usage / precision](https://www.mpmath.org/doc/current/basics.html)

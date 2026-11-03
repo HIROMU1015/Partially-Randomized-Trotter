@@ -482,9 +482,9 @@ https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/321cd8c3066194fe
 
 Git blob：`499d6f9c70609891375cc232a29ad45ae5a29f05`。
 
-**[R8] branch取得確認。** 本レビュー時点でHEADが`e6530c...`に一致。内容の引用は原則として固定commitを用いる。
+**[R8] branch取得時の固定snapshot。** 本レビュー時点でHEADが`e6530c...`に一致。内容の引用は原則として固定commitを用いる。
 
-https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/track-b-df-rte-product-generation-audit-20261013
+https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/e6530c055c505712d5f1d1af604f1accf85cebba
 
 **[R9] 旧generic whole系列の判断。** 本conversationで既に完了したレビュー・closureを継承し、今回費用を再検証していない。
 

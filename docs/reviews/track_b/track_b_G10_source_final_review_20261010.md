@@ -484,7 +484,7 @@ G10結果後の重要な研究レビューは別の節目であり、資料可�
 - [R21] [継承P5Closed](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/05c5ef23fce775a822ab5686f5da2f0d77675864/src/trottertracks/algorithm_codesign/g9_p5.py)
 - [R22] [read-only準備verifier](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/05c5ef23fce775a822ab5686f5da2f0d77675864/scripts/tracks/algorithm_codesign/verify_g10_source_preparation.py)
 - [R23] [採用G9 v2レビュー](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/05c5ef23fce775a822ab5686f5da2f0d77675864/docs/research/track_b_G9_v2_scientific_review_20261010.md)
-- [R24] [レビュー中に確認したbranch ref](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/ref/heads/track-b-g10-degree-comparison-preparation-20261010)：HEAD=S。
+- [R24] [レビュー中に確認したsource Sの固定metadata](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/commits/05c5ef23fce775a822ab5686f5da2f0d77675864)：当時のbranch HEAD=S。
 - [W1] [mpmath 1.3.0 Utility functions](https://mpmath.org/doc/1.3.0/general.html)：fraction文字列の変換。
 - [W2] [mpmath 1.3.0 Basic usage](https://mpmath.org/doc/1.3.0/basics.html)：高精度入力の扱い。
 - [W3] [Python 3.10 json公式資料](https://docs.python.org/3.10/library/json.html)：JSON、整数文字列変換の制限。参照時のpatch版は固定runtimeそのものではない。
