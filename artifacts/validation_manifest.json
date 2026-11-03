@@ -1,4 +1,90 @@
 {
+  "rpe_m17_b1_construction_precision_20261103": {
+    "status": "COMPLETED_MANDATORY_STOP",
+    "SOURCE_commit": "9d27f931d6a572210eb206569806f96a46c2d094",
+    "task_a_result_commit": "a5304864ec5e1412a36c31574bcb95fb13f80202",
+    "original_result_commit": "cd749066904d3f29b28b03c19ab69370372b157f",
+    "report": "docs/research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md",
+    "result": "artifacts/rpe_m17_b1_construction_precision/2026-11-03/run01/RESULT.json",
+    "result_sha256": "d392c2430882ca239e1e4ed5f8095dc912b5ef3597313b98cf0bf51e5ea7415e",
+    "float_source_replay": "artifacts/rpe_m17_b1_construction_precision/2026-11-03/run01/float_source_replay.npz",
+    "float_source_replay_sha256": "f3831949a05207a8c677a257577d29d24fc34264297f5252fcdf8c96b3d93d8c",
+    "high_precision_operators": "artifacts/rpe_m17_b1_construction_precision/2026-11-03/run01/high_precision_operators.zip",
+    "high_precision_operators_sha256": "70c368097986b295914b776133789c2d254b8ab1ae72d7fedb75a40a650cb1a5",
+    "conditions": "linear H4/1.00 Angstrom/STO-3G/saved legacy DF12; B physical state; 8 qubits, N=4 sector70; Partial L_D3; single delta .02; m17/q131072/r32/K2; extract_identity_phase; coefficient_atol=1e-12; saved matrices/state/probabilities/tau/B fixed; theta64 new SOURCE replay",
+    "float_replay_comparison": {
+      "law_event_mean": {
+        "array_equal": true,
+        "frobenius": 0.0
+      },
+      "law_tail_mean": {
+        "array_equal": true,
+        "frobenius": 0.0
+      },
+      "reference_tail": {
+        "array_equal": true,
+        "frobenius": 0.0
+      }
+    },
+    "baseline_origin": "saved Task A (float replay tails identical)",
+    "high_precision_means": 4,
+    "conditional_replay_baseline_means": 0,
+    "precision_bits_used": [
+      96,
+      160
+    ],
+    "convergence": {
+      "path_changes": {
+        "reference": {
+          "real": "-0.0000000000000000000000076955132440561856836847877265617129999999999999999999999999999991923186183036764",
+          "imag": "0.000000000000000000000010983900740639141119580913384152794999999999999999999999999999999268961926666937",
+          "abs": "0.000000000000000000000013411450315668966892767463712610544747298084669815024743295518527677828738341652"
+        },
+        "law": {
+          "real": "0.0000000000000000000000014122072872769939577999576604486739999999999999999999999999999997507517059575465",
+          "imag": "-0.0000000000000000000000020411235420628876773855460264362969999999999999999999999999999996960972595268202",
+          "abs": "0.0000000000000000000000024820384235949279401372024331450643874829361499121748267999221620562194564302818"
+        }
+      },
+      "criterion": 1e-13,
+      "is_error_bound": false,
+      "converged": true,
+      "tail_changes_frobenius": {
+        "reference": "1.151483937922739257164374891979033592505633061460772382620934513121642541686827e-27",
+        "law": "1.2495370697634638110078905432353234869382770030035213954218339181492615218090465e-27"
+      },
+      "tail_criterion": "0.00000000000000000076293945312500002317332882949857400024678930986621197898878143917045235866680741"
+    },
+    "b1a_gap_abs": "0.00000000032583605418403953669583494849296408800963968598977936204347449926413582382253358",
+    "relation_to_original_atol": "ABOVE",
+    "construction_mean_change": {
+      "law": {
+        "real": "-0.00000000021628286140699598504489749357233166948040586347700000000000000000000000000000009",
+        "imag": "0.00000000030808204350339724024974324115706960742831629836300000000000000000000000000000085",
+        "abs": "0.00000000037642106963828018825256784080717873414417228784352426028770962584743509103175055"
+      },
+      "reference": {
+        "real": "-0.000000000044797081140248997382074357417125911080558344896999999999999999999999999999999299",
+        "imag": "0.000000000063792761872782242304384566266563535151859422909999999999999999999999999999999622",
+        "abs": "0.000000000077950592980705106050757461629400409545417129650569803153740726670414058150380967"
+      }
+    },
+    "candidate_labels": [
+      "FROZEN_INPUT_OR_DEFINITION_DIFFERENCE_POSSIBLE"
+    ],
+    "original_numeric_diagnostic_status": "INCONSISTENT",
+    "u_num_bound": null,
+    "RPE_tolerance_certified": false,
+    "scientific_status": "UNDETERMINED",
+    "third_precision_executed": false,
+    "B1b_B2_executed": false,
+    "H_state_DF_component_generation_sampling_compile_cost": 0,
+    "technical_retries": 0,
+    "workers": 4,
+    "wall_seconds": 12.653641766868532,
+    "old_source_inputs_results_statuses_STOPs_preserved": true,
+    "mandatory_STOP": true
+  },
   "rpe_m17_precision_isolation_20261103": {
     "status": "COMPLETED_MANDATORY_STOP",
     "SOURCE_commit": "4479a1c9cf150250254e2c2650f70fb43841fed1",

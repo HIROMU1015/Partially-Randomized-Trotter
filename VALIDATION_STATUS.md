@@ -1,3 +1,13 @@
+## 2026-11-03 RPE m17 B-1a：高精度構成後も元診断閾値を超過
+
+[報告・SOURCE・原本3件](docs/research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)。
+SOURCE9d27f931d6a572210eb206569806f96a46c2d094、linear H4/1Å/STO-3G/legacy DF12、
+B physical state、8qubit・4電子sector70、Partial L_D3/単一δ=.02/m17 q131072/r32 K2。
+float replayは保存行列と一致。Task A保存factor meanを再利用し、保存A以降の新4 meanを96/160 bitで評価した。
+mean/tail収束を満たし、Law/reference gapは3.2583605418e-10。元1e-10を超える差が残る。
+構成算術の影響は観測されたが、固定入力表現・定義差等の原因は未分離。
+旧INCONSISTENT、u_num=null、科学UNDETERMINEDを保持。224 bit・中断/retry・B-1b/B-2なしで正常完了後STOP。
+
 ## 2026-11-03 RPE m17 Task A：高精度でもgapが残る
 
 [報告・SOURCE・原RESULT/S64](docs/research/rpe_m17_numerical_precision_execution_20261103/REPORT.md)。

@@ -1,8 +1,13 @@
 # リポジトリの現在の入口
 
+[RPE m17 B-1a：高精度構成後も数値診断超過（2026-11-03）](docs/research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)：
+linear H4/1Å/STO-3G/保存DF12/L_D3/単一δ=.02/m17 q131072/r32 K2、保存Aから独立Law/Taylor構成を96/160 bitで評価。
+4 meanで収束、gapはTask Aの約6.24e-10から約3.26e-10へ変化したが元1e-10を超過。
+原本3件を保存。旧INCONSISTENT/u_num未確立を保持し、B-1b/B-2なしでmandatory STOP。
+
 [RPE m17 B-1：保存A以降の高精度構成の準備（2026-11-03）](docs/research/rpe_m17_b1_construction_precision_preparation_20261103/NEXT_STAGE_DECISION.md)：
 保存binary64と新SOURCE replay入力を区別し、独立Law/Taylorの最小B-1a adapter・人工試験・固定計画を準備。
-実H4の新構成/power/meanは未実行。旧INCONSISTENT/u_num未確立を保持し、公開後mandatory STOP。
+準備時点の未実行記録。後続の許可済みB-1aは上記報告へ。旧INCONSISTENT/u_num未確立を保持。
 
 [RPE m17 Task A：高精度でも保存factor間の差が残る（2026-11-03）](docs/research/rpe_m17_numerical_precision_execution_20261103/REPORT.md)：
 H4/DF12/L_D3/δ=.02/q131072/r32/K2、基準再現と96/160 bit収束を確認。S固定gap6.2484e-10、factor固定6.2431e-10。

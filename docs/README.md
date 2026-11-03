@@ -1,7 +1,11 @@
 # 文書の現在の入口
 
+[RPE m17 B-1a：構成精度の限定実行結果](research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)
+（2026-11-03）。保存Aから96/160 bitで4 meanを評価して収束、gap約3.26e-10。
+元1e-10超過と科学UNDETERMINEDを保持。原RESULT/float replay/HP operatorを保存しSTOP。
+
 [RPE m17 B-1：入力境界・構成精度adapter・最小実行計画](research/rpe_m17_b1_construction_precision_preparation_20261103/NEXT_STAGE_DECISION.md)
-（2026-11-03、準備・人工試験のみ。実H4計算なし、別承認までSTOP）。
+（2026-11-03、準備時点は人工試験のみ。後続の許可済みB-1aは上記結果へ）。
 
 [RPE m17 Task A：保存行列の高精度評価結果](research/rpe_m17_numerical_precision_execution_20261103/REPORT.md)
 （2026-11-03）。基準2平均・高精度8平均、96/160 bitで収束してもgapは約6.24e-10。
