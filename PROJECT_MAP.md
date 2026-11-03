@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE候補A：係数閾値の技術修正版・別の1回実行計画（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_threshold_fix_20261103/SOURCE_FIX_AND_EXECUTION_PLAN.md)：
+旧SOURCE/run01を保全し、閾値1e-12を明示する別runnerと人工回帰3件を追加。
+修正版の科学実行は未承認・未実行。run02には新SOURCEへの別許可が必要、mandatory STOPを維持。
+
 [RPE候補A：1回実行のpreparation停止記録（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)：
 固定SOURCE09237b4を1回実行し、保存signalとrunnerの係数閾値不整合により照合で停止。
 sampling・仮想shot0、科学判定UNDETERMINED。原RESULT・原因・次段案を保存し、retryせずmandatory STOP。

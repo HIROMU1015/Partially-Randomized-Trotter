@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE候補A：閾値指定の修正・新SOURCEでの1回実行計画](research/rpe_fresh_iid_measurement_a_threshold_fix_20261103/SOURCE_FIX_AND_EXECUTION_PLAN.md)
+（2026-11-03）。原runner/run01を残し、別runnerで引数受渡しを修正・人工3 PASS。
+修正版のH4科学実行は未開始。新SOURCEへの別許可を必要とし、STOPを維持する。
+
 [RPE候補A：preparation検査で停止した1回実行](research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)
 （2026-11-03）。係数閾値の引数指定漏れを静的確認。sampling・仮想shot0、UNDETERMINED。
 原RESULTを保全し、retryせずmandatory STOP。修正版準備と新しい実行許可を次段案とする。
