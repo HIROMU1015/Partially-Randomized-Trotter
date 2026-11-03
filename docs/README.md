@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C：[全law/signal/CAの再利用調査・誤差分解・Stage設計](research/research_c_all_law_signal_ca_readiness_20261103.md)。人工152 PASS。科学実行NOT_READY、actual CAはnull、旧SOURCE/raw/STOP保持。
+
 ## 研究C：保存PR32対固定XDF/CDFの探索的直接比較（2026-11-03）
 
 [7-call結果・近似一標本t・資格](research/research_c_pr_xdf_cdf_statistical_comparison_execution_20261103.md)。固定H4・直鎖1.00 Å/STO-3G、sector36/rank8、PR元順LD2・partial S2/s1/r32/K0・δ=h=.1/m0..12、XDF/CDF全frame S2/s1、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。保存PR native32の事後的探索的一標本t比較を固定7/7callで実行。PR/XDF点比.940365699780、近似95%区間[.912991218406,.967740181154]、一側p=5.26154e-5（α=.025）、精度/診断PASS、POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER。CDFは同一区間から導く副比較で追加検定0。Actual CA・全law・ideal-law価格移送・confirmatory資格は未認定。

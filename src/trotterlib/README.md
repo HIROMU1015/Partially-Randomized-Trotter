@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究C：`trottertracks/c_all_law_signal_ca.py` は既存C2/Full synthesis/C1 accuracyへの最小接続。[人工152 PASS・全law coverage不足・CA資格](../../docs/research/research_c_all_law_signal_ca_readiness_20261103.md)。実H4のerror_evidenceはnullを維持。
+
 研究Cの `trottertracks/c_pr_xdf_statistics.py`：[固定7/7-call実行結果と探索的資格](../../docs/research/research_c_pr_xdf_cdf_statistical_comparison_execution_20261103.md)。既存一標本engineを無変更で使用、追加sampling/build/compile0。
 
 研究C：`trottertracks/c_pr_xdf_statistics.py` は既存 `c_r32_price_statistics.price_statistics` を再利用する固定XDF/CDF価格adapter。Importはpassive。[準備・人工テスト・未承認7-call](../../docs/research/research_c_pr_xdf_cdf_statistical_comparison_preparation_20261103.md)。

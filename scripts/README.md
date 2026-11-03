@@ -1,5 +1,7 @@
 # scripts 索引
 
+研究C：`prepare_research_c_all_law_signal_ca.py` はdesign/inputのpassive preflightのみ。科学entryは現NOT_EXECUTABLE契約を拒否する。[Stage条件・calls・STOP](../docs/research/research_c_all_law_signal_ca_readiness_20261103.md)。
+
 研究Cの `run_research_c_pr_xdf_statistics.py`：[固定7/7-call実行結果](../docs/research/research_c_pr_xdf_cdf_statistical_comparison_execution_20261103.md)。保存native32のみの事後的探索的比較、追加sampling0。run01は実行済み・retry/resume0、再起動せずmandatory STOP。
 
 研究C：`run_research_c_pr_xdf_statistics.py` は既定で保存JSONのpassive auditのみ。別の科学実行許可後に限り `--execute` で固定7-call。[契約・資格・STOP](../docs/research/research_c_pr_xdf_cdf_statistical_comparison_preparation_20261103.md)。

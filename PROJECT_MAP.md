@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C：[全law synthesis・implemented-law signal・CA資格の技術準備](docs/research/research_c_all_law_signal_ca_readiness_20261103.md)。最小adapter・人工/回帰152 PASS・passive確認PASS。Whole-P0一様coverageと実stream/reference対応が未成立のため契約はUNAPPROVED_DESIGN_NOT_EXECUTABLE、実H4新科学call0、mandatory STOP。
+
 ## 研究C：新PR対保存XDF8/CDF8の直接統計比較（2026-11-03）
 
 固定H4・直鎖1.00 Å/STO-3G、sector36/rank8、PR元順LD2・partial S2/s1/r32/K0・δ=h=.1/m0..12、XDF/CDF全frame S2/s1、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。保存PR native32の事後的探索的一標本t比較を固定7/7callで実行。PR/XDF点比.940365699780、近似95%区間[.912991218406,.967740181154]、一側p=5.26154e-5（α=.025）、精度/診断PASS、POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER。CDFは同一区間から導く副比較で追加検定0。Actual CA・全law・ideal-law価格移送・confirmatory資格は未認定。
