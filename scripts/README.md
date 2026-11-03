@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：未使用条件へのrecipe移送・技術準備（2026-11-03）
+
+[入力候補・adapter・72人工/回帰PASS・未承認設計](../docs/research/research_c_near_objective_transfer_readiness_20261103.md)。`trottertracks/c_near_transfer.py`、`scripts/prepare_research_c_near_transfer.py`、`tests/management/test_research_c_near_transfer.py`。既存PR/ENTRY optimizerを再利用し、geometry/shape/scale/sectorと候補handoffを分離。第一提案H4・1.15Å、代替0.85Å/H6。Adapterは技術的GO、対象入力・rank/LD等は未採択でUNAPPROVED_DESIGN_NOT_EXECUTABLE、科学entry/call上限null。新実分子計算・重要レビュー0、旧Claim/SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：PR対weighted L1・共通r32の条件付き資源比較（2026-11-03）
 
 [1,231-call結果・全26round・各native32・同J/U強D・資格の限界](../docs/research/research_c_near_practical_r32_downstream_execution_20261103.md)。固定H4/1Å/STO-3G・number CDF8/sector36、元順LD2・S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground/状態準備除外、P0/fenced serial。PR/ENTRY総RZ点比.49418、名目Welch95%モデルでPR低費用。全law/actual CAは未資格、旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
