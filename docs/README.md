@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：仮想測定bridge adapter・kernel上界の不足](research/rpe_m17_virtual_measurement_bridge_preparation_20261104/IMPLEMENTATION_REPORT.md)
+（2026-11-04）。数値context/残差/affine誤差majorantを人工検査。実環境BLASの丸め係数未確立で科学実行不可。
+新H4数値評価0、U_exec=null・旧status/STOP保持。次の科学SOURCEは未完成。
+
 [RPE m17：仮想測定へのbridge・次期最小検証案](research/rpe_m17_virtual_measurement_bridge_preflight_20261104/NEXT_STAGE_DECISION.md)
 （2026-11-04）。static SOURCE対応、IIDと固定PCG64、数値作用/guard完了/clip/有限gridを整理。
 人工15 tests PASS、新H4計算なし。数値作用の上界＋全support完了確認を第一候補とし、U_exec=null・旧status/STOPを維持。

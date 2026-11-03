@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：仮想測定bridge adapterの技術準備（2026-11-04）](docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104/IMPLEMENTATION_REPORT.md)：
+保存local matrixによる数値context、Acb残差、加法誤差を含む平均/全supportの伝播を人工検査。
+BLAS kernel丸め係数は未確立で科学runnerは未完成。実H4評価0、U_exec=null・旧status/STOP保持。
+
 [RPE m17：ideal categoricalからfloat仮想測定へのbridge調査（2026-11-04）](docs/research/rpe_m17_virtual_measurement_bridge_preflight_20261104/NEXT_STAGE_DECISION.md)：
 SOURCE対応、IID/固定PCG64、raw state・state-action・検査/clip・Bernoulliの保証範囲を分離。
 人工15 tests PASS。第一候補は数値作用の誤差majorantと全supportの測定完了域。新H4計算なし、U_exec=null・旧status/STOP保持。

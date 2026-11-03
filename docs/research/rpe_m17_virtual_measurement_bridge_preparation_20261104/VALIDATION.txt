@@ -1,0 +1,87 @@
+2026-11-04 JST / LOCAL technical preparation only
+Base: fe428825cb0a1b405702fe201d3b32d257a77794
+Branch: codex/rpe-m17-virtual-measurement-bridge-preparation-20261104
+
+Final status: TECHNICAL_ADAPTER_PREPARED_KERNEL_UNRESOLVED
+Scientific execution ready: false
+U_exec_upper: null
+No real H4 numerical work or new scientific artifact directory was created.
+
+Existing isolated environment, read only:
+Python 3.11.0rc1, NumPy 1.26.4, python-flint 0.9.0 / FLINT 3.6.0.
+Qiskit 1.3.0. No package installation or shared environment changes.
+Tests use OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1,
+PYTHONWARNINGS=ignore and MPLCONFIGDIR=<owned-temp-dir>.
+These tiny artificial tests do not impose CPU/RAM/wall caps on future science.
+
+1. New synthetic adapter tests: 16 PASS / 0.120s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104 -p 'test_virtual_bridge.py' -v
+
+  Artificial 2x2 arrays, saved local matrices, sector permutation, signed P;
+  comparison to unchanged legacy restricted_basis on artificial gates;
+  ideal residual and saved global radius retention;
+  rational center conversion uncertainty;
+  affine composition order and additive error propagation;
+  binary powers and exact-rational references;
+  order-IID affine average vs finite artificial enumeration;
+  zero-mass order support; rotation trig/action/rounding separation;
+  raw norm and dot error counted once;
+  perturbed dyadic operator action covered by bound;
+  reconstructed interval endpoints; all-support guard prerequisites;
+  missing arithmetic/completion stays null, strict equality does not pass;
+  Model II never implies fixed-PCG64 certification;
+  combined toy pass; default/--run refuse numerical loaders/RNG;
+  invalid dimensions, support, probabilities, nonfinite/negative coefficients.
+
+  Initial artificial test assumed an int-zero Growth field was already Arb.
+  Corrected the test conversion, then ran the final 16-test suite successfully.
+  No real inputs, numerical tolerances or scientific conditions were changed.
+
+2. Existing bridge synthetic tests: 15 PASS / 0.019s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preflight_20261104 -p 'test_bridge_math.py' -v
+
+3. Reused enclosure helper tests: 5 PASS / 0.104s / exit 0
+  Run from docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103:
+  python -m unittest -v test_mean_enclosure.EnclosureTests.test_outward_endpoints_and_midpoint_radius_retained test_mean_enclosure.EnclosureTests.test_sector_invariance_and_little_endian_row_action test_mean_enclosure.EnclosureTests.test_signed_component_mixture_and_unsupported_support test_mean_enclosure.EnclosureTests.test_global_radius_product_uses_general_norms test_mean_enclosure.EnclosureTests.test_noncommuting_product_order_and_power
+
+Total: 36 relevant synthetic tests PASS. Local author verification only;
+not independent science review, CI evidence, real H4 upper bounds or GO.
+
+4. Actual default CLI, metadata only: exit 0
+  python docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104/run_virtual_bridge.py --describe
+  Six fixed original inputs were compared as bytes and SHA256 against their
+  pinned commits. Four old helper sources were compared as bytes.
+  Output: scientific_execution_ready=false, new_real_numerical_calls=0,
+  U_exec_upper=null, mandatory_STOP=true.
+  The actual --run was not invoked. Its blocked branch was tested with metadata
+  mocked and np.load, numerical helpers and PCG64 forbidden.
+
+Backend inspection, not a numerical error guarantee:
+  np.show_config(): OpenBLAS 0.3.23.dev, ILP64, dynamic architecture.
+  openblas_get_config64_(): OpenBLAS 0.3.23.dev USE64BITINT DYNAMIC_ARCH
+    NO_AFFINITY Prescott MAX_THREADS=64
+  openblas_get_corename64_(): Prescott
+  Build metadata mentioning HASWELL is distinct from the selected runtime core.
+  Symbols zgemv_t_PRESCOTT, zgemv_n_PRESCOTT, zdotc_k_PRESCOTT exist.
+  Initial GEMV disassembly inspected; full arithmetic paths not established.
+  NumPy1.26.4 matmul.c.src and vdot.c confirm CBLAS dispatch paths.
+  OpenBLAS v0.3.23 KERNEL.PRESCOTT maps GEMVN to zgemv_n_dup.S and
+  GEMVT to zgemv_t.S; this alone does not establish the dev binary's identity.
+  Some attempted OpenBLAS release SOURCE URLs were unavailable. No inferred
+  version-to-kernel identity or invented gamma/underflow coefficient was used.
+
+Scope protection:
+  New real H4 matrix construction/action/norm/residual/enclosure/mean/budget: 0.
+  Sampling, RNG replay, virtual shots, circuit build/compile, state solve,
+  H/DF generation, success/cost reanalysis, detailed independent science review: 0.
+  Only original byte/hash/schema inspection and artificial calculations occurred.
+  No original SOURCE, result, H/state/DF/N/alpha/beta/epsilon, grant, ledger,
+  marker or STOP was modified. Main dirty workspace and SERVER2 H8 untouched.
+  Research synthesis/status/manifests unchanged because there is no new science.
+  Only relevant PROJECT_MAP.md/docs/README.md indexes changed.
+
+Publication and STOP:
+  Commit/push the technical adapter and unresolved-method report only.
+  Match remote branch SHA, tree and published new files against local Git blobs.
+  Final publication SHA/verification is reported in chat after publication.
+  MANDATORY STOP; no real numerical execution SOURCE is claimed ready.
