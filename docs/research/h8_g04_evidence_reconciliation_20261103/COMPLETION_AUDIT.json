@@ -1,0 +1,439 @@
+{
+  "schema": "H8_G04_ANONYMIZED_COMPLETION_AUDIT_V1",
+  "date_JST": "2026-11-03",
+  "status": "PASS_LIMITED_COMPLETION_AND_LITERAL_JOIN; REMAINING_INPUT_AND_ASSURANCE_LIMITS",
+  "method": "Projection of preserved 20261103 primary-agent literal/hash checks and explicitly labelled 20261020 audit metadata; no independent reviewer",
+  "result_commit": "e6eea5387a6e84d1e39a9adb3b61975acc74e200",
+  "scope_conditions": "linear H8/1.00 Angstrom/STO-3G/tol-only1e-8 DF28/T0.8/P0/usual signed bias/allowance1; fixed p8q2r4K4 and p7q16r4K4",
+  "compiler": {
+    "version": "Qiskit 1.3.0",
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "wrapper": "full Hadamard including measurement; state preparation excluded",
+    "control": "ordinary ancilla; symmetric_directional; full-Fock scalar once; reference unrotated",
+    "original_profile_bytes_verified": false,
+    "original_compiler_output_identity_verified": false
+  },
+  "scopes": [
+    {
+      "scope": "H8_CONFIRM_P8_Q2",
+      "status": "PASS_LIMITED_COMPLETION_AND_LITERAL_JOIN",
+      "execution_SOURCE": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "dataset_SOURCE": "1549b6f891a15ff48379996c34b344118ba2606c",
+      "n": 48,
+      "complete_axes": 96,
+      "driver": {
+        "exit_code": 0,
+        "reaped": true
+      },
+      "new_trajectory_parents": 47,
+      "reused_trajectories": 1,
+      "new_nested_children": 94,
+      "original_STOP_reason": "ValueError:NATIVE_START_IDENTITY",
+      "original_STOP_preserved": true,
+      "old_reservations_refunded": false,
+      "saved_calls": {
+        "trajectory": 47,
+        "occurrence": 94,
+        "RTE_event": 376,
+        "native_evolution": 47,
+        "wrapper_compile": 94
+      },
+      "scientific_artifact_identities": {
+        "result_sha256": "1bb524766083e1493a14fff1eea0cb773db853585aa8e1030fef26676d43ff70",
+        "native_receipt_sha256": "4dab268085bb3fc46b4633ecaa8b65a055558283120e25113a574fb089d06b4c",
+        "terminal_sha256": "1464141a39ea82d163223da26055e656d08f8297e5be550ff2de20d9547d78e8",
+        "seal_sha256": "ca85bc63c9f92507ac97ce429c5dfeab620e97dfa7d3edbe08afd03ef5c96299",
+        "resume_sha256": "65d28f914638e3a6cec6cf3c60bb727dfddb3c1b23cce7f60bfb41133aef90ba",
+        "registry_sha256": "08dcdb673a498d766db615545315b3e4dc74c68a9dfab18b9b27eeec2eb4a90f"
+      },
+      "input_binding": {
+        "system": "H8",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank": 28,
+        "rank_policy": "tol_only_1e-8",
+        "T": 0.8,
+        "hamiltonian": "1a5ebefa18fc1c9f01ad644b81d13f49c7bf944bccfe3837d459c35d3325dbe2",
+        "state": "50a8fcb4cd29d60349db8e8fe728cb609eaaa903d9531833ef63e2711fa363fb",
+        "snapshot": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "profile": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "control": "symmetric_directional"
+      },
+      "fixed_input_files": [
+        {
+          "role": "h8_input_snapshot.npz",
+          "sha256": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+          "bytes": 1299688,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "snapshot_receipt.json",
+          "sha256": "d660f949a28256ba7a69b5bd21b2d6eb70d9f8543873616767200087baf03958",
+          "bytes": 5542,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "df_receipt.json",
+          "sha256": "4911d1f5faab5fe81bfb70c6c2ef01265e3085107a513d4c990e1f39b44a7e0f",
+          "bytes": 31248,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "projection_receipt.json",
+          "sha256": "833c67040296fda69b8e963b8a695c6ea542d03b7f10cc15312c8de2598868fe",
+          "bytes": 27980,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "h8_preparation_export",
+          "sha256": "771137828552b858361b6e2b25d2b675fb83f908aad6209f757e46464b817420",
+          "bytes": 5520922,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "preparation_identity_receipts",
+          "sha256": "b6015092b860ec99886154b8b53f3281c85cb2285dbbd7cb25fa980fda3d9c70",
+          "bytes": 18051,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "full_H_reference",
+          "sha256": "b61cacde7d97514cf6734e1678c425471bd93acd4bbc93fd49542ad9c21cce18",
+          "bytes": 4578,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        }
+      ],
+      "saved_primary": {
+        "n": 48,
+        "mean_exact": "9840910801/8",
+        "sample_SD": 21997504.966893576,
+        "paired_SE": 3175066.353534034,
+        "fixed_PF_G_exact": "1267321444",
+        "PR_reduction_percent_exact": "7441518775/2534642888",
+        "point_decision": "POINT_REPRODUCED",
+        "cohort": "INDEPENDENT_UNCONDITIONAL_CONFIRMATION_N48",
+        "population_conclusion": "UNRESOLVED_WITHOUT_VALID_ALL_SUPPORT_INFERENCE",
+        "confidence_interval": null,
+        "p_value": null,
+        "old_samples_pooled": false
+      },
+      "saved_secondary": {
+        "n": 48,
+        "mean_exact": "9840910801/8",
+        "sample_SD": 21997504.966893576,
+        "paired_SE": 3175066.353534034,
+        "fixed_PF_G_exact": null,
+        "PR_reduction_percent_exact": null,
+        "point_decision": "FIXED_PF_NOT_ELIGIBLE_NO_COMPARISON",
+        "cohort": "INDEPENDENT_UNCONDITIONAL_CONFIRMATION_N48",
+        "population_conclusion": "UNRESOLVED_WITHOUT_VALID_ALL_SUPPORT_INFERENCE",
+        "confidence_interval": null,
+        "p_value": null,
+        "old_samples_pooled": false,
+        "interpretation": "EMPIRICAL_NONCANCELLATION_DESCRIPTIVE_ONLY"
+      },
+      "saved_event_counts": {
+        "0": 384,
+        "2": 0,
+        "4": 0
+      },
+      "profile_reference": {
+        "identifier": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "kind": "INHERITED_NATIVE_PROFILE_IDENTIFIER",
+        "original_profile_file_bytes_verified": false,
+        "old_compiler_output_bit_identity_verified": false
+      },
+      "reference_identity_check": "Saved A signal reference literal equals sealed full_H_reference; record/accounting/law hashes matched; no new solver or numerical evaluation",
+      "preparation": {
+        "prefix": "8",
+        "preparation_hash": "52bdd60b64c3823f13cb5bf0ee7621a2051b1b9e2b0db50dfeb0c8f058168108",
+        "matches_fixed_design_hash": true,
+        "saved_exact_export_match": false,
+        "status": "UNRESOLVED_SAVED_EXPORT_COMPARISON_FLAG",
+        "interpretation": "Saved preparation identity binding and separate exact-export comparison flag have different roles; a false flag is retained and not upgraded to scientific equivalence"
+      },
+      "axis_provenance_locator": "AXIS_PROVENANCE.csv;scope=H8_CONFIRM_P8_Q2"
+    },
+    {
+      "scope": "H8_CONFIRM_P7_Q16",
+      "status": "PASS_LIMITED_COMPLETION_AND_LITERAL_JOIN",
+      "execution_SOURCE": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "dataset_SOURCE": "1549b6f891a15ff48379996c34b344118ba2606c",
+      "n": 48,
+      "complete_axes": 96,
+      "driver": {
+        "exit_code": 0,
+        "reaped": true
+      },
+      "new_trajectory_parents": 48,
+      "reused_trajectories": 0,
+      "new_nested_children": 101,
+      "original_STOP_reason": "KeyboardInterrupt:OWN_RUN_SIGNAL_15",
+      "original_STOP_preserved": true,
+      "old_reservations_refunded": false,
+      "saved_calls": {
+        "trajectory": 48,
+        "occurrence": 768,
+        "RTE_event": 3072,
+        "native_evolution": 48,
+        "wrapper_compile": 96,
+        "control_probe": 4,
+        "independent_event_oracle": 1
+      },
+      "scientific_artifact_identities": {
+        "result_sha256": "0cabd3aff1867144df4e694e9677d2ea55488d80fbad42590504da85d14156cf",
+        "native_receipt_sha256": "0b84020c429d3343d16adb75273ba827c73eb488656042ee465eb22234006ef1",
+        "terminal_sha256": "6154e0d97c10085c5ed8a279cb4d12e67ffd804cb818a6fd1277e92147b77c1e",
+        "seal_sha256": "7d8d595e6cacf90523ccdcb00160b96f73d0ef0d9523b1f1907d086b907826de",
+        "resume_sha256": "8f4cb9904ef244506bf20649f549e0bb2f784192964d4b4bd7e5fcfdbe94ae68",
+        "registry_sha256": "08dcdb673a498d766db615545315b3e4dc74c68a9dfab18b9b27eeec2eb4a90f"
+      },
+      "input_binding": {
+        "system": "H8",
+        "geometry": "linear_1Angstrom",
+        "basis": "STO-3G",
+        "rank": 28,
+        "rank_policy": "tol_only_1e-8",
+        "T": 0.8,
+        "hamiltonian": "1a5ebefa18fc1c9f01ad644b81d13f49c7bf944bccfe3837d459c35d3325dbe2",
+        "state": "50a8fcb4cd29d60349db8e8fe728cb609eaaa903d9531833ef63e2711fa363fb",
+        "snapshot": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "profile": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "control": "symmetric_directional"
+      },
+      "fixed_input_files": [
+        {
+          "role": "h8_input_snapshot.npz",
+          "sha256": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+          "bytes": 1299688,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "snapshot_receipt.json",
+          "sha256": "d660f949a28256ba7a69b5bd21b2d6eb70d9f8543873616767200087baf03958",
+          "bytes": 5542,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "df_receipt.json",
+          "sha256": "4911d1f5faab5fe81bfb70c6c2ef01265e3085107a513d4c990e1f39b44a7e0f",
+          "bytes": 31248,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "projection_receipt.json",
+          "sha256": "833c67040296fda69b8e963b8a695c6ea542d03b7f10cc15312c8de2598868fe",
+          "bytes": 27980,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "h8_preparation_export",
+          "sha256": "771137828552b858361b6e2b25d2b675fb83f908aad6209f757e46464b817420",
+          "bytes": 5520922,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "preparation_identity_receipts",
+          "sha256": "b6015092b860ec99886154b8b53f3281c85cb2285dbbd7cb25fa980fda3d9c70",
+          "bytes": 18051,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        },
+        {
+          "role": "full_H_reference",
+          "sha256": "b61cacde7d97514cf6734e1678c425471bd93acd4bbc93fd49542ad9c21cce18",
+          "bytes": 4578,
+          "verification": "MATCHED_EXISTING_SEAL_BYTES_IN_20261103_METADATA_CHECK; arrays not decoded"
+        }
+      ],
+      "saved_primary": {
+        "n": 48,
+        "mean_exact": "546493203592571/6",
+        "sample_SD": 999128867999.9038,
+        "paired_SE": 144211830223.71762,
+        "fixed_PF_G_exact": "94193016652860",
+        "PR_reduction_percent_exact": "93324481622945/28257904995858",
+        "point_decision": "POINT_REPRODUCED",
+        "cohort": "INDEPENDENT_UNCONDITIONAL_CONFIRMATION_N48",
+        "population_conclusion": "UNRESOLVED_WITHOUT_VALID_ALL_SUPPORT_INFERENCE",
+        "confidence_interval": null,
+        "p_value": null,
+        "old_samples_pooled": false
+      },
+      "saved_secondary": {
+        "n": 48,
+        "mean_exact": "546493203592571/6",
+        "sample_SD": 999128867999.9038,
+        "paired_SE": 144211830223.71762,
+        "fixed_PF_G_exact": "110353805016120",
+        "PR_reduction_percent_exact": "578148132520745/33106141504836",
+        "point_decision": "POINT_REPRODUCED",
+        "cohort": "INDEPENDENT_UNCONDITIONAL_CONFIRMATION_N48",
+        "population_conclusion": "UNRESOLVED_WITHOUT_VALID_ALL_SUPPORT_INFERENCE",
+        "confidence_interval": null,
+        "p_value": null,
+        "old_samples_pooled": false,
+        "interpretation": "EMPIRICAL_NONCANCELLATION_DESCRIPTIVE_ONLY"
+      },
+      "saved_event_counts": {
+        "0": 3072,
+        "2": 0,
+        "4": 0
+      },
+      "profile_reference": {
+        "identifier": "622ce4a8391002558b877240b48d831d9bb0a72aeabba2e4d73bfec64b9c9f12",
+        "kind": "INHERITED_NATIVE_PROFILE_IDENTIFIER",
+        "original_profile_file_bytes_verified": false,
+        "old_compiler_output_bit_identity_verified": false
+      },
+      "reference_identity_check": "Saved A signal reference literal equals sealed full_H_reference; record/accounting/law hashes matched; no new solver or numerical evaluation",
+      "preparation": {
+        "prefix": "7",
+        "preparation_hash": "f794c14366f6081237cafd80a91b6659c98450f3eb720c90073ab5ed2263abc4",
+        "matches_fixed_design_hash": true,
+        "saved_exact_export_match": true,
+        "status": "SAVED_EXPORT_COMPARISON_TRUE",
+        "interpretation": "Saved preparation identity binding and separate exact-export comparison flag have different roles; a false flag is retained and not upgraded to scientific equivalence"
+      },
+      "axis_provenance_locator": "AXIS_PROVENANCE.csv;scope=H8_CONFIRM_P7_Q16"
+    }
+  ],
+  "SOURCE_closure": [
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "artifacts/resource_applicability/track_a_h8_new_pr_confirmation_design/2026-10-18/plan_PROPOSED.json",
+      "git_blob": "03a886c114cf912635c0b332a757150c2a17165c",
+      "sha256": "8d216c083d68e993ed67dfdabafc93aa05a59ace364066e5b1cbdd3df4b9eccb",
+      "bytes": 7548
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/h8_pr_confirmation.py",
+      "git_blob": "4d82b11ebed9818c6062a67f9c4211f06ea49743",
+      "sha256": "de45b22f85f8d5bd22208220ea19f75699ce89ea5011c64ec352ccb0af36bde5",
+      "bytes": 28386
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/prepare_h8_pr_confirmation.py",
+      "git_blob": "57e6ffd58e78bbe7dfd745399b42e2b88a4315f1",
+      "sha256": "aafa83f54b18a05f95031fd1a51d90f93e7e5fbbdefbf4a37464dcccb234ceb5",
+      "bytes": 8410
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/launch_h8_pr_confirmation.py",
+      "git_blob": "74d0d83672819d08d032dbb791947ceaa9cb7513",
+      "sha256": "56ba45006dc40db71d88c11c646f752310c5498ba63a089491d02e21b5a43df5",
+      "bytes": 6268
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/h8_pr_confirmation_parallel.py",
+      "git_blob": "492e1fdb44dc5952a83d2701b27af98071819487",
+      "sha256": "46eb3489155479f71d616105b0fe24eb129ad8d351edfadbd180d46f93efff34",
+      "bytes": 9181
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/prepare_h8_pr_confirmation_resume.py",
+      "git_blob": "d92adcf737a22cf2e4a3fd3422b9865445d027a6",
+      "sha256": "fd1d019b0a058bc7c288f5e88ee3e54940dd3556fa353db88e3d7dfef1179ebe",
+      "bytes": 9401
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "tests/test_h8_pr_confirmation.py",
+      "git_blob": "70f68e3178a1ecd0087d54f735dfc112f8cd3078",
+      "sha256": "2da441ebd760cc7e5551e98ac0e9d62c9986dda19331c3a950b4523438fde5a1",
+      "bytes": 16302
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/pr_cost_native.py",
+      "git_blob": "1bc658ba554b63db0060f5ffb6b2b796292197fc",
+      "sha256": "5f14364af9904914c7ee599b72a87caca2dece3c7d67d3d946ec577fb20b14b4",
+      "bytes": 14303
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/pr_cost_contract.py",
+      "git_blob": "e20e33c02009b232bd03492bf735b48b9c1e214b",
+      "sha256": "be0b6105a9fc406f980b88e900770c4dde8f421923a00cd63176cb1b427fb519",
+      "bytes": 10911
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/h8_key_compile_parallel.py",
+      "git_blob": "a631d63b1badefe882e94c2e0728cd85b2579a64",
+      "sha256": "f3d8b59e9fab4354b05737469242234453becca795ac30faa2bc9dbba09a97b3",
+      "bytes": 11996
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "src/trotterlib/pr_cost_integration.py",
+      "git_blob": "5531ff4fd94bc3bd9e3af10d35043f48b10cd6d9",
+      "sha256": "26fdc184385c0a8136ac91355d92430b795c40210bfddff64d8c4cf39cb762d7",
+      "bytes": 14124
+    }
+  ],
+  "seed_audit": {
+    "current_20261103_check": "Registered task seed/index/trace/paired-axis equality; 48 unique masters per scope; masters disjoint from stored exclusions; no new RNG derivation",
+    "prior_20261020_supplement": {
+      "status": "PASS_METADATA_ONLY",
+      "old_excluded_values": 4136,
+      "A_registered_masters": 128,
+      "merged_excluded_values": 5000,
+      "registered_confirmation_tasks": 96,
+      "old_registration_checks": [
+        {
+          "role": "exploration_registration",
+          "registration_rows": 592,
+          "masters_missing": 0,
+          "derived_values_missing": 0
+        },
+        {
+          "role": "confirmation_registration",
+          "registration_rows": 192,
+          "masters_missing": 0,
+          "derived_values_missing": 0
+        }
+      ]
+    },
+    "prior_derived_seed_audit_rerun": false,
+    "seed_values_published": false,
+    "full_historical_coverage_certified": false,
+    "mathematical_independence_certified": false
+  },
+  "preservation": {
+    "explicitly_read_original_files_stat_stable": 707,
+    "originals_modified": 0,
+    "one_shot_retry_and_STOP_contracts_unchanged": true,
+    "full_runtime_provider_rehash_rerun": false,
+    "independent_backup_claimed": false
+  },
+  "limits": [
+    "The raw execution receipts and input arrays are not published; hashes and this author-produced projection do not allow independent recomputation of every raw check",
+    "Original profile bytes and compiled circuit fingerprint rederivation unavailable",
+    "p8 saved_exact_export_match=false remains unresolved",
+    "Full historical stochastic independence and population-mean superiority are not certified",
+    "H8 rare-RTE closure stays in force; its audit is not substituted for original confirmation completion"
+  ],
+  "new_scientific_calls": 0,
+  "new_statistics": 0,
+  "mandatory_STOP": true,
+  "next_stage_authorized": false,
+  "prior_audit_receipt_identities": {
+    "audit_receipt_20261020_sha256": "9750d4bddebd1ab781976a5633c12330f05cf7abc611fa0ed2f8a2ac797d4488",
+    "provenance_supplement_20261020_sha256": "4a4d5588d7bd5a73dfead207f382d32c3e6cd175ab085adccf78058e8484236d",
+    "receipt_origin": "Existing owner dossier; original paths and raw contents omitted; saved prior checks are labelled separately"
+  }
+}
