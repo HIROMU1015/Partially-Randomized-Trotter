@@ -1,8 +1,12 @@
 # リポジトリの現在の入口
 
+[RPE候補A：1回実行のpreparation停止記録（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)：
+固定SOURCE09237b4を1回実行し、保存signalとrunnerの係数閾値不整合により照合で停止。
+sampling・仮想shot0、科学判定UNDETERMINED。原RESULT・原因・次段案を保存し、retryせずmandatory STOP。
+
 [RPE候補A：fresh-IID測定接続の実装・科学実行準備（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_preparation_20261103/IMPLEMENTATION_REPORT.md)：
 既存sampler/state-actionのadapter、限定runner、人工tests、固定seed・判定・1回実行計画。
-科学実行は未承認・未実行。V1/V2/V3/R1とBの結果・STOPを維持。
+準備時点の未実行記録。後続の1回実行は上記停止報告へ。V1/V2/V3/R1とBの結果・STOPを維持。
 
 [RPE固定request B：実回路・測定平均の局所照合（2026-11-03）](docs/research/rpe_fixed_request_measurement_b_20261103/REPORT.md)：
 H4/1Å/STO-3G/legacy DF12、L_D3/12、δ=.02、q1/q8の6request・12axisが1e-10内。

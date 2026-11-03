@@ -1,8 +1,12 @@
 # 文書の現在の入口
 
+[RPE候補A：preparation検査で停止した1回実行](research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)
+（2026-11-03）。係数閾値の引数指定漏れを静的確認。sampling・仮想shot0、UNDETERMINED。
+原RESULTを保全し、retryせずmandatory STOP。修正版準備と新しい実行許可を次段案とする。
+
 [RPE候補A：fresh-IID測定接続の準備](research/rpe_fresh_iid_measurement_a_preparation_20261103/IMPLEMENTATION_REPORT.md)
 （2026-11-03）。adapter・人工tests・固定SOURCE/input/seed/統計診断の実行計画。
-新しいH4科学sampling/state-action/仮想shotは未実施、科学実行は別承認。
+準備時点ではH4科学実行なし。後続の許可済み1回試行は上記停止報告へ。
 
 [RPE固定request B：physical入力・controlled/Hadamard平均の局所照合](research/rpe_fixed_request_measurement_b_20261103/REPORT.md)
 （2026-11-03）。保存q1/q8の6request・12axisで数値整合。sampling・compile・費用評価なし。

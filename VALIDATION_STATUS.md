@@ -1,3 +1,13 @@
+## 2026-11-03 RPE候補A：preparation検査で停止・科学判定未定
+
+[実行報告・原RESULT](docs/research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)。
+固定SOURCE09237b48ea22ad10d860e67e4a2c1465aad65e41の1回試行。
+linear H4/1Å/STO-3G/legacy DF12、8qubit・4電子sector70、Bのphysical state、
+Partial L_D3/δ=.02/r1/K2、q1/q8・cosine/sine各N510/454。
+保存signalのcoefficient_atol=1e-12とrunner既定0.0の不整合を静的確認し、DF preparation照合でexit1。
+sampling・trajectory state-action・仮想shot・統計診断0、UNDETERMINED。保存meanとの科学的不一致を意味しない。
+実行時hash/component数は未保存。SOURCE・raw・V1–R1/Bを保持し、retryせずmandatory STOP。
+
 ## 2026-11-03 RPE固定request B：局所実回路平均の整合
 
 [報告・SOURCE・raw](docs/research/rpe_fixed_request_measurement_b_20261103/REPORT.md)。
