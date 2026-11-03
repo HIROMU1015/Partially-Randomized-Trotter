@@ -1,8 +1,12 @@
 # 文書の現在の入口
 
+[RPE m17 Task A：保存行列の高精度評価結果](research/rpe_m17_numerical_precision_execution_20261103/REPORT.md)
+（2026-11-03）。基準2平均・高精度8平均、96/160 bitで収束してもgapは約6.24e-10。
+保存tail以前の構成・入力・定義は未分離。原RESULT/S64を保存し、旧status保持・B未実行でSTOP。
+
 [RPE m17：保存行列の数値精度切り分け準備](research/rpe_m17_numerical_precision_preparation_20261103/NEXT_STAGE_DECISION.md)
 （2026-11-03）。静的分析、精度・段階別計画、mpmath adapter、人工18 PASS。S固定とfactor固定を区別する。
-実H4の新数値評価は未実施、旧1e-10/INCONSISTENT/u_num未確立を保持してSTOP。
+準備時点の未実行記録。後続Task Aは上記報告へ。旧1e-10/INCONSISTENT/u_num未確立を保持する。
 
 [RPE m17：局所周辺平均の実行結果](research/rpe_m17_mean_validation_execution_20261103/REPORT.md)
 （2026-11-03）。2経路差6.26e-10で固定数値診断INCONSISTENT、統計予算残余8.60e-5。

@@ -1,3 +1,13 @@
+## 2026-11-03 RPE m17 Task A：高精度でもgapが残る
+
+[報告・SOURCE・原RESULT/S64](docs/research/rpe_m17_numerical_precision_execution_20261103/REPORT.md)。
+SOURCE4479a1c9cf150250254e2c2650f70fb43841fed1、linear H4/1Å/STO-3G/DF12、
+B physical state、8qubit・4電子sector70、Partial L_D3/単一δ=.02/m17 q131072/r32 K2。
+float基準2平均が元値を再現、96/160 bitの8平均で両modeが収束診断を満たした。
+S64固定gap6.2484114598e-10、F/R/tail固定gap6.2430653168e-10。元1e-10を超える差は残る。
+保存tail以前の構成丸め・入力表現・定義差は未分離、u_numはnull・科学statusはUNDETERMINED。
+旧INCONSISTENTを保持。224 bit、B、新H/state/DF生成、sampling、compile、価格評価、retryは0。正常完了後STOP。
+
 ## 2026-11-03 RPE m17：正常完了・固定数値診断INCONSISTENT
 
 [報告・SOURCE・原RESULT/7行列](docs/research/rpe_m17_mean_validation_execution_20261103/REPORT.md)。
