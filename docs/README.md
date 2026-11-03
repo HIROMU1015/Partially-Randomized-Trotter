@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE測定平均の精度要件・round・検証方式の設計](research/rpe_mean_tolerance_validation_selection_20261103/NEXT_STAGE_DECISION.md)
+（2026-11-03）。同directoryに精度式、18roundの保存値転記、sampling/決定論的平均の比較、次科学検証案。
+第一候補m17/r32の両軸、具体の許容差は新規計算せず未確定。人工8 PASS、新科学実行・数値再解析なし、STOP維持。
+
 [RPE候補A run02：fresh trajectory・仮想Hadamard測定の限定診断](research/rpe_fresh_iid_measurement_a_run02_20261103/REPORT.md)
 （2026-11-03）。1,928 trajectory/shotを完了、4軸/12比較で固定閾値を超える不一致なし。
 同等性・全18roundの保証ではなくUNDETERMINED。SOURCE・raw・資源・次段案を保存し追加samplingなしでSTOP。

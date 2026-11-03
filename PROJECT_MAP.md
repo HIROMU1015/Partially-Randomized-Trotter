@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE測定平均：必要精度・対象round・追加検証方式の設計（2026-11-03）](docs/research/rpe_mean_tolerance_validation_selection_20261103/NEXT_STAGE_DECISION.md)：
+既存N/alpha/epsilonの残余条件を静的導出。第一候補m17/q131072/r32の両軸、sampler-lawの決定論的平均照合を推奨。
+4文書・人工8 PASS。新しい許容差/確率の数値再解析・H4作用・samplingなし、旧status/STOPを保持した未実行計画。
+
 [RPE候補A run02：fresh-IID・仮想測定の限定診断完了（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_run02_20261103/REPORT.md)：
 修正版SOURCEd0b1da1で1,928 trajectory/shot・8,284 event位置を生成。4軸/12比較で診断上の不一致なし。
 有限Nで同等性は認定せず科学statusはUNDETERMINED。raw・SOURCE・数値identityを保存し、追加samplingなしでSTOP。
