@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-11-03：保存PR32対固定XDF/CDFの探索的直接比較
+
+固定H4・直鎖1.00 Å/STO-3G、sector36/rank8、PR元順LD2・partial S2/s1/r32/K0・δ=h=.1/m0..12、XDF/CDF全frame S2/s1、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。保存PR native32の事後的探索的一標本t比較を固定7/7callで実行。PR/XDF点比.940365699780、近似95%区間[.912991218406,.967740181154]、一側p=5.26154e-5（α=.025）、精度/診断PASS、POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER。CDFは同一区間から導く副比較で追加検定0。Actual CA・全law・ideal-law価格移送・confirmatory資格は未認定。
+
+[実行報告](docs/research/research_c_pr_xdf_cdf_statistical_comparison_execution_20261103.md)／[結果JSON](artifacts/research_c_pr_xdf_statistics/2026-11-03/run01/result.json)。7 COMPLETE・FAIL/retry/resume0。入力/SOURCE/契約不変。全体manifest checkerの旧schema不整合は未修正。
+
 ## 2026-11-03：研究C近接目的比較II・645-call限定実行
 
 研究C近接目的比較II：共通保存H4・直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、初期penalty寄与.1、各arm最大16更新の固定政策でPR/weighted L1を実行。645/1,629 units COMPLETE、correctness FAIL/retry/resume0、両arm16更新・DF予算PASS。終端exact λはPR .500044243591Ha、ENTRY .941312847393Ha。両J一次MET/U一次NOT_METで有限endpointの比較。PRの量子資源優位・厳密CAは未判定。 [実行報告](docs/research/research_c_near_objective_practical_comparison_execution_20261103.md)

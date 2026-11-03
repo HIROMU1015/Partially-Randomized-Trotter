@@ -1,0 +1,149 @@
+{
+  "status": "EXPLORATORY_DIRECT_COMPARISON_RECORDED",
+  "primary": {
+    "samples": 32,
+    "confidence": 0.95,
+    "kernel_mean": 7519.09375,
+    "kernel_SE": 107.32188319090913,
+    "total_point": 94288043542.0,
+    "total_SE": 1345795809.412428,
+    "difference_point": -5979377488.0,
+    "ratio_point": 0.9403656997798819,
+    "total_interval": [
+      91543274892.59941,
+      97032812191.40059
+    ],
+    "difference_interval": [
+      -8724146137.400589,
+      -3234608838.599411
+    ],
+    "ratio_interval": [
+      0.9129912184059235,
+      0.9677401811538404
+    ],
+    "interval_kind": "APPROXIMATE_FIXED_N_IID_STUDENT_T_NOT_VALIDATED",
+    "actual_CA_achieved": null,
+    "guaranteed_resource_superiority": null,
+    "ideal_law_cost_transfer_qualified": false,
+    "equivalence": null,
+    "noninferiority": null,
+    "old_pooled": false,
+    "selection_scope": "post-hoc exploratory; existing cohort, not prospective holdout",
+    "calibration": {
+      "status": "FINITE_BIT_POINT_ESTIMATE_ONLY",
+      "samples": 32,
+      "sample_mean": {
+        "rz_count": 7519.09375,
+        "rz_depth": 2585.75,
+        "cx_count": 3369.0,
+        "cx_depth": 2338.71875,
+        "total_depth": 5661.71875,
+        "circuit_size": 14780.65625
+      },
+      "sample_mean_standard_error": {
+        "rz_count": 107.32188319090913,
+        "rz_depth": 27.660528532724705,
+        "cx_count": 33.4283055643451,
+        "cx_depth": 14.409564642118902,
+        "total_depth": 59.79769715828083,
+        "circuit_size": 217.33053098062538
+      },
+      "ideal_law_expectation": null,
+      "cost_support": null,
+      "lower": null,
+      "upper": null,
+      "simultaneous_interval_qualified": false,
+      "guaranteed_resource_superiority": null,
+      "sample_variance": {
+        "rz_count": 368575.57157258067,
+        "rz_depth": 24483.354838709678,
+        "cx_count": 35758.45161290323,
+        "cx_depth": 6644.337701612903,
+        "total_depth": 114424.46673387097,
+        "circuit_size": 1511441.9102822582
+      },
+      "observed_min": {
+        "rz_count": 6548,
+        "rz_depth": 2318,
+        "cx_count": 3064,
+        "cx_depth": 2200,
+        "total_depth": 5078,
+        "circuit_size": 12790
+      },
+      "observed_max": {
+        "rz_count": 9075,
+        "rz_depth": 2985,
+        "cx_count": 3850,
+        "cx_depth": 2540,
+        "total_depth": 6520,
+        "circuit_size": 17927
+      },
+      "uncertainty": "descriptive SE only; rare trajectories can be missed; observed extrema are not support bounds",
+      "finite_bit_law_error": null,
+      "CA_achieved": null,
+      "shots": null,
+      "total_resources": null
+    },
+    "halfwidth": 2744768649.400584,
+    "precision_met": true,
+    "diagnostics": {
+      "moment_skewness": 0.5823647225066234,
+      "maximum_delete_one_mean_shift": 50.190524193548384,
+      "delete_one_shift_exceeds_halfwidth": false,
+      "delete_one_shift_fraction_of_halfwidth": 0.22930148846748832,
+      "influence_fraction_threshold": 0.25,
+      "influence_warning": false,
+      "skewness_warning": false,
+      "observations_removed": 0,
+      "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+    },
+    "decision": "POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER",
+    "confirmatory": false,
+    "primary": "XDF",
+    "one_sided_alpha": 0.025,
+    "hypothesis": "H0:mu_PR>=C_XDF;H1:mu_PR<C_XDF",
+    "one_sided_test": {
+      "statistic": -4.443004983505327,
+      "pvalue": 5.2615399948145244e-05,
+      "df": 31,
+      "alternative": "less",
+      "raw_model_reject": true
+    },
+    "test_interval_consistent": true,
+    "one_sided_upper_confidence": 0.975,
+    "one_sided_upper_bound": 97032812191.40059
+  },
+  "secondary": {
+    "secondary": "CDF",
+    "method": "same_univariate_PR_interval_affine_images_no_second_test",
+    "additional_test_count": 0,
+    "pvalue": null,
+    "difference_point": -7768401027.0,
+    "ratio_point": 0.9238813280258082,
+    "difference_interval": [
+      -10513169676.400589,
+      -5023632377.599411
+    ],
+    "ratio_interval": [
+      0.8969867143540096,
+      0.9507759416976068
+    ],
+    "primary_lower_implies_secondary_lower": true,
+    "decision": "POSTHOC_EXPLORATORY_SHARED_BOUND_PR_LOWER",
+    "confirmatory": false,
+    "actual_CA_achieved": null,
+    "guaranteed_resource_superiority": null,
+    "ideal_law_cost_transfer_qualified": false,
+    "equivalence": null,
+    "noninferiority": null
+  },
+  "source_manifest_sha256": "0f35c863224a197641bef433d3034d73f26756035c787069b3aecd44e031be2a",
+  "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+  "ideal_scientific_SOURCE": "2d20ad196a406752de8e4c0ce9516b101e49d927",
+  "new_native_sampling": 0,
+  "actual_CA_achieved": null,
+  "guaranteed_resource_superiority": null,
+  "equivalence": null,
+  "noninferiority": null,
+  "mandatory_stop": true
+}

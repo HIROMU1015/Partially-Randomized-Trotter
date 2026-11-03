@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+## 研究C：新PR対保存XDF8/CDF8の直接統計比較（2026-11-03）
+
+固定H4・直鎖1.00 Å/STO-3G、sector36/rank8、PR元順LD2・partial S2/s1/r32/K0・δ=h=.1/m0..12、XDF/CDF全frame S2/s1、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。保存PR native32の事後的探索的一標本t比較を固定7/7callで実行。PR/XDF点比.940365699780、近似95%区間[.912991218406,.967740181154]、一側p=5.26154e-5（α=.025）、精度/診断PASS、POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER。CDFは同一区間から導く副比較で追加検定0。Actual CA・全law・ideal-law価格移送・confirmatory資格は未認定。
+
+[7-call実行結果・固定SOURCE・限界](docs/research/research_c_pr_xdf_cdf_statistical_comparison_execution_20261103.md)。新sampling/build/compile0、旧SOURCE/raw/STOP保全、mandatory STOP。
+
 研究Cの保存PR native32対XDF8/CDF8：[直接統計比較の技術準備](docs/research/research_c_pr_xdf_cdf_statistical_comparison_preparation_20261103.md)。事後的・探索的一標本t、未承認7-call、人工66 PASS、passive preflight PASS。実H4の新CI/p値0、mandatory STOP。
 
 ## 研究C：PR対weighted L1・共通r32の条件付き資源比較（2026-11-03）
