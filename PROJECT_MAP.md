@@ -1,8 +1,12 @@
 # リポジトリの現在の入口
 
+[RPE候補A run02：fresh-IID・仮想測定の限定診断完了（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_run02_20261103/REPORT.md)：
+修正版SOURCEd0b1da1で1,928 trajectory/shot・8,284 event位置を生成。4軸/12比較で診断上の不一致なし。
+有限Nで同等性は認定せず科学statusはUNDETERMINED。raw・SOURCE・数値identityを保存し、追加samplingなしでSTOP。
+
 [RPE候補A：係数閾値の技術修正版・別の1回実行計画（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_threshold_fix_20261103/SOURCE_FIX_AND_EXECUTION_PLAN.md)：
 旧SOURCE/run01を保全し、閾値1e-12を明示する別runnerと人工回帰3件を追加。
-修正版の科学実行は未承認・未実行。run02には新SOURCEへの別許可が必要、mandatory STOPを維持。
+準備時点の未実行記録。後続の許可済みrun02は上記完了報告へ。
 
 [RPE候補A：1回実行のpreparation停止記録（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)：
 固定SOURCE09237b4を1回実行し、保存signalとrunnerの係数閾値不整合により照合で停止。

@@ -1,3 +1,13 @@
+## 2026-11-03 RPE候補A run02：限定sampling・仮想測定診断の完了
+
+[報告・SOURCE・raw](docs/research/rpe_fresh_iid_measurement_a_run02_20261103/REPORT.md)。
+科学SOURCEd0b1da1b04c266a1f7abf8e43966ca6e289a8695、linear H4/1Å/STO-3G/legacy DF12、
+8qubit・4電子sector70/B physical state、Partial L_D3/単一δ=.02/r1,K2、q1/q8・各軸N510/454。
+1,928 trajectory・仮想shot、8,284 event位置、4軸/12比較を完了しNO_DISCREPANCY_DETECTED。
+科学statusはUNDETERMINED。同等性・全law・全18round・compiled correctness・総費用の保証ではない。
+coefficient_atol=1e-12で保存preparation hash/218 componentを再現。中断・retry・追加sampling0。
+先行run01/B/V1–R1の証拠を保持し、COMPLETED_MANDATORY_STOP。
+
 ## 2026-11-03 RPE候補A：preparation検査で停止・科学判定未定
 
 [実行報告・原RESULT](docs/research/rpe_fresh_iid_measurement_a_execution_20261103/REPORT.md)。
