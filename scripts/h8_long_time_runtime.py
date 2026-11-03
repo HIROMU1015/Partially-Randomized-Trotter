@@ -169,11 +169,17 @@ def signal_job(row):
     ctx = CONTEXT
     np = ctx.np
     corrected, maximum, log_B = ctx.evolve(row, path='corrected')
-    raw, rawmax, other_log = ctx.evolve(row, path='raw')
-    independent, _, _ = ctx.evolve(row, path='corrected', horner=True)
-    exact, _, _ = ctx.evolve(row, path='exact_tail') if row['method'] == 'PR' else (corrected, maximum, log_B)
-    discrepancy = float(np.linalg.norm(corrected - independent))
-    closure = float(np.linalg.norm(raw - math.exp(-log_B) * corrected))
+    if row['method'] == 'PR':
+        raw, rawmax, other_log = ctx.evolve(row, path='raw')
+        independent, _, _ = ctx.evolve(row, path='corrected', horner=True)
+        exact, _, _ = ctx.evolve(row, path='exact_tail')
+        discrepancy = float(np.linalg.norm(corrected - independent))
+        closure = float(np.linalg.norm(raw - math.exp(-log_B) * corrected))
+    else:
+        # PF has no normalization or finite recurrence. Reuse the same vector;
+        # its independent action check is the sparse-vs-spin primitive gate.
+        raw, rawmax, other_log, exact = corrected, maximum, log_B, corrected
+        discrepancy = closure = 0.
     a.require(log_B == other_log and max(discrepancy, closure) < 1e-9, 'FINITE_MEAN_RECURRENCE_CLOSURE')
     a.require(abs(float(np.linalg.norm(exact)) - 1.) < 1e-9, 'EXACT_TAIL_PF_NORM')
     z, zr, ze = (complex(np.vdot(ctx.state, v)) for v in (corrected, raw, exact))

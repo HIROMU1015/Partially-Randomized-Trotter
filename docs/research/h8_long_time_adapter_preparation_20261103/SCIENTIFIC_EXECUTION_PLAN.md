@@ -23,9 +23,9 @@ Hamiltonian、snapshot、state、preparation、referenceのidentityは別のも�
 
 これは許可を求めるdomainの案であり、全直積を自動生成・compileする指示ではない。
 [configuration](../../../configs/h8_long_time/proposed_scope.json)にもこの区別を保存した。
-Stage Aの最初の有限候補一覧は実行前にscope JSONへ列挙する。
-例えばK4/R32で両PR公式のq窓を調べ、必要な点だけ低RやK2感度へ進む。
-PF側も同じ誤差政策で強い公式・prefixを検査し、適格qを絞る。
+最初の有限batch案はconfiguration内に57候補を列挙した。PRは両prefix・両公式の主q窓をK4/R32で12点、PFは5つのmethod/prefix×3公式×q1/4/16の45点。いずれも今回未実行。
+その後、適格性の境界や比較の情報価値に応じてPF q2/8/32、PR低RまたはK2感度を明示した追加batchで調べる。
+このdomain全体の評価・compileを一律には要求しない。PF側も同じ誤差政策で強い公式・prefixを検査し、適格qを絞る。
 未評価のqを単調性だけで適格とせず、PF最良を主張する範囲を実測済み候補へ限定する。
 許可されたdomain内での追加batchも明示scopeと新保存先を使い、先の結果を消さない。
 
@@ -43,7 +43,7 @@ Kはeven event cutoffで、平均の多項式は最高K+1次。
 private configと各stage scopeに同じSOURCE・関係するsource file hash・入力bindingを指定する。
 旧H8 loaderやproviderの物理入力生成は呼ばない。保存snapshotとFull exportだけをrestoreする。
 
-実行前に必要な確定項目は、Stage Aの有限候補一覧、同時worker数、出力先、Stage Bの探索nと選択規則。
+実行前に必要な確定項目は、Stage Aの57候補案の採用、同時worker数、出力先、Stage Bの探索nと選択規則。
 科学実行承認を求める対象はSOURCE、保存入力identity、上のT/ε/domain、以下の科学callと移行規則。
 チャットの明示許可で足り、承認packet・署名・grant発行基盤は作らない。
 CLIの`--execute`は単なる明示dispatchで、許可そのものではない。
@@ -59,8 +59,8 @@ CLIの`--execute`は単なる明示dispatchで、許可そのものではない�
 2. B0Iで使うexact stored-binary64 scalarを保存H8行列から評価。p16は既存DBAのexact rational receiptと完全照合。p15は新しい計算であることを明記。
 3. sparse full-H `reference_pair(T=1.6)`：direct actionと二つのT/2 action、signal/vector差、residual診断。referenceはfull-H作用から求め、energy位相は補助診断だけ。
 4. 実際に使用する全signed half-time、必要全blockについてspin作用と独立occupation CSR作用を保存state・先頭/末尾basis vectorの3 probeで比較。差<1e-9。
-5. 各候補のsigned PFとPR finite mean。corrected/raw、forward/Horner、exact-tail PFを計算し、normalization vector closureとrecurrence差<1e-9、exact-tail norm差<1e-9を検査。
-6. full-Hからのtotal bias、outer PF/discard bias、finite-RTE bias、log B、数値allowance、axis headroom、N_cos/N_sinを算出。既存`qualify_record`とDecimal整数shot照合を使う。u floor1e-9、log-B margin floor1e-12、u/headroom≤.01を維持し、reference/primitive/recurrence差もuの入力へ入れる。
+5. 各候補のsigned PFとPR finite mean。PRのcorrected/raw、forward/Horner、exact-tail PFを計算し、normalization vector closureとrecurrence差<1e-9、exact-tail norm差<1e-9を検査。
+6. full-Hからのtotal bias、outer PF/discard bias、finite-RTE bias、log B、数値allowance、axis headroom、N_cos/N_sinを算出。既存`qualify_record`とDecimal整数shot照合を使う。u floor1e-9、log-B margin floor1e-12、u/headroom≤.01を維持し、reference/primitive/recurrence差もuの入力へ入れる。PFにはfinite recurrenceがないため同じvectorを再利用し、重複伝播を避ける。
 
 保存ファイルはscope.json、preparation_binding.json、reference.json、primitive_gate.json、result.json。
 結果はELIGIBLE/INELIGIBLE/UNDETERMINEDを明記。科学的error certificateではなくempirical numerical allowance。
