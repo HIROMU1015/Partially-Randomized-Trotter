@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：ideal categoricalからfloat仮想測定へのbridge調査（2026-11-04）](docs/research/rpe_m17_virtual_measurement_bridge_preflight_20261104/NEXT_STAGE_DECISION.md)：
+SOURCE対応、IID/固定PCG64、raw state・state-action・検査/clip・Bernoulliの保証範囲を分離。
+人工15 tests PASS。第一候補は数値作用の誤差majorantと全supportの測定完了域。新H4計算なし、U_exec=null・旧status/STOP保持。
+
 [RPE m17：ideal categorical平均の包含で局所十分条件を確認（2026-11-03）](docs/research/rpe_m17_rigorous_mean_enclosure_execution_20261103/REPORT.md)：
 linear H4/1Å/STO-3G/保存legacy DF12/L_D3/単一δ=.02/m17 q131072/r32 K2、218成分/11 basisのreplayと96 bit包含1回。
 両軸U_cat約4.23e-7で固定N/α/εの十分条件を確認。IID53/ideal/normalized rayの限定scope。

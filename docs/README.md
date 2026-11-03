@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：仮想測定へのbridge・次期最小検証案](research/rpe_m17_virtual_measurement_bridge_preflight_20261104/NEXT_STAGE_DECISION.md)
+（2026-11-04）。static SOURCE対応、IIDと固定PCG64、数値作用/guard完了/clip/有限gridを整理。
+人工15 tests PASS、新H4計算なし。数値作用の上界＋全support完了確認を第一候補とし、U_exec=null・旧status/STOPを維持。
+
 [RPE m17：ideal categorical測定平均の包含結果](research/rpe_m17_rigorous_mean_enclosure_execution_20261103/REPORT.md)
 （2026-11-03）。96 bitの1包含で両軸の固定座標十分条件を確認。U_cat約4.23e-7、ν_exec bridgeは未評価。
 全体UNDETERMINED・旧INCONSISTENTを維持し、SOURCE/replay/CDF/operator原本を保存してSTOP。
