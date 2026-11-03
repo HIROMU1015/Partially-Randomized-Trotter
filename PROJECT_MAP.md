@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE候補A：fresh-IID測定接続の実装・科学実行準備（2026-11-03）](docs/research/rpe_fresh_iid_measurement_a_preparation_20261103/IMPLEMENTATION_REPORT.md)：
+既存sampler/state-actionのadapter、限定runner、人工tests、固定seed・判定・1回実行計画。
+科学実行は未承認・未実行。V1/V2/V3/R1とBの結果・STOPを維持。
+
 [RPE固定request B：実回路・測定平均の局所照合（2026-11-03）](docs/research/rpe_fixed_request_measurement_b_20261103/REPORT.md)：
 H4/1Å/STO-3G/legacy DF12、L_D3/12、δ=.02、q1/q8の6request・12axisが1e-10内。
 SOURCE・runner・人工testsとraw/state artifactへ同報告から辿る。sampling/compile/費用再解析0、mandatory STOP。

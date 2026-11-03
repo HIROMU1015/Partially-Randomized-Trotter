@@ -1,0 +1,142 @@
+{
+  "status": "PREPARATION_COMPLETE_SCIENTIFIC_EXECUTION_NOT_STARTED_MANDATORY_STOP",
+  "date_jst": "2026-11-03",
+  "parent_B_result_commit": "e22d7718c47358ff650dbc04e8e72f6ab1c8bf41",
+  "scope": "Implementation, metadata/literal transfer, artificial tests and one-shot scientific execution plan only",
+  "environment": {
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "qiskit": "1.3.0",
+    "existing_environment_modified": false
+  },
+  "artificial_tests": {
+    "command": "python -m unittest -q test_fresh_iid_a.py",
+    "tests_run": 18,
+    "failures": 0,
+    "errors": 0,
+    "observed_seconds": 0.164,
+    "names": [
+      "test_fixed_metadata_and_old_allocations_transfer_without_reoptimization",
+      "test_seed_keys_unique_reproducible_and_domain_separated",
+      "test_legacy_event_law_order_phase_and_probability_are_preserved",
+      "test_artificial_distribution_mean_has_one_normalization",
+      "test_every_shot_calls_sampler_even_if_event_sequences_coincide",
+      "test_sine_probability_and_no_normalization_reapplication",
+      "test_roundoff_is_explicit_and_invalid_means_not_clamped",
+      "test_corrected_and_control_labels_are_rejected",
+      "test_missing_event_or_shot_records_stop",
+      "test_same_synthetic_seed_config_reproduces_both_random_levels",
+      "test_process_and_chunk_order_do_not_change_artificial_samples",
+      "test_no_discrepancy_does_not_certify_equivalence_or_RPE_success",
+      "test_a_large_artificial_discrepancy_is_flagged",
+      "test_three_levels_of_means_are_kept_separate",
+      "test_numeric_basis_order_and_sector_embedding_match_explicit_toy_circuit",
+      "test_numeric_halves_match_legacy_primitives_including_scalar_on_toy",
+      "test_default_cli_does_not_enter_science_or_any_rng_draw",
+      "test_artificial_interrupt_preserves_stop_status_without_context_or_sampling"
+    ],
+    "synthetic_namespace": "synthetic_only_fresh_iid_a_tests_v1",
+    "scientific_H4_context_mocked_or_not_called": true,
+    "author_technical_checks_not_independent_review": true
+  },
+  "code_sha256": {
+    "fresh_iid_adapter.py": "988aa46ec53b8fb1b7dc8cfbf88a8aafe7487f6cc8c9c31a19b0a735f0f063be",
+    "run_fresh_iid_a.py": "fbfd8f26a395c799ce58ca2318d712590f77d8d23817ec2d8e1da73b924cdcec",
+    "test_fresh_iid_a.py": "221fd02fa8a1fca1cc7b04784338daeadb7d80469c1af4c4f4f99e4bdde75c25"
+  },
+  "legacy_functions_reused": {
+    "_apply_event_to_state": {
+      "source": "src/trotterlib/rpe_hadamard_failure_validation.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "e8509f37bb71fd62cd5a266d87c3af52d38b68c69d5fb17a1d4d7516221a1d38",
+      "unchanged_definition": true
+    },
+    "_trajectory_signal": {
+      "source": "src/trotterlib/rpe_hadamard_failure_validation.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "c6014409e92078b6de1098ee80f4ce0e0adadd175f48b3261509c45c50e0db21",
+      "unchanged_definition": true
+    },
+    "_seed_for_shot": {
+      "source": "src/trotterlib/rpe_hadamard_failure_validation.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "55888256e809d61bcadcaf276bd0ed683f7a3236edca42a83a59706377821c7b",
+      "unchanged_definition": true
+    },
+    "finite_rte_distribution": {
+      "source": "src/trotterlib/rte.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "807f6719f73c4029678373a665f0161219a772c7a2071abb493a669d6e3412b7",
+      "unchanged_definition": true
+    },
+    "_make_event": {
+      "source": "src/trotterlib/rte.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "a659081e50a49c74996f8334163e24f8860efd2dc38381a2963f812be1631183",
+      "unchanged_definition": true
+    },
+    "iter_sample_rte_events": {
+      "source": "src/trotterlib/rte.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "7d7d98d9eeaf8e70c8d951dc7a065e07e692a8fb26b64581800db79299f0c9ba",
+      "unchanged_definition": true
+    },
+    "sample_rte_events": {
+      "source": "src/trotterlib/rte.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "function_text_sha256": "6803e1d76e9b4aa5f3445e88eacf3fe1e4ee3e5ec567d47ea292594034ece091",
+      "unchanged_definition": true
+    }
+  },
+  "protected_B_artifact_byte_checks": {
+    "artifacts/rpe_fixed_request_measurement_b/2026-11-03/run01/RESULT.json": "b9b4615ed862a7a85dc6790692f8632d0997d53a1ad36ad59788572a64a51283",
+    "artifacts/rpe_fixed_request_measurement_b/2026-11-03/run01/physical_state.npz": "793300c86417f52569289ce86980c5f9a87292e130199355a0f4f7056225c9c4"
+  },
+  "technical_metadata_checks": {
+    "fixed_axes": 4,
+    "N_per_axis_q1": 510,
+    "N_per_axis_q8": 454,
+    "saved_alpha_beta_epsilon_unchanged": true,
+    "production_key_hash_checks_without_random_draws": 3856,
+    "NPZ_byte_hash_only_no_numerical_decode": true,
+    "new_private_seed_material_used": false
+  },
+  "planned_scientific_counts_not_executed": {
+    "trajectories": 1928,
+    "conditional_signals": 1928,
+    "virtual_shots": 1928,
+    "events": 8284,
+    "retained_sector_operators": 218,
+    "ground_state_solves": 0,
+    "controlled_or_measurement_builds": 0,
+    "compiles": 0
+  },
+  "statistical_plan": {
+    "diagnostic_family_eta": 0.05,
+    "comparisons": 12,
+    "half_width": "sqrt(2*log(2*12/0.05)/N)",
+    "RPE_allocations_not_replaced": true,
+    "no_discrepancy_equivalence_status": "UNDETERMINED",
+    "RPE_success_probability_evaluated": false
+  },
+  "new_H4_scientific_calls_executed": {
+    "NPZ_numerical_decode": 0,
+    "state_action": 0,
+    "sampling": 0,
+    "virtual_shots": 0,
+    "saved_value_scientific_reanalysis": 0,
+    "circuit_build_or_compile": 0,
+    "ground_state_solve": 0,
+    "scientific_RNG_replay": 0,
+    "important_independent_review": 0
+  },
+  "preserved_statuses": {
+    "V1": "CONDITIONAL with original Full radius and state/control limitations",
+    "V2": "Both CONDITIONAL_SUCCESS",
+    "V3": "Long-q price extrapolation preserved",
+    "R1": "Cost UNDETERMINED; R2/R3 not restarted",
+    "B": "LOCAL_FIXED_REQUEST_MEANS_CONSISTENT_MANDATORY_STOP"
+  },
+  "mandatory_STOP_after_publication_verification": true,
+  "publication_verification": "Remote commit/tree and public core-file bytes will be checked after push and reported in final chat"
+}

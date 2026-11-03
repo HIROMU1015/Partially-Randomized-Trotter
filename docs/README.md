@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE候補A：fresh-IID測定接続の準備](research/rpe_fresh_iid_measurement_a_preparation_20261103/IMPLEMENTATION_REPORT.md)
+（2026-11-03）。adapter・人工tests・固定SOURCE/input/seed/統計診断の実行計画。
+新しいH4科学sampling/state-action/仮想shotは未実施、科学実行は別承認。
+
 [RPE固定request B：physical入力・controlled/Hadamard平均の局所照合](research/rpe_fixed_request_measurement_b_20261103/REPORT.md)
 （2026-11-03）。保存q1/q8の6request・12axisで数値整合。sampling・compile・費用評価なし。
 同directoryの固定runner/testと、新artifact/stateへのリンクを参照。旧判定を維持してmandatory STOP。
