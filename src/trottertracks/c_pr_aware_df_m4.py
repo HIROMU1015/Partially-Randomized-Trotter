@@ -122,7 +122,7 @@ def sector_schema_gate(values):
     return component_check(sum(G),H,1e-10,label='unchanged M3 sector sum')
 
 
-def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf):
+def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf,expected_steps=128):
     """Reuse existing head-exponential and finite-RTE functions, omitting PF.
 
     This is the RTE branch of reference_kernels verbatim in meaning. Its PF
@@ -131,7 +131,8 @@ def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf):
     import numpy as np
     from . import c1_stage3_reference as ref
     h=Fraction(1,10)
-    if config.rte_steps!=128 or config.evolution_time!=float(h):raise ValueError('R128_H_CONFIG')
+    if (type(expected_steps) is not int or expected_steps<1 or config.rte_steps!=expected_steps
+            or config.evolution_time!=float(h)):raise ValueError(f'R{expected_steps}_H_CONFIG')
     G=tuple(np.asarray(g,dtype=complex) for g in generators);cache={}
     forward=tuple((i,h/2) for i in range(ld+1))
     left=ref._ordered_exponentials(G,forward,cache)
@@ -143,7 +144,7 @@ def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf):
     return dict(pf=np.array(saved_pf,copy=True),corrected=matrix,config=config,step_time=float(h))
 
 
-def rte_round(kernel,m,saved_pf_error):
+def rte_round(kernel,m,saved_pf_error,*,state=None):
     """Same existing two powers/norm2/A, without exact exp or PF error norm."""
     import numpy as np
     from . import c1_stage3_reference as ref
@@ -155,8 +156,15 @@ def rte_round(kernel,m,saved_pf_error):
     corrected=np.linalg.matrix_power(kernel['corrected'],n)
     error=float(np.linalg.norm(corrected-pf,2))
     if not math.isfinite(error):raise ValueError('NONFINITE_RTE_ERROR')
-    return dict(pf_operator_error=saved_pf_error,rte_corrected_operator_error=error,attenuation=A,
+    row=dict(pf_operator_error=saved_pf_error,rte_corrected_operator_error=error,attenuation=A,
         evidence_kind='binary64_sector_operator_numerical_pilot',PF_reused=True)
+    if state is not None:
+        psi=np.asarray(state,dtype=complex)
+        if not np.isclose(np.vdot(psi,psi),1.,rtol=0,atol=1e-12):
+            raise ValueError('Normalized target state required')
+        signal=complex(np.vdot(psi,A*corrected@psi))
+        row['raw_signal_parts']=[float(signal.real),float(signal.imag)]
+    return row
 
 
 def tau_gate(tail,config,saved):

@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：比較II・共通r32下流評価（2026-11-03）
+
+[最小接続・人工79 PASS・1,231-call固定条件](../docs/research/research_c_near_practical_r32_downstream_preparation_20261103.md)。`c_near_practical_r32.py` / `run_research_c_near_practical_r32.py`。PR/ENTRYの保存endpoint、各native32、各同J/U強Dを接続。既定runnerはpassive preflight。
+
 ## 研究C：近接目的比較IIの実行結果（2026-11-03）
 
 [645-call結果・PR/L1終端・制約](../docs/research/research_c_near_objective_practical_comparison_execution_20261103.md)。両arm16更新/DF予算PASS、J MET/U NOT_MET。Exact λはPR .500044243591Ha/ENTRY .941312847393Ha。下流資源は未評価、mandatory STOP。

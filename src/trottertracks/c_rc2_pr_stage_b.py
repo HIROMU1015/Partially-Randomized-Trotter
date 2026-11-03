@@ -130,11 +130,11 @@ def prepare_candidate(packet, data, *, identity):
     return replace(arm, role=role, model=model, plan=replace(arm.plan, model=model))
 
 
-def distribution_gate(tail, config, distribution):
+def distribution_gate(tail, config, distribution, *, expected_steps=128):
     """Audit the regenerated K0 law, not an implemented PRNG/IID certificate."""
     if config is None or distribution is None: raise ValueError('REGISTERED_NONZERO_TAIL')
     tol = ALLOWANCES['normalization']
-    if (config.rte_steps != 128 or config.evolution_time != .1
+    if (config.rte_steps != expected_steps or config.evolution_time != .1
             or config.finite_taylor_order != 0 or distribution.orders != (0,)
             or distribution.order_probabilities != (1.,)
             or not math.isclose(config.lambda_r, tail.lambda_r, rel_tol=1e-12, abs_tol=1e-14)
