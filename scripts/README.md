@@ -1,5 +1,7 @@
 # scripts 索引
 
+研究C：`run_research_c_iid_grid_bridge.py` の固定Stage Aは[38-call実行済み・結果と資格](../docs/research/research_c_iid_grid_stage_a_execution_20261103.md)。Fresh run01消費済み、retry/resume0。再起動せずmandatory STOP、Stage B/C未実行。
+
 研究C：`run_research_c_iid_grid_bridge.py` は既定passive。[固定38-call Stage A・IIDモデル・未資格・STOP](../docs/research/research_c_iid_grid_all_law_readiness_20261103.md)。別の科学実行許可後だけ `--execute`、native compile/sampling/RPE評価やB/Cへの自動進行なし。
 
 研究C：`prepare_research_c_all_law_signal_ca.py` はdesign/inputのpassive preflightのみ。科学entryは現NOT_EXECUTABLE契約を拒否する。[Stage条件・calls・STOP](../docs/research/research_c_all_law_signal_ca_readiness_20261103.md)。

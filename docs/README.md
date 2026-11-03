@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C：[現PR/r32のIID-grid reference bridge・Stage A実行](research/research_c_iid_grid_stage_a_execution_20261103.md)。38/38 COMPLETE、13roundの数値観測と正確なcategorical TV。Native一様bound・reference不確かさ・実PCG64・actual CAは未資格。
+
 研究C：[独立53-bit gridモデル・現候補reference bridge・Stage A〜C](research/research_c_iid_grid_all_law_readiness_20261103.md)。未承認Stage Aのみ38-call実行可能、182人工/回帰PASS。Bのuniform P0とCの必要boundは未取得。
 
 研究C：[全law/signal/CAの再利用調査・誤差分解・Stage設計](research/research_c_all_law_signal_ca_readiness_20261103.md)。人工152 PASS。科学実行NOT_READY、actual CAはnull、旧SOURCE/raw/STOP保持。

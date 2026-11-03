@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-11-03：研究C・IID-grid reference bridgeのStage A実行
+
+固定H4・直鎖1.00 Å/STO-3G、Nα=Nβ=2、sector36/number CDF8、元順LD2・partial ordered S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground oracle/状態準備除外。固定SOURCEddd833348・契約無変更で38/38 COMPLETE、correctness FAIL/retry/resume0。各event/occurrence/shot独立53-bitモデル内のcategorical TVは約3.42775e-15、m12の条件付きraw上界約8.98564e-10。保存raw信号再生差は全13roundで最大6.02111e-15。Sector bridgeのローカル数値pilotで、CI/外部独立再現や厳密包囲ではない。
+
+[実行報告・数値観測と限界](docs/research/research_c_iid_grid_stage_a_execution_20261103.md)／[結果JSON](artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/result.json)。Whole-P0一様誤差・reference数値不確かさ・実PCG64 joint stream・厳密CA・actual CAは未資格。新native compile/sampling/PF-RTE生成/ground/shots評価0、Stage B/C未実行、mandatory STOP。全体manifest checkerの旧schema不整合は未修正。
+
 ## 2026-11-03：保存PR32対固定XDF/CDFの探索的直接比較
 
 固定H4・直鎖1.00 Å/STO-3G、sector36/rank8、PR元順LD2・partial S2/s1/r32/K0・δ=h=.1/m0..12、XDF/CDF全frame S2/s1、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。保存PR native32の事後的探索的一標本t比較を固定7/7callで実行。PR/XDF点比.940365699780、近似95%区間[.912991218406,.967740181154]、一側p=5.26154e-5（α=.025）、精度/診断PASS、POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER。CDFは同一区間から導く副比較で追加検定0。Actual CA・全law・ideal-law価格移送・confirmatory資格は未認定。

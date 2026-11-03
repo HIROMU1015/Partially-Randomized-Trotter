@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究C：`trottertracks/c_iid_grid_bridge.py` の[現候補Stage A実行結果](../../docs/research/research_c_iid_grid_stage_a_execution_20261103.md)。固定SOURCE無変更で38 COMPLETE、sector数値pilotとIID categorical評価。Accuracy adapterは未実行、actual-law証拠へ昇格しない。
+
 研究C：`trottertracks/c_iid_grid_bridge.py` / `c_iid_grid_accuracy.py` は旧C2/accuracy engineを無変更で再利用。[現r32 reference接続・IID条件付き資格・182 PASS](../../docs/research/research_c_iid_grid_all_law_readiness_20261103.md)。実PCG64のevidence laneへ昇格しない。
 
 研究C：`trottertracks/c_all_law_signal_ca.py` は既存C2/Full synthesis/C1 accuracyへの最小接続。[人工152 PASS・全law coverage不足・CA資格](../../docs/research/research_c_all_law_signal_ca_readiness_20261103.md)。実H4のerror_evidenceはnullを維持。

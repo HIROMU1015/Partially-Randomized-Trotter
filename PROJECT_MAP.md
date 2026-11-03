@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C：[IID-grid Stage A・38-call実行結果](docs/research/research_c_iid_grid_stage_a_execution_20261103.md)。固定H4/1Å・新PR/CDF8/LD2/S2/s1/r32/K0/h=.1/m0..12のreference bridge完了。38 COMPLETE/FAIL・retry・resume0、categorical TV約3.43e-15。Whole-P0/数値reference不確かさ/実PCG64/actual CAは未資格、Stage B/C未実行、mandatory STOP。
+
 研究C：[IID finite-bit条件付き全law/RPE評価の具体化](docs/research/research_c_iid_grid_all_law_readiness_20261103.md)。現PR/r32/s1のStage A reference bridgeは未承認38-callで技術GO、人工182 PASS、passive PASS。Whole-P0未資格でStage B/CはNOT_READY。実PCG64/actual CAは未認定、新実H4計算0、mandatory STOP。
 
 研究C：[全law synthesis・implemented-law signal・CA資格の技術準備](docs/research/research_c_all_law_signal_ca_readiness_20261103.md)。最小adapter・人工/回帰152 PASS・passive確認PASS。Whole-P0一様coverageと実stream/reference対応が未成立のため契約はUNAPPROVED_DESIGN_NOT_EXECUTABLE、実H4新科学call0、mandatory STOP。
