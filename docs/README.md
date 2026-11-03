@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C・B2：[reference数値不確かさの技術準備・誤差成分・未承認契約](research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。既存Arbを再利用するadapter、人工検証、passive preflight。科学契約とStage CはNOT_READY、mandatory STOP。
+
 研究C：[B1/B2統合準備と保留事項](research/research_c_b1_b2_accuracy_scope_integration_20261103.md)／[三つの精度検証scope比較](research/research_c_accuracy_validation_scope_options_20261103.md)。B2公開未観測のため結果統合は保留、独立schema/人工284 PASS、scope・confidence方針は未採択。
 
 研究C・B1：[現r32のWhole-P0構造上限・一様誤差の不足・B2 interface](research/research_c_p0_uniform_method_readiness_20261103.md)。252人工/回帰PASS。P0_UNIFORM_NOT_ESTABLISHED、未承認設計は非実行、Stage C/新実H4科学0。

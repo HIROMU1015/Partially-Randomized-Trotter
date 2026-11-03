@@ -1,0 +1,99 @@
+{
+  "scope": "C_REFERENCE_NUMERICAL_UNCERTAINTY_B2_V1",
+  "base_commit": "90a2a7baf07b98108111126504d202294a884af5",
+  "status": "NOT_READY",
+  "executable": false,
+  "candidate_sha256": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+  "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+  "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+  "model": {
+    "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+    "bits": 53,
+    "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+    "independent_events": true,
+    "independent_coherent_occurrences": true,
+    "independent_measurement_shots": true,
+    "independent_XY_measurements": true,
+    "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+    "PCG64_joint_stream_qualified": false
+  },
+  "reference_space": "sector36",
+  "reference_target": "saved_CAR_raw_finite_RTE",
+  "rounds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "preferred_method": "A_precision_sensitivity_plus_B_local_error_transport",
+  "enclosure_reuse": "C_optional_existing_literal_CAR_Arb192",
+  "science_precision_policy": null,
+  "call_limits": null,
+  "maximum_logical_units": null,
+  "entry": "scripts/prepare_research_c_reference_numerical_uncertainty.py",
+  "fresh_output": "artifacts/research_c_reference_numerical_uncertainty/2026-11-03/run01",
+  "retry": 0,
+  "resume": 0,
+  "partial_failure": "stop dependent work;preserve partial output;no fallback or automatic retry",
+  "mandatory_stop": true,
+  "Stage_C": "NOT_READY",
+  "reference_numerical_uncertainty": null,
+  "rigorous_bridge_bound": null,
+  "blockers": [
+    "Exact saved-bit CAR target versus reconstructed mathematical CAR/atom target must be bound explicitly",
+    "Lambda/tau/atan/attenuation and literal nonunitary U corrections need a complete disjoint allocation",
+    "Saved ground vector to own-DF ground oracle relation has no qualified state-error bound",
+    "End-to-end precision/backend/call graph for those missing terms is not frozen"
+  ],
+  "resource_caps": {
+    "CPU": null,
+    "RAM": null,
+    "workers": null,
+    "wall": null
+  },
+  "source_manifest": "artifacts/research_c_reference_numerical_uncertainty/2026-11-03/technical/SOURCE.json",
+  "source_manifest_sha256": "03dc1944d1a181ac7a81000fcc898fdd893f154d326dc5619d79348748fa11ff",
+  "implementation_source_commit": "cf8d09338faaaa548a9f5112bb93935ac4f24af1",
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "python-flint": "0.8.0",
+    "mpmath": "1.3.0"
+  },
+  "stage_A_input_roles": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "candidate": "artifacts/research_c_near_practical/2026-11-03/run01/PR/endpoint.npz",
+    "factors": "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.npz",
+    "physical_qualification": "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.json",
+    "own_ground": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/ground_candidate.npz",
+    "PF_RTE_reference": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/B/sector_reference.npz"
+  },
+  "numeric_policy": {
+    "artificial_Arb_bits": 192,
+    "artificial_independent_decimal_digits": [
+      90,
+      128
+    ],
+    "real_H4_policy_fixed": false,
+    "high_low_agreement_is_bound": false,
+    "saved_binary64_input_representation_is_not_scientific_input_error": true,
+    "unknown_is_zero": false
+  },
+  "logical_call_derivation": {
+    "status": "NOT_READY_NO_REGISTERED_SCIENCE_DISPATCH",
+    "reason": "Which CAR construction,normalization,oracle-relation path and precision are evaluated is unresolved;counts cannot be derived from an executable call graph.",
+    "known_shape": "13 rounds;12 dependent squares per chosen kernel chain;not 4096 physical squaring calls",
+    "old_38_and_16_budgets_transferred": false
+  },
+  "separate_permission_required": "Only a later completed fixed B2 science contract may be executed;no Stage A rerun/native/Stage C/sampling/important review included."
+}

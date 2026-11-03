@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究C・B2：`trottertracks/c_reference_numerical_uncertainty.py` は局所誤差・coherent反復・反復二乗・state誤差からraw信号への接続。[方法と資格](../../docs/research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。共有engineは無変更、実H4不確かさはnull。
+
 研究C：`trottertracks/c_b1_b2_scope_integration.py` は既存IID accuracyへのpartition/scope検査。[B2不在gate・有限/確率的資格の区別・284 PASS](../../docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。旧SOURCE無変更、actual-law/厳密CAへ昇格しない。
 
 研究C・B1：`trottertracks/c_p0_uniform_method.py` は既存C2-A/ZSXX・full synthesisを再利用する現r32 adapter。[構造count/有限診断/未資格/252 PASS](../../docs/research/research_c_p0_uniform_method_readiness_20261103.md)。旧共有SOURCEは無変更、実H4一様boundは未取得。
