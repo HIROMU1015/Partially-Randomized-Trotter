@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：固定4word有限pilot・86-call完了（2026-11-04）
+
+[全4wordのfull512/CAR/P0/actual inverse/X-Y・費用観測・未資格事項](docs/research/research_c_fixed_word_pilot_execution_20261104.md)。保存H4/1Å/STO-3G・number CDF8/元順LD2・partial S2/s1/r32/K0/h=.1の1step。86/86 COMPLETE・FAIL/retry/resume0、4word PASS。有限binary64観測であり全law bound・categorical unitary・Stage C・actual CAは未資格。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：固定4word・有限native pilotの具体化（2026-11-04）
 
 [4つの32-event word・binary64 numerical pilot・86-call上限・人工85 PASS](docs/research/research_c_fixed_word_pilot_preparation_20261104.md)。`c_fixed_word_pilot.py` / `run_research_c_fixed_word_pilot.py`。Full512/CAR/P0/actual inverse/X-Yを再利用し、新sampling・Stage C・shotsは含めない。実H4未実行、固定契約への科学実行許可後のみfresh run。
