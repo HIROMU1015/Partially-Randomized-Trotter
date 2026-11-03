@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：B-1b/B-2と直接的な数値誤差上界の選定](research/rpe_m17_b1b_b2_assessment_20261103/NEXT_STAGE_DECISION.md)
+（2026-11-03）。成分入力の可用性、有限Law/Taylor恒等式、CDFと測定meanへのbridge、次の最小計画。
+静的調査・人工検証のみ。新H4再解析・成分生成・sampling/compileなし、mandatory STOP。
+
 [RPE m17 B-1a：構成精度の限定実行結果](research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)
 （2026-11-03）。保存Aから96/160 bitで4 meanを評価して収束、gap約3.26e-10。
 元1e-10超過と科学UNDETERMINEDを保持。原RESULT/float replay/HP operatorを保存しSTOP。

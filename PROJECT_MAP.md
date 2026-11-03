@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：B-1b/B-2の必要性・固定入力・直接上界の次期案（2026-11-03）](docs/research/rpe_m17_b1b_b2_assessment_20261103/NEXT_STAGE_DECISION.md)：
+全成分保存原本は確認範囲で不足。代数・SOURCE・binary64、samplerのCDF処理を分けて整理。
+第一候補はsampler接続を含む局所meanの誤差上界評価。backend/export/SOURCE準備が先で、新H4計算なし・旧status/STOP保持。
+
 [RPE m17 B-1a：高精度構成後も数値診断超過（2026-11-03）](docs/research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)：
 linear H4/1Å/STO-3G/保存DF12/L_D3/単一δ=.02/m17 q131072/r32 K2、保存Aから独立Law/Taylor構成を96/160 bitで評価。
 4 meanで収束、gapはTask Aの約6.24e-10から約3.26e-10へ変化したが元1e-10を超過。

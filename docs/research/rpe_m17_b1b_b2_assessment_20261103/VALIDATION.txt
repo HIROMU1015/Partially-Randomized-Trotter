@@ -1,0 +1,52 @@
+LOCAL static assessment validation, 2026-11-03 JST
+No new H4 numerical work, saved-value numerical reanalysis, component/CDF regeneration,
+mean/norm/bound evaluation, RNG/shot/compile or independent scientific review.
+Environment: Python 3.11.0rc1; NumPy 1.26.4. Artificial rational/CDF fixtures only.
+New static identities: 11 PASS; reused original m17 artificial suite: 13 PASS; total 24 PASS.
+Existing scientific sources, raw artifacts, statuses and STOPs preserved.
+Input work: JSON structure/literal transfer, SHA/git blob and NPY header inspection only.
+GitHub checks: three fixed SOURCE/report blobs matched local; fixed carrier snapshot metadata matched.
+Backend discovery only: mpmath available; flint/gmpy2 and native flint/arb not found.
+No backend installation and no new scientific execution pipeline added.
+
+new_static
+Command: OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest discover -s docs/research/rpe_m17_b1b_b2_assessment_20261103 -p test_static_identities.py -v
+Exit: 0
+test_budget_is_strict_and_requires_unknown_bridges (test_static_identities.StaticIdentities.test_budget_is_strict_and_requires_unknown_bridges) ... ok
+test_contraction_bound_and_invalid_unconditional_q_eta (test_static_identities.StaticIdentities.test_contraction_bound_and_invalid_unconditional_q_eta) ... ok
+test_finite_pairing_all_degrees_and_signed_time (test_static_identities.StaticIdentities.test_finite_pairing_all_degrees_and_signed_time) ... ok
+test_grid_bucket_counts_include_right_boundary (test_static_identities.StaticIdentities.test_grid_bucket_counts_include_right_boundary) ... ok
+test_half_tail_product_error_order (test_static_identities.StaticIdentities.test_half_tail_product_error_order) ... ok
+test_independent_noncommuting_signed_component_products (test_static_identities.StaticIdentities.test_independent_noncommuting_signed_component_products) ... ok
+test_inner_outer_normalizer_once (test_static_identities.StaticIdentities.test_inner_outer_normalizer_once) ... ok
+test_noncommuting_power_telescoping (test_static_identities.StaticIdentities.test_noncommuting_power_telescoping) ... ok
+test_numpy_cdf_normalization_is_distinct_from_raw_weights (test_static_identities.StaticIdentities.test_numpy_cdf_normalization_is_distinct_from_raw_weights) ... ok
+test_rotation_sign_with_rational_pythagorean_point (test_static_identities.StaticIdentities.test_rotation_sign_with_rational_pythagorean_point) ... ok
+test_total_variation_bounded_by_cdf_differences (test_static_identities.StaticIdentities.test_total_variation_bounded_by_cdf_differences) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.002s
+
+OK
+
+reused_m17
+Command: OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest discover -s docs/research/rpe_m17_mean_validation_preparation_20261103 -p test_m17_mean_validation.py -v
+Exit: 0
+test_a_reference_mismatch_is_reported_without_tolerance_inflation (test_m17_mean_validation.MeanPreparationTests.test_a_reference_mismatch_is_reported_without_tolerance_inflation) ... ok
+test_actual_fixed_row_only_transfers_literals (test_m17_mean_validation.MeanPreparationTests.test_actual_fixed_row_only_transfers_literals) ... ok
+test_complete_context_schema_with_synthetic_components_and_cached_basis (test_m17_mean_validation.MeanPreparationTests.test_complete_context_schema_with_synthetic_components_and_cached_basis) ... ok
+test_context_inventory_failure_retains_actual_values (test_m17_mean_validation.MeanPreparationTests.test_context_inventory_failure_retains_actual_values) ... ok
+test_context_passes_threshold_and_r32_without_r1_fallback (test_m17_mean_validation.MeanPreparationTests.test_context_passes_threshold_and_r32_without_r1_fallback) ... ok
+test_default_cli_cannot_enter_science_or_open_outputs (test_m17_mean_validation.MeanPreparationTests.test_default_cli_cannot_enter_science_or_open_outputs) ... ok
+test_grouping_keeps_weight_sources_and_shares_basis_transform (test_m17_mean_validation.MeanPreparationTests.test_grouping_keeps_weight_sources_and_shares_basis_transform) ... ok
+test_interruption_retains_scalar_stage_and_error_without_overwriting (test_m17_mean_validation.MeanPreparationTests.test_interruption_retains_scalar_stage_and_error_without_overwriting) ... ok
+test_invalid_scalar_inputs_and_nonpositive_reserve_do_not_become_passes (test_m17_mean_validation.MeanPreparationTests.test_invalid_scalar_inputs_and_nonpositive_reserve_do_not_become_passes) ... ok
+test_literal_law_matches_full_small_support_including_order2_and_negative_time (test_m17_mean_validation.MeanPreparationTests.test_literal_law_matches_full_small_support_including_order2_and_negative_time) ... ok
+test_r_lives_inside_q_and_scalar_normalization_is_applied_once (test_m17_mean_validation.MeanPreparationTests.test_r_lives_inside_q_and_scalar_normalization_is_applied_once) ... ok
+test_scalar_reserve_uses_saved_n_alpha_epsilon_on_synthetic_values (test_m17_mean_validation.MeanPreparationTests.test_scalar_reserve_uses_saved_n_alpha_epsilon_on_synthetic_values) ... ok
+test_synthetic_completion_saves_two_means_and_seven_operators_without_certification (test_m17_mean_validation.MeanPreparationTests.test_synthetic_completion_saves_two_means_and_seven_operators_without_certification) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.041s
+
+OK
