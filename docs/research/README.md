@@ -1,5 +1,13 @@
 # 研究計画資料
 
+## 研究C：近接weighted L1・強決定論DFの証拠統合（2026-11-03追補）
+
+[最新版Evidence Map・C21〜C29/Q02・貢献候補対応](research_c_near_objective_xdf_evidence_integration_20261103.md)。固定直鎖H4・隣接1.00 Å/STO-3G、rank8・sector36。PR/ENTRYは通常number CDF8・元順LD2、partial ordered S2/s1/r32/K0、δ=h=.1・m0..12、各DF自身のground oracle・状態準備費用除外、保存P0・head/X/Y shell込みfenced serial。共通有限政策の各16更新endpointでは、PR-aware/weighted L1の条件付き総RZ点比.494181551983（約50.58%低費用）、登録近似Welch95%差区間[-103702867354.3995,-89313774645.6005]でNOMINAL_MODEL_PR_LOWER。両DF予算PASS・U一次未達。
+
+新PR点値94288043542は保存XDF8/CDF8の共通ideal費用100267421030/102056444569も下回る（両者は全frame S2/s1、PR split・r/K非適用）。これは固定候補の条件付き点比較で、PR対XDF/CDFの直接統計的優位・同等性・非劣性、PR/ENTRY比CI、全law誤差・actual CA・一般性は未資格。旧update005/064と旧32 Claimは原条件の履歴として保全する。
+
+固定3系列の科学SOURCE・結果commit・評価laneを分離した文書統合。新科学計算・保存raw再解析・重要科学レビュー0、公開照合後mandatory STOP。以下の旧節は各時点の証拠として読む。
+
 ## 研究C：11月3日成果統合・nominal価格比較（2026-11-03）
 
 [新版Evidence Map・旧24 Claimとの対応・8追加項目](research_c_evidence_map_updated_20261103.md)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。

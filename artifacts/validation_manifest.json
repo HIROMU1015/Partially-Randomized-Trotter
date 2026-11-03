@@ -255,6 +255,36 @@
       "commit": "24a7268359506abd171686132f12b4876f9e62bf",
       "role": "point_consistent_J_U_paired_reexecution_SOURCE",
       "description": "Same science/allowances;328 units;terminal andDF PASS;both first-order unqualified"
+    },
+    {
+      "sha": "70a98adfb701a209db2c65ea60fb789ff62b1fe7",
+      "role": "near_finite_recipe_scientific_SOURCE",
+      "description": "Fixed published evidence referenced by the near-objective/XDF integration; SOURCE and result roles kept distinct; no new science."
+    },
+    {
+      "sha": "2ceb0a8825785ebd4f21241d8ef0f20cb321bf69",
+      "role": "near_finite_recipe_result",
+      "description": "Fixed published evidence referenced by the near-objective/XDF integration; SOURCE and result roles kept distinct; no new science."
+    },
+    {
+      "sha": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+      "role": "near_r32_scientific_SOURCE",
+      "description": "Fixed published evidence referenced by the near-objective/XDF integration; SOURCE and result roles kept distinct; no new science."
+    },
+    {
+      "sha": "beb8de5cd8b71f80bb69556f92299435ff431c3e",
+      "role": "near_r32_result",
+      "description": "Fixed published evidence referenced by the near-objective/XDF integration; SOURCE and result roles kept distinct; no new science."
+    },
+    {
+      "sha": "2d20ad196a406752de8e4c0ce9516b101e49d927",
+      "role": "saved_CDF_XDF_common_ideal_scientific_SOURCE",
+      "description": "Fixed published evidence referenced by the near-objective/XDF integration; SOURCE and result roles kept distinct; no new science."
+    },
+    {
+      "sha": "39ee9705b7a459c40c205c542d660b5d2ab90d33",
+      "role": "saved_CDF_XDF_common_ideal_result",
+      "description": "Fixed published evidence referenced by the near-objective/XDF integration; SOURCE and result roles kept distinct; no new science."
     }
   ],
   "artifact_inventory": {
@@ -1670,6 +1700,14 @@
           "research_c_latest_evidence_integration_20261103"
         ],
         "reason": "Technical integration of five already published studies; no new scientific execution or qualification"
+      },
+      {
+        "path": "artifacts/research_c_near_xdf_evidence_integration/2026-11-03/static_verification.json",
+        "kind": "file",
+        "supports": [
+          "research_c_near_xdf_evidence_integration_20261103"
+        ],
+        "reason": "Static verification for fixed evidence integration only; no scientific execution or new statistical inference."
       }
     ],
     "quarantined": [
@@ -13752,6 +13790,23 @@
       "static_verification": "artifacts/research_c_latest_evidence_integration/2026-11-03/static_verification.json",
       "inherited_manifest_checker_failure": "relevant_commits[37]: missing sha/description; unexpected commit; unchanged from clean base",
       "mandatory_stop": true
+    },
+    {
+      "id": "research_c_near_xdf_evidence_integration_20261103",
+      "status": "source_present_no_current_ci",
+      "summary": "Technical integration only: docs/research/research_c_near_objective_xdf_evidence_integration_20261103.md; C21-C29/Q02; 3 fixed published studies, no new science/reanalysis/important review, no qualification upgrade. Old 32 claims preserved. Existing global manifest checker failure retained.",
+      "counts": {
+        "fixed_scientific_studies_referenced": 3,
+        "old_claims_preserved": 32,
+        "new_claims": 10,
+        "new_scientific_calls": 0,
+        "new_important_scientific_reviews": 0
+      },
+      "completion_criteria": [
+        "Preserve fixed scientific SOURCE, raw, contracts, STOP and all existing manifest records.",
+        "Verify published scalar/decision transcription, candidate identity, JSON pointers, links and added-record schema; this is not scientific reproduction or a global checker PASS.",
+        "Keep PR/ENTRY nominal Welch judgment separate from PR versus saved XDF/CDF conditional point comparison; no new CI, actual CA or novelty adoption."
+      ]
     }
   ],
   "repository_completion_criteria": [

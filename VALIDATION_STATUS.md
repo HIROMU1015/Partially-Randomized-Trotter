@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-11-03追補：近接目的比較・共通idealの既存証拠統合
+
+[最新版Evidence Map](docs/research/research_c_near_objective_xdf_evidence_integration_20261103.md)／[静的照合記録](artifacts/research_c_near_xdf_evidence_integration/2026-11-03/static_verification.json)。固定直鎖H4・隣接1.00 Å/STO-3G、rank8・sector36。PR/ENTRYは通常number CDF8・元順LD2、partial ordered S2/s1/r32/K0、δ=h=.1・m0..12、各DF自身のground oracle・状態準備費用除外、保存P0・head/X/Y shell込みfenced serial。共通有限政策の各16更新endpointでは、PR-aware/weighted L1の条件付き総RZ点比.494181551983（約50.58%低費用）、登録近似Welch95%差区間[-103702867354.3995,-89313774645.6005]でNOMINAL_MODEL_PR_LOWER。両DF予算PASS・U一次未達。
+
+新PR点値94288043542は保存XDF8/CDF8の共通ideal費用100267421030/102056444569も下回る（両者は全frame S2/s1、PR split・r/K非適用）。これは固定候補の条件付き点比較で、PR対XDF/CDFの直接統計的優位・同等性・非劣性、PR/ENTRY比CI、全law誤差・actual CA・一般性は未資格。旧update005/064と旧32 Claimは原条件の履歴として保全する。
+
+F16 645/最大1629、R32 1231/1231、I61 61/61のCOMPLETE・FAIL/retry/resume0・mandatory STOPは各固定公開実行の引用実績。今回の科学実行・重要科学レビューは0。Manifestは技術統合索引だけを現行checker schemaに沿って追加し、旧recordを保持する。全体checkerはclean起点からrelevant_commits[37]の旧形式でFAIL、今回も全体PASSと表示しない。新追記のschema・JSON Pointer・転記・リンク・旧Claim/差分保全は個別に静的検証する。
+
 ## 2026-11-03：研究Cの既存公開証拠統合（新科学実行なし）
 
 [最新Evidence Map](docs/research/research_c_evidence_map_updated_20261103.md)／[静的照合記録](artifacts/research_c_latest_evidence_integration/2026-11-03/static_verification.json)。固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。
