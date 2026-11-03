@@ -50,6 +50,9 @@ def collect(private, output):
     result = dict(status='COMPLETE_EXPLORATION_ONLY', signal_SOURCE=signal['SOURCE'],
         native_SOURCE=batches[0]['SOURCE'], source_files=batches[0]['source_files'], binding=signal['binding'],
         report_script_sha256=a.sha(__file__), rows=rows, trials=trials, comparisons=comparisons,
+        execution_recovery=[{k: batch['recovery'][k] for k in (
+            'runtime_SOURCE', 'recovery_script_sha256', 'reused_trials', 'missing_trials', 'new_samples', 'workers')}
+            for batch in batches if 'recovery' in batch],
         measured_best_PF=best_pf['candidate']['id'], global_grid_optimum_claim=False,
         provenance={name: a.sha(private / 'runs' / name / 'result.json') for name in ('stage_A01', 'stage_A02', 'stage_B01', 'stage_B02')},
         confirmation=dict(status='NOT_RUN', n=None, precision_target=None, pooled=False),
@@ -76,6 +79,7 @@ def collect(private, output):
         '新T full-H sparse reference、signed primitive、finite mean/normalization、bias/headroom/shotを検査した。',
         'Stage Aは初期57＋境界補完12＝69候補。適格40、不適格29、判定保留0。',
         'Stage Bは選んだPR4候補（各n=9）とPF15候補（各1回）、計51 trajectory・102軸の価格を取得した。',
+        '起動セッション消失からの復旧がある場合、そのscript hash・再利用件数・未完了件数を保存結果のexecution_recoveryに記す。元seed・event列を一致させ、新しい標本を追加しない。',
         '各群の代表例でlow/high control、algebraic event vector、cos/sin期待値、compiled vectorを検査した。',
         'CompilerはQiskit1.3.0、rz/sx/x/cx、opt1、seed17、backend/topology未指定。measurement付きfull Hadamard wrapperのRZを用いる。', '',
         '## 探索価格の比較', '',

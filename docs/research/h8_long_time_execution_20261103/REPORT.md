@@ -35,3 +35,12 @@ Stage Bはm5の7候補・23 trajectoryを8 worker、S2/Y4の12候補・28 trajec
 
 今回の検査は主担当Codexによるもので、別担当者の独立科学レビューではない。
 科学性能・全候補の最適性・population cost保証・最終全RPE costを主張しない。
+
+## 18時台の稼働確認と復旧
+
+2026-11-03 18:23 JSTの確認では、元の両起動セッション・計算worker・集計待機プロセスが失われていた。原因は未確定。HOLDや例外logは残っていないため、正常完了とも科学的不一致とも判定しない。
+最後の出力は17:41頃。Stage B01は21/23 trajectory・45/46軸、B02は15/28 trajectory・42/56軸まで保存され、計36/51 trajectoryが完了した。
+
+完了済み36件と元のpartial/cacheを保全し、未完了15件だけを新しいprivate復旧先で処理する。科学runtime SOURCE、入力、固定N、cohort、n、candidate/indexと元seed/event列を維持し、新しい標本を追加しない。元のHOLDがある場合は復旧入口が拒否する。
+[復旧入口](../../../scripts/resume_h8_long_time_execution.py)は既存Context・price_job・paired会計を使い、保存compiled QPYも再利用する。チャットから独立した自分専用のtransient user serviceで起動する。共有サービス・OS設定は変更しない。
+既存テストと人工復旧fixtureは計25件PASS。代表回路の検証は完了するまでPASSにしない。前回の18:30–20:30完了見込みは撤回し、復旧後も数時間を要する可能性がある。
