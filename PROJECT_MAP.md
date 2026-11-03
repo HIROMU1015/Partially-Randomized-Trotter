@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE 18roundの測定・実回路接続準備（2026-11-03）](docs/research/rpe_18round_measurement_connection_20261103/IMPLEMENTATION_CONNECTION_REPORT.md)：
+SOURCE対応、前提・証拠表、薄いadapterと人工tests、次の限定科学検証案。
+新H4計算・sampling・build/compile・保存signal再解析なし。V1/V2/V3/R1の判定とSTOPを維持。
+
 Pauli-JWの最新研究成果は[H2・H4・H6の総合資料](docs/research/pauli_jw_resource_evaluation_summary.md)から読む。目的・手法・最新15条件・限界を体系化し、以下の実験履歴とは分離する。
 
 [純RTEが低費用となる原因の既存証拠調査（2026-11-01）](docs/research/pauli_pure_rte_cost_mechanism_inventory_20261101.md)。保存費用内訳・event数・D1/D2対照と未分離の因果要因を整理。新科学計算・再解析・主要claim採択なし。

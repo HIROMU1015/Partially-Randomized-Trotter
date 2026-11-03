@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE 18round：測定・実回路への接続準備](research/rpe_18round_measurement_connection_20261103/IMPLEMENTATION_CONNECTION_REPORT.md)
+（2026-11-03）。同directoryに前提表、科学検証案、次段判断、adapter、人工testsと検査記録。
+科学runnerは追加せず、V2条件付き成功・R1費用UNDETERMINEDと既存STOPを維持。
+
 Pauli-JW研究は[科学的成果の総合資料](research/pauli_jw_resource_evaluation_summary.md)へ。個別報告・SOURCE・保存値の出典もそこから辿れる。
 
 <details>
