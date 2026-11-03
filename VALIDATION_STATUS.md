@@ -1,3 +1,13 @@
+## 2026-11-03 RPE m17：ideal categorical scopeの座標十分条件を包含で確認
+
+[報告・SOURCE・原本4件](docs/research/rpe_m17_rigorous_mean_enclosure_execution_20261103/REPORT.md)。実行11/3、報告11/4 JST。
+SOURCE18fffce48e33136b91eb6ac5a6f9a5f77a08d36f、linear H4/1Å/STO-3G/保存legacy DF12、
+B saved-state ray、8qubit・4電子sector70、Partial L_D3/単一δ=.02/m17 q131072/r32 K2。
+218 component/11 basisのSOURCE replayとhash照合後、component/order CDF各1回、96 bit包含1回を完了。
+両軸U_cat約4.23e-7で固定N411/α/εのstrict十分条件を確認。IID uniform53・ideal未compile・normalized rayの限定scope。
+builder π64加算も上界へ含む。ν_exec bridgeは全てnull、全体UNDETERMINED/旧INCONSISTENT/旧u_num=nullを保持。
+160/224 bit・中断/retry・sampling/compile/費用・成功率再解析0。正常終了後mandatory STOP。
+
 ## 2026-11-03 RPE m17 B-1a：高精度構成後も元診断閾値を超過
 
 [報告・SOURCE・原本3件](docs/research/rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)。

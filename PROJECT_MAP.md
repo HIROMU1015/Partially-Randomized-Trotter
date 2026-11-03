@@ -1,8 +1,13 @@
 # リポジトリの現在の入口
 
+[RPE m17：ideal categorical平均の包含で局所十分条件を確認（2026-11-03）](docs/research/rpe_m17_rigorous_mean_enclosure_execution_20261103/REPORT.md)：
+linear H4/1Å/STO-3G/保存legacy DF12/L_D3/単一δ=.02/m17 q131072/r32 K2、218成分/11 basisのreplayと96 bit包含1回。
+両軸U_cat約4.23e-7で固定N/α/εの十分条件を確認。IID53/ideal/normalized rayの限定scope。
+ν_exec bridge=null、RPE全体UNDETERMINED・旧INCONSISTENTを保持。原本4件を保存しSTOP。
+
 [RPE m17：ideal categorical測定平均の保証付き包含準備（2026-11-03）](docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103/NEXT_STAGE_DECISION.md)：
 成分/basis SOURCE replay export、CDF/53-bit mass、Acb/global radius、限定96→160→224 bit runnerを人工検証。
-ν_catとν_execのbridgeを分離し、実H4計算は未実行。旧status/STOPを保持し、公開後は別の科学実行許可までSTOP。
+準備時点の未実行記録。後続の許可済み包含評価は上記報告へ。旧status/STOPを保持。
 
 [RPE m17：B-1b/B-2の必要性・固定入力・直接上界の次期案（2026-11-03）](docs/research/rpe_m17_b1b_b2_assessment_20261103/NEXT_STAGE_DECISION.md)：
 全成分保存原本は確認範囲で不足。代数・SOURCE・binary64、samplerのCDF処理を分けて整理。
