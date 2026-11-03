@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：B1/B2固定Reference上界の技術統合（依頼日2026-11-03）
+
+[固定B2二項・Stage C残件・scope追補](../docs/research/research_c_b1_b2_reference_bound_integration_20261103.md)。`c_b1_b2_reference_bound_integration.py` / `prepare_research_c_b1_b2_reference_bound_integration.py`。Sector36のBridge/Reference上界を13roundの既存schemaへ保持し、Whole-P0/full512とcategorical unitary前提の未資格を維持。Stage C NOT_READY、新科学0、旧SOURCE/raw/契約/STOP保全。
+
 研究C：`prepare_research_c_b1_b2_scope_integration.py` はpassiveのみ。[B2公開待ち・未承認比較設計・STOP](../docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。新科学entryは非実行、Stage A/B1/B2の再実行やStage Cの自動開始なし。
 
 研究C・B1：`prepare_research_c_p0_uniform_method.py` はpassiveのみ。[Whole-P0一様法・未準備条件・calls](../docs/research/research_c_p0_uniform_method_readiness_20261103.md)。実H4科学entryは未成立のため拒否、Stage A再実行・Stage Cへの進行なし。

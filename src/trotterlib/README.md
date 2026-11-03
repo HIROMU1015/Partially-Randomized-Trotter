@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：B1/B2固定Reference上界の技術統合（依頼日2026-11-03）
+
+[固定B2二項・Stage C残件・scope追補](../../docs/research/research_c_b1_b2_reference_bound_integration_20261103.md)。`c_b1_b2_reference_bound_integration.py` / `prepare_research_c_b1_b2_reference_bound_integration.py`。Sector36のBridge/Reference上界を13roundの既存schemaへ保持し、Whole-P0/full512とcategorical unitary前提の未資格を維持。Stage C NOT_READY、新科学0、旧SOURCE/raw/契約/STOP保全。
+
 研究C：`trottertracks/c_b1_b2_scope_integration.py` は既存IID accuracyへのpartition/scope検査。[B2不在gate・有限/確率的資格の区別・284 PASS](../../docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。旧SOURCE無変更、actual-law/厳密CAへ昇格しない。
 
 研究C・B1：`trottertracks/c_p0_uniform_method.py` は既存C2-A/ZSXX・full synthesisを再利用する現r32 adapter。[構造count/有限診断/未資格/252 PASS](../../docs/research/research_c_p0_uniform_method_readiness_20261103.md)。旧共有SOURCEは無変更、実H4一様boundは未取得。

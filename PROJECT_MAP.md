@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：B1/B2固定Reference上界の技術統合（依頼日2026-11-03）
+
+[固定B2二項・Stage C残件・scope追補](docs/research/research_c_b1_b2_reference_bound_integration_20261103.md)。`c_b1_b2_reference_bound_integration.py` / `prepare_research_c_b1_b2_reference_bound_integration.py`。Sector36のBridge/Reference上界を13roundの既存schemaへ保持し、Whole-P0/full512とcategorical unitary前提の未資格を維持。Stage C NOT_READY、新科学0、旧SOURCE/raw/契約/STOP保全。
+
 研究C：[B1/B2統合schema・精度scope比較（B2公開未観測）](docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。開始時のB2照会は一致0、依存判定は保留。誤差partition・有限/確率的案・既存accuracy gateを人工284 PASS（旧2件除外）で接続した。新H4科学/Stage C/重要レビュー0、未承認設計は非実行、mandatory STOP。
 
 研究C・B1：[Whole-P0一様synthesis法の技術具体化](docs/research/research_c_p0_uniform_method_readiness_20261103.md)。既存C2-A/ZSXX composerを現r32へ接続、人工/回帰252 PASS（旧2件は理由付き除外）。構造上限は具体化したが全domain再合成・phase等は未資格。実H4契約は非実行/calls未確定、B2未統合、新科学0、mandatory STOP。
