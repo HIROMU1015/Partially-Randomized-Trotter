@@ -1,0 +1,91 @@
+LOCAL technical preparation validation, 2026-11-03 JST
+No real H4 component/basis replay, CDF/grid evaluation, operator/norm/mean/budget evaluation,
+sampling/RNG replay/quantum shots/controlled build/compile/cost or independent scientific review.
+New enclosure suite: 25 PASS. Original m17 artificial suite: 13 PASS. Static identity suite: 11 PASS. Total 49 PASS.
+Environment: Python 3.11.0rc1; python-flint0.9.0; FLINT3.6.0; NumPy1.26.4; SciPy1.14.1;
+Qiskit1.3.0; qiskit-nature0.7.2; OpenFermion1.6.1; mpmath1.3.0.
+python-flint installed into dedicated owned venv; original dependencies reused read-only through a .pth entry.
+No shared environment/package modifications. Requirements allow a separate full environment recreation.
+Artificial method comparison: 8x8 dense unitary, q131072, 96 bit.
+Global spectral radius upper approximately 1.1491831210e-22; direct Acb [0,0] real radius approximately 1.9454310564e-17.
+A separate 224-bit artificial reference is contained. Different radius types; no real-H4 width/speed claim.
+Initial toy-only test harness issues (Fraction conversion, Qiskit convenience method, rational vs binary64 alpha)
+were corrected before the final passing runs. No real input or scientific threshold was changed.
+Real data access during preparation: fixed bytes/SHA/git blobs, saved JSON literals, NPY headers only.
+Default runner tested while np.load, SOURCE replay and CDF entrypoints were blocked by mocks.
+
+new_enclosure
+Command: PYTHONWARNINGS=ignore MPLCONFIGDIR=<owned-temp-dir> OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest discover -s docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103 -p test_mean_enclosure.py -v
+Exit: 0
+test_basis_export_on_artificial_gate_registry (test_mean_enclosure.EnclosureTests.test_basis_export_on_artificial_gate_registry) ... ok
+test_builder_pi_phase_transfer_includes_float_additions (test_mean_enclosure.EnclosureTests.test_builder_pi_phase_transfer_includes_float_additions) ... ok
+test_cdf_exact_grid_and_boundary_side_right (test_mean_enclosure.EnclosureTests.test_cdf_exact_grid_and_boundary_side_right) ... ok
+test_component_renormalization_matches_source (test_mean_enclosure.EnclosureTests.test_component_renormalization_matches_source) ... ok
+test_default_does_not_load_real_arrays_or_construct_cdf (test_mean_enclosure.EnclosureTests.test_default_does_not_load_real_arrays_or_construct_cdf) ... ok
+test_driver_synthetic_success_failure_and_fresh_output (test_mean_enclosure.EnclosureTests.test_driver_synthetic_success_failure_and_fresh_output) ... ok
+test_exact_rational_and_binary64_differ (test_mean_enclosure.EnclosureTests.test_exact_rational_and_binary64_differ) ... ok
+test_full_preparation_export_on_synthetic_object (test_mean_enclosure.EnclosureTests.test_full_preparation_export_on_synthetic_object) ... ok
+test_gate_analytic_formula_matches_qiskit_on_toy (test_mean_enclosure.EnclosureTests.test_gate_analytic_formula_matches_qiskit_on_toy) ... ok
+test_global_radius_product_uses_general_norms (test_mean_enclosure.EnclosureTests.test_global_radius_product_uses_general_norms) ... ok
+test_invalid_categorical_stops_without_rng (test_mean_enclosure.EnclosureTests.test_invalid_categorical_stops_without_rng) ... ok
+test_large_q_with_global_radius_and_direct_interval (test_mean_enclosure.EnclosureTests.test_large_q_with_global_radius_and_direct_interval) ... ok
+test_measurement_re_im_and_normalized_saved_ray (test_mean_enclosure.EnclosureTests.test_measurement_re_im_and_normalized_saved_ray) ... ok
+test_no_extra_normalization_r_lives_inside_q (test_mean_enclosure.EnclosureTests.test_no_extra_normalization_r_lives_inside_q) ... ok
+test_noncommuting_product_order_and_power (test_mean_enclosure.EnclosureTests.test_noncommuting_product_order_and_power) ... ok
+test_noncommuting_signed_event_average (test_mean_enclosure.EnclosureTests.test_noncommuting_signed_event_average) ... ok
+test_nonfinite_and_missing_input_stops (test_mean_enclosure.EnclosureTests.test_nonfinite_and_missing_input_stops) ... ok
+test_outward_endpoints_and_midpoint_radius_retained (test_mean_enclosure.EnclosureTests.test_outward_endpoints_and_midpoint_radius_retained) ... ok
+test_precision_selection_is_bounded_and_driven_by_interval (test_mean_enclosure.EnclosureTests.test_precision_selection_is_bounded_and_driven_by_interval) ... ok
+test_run_requires_output_before_science (test_mean_enclosure.EnclosureTests.test_run_requires_output_before_science) ... ok
+test_scalar_half_phase_uses_source_separate_parameters (test_mean_enclosure.EnclosureTests.test_scalar_half_phase_uses_source_separate_parameters) ... ok
+test_sector_invariance_and_little_endian_row_action (test_mean_enclosure.EnclosureTests.test_sector_invariance_and_little_endian_row_action) ... ok
+test_signed_component_mixture_and_unsupported_support (test_mean_enclosure.EnclosureTests.test_signed_component_mixture_and_unsupported_support) ... ok
+test_strict_budget_unknown_bridge_and_ambiguous_interval (test_mean_enclosure.EnclosureTests.test_strict_budget_unknown_bridge_and_ambiguous_interval) ... ok
+test_toy_hadamard_sdg_convention_and_plus_probability (test_mean_enclosure.EnclosureTests.test_toy_hadamard_sdg_convention_and_plus_probability) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 0.904s
+
+OK
+
+reused_m17
+Command: PYTHONWARNINGS=ignore MPLCONFIGDIR=<owned-temp-dir> OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest discover -s docs/research/rpe_m17_mean_validation_preparation_20261103 -p test_m17_mean_validation.py -v
+Exit: 0
+test_a_reference_mismatch_is_reported_without_tolerance_inflation (test_m17_mean_validation.MeanPreparationTests.test_a_reference_mismatch_is_reported_without_tolerance_inflation) ... ok
+test_actual_fixed_row_only_transfers_literals (test_m17_mean_validation.MeanPreparationTests.test_actual_fixed_row_only_transfers_literals) ... ok
+test_complete_context_schema_with_synthetic_components_and_cached_basis (test_m17_mean_validation.MeanPreparationTests.test_complete_context_schema_with_synthetic_components_and_cached_basis) ... ok
+test_context_inventory_failure_retains_actual_values (test_m17_mean_validation.MeanPreparationTests.test_context_inventory_failure_retains_actual_values) ... ok
+test_context_passes_threshold_and_r32_without_r1_fallback (test_m17_mean_validation.MeanPreparationTests.test_context_passes_threshold_and_r32_without_r1_fallback) ... ok
+test_default_cli_cannot_enter_science_or_open_outputs (test_m17_mean_validation.MeanPreparationTests.test_default_cli_cannot_enter_science_or_open_outputs) ... ok
+test_grouping_keeps_weight_sources_and_shares_basis_transform (test_m17_mean_validation.MeanPreparationTests.test_grouping_keeps_weight_sources_and_shares_basis_transform) ... ok
+test_interruption_retains_scalar_stage_and_error_without_overwriting (test_m17_mean_validation.MeanPreparationTests.test_interruption_retains_scalar_stage_and_error_without_overwriting) ... ok
+test_invalid_scalar_inputs_and_nonpositive_reserve_do_not_become_passes (test_m17_mean_validation.MeanPreparationTests.test_invalid_scalar_inputs_and_nonpositive_reserve_do_not_become_passes) ... ok
+test_literal_law_matches_full_small_support_including_order2_and_negative_time (test_m17_mean_validation.MeanPreparationTests.test_literal_law_matches_full_small_support_including_order2_and_negative_time) ... ok
+test_r_lives_inside_q_and_scalar_normalization_is_applied_once (test_m17_mean_validation.MeanPreparationTests.test_r_lives_inside_q_and_scalar_normalization_is_applied_once) ... ok
+test_scalar_reserve_uses_saved_n_alpha_epsilon_on_synthetic_values (test_m17_mean_validation.MeanPreparationTests.test_scalar_reserve_uses_saved_n_alpha_epsilon_on_synthetic_values) ... ok
+test_synthetic_completion_saves_two_means_and_seven_operators_without_certification (test_m17_mean_validation.MeanPreparationTests.test_synthetic_completion_saves_two_means_and_seven_operators_without_certification) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.037s
+
+OK
+
+reused_static
+Command: PYTHONWARNINGS=ignore MPLCONFIGDIR=<owned-temp-dir> OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 python -m unittest discover -s docs/research/rpe_m17_b1b_b2_assessment_20261103 -p test_static_identities.py -v
+Exit: 0
+test_budget_is_strict_and_requires_unknown_bridges (test_static_identities.StaticIdentities.test_budget_is_strict_and_requires_unknown_bridges) ... ok
+test_contraction_bound_and_invalid_unconditional_q_eta (test_static_identities.StaticIdentities.test_contraction_bound_and_invalid_unconditional_q_eta) ... ok
+test_finite_pairing_all_degrees_and_signed_time (test_static_identities.StaticIdentities.test_finite_pairing_all_degrees_and_signed_time) ... ok
+test_grid_bucket_counts_include_right_boundary (test_static_identities.StaticIdentities.test_grid_bucket_counts_include_right_boundary) ... ok
+test_half_tail_product_error_order (test_static_identities.StaticIdentities.test_half_tail_product_error_order) ... ok
+test_independent_noncommuting_signed_component_products (test_static_identities.StaticIdentities.test_independent_noncommuting_signed_component_products) ... ok
+test_inner_outer_normalizer_once (test_static_identities.StaticIdentities.test_inner_outer_normalizer_once) ... ok
+test_noncommuting_power_telescoping (test_static_identities.StaticIdentities.test_noncommuting_power_telescoping) ... ok
+test_numpy_cdf_normalization_is_distinct_from_raw_weights (test_static_identities.StaticIdentities.test_numpy_cdf_normalization_is_distinct_from_raw_weights) ... ok
+test_rotation_sign_with_rational_pythagorean_point (test_static_identities.StaticIdentities.test_rotation_sign_with_rational_pythagorean_point) ... ok
+test_total_variation_bounded_by_cdf_differences (test_static_identities.StaticIdentities.test_total_variation_bounded_by_cdf_differences) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.002s
+
+OK

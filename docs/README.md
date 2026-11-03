@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：測定平均の包含adapter・科学実行SOURCEの準備](research/rpe_m17_rigorous_mean_enclosure_preparation_20261103/NEXT_STAGE_DECISION.md)
+（2026-11-03）。成分/basis export、CDF/grid、Arb/Acb環境、global radiusとstrict予算判定、限定実行計画。
+人工検証のみ。実H4のSOURCE replay/CDF/包含は別許可まで未実行、旧status/STOP保持。
+
 [RPE m17：B-1b/B-2と直接的な数値誤差上界の選定](research/rpe_m17_b1b_b2_assessment_20261103/NEXT_STAGE_DECISION.md)
 （2026-11-03）。成分入力の可用性、有限Law/Taylor恒等式、CDFと測定meanへのbridge、次の最小計画。
 静的調査・人工検証のみ。新H4再解析・成分生成・sampling/compileなし、mandatory STOP。

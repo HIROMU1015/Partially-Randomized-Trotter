@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：ideal categorical測定平均の保証付き包含準備（2026-11-03）](docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103/NEXT_STAGE_DECISION.md)：
+成分/basis SOURCE replay export、CDF/53-bit mass、Acb/global radius、限定96→160→224 bit runnerを人工検証。
+ν_catとν_execのbridgeを分離し、実H4計算は未実行。旧status/STOPを保持し、公開後は別の科学実行許可までSTOP。
+
 [RPE m17：B-1b/B-2の必要性・固定入力・直接上界の次期案（2026-11-03）](docs/research/rpe_m17_b1b_b2_assessment_20261103/NEXT_STAGE_DECISION.md)：
 全成分保存原本は確認範囲で不足。代数・SOURCE・binary64、samplerのCDF処理を分けて整理。
 第一候補はsampler接続を含む局所meanの誤差上界評価。backend/export/SOURCE準備が先で、新H4計算なし・旧status/STOP保持。
