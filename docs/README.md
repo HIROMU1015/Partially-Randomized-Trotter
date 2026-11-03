@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C・B2：[状態非依存reference上界の固定27-call実行結果](research/research_c_reference_bound_execution_20261103.md)。27 COMPLETE/FAIL0、Arb384で全13round取得。物理入力・Whole-P0・Stage C・actual CAは未資格、mandatory STOP。
+
 研究C・B2：[状態非依存reference上界・固定27-call未承認契約](research/research_c_reference_bound_contract_readiness_20261103.md)。Arb384、保存state未使用、二項triangle、既存SOURCE保全。実H4評価は別途実行許可まで開始しない。
 
 研究C・B2：[reference数値不確かさの技術準備・誤差成分・未承認契約](research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。既存Arbを再利用するadapter、人工検証、passive preflight。科学契約とStage CはNOT_READY、mandatory STOP。

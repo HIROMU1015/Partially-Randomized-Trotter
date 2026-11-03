@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究C・B2：`trottertracks/c_reference_bound_contract.py` の[状態非依存reference上界・27-call結果](../../docs/research/research_c_reference_bound_execution_20261103.md)。全13roundの二項包囲、固定保存入力だけの資格。Stage C未実行、SOURCE無変更、mandatory STOP。
+
 研究C・B2：`trottertracks/c_reference_bound_contract.py` は既存CAR/ArbとB2 adapterを再利用する状態非依存の二項上界。[固定契約と資格範囲](../../docs/research/research_c_reference_bound_contract_readiness_20261103.md)。実H4未実行、B1/Stage C資格は変更しない。
 
 研究C・B2：`trottertracks/c_reference_numerical_uncertainty.py` は局所誤差・coherent反復・反復二乗・state誤差からraw信号への接続。[方法と資格](../../docs/research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。共有engineは無変更、実H4不確かさはnull。

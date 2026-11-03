@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C・B2：[状態非依存reference上界の27-call実行結果](docs/research/research_c_reference_bound_execution_20261103.md)。27/27 COMPLETE、Arb384・全13round。固定保存入力の二項上界を取得、Stage C/actual CA未資格、mandatory STOP。
+
 研究C・B2：[状態非依存reference上界の固定27-call契約](docs/research/research_c_reference_bound_contract_readiness_20261103.md)。保存stateを使わず、atom→数学CAR→保存数値referenceの二項をArb384で評価する準備。実H4は未実行、Stage C未資格。
 
 研究C・B2：[reference数値不確かさの方法・誤差伝播・統合interface](docs/research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。既存Arb/CARを再利用し人工検証。実H4契約NOT_READY、Stage C未実行、旧SOURCE/STOP保全。
