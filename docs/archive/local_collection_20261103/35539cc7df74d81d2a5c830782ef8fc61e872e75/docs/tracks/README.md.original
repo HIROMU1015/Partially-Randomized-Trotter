@@ -1,0 +1,43 @@
+# Research tracks
+
+2026-10-04。これは研究ラインの境界と文書入口の整理であり、science execution authorizationではない。
+
+| Track | 役割 | 現在の証拠と停止位置 |
+|---|---|---|
+| [A: Resource / Applicability](resource_applicability/README.md) | 固定DF splitと既存finite-RTEのmatched-accuracy compiled resource map・適用条件・機構説明 | PR-2 M1/M2の正式なlocal evidence。M2 `TRANSFER_SUPPORTED`後、研究方針review待ち |
+| [B: Algorithm Co-design](algorithm_codesign/README.md) | subalgorithmの変更がsplit/frontierの構造を変えるかという探索的RQ | 新規性gate未通過、採択algorithm・独立science結果・実行認可なし |
+
+両ラインは同一repositoryで扱う。既存のPR-2 branchは保持し、今回branch/worktreeの新設はしない。
+長期branch案とファイル分類は[構造監査・分離計画](repository_structure_audit_2026-10-04.md)、
+path/provenance・共通実装・入力再利用の規則は[migration policy](migration_policy.md)を参照する。
+
+## 正本と共通データ
+
+全体入口は[研究概要・現状](../research/研究概要・現状.md)。従来の正本・検証報告・artifactを改名せず、
+Track READMEはその上に置く案内と今後のscope草案とする。過去のauthorizationを新研究へ継承しない。
+矛盾があれば、現行正本の適用stage、[VALIDATION_STATUS](../../VALIDATION_STATUS.md)、
+[証拠manifest](../../artifacts/validation_manifest.json)、個別result/source commitを照合してreviewへ戻る。
+
+- `src/trotterlib/`のHamiltonian/DF表現、低レベルPF/RTE回路、signal/shot/cost helper、IO・並列executorは原則一つを共有する。
+- 所有分類`COMMON`は一般的な性能保証・新研究での科学的検証済み・実行許可を意味しない。
+- H4 1.00 ÅはTrack A development。H4 1.30 Åは**M2で使用済み**であり、Bから参照するなら既知/development/exploratory/post-hoc evidenceである。
+- Track Bの新しいblind/held-outは未定。将来、既視結果と独立にidentity・開封境界・成功条件を結果前固定する。今回は候補探索も開封もしない。
+- P-A/P-B/P-C/P-D/R3/FRのnegative evidenceとSTOP理由を保持する。改名・branch分離だけで再開しない。
+
+## 今回の検査
+
+[全ファイル分類表](audit/2026-10-04/file_classification_v1.csv)は整理開始時HEADの1380ファイルと
+既存未commit資料14ファイルを対象とする。分類が曖昧なものは`review_required=True`として現位置に残す。
+[保護対象snapshot](audit/2026-10-04/protected_paths_v1.json)は**構造監査専用**であり、科学manifestではない。
+NPZ/NPY/pickle/PDF等の内容を開かずGit metadataだけ記録した。
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 \
+  python -B scripts/common/audit_research_track_structure.py \
+  --verify docs/tracks/audit/2026-10-04/protected_paths_v1.json
+```
+
+これは保護textの照合で、科学runやfull test suiteではない。元HEADを動かした後のFAILは
+そのsnapshotの適用期間が終わったことを含み得るため、旧記録を書き換えず別監査として扱う。
+
+現在は構造とREADME草案のreviewまで。Aの追加計算、Bのpilot、branch作成、commit/pushへ自動的に進まない。

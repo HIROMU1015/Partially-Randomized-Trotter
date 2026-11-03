@@ -1,0 +1,61 @@
+"""Synthetic tests only: no molecular data, compiler or scientific runner."""
+import importlib.util
+from pathlib import Path
+from unittest.mock import patch
+
+import pytest
+
+SCRIPT = Path(__file__).parents[2] / "scripts/common/audit_research_track_structure.py"
+SPEC = importlib.util.spec_from_file_location("track_structure_audit", SCRIPT)
+audit = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(audit)
+
+
+@pytest.mark.parametrize("path,expected,review", [
+    ("src/trotterlib/df_hamiltonian.py", "COMMON", False),
+    ("src/trotterlib/product_formula.py", "COMMON", False),
+    ("src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py", "TRACK_A", False),
+    ("artifacts/pr2_matched_accuracy_m1_b1_execution/result.json", "TRACK_A", False),
+    ("docs/tracks/algorithm_codesign/README.md", "TRACK_B", False),
+    ("src/trotterlib/research_direction_pd_realization.py", "LEGACY_OR_ARCHIVE", False),
+    ("src/trotterlib/pr2_pr3_minimal_pilot.py", "LEGACY_OR_ARCHIVE", True),
+    ("docs/research/fr_research_claim_and_manuscript.md", "LEGACY_OR_ARCHIVE", True),
+    ("unknown.pdf", "LEGACY_OR_ARCHIVE", True),
+])
+def test_ownership_does_not_promote_stopped_research(path, expected, review):
+    category, reason, required = audit.classify(path)
+    assert category == expected
+    assert required == review
+    assert reason
+
+
+@pytest.mark.parametrize("name", ["held_out.npz", "state.npy", "cache.pkl", "state.pickle", "paper.pdf", "old.ipynb"])
+def test_binary_is_metadata_only_before_filesystem_access(tmp_path, name):
+    with patch.object(Path, "read_bytes", side_effect=AssertionError("data must not be read")), patch.object(Path, "is_symlink", side_effect=AssertionError("data must not be inspected")):
+        assert audit.text_state(tmp_path, name)["state"] == "git_metadata_only_content_not_opened"
+
+
+def test_runtime_text_is_rejected(tmp_path):
+    with pytest.raises(ValueError):
+        audit.text_state(tmp_path, "artifacts/example/.runtime/cache.json")
+
+
+def test_missing_text_and_symlink_are_not_materialized(tmp_path):
+    assert audit.text_state(tmp_path, "missing.md")["state"] == "preexisting_missing"
+    link = tmp_path / "link.md"
+    link.symlink_to(tmp_path / "held_out.npz")
+    assert audit.text_state(tmp_path, "link.md")["state"] == "symlink_not_followed"
+
+
+def test_verifier_detects_modified_protected_text(tmp_path):
+    row = {"path": "source.py", "scope": "head_tracked", "git_mode": "100644",
+           "original_worktree": {"state": "text_read_only", "bytes": 0, "sha256": "wrong"}}
+    snapshot = {"head": "fixed", "allowed_navigation_edits": [], "rows": [row]}
+    with patch.object(audit, "git", side_effect=["fixed", "source.py\0"]):
+        assert audit.verify(tmp_path, snapshot)["errors"] == ["source.py"]
+
+
+def test_csv_covers_every_row():
+    row = dict(path="docs/日本語.md", category="COMMON", reason="shared", review_required=False,
+               scope="head_tracked", git_mode="100644", git_blob="abc")
+    assert "docs/日本語.md,COMMON" in audit.csv_inventory({"rows": [row]})

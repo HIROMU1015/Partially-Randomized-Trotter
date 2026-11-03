@@ -1,0 +1,41 @@
+# Track A 原稿・図・reviewの入口
+
+最新の利用者指示により、原稿作成・投稿先検討はいったん保留。
+v0.1/v0.2・図・監査はそのまま保存し、[H4 geometry拡張の設計準備](../research/track_a_geometry_precision_extension_proposal_v0.md)へ移る。
+追加scienceはまだ実行せず、距離・実行場所・新source/authorizationの固定を先に行う。
+以下の原稿完成・投稿先検討はその時点の記録であり、原稿を削除したり科学値を書き換えたりしない。
+
+2026-10-05。現在の原稿は日本語v0.2。
+利用者提示の外部GPT review `CLOSE_AS_TECHNICAL_RESOURCE_NOTE`を採用し、
+限定的なtechnical resource/application noteとして仕上げる。新科学計算0、科学STOP。
+
+- [本文v0.2](track_a_resource_study_v0_2.md)：三寄与、圧縮Abstract、Related Work、整理したlimitations。
+- [Supplement v0.2](track_a_resource_study_supplement_v0_2.md)：6metrics、SE、selector、P、stage/commit/hash、STOP。
+- [claim audit v0.2](track_a_resource_study_claim_audit_v0_2.md)：C1〜C3の章間整合性とreview対応。
+- [scope判断](../research/track_a_technical_resource_note_scope_decision_20261005.md)と
+  [別判断JSON](../research/track_a_technical_resource_note_scope_decision_20261005.json)：科学resultを上書きしない編集判断。
+- [v0.2 editorial audit](../../artifacts/resource_applicability/track_a_manuscript_v0_2/2026-10-05/editorial_audit.json)：
+  原科学値・v0.1・図の不変性、式・数値列・caption・リンクの検査。
+  [別manifest](../../artifacts/resource_applicability/track_a_manuscript_v0_2/2026-10-05/manifest.json)にv0.2文書と監査のhashを記録。
+
+## 保存したv0.1と図
+
+- [本文v0.1](track_a_resource_study_v0_1.md)、[Supplement](track_a_resource_study_supplement_v0_1.md)、
+  [執筆者監査](track_a_resource_study_claim_audit_v0_1.md)はreview履歴として保存。
+- [元の完成原稿レビュー依頼](track_a_publication_readiness_review_request_v0_1.md)は依頼時点の記録。
+- [固定図・表示CSV・asset manifest](../../artifacts/resource_applicability/track_a_manuscript_v0_1/2026-10-05/)：
+  4主図＋補足図1のPNG/SVG/PDF、表示CSV6をv0.2でもそのまま使用。
+- [v0.1 verification audit](../../artifacts/resource_applicability/track_a_manuscript_audit/2026-10-05/verification.json)：
+  元9入力・22asset・表示値・原稿リンク・専用21 synthetic/local testsの当時の結果。
+
+evidence commit `5a1adffad780f0ec4272f5e8bb94713f9ff0f2bc`、
+design commit `d45c4006d440ba053517d6f646844a61b18dfd15`、
+v0.1公開commit `4c23453c541700c6a41ba71fc5ec9323b53858d6`。
+研究設計は[固定claim/evidence map](../research/track_a_post_pm2_claim_evidence_map.md)と
+[原稿設計](../research/track_a_post_pm2_manuscript_design.md)を維持する。
+
+## 次の判断
+
+投稿形態・投稿先、著者・所属、投稿要領への整形を決める。現時点で投稿・追加科学計算は認可していない。
+technical noteへの収束判断は採択保証、独立再現、immutable CIではない。
+strong synthesis、高次PF、別geometry/分子、追加trajectory、energy/RPE総cost、Track B統合へ進まない。

@@ -1,0 +1,106 @@
+# Track A: Resource / Applicability Study
+
+現在は利用者の新しい意向により原稿作成を保留し、
+[H4 geometryと要求精度の全候補map拡張](../../research/track_a_geometry_precision_extension_proposal_v0.md)を準備する。
+距離・host・worker・新source/authorizationは未固定、science launchは未実施。
+既存claim・原稿・証拠とSTOPを維持し、H6/H8・追加96・Track B統合は別判断。
+以下は各milestone当時の履歴。
+
+2026-10-05。PR-2から続く本線。文書入口であり、追加実行の認可ではない。
+現在はPM-2保存値解析を終え、[通し原稿v0.1・主図・補足・監査](../../manuscripts/README.md)を作成した。
+次は完成原稿の独立した投稿可能性review。追加科学計算は認可せず、既存結果とSTOPを維持する。
+
+## Research Question
+
+固定DF Hamiltonianについてresidualをdiscardする、deterministicに保持する、canonical finite-RTEで
+randomに補完する、のどれを選ぶべきか。同じcomplex-signal accuracyで、corrected normalization、
+analytic shots、実測full-wrapper compile、状態準備cost感度、`split / q / r / K`を戻すと、
+どこでintermediate partialがresource frontierに残り、その境界をどの費用・誤差項が説明するか。
+
+新しいsimulation algorithmやsampling distributionの一般的resource最適性を主張する研究ではない。
+設計の正本は[matched-accuracy resource contract](../../research/pr2_matched_accuracy_resource_contract_v1.md)、
+[prior-art gate](../../research/pr2_matched_accuracy_prior_art_gate_v1.md)、各stageのamendmentとauthorizationを辿る。
+
+## Current claimと証拠の範囲
+
+> H4 1.00 Å developmentの登録した二次DF-PF候補内では、intermediate DF-prefix partialが固定q=8でも
+> primary RZ最小で、可変qでは絶対資源がさらに下がった。そこで固定した少数構成は、
+> 未使用だったH4 1.30 Åへの一回のM2 transferでもaccuracyとresource competitivenessを維持した。
+
+[PM-0事後解析](../../research/pr2_post_m2_evidence_attribution.md)により帰属を限定した。
+旧S2からの方式判断の差はcandidate-domain変更を含み、q最適化だけへの帰属はできない。
+旧selectorのprimary RZ regretは0だが、6指標Paretoの一件を落とす。
+M1/M2のP感度は共通5構成で比べると両方とも大きなPでB1へ移る。
+元result/statusは不変で、POSTHOC成果物は[track-scoped output](../../../artifacts/resource_applicability/pr2_post_m2_evidence_attribution/2026-10-04/)に分離した。
+
+両方ともH4 linear、STO-3G、DF rank12 Hamiltonian、8 system qubits、`T=0.8`。
+M1のsplitは`L_D=0,3,6,9,12`、`q=1,2,4,8`、`delta=T/q=0.8,0.4,0.2,0.1`。
+M2は以下の固定5構成だけで、delta sweepや各methodの再最適化は行っていない。
+
+| M2固定構成 | L_D | q / delta | r / K |
+|---|---:|---|---|
+| B2 partial 1 | 3 | 1 / 0.8 | 4 / 2 |
+| B2 partial 2 | 3 | 1 / 0.8 | 8 / 2 |
+| B0 discard | 6 | 1 / 0.8 | 0 / 0 |
+| B1 deterministic | 12 | 1 / 0.8 | 0 / 0 |
+| B3 random-dominant | 0 | 8 / 0.1 | 32 / 4 |
+
+| Evidence | 保存された結論 | 正式path |
+|---|---|---|
+| 旧S2 | fixed-q=8のdevelopment比較。後のmatched-accuracy結果とは比較scopeが違う | [S2 validation](../../pr2_v4_s2_development_validation.md) |
+| M1-A | 210候補、206 accuracy適格、random194/194適格。64 proxy-frontier候補の52件が旧16-cell cap外、`SELECTION_LIMITED`、compile0 | [M1-A](../../pr2_matched_accuracy_m1_a_validation.md) |
+| M1-B1 | 210 cell、12,448 wrapper recordのbounded map。6指標actual point ParetoはB2 rank3/q1/r4またはr8/K2の二件。旧selectorはこの二件の一件しか保持しない | [M1-B1](../../pr2_matched_accuracy_m1_b1_result_validation.md) |
+| M2 | 全5件accuracy適格、usable B2二件がpoint Pareto。primary RZの最小B2/最小endpoint比0.586090、engineering upper2SE 0.593584。`TRANSFER_SUPPORTED` | [M2](../../pr2_matched_accuracy_m2_transfer_result_validation.md) |
+
+primaryは`N_real E[C_cosine,RZ] + N_imag E[C_sine,RZ]`、ParetoはRZ/CX count・depth、total depth、sizeの6指標。
+paired Re/Im covarianceを保持したSEとratio±2SEはengineering intervalでありformal CIではない。
+H4 M2の`P>=0` point lower envelopeはB2 r4→B2 r8→大きいPでB1へ移る。状態準備回路はcompileしていない。
+従って「Pを含め常にB2が最良」「r4が厳密winner」とはしない。
+
+## Provenance / current status
+
+- M1-B1 evidence commit：`8e0814e70c14ecf526444fac8a2142799610dc96`。
+- M2軽量result/report commit：`b6e65c6123475add5e620ec1064f361378bead95`。
+- M2 actual execution source：`2978e2fea672b7a1ff20cac74269ec9a610159dc`。
+- M2 result SHA-256：`f41a92beb57e59cddc8c063b061c40acd4da50cb76ac0698efc2bce004937931`。
+- M2 result：[saved JSON](../../../artifacts/pr2_matched_accuracy_m2_transfer_execution/2026-10-04/pr2_matched_accuracy_m2_transfer_result_v2.json)。旧result/manifest/source/authorizationを変更しない。
+- 証拠はsource-bound **local validation**。immutable CI、外部再現、実量子shot測定ではない。
+- statusは既存M2の`TRANSFER_SUPPORTED`、`mandatory_stop_reached=true`、`next_stage_authorized=false`のまま。
+
+H4 1.30 Åは使用済みで、Track Bのfresh held-outにはならない。入力identityは保存済みplan/resultから参照し、
+整理のためにNPZを開き直さない。
+
+## PM-0〜PM-3：方針review採用後の段階
+
+利用者提供`pr2_post_m2_research_redesign_20261004.md`に整合させ、以前の暫定PMラベルを置き換える。
+旧実行stage/authorizationの改名ではない。
+
+1. **PM-0：証拠帰属・同一集合再解析。完了、POSTHOC、科学計算0。** 保存JSON/sourceだけから
+   同一domain、primary/secondary regret、N×cost、R=q*r、bias欠測、baseline実装を監査した。
+2. **PM-1：近傍discard baseline反証。完了、結果後STOP。**
+   [結果照合](../../pr2_pm1_discard_result_validation.md)はdevelopment B0 rank4/5 × q=1/2/4/8、
+   8 signal＋16 deterministic wrapper、random追加0。結果commitは`194cc604`。
+   全8件がaccuracy適格でも、元ε=0.05の保存比較ではB2より必要shotとprimary費用が大きかった。
+   これは固定二次DF-prefix class内の比較で、strong synthesisや一般的最適性は別監査が必要。
+3. **PM-2：固定taskのε/P資源境界。保存値解析・照合を完了、科学計算0。**
+   [固定契約](../../research/pr2_pm2_precision_resource_contract_v1.md)はdevelopment全218候補と
+   M2元5構成を別集合にし、ε=0.005〜0.1、軸別costとcorrected shots、共通P>=0感度を固定する。
+   POSTHOC保存値解析であり、旧result/statusを置き換えない。新しいsignal/sampling/compileは0。
+   [PM-2照合](../../pr2_pm2_precision_resource_result_validation.md)と原稿を区別する。
+   原稿設計commitd45c400、結果commit5a1adffaに基づく4主図・補足図1を再表示した。
+4. **PM-3：独立構造軸またはenergy接続。条件付き・未認可。** PM-0〜2で現在のRQが閉じるなら追加不要。
+
+M2のSUPPORTED、PM-0〜PM-2完了も次段階の自動GOではない。今は原稿完成後の独立reviewへSTOPする。
+既存302点の再表示は追加検証ではない。precision gridや候補集合の追加・科学実行は行わない。
+NPZやruntimeを開かず、科学実行しない。以前のPM-1準備attemptのNPZ4件stat/hash（load0）違反、
+認可済みPM-1一回実行、今回PM-2準備の保護データaccess0は別auditとして区別する。
+
+## Claims not supported / STOP
+
+- 一般的な最適split、rank3/q1最適性、held-out上の全method最適性、r4/r8の精密winner。
+- 新しいhybrid algorithm、resource-optimal importance sampling、rigorous `C_use` bound。
+- H12係数のH4/H6からの外挿、最終RPE総cost、hardware優位性、大分子への一般化。
+- 追加96 trajectory、retuning、H5/H6/H12、別geometry/PF、長RPE、S3は未認可。
+
+研究方針reviewが終わるまで追加計算をしない。scope不足・既知trade-offだけ・判定不確実なら
+technical note/STOP/inconclusiveも保存し、positive resultを得るための条件追加は行わない。

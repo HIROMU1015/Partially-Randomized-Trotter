@@ -35,3 +35,7 @@
 - [原版 5c4505ec295e](../archive/main_collection_versions_20261103/5c4505ec295e1817c451209fbdb1854dd031f591/docs/manuscripts/README.md.original) ／ [元snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b2e1bf65e21893b6c617223b42313623d3186f12/docs/manuscripts/README.md)
 - [原版 c938392f6859](../archive/main_collection_versions_20261103/c938392f6859708a0a636dcb9d8184eafcb7f83a/docs/manuscripts/README.md.original) ／ [元snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/73b2102a305f018d22348418adc7939cae63f0b2/docs/manuscripts/README.md)
 - [原版 6a6d9a1704fe](../archive/main_collection_versions_20261103/6a6d9a1704fe33fe29151c0f5c9a5a7010972fc7/docs/manuscripts/README.md.original) ／ [元snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/6c68efbaabd57c3a7f9f3b0fca48ed5c46436bd5/docs/manuscripts/README.md)
+
+## ローカル原稿v0.2の保存（2026-11-03）
+
+[Track A本文v0.2](track_a_resource_study_v0_2.md)、[補足](track_a_resource_study_supplement_v0_2.md)、[当時の編集記録](track_a_resource_study_claim_audit_v0_2.md)。未コミット原本の[収録・出典対応](../research/main_local_results_collection_20261103.md)を併読する。当時の科学条件・status・STOPを維持する。

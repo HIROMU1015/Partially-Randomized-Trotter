@@ -1,0 +1,287 @@
+# Partial Randomized PF
+
+> [!WARNING]
+> **Numerical validation is not complete.** The committed DF screening JSON is
+> quarantined because its Cgs input tables were removed after a ground-state
+> mismatch was found, and it has not been regenerated. UWC raw result files are
+> also not committed. Do not treat the current screening/UWC numbers as final
+> research results. Check [`VALIDATION_STATUS.md`](../../../VALIDATION_STATUS.md) and
+> [`artifacts/validation_manifest.json`](../../../artifacts/validation_manifest.json)
+> for the current evidence and completion criteria.
+
+This is the first-stage research implementation for the simplified partially randomized product-formula comparison described in the project discussion.
+
+> [!IMPORTANT]
+> The `G_rand` / `B(kappa)` / anchor-Cgs cost model documented below is a
+> **`legacy_analytic_proxy` (fidelity Level 0)**.  In particular, choosing
+> `randomized_method="rte"` in that model changes only an analytic prefactor;
+> it does not sample the RTE distribution or compute a finite-RPE total.
+> The new finite-distribution implementation is in
+> `src/trotterlib/rte.py`.  Its conventions, primary-source equations, and
+> next circuit API are documented in
+> [`docs/rte_conventions.md`](../../rte_conventions.md) and
+> [`docs/df_rte_event_circuit_api.md`](../../df_rte_event_circuit_api.md).
+
+## DF partial-S2 one-step and short repeated circuits
+
+The finite-circuit path now reaches one compiled second-order partial step:
+
+```text
+ranked deterministic DF half sweep
+-> one sampled finite-RTE tail occurrence
+-> reversed deterministic DF half sweep
+```
+
+`L_D` counts only two-body DF fragments. Constant and one-body corrections
+remain deterministic and are applied once per step. The deterministic
+fragment order is the actual `rank_df_fragments` prefix, not original-index
+order. `DFFragmentPartition.lambda_r` is retained as the legacy
+`ranking_proxy_lambda_r`; RTE config, probabilities, Taylor cutoff, and
+attenuation instead use `exact_rte_lambda_r`, recomputed after symbolic I/Z/ZZ
+expansion and threshold/identity policy.
+
+The implementation explicitly appends each deterministic block at `delta/2`,
+the RTE occurrence at `delta`, and the same blocks in reverse at `delta/2`.
+It does not build an internal S2 for all of `H_D` and place that complete S2 on
+both sides. Controlled blocks leave Gaussian basis changes uncontrolled and
+control only shared diagonal RZ/RZZ/phase primitives.
+
+See [`docs/df_partial_s2_compiled_cost.md`](../../df_partial_s2_compiled_cost.md).
+The one-step API remains unchanged. A Level-5-R validation path now also
+stores an ordered trajectory of independent RTE occurrences, concatenates
+`repetition_count` complete steps, and transpiles the whole short circuit once.
+It compares that primary cost with the matched sum of separately transpiled
+steps and with a local boundary-optimized construction. Only adjacent equal
+deterministic boundary blocks and commuting per-step scalar phases are
+simplified; event and fragment order never changes. See
+[`docs/df_partial_s2_repeated_compiled_cost.md`](../../df_partial_s2_repeated_compiled_cost.md).
+
+Repeated results separate seed-bearing provenance fingerprints from
+seed-independent circuit-semantics fingerprints used by the transpile cache.
+The default `full_diagnostics` mode retains raw/optimized, matched-step, and
+primitive comparisons. `selected_only` transpiles only the chosen complete
+trajectory and returns unavailable diagnostics as `None`, while retaining the
+primary exact or Monte Carlo statistics and error metadata. Small dense tests
+exercise non-diagonal one-body/DF bases, nonempty Givens changes, `q=2,3`,
+controlled and uncontrolled circuits, and positive and negative step times.
+Probability sums use explicit absolute tolerances and are normalized for
+expectations after their raw sums are recorded.
+
+Compiled evaluation is now genuinely streamed across work items. Exact paths
+retain only the finite one-event catalog needed to index a Cartesian product;
+they do not retain all event sequences, trajectories, weights, or requests.
+Monte Carlo creates one event sequence/request, builds and compiles it, updates
+online statistics and rolling digests, then releases it. The legacy public
+tuple enumeration/sampling APIs remain available for small validation cases.
+
+Repeated provenance uses an ordered-prefix retention policy with a default
+limit of 1024 records. Provenance fingerprints, circuit-semantics fingerprints,
+and trajectory seeds beyond that prefix are not stored, but every record still
+contributes to its rolling digest. Results explicitly report the total and
+retained counts and whether truncation occurred. A cache-independent workload
+planner checks total build requests, cache/transpile requests, and conservative
+untranspiled instruction applications before any Qiskit builder runs; post-build
+counts detect planner underestimation.
+
+These Level-5 results do not include long `2**m` RPE construction, state
+preparation, attenuation-driven shot counts, or quantum-shot sampling.
+
+## Scope
+
+- Use the Pauli LCU form of the JW Hamiltonian.
+- Sort Pauli terms by descending `|c_l|`.
+- Define `H_D` from the top `L_D` terms and `H_R` from the tail.
+- Compute `lambda_R(L_D) = sum_{l > L_D} |c_l|`.
+- Estimate a state-specific survival-phase-bias coefficient on `H_D` for
+  candidate screening. This value is explicitly not `C_gs` and must not be
+  substituted into the rigorous partially-randomized error bound.
+
+## Cost Model
+
+For a fixed PF label `p`, deterministic cutoff `L_D`, total error budget `eps`, `q = eps_qpe / eps`, and `0 < q < 1`,
+
+- `eps_qpe = q * eps`
+- `eps_trot = eps * sqrt(1 - q^2)`
+
+The deterministic contribution is
+
+- `G_det = A_p(L_D) * (C_gs^(p)(L_D))^(1/p) / (eps_qpe * eps_trot^(1/p))`
+
+The randomized prefactor is no longer an external constant. It is derived from `kappa`:
+
+- `B(kappa) = B0 * kappa * exp(2 / kappa)`
+- `B0 = (280/9) * G_rand * gamma * (0.1 * pi)^2`
+
+Defaults:
+
+- `randomized_method = "qdrift"` gives `gamma = 1`
+- `randomized_method = "rte"` gives `gamma = 2`
+- `G_rand = 1.0`
+
+The randomized contribution is
+
+- `G_rand = B(kappa) * lambda_R(L_D)^2 / eps_qpe^2`
+
+The total cost is
+
+- `G_total = G_det + G_rand`
+
+## Modes
+
+- `kappa_mode = optimize`
+  Main analysis mode. For each `(p, L_D)`, the code numerically optimizes both `q` and `kappa`.
+- `kappa_mode = fixed`
+  Reference mode. Use a fixed `kappa`, with `kappa = 2` as the default baseline.
+- `kappa_mode = sweep`
+  Sensitivity analysis mode. Evaluate a kappa grid, optimize `q` at each grid point, and store the sweep table for CSV export.
+
+If `lambda_R == 0`, the randomized side is turned off explicitly:
+
+- `kappa_opt = None`
+- `B_opt = 0`
+- `G_rand = 0`
+
+## Reused Code
+
+- Hamiltonian generation: `src/trotterlib/chemistry_hamiltonian.py`
+- PF definitions: `src/trotterlib/product_formula.py`
+- PF step ordering: `src/trotterlib/pf_decomposition.py`
+- Perturbative state-evolution path: `src/trotterlib/qiskit_time_evolution_ungrouped.py`
+- Fixed-order log-log coefficient fit: `src/trotterlib/analysis_utils.py`
+
+## DF-native phase-bias screening path
+
+DF representation を使う本流では、Pauli 項へ戻さず DF fragment のまま
+`H_D/H_R` を分割する。`src/trotterlib/df_partial_randomized_pf.py` がそのための
+DF-native な state-specific survival phase-bias fit path を提供する。
+
+- `rank_df_fragments(...)`: DF fragment を固定の重み規則で降順に並べる。
+- `split_df_hamiltonian_by_ld(...)`: `L_D` 個の DF fragment を deterministic 側に置く。
+- `fit_df_cgs_with_perturbation(...)`: `t=0` anchor を持つ位相追跡gridで
+  survival phaseをunwrapし、small-time log gridと複数fit windowから
+  shift-invariantなphase-bias surrogateをfitする。名称は互換性のため残る。
+- `get_or_compute_cached_df_cgs_fit(...)`: DF 用 cache key で GPU 実行結果を再利用する。
+- `get_or_compute_cached_df_ground_state(...)`: `H_D` と physical sector と solver 条件ごとに基底状態・基底エネルギーを `artifacts/partial_randomized_pf/df_ground_state_cache/*.npz` に保存して再利用する。
+- `df_deterministic_step_rz_cost(...)`: DF project と同じ U/D 分解ベースで `total_ref_rz_depth` を数え、phase-bias cache record の `metadata.df_step_cost` に保存する。
+
+GPU runner は `src/trotterlib/df_gpu_statevector.py` にあり、
+`qiskit-aer-gpu` の `AerSimulator(method="statevector", device="GPU")` を使う。
+default では symbolic time parameter `t` を持つ回路を一度だけ GPU backend 向けに
+transpile し、各 `t_values` では parameter bind だけを行って実行する。
+`gpu_ids=("0", "1", ...)` のように複数 GPU を渡すと、`t_values` の各点を
+1 GPU ずつ round-robin に割り当て、別プロセスで並列実行する。
+旧来のように各 `t` で個別に circuit build/transpile したい場合は
+`use_parameterized_template=False` を指定するか、
+`scripts/run_h5_df_cgs_gpu_slopes.py --no-parameterized-template` を使う。
+基底状態 cache を使わず毎回 solve したい場合は `use_ground_state_cache=False`
+または `scripts/run_h5_df_cgs_gpu_slopes.py --no-ground-state-cache` を使う。
+GPU 環境では以下を使う。
+
+```bash
+pip install -r requirements-gpu.txt
+```
+
+このpathで得る係数の `estimate_kind` は
+`state_specific_phase_bias_surrogate`、`is_rigorous_bound` は常に `false`。
+用途は `L_D` 候補screeningとfit安定性比較に限る。理論上界式へ代入する
+legacy screening APIは、`rigorous_pr_cgs_bound` と明記されていない表を拒否する。
+
+## Outputs
+
+This legacy analytic output exists only when the input table explicitly marks
+`estimate_kind="rigorous_pr_cgs_bound"` and `is_rigorous_bound=true`.
+Phase-bias screening output uses `phase_bias_coefficient` instead.
+
+Each candidate stores:
+
+- `result_model = "legacy_analytic_proxy"`, `fidelity_level = 0`
+- `c_gs`, `fit_coeff_fixed_order`
+- `fit_slope`, `fit_coeff`
+- `q_opt`, `eps_qpe_opt`, `eps_trot_opt`
+- `kappa_opt`, `b_opt`
+- `boundary_hit_q`, `boundary_hit_kappa`
+- `randomized_method`, `g_rand_input`, `b0`
+- `G_det`, `G_rand`, `G_total`
+
+Here `fit_coeff_fixed_order` is the coefficient obtained with the log-log slope fixed to the PF order `p`, while `fit_slope` and `fit_coeff` come from the free log-log fit used only as diagnostics.
+
+If `kappa_mode = sweep`, each candidate also stores the full `kappa_sweep` table.
+
+Boundary diagnostics:
+
+- `boundary_hit_kappa = True` means the best `kappa` is close to the lower or upper search boundary.
+- If `kappa` sticks to the upper boundary, the randomized tail may already be nearly irrelevant and the result may be close to the deterministic limit.
+
+## Phase-bias cache
+
+- DF phase-bias fits are cached in `artifacts/partial_randomized_pf/df_cgs_fit_cache.json` (schema 8 / definition v3).
+- The cache stores the fitted values and perturbation-fit diagnostics, not the explicit contents of `H_D`.
+- Cache keys include the full DF Hamiltonian, physical sector, PF/`L_D`, fit and
+  branch-grid policy, overlap/branch/residual/window thresholds, resolved
+  evolution and matrix-free backends, and ground-state solver settings.
+
+## Matrix-Free Ground State Solver
+
+The `H_D` ground state used in the `C_gs` surrogate is computed with a matrix-free
+`LinearOperator` by default. When `numba` is installed, Pauli strings are compiled
+to bit masks and the statevector index loop is parallelized with OpenMP through
+`numba.prange`.
+
+- `--matrix-free-backend auto` uses the numba backend when available and falls back to the pure-Python tensor backend otherwise.
+- `--matrix-free-backend numba` requires numba and fails if it is unavailable.
+- By default, the numba backend detects the CPUs available to the process and uses that thread count.
+- `--matrix-free-threads N` sets the numba thread count for the matrix-free matvec; `0` means auto-detect.
+- `--ground-state-ncv N` passes `ncv` to ARPACK's `eigsh`; smaller values reduce memory pressure, while larger values may improve convergence.
+
+This avoids materializing the sparse Hamiltonian matrix, but it still uses full
+statevectors. It does not remove the exponential memory scaling of exact full-space
+ground-state calculations.
+
+## Run
+
+Create an environment with the existing project requirements, then run for a small system first.
+
+```bash
+python3 -m venv .venv311
+source .venv311/bin/activate
+python -m pip install -r requirements.txt
+```
+
+Main mode with kappa optimization:
+
+```bash
+python scripts/run_partial_randomized_pf.py \
+  --molecule-type 3 \
+  --epsilon-total 1e-3 \
+  --pf-labels 2nd,4th(new_2),8th(Morales) \
+  --kappa-mode optimize \
+  --matrix-free-backend auto \
+  --matrix-free-threads 4
+```
+
+Reference mode with `kappa = 2`:
+
+```bash
+python scripts/run_partial_randomized_pf.py \
+  --molecule-type 3 \
+  --epsilon-total 1e-3 \
+  --kappa-mode fixed \
+  --kappa-value 2
+```
+
+Sensitivity analysis with CSV export:
+
+```bash
+python scripts/run_partial_randomized_pf.py \
+  --molecule-type 3 \
+  --epsilon-total 1e-3 \
+  --kappa-mode sweep \
+  --kappa-grid 1,2,4,8,16,32 \
+  --export-kappa-sweep-csv
+```
+
+The script prints the best candidate and writes the full JSON result to `artifacts/partial_randomized_pf/`. In sweep mode it can also write a CSV table for the kappa sensitivity scan.
+
+## Backward Compatibility
+
+The old fixed-`B` path is still available in the library through `optimize_error_budget(...)`, and the CLI keeps a deprecated `--random-prefactor` option for legacy comparisons. The main path now uses `B(kappa)` instead of a user-supplied external constant.

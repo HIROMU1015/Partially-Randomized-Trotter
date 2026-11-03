@@ -1,0 +1,62 @@
+"""Byte/status preservation audit only; no scientific imports or computation."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[4]
+OUT = Path(__file__).resolve().parent
+DOCS = {'PROJECT_MAP.md','VALIDATION_STATUS.md','docs/README.md','docs/research/README.md','docs/research/研究概要・現状.md','scripts/README.md','src/trotterlib/README.md'}
+
+
+def sha(p):
+    h = hashlib.sha256()
+    with p.open('rb') as f:
+        for block in iter(lambda:f.read(1024*1024),b''):h.update(block)
+    return h.hexdigest()
+
+
+def load(p):return json.loads(p.read_text())
+
+
+def git(root,*args):return subprocess.check_output(['git','-C',str(root),*args])
+
+
+def baseline(p):
+    a=load(p);origin=Path(a['worktree'])
+    changed=[n for n,h in a['hashes'].items() if not (origin/n).is_file() or sha(origin/n)!=h]
+    assert not changed,(str(p),changed)
+    assert git(origin,'rev-parse','HEAD').decode().strip()==a['head']
+    assert git(origin,'status','--short','--untracked-files=all').decode()==a['status']
+    diff=hashlib.sha256(git(origin,'diff','--binary')).hexdigest()
+    if 'diff_sha256' in a:assert diff==a['diff_sha256']
+    return {'origin_worktree':str(origin),'baseline_path':str(p),'baseline_sha256':sha(p),'files_verified':len(a['hashes']),'HEAD_status_existing_bytes_unchanged':True,'diff_sha256':diff,'diff_direct_baseline_available':'diff_sha256' in a,'changed_existing_files':changed}
+
+
+def inventory(root,relative):
+    p=root/relative;a=load(p)
+    for e in a['entries']:
+        f=root/e['path'];assert sha(f)==e['sha256'] and f.stat().st_size==e['size_bytes'],e['path']
+    return {'origin_worktree':str(root),'path':relative,'sha256':sha(p),'entries_verified':len(a['entries'])}
+
+
+def main():
+    before=OUT/'preservation_before_v5.json';a=load(before)
+    v4=Path(a['worktree']);previous=v4/'artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/preservation_baselines'
+    paths=[before,*[previous/n for n in ('track_a_ax2b_h4_v4_execution_before_20261009.json','track_a_ax2b_memory_v4_before_20261009.json','ax2a_original_preservation_20261009.json')]]
+    preserved=[baseline(p) for p in paths]
+    changes=[n for n,h in a['hashes'].items() if not (ROOT/n).is_file() or sha(ROOT/n)!=h]
+    assert set(changes)==DOCS,changes
+    assert git(ROOT,'rev-parse','HEAD').decode().strip()==a['head']
+    manifests=[inventory(v4,'artifacts/resource_applicability/track_a_ax2b_h4_pilot_v4/2026-10-09/launch_v1/pilot_evidence_inventory_v4.json'),inventory(Path(load(paths[1])['worktree']),'artifacts/resource_applicability/track_a_ax2b_h4_memory_preparation/2026-10-09/memory_preparation_inventory_v4.json'),inventory(Path(load(paths[2])['worktree']),'artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/pilot_evidence_inventory_v1.json')]
+    review=Path('/home/abe/Project/Partially Randomized Trotter/track_a_ax1b_post_scientific_review_2026-10-09.md')
+    assert sha(review)==load(paths[3])['review_sha256']
+    frozen=load(OUT/'source_freeze_v5.json')
+    for group in ('science_source_hashes','preparation_validation_file_hashes'):
+        for n,h in frozen[group].items():assert sha(ROOT/n)==h,n
+    result={'schema':'track_a_ax2b_fingerprint_v5_preservation_v1','status':'PRESERVED','original_worktrees':preserved,'original_inventories':manifests,'copied_existing_files':len(a['hashes']),'v5_changed_existing_files':sorted(changes),'frozen_science_source_count':len(frozen['science_source_hashes']),'validation_file_hash_count':len(frozen['preparation_validation_file_hashes']),'root_review_sha256':sha(review),'Track_B_changes':0,'commits_or_pushes':0,'new_molecular_signal_sampling_compile_calls':0,'science_authorized':False,'launch_allowed':False,'mandatory_stop':True,'next_stage_authorized':False}
+    with (OUT/'preservation_report_v5.json').open('x') as f:json.dump(result,f,ensure_ascii=False,sort_keys=True,indent=2);f.write('\n')
+    print(json.dumps({'status':'PRESERVED','origin_file_counts':[p['files_verified'] for p in preserved],'origin_inventory_counts':[p['entries_verified'] for p in manifests],'changed_copy_files':sorted(changes),'science_source_count':result['frozen_science_source_count']},ensure_ascii=False))
+
+
+if __name__=='__main__':main()

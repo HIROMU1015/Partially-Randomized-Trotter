@@ -1,0 +1,177 @@
+"""Read-only track inventory; no scientific imports, binary inputs, or outputs.
+
+Classification records describe ownership, NOT validation status or permission.
+Existing paths remain unchanged. A review flag prohibits treating the suggested
+class as sufficient justification to relocate a file or adopt a method.
+"""
+from __future__ import annotations
+
+import argparse
+from collections import Counter
+import csv
+import hashlib
+import io
+import json
+from pathlib import Path, PurePosixPath
+import subprocess
+import sys
+
+
+CATEGORIES = ("COMMON", "TRACK_A", "TRACK_B", "LEGACY_OR_ARCHIVE")
+TEXT_SUFFIXES = {".md", ".py", ".pyi", ".json", ".csv", ".txt", ".toml", ".yml", ".yaml", ".sh"}
+TEXT_NAMES = {".gitignore", ".gitattributes"}
+NAVIGATION_PATHS = {
+    "PROJECT_MAP.md", "docs/README.md", "docs/research/README.md",
+    "docs/research/研究概要・現状.md", "docs/research/研究ノート/2026-10-04.md",
+    "scripts/README.md", "src/trotterlib/README.md", "tests/README.md",
+}
+LEGACY_MARKERS = (
+    "research_direction_", "finite_rte_phase_amplitude", "fr_revision_",
+    "fr_research_", "fr1_", "research_redesign_phase_amplitude",
+    "r3_prior_art", "pa_joint_", "pc_geometry_", "pd_",
+    "pr2_pr3_minimal_pilot", "trotter_expo_coeff_", "grouped_uwc", "uwc",
+    "df_screening", "df_anchor_refinement", "df_optimized_costs",
+)
+ROOT_HISTORY = {
+    "Partial Randomized Study Protocol.md", "README_partial_randomized_pf.md",
+    "codex-inst.md", "abe_trotter_project.ipynb", "current-bentoslide.pdf",
+    "partial_randomization_research_options_20260927.md",
+    "partial_randomized_trotter_prevalidation_catalog.md",
+    "partial_randomized_trotter_research_redesign_20260925.md",
+    "partial_randomized_trotter_validation_review_898da848.md",
+    "research_focus_and_completion_plan_16d4482_20260927.md",
+}
+
+
+def classify(path: str) -> tuple[str, str, bool]:
+    """Conservative ownership rules, informed by the project/evidence audit."""
+    p = PurePosixPath(path)
+    name = p.name
+    if "/algorithm_codesign/" in path:
+        return "TRACK_B", "new_exploratory_track_no_science_authorization", False
+    if "/resource_applicability/" in path:
+        return "TRACK_A", "new_resource_track_navigation", False
+    if path.startswith(("docs/tracks/", "scripts/common/", "tests/tracks/")):
+        return "COMMON", "track_structure_metadata_only", False
+    if path.startswith(("docs/archive/", "docs/presentations/", "notes/", "docs/research/研究ノート/")):
+        return "LEGACY_OR_ARCHIVE", "chronology_or_presentation_not_current_spec", "研究ノート" in path
+    if name in ROOT_HISTORY or name.startswith("BentoSlide"):
+        return "LEGACY_OR_ARCHIVE", "historical_root_material", False
+    if any(marker in path for marker in LEGACY_MARKERS):
+        mixed = "pr2_pr3" in path or "fr_research" in path or "df_screening" in path
+        return "LEGACY_OR_ARCHIVE", "stopped_or_historical_research_keep_negative_evidence", mixed
+    if "pr2" in path:
+        old = any(s in path for s in ("s0", "s1_s3", "v0", "v1_v3", "minimal_pilot", "restart"))
+        return "TRACK_A", "pr2_lineage_keep_stage_specific_status", old
+    if path.startswith("docs/research/") and name not in {"README.md", "prevalidation_catalog_evidence_map.md"}:
+        return "TRACK_A", "existing_normative_resource_docs_with_shared_or_legacy_passages", True
+    if path.startswith(("src/", "scripts/", "tests/")):
+        review = any(s in path for s in ("gpu", "ground", "partial_randomized_pf", "cost_extrapolation", "compare_df", "analyze_df", "profile_h5"))
+        return "COMMON", "shared_implementation_or_scoped_helper_validation_not_track_b_evidence", review
+    if path.startswith("artifacts/"):
+        return "COMMON", "shared_scoped_evidence_no_new_blind_validation", False
+    if path.startswith("docs/"):
+        return "COMMON", "shared_validation_or_repository_guidance", False
+    if name in {"AGENTS.md", "README.md", "PROJECT_MAP.md", "VALIDATION_STATUS.md", "pyproject.toml", "requirements.txt", "requirements-gpu.txt", ".gitignore", ".gitattributes"} or path.startswith((".github/", ".vscode/")):
+        return "COMMON", "repository_infrastructure_and_evidence_index", False
+    return "LEGACY_OR_ARCHIVE", "unresolved_historical_or_reference_file_keep_in_place", True
+
+
+def git(root: Path, *args: str) -> str:
+    return subprocess.check_output(["git", "-C", str(root), *args]).decode("utf-8")
+
+
+def text_state(root: Path, path: str, mode: str = "100644") -> dict:
+    # Reject non-text data from path metadata BEFORE any filesystem access.
+    p = PurePosixPath(path)
+    if mode not in {"100644", "100755"} or (p.suffix not in TEXT_SUFFIXES and p.name not in TEXT_NAMES):
+        return {"state": "git_metadata_only_content_not_opened"}
+    if ".runtime" in p.parts or any(part in {"..", ".git"} for part in p.parts) or p.is_absolute():
+        raise ValueError("unsafe or runtime path")
+    f = root / path
+    if f.is_symlink():
+        return {"state": "symlink_not_followed"}
+    try:
+        data = f.read_bytes()
+    except FileNotFoundError:
+        return {"state": "preexisting_missing"}
+    return {"state": "text_read_only", "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+
+
+def inventory(root: Path) -> dict:
+    rows = []
+    for entry in git(root, "ls-tree", "-r", "-z", "HEAD").split("\0"):
+        if not entry:
+            continue
+        meta, path = entry.split("\t", 1)
+        mode, kind, blob = meta.split(" ")
+        category, reason, review = classify(path)
+        rows.append({"path": path, "category": category, "reason": reason,
+                     "review_required": review, "scope": "head_tracked", "git_mode": mode,
+                     "git_blob": blob, "original_worktree": text_state(root, path, mode)})
+    # Only preexisting documentation metadata; never enumerate runtime/held-out.
+    for path in git(root, "ls-files", "--others", "--exclude-standard", "-z", "--", "docs").split("\0"):
+        if not path or PurePosixPath(path).suffix not in {".md", ".json"}:
+            continue
+        category, reason, review = classify(path)
+        rows.append({"path": path, "category": category, "reason": reason,
+                     "review_required": review, "scope": "preexisting_untracked_document",
+                     "git_mode": "", "git_blob": "", "original_worktree": text_state(root, path)})
+    return {"schema_version": 1, "purpose": "structural_audit_not_scientific_manifest",
+            "head": git(root, "rev-parse", "HEAD").strip(),
+            "branch": git(root, "branch", "--show-current").strip(),
+            "tracked_file_count": sum(r["scope"] == "head_tracked" for r in rows),
+            "counts_by_category": dict(Counter(r["category"] for r in rows)),
+            "review_required_count": sum(r["review_required"] for r in rows),
+            "allowed_navigation_edits": sorted(NAVIGATION_PATHS),
+            "scientific_execution_authorized": False, "rows": rows}
+
+
+def csv_inventory(snapshot: dict) -> str:
+    stream = io.StringIO(newline="")
+    fields = ["path", "category", "reason", "review_required", "scope", "git_mode", "git_blob"]
+    writer = csv.DictWriter(stream, fieldnames=fields, lineterminator="\n")
+    writer.writeheader()
+    for row in snapshot["rows"]:
+        writer.writerow({field: row[field] for field in fields})
+    return stream.getvalue()
+
+
+def verify(root: Path, snapshot: dict) -> dict:
+    errors = []
+    compared = 0
+    for row in snapshot["rows"]:
+        if row["path"] in snapshot["allowed_navigation_edits"]:
+            continue
+        current = text_state(root, row["path"], row["git_mode"] or "100644")
+        if current != row["original_worktree"]:
+            errors.append(row["path"])
+        if current["state"] != "git_metadata_only_content_not_opened":
+            compared += 1
+    if git(root, "rev-parse", "HEAD").strip() != snapshot["head"]:
+        errors.append("HEAD_changed")
+    head_rows = [r for r in snapshot["rows"] if r["scope"] == "head_tracked"]
+    paths = git(root, "ls-tree", "-r", "--name-only", "-z", "HEAD").split("\0")[:-1]
+    if set(paths) != {r["path"] for r in head_rows}:
+        errors.append("tracked_inventory_coverage_changed")
+    return {"status": "PASS" if not errors else "FAIL", "protected_text_or_missing_paths_compared": compared,
+            "binary_content_opened": 0, "errors": errors}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=Path.cwd())
+    parser.add_argument("--format", choices=("json", "csv"), default="json")
+    parser.add_argument("--verify", type=Path, help="Compare a previously captured structural snapshot")
+    args = parser.parse_args()
+    if args.verify:
+        result = verify(args.root, json.loads(args.verify.read_text(encoding="utf-8")))
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return int(result["status"] != "PASS")
+    result = inventory(args.root)
+    sys.stdout.write(csv_inventory(result) if args.format == "csv" else json.dumps(result, ensure_ascii=False, indent=2) + "\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

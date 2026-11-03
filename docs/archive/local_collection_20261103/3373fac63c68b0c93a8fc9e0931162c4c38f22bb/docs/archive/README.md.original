@@ -1,0 +1,36 @@
+# 過去の計画・レビュー・実装資料
+
+現行の研究仕様ではなく、判断の経緯を確認する資料を集める。
+旧文書に書かれた「次を実行する」は現在の認可ではない。
+最新の資料は[PR-2入口](../research/pr2/README.md)と[研究概要・現状](../research/研究概要・現状.md)から読む。
+
+## このディレクトリへ移した資料
+
+| 区分 | 資料 | 保管する理由 |
+|---|---|---|
+| 過去の研究計画 | [2026-09-25のテーマ再設計](planning/partial_randomized_trotter_research_redesign_20260925.md) | P-A/P-B/P-C/P-Dの着想と停止条件の履歴 |
+| 過去の研究計画 | [P-D研究方針・検証計画](planning/pd_research_strategy_and_validation_plan_20260925.md) | P-Dの正式契約ができる前の提案。現在の実行順ではない |
+| PR-2設計入力 | [S2後の再設計案](planning/pr2_research_redesign_a9171d8_20260929.md) | matched-accuracy設計の由来。原文のSHA固定を維持 |
+| PR-2設計入力 | [S2後の作業計画](planning/pr2_codex_redesign_workplan_a9171d8_20260929.md) | 再設計案と一組の引継ぎ履歴。独立した実行認可ではない |
+| 外部レビュー | [commit 898da848へのレビュー](reviews/partial_randomized_trotter_validation_review_898da848.md) | 後続の再設計に至る監査履歴 |
+| 旧実装 | [partial-randomized PF実装説明](implementation/README_partial_randomized_pf.md) | legacy proxyの規約を確認する補助資料。現行結果と混同しない |
+
+旧GPU実装依頼メモ `codex-inst.md` は2026-10-04に利用者の明示確認後、最新PR-2 worktreeから削除した。
+元の内容は整理前commitの `codex-inst.md` から復元できる。削除対象・SHA・復元元は移動台帳に残す。
+
+## 移動せず保護した履歴
+
+以下はmanifest登録・source hash・runnerの入力パス・凍結契約からの参照を持つため、元の場所と内容を維持する。
+名前が古い、計画が終了した、という理由だけでは削除しない。
+
+- [初期Study Protocol](../../Partial%20Randomized%20Study%20Protocol.md)：旧screeningの証拠台帳に登録済み。
+- [P-D S1外部レビュー](../../pd_s1_review_5c331f0.md)：事後再解析runnerの固定入力。
+- [FR初期再設計案](../../research_redesign_phase_amplitude_20260926.md)：凍結FR契約の設計入力。
+- [FR-R0再設計入力](../../fr1_revised_research_plan_20260926.md)と[完成方針入力](../../research_focus_and_completion_plan_16d4482_20260927.md)：証拠台帳の登録資料。
+- [事前検証backlog](../../partial_randomized_trotter_prevalidation_catalog.md)と[研究候補整理](../../partial_randomization_research_options_20260927.md)：旧ID・参照との対応を保持。
+- [研究ノート](../research/研究ノート/README.md)：中止・失敗・判断変更も含む時系列履歴。
+- [artifacts案内](../../artifacts/README.md)：成果物内のfrozen Markdownは証拠であり、整理対象の重複文書ではない。
+
+このarchiveも履歴保管であって実行可能な指示集ではない。
+移動の旧path・新path・SHA-256は[移動台帳](../maintenance/markdown_relocations_2026-10-04.json)、
+確認済み削除の記録は[整理記録](../maintenance/2026-10-04_markdown_cleanup.md)を参照する。

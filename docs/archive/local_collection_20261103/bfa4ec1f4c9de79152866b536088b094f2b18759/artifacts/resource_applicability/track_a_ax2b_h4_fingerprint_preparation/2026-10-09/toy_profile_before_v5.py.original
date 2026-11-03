@@ -1,0 +1,28 @@
+import cProfile,json,os,pstats,time
+from pathlib import Path
+import numpy as np
+import qiskit
+from qiskit import QuantumCircuit
+from trottertracks.resource_applicability.ax2b_stream_fingerprint_v4 import canonical_qiskit_circuit_fingerprint as old
+import trotterlib.rte_compiled_cost as cost
+import trotterlib.rte as rte
+
+def forbidden(*args,**kwargs):raise AssertionError('Scientific load/sample/compile forbidden')
+np.load=qiskit.transpile=cost.transpile=rte.sample_rte_events=forbidden
+os.sched_setaffinity(0,{3})
+inner=QuantumCircuit(1,name='toy_inner');inner.rz(.13,0);inner.p(-.17,0);inner.global_phase=.23
+outer=QuantumCircuit(2,name='toy_outer')
+for i in range(4):outer.append(inner.to_gate(),[0])
+outer.cx(0,1)
+gate=outer.to_gate().control(ctrl_state=0)
+circuit=QuantumCircuit(3,name='toy_repeated_controlled')
+for i in range(100):circuit.append(gate,[0,1,2])
+start=time.perf_counter();expected=old(circuit);cold=time.perf_counter()-start
+profile=cProfile.Profile();start=time.perf_counter();actual=profile.runcall(old,circuit);elapsed=time.perf_counter()-start
+assert actual==expected
+stats=pstats.Stats(profile)
+rows=[{'file':str(key[0]),'line':key[1],'function':key[2],'primitive_calls':v[0],'total_calls':v[1],'self_seconds':v[2],'cumulative_seconds':v[3]} for key,v in stats.stats.items()]
+report={'scope':'fixed synthetic controlled/nested circuit; no molecular arrays, sampling or compile','top_level_instructions':len(circuit.data),'assigned_toy_cpu':3,'warm_hash':expected,'cold_unprofiled_wall_seconds':cold,'warm_profiled_wall_seconds':elapsed,'profile_total_calls':stats.total_calls,'top_self_seconds':sorted(rows,key=lambda r:r['self_seconds'],reverse=True)[:30],'top_cumulative_seconds':sorted(rows,key=lambda r:r['cumulative_seconds'],reverse=True)[:30],'scientific_compute_calls':0,'timing_limit':'cProfile adds overhead; values are toy measurements, not H4 runtime predictions'}
+p=Path('artifacts/resource_applicability/track_a_ax2b_h4_fingerprint_preparation/2026-10-09/toy_profile_before_v5.json')
+with p.open('x') as f:json.dump(report,f,ensure_ascii=False,sort_keys=True,indent=2)
+print(json.dumps({'cold_seconds':cold,'warm_profile_seconds':elapsed,'calls':stats.total_calls,'top_self':report['top_self_seconds'][:10]}))

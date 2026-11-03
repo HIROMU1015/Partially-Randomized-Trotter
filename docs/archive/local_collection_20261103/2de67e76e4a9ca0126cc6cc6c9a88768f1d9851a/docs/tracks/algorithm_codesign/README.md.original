@@ -1,0 +1,98 @@
+# Track B: Algorithm Co-design（exploratory draft）
+
+2026-10-04。**novelty/RQ検討段階。採択済みalgorithm、性能改善の証拠、science実行認可はない。**
+Track AのresultをBのmethod validationへ読み替えず、P-D/R3等を名前だけ変えて復活させない。
+
+## Research Question / novelty hypothesis
+
+`(split, deterministic algorithm, randomized algorithm, 各内部parameter)`を設計変数とすると、
+subalgorithmの変更はresourceの絶対値だけでなく、最適splitまたはendpoint/intermediate frontierの
+構造自体を変えるか。そのinteractionをDF structure、PF error、stage cost、residual burdenで説明できるか。
+
+仮説は「algorithm choiceとsplit choiceのinteractionに、既知のstage-count比較だけでは得られない
+予測・選択原理があるかもしれない」。存在は未確認であり、新手法・理論・一般優位を現時点で主張しない。
+既存の混合法や費用最適化をDFの一例で再現するだけならGOにしない。
+
+## Nearest prior art / 必須novelty gate
+
+以下は2026-10-04に一次sourceのabstractと既存local監査を照合した**入口一覧**で、全文claim単位の
+新規性gate完了ではない。次の段階で「既知 / Bが追加するもの / 主張しないもの」を命題・仮定・情報量・
+cost model別に固定し、`PROCEED_MINIMAL_PILOT_DESIGN / NARROW_TO_REPLICATION_NOTE / STOP_DUPLICATIVE`
+のいずれかを人によるreviewで決める。PROCEEDもpilot実行許可ではない。
+
+| 近接研究 | すでに扱われること | Bで追加が必要な差分（未確認） |
+|---|---|---|
+| [Composite Quantum Simulations](https://quantum-journal.org/papers/q-2023-11-14-1181/) | Trotter-SuzukiとQDriftの組合せ、項のpartitionと性能解析 | 既知hybrid/partitionの言い換えでない、DF splitとalgorithmのinteraction・予測可能な選択原理 |
+| [Phase estimation with partially randomized time evolution](https://arxiv.org/abs/2503.05647) | 部分ランダム化を用いたsingle-ancilla phase estimationと量子化学資源評価 | finite cutoff・matched-accuracy・compiled wrapperを含む、algorithm変更による構造差分 |
+| [SPRINT / GRADE](https://arxiv.org/abs/2606.30741) | near-integrability、randomization、symmetry protection等を統合した量子化学PF、Hamiltonian分解 | strong baselineの既知機構で説明されないsplit/frontier interaction |
+| [Hybridized Methods in the Interaction Picture](https://quantum-journal.org/papers/q-2022-08-17-780/) | 異なるsimulation methodをhybrid化する枠組み | 異種algorithmを組み合わせること自体でなく、DF条件下の新しい選択原理 |
+| [Resource-Optimal Importance Sampling](https://arxiv.org/abs/2603.13495) | 1回のcircuit costとestimator varianceを共同最適化するsampling枠組み | 既知importance samplingの適用だけでないinteraction。分布変更時のbias/normalizationを公平に扱う |
+
+[Track A prior-art gate](../../research/pr2_matched_accuracy_prior_art_gate_v1.md)の
+`PROCEED_RESOURCE_STUDY`はBの新手法claimの承認ではない。
+[R3 STOP監査](../../research/r3_prior_art_and_minimal_contract.md)と
+[P-D post-hoc STOP](../../research_direction_pd_s1_posthoc.md)に対し、別のRQ・method delta・予測可能な証人を示す必要がある。
+
+## Development data / evidence boundary
+
+- AのM1（H4 linear1.00 Å、STO-3G、DF rank12）とM2（同1.30 Å）の文書・保存結果はBの既知/development/exploratory材料として参照できる。
+- M2 H4 1.30 Åは既に開封・採点済み。Bのfresh held-out、blind transfer、independent replicationと呼ばない。
+- 過去に見たsplit/q/r/K条件を使うならpost-hocまたはexploratoryと表示する。
+- Bのdevelopment snapshot、algorithm family、parameter subset、accuracy/cost比較条件は**まだ未固定**。
+  今回既存NPZのresolve/stat/hash/load、分子生成、new data searchを行わない。
+- 将来のheld-outは未定。データ取得・開封前にinput/source/algorithm/split/seed/compiler、成功条件、
+  access境界と停止条件を独立契約で固定する。新しい名前だけで既視データをblind化しない。
+- Aの結果やcacheをBの新しい科学結果として流用しない。再利用可能なのはreviewされた低レベル実装と、明示された既知情報である。
+
+## Candidate algorithms（検討候補、採択ではない）
+
+| Side | 最小比較の候補 | 今回しないこと |
+|---|---|---|
+| Deterministic | current second-order partial-S2と、既知higher-order PF **一種類** | 次数/family大量追加、新PF設計、最良結果を見てfamily差替え |
+| Randomized | 初回はcurrent canonical finite-RTEを固定 | importance sampling/QDrift等を一度に実装・全比較 |
+| 将来のrandom alternative | 文献gateで必要性が認められた**一種類だけ**。候補としてQDriftまたは既知importance-sampled方式を検討し得るが、未選択 | finite-RTEのnormalization/variance/biasと異なる契約を無視した単純gate-count比較 |
+
+`src/trotterlib/product_formula.py`には既存PF係数実装があるが、DF controlled finite-RTE wrapperに
+そのまま組み込める、または今回の精度/cost条件で検証済み、とはしない。負時間stage、PF順序、
+controlled phase、signal/cost fingerprintを個別に設計・testしてsourceを結果前固定する必要がある。
+
+## Minimal pilot案（すべて未認可）
+
+ここでいう**Pilot B1/B2**はTrack A baseline名B1/B2とは別である。
+
+### Pilot B1案
+
+random sideはcurrent finite-RTEに固定し、deterministic sideだけsecond-orderと一つのhigher-order PFを比較する。
+一つの既視development条件と、endpoint/intermediateを識別できる最少split subsetを、結果前に固定する。
+`A_D × A_R × split × q × r × K`のfull gridは作らない。
+
+見るのはbest split、endpoint/intermediate frontier、PF error/stage cost/residual burdenの説明可能な変化。
+「higher-orderがX%安い」だけではGOにしない。source/contract/schema/zero-compute planを先にreviewする。
+
+実行前に未固定項目を解消する：Hamiltonian/snapshot・geometry/basis/DF rank、split subset、delta window/T、
+PF family、q/r/K、matched signal accuracy、shot/normalization式、primary/secondary metric、strong baselines、
+seed数、wrapper/action/wall/RSS上限、workers、数値gate、minimum interaction/materiality、terminal status。
+今回は数値閾値や資源上限を適当に決めてpilotを開始しない。
+
+### Pilot B2案
+
+Pilot B1が弱いことだけを自動再開理由にしない。独立のRQ/新規性/情報価値reviewを通った場合だけ、
+deterministic sideを固定し、finite-RTEと一つのrandom alternativeを比較する案を検討する。
+主目的はwinner探しではなくsplit decisionへのinteraction。別source/契約/認可が必要で、今回は実装しない。
+
+## GO / STOP / 禁止する自動拡張
+
+正式研究への昇格候補は、algorithm choiceがsplit/frontierを系統的に変え、DF/error/cost量で機構を説明し、
+未使用条件へ予測可能なselection ruleを結果前に持ち出せる場合。新しいblind evidenceはその後に別契約で取得する。
+これは定性的な設計gate草案であり、runnerが結果後に自由にGO判定するルールではない。
+
+以下なら大規模化しない。
+
+- optimal split/方式選択がほぼ不変、または既知stage-count差だけで説明できる。
+- SPRINT/PR/Composite/interaction-picture/importance samplingの既知結果の再現に留まる。
+- 新しい予測・選択原理が見えない、strong baselineで差が消える。
+- positive performance gainを探してalgorithm、geometry、precision、seedを追加し続ける必要がある。
+
+多数algorithm、full cross-product grid、新分子/H5/H6/H12、追加96、長RPE、S3、最終総cost、
+Track A evidenceの上書き、過去STOPの自動解除を禁止する。各pilot結果に関係なくreviewへSTOPし、
+次段階は別の明示認可にする。現在の次作業は**文献/RQとSTOP研究との差分の整理だけ**。

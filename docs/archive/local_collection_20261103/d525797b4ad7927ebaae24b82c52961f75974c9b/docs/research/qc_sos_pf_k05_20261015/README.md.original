@@ -1,0 +1,45 @@
+# SOS-PF K0.5：限定追加技術調査
+
+2026-10-15着手、2026-10-16完了（JST）。**ローカル資料のみ。文献原文の確認・静的数理検討で完了し、Mandatory STOP。**
+
+K0の `UNDETERMINED_DATA_REQUIRED` は変更しない。K1の実装・実行・認可、候補Aの継続／終了判断、研究テーマの採択、GPT詳細科学レビュー、GitHub公開は今回の範囲外である。
+
+## 読む順序
+
+1. [K0.5追加技術調査報告](technical_report.md)：追加証拠、保証の障害、生成規則の境界。
+2. [追加文献対応表](literature_correspondence.md)：原文・版・定理・仮定・未取得事項。
+3. [GPT向け判断資料](gpt_decision_handoff.md)：解消した疑問、blocking issue、将来の数値検証の情報価値。
+4. [取得・参照provenance](provenance.json)、[既存資料の保全照合](preservation_check.json)。
+
+## 基準資料
+
+Repository：`HIROMU1015/Partially-Randomized-Trotter`。
+K0公開branch：`qc-sos-pf-k0-publication-20261015`。
+固定commit：`58d8672702284d73321cc67a26c4640adaddde5f`。
+
+- [公開K0索引](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/README.md)
+- [公開K0技術監査](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/technical_audit.md)
+- [公開K0文献台帳](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/literature_registry.json)
+- [公開K0状態](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/method_status.json)
+- [公開K0引継ぎ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/gpt_handoff.md)
+- [未認可K1草案](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/58d8672702284d73321cc67a26c4640adaddde5f/docs/research/qc_sos_pf_k0_20261015/k1_design_draft.md)
+
+K0を複製・上書きせず、本文の節・式番号で参照する。local K0のREADME等には公開時だけの整備差分がある。科学的主要5資料は固定公開commitのblobとも照合した（provenance参照）。
+
+## 今回増えた判断材料
+
+- Kang–Su §2.5のLemma 7／Corollary 8まで含めると、同論文から一般のenergy誤差評価へ接続できる。単に「ground固有値保証なし」と切り捨てられない。ただしSOS offsetに応じた鋭い保証とは別である。
+- 励起gapなしでも、既知のoperator誤差とQPEの安定性を通じたground-energy task保証は可能。gapが不可欠なのはK0の特定branch・overlapを追うSchur評価であり、全energy推定方式ではない。
+- 二次PFには既知の明示的な有限時間commutator boundがある。新しい保証の有用性は、これとKang–Suの固定粒子数評価を含む同情報の対照から測る必要がある。
+- K0のCauchy半径・剰余・gap条件の競合を記号式で分離した。数値を入れた有用性判定は行っていない。
+- ACM出版PDF／完全本文は403で未取得。書誌情報と検索索引上の本文の一部のみ確認した。**arXiv v3との数学的・アルゴリズム的差分は未照合**であり、同一版と記載しない。
+
+独立した有利な生成規則・化学で有用な認証step・総費用改善は、今回も確立していない。結論の状態はK0と同じだが、gapの役割と既知保証への還元関係は具体化した。ここで追加調査を終了する。
+
+## 保護・取得限界
+
+新規科学計算、科学データ再集計、SDP、固有値・期待値・RDM計算、PF実行、compile、T合成は行っていない。行った機械処理は原文取得、PDFテキスト化、Git object読取り、文書・ファイルhash照合だけである。
+
+既存K0、科学source、results、authorization、STOP、global manifest、他研究の資料は編集していない。第一候補CLOSED、H-E1終了、M-a/M-b STOP、PF小改変系列PAUSED、旧D HOLD等を維持する。Claude原本は今回も未取得であり、提供済みという事情を取得証拠に置き換えない。
+
+**K0.5 COMPLETE / MANDATORY STOP / K1 NOT AUTHORIZED / NO COMMIT OR PUSH。**

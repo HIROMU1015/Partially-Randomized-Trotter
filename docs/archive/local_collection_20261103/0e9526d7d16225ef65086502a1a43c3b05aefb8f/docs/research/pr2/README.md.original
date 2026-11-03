@@ -1,0 +1,41 @@
+# PR-2資料の入口
+
+2026-10-05追記：現在は[PM-1結果](../../pr2_pm1_discard_result_validation.md)を受けた
+[PM-2精度・測定込み資源契約](../pr2_pm2_precision_resource_contract_v1.md)の準備まで。
+解析未実施、新しい科学計算未認可。以下のM2時点索引は過去stageの入口として残す。
+
+最終整理：2026-10-04。研究仕様の正本は[研究概要・現状](../研究概要・現状.md)と各stageの固定契約である。
+この索引は閲覧順を整理するもので、計算の認可・研究判断の変更ではない。
+
+## いま読む資料
+
+1. [研究概要・現状](../研究概要・現状.md)：現在地、claimの範囲、未承認の作業。
+2. [M2結果照合](../../pr2_matched_accuracy_m2_transfer_result_validation.md)：固定5構成の一回実行、`TRANSFER_SUPPORTED`後の研究方針全面review待ち。
+3. [M1-B1結果検証](../../pr2_matched_accuracy_m1_b1_result_validation.md)：developmentのactual compile map。
+4. [M2 held-out transfer契約](../pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)：固定5構成、判定、上限、停止規則。
+   [usable B2 amendment v2](../pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)を併読する。v1の§4–6を修正する。
+5. [M2最終実行前レビュー依頼](../pr2_m2_execution_authorization_external_review_request_90a9f24.md)：実行前に確認した範囲と停止規則。
+6. [検証状況](../../../VALIDATION_STATUS.md)と[証拠台帳](../../../artifacts/validation_manifest.json)：証拠の利用条件。
+
+旧v1は `M2_TRANSFER_CONTRACT_FROZEN_EXECUTION_NOT_AUTHORIZED` として保存。
+修正版v2の正式source/plan、別authorization、最終reviewを固定してM2を一度実行した。旧draftは履歴として保存。
+現在は`TRANSFER_SUPPORTED`後のmandatory STOP。この索引・過去の実行依頼・レビュー文を読むだけでは
+再実行、held-out再探索、追加trajectoryや次段階を認可しない。
+
+## stage別の資料
+
+| stage | 研究契約・実行条件 | 報告・レビュー |
+|---|---|---|
+| M2：完了・研究方針review待ち | [held-out transfer契約](../pr2_matched_accuracy_m2_held_out_transfer_contract_v1.md)、[usable B2 amendment](../pr2_matched_accuracy_m2_transfer_contract_amendment_v2.md)、[実行authorization](../pr2_matched_accuracy_m2_transfer_execution_authorization_v1.md) | [結果照合](../../pr2_matched_accuracy_m2_transfer_result_validation.md)、[最終実行前レビュー依頼](../pr2_m2_execution_authorization_external_review_request_90a9f24.md) |
+| M1-B1：完了したdevelopment map | [bounded契約](../pr2_matched_accuracy_m1_b1_bounded_compile_contract_v1.md)、[source-first amendment](../pr2_matched_accuracy_m1_b1_execution_contract_amendment_v2.md)、[実行認可](../pr2_matched_accuracy_m1_b1_execution_authorization_v1.md) | [結果検証](../../pr2_matched_accuracy_m1_b1_result_validation.md)、[認可前レビュー](../pr2_m1_b1_execution_authorization_external_review_request_8fc2400.md) |
+| M1-A：compile-free評価 | [実装契約](../pr2_matched_accuracy_m1_implementation_contract_v1.md)、[hard barrier](../pr2_matched_accuracy_m1_preexecution_amendment_v2.md)、[再認可v1.1](../pr2_matched_accuracy_m1_execution_authorization_v1_1.md) | [SELECTION_LIMITED報告](../../pr2_matched_accuracy_m1_a_validation.md)、[停止後レビュー](../pr2_m1_a_selection_limited_external_review_request_3c1831e.md) |
+| S2：旧fixed-q development比較 | [authorization v5](../pr2_v4_s2_development_authorization_v5.md) | [V4/S2結果](../../pr2_v4_s2_development_validation.md) |
+| V0–V3：新snapshot系列の起点 | [amendment v4](../pr2_new_series_amendment_v4.md) | [V0監査](../pr2_v0_input_recovery_audit_bf5d3b2_20260928.md)、[V1–V3 packet](../pr2_v1_v3_result_packet_ef86868_20260928.md) |
+| 旧S0：保存する停止判断 | [旧事前登録](../pr2_s1_s3_preregistration.md) | [入力再現不一致の停止報告](../pr2_s0_reproduction_stop_c644925.md) |
+
+## 方針・設計入力
+
+- [matched-accuracy resource-map契約](../pr2_matched_accuracy_resource_contract_v1.md)と[先行研究gate](../pr2_matched_accuracy_prior_art_gate_v1.md)が採択済み設計の正本。
+- [S2後の再設計提案](../../archive/planning/pr2_research_redesign_a9171d8_20260929.md)と[引継ぎ作業計画](../../archive/planning/pr2_codex_redesign_workplan_a9171d8_20260929.md)は提案履歴。元のSHA-256を保持して収録した。
+- [CPU高速化確認依頼](../gpu_server_pr2_m1_b1_cpu_acceleration_feasibility_prompt.md)はM1-B1当時の運用文書で、現在の実行依頼ではない。
+- 全版の一覧は[Markdown総目録](../../DOCUMENTATION_INDEX.md)を参照する。古い契約・STOP・reviewを消さない。

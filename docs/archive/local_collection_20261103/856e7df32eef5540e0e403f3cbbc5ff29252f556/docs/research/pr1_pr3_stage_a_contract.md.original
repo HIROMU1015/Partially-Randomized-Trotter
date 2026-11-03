@@ -1,0 +1,244 @@
+# PR-1＋PR-3 Stage A選定契約
+
+作成日：2026-09-27  
+親方針：`PR_DIRECTION_STAGE_A_ADOPTED_NO_PILOT_YET`  
+本書status：`PR13_STAGE_A_AUDIT_PASSED_PILOT_PREREGISTRATION_NEXT`  
+位置付け：PR-1を共通評価軸、PR-3を第一拡張候補として、数値pilot前の研究差分、実装gap、
+比較task、GO/STOPを固定する。新しいsimulation、compile、artifact、研究結果を意味しない。
+
+## 0. 結論
+
+最初の研究候補を次の一文へ固定する。
+
+> 決定論backboneを保った部分ランダム化で、random tailだけへ既存の外挿を適用したとき、
+> 通常の部分ランダム化およびfull-random外挿に対するbias--variance--backbone costの
+> crossoverを、同じ物理時間、estimand、control、費用scopeで明らかにできるか。
+
+PR-1は独立した巨大workflowではなく、この問いをPauli型とDF-native型へ公平に適用する共通評価軸とする。
+最初の数値pilotは、1節の既知／候補差分と5節の三gateが確定した後にだけ開始する。
+
+## 1. 既知として扱うものと、候補として残す差分
+
+| 区分 | 扱い |
+|---|---|
+| Hamiltonianのdeterministic/randomized partition | Composite simulationとPRで既知。分割の導入自体を新規としない |
+| PRのfinite/infinite RTE、attenuation、single-ancilla phase signal、資源式 | 既知理論および本repoの既存検証を利用する |
+| qFLO／Richardson外挿 | qDRIFTの複数step数から線形observable estimatorを外挿する既存法として扱う。外挿式自体を新規としない |
+| Pauli型とDF-native型の実装 | それぞれ既存要素がある。表現名を替えただけでは成果としない |
+| 本候補で問う差分 | tailだけを外挿するestimandと回路、毎levelで再実行するbackbone、control・shot・basis共有を含む費用、およびsplit依存のcrossover |
+
+新規性候補は「Richardson外挿が数学的に使えること」ではない。partial tailへ限定したときの正しい
+推定対象、実装費用、通常PR／full-random／deterministic endpointとの使い分けに置く。
+
+## 2. 現行リポジトリで再利用できるもの
+
+| 資産 | 再利用可能な範囲 | 不足・禁止事項 |
+|---|---|---|
+| `src/trotterlib/partial_randomized_pf.py` | Pauli prefix、qDRIFT/RTEラベル、簡略analytic cost、誤差配分の既存実装 | qFLO estimatorや外挿回路ではない。PR論文v2のRTE baselineをqDRIFTへ誤用しない |
+| `src/trotterlib/pauli_partial_cgs_validation.py` と対応script/test | 小系Pauli-prefix partial-$S_2$のdense参照、branch・signal・cost診断 | ローカル`artifacts/partial_randomized_pf/diagnostics/`はGit管理外で現行証拠に使わない。必要なら新契約から再生成する |
+| DF partial-$S_2$、RTE、Hadamard wrapper、WP/M06-F/A0 | controlled semantics、basis共有、compiled-cost scope、shot・状態準備感度、検証済みproxy domain | H4の点順位を移送しない。proxyはfingerprintと検証domainが一致する場合だけ使う |
+| P-A--D、R3 | 強いbaseline、公平再最適化、holdout、停止条件 | 停止済みclaimを再開または改名しない |
+| FR | 平均演算子とchannel、正scalar、signal半径、controlの区別 | FR-R2を再開せず、`TECHNICAL_NOTE`を新規理論として使わない |
+
+現時点でrepo内にqFLO／Richardsonのcomplex-signal estimatorはない。したがって、既存の
+`cost_extrapolation.py`やlong-$q$ affine proxyをPR-3の外挿法とみなさない。前者は回路cost等の
+別目的、後者は検証済み範囲内のcost proxyであり、estimandのbias cancellationではない。
+
+## 3. 共通task v0
+
+Stage A監査では次を仮固定し、監査結果前に数値gridを作らない。
+
+| 項目 | v0 |
+|---|---|
+| 主estimand | $z(T)=\langle\psi|U(T)|\psi\rangle$の実部・虚部。ancilla $X/Y$ expectationとして線形に扱う |
+| 参照1 | 同じdeterministic backboneとouter PFでtailだけをexactにした$z_{\rm tail\text{-}exact}$ |
+| 参照2 | 元のexact-$H$による$z_{\rm exact}$。outer PF biasを参照1との差と混ぜない |
+| 共通時間 | 全methodで同じ物理時間$T$。step数だけをそろえた比較は禁止 |
+| 最初の系 | 非可換小モデルと既存H4 anchor。H4を未使用条件とは呼ばない |
+| split | full-random endpoint、少数の中間split、deterministic endpoint。全prefix sweepは要求しない |
+| refinement | 監査通過後のpilotでtail qDRIFT step数$N,2N,4N$。外側PF反復数$q$と混同しない |
+| control | `ordinary_controlled = diag(I,U)`を既定候補とし、methodごとの差を隠さない |
+| cost | 1-shot count/depth、外挿weight込みshot、全shot cost、backbone比率。no-prepを主層、共通準備cost $P$を感度層 |
+
+qFLOの既知保証が通常observableだけに適用され、controlled Hamiltonianへの適用から上記$X/Y$
+estimandが正当に得られない場合は、coherent-signal scopeで数値pilotを開始しない。通常observableへ
+scopeを変更する場合は別の研究判断として明示し、phase-estimation改善と呼ばない。
+
+## 4. 比較baseline
+
+最低限の比較は次の4本とする。
+
+1. 通常のpartial-qDRIFT。各splitで設定を公平に選ぶ。
+2. partial-tail qFLO。deterministic backboneを各level・各shotの費用へ戻す。
+3. full-random qFLO。同じestimand、$T$、統計誤差、成功確率で比較する。
+4. 適切なdeterministic endpoint。既存側にもtime step、PF、basis reuseを許す。
+
+既存partial-RTEは、上の比較でPR-3の差分が残った後の副baselineとする。初回からqDRIFT、RTE、
+qSWIFT、MLMC、interaction pictureを全実装しない。
+
+## 5. 数値pilot前の三gate
+
+### G-A：estimand接続
+
+- qFLOの定理が何のexpectationを保証するかを式単位で固定する。
+- controlled Hamiltonianまたはcontrolled primitiveを使う場合、Re/Im estimatorの周辺分布と
+  外挿後の目標量を導出する。
+- 位相を直接外挿せず、線形なRe/Imから必要なbranch・半径条件を別に扱う。
+
+### G-B：先行研究との差分
+
+- PR、Composite、qFLOの最も近い結果が、partial-tail限定、backbone反復費用、coherent signal、
+  split別crossoverを同じ比較として既に与えていないか確認する。
+- 同じ仮定・出力・費用の結果が直接得られる場合、PR-3を新しい方法として進めない。
+- 既知定理が使えることだけでは停止せず、実装・資源・用途の未解決差分が残るかを判定する。
+
+### G-C：実装可能性
+
+- qDRIFT path sampling、controlled primitive、level別Re/Im mean、外挿weight、shot allocationを
+  現行builderへ追加できる最小APIを特定する。
+- Pauli型とDF-native型で同じcost scopeを構成できない場合、その差自体をPR-1の結果候補として
+  記録するが、欠けた費用を0として比較しない。
+
+三gateを全て満たした場合だけ`GO_PR3_MINIMAL_PILOT`とする。G-AまたはG-Bを満たさない場合は
+`REDIRECT_PR2_AUDIT`、G-Cだけが不通過なら`HOLD_PR3_IMPLEMENTATION_BLOCKED`とする。
+
+### 5.1 2026-09-27監査結果
+
+判定は`GO_PR3_MINIMAL_PILOT_PREREGISTRATION`である。ただし、通過した研究scopeは
+「固定された有限個のtail occurrenceに対する低次数の線形信号外挿と資源crossover」であり、
+qFLOのfull-random漸近深さ保証をComposite回路へそのまま移送する主張ではない。
+
+| gate | 判定 | 通過した範囲 | 残す境界 |
+|---|---|---|---|
+| G-A estimand | `PASS_FIXED_OUTER_PF_LINEAR_SIGNAL` | ordinary controlのancilla $X/Y$ expectationと、有限回のtail channel合成は線形observableのpower seriesを持つ | 位相そのものは外挿しない。qFLOの漸近定数・対数深さをpartial-tailへ移送しない |
+| G-B 差分 | `PASS_SCOPED_RESOURCE_CROSSOVER` | tail-only外挿、毎levelのbackbone、shot、control、splitを同一比較へ入れる資源・適用条件研究 | partition、qDRIFT、qFLO、PR信号実装自体の新規性を主張しない。探索は非網羅的であり投稿前に更新する |
+| G-C 実装 | `PASS_WITH_NEW_QDRIFT_LEVEL_MODULE` | 既存controlled partial-$S_2$、Hadamard $X/Y$ wrapper、compiled-cost基盤を再利用できる | qDRIFT trajectory/mean、level estimator、shot allocationは新規実装が必要。既存analytic labelを回路実装とみなさない |
+
+### 5.2 G-A：coherent signalへの接続
+
+$U(T)=e^{-iHT}$、$z(T)=\langle\psi|U(T)|\psi\rangle$とし、ordinary-controlled evolutionを
+
+$$
+V(T)=|0\rangle\!\langle0|\otimes I+|1\rangle\!\langle1|\otimes U(T)
+$$
+
+とする。$|+\rangle\otimes|\psi\rangle$から始めれば、本repoのsine-axis規約
+（`Sdg` then `H`、bit値$(-1)^b$）で
+
+$$
+\langle X_a\rangle=\operatorname{Re}z(T),\qquad
+\langle Y_a\rangle=\operatorname{Im}z(T)
+$$
+
+である。従って外挿対象は位相ではなく、二つのbounded Hermitian observable
+$X_a\otimes I$、$Y_a\otimes I$のexpectationである。
+
+$H=\sum_j h_jH_j$で$h_j>0$、$\lVert H_j\rVert=1$と書けば、controlled Hamiltonianは
+
+$$
+H_c=|1\rangle\!\langle1|\otimes H
+=\sum_jh_j\bigl(|1\rangle\!\langle1|\otimes H_j\bigr)
+$$
+
+であり、各項のnormは1、指数関数はcontrolled primitiveとして実装できる。このためfull-random
+controlled evolutionはqFLOのobservable設定へ直接埋め込める。
+
+partial-tailでは、$s=1/N$のtail平均channelを$\mathcal Q_s$、$s$に依存しないcontrolled
+deterministic mapを$\mathcal D_k$とする。固定した外側PFがtailを有限回$K$含むなら、平均回路は
+
+$$
+\Phi_s=\mathcal D_K\circ\mathcal Q_s\circ\mathcal D_{K-1}\circ\cdots
+\circ\mathcal Q_s\circ\mathcal D_0.
+$$
+
+qDRIFT channelの局所power seriesと有限個の線形mapの積から、$s=0$近傍で
+
+$$
+\operatorname{Tr}[A\Phi_s(\rho)]
+=\operatorname{Tr}[A\Phi_0(\rho)]+c_1s+c_2s^2+\cdots,
+\qquad A\in\{X_a\otimes I,Y_a\otimes I\}
+$$
+
+となる。したがって固定$K$での低次数Richardson cancellationは正当化でき、$s\to0$の目標は
+同じ外側PFでtailだけをexactにした$z_{\rm tail\text{-}exact}$である。元のexact-$H$との差は
+outer-PF biasとして別に記録する。
+
+この合成議論だけからは、qFLO論文のfull-random用remainder bound、well-conditioned高次数node、
+$O(\log(1/\epsilon))$最大深さをpartial-tailへ移送できない。初回pilotは$N,2N,4N$の低次数に限定し、
+位相を報告する場合は$|z_{\rm tail\text{-}exact}|\geq\rho_{\min}$とbranch clearanceを別gateにする。
+
+### 5.3 G-B：一次文献との境界
+
+2026-09-27時点の一次文献監査では、次を既知とした。
+
+- [qFLO](https://arxiv.org/abs/2411.04240)は、反復qDRIFT channelの$1/N$展開と線形observableの
+  Richardson estimator、測定誤差を含む資源scaleを与える。高精度のstate/channel自体を作る方法ではない。
+- [Composite Quantum Simulations](https://quantum-journal.org/papers/q-2023-11-14-1181/)は、
+  deterministic PFとqDRIFTのpartitionおよびdiamond-distance/cost解析を既に与える。
+- [Importance sampling for stochastic quantum simulations](https://quantum-journal.org/papers/q-2023-04-13-977/)
+  はComposite channelを含むqDRIFTのbias、variance、sample/experiment/time-step選択を既に扱う。
+- [Phase estimation with partially randomized time evolution](https://arxiv.org/abs/2503.05647)と
+  [phase2](https://www.nature.com/articles/s44488-026-00002-2)は、部分ランダム化をcoherent phase signal／
+  overlapへ接続する理論・実装が既知であることを示す。
+- [Hamiltonian-simulation lower bound](https://arxiv.org/abs/2607.19852)は一般channel simulationの
+  精度依存を制約する。observable post-processingである本候補を直ちに否定しないが、channel精度の
+  漸近改善として主張することは禁止する。
+
+タイトル・abstract・本文語検索を用いた限定監査では、partial tailだけのRichardson外挿を、同一の
+coherent estimand、backbone再実行、shot配分、full-random/deterministic endpointとのsplit別比較まで
+一体として与える結果は確認できなかった。ただし、これは新規性の完全証明ではない。研究差分は
+新アルゴリズム一般定理ではなく、正しい推定器・物理費用・crossoverの再現可能な評価へ限定する。
+
+### 5.4 G-C：最小実装差分
+
+再利用経路は、`df_partial_s2.py`／`df_partial_s2_repeated.py`のcontrolled backbone、
+`rpe_hadamard_interrogation.py`のRe/Im wrapper、既存compiled-cost providerである。Pauli小系では
+`pauli_partial_cgs_validation.py`のdense Hamiltonian、target state、tail-exact partial-$S_2$参照を
+再利用できる。
+
+不足する最小部品は次の4点である。
+
+1. 一つのtail occurrenceを$N$回のqDRIFT drawで置換し、各occurrence・shotで独立seedを持つtrajectory生成。
+2. toy/H4用のexact mean channel evaluatorと、Monte Carlo meanを分離したlevel別Re/Im結果。
+3. $N,2N,4N$からweights、bias、variance、最適shot配分を計算する線形estimator。
+4. 全levelでdeterministic backboneとcontrolを再加算する、Pauli/DF共通cost record。
+
+`partial_randomized_pf.py`の`qdrift`は現状analytic cost labelであり1の代用にならない。既存Hadamard
+wrapperもfresh iid trajectory per shotを検証しないため、そのflagをpilotで真にする新しいrunner契約が
+必要である。以上は新moduleとunit testで局所追加できるため、実装不能とは判定しない。
+
+## 6. GO後に作る最小pilot
+
+pilotの事前登録は次だけを含める。
+
+1. 非可換toyとH4 anchor、各1--2中間split。
+2. tail qDRIFT step数$N,2N,4N$のexact meanによるtail-exact biasとexact-$H$ bias。
+3. 同じ線形estimandの有限shot varianceと、外挿weightを使う最適sample配分。
+4. 各levelのbackboneを含むcontrolled 1-shot cost。候補差がmodel不確かさより大きい点だけcompileする。
+5. 通常PR、partial-qFLO、full-qFLO、deterministic endpointの同一条件比較。
+6. 有利な一点ではなく、支配費用とcrossoverの有無を判断する。
+
+固定の「何%以上改善」を研究価値全体のgateにしない。ただし、数値同値性、推定精度、Monte Carlo
+誤差、cost-model不確かさの受理基準は結果前に固定する。
+
+## 7. 完成時の主張と停止点
+
+研究候補として残る最小主張は次の形である。
+
+> tail-only外挿の正しい推定器と回路費用を示し、通常PRおよびfull-random外挿に対して、
+> deterministic backbone、tail size、要求精度が有利・不利を分ける条件を、独立条件で確認した。
+
+次の場合は主成果にしない。
+
+- qFLOの既知結果を変数名だけ置換した。
+- exact mean biasだけが減り、shotとbackbone費用を戻すと新しい設計判断がない。
+- 既存Pauli local JSONまたはquarantined screeningを新しい証拠として再利用した。
+- H4の一条件だけで勝敗を確定し、独立条件またはcrossover説明がない。
+- fixed-time signalの結果をfull RPEまたはground-energy総costの改善と呼んだ。
+
+## 8. 次の作業
+
+次は、6節を機械判定可能なpilot事前登録へ落とすことである。少なくとも入力fingerprint、$N$の定義、
+独立seed規約、Richardson weights、exact-mean／有限shotの受理基準、$\rho_{\min}$、branch clearance、
+cost scope、GO/STOPを結果を見る前に固定する。事前登録まではrunner、artifact、manifest entryを
+作らない。PR-2はpilotが固定STOPへ到達した場合の次候補であり、PR-3と並行して数値実装しない。

@@ -18,3 +18,7 @@ rootにある未commitの既存レビュー/配置整理を、このbranchへ一
 
 - [表現・算法構成探索](representation_exploration/README.md)：今回受領したmixed-access H4科学レビュー。
 - [研究の現在状態](../research/研究概要・現状.md)：適用済み判断・成果固定・STOP。
+
+## ローカル受領原文の追加収録（2026-11-03）
+
+[追加レビュー原文と出典の対応](../research/main_local_results_collection_20261103.md)を参照する。Track A・Track B・研究C・表現探索の原文を保存し、今回の新しい科学レビューや現行採用判断とは区別する。

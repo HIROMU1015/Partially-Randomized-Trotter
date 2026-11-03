@@ -1,0 +1,78 @@
+"""Check preserved byte baselines and origin inventories; stdlib read-only audit."""
+import hashlib
+import json
+from pathlib import Path
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[5]
+OUT = Path(__file__).resolve().parent
+BASE = OUT / 'preservation_baselines'
+DOCS = {'PROJECT_MAP.md','VALIDATION_STATUS.md','docs/README.md','docs/research/README.md','docs/research/研究概要・現状.md','scripts/README.md','src/trotterlib/README.md'}
+
+
+def sha(p):
+    h = hashlib.sha256()
+    with p.open('rb') as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def load(p):
+    return json.loads(p.read_text())
+
+
+def git(root, *args):
+    return subprocess.check_output(['git', '-C', str(root), *args])
+
+
+def audit_baseline(name):
+    p = BASE / name
+    a = load(p)
+    origin = Path(a['worktree'])
+    changed = [n for n, h in a['hashes'].items() if not (origin / n).is_file() or sha(origin / n) != h]
+    head = git(origin, 'rev-parse','HEAD').decode().strip()
+    status = git(origin, 'status','--short','--untracked-files=all').decode()
+    status_matches = status == a['status']
+    current_diff_sha = hashlib.sha256(git(origin,'diff','--binary')).hexdigest()
+    diff_matches = current_diff_sha == a['diff_sha256'] if 'diff_sha256' in a else None
+    if changed or head != a['head'] or not status_matches or diff_matches is False:
+        raise ValueError('PRESERVATION_MISMATCH:' + name + ':' + repr(changed))
+    return {'origin_worktree': str(origin), 'baseline': str(p.relative_to(ROOT)), 'baseline_sha256': sha(p), 'existing_files_verified': len(a['hashes']), 'changed_existing_files': changed, 'HEAD_unchanged': True, 'git_status_unchanged': True, 'git_diff_sha256': current_diff_sha, 'diff_baseline_directly_recorded': 'diff_sha256' in a, 'git_diff_unchanged_if_recorded': diff_matches, 'tracked_worktree_bytes_and_HEAD_unchanged': True}
+
+
+def audit_inventory(root, relative):
+    p = root / relative
+    a = load(p)
+    for item in a['entries']:
+        f = root / item['path']
+        if sha(f) != item['sha256'] or f.stat().st_size != item['size_bytes']:
+            raise ValueError('ORIGIN_INVENTORY_MISMATCH:' + item['path'])
+    return {'origin_worktree': str(root), 'inventory_path': relative, 'sha256': sha(p), 'entries_verified': len(a['entries'])}
+
+
+def main():
+    originals = [audit_baseline(n) for n in ('track_a_ax2b_h4_v4_execution_before_20261009.json','track_a_ax2b_memory_v4_before_20261009.json','ax2a_original_preservation_20261009.json')]
+    prep = load(BASE / 'track_a_ax2b_h4_v4_execution_before_20261009.json')
+    changed_copy = [n for n,h in prep['hashes'].items() if not (ROOT/n).is_file() or sha(ROOT/n) != h]
+    if set(changed_copy) != DOCS:
+        raise ValueError('EXECUTION_COPY_UNEXPECTED_CHANGE:' + repr(changed_copy))
+    if git(ROOT, 'rev-parse', 'HEAD').decode().strip() != prep['head']:
+        raise ValueError('EXECUTION_HEAD_CHANGED')
+    inventories = [audit_inventory(Path(prep['worktree']), 'artifacts/resource_applicability/track_a_ax2b_h4_memory_preparation/2026-10-09/memory_preparation_inventory_v4.json'), audit_inventory(Path(load(BASE/'track_a_ax2b_memory_v4_before_20261009.json')['worktree']), 'artifacts/resource_applicability/track_a_ax2b_h4_pilot/2026-10-09/launch_v1/pilot_evidence_inventory_v1.json')]
+    review = Path('/home/abe/Project/Partially Randomized Trotter/track_a_ax1b_post_scientific_review_2026-10-09.md')
+    expected_review = load(BASE/'ax2a_original_preservation_20261009.json')['review_sha256']
+    if sha(review) != expected_review:
+        raise ValueError('ROOT_REVIEW_CHANGED')
+    frozen = load(OUT/'run_v1/frozen_preparation.json')
+    for n,h in frozen['source_hashes'].items():
+        if sha(ROOT/n) != h:
+            raise ValueError('FROZEN_SOURCE_CHANGED:' + n)
+    result = {'schema':'track_a_ax2b_h4_v4_execution_preservation_v1','status':'PRESERVED','original_worktrees':originals,'origin_inventories':inventories,'execution_existing_file_count':len(prep['hashes']),'execution_changed_existing_files':sorted(changed_copy),'execution_source_hashes_verified':len(frozen['source_hashes']),'root_review_path':str(review),'root_review_sha256':sha(review),'original_v4_preparation_source_and_artifacts_unchanged':True,'original_v3_pilot_source_and_artifacts_unchanged':True,'original_dirty_worktree_unchanged':True,'Track_B_changes':0,'commits_or_pushes':0,'mandatory_stop':True,'next_stage_authorized':False}
+    with (OUT/'preservation_report_v4.json').open('x') as f:
+        json.dump(result,f,ensure_ascii=False,sort_keys=True,indent=2); f.write('\n')
+    print(json.dumps({'status':result['status'],'original_file_counts':[r['existing_files_verified'] for r in originals],'execution_changed_existing_files':sorted(changed_copy),'origin_inventory_counts':[r['entries_verified'] for r in inventories],'source_hashes_verified':len(frozen['source_hashes'])},ensure_ascii=False))
+
+
+if __name__ == '__main__':
+    main()

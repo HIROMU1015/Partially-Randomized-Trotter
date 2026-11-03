@@ -1,0 +1,187 @@
+# Partially Randomized Trotter
+
+複数ブランチの研究結果は、[研究結果への統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)から探せます。
+研究別の総括、結果・SOURCE・raw、検証状態、固定commitへの入口をまとめています。
+
+## 研究内容を確認する入口
+
+リポジトリ内の実装、検証、文書、成果物の区分は、最初に
+[`PROJECT_MAP.md`](PROJECT_MAP.md)を参照する。
+
+このリポジトリから研究紹介、発表、進捗報告などを作る場合は、続いて
+[`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)を参照する。
+研究背景、目的、現在の検証段階、採用済みのCの扱い、主要結果、未決定事項、
+証拠資料の読み順を一か所にまとめている。
+
+Codex向けのリポジトリ読解規則は[`AGENTS.md`](AGENTS.md)に記載する。
+
+資料は[文書索引](docs/README.md)、[Markdown分類総目録](docs/DOCUMENTATION_INDEX.md)、
+[旧計画・レビュー](docs/archive/README.md)から探せる。
+人向けの進捗報告・打合せ資料は[進捗報告資料](docs/progress/README.md)へ保存する。
+このcheckoutと最新PR-2 worktreeの区別は[整理記録](docs/maintenance/2026-10-04_workspace_root_markdown_cleanup.md)を参照する。
+
+> [!IMPORTANT]
+> **Current validation status:** the legacy higher-order PF notebook and fit
+> coefficients are historical evidence, while the current DF
+> partial-randomized screening result is **not a validated final result** and
+> must not be used for research claims. Its Cgs input tables were removed after
+> a ground-state mismatch was found, and the screening output has not yet been
+> regenerated. The UWC tables are prose-only because their referenced raw
+> artifacts are not committed. See [VALIDATION_STATUS.md](VALIDATION_STATUS.md)
+> and [the machine-readable manifest](artifacts/validation_manifest.json) before
+> interpreting any result in this repository.
+
+現在の中心課題は、DF Hamiltonianに対する部分ランダム化時間発展について、二次PF、
+finite RTE、RPEの誤差・失敗確率・期待compiled costを接続することである。
+OpenFermion/PySCFでH-chain Hamiltonianを生成し、Qiskit回路、摂動論、sector内厳密計算を
+使って、最終コスト評価に入る前の近似検証を進めている。
+
+このリポジトリは旧来の高次Trotter積公式の誤差スケーリング・コスト評価から発展したため、
+高次PF notebookと係数artifactも歴史的資料として残る。これらを現在のDF部分ランダム化の
+結果と混同しないこと。積公式構築アルゴリズムの参考文献として
+`Greatly-improved-higher-order-product-formulae-for-quantum-simulation.pdf`を同梱する。
+
+## 検証結果を確認する前に
+
+- 現在の検証範囲、利用可否、欠落成果物: [`VALIDATION_STATUS.md`](VALIDATION_STATUS.md)
+- 機械可読な状態とパス検査: [`artifacts/validation_manifest.json`](artifacts/validation_manifest.json)
+- manifest の自己検査: `python3 scripts/check_validation_manifest.py`
+- partial-randomized PF の実装説明: [旧partial-randomized PF実装説明](docs/archive/implementation/README_partial_randomized_pf.md)
+- finite RTE の規約と API: [`docs/rte_conventions.md`](docs/rte_conventions.md)
+- DF-tail の厳密 I/Z/ZZ 抽出: [`docs/df_rte_tail_extraction.md`](docs/df_rte_tail_extraction.md)
+- DF RTE event入力API: [`docs/df_rte_event_circuit_api.md`](docs/df_rte_event_circuit_api.md)
+- DF RTE event/短列のcompiled期待コスト: [`docs/rte_compiled_event_cost.md`](docs/rte_compiled_event_cost.md)
+- DF partial-S2一反復の回路とcompiled期待コスト: [`docs/df_partial_s2_compiled_cost.md`](docs/df_partial_s2_compiled_cost.md)
+- DF partial-S2短い複数反復とcompiled期待コスト: [`docs/df_partial_s2_repeated_compiled_cost.md`](docs/df_partial_s2_repeated_compiled_cost.md)
+- RTE step/occurrence/RPE round の打切り予算: [`docs/rte_truncation_budget.md`](docs/rte_truncation_budget.md)
+- finite-RTE信号近似の小規模検証: [`docs/finite_rte_signal_validation.md`](docs/finite_rte_signal_validation.md)
+- RPE短roundの信号・shot・回路cost接続検証: [`docs/rpe_round_cost_connection_validation.md`](docs/rpe_round_cost_connection_validation.md)
+- RPE短roundの仮想Hadamard測定・失敗確率検証: [`docs/rpe_hadamard_failure_validation.md`](docs/rpe_hadamard_failure_validation.md)
+- $q=8$ Hadamard 1 shot cost proxy・resource接続検証: [`docs/rpe_hadamard_proxy_resource_validation.md`](docs/rpe_hadamard_proxy_resource_validation.md)
+- RPE位相誤差・失敗確率配分の感度検証: [`docs/rpe_allocation_sensitivity_validation.md`](docs/rpe_allocation_sensitivity_validation.md)
+- RPE限定4段の集計・失敗確率検証: [`docs/rpe_four_round_accounting_validation.md`](docs/rpe_four_round_accounting_validation.md)
+- RPE 4段の物理信号・分岐復元検証: [`docs/rpe_four_round_phase_validation.md`](docs/rpe_four_round_phase_validation.md)
+- 目標精度からのRPE round範囲・固定設定診断: [`docs/rpe_target_round_horizon_validation.md`](docs/rpe_target_round_horizon_validation.md)
+- RPEのdelta候補・round別有限RTE schedule検証: [`docs/rpe_delta_round_schedule_validation.md`](docs/rpe_delta_round_schedule_validation.md)
+- delta scheduleの中央RTE compiled-cost proxy検証: [`docs/rpe_delta_compiled_cost_validation.md`](docs/rpe_delta_compiled_cost_validation.md)
+- PF誤差surrogate・CPU Qiskit摂動・QPE分枝のholdout検証: [`docs/pf_delta_validation.md`](docs/pf_delta_validation.md)
+- H-chain系サイズ・実行可能delta窓におけるPF係数検証: [`docs/pf_c_system_size_validation.md`](docs/pf_c_system_size_validation.md)
+- RTE 一次資料の版管理: [`docs/rte_source_versions.md`](docs/rte_source_versions.md)
+- 短いRPE X/Y Hadamard interrogation wrapper: [`docs/rpe_hadamard_interrogation.md`](docs/rpe_hadamard_interrogation.md)
+- 研究概要・現在地: [`docs/research/研究概要・現状.md`](docs/research/研究概要・現状.md)
+- 研究目的・背景・解析手順の索引: [`docs/research/README.md`](docs/research/README.md)
+
+検証ステータスが `validated` になるまでは、DF screening や UWC の数値を最終結論として引用しないでください。
+
+## できること
+- 2nd/4th/8th/10thなどの積公式係数に基づく誤差評価
+- グルーピングあり/なしの時間発展誤差プロット
+- QPEのβ評価
+- 誤差のlog-logフィット結果を保存
+- パウリ回転数/RZ・T-depth外挿
+- 有限 RTE の列挙・標本平均、RPEラウンド打切り予算、dense-free DF-tailからQiskit event回路構築、単一event・短いevent列・DF partial-S2一反復および短い複数反復のcompiled期待コスト
+
+DF-RTEのcompiledコストは、固定したcompiler設定で実際にtranspileした
+RZ/CX count/depthを対象とする。小event空間ではexact enumeration、大きい
+空間では古典Monte Carloと標準誤差を使用する。Level 5では決定論half
+sweepとRTE occurrenceを結合したpartial-S2一反復に加え、短い複数反復を
+一つの回路としてtranspileするLevel 5-R検証を扱う。state preparation、
+量子shot、長い `2**m` 回路、またはRPE総コストは含まない。
+反復APIは監査用provenance fingerprint（seed規約を含む）とcircuit
+semantics fingerprint（seedを含まず実回路だけを表す）を分離する。transpile
+cacheはさらに、数値bind済み実Qiskit回路の再帰serializerとbackend targetを
+canonical hashして検証する。既定の
+`full_diagnostics`に加えて選択した全体回路だけをtranspileする
+`selected_only`を提供する。exact確率和とRTEパラメータ比較の許容誤差は
+明示され、許容内の確率和はraw値を記録したうえで期待値用に正規化される。
+
+compiled-cost内部はonline統計だけでなく、event、partial-S2 request、exact
+trajectory、Monte Carlo trajectoryも一件ずつ生成・消費する。互換用の
+`enumerate_rte_events()` / `sample_rte_events()` はtupleを返すが、compiled
+経路はiterator APIを使い、exact Cartesian積では単一event catalogだけを
+保持してsequence/trajectory全体は保持しない。Level 5-R provenanceは既定で
+先頭1024件だけを結果へ保存し、全件はrolling digest、総件数、保持件数、
+truncation flagで監査する。cache hitを仮定しない総build/transpile/instruction
+workload plannerがbuilder実行前に上限を検査し、build後にも実instruction数を
+照合する。これは長いRPE回路をtranspileしたことを意味せず、Level 5-R fixture
+は引き続き非科学的な実装回帰である。
+
+## ディレクトリ構成
+
+- [`src/trotterlib/`](src/trotterlib/)：ライブラリ本体。モジュール分類は[`src/trotterlib/README.md`](src/trotterlib/README.md)
+- [`scripts/`](scripts/)：検証runner、batch、診断、旧経路。分類は[`scripts/README.md`](scripts/README.md)
+- [`tests/`](tests/)：自動回帰テスト。研究結果のstatusはテストだけでなくmanifestで判断する
+- [`docs/research/`](docs/research/)：研究方針、解析手順、現在地、研究ノート
+- [`docs/`](docs/)：実装規約と検証報告。索引は[`docs/README.md`](docs/README.md)
+- [`artifacts/`](artifacts/)：固定入力、結果、キャッシュ。利用規則は[`artifacts/README.md`](artifacts/README.md)
+
+`abe_trotter_project.ipynb`、旧protocol、旧screening文書は歴史的・補助的資料であり、
+現行研究の入口ではない。詳細は[`PROJECT_MAP.md`](PROJECT_MAP.md)の状態区分を参照する。
+
+## セットアップ
+Python 3.11 を前提とする。
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+`requirements.txt` には `-e .` が含まれているため、`trotterlib` がインストールされる。
+
+## 旧高次PF経路の使い方（ノートブック）
+
+以下は本プロジェクトの出発点となった高次PF解析の再現手順であり、現在のDF部分ランダム化
+検証の実行入口ではない。
+
+`abe_trotter_project.ipynb` を開いて、Error plt → extrapolation の流れで実行する。論文と同様の外挿を再現する場合は `artifacts/trotter_expo_coeff_gr_original` を参照する（例: `exp_extrapolation(..., use_original=True)`）。既存の挙動で実行したい場合は従来通り `artifacts/trotter_expo_coeff_gr` のデータを使う。
+
+## 旧高次PF経路の主要関数（trotterlib.__all__）
+`pf_label` は積公式ラベル（例: `"2nd"`, `"4th(new_2)"`, `"8th(Morales)"`, `"10th(Morales)"`）を指定する。
+
+- `jw_hamiltonian_maker(mol_type, distance=None)`: 水素鎖のJWハミルトニアンを構築し、`(jw_hamiltonian, HFエネルギー, ham_name, num_qubits)` を返す。`mol_type` はH鎖の原子数、`distance` は原子間距離（省略時は `config.DEFAULT_DISTANCE`）。
+- `trotter_error_plt(t_start, t_end, t_step, molecule_type, pf_label)`: 対角化ベースの時間発展誤差をlog-logでプロットし、`(t_list, error_list)` を返す。`t_start`/`t_end` は時間範囲、`t_step` は刻み幅、`molecule_type` はH鎖原子数、`pf_label` は積公式ラベル。
+- `trotter_error_plt_qc(t_start, t_end, t_step, molecule_type, pf_label)`: 非グルーピングのQiskit時間発展で誤差を評価し、対角化結果とも比較プロットする。引数は `trotter_error_plt` と同じ。
+- `trotter_error_plt_qc_gr(t_start, t_end, t_step, molecule_type, pf_label, save_fit_params, save_avg_coeff)`: グルーピングありの誤差評価。`save_fit_params=True` でフィット結果（expo/coeff）を保存、`save_avg_coeff=True` で次数固定の平均係数を保存する。
+- `exp_extrapolation(Hchain, n_w_list, show_bands=True, band_height=0.06, band_alpha=0.28)`: 保存済みフィット係数からパウリ回転数を外挿し、H鎖サイズに対するスケーリングを比較する。`Hchain` は最大H鎖原子数、`n_w_list` は比較する積公式ラベル一覧。
+- `exp_extrapolation_diff(Hchain, n_w_list=("4th(new_2)", "8th(Morales)"), MIN_POS=1e-18, X_MIN_CALC=4, X_MAX_DISPLAY=100)`: 2つの積公式の外挿曲線と差分を同一図（双Y軸）で表示する。`n_w_list` は2要素推奨。
+- `t_depth_extrapolation(Hchain, n_w_list, rz_layer=None, show_bands=True, band_height=0.06, band_alpha=0.28)`: QPE全体のT-depth（またはRZレイヤ数）を外挿する。`rz_layer=True` でRZレイヤ数を表示する。
+- `t_depth_extrapolation_diff(Hchain, rz_layer=None, n_w_list=("4th(new_2)", "8th(Morales)"), MIN_POS=1e-18, X_MIN_CALC=4, X_MAX_DISPLAY=100)`: 2つの積公式のT-depth（またはRZレイヤ数）と差分を比較する。
+- `efficient_accuracy_range_plt_grouper(Hchain, n_w_list)`: 各H鎖サイズで最適となる誤差範囲を評価し、積公式ごとの有効範囲を可視化する。
+
+## 主要な設定
+`src/trotterlib/config.py` で出力先やプロセス数を調整できる。
+- `ARTIFACTS_DIR`: 生成物の保存先（`MATRIX_DIR`, `CALCULATION_DIR`, `PICKLE_DIR_PATH` の基点）
+- `PICKLE_DIR` / `PICKLE_DIR_GROUPED`: 係数保存フォルダ名（`artifacts/` 配下に作成）
+- `POOL_PROCESSES`: 並列プロセス数（時間発展の並列評価に使用）
+- `DEFAULT_BASIS` / `DEFAULT_DISTANCE`: 分子基底と原子間距離のデフォルト値
+- `BETA`: QPE のユニタリ作用回数 M の比例定数（`M = β / ε`）
+- `CA`: 化学的精度
+- `TARGET_ERROR`: 外挿や T-depth 計算で使う target error（既定は `CA / 10`）
+- `P_DIR`: 積公式ラベルと次数の対応（`num_w` 指定に必須）
+- `DECOMPO_NUM`: H-chain のハミルトニアンを PF で分解した際の、1ステップあたりのパウリ回転数
+- `PF_RZ_LAYER`: H-chain のハミルトニアンを PF で分解した際の、1ステップあたりの RZ レイヤー数（FermionOperator→RZ の見積りは Inoue 論文の変換に準拠）
+- `validate_config()`: 設定キーの整合チェック（必要なら呼び出して検証）
+
+作業ディレクトリを変える場合は `TROTTER_PROJECT_ROOT` を設定すると保存先が崩れない。
+
+```bash
+export TROTTER_PROJECT_ROOT=/path/to/Evaluation_numGate_highorder
+```
+
+## 注意事項
+- PySCF/Qiskitの計算は重いため、H鎖のサイズや `POOL_PROCESSES` は環境に合わせて調整する。
+- `artifacts/` 配下に大量のキャッシュが生成される。
+
+## 3つの研究方針のレビュー・設計資料
+
+2026-10-12の直下整理で、受領レビューと設計案を次の場所へ配置した。
+本文を保存した資料索引であり、別branchの科学結果をこのcheckoutへ統合したものではない。
+
+| 研究方針 | レビュー | 計画・設計案 |
+|---|---|---|
+| ① 資源・適用可能性評価（Track A） | [レビュー](docs/reviews/track_a/) | [計画・設計](docs/research/planning/track_a/) |
+| ② PR内部改良（Track B） | [レビュー](docs/reviews/track_b/) | [計画・設計](docs/research/planning/track_b/) |
+| ③ 表現・構成を含む全体改良 | [レビュー](docs/reviews/representation_exploration/) | [計画・設計](docs/research/planning/representation_exploration/) |
+
+元pathと固定参照の扱いは[2026-10-12の整理記録](docs/maintenance/2026-10-12_workspace_root_markdown_cleanup.md)を参照する。

@@ -1,0 +1,244 @@
+# 研究目的・研究課題
+
+本資料は、研究資料全体の入口として、研究目的、現段階の範囲、最終目的関数およびResearch Questionsを定める。PR論文で既に分かっていることは[次の主資料](先行研究と未解決点.md)、解析式と最適化手順は[研究方法・解析手順](研究方法・解析手順.md)、現行実装での評価条件は[数値実験・評価計画](数値実験・評価計画.md)を正本とする。
+
+## 1. 研究目的
+
+本研究の目的は、Hamiltonianを決定論部分とランダム部分へ分ける時間発展について、表現、分割、
+random-tail処理、誤差、統計、compiled実装費用の競合を明らかにし、部分ランダム化を選ぶべき条件と
+選ぶべきでない条件を再現可能な比較として示すことである。新しい一般定理だけを完成条件にせず、
+既存法のpartial版への正当な拡張、表現・実装との共同設計、同一taskでの資源評価も成果候補とする。
+
+従来のDF partial-RTE/RPE総cost路線は、この目的の重要な応用・証拠基盤として維持する。固定された
+rank済み二体DF fragment列の分割位置 $L_D$、時間刻み $\delta_{\mathrm{time}}$、roundごとの
+finite-RTE設定、および誤差・失敗確率の配分を総コストに基づいて比較する。ただし、全RPE総costの
+完了を、すべての新しい部分ランダム化研究の共通必須条件にはしない。
+
+総cost型の成果まで進む場合の最終目標は、状態準備を除外したfull RPE interrogationについて、各round・各測定軸の1 shot当たりの期待compiled costを必要shot数と掛け、全roundで合計することである。選択したcompiled-cost指標を $C$ として、目的関数を
+
+$$
+G_{\mathrm{total}}^{\mathrm{target}}
+=
+\sum_{m=0}^{M}
+\sum_{b\in\{c,s\}}
+N_{m,b}\,
+\mathbb{E}\!\left[C_{m,b}^{\mathrm{target,no\text{-}prep}}\right]
+$$
+
+と表す。$C_{m,b}^{\mathrm{target,no\text{-}prep}}$ は、状態準備を含まない1回のRPE interrogation circuitのcompiled costであり、単なるtime-evolution subcircuitのコストではない。
+
+### 1.1 研究テーマ選定フェーズ（2026-09-25採用）
+
+上記の現行partial-RTE総cost研究は、H4で局所compiler精密化を追加しても候補区間が重なる段階まで
+検証した。A0で最新proxyと旧$q=16,32$の証拠lineageも整理したため、同じH4 cost modelの
+局所精密化をいったん停止する。
+
+次の段階では、研究テーマを完成させる前に、独立した研究上の差分が存在するかを小規模pilotで
+判別する。実行順は次のとおりとする。
+
+1. P-B：energy-only PF選択とtarget weight／signal-aware選択が食い違うか。
+2. P-C：geometry方向に予測可能な符号付きPF誤差と差分biasが存在するか。
+3. P-A：強い既知baselineの後にもDF回路列のjoint synthesisに利益が残るか。
+
+各pilotは一つの反例、予測可能な差、または明確な停止根拠を得る最小範囲に留める。3件が揃った
+時点で停止し、案A/B/Cのどれを主研究にするか再判断する。この間、H12、長RPE総cost、追加の
+$q>32$、$\delta/r$境界拡張は、選ばれたテーマが必要とするまで実行要件にしない。
+
+P-Bは固定H4 gridで実質的なenergy/signal選択差がなく停止した。P-Cは0.80--1.20 Åの固定H4
+条件で未使用geometryと未使用deltaの差分bias予測gateを通過した。P-Aでは未使用event列長3、5、8で
+interval-union DPが現行policy比pooled RZを7.194%減らし、operator同値性を含む6 gateを通過した。
+3案を比較した結果、P-Aを暫定主題、P-Cを副候補、P-Bを現範囲で停止とした。続くP-A専用の
+先行研究監査では個々の要素は既知だが、現行v1と同じ組合せは検索範囲内で確認できなかった。
+事前登録済みblind validationでも未使用H5 snapshotとH4 optimization level 2の両stratumが
+全6 gateを通過した。
+
+後続の形式化・機構監査ではblindの54/54 recordにrun内区間分割が一度もなく、48 holdoutの256 eventも
+全てTaylor order 0だった。さらに、明示的一区間baseline、強制support変化、全event Taylor order 2を
+使う事前登録比較でも、training/blind全30 taskのplanとcompiled metricが完全に一致した。
+
+従ってP-Aのinterval claimを主研究候補から外し、P-C geometry energy differenceへ戻った。
+続く事前登録済みP-C tracking・breakdown validationでは、連続追跡prefixが全8 geometryで独立prefixと
+同一となり、1.40、1.60 Åのblind coefficient予測誤差が33.653%、123.245%へ増えた。
+固定pair予測は1/4だけが15%基準内、continuity診断はstretch側2 breakdownをflagできず正解率50%だった。
+固定decision ruleにより`stop_pc_current_h4_family_as_primary`とする。
+
+P-A interval、P-B current grid、P-C current H4 familyはいずれも停止条件に達した。その後のP-D、
+R3、FR系列も、それぞれの固定比較と停止条件まで完了した。この節は2026-09-25に採ったテーマ選定の
+経緯として保存し、現在の実行順は次節を優先する。H12、長RPE総cost、追加$q>32$は自動的な
+次作業にしない。
+
+### 1.2 部分ランダム化中心の研究方向再固定（2026-09-27採用）
+
+[部分ランダム化研究候補と事前検証計画](../../partial_randomization_research_options_20260927.md)に基づく
+最小pilot、[PR-2主研究契約](pr2_primary_research_contract.md)、
+[S1--S3結果前事前登録](pr2_s1_s3_preregistration.md)と
+[外部レビュー後amendment v2](pr2_s1_s3_preregistration_amendment_v2.md)の文書固定まで完了した。数値証拠のstatusは
+`PR23_MINIMAL_PILOTS_COMPLETE_MANDATORY_STOP_SELECT_PR2`、現行の実行statusは
+`PR2_PREREG_AMENDMENT_V2_FIXED_S0_IMPLEMENTATION_ONLY`とする。
+
+pilot前のG-A--G-C監査は固定した外側PFにおける低次数tail-only線形信号外挿だけを通過scopeとし、
+full-random qFLOの漸近保証を移送しなかった。その固定2-qubit pilotはbiasを96.96%減らしたが、
+work比7.557で`STOP_PR3_VARIANCE_BACKBONE_DOMINATES`となった。
+
+- PR-1の表現・実装をそろえた資源比較を、以後の候補に共通する評価軸として採用する。
+- PR-2のH4 rank-12参照に対するrank 3/6/9 pilotは全correctness gateを通過し、rank 3/6で
+  one-step hybrid/reference比0.307753/0.548093を得て`GO_PR2`となった。
+- PR-2を次の主題候補とする。pilotはrank-12のgeneration-prefixとの一致を示したが、通常PR実装の
+  weight-ranked prefixとの同一性はS0で確認する。一致なら統合、不一致なら両方をbaselineとして残し、
+  順序差だけをmethod deltaとはしない。成果候補はcoherent-signal taskにおけるresidual-aware rank
+  stoppingの限定的な資源crossoverと破綻条件とする。
+- PR-4は物理的な差分推定器と測定費用の監査まで、PR-5/6は明確なmethod deltaまたは
+  primitive上の利益が固定できるまで保留する。
+
+この採択は、P-A--D、R3、FRの停止済みclaimを再開しない。既存の回路scope、basis共有、
+compiled-cost proxy、shot・状態準備感度、平均演算子とchannelの区別を再利用する。
+`STOP_AFTER_PR2_PR3_MINIMAL_PILOTS`に要求された中心主張、先行研究差、rank-6 development anchor、
+H4 1.30 Å held-out geometry transfer、scope progression、完成基準に加え、S1--S3の結果前条件を固定した。
+外部レビューの`AMEND_BEFORE_S0`に従い、normalization-corrected estimatorと$\mathcal B^2$ shot overhead、
+B3 semantics、state-preparation感度、engineering interval、B2 family判定、S1 correctness-onlyを追加した。
+次に許されるのはS0 runner/test/schema/input-freeze recipeの実装だけであり、S0 input/identity実行とS1を
+開始しない。PR-4--6、H12、長RPE、広いgridは自動的な次作業にしない。
+
+## 2. 現段階の研究範囲と仮定
+
+### 2.1 固定するDF条件と探索変数
+
+現段階では、DF表現、DF rank、fragment順位、coefficient thresholdなどのDF生成条件を固定する。固定したfragment列に対して、Hamiltonian分割変数として探索するのはprefix長 $L_D$ だけである。
+
+これは既存総cost路線とPR-3の最初のanchorに対する固定条件である。PR-1のPauli/DF比較またはPR-2の
+圧縮残差へ進む場合は、表現、sampling単位、圧縮度を別契約で固定する。以下の$L_D$探索規約を
+暗黙に移送しない。
+
+- 外側の変数：$L_D$、$\delta_{\mathrm{time}}$
+- roundごとの変数：RTE short-step数 $r_m$、finite Taylor cutoff $K_m$
+- 方法論上の最終的な配分変数：位相誤差予算と失敗確率 $\alpha_{m,b}$
+
+現行実装では配分自体の最適化は未実装であり、複数の事前指定scheduleの下でroundごとの $(r_m,K_m)$ を比較する段階である。DF表現・rankと $L_D$ の同時最適化は将来課題とする。
+
+### 2.2 入力状態と状態準備コスト
+
+本研究は状態準備法そのものを対象とせず、必要な入力状態を利用できると仮定する。状態準備コストは、候補間で数学的に相殺されるからではなく、研究範囲外とする仮定によって総コストから除外する。候補ごとにshot数が異なるため、1 shot当たりの状態準備コストが一定でも一般には相殺されない。
+
+これとは別に、対象となるpartial-$S_2$ signalが、RPEに必要な位相関係と正の基準半径を持つことを条件付きのsignal modelとして仮定する。基準信号を
+
+$$
+Z_{\star,m}
+=
+\rho_{\star,m}e^{-iq_m\theta_\star},
+\qquad
+\rho_{\star,m}>0
+$$
+
+と書く。この位相・半径条件の成立を本研究で証明または保証するものではない。特に、元のHamiltonianのexact ground stateを準備できることだけから、partial-$S_2$ signalの半径が自動的に1になるとは主張しない。
+
+### 2.3 主解析の信号半径モデル
+
+finite-RTE誤差が信号半径を低下させ得ることは認識したうえで、主解析では簡略モデル
+
+$$
+\rho_m^{\mathrm{obs,model}}
+=
+A_m^{\mathrm{att}}\rho_{\star,m}
+$$
+
+を用いる。これはfinite-RTE誤差 $\epsilon_{Z,m}$ による半径低下を省略したモデル値であり、一般的な厳密下界ではない。
+
+保証を伴う保守的評価では、正当化された基準半径下界 $\rho_{\star,m,\mathrm{lb}}$ を別途与え、
+
+$$
+\rho_{m,\mathrm{lb}}^{\mathrm{obs}}
+=
+A_m^{\mathrm{att}}
+\left(
+\rho_{\star,m,\mathrm{lb}}-\epsilon_{Z,m}
+\right),
+\qquad
+0\leq\epsilon_{Z,m}<\rho_{\star,m,\mathrm{lb}}
+$$
+
+を用いる。両者の使い分けとshot数への接続は[研究方法・解析手順](研究方法・解析手順.md)で定める。
+
+### 2.4 研究上の目標と現行実装
+
+本文は研究上の総コストモデルと解析方針を示す。Product Formula次数、回路制御方式、直接構築可能なround範囲など、現行実装に固有の評価条件は[数値実験・評価計画](数値実験・評価計画.md)で定める。
+
+現行の主な直接評価対象は `compiled_time_evolution_subcircuit` であり、これは上記の最終目的関数を直接評価したものではない。状態準備なしのHadamard-test wrapperを含む `single_hadamard_interrogation_without_state_preparation` を中間段階とし、長roundを含む全roundの `target full RPE interrogation cost excluding state preparation` への接続を最終目標とする。
+
+## 3. 主要検討事項
+
+### 3.1 finite-RTEの期待compiled cost
+
+finite Taylor cutoff $K_m$ を導入すると、RTE eventの確率分布、Taylor打切り誤差、normalization、attenuationおよびeventごとの回路構造が同時に変化する。各roundで $(r_m,K_m)$ を変え、1 shot当たりの期待compiled costと、attenuationを通じて変わる必要shot数の積を比較する。
+
+単純な平均primitive costだけでは、basis変換の共有、gate cancellation、rotation fusionおよびroutingを捉えられない。そのため、直接構築できる短回路ではevent列を含む回路をcompileし、長roundでは検証済みproxyへ接続する。
+
+### 3.2 誤差・失敗確率配分
+
+Product Formula誤差、finite-RTE誤差および統計誤差を、それぞれRPEのround位相を最大何radずらし得るかという上界へ換算する。round $m$ の配分値には
+
+$$
+\overline\beta_{\mathrm{PF},m}
++
+\overline\beta_{\mathrm{RTE},m}
++
+\overline\beta_{\mathrm{stat},m}
+\leq
+\beta_{\mathrm{RPE}}
+$$
+
+を課し、実際の誤差上界が各配分値以下であることを確認する。cosine・sineの失敗確率は
+
+$$
+\sum_{m=0}^{M}
+\left(
+\alpha_{m,c}+\alpha_{m,s}
+\right)
+\leq
+\alpha_{\mathrm{tot}}
+$$
+
+で管理する。固定scheduleの下ではround別の $(r_m,K_m)$ を独立に比較できるが、$\alpha_{m,b}$ 自体を最適化すると、この総和制約によってround間が結合する。
+
+### 3.3 固定DF表現下の分割・時間刻み最適化
+
+$L_D$ を増やすとランダムtailは軽くなりやすい一方、決定論回路は重くなり得る。$\delta_{\mathrm{time}}$ はProduct Formula誤差、RPE round数、finite-RTE条件およびcompiled costを同時に変える。したがって、$\lambda_R$ 単独ではなく、外側候補ごとに内側の最小総コスト
+
+$$
+G_{\mathrm{opt}}(L_D,\delta_{\mathrm{time}})
+=
+\min_{\{r_m,K_m,\,\text{誤差・確率配分}\}}
+G_{\mathrm{total}}^{\mathrm{target}}
+$$
+
+を比較することを方法論上の目標とする。
+
+## 4. Research Questions
+
+**RQ1.** finite-RTE event分布から、time-evolution subcircuit、状態準備なしの1回のHadamard interrogation、最終的な全round総コストをどのように接続できるか。
+
+**RQ2.** 総位相誤差予算と総失敗確率を固定したとき、その配分は $r_m$、$K_m$、$N_{m,b}$ および総コストへどのような影響を与えるか。
+
+**RQ3.** 固定したDF表現とfragment順位の下で、どの $(L_D,\delta_{\mathrm{time}})$ がcompiled総コストを最小化し、どの条件で部分ランダム化が決定論的Product Formulaより有利になるか。
+
+2026-09-26の先行研究監査では、RQ3をこの広さのまま独立した新規性とは扱わないことにした。
+fragment norm、PF誤差、per-step cost、randomized remainderを合わせた選択は既存研究と強く重なる。
+RQ3は将来の総resource評価に必要な工学的目的として保持する。独立研究候補として残すR3-Sは、
+ordered DF prefix固有の安価な診断で詳細評価の選択を認証または棄却し、未使用条件でregretと
+評価数を同時に検証する狭い問いに限定する。追加監査でも一般certified multi-fidelity法との差分とquantum-specific保証を固定できず、R3-S0は不通過とした。
+`STOP_R3_NO_METHOD_DELTA`でR3を停止する。条件と判断記録は[先行研究監査と最小契約](r3_prior_art_and_minimal_contract.md)を正本とする。
+
+**RQ4.** Pauli型とDF-native型の部分ランダム化を同じtask・誤差・制御化・費用scopeで比較すると、
+どの表現・sampling単位・basis共有が損益分岐を決めるか。
+
+**RQ5.** 決定論backboneを保ったままrandom tailだけへ外挿を適用すると、通常PRおよびfull-random
+外挿に対し、bias--variance--backbone costのどの領域で有利または不利になるか。
+
+**RQ6.** 固定DF参照Hamiltonianの中間rank prefixとexact random residualを組み合わせると、
+residualを捨てる方法または全rankを決定論化する方法に対し、controlled coherent-signal taskの
+どの領域でfull-scope資源crossoverが残り、どの費用項で消えるか。
+
+RQ4を共通評価軸、RQ5を現pilot範囲で停止、RQ6を現行主題候補とする。RQ6のprefix構成を新手法と
+呼ばず、限定的な資源研究として扱う。非prefix圧縮へ拡張する場合は、別のmethod-delta gateを通す。
+RQ1--RQ3の既存成果は回路・信号・cost基盤として再利用するが、全RPE workflowを一律に要求しない。
+
+次の主資料：[先行研究と未解決点](先行研究と未解決点.md)

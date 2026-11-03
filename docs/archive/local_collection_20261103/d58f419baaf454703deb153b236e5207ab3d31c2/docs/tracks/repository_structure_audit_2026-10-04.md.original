@@ -1,0 +1,131 @@
+# Repository structure audit / two-track separation plan
+
+監査日：2026-10-04。対象repository：`HIROMU1015/Partially-Randomized-Trotter`。
+結果は構造整理であり、研究方針の科学的GOやscience execution authorizationではない。
+
+## 1. Scope / branch監査
+
+| checkout | branch / HEAD | 扱い |
+|---|---|---|
+| `/home/abe/Project/Partially Randomized Trotter` | `all-r-coherent-opt2-reoptimization` / `e098c54c78f589055082f9cfc2b13de50c90ca94` | 別branch、未commit科学/研究資料変更あり。今回変更しない |
+| `.worktrees/pr2-v4-s2-parallelization-20260928` | `pr2-v4-s2-parallelization-20260928` / `b6e65c6123475add5e620ec1064f361378bead95` | 最新M2 resultを持つ分類基準・今回の追加先 |
+
+originは`git@github.com:HIROMU1015/Partially-Randomized-Trotter.git`。
+`git ls-remote`でorigin PR-2 branchは上記b6e65c6と一致した。defaultはmainで
+`0babed07006c4cfc34b2b4191f4f0c8a9e9bceaf`、最新PR-2の起点としては使わない。
+root HEADはPR-2 HEADの祖先だが、rootのdirty変更を最新worktreeへコピー/mergeしない。
+upstreamの別projectもHIROMU1015配下だが、この整理のpublication先は変更しない。
+quration等の他repositoryには触れない。
+
+確認対象：PROJECT_MAP、AGENTS、研究概要全文、研究目的、VALIDATION_STATUSと証拠manifest（74 result sets）、
+M1/M2契約/報告/保存artifactの情報、library/runner/test索引とsource/import構造、P-A/P-B/P-C/P-D/R3/FRの
+STOP・限定claim。分子NPZ、runtime、state/vectorは開かない。
+
+## 2. 全ファイル分類
+
+[CSV](audit/2026-10-04/file_classification_v1.csv)は**開始時HEADの全1380ファイル**を一行一ファイルで記録する。
+さらに既存の未commit資料14件を`preexisting_untracked_document`として別枠で含める。
+ignored runtime/venv、Git内部、別worktreeの重複file setは分類対象に含めない。
+
+| Category | HEAD tracked | 既存未commit資料 | 意味 |
+|---|---:|---:|---|
+| COMMON | 371 | 4 | 共通基盤・scoped helper validation・全体index。Bの科学証拠という意味ではない |
+| TRACK_A | 136 | 1 | PR-2 M1/M2とそのstage別履歴。旧authorizationの再実行許可ではない |
+| TRACK_B | 0 | 0 | 既存独立science source/evidenceなし。今回B READMEだけ新規追加 |
+| LEGACY_OR_ARCHIVE | 873 | 9 | 旧PF係数、P/WP/FR等の研究履歴、negative evidence、旧計画・発表資料 |
+
+分類はsource/doc/evidence監査に基づく保守的な所有規則を
+[`audit_research_track_structure.py`](../../scripts/common/audit_research_track_structure.py)で全pathへ適用したもの。
+全ファイルの科学的妥当性を再審査した結果ではなく、曖昧な85件は`review_required=True`とした。
+新規追加文書はA README=TRACK_A、B README=TRACK_B、その他の構造文書/監査script/tests=COMMON。
+
+## 3. 移動保留 / 曖昧なもの
+
+85件の正確な一覧はCSVのreview列で抽出できる。主な理由は以下。
+
+| file群・例 | 暫定分類 | 判断保留の理由 / 必要な確認 |
+|---|---|---|
+| `docs/research/研究目的・研究課題.md`等の主要8資料・PDF | TRACK_A | resource研究が中心だが共通method/旧計画も混在。結果後に旧契約を変更せず、新scopeを別文書で整理 |
+| `docs/research/研究ノート/` | LEGACY_OR_ARCHIVE | 複数track・決定履歴が同居。dated historyを分割・書換えしない |
+| `pr2_pr3_minimal_pilot`のmodule/runner/test/doc/artifact | LEGACY_OR_ARCHIVE | PR-2初期証拠と停止PR-3が同居。現M1/M2やBのpositive evidenceへ昇格しない |
+| `pr2_s0_s1_validation`と旧V0/V1–V3/S1–S3系 | TRACK_A | 正常/停止/改訂stageとsnapshotが混在。原version・旧STOPを保存、M2 snapshotは使用済み |
+| `fr_research_claim_and_manuscript.md` | LEGACY_OR_ARCHIVE | FR-R1b practical STOPと後続theory草案は別。rootにも別branchの資料があり、FR全成果を無効化した意味ではない |
+| `df_screening_cost.py`、旧screening JSON、関連runner | LEGACY_OR_ARCHIVE | invalidated ground-state由来のstale結果を現在証拠として使わない。helper抽出は別review |
+| `df_partial_randomized_pf.py` / `partial_randomized_pf.py`、`cost_extrapolation.py`と対応test | COMMON | shared helperと古いworkflowが混在。public APIを動かさず、実際の再利用範囲を今後限定 |
+| GPU/ground-state/旧方向解析runnerとrootの先行研究PDF三件 | COMMONまたはLEGACY_OR_ARCHIVE | 入力生成/既存helper/歴史資料のscopeを区別。分類だけでrun許可やBの採択にしない |
+
+## 4. Legacyはnegative evidenceとして保存
+
+| 系列 | 保存する判断 / 主張上の制約 | 入口 |
+|---|---|---|
+| P-A | interval-DP primary停止。baselineとの差/plan変更・改善のgate不通過 | [mechanism validation](../research_direction_joint_synthesis_mechanism_validation.md) |
+| P-B | 既存小系pilotではenergy-onlyとsignal選択の実用的不一致を確認せず。一般selector検証ではない | [signal pilot](../research_direction_signal_weight_pilot.md) |
+| P-C | `stop_pc_current_h4_family_as_primary`。geometry trackingを現在familyの主研究にしない | [tracking validation](../research_direction_geometry_tracking_breakdown.md) |
+| P-D | `posthoc_complete_stop_pd_without_s2`。frozen候補で主baselineの選択差がない事後解釈、S2停止 | [post-hoc report](../research_direction_pd_s1_posthoc.md) |
+| R3 | `STOP_R3_NO_METHOD_DELTA`。一般multi-fidelity/selectorとの差分未確定、数値pilotへ進まず | [prior-art STOP](../research/r3_prior_art_and_minimal_contract.md) |
+| FR | `MECHANISM_ONLY_NO_PRACTICAL_GO`。mechanism/theory検討とpractical resource GOを区別 | [FR-R1b](../fr_revision_nonuniform.md)、[theory草案](../research/fr_research_claim_and_manuscript.md) |
+
+各結果のHamiltonian/geometry/basis/rank/実行scopeはリンク先の正本に従う。
+コードを残すこと、Bで同じ量を扱うことはSTOPの撤回ではない。
+
+## 5. 推奨directory（既存path維持、新規だけ）
+
+```text
+src/trotterlib/                     # 既存共通基盤、API/pathを維持
+src/trottertracks/                  # 将来案のみ。B固有adapterを別namespaceにする
+docs/research/                     # 現行正本・共通method・provenance・dated history
+docs/tracks/
+  README.md / migration_policy.md / repository_structure_audit_2026-10-04.md
+  resource_applicability/README.md  # A入口を今回追加
+  algorithm_codesign/README.md      # B探索草案を今回追加
+  audit/2026-10-04/                 # 構造metadata。科学artifactではない
+scripts/common/                    # 今回read-only構造監査だけ
+scripts/resource_applicability/    # 将来の新runnerのみ、今回未作成
+scripts/algorithm_codesign/        # 将来の新runnerのみ、今回未作成
+tests/tracks/                      # 今回は構造の純synthetic testsだけ
+  resource_applicability/          # 将来案
+  algorithm_codesign/              # 将来案
+artifacts/resource_applicability/  # 将来の別認可runだけ
+artifacts/algorithm_codesign/      # 将来の別認可runだけ
+```
+
+旧artifacts、runner/module/testは対応関係を含め元pathに置く。研究概要は現在970行の本文/anchorを
+保持し、今回はtrack navigationだけ追加する。全体概要の短縮は別のlink/provenance監査後とする。
+
+## 6. Branch / worktree推奨案（未作成）
+
+既存PR-2を壊さず、構造資料のreviewと必要時の独立commitの**後**、同じpost-M2基点から以下を分岐する案。
+
+- `track-a-resource-applicability`：M1/M2 formal evidenceとpost-M2 claim/mechanism整理。
+- `track-b-algorithm-codesign`：独立novelty/RQ文書、将来の結果前pilot設計。
+- worktreeは例えば `/home/abe/Project/prt-worktrees/track-a-resource-applicability` と
+  `/home/abe/Project/prt-worktrees/track-b-algorithm-codesign`（提案path、今回は作成/探索しない）。
+
+同名branchがあれば上書きしない。最新M2を持たないmain/rootから始めず、共有した構造commitを正確に固定する。
+現在のdirty変更をclean/stash/resetで消さない。共通変更は小さな独立commitを両trackへ選択的に取り込み、
+track-specific実験はもう片方へ自動mergeしない。今回は提案までで、branch作成・commit/pushはしていない。
+
+## 7. 変更予定と今回実施した範囲
+
+新規追加：本監査、`docs/tracks/README.md`、`migration_policy.md`、A/B README、
+`audit/2026-10-04/file_classification_v1.csv`、`protected_paths_v1.json`、検査結果`verification_v1.json`、
+`scripts/common/audit_research_track_structure.py`、`tests/tracks/test_research_track_structure.py`。
+
+既存への追記だけ：`PROJECT_MAP.md`、`docs/README.md`、`docs/research/README.md`、
+`docs/research/研究概要・現状.md`、`scripts/README.md`、`src/trotterlib/README.md`、`tests/README.md`、
+`docs/research/研究ノート/2026-10-04.md`。
+
+**変更しない**：全scientific source、既存module/runner/test、全artifact、M1/M2検証文書・契約・認可、
+validation status/manifest。既存利用者整理の削除7件・untracked資料14件も今回の作業ではない。
+保護snapshotは開始時worktree text bytes/SHAと既存missingを記録し、索引追記の8pathだけ除外して照合する。
+content未読の557pathはGit metadataで分類しただけで、完全なbinary再hash検証とは主張しない。
+
+検査は構造scriptのsynthetic19 tests、inventory coverage、保護text照合、新規/追記linkと差分の確認に限定する。
+full suite、NPZ access、science run、sampling、compile、GPUは0。最終の検査件数/結果はverification JSONへ記録する。
+科学manifestへ新結果を追加せず、構造監査の記録を分ける。
+
+## 次作業と停止位置
+
+AはまずPM-0：保存済みM1/M2からclaim/limitationをreviewする。
+Bはまずnovelty/RQ gate：P-D/R3と近接文献との差分をclaim単位で確認する。
+両方とも科学計算は未認可。構造整理終了後にSTOPし、branch作成やpilotへ自動的に進まない。

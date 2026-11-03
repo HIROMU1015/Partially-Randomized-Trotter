@@ -1,0 +1,39 @@
+# 過去の計画・レビュー・実装資料
+
+ここには現行仕様ではない提案・説明を分類して保管する。過去の実行指示は現在の認可ではない。
+本checkoutは `all-r-coherent-opt2-reoptimization`。最新PR-2の資料は
+`.worktrees/pr2-v4-s2-parallelization-20260928/` 側で管理されており、ここへmergeしていない。
+
+## 移動した資料
+
+| 区分 | 資料 | 位置付け |
+|---|---|---|
+| 旧計画 | [2026-09-25の再設計案](planning/partial_randomized_trotter_research_redesign_20260925.md) | P-A/P-B/P-C/P-D/R3等の着想と判断履歴 |
+| 旧計画 | [P-D方針・検証計画](planning/pd_research_strategy_and_validation_plan_20260925.md) | 正式契約前の提案。現在の実行順ではない |
+| 過去のレビュー | [commit 898da848への外部レビュー](reviews/partial_randomized_trotter_validation_review_898da848.md) | 後続のテーマ再検討に至る監査履歴 |
+| 旧実装 | [partial-randomized PF実装説明](implementation/README_partial_randomized_pf.md) | legacy proxyの補助説明。現行数値の正本ではない |
+
+発表構成案2件は[発表資料](../presentations/README.md)へ移した。
+
+## 直下のpathを維持する資料
+
+| 資料 | 維持する理由 |
+|---|---|
+| [初期Study Protocol](../../Partial%20Randomized%20Study%20Protocol.md) | evidence manifestに登録された履歴 |
+| [FR-R0再設計入力](../../fr1_revised_research_plan_20260926.md) | evidence manifest・既存契約からの参照を維持 |
+| [FR定理・先行研究レビュー](../../fr_theorem_prior_art_review_71169d8.md) | 未追跡の利用者入力。編集中の正本・status・研究ノートが直接参照する |
+| [部分ランダム化研究候補](../../partial_randomization_research_options_20260927.md) | 利用者の未commit編集を保持し、既存stage契約との対応を維持 |
+| [事前検証backlog](../../partial_randomized_trotter_prevalidation_catalog.md) | 既存IDと証拠索引との対応を維持 |
+| [P-D S1外部レビュー](../../pd_s1_review_5c331f0.md) | 事後再解析runnerの固定入力path |
+| [FR完成方針入力](../../research_focus_and_completion_plan_16d4482_20260927.md) | evidence manifestに登録された設計入力 |
+| [FR初期再設計](../../research_redesign_phase_amplitude_20260926.md) | 凍結FR契約からの参照を維持 |
+
+位置が古いことや系列が停止したことだけで、上記を不要とは判断しない。
+[研究概要・現状](../research/研究概要・現状.md)・固定契約・検証状況を優先して読む。
+
+## 確認済み削除
+
+古い単発実装依頼 `codex-inst.md` 1件は、利用者確認後に削除した。
+内容は整理前Git commitから復元できる。削除と移動のSHA・元pathは
+[整理台帳](../maintenance/workspace_root_markdown_relocations_2026-10-04.json)、
+作業範囲と保護対象は[整理記録](../maintenance/2026-10-04_workspace_root_markdown_cleanup.md)に記録する。

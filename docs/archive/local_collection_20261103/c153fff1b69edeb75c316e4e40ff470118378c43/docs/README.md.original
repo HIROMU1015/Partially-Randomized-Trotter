@@ -1,0 +1,159 @@
+# 文書索引
+
+研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
+このcheckoutにない後続資料も、固定commitから参照できる。
+
+このディレクトリには、研究方針の正本、実装規約、検証報告、発表資料の案内が共存する。
+研究全体を初めて読む場合は、先に[`../PROJECT_MAP.md`](../PROJECT_MAP.md)と
+[`research/研究概要・現状.md`](research/研究概要・現状.md)を読む。
+
+PR-2別系列の最新packetは
+[`research/pr2_v1_v3_result_packet_ef86868_20260928.md`](research/pr2_v1_v3_result_packet_ef86868_20260928.md)。
+旧S0 STOPを保持し、V1–V3通過後にV4/S1′未承認で停止したlocal validationを、外部レビュー、V0監査、
+amendment v4、authorization manifestとともに追跡できる。
+
+## 用途から探す
+
+- [進捗報告資料](progress/README.md)：人向けの全体進捗・3つの研究方針別報告・打合せ資料。
+- [Markdown分類総目録](DOCUMENTATION_INDEX.md)：このcheckout内の全Markdownを用途別に分類。
+- [旧計画・レビュー・実装説明](archive/README.md)：現行仕様ではない資料の保管場所。
+- [発表資料](presentations/README.md)：移動したスライド構成案。
+- [配置整理・保護・削除の記録](maintenance/2026-10-04_workspace_root_markdown_cleanup.md)：元path、SHA、確認済み削除。
+
+このcheckoutは `all-r-coherent-opt2-reoptimization`。最新PR-2の作業場所は
+`.worktrees/pr2-v4-s2-parallelization-20260928/` であり、今回の整理ではbranch間の研究状態を統合しない。
+
+## 研究方針と現在地
+
+- [`research/研究概要・現状.md`](research/研究概要・現状.md)：最新の短い全体要約
+- [`research/prevalidation_catalog_evidence_map.md`](research/prevalidation_catalog_evidence_map.md)：事前検証カタログの実施IDと文書・artifact・testの対応
+- [`research/README.md`](research/README.md)：研究文書内の索引
+- [`research/研究目的・研究課題.md`](research/研究目的・研究課題.md)：目的と研究課題
+- [`research/研究方法・解析手順.md`](research/研究方法・解析手順.md)：採用する解析手順
+- [`research/数値実験・評価計画.md`](research/数値実験・評価計画.md)：検証と評価の計画
+- `research/研究ノート/`：時系列の判断記録。現在の仕様ではない
+
+## 現在の主な検証文書
+
+### PF係数
+
+- [`pf_delta_validation.md`](pf_delta_validation.md)
+- [`pf_c_system_size_validation.md`](pf_c_system_size_validation.md)
+
+### finite RTE
+
+- [`rte_conventions.md`](rte_conventions.md)
+- [`rte_truncation_budget.md`](rte_truncation_budget.md)
+- [`finite_rte_signal_validation.md`](finite_rte_signal_validation.md)
+- [`research/finite_rte_phase_amplitude_contract.md`](research/finite_rte_phase_amplitude_contract.md)：FR-0の補正後演算子・平均演算子、位相・信号半径境界、比較契約
+- [`research/finite_rte_phase_amplitude_prior_art.md`](research/finite_rte_phase_amplitude_prior_art.md)：finite RTEと近接解析のscoped先行研究監査
+- [`research/finite_rte_phase_amplitude_fr1_preregistration.md`](research/finite_rte_phase_amplitude_fr1_preregistration.md)：FR-1の非可換toy入力・gate・停止規則と実行後status
+- [`finite_rte_phase_amplitude_validation.md`](finite_rte_phase_amplitude_validation.md)：G0/G1/G3/G4通過、G2不通過、mechanism-only停止結果
+- [`fr_revision_fr1a_posthoc.md`](fr_revision_fr1a_posthoc.md)：既存FR-1を正scalarと強いbaselineで再解析し、scalar-only説明となった事後監査
+- [`fr_revision_nonuniform.md`](fr_revision_nonuniform.md)：非一様4×4でFR固有の境界改善を確認したが、固定予算の選択差がなくmechanism-onlyで停止したFR-R1b結果
+- [`research/fr_revision_scalar_structure_contract.md`](research/fr_revision_scalar_structure_contract.md)：FR-R0の正scalar分離、情報層、強いbaseline、FR-R1事前登録要件
+- [`research/fr_revision_fr1a_posthoc_plan.md`](research/fr_revision_fr1a_posthoc_plan.md)：既存FR-1を再分類しない正scalar事後解析計画
+- [`research/fr_revision_nonuniform_preregistration.md`](research/fr_revision_nonuniform_preregistration.md)：非一様4×4の固定grid、状態、比較、GO/STOP
+- [`research/fr_research_claim_and_manuscript.md`](research/fr_research_claim_and_manuscript.md)：平均振幅演算子、J0/J1/J2、導出・反例・未解決範囲・数値provenanceを固定した研究成果の現行正本
+- [`research/pr2_pr3_minimal_pilot_preregistration.md`](research/pr2_pr3_minimal_pilot_preregistration.md)：PR-2/PR-3各一条件、判定規則、強制STOPの事前登録
+- [`pr2_pr3_minimal_pilot_validation.md`](pr2_pr3_minimal_pilot_validation.md)：PR-2 GO、PR-3 STOP、PR-2主題候補選択のlocal pilot結果
+- [`research/pr2_primary_research_contract.md`](research/pr2_primary_research_contract.md)：PR-2を新手法ではなく限定的な資源研究として固定し、generation/weight-ranked prefix identity gate、rank-6 anchor、独立条件、完成・停止規則を定める
+- [`research/pr2_s1_s3_preregistration.md`](research/pr2_s1_s3_preregistration.md)：PR-2 S1--S3の共通estimand、strong baseline、finite-RTE候補、signal精度、shot/compiled-cost、stage stop、実装blockerを結果前に固定した外部レビュー用v1
+- [`research/pr2_s0_s1_external_review_d3e1723.md`](research/pr2_s0_s1_external_review_d3e1723.md)：fixed commit `d3e1723`に対するS0/S1前レビューと`AMEND_BEFORE_S0`判定
+- [`research/pr2_s1_s3_preregistration_amendment_v2.md`](research/pr2_s1_s3_preregistration_amendment_v2.md)：レビューを反映した結果前v2。S0実装だけを許可し、S1数値実行を未許可とする
+- [`research/pr2_s0_s1_execution_amendment_v3.md`](research/pr2_s0_s1_execution_amendment_v3.md)：S0実行と、S0通過時だけのS1 correctness実行を許可し、S1 summary後のmandatory STOPを固定
+- [`research/pr2_codex_validation_policy_d3e1723.md`](research/pr2_codex_validation_policy_d3e1723.md)：Codexが実装・実行してよいS0/S1範囲とS2/S3禁止を定める方針
+- [`research/pr2_s0_reproduction_stop_c644925.md`](research/pr2_s0_reproduction_stop_c644925.md)：development hash不一致による`STOP_INPUT_REPRODUCTION_MISMATCH`、S1未実行、証拠hashと再試行条件
+- [`research/pr2_s0_external_review_request_c644925.md`](research/pr2_s0_external_review_request_c644925.md)：S0 STOP後にGPTへ渡すfile packet、レビュー問い、禁止する事後緩和、回答形式
+- [`../fr_theorem_prior_art_review_71169d8.md`](../fr_theorem_prior_art_review_71169d8.md)：T1--T4の定理・先行研究レビューと最終分類の補助資料
+- [`df_rte_tail_extraction.md`](df_rte_tail_extraction.md)
+- [`df_rte_event_circuit_api.md`](df_rte_event_circuit_api.md)
+
+### コンパイル後回路コスト
+
+- [`random_circuit_cost_validation.md`](random_circuit_cost_validation.md)
+- [`rte_boundary_cost_validation.md`](rte_boundary_cost_validation.md)
+- [`rte_boundary_pair_validation.md`](rte_boundary_pair_validation.md)
+- [`hierarchical_cost_validation.md`](hierarchical_cost_validation.md)
+- [`rte_connected_cluster_cost_validation.md`](rte_connected_cluster_cost_validation.md)
+- [`rte_compiled_cost_validation_summary.md`](rte_compiled_cost_validation_summary.md)
+- [`rte_compiled_event_cost.md`](rte_compiled_event_cost.md)
+- [`df_partial_s2_compiled_cost.md`](df_partial_s2_compiled_cost.md)
+- [`df_partial_s2_repeated_compiled_cost.md`](df_partial_s2_repeated_compiled_cost.md)
+
+### RPEへの接続
+
+- [`rpe_resource_accounting.md`](rpe_resource_accounting.md)
+- [`rpe_hadamard_interrogation.md`](rpe_hadamard_interrogation.md)
+- [`rpe_round_cost_connection_validation.md`](rpe_round_cost_connection_validation.md)
+- [`rpe_hadamard_failure_validation.md`](rpe_hadamard_failure_validation.md)
+- [`rpe_hadamard_proxy_resource_validation.md`](rpe_hadamard_proxy_resource_validation.md)
+- [`rpe_allocation_sensitivity_validation.md`](rpe_allocation_sensitivity_validation.md)
+- [`rpe_four_round_accounting_validation.md`](rpe_four_round_accounting_validation.md)
+- [`rpe_four_round_phase_validation.md`](rpe_four_round_phase_validation.md)
+- [`rpe_target_round_horizon_validation.md`](rpe_target_round_horizon_validation.md)
+- [`rpe_delta_round_schedule_validation.md`](rpe_delta_round_schedule_validation.md)
+- [`rpe_delta_compiled_cost_validation.md`](rpe_delta_compiled_cost_validation.md)
+- [`research_direction_prevalidation.md`](research_direction_prevalidation.md)
+- [`research_direction_ablation.md`](research_direction_ablation.md)
+- [`research_direction_pf_sensitivity.md`](research_direction_pf_sensitivity.md)
+- [`research_direction_gate_s1.md`](research_direction_gate_s1.md)
+- [`research_direction_structure_pilot.md`](research_direction_structure_pilot.md)
+- [`research_direction_sequence_policy.md`](research_direction_sequence_policy.md)
+- [`research_direction_full_scope.md`](research_direction_full_scope.md)
+- [`research_direction_full_scope_extension.md`](research_direction_full_scope_extension.md)
+- [`research_direction_decision_cost.md`](research_direction_decision_cost.md)
+- [`research_direction_late_round_proxy.md`](research_direction_late_round_proxy.md)
+- [`research_direction_compiler_transfer.md`](research_direction_compiler_transfer.md)
+- [`research_direction_uncertainty_break_even.md`](research_direction_uncertainty_break_even.md)
+- [`research_direction_wp11_synthesis.md`](research_direction_wp11_synthesis.md)
+- [`research_direction_full_opt2.md`](research_direction_full_opt2.md)：WP11選択M06-Fの事前固定条件、51/51完全性監査、direct-RZ測定、coherent opt2再最適化、A0 proxy-lineage再照合
+- [`research_direction_signal_weight_pilot.md`](research_direction_signal_weight_pilot.md)：P-Bのenergy bias・target weight・q別signal再解析とテーマ選定判断
+- [`research_direction_geometry_energy_difference_pilot.md`](research_direction_geometry_energy_difference_pilot.md)：P-Cのgeometry依存signed PF error、未使用geometry/delta、差分bias予測
+- [`research/pc_geometry_tracking_breakdown_preregistration.md`](research/pc_geometry_tracking_breakdown_preregistration.md)：P-Cの8 geometry、追跡規則、blind region、7 gate、停止規則を計算前に固定
+- [`research_direction_geometry_tracking_breakdown.md`](research_direction_geometry_tracking_breakdown.md)：追跡prefix不変、stretch予測破れ、固定gateによるcurrent H4 P-C停止
+- [`research/pd_energy_tail_pareto_preregistration.md`](research/pd_energy_tail_pareto_preregistration.md)：P-Dの固定5公式、development/blind、7 gate、停止規則
+- [`research_direction_energy_tail_pareto.md`](research_direction_energy_tail_pareto.md)：energy-onlyとtail-aware選択のblind逆転、P-D条件付き候補、次のsigned-time/internal-H_D gate
+- [`research/pd_realization_go_no_go_preregistration.md`](research/pd_realization_go_no_go_preregistration.md)：P-D現実化の負時間finite-RTE、fragment内部`H_D`誤差、fresh `L_D=5`、Go/No-Go停止規則
+- [`research_direction_pd_realization.md`](research_direction_pd_realization.md)：D1--D3全通過、P-D正式候補化と研究再設計停止点
+- [`research/pd_primary_research_contract.md`](research/pd_primary_research_contract.md)：P-D S0の主RQ、比較契約、Case A--D、強制停止
+- [`research/pd_prior_art_and_baselines.md`](research/pd_prior_art_and_baselines.md)：既知absolute-tail-time modelと新規性候補の境界
+- [`research/pd_s1_fair_comparison_preregistration.md`](research/pd_s1_fair_comparison_preregistration.md)：固定時間・位相予算、B0/B1a/B1b/B2/B4、K4・境界規則
+- [`research_direction_pd_fair_comparison.md`](research_direction_pd_fair_comparison.md)：B1b/B2/B4一致、Case C/D不成立、B1a境界未解消のS1停止結果
+- [`research/pd_s1_posthoc_reanalysis_plan.md`](research/pd_s1_posthoc_reanalysis_plan.md)：固定S1 artifactだけを使う事後再解析の入力、5%近傍、解釈規則、停止条件
+- [`research_direction_pd_s1_posthoc.md`](research_direction_pd_s1_posthoc.md)：一次Case Bを保存した主baseline再解釈、B1a診断、nested/native内訳
+- [`research/r3_prior_art_and_minimal_contract.md`](research/r3_prior_art_and_minimal_contract.md)：広いR3の重複、R3-S0不通過、実行しない条件付き最小検証契約
+- [`../pd_s1_review_5c331f0.md`](../pd_s1_review_5c331f0.md)：S1 snapshotに対する外部レビュー。正式方針ではなく事後再解析の入力資料
+- [`research_direction_joint_synthesis_pilot.md`](research_direction_joint_synthesis_pilot.md)：P-Aのinterval-aware DF回路列合成、強いbaseline、未使用列holdout
+- [`research_direction_theme_selection.md`](research_direction_theme_selection.md)：P-B/P-C/P-A比較と後続停止点を含む選定履歴。現行判断はA/B/Cに確認済み主題なし
+- [`research/pa_joint_synthesis_prior_art_audit.md`](research/pa_joint_synthesis_prior_art_audit.md)：P-A v1のscoped prior-art audit、限定novelty statement、v2境界
+- [`research/pa_joint_synthesis_blind_validation_preregistration.md`](research/pa_joint_synthesis_blind_validation_preregistration.md)：H5 physical transferとH4 opt2 compiler transferの事前登録、compile前task manifest、固定gate
+- [`research_direction_joint_synthesis_blind_validation.md`](research_direction_joint_synthesis_blind_validation.md)：P-A v1のH5 physical transferとH4 opt2 compiler transferの完了結果、固定gate、判断、scope
+- [`research/pa_joint_synthesis_v1_formalization.md`](research/pa_joint_synthesis_v1_formalization.md)：P-A v1の有限候補、DP最適性・計算量・同値性条件、一区間退化と次の機構識別
+- [`research/pa_joint_synthesis_mechanism_validation_preregistration.md`](research/pa_joint_synthesis_mechanism_validation_preregistration.md)：明示的一区間baseline、forced support変化、order 2 stream、固定gate・停止規則の事前登録
+- [`research_direction_joint_synthesis_mechanism_validation.md`](research_direction_joint_synthesis_mechanism_validation.md)：P-A非退化mechanism検証の0 split・0 plan差・0 RZ改善とP-C復帰判断
+
+## 実行・運用
+
+- [`server_parallel_validation_execution.md`](server_parallel_validation_execution.md)：共有CPU/GPUサーバー向けのbounded実行、checkpoint、resume、dry-run
+- [`examples/parallel_validation_h4_q1_manifest.json`](examples/parallel_validation_h4_q1_manifest.json)：H4 q=1のdry-run用manifest例
+
+## 発表資料と参考文献
+
+- [`presentations/README.md`](presentations/README.md)：発表資料・構成案の位置づけ
+- [`references/README.md`](references/README.md)：同梱した論文PDFの位置づけ
+- [`rte_source_versions.md`](rte_source_versions.md)：RTE一次資料の版管理
+
+## 状態の読み方
+
+個別文書に数値があっても、それだけで現在利用可能とは判断しない。
+再現可能性、失効、成果物の有無は[`../VALIDATION_STATUS.md`](../VALIDATION_STATUS.md)と
+[`../artifacts/validation_manifest.json`](../artifacts/validation_manifest.json)で確認する。
+
+## 3つの研究方針の受領資料（2026-10-12配置）
+
+- [研究レビュー](reviews/README.md)：資源評価、PR内部改良、表現・構成探索ごとの判断記録。
+- [研究計画・設計案](research/planning/README.md)：同じ3方針の提案・再設計・数理設計。
+- [今回の整理記録](maintenance/2026-10-12_workspace_root_markdown_cleanup.md)：移動元・移動先・内容保全。
+
+各branchの固定契約・証拠と、ここに保管した受領資料を区別して読む。
