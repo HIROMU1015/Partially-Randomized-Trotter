@@ -44,3 +44,8 @@ Stage Bはm5の7候補・23 trajectoryを8 worker、S2/Y4の12候補・28 trajec
 完了済み36件と元のpartial/cacheを保全し、未完了15件だけを新しいprivate復旧先で処理する。科学runtime SOURCE、入力、固定N、cohort、n、candidate/indexと元seed/event列を維持し、新しい標本を追加しない。元のHOLDがある場合は復旧入口が拒否する。
 [復旧入口](../../../scripts/resume_h8_long_time_execution.py)は既存Context・price_job・paired会計を使い、保存compiled QPYも再利用する。チャットから独立した自分専用のtransient user serviceで起動する。共有サービス・OS設定は変更しない。
 既存テストと人工復旧fixtureは計25件PASS。代表回路の検証は完了するまでPASSにしない。前回の18:30–20:30完了見込みは撤回し、復旧後も数時間を要する可能性がある。
+
+18:30 JSTに独立user serviceで復旧を開始した。PFの未完了9件は稼働中。
+PRの6件では、`to_dict()`中のtupleが保存JSONからlistとして復元されるため、Python object同士の直接比較が拒否された。元seedの再構成診断でcanonical JSONは完全一致した。科学的なevent差ではなくメタデータ表現の技術的不一致である。
+最初の復旧SOURCEと稼働中のPF workerを変更・停止せず、[追加復旧入口](../../../scripts/repair_h8_long_time_recovery.py)でcanonical JSON一致を要求してPR6件だけを処理する。seed、値、event順序の差は引き続き拒否する。元の技術的HOLDは保持し、異なるHOLD理由は受け入れない。
+型差の回帰例を含む人工テストは計27件PASS。新規候補・標本の追加はなく、Stage Cは引き続き未実行。
