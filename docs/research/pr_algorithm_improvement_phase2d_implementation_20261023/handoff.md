@@ -10,7 +10,7 @@
 6. fixture／catalog、Pauli maps、V/Gamma matrix、状態、lambda/B、各L、input SHA、科学case IDs、env lockを生成していない。manifestの未binding値はnull。
 7. 新規科学計算、event／trajectory生成、sampling、Operator／mean／signal評価、build/transpile/compile、native synthesis、新証明、科学grant／ledger／marker発行は0件。
 8. 段階Bではユーザーの別明示承認後に、静的候補の採用、限定input binding、L/coverage、価格provider、env/precision資格、exact call/outputを固定する。recipe生成やtest実行を含める場合は科学callとして明示し、P0契約を無断拡張しない。
-9. branchは `research/pr-algorithm-improvement-phase2d-implementation-20261023`。固定公開commit／tree／file digestは[PUBLICATION.json](PUBLICATION.json)、入口は[専用branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/research/pr-algorithm-improvement-phase2d-implementation-20261023/docs/research/pr_algorithm_improvement_phase2d_implementation_20261023)。receiptの検証済みpayload commitでSOURCEを取得できる。
+9. branchは `research/pr-algorithm-improvement-phase2d-implementation-20261023`。固定公開commit／tree／file digestは[PUBLICATION.json](PUBLICATION.json)、入口は[専用branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/bfaab3831042f64a7112296437c0001e34920209/docs/research/pr_algorithm_improvement_phase2d_implementation_20261023)。receiptの検証済みpayload commitでSOURCEを取得できる。
 10. 起点から新namespace／runner／test／技術記録の追加だけ。既存SOURCE、入力、結果、レビュー、契約、grant／ledger／marker／STOP、原稿、他branch/worktree/jobを保全。非公開原本、認証情報、内部絶対pathを公開しない。
 11. 次の担当はユーザー。IのSOURCEとblockerを確認し、Bの限定処理を承認するか判断する。Codexは承認後だけBへ進み、B後STOP、F1とF2もそれぞれ別承認。**今回の公開確認後mandatory STOP**。
 

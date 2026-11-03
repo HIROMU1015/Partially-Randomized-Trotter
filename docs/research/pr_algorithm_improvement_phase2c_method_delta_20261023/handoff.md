@@ -14,7 +14,7 @@ PO-01～09は未実行のまま継承する。同一H・scalar、有限corrected
 
 今回実施したのは固定資料／一次文献／SOURCEの静的読解、概念設計、文書管理検査と公開。新科学計算・raw再解析・sampling・simulation・回路build/compile・native価格取得・実装・非自明な新証明・grant作業は0件。出典は[SOURCE_EVIDENCE_INDEX.json](SOURCE_EVIDENCE_INDEX.json)、管理検査は[VERIFICATION.json](VERIFICATION.json)。
 
-公開先は `HIROMU1015/Partially-Randomized-Trotter`、branch `research/pr-algorithm-improvement-phase2c-method-delta-20261023`、起点commit `0c94a3d973b0ba0d24b3d277ab8316829739b278`。[公開ディレクトリ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/research/pr-algorithm-improvement-phase2c-method-delta-20261023/docs/research/pr_algorithm_improvement_phase2c_method_delta_20261023)。公開payloadの固定commit・identityは[PUBLICATION.json](PUBLICATION.json)へ記録し、最終receipt commitのHEADは公開後の外部管理記録とチャットで照合する。
+公開先は `HIROMU1015/Partially-Randomized-Trotter`、branch `research/pr-algorithm-improvement-phase2c-method-delta-20261023`、起点commit `0c94a3d973b0ba0d24b3d277ab8316829739b278`。[公開ディレクトリ](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ef2eb7d55ea37bf93e0b85773df20b63811d1f9b/docs/research/pr_algorithm_improvement_phase2c_method_delta_20261023)。公開payloadの固定commit・identityは[PUBLICATION.json](PUBLICATION.json)へ記録し、最終receipt commitのHEADは公開後の外部管理記録とチャットで照合する。
 
 元のPhase 2Cを読取り専用とし、科学SOURCE・保存input・raw・旧研究記録・private review原本・grant・ledger・marker・STOP・論文・他branch/worktree/jobは変更しない。新namespaceへの文書追加のみ。private原本、内部絶対path、認証情報を公開しない。
 

@@ -12,7 +12,7 @@
 8. **未確定**：新prototype/closure、input採用と生成hash、L/coverage、価格provider、interval/ceil資格、env patch/wheels、API truncation_tolerance、finite-bit/bias割当、最終call整数／出力容量。最新private GPT review原本は未取得で、ユーザー指示の採択済み方針を利用した。
 9. **実装・科学実行の必要性**：契約案だけではmixed adapterを検証できない。P0は禁止範囲を守り、実装／import／fixture生成／simulation／sampling／build／compile／非自明証明／新科学grant発行は全て0件。SOURCE/inputを固定するためI（実装のみ）とB（限定input binding）を提案するが、今回未承認。
 10. **次の担当・承認**：ユーザーが[承認境界](STOP_AND_AUTHORIZATION_BOUNDARIES.md)のI/B範囲を判断。Codexは明示承認後だけ最小prototypeとbindingを行い、最終SOURCE/input/call契約を提示してSTOP。その後ユーザーがF1を明示承認、F1結果確認後にF2を別承認する。GPTレビューを自動依頼しない。
-11. **公開**：branch `research/pr-algorithm-improvement-phase2d-preparation-20261023`。固定文書commit／tree／bytes/SHA256/blobのreceiptは[PUBLICATION.json](PUBLICATION.json)。入口は[専用branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/research/pr-algorithm-improvement-phase2d-preparation-20261023/docs/research/pr_algorithm_improvement_phase2d_preparation_20261023)。receiptの検証対象commitを使えば、公開receipt自身を含む最終commitと混同せず追跡できる。
+11. **公開**：branch `research/pr-algorithm-improvement-phase2d-preparation-20261023`。固定文書commit／tree／bytes/SHA256/blobのreceiptは[PUBLICATION.json](PUBLICATION.json)。入口は[専用branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b8d54708f90ccef275eda3757143100b2d0c677e/docs/research/pr_algorithm_improvement_phase2d_preparation_20261023)。receiptの検証対象commitを使えば、公開receipt自身を含む最終commitと混同せず追跡できる。
 12. **mandatory STOP**：P0文書の公開・remote HEAD／変更files／既存file非変更／bytes／SHA256／Git blob／文書リンクの照合後に停止する。この公開はF1/F2、旧C1、RQ-04、性能GO、新規性GO、投稿GOの承認ではない。
 
 管理検査の範囲は[VERIFICATION.md](VERIFICATION.md)。既存SOURCE・input・raw・研究記録・privateレビュー・grant／ledger／marker／STOP・他worktree/job・論文原稿を保全した独立namespaceの追加だけとする。

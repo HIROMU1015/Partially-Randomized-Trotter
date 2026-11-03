@@ -13,7 +13,7 @@
 9. 契約・補助SOURCE・schemaを静的に準備したが、environment未解決のためREADY_FOR_B_EXECUTION_APPROVALではない。静的PASSを科学PASSとしない。
 10. 次の担当はユーザー。専用環境の固定とfinal packetを確認し、B科学実行を別途明示承認するか判断する。Codexは承認後だけ実行する。
 11. B後にL/E/Q、F1 input-only bundle／law／countsを引き渡す。F1の価格・環境・完全case payloadは別途freeze、U_F2はIR bindingまで未定。F1/F2とも別承認。
-12. branch `research/pr-algorithm-improvement-phase2d-binding-preparation-20261023`。commit/tree/bytes/hash/blobは[PUBLICATION.json](PUBLICATION.json)。入口は[専用branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/research/pr-algorithm-improvement-phase2d-binding-preparation-20261023/docs/research/pr_algorithm_improvement_phase2d_binding_preparation_20261023)。固定payload commitで保全SOURCEと契約を確認できる。
+12. branch `research/pr-algorithm-improvement-phase2d-binding-preparation-20261023`。commit/tree/bytes/hash/blobは[PUBLICATION.json](PUBLICATION.json)。入口は[専用branch](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/3de42d3a3efe9ebc74dde8a1d0e1f1bdbadd607c/docs/research/pr_algorithm_improvement_phase2d_binding_preparation_20261023)。固定payload commitで保全SOURCEと契約を確認できる。
 13. 公開照合後mandatory STOP。既存SOURCE、input/raw、レビュー、契約、grant/ledger/marker/STOP、原稿、他branch/worktree/jobを保全する。B/F1/F2/旧C1/RQ-04/新レビューを自動開始しない。
 
 今回実施していないのは、科学module import、fixture／matrix／Pauli map／lambda/B/L／law/input SHA生成、pytest、sampling/event/trajectory、Operator/mean/signal、build/compile、native synthesis、新証明、grant発行である。実行方法を定義したことと実行結果があることを区別する。

@@ -413,7 +413,7 @@ PRの利益が全面的だったという表現は拡張比較には使わない
 - **[R9]** [240件実行終了監査・前半を確認](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/98cdb35cd08469714f20d6cc3b982d9c80908f46/artifacts/resource_applicability/track_a_h4_b0i_map_results/2026-10-14/native_resource_receipt.json)
 - **[R10]** [旧最良決定論対照とPRの18点](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7c4483378047b57f514c47dad98905e3f2a9a756/artifacts/resource_applicability/track_a_h4_geometry_results/2026-10-13/precision_comparison.csv)
 - **[R11]** [元H4 sourceのprepare/shot/resource会計](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d0726e946f89f8c30a08d383fb8ff48b363629ec/src/trottertracks/resource_applicability/h4_geometry/signal.py)
-- **[R12]** [remote branch参照](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/branches/track-a-h4-b0i-manuscript-v04-20261014)
+- **[R12]** [remote branch参照](https://api.github.com/repos/HIROMU1015/Partially-Randomized-Trotter/git/commits/47dc17a83e2fc9216e22b59317969952ef79028a)
 - **[R13]** [240件結果報告・原稿の固定結果入口](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/98cdb35cd08469714f20d6cc3b982d9c80908f46/docs/research/track_a_h4_b0i_map_results_20261014.md)
 - **[P1]** [Günther et al., PRX Quantum 7, 020332 (19 May 2026)](https://journals.aps.org/prxquantum/abstract/10.1103/ynxb-p2xq)
 - **[P2]** [Simon and Love, Physical Review A 114, 032425 (9 September 2026)](https://journals.aps.org/pra/abstract/10.1103/h9gv-ml7w)
