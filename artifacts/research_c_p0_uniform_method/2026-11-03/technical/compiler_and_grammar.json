@@ -1,0 +1,269 @@
+{
+  "scope": "B1 static compiler graph and artificial symbolic definitions;no H4 circuit/input decode",
+  "expanded_stage_graph": {
+    "pre_init": [
+      {
+        "name": "ContainsInstruction"
+      },
+      {
+        "name": "ConditionalController",
+        "nested": [
+          {
+            "name": "Error"
+          }
+        ]
+      }
+    ],
+    "init": [
+      {
+        "name": "InverseCancellation",
+        "parameter_free": true,
+        "gates": [
+          "cx",
+          "ecr",
+          "cz",
+          "cy",
+          "x",
+          "y",
+          "z",
+          "h",
+          "swap",
+          "t",
+          "tdg",
+          "s",
+          "sdg",
+          "sx",
+          "sxdg"
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "name": "UnitarySynthesis"
+      },
+      {
+        "name": "HighLevelSynthesis"
+      },
+      {
+        "name": "BasisTranslator"
+      }
+    ],
+    "pre_optimization": [],
+    "optimization": [
+      {
+        "name": "Depth"
+      },
+      {
+        "name": "FixedPoint"
+      },
+      {
+        "name": "Size"
+      },
+      {
+        "name": "FixedPoint"
+      },
+      {
+        "name": "DoWhileController",
+        "nested": [
+          {
+            "name": "Optimize1qGatesDecomposition",
+            "target_none": true,
+            "decomposers": [
+              "ZSXX"
+            ],
+            "error_map_none": true
+          },
+          {
+            "name": "InverseCancellation",
+            "parameter_free": true,
+            "gates": [
+              "cx",
+              "ecr",
+              "cz",
+              "cy",
+              "x",
+              "y",
+              "z",
+              "h",
+              "swap",
+              "t",
+              "tdg",
+              "s",
+              "sdg",
+              "sx",
+              "sxdg"
+            ]
+          },
+          {
+            "name": "GatesInBasis"
+          },
+          {
+            "name": "ConditionalController",
+            "nested": [
+              {
+                "name": "FlowControllerLinear",
+                "nested": [
+                  {
+                    "name": "UnitarySynthesis"
+                  },
+                  {
+                    "name": "HighLevelSynthesis"
+                  },
+                  {
+                    "name": "BasisTranslator"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Depth"
+          },
+          {
+            "name": "FixedPoint"
+          },
+          {
+            "name": "Size"
+          },
+          {
+            "name": "FixedPoint"
+          }
+        ]
+      }
+    ],
+    "scheduling": [
+      {
+        "name": "ContainsInstruction"
+      },
+      {
+        "name": "ConditionalController",
+        "nested": [
+          {
+            "name": "TimeUnitConversion"
+          }
+        ]
+      }
+    ]
+  },
+  "graph_check": {
+    "status": "PINNED_GRAPH_MATCH_NOT_NUMERIC_CERTIFICATE",
+    "mismatches": [],
+    "all_law_qualified": false
+  },
+  "primitive_definitions": {
+    "scope": "artificial symbolic primitive definitions;not numerical H4",
+    "primitives": {
+      "xx_plus_yy": {
+        "lowered_counts": {
+          "u": 7,
+          "rz": 6,
+          "cx": 2,
+          "sx": 1
+        },
+        "native_counts_upper": {
+          "one_qubit": 42,
+          "cx": 2
+        },
+        "declared_phase": "5.497787143782138"
+      },
+      "crz": {
+        "lowered_counts": {
+          "rz": 2,
+          "cx": 2
+        },
+        "native_counts_upper": {
+          "one_qubit": 2,
+          "cx": 2
+        },
+        "declared_phase": "0.0"
+      },
+      "crzz": {
+        "lowered_counts": {
+          "u": 18,
+          "cx": 14,
+          "rz": 2
+        },
+        "native_counts_upper": {
+          "one_qubit": 92,
+          "cx": 14
+        },
+        "declared_phase": "0.0"
+      },
+      "p": {
+        "lowered_counts": {
+          "u": 1
+        },
+        "native_counts_upper": {
+          "one_qubit": 5,
+          "cx": 0
+        },
+        "declared_phase": "0.0"
+      },
+      "rz": {
+        "lowered_counts": {
+          "rz": 1
+        },
+        "native_counts_upper": {
+          "one_qubit": 1,
+          "cx": 0
+        },
+        "declared_phase": "0"
+      }
+    },
+    "phase_error_enclosed": false,
+    "uniform_error_bound": null
+  },
+  "current_grammar": {
+    "native_gate_upper_counts": {
+      "one_qubit": 100914,
+      "cx": 6608
+    },
+    "primitive_multiplicities": {
+      "rz": 640,
+      "xx_plus_yy": 2016,
+      "crz": 48,
+      "crzz": 168,
+      "p": 10
+    },
+    "rewrite_budget": {
+      "initial_one_qubit": 100914,
+      "initial_cx": 6608,
+      "initial_size": 107522,
+      "max_1q_run_length": 100914,
+      "accepted_1q_rewrites_max": 107522,
+      "accepted_gate_visits_max": 645132,
+      "phase_updates_max": 107522,
+      "successful_output_iterations_max": 1000,
+      "candidate_matrix_products_max": 100914000,
+      "candidate_resyntheses_max": 100914000,
+      "ZSXX_output_gates_max": 5,
+      "assumptions": "post-translation native RZ/SX/X/CX;target=None;no calibrations/control flow;fixed opt1 passes",
+      "proves_all_words_compile_successfully": false,
+      "uniform_error_bound": null
+    },
+    "coverage": "syntactic upper count under fixed standard definitions;not a synthesis-error proof",
+    "H4_arrays_decoded": 0,
+    "H4_circuits_built": 0,
+    "uniform_error_bound": null
+  },
+  "compiler_proof_input_status": {
+    "status": "UNRESOLVED",
+    "missing": [
+      "uniform_node_matrix_evaluation_and_IEEE_model",
+      "zsxx",
+      "translation",
+      "phase"
+    ],
+    "whole_law_bound": null,
+    "actual_H4_bound": null,
+    "whole_P0_bound_exact": null
+  },
+  "reused_domain": "Existing ZSXX RZ/SX/X determinant4 cosets and conditional near-unitary tube;Euler poles/cuts retained.",
+  "source_default_iteration_guard": 1000,
+  "guard_proves_all_words_succeed": false,
+  "phase": "MPFR160 declared accumulator;internal f64 Euler/definition phases and final cast/remainder remain separate.",
+  "reuse": "c_pr_aware_df_c2a.monotone_budget/symbolic_templates/compiler_coverage; c_pr_aware_df_zsxx_uniform.uniform_whole_bound",
+  "scientific_calls": 0,
+  "actual_H4_uniform_bound": null,
+  "rigorous_bound": null
+}

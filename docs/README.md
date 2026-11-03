@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C・B1：[現r32のWhole-P0構造上限・一様誤差の不足・B2 interface](research/research_c_p0_uniform_method_readiness_20261103.md)。252人工/回帰PASS。P0_UNIFORM_NOT_ESTABLISHED、未承認設計は非実行、Stage C/新実H4科学0。
+
 研究C：[現PR/r32のIID-grid reference bridge・Stage A実行](research/research_c_iid_grid_stage_a_execution_20261103.md)。38/38 COMPLETE、13roundの数値観測と正確なcategorical TV。Native一様bound・reference不確かさ・実PCG64・actual CAは未資格。
 
 研究C：[独立53-bit gridモデル・現候補reference bridge・Stage A〜C](research/research_c_iid_grid_all_law_readiness_20261103.md)。未承認Stage Aのみ38-call実行可能、182人工/回帰PASS。Bのuniform P0とCの必要boundは未取得。
