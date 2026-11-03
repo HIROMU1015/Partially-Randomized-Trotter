@@ -119,3 +119,7 @@ DF部分ランダム化研究と混同しない。
 
 [収録ファイル・保存版と確認範囲](../../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## H8長時間adapterからの再利用（2026-11-03）
+
+既存DF/RTE APIと`h46_m5_plan.py`を[scripts側adapter](../../scripts/h8_long_time_adapter.py)から再利用する。ライブラリ本体の科学実装は変更しない。[人工検証・未検証範囲](../../docs/research/h8_long_time_adapter_preparation_20261103/SOURCE_REUSE_AND_VALIDATION.md)。

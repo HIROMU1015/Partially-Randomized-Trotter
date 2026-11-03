@@ -1,0 +1,50 @@
+{
+  "status": "PROPOSAL_ONLY_EXECUTION_HOLD",
+  "system": "linear H8",
+  "distance_angstrom": 1.0,
+  "basis": "STO-3G",
+  "DF": {"policy": "saved tol-only1e-8", "rank": 28, "regenerate": false},
+  "T": 1.6,
+  "epsilon": 0.0005,
+  "state_preparation_cost": 0,
+  "PR": {
+    "prefixes": [7, 8],
+    "2nd": {"q": [8, 16, 32], "R_outer": [4, 32]},
+    "4th(m5_best)": {"q": [1, 2, 4], "R_outer": [16, 32]},
+    "K_first": 4,
+    "K_conditional_sensitivity": 2,
+    "allocation": "ABS_TIME_PER_OUTER",
+    "polynomial_highest_degree": "K+1",
+    "matched_q_diagnostic": "one eligible selected S2 q; one explicitly scoped MATCHED_Q_ONLY candidate, R32/K4; main m5 domain unchanged"
+  },
+  "PF": {
+    "FULL": [28], "B0": [15, 16], "B0I": [15, 16],
+    "formulas": ["2nd", "4th", "4th(m5_best)"],
+    "q": [1, 2, 4, 8, 16, 32]
+  },
+  "compiler": {
+    "qiskit": "1.3.0", "basis_gates": ["rz", "sx", "x", "cx"],
+    "optimization_level": 1, "seed_transpiler": 17,
+    "backend": null, "coupling_map": null, "target": null
+  },
+  "control": "symmetric_directional; actual saved-gate adjoints",
+  "cost": "measured full Hadamard wrapper RZ; G=N_cos*C_cos+N_sin*C_sin",
+  "Stage_A": {
+    "scope": "explicit candidate list selected from this domain; no automatic Cartesian execution",
+    "reference": "new full-H sparse T=1.6 action; direct vs split-time check",
+    "sampling": false, "circuit_build": false, "compile": false
+  },
+  "Stage_B": {
+    "scope": "eligible selected candidates only; both PR formulas and strong PF",
+    "exploration_n_proposal": 9, "n_fixed": false,
+    "selection_requires_stage_A": true
+  },
+  "Stage_C": {
+    "cohort": "CONFIRMATION", "n": null, "precision_target": null,
+    "design_variable": "variance of paired N_cos*C_cos+N_sin*C_sin with Stage A N fixed",
+    "pool_exploration": false, "automatic_top_up": false,
+    "candidate_switch_after_confirmation": false
+  },
+  "workers": null,
+  "mandatory_STOP_after_preparation": true
+}

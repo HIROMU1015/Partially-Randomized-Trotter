@@ -141,3 +141,7 @@ artifacts/<validation_name>/
 ## ローカルSOURCE入口の収録（2026-11-03）
 
 [AX-2A metadata-only writer](resource_applicability/prepare_track_a_ax2a.py)と[AX-2B metadata-only writer](resource_applicability/prepare_track_a_ax2b_preflight.py)の原版を追加した。[原本対応と未検証範囲](../docs/research/main_local_results_collection_20261103.md)を参照する。既存moduleの存在と構文だけを確認し、runner・研究test・科学計算は実行していない。
+
+## H8長時間adapter（2026-11-03）
+
+`h8_long_time_adapter.py` はmetadata-only inspectをdefaultとし、lazy backend `h8_long_time_runtime.py` に接続する。[SOURCE・人工検証・実行HOLD](../docs/research/h8_long_time_adapter_preparation_20261103/SOURCE_REUSE_AND_VALIDATION.md)を参照。実H8計算は別途許可が必要。

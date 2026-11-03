@@ -168,3 +168,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## ローカルに残っていた文書・SOURCEの収録（2026-11-03）
 
 [原稿・受領レビュー・研究ノート・SOURCEと保存別版の対応](docs/research/main_local_results_collection_20261103.md)から辿る。元の科学SOURCE・status・STOPは維持する。
+
+## H8長時間・高次PR adapter準備（2026-11-03）
+
+[実装・人工検証と科学実行HOLD](docs/research/h8_long_time_adapter_preparation_20261103/IMPLEMENTATION_REPORT.md)。保存H8/sparse作用とH46 signed/nativeを接続。新科学結果はない。

@@ -98,3 +98,7 @@
 ## ローカルの未コミット資料からの追加収録（2026-11-03）
 
 [原稿・レビュー・研究ノートと保存版の対応](research/main_local_results_collection_20261103.md)。原文の科学的採用や新規実行の認定ではない。
+
+## H8長時間・高次PRの実装準備（2026-11-03）
+
+[実装報告](research/h8_long_time_adapter_preparation_20261103/IMPLEMENTATION_REPORT.md)、[科学実行案](research/h8_long_time_adapter_preparation_20261103/SCIENTIFIC_EXECUTION_PLAN.md)、[次段階判断](research/h8_long_time_adapter_preparation_20261103/NEXT_STAGE_DECISION.md)。人工/mockのみ。Stage A/B/Cは未実行・HOLD。
