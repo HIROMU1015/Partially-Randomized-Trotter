@@ -1,5 +1,7 @@
 # scripts 索引
 
+研究C：`prepare_research_c_b1_b2_scope_integration.py` はpassiveのみ。[B2公開待ち・未承認比較設計・STOP](../docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。新科学entryは非実行、Stage A/B1/B2の再実行やStage Cの自動開始なし。
+
 研究C・B1：`prepare_research_c_p0_uniform_method.py` はpassiveのみ。[Whole-P0一様法・未準備条件・calls](../docs/research/research_c_p0_uniform_method_readiness_20261103.md)。実H4科学entryは未成立のため拒否、Stage A再実行・Stage Cへの進行なし。
 
 研究C：`run_research_c_iid_grid_bridge.py` の固定Stage Aは[38-call実行済み・結果と資格](../docs/research/research_c_iid_grid_stage_a_execution_20261103.md)。Fresh run01消費済み、retry/resume0。再起動せずmandatory STOP、Stage B/C未実行。
