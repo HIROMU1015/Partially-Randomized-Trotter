@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究Cの保存PR native32対XDF8/CDF8：[直接統計比較の技術準備](docs/research/research_c_pr_xdf_cdf_statistical_comparison_preparation_20261103.md)。事後的・探索的一標本t、未承認7-call、人工66 PASS、passive preflight PASS。実H4の新CI/p値0、mandatory STOP。
+
 ## 研究C：PR対weighted L1・共通r32の条件付き資源比較（2026-11-03）
 
 [1,231-call結果・全26round・各native32・同J/U強D・資格の限界](docs/research/research_c_near_practical_r32_downstream_execution_20261103.md)。固定H4/1Å/STO-3G・number CDF8/sector36、元順LD2・S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground/状態準備除外、P0/fenced serial。PR/ENTRY総RZ点比.49418、名目Welch95%モデルでPR低費用。全law/actual CAは未資格、旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
