@@ -2,7 +2,7 @@
 
 ## 研究C：比較II・共通r32下流評価（2026-11-03）
 
-[最小接続・人工79 PASS・1,231-call固定条件](research/research_c_near_practical_r32_downstream_preparation_20261103.md)。`c_near_practical_r32.py` / `run_research_c_near_practical_r32.py`。PR/ENTRYの保存endpoint、各native32、各同J/U強Dを接続。既定runnerはpassive preflight。
+[最小接続・人工80 PASS・1,231-call固定条件](research/research_c_near_practical_r32_downstream_preparation_20261103.md)。`c_near_practical_r32.py` / `run_research_c_near_practical_r32.py`。PR/ENTRYの保存endpoint、各native32、各同J/U強Dを接続。既定runnerはpassive preflight。
 
 ## 研究C：近接目的比較IIの実行結果（2026-11-03）
 

@@ -31,7 +31,7 @@ def fixture(root,monkeypatch):
         df['exact_tail_lambda_Ha']=sum(abs(float(x.coefficient)) for x in model.plan.atoms)
         m.io.save(root/(name+'_df.json'),df)
         endpoints[name]=dict(candidate=name+'.npz',reference=name+'_ref.npz',physical=name+'_df.json')
-        arms[name]=dict(endpoint_sha256=digest,physical=df,endpoint_eligible=True,trajectory=dict(accepted_U_updates=16),status='MAXIMUM_ACCEPTED_UPDATES',candidate_identity=dict(source_manifest_sha256='SOURCE'))
+        arms[name]=dict(endpoint_sha256=digest,physical=dict(df,candidate_path=name+'.npz'),endpoint_eligible=True,trajectory=dict(accepted_U_updates=16),status='MAXIMUM_ACCEPTED_UPDATES',candidate_identity=dict(source_manifest_sha256='SOURCE'))
     monkeypatch.setattr(m,'CANDIDATES',digests);monkeypatch.setattr(m,'INPUT',m.io.sha(root/'input.npz'))
     origin={k:'origin_'+k+'.json' for k in ('result','STOP','contract','SOURCE')}
     m.io.save(root/origin['SOURCE'],dict(synthetic=True));source_digest=m.io.sha(root/origin['SOURCE'])
@@ -126,6 +126,15 @@ def test_budget_seed_identity_and_passive_import():
     code="import sys;sys.path.insert(0,'src');from trottertracks import c_near_practical_r32;assert not any(x in sys.modules for x in ('numpy','scipy','qiskit','ffsim'))"
     subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,check=True)
     with pytest.raises(PermissionError):m.run(Path('.'),Path('absent.json'))
+
+
+def test_saved_summary_locator_is_metadata_only_all_DF_fields_still_match(tmp_path,monkeypatch):
+    c=fixture(tmp_path,monkeypatch)
+    assert m.evidence(tmp_path,c)['physical']['PR']['budget_PASS']
+    p=tmp_path/c['origin_records']['result'];v=m.io.read(p)
+    v['arms']['PR']['physical']['sector_error']=.002
+    p.write_text(json.dumps(v))
+    with pytest.raises(ValueError,match='ENDPOINT_PROVENANCE:PR'):m.evidence(tmp_path,c)
 
 
 def samples(offset):

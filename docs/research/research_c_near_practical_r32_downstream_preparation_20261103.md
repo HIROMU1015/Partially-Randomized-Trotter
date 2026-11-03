@@ -16,7 +16,7 @@
 
 新しい `c_near_practical_r32.py` はendpointを束縛するadapterである。保存DF norm+guardは同一endpoint/J/U/評価規約を確認して再利用し、各候補のground・law・PF/RTE・shots・native価格・強Dは新しく評価する。元physical Hとsector basisのみ共有し、物理groundを一度だけ計算する。PR/Dは同じ候補の新しいeigenpairを共有する。旧005/064のground・誤差・shots・価格は入力にしない。
 
-既存helperの変更はopt-in candidate label/identity、sampling引数、同じ分布診断の関数抽出に限る。旧runnerの既定条件・617-call定義は保つ。強Dの候補ラベルをshellループ変数から独立させた。ffsim・optimizer・共有venvは変更しない。
+既存helperの変更はopt-in candidate label/identity、sampling引数、同じ分布診断の関数抽出に限る。旧runnerの既定条件・617-call定義は保つ。強Dの候補ラベルをshellループ変数から独立させた。ffsim・optimizer・共有venvは変更しない。Passive preflightで、旧summaryがqualification JSON保存後にcandidate_pathだけを付加する形式を確認した。locatorを除く全DF項目の厳密一致とendpoint byte hashを検査し、数値項目の差は引き続きFAILにする。
 
 2群とも価格が確率変数なので、固定D用の一標本区間を主比較へ流用しない。新しい `c_near_r32_statistics.py` は既存affine会計と校正のwrapperで、2群区間自体はpinned SciPy `ttest_ind(equal_var=False).confidence_interval(.95)` を使用する。PF、shots、native builder、統計分布関数を再実装しない。
 
@@ -66,7 +66,7 @@ Fresh outputは `artifacts/research_c_near_practical_r32/2026-11-03/run01`。第
 
 ## 人工検証と資源
 
-[人工・回帰log](../../artifacts/research_c_near_practical_r32/2026-11-03/technical/artificial_tests.txt)：79 PASS。発明したJ/U/Hamiltonianによるend-to-end（成功、片側RPE不適格、alias未資格、correctness FAIL）、SOURCE/input/fresh fault、call上限、64 seed、r32 native plumbing、会計、Welch区間、ゼロ分散、既存native/retuning/statisticsの既定動作を確認した。実H4追加decode/演算を人工テストに含めない。人工PASSは科学的性能の証拠ではない。
+[人工・回帰log](../../artifacts/research_c_near_practical_r32/2026-11-03/technical/artificial_tests.txt)：80 PASS。発明したJ/U/Hamiltonianによるend-to-end（成功、片側RPE不適格、alias未資格、correctness FAIL）、SOURCE/input/fresh fault、call上限、64 seed、r32 native plumbing、会計、Welch区間、ゼロ分散、既存native/retuning/statisticsの既定動作を確認した。実H4追加decode/演算を人工テストに含めない。人工PASSは科学的性能の証拠ではない。
 
 Dominant workloadはfull512 raw/compiled/actual-adjoint decode×64 trajectory。旧1候補617-callは約970秒/peak2.4GiBだったが、今回の時間や速度比を保証しない。利用可能CPU/RAM/pressureを実行直前に観測し、既存resource_planを使う。PR/ENTRYの13roundは並列。Qiskitの一時global equivalence/adjoint処理のためcohort同士は順次、各32trajectoryは内部並列、build/compile/adjoint作成は既存mutex、Dの独立4decodeも並列。プロセス内BLAS1でoversubscriptionを避ける。CPU/RAM/worker/wallの追加上限は設けない。task-local cache/tmpだけを使用し、共有環境・他job・旧SOURCE/raw/STOPを変更しない。
 

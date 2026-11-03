@@ -81,7 +81,10 @@ def evidence(root,c):
     physical={}
     for arm,digest in CANDIDATES.items():
         a=result['arms'][arm];df=io.read(root/c['endpoints'][arm]['physical'])
-        if (a['endpoint_sha256']!=digest or a['physical']!=df or not a['endpoint_eligible']
+        # Stage O adds its candidate locator after saving the qualification JSON.
+        # Compare every qualification field; endpoint bytes are separately pinned.
+        summary_df={k:v for k,v in a['physical'].items() if k!='candidate_path'}
+        if (a['endpoint_sha256']!=digest or summary_df!=df or not a['endpoint_eligible']
             or a['trajectory']['accepted_U_updates']!=16 or a['status']!='MAXIMUM_ACCEPTED_UPDATES'
             or a['candidate_identity']['source_manifest_sha256']!=contract['source_manifest_sha256']):
             raise ValueError('ENDPOINT_PROVENANCE:'+arm)
