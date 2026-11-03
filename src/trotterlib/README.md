@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：fresh IID-grid期待bias・技術設計（2026-11-04）
+
+[期待bias校正の技術準備](../../docs/research/research_c_iid_grid_expected_bias_readiness_20261104.md)。`c_iid_grid_expected_bias.py` / `prepare_research_c_iid_grid_expected_bias.py`。Kernel/round校正、両norm反復、per-word enclosure境界、同時confidenceと既存RPE算術を別期待値qualificationへ接続。人工検証のみ、新H4科学0。方法・N・δ・数値資格は未採択、非実行契約/call上限null、mandatory STOP。
+
 ## 研究C：固定4word有限pilot・86-call完了（2026-11-04）
 
 [全4wordのfull512/CAR/P0/actual inverse/X-Y・費用観測・未資格事項](../../docs/research/research_c_fixed_word_pilot_execution_20261104.md)。保存H4/1Å/STO-3G・number CDF8/元順LD2・partial S2/s1/r32/K0/h=.1の1step。86/86 COMPLETE・FAIL/retry/resume0、4word PASS。有限binary64観測であり全law bound・categorical unitary・Stage C・actual CAは未資格。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。

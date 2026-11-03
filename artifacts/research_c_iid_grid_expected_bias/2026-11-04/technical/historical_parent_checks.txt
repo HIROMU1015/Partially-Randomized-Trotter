@@ -1,0 +1,312 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+__________________ test_passive_current_contract_drift[none] ___________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7e5538f61990>
+fault = 'none'
+
+    @pytest.mark.parametrize('fault',['none','model','source','input','fresh','retry','resume'])
+    def test_passive_current_contract_drift(monkeypatch,fault):
+        read,sha=m.io.read,m.io.sha;cp=ROOT/m.CONTRACT
+        def changed(path):
+            d=deepcopy(read(path))
+            if Path(path)==cp:
+                if fault=='model':d['model']['independent_coherent_occurrences']=False
+                if fault in ('retry','resume'):d[fault]=1
+            return d
+        monkeypatch.setattr(m.io,'read',changed)
+        bad=ROOT/('src/trottertracks/c_iid_grid_bridge.py' if fault=='source' else m.previous.records()['PR_result'])
+        if fault in ('source','input'):monkeypatch.setattr(m.io,'sha',lambda p:'wrong' if Path(p)==bad else sha(p))
+        if fault=='fresh':
+            exists=Path.exists;monkeypatch.setattr(Path,'exists',lambda p:True if p==ROOT/m.FRESH else exists(p))
+>       if fault=='none':assert m.preflight(ROOT,cp)[1]['scientific_calls']==0
+                                ^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_iid_grid_bridge.py:236:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/trottertracks/c_iid_grid_bridge.py:235: in preflight
+    old,_=previous.preflight(root,root/previous.CONTRACT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = PosixPath('/tmp/prt-c-fixed-word-pilot-execution-20261104')
+path = PosixPath('/tmp/prt-c-fixed-word-pilot-execution-20261104/docs/research/research_c_all_law_signal_ca_contract_unapproved_20261103.json')
+
+    def preflight(root, path):
+        """Technical design/input binding only; no propagation, table or shots."""
+        root=Path(root).resolve();c=io.read(path)
+        for k,v in fixed().items():
+            if c[k]!=v:raise ValueError('FIXED_DESIGN:'+k)
+        if io.sha(root/c['source_manifest'])!=c['source_manifest_sha256']:raise ValueError('SOURCE_MANIFEST')
+        source=io.read(root/c['source_manifest'])
+        needed=set(records().values())|set(c['scientific_input_roles'].values())
+        if not needed<=c['saved_inputs'].keys() or ENTRY not in source['files']:raise ValueError('UNPINNED_INPUT_OR_ENTRY')
+        for group in (source['files'],c['saved_inputs']):
+            for name,digest in group.items():
+                p=(root/name).resolve()
+>               if not p.is_relative_to(root) or io.sha(p)!=digest:raise ValueError('SOURCE_INPUT:'+name)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               ValueError: SOURCE_INPUT:src/trottertracks/c_pr_integrated_performance.py
+
+src/trottertracks/c_all_law_signal_ca.py:202: ValueError
+______________ test_no_scientific_entry_and_real_passive_metadata ______________
+
+    def test_no_scientific_entry_and_real_passive_metadata():
+        with pytest.raises(PermissionError):m.run_science()
+        with pytest.raises(NotImplementedError,match='B2_PENDING'):m.run_science(execute_science=True)
+        code='''
+    import sys
+    from pathlib import Path
+    class Block:
+     def find_spec(self,fullname,*a):
+      if fullname.split('.')[0] in ('numpy','scipy','qiskit','pyscf','openfermion','ffsim','jax','flint'):
+       raise AssertionError(fullname)
+    sys.meta_path.insert(0,Block())
+    from trottertracks import c_b1_b2_scope_integration as m
+    r=m.preflight(Path.cwd(),Path(m.CONTRACT))
+    assert not r['execution_ready'] and r['scientific_calls']==0
+    '''
+>       subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,check=True)
+
+tests/management/test_research_c_b1_b2_scope_integration.py:129:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\ncla...on as m\nr=m.preflight(Path.cwd(),Path(m.CONTRACT))\nassert not r['execution_ready'] and r['scientific_calls']==0\n"],)
+kwargs = {'cwd': PosixPath('/tmp/prt-c-fixed-word-pilot-execution-20261104')}
+process = <Popen: returncode: 1 args: ['/tmp/prt-c1-stage2-preparation-20261025/.venv/...>
+stdout = None, stderr = None, retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self,fullname,*a):\n  if fullname.split('.')[0] in ('numpy','scipy','qiskit','pyscf','openfermion','ffsim','jax','flint'):\n   raise AssertionError(fullname)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_b1_b2_scope_integration as m\nr=m.preflight(Path.cwd(),Path(m.CONTRACT))\nassert not r['execution_ready'] and r['scientific_calls']==0\n"]' returned non-zero exit status 1.
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-fixed-word-pilot-execution-20261104/src/trottertracks/c_b1_b2_scope_integration.py", line 138, in preflight
+    if not p.is_relative_to(root) or io.sha(p)!=want:raise ValueError('SOURCE_INPUT:'+name)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: SOURCE_INPUT:src/trottertracks/c_pr_integrated_performance.py
+_____________ test_real_metadata_passive_without_numerical_imports _____________
+
+    def test_real_metadata_passive_without_numerical_imports():
+        code='''
+    import sys
+    from pathlib import Path
+    class Block:
+     def find_spec(self,fullname,*args):
+      if fullname.split('.')[0] in ('numpy','scipy','qiskit','pyscf','openfermion','ffsim','jax'):
+       raise AssertionError('NO_NUMERICAL_IMPORT:'+fullname)
+    sys.meta_path.insert(0,Block())
+    from trottertracks import c_p0_uniform_method as m
+    r=m.preflight(Path.cwd(),Path(m.CONTRACT))
+    assert r['scientific_calls']==0 and not r['H4_execution_ready']
+    '''
+>       subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,check=True)
+
+tests/management/test_research_c_p0_uniform_method.py:183:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+input = None, capture_output = False, timeout = None, check = True
+popenargs = (['/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\ncla...as m\nr=m.preflight(Path.cwd(),Path(m.CONTRACT))\nassert r['scientific_calls']==0 and not r['H4_execution_ready']\n"],)
+kwargs = {'cwd': PosixPath('/tmp/prt-c-fixed-word-pilot-execution-20261104')}
+process = <Popen: returncode: 1 args: ['/tmp/prt-c1-stage2-preparation-20261025/.venv/...>
+stdout = None, stderr = None, retcode = 1
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+
+        If timeout is given, and the process takes too long, a TimeoutExpired
+        exception will be raised.
+
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self,fullname,*args):\n  if fullname.split('.')[0] in ('numpy','scipy','qiskit','pyscf','openfermion','ffsim','jax'):\n   raise AssertionError('NO_NUMERICAL_IMPORT:'+fullname)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_p0_uniform_method as m\nr=m.preflight(Path.cwd(),Path(m.CONTRACT))\nassert r['scientific_calls']==0 and not r['H4_execution_ready']\n"]' returned non-zero exit status 1.
+
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: CalledProcessError
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-fixed-word-pilot-execution-20261104/src/trottertracks/c_p0_uniform_method.py", line 167, in preflight
+    if not p.is_relative_to(root) or io.sha(p)!=want:raise ValueError('SOURCE_INPUT:'+name)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: SOURCE_INPUT:src/trottertracks/c_pr_integrated_performance.py
+_____________ test_consumed_stage_A_is_refused_and_STOP_preserved ______________
+
+    def test_consumed_stage_A_is_refused_and_STOP_preserved():
+        from trottertracks import c_iid_grid_bridge as a
+        stop=ROOT/a.FRESH/'STOP.json';before=stop.read_bytes()
+>       with pytest.raises(ValueError,match='FRESH_NO_RETRY_RESUME'):a.preflight(ROOT,ROOT/a.CONTRACT)
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_p0_uniform_method.py:166:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/trottertracks/c_iid_grid_bridge.py:235: in preflight
+    old,_=previous.preflight(root,root/previous.CONTRACT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = PosixPath('/tmp/prt-c-fixed-word-pilot-execution-20261104')
+path = PosixPath('/tmp/prt-c-fixed-word-pilot-execution-20261104/docs/research/research_c_all_law_signal_ca_contract_unapproved_20261103.json')
+
+    def preflight(root, path):
+        """Technical design/input binding only; no propagation, table or shots."""
+        root=Path(root).resolve();c=io.read(path)
+        for k,v in fixed().items():
+            if c[k]!=v:raise ValueError('FIXED_DESIGN:'+k)
+        if io.sha(root/c['source_manifest'])!=c['source_manifest_sha256']:raise ValueError('SOURCE_MANIFEST')
+        source=io.read(root/c['source_manifest'])
+        needed=set(records().values())|set(c['scientific_input_roles'].values())
+        if not needed<=c['saved_inputs'].keys() or ENTRY not in source['files']:raise ValueError('UNPINNED_INPUT_OR_ENTRY')
+        for group in (source['files'],c['saved_inputs']):
+            for name,digest in group.items():
+                p=(root/name).resolve()
+>               if not p.is_relative_to(root) or io.sha(p)!=digest:raise ValueError('SOURCE_INPUT:'+name)
+                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               ValueError: SOURCE_INPUT:src/trottertracks/c_pr_integrated_performance.py
+
+src/trottertracks/c_all_law_signal_ca.py:202: ValueError
+
+During handling of the above exception, another exception occurred:
+
+    def test_consumed_stage_A_is_refused_and_STOP_preserved():
+        from trottertracks import c_iid_grid_bridge as a
+        stop=ROOT/a.FRESH/'STOP.json';before=stop.read_bytes()
+>       with pytest.raises(ValueError,match='FRESH_NO_RETRY_RESUME'):a.preflight(ROOT,ROOT/a.CONTRACT)
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'FRESH_NO_RETRY_RESUME'
+E         Actual message: 'SOURCE_INPUT:src/trottertracks/c_pr_integrated_performance.py'
+
+tests/management/test_research_c_p0_uniform_method.py:166: AssertionError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_iid_grid_bridge.py::test_passive_current_contract_drift[none]
+FAILED tests/management/test_research_c_b1_b2_scope_integration.py::test_no_scientific_entry_and_real_passive_metadata
+FAILED tests/management/test_research_c_p0_uniform_method.py::test_real_metadata_passive_without_numerical_imports
+FAILED tests/management/test_research_c_p0_uniform_method.py::test_consumed_stage_A_is_refused_and_STOP_preserved
+4 failed in 0.32s
