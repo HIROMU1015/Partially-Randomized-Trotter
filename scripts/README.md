@@ -1,5 +1,7 @@
 # scripts 索引
 
+研究C・B2：`run_research_c_reference_bound.py` は既定passive。[固定27-call・Arb384・状態非依存の準備](../docs/research/research_c_reference_bound_contract_readiness_20261103.md)。`--execute`は別途科学実行許可後のみ。
+
 研究C・B2：`prepare_research_c_reference_numerical_uncertainty.py` はpassive専用。[方法・人工検証・NOT_READY契約](../docs/research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。実科学の実行optionはない。
 
 研究C：`prepare_research_c_b1_b2_scope_integration.py` はpassiveのみ。[B2公開待ち・未承認比較設計・STOP](../docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。新科学entryは非実行、Stage A/B1/B2の再実行やStage Cの自動開始なし。

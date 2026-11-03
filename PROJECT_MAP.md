@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C・B2：[状態非依存reference上界の固定27-call契約](docs/research/research_c_reference_bound_contract_readiness_20261103.md)。保存stateを使わず、atom→数学CAR→保存数値referenceの二項をArb384で評価する準備。実H4は未実行、Stage C未資格。
+
 研究C・B2：[reference数値不確かさの方法・誤差伝播・統合interface](docs/research/research_c_reference_numerical_uncertainty_readiness_20261103.md)。既存Arb/CARを再利用し人工検証。実H4契約NOT_READY、Stage C未実行、旧SOURCE/STOP保全。
 
 研究C：[B1/B2統合schema・精度scope比較（B2公開未観測）](docs/research/research_c_b1_b2_accuracy_scope_integration_20261103.md)。開始時のB2照会は一致0、依存判定は保留。誤差partition・有限/確率的案・既存accuracy gateを人工284 PASS（旧2件除外）で接続した。新H4科学/Stage C/重要レビュー0、未承認設計は非実行、mandatory STOP。
