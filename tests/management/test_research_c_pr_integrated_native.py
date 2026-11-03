@@ -9,7 +9,8 @@ from trottertracks import c_pr_integrated_performance as m
 
 
 @pytest.mark.parametrize('fail_compile',[False,True])
-def test_fixed32_native_dispatch_and_failure(tmp_path,monkeypatch,fail_compile):
+@pytest.mark.parametrize('finite',[False,True])
+def test_fixed32_native_dispatch_and_failure(tmp_path,monkeypatch,fail_compile,finite):
     from qiskit import QuantumCircuit,qpy
     from trottertracks import c1_h4_strong_baseline as strong,c1_h4_native_fair as fair,c_pr_aware_df_m2 as m2
     from trottertracks.pr_dictionary_validation import f2_execution
@@ -47,13 +48,24 @@ def test_fixed32_native_dispatch_and_failure(tmp_path,monkeypatch,fail_compile):
         plan=SimpleNamespace(extracted_identity=0.,atoms=[]))
     a=dict(arm=arm,p=dict(h=np.eye(4),g=np.zeros((4,)*4),constant=0.),sector={},ground=np.ones(36)/6,
         tail=SimpleNamespace(lambda_r=1.,components=[]),dist=None,config=None)
-    out=tmp_path/'out';out.mkdir();call=m.Calls(out,m.LIMITS,m.MAX_CALLS)
+    out=tmp_path/'out';out.mkdir();call=m.Calls(out,dict(m.LIMITS,fixed_word_events=4,finite_summary=1),m.MAX_CALLS)
+    options={}
+    if finite:
+        a['config']=SimpleNamespace(rte_steps=32)
+        event=SimpleNamespace(taylor_order=0,to_dict=lambda:{'synthetic':True})
+        options=dict(sampling=dict(samples=4,events_per_sample=32),fixed_words=[(event,)*32 for _ in range(4)])
     if fail_compile:
-        with pytest.raises(Exception):m.native(tmp_path,c,out,call,a)
+        with pytest.raises(Exception):m.native(tmp_path,c,out,call,a,**options)
         assert call.stop.is_set() and not (out/'result.json').exists()
     else:
-        rows,cal=m.native(tmp_path,c,out,call,a)
-        assert len(rows)==32 and sorted(seen)==list(range(32))
-        assert len(list((out/'circuits').glob('*.qpy')))==128
-        assert call.counts['compile']==call.counts['trajectory_sample']==32
+        rows,cal=m.native(tmp_path,c,out,call,a,**options)
+        n=4 if finite else 32
+        assert len(rows)==n and sorted(seen)==([] if finite else list(range(32)))
+        assert len(list((out/'circuits').glob('*.qpy')))==4*n
+        assert call.counts['compile']==call.counts['fixed_word_events' if finite else 'trajectory_sample']==n
         assert cal['cost_support'] is None
+        if finite:
+            import json
+            value=json.loads((out/'samples/word00_events.json').read_text())
+            assert value['sampling'] is None and not value['coherent_occurrences_independent']
+            assert cal['status']=='FIXED_FINITE_WORD_CORRECTNESS_COMPLETE' and cal['population_mean'] is None

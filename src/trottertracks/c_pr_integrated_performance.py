@@ -23,7 +23,7 @@ SAMPLING=dict(master=2026110201,cohort='integrated_best_fixed32_v1',axis='INTEGR
     events_per_sample=128,PRNG='numpy.random.PCG64',paired=False,adaptive=False)
 
 
-def native(root,c,out,call,a,*,sampling=None,prepared=None):
+def native(root,c,out,call,a,*,sampling=None,prepared=None,fixed_words=None):
     import numpy as np
     from qiskit import qpy
     from threadpoolctl import threadpool_limits
@@ -36,7 +36,11 @@ def native(root,c,out,call,a,*,sampling=None,prepared=None):
     arm=a['arm'];h=Fraction(1,10);shared=SharedQiskitCalls(call)
     policy=dict(SAMPLING if sampling is None else sampling)
     steps=policy['events_per_sample']
-    if (policy['samples']!=32 or type(steps) is not int or steps<1
+    finite=fixed_words is not None
+    count=policy['samples']
+    if (type(count) is not int or count<1 or (not finite and count!=32)
+            or finite and (len(fixed_words)!=count or any(len(w)!=steps for w in fixed_words))
+            or type(steps) is not int or steps<1
             or (sampling is not None and a['config'].rte_steps!=steps)):
         raise ValueError('NATIVE_SAMPLING_CONFIG')
     for leaf in ('circuits','samples','references'):(out/leaf).mkdir()
@@ -73,17 +77,22 @@ def native(root,c,out,call,a,*,sampling=None,prepared=None):
     def qsave(label,kind,q):
         with (out/'circuits'/(label+'_'+kind+'.qpy')).open('xb') as f:qpy.dump(q,f)
     def task(i):
-        label=f'sample{i:02d}'
+        label=('word' if finite else 'sample')+f'{i:02d}'
         def sample():
+            if finite:
+                events=tuple(fixed_words[i])
+                if any(e.taylor_order!=0 for e in events):raise ValueError('FIXED_WORD_K0_ONLY')
+                return events
             master=(policy['master'],policy['cohort'],c['source_manifest_sha256'])
             events=b.independent_occurrence(arm,a['tail'],a['dist'],a['config'],master=master,
                 round_index=-1,axis=policy['axis'],shot=i,occurrence=0)
             if len(events)!=steps or any(x.taylor_order!=0 for x in events):raise ValueError('NATIVE_K0_EVENT_COUNT')
             return events
-        events=call('trajectory_sample',label,sample)
-        io.save(out/'samples'/(label+'_events.json'),dict(sample=i,sampling=policy,
+        events=call('fixed_word_events' if finite else 'trajectory_sample',label,sample)
+        io.save(out/'samples'/(label+'_events.json'),dict(sample=i,sampling=None if finite else policy,
             SOURCE=c['source_manifest_sha256'],JU=arm.model.source_identity,events=[x.to_dict() for x in events],
-            coherent_occurrences_independent=True,quantum_shots=0,old_cohort_pooled=False))
+            coherent_occurrences_independent=not finite,quantum_shots=0,old_cohort_pooled=False,
+            **({'scope':'fixed finite words;not an IID sample or mean-price estimator'} if finite else {})))
         raw=shared('kernel_build',label,lambda:b.build_kernel(arm,h,events,a['config'],builder=builder));qsave(label,'raw',raw)
         ref=call('trajectory_reference',label,lambda:b2.trajectory_reference(arm,ctx,h,events))
         loader.save_arrays(out/'references'/(label+'.npz'),system_reference=ref)
@@ -96,18 +105,22 @@ def native(root,c,out,call,a,*,sampling=None,prepared=None):
         io.save(out/'samples'/(label+'_XY.json'),call('XY_gate',label,lambda:b2.XY_gate(R,C,ref,psi,shells)))
         metrics=call('kernel_metrics',label,lambda:circuit_metrics(compiled));io.save(out/'samples'/(label+'_metrics.json'),metrics)
         return i,metrics
-    plan=m4.integrated.resource_plan(task_count=32,full_dimension=256);io.save(out/'native_resource_plan.json',plan)
+    plan=m4.integrated.resource_plan(task_count=count,full_dimension=256);io.save(out/'native_resource_plan.json',plan)
     rows={};errors=[]
     with threadpool_limits(limits=plan['BLAS_threads_per_worker']),shared.adjoint_builds():
         with ThreadPoolExecutor(max_workers=plan['workers']) as pool:
-            for f in as_completed([pool.submit(task,i) for i in range(32)]):
+            for f in as_completed([pool.submit(task,i) for i in range(count)]):
                 try:
                     i,v=f.result();rows[i]=v
                     with (out/'native_progress.jsonl').open('a') as stream:
                         stream.write(json.dumps(dict(completed=len(rows),CPU_seconds=time.process_time(),peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss))+'\n')
                 except BaseException as e:call.stop.set();errors.append(e)
     if errors:raise errors[0]
-    samples=[rows[i] for i in range(32)]
+    samples=[rows[i] for i in range(count)]
+    if finite:
+        return samples,call('finite_summary','all registered words;no population inference',lambda:dict(
+            status='FIXED_FINITE_WORD_CORRECTNESS_COMPLETE',words=count,metrics=samples,
+            population_mean=None,cost_support=None,whole_law_synthesis_bound=None,actual_CA_achieved=None))
     return samples,call('calibration_summary','fixed32 new-candidate cohort',lambda:b2.calibration(samples))
 
 

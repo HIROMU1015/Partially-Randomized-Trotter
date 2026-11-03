@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：固定4word・有限native pilotの具体化（2026-11-04）
+
+[4つの32-event word・binary64 numerical pilot・86-call上限・人工85 PASS](../../docs/research/research_c_fixed_word_pilot_preparation_20261104.md)。`c_fixed_word_pilot.py` / `run_research_c_fixed_word_pilot.py`。Full512/CAR/P0/actual inverse/X-Yを再利用し、新sampling・Stage C・shotsは含めない。実H4未実行、固定契約への科学実行許可後のみfresh run。
+
 ## 研究C：B1/B2固定Reference上界の技術統合（依頼日2026-11-03）
 
 [固定B2二項・Stage C残件・scope追補](../../docs/research/research_c_b1_b2_reference_bound_integration_20261103.md)。`c_b1_b2_reference_bound_integration.py` / `prepare_research_c_b1_b2_reference_bound_integration.py`。Sector36のBridge/Reference上界を13roundの既存schemaへ保持し、Whole-P0/full512とcategorical unitary前提の未資格を維持。Stage C NOT_READY、新科学0、旧SOURCE/raw/契約/STOP保全。
