@@ -172,3 +172,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## H8長時間・高次PR adapter準備（2026-11-03）
 
 [実装・人工検証と科学実行HOLD](docs/research/h8_long_time_adapter_preparation_20261103/IMPLEMENTATION_REPORT.md)。保存H8/sparse作用とH46 signed/nativeを接続。新科学結果はない。
+
+## H8長時間・高次PRの実計算（2026-11-03）
+
+[Stage A/B実行記録](docs/research/h8_long_time_execution_20261103/REPORT.md)。固定H8 DF28・T1.6・ε.0005のStage Aは69候補完了。Stage B探索を進め、Stage Cは未実行。

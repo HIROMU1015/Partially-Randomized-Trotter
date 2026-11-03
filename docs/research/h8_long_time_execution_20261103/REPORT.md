@@ -31,7 +31,7 @@ paired cos/sin価格、代表control/actual-adjoint/scalar検査、measurement�
 Stage A第一batchは57候補PASS、適格30・不適格27・UNDETERMINED0。signed primitiveは855 block/time組×3 probeで最大差2.62e-14。新T full-H referenceはdirect/split-time照合をPASS。
 PR S2はq8/16不適格、q32適格。PR m5はq1/2/4で適格。q/Nの差だけで資源優位は判定しない。
 強いPF対照の適格性境界を補完するため、同じ計画domain内のY4 q8（5 method/prefix）、S2 q32（5）、B0 S2 q8（2）の12候補を追加実行し、計69候補が完了した（適格40、不適格29、判定保留0）。初期結果は[保存結果](../../../artifacts/resource_applicability/track_a_h8_long_time/2026-11-03/stage_A_initial.json.gz)。
-Stage Bはm5のPR prefix7/8（q1、各n9）とPF5群のm5 q1、計7候補・23 trajectory・46 axis価格を8 workerで実行中。まだcompiled価格・順位の結論はない。既存native APIのinstruction boundは正の整数が必要なため、無限大ではなく既存block_instruction_boundの整数を渡す互換修正をSOURCE `df93fbb88761b61c2691bf01f761ed20a7987d7f`へ固定した。人工/mock21件PASS。Stage Aのsource mapは別に保持し、科学入力やsignal値を変更しない。
+Stage Bはm5の7候補・23 trajectoryを8 worker、S2/Y4の12候補・28 trajectoryを25 workerで並行実行中。各PR候補はn9、PFは候補ごとに1回。まだcompiled価格・順位の結論はない。既存native APIのinstruction boundは正の整数が必要なため、無限大ではなく既存block_instruction_boundの整数を渡す互換修正をSOURCE `df93fbb88761b61c2691bf01f761ed20a7987d7f`へ固定した。人工/mock21件PASS。Stage Aのsource mapは別に保持し、科学入力やsignal値を変更しない。
 
 今回の検査は主担当Codexによるもので、別担当者の独立科学レビューではない。
 科学性能・全候補の最適性・population cost保証・最終全RPE costを主張しない。
