@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：現行kernelの保証条件・丸め上界](research/rpe_m17_openblas_kernel_bound_preflight_20261104/NEXT_STAGE_DECISION.md)
+（2026-11-04）。使用経路を人工追跡し、限定された算術条件の係数・underflow項・abs上界を導出。
+人工44件PASS、実H4評価なし。runtime条件/guard/統合科学SOURCEは残作業、旧statusとSTOP保持。
+
 [RPE m17：仮想測定bridge adapter・kernel上界の不足](research/rpe_m17_virtual_measurement_bridge_preparation_20261104/IMPLEMENTATION_REPORT.md)
 （2026-11-04）。数値context/残差/affine誤差majorantを人工検査。実環境BLASの丸め係数未確立で科学実行不可。
 新H4数値評価0、U_exec=null・旧status/STOP保持。次の科学SOURCEは未完成。

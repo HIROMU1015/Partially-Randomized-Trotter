@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：現行OpenBLAS経路の丸め上界を導出（2026-11-04）](docs/research/rpe_m17_openblas_kernel_bound_preflight_20261104/NEXT_STAGE_DECISION.md)：
+人工dispatch追跡、Prescott GEMVT/DOT・AVX2/FMA・glibc hypot・FP modeを確認し、限定profileの係数をKernelBoundsへ接続。
+新人工13＋関連31件PASS。実H4上界/全support guardは未評価、科学SOURCE未完成、U_exec=null・旧status/STOP保持。
+
 [RPE m17：仮想測定bridge adapterの技術準備（2026-11-04）](docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104/IMPLEMENTATION_REPORT.md)：
 保存local matrixによる数値context、Acb残差、加法誤差を含む平均/全supportの伝播を人工検査。
 BLAS kernel丸め係数は未確立で科学runnerは未完成。実H4評価0、U_exec=null・旧status/STOP保持。
