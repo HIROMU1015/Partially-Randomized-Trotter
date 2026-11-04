@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Population range Stage R・部分STOP（2026-11-04）
+
+[Stage R部分結果](docs/research/research_c_population_range_stage_R_execution_20261104.md)。固定SOURCE6c1fbe539を一度実行し10/256 units（9 COMPLETE/1 FAIL）。保存meanのmodel文字列とIIDモデル辞書を混同した`SAVED_ANGLE_MODEL`で停止。a/M・13roundは未取得、retry/resume0。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
+
 ## 研究C：literal per-word包囲・population range（2026-11-04）
 
 [per-word誤差包囲・population range](docs/research/research_c_per_word_population_range_readiness_20261104.md)。`c_per_word_population_range.py` / `c_per_word_range_execution.py` / `prepare_research_c_per_word_population_range.py`。既存Arb/CAR/全columnを再利用し、literal U・非Hermitian headを保持する。Stage Rは未承認256-call、Pは非実行65-call案、校正/accuracyは未採択。人工検証のみ・新H4科学0、mandatory STOP。
