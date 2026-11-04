@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Stage P固定1-wordの包囲取得・部分STOP（2026-11-04）
+
+[per-word上界・30-call部分証拠・残件](docs/research/research_c_stage_p_literal_execution_20261104.md)。保存直鎖H4・1.00 Å/STO-3G、number CDF8・LD2・partial S2/s1/r32/K0・h=δ=.1、固定F6/F7交互32-event word。SOURCEf658f72d5無変更、30 attempts/29 COMPLETE/記録FAIL0/未完了1。Arb192・全512列でC→R上界約1.585733058571e-11、R→D約3.957579638642e-14、合計約1.589690638209e-11を取得。Raw actual inverseは完了、compiled inverse検証中にプロセス消失を観測し原因未確定。Shell・信号boundはnull、Stage P全体未完了、全law/校正/CA未資格。Retry/resume0、残11 units転用なし、旧原本保全、mandatory STOP。
+
 ## 研究C：Head bridge・26-call実行完了（2026-11-04）
 
 [Sector36 Head上界・B2三項接続・残件](docs/research/research_c_head_bridge_execution_20261104.md)。SOURCEf658f72d5無変更、26/26 COMPLETE・FAIL/retry/resume0。Kernel head差上界約3.05978e-16、m12約1.25328e-12、B2接続合計約2.67040e-11。全law/native/校正/CA未資格、P41-call未実行、旧原本保全、mandatory STOP。

@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-04：固定1-wordのper-word包囲取得とStage P部分中断
+
+保存直鎖H4・1.00 Å/STO-3G、number CDF8・LD2・partial S2/s1/r32/K0・h=δ=.1、固定F6/F7交互32-event word。SOURCEf658f72d5無変更、30 attempts/29 COMPLETE/記録FAIL0/未完了1。Arb192・全512列でC→R上界約1.585733058571e-11、R→D約3.957579638642e-14、合計約1.589690638209e-11を取得。Raw actual inverseは完了、compiled inverse検証中にプロセス消失を観測し原因未確定。Shell・信号boundはnull、Stage P全体未完了、全law/校正/CA未資格。Retry/resume0、残11 units転用なし、旧原本保全、mandatory STOP。 [固定実行報告](docs/research/research_c_stage_p_literal_execution_20261104.md)。以下は各時点の証拠として保持する。
+
 ## 2026-11-04：Head target間のsector36 bridge取得
 
 保存H4・直鎖1.00 Å/STO-3G、number CDF8・Nα=Nβ2/sector36、元順LD2・partial S2/s1/r32/K0・h=δ=.1/m0..12、own-DF ground oracle/状態準備除外。固定SOURCEf658f72d5を無変更で一度実行し26/26 COMPLETE、FAIL/retry/resume0。Exact sector不変性・candidate/共通位相を確認し、Arb384でhead kernel差上界約3.059775044622e-16、m12 head transport上界約1.253283858278e-12を取得した。B2既存二項との一回ずつの接続はm12で約2.670395084860e-11。正本はexact rational endpoint。Sector36のreference接続で、Stage P・全law synthesis・校正・actual CAは未資格。旧SOURCE/raw/STOPを保全しmandatory STOP。 [固定実行報告](docs/research/research_c_head_bridge_execution_20261104.md)。以下は各時点の証拠として保持する。
