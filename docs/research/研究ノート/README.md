@@ -1,3 +1,8 @@
+## 2026-11-04 RPE m17：数値作用上界は取得、全support guardは未保証
+
+[当日記録](2026-11-04_rpe_m17_virtual_bridge.md)。SOURCEc3a5cc387、固定H4/DF12/L_D3/δ=.02/m17 q131072/r32 K2を96 bit・1 pass。
+runtime/finite確認、平均作用誤差上端約8.01e-8。一様signal上端ではguard通過を示せず両軸U_virtual/U_exec=null、旧status保持でSTOP。
+
 ## 2026-10-23 H4 K静的調査・L production実装
 
 [K静的調査・L production記録](2026-10-23_H4_KL_production.md)。SOURCE eb195bf2d、T/binding100＋L48＝148 PASS。固定128・148/148/11/324のkernel/one-shot制御・無効契約を封印。K全体保証とC/L overlapは未解決、実H4診断/科学grant/compile/受理/N_G0、技術STOP。以下は各時点の履歴。

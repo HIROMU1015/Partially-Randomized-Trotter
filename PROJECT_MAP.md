@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：仮想測定bridge実行・全support guardは未保証（2026-11-04）](docs/research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)：
+H4/1Å/STO-3G/保存DF12/B raw state/sector70、L_D3/δ=.02/m17 q131072/r32 K2。固定SOURCEc3a5cc387で96 bit・1 pass。
+runtime/finite確認、作用誤差majorant取得、guard完了は未証明。両軸U_virtual/U_exec=null・旧status保持、原本5件保存でSTOP。
+
 [RPE m17：科学runner統合・SOURCE固定（2026-11-04）](docs/research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)：
 保存入力→numeric context→KernelBounds→全support有限性/guard→strict判定を接続。同じprocessのdispatchと全thread FP modeを監視。
 人工・関連57件PASS、実gdb監視下の人工pipelineも完了。実H4科学計算は未実行、固定SOURCEの別実行許可待ちSTOP。

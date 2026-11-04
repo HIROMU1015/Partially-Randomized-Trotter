@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：仮想測定bridgeの1 pass結果](research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)
+（2026-11-04）。runtime/finite確認、作用誤差majorantを取得したが全support guardは未保証。
+両軸U_virtual/U_exec=null、旧status保持。96 bitの1回で終了し、原本5件を保全してmandatory STOP。
+
 [RPE m17：統合科学runnerと固定実行計画](research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)
 （2026-11-04）。同一workerのruntime監視、保存context/誤差/finite/guard/strict判定、fresh出力とSTOPを統合。
 人工・関連57件PASS、人工pipelineの実gdb監視も確認。実H4計算未実行、科学実行は固定SOURCEに対する別許可後。

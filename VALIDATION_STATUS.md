@@ -1,3 +1,13 @@
+## 2026-11-04 RPE m17：作用上界は取得、全support測定完了は未保証
+
+[報告・SOURCE・原本](docs/research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)。
+SOURCEc3a5cc387b8962b63782dc71ab175147f2d87e33、linear H4/1Å/STO-3G/保存legacy DF12/B raw state/4電子sector70、
+Partial L_D3/単一δ=.02/m17 q131072/r32 K2、extract_identity_phase/cutoff1e-12、保存N411/α/β/ε。
+numeric context1、96 bit bound pass1を正常完了。runtimeとfinite screenを確認、平均作用誤差majorant約8.01e-8。
+一様signal上端約1.0000025546ではclip前guardを保証できず、ARITHMETIC_BOUND_OBTAINED_BUT_COMPLETION_UNRESOLVED。
+実abortのwitnessではない。両軸U_virtual/U_exec=null、全体UNDETERMINED/false、旧INCONSISTENT/u_num=null保持。
+追加精度・retry・sampling/RNG replay・build/compile・成功率/費用再評価なし。mandatory STOP。
+
 ## 2026-11-03 RPE m17：ideal categorical scopeの座標十分条件を包含で確認
 
 [報告・SOURCE・原本4件](docs/research/rpe_m17_rigorous_mean_enclosure_execution_20261103/REPORT.md)。実行11/3、報告11/4 JST。
