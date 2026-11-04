@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：列挙不要な包絡の人工検証・H4科学SOURCEを見送る判断](research/rpe_m17_invariant_radial_preflight_20261104/REPORT.md)
+（2026-11-04）。球/box・局所rounding-cellを実装、人工44件PASS。unitary例に障害が残り、H4保証の見込みは未確立。
+実H4追加評価0、同系統adapter開発は打ち切り。両U null・UNDETERMINED/STOPを保持。
+
 [RPE m17：行別誤差・signed energy・prefixを接続した人工adapter](research/rpe_m17_row_energy_adapter_preparation_20261104/IMPLEMENTATION_REPORT.md)
 （2026-11-04）。有限人工supportの閉性、全prefix、vdot/abs/guardと独立の平均誤差を接続。人工46件PASS。
 実H4の不変領域は未構成、科学runnerは未準備・新H4評価0。旧status/STOPを保持。

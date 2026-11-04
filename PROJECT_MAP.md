@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：列挙不要な不変領域・radial包絡の検証と打切り判断（2026-11-04）](docs/research/rpe_m17_invariant_radial_preflight_20261104/REPORT.md)：
+人工dense収縮系の球/box保証は成立、dense unitary例では汎用包絡が閉じず、H4適用根拠は未確立。
+人工44件PASS、新H4評価0。科学SOURCEは準備せず、このadapter系列は終了。両U null・旧status/STOP保持。
+
 [RPE m17：行別丸め・signed energy・全prefixの人工adapter（2026-11-04）](docs/research/rpe_m17_row_energy_adapter_preparation_20261104/IMPLEMENTATION_REPORT.md)：
 有限人工domainの全数検査でrow残差からguard/strict接続まで実装。新18＋再利用28、計46件PASS。
 H4到達領域は未構成、科学SOURCEは未準備。新H4評価0・両U null・旧status/STOP保持。
