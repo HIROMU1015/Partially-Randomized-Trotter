@@ -2,6 +2,8 @@
 
 [過去のブランチURLに対応する固定commit・保存原版の案内](branch_reference_navigation_20261103.md)。
 
+[保留7枝の再現用ファイル・保存別版の追加収録（11月4日）](priority7_collection_20261104.md)。
+
 既存成果のmainへの収録は[収録済み成果と原SOURCEの案内](main_collection_20261103.md)を参照。第1回はTrack B G6の結果・文書・再現用SOURCEである。
 
 2026-11-02 JST。複数ブランチに分かれた既存成果を、総括・結果・SOURCE・raw・検証状態へ辿るための入口である。

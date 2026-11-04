@@ -1,0 +1,61 @@
+diff --git a/scripts/run_research_c_c1_stage1.py b/scripts/run_research_c_c1_stage1.py
+index f26172189..4ef6f2110 100644
+--- a/scripts/run_research_c_c1_stage1.py
++++ b/scripts/run_research_c_c1_stage1.py
+@@ -37 +37,2 @@ def main():
+-        result=run.execute(v,args.approval,args.output,args.fit_python.resolve())
++        # Preserve the venv symlink: resolving it launches the base interpreter.
++        result=run.execute(v,args.approval,args.output,args.fit_python.absolute())
+diff --git a/src/trottertracks/c1_stage1.py b/src/trottertracks/c1_stage1.py
+index db6750779..678cf5965 100644
+--- a/src/trottertracks/c1_stage1.py
++++ b/src/trottertracks/c1_stage1.py
+@@ -16,0 +17 @@ from . import c1_general_k_adapter as adapter
++from .c1_ffsim_compat import VERSION as COMPAT_VERSION
+@@ -65 +66,2 @@ def fit_once(h, g, constant, calls, *, fit_function=None, raw_callback=None):
+-        import ffsim
++        from .c1_ffsim_compat import double_factorized
++        import ffsim  # initializes the fixed ffsim/JAX configuration
+@@ -69 +71 @@ def fit_once(h, g, constant, calls, *, fit_function=None, raw_callback=None):
+-        fit_function = ffsim.linalg.double_factorized
++        fit_function = double_factorized
+@@ -95,0 +98 @@ def fit_once(h, g, constant, calls, *, fit_function=None, raw_callback=None):
++                    compatibility_version=COMPAT_VERSION,
+diff --git a/src/trottertracks/c1_stage1_execution.py b/src/trottertracks/c1_stage1_execution.py
+index 0f15aa7cd..f37f91764 100644
+--- a/src/trottertracks/c1_stage1_execution.py
++++ b/src/trottertracks/c1_stage1_execution.py
+@@ -18 +18 @@ import traceback
+-SCOPE="C1_STAGE1_P_H4_ONE_FIT_V1"
++SCOPE="C1_STAGE1_P_H4_ONE_FIT_COMPAT_V2"
+@@ -20 +20 @@ P_H4_SHA256="8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+-ENV_DIR="artifacts/research_c_c1_stage1_technical/2026-10-24/environment"
++ENV_DIR="artifacts/research_c_c1_stage1_compatibility/2026-10-25/environment"
+@@ -57 +57 @@ def preflight(root,contract_path,source_path,input_path):
+-    from .c1_stage1 import FIT_SETTINGS, ALLOWANCE_VERSION, expected_evaluation_calls
++    from .c1_stage1 import FIT_SETTINGS, ALLOWANCE_VERSION, COMPAT_VERSION, expected_evaluation_calls
+@@ -62 +62,2 @@ def preflight(root,contract_path,source_path,input_path):
+-    if (contract['fit_settings']!=FIT_SETTINGS or contract['allowance']['version']!=ALLOWANCE_VERSION
++    if (contract['compatibility']['version']!=COMPAT_VERSION
++            or contract['fit_settings']!=FIT_SETTINGS or contract['allowance']['version']!=ALLOWANCE_VERSION
+@@ -160 +161 @@ def worker_fit(v,output):
+-    runtime.update(x64=True,devices=list(map(str,jax.devices())))
++    runtime.update(x64=True,devices=list(map(str,jax.devices())),compatibility_version=s.COMPAT_VERSION)
+@@ -193,0 +195 @@ def load_export(output,verified):
++            or metadata.get('compatibility_version')!=s.COMPAT_VERSION
+diff --git a/tests/management/test_research_c_c1_stage1_execution.py b/tests/management/test_research_c_c1_stage1_execution.py
+index bb2dec0d3..feb359446 100644
+--- a/tests/management/test_research_c_c1_stage1_execution.py
++++ b/tests/management/test_research_c_c1_stage1_execution.py
+@@ -34,0 +35 @@ def packet(tmp_path):
++             compatibility={'version':s.COMPAT_VERSION},
+@@ -122,3 +123,6 @@ def test_CLI_execution_requires_approval_before_any_file_read(tmp_path):
+-def test_production_numeric_entries_have_not_been_run():
+-    # There is no bundled grant, real snapshot, science output or auto-run hook.
+-    assert not (ROOT/'artifacts/research_c_c1_stage1_science').exists()
++def test_previous_approval_scope_cannot_authorize_compatibility_run(tmp_path):
++    v=packet(tmp_path);ap=tmp_path/'approval.json'
++    run.save(ap,dict(scope='C1_STAGE1_P_H4_ONE_FIT_V1',approved=True))
++    with patch.object(run.subprocess,'check_output',return_value='mock'):
++        with pytest.raises(PermissionError,match='NEW_EXPLICIT'):
++            run.verify_approval(v,ap,tmp_path/'fresh')

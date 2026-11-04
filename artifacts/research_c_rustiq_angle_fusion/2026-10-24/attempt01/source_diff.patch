@@ -1,0 +1,1118 @@
+diff --git a/scripts/run_research_c_rustiq_limited.py b/scripts/run_research_c_rustiq_limited.py
+index 61e04caf4..560cb14e9 100644
+--- a/scripts/run_research_c_rustiq_limited.py
++++ b/scripts/run_research_c_rustiq_limited.py
+@@ -11,12 +11,27 @@ sys.path.insert(0, str(ROOT/'src'))
+ 
+ def main():
+     parser = argparse.ArgumentParser(description=__doc__)
+-    parser.add_argument('--packet', required=True, type=Path)
++    parser.add_argument('--packet', type=Path)
+     parser.add_argument('--inputs', required=True, type=Path)
+-    parser.add_argument('--output', required=True, type=Path)
++    parser.add_argument('--output', type=Path)
++    parser.add_argument('--scope', choices=('C4_Q13_LIMITED_V1','C4_B2_SAVED_COMPARISON_V1'),
++                        default='C4_Q13_LIMITED_V1')
++    parser.add_argument('--preflight-only', action='store_true',
++                        help='B2 technical bytes/schema/environment checks; no science or output')
+     args = parser.parse_args()
+-    from trottertracks.pr_dictionary_validation.rustiq_execution import verify_packet, execute
+-    verified = verify_packet(ROOT, args.packet, args.inputs, args.output)
++    from trottertracks.pr_dictionary_validation.rustiq_execution import (
++        verify_packet, execute, verify_b2_preflight, B2_SCOPE)
++    if args.preflight_only:
++        if args.scope != B2_SCOPE or args.packet is not None or args.output is not None:
++            parser.error('--preflight-only requires B2 scope and no packet/output')
++        verified = verify_b2_preflight(ROOT, args.inputs)
++        print(json.dumps(dict(status='B2_TECHNICAL_PREFLIGHT_PASS_NO_SCIENCE',
++            source_identity=verified['source_identity'], input_identity=verified['input_identity'],
++            scientific_execution_authorized=False), indent=2))
++        return
++    if args.packet is None or args.output is None:
++        parser.error('--packet and --output are required for an approved execution')
++    verified = verify_packet(ROOT, args.packet, args.inputs, args.output, scope=args.scope)
+     print(json.dumps(execute(verified), ensure_ascii=False, indent=2))
+ 
+ 
+diff --git a/src/trottertracks/pr_dictionary_validation/reference.py b/src/trottertracks/pr_dictionary_validation/reference.py
+index 6c3528a9b..38f9fb3d9 100644
+--- a/src/trottertracks/pr_dictionary_validation/reference.py
++++ b/src/trottertracks/pr_dictionary_validation/reference.py
+@@ -6,6 +6,69 @@ No matrices or high-precision contexts are instantiated on import.
+ from __future__ import annotations
+ from fractions import Fraction
+ import itertools
++import re
++
++
++_SAVED_UNSIGNED = r'(?:[0-9]+(?:\.[0-9]*)?|\.[0-9]+)(?:[eE][+-]?[0-9]+)?'
++_SAVED_REAL = r'[+-]?' + _SAVED_UNSIGNED
++_SAVED_COMPLEX = re.compile(r'\((' + _SAVED_REAL + r') ([+-]) ('
++                            + _SAVED_UNSIGNED + r')j\)')
++
++
++def saved_scalar_parts(text):
++    """Strict ctx.nstr grammar, preserving decimal text without float/eval."""
++    if not isinstance(text, str):
++        raise ValueError('Saved reference scalar must be text')
++    if re.fullmatch(_SAVED_REAL, text):
++        return text, '0'
++    match = _SAVED_COMPLEX.fullmatch(text)
++    if not match:
++        raise ValueError('Unknown/nonfinite saved reference scalar')
++    real, sign, imaginary = match.groups()
++    return real, ('-' if sign == '-' else '') + imaginary
++
++
++def validate_saved_reference(payload, *, full):
++    """Metadata/string-only validation; no high-precision or matrix operations."""
++    shapes = dict(h=16, d=16, r=16, operator=16, wrapper_X=32, wrapper_Y=32) if full else dict(controlled=32)
++    expected = set(shapes) | ({'signal'} if full else set())
++    if (set(payload) != {'digits', 'values'} or type(payload['digits']) is not int
++            or payload['digits'] != 128 or not isinstance(payload['values'], dict)
++            or set(payload['values']) != expected):
++        raise ValueError('Saved reference schema/digits/keys mismatch')
++    for key, size in shapes.items():
++        matrix = payload['values'][key]
++        if (not isinstance(matrix, list) or len(matrix) != size
++                or any(not isinstance(row, list) or len(row) != size for row in matrix)):
++            raise ValueError('Saved reference shape mismatch: '+key)
++        for row in matrix:
++            for text in row:
++                saved_scalar_parts(text)
++    if full:
++        saved_scalar_parts(payload['values']['signal'])
++    return payload
++
++
++def restore_saved_reference(payload, *, full):
++    """Explicit science entry: restore only selected saved 128-digit targets.
++
++    No reference generation or precision re-comparison. Real/imag strings enter
++    the high-precision context before the caller's existing binary64 conversion.
++    """
++    validate_saved_reference(payload, full=full)
++    ctx = precision_context(128)
++    def scalar(text):
++        real, imaginary = saved_scalar_parts(text)
++        value = ctx.mpc(ctx.mpf(real), ctx.mpf(imaginary))
++        if not ctx.isfinite(value):
++            raise ValueError('Nonfinite restored reference')
++        return value
++    keys = ('operator', 'wrapper_X', 'wrapper_Y') if full else ('controlled',)
++    values = {key: ctx.matrix([[scalar(v) for v in row] for row in payload['values'][key]])
++              for key in keys}
++    if full:
++        values['signal'] = scalar(payload['values']['signal'])
++    return dict(ctx=ctx, **values)
+ 
+ 
+ def precision_context(digits: int):
+diff --git a/src/trottertracks/pr_dictionary_validation/rustiq_adapter.py b/src/trottertracks/pr_dictionary_validation/rustiq_adapter.py
+index e1038d8c4..5c2c9d5da 100644
+--- a/src/trottertracks/pr_dictionary_validation/rustiq_adapter.py
++++ b/src/trottertracks/pr_dictionary_validation/rustiq_adapter.py
+@@ -1,4 +1,4 @@
+-"""Opt-in Qiskit 1.3 Rustiq central-rotation adapter; science remains unrun.
++"""Opt-in Qiskit 1.3 central-rotation adapter; new B2 science remains unrun.
+ 
+ Planning/binding uses only typed PR records and the standard library. Quantum
+ imports and synthesis occur only in explicit build calls after separate approval.
+@@ -16,7 +16,8 @@ from .prototype import atom_record
+ 
+ ADAPTER = 'C4_Q13_central_v1'
+ QISKIT_SOURCE = '896d1c8b72888a52a46081a6d1f4de8c56db8aea'
+-ROUTES = ('B0', 'B1', 'R1')
++ROUTES = ('B0', 'B1', 'R1', 'B2')
++FUSION_POLICY = 'C4_B2_adjacent_controlled_fsum_v1'
+ 
+ 
+ @dataclass(frozen=True)
+@@ -96,11 +97,14 @@ def route_identity(route, *, input_identity, source_identity, profile=None, opti
+     options.validate()
+     profile = CompilerProfile() if profile is None else profile
+     profile.validate()
+-    return dict(adapter=ADAPTER, route=route, input=input_identity, source=source_identity,
++    identity = dict(adapter=ADAPTER, route=route, input=input_identity, source=source_identity,
+                 qiskit='1.3.0', qiskit_source=QISKIT_SOURCE, bundled_rustiq_core='0.0.10',
+                 options=asdict(options), compiler=asdict(profile),
+                 basis_policy='common_run_support_full_fused',
+                 mapping='word[p]=qubit_p;system=0..m-1;ancilla=m;no_second_control')
++    if route == 'B2':
++        identity['fusion_policy'] = FUSION_POLICY
++    return identity
+ 
+ 
+ def _validate_atom(atom, modes):
+@@ -255,6 +259,80 @@ def region_network(region, *, ancilla):
+     return tuple(terms)
+ 
+ 
++@dataclass(frozen=True)
++class FusionGroup:
++    support: tuple[int, ...]
++    signed_angle: float
++    ledger: dict
++
++
++def _signed_sum(members):
++    angles = tuple(o.signed_angle for o in members)
++    if not angles or any(type(a) is not float or not math.isfinite(a) for a in angles):
++        raise ValueError('Finite binary64 rotation angles required')
++    try:
++        value = angles[0] if len(angles) == 1 else math.fsum(angles)
++    except OverflowError as error:
++        raise ValueError('B2 angle sum overflow') from error
++    if not math.isfinite(value):
++        raise ValueError('B2 angle sum is nonfinite')
++    return value
++
++
++def fusion_groups(plan, region, *, case_id, macro_index):
++    """Pure typed fold; never re-plan runs, move events, or expand controls.
++
++    Preparation tests use artificial records only. Calling on saved F1 angles
++    belongs to the separately approved scientific execution.
++    """
++    data = asdict(plan)
++    fingerprint = data.pop('fingerprint')
++    if (digest(data) != fingerprint or plan.provenance != route_identity('B2',
++            input_identity=plan.provenance.get('input'), source_identity=plan.provenance.get('source'))):
++        raise ValueError('Stale original plan')
++    if (not isinstance(case_id, str) or not case_id
++            or type(macro_index) is not int or macro_index < 0
++            or plan.system_qubits != tuple(range(plan.ancilla))):
++        raise ValueError('Bound case/macro and original ancilla-last mapping required')
++    matching = [(run, r) for run in plan.runs for r in run.regions if r == region]
++    if len(matching) != 1 or not region.eligible or not region.occurrences:
++        raise ValueError('One original eligible rotation region required')
++    run = matching[0][0]
++    def key(o):
++        if (o.role != 'rotation' or o.kind not in ('FRAME_Z', 'PHYSICAL_PAULI')
++                or o.run_id != run.run_id or o.basis_id != run.basis_id
++                or o.basis_hash != run.basis_hash or not o.support
++                or o.word != tuple(plan.occurrences[o.ordinal].word)
++                or o != plan.occurrences[o.ordinal]):
++            raise ValueError('Rotation/original occurrence or basis/run drift')
++        return (o.kind, o.word, o.support, o.basis_id, o.basis_hash, o.frame_id, o.run_id)
++    groups = []
++    members = []
++    previous = None
++    def flush():
++        first = members[0]
++        angle = _signed_sum(members)
++        ledger = dict(policy=FUSION_POLICY, case=case_id, macro=macro_index,
++            run=run.run_id, region=region.region_id, singleton=run.singleton,
++            basis_id=first.basis_id, basis_hash=first.basis_hash, frame=first.frame_id,
++            kind=first.kind, word=first.word, support=first.support,
++            system=plan.system_qubits, ancilla=plan.ancilla, generator='controlled_central_Z',
++            original_plan=fingerprint, members=[dict(ordinal=o.ordinal, atom_id=o.atom_id,
++                event=o.event_index, application=o.application_index,
++                coefficient_sign=o.coefficient_sign, angle_hex=o.signed_angle.hex()) for o in members],
++            angle_hex=angle.hex())
++        groups.append(FusionGroup(first.support, angle, ledger))
++    for occurrence in region.occurrences:
++        current = key(occurrence)
++        if members and current != previous:
++            flush()
++            members = []
++        members.append(occurrence)
++        previous = current
++    flush()
++    return tuple(groups)
++
++
+ def _q13(num_qubits, network, options):
+     from importlib.metadata import version
+     if version('qiskit') != '1.3.0':
+@@ -270,7 +348,8 @@ def _new_circuit(qubits):
+     return QuantumCircuit(qubits)
+ 
+ 
+-def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
++def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None,
++                  case_id=None, macro_index=None):
+     """Explicit SCIENTIFIC build entry. Do not call during preparation."""
+     options.validate()
+     data = asdict(plan)
+@@ -281,6 +360,10 @@ def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
+         raise ValueError('Stale plan or route/options provenance')
+     if provider.modes != plan.ancilla:
+         raise ValueError('Provider/register mismatch')
++    if plan.provenance['route'] == 'B2' and (
++            not isinstance(case_id, str) or not case_id
++            or type(macro_index) is not int or macro_index < 0):
++        raise ValueError('B2 requires bound case/macro scope before emission')
+     by_id = {a.atom_id: a for a in atoms}
+     qc = _new_circuit(plan.ancilla+1)
+     for run in plan.runs:
+@@ -305,6 +388,19 @@ def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
+                     trace.append(dict(kind='synthesis', plan=plan.fingerprint,
+                                       region=region.region_id, seconds=seconds,
+                                       cpu_seconds=cpu_seconds, terms=network))
++            elif plan.provenance['route'] == 'B2' and region.eligible:
++                tick, cpu = time.perf_counter(), time.process_time()
++                groups = fusion_groups(plan, region, case_id=case_id, macro_index=macro_index)
++                record = dict(kind='fusion', plan=plan.fingerprint,
++                    region=region.region_id, seconds=time.perf_counter()-tick,
++                    cpu_seconds=time.process_time()-cpu, ledger=[g.ledger for g in groups])
++                tick, cpu = time.perf_counter(), time.process_time()
++                for group in groups:
++                    legacy.append_central(qc, group.support, plan.ancilla, group.signed_angle)
++                if trace is not None:
++                    record.update(emitter_seconds=time.perf_counter()-tick,
++                                  emitter_cpu_seconds=time.process_time()-cpu)
++                    trace.append(record)
+             else:
+                 for o in region.occurrences:
+                     legacy.append_central(qc, o.support, plan.ancilla, o.signed_angle)
+@@ -315,16 +411,19 @@ def emit_sequence(plan, atoms, provider, *, options=Options(), trace=None):
+ 
+ 
+ def build_evolution(spec, context, macros, atoms, provider, *, input_identity,
+-                    source_identity, route='B0', options=Options(), trace=None):
++                    source_identity, route='B0', options=Options(), trace=None, case_id=None):
+     """Opt-in builder, preserving legacy D fusion, scalar and result/wrapper API.
+ 
+     B0 delegates unchanged to the strong optimized baseline. B1 uses the same
+     typed partition as R1 with the original central emitter. R1 alone calls Q13.
++    B2 folds only original adjacent controlled rotations without re-planning.
+     This orchestration is narrow duplication because the frozen builder has no
+     emitter hook; its basis/central/D/result/compiler implementations are reused.
+     """
+     provenance = route_identity(route, input_identity=input_identity,
+                                 source_identity=source_identity, options=options)
++    if route == 'B2' and (not isinstance(case_id, str) or not case_id):
++        raise ValueError('B2 requires bound case scope')
+     if route == 'B0':
+         return legacy.build_evolution(spec, context, macros, atoms, provider,
+             input_identity=input_identity, source_identity=source_identity, optimized=True)
+@@ -346,18 +445,24 @@ def build_evolution(spec, context, macros, atoms, provider, *, input_identity,
+             plans=[asdict(p) for p in plans],
+             scalar_phase=dict(kind='scalar', angle=scalar, ancilla=spec.modes)))
+     qc = _new_circuit(spec.modes+1)
++    emit_trace = trace if trace is not None or route != 'B2' else []
++    trace_start = len(emit_trace) if route == 'B2' else 0
+     delta = float(context.delta)
+     for j, plan in enumerate(plans):
+         if j == 0:
+             legacy.append_deterministic(qc, spec.deterministic, delta/2, spec.modes)
+-        qc.compose(emit_sequence(plan, atoms, provider, options=options, trace=trace), inplace=True)
++        scope = dict(case_id=case_id, macro_index=j) if route == 'B2' else {}
++        qc.compose(emit_sequence(plan, atoms, provider, options=options, trace=emit_trace,
++                                 **scope), inplace=True)
+         legacy.append_deterministic(qc, spec.deterministic,
+             delta if j < context.q-1 else delta/2, spec.modes)
+     qc.p(scalar, spec.modes)
+     records = tuple(tuple(e.to_dict() for e in macro) for macro in macros)
++    fusion = dict(case=case_id, fusion_ledger=[t['ledger'] for t in emit_trace[trace_start:]
++                 if t['kind'] == 'fusion']) if route == 'B2' else {}
+     fp = digest(dict(provenance=provenance, context=vars(context), macros=records,
+                      atoms=[atom_record(a) for a in atoms], plans=[p.fingerprint for p in plans],
+-                     scalar_phase=scalar))
++                     scalar_phase=scalar, **fusion))
+     return legacy.MixedEvolutionResult(qc, spec.modes, spec.modes, context, records,
+         input_identity, source_identity, fp, ADAPTER+'_'+route)
+ 
+diff --git a/src/trottertracks/pr_dictionary_validation/rustiq_execution.py b/src/trottertracks/pr_dictionary_validation/rustiq_execution.py
+index c792c71bb..9a4855bae 100644
+--- a/src/trottertracks/pr_dictionary_validation/rustiq_execution.py
++++ b/src/trottertracks/pr_dictionary_validation/rustiq_execution.py
+@@ -10,11 +10,13 @@ from pathlib import Path
+ import gzip
+ import hashlib
+ import json
++import csv
+ import multiprocessing
+ import os
+ import platform
+ import resource
+ import subprocess
++import sys
+ import time
+ import traceback
+ 
+@@ -23,6 +25,8 @@ from .fixture import canonical_json, digest
+ CONTRACT = 'docs/research/research_c_rustiq_limited_contract_20261024.json'
+ CONTRACT_SHA = 'e948a2e7fdf47e20b8af8cd7debae0631dabbd5e6ad77f419a9a9e2c668319a1'
+ CASE_IDS = ('SS_motif_2', 'SS_motif_3', 'SS_motif_4', 'PP_motif_0')
++B2_SCOPE = 'C4_B2_SAVED_COMPARISON_V1'
++B2_CONTRACT = 'docs/research/research_c_angle_fusion_b2_contract_20261024.json'
+ 
+ 
+ def write_json(path, value):
+@@ -35,8 +39,12 @@ def file_sha(path):
+     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+ 
+ 
+-def verify_packet(root, packet, inputs, output):
++def verify_packet(root, packet, inputs, output, *, scope='C4_Q13_LIMITED_V1'):
+     """Read-only, standard-library approval and identity gate before science."""
++    if scope == B2_SCOPE:
++        return _verify_b2_packet(root, packet, inputs, output)
++    if scope != 'C4_Q13_LIMITED_V1':
++        raise PermissionError('Unknown execution scope')
+     root, packet, inputs, output = map(lambda p: Path(p).resolve(), (root, packet, inputs, output))
+     approval = json.loads((packet/'approval.json').read_bytes())
+     if (approval.get('stage') != 'C4_Q13_LIMITED_V1'
+@@ -71,6 +79,101 @@ def verify_packet(root, packet, inputs, output):
+                 input_identity=digest(contract['input_files']))
+ 
+ 
++def _saved_payload(path, *, full):
++    from .reference import validate_saved_reference
++    return validate_saved_reference(json.loads(gzip.decompress(Path(path).read_bytes())), full=full)
++
++
++def verify_b2_preflight(root, inputs, *, environment=True):
++    """Technical bytes/schema checks only. This function grants no science."""
++    root, inputs = Path(root).resolve(), Path(inputs).resolve()
++    contract = json.loads((root/B2_CONTRACT).read_bytes())
++    if (contract['schema'] != B2_SCOPE or contract['scientific_execution_authorized'] is not False
++            or tuple(c['id'] for c in contract['cases']) != CASE_IDS
++            or len([r for c in contract['cases'] for r in c['target_regions']]) != 10):
++        raise ValueError('B2 contract scope drift')
++    for name, expected in contract['source_files'].items():
++        if file_sha(root/name) != expected:
++            raise ValueError('B2 SOURCE drift: '+name)
++    old = root/contract['saved_evidence']['root']
++    manifest_path = old/'OUTPUT_HASH_MANIFEST.json'
++    if file_sha(manifest_path) != contract['saved_evidence']['manifest_sha256']:
++        raise ValueError('Saved packet manifest drift')
++    manifest = json.loads(manifest_path.read_bytes())
++    for name, record in manifest['files'].items():
++        path = (old/name).resolve()
++        if old not in path.parents or file_sha(path) != record['sha256']:
++            raise ValueError('Saved packet byte drift: '+name)
++    prior = json.loads((old/'preparation_contract.json').read_bytes())
++    if json.loads((old/'summary.json').read_bytes())['status'] != contract['saved_evidence']['status']:
++        raise ValueError('Saved correctness qualification drift')
++    if (contract['cases'] != prior['cases'] or contract['compiler'] != prior['compiler']
++            or contract['model'] != prior['model'] or contract['input_files'] != prior['input_files']
++            or contract['tolerances'] != prior['tolerances']):
++        raise ValueError('B2 scientific conditions drift')
++    for name in contract['unchanged_source_files']:
++        if file_sha(root/name) != contract['unchanged_source_files'][name]:
++            raise ValueError('Shared builder/compiler/wrapper drift: '+name)
++    input_bytes = {}
++    for name, expected in contract['input_files'].items():
++        data = (inputs/name).read_bytes()
++        if hashlib.sha256(data).hexdigest() != expected:
++            raise ValueError('Input drift: '+name)
++        input_bytes[name] = data
++    for case in contract['cases']:
++        cid = case['id']
++        report = json.loads((old/'reports'/(cid+'_input.json')).read_bytes())
++        if report['case'] != case or set(report['reference_reports']) != {'90', '128'}:
++            raise ValueError('Saved case/reference metadata drift')
++        _saved_payload(old/'references'/(cid+'_128.json.gz'), full=True)
++        for region in case['target_regions']:
++            name = region['id'].replace('/', '_').replace(':', '_')
++            if name not in report['local_agreement']:
++                raise ValueError('Missing saved precision qualification')
++            _saved_payload(old/'references'/(name+'_128.json.gz'), full=False)
++    if environment:
++        _verify_b2_environment(contract)
++    return dict(root=root, old_packet=old, contract=contract, inputs=input_bytes,
++        input_identity=digest(contract['input_files']),
++        source_identity=digest(contract['source_files']), scope=B2_SCOPE)
++
++
++def _verify_b2_environment(contract):
++    from importlib.metadata import version, distribution
++    env = contract['environment']
++    if platform.python_version() != env['python']:
++        raise ValueError('Python version drift')
++    for name, expected in env['package_versions'].items():
++        if version(name) != expected:
++            raise ValueError('Saved environment version drift: '+name)
++    if file_sha(Path(sys.executable).resolve()) != env['python_executable_sha256']:
++        raise ValueError('Python binary drift')
++    dist = distribution('qiskit')
++    for name, expected in env['qiskit_files'].items():
++        if file_sha(dist.locate_file(name)) != expected:
++            raise ValueError('Qiskit API/native binary drift: '+name)
++
++
++def _verify_b2_packet(root, packet, inputs, output):
++    root, packet, output = (Path(p).resolve() for p in (root, packet, output))
++    approval = json.loads((packet/'approval.json').read_bytes())
++    if (approval.get('stage') != B2_SCOPE or approval.get('approved') is not True
++            or approval.get('authority') != 'USER_EXPLICIT_C4_B2_EXECUTION'
++            or approval.get('contract_sha256') != file_sha(root/B2_CONTRACT)):
++        raise PermissionError('Fresh explicit B2-only execution approval required')
++    if output.exists() or approval['output'] != str(output):
++        raise PermissionError('Fresh bound output required; no retry/resume')
++    head = subprocess.check_output(['git','rev-parse','HEAD'], cwd=root, text=True).strip()
++    if head != approval['source_commit'] or subprocess.check_output(['git','diff','--name-only','HEAD'], cwd=root):
++        raise ValueError('Bound B2 publication commit/worktree drift')
++    verified = verify_b2_preflight(root, inputs)
++    if verified['old_packet'] == output or verified['old_packet'] in output.parents:
++        raise PermissionError('Old evidence output is protected')
++    verified.update(packet=packet, output=output, approval=approval,
++                    source_identity=head+':'+verified['source_identity'])
++    return verified
++
++
+ class Journal:
+     def __init__(self, out, task):
+         self.out = Path(out)
+@@ -123,7 +226,7 @@ def _save_reference(out, name, ctx, values):
+             stream.write(canonical_json(dict(digits=ctx.dps, values=payload)))
+ 
+ 
+-def _matrix(out, name, actual, expected, *, controlled=False):
++def _matrix(out, name, actual, expected, *, controlled=False, literal=None):
+     """One Operator materialization, same absolute/ unitarity gates as legacy.
+ 
+     Unlike controlled_gate's report-only API, save that very matrix without a
+@@ -134,6 +237,9 @@ def _matrix(out, name, actual, expected, *, controlled=False):
+     from . import gates
+     matrix = Operator(actual).data
+     report = gates.matrix_gate(matrix, expected, 1e-10, label=name)
++    if literal is not None:
++        report['before_fusion_literal'] = gates.matrix_gate(matrix, literal, 1e-10,
++                                                          label=name+'_BEFORE_FUSION')
+     if controlled:
+         report['unitarity'] = gates.matrix_gate(matrix.conj().T@matrix,
+             np.eye(len(matrix)), 1e-10, label=name+'_UNITARITY')
+@@ -214,23 +320,103 @@ def _prepare(payload):
+         signal=complex(full['signal']))
+ 
+ 
++def _prepare_saved(payload):
++    """B2 science-only preparation: saved law/targets, zero new references."""
++    import numpy as np
++    from .f1_saved_execution import SavedF1
++    from . import reference as ref, rustiq_adapter as adapter
++    from .prototype import atom_record
++    case, shared, out = payload
++    cid, arm = case['id'], case['arm']
++    old = Path(shared['old_packet'])
++    journal = Journal(out, cid+'_saved_targets')
++    engine = SavedF1(dict(contract=dict(fixture_bundle_path='handoff/f1_bundle.json'),
++                          inputs=shared['inputs']))
++    resolved = journal.call('motif_restore', cid, lambda: engine.resolve_case(case))
++    if canonical_json(resolved['macros']) != canonical_json(case['macros']):
++        raise ValueError('Literal motif drift: '+cid)
++    macros, atoms = engine.macros(arm, resolved['macros']), engine.atoms[arm]
++    provenance = adapter.route_identity('B2', input_identity=shared['input_identity'],
++                                        source_identity=shared['source_identity'])
++    plans = tuple(adapter.plan_sequence(e, atoms, 4, provenance=provenance) for e in macros)
++    saved = json.loads((old/'reports'/(cid+'_input.json')).read_bytes())
++    events = [[e.to_dict() for e in macro] for macro in macros]
++    angle_hex = [[o.signed_angle.hex() if o.signed_angle is not None else None
++                  for o in p.occurrences] for p in plans]
++    if (canonical_json(events) != canonical_json(saved['events'])
++            or canonical_json([atom_record(a) for a in atoms]) != canonical_json(saved['atoms'])
++            or angle_hex != saved['angle_hex']):
++        raise ValueError('Original saved event/angle/atom drift')
++    for p, previous in zip(plans, saved['plans'], strict=True):
++        current = asdict(p)
++        for key in ('occurrences','runs','phases','phase','system_qubits','ancilla'):
++            if canonical_json(current[key]) != canonical_json(previous[key]):
++                raise ValueError('Original plan drift: '+key)
++    target = [dict(id=f'{cid}/macro{mi}/{r.region_id}', macro=mi, region=r.region_id,
++                   occurrence_ordinals=[o.ordinal for o in r.occurrences])
++              for mi,p in enumerate(plans) for run in p.runs for r in run.regions if r.eligible]
++    if target != case['target_regions']:
++        raise ValueError('B2 target region inventory drift')
++    def restore(name, full):
++        value = journal.call('reference_decode', name, lambda: ref.restore_saved_reference(
++            _saved_payload(old/'references'/(name+'_128.json.gz'), full=full), full=full))
++        with (Path(out)/'references'/(name+'_128.json.gz')).open('xb') as stream:
++            stream.write((old/'references'/(name+'_128.json.gz')).read_bytes())
++        return value
++    full = restore(cid, True)
++    local = []
++    for item in target:
++        mi = item['macro']
++        region = next(r for run in plans[mi].runs for r in run.regions if r.region_id == item['region'])
++        name = item['id'].replace('/', '_').replace(':', '_')
++        value = restore(name, False)
++        expected = journal.call('target_matrix', name, lambda: ref.to_numpy(value['controlled']))
++        literal = journal.call('literal_load', name, lambda: np.load(
++            old/'operators'/(name+'_B0_B1_literal.npy'), allow_pickle=False))
++        if literal.shape != (32,32) or not np.isfinite(literal).all():
++            raise ValueError('Saved literal shape/nonfinite')
++        local.append(dict(name=name, region=region, plan=plans[mi], case_id=cid,
++            macro=mi, expected=expected, literal=literal, agreement=saved['local_agreement'][name]))
++    write_json(Path(out)/'reports'/(cid+'_input.json'), dict(case=case, events=events,
++        atoms=[atom_record(a) for a in atoms], plans=[asdict(p) for p in plans], angle_hex=angle_hex,
++        reused_precision_reports=saved['reference_reports'], local_agreement=saved['local_agreement']))
++    expected = journal.call('target_matrix', cid+'_controlled', lambda: ref.to_numpy(
++        ref.controlled_operator(full['ctx'], full['operator'])))
++    wrappers = {a: journal.call('target_matrix', cid+'_wrapper_'+a,
++        lambda a=a: ref.to_numpy(full['wrapper_'+a])) for a in ('X','Y')}
++    signal = journal.call('target_signal', cid, lambda: complex(full['signal']))
++    return dict(case=case, spec=engine.spec, context=engine.context, atoms=atoms, macros=macros,
++        frames=engine.provider.frames, local=local, expected=expected, wrappers=wrappers, signal=signal)
++
++
+ def _local(payload):
+     from qiskit import QuantumCircuit
+     from . import circuits, rustiq_adapter as adapter
+     record, route, out = payload
+     name = record['name']+'_'+route
+     journal = Journal(out, name)
++    ledger = []
+     def build():
+         if route == 'R1':
+             network = adapter.region_network(record['region'], ancilla=4)
+             return adapter._q13(5, network, adapter.Options())
+         qc = QuantumCircuit(5)
++        if route == 'B2':
++            groups = adapter.fusion_groups(record['plan'], record['region'],
++                case_id=record['case_id'], macro_index=record['macro'])
++            ledger.extend(g.ledger for g in groups)
++            for group in groups:
++                circuits.append_central(qc, group.support, 4, group.signed_angle)
++            return qc
+         for occurrence in record['region'].occurrences:
+             circuits.append_central(qc, occurrence.support, 4, occurrence.signed_angle)
+         return qc
+     qc = journal.call('local_build', name, build)
+     _save_circuit(out, name, qc)
+-    report = journal.call('operator', name, lambda: _matrix(out, name, qc, record['expected'], controlled=True))
++    report = journal.call('operator', name, lambda: _matrix(out, name, qc, record['expected'],
++        controlled=True, **(dict(literal=record['literal']) if route == 'B2' else {})))
++    if route == 'B2':
++        report['fusion_ledger'] = ledger
+     write_json(Path(out)/'reports'/(name+'.json'), report)
+     return report
+ 
+@@ -245,7 +431,8 @@ def _full(payload):
+     evolution = journal.call('full_build', name, lambda: adapter.build_evolution(
+         prepared['spec'], prepared['context'], prepared['macros'], prepared['atoms'], provider,
+         input_identity=shared['input_identity'], source_identity=shared['source_identity'],
+-        route=route, trace=trace))
++        route=route, trace=trace,
++        **(dict(case_id=prepared['case']['id']) if route == 'B2' else {})))
+     _save_circuit(out, name+'_evolution', evolution.circuit)
+     report = journal.call('operator', name+'_controlled', lambda: _matrix(
+         out, name+'_controlled', evolution.circuit, prepared['expected'], controlled=True))
+@@ -310,6 +497,55 @@ def _compile(payload):
+         expected_signal=item['expected_signal'], cache_key=key)
+ 
+ 
++def _raw_diagnostic(payload):
++    from qiskit import qpy
++    from .f2_execution import circuit_metrics
++    item, old_packet, out = payload
++    cid = item['parent'].rsplit('_', 1)[0]
++    journal = Journal(out, item['name']+'_raw_metrics')
++    def load():
++        with (Path(old_packet)/'circuits'/(cid+'_B1_'+item['axis']+'_raw.qpy')).open('rb') as stream:
++            circuits = qpy.load(stream)
++        if len(circuits) != 1 or circuits[0].num_qubits != 5:
++            raise ValueError('Saved B1 raw wrapper inventory/register drift')
++        return circuits[0]
++    previous = journal.call('saved_raw_qpy_decode', item['name'], load)
++    old_metric = journal.call('raw_metrics', item['name']+'_B1', lambda: circuit_metrics(previous))
++    new_metric = journal.call('raw_metrics', item['name']+'_B2', lambda: circuit_metrics(item['circuit']))
++    if old_metric['measurement_count'] != 1 or new_metric['measurement_count'] != 1:
++        raise ValueError('Raw wrapper measurement drift')
++    return dict(case=cid, axis=item['axis'], B1=old_metric, B2=new_metric)
++
++
++def paired_metric_rows(saved, new, fields):
++    """Science-only comparison on real evidence; preparation uses toy rows.
++
++    Preserve case/axis correspondence; no sums, ranking, weights or inferred
++    timings. Keep old/new native integer vectors side by side for the design's
++    GO/STOP decision after the separately authorized correctness run.
++    """
++    by_key = {}
++    for row in [*saved, *new]:
++        key = (row['case'],row['axis'],row['route'])
++        if key in by_key:
++            raise ValueError('Duplicate compiled metric record')
++        metric = {}
++        for field in fields:
++            raw = row[field]
++            if (type(raw) is not int and not (isinstance(raw,str) and raw.isascii() and raw.isdecimal())):
++                raise ValueError('Integer compiled metric required: '+field)
++            metric[field] = int(raw)
++            if metric[field] < 0:
++                raise ValueError('Negative compiled metric')
++        if metric['measurement_count'] != 1:
++            raise ValueError('Full measured wrapper required')
++        by_key[key] = metric
++    if set(by_key) != {(cid,a,r) for cid in CASE_IDS for a in ('X','Y') for r in ('B0','B1','R1','B2')}:
++        raise ValueError('Compiled metric correspondence drift')
++    return [dict(case=cid,axis=a,metrics={r:by_key[(cid,a,r)] for r in ('B0','B1','R1','B2')})
++            for cid in CASE_IDS for a in ('X','Y')]
++
++
+ def _worker_init(threads):
+     # Own processes only; source/lock/packages/shared caches remain untouched.
+     os.environ.update(OPENBLAS_NUM_THREADS='1', OMP_NUM_THREADS='1', MKL_NUM_THREADS='1',
+@@ -333,6 +569,7 @@ def journal_counts(output):
+ 
+ 
+ def execute(verified):
++    b2 = verified.get('scope') == B2_SCOPE
+     from importlib.metadata import version
+     if platform.python_version() != verified['contract']['environment']['python']:
+         raise ValueError('Python version drift')
+@@ -346,9 +583,15 @@ def execute(verified):
+     write_json(out/'approval.json', verified['approval'])
+     write_json(out/'preparation_contract.json', verified['contract'])
+     write_json(out/'execution_binding.json', dict(source_identity=verified['source_identity'],
+-        input_identity=verified['input_identity'], retry_policy='User authorizes technical fixes/fresh attempts; no scientific condition or tolerance changes. Preserve failed attempts.'))
++        input_identity=verified['input_identity'],
++        retry_policy=('No retry/resume; fresh separate user approval required.' if b2 else
++        'User authorizes technical fixes/fresh attempts; no scientific condition or tolerance changes. Preserve failed attempts.')))
++    if b2:
++        with (out/'source_diff.patch').open('xb') as stream:
++            stream.write(subprocess.check_output(['git','diff',verified['contract']['design_commit'],
++                'HEAD','--',*verified['contract']['changed_source_files']], cwd=verified['root']))
+     cpus = len(os.sched_getaffinity(0))
+-    workers = min(24, cpus)  # 24 independent registered wrapper tasks, not an artificial cap
++    workers = min(10 if b2 else 24, cpus)  # maximum independent stage tasks, not an artificial cap
+     threads = max(1, cpus//workers)
+     resources = dict(affinity_cpus=cpus, load_average=os.getloadavg(), workers=workers,
+         thread_rule='BLAS/OpenMP/Numba/Qiskit=1; Rayon=available CPUs // active worker capacity',
+@@ -359,6 +602,8 @@ def execute(verified):
+     write_json(out/'resources.json', resources)
+     _worker_init(threads)
+     shared = {k: verified[k] for k in ('inputs', 'input_identity', 'source_identity')}
++    if b2:
++        shared['old_packet'] = str(verified['old_packet'])
+     start, cpu_start = time.perf_counter(), time.process_time()
+     journal = Journal(out, 'main')
+     from . import gates
+@@ -368,19 +613,19 @@ def execute(verified):
+                                  initializer=_worker_init, initargs=(threads,)) as pool:
+             def stage(name, function, jobs):
+                 for path, sha in {**verified['contract']['source_files'],
+-                                  **verified['approval']['execution_files']}.items():
++                                  **verified['approval'].get('execution_files', {})}.items():
+                     if file_sha(verified['root']/path) != sha:
+                         raise ValueError('Frozen SOURCE drift: '+path)
+                 print(name, 'START', len(jobs), flush=True)
+                 results = list(pool.map(function, jobs, chunksize=1))
+                 print(name, 'PASS', len(results), flush=True)
+                 return results
+-            prepared = stage('REFERENCES', _prepare,
++            prepared = stage('SAVED_TARGETS' if b2 else 'REFERENCES', _prepare_saved if b2 else _prepare,
+                 [(c, shared, str(out)) for c in verified['contract']['cases']])
+             local = stage('LOCAL', _local, [(r, route, str(out)) for p in prepared
+-                for r in p['local'] for route in ('B0_B1_literal', 'R1')])
++                for r in p['local'] for route in (('B2',) if b2 else ('B0_B1_literal', 'R1'))])
+             full = stage('CONTROLLED', _full, [(p, route, shared, str(out))
+-                for p in prepared for route in ('B0', 'B1', 'R1')])
++                for p in prepared for route in (('B2',) if b2 else ('B0', 'B1', 'R1'))])
+             adjoints = stage('ADJOINT', _adjoint, [(item, str(out)) for item in full])
+             wrappers = stage('RAW_XY', _wrapper, [(item, axis, str(out)) for item in full for axis in ('X', 'Y')])
+             raw_pairs = {}
+@@ -398,13 +643,54 @@ def execute(verified):
+             for item in compiled:
+                 metric = journal.call('metrics', item['name'], lambda: circuit_metrics(item['circuit']))
+                 metrics.append(dict(case=item['parent'].rsplit('_', 1)[0], route=item['route'], axis=item['axis'], **metric))
++            raw_diagnosis = stage('RAW_IR_DIAGNOSIS', _raw_diagnostic,
++                [(item, str(verified['old_packet']), str(out)) for item in wrappers]) if b2 else None
+         counts, lines = journal_counts(out)
+         expected = dict(motif_restore=4, reference=28, local_build=20, full_build=12,
+             adjoint=12, wrapper_build=24, operator=68, raw_signal=24, compile_cold=24,
+             compile_warm=24, compiled_signal=24, signal_pair=24, metrics=24)
++        if b2:
++            expected = verified['contract']['journal_counts']
+         if counts != expected:
+             raise ValueError('Call accounting mismatch: '+str(counts))
+         synthesis = [t for item in full for t in item['trace'] if t['kind'] == 'synthesis']
++        if b2:
++            if synthesis or len(local) != 10 or len(full) != 4 or len(compiled) != 8:
++                raise ValueError('B2 route/call inventory drift')
++            if (sum('before_fusion_literal' in r for r in local) != 10
++                    or sum('unitarity' in r for r in local) != 10
++                    or sum('unitarity' in i['operator'] for i in full) != 4):
++                raise ValueError('B2 absolute/ before-after /unitarity comparison count drift')
++            fusion = [t for item in full for t in item['trace'] if t['kind'] == 'fusion']
++            if len(fusion) != 10:
++                raise ValueError('Full fusion region inventory drift')
++            write_json(out/'raw_ir_diagnosis.json', raw_diagnosis)
++            with (verified['old_packet']/'metrics.csv').open() as stream:
++                saved_metrics = list(csv.DictReader(stream))
++            keys = {(row['case'], row['route'], row['axis']) for row in saved_metrics}
++            if keys != {(cid,r,a) for cid in CASE_IDS for r in ('B0','B1','R1') for a in ('X','Y')} or len(saved_metrics) != 24:
++                raise ValueError('Saved compiled metric inventory drift')
++            write_json(out/'saved_compiled_metrics.json', saved_metrics)
++            write_json(out/'paired_compiled_metrics.json', paired_metric_rows(
++                saved_metrics, metrics, verified['contract']['resources']['metrics']))
++            write_json(out/'metrics.json', metrics)
++            write_json(out/'signal_reports.json', dict(raw=raw_pairs, compiled=compiled_pairs))
++            write_json(out/'provenance.json', dict(source_commit=verified['approval']['source_commit'],
++                source_files=verified['contract']['source_files'], input_files=verified['contract']['input_files'],
++                parent_evidence=verified['contract']['saved_evidence'], environment=verified['contract']['environment'],
++                compiler=verified['contract']['compiler'], fusion_policy=verified['contract']['fusion_policy'],
++                local_evidence='New local execution, not CI or independent external reproduction'))
++            summary = dict(status='C4_B2_CORRECTNESS_PASS_RESOURCES_RECORDED_MANDATORY_STOP',
++                source_commit=verified['approval']['source_commit'], counts=counts, journal_lines=lines,
++                operator_comparisons=36, unitarity_checks=14, new_references=0,
++                Rustiq_calls=0, transpile_calls=8, cold_misses=8, warm_hits=8,
++                further_science_authorized=False, wall_seconds=time.perf_counter()-start,
++                parent_cpu_seconds=time.process_time()-cpu_start,
++                children_cpu_seconds=resource.getrusage(resource.RUSAGE_CHILDREN).ru_utime+
++                    resource.getrusage(resource.RUSAGE_CHILDREN).ru_stime)
++            write_json(out/'summary.json', summary)
++            write_json(out/'STOP.json', dict(status='COMPLETED_MANDATORY_STOP', further_science=False))
++            return summary
+         if len(synthesis) != 10:
+             raise ValueError('Full synthesis count drift')
+         total_terms = sum(len(t['terms']) for t in synthesis)*2
+diff --git a/tests/management/test_research_c_rustiq_adapter.py b/tests/management/test_research_c_rustiq_adapter.py
+index d7b511096..1e4d9e370 100644
+--- a/tests/management/test_research_c_rustiq_adapter.py
++++ b/tests/management/test_research_c_rustiq_adapter.py
+@@ -6,8 +6,10 @@ from types import SimpleNamespace
+ from unittest.mock import Mock, patch
+ import math
+ import hashlib
++import importlib.metadata  # keep module lifetime stable across synthetic sys.modules patches
+ import json
+ import sys
++import subprocess
+ import unittest
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+@@ -207,7 +209,7 @@ class AdapterTests(unittest.TestCase):
+                       for r in adapter.ROUTES]
+         identities.extend([adapter.route_identity('R1', input_identity='i2', source_identity='s'),
+                            adapter.route_identity('R1', input_identity='i', source_identity='s2')])
+-        self.assertEqual(len({digest(x) for x in identities}), 5)
++        self.assertEqual(len({digest(x) for x in identities}), len(adapter.ROUTES)+2)
+         p = provenance()
+         p['options']['upto_phase'] = True
+         with self.assertRaises(ValueError):
+@@ -322,7 +324,108 @@ class AdapterTests(unittest.TestCase):
+         c = json.loads(path.read_bytes())
+         for name, expected in c['source_files'].items():
+             with self.subTest(path=name):
+-                self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(), expected)
++                frozen = subprocess.check_output(['git','show',
++                    '5038427e034c5e2cca6674998d28715cd93ec551:'+name], cwd=ROOT)
++                self.assertEqual(hashlib.sha256(frozen).hexdigest(), expected)
++
++    def test_B2_maximal_adjacent_groups_keep_P_Q_P_and_atom_aliases(self):
++        a, alias = atom('a'), atom('alias', negative=True)
++        q = atom('q', ('I','Z','I','I'))
++        p = plan([event(a),event(alias,angle=-0.25),event(q),event(a)], [a,alias,q], 'B2')
++        groups = adapter.fusion_groups(p, p.runs[0].regions[0], case_id='artificial', macro_index=0)
++        self.assertEqual([g.signed_angle for g in groups], [-0.125,0.125,0.125])
++        self.assertEqual([[m['ordinal'] for m in g.ledger['members']] for g in groups], [[0,1],[2],[3]])
++        self.assertEqual([m['atom_id'] for m in groups[0].ledger['members']], ['a','alias'])
++        self.assertEqual([m['coefficient_sign'] for m in groups[0].ledger['members']], [1,-1])
++        self.assertEqual(len(p.occurrences),4)
++
++    def test_B2_fsum_keeps_distinct_Taylor_angles_without_representative_multiplier(self):
++        a = atom('a')
++        events = [event(a,angle=x) for x in (1e16,1.0,-1e16)]
++        for e, n in zip(events, (2,0,0)):
++            e.taylor_order = n
++        p = plan(events,[a],'B2')
++        g, = adapter.fusion_groups(p,p.runs[0].regions[0],case_id='artificial',macro_index=0)
++        self.assertEqual(g.signed_angle,1.0)
++        self.assertEqual([e.taylor_order for e in events],[2,0,0])
++        self.assertEqual([m['angle_hex'] for m in g.ledger['members']], [x.hex() for x in (1e16,1.0,-1e16)])
++
++    def test_B2_singleton_negative_zero_and_zero_sum_are_not_deleted(self):
++        a = atom('a')
++        for angles in [(-0.0,), (0.125,-0.125), (math.pi,math.pi)]:
++            p = plan([event(a,angle=x) for x in angles],[a],'B2')
++            g, = adapter.fusion_groups(p,p.runs[0].regions[0],case_id='artificial',macro_index=0)
++            wanted = angles[0] if len(angles)==1 else math.fsum(angles)
++            self.assertEqual(g.signed_angle.hex(),wanted.hex())
++        for bad in (float('nan'),float('inf'),1):
++            with self.assertRaises(ValueError):
++                adapter._signed_sum([SimpleNamespace(signed_angle=bad)])
++        with self.assertRaisesRegex(ValueError,'overflow'):
++            adapter._signed_sum([SimpleNamespace(signed_angle=1e308)]*2)
++
++    def test_B2_original_word_and_frame_are_in_the_group_key(self):
++        a = atom('a')
++        p = plan([event(a),event(a)],[a],'B2')
++        for field,value in [('word',('X','I','I','I')),('frame_id','other')]:
++            second = replace(p.occurrences[1],**{field:value})
++            occurrences = (p.occurrences[0],second)
++            region = replace(p.runs[0].regions[0],occurrences=occurrences)
++            changed = replace(p,occurrences=occurrences,runs=(replace(p.runs[0],regions=(region,)),))
++            data = adapter.asdict(changed); data.pop('fingerprint')
++            changed = replace(changed,fingerprint=digest(data))
++            self.assertEqual(len(adapter.fusion_groups(changed,region,case_id='artificial',macro_index=0)),2)
++
++    def test_B2_product_identity_basis_macro_fences_and_phase_are_preserved(self):
++        a, other = atom('a',negative=True),atom('other',frame='F1')
++        identity = atom('identity',('I',)*4,kind='IDENTITY')
++        p = plan([event(a,a,phase=-1),event(a),event(identity,angle=0.25),event(other),event(a)],
++                 [a,identity,other],'B2')
++        groups = [g for run in p.runs for r in run.regions if r.eligible
++                  for g in adapter.fusion_groups(p,r,case_id='artificial',macro_index=0)]
++        self.assertEqual([len(g.ledger['members']) for g in groups],[2,1,1])
++        self.assertEqual(p.phase,math.pi+math.pi-0.25)
++        region = p.runs[0].regions[-1]
++        other_macro = adapter.fusion_groups(p,region,case_id='artificial',macro_index=1)
++        self.assertNotEqual(digest(groups[0].ledger),digest(other_macro[0].ledger))
++        with self.assertRaises(ValueError):
++            adapter.fusion_groups(p,p.runs[0].regions[0],case_id='artificial',macro_index=0)
++        crossing = adapter.Region('crossing',(p.occurrences[1],p.occurrences[-1]),True)
++        with self.assertRaises(ValueError):
++            adapter.fusion_groups(p,crossing,case_id='artificial',macro_index=0)
++
++    def test_B2_emits_one_existing_controlled_primitive_keeps_original_full_basis(self):
++        a = atom('a')
++        p = plan([event(a),event(a,angle=-0.125)],[a],'B2')
++        provider = SimpleNamespace(modes=4,basis=Mock(return_value=Mock()),
++                                   reference_support=lambda a,singleton:a.support)
++        trace=[]
++        with patch.object(adapter,'_new_circuit',return_value=Recorder(5)), \
++                patch.object(adapter,'_q13',side_effect=AssertionError('No Rustiq')), \
++                patch.object(adapter.legacy,'append_central') as central:
++            adapter.emit_sequence(p,[a],provider,trace=trace,case_id='artificial',macro_index=0)
++        provider.basis.assert_called_once_with(a,singleton=False)
++        self.assertEqual(central.call_count,1)
++        self.assertEqual(central.call_args.args[1:],((0,),4,0.0))
++        self.assertEqual(trace[0]['kind'],'fusion')
++        self.assertEqual(trace[0]['ledger'][0]['original_plan'],p.fingerprint)
++
++    def test_B2_route_fingerprint_cache_and_scoped_original_order(self):
++        a = atom('a'); e = event(a)
++        context = EvolutionContext('1/5',2,2,2)
++        spec = SimpleNamespace(modes=4,scalar='1/37',deterministic=('1/20',)*4,validate=Mock())
++        provider = SimpleNamespace(modes=4,basis=Mock(return_value=Mock()),
++                                   reference_support=lambda a,singleton:a.support)
++        with patch.object(adapter,'_new_circuit',side_effect=Recorder), \
++                patch.object(adapter.legacy,'append_deterministic'), \
++                patch.object(adapter.legacy,'append_central'), \
++                patch.object(adapter,'_q13',side_effect=AssertionError('No Rustiq')):
++            result = adapter.build_evolution(spec,context,((e,e),(e,e)),[a],provider,
++                input_identity='i',source_identity='s',route='B2',case_id='artificial')
++        self.assertEqual(result.ordered_events,((e.to_dict(),e.to_dict()),)*2)
++        identity=adapter.compile_identity(result,route='B2')
++        self.assertEqual(identity['fusion_policy'],adapter.FUSION_POLICY)
++        self.assertEqual(identity['evolution'],result.fingerprint)
++        self.assertNotEqual(plan([e],[a],'B1').fingerprint,plan([e],[a],'B2').fingerprint)
+ 
+ 
+ if __name__ == '__main__':
+diff --git a/tests/management/test_research_c_rustiq_execution.py b/tests/management/test_research_c_rustiq_execution.py
+index 8123e90d1..e290f039f 100644
+--- a/tests/management/test_research_c_rustiq_execution.py
++++ b/tests/management/test_research_c_rustiq_execution.py
+@@ -1,13 +1,17 @@
+ """Approval, call accounting and failure preservation without science imports."""
+ from pathlib import Path
+ from tempfile import TemporaryDirectory
+-from unittest.mock import patch
++from unittest.mock import patch, Mock
++from types import SimpleNamespace
++from decimal import Decimal, localcontext
++import json
+ import sys
+ import unittest
+ 
+ ROOT = Path(__file__).resolve().parents[2]
+ sys.path.insert(0, str(ROOT/'src'))
+ from trottertracks.pr_dictionary_validation import rustiq_execution as execution
++from trottertracks.pr_dictionary_validation import reference
+ 
+ 
+ class ExecutionManagementTests(unittest.TestCase):
+@@ -67,6 +71,197 @@ class ExecutionManagementTests(unittest.TestCase):
+                 journal.call('mock', 'no-new-dependency', lambda: None)
+             self.assertEqual(len(journal.path.read_text().splitlines()), 4)
+ 
++    def test_B2_rejects_old_grant_before_preflight_or_science(self):
++        with TemporaryDirectory() as tmp:
++            root=Path(tmp)
++            execution.write_json(root/'approval.json',dict(stage='C4_Q13_LIMITED_V1',approved=True))
++            with patch.object(execution,'verify_b2_preflight',side_effect=AssertionError('No preparation')), \
++                    self.assertRaises(PermissionError):
++                execution.verify_packet(root,root,root,root/'out',scope=execution.B2_SCOPE)
++
++    def test_B2_fresh_bound_grant_and_protected_output(self):
++        with TemporaryDirectory() as tmp:
++            root=Path(tmp)
++            (root/execution.B2_CONTRACT).parent.mkdir(parents=True)
++            execution.write_json(root/execution.B2_CONTRACT,dict(artificial=True))
++            approval=dict(stage=execution.B2_SCOPE,authority='USER_EXPLICIT_C4_B2_EXECUTION',approved=True,
++                contract_sha256=execution.file_sha(root/execution.B2_CONTRACT),source_commit='artificial',
++                output=str(root/'out'))
++            execution.write_json(root/'approval.json',approval)
++            def git(cmd,**kwargs):
++                return 'artificial\n' if cmd[1]=='rev-parse' else b''
++            verified=dict(old_packet=root/'old',source_identity='hash')
++            with patch.object(execution.subprocess,'check_output',side_effect=git), \
++                    patch.object(execution,'verify_b2_preflight',return_value=verified):
++                result=execution.verify_packet(root,root,root,root/'out',scope=execution.B2_SCOPE)
++                self.assertEqual(result['source_identity'],'artificial:hash')
++                (root/'out').mkdir()
++                with self.assertRaises(PermissionError):
++                    execution.verify_packet(root,root,root,root/'out',scope=execution.B2_SCOPE)
++
++    def test_saved_reader_decimal_and_complex_grammar_is_strict(self):
++        for text, parts in [('0.0',('0.0','0')),('-0.0',('-0.0','0')),
++                            ('1.234e-128',('1.234e-128','0')),
++                            ('(-1.25e+3 - 0.0004j)',('-1.25e+3','-0.0004')),
++                            ('(0.0 + 1.0j)',('0.0','1.0'))]:
++            self.assertEqual(reference.saved_scalar_parts(text),parts)
++        for text in ('nan','+inf','(1.0 + -2.0j)','1+2j','__import__("os")',1.0,' 1.0','(1.0 + 2.0j)garbage'):
++            with self.subTest(text=text),self.assertRaises(ValueError):
++                reference.saved_scalar_parts(text)
++
++    def test_saved_reader_passes_original_decimal_text_to_context_without_float(self):
++        text='0.123456789012345678901234567890123456789012345678901234567890'
++        payload=dict(digits=128,values=dict(controlled=[[text]*32 for _ in range(32)]))
++        ctx=SimpleNamespace(mpf=Decimal,mpc=lambda real,imag:(real,imag),
++            isfinite=lambda value:all(x.is_finite() for x in value),matrix=lambda rows:rows)
++        with localcontext() as decimal_context,patch.object(reference,'precision_context',return_value=ctx):
++            decimal_context.prec=200
++            restored=reference.restore_saved_reference(payload,full=False)
++            self.assertEqual(str(restored['controlled'][0][0][0]),text)
++        payload['digits']=90
++        with patch.object(reference,'precision_context',side_effect=AssertionError('No context')), \
++                self.assertRaises(ValueError):
++            reference.restore_saved_reference(payload,full=False)
++
++    def test_saved_reader_schema_and_shapes_fail_closed(self):
++        payload=dict(digits=128,values=dict(controlled=[['0.0']*32 for _ in range(32)]))
++        self.assertIs(reference.validate_saved_reference(payload,full=False),payload)
++        for bad in (dict(digits=128,values=dict(controlled=[['0.0']])),
++                    dict(digits=128,values=dict(controlled=payload['values']['controlled'],signal='0.0')),
++                    dict(digits=True,values=payload['values'])):
++            with self.assertRaises(ValueError):
++                reference.validate_saved_reference(bad,full=False)
++
++    def test_before_after_gate_materializes_Operator_once_with_mock_only(self):
++        from trottertracks.pr_dictionary_validation import gates
++        matrix=object(); operator=Mock(return_value=SimpleNamespace(data=matrix))
++        numpy=SimpleNamespace(save=Mock())
++        with TemporaryDirectory() as tmp, \
++                patch.dict(sys.modules,{'numpy':numpy,'qiskit.quantum_info':SimpleNamespace(Operator=operator)}), \
++                patch.object(gates,'matrix_gate',side_effect=[dict(label='reference'),dict(label='literal')]) as gate:
++            report=execution._matrix(tmp,'artificial','circuit-token','independent-target',literal='saved-literal')
++        operator.assert_called_once_with('circuit-token')
++        self.assertEqual(gate.call_count,2)
++        self.assertIs(gate.call_args_list[0].args[0],matrix)
++        self.assertIs(gate.call_args_list[1].args[0],matrix)
++        self.assertEqual(report['before_fusion_literal']['label'],'literal')
++
++    def test_B2_local_dispatch_calls_existing_emitter_without_Rustiq_or_real_QC(self):
++        from trottertracks.pr_dictionary_validation import rustiq_adapter as adapter
++        from trottertracks.pr_dictionary_validation import circuits
++        group=adapter.FusionGroup((0,),0.0,dict(policy='artificial'))
++        record=dict(name='artificial',region='region-token',plan='plan-token',case_id='case',macro=0,
++                    expected='independent-token',literal='literal-token')
++        qc=object()
++        with TemporaryDirectory() as tmp:
++            out=Path(tmp);(out/'journals').mkdir();(out/'reports').mkdir()
++            with patch.dict(sys.modules,{'qiskit':SimpleNamespace(QuantumCircuit=Mock(return_value=qc))}), \
++                    patch.object(adapter,'fusion_groups',return_value=(group,)), \
++                    patch.object(adapter,'_q13',side_effect=AssertionError('No Rustiq')), \
++                    patch.object(circuits,'append_central') as central, \
++                    patch.object(execution,'_save_circuit'), \
++                    patch.object(execution,'_matrix',return_value={}) as gate:
++                result=execution._local((record,'B2',str(out)))
++            central.assert_called_once_with(qc,(0,),4,0.0)
++            self.assertEqual(gate.call_args.kwargs['literal'],'literal-token')
++            self.assertEqual(result['fusion_ledger'],[group.ledger])
++            self.assertEqual(execution.journal_counts(out)[0],dict(local_build=1,operator=1))
++
++    def test_B2_contract_binds_current_source_and_zero_old_route_execution(self):
++        contract=json.loads((ROOT/execution.B2_CONTRACT).read_bytes())
++        self.assertFalse(contract['scientific_execution_authorized'])
++        self.assertEqual(contract['schema'],execution.B2_SCOPE)
++        for name,expected in contract['source_files'].items():
++            self.assertEqual(execution.file_sha(ROOT/name),expected,name)
++        self.assertEqual(contract['call_counts']['operator_materializations'],26)
++        self.assertEqual(contract['call_counts']['Rustiq_synthesis_calls'],0)
++        self.assertEqual(contract['call_counts']['new_references'],0)
++        self.assertEqual(contract['call_counts']['old_route_execution'],0)
++
++    def test_B2_controller_uses_only_opt_in_jobs_and_stops_at_failed_stage(self):
++        """All worker operations are tokens; no circuit/reference numeric work."""
++        from contextlib import ExitStack
++        from trottertracks.pr_dictionary_validation import gates, f2_execution
++        class TokenPool:
++            def __init__(self,**kwargs): pass
++            def __enter__(self): return self
++            def __exit__(self,*args): pass
++            def map(self,function,jobs,**kwargs): return map(function,jobs)
++        cases=[dict(id=cid,regions=n) for cid,n in zip(execution.CASE_IDS,(2,2,2,4))]
++        def prepare(payload):
++            case,shared,out=payload
++            return dict(case=case,local=['local-token']*case['regions'],signal=0j)
++        def full(payload):
++            p,route,shared,out=payload
++            self.assertEqual(route,'B2')
++            return dict(name=p['case']['id']+'_B2',route=route,prepared=p,
++                trace=[dict(kind='fusion')]*p['case']['regions'],operator=dict(unitarity={}))
++        def wrapper(payload):
++            item,axis,out=payload
++            return dict(name=item['name']+'_'+axis,parent=item['name'],axis=axis,
++                route=item['route'],raw_signal=0,expected_signal=0j,circuit='raw-token')
++        def compile_token(payload):
++            item,out=payload
++            return dict(item,compiled_signal=0)
++        for fail_local in (False,True):
++            with self.subTest(fail_local=fail_local),TemporaryDirectory() as tmp,ExitStack() as stack:
++                root=Path(tmp);old=root/'old';old.mkdir()
++                with (old/'metrics.csv').open('w') as stream:
++                    stream.write('case,route,axis,measurement_count\n')
++                    for cid in execution.CASE_IDS:
++                        for route in ('B0','B1','R1'):
++                            for axis in ('X','Y'): stream.write(f'{cid},{route},{axis},1\n')
++                contract=dict(environment=dict(python=execution.platform.python_version()),
++                    cases=cases,source_files={},design_commit='artificial',changed_source_files=[],
++                    journal_counts=dict(signal_pair=8,metrics=8),input_files={},saved_evidence={},
++                    compiler={},fusion_policy='artificial',resources=dict(metrics=['measurement_count']))
++                verified=dict(scope=execution.B2_SCOPE,contract=contract,root=root,old_packet=old,
++                    output=root/'out',inputs={},input_identity='i',source_identity='s',
++                    approval=dict(source_commit='artificial'))
++                mocks={}
++                replacements=dict(_prepare_saved=prepare,_full=full,_adjoint=lambda x:{},
++                    _wrapper=wrapper,_compile=compile_token,_raw_diagnostic=lambda x:{})
++                for name,function in replacements.items():
++                    mocks[name]=stack.enter_context(patch.object(execution,name,side_effect=function))
++                def local_token(payload):
++                    self.assertEqual(payload[1],'B2')
++                    if fail_local: raise ValueError('artificial local failure')
++                    return dict(before_fusion_literal={},unitarity={})
++                mocks['_local']=stack.enter_context(patch.object(execution,'_local',side_effect=local_token))
++                stack.enter_context(patch.object(execution,'_prepare',side_effect=AssertionError('No new references')))
++                stack.enter_context(patch.object(execution,'ProcessPoolExecutor',TokenPool))
++                stack.enter_context(patch.object(execution,'_worker_init'))
++                stack.enter_context(patch.object(execution.subprocess,'check_output',return_value=b'artificial diff'))
++                stack.enter_context(patch.object(gates,'signal_gate',return_value=dict(error=0)))
++                stack.enter_context(patch.object(f2_execution,'circuit_metrics',return_value=dict(measurement_count=1)))
++                if fail_local:
++                    with self.assertRaisesRegex(ValueError,'artificial local failure'):
++                        execution.execute(verified)
++                    mocks['_full'].assert_not_called()
++                    self.assertEqual(json.loads((root/'out/STOP.json').read_bytes())['status'],
++                                     'FAILED_ATTEMPT_PRESERVED')
++                else:
++                    result=execution.execute(verified)
++                    self.assertEqual(result['Rustiq_calls'],0)
++                    for name,expected in dict(_prepare_saved=4,_local=10,_full=4,_adjoint=4,
++                                               _wrapper=8,_compile=8,_raw_diagnostic=8).items():
++                        self.assertEqual(mocks[name].call_count,expected,name)
++
++    def test_paired_cost_table_uses_only_same_case_axis_integer_vectors_on_toy_rows(self):
++        saved=[];new=[]
++        for cid in execution.CASE_IDS:
++            for axis in ('X','Y'):
++                for route in ('B0','B1','R1','B2'):
++                    row=dict(case=cid,axis=axis,route=route,measurement_count=1,cx_count=7 if route=='B2' else '9')
++                    (new if route=='B2' else saved).append(row)
++        rows=execution.paired_metric_rows(saved,new,['cx_count','measurement_count'])
++        self.assertEqual(len(rows),8)
++        self.assertEqual(rows[0]['metrics']['B2']['cx_count'],7)
++        self.assertEqual(rows[0]['metrics']['R1']['cx_count'],9)
++        new[0]['measurement_count']=0
++        with self.assertRaises(ValueError):
++            execution.paired_metric_rows(saved,new,['cx_count','measurement_count'])
++
+ 
+ if __name__ == '__main__':
+     unittest.main()

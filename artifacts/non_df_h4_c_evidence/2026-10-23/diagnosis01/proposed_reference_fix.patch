@@ -1,0 +1,10 @@
+--- a/src/trotterlib/h4_ball_evidence.py
++++ b/src/trotterlib/h4_ball_evidence.py
+@@
+-def signal(state,out):return (dagger(state)*out)[0,0]
++def signal(state,out):
++    require(state.ncols()==out.ncols()==1 and state.nrows()==out.nrows(), 'SIGNAL_STATE_VECTOR_SHAPE')
++    return (dagger(state)*out)[0,0]
+@@
+-        reference=signal(state,self.expm(full*acb(0,-T),('reference',bits)))
++        reference=signal(state,self.expm(full*acb(0,-T),('reference',bits))*state)
