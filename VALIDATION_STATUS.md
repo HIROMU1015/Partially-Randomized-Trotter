@@ -602,3 +602,8 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 [収録ファイル・保存版と確認範囲](docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## H8長時間・高次PRの新規探索（2026-11-04）
+
+分類はlocal validation / exploration complete。[結果と限定条件](docs/research/h8_long_time_execution_20261103/EXPLORATION_RESULTS_20261104.md)。Linear H8、1.00 Å、STO-3G、保存tol-only1e-8 DF28、T=1.6、ε=.0005、P=0、PR R_outer32/K4。69候補のsignal/shot、選定19候補・51標本・102軸の直接価格とpaired Gを保存した。全19代表の計133検査が許容内。これは今回の固定scopeの完了であり、上記の歴史的DF/UWC監査や他研究の状態を変更しない。
+Signal SOURCE `d1272016592ff06c0567862f770ed796fd61b366`、native SOURCE `df93fbb88761b61c2691bf01f761ed20a7987d7f`、位相補助SOURCE `18ce41942051065fa097644a8a937bd11adba708`。元の失敗/HOLDを保持し、状態vectorの位相整列や許容誤差緩和はしていない。入力raw・seed/event・QPYはprivate保全、匿名価格・検査metadataは公開対象。外部独立再現、確認Stage C、母集団保証、全domain最適性と全RPE総費用は未検証。

@@ -68,3 +68,8 @@ PRの6件では、`to_dict()`中のtupleが保存JSONからlistとして復元�
 
 20:27 JSTの確認では、最初の位相補助実行は2件とも技術的HOLDで終了していた。m5は18:20に補正後cosine vector差7.80e-12（許容1e-7、位相整列なし）まで通過したが、sine wrapperの`sdg`が局所operator検査の対象に未登録だった。S2は18:58に、元run以外の復旧先に保存されていたcompiled QPYを再利用対象から漏らしたため、`SAME_ORIGINAL_RAW_COMPILED_CIRCUIT`で停止した。S2の復旧QPYと再compile QPYのhashは一致した。
 追加修正の範囲内で、S†も小operator検査を要求する対象に加え、既知の復旧cacheを検索するよう修正した。保存済みcosine wrapperから元evolutionを取り出し、同じnative builderによるcosine再構築fingerprintの一致を要求する。これにより重い同一回路の再構成を避ける。保存vector・局所operator検査は元のSOURCE・標本・preparation・hashを照合して再利用し、補正済みvectorには位相を二重に加えない。人工3qubit回路のS†と完全な保存再利用を含め関連36テストPASS。元の全HOLDと最初の補助SOURCE `f04ef60c960fd2a68bcf0506f4c505f0bc872b78`は保全し、次の補助SOURCEと別のprivate保存先で同じ2標本だけを継続する。科学条件・許容誤差・標本数は変更しない。
+
+## 探索完了（11月4日23:06 JST）
+
+最終補助SOURCE `18ce41942051065fa097644a8a937bd11adba708`で、m5 prefix8代表は21:01、S2 prefix8代表は23:06に全7検査PASS。全51 trajectory・19候補・102軸の探索価格集計を完了した。19代表の計133検査と、51標本からの19候補の固定Nによる平均Gを照合した。
+[完全な探索結果](EXPLORATION_RESULTS_20261104.md)を参照。最良の測定済みPFはB0+I/m5/prefix15/q1、G=8.9291219516568e13。PR m5/prefix8/q1/R_outer32/K4の9標本平均G=6.732336259192e13、PF比0.75397517（観測平均で24.60%低い）。母集団保証・全domain最適性・全RPE総費用・確認cohortの結果ではない。元の失敗/HOLD、17:50中間集計と科学SOURCEを保持した。Stage Cは未実行。

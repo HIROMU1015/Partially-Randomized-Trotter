@@ -180,3 +180,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 11月4日の[compiler位相補助実装・再検証範囲](docs/research/h8_long_time_execution_20261103/COMPILER_PHASE_REPAIR_PROPOSAL_20261104.md#追加修正の実装11月4日上記提案後)は、元の2代表と保存標本に限定する。元の失敗・HOLDと補正後の来歴を区別する。
 
 [11月4日17:50の中間集計](docs/research/h8_long_time_execution_20261103/INTERIM_RESULTS_20261104_1750JST.md)は49/51標本の保存価格。代表検証待ち2候補の値は暫定で、最終順位・母集団保証を主張しない。
+
+[11月4日23:06に完了した全件探索結果](docs/research/h8_long_time_execution_20261103/EXPLORATION_RESULTS_20261104.md)は51標本・19候補。全代表検証が通過した。確認Stage Cと母集団保証は未実施。
