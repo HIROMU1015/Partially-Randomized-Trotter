@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Head bridge／Stage Pの技術準備（2026-11-04）
+
+[Head経路・二leg・full512/inverse/shell・未承認契約](../../docs/research/research_c_head_bridge_stage_p_readiness_20261104.md)。`c_head_reference_bridge.py` / `c_stage_p_literal.py` / `c_head_stage_p_execution.py`、`prepare_research_c_head_bridge_stage_p.py`。人工43／関連355 PASS。H26-call、P41-callは独立した未承認契約、passive科学0。実H4の両boundはnull、旧SOURCE/raw/STOP保全、mandatory STOP。
+
 ## 研究C：schema修正後Stage R・256-call完了（2026-11-04）
 
 [Stage R結果・norm/range・head bridge残件](../../docs/research/research_c_population_range_schema_execution_20261104.md)。SOURCE60cdba8fe無変更、256/256 COMPLETE・FAIL/retry/resume0。保存H4/1Å/STO-3G・CDF8/LD2/S2/s1/r32/K0/h=.1/m0..12でa−1≈1.76183e-16、M=1+a>2、m12成長上界−1≈7.21647e-13。B2 head bit一致0/3、追加bridge必要。全law合成/校正/CA未資格、旧失敗原本保全、mandatory STOP。
