@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[全18round categorical平均とControlled Hadamard回路の接続調査](research/rpe_categorical_circuit_connection_20261104/CONNECTION_ANALYSIS.md)
+（2026-11-04）。任意wordの条件付き代数・boundary有理数差・Gaussian/CAR support上界を整理し人工114件PASS。
+新H4評価0。全18回路接続の上界は未評価、次の有限audit計画を固定（H4統合runner未実装）。全体UNDETERMINED/false・両U null、mandatory STOP。
+
 [Controlled RTE・Hadamard v2：12局所probe・24軸PASS](research/rpe_controlled_hadamard_local_probes_v2_execution_20261104/REPORT.md)
 （2026-11-04）。SOURCE7279f700a、H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、6r×q_probe1/2を96-bit独立参照と照合。
 最大axis上端約4.03e-15、sampling/compile0。旧run01/判定を保全、全18保証は未完・全体UNDETERMINED/false、mandatory STOP。

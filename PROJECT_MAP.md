@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[全18round categorical平均・Controlled Hadamard・長q位相転送の接続調査（2026-11-04）](docs/research/rpe_categorical_circuit_connection_20261104/CONNECTION_ANALYSIS.md)：
+任意wordの条件付き代数、boundary parameter差、Gaussian/CAR support上界を整理。人工114件PASS・新H4評価0。
+6rの保存τ/θ・18tupleを静的照合。全18回路transferは未評価、有限audit計画を固定（H4統合runner未実装）。
+SOURCE/raw/STOPとUNDETERMINED/false・両U nullを維持し、公開照合後mandatory STOP。
+
 [Controlled RTE・Hadamard v2：12局所probe・24軸の整合（2026-11-04）](docs/research/rpe_controlled_hadamard_local_probes_v2_execution_20261104/REPORT.md)：
 SOURCE7279f700aをrun02へ1回実行。H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、6r×q_probe1/2が参照不確かさ込み1e-10内。
 最大axis上端約4.03e-15。全18長q/分布平均の保証ではない。旧run01保全、UNDETERMINED/false維持、公開照合後STOP。
