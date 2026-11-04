@@ -1,0 +1,103 @@
+2026-11-04 JST / LOCAL scientific-runner implementation and synthetic verification
+Base: e2fd35f1dcc73b697ac85661ef91f21082fd2136
+Branch: codex/rpe-m17-virtual-bridge-scientific-runner-preparation-20261104
+Status: PREPARED_NOT_SCIENTIFICALLY_EXECUTED
+
+Source and scope
+  Read PROJECT_MAP.md, actual AGENTS.md, unified 2026-10-25 operational sections
+  8.1/8.4/10 and the user's implementation-only instruction.
+  Reused fixed bridge 728c90a2d, kernel e2fd35f1d, ideal helper 18fffce48 and
+  original input-byte checks. Old sources, results, grants/ledgers/markers and
+  STOPs are preserved. Main dirty workspace, SERVER2 H8 and other jobs untouched.
+  New execution modules: run_scientific_bridge.py, observe_runtime.py,
+  runtime_policy.py, runtime_checks.py, bridge_pipeline.py.
+  Fixed single-cell Model II, 96-bit one-pass plan. No actual H4 --run invoked.
+
+Environment
+  Existing isolated Python 3.11.0rc1 / NumPy 1.26.4 / Qiskit 1.3.0 /
+  python-flint 0.9.0 / FLINT 3.6.0. No installation or shared setting changes.
+  Unit-test prefix: PYTHONWARNINGS=ignore MPLCONFIGDIR=<owned-temp-dir>
+    OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+  Tiny tests use thread1; live observer checks did not impose that setting.
+  Future science uses affinity-based FLINT threads and actual quotas/load.
+
+Synthetic unit tests (all exit 0)
+  python -m unittest discover -s docs/research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104 -p 'test_scientific_bridge.py' -v
+    13 PASS, 0.134s.
+    Full toy context/bound/strict decision; strict equality does not pass;
+    all-support guard unresolved -> null; finite-envelope failure -> null;
+    complex128/shape/stride/C-layout/nonfinite rejection;
+    required dispatches/output partition and MXCSR mode rejection;
+    missing/stale runtime checkpoint -> STOP;
+    full worker orchestration on artificial context with real H4 load forbidden;
+    bad profile stops before numerical load; late runtime failure suppresses
+    candidate PASS; partial numeric context retained; fresh output is immutable;
+    missing observer stops; default does not start science; dirty SOURCE rejected;
+    loader wiring checked with fully artificial schema/arrays, including signed
+    zero raw-state byte mismatch. This is not an H4 numerical fixture.
+
+  python -m unittest discover -s docs/research/rpe_m17_openblas_kernel_bound_preflight_20261104 -p 'test_kernel_bounds.py' -v
+    13 PASS, 0.068s.
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104 -p 'test_virtual_bridge.py' -v
+    16 PASS, 0.125s.
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preflight_20261104 -p 'test_bridge_math.py' -v
+    15 PASS, 0.017s.
+  Total 57 PASS. Local author tests, not independent review or CI/scientific GO.
+
+Live runtime observer, artificial only
+  python docs/research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104/run_scientific_bridge.py --runtime-check --output-dir <owned-fresh-temp-dir>
+  Final runtime check: COMPLETED_RUNTIME_CHECK_MANDATORY_STOP, exit 0.
+  Same child process: current binary/core profile matched; 32 threads inspected.
+  CBLAS shape70/ColMajor-Trans/alpha1/beta0, GEMVT18 output partitions summing70,
+  DOT, AVX2/FMA multiply/subtract, _Py_c_abs and hypot observed.
+  MXCSR 0x1fa0/0x1fa2, supported mode across all inspected threads.
+  All real scientific-call counters remained 0.
+  Initial artificial observer run stopped on the CBLAS beta stack read because
+  GDB skipped the push-rbp/mov-rsp-rbp prologue. Corrected the read to the actual
+  inspected entry offset0 or prologue offset4; unknown offsets still STOP.
+  Repeated only the artificial runtime check successfully. No science retry.
+
+Live observed full synthetic pipeline
+  GDB executes observe_runtime.py on a new child invoking the existing
+  test_scientific_bridge.observed_artificial_fixture helper. That helper mocks
+  only source/input metadata and the H4 loader with a two-dimensional toy;
+  np.load and PCG64 are forbidden. Actual binary/profile probe, GDB observer,
+  context assembly, Acb bound and strict comparison remain active.
+  Exit0, completed all seven checkpoints:
+    probe_start/probe_complete/before_context/after_context: 32 threads;
+    before_bound/after_bound/complete: 63 threads after FLINT initialization.
+  Observer status RUNTIME_CONDITIONS_CONFIRMED, phase complete, failure null.
+  Artificial worker status COMPLETED_MANDATORY_STOP;
+  artificial local condition confirmed; explicit real_H4_calls=0.
+  This is technical coverage of the full orchestration, not a real upper bound.
+  GDB traced only the job's new child via the normal sandbox approval path;
+  no attachment to other processes, ptrace policy changes or kernel replacement.
+
+Default CLI and preservation
+  python docs/research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104/run_scientific_bridge.py --describe
+  Exit0, metadata only: six fixed originals byte/hash checked, precision[96],
+  max_bound_passes1, real_numerical_calls0, U_exec_upper=null.
+  No real array load, norm, residual, CDF, mean, bound or budget was evaluated.
+  No scientific artifact directory or marker was created during preparation.
+  New SOURCE and its frozen helper identities are checked again after commit;
+  that metadata check does not invoke --run or scientific data loading.
+
+Safety and result semantics
+  Runtime failure, missing observation, input/source mismatch, interrupted child,
+  invalid finite envelope or unproved guard cannot become a Model-II PASS.
+  Supervisor invalidates candidate bounds after late runtime failure and records
+  partial results before mandatory STOP. Cleanup acts only on its own session.
+  U_exec for fixed PCG64 remains null, RPE_tolerance_certified=false,
+  whole scientific_status=UNDETERMINED; old INCONSISTENT/u_num=null preserved.
+  No new H4 numerical work, sampling/RNG replay, circuit build/compile,
+  success/cost reanalysis or detailed scientific review was performed.
+  Runtime checkpoint JSON records floating-point conditions/provenance only;
+  it is not a user-permission certificate or approval-proof system.
+
+Publication
+  Only this new preparation folder and PROJECT_MAP.md/docs/README.md are changed.
+  Scientific synthesis/status/manifests unchanged because no science result changed.
+  Commit/push and compare remote ref SHA, commit tree and all changed file blobs.
+  Final publication identity/verification is reported in chat.
+  MANDATORY STOP after publication. New science requires the user's separate
+  explicit permission for the fixed published SOURCE and execution plan.

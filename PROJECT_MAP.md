@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：科学runner統合・SOURCE固定（2026-11-04）](docs/research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)：
+保存入力→numeric context→KernelBounds→全support有限性/guard→strict判定を接続。同じprocessのdispatchと全thread FP modeを監視。
+人工・関連57件PASS、実gdb監視下の人工pipelineも完了。実H4科学計算は未実行、固定SOURCEの別実行許可待ちSTOP。
+
 [RPE m17：現行OpenBLAS経路の丸め上界を導出（2026-11-04）](docs/research/rpe_m17_openblas_kernel_bound_preflight_20261104/NEXT_STAGE_DECISION.md)：
 人工dispatch追跡、Prescott GEMVT/DOT・AVX2/FMA・glibc hypot・FP modeを確認し、限定profileの係数をKernelBoundsへ接続。
 新人工13＋関連31件PASS。実H4上界/全support guardは未評価、科学SOURCE未完成、U_exec=null・旧status/STOP保持。

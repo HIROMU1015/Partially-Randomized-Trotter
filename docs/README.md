@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：統合科学runnerと固定実行計画](research/rpe_m17_virtual_bridge_scientific_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)
+（2026-11-04）。同一workerのruntime監視、保存context/誤差/finite/guard/strict判定、fresh出力とSTOPを統合。
+人工・関連57件PASS、人工pipelineの実gdb監視も確認。実H4計算未実行、科学実行は固定SOURCEに対する別許可後。
+
 [RPE m17：現行kernelの保証条件・丸め上界](research/rpe_m17_openblas_kernel_bound_preflight_20261104/NEXT_STAGE_DECISION.md)
 （2026-11-04）。使用経路を人工追跡し、限定された算術条件の係数・underflow項・abs上界を導出。
 人工44件PASS、実H4評価なし。runtime条件/guard/統合科学SOURCEは残作業、旧statusとSTOP保持。
