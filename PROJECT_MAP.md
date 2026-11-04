@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[Controlled RTE・Hadamard：12局所probe実行・selector不在STOP（2026-11-04）](docs/research/rpe_controlled_hadamard_local_probes_execution_20261104/REPORT.md)：
+SOURCE76d25ac69を1回起動。H/state load・DF preparation・support登録各1後、固定component不在で停止。
+回路build/state-action/参照/測定平均0、retryなし。原RESULT保全、全体UNDETERMINED/false、公開照合後mandatory STOP。
+
 [Controlled RTE・Hadamard：12局所probeのrunner SOURCE準備（2026-11-04）](docs/research/rpe_controlled_hadamard_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)：
 signal τのhex結合・96-bit独立参照・6r群並列・raw/STOPを実装。人工60件PASS、実H4科学実行0。
 q_probe1/2の12本に限定した実行範囲を固定。公開SOURCEへの別途明示科学実行許可待ちSTOP、全体UNDETERMINED/false保持。

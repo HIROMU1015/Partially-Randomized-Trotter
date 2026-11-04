@@ -1,3 +1,9 @@
+## 2026-11-04 Controlled RTE・Hadamard：固定selector不在STOP
+
+[当日記録](2026-11-04_rpe_controlled_local_probes.md)。SOURCE76d25ac69を1回起動。
+固定H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、6r×q_probe1/2を予定したが、prep/support登録後にcomponent不在で停止。
+回路・参照・平均評価0、旧判定/原本保全、retryなし・公開照合後mandatory STOP。
+
 ## 2026-11-04 RPE m17：数値作用上界は取得、全support guardは未保証
 
 [当日記録](2026-11-04_rpe_m17_virtual_bridge.md)。SOURCEc3a5cc387、固定H4/DF12/L_D3/δ=.02/m17 q131072/r32 K2を96 bit・1 pass。

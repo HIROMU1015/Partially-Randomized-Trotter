@@ -1,3 +1,13 @@
+## 2026-11-04 Controlled RTE・Hadamard：固定selector不在で停止
+
+[報告・原RESULT](docs/research/rpe_controlled_hadamard_local_probes_execution_20261104/REPORT.md)。
+SOURCE76d25ac69c22da6efeec673dc36c5fe04b71533f、linear H4/1Å/STO-3G/保存DF12、Partial L_D3/δ=.02/K2、
+B physical-state ray/4電子sector70、extract_identity_phase/cutoff1e-12、6r×q_probe1/2の予定12本。
+H/state load・DF preparation・support登録各1後、df-fragment-10:Z0／df-fragment-11:Z0が保存exportに存在せずSTOPPED_WITH_ERROR。
+参照・config/θ replay・回路build・state-action・Hadamard平均・sampling/compile0。回路不一致の観測ではない。
+準備時の静的membership確認不足を記録し、旧SOURCE/raw・B/V1–R1/m17の判定を維持。
+UNDETERMINED/false、retryなし、報告・公開照合後mandatory STOP。
+
 ## 2026-11-04 RPE m17：作用上界は取得、全support測定完了は未保証
 
 [報告・SOURCE・原本](docs/research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)。

@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled RTE・Hadamard：固定selector不在で科学実行停止](research/rpe_controlled_hadamard_local_probes_execution_20261104/REPORT.md)
+（2026-11-04）。SOURCE76d25ac69の1回試行。H/state load・DF preparation・support登録各1、後続の回路・平均評価0。
+実装側の固定IDと保存1e-12 exportが不適合。原RESULTと旧判定を保全しretryせずmandatory STOP。
+
 [Controlled RTE・Hadamard：12局所probeのrunner実装・固定実行範囲](research/rpe_controlled_hadamard_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)
 （2026-11-04）。signal τ adapter、96-bit occupation-energy参照、並列batchとraw/STOP。人工60件PASS、実H4科学実行0。
 公開SOURCEの別途実行承認待ち。旧SOURCE/結果/判定と全体UNDETERMINED/falseを保持。
