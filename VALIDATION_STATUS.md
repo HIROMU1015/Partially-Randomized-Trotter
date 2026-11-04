@@ -1,3 +1,14 @@
+## 2026-11-04 Controlled RTE・Hadamard v2：固定12局所probe・24軸整合
+
+[報告・8原本](docs/research/rpe_controlled_hadamard_local_probes_v2_execution_20261104/REPORT.md)。
+SOURCE7279f700a58921209b851c8d9c363d38ff2f1d98を1回実行。linear H4/1Å/STO-3G/保存DF12、
+Partial L_D3/δ=.02/K2/cutoff1e-12、B physical-state ray/4電子sector70、r1,2,4,8,16,32×q_probe1/2。
+固定c0=df-fragment-3:Z0Z2/c1=df-fragment-4:Z0Z1、96-bit occupation-energy参照と
+uncontrolled/control raw・boundary両branch、Re/+Im wrapperが1e-10内。最大axis上端約4.03e-15。
+36 evolution build、48 control branch action、24 wrapper/mean、sampling/compile/長q回路0、v2内retry0。
+条件付きtrajectoryのlocal numerical evidenceであり、全18q/分布平均/任意trajectory/実機の保証ではない。
+旧run01 STOPと既存判定を保全。全体UNDETERMINED/false、U_exec=null、公開照合後mandatory STOP。
+
 ## 2026-11-04 Controlled RTE・Hadamard：固定selector不在で停止
 
 [報告・原RESULT](docs/research/rpe_controlled_hadamard_local_probes_execution_20261104/REPORT.md)。

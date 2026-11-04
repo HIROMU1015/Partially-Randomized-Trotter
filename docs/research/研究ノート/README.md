@@ -1,3 +1,9 @@
+## 2026-11-04 Controlled RTE・Hadamard v2：12局所probe整合
+
+[当日記録](2026-11-04_rpe_controlled_local_probes_v2.md)。selectorを実保存payloadで固定し、SOURCE7279f700aをrun02へ1回実行。
+H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、6r×q_probe1/2の12本・24軸がatol1e-10内。最大axis上端約4.03e-15。
+sampling/compile0、旧run01保全。全18長q等は未保証、全体UNDETERMINED/false、公開照合後mandatory STOP。
+
 ## 2026-11-04 Controlled RTE・Hadamard：固定selector不在STOP
 
 [当日記録](2026-11-04_rpe_controlled_local_probes.md)。SOURCE76d25ac69を1回起動。

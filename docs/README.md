@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled RTE・Hadamard v2：12局所probe・24軸PASS](research/rpe_controlled_hadamard_local_probes_v2_execution_20261104/REPORT.md)
+（2026-11-04）。SOURCE7279f700a、H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、6r×q_probe1/2を96-bit独立参照と照合。
+最大axis上端約4.03e-15、sampling/compile0。旧run01/判定を保全、全18保証は未完・全体UNDETERMINED/false、mandatory STOP。
+
 [Controlled RTE・Hadamard v2：selector修正・固定再実行範囲](research/rpe_controlled_hadamard_runner_v2_20261104/PREPARATION_REPORT.md)
 （2026-11-04）。実保存payloadとの静的membershipを追加、負/正・異basisのpairを固定。人工67件PASS。
 新SOURCE固定後、今回の修正再実行許可内でrun02を1回実施する。旧SOURCE/run01・判定を保全。

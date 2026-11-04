@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[Controlled RTE・Hadamard v2：12局所probe・24軸の整合（2026-11-04）](docs/research/rpe_controlled_hadamard_local_probes_v2_execution_20261104/REPORT.md)：
+SOURCE7279f700aをrun02へ1回実行。H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、6r×q_probe1/2が参照不確かさ込み1e-10内。
+最大axis上端約4.03e-15。全18長q/分布平均の保証ではない。旧run01保全、UNDETERMINED/false維持、公開照合後STOP。
+
 [Controlled RTE・Hadamard v2：selector修正と再実行準備（2026-11-04）](docs/research/rpe_controlled_hadamard_runner_v2_20261104/PREPARATION_REPORT.md)：
 実保存218成分で存在する負/正・異basisのpairを固定。metadata gateを実H4 load前へ追加、人工67件PASS。
 旧SOURCE/run01を保全し、今回許可された12局所probeを新SOURCE固定後run02へ1回実行する。
