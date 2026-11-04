@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：literal per-word包囲・population range（2026-11-04）
+
+[per-word誤差包囲・population range](docs/research/research_c_per_word_population_range_readiness_20261104.md)。`c_per_word_population_range.py` / `c_per_word_range_execution.py` / `prepare_research_c_per_word_population_range.py`。既存Arb/CAR/全columnを再利用し、literal U・非Hermitian headを保持する。Stage Rは未承認256-call、Pは非実行65-call案、校正/accuracyは未採択。人工検証のみ・新H4科学0、mandatory STOP。
+
 ## 研究C：fresh IID-grid期待bias・技術設計（2026-11-04）
 
 [期待bias校正の技術準備](docs/research/research_c_iid_grid_expected_bias_readiness_20261104.md)。`c_iid_grid_expected_bias.py` / `prepare_research_c_iid_grid_expected_bias.py`。Kernel/round校正、両norm反復、per-word enclosure境界、同時confidenceと既存RPE算術を別期待値qualificationへ接続。人工検証のみ、新H4科学0。方法・N・δ・数値資格は未採択、非実行契約/call上限null、mandatory STOP。
