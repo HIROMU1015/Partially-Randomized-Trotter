@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Stage R schema修正・新規未承認契約（2026-11-04）
+
+[schema修正・新SOURCE・未承認Stage R契約](../../docs/research/research_c_population_range_schema_preparation_20261104.md)。`c_per_word_range_schema.py` / `prepare_research_c_population_range_schema.py`でeventタグとIID設定を分離照合。新schema人工48・関連回帰込み313 PASS、passive科学0。旧10/256-call失敗SOURCE/raw/STOPを保全し、新規256-call契約は未承認・未実行。公開照合後mandatory STOP。
+
 ## 研究C：Population range Stage R・部分STOP（2026-11-04）
 
 [Stage R部分結果](../../docs/research/research_c_population_range_stage_R_execution_20261104.md)。固定SOURCE6c1fbe539を一度実行し10/256 units（9 COMPLETE/1 FAIL）。保存meanのmodel文字列とIIDモデル辞書を混同した`SAVED_ANGLE_MODEL`で停止。a/M・13roundは未取得、retry/resume0。旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。

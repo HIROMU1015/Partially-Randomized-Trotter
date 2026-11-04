@@ -1,0 +1,177 @@
+{
+  "status": "FOCUSED_METADATA_AND_STATIC_INPUT_GATE_AUDIT_COMPLETE",
+  "numerical_reanalysis": 0,
+  "arrays_decoded": 0,
+  "other_schema_role_mismatch_found": false,
+  "observations": {
+    "ideal_event_mean.json": {
+      "path": "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/ideal_event_mean.json",
+      "sha256": "f261f4a899cc9c5ac5470eb3465a08b9fd41f211db3cc84b2929ca62e26d02cb",
+      "top_level_types": {
+        "model": "str",
+        "report": "dict"
+      },
+      "model": "ideal_saved_atom",
+      "report_types": {
+        "status": "str",
+        "unitary_events": "list",
+        "mean_identity": "dict",
+        "angle": "float",
+        "normalization": "float",
+        "scalar_phase_excluded": "bool",
+        "reference_uncertainty": "NoneType",
+        "rigorous_operator_bound": "NoneType"
+      }
+    },
+    "grid_event_mean.json": {
+      "path": "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/grid_event_mean.json",
+      "sha256": "43a7778282117f71cd736742dc3a8ab67fd1eb070745aea8001f5c1666ef6ec8",
+      "top_level_types": {
+        "model": "str",
+        "report": "dict"
+      },
+      "model": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+      "report_types": {
+        "status": "str",
+        "unitary_events": "list",
+        "mean_identity": "dict",
+        "angle": "float",
+        "normalization": "float",
+        "scalar_phase_excluded": "bool",
+        "reference_uncertainty": "NoneType",
+        "rigorous_operator_bound": "NoneType"
+      }
+    },
+    "result.json": {
+      "path": "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/result.json",
+      "sha256": "565de4bb40ceb9c6459a35834e4c00e5cd9998cfb7bbfabce60b1fd1e8e5a6ed",
+      "top_level_types": {
+        "status": "str",
+        "model": "dict",
+        "rounds": "list",
+        "candidate": "str",
+        "PR_scientific_SOURCE": "str",
+        "Stage_B": "str",
+        "Stage_C": "str",
+        "PCG64_joint_stream_qualified": "bool",
+        "PCG64_joint_stream_error": "NoneType",
+        "all_law_synthesis": "NoneType",
+        "reference_numerical_uncertainty": "NoneType",
+        "error_evidence": "NoneType",
+        "actual_CA_achieved": "NoneType",
+        "rigorous_CA": "NoneType",
+        "new_sampling": "int",
+        "new_native_build_compile": "int",
+        "new_PF_RTE_generation": "int",
+        "ground_eigensolve": "int",
+        "shots_evaluation": "int",
+        "mandatory_stop": "bool"
+      },
+      "model": {
+        "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+        "bits": 53,
+        "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+        "independent_events": true,
+        "independent_coherent_occurrences": true,
+        "independent_measurement_shots": true,
+        "independent_XY_measurements": true,
+        "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+        "PCG64_joint_stream_qualified": false
+      }
+    },
+    "atoms.json": {
+      "path": "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/atoms.json",
+      "sha256": "8b5bcadb458e2eb345aa779e171f8cc4f28467a648c73c4bc9ec4f1e8f70bfbf",
+      "top_level_types": {
+        "status": "str",
+        "atoms": "list",
+        "raw_tail": "dict",
+        "exact_mass": "str",
+        "float_mass": "float",
+        "coefficient_identity_rounding_enclosed": "bool",
+        "reference_uncertainty": "NoneType"
+      }
+    },
+    "categorical_table.json": {
+      "path": "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/categorical_table.json",
+      "sha256": "9827934f51a03f54de1a9c73488fa322821185ae140662906096e27862078503",
+      "top_level_types": {
+        "status": "str",
+        "reference": "str",
+        "ideal_probabilities": "list",
+        "first_probabilities": "list",
+        "sampler_probabilities": "list",
+        "cdf": "list",
+        "grid": "dict",
+        "eta_exact": "str",
+        "eta_upper_float": "float",
+        "stages_TV": "dict",
+        "lost_positive_ideal_atoms": "list",
+        "pcg64_IID_proven": "bool",
+        "coefficient_generation_error": "NoneType",
+        "reference_bridge_error": "NoneType",
+        "angle_normalization_error": "NoneType",
+        "actual_implemented_law_error": "NoneType"
+      },
+      "grid_types": {
+        "probabilities": "list",
+        "cdf": "list",
+        "counts": "list",
+        "denominator": "int",
+        "probabilities_exact": "list",
+        "zero_random_draws": "bool",
+        "mapping": "str",
+        "bits": "int"
+      }
+    }
+  },
+  "gates": [
+    {
+      "input": "ideal_event_mean.model",
+      "producer": "c_iid_grid_bridge.execute:ideal_saved_atom string",
+      "consumer": "c_per_word_range_schema.saved_metadata:IDEAL_EVENT_TAG strict string",
+      "action": "REPAIRED"
+    },
+    {
+      "input": "grid_event_mean.model + Stage_A_result.model + contract.identity.model",
+      "producer": "ID string + full dictionary + full dictionary",
+      "consumer": "separate ID and typed full-config checks",
+      "action": "TYPED_AND_PINNED"
+    },
+    {
+      "input": "atoms.atoms rows",
+      "producer": "c_pr_aware_df_c2_bridge.atom_audit",
+      "consumer": "same signed coefficient/frame/support binding;new passive type/cardinality checks",
+      "action": "SCHEMA_COMPATIBLE"
+    },
+    {
+      "input": "categorical_table.grid",
+      "producer": "c_pr_aware_df_stage_c2.analyze_table",
+      "consumer": "grid mapping/bits/count integer schema;unchanged grid_support exact sum/positive support gate",
+      "action": "SCHEMA_COMPATIBLE"
+    },
+    {
+      "input": "origin contract/result/SOURCE/STOP",
+      "producer": "saved PR r32 downstream pipeline",
+      "consumer": "unchanged c_fixed_word_pilot.evidence",
+      "action": "NO_ROLE_MISMATCH_IN_STATIC_READER"
+    },
+    {
+      "input": "saved sector generators/basis NPZ",
+      "producer": "frozen physical endpoint/reference pipeline",
+      "consumer": "unchanged loader keys generators/sector_basis_indices;exact head binding remains diagnostic",
+      "action": "STATIC_KEYS_ONLY_NO_MOLECULAR_DECODE"
+    },
+    {
+      "input": "B1/B2 categorical_record model/row.model/random_model",
+      "producer": "Stage A dictionary/dictionary/ID string",
+      "consumer": "already compares matching dictionary/dictionary/ID fields",
+      "action": "NO_REPAIR_NEEDED_STATIC_ONLY"
+    }
+  ],
+  "limitations": [
+    "audit limited to reused Stage R/input producers and adjacent model gates",
+    "no saved residuals,probabilities,operator arrays or new norms evaluated",
+    "does not certify absence of other runtime/scientific issues"
+  ]
+}
