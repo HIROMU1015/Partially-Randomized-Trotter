@@ -1,3 +1,9 @@
+## 2026-11-04 RPE残存3課題の技術準備
+
+[`run_three_gaps.py`](../docs/research/rpe_three_gaps_preparation_20261104/run_three_gaps.py)はdefaultでbyte/literal照合のみ。
+別途許可後の`--run --tasks A C`でAのdirect Hoeffding、Cの保存DF sector ground証明を独立評価する。
+BのH4全域実行入口は未成立。[証明・人工検証・固定計画](../docs/research/rpe_three_gaps_preparation_20261104/REPORT.md)。
+
 ## 2026-11-04 RPE branch・energy接続準備
 
 文書隣接の[`run_limited_validation.py`](../docs/research/rpe_branch_energy_preparation_20261104/run_limited_validation.py)は

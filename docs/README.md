@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE D残存3課題：技術準備（2026-11-04）](research/rpe_three_gaps_preparation_20261104/REPORT.md)：
+direct Hoeffding・exact上端和、保存DF sector最小固有値の正定値/Rayleigh証明、Float64有限域の適用限界。
+人工28件PASS、実H4新評価0。A/Cは公開SOURCEへの別途実行許可待ち、B全域はUNKNOWNのまま。公開照合後STOP。
+
 [RPE D：branch・energy限定検証結果（2026-11-04）](research/rpe_branch_energy_execution_20261104/REPORT.md)：
 H4/1Å/STO-3G/保存legacy DF12/L_D3/δ=.02、160 bit・1 pass、旧36軸再利用。
 全phase・理想branch・literal energy条件成立、exact Σα>.05で総合UNKNOWN/STOP。

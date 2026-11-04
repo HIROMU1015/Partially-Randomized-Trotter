@@ -577,6 +577,10 @@ PM-1の[contract module](../trottertracks/resource_applicability/pm1_discard_con
 
 ### RPE
 
+残存α/Float64/reference条件は[`文書隣接の3課題adapter`](../../docs/research/rpe_three_gaps_preparation_20261104/REPORT.md)。
+既存D/Arb/V2 loader/DF整数excitation関数を再利用。A/C科学SOURCEを準備、B全域は未解決。
+人工28件PASSのみ、実H4の新しい確率・固有値・decoder評価は未実行。
+
 保存中心から全round branch・energyへの接続用の純関数は、科学moduleの自動起動を避けて
 [`文書隣接adapter`](../../docs/research/rpe_branch_energy_preparation_20261104/adapter.py)へ置く。
 既存decoder・外向き和・Arb helperを再利用。

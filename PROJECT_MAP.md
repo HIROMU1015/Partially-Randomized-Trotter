@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE D残存3課題：技術準備（2026-11-04）](docs/research/rpe_three_gaps_preparation_20261104/REPORT.md)：
+保存αを変更しないdirect Hoeffding上界、保存DF sector groundのinterval LDL*/Rayleigh SOURCEを準備。
+Float64全域は未解決、小さい人工prefix checkerのみ。人工28件PASS、実H4新評価0。旧UNKNOWN/STOP・global false・両bridge nullを維持。
+
 [RPE D：branch・energy限定検証結果（2026-11-04）](docs/research/rpe_branch_energy_execution_20261104/REPORT.md)：
 H4/1Å/STO-3G/保存legacy DF12/L_D3/δ=.02/保存state ray・sector70、旧36軸再利用、160 bit・1 pass。
 幾何・理想branch・literal energy条件成立、exact Σα>.05で総合UNKNOWN/STOP。Float64/reference・実測定未保証、global false・元bridge null保持。
