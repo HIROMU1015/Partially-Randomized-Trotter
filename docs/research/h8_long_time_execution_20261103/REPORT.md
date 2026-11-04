@@ -49,3 +49,16 @@ Stage Bはm5の7候補・23 trajectoryを8 worker、S2/Y4の12候補・28 trajec
 PRの6件では、`to_dict()`中のtupleが保存JSONからlistとして復元されるため、Python object同士の直接比較が拒否された。元seedの再構成診断でcanonical JSONは完全一致した。科学的なevent差ではなくメタデータ表現の技術的不一致である。
 最初の復旧SOURCEと稼働中のPF workerを変更・停止せず、[追加復旧入口](../../../scripts/repair_h8_long_time_recovery.py)でcanonical JSON一致を要求してPR6件だけを処理する。seed、値、event順序の差は引き続き拒否する。元の技術的HOLDは保持し、異なるHOLD理由は受け入れない。
 型差の回帰例を含む人工テストは計27件PASS。新規候補・標本の追加はなく、Stage Cは引き続き未実行。
+
+## 11月4日の状態とcompiler位相診断
+
+48/51標本が完了した。11月4日00:09のユーザーサービス終了で未完了のS2代表2件と診断が中断したため、共有設定を変更せず、自分専用tmuxで再開した。S2代表は元の条件・seedで継続し、検証ベクトルを段階ごとに保存する。
+失敗したm5 prefix8代表はHOLDを保全する。診断ではHighLevelSynthesis後の差0に対し、最初のBasisTranslator後に符号反転が現れた。
+実際のXX+YYゲートの局所compiler変換で余分な位相iを観測し、対象wrapperの52262ゲートから全体の符号反転を説明できた。
+補正を使う実装・再検証は自動承認レビューで却下されており、未実施。
+[具体的な修正案・診断根拠と必要な許可範囲](COMPILER_PHASE_REPAIR_PROPOSAL_20261104.md)を参照する。
+
+11月4日17:30 JSTの読取確認では、完了した重複なしの標本は49/51件で、保存判定は全49件PASS。再開したS2 prefix7・q32の代表は11:59 JSTに7検査すべてを通過した（compiled vector差はcosine 4.20e-11、sine 5.24e-11、許容値1e-7、位相整列なし）。一方、S2 prefix8・q32の代表は11:04 JSTに`COMPILED_VECTOR_cosine`でHOLDとなった。この新しいHOLDの原因を、m5代表の診断結果だけで確定しない。
+残る2件はm5 prefix8・q1とS2 prefix8・q32の代表で、いずれもHOLDを保全して自動再試行していない。計算workerは終了しており、現在は計算待ちではない。補正実装・同じ標本での必要な再検証は、上記修正案への追加許可待ち。Stage B全体の価格集計・順位は未確定で、Stage Cは未実行。
+
+追加修正として、[位相会計](../../../scripts/h8_compiler_phase_bookkeeping.py)と[残る2代表の再検証・集計入口](../../../scripts/repair_h8_compiler_phase.py)を実装した。元の科学SOURCE・入力はそのまま、実際の局所gate operatorに基づくglobal phaseだけを補正する。人工operator検査、人工3qubit回路から元の7検査を通す検査、補助SOURCEの集計来歴を含む34テストPASS。補助SOURCE公開後に、同じ元標本2件だけを並列実行する。49件の完了結果、元HOLD、元raw/QPYを保全し、Stage Cは実行しない。

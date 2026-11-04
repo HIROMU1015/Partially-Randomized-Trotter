@@ -145,3 +145,5 @@ artifacts/<validation_name>/
 ## H8長時間adapter（2026-11-03）
 
 `h8_long_time_adapter.py` はmetadata-only inspectをdefaultとし、lazy backend `h8_long_time_runtime.py` に接続する。[SOURCE・人工検証・実行HOLD](../docs/research/h8_long_time_adapter_preparation_20261103/SOURCE_REUSE_AND_VALIDATION.md)を参照。実H8計算は別途許可が必要。
+
+`h8_compiler_phase_bookkeeping.py` は固定compilerの局所operator検査とglobal phase会計。`repair_h8_compiler_phase.py` は許可された元の2代表だけを別来歴で再検証・集計する。[範囲と人工検証](../docs/research/h8_long_time_execution_20261103/COMPILER_PHASE_REPAIR_PROPOSAL_20261104.md#追加修正の実装11月4日上記提案後)を参照。元SOURCE・HOLDは変更しない。

@@ -72,6 +72,33 @@ class SavedEvidenceTests(unittest.TestCase):
                     report.collect(private, root / 'output')
                 self.assertFalse((root / 'output/exploration.json.gz').exists())
 
+    def test_supplement_source_and_operator_accounting_are_preserved(self):
+        for omit_source in (False, True):
+            with self.subTest(omit_source=omit_source), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                private = self.fixture(root)
+                path = private / 'runs/stage_B01/result.json'
+                batch = a.read(path)
+                source = dict(SOURCE='supplement-fixture', source_files={'phase.py': 'fixture'},
+                    statevector_phase_alignment=False, original_HOLDs_preserved=True)
+                trial = batch['trials'][0]
+                axes = {axis: dict(derived_from='CERTIFIED_SMALL_GATE_OPERATORS',
+                    statevector_phase_alignment=False, gate_counts_unchanged=True,
+                    delta_phase_quarters=2, xx_plus_yy_count=2, maximum_local_operator_error=1e-14,
+                    rz_count=trial['prices'][axis]['rz_count']) for axis in ('cosine', 'sine')}
+                trial['compiler_phase_supplement'] = dict(**source, axes=axes, previous_HOLD_preserved=True)
+                if not omit_source:
+                    batch['compiler_phase_supplement'] = source
+                path.write_text(json.dumps(batch))
+                with patch.object(a, 'ROOT', root), redirect_stdout(io.StringIO()):
+                    if omit_source:
+                        with self.assertRaisesRegex(ValueError, 'REPAIR_SOURCE_PROVENANCE'):
+                            report.collect(private, root / 'output')
+                    else:
+                        result = report.collect(private, root / 'output')
+                        self.assertEqual(result['compiler_phase_supplements'], [source])
+                        self.assertEqual(result['native_SOURCE'], 'native-fixture')
+
 
 if __name__ == '__main__':
     unittest.main()

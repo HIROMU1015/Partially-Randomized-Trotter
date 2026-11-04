@@ -9,13 +9,37 @@ from pathlib import Path
 import h8_long_time_adapter as a
 
 
-def collect(private, output):
+def collect(private, output, *, batch_root=None):
     signal = a.read(private / 'stage_A_combined.json')
     endpoints = {v['endpoint']['candidate']['id']: v['endpoint'] for v in signal['results']}
-    batches = [a.read(private / 'runs' / name / 'result.json') for name in ('stage_B01', 'stage_B02')]
+    batch_root = private / 'runs' if batch_root is None else batch_root
+    batches = [a.read(batch_root / name / 'result.json') for name in ('stage_B01', 'stage_B02')]
     a.require(all(v['status'] == 'PASS' and v['binding'] == signal['binding'] for v in batches), 'COMPLETED_SAME_INPUT_ONLY')
     a.require(batches[0]['SOURCE'] == batches[1]['SOURCE'] and batches[0]['source_files'] == batches[1]['source_files'], 'SAME_NATIVE_SOURCE')
     a.require(all(v['signal_SOURCE'] == signal['SOURCE'] for v in batches), 'FIXED_SIGNAL_SOURCE')
+    supplements = {}
+    for batch in batches:
+        supplement = batch.get('compiler_phase_supplement')
+        if supplement:
+            a.require(supplement['statevector_phase_alignment'] is False
+                      and supplement['original_HOLDs_preserved'] is True, 'SUPPLEMENT_PHASE_POLICY')
+            supplements[a.digest(supplement)] = supplement
+        for trial in batch['trials']:
+            repair = trial.get('compiler_phase_supplement')
+            if not repair:
+                continue
+            a.require(supplement is not None and repair['SOURCE'] == supplement['SOURCE']
+                      and repair['source_files'] == supplement['source_files']
+                      and repair['statevector_phase_alignment'] is False
+                      and repair['previous_HOLD_preserved'] is True
+                      and set(repair['axes']) == {'cosine', 'sine'}, 'REPAIR_SOURCE_PROVENANCE')
+            for axis, phase in repair['axes'].items():
+                a.require(phase['derived_from'] == 'CERTIFIED_SMALL_GATE_OPERATORS'
+                          and phase['statevector_phase_alignment'] is False
+                          and phase['gate_counts_unchanged'] is True
+                          and phase['delta_phase_quarters'] == (-phase['xx_plus_yy_count']) % 4
+                          and 0 <= phase['maximum_local_operator_error'] < 1e-10
+                          and phase['rz_count'] == trial['prices'][axis]['rz_count'], 'REPAIR_OPERATOR_ACCOUNTING')
     rows, trials, ids = [], [], set()
     for batch in batches:
         for cid, summary in batch['summaries'].items():
@@ -49,12 +73,14 @@ def collect(private, output):
         for v in rows if v['candidate']['method'] == 'PR']
     result = dict(status='COMPLETE_EXPLORATION_ONLY', signal_SOURCE=signal['SOURCE'],
         native_SOURCE=batches[0]['SOURCE'], source_files=batches[0]['source_files'], binding=signal['binding'],
+        compiler_phase_supplements=list(supplements.values()),
         report_script_sha256=a.sha(__file__), rows=rows, trials=trials, comparisons=comparisons,
         execution_recovery=[{k: batch['recovery'][k] for k in (
             'runtime_SOURCE', 'recovery_script_sha256', 'reused_trials', 'missing_trials', 'new_samples', 'workers')}
             for batch in batches if 'recovery' in batch],
         measured_best_PF=best_pf['candidate']['id'], global_grid_optimum_claim=False,
-        provenance={name: a.sha(private / 'runs' / name / 'result.json') for name in ('stage_A01', 'stage_A02', 'stage_B01', 'stage_B02')},
+        provenance={name: a.sha((private / 'runs' if name.startswith('stage_A') else batch_root)
+                               / name / 'result.json') for name in ('stage_A01', 'stage_A02', 'stage_B01', 'stage_B02')},
         confirmation=dict(status='NOT_RUN', n=None, precision_target=None, pooled=False),
         original_STOPs_preserved=True, speedup_benchmark=False)
     output.mkdir(parents=True, exist_ok=True)
@@ -70,11 +96,13 @@ def collect(private, output):
             writer.writerow({k: row['candidate'].get(k) if k in row['candidate'] else row[k] for k in columns})
     lines = [
         '# H8長時間・高次PR：Stage A/B実行結果', '',
-        '2026-11-03。Stage AとStage Bの探索を完了。Stage Cは未実行。高速化率のbenchmarkは行っていない。', '',
+        '2026-11-04。Stage AとStage Bの探索を完了。Stage Cは未実行。高速化率のbenchmarkは行っていない。', '',
         'Linear H8、隣接距離1.00 Å、STO-3G、保存tol-only1e-8 DF rank28、元state・fragment順序0..27。',
         'T=1.6、ε=0.0005、状態準備P=0。費用はG=N_cos C_cos+N_sin C_sin。', '',
         '## SOURCEと検査', '',
         f"Signal SOURCE：`{signal['SOURCE']}`。Native価格SOURCE：`{batches[0]['SOURCE']}`。",
+        'Compiler位相補助SOURCE：' + ('、'.join('`' + s['SOURCE'] + '`' for s in supplements.values()) or 'なし') + '。',
+        '補正がある代表では、実際の非basisゲートを小operatorで検査し、余分な位相をfull wrapperのglobal phaseだけへ会計した。状態vectorからの位相整列・許容誤差緩和・RZ数変更は行わない。元HOLDと補正結果は別の来歴で保持する。',
         '価格経路では既存APIが要求する整数instruction boundへ修正し、元Stage AのSOURCEと入力・値を保全した。',
         '新T full-H sparse reference、signed primitive、finite mean/normalization、bias/headroom/shotを検査した。',
         'Stage Aは初期57＋境界補完12＝69候補。適格40、不適格29、判定保留0。',
@@ -96,14 +124,15 @@ def collect(private, output):
         '未測定候補の費用はunknown。未観測次数の条件付き費用もunknownとし、希少orderとpopulation tail bound未確立の限界を保持する。', '',
         '## 保存結果と次の段階', '',
         '[69候補のsignal/shot](../../../artifacts/resource_applicability/track_a_h8_long_time/2026-11-03/stage_A_combined.json.gz)、',
-        '[価格・会計・比較](../../../artifacts/resource_applicability/track_a_h8_long_time/2026-11-03/exploration.json.gz)、',
-        '[価格CSV](../../../artifacts/resource_applicability/track_a_h8_long_time/2026-11-03/compiled_costs.csv)、',
+        '[価格・会計・比較](../../../' + str(output.relative_to(a.ROOT)) + '/exploration.json.gz)、',
+        '[価格CSV](../../../' + str(output.relative_to(a.ROOT)) + '/compiled_costs.csv)、',
         '[集計コード](../../../scripts/report_h8_long_time_execution.py)。', '',
         'seed実値、event列、入力raw、QPY、内部pathはprivateに保全。元SOURCE・結果・grant/ledger/marker・既存STOPは変更していない。',
         '主担当Codexによる検査であり、別担当者の独立科学レビューではない。', '',
         '次の担当：ユーザーが確認精度・n・候補・方向を判断しStage Cを許可する。Codexがweighted G分散と希少orderの限界を示し、許可後に別cohortで確認する。',
         '**Stage Cは未実行。自動top-up・候補差替え・旧rare-RTE run再開は行わない。**', '']
-    (a.ROOT / 'docs/research/h8_long_time_execution_20261103/REPORT.md').write_text('\n'.join(lines))
+    # Keep the dated execution/HOLD history in REPORT.md intact.
+    (a.ROOT / 'docs/research/h8_long_time_execution_20261103/EXPLORATION_RESULTS_20261104.md').write_text('\n'.join(lines))
     print(json.dumps(dict(status=result['status'], measured_candidates=len(rows), trajectories=len(trials),
                          best_measured_PF=best_pf['candidate'], comparisons=comparisons)))
     return result
