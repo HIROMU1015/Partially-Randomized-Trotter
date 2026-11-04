@@ -1,5 +1,10 @@
 # 文書索引
 
+## 研究C：保存H／H_eigh独立差分・4-call完了（2026-11-05）
+
+[実行結果・exact区間・原本・STOP](research/research_c_saved_eigh_difference_execution_20261105.md)。固定SOURCE4a3228881・4/4 COMPLETE、FAIL/retry/resume0。保存H4/1Å/STO-3G・CDF8/LD2/sector36で差のoperator norm≤8.696771106319333e-16 Ha。Frobenius上界でありoperator norm厳密値ではない。H_target未採択、ground/gap/X-Y未評価、旧15-call STOPを維持、mandatory STOP。
+
+
 ## 研究C：保存H／H_eigh独立差分・4-call契約準備（2026-11-05）
 
 [固定SOURCE・未承認4-call診断・passive preflight](research/research_c_saved_eigh_difference_readiness_20261105.md)。`c_saved_eigh_difference.py`、default passiveの`run_research_c_saved_eigh_difference.py`、人工test `test_research_c_saved_eigh_difference.py`、artifact `research_c_saved_eigh_difference/2026-11-05/technical/`。Exact Frobenius平方和／Arb192区間／operator norm上界のみ。新規人工32 PASS、既存127 PASS／継承4 FAIL。実H4科学0、別途実行許可待ち、旧STOP保全、mandatory STOP。
