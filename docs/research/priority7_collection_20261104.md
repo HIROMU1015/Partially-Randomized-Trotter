@@ -73,3 +73,28 @@ lockのinstall・wheel hash検証、科学結果の再評価、SOURCEの実行�
 
 今回、リモート枝・タグの追加削除は行わない。両サーバーの差分確認が返ったら、ローカル側で
 成果の収録・現在の用途・履歴保持先を統合し、その後の整理対象を具体化する。
+
+## 後続整理：保存タグによる履歴保持（2026-11-04）
+
+上記の内容収録と両サーバーの差分確認を経て、次の7つの保存タグを公開し、
+元の先端OIDとの一致・履歴保全を確認した。その後、期待OIDを明示したlease付きatomic pushで
+対象リモート枝7本を削除した。これは前節の収録作業の後に行った参照整理である。
+
+| 元のリモート枝 | 公開保存タグ | 保持する元先端commit |
+|---|---|---|
+| `codex/pauli-pure-rte-paper-evidence-addendum-20261102` | `archive/research-map-20261104/f6eb34dad982` | [f6eb34dad982](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/f6eb34dad982f8f753a618c609b528fb3c20d142) |
+| `codex/pr-coverage-inventory-local-20261102` | `archive/research-map-20261104/17aacf67ee85` | [17aacf67ee85](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/17aacf67ee854657652ade8035c5fdfad1eb077a) |
+| `codex/pr-coverage-inventory-server1-20261102` | `archive/research-map-20261104/2de84ed7af00` | [2de84ed7af00](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/2de84ed7af00e73339886429aabab0bf8180e9f0) |
+| `codex/pr-coverage-inventory-server2-20261102` | `archive/research-map-20261104/8834de0cf938` | [8834de0cf938](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/8834de0cf938b13490c08e05006e3c566fed7c7a) |
+| `codex/research-c-contribution-positioning-20261102` | `archive/research-map-20261104/88afb1acc78d` | [88afb1acc78d](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/88afb1acc78dbc9b4af2bb5e149cd873a914b03b) |
+| `codex/research-c-r32-price-statistics-execution-20261103` | `archive/research-map-20261104/459c8472d666` | [459c8472d666](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/459c8472d66689bf149a60fd6cc7311ff5237c65) |
+| `codex/research-c-u-step-control-execution-20261103` | `archive/research-map-20261104/ea54b9b8ba42` | [ea54b9b8ba42](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/ea54b9b8ba42ff993d803ec6f5c57e4e622fdee6) |
+
+保存タグはいずれも元の先端commitを直接指す。mainに選択収録した内容に加え、元snapshotから到達する
+科学SOURCE・入力・大きな原データを含むGit履歴を、同じOIDで参照できる。
+既存文書や所在表の`source_branches`は当時の出典名であり、現在も同名の枝が存在することを示さない。
+固定commit URLと上記保存タグを使って元contextへ進む。
+
+この整理でlocal枝・worktree・未commit変更・外部保存データを変更していない。
+科学SOURCEの付け替え、枝全体のmainへのmerge、科学的採否の更新、新しい科学実行は行っていない。
+固定snapshotの保持と、ignored/未追跡データや別媒体backupの完全性確認は区別する。
