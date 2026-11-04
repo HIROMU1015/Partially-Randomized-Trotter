@@ -1,3 +1,9 @@
+## 2026-11-04 RPE A/C限定実行結果
+
+SOURCEd29a86963の[`run_three_gaps.py`](../docs/research/rpe_three_gaps_preparation_20261104/run_three_gaps.py)を
+A160-bit/C256-bit各1 passで実行済み。[原結果・報告](../docs/research/rpe_three_gaps_execution_20261104/REPORT.md)。
+直接95%条件と保存DF reference込み数学的energy条件が成立。B全域は未実行、追加retryなしでmandatory STOP。
+
 ## 2026-11-04 RPE残存3課題の技術準備
 
 [`run_three_gaps.py`](../docs/research/rpe_three_gaps_preparation_20261104/run_three_gaps.py)はdefaultでbyte/literal照合のみ。

@@ -1,3 +1,9 @@
+## 2026-11-04 RPE A/C：直接tailの95%条件と保存DF reference
+
+[当日記録](2026-11-04_rpe_direct_tail_and_reference.md)。SOURCEd29a86963、H4/1Å/STO-3G/DF12/L_D3/δ=.02/保存state ray・sector70。
+A160-bit/C256-bit各1 pass。α不変で直接成功下界≥.950307、70正pivotでDF sector最小固有値を包含、reference込み理想energy目標内。
+B全域・実測定未保証、global false/UNDETERMINED・両bridge nullを維持してSTOP。
+
 ## 2026-11-04 RPE D：理想branch・literal energy成立、保存α基準は未確認
 
 [当日記録](2026-11-04_rpe_branch_energy_connection.md)。SOURCE6942e5176、H4/1Å/STO-3G/legacy DF12/L_D3/δ=.02。

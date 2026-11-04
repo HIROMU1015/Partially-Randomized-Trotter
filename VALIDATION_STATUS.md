@@ -1,3 +1,12 @@
+## 2026-11-04 RPE A/C：直接95%条件・保存DF reference成立、実装decoder未保証
+
+[報告・原A/C/RESULT・全軸tail表示](docs/research/rpe_three_gaps_execution_20261104/REPORT.md)。
+SOURCEd29a86963f91044a95217d7d2e2ee9703d2f1dc1、H4/1Å/STO-3G/保存legacy DF12、Partial L_D3/δ=.02、保存state ray・sector70、m0..17保存条件。
+A160 bit/C256 bit・各1 pass。α不変、直接失敗上界和≤0.0496929699367478180、成功下界≥0.950307030063252182。
+C70正pivot＋Rayleighで保存DF sector最小固有値を包含、η_ref≤1.00000000000000001e−8 Ha、reference込み数学的energy目標内。
+B scientific call0/UNKNOWN、実装energy上界null。元分子・実測定等は未保証。旧SOURCE/results/Σα UNKNOWNを上書きしない。
+retry/精度追加/shift変更・sampling/compile/cost/eigsh/eigh0、LOCAL固定SOURCE結果。global false/UNDETERMINED・両bridge null、公開照合後STOP。
+
 ## 2026-11-04 RPE D：幾何・理想branch・literal energy成立、保存α基準は未確認
 
 [報告・原RESULT・全round表示](docs/research/rpe_branch_energy_execution_20261104/REPORT.md)。

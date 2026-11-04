@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE A/C限定実行：95%条件・保存DF referenceを確認（2026-11-04）](docs/research/rpe_three_gaps_execution_20261104/REPORT.md)：
+H4/1Å/STO-3G/DF12/L_D3/δ=.02/保存state ray・sector70、A160-bit/C256-bit各1 pass。
+α不変の直接成功下界≥.950307、保存DF最小固有値のreference込み理想energy目標内。B全域はUNKNOWN、global false・両bridge null保持。
+
 [RPE D残存3課題：技術準備（2026-11-04）](docs/research/rpe_three_gaps_preparation_20261104/REPORT.md)：
 保存αを変更しないdirect Hoeffding上界、保存DF sector groundのinterval LDL*/Rayleigh SOURCEを準備。
 Float64全域は未解決、小さい人工prefix checkerのみ。人工28件PASS、実H4新評価0。旧UNKNOWN/STOP・global false・両bridge nullを維持。
