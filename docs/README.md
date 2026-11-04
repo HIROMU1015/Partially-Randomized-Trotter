@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled RTE・Hadamard v2：selector修正・固定再実行範囲](research/rpe_controlled_hadamard_runner_v2_20261104/PREPARATION_REPORT.md)
+（2026-11-04）。実保存payloadとの静的membershipを追加、負/正・異basisのpairを固定。人工67件PASS。
+新SOURCE固定後、今回の修正再実行許可内でrun02を1回実施する。旧SOURCE/run01・判定を保全。
+
 [Controlled RTE・Hadamard：固定selector不在で科学実行停止](research/rpe_controlled_hadamard_local_probes_execution_20261104/REPORT.md)
 （2026-11-04）。SOURCE76d25ac69の1回試行。H/state load・DF preparation・support登録各1、後続の回路・平均評価0。
 実装側の固定IDと保存1e-12 exportが不適合。原RESULTと旧判定を保全しretryせずmandatory STOP。

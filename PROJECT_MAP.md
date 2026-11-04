@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[Controlled RTE・Hadamard v2：selector修正と再実行準備（2026-11-04）](docs/research/rpe_controlled_hadamard_runner_v2_20261104/PREPARATION_REPORT.md)：
+実保存218成分で存在する負/正・異basisのpairを固定。metadata gateを実H4 load前へ追加、人工67件PASS。
+旧SOURCE/run01を保全し、今回許可された12局所probeを新SOURCE固定後run02へ1回実行する。
+
 [Controlled RTE・Hadamard：12局所probe実行・selector不在STOP（2026-11-04）](docs/research/rpe_controlled_hadamard_local_probes_execution_20261104/REPORT.md)：
 SOURCE76d25ac69を1回起動。H/state load・DF preparation・support登録各1後、固定component不在で停止。
 回路build/state-action/参照/測定平均0、retryなし。原RESULT保全、全体UNDETERMINED/false、公開照合後mandatory STOP。
