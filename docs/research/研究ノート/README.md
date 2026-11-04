@@ -1,3 +1,9 @@
+## 2026-11-05 Support期待転送：ideal IID平均の全36軸十分条件
+
+[当日記録](2026-11-05_rpe_support_weighted_transfer.md)。SOURCE7a39a78ec、H4/1Å/STO-3G/DF12/L_D3/δ=.02/K2。
+旧218 certificateを使い96 bit/1 pass、全18/36軸strict。m17平均追加上端約7.56e-9、新operator/mean matrix/compile/sampling0。
+旧一様18/36結果と全体UNDETERMINED/false・両U nullを維持し、公開照合後STOP。
+
 ## 2026-11-05 Controlled Hadamard全18round：追加上界取得・全体未判定
 
 [当日記録](2026-11-05_rpe_controlled_connection_certificate.md)。SOURCE5605ea6fdを96 bit/1 pass実行。

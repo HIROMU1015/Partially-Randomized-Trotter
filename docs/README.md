@@ -1,5 +1,10 @@
 # 文書の現在の入口
 
+[Support期待転送：ideal controlled IID平均の全18round接続](research/rpe_support_weighted_transfer_execution_20261105/REPORT.md)
+（2026-11-05）。H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2、SOURCE7a39a78ecを96 bit/1 passで実行し全36軸strict。
+m17平均追加上端約7.56e-9。
+新operator/column/mean matrix/sampling/compile0。旧一様結果・全体UNDETERMINED/false・両U nullを保持しSTOP。
+
 [Support上界の保守性と改善候補](research/rpe_support_bound_sharpness_20261105/SUPPORT_BOUND_ANALYSIS.md)
 （2026-11-05）。projector/word/期待転送を条件付きで導出、人工173件PASS。実装平均のevent積分解は使わない。
 新H4評価0。旧certificateを再利用する限定平均転送SOURCEを公開、旧判定・両U nullを保持してSTOP。

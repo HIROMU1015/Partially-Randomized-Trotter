@@ -1,3 +1,13 @@
+## 2026-11-05 Support期待転送：ideal controlled IID平均の全36軸十分条件
+
+[報告・4原本](docs/research/rpe_support_weighted_transfer_execution_20261105/REPORT.md)。SOURCE7a39a78eccdbe457786978e14d36b2f0d7abc290。
+linear H4/1Å/STO-3G/保存DF12、L_D3/δ=.02/K2/cutoff1e-12、B normalized ray/8qubit・4電子sector70、保存18tuple/law/θ/policy。
+旧218 certificateからmoment1・sin12・6r/18transfer/36strict比較を96 bit/1 passで実行し、全36軸SUFFICIENT_CONDITION_CONFIRMED。
+m17平均専用追加上端は上向き表示7.55735552e-9。新basis/column/operator/mean matrix/CDF/sampling/長q build/compile0。
+CONDITIONAL_IDEAL_CONTROLLED_IID_MEAN_LOCAL_CONDITIONS_CONFIRMED、exit0、欠測なし、retry0。
+旧一様18/36判定とraw/SOURCEは保持。任意trajectory/PCG64/Float64/compiled/noisy/全体RPEへの保証ではない。
+全体UNDETERMINED/false、U_virtual_IID_upper=U_exec_upper=nullを維持し、公開照合後mandatory STOP。
+
 ## 2026-11-05 Controlled Hadamard全18round：追加上界取得・18軸未判定
 
 [報告・6原本](docs/research/rpe_controlled_connection_certificate_execution_20261105/REPORT.md)。
