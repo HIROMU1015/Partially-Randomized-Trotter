@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled IID測定と数学的energy：条件付き95%の限定実行結果](research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md)
+（2026-11-05）。H4/1Å/STO-3G/保存DF12・L_D3/δ=.02/K2、SOURCEffa1e22b3、Arb160・36軸＋1 exact集約。
+成功下界≥.950307011365666053。既存G→branch/alias→reference込み保存DF energy証拠を再利用。全体false/UNDETERMINED・両U null、STOP。
+
 [Controlled IID平均から成功確率・数学的energyへの接続SOURCE](research/rpe_controlled_iid_success_energy_preparation_20261105/NEXT_STAGE_DECISION.md)
 （2026-11-05）。旧Hoeffding adapterとG→branch→energy証明を再利用。人工148件PASS、新H4の確率評価0。
 全36軸のArb160・1 pass限定計画を準備。新Controlled成功確率は未判定、全体false/UNDETERMINED・両U null、公開照合後STOP。

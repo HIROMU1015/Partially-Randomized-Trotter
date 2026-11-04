@@ -1,3 +1,13 @@
+## 2026-11-05 Controlled IID測定：数学的decoder・保存DF energyへの条件付き95%接続
+
+[報告・4原本・36軸表](docs/research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md)。SOURCEffa1e22b3001ad1c4eb275ff1121ed17111452ec。
+linear H4/1Å/STO-3G/保存legacy DF12、Partial L_D3/δ=.02/K2/cutoff1e-12、保存physical normalized ray・8qubit/N4 sector70、保存18tuple/law/policy。
+Arb160・1 pass、36 tailセルとexact集約1回。失敗上界≤.0496929886343339467、成功下界≥.950307011365666053、native exit0。
+CONDITIONAL_IDEAL_CONTROLLED_IID_MATHEMATICAL_ENERGY_95_SUFFICIENT。旧DのG→17 strict branch・alias/liftと旧Cのreference込みenergy上端を再利用。
+新幾何/energy/reference/mean/H/state評価、sampling/build/compile/cost/詳細レビュー0。SOURCE/raw保全、追加precision/retry0。
+指定ideal IID測定・数学的decoder・外部alias条件下の保存DF sector ground energyが対象。実PRNG/Float64/compiled/noisy/実状態準備/真の分子energy/総費用は未保証。
+旧Σα UNKNOWN・旧一様18/36・旧categorical判定を変更しない。全体false/UNDETERMINED・U_virtual_IID_upper=U_exec_upper=nullを保持し、公開照合後mandatory STOP。
+
 ## 2026-11-05 Support期待転送：ideal controlled IID平均の全36軸十分条件
 
 [報告・4原本](docs/research/rpe_support_weighted_transfer_execution_20261105/REPORT.md)。SOURCE7a39a78eccdbe457786978e14d36b2f0d7abc290。

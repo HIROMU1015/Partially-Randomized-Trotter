@@ -1,3 +1,9 @@
+## 2026-11-05 Controlled IID測定→数学的energyの条件付き95%接続
+
+[当日記録](2026-11-05_rpe_controlled_iid_success_energy.md)。H4/1Å/STO-3G/DF12・L_D3/δ=.02/K2、SOURCEffa1e22b3。
+Arb160・36 tail＋1 exact集約で成功下界≥.950307011365666053。G→旧D branch/alias→旧Cの保存DF sector energy証拠を再利用。
+新幾何/固有値/build/compile/sampling0、旧判定と全体false/UNDETERMINED・両U nullを維持しSTOP。
+
 ## 2026-11-05 Support期待転送：ideal IID平均の全36軸十分条件
 
 [当日記録](2026-11-05_rpe_support_weighted_transfer.md)。SOURCE7a39a78ec、H4/1Å/STO-3G/DF12/L_D3/δ=.02/K2。

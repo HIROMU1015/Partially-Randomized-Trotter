@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[Controlled IID測定→数学的energy：条件付き95%十分保証（2026-11-05）](docs/research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md)：
+H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2、保存ray/N4 sector70。SOURCEffa1e22b3、Arb160・1 pass、36 tail＋1 exact集約。
+失敗上界≤.0496929886343339467、成功下界≥.950307011365666053。G→旧Dのbranch/alias→旧Cの保存DF energy上端を再利用。
+PCG64/Float64/compiled/noisy/全体RPEは未認定。新幾何/reference/build/compile/sampling0、false/UNDETERMINED・両U null、公開照合後STOP。
+
 [Controlled IID平均→RPE成功確率・数学的energy：接続SOURCE準備（2026-11-05）](docs/research/rpe_controlled_iid_success_energy_preparation_20261105/NEXT_STAGE_DECISION.md)：
 H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2。旧alpha/aggregateを無変更で再利用し、U_cat+Δ_meanから36 tail＋exact和へ接続。
 Gと保存入力の同一性により旧Dの17 strict branch・旧Cのreference込みenergy証明を再利用可能。人工148件PASS。
