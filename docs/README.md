@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：Stage P／compiler適用性・校正実行可能性の技術準備（2026-11-04）
+
+[統合・Arb全基底高速化・失敗scope・未承認契約](research/research_c_stage_p_totality_calibration_feasibility_20261104.md)。`c_arb_column_batch`／`c_totality_calibration`／`c_batch_pair_pilot`、passive entry `scripts/prepare_research_c_totality_calibration.py`、人工テスト `tests/management/test_research_c_totality_calibration.py`、証拠 `artifacts/research_c_stage_p_totality_calibration/2026-11-04/technical/`。固定1-wordと全word資格を区別し、期待bias校正はNOT_READY。保存native pair高速化の7-call案のみ実行経路固定・未承認、今回の新実H4科学0、mandatory STOP。
+
 ## 研究C：Stage P未完了項目・15-call完了（2026-11-04）
 
 [全512列inverse・shell・raw信号・範囲](research/research_c_stage_p_completion_execution_20261104.md)。保存直鎖H4・1.00 Å/STO-3G、number CDF8/LD2・partial S2/s1/r32/K0・h=δ=.1、固定F6/F7交互32-event word。SOURCE2c454ed08無変更、独立15/15 COMPLETE・FAIL/retry/resume0。Arb192・全512列のcompiled actual inverse上界約5.542118759907e-15、3 shellと単一occurrenceのraw complex signal上界約4.496362061560e-11を取得。旧C→R→D/raw inverseは再利用、旧41-call部分STOPと残11 unitsは維持。全law/校正/CAへ進まずmandatory STOP。

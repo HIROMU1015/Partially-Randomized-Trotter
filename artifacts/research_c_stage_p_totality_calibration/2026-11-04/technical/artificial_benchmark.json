@@ -1,0 +1,133 @@
+{
+  "kind": "ARTIFICIAL_ONLY",
+  "python": "3.11.1",
+  "CPU_affinity": 32,
+  "results": [
+    {
+      "name": "batch_only",
+      "qubits": 4,
+      "common_gates_per_side": 8,
+      "cancellation": false,
+      "parallel": false,
+      "times_seconds": {
+        "old": [
+          0.28616061341017485,
+          0.026837119832634926,
+          0.02612823247909546
+        ],
+        "batch": [
+          0.03090043179690838,
+          0.025003564544022083,
+          0.025146580301225185
+        ]
+      },
+      "median_seconds": {
+        "old": 0.026837119832634926,
+        "batch": 0.025146580301225185
+      },
+      "measured_median_ratio_old_over_batch": 1.0672274126803387,
+      "bounds": {
+        "old": {
+          "upper_exact": "1617572092359200194787221009678355223819013095532753645887/3369993333393829974333376885877453834204643052817571560137951281152",
+          "lower_exact": "570689620527514004089108366577249879396055574202710479574878843649239124388266856213420343327156576846457/4925250774549309901534880012517951725634967408808180833493536675530715221437151326426783281860614455100828498788352",
+          "columns_evaluated": 16,
+          "precision_bits": 192,
+          "resource_plan": {
+            "workers": 16,
+            "CPU_affinity": 32,
+            "cgroup_CPU_quota": null,
+            "available_RAM_bytes": 55888551936,
+            "estimated_RAM_per_worker_bytes": 536936448,
+            "method": "independent full-basis columns;process-local gate cache;FLINT block matmul;recenter after each gate",
+            "CPU_cap": null,
+            "RAM_cap": null,
+            "wall_cap": null,
+            "workers_used": 1,
+            "reason": "tiny workload or explicit artificial-test serial path"
+          }
+        },
+        "batch": {
+          "upper_exact": "1617572092359200194787221009678355223819013095532753645887/3369993333393829974333376885877453834204643052817571560137951281152",
+          "lower_exact": "570689620527514004089108366577249879396055574202710479574878843649239124388266856213420343327156576846457/4925250774549309901534880012517951725634967408808180833493536675530715221437151326426783281860614455100828498788352",
+          "columns_evaluated": 16,
+          "precision_bits": 192,
+          "resource_plan": {
+            "workers": 1,
+            "CPU_affinity": 32,
+            "cgroup_CPU_quota": null,
+            "available_RAM_bytes": 55888551936,
+            "estimated_RAM_per_worker_bytes": 536936448,
+            "method": "independent full-basis columns;process-local gate cache;FLINT block matmul;recenter after each gate",
+            "CPU_cap": null,
+            "RAM_cap": null,
+            "wall_cap": null,
+            "workers_used": 1,
+            "reason": "small residual or explicit artificial serial comparison"
+          }
+        }
+      }
+    },
+    {
+      "name": "common_unitaries_full512",
+      "qubits": 9,
+      "common_gates_per_side": 12,
+      "cancellation": true,
+      "parallel": true,
+      "times_seconds": {
+        "old": [
+          2.585949255153537,
+          2.6829363964498043,
+          2.7496639704331756
+        ],
+        "batch": [
+          0.42069370206445456,
+          0.4058343591168523,
+          0.44145210552960634
+        ]
+      },
+      "median_seconds": {
+        "old": 2.6829363964498043,
+        "batch": 0.42069370206445456
+      },
+      "measured_median_ratio_old_over_batch": 6.3774104135239735,
+      "bounds": {
+        "old": {
+          "upper_exact": "2287592391130605629680135193134869901306114916636638093797/842498333348457493583344221469363458551160763204392890034487820288",
+          "lower_exact": "570689620527514004089108366577249879396055574189953895175046539582986072554218276126651231186143274625121/4925250774549309901534880012517951725634967408808180833493536675530715221437151326426783281860614455100828498788352",
+          "columns_evaluated": 512,
+          "precision_bits": 192,
+          "resource_plan": {
+            "workers": 32,
+            "CPU_affinity": 32,
+            "cgroup_CPU_quota": null,
+            "available_RAM_bytes": 55991652352,
+            "estimated_RAM_per_worker_bytes": 538968064,
+            "method": "independent full-basis columns;process-local gate cache;FLINT block matmul;recenter after each gate",
+            "CPU_cap": null,
+            "RAM_cap": null,
+            "wall_cap": null
+          }
+        },
+        "batch": {
+          "upper_exact": "4575184782261211259360270386269739802612229832956275838569/1684996666696914987166688442938726917102321526408785780068975640576",
+          "lower_exact": "1141379241055028008178216733154499758792111148456256681706634533888829081632303592231857355033991723621341/9850501549098619803069760025035903451269934817616361666987073351061430442874302652853566563721228910201656997576704",
+          "columns_evaluated": 512,
+          "precision_bits": 192,
+          "resource_plan": {
+            "workers": 32,
+            "CPU_affinity": 32,
+            "cgroup_CPU_quota": null,
+            "available_RAM_bytes": 56006987776,
+            "estimated_RAM_per_worker_bytes": 538968064,
+            "method": "independent full-basis columns;process-local gate cache;FLINT block matmul;recenter after each gate",
+            "CPU_cap": null,
+            "RAM_cap": null,
+            "wall_cap": null
+          }
+        }
+      }
+    }
+  ],
+  "H4_speedup_measured": false,
+  "new_H4_scientific_calls": 0
+}
