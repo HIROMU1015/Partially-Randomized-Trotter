@@ -1,5 +1,10 @@
 # scripts 索引
 
+## 研究C：保存H／H_eigh独立差分・4-call契約準備（2026-11-05）
+
+[固定SOURCE・未承認4-call診断・passive preflight](../docs/research/research_c_saved_eigh_difference_readiness_20261105.md)。`c_saved_eigh_difference.py`、default passiveの`run_research_c_saved_eigh_difference.py`、人工test `test_research_c_saved_eigh_difference.py`、artifact `research_c_saved_eigh_difference/2026-11-05/technical/`。Exact Frobenius平方和／Arb192区間／operator norm上界のみ。新規人工32 PASS、既存127 PASS／継承4 FAIL。実H4科学0、別途実行許可待ち、旧STOP保全、mandatory STOP。
+
+
 ## 研究C：Hermitian oracle target・bridge技術準備（2026-11-05）
 
 [producer／NumPy L規則・候補比較・rigorous bridge・人工検証](../docs/research/research_c_hermitian_oracle_bridge_readiness_20261105.md)。`c_hermitian_oracle_bridge.py`、passive専用`prepare_research_c_hermitian_oracle_bridge.py`、人工test `test_research_c_hermitian_oracle_bridge.py`、artifact `research_c_hermitian_oracle_bridge/2026-11-05/technical/`。研究target未採択、非実行契約NOT_READY、新規人工34 PASS・既存93 PASS／継承4 FAIL。実H4新科学0、旧15-call STOP・残12転用禁止を維持、公開照合後mandatory STOP。

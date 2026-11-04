@@ -1,0 +1,60 @@
+........................................................................ [ 54%]
+...................................................FF.FF...              [100%]
+=================================== FAILURES ===================================
+_ test_scientific_source_commit_must_contain_the_frozen_manifest[0000000000000000000000000000000000000000] _
+tests/management/test_research_c_direct_m0_bound.py:68: in test_scientific_source_commit_must_contain_the_frozen_manifest
+    with pytest.raises(ValueError,match='SCIENTIFIC_SOURCE_COMMIT'):m.preflight(ROOT,p)
+                                                                    ^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_direct_m0_bound.py:96: in preflight
+    if not output.is_relative_to(root) or output.exists(): raise ValueError('FRESH_NO_RETRY_RESUME')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ValueError: FRESH_NO_RETRY_RESUME
+
+During handling of the above exception, another exception occurred:
+tests/management/test_research_c_direct_m0_bound.py:68: in test_scientific_source_commit_must_contain_the_frozen_manifest
+    with pytest.raises(ValueError,match='SCIENTIFIC_SOURCE_COMMIT'):m.preflight(ROOT,p)
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'SCIENTIFIC_SOURCE_COMMIT'
+E     Actual message: 'FRESH_NO_RETRY_RESUME'
+_ test_scientific_source_commit_must_contain_the_frozen_manifest[e409111ccd1427c343c2c44a4e87a3230f70a824] _
+tests/management/test_research_c_direct_m0_bound.py:68: in test_scientific_source_commit_must_contain_the_frozen_manifest
+    with pytest.raises(ValueError,match='SCIENTIFIC_SOURCE_COMMIT'):m.preflight(ROOT,p)
+                                                                    ^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_direct_m0_bound.py:96: in preflight
+    if not output.is_relative_to(root) or output.exists(): raise ValueError('FRESH_NO_RETRY_RESUME')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ValueError: FRESH_NO_RETRY_RESUME
+
+During handling of the above exception, another exception occurred:
+tests/management/test_research_c_direct_m0_bound.py:68: in test_scientific_source_commit_must_contain_the_frozen_manifest
+    with pytest.raises(ValueError,match='SCIENTIFIC_SOURCE_COMMIT'):m.preflight(ROOT,p)
+E   AssertionError: Regex pattern did not match.
+E     Expected regex: 'SCIENTIFIC_SOURCE_COMMIT'
+E     Actual message: 'FRESH_NO_RETRY_RESUME'
+_____________ test_default_cli_preflight_has_no_scientific_imports _____________
+tests/management/test_research_c_direct_m0_bound.py:92: in test_default_cli_preflight_has_no_scientific_imports
+    subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,check=True)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self,name,*a):\n  if name.split('.')[0] in ('numpy','scipy','flint','qiskit','ffsim','pyscf'):\n   raise AssertionError('NO_SCIENTIFIC_IMPORT:'+name)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_direct_m0_bound as m\nr=m.preflight(Path.cwd())\nassert r['scientific_calls']==r['arrays_decoded']==r['QPY_decoded']==0\nassert not r['numerical_oracle_qualified'] and r['mandatory_stop']\nassert r['maximum_logical_units']==15\n"]' returned non-zero exit status 1.
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-hermitian-oracle-bridge-readiness-20261105/src/trottertracks/c_direct_m0_bound.py", line 96, in preflight
+    if not output.is_relative_to(root) or output.exists(): raise ValueError('FRESH_NO_RETRY_RESUME')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: FRESH_NO_RETRY_RESUME
+_______ test_current_preparation_or_frozen_contract_never_performs_math ________
+tests/management/test_research_c_direct_m0_bound.py:96: in test_current_preparation_or_frozen_contract_never_performs_math
+    c=contract();r=m.preflight(ROOT)
+                   ^^^^^^^^^^^^^^^^^
+src/trottertracks/c_direct_m0_bound.py:96: in preflight
+    if not output.is_relative_to(root) or output.exists(): raise ValueError('FRESH_NO_RETRY_RESUME')
+                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ValueError: FRESH_NO_RETRY_RESUME
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_direct_m0_bound.py::test_scientific_source_commit_must_contain_the_frozen_manifest[0000000000000000000000000000000000000000]
+FAILED tests/management/test_research_c_direct_m0_bound.py::test_scientific_source_commit_must_contain_the_frozen_manifest[e409111ccd1427c343c2c44a4e87a3230f70a824]
+FAILED tests/management/test_research_c_direct_m0_bound.py::test_default_cli_preflight_has_no_scientific_imports
+FAILED tests/management/test_research_c_direct_m0_bound.py::test_current_preparation_or_frozen_contract_never_performs_math
+4 failed, 127 passed in 1.64s

@@ -145,6 +145,17 @@ def test_permission_precedes_preflight_and_every_array_access(monkeypatch):
     with pytest.raises(PermissionError,match='FOUR_CALL'):m.run(ROOT)
 
 
+def test_difference_pipeline_never_calls_eigensolver_or_oracle(tmp_path,monkeypatch):
+    from trottertracks import c_direct_m0_oracle as oracle
+    def forbidden(*a,**kw):raise AssertionError('OUTSIDE_DIFFERENCE_ONLY_SCOPE')
+    for owner,name in [(np.linalg,'eigh'),(np.linalg,'eigvalsh'),
+                       (oracle,'propose_isolation'),(oracle,'qualify_ground'),
+                       (bridge,'qualify'),(bridge,'transport_ground')]:
+        monkeypatch.setattr(owner,name,forbidden)
+    root,c,out=fixture(tmp_path,[[0,1j],[0,2]])
+    assert m._attempt(root,c,out)['status']=='VALIDATED_SAVED_EIGH_DIFFERENCE_ONLY'
+
+
 @pytest.mark.parametrize('field,value', [
     ('UPLO','U'),('shape',[35,35]),('dtype','<f8'),('retry',1),('resume',1),
     ('maximum_logical_units',5),('ground_eigensolve',1),('target_adopted',True)])

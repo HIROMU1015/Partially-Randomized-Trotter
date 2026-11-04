@@ -1,0 +1,76 @@
+{
+  "runs": [
+    {
+      "label": "baseline",
+      "command": [
+        "/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/management/test_research_c_hermitian_oracle_bridge.py",
+        "tests/management/test_research_c_direct_round_signal.py",
+        "tests/management/test_research_c_direct_m0_runner.py",
+        "tests/management/test_research_c_direct_m0_bound.py"
+      ],
+      "cwd": "/tmp/prt-c-hermitian-oracle-bridge-readiness-20261105",
+      "returncode": 1,
+      "wall_seconds": 1.8024818114936352,
+      "summary": "4 failed, 127 passed in 1.64s"
+    },
+    {
+      "label": "current",
+      "command": [
+        "/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/management/test_research_c_saved_eigh_difference.py",
+        "tests/management/test_research_c_hermitian_oracle_bridge.py",
+        "tests/management/test_research_c_direct_round_signal.py",
+        "tests/management/test_research_c_direct_m0_runner.py",
+        "tests/management/test_research_c_direct_m0_bound.py"
+      ],
+      "cwd": "/tmp/prt-c-saved-eigh-difference-readiness-20261105",
+      "returncode": 1,
+      "wall_seconds": 2.1305391266942024,
+      "summary": "4 failed, 159 passed in 1.96s"
+    }
+  ],
+  "new_tests_passed": 32,
+  "new_failures": 0,
+  "inherited_failures": 4,
+  "scientific_calls": 0,
+  "actual_H4_arrays_decoded": 0,
+  "reason": "Same four frozen pre-execution Direct m0 preflight tests fail on the consumed science-run01 at the exact base. FRESH_NO_RETRY_RESUME is preserved.",
+  "baseline_commit": "56d2f85e471d2ab3927c9c9568f31034df143b26",
+  "inherited_failed_tests": [
+    "FAILED tests/management/test_research_c_direct_m0_bound.py::test_scientific_source_commit_must_contain_the_frozen_manifest[0000000000000000000000000000000000000000]",
+    "FAILED tests/management/test_research_c_direct_m0_bound.py::test_scientific_source_commit_must_contain_the_frozen_manifest[e409111ccd1427c343c2c44a4e87a3230f70a824]",
+    "FAILED tests/management/test_research_c_direct_m0_bound.py::test_default_cli_preflight_has_no_scientific_imports",
+    "FAILED tests/management/test_research_c_direct_m0_bound.py::test_current_preparation_or_frozen_contract_never_performs_math"
+  ],
+  "runtime_local_modules": [
+    "src/trottertracks/c1_general_k_adapter.py",
+    "src/trottertracks/c1_stage1_execution.py",
+    "src/trottertracks/c1_stage2_native.py",
+    "src/trottertracks/c1_stage3_accuracy.py",
+    "src/trottertracks/c1_stage3_connection.py",
+    "src/trottertracks/c1_stage3_integrated.py",
+    "src/trottertracks/c_direct_m0_oracle.py",
+    "src/trottertracks/c_fresh_iid_calibration.py",
+    "src/trottertracks/c_hermitian_oracle_bridge.py",
+    "src/trottertracks/c_iid_grid_expected_bias.py",
+    "src/trottertracks/c_per_word_population_range.py",
+    "src/trottertracks/c_pr_aware_df_zsxx_enclosure.py",
+    "src/trottertracks/c_saved_eigh_difference.py"
+  ],
+  "runtime_module_coverage_complete": true
+}
