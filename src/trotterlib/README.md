@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Stage P未完了項目だけの後続実行（2026-11-04）
+
+[15-call契約・列別進捗・終了記録・人工検証](../../docs/research/research_c_stage_p_completion_preparation_20261104.md)。保存C→R→Dとraw inverseは再利用し、compiled inverse/full512・shell・単一occurrence信号だけを新fresh出力へ評価する。旧run/残11 unitsは保全、retry/resume0、全law/CAへ進まない。
+
 ## 研究C：Stage P固定1-wordの包囲取得・部分STOP（2026-11-04）
 
 [per-word上界・30-call部分証拠・残件](../../docs/research/research_c_stage_p_literal_execution_20261104.md)。保存直鎖H4・1.00 Å/STO-3G、number CDF8・LD2・partial S2/s1/r32/K0・h=δ=.1、固定F6/F7交互32-event word。SOURCEf658f72d5無変更、30 attempts/29 COMPLETE/記録FAIL0/未完了1。Arb192・全512列でC→R上界約1.585733058571e-11、R→D約3.957579638642e-14、合計約1.589690638209e-11を取得。Raw actual inverseは完了、compiled inverse検証中にプロセス消失を観測し原因未確定。Shell・信号boundはnull、Stage P全体未完了、全law/校正/CA未資格。Retry/resume0、残11 units転用なし、旧原本保全、mandatory STOP。
