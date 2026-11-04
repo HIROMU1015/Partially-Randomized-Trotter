@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE B追補2：測定入力経路・距離kernel（2026-11-05）](docs/research/rpe_three_gaps_preparation_20261104/INPUT_KERNEL_ADDENDUM_20261105.md)：
+既存18round接続interfaceの整数和/N→cmath.phase→scalar経路を追加確認。解決済みloop/GOTとwrap用fmodの限定域証明を接続。
+exp/atan2の全域誤差契約は未取得、H4科学SOURCE未準備。人工10＋既存44件PASS、新H4評価0、旧結果・global false・両bridge null保持でSTOP。
+
 [RPE B追補：Float64 decoderの一様誤差保証・技術準備（2026-11-05）](docs/research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md)：
 mean丸め・wrap前rootの条件付き補題、scalar一roundの全成功格子angle/wrap上界を準備。人工16＋既存28件PASS。
 全候補distance契約・全18round測定callerは未確定、H4科学runner未準備・新H4評価0。A/C不変、global false・両bridge nullでSTOP。

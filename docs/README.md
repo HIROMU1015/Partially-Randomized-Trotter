@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE B追補2：測定入力経路・距離kernel（2026-11-05）](research/rpe_three_gaps_preparation_20261104/INPUT_KERNEL_ADDENDUM_20261105.md)：
+既存18roundのcmath経路、NumPy解決loop/libm束縛、wrap用fmodの限定域証明。exp/atan2精度契約は未取得。
+人工10＋既存44件PASS、新H4評価0、科学SOURCE未準備。正式production採択・実装energyは未保証のままSTOP。
+
 [RPE B追補：Float64 decoder一様保証の技術準備（2026-11-05）](research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md)：
 SOURCE/runtime/mean経路を区別し、mean・wrap前rootの条件付き補題と有限roundのangle/wrap被覆を追加。
 人工16＋既存28件PASS。distance全域・全18round測定callerは未確定、H4科学SOURCE未準備。A/C・旧STOPを保持、新H4評価0。

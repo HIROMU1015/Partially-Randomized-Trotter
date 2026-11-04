@@ -1,0 +1,478 @@
+{
+  "schema": "RPE_B_INPUT_KERNEL_TECHNICAL_V1",
+  "date_jst": "2026-11-05",
+  "parent_commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+  "branch": "codex/rpe-input-kernel-preparation-20261105",
+  "decision": "UNKNOWN/STOP",
+  "H4_scientific_source_ready": false,
+  "scientific_runner_added": false,
+  "caller": {
+    "existing_interface_commit": "8722b5a461c617b8846c2754275895f152df78f3",
+    "source": "docs/research/rpe_18round_measurement_connection_20261103/measurement_adapter.py",
+    "functions": [
+      "collect_virtual_round",
+      "MeasuredMeans.signal",
+      "decode_measurements",
+      "original_decoder"
+    ],
+    "mean": "exact Python integer sum / N conditional on built-in int +/-1 callbacks",
+    "phase": "cmath.phase scalar, not np.angle",
+    "production_adoption": false,
+    "production_backend_present": false,
+    "old_np_angle_envelope_transferred": false,
+    "previous_search_omission_corrected": true
+  },
+  "conditional_candidate_lemma": {
+    "bound_exact": "1/70368744177664",
+    "q_domain": "2 <= q <= 2**17, powers of two",
+    "principal_domain": "[-pi64,pi64]",
+    "fmod_y_domain": "(-2*pi64,4*pi64)",
+    "assumptions": [
+      "same identified binary and binding",
+      "binary64 RN / gradual underflow",
+      "candidate wrap input in [-4,8]"
+    ],
+    "proof": "manual restricted-domain source/binary argument in INPUT_KERNEL_ADDENDUM_20261105.md; tests are not proof"
+  },
+  "fmod_kernel": {
+    "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+    "elf_address": "0x26020",
+    "size": 496,
+    "code_sha256": "8fa1fd9c36063af4f4801f334ee07237b0e3e6250b0d310625759f6a9ae628c2",
+    "method": "integer compare / shift / subtract / bit reconstruction",
+    "scope": "exact truncation remainder for finite y in (-D,2D), D=2*pi64; not a general libm certificate"
+  },
+  "runtime": {
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "libc": [
+      "glibc",
+      "2.35"
+    ],
+    "machine": "x86_64",
+    "fp": {
+      "x87_control": "0x37f",
+      "mxcsr": "0x1fa2",
+      "x87_nearest": true,
+      "sse_nearest": true,
+      "flush_to_zero": false,
+      "denormals_are_zero": false,
+      "scope": "observed current thread only; no FP-mode change"
+    },
+    "scalar_remainder": {
+      "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+      "elf_address": "0xf4570",
+      "symbols": [
+        "double_remainder"
+      ]
+    },
+    "loops": [
+      {
+        "ufunc": "remainder",
+        "dtypes": [
+          "float64",
+          "float64",
+          "float64"
+        ],
+        "fixed_strides": [
+          8,
+          0,
+          8
+        ],
+        "wrapper": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x24cf30",
+          "symbols": [
+            "generic_wrapped_legacy_loop"
+          ]
+        },
+        "inner": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0xe3be0",
+          "symbols": [
+            "DOUBLE_remainder"
+          ]
+        },
+        "user_data": null
+      },
+      {
+        "ufunc": "arctan2",
+        "dtypes": [
+          "float64",
+          "float64",
+          "float64"
+        ],
+        "fixed_strides": [
+          16,
+          16,
+          8
+        ],
+        "wrapper": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x24cf30",
+          "symbols": [
+            "generic_wrapped_legacy_loop"
+          ]
+        },
+        "inner": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x2cdb20",
+          "symbols": [
+            "DOUBLE_arctan2"
+          ]
+        },
+        "user_data": null
+      },
+      {
+        "ufunc": "arctan2",
+        "dtypes": [
+          "float64",
+          "float64",
+          "float64"
+        ],
+        "fixed_strides": [
+          8,
+          8,
+          8
+        ],
+        "wrapper": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x24cf30",
+          "symbols": [
+            "generic_wrapped_legacy_loop"
+          ]
+        },
+        "inner": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x2cdb20",
+          "symbols": [
+            "DOUBLE_arctan2"
+          ]
+        },
+        "user_data": null
+      },
+      {
+        "ufunc": "exp",
+        "dtypes": [
+          "complex128",
+          "complex128"
+        ],
+        "fixed_strides": [
+          16,
+          16
+        ],
+        "wrapper": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x24cf30",
+          "symbols": [
+            "generic_wrapped_legacy_loop"
+          ]
+        },
+        "inner": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0xdb810",
+          "symbols": [
+            "PyUFunc_D_D"
+          ]
+        },
+        "user_data": {
+          "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+          "elf_address": "0x25e510",
+          "symbols": [
+            "nc_exp"
+          ]
+        }
+      }
+    ],
+    "images": [
+      {
+        "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+        "sha256": "a735e4e8355b75c800112af8a5b1731b891b2016ed57067352eea6cab0aa00bc",
+        "bindings": [
+          {
+            "symbol": "fmod@GLIBC_2.2.5",
+            "relocation": "000000000067fe30",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x10ea0",
+              "symbols": [
+                "fmod@@GLIBC_2.2.5",
+                "fmodf32x@@GLIBC_2.27",
+                "fmodf64@@GLIBC_2.27"
+              ]
+            }
+          },
+          {
+            "symbol": "atan2@GLIBC_2.2.5",
+            "relocation": "00000000006800e8",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x10c10",
+              "symbols": [
+                "atan2@@GLIBC_2.2.5",
+                "atan2f32x@@GLIBC_2.27",
+                "atan2f64@@GLIBC_2.27"
+              ]
+            }
+          },
+          {
+            "symbol": "cexp@GLIBC_2.2.5",
+            "relocation": "0000000000680c38",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x363f0",
+              "symbols": [
+                "cexp@@GLIBC_2.2.5",
+                "cexpf32x@@GLIBC_2.27",
+                "cexpf64@@GLIBC_2.27"
+              ]
+            }
+          },
+          {
+            "symbol": "fmod@GLIBC_2.2.5",
+            "relocation": "0000000000680e38",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x10ea0",
+              "symbols": [
+                "fmod@@GLIBC_2.2.5",
+                "fmodf32x@@GLIBC_2.27",
+                "fmodf64@@GLIBC_2.27"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "path": "/usr/bin/python3.11",
+        "sha256": "320707a1d684b043661306d508d1a8655f507c0bb8e827398cb53680054aa7c8",
+        "bindings": [
+          {
+            "symbol": "atan2@GLIBC_2.2.5",
+            "relocation": "0000000000954078",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x10c10",
+              "symbols": [
+                "atan2@@GLIBC_2.2.5",
+                "atan2f32x@@GLIBC_2.27",
+                "atan2f64@@GLIBC_2.27"
+              ]
+            }
+          },
+          {
+            "symbol": "fmod@GLIBC_2.2.5",
+            "relocation": "00000000009544b8",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x10ea0",
+              "symbols": [
+                "fmod@@GLIBC_2.2.5",
+                "fmodf32x@@GLIBC_2.27",
+                "fmodf64@@GLIBC_2.27"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "sha256": "1a08a427bbf3790aa434d2310e8c724846ec72ba7811982e85b0002dd296ca92",
+        "bindings": [
+          {
+            "symbol": "__atan2_finite IFUNC",
+            "relocation": "00000000000e6028",
+            "target": {
+              "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+              "elf_address": "0x78060",
+              "symbols": []
+            }
+          }
+        ]
+      }
+    ],
+    "precision_contract": null,
+    "H4_uniform_decoder_decision": "UNKNOWN/STOP"
+  },
+  "primary_sources": [
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "math/s_cexp_template.c",
+      "git_blob": "ceb91c92d5a5a6b97c5c122bf5203f8a7ef2fa71"
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/ieee754/dbl-64/e_fmod.c",
+      "git_blob": "60b8bbb9d2ec7f04e82a61d952b5f2a69c4bfc2f"
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/ieee754/dbl-64/s_sincos.c",
+      "git_blob": "12c3021e66c4538eb40d0258952150ae4fd45b20"
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/x86_64/fpu/multiarch/ifunc-avx-fma4.h",
+      "git_blob": "9eb1e56afafd5b811e7f3cf339a1ff095fa3cc8e"
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/x86_64/fpu/multiarch/e_atan2.c",
+      "git_blob": "a780a5a8f02da1ba7fa519ce0dd49434c49121fa"
+    },
+    {
+      "repository": "bminor/glibc",
+      "ref": "glibc-2.35",
+      "path": "sysdeps/x86_64/fpu/multiarch/e_atan2-fma.c",
+      "git_blob": "caba6864965e643645f1a42e0033f4bf0d1c9545"
+    },
+    {
+      "repository": "python/cpython",
+      "ref": "v3.11.0rc1",
+      "path": "Modules/cmathmodule.c",
+      "git_blob": "2038ac26e65857854e3a06bcffa8b9f906117b7e"
+    }
+  ],
+  "github_fixed_files_verified": [
+    {
+      "commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md",
+      "git_blob": "ebcadb3483fa35481e23cfc17baa07fd3abc9ab1",
+      "sha256": "96182559ae47037d98e5fcf4ffcbadea91a45856c1b6a9ab0a50882b3fb16427"
+    },
+    {
+      "commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/DECODER_PREPARATION_VALIDATION.json",
+      "git_blob": "1fe5921f00a003a8eaab47991d3a265096b1821c",
+      "sha256": "95e5f74e9d34642c62fc7ba65ba8e4178ff5dde1aa96d44d80a01cbb4cf697ed"
+    },
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "docs/research/rpe_three_gaps_execution_20261104/REPORT.md",
+      "git_blob": "77f30cddadf459c41b2a1958d621addd355f55dd",
+      "sha256": "60a1b24609b97f379543c60eaa0a6631383b0b966cdb33b7852f9d459d023ca2"
+    },
+    {
+      "commit": "d29a86963f91044a95217d7d2e2ee9703d2f1dc1",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/PROOF_AND_SCOPE.md",
+      "git_blob": "5016a22a18566858131692957a14d34341368ca7",
+      "sha256": "d319e1ce20dcbb56928d3a5aa0c73f361e8a0b7dce95bff3e553feb40dcf83c7"
+    },
+    {
+      "commit": "6942e5176d2dec115ac3c271e48f84377abda915",
+      "path": "docs/research/rpe_branch_energy_preparation_20261104/PROOF.md",
+      "git_blob": "29b1aaafb560b3560c3b29fbc46fd564f7382c58",
+      "sha256": "593680e71566a890ad7e9be2d96daa4f7064a5cab60f3dcc738b20a46009be16"
+    },
+    {
+      "commit": "89cb94fe4db1d39d574877c3bc2db79a6d7a5f9f",
+      "path": "docs/research/rpe_branch_energy_execution_20261104/REPORT.md",
+      "git_blob": "3c6ddce7a310d87809ac51e81028db9154c61d00",
+      "sha256": "d4b9794a730349e759fda146489633d60f0038f5d0fe533dfa08f76489789166"
+    },
+    {
+      "commit": "d2e7a7db683e116243eae061c0e4c87865054e9e",
+      "path": "docs/research/rpe_18round_ideal_enclosure_execution_20261104/REPORT.md",
+      "git_blob": "81841c814e4ead53aa42679f26c864a9db603043",
+      "sha256": "c3e066ab90d1b54e2051bff727eb2335ead1c9eddf751238cecddd6adf1ca149"
+    },
+    {
+      "commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+      "path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "git_blob": "928e662fe9734ab267674ee9d6f4ff62931ec2b1",
+      "sha256": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4"
+    },
+    {
+      "commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/decoder_numeric_preparation.py",
+      "git_blob": "7a22db6a2e163cf9c8a0a19bacafcdfbe675b63e",
+      "sha256": "83087fb9180b3a881d8a01925f08d2eb00090af75663e6fa789235cded88617d"
+    },
+    {
+      "commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/decoder_finite.py",
+      "git_blob": "fe8865780c594fc68ccdbbcfa96d91b10f39c9a5",
+      "sha256": "336f1efb585037cd86250c0eda4061086244e5c29d3fc3618fec280025dc913f"
+    },
+    {
+      "commit": "4318f0bae689a11256d1e3f638db089a1f6a4a13",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/test_decoder_numeric_preparation.py",
+      "git_blob": "6bc0beead0634816e1dc1fd2b0b4657fe2b25f0f",
+      "sha256": "8528d2d7311ea0faad48c9bc4858175e9e2611724ce8af8f8da53d79c8bf286d"
+    },
+    {
+      "commit": "8722b5a461c617b8846c2754275895f152df78f3",
+      "path": "docs/research/rpe_18round_measurement_connection_20261103/IMPLEMENTATION_CONNECTION_REPORT.md",
+      "git_blob": "c03015bc80ec203287bcfd09216be33b36196a68",
+      "sha256": "d00968db7cac66ce639e5a2a81596057dabc0195a701f1982a775abd34c34fbc"
+    },
+    {
+      "commit": "8722b5a461c617b8846c2754275895f152df78f3",
+      "path": "docs/research/rpe_18round_measurement_connection_20261103/measurement_adapter.py",
+      "git_blob": "e1930daf4c42ce6c59dbe2359267eedcca66caef",
+      "sha256": "1822d5e692e4afaaa936cda5faed571b85ba45b499238513c49b1fc377cb7096"
+    }
+  ],
+  "A_C_bytes_preserved": [
+    {
+      "path": "artifacts/rpe_three_gaps_validation/2026-11-04/run01/A.json",
+      "sha256": "fc13fe2515b7f6e91ae61f1e8817623784abf7f95b0a10a8b82be54ad2fae0d1"
+    },
+    {
+      "path": "artifacts/rpe_three_gaps_validation/2026-11-04/run01/C.json",
+      "sha256": "78b2ffe9aeb7c6e1944d0e7ed717ece20de75d0a1246fc413daf965f24f29308"
+    },
+    {
+      "path": "artifacts/rpe_three_gaps_validation/2026-11-04/run01/RESULT.json",
+      "sha256": "707c22df15d690348bc081d9249a5598deeec1353447a4e5c85a12a9be5434f3"
+    }
+  ],
+  "uniform_contracts": {
+    "a_production": null,
+    "c_production": null,
+    "d_production": null,
+    "e_exp": null,
+    "e_angle": null,
+    "implementation_energy_upper": null,
+    "atan2_0524_ulp_adopted": false
+  },
+  "tests": {
+    "new_artificial": 10,
+    "reused_artificial": 44,
+    "total": 54,
+    "result": "PASS",
+    "Arb_bits": 192,
+    "reused_crosscheck_bits": 384,
+    "command": "python -m unittest -v test_input_kernel_connection test_decoder_numeric_preparation test_three_gaps"
+  },
+  "scope": {
+    "new_H4_scientific_calls": 0,
+    "H4_success_grid_evaluations": 0,
+    "H4_branch_margin_substitutions": 0,
+    "new_sampling": 0,
+    "RNG_replay": 0,
+    "circuit_build_compile": 0,
+    "cost_evaluations": 0,
+    "A_C_recomputed": false,
+    "old_decoder_modified": false,
+    "old_virtual_float_guard_BLAS_series_resumed": false,
+    "shared_environment_modified": false
+  },
+  "missing_evidence": [
+    "formal sincos and FMA atan2 restricted-domain approximation/rounding proof",
+    "formal target caller/backend/dtype contract if existing interface is adopted",
+    "application/source/precision/call budget only after all uniform contracts are established"
+  ],
+  "status": {
+    "RPE_tolerance_certified": false,
+    "scientific_status": "UNDETERMINED",
+    "U_virtual_IID_upper": null,
+    "U_exec_upper": null,
+    "mandatory_STOP": true
+  }
+}

@@ -577,6 +577,10 @@ PM-1の[contract module](../trottertracks/resource_applicability/pm1_discard_con
 
 ### RPE
 
+[入力経路・kernelのB追補2](../../docs/research/rpe_three_gaps_preparation_20261104/INPUT_KERNEL_ADDENDUM_20261105.md)は
+既存18round接続interface（整数和/N→cmath.phase）と、NumPy scalar/arrayの解決loop・libm束縛を区別する。
+fmod限定域証明を追加。exp/atan2全域契約は未取得、decoder無変更、人工10＋既存44件PASS・H4新評価0。
+
 [Float64一様保証のB追補](../../docs/research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md)では
 既存decoderを無変更で使用し、有限人工roundのmean→angle→wrap被覆だけを隣接helperで追加。
 mean/root基本演算の条件付き補題は構成したが、distance全域契約は未取得。人工16＋既存28件PASS、H4科学runner未準備・新H4評価0。
