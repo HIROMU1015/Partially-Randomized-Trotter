@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：行別誤差・signed energy・prefixを接続した人工adapter](research/rpe_m17_row_energy_adapter_preparation_20261104/IMPLEMENTATION_REPORT.md)
+（2026-11-04）。有限人工supportの閉性、全prefix、vdot/abs/guardと独立の平均誤差を接続。人工46件PASS。
+実H4の不変領域は未構成、科学runnerは未準備・新H4評価0。旧status/STOPを保持。
+
 [RPE m17：保存norm²の再利用とguard証明の改善候補](research/rpe_m17_guard_proof_refinement_preflight_20261104/TECHNICAL_FINDINGS.md)
 （2026-11-04）。同じraw stateへの96 bit norm²適用をbyte/SOURCEで確認。現行kernelのrow/energy/相関を静的検討。
 人工37件PASS、実H4追加評価0。保証は未確定、次は人工graph接続。旧status/STOPを保持。

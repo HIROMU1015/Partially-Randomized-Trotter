@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：行別丸め・signed energy・全prefixの人工adapter（2026-11-04）](docs/research/rpe_m17_row_energy_adapter_preparation_20261104/IMPLEMENTATION_REPORT.md)：
+有限人工domainの全数検査でrow残差からguard/strict接続まで実装。新18＋再利用28、計46件PASS。
+H4到達領域は未構成、科学SOURCEは未準備。新H4評価0・両U null・旧status/STOP保持。
+
 [RPE m17：保存norm²再利用とguard証明改善の技術調査（2026-11-04）](docs/research/rpe_m17_guard_proof_refinement_preflight_20261104/TECHNICAL_FINDINGS.md)：
 B/export/contextのraw bytes一致で既存96 bit norm²の適用を確認。行ごとの丸め・signed energy・prefixを検討。
 人工37件PASS、新H4評価0。H4 guardは未保証、旧U/status/STOP保持。次は人工graph接続の技術準備案。
