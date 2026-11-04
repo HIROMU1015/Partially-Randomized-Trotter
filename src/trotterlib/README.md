@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：CX構造差・内部block包囲の技術準備（2026-11-05）
+
+[導出・構造監査・人工benchmark・新規未承認6-call](../../docs/research/research_c_cx_structural_block_readiness_20261105.md)。`c_cx_structural_blocks`／`c_cx_structural_readiness`、passive入口 `scripts/prepare_research_c_cx_structural_blocks.py`。保存H4のCX差を8window・最大support4へ完全分割。Arb192の局所Gram/SU2＋補償phaseを合成するopt-in経路で、実H4の新Arb/compileは0・新上界null。人工の鋭い例と粗い反例を区別し、旧SOURCE/raw/STOP保全、科学pilotは未承認・非実行、mandatory STOP。
+
 ## 研究C：局所support C/R pilot・登録4-call早期STOP（2026-11-05）
 
 [構造不対応・部分予算・旧証拠保全](../../docs/research/research_c_compiled_raw_local_pilot_execution_20261105.md)。固定SOURCE6bcf68d55無変更、4/6 COMPLETE、FAIL/retry/resume0。正規化CX eventsはcompiled2894/raw候補2912で、NOT_APPLICABLE_NO_SHARED_CX_SKELETON。局所Arb0・新上界null、残2 units転用なし。全wall約1.37秒は適用性判定であり上界計算のspeedupではない。旧包囲・SOURCE/raw/STOP保全、校正/Stage C 0、mandatory STOP。
