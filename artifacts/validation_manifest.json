@@ -10,6 +10,11 @@
   },
   "relevant_commits": [
     {
+      "sha": "7f70ca0af877621d6e4abb5db94945819ee0826e",
+      "role": "fixed_CX_internal_block_saved_pair_scientific_SOURCE",
+      "description": "Unchanged six-call saved H4 C/R pilot;Arb192 full512 native unitary upper2,VALID_BUT_LOOSER;all six COMPLETE,no FAIL/retry/resume;old tighter bound preserved;no calibration/Stage C."
+    },
+    {
       "sha": "2c454ed089fd6995f22c87d0a34886e1f680f3a1",
       "role": "fixed_Stage_P_missing_outputs_scientific_SOURCE",
       "description": "Independent15/15 COMPLETE;unchanged Arb192 column primitives/full512 compiled actual inverse;3shells/one-occurrence raw signal;prior forward bounds reused;old interrupted41-call study remains unchanged;STOP."
@@ -294,6 +299,14 @@
   ],
   "artifact_inventory": {
     "present": [
+      {
+        "path": "artifacts/research_c_cx_structural_blocks/2026-11-05/block-pilot01",
+        "kind": "directory",
+        "supports": [
+          "research_c_cx_structural_block_pilot_execution_20261105"
+        ],
+        "reason": "Complete internal-block structural plan,local primitive/block witnesses,exact bound terms,SOURCE/contract copies,six-call journal/STOP;preflight and exit status in sibling paths."
+      },
       {
         "path": "artifacts/research_c_stage_p_completion/2026-11-04/run01",
         "kind": "directory",
@@ -1818,6 +1831,48 @@
     ]
   },
   "result_sets": [
+    {
+      "id": "research_c_cx_structural_block_pilot_execution_20261105",
+      "status": "FIXED_PAIR_COMPLETE_VALID_BUT_LOOSER",
+      "report": "docs/research/research_c_cx_structural_block_pilot_execution_20261105.md",
+      "artifacts": "artifacts/research_c_cx_structural_blocks/2026-11-05/block-pilot01",
+      "launch": "artifacts/research_c_cx_structural_blocks/2026-11-05/block-pilot-launch01",
+      "scientific_SOURCE_commit": "7f70ca0af877621d6e4abb5db94945819ee0826e",
+      "scope": "Saved linearH4/1Angstrom/STO-3G,numberCDF8/LD2/partialS2/s1/r32/K0/h=.1;one alternating F6Z/F7ZZ32-event word;full controlled512 compiled/raw mathematical native gates;no fresh sampling or compilation",
+      "source_files": 194,
+      "saved_inputs": 11,
+      "maximum_scientific_units": 6,
+      "scientific_units": 6,
+      "COMPLETE": 6,
+      "call_FAIL": 0,
+      "retry": 0,
+      "resume": 0,
+      "old_unused_units_transferred": 0,
+      "precision_bits": 192,
+      "dimension": 512,
+      "full_operator_coverage": true,
+      "columns_evaluated": 0,
+      "phase_fit": false,
+      "sector_projection": false,
+      "upper_exact": "2",
+      "translation_upper_exact": "10220553012535662903653679646867579465994644500911640624874463441883775038451580560514114007041170066886389805500205116770679936210705/49947976805055875702105555676690660891977570282639538413746511354005947821116249921924897649015871538557230897942505966327167610868612564900642816",
+      "blocks_upper_exact": "116796838104298207970075353815940568299154277407462266140344058362165639907367234502000629269295544700194446801884131/4925250774549309901534880012517951725634967408808180833493536675530715221437151326426783281860614455100828498788352",
+      "global_phase_upper_exact": "4438581203288235482175735871806550440191198067960676046389/3138550867693340381917894711603833208051177722232017256448",
+      "old_upper_exact": "3420102294992199857198671118140265521747306305981520035903/215679573337205118357336120696157045389097155380324579848828881993728",
+      "new_plan_and_certificate_wall_seconds": 2.647793815471232,
+      "old_historical_wall_seconds": 1173.086005588062,
+      "timing_and_tightness_success": false,
+      "new_fit": 0,
+      "new_sampling": 0,
+      "new_build": 0,
+      "new_compile": 0,
+      "worker_exit_code": 0,
+      "all_law_synthesis_error_bound": null,
+      "calibration_ready": false,
+      "Stage_C_ready": false,
+      "actual_CA_achieved": null,
+      "mandatory_stop": true
+    },
     {
       "id": "research_c_stage_p_completion_execution_20261104",
       "status": "VALIDATED_FIXED_WORD_MISSING_OUTPUTS_COMPLETE",
