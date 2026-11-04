@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：ノルム専用証明の限界と限定診断SOURCE（2026-11-04）](docs/research/rpe_m17_norm_only_adapter_preparation_20261104/PROOF_LIMIT.md)：
+現行係数の積型上界は欠損ゼロでも単位norm時のguardを認定できず、完全adapterは見送り。
+保存stateだけを使う将来の診断SOURCEを固定、人工35件PASS。新H4評価0・両U null・旧status/STOP保持。
+
 [RPE m17：guard上界の保守性・静的検討（2026-11-04）](docs/research/rpe_m17_guard_bound_static_assessment_20261104/GUARD_BOUND_ASSESSMENT.md)：
 作用誤差とノルム増幅を分ける証明案、rotationの非Hermitian項、現行kernel丸め項が残る限界を整理。
 新人工8＋既存16件PASS。新H4評価0、guard改善量は未評価、旧status/SOURCE/raw/STOP保持。

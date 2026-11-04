@@ -1,0 +1,69 @@
+2026-11-04 JST / technical preparation, static constants and artificial inputs
+Base: ded65600f7e5517166b432587e28c4f4bac9d6bf
+Branch: codex/rpe-m17-norm-only-adapter-preparation-20261104
+
+Outcome
+- Absolute-defect, independent product norm upper bounds have a structural
+  obstruction near unit raw norm with the existing kernel coefficients.
+- Static constants only: Lambda lower-bounds the candidate upper bound / n^2;
+  it is not a lower bound on actual signal or floating-point error.
+- Full norm adapter and full-matrix defect pass are deliberately not added.
+- Saved-state proof-feasibility diagnostic SOURCE is prepared, not executed.
+- Both U values remain null, global status UNDETERMINED. No guard certification.
+
+Reuse
+- Applicable AGENTS/PROJECT_MAP and accessible unified 2026-10-25 sections
+  8.1, 8.4 and 10 were read. Primary agent only; no independent review.
+- Reused fixed path_bounds, fixed_bytes, validate_array and atomic write_json.
+- Actual action/rotation/mean/finite/abs/guard/strict functions are unchanged.
+- Prior static and artificial adapter examples retain action-vs-norm separation,
+  non-Hermitian rotation terms, affine underflow and all-support prerequisites.
+
+Environment
+  Existing /tmp/prt-rpe-m17-enclosure-venv-20261103, read only.
+  Python 3.11.0rc1, NumPy 1.26.4, python-flint 0.9.0 / FLINT 3.6.0;
+  Qiskit 1.3.0 used only in unchanged artificial adapter tests.
+  PYTHONWARNINGS=ignore PYTHONDONTWRITEBYTECODE=1
+  MPLCONFIGDIR=/tmp/prt-rpe-m17-enclosure-mpl
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 for tiny fixtures.
+  No package/global/shared environment changes; no future resource caps.
+
+New tests: 11 PASS / 0.017 s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_norm_only_adapter_preparation_20261104 -p test_norm_proof_diagnostic.py -v
+  Existing coefficients and exact RNE guard constants; universal matrix-floor
+  examples on zero/unitary/contractive/expansive/non-normal toy matrices;
+  exact threshold equality stays inconclusive; both U values stay null;
+  long chain via scalar Bernoulli floor; exact subnormal squares retained;
+  synthetic ZIP with unreadable matrix payloads loads only artificial psi;
+  invalid state/layout/scope rejected; default enters no numerical loader;
+  full artificial diagnostic one-pass STOP; fresh-output preservation;
+  SOURCE/input failure stops before load; interruption saved without retry.
+
+Reused static examples: 8 PASS / 0.003 s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_guard_bound_static_assessment_20261104 -p test_guard_bound_examples.py -v
+  Phase error/norm separation; nonunitary inclusion; exact rotation identity
+  and non-Hermitian counterexample; injected arithmetic/additive errors;
+  rare positive support; residual-zero kernel floor; paired extrema; null guard.
+
+Reused adapter tests: 16 PASS / 0.124 s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104 -p test_virtual_bridge.py -v
+  Artificial 2x2 matrix/basis/sector cases, long affine composition, exact law
+  average vs uniform, underflow, strict guard/budget, missing-proof STOP.
+
+Total: 35 PASS / LOCAL author checks; not CI or an independent review.
+No real H4 context was numerically loaded, sampled, rebuilt or reanalyzed.
+Only RESULT schema/provenance strings, bytes/hashes and pure structural
+constants were examined. No norm/defect/mean/budget of real data was evaluated.
+Finite artificial examples support implementation behavior; the universal
+floor argument is the symbolic proof in PROOF_LIMIT.md, not extrapolation
+from tests.
+
+Publication verification
+- Only the new preparation directory, PROJECT_MAP.md and docs/README.md change.
+- Existing SOURCE/raw/status/STOP files remain unchanged from the base commit.
+- Byte-only description checks the two fixed inputs and seven fixed helpers;
+  a test blocks np.load and exact_norm_squared on the default path.
+- Relative links and git diff --check are checked before commit.
+- Remote SHA/tree/changed-file blob matches are reported after push.
+- New scientific evaluation requires separate permission after SOURCE freeze.
+- Mandatory STOP after publication checks.

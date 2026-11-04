@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：ノルム専用adapterの可否と限定診断準備](research/rpe_m17_norm_only_adapter_preparation_20261104/PROOF_LIMIT.md)
+（2026-11-04）。欠損ゼロ時にも残る積型上界の限界を静的導出。完全adapterを見送り、保存stateの最小診断SOURCEを準備。
+人工35件PASS。実H4追加評価0、診断実行は公開SOURCEに対する別途許可後。全体未判定・旧STOP保持。
+
 [RPE m17：guard上界を鋭くするための静的検討](research/rpe_m17_guard_bound_static_assessment_20261104/GUARD_BOUND_ASSESSMENT.md)
 （2026-11-04）。作用誤差とノルム増幅の分離、rotation/roundoffの式、保守性と証明限界を整理。
 人工24件PASS、実H4追加評価0。新科学SOURCEは未完成、guard未判定・旧status/STOPを保持。
