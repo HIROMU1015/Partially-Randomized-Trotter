@@ -182,3 +182,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [11月4日17:50の中間集計](docs/research/h8_long_time_execution_20261103/INTERIM_RESULTS_20261104_1750JST.md)は49/51標本の保存価格。代表検証待ち2候補の値は暫定で、最終順位・母集団保証を主張しない。
 
 [11月4日23:06に完了した全件探索結果](docs/research/h8_long_time_execution_20261103/EXPLORATION_RESULTS_20261104.md)は51標本・19候補。全代表検証が通過した。確認Stage Cと母集団保証は未実施。
+
+## H8長時間・高次PR Stage Cの準備（2026-11-04依頼）
+
+[独立標本比較の計画・実装・人工検証](docs/research/h8_stage_c_preparation_20261104/PLAN.md)と[次段判断](docs/research/h8_stage_c_preparation_20261104/NEXT_STAGE_DECISION.md)。保存探索nとSEを引用したn9・同等SE目標の提案、固定PF対照、別cohortの最小入口を準備した。Stage C、価格再集計、分散再解析は未実行。技術準備後はmandatory STOP。
