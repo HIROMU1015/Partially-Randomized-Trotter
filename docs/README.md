@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：schema修正後Stage R・256-call完了（2026-11-04）
+
+[Stage R結果・norm/range・head bridge残件](research/research_c_population_range_schema_execution_20261104.md)。SOURCE60cdba8fe無変更、256/256 COMPLETE・FAIL/retry/resume0。保存H4/1Å/STO-3G・CDF8/LD2/S2/s1/r32/K0/h=.1/m0..12でa−1≈1.76183e-16、M=1+a>2、m12成長上界−1≈7.21647e-13。B2 head bit一致0/3、追加bridge必要。全law合成/校正/CA未資格、旧失敗原本保全、mandatory STOP。
+
 ## 研究C：Stage R schema修正・新規未承認契約（2026-11-04）
 
 [schema修正・新SOURCE・未承認Stage R契約](research/research_c_population_range_schema_preparation_20261104.md)。`c_per_word_range_schema.py` / `prepare_research_c_population_range_schema.py`でeventタグとIID設定を分離照合。新schema人工48・関連回帰込み313 PASS、passive科学0。旧10/256-call失敗SOURCE/raw/STOPを保全し、新規256-call契約は未承認・未実行。公開照合後mandatory STOP。
