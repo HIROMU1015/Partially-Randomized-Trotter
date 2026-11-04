@@ -1,0 +1,159 @@
+{
+  "kind": "STATIC_INSTALLED_QISKIT_1_3_SOURCE_NO_COMPILATION",
+  "fixed_pre_unroll": "existing compiled_wrapper UnrollCustomDefinitions(empty EquivalenceLibrary,basis+u)",
+  "fixed_declared_phase": "existing MPFR160 symbolic accumulator,no phase fit",
+  "preset": {
+    "init": {
+      "type": "FlowControllerLinear",
+      "tasks": [
+        {
+          "type": "InverseCancellation",
+          "tasks": []
+        }
+      ]
+    },
+    "translation": {
+      "type": "FlowControllerLinear",
+      "tasks": [
+        {
+          "type": "UnitarySynthesis",
+          "tasks": []
+        },
+        {
+          "type": "HighLevelSynthesis",
+          "tasks": []
+        },
+        {
+          "type": "BasisTranslator",
+          "tasks": []
+        }
+      ]
+    },
+    "optimization": {
+      "type": "FlowControllerLinear",
+      "tasks": [
+        {
+          "type": "Depth",
+          "tasks": []
+        },
+        {
+          "type": "FixedPoint",
+          "tasks": []
+        },
+        {
+          "type": "Size",
+          "tasks": []
+        },
+        {
+          "type": "FixedPoint",
+          "tasks": []
+        },
+        {
+          "type": "DoWhileController",
+          "tasks": [
+            {
+              "type": "Optimize1qGatesDecomposition",
+              "tasks": []
+            },
+            {
+              "type": "InverseCancellation",
+              "tasks": []
+            },
+            {
+              "type": "GatesInBasis",
+              "tasks": []
+            },
+            {
+              "type": "ConditionalController",
+              "tasks": [
+                {
+                  "type": "FlowControllerLinear",
+                  "tasks": [
+                    {
+                      "type": "UnitarySynthesis",
+                      "tasks": []
+                    },
+                    {
+                      "type": "HighLevelSynthesis",
+                      "tasks": []
+                    },
+                    {
+                      "type": "BasisTranslator",
+                      "tasks": []
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Depth",
+              "tasks": []
+            },
+            {
+              "type": "FixedPoint",
+              "tasks": []
+            },
+            {
+              "type": "Size",
+              "tasks": []
+            },
+            {
+              "type": "FixedPoint",
+              "tasks": []
+            }
+          ]
+        }
+      ]
+    },
+    "scheduling": {
+      "type": "FlowControllerLinear",
+      "tasks": [
+        {
+          "type": "ContainsInstruction",
+          "tasks": []
+        },
+        {
+          "type": "ConditionalController",
+          "tasks": [
+            {
+              "type": "TimeUnitConversion",
+              "tasks": []
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "source_files": {
+    "Optimize1qGatesDecomposition": {
+      "package_path": "qiskit/transpiler/passes/optimization/optimize_1q_decomposition.py",
+      "sha256": "50cae371407971b1c2bae493a7a900f3aeb820157547b5b02c159a2a3fcf8c7b"
+    },
+    "InverseCancellation": {
+      "package_path": "qiskit/transpiler/passes/optimization/inverse_cancellation.py",
+      "sha256": "57d8e3f41425b7929f9307cfc23c44c5396999edd42345c3f8091bc2349f333c"
+    },
+    "BasisTranslator": {
+      "package_path": "qiskit/transpiler/passes/basis/basis_translator.py",
+      "sha256": "b749142df3d94ab5c3a232a4bc265b0ae3ffde4782d4ef2e8f226fcfb0121843"
+    },
+    "UnrollCustomDefinitions": {
+      "package_path": "qiskit/transpiler/passes/basis/unroll_custom_definitions.py",
+      "sha256": "5f9624c55c9c3060dbce06f9f2ca12563b8d637ca8899ac2f6b7040b51ba5642"
+    },
+    "XXPlusYYGate": {
+      "package_path": "qiskit/circuit/library/standard_gates/xx_plus_yy.py",
+      "sha256": "b622e4cab5b4e4101736c7d682b13b149f077fe687f2de3f820949c92a277ded"
+    },
+    "CRZGate": {
+      "package_path": "qiskit/circuit/library/standard_gates/rz.py",
+      "sha256": "2ee16adeac1dc3c9238b0d911913f58dba5f835ce2c3c9d8eb88a6b83b8c48b6"
+    },
+    "RZZGate": {
+      "package_path": "qiskit/circuit/library/standard_gates/rzz.py",
+      "sha256": "e6cd317bd23de76a238b727e64907b3a627519671feff86eae70868f6dbfe101"
+    }
+  },
+  "per_pass_numerical_error_proved": false,
+  "all_word_success_proved": false
+}

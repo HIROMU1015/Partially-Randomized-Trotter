@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：Compiled→raw局所support包囲・abort scope（2026-11-05）
+
+[導出・人工benchmark・未承認6-call契約](docs/research/research_c_compiled_raw_certificate_acceleration_20261105.md)。`c_compiled_raw_local`／`c_compiled_raw_readiness`／`c_compiler_abort_scope`、passive入口 `scripts/prepare_research_c_compiled_raw_acceleration.py`。Primitive bridge＋SU(2)局所誤差＋保持phaseのunitary telescopeで全register operatorを包囲する。人工full512の融合例で約162倍、粗くなる反例も保全。実H4の構造対応・新上界・速度は未検証、旧column schemaへ未接続。新規人工55 PASS、実H4 Arb/校正/Stage C 0、6-callは未承認・未実行、mandatory STOP。
+
 ## 研究C：Stage P／Compiler／Fresh IID-grid技術統合（2026-11-04識別子）
 
 [接続仕様・人工検証・未採択条件](docs/research/research_c_iid_calibration_integration_20261104.md)。B固定commitを起点にAの未収録差分を追加。`c_iid_calibration_integration.py` とpassive専用 `prepare_research_c_iid_calibration_integration.py` が、fresh標本→P0状態→batch C/R・literal R/D→既存統計の接続を検査する。全word成功・科学READYはfalse、7-call pilot未実行、mandatory STOP。
