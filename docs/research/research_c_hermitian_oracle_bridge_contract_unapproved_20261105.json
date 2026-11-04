@@ -1,0 +1,305 @@
+{
+  "scope": "C_HERMITIAN_ORACLE_BRIDGE_PROPOSAL_V1",
+  "base_commit": "75fe82e9d627bfb0ceca450b96459144e6627914",
+  "status": "NOT_READY",
+  "executable": false,
+  "H_target": null,
+  "target_adoption": "user/research C decision required; eigh semantics are identified, not adopted",
+  "identity": {
+    "candidate": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+    "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+    "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+    "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+    "model": {
+      "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+      "bits": 53,
+      "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+      "independent_events": true,
+      "independent_coherent_occurrences": true,
+      "independent_measurement_shots": true,
+      "independent_XY_measurements": true,
+      "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+      "PCG64_joint_stream_qualified": false
+    },
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "conditions": {
+      "molecule": "linear H4",
+      "distance_A": 1.0,
+      "basis": "STO-3G",
+      "Nalpha": 2,
+      "Nbeta": 2,
+      "sector_dimension": 36,
+      "controlled_dimension": 512,
+      "rank": 8,
+      "ld": 2,
+      "s": 1,
+      "r": 32,
+      "K": 0,
+      "h": "1/10",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "oracle": "own_DF_ground_state_oracle",
+      "state_preparation": "EXCLUDED",
+      "CA_Ha": 0.00159,
+      "DF_reserve_Ha": 0.00019875
+    },
+    "accuracy_target": {
+      "energy_ha": 0.00159,
+      "df_reserve_fraction": 0.125,
+      "base_time": 0.1,
+      "beta_total": 0.5235987755982988,
+      "beta_stat": 0.2617993877991494,
+      "alpha_axis": 0.0003846153846153846,
+      "alpha_total": 0.01
+    },
+    "phase_policy": "qiskit_P0_mpfr160_declared_phase_v1",
+    "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+  },
+  "roles": {
+    "raw": "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/raw_record.json",
+    "compiled": "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/compiled_record.json",
+    "actual_inverse": "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/compiled_adjoint_record.json",
+    "literal": "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/literal_reference.json",
+    "per_word": "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/per_word.json",
+    "inverse_binding": "artifacts/research_c_stage_p_completion/2026-11-04/run01/compiled_actual_inverse.json",
+    "candidate": "artifacts/research_c_near_practical/2026-11-03/run01/PR/endpoint.npz",
+    "sector": "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.npz",
+    "basis": "artifacts/research_c_near_practical/2026-11-03/run01/physical_reference.npz",
+    "ground": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/ground_candidate.npz",
+    "shell_head": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/head_compiled.qpy",
+    "shell_X": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/X_compiled.qpy",
+    "shell_Y": "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/Y_compiled.qpy"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/raw_record.json": "37e95cabb7a50858a49fa85e4c236558873188782293722ac238ba66386d5fd4",
+    "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/compiled_record.json": "9e3d59f7a20702baa2f6b053c77c183708a069a88fa77b8aeb9b679b2925e876",
+    "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/compiled_adjoint_record.json": "adf5da68fc5f204f0a4602c5e998b41929b485ff9c2117246ecd02d9d7142e91",
+    "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/literal_reference.json": "c8be128fc719583b14e4c6af5d2e39502f2e656a7d4a3ba9f237fdfe8fb2e0c6",
+    "artifacts/research_c_head_bridge_stage_p/2026-11-04/P-run01/per_word.json": "066a9d623e38dfcf7613ad89b44669cfcdf8ab7dbcc6a323773a604b6d509a8c",
+    "artifacts/research_c_stage_p_completion/2026-11-04/run01/compiled_actual_inverse.json": "7d0f81366942e255f74daf705a33f519a002166328449e7372d73b8b1aae4915",
+    "artifacts/research_c_near_practical/2026-11-03/run01/PR/endpoint.npz": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+    "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.npz": "ebdebe8f2c3f156c8202834181e143298d667490b3f33fc611dc0fab97b976cd",
+    "artifacts/research_c_near_practical/2026-11-03/run01/physical_reference.npz": "92a8d27bdebb53937f6361c106a13ef90b9110930d4bf4ddb577796cfb208739",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/ground_candidate.npz": "40fb36a7b236a527eea158e7682fe7baf15daa2c52252e96b16ff913f06deef8",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/head_compiled.qpy": "e832223caf172346ce0c21b09e726755f57e2364c04918aa41c9a06a1b3acbec",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/X_compiled.qpy": "f1b858626a70549c2eedf01010931525f0da6be6b4d4717d74845517cba412ab",
+    "artifacts/research_c_pr_aware_df_stage_b2/2026-10-27/run02/circuits/Y_compiled.qpy": "e08e7355580e1171fb28bcd4394c0b6593e6c9f7b3934b6f11ce7a5f6a118803",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/contract.json": "79830424ae479a21b862178e7b50dfc2d71ef922fe46200153341245cef41b2c",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/SOURCE.json": "103c8ba7ecda6e5da48cc0e73f267befcf104c4ad3c18c32de875289fa532739",
+    "docs/research/research_c_direct_m0_contract_unapproved_20261105.json": "e139e509b194190929dc3d3edfa4cb37e89f906db510cc41af44387920e6518c"
+  },
+  "technical_SOURCE": "artifacts/research_c_hermitian_oracle_bridge/2026-11-05/technical/SOURCE.json",
+  "scientific_SOURCE": null,
+  "precision_bits": 192,
+  "UPLO": "L",
+  "numpy": "1.26.4",
+  "saved_H_dtype": "<c16",
+  "bridge": {
+    "matrix": "||B-A||2 <= ||B-A||F, exact component squares + Arb192 outward sqrt",
+    "ground": "exact inertia + normalized Rayleigh residual; complex realification doubles inertia multiplicities",
+    "transport": "g > 2 epsilon; target gap >= g-2 epsilon; phase-aligned distance <= sqrt(2)*epsilon/(g-epsilon)",
+    "signal": "initial centre radius once; unitary E unchanged except arithmetic; literal E <- aE + delta; per-axis radius 2||centre||E+E^2"
+  },
+  "logical_calls": {
+    "total": null,
+    "reason": "target, reference binding and stage scope unresolved; no executable call schedule",
+    "ordered_proposed_stages": [
+      "A: fresh saved-H/eigh difference diagnosis only; does not adopt research target",
+      "B: target adoption and explicit reference identity; then oracle isolation/residual/state-distance qualification",
+      "C: only if needed, additional Hermitian-to-Hermitian perturbation/reference bridge",
+      "D: separately fixed Direct m0 X/Y contract after state/reference bridge qualifies"
+    ],
+    "stages_are_not_automatically_bundled": true,
+    "unused_old_calls_transferable": 0
+  },
+  "fresh_output": null,
+  "fresh_output_rule": "choose a new absent directory when a stage and its exact call schedule are fixed; never science-run01 or any old output",
+  "resource_plan": {
+    "inspection": "32 available CPUs; 62 GiB RAM, about52 GiB available at inspection; no GPU workload selected",
+    "dominant": "exact LDL O(n^3), Fraction bit growth; complex realification 2n",
+    "configuration": "reuse real n-dimensional path when exactly real; complex path 2n-dimensional; cache immutable exact matrix within fresh job; do not parallelize dependent pivots",
+    "before_substantial_run": "check current affinity/RAM and bit-growth timings under explicit scope; parallelize independent target/shift candidates only if those calls are permitted; coordinate BLAS threads; no shared env changes",
+    "wall_time_cap": null,
+    "cpu_cap": null,
+    "memory_cap": null,
+    "workers_cap": null
+  },
+  "failure_policy": "first numerical/identity/zero-pivot/gap failure or interruption: preserve partial results and STOP; no alternate shift/candidate retry",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_STOP": true,
+  "scientific_calls_this_preparation": 0,
+  "forbidden": [
+    "old Direct m0 resume",
+    "reuse of unused 12 calls",
+    "new sampling/build/compile",
+    "fresh IID expected bias calibration",
+    "Stage C",
+    "actual CA",
+    "important scientific review"
+  ],
+  "m": 0,
+  "occurrences": 1,
+  "word": [
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F6:0",
+      "0x1.99a2cb0f00abbp-10"
+    ],
+    [
+      "CDF_proposed:F7:6,7",
+      "0x1.99a2cb0f00abbp-10"
+    ]
+  ],
+  "literal_target_id": "a62d9d2f7036c0d7e8aa25323acf05d98c20f368cf4863d08a15cd24c62c5021",
+  "readiness_blockers": [
+    "research Hamiltonian not adopted",
+    "reference and shell/head target relation not fixed",
+    "new scientific SOURCE and stage call schedule not fixed",
+    "no scientific execution permission for this proposal"
+  ]
+}

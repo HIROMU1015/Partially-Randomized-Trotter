@@ -1,5 +1,10 @@
 # trotterlib モジュール索引
 
+## 研究C：Hermitian oracle target・bridge技術準備（2026-11-05）
+
+[producer／NumPy L規則・候補比較・rigorous bridge・人工検証](../../docs/research/research_c_hermitian_oracle_bridge_readiness_20261105.md)。`c_hermitian_oracle_bridge.py`、passive専用`prepare_research_c_hermitian_oracle_bridge.py`、人工test `test_research_c_hermitian_oracle_bridge.py`、artifact `research_c_hermitian_oracle_bridge/2026-11-05/technical/`。研究target未採択、非実行契約NOT_READY、新規人工34 PASS・既存93 PASS／継承4 FAIL。実H4新科学0、旧15-call STOP・残12転用禁止を維持、公開照合後mandatory STOP。
+
+
 ## 研究C：保存oracle対応・固定m0 15-call案（2026-11-05）
 
 [producer対応・SOURCE・固定契約](../../docs/research/research_c_direct_m0_oracle_binding_20261105.md)。`c_direct_m0_bound.py` / `run_research_c_direct_m0_bound.py`はdefaultでbytes-only preflight。旧numerical oracleと同じ保存H入力をbindし、exact symmetryは実行時gate。科学実行は別途明示許可待ち、実H4科学0、mandatory STOP。

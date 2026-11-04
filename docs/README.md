@@ -1,5 +1,10 @@
 # 文書索引
 
+## 研究C：Hermitian oracle target・bridge技術準備（2026-11-05）
+
+[producer／NumPy L規則・候補比較・rigorous bridge・人工検証](research/research_c_hermitian_oracle_bridge_readiness_20261105.md)。`c_hermitian_oracle_bridge.py`、passive専用`prepare_research_c_hermitian_oracle_bridge.py`、人工test `test_research_c_hermitian_oracle_bridge.py`、artifact `research_c_hermitian_oracle_bridge/2026-11-05/technical/`。研究target未採択、非実行契約NOT_READY、新規人工34 PASS・既存93 PASS／継承4 FAIL。実H4新科学0、旧15-call STOP・残12転用禁止を維持、公開照合後mandatory STOP。
+
+
 ## 研究C：Direct m0固定実行・exact symmetry STOP（2026-11-05）
 
 [3 attempts／2 COMPLETE／1 FAIL・原本・STOP](research/research_c_direct_m0_bound_execution_20261105.md)。SOURCE098e1bac4の固定15-callを一度実行し、保存sector Hの厳密対称性で停止。Oracle距離・X/Y未取得、retry/resume0、残12 units転用なし。

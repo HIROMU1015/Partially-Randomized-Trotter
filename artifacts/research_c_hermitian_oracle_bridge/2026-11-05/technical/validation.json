@@ -1,0 +1,49 @@
+{
+  "runs": [
+    {
+      "label": "baseline",
+      "cwd": "/tmp/prt-c-direct-m0-bound-execution-20261105",
+      "command": [
+        "/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/management/test_research_c_direct_round_signal.py",
+        "tests/management/test_research_c_direct_m0_runner.py",
+        "tests/management/test_research_c_direct_m0_bound.py"
+      ],
+      "returncode": 1,
+      "wall_seconds": 1.6908771134912968,
+      "summary": "4 failed, 93 passed in 1.52s"
+    },
+    {
+      "label": "current",
+      "cwd": "/tmp/prt-c-hermitian-oracle-bridge-readiness-20261105",
+      "command": [
+        "/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-q",
+        "--tb=short",
+        "-p",
+        "no:cacheprovider",
+        "tests/management/test_research_c_hermitian_oracle_bridge.py",
+        "tests/management/test_research_c_direct_round_signal.py",
+        "tests/management/test_research_c_direct_m0_runner.py",
+        "tests/management/test_research_c_direct_m0_bound.py"
+      ],
+      "returncode": 1,
+      "wall_seconds": 1.7948196912184358,
+      "summary": "4 failed, 127 passed in 1.63s"
+    }
+  ],
+  "scientific_calls": 0,
+  "new_failures": 0,
+  "inherited_failures": 4,
+  "reason": "Frozen pre-execution tests assume absent science-run01; post-execution baseline already has that consumed output. FRESH_NO_RETRY_RESUME remains enforced. No SOURCE/test/contract or raw removal to force these tests to pass."
+}
