@@ -1,0 +1,79 @@
+# 2026-11-03 RPE m17：正常完了・数値再現閾値を超える差
+
+明示実行許可後、固定SOURCE `128e9a5bf2630cd0333ec5f69b81b25def78eb79`で1セルを実行した。
+linear H4/1Å/STO-3G/legacy DF12、B physical state、8qubit・4電子sector70、
+Partial L_D3、単一δ=.02、m17/q131072/r32/K2、各軸N411/保存α・β・epsilonを保持。
+
+[報告](../rpe_m17_mean_validation_execution_20261103/REPORT.md)と
+[原RESULT](../../../artifacts/rpe_m17_mean_validation/2026-11-03/run01/RESULT.json)を保存した。
+scalar残余1行・DF preparation1・最終complex平均2経路、約1.515秒、exit0。
+law対reference差6.259420298065069e-10、law対保存μ差5.688626584284386e-10、
+reference対保存μ差8.21305022751065e-11。
+固定1e-10の診断はINCONSISTENT、実行はCOMPLETED_MANDATORY_STOPである。
+
+新たに計算した統計予算残余は約8.600652200938497e-5で正。
+観測座標差を引いた余地も正だがu_num上界は未確立、科学statusはUNDETERMINED。
+診断超過とRPEに必要な精度への不適合は区別し、いずれの方向にも科学的保証を昇格しない。
+
+判断：正常完了時の診断不一致なので、技術的中断の再試行許可を適用して再実行はしない。
+長qの丸め増幅は候補であり、原因を確認したとは言わない。SOURCE・閾値・原記録を保持してSTOP。
+次段案はCodexによる同じ保存行列を使う精度切分け計画・SOURCEの準備と、ユーザーによる限定新評価の別許可。
+新sampling、compile、価格・成功率再評価、重要レビュー、別roundの追加は行っていない。
+
+## 追記：Task Aの精度切り分けを完了
+
+別の明示許可後、SOURCE `4479a1c9cf150250254e2c2650f70fb43841fed1`でTask Aを実行した。
+同じH4/1Å/STO-3G/DF12/B physical state/L_D3/δ=.02/m17 q131072/r32 K2の保存入力を使った。
+[報告](../rpe_m17_numerical_precision_execution_20261103/REPORT.md)、
+[原RESULT](../../../artifacts/rpe_m17_precision_isolation/2026-11-03/run01/RESULT.json)。
+
+float64基準は両pathとも元平均からのdrift0.0。S64固定とF/R/tail固定を区別し、
+96/160 bitで両modeが収束診断1e-13を満たした。float平均2＋高精度平均8、約15.942秒、exit0。
+224 bit・中断・retryは不要だった。
+gapはS64固定6.248411459764507e-10、F/R/tail固定6.243065316757413e-10で、元1e-10を超える差が残った。
+
+判断：保存後のq乗・期待値やS組立ての高精度化だけでは、今回の診断超過を解消しない。
+候補labelはCONSTRUCTION_ROUNDOFF_PLAUSIBLEとIMPLEMENTATION_OR_DEFINITION_DIFFERENCE_POSSIBLE。
+保存tail以前の構成丸め・入力表現・定義差は未分離。収束を数値誤差上界にしない。
+旧INCONSISTENT、u_num=null、RPE適合UNDETERMINEDを保持し、B-1/B-2へ移行せずSTOP。
+次段案はCodexによるB-1の入力境界・最小SOURCEの準備と、ユーザーによる新構成評価の別許可。
+
+## 追記：B-1aの保存A以降の高精度構成を完了
+
+ユーザーの別の明示実行許可後、SOURCE `9d27f931d6a572210eb206569806f96a46c2d094`で1回実行した。
+同じlinear H4/1Å/STO-3G/保存legacy DF12/B physical state/4電子sector70、Partial L_D3、
+単一δ=.02、m17/q131072/r32/K2、保存identity/係数閾値/N/α/β/εを保持。
+[報告](../rpe_m17_b1_construction_precision_execution_20261103/REPORT.md)、
+[原RESULT](../../../artifacts/rpe_m17_b1_construction_precision/2026-11-03/run01/RESULT.json)。
+
+float SOURCE replayのevent/tailは保存行列と一致し、Task A保存factor固定meanを再利用した。
+新θ64は保存原本ではなく今回のSOURCE replay入力として記録。
+保存A/π/τ/Bと新θ64を正確にliftし、HP構成後のtailをHP後段へ渡した。
+96/160 bitで4 meanとtailが収束し、gapは3.258360541840395e-10。Task Aの約6.2431e-10から変化したが、元1e-10超過は残る。
+約12.654秒、exit0。conditional比較基準、224 bit、中断/retryは不要だった。
+
+判断：固定入力条件で構成算術の影響を観測したが、scalar/matrixの個別寄与や入力表現・定義差は一意には分離できない。
+候補labelはFROZEN_INPUT_OR_DEFINITION_DIFFERENCE_POSSIBLE。
+正常な診断超過を理由に繰り返さず、旧INCONSISTENT/u_num=null/RPE適合UNDETERMINEDを保持してSTOP。
+元SOURCE/入力/結果/STOPを保全し、新H/state/DF生成、sampling、compile、費用再評価、B-1b/B-2は行っていない。
+次段案はCodexが別指示後に固定成分入力の可用性とB-1b/B-2の要否を静的整理し、ユーザーが新しい対象・実行範囲を判断すること。
+
+## 追記：指定ideal categorical scopeの包含で局所十分条件を確認
+
+別の明示実行許可後、科学SOURCE `18fffce48e33136b91eb6ac5a6f9a5f77a08d36f`を変更せず実行した。
+linear H4/1Å/STO-3G/保存legacy DF12、B stateのnormalized ray、4電子sector70、Partial L_D3、
+単一δ=.02、m17/q131072/r32/K2、保存cutoff/identity/N/α/β/εを保持。
+[報告](../rpe_m17_rigorous_mean_enclosure_execution_20261103/REPORT.md)、
+[原RESULT](../../../artifacts/rpe_m17_rigorous_mean_enclosure/2026-11-03/run01/RESULT.json)。
+
+218成分・11 basis・4 deterministic blockのSOURCE replay1回で既存preparation/tail hashを再現。
+過去の原payload取得とは呼ばず、新生成物としてexportした。component/order CDFは各1回。
+96 bitの1包含で両軸U_cat約4.23e-7を得て、固定N411/α/εのstrict十分条件を確認した。
+対象はIID uniform53・exact-parameter ideal未compile gate・保存rayで、builderのπ64 phase加算誤差も含む。
+約3.717秒、exit0。160/224 bitやretryは不要だった。
+
+判断：数値観測差の追跡から、指定scopeの座標差を包含上界で判断する局所証拠へ進んだ。
+一方、実PRNG・float仮想測定・compiled/noise・state preparation・過去payload identityへのbridgeはnull。
+categorical条件確認をRPE全体へ拡張せず、旧INCONSISTENT/旧u_num=null/全体UNDETERMINEDを保持してSTOP。
+SCF/DF因子化/state solve、sampling/shot、controlled build/compile、費用・成功率再解析は行っていない。
+次段案はユーザーが接続先ν_execを選び、Codexが指定されたbridgeのSOURCE/証拠/不足を静的調査すること。

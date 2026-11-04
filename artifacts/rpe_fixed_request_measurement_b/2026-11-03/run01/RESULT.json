@@ -1,0 +1,575 @@
+{
+  "status": "LOCAL_FIXED_REQUEST_MEANS_CONSISTENT_MANDATORY_STOP",
+  "source_commit": "4d7c455db3ed7d3e4bc9e2e1fd4dbeba9f46b272",
+  "plan_commit": "8722b5a461c617b8846c2754275895f152df78f3",
+  "atol": 1e-10,
+  "fixed_specs": [
+    [
+      3,
+      1,
+      "all_order0"
+    ],
+    [
+      3,
+      1,
+      "first_order2"
+    ],
+    [
+      3,
+      8,
+      "all_order0"
+    ],
+    [
+      3,
+      8,
+      "first_order2"
+    ],
+    [
+      12,
+      1,
+      "deterministic"
+    ],
+    [
+      12,
+      8,
+      "deterministic"
+    ]
+  ],
+  "counts": {
+    "ground_state_solves_started": 1,
+    "uncontrolled_reference_half_builds": 2,
+    "theoretical_trajectory_signals": 6,
+    "controlled_evolution_builds": 6,
+    "measurement_wrapper_builds": 12,
+    "control_branch_state_actions": 12,
+    "Hadamard_ideal_mean_actions": 12,
+    "RNG_draws": 0,
+    "quantum_shots": 0,
+    "transpiles_or_compiles": 0,
+    "price_evaluations": 0,
+    "saved_signal_reanalyses": 0,
+    "request_action_jobs_submitted": 6
+  },
+  "scope": "Fixed conditional requests; not fresh-IID or marginal validation",
+  "action_count_convention": "Completed action counts cover harvested worker results; after a worker error or early STOP other submitted jobs may have run within the six-request scope",
+  "mandatory_STOP": true,
+  "versions": {
+    "qiskit": "1.3.0",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1"
+  },
+  "inputs": {
+    "snapshot_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+    "snapshot_sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b",
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "source_carrier_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+    "legacy_source_paths_matched": [
+      "src/trotterlib/df_hamiltonian.py",
+      "src/trotterlib/df_partial_randomized_pf.py",
+      "src/trotterlib/df_partial_s2.py",
+      "src/trotterlib/df_partial_s2_cost.py",
+      "src/trotterlib/df_partial_s2_repeated.py",
+      "src/trotterlib/df_rte_circuit.py",
+      "src/trotterlib/df_rte_tail.py",
+      "src/trotterlib/df_rte_qiskit.py",
+      "src/trotterlib/rte.py",
+      "src/trotterlib/rte_connected_cluster_cost_validation.py",
+      "src/trotterlib/finite_rte_signal_validation.py",
+      "src/trotterlib/rpe_hadamard_failure_validation.py",
+      "src/trotterlib/rpe_hadamard_interrogation.py",
+      "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py",
+      "src/trotterlib/research_direction_sequence_policy.py",
+      "src/trotterlib/research_direction_full_scope.py"
+    ]
+  },
+  "physical_state": {
+    "fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+    "saved_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+    "matches_saved_fingerprint": true,
+    "identity_status": "MATCHED_RECONSTRUCTED_STATE_FINGERPRINT",
+    "energy": -2.1663874486347616,
+    "saved_energy": -2.1663874486347616,
+    "sector_dimension": 70,
+    "residuals": {
+      "normalization": 1.1102230246251565e-16,
+      "eigen_residual_l2": 1.3966167801963928e-15,
+      "saved_energy_difference": 0.0,
+      "hermiticity_max_abs": 1.3877787807814457e-16
+    },
+    "shared_by_both_ld": true,
+    "old_Full_diagnostic_fingerprint_still_missing": true
+  },
+  "conditional_events": {
+    "selector": "component_id order: c0 first, c1 first different basis_id",
+    "components": [
+      {
+        "id": "df-fragment-10:Z0",
+        "basis_id": "df-basis-9c92d127b00785b8e60d6836847a7b85296f6c6f973bfebe3c375cf5bd77b241",
+        "coefficient_sign": -1,
+        "support": [
+          0
+        ]
+      },
+      {
+        "id": "df-fragment-11:Z0",
+        "basis_id": "df-basis-fc42cb3fc00f63063d7c3a60029364c945aa28b7b9d043b1fc0d55d4ca5d288d",
+        "coefficient_sign": 1,
+        "support": [
+          0
+        ]
+      }
+    ],
+    "order0": {
+      "rotation": "df-fragment-10:Z0",
+      "angle": 0.011664879386125687,
+      "phase": {
+        "real": 1.0,
+        "imag": 0.0
+      }
+    },
+    "order2": {
+      "rotation": "df-fragment-10:Z0",
+      "products": [
+        "df-fragment-11:Z0",
+        "df-fragment-10:Z0"
+      ],
+      "angle": 0.0038884498995987236,
+      "phase": {
+        "real": -1.0,
+        "imag": 0.0
+      }
+    },
+    "random_draws": 0,
+    "not_a_distribution_sample": true
+  },
+  "support_policy": {
+    "policy": "support_run_le_1",
+    "training_fingerprint": "9dcdc4a28866dc223afb0ea212df645a3ed4a28e5c6dad6ddfc0ec1fcb28ba9e",
+    "maximum_preserved_column_residual": 0.0
+  },
+  "half_checks": {
+    "3": {
+      "forward_leakage_frobenius": 0.0,
+      "reverse_leakage_frobenius": 0.0
+    },
+    "12": {
+      "forward_leakage_frobenius": 0.0,
+      "reverse_leakage_frobenius": 0.0
+    }
+  },
+  "requests": [
+    {
+      "id": "ld3_q1_all_order0",
+      "settings": {
+        "ld": 3,
+        "m": 0,
+        "q": 1,
+        "r": 1,
+        "k": 2,
+        "delta": 0.02,
+        "cosine": {
+          "shots": 510,
+          "alpha": "2.8897922699779505e-08"
+        },
+        "sine": {
+          "shots": 510,
+          "alpha": "2.8897922699779505e-08"
+        },
+        "beta_pf": "0.014050012886294481",
+        "beta_rte": "9.899584668737594e-08",
+        "beta_stat": "0.38594988811785885",
+        "epsilon_coordinate": "0.266146579872968",
+        "state_label": "physical_df_ground_state",
+        "signal_kind": "attenuated_event_mean_signal",
+        "physical_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+        "identity_status": "MATCHED_RECORDED_PHYSICAL_FINGERPRINT"
+      },
+      "theoretical_signal": {
+        "real": 0.9988779274144977,
+        "imag": 0.04579072300507143
+      },
+      "trajectory_fingerprint": "2f278b0ecb231c67351bbef8af7d096845a7f2f40424d3e9786213ce6adc24bc",
+      "circuit_semantics_fingerprint": "6b0997a43b25b3adca13ead600db2ae453d6ada27b55aaa1ff7d875d494a97cf",
+      "constant_phase": -0.0458620249464,
+      "extracted_identity_phase": -0.0018523033178438153,
+      "rte_relative_phase": 0.0,
+      "support_application_count": 1
+    },
+    {
+      "id": "ld3_q1_first_order2",
+      "settings": {
+        "ld": 3,
+        "m": 0,
+        "q": 1,
+        "r": 1,
+        "k": 2,
+        "delta": 0.02,
+        "cosine": {
+          "shots": 510,
+          "alpha": "2.8897922699779505e-08"
+        },
+        "sine": {
+          "shots": 510,
+          "alpha": "2.8897922699779505e-08"
+        },
+        "beta_pf": "0.014050012886294481",
+        "beta_rte": "9.899584668737594e-08",
+        "beta_stat": "0.38594988811785885",
+        "epsilon_coordinate": "0.266146579872968",
+        "state_label": "physical_df_ground_state",
+        "signal_kind": "attenuated_event_mean_signal",
+        "physical_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+        "identity_status": "MATCHED_RECORDED_PHYSICAL_FINGERPRINT"
+      },
+      "theoretical_signal": {
+        "real": 0.7600960607317182,
+        "imag": 0.03432865054302436
+      },
+      "trajectory_fingerprint": "a95e991c6146a1632d967c0737da00f924b63a1308df1882107683742de79067",
+      "circuit_semantics_fingerprint": "6db4b450c35308b5001eeceac7230d31ddf0ef01884476f8b841bcd1cd9a8594",
+      "constant_phase": -0.0458620249464,
+      "extracted_identity_phase": -0.0018523033178438153,
+      "rte_relative_phase": 6.283185307179586,
+      "support_application_count": 1
+    },
+    {
+      "id": "ld3_q8_all_order0",
+      "settings": {
+        "ld": 3,
+        "m": 3,
+        "q": 8,
+        "r": 1,
+        "k": 2,
+        "delta": 0.02,
+        "cosine": {
+          "shots": 454,
+          "alpha": "2.2180178685403194e-07"
+        },
+        "sine": {
+          "shots": 454,
+          "alpha": "2.2180178685403194e-07"
+        },
+        "beta_pf": "0.014050012886294481",
+        "beta_rte": "9.899584668737594e-08",
+        "beta_stat": "0.38594988811785885",
+        "epsilon_coordinate": "0.26589319587097715",
+        "state_label": "physical_df_ground_state",
+        "signal_kind": "attenuated_event_mean_signal",
+        "physical_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+        "identity_status": "MATCHED_RECORDED_PHYSICAL_FINGERPRINT"
+      },
+      "theoretical_signal": {
+        "real": 0.9291664512141604,
+        "imag": 0.35685302079843584
+      },
+      "trajectory_fingerprint": "184ba18e684aa0f6eecc613b17324c7ef5adf8985f0bc544b2b4b9e33eed773d",
+      "circuit_semantics_fingerprint": "727c0977f8f7a27c83a6bfca6c9e6ad59a181f099c94ee32f376a8a3664bfae4",
+      "constant_phase": -0.3668961995712,
+      "extracted_identity_phase": -0.014818426542750522,
+      "rte_relative_phase": 0.0,
+      "support_application_count": 8
+    },
+    {
+      "id": "ld3_q8_first_order2",
+      "settings": {
+        "ld": 3,
+        "m": 3,
+        "q": 8,
+        "r": 1,
+        "k": 2,
+        "delta": 0.02,
+        "cosine": {
+          "shots": 454,
+          "alpha": "2.2180178685403194e-07"
+        },
+        "sine": {
+          "shots": 454,
+          "alpha": "2.2180178685403194e-07"
+        },
+        "beta_pf": "0.014050012886294481",
+        "beta_rte": "9.899584668737594e-08",
+        "beta_stat": "0.38594988811785885",
+        "epsilon_coordinate": "0.26589319587097715",
+        "state_label": "physical_df_ground_state",
+        "signal_kind": "attenuated_event_mean_signal",
+        "physical_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+        "identity_status": "MATCHED_RECORDED_PHYSICAL_FINGERPRINT"
+      },
+      "theoretical_signal": {
+        "real": 0.7069258862634945,
+        "imag": 0.2734126063317738
+      },
+      "trajectory_fingerprint": "9087cd3148cf33012aa7bc3f600f88fcafbf093377d73124669d608131be768d",
+      "circuit_semantics_fingerprint": "bfc255505af6de7fc1e4bfa6b5faa288602795af9769fb67b2998f65f63c9306",
+      "constant_phase": -0.3668961995712,
+      "extracted_identity_phase": -0.014818426542750522,
+      "rte_relative_phase": 6.283185307179586,
+      "support_application_count": 8
+    },
+    {
+      "id": "ld12_q1_deterministic",
+      "settings": {
+        "ld": 12,
+        "m": 0,
+        "q": 1,
+        "r": 0,
+        "k": 0,
+        "delta": 0.02,
+        "cosine": {
+          "shots": 476,
+          "alpha": "9.681322047394193e-08"
+        },
+        "sine": {
+          "shots": 476,
+          "alpha": "9.681322047394193e-08"
+        },
+        "beta_pf": "0.014077830256906622",
+        "beta_rte": "0.0",
+        "beta_stat": "0.3859221697430934",
+        "epsilon_coordinate": "0.26616463908047505",
+        "state_label": "physical_df_ground_state",
+        "signal_kind": "physical_PF_signal",
+        "physical_fingerprint": "NOT_RECORDED",
+        "identity_status": "CONDITIONAL_SOURCE_PROVENANCE; fingerprint only in PF12 reference"
+      },
+      "theoretical_signal": {
+        "real": 0.9990615045501238,
+        "imag": 0.0433140869227315
+      },
+      "trajectory_fingerprint": "6d5cbd5dc3e6e267df10c42745bc3c6e97ff47270742eb9f43a31a4b91c08691",
+      "circuit_semantics_fingerprint": "c3d2a47395ce9c04f904523d7b6f36ab8b1425db1400ba7f614e13fa73ea0fe5",
+      "constant_phase": -0.0458620249464,
+      "extracted_identity_phase": -0.0,
+      "rte_relative_phase": 0.0,
+      "support_application_count": 0
+    },
+    {
+      "id": "ld12_q8_deterministic",
+      "settings": {
+        "ld": 12,
+        "m": 3,
+        "q": 8,
+        "r": 0,
+        "k": 0,
+        "delta": 0.02,
+        "cosine": {
+          "shots": 418,
+          "alpha": "7.643870937566136e-07"
+        },
+        "sine": {
+          "shots": 418,
+          "alpha": "7.643870937566136e-07"
+        },
+        "beta_pf": "0.014077830256906622",
+        "beta_rte": "0.0",
+        "beta_stat": "0.3859221697430934",
+        "epsilon_coordinate": "0.26616463908047505",
+        "state_label": "physical_df_ground_state",
+        "signal_kind": "physical_PF_signal",
+        "physical_fingerprint": "NOT_RECORDED",
+        "identity_status": "CONDITIONAL_SOURCE_PROVENANCE; fingerprint only in PF12 reference"
+      },
+      "theoretical_signal": {
+        "real": 0.9405259533261615,
+        "imag": 0.33972184373990105
+      },
+      "trajectory_fingerprint": "0a9066ae6323a58360b03abc5e95d7efd400e2b14932d5d13f267d6e218f990b",
+      "circuit_semantics_fingerprint": "d7290a1a53bd68a70c263e0636b619aabc032c88b9ef1753a14fc3146aed211f",
+      "constant_phase": -0.3668961995712,
+      "extracted_identity_phase": -0.0,
+      "rte_relative_phase": 0.0,
+      "support_application_count": 0
+    }
+  ],
+  "execution": {
+    "available_cpu_count": 32,
+    "workers": 6,
+    "start_method": "spawn",
+    "BLAS_threads_per_process": 1,
+    "reason": "Six independent fixed requests; small 2xN local-gate arrays do not benefit from BLAS threading; immutable basis cache reused during setup",
+    "gpu_used": false,
+    "gpu_reason": "No working NVIDIA driver; 512-amplitude actions use existing CPU Qiskit Statevector",
+    "compiled_price_profile_metadata_only": {
+      "qiskit": "1.3.0",
+      "optimization_level": 2,
+      "basis": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "seed": 17
+    }
+  },
+  "measurements": [
+    {
+      "id": "ld12_q1_deterministic",
+      "ld": 12,
+      "q": 1,
+      "profile": "deterministic",
+      "axes": {
+        "cosine": {
+          "actual_Z_mean": 0.9990615045501227,
+          "theoretical_mean": 0.9990615045501238,
+          "absolute_residual": 1.1102230246251565e-15,
+          "pass": true
+        },
+        "sine": {
+          "actual_Z_mean": 0.043314086922731254,
+          "theoretical_mean": 0.0433140869227315,
+          "absolute_residual": 2.42861286636753e-16,
+          "pass": true
+        }
+      },
+      "residuals": {
+        "control_zero_branch_max_abs": 6.522560269672795e-16,
+        "control_one_branch_max_abs": 1.2018079499338953e-15,
+        "control_zero_sector_leakage_l2": 0.0,
+        "control_one_sector_leakage_l2": 0.0
+      },
+      "pass": true,
+      "elapsed_seconds": 1.4349900241941214
+    },
+    {
+      "id": "ld12_q8_deterministic",
+      "ld": 12,
+      "q": 8,
+      "profile": "deterministic",
+      "axes": {
+        "cosine": {
+          "actual_Z_mean": 0.9405259533261623,
+          "theoretical_mean": 0.9405259533261615,
+          "absolute_residual": 7.771561172376096e-16,
+          "pass": true
+        },
+        "sine": {
+          "actual_Z_mean": 0.33972184373989633,
+          "theoretical_mean": 0.33972184373990105,
+          "absolute_residual": 4.718447854656915e-15,
+          "pass": true
+        }
+      },
+      "residuals": {
+        "control_zero_branch_max_abs": 7.539975588333192e-15,
+        "control_one_branch_max_abs": 9.588036049597112e-15,
+        "control_zero_sector_leakage_l2": 0.0,
+        "control_one_sector_leakage_l2": 0.0
+      },
+      "pass": true,
+      "elapsed_seconds": 14.591381187550724
+    },
+    {
+      "id": "ld3_q1_all_order0",
+      "ld": 3,
+      "q": 1,
+      "profile": "all_order0",
+      "axes": {
+        "cosine": {
+          "actual_Z_mean": 0.9988779274144959,
+          "theoretical_mean": 0.9988779274144977,
+          "absolute_residual": 1.7763568394002505e-15,
+          "pass": true
+        },
+        "sine": {
+          "actual_Z_mean": 0.04579072300507203,
+          "theoretical_mean": 0.04579072300507143,
+          "absolute_residual": 6.036837696399289e-16,
+          "pass": true
+        }
+      },
+      "residuals": {
+        "control_zero_branch_max_abs": 2.971545719085171e-16,
+        "control_one_branch_max_abs": 2.3108359668400893e-15,
+        "control_zero_sector_leakage_l2": 0.0,
+        "control_one_sector_leakage_l2": 0.0
+      },
+      "pass": true,
+      "elapsed_seconds": 0.2778215380385518
+    },
+    {
+      "id": "ld3_q1_first_order2",
+      "ld": 3,
+      "q": 1,
+      "profile": "first_order2",
+      "axes": {
+        "cosine": {
+          "actual_Z_mean": 0.7600960607317168,
+          "theoretical_mean": 0.7600960607317182,
+          "absolute_residual": 1.4432899320127035e-15,
+          "pass": true
+        },
+        "sine": {
+          "actual_Z_mean": 0.034328650543024475,
+          "theoretical_mean": 0.03432865054302436,
+          "absolute_residual": 1.1796119636642288e-16,
+          "pass": true
+        }
+      },
+      "residuals": {
+        "control_zero_branch_max_abs": 1.1102230246251565e-15,
+        "control_one_branch_max_abs": 1.2984904035018087e-14,
+        "control_zero_sector_leakage_l2": 0.0,
+        "control_one_sector_leakage_l2": 0.0
+      },
+      "pass": true,
+      "elapsed_seconds": 0.28497546073049307
+    },
+    {
+      "id": "ld3_q8_all_order0",
+      "ld": 3,
+      "q": 8,
+      "profile": "all_order0",
+      "axes": {
+        "cosine": {
+          "actual_Z_mean": 0.929166451214153,
+          "theoretical_mean": 0.9291664512141604,
+          "absolute_residual": 7.438494264988549e-15,
+          "pass": true
+        },
+        "sine": {
+          "actual_Z_mean": 0.35685302079843817,
+          "theoretical_mean": 0.35685302079843584,
+          "absolute_residual": 2.3314683517128287e-15,
+          "pass": true
+        }
+      },
+      "residuals": {
+        "control_zero_branch_max_abs": 3.3306690738754696e-15,
+        "control_one_branch_max_abs": 1.8385439863224732e-14,
+        "control_zero_sector_leakage_l2": 0.0,
+        "control_one_sector_leakage_l2": 0.0
+      },
+      "pass": true,
+      "elapsed_seconds": 3.3188639488071203
+    },
+    {
+      "id": "ld3_q8_first_order2",
+      "ld": 3,
+      "q": 8,
+      "profile": "first_order2",
+      "axes": {
+        "cosine": {
+          "actual_Z_mean": 0.7069258862634858,
+          "theoretical_mean": 0.7069258862634945,
+          "absolute_residual": 8.659739592076221e-15,
+          "pass": true
+        },
+        "sine": {
+          "actual_Z_mean": 0.27341260633177156,
+          "theoretical_mean": 0.2734126063317738,
+          "absolute_residual": 2.220446049250313e-15,
+          "pass": true
+        }
+      },
+      "residuals": {
+        "control_zero_branch_max_abs": 5.440092820663267e-15,
+        "control_one_branch_max_abs": 1.3417569708842271e-14,
+        "control_zero_sector_leakage_l2": 0.0,
+        "control_one_sector_leakage_l2": 0.0
+      },
+      "pass": true,
+      "elapsed_seconds": 3.3190052937716246
+    }
+  ],
+  "wall_seconds": 44.93234631791711
+}

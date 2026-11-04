@@ -160,3 +160,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## サーバー2の追加収録（2026-11-03）
 
 [固定SOURCE・保存成果の追加収録と版対応](server2_main_collection_20261103.md)。保存原版と現行実行pathへの採用を分け、元の科学SOURCE・入力・status・STOPを維持する。
+
+## 追加34枝の公開成果（2026-11-04）
+
+[報告・再現用SOURCE・保存原版と元snapshotの対応](unlisted34_collection_20261104.md)から辿る。元の科学SOURCE・入力・status・STOPを維持し、選択収録と実行採択・枝全体のmergeを区別する。

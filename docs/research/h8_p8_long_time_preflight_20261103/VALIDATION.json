@@ -1,0 +1,436 @@
+{
+  "schema": "H8_P8_LONG_TIME_PREFLIGHT_V1",
+  "date_JST": "2026-11-03",
+  "assigned_role": "LOCAL Codex",
+  "execution_context": "existing project workspace and known owner H8 storage available to this session; no other-host SSH",
+  "base_commit": "0c49a88134066177816feca2741f36f6b88d23ba",
+  "branch": "codex/h8-p8-root-cause-long-time-preflight-20261103",
+  "status": "PASS_STATIC_METADATA_SYNTHETIC_AND_DOCUMENT_CHECKS_ONLY",
+  "task_A": {
+    "classification": "EXPLAINED_NO_SCIENTIFIC_IMPACT",
+    "classification_scope": "Cause and effect of saved_exact_export_match=false only; not a blanket certification of all H8 scientific results",
+    "producer": {
+      "carrier": "0c49a88134066177816feca2741f36f6b88d23ba",
+      "path": "scripts/h8_ab_native.py",
+      "sha256": "89d6fc478692cf1f0b52a7acdd00d1a05fc42449e961247ac09c5668a7d4e02b",
+      "expression": "('faithful:p' + str(p)) in export",
+      "comparison_if_key_present": "exact equality of six-field preparation_export view; no tolerance; mismatch raises before writer"
+    },
+    "export_sha256": "771137828552b858361b6e2b25d2b675fb83f908aad6209f757e46464b817420",
+    "export_top_level_keys": [
+      "discard:p14",
+      "discard:p21",
+      "discard:p7",
+      "faithful:p14",
+      "faithful:p21",
+      "faithful:p28",
+      "faithful:p7"
+    ],
+    "faithful_p8_present": false,
+    "faithful_p7_present": true,
+    "original_and_resume_same_native_config": true,
+    "original_and_resume_same_p8_preparation_hash": true,
+    "original_STOP_reason": "ValueError:NATIVE_START_IDENTITY",
+    "reused_original_replica0_literal_in_final_result": true,
+    "same_cohort_not_legacy_n32": true,
+    "original_false_preserved": true,
+    "independent_p8_prefix_export_comparison_available": false
+  },
+  "task_B": {
+    "status": "PLAN_ONLY_NOT_APPROVED_NOT_EXECUTED",
+    "primary_T": "1.6",
+    "primary_epsilon": "0.0005",
+    "PR_formulas": [
+      "2nd",
+      "4th(m5_best)"
+    ],
+    "PR_prefixes": [
+      7,
+      8
+    ],
+    "S2_q": [
+      8,
+      16,
+      32
+    ],
+    "m5_q": [
+      1,
+      2,
+      4
+    ],
+    "S2_R_outer": [
+      4,
+      32
+    ],
+    "m5_R_outer": [
+      16,
+      32
+    ],
+    "K_first_pass": 4,
+    "K_optional_sensitivity": 2,
+    "strong_PF": {
+      "methods": [
+        "FULL28",
+        "B0_p15",
+        "B0_p16",
+        "B0I_p15",
+        "B0I_p16"
+      ],
+      "formulas": [
+        "2nd",
+        "4th",
+        "4th(m5_best)"
+      ],
+      "q": [
+        1,
+        2,
+        4,
+        8,
+        16,
+        32
+      ]
+    },
+    "exploration_n_proposal": 9,
+    "confirmation_n": null,
+    "new_reference_at_primary_T_required": true,
+    "automatic_next_condition": false,
+    "p8_flag_specific_input_HOLD": false,
+    "execution_state": "EXECUTION_HOLD_NOT_AUTHORIZED_AND_ADAPTER_NOT_VALIDATED",
+    "confirmation_precision_target": "UNDECIDED_BEFORE_EXECUTION; H46 n implementation targets unweighted unit-price sum; H8 weighted G requires explicit rule",
+    "matched_q_diagnostic": {
+      "m5_extra_q": "one selected eligible S2 q from 8/16/32",
+      "R_outer": 32,
+      "K": 4,
+      "scope": "diagnostic only, separate from m5 main q1/2/4 domain; both must qualify"
+    }
+  },
+  "H46_SOURCE_commits_resolved_from_existing_provenance": {
+    "continuation": "ff323f1b09f96c0ce01955728832ff6b0f4c230f",
+    "extension_native": "f1e95576a8a924face4213b86172455f4f993d7c",
+    "extension_signal": "2069360497a7849b63cb102e02ca1ca412462f52",
+    "native": "27ebabdd2943a4de787ec8b976c38e06fda5a497",
+    "signal": "e417ffc9f52b13c18f5493193ce510d858664259"
+  },
+  "fixed_references": [
+    {
+      "commit": "0c49a88134066177816feca2741f36f6b88d23ba",
+      "path": "scripts/h8_ab_native.py",
+      "role": "reuse_source",
+      "git_blob": "9cfe2868b7c8edcd9008739b546dd054a0ffbbff",
+      "sha256": "89d6fc478692cf1f0b52a7acdd00d1a05fc42449e961247ac09c5668a7d4e02b",
+      "read_scope": "load; prefix_preparation; preparation_export; static read only"
+    },
+    {
+      "commit": "0c49a88134066177816feca2741f36f6b88d23ba",
+      "path": "scripts/h8_b0_anchor_adapter.py",
+      "role": "reuse_source",
+      "git_blob": "90561ba11d12bde5844421a96db194cad5919829",
+      "sha256": "21a4da4c7b09906fb7dc09b2f12150504e2b49c574cbb6e305d30d04bacd79af",
+      "read_scope": "restore; static read only"
+    },
+    {
+      "commit": "0c49a88134066177816feca2741f36f6b88d23ba",
+      "path": "scripts/h8_strengthened_export.py",
+      "role": "reuse_source",
+      "git_blob": "f539145ab5d33e2c55fcd7aad5b463bf2647cc2e",
+      "sha256": "1052b7351854df13c6aaa8621378b489d09a258845f0b2fbdd19ef484cfb1f4c",
+      "read_scope": "validate_export; static read only"
+    },
+    {
+      "commit": "0c49a88134066177816feca2741f36f6b88d23ba",
+      "path": "scripts/h8_ab_signal.py",
+      "role": "reuse_source",
+      "git_blob": "117cb27c325cf4cac4cf605af74e705f8589b488",
+      "sha256": "819594bb32735fa4319331777a77be510d7b7dba09c65ce3795ebc76d20ae908",
+      "read_scope": "signal; new_outer; candidate; static read only"
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/pr_cost_native.py",
+      "role": "reuse_source",
+      "git_blob": "1bc658ba554b63db0060f5ffb6b2b796292197fc",
+      "sha256": "5f14364af9904914c7ee599b72a87caca2dece3c7d67d3d946ec577fb20b14b4",
+      "read_scope": "load_context; static read only"
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/h8_pr_confirmation.py",
+      "role": "reuse_source",
+      "git_blob": "4d82b11ebed9818c6062a67f9c4211f06ea49743",
+      "sha256": "de45b22f85f8d5bd22208220ea19f75699ce89ea5011c64ec352ccb0af36bde5",
+      "read_scope": "native_identity; accept; point_account; static read only"
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "scripts/prepare_h8_pr_confirmation_resume.py",
+      "role": "reuse_source",
+      "git_blob": "d92adcf737a22cf2e4a3fd3422b9865445d027a6",
+      "sha256": "fd1d019b0a058bc7c288f5e88ee3e54940dd3556fa353db88e3d7dfef1179ebe",
+      "read_scope": "collect; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h46_long_time_signal.py",
+      "role": "reuse_source",
+      "git_blob": "8527aff7e5463e4e4f54abda73b0c6b9ac32b898",
+      "sha256": "7fbb966fbf87f963de9280ec10f8adefcf304c2e26d1ab051f076369445f24ca",
+      "read_scope": "evolve_batch; qualify; context; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h46_long_time_native.py",
+      "role": "reuse_source",
+      "git_blob": "226b1d96fcebddb4e906261d6041243c407af56d",
+      "sha256": "c228b330c3fd4a775a912d5c09280addc3e7f669dd2e7ee0b8955877b97538fb",
+      "read_scope": "compose; sample_requests; cost_trial; summarize_trials; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h46_m5_tol_native.py",
+      "role": "reuse_source",
+      "git_blob": "98109bb96510af9db51cbf50014774a8306d0263",
+      "sha256": "bcf91dd2b05275e7ccf88e707b09d94ab87ac668609ca5e82369057e973b0da4",
+      "read_scope": "restore; context; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "src/trotterlib/h46_m5_plan.py",
+      "role": "reuse_source",
+      "git_blob": "0f7bb7084f9cb1269acf32084fcfa814fb09b759",
+      "sha256": "2ad8cfa8e5ae71a8100fe16c71995e86236d2a2eee750af5e52034ab31e3e832",
+      "read_scope": "weights; allocation; schedule; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h46_new2_core.py",
+      "role": "reuse_source",
+      "git_blob": "3b6b6c7e65ce83f2e8adf4cc23adccdf80790100",
+      "sha256": "190dfa9638dfd488acdeb561d44d444a65cc6a5a059bf23a5f8ced690d5759da",
+      "read_scope": "polynomial; allocation; spectral_apply; occupation_one_body; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "references/h46_m5_best_formula_v1.json",
+      "role": "reuse_source",
+      "git_blob": "dc214e09de0a755d8857584bd27eaf6eab36fb44",
+      "sha256": "b2e7cefed7896c6c409d0778e970f8923a0764a79b1679cd2c40d1140806b997",
+      "read_scope": "formula_id; stage_count; function_source; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "tests/test_h46_long_time_signal.py",
+      "role": "reuse_source",
+      "git_blob": "c99a1bce20e6b9b25858178117974031381b21b9",
+      "sha256": "f1d837e12f38590623ba10f110e1d8efc7dab094f0a345948c2d5554a908a181",
+      "read_scope": "synthetic time/scalar/finite-mean fixtures; static read only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "tests/test_h46_long_time_native.py",
+      "role": "reuse_source",
+      "git_blob": "b98c37fb3bcdbf5d7b0432ebed76f509d3761b57",
+      "sha256": "c761b5e1dea3e3843d419f72c31d86431916fecbbed94a8b706581d83fc28502",
+      "read_scope": "CDF and cohort fixtures; static read only"
+    },
+    {
+      "commit": "37694741ee356fd09b5dfcb56130c55ab381044c",
+      "path": "docs/research/h8_g04_evidence_reconciliation_20261103/REPORT.md",
+      "role": "fixed_reference",
+      "git_blob": "f965fcd32a6385802cae9d103e9a16592cf21a49",
+      "sha256": "d60c9c385e1b80107516bf90c9804a742f8e53dae614142925716ae09feafff0",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "37694741ee356fd09b5dfcb56130c55ab381044c",
+      "path": "docs/research/h8_g04_evidence_reconciliation_20261103/COMPLETION_AUDIT.json",
+      "role": "fixed_reference",
+      "git_blob": "2d4e128fd84b8012d805318a0aebfc8297e6beb2",
+      "sha256": "66fa89b92f627600950f3457e7c316df671a4a8f923c990de20f9b87e6f9df04",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "37694741ee356fd09b5dfcb56130c55ab381044c",
+      "path": "docs/research/h8_g04_evidence_reconciliation_20261103/AXIS_PROVENANCE.csv",
+      "role": "fixed_reference",
+      "git_blob": "42d813baf3863e756f8c89fe2dfd2f3be0b5f51b",
+      "sha256": "f97baddc7464935f6d064c3c611f8287fcfe3158950861de8a5594eda015caa8",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "37694741ee356fd09b5dfcb56130c55ab381044c",
+      "path": "docs/research/h8_g04_evidence_reconciliation_20261103/H8_CONFIRMATION_EVIDENCE.csv",
+      "role": "fixed_reference",
+      "git_blob": "02968056c67bdd32a6bec32a0faa470cf19beb7b",
+      "sha256": "89b1c62fb2ecd5d9680f69325205c0320a525ed6c9b4ccec011f78310def0f9a",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "879a28940392a1f2ea58f32f1a320d4b6822a6dc",
+      "path": "docs/research/h8_g04_o1_evidence_integration_20261103/REPORT.md",
+      "role": "fixed_reference",
+      "git_blob": "475211fded3aee3d43eefbff8c0edc56b22aa193",
+      "sha256": "8776cfdfe0ac39c8a85291635ec50387b27d4f0730decdc7b1b0e7c13dca0eda",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "879a28940392a1f2ea58f32f1a320d4b6822a6dc",
+      "path": "docs/research/h8_g04_o1_evidence_integration_20261103/STATUS_AND_REMAINING_GAPS.md",
+      "role": "fixed_reference",
+      "git_blob": "9dafee2ecd114336d1f0dc39be524591802d6938",
+      "sha256": "4a8be95f34f947cf34acddc6863605a4169af2cf38de6a6266d074a35fd18622",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "713c45f84c8d7a41ceaef93381bd083e22189085",
+      "path": "docs/research/h8_h46_validation_coverage_gap_20261103/H8_MINIMAL_NEXT_PLAN.md",
+      "role": "fixed_reference",
+      "git_blob": "a50bde182c2f1d50de553e249f32e419890840df",
+      "sha256": "e9acb3f6110de4d755c1e8c32b2e34e62eb995275e7acc98243f610a4b05cda8",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "713c45f84c8d7a41ceaef93381bd083e22189085",
+      "path": "docs/research/h8_h46_validation_coverage_gap_20261103/REPORT.md",
+      "role": "fixed_reference",
+      "git_blob": "52ac2a5397cf112c99948f0ce74bbc7f119fc603",
+      "sha256": "096d7e82645347c542e7244ad6ffdaad3defc8a6caeb293064ab170065125c47",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "REPORT.md",
+      "role": "fixed_reference",
+      "git_blob": "cc46e0654e6ebafc8ddc4ca75d36a72f3cdfbc50",
+      "sha256": "528948c00035ec3a87f78abdd6f0afd5e4f48df7d9c868428d8059f9b308b4e0",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "862d732fba0a5f353c522a9219dec78ae2f21a4b",
+      "path": "docs/research/h8_rare_rte_closure_policy_20261021.md",
+      "role": "fixed_reference",
+      "git_blob": "fc021fb5d8559479f0ede919a11316a8799c257e",
+      "sha256": "1aa82ffe41f964125bebadb99fcaca36f65cd1366537f153c2e5e991b2769836",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "745a674546f2cb6258526fbfde1d9a00601689f8",
+      "path": "artifacts/resource_applicability/track_a_h8_new_pr_confirmation_design/2026-10-18/plan_PROPOSED.json",
+      "role": "fixed_reference",
+      "git_blob": "03a886c114cf912635c0b332a757150c2a17165c",
+      "sha256": "8d216c083d68e993ed67dfdabafc93aa05a59ace364066e5b1cbdd3df4b9eccb",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "path": "artifacts/resource_applicability/track_a_h468_paper_evidence_integration/2026-10-19/main_table_proposed.json",
+      "role": "fixed_reference",
+      "git_blob": "0cbc211213b6d565f02c359de3af1ffb1f996410",
+      "sha256": "ad67013f3c5186c5418129698d0e64896a00fe661283ec1a84b764d55ad8fe75",
+      "read_scope": "full document or code; no numerical execution"
+    },
+    {
+      "commit": "879a28940392a1f2ea58f32f1a320d4b6822a6dc",
+      "path": "docs/research/h8_g04_o1_evidence_integration_20261103/H468_COVERAGE_ADDENDUM.csv",
+      "role": "fixed_reference",
+      "git_blob": "a5326cc9cd6686d8365f09ce7a85c2030e3ce830",
+      "sha256": "e17e28d4d194121b4f637ee2ac966b30ac66c239b6009c5d23de4e4cb828924d",
+      "read_scope": "INPUT_H8/NATIVE_H8/H8_LONG_GAP/H8_HIGH_PR_GAP; IDs/status only"
+    },
+    {
+      "commit": "713c45f84c8d7a41ceaef93381bd083e22189085",
+      "path": "docs/research/h8_h46_validation_coverage_gap_20261103/H468_VALIDATION_COVERAGE.csv",
+      "role": "fixed_reference",
+      "git_blob": "66861d3db3781b3d0c808705a4bf6a417d648934",
+      "sha256": "d7a59ace3111dac81047944e31c0454216e45542ac525971afd997d2ec763d62",
+      "read_scope": "same selected coverage fields; no G/N/SE arithmetic"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/scientific_provenance.json",
+      "role": "fixed_reference",
+      "git_blob": "6a21bef1fcf4bcd4b3de9342c7895ca805a33991",
+      "sha256": "d65255c00e217a71cb968e25c75401522f9090fe892e843dd548181b70f1e8a0",
+      "read_scope": "source_commits/source_files/provider_SOURCE; metadata only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/completion_provenance.json",
+      "role": "fixed_reference",
+      "git_blob": "891e016a71637c9de4abed9ba0be760b3fd9b016",
+      "sha256": "b4ffce8e9183a7c153db30a1e93fa30dabe90ff98b215050c99b39a801f885e9",
+      "read_scope": "source_base/source_before_report_fix; relevant metadata only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/run_pf_common_run.py",
+      "role": "reuse_source",
+      "git_blob": "639caadf3641e154e6267f5a2d19c0acadd5c022",
+      "sha256": "b06275647ed6ad5e3a35bf573f8f113a1a51d2e5b02e152eaa32b68893f67a11",
+      "read_scope": "qualify_record selected function; static only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h246_saved_cost_evaluation.py",
+      "role": "reuse_source",
+      "git_blob": "8dd037673a7180a2759215f8538f9e96d73d6aa7",
+      "sha256": "f66bb36dbac5f94927ce67fc104e2c6eaceb4d235e4f4486a699e0c5a88d2fce",
+      "read_scope": "paired selected function; static only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "scripts/h46_long_time_report.py",
+      "role": "reuse_source",
+      "git_blob": "408f7099d715e0a93bbc128a9eca08e135598a3c",
+      "sha256": "04ff4776dd8deaf79f5c9313895e69bb0c54f122f7eeec840392eea05102d8df",
+      "read_scope": "confirmation_plan selected function; static only"
+    },
+    {
+      "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+      "path": "docs/research/track_a_h246_reconstructed_confirmation_results_20261022.md",
+      "role": "fixed_reference",
+      "git_blob": "7407b02ebcfa510a4db31f5a923b7c90e2a03d7a",
+      "sha256": "8ef47a68fc135ef13226a31cc5bbf2e31b60b55262080a0edb4d1410dab0a085",
+      "read_scope": "recorded H2/H4/H6 scope and confirmation; no scientific re-evaluation"
+    }
+  ],
+  "synthetic_tests": {
+    "status": "PASS",
+    "count": 7,
+    "method": "AST-only exact optional export guard/flag and native_identity from fixed SOURCE; synthetic dictionaries/integers; no full loader import"
+  },
+  "checks": {
+    "private_known_path_metadata": "PASS; export keys/config/preparation/old replica0 and source bytes only",
+    "original_files_preserved": 20,
+    "no_scientific_array_decode": true,
+    "source_reuse_rows": 18,
+    "documentation_structure": "PASS",
+    "private_information_scan": "PASS",
+    "originals_final_stat_stable": 20,
+    "relative_and_fixed_links": "PASS",
+    "scientific_performance_revalidated": false
+  },
+  "boundaries": {
+    "new_scientific_calls": 0,
+    "new_statistics": 0,
+    "new_reference": 0,
+    "sampling": 0,
+    "RNG_replay": 0,
+    "simulation": 0,
+    "circuit_build": 0,
+    "compile": 0,
+    "new_pipeline_implementation": false,
+    "original_SOURCE_input_result_modified": false,
+    "grant_ledger_marker_STOP_modified": false,
+    "shared_environment_or_other_users_modified": false,
+    "subagents": 0,
+    "independent_scientific_review": false,
+    "formal_execution_contract_created": false,
+    "mandatory_STOP": true
+  },
+  "publication": {
+    "scope": "this directory only; three requested Markdown files, one reuse table, one technical test, one validation record",
+    "raw_seeds_internal_paths_credentials": false,
+    "existing_publication_permission_applied": true,
+    "final_remote_SHA_and_body_check": "recorded after publication, reported separately to avoid self-reference"
+  }
+}

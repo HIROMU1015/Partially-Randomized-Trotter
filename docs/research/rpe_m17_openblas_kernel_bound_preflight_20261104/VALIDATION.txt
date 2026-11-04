@@ -1,0 +1,106 @@
+2026-11-04 JST / LOCAL kernel-bound technical investigation
+Branch: codex/rpe-m17-openblas-kernel-bound-preflight-20261104
+Base: 728c90a2d4d4335ef5b7237808c15b182e694bb9
+Technical result: CURRENT_KERNEL_BOUND_DERIVED, for the documented restricted
+binary/path/FP-mode/range profile only. Scientific execution ready: false.
+
+Read and reused:
+  Fixed 728c90a2d adapter/runner/test/VALIDATION and both reports;
+  inclusion result 34840ce9b and science SOURCE 18fffce48;
+  candidate A SOURCE d0b1da1b / legacy carrier 4591b8d7;
+  actual AGENTS.md, PROJECT_MAP.md and accessible unified 2026-10-25
+  operational instruction sections 8.1, 8.4 and 10.
+  Original scientific files and the previous adapters were not edited.
+
+Environment: existing isolated Python 3.11.0rc1; NumPy 1.26.4;
+python-flint 0.9.0/FLINT 3.6.0; Qiskit 1.3.0; Ubuntu glibc 2.35.
+No packages, shared libraries, global settings, other jobs or users changed.
+
+Read-only binary/dispatch investigation:
+  Runtime OpenBLAS: 0.3.23.dev USE64BITINT DYNAMIC_ARCH NO_AFFINITY Prescott.
+  Inspected actual GEMVT/DOT/zero-SCAL/ufunc/hypot disassembly for the stated
+  operation graph, not every BLAS instruction or dependency.
+  CBLAS C-layout artificial matrices dispatch to Prescott GEMVT; the 70x70
+  transpose-thread wrapper partitions output columns, preserving m=70.
+  NumPy complex multiply/subtract use FMA3__AVX2 paths.
+  CPython complex abs reaches actual libm hypot at relative offset 0x26210.
+  MXCSR 0x1fa0/0x1fa2 observed in kernels/workers/ufunc/hypot: RNE, gradual
+  underflow, FTZ/DAZ disabled. Future jobs must satisfy the same conditions.
+  F-layout and strided paths were observed separately and excluded from the
+  coefficient selector. They were not silently replaced or certified.
+
+  NPY headers only: saved forward/reverse are <c16, (70,70), fortran_order=False;
+  B raw state is <c16, (70,), fortran_order=False.
+  No matrix element was loaded/evaluated in that check.
+
+  Sandbox ptrace initially refused the new artificial child process. The same
+  authorized child was traced through require_escalated successfully. No OS
+  ptrace policy or shared environment was changed.
+
+Reproducible artificial gdb probe:
+  gdb -q -batch -x docs/research/rpe_m17_openblas_kernel_bound_preflight_20261104/trace_dispatch.gdb --args <existing-python> docs/research/rpe_m17_openblas_kernel_bound_preflight_20261104/artificial_dispatch.py
+  Exit 0, DONE. BLAS thread count was not limited for this observation.
+  dispatch_observation.txt keeps the actual 92 PROFILE/ARTIFICIAL/TRACE/DONE
+  lines and omits transient addresses, local paths, thread ids and gdb chatter.
+
+Primary source acquisition:
+  GitHub plugin obtained tagged NumPy, OpenBLAS, CPython sources after some web
+  raw-page fetches failed. A missing guessed driver/level2/zgemv_thread.c URL
+  was corrected to driver/level2/gemv_thread.c. No absent content was invented.
+  Public release source explains roles; dev-binary identity is not inferred
+  from its version string. Target binary SHA256 values are in the path report.
+
+Mathematical derivation:
+  Signed-product forests: D=2n+16, J=4n+16, relative gamma and additive ETA.
+  Complex norm factors and underflow terms explicitly retained.
+  Hypot correction-polynomial error propagated over whole normalized variable
+  intervals using exact Fraction operations, not fitted to sampled errors.
+  Both branches satisfy e_poly<256u and final relative budget<1024u.
+  Power-of-two scaling and subnormal output add the stated ETA term.
+  Finite intermediate and abs range screens are separate from full-support
+  guard certification. No real H4 input was used to evaluate any such screen.
+
+Technical tests, existing isolated python:
+  Prefix: PYTHONWARNINGS=ignore MPLCONFIGDIR=<owned-temp-dir>
+          OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+  Thread1 applies to tiny unit tests only, not the gdb observation or science.
+
+  python -m unittest discover -s docs/research/rpe_m17_openblas_kernel_bound_preflight_20261104 -p 'test_kernel_bounds.py' -v
+  13 PASS / 0.068s / exit 0 (final run).
+  Exact-rational GEMV/DOT, conjugation, scale/subtract, cancellation,
+  artificial subnormal/underflow, 70-dimensional artificial matrix,
+  alternative reduction orders, simulated fused/unfused arithmetic,
+  analytic hypot proof budget, complex abs range/coordinate guard,
+  overflow screen, mode/profile/layout rejection, old null/STOP preservation.
+
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104 -p 'test_virtual_bridge.py' -v
+  16 PASS / 0.123s / exit 0.
+
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preflight_20261104 -p 'test_bridge_math.py' -v
+  15 PASS / 0.019s / exit 0.
+
+Total: 44 PASS. Local author technical verification, not independent review,
+CI, observed real H4 error bounds, proof of IID PCG64, or a scientific GO.
+No real scientific --run was invoked; the blocked branch was checked only
+with metadata mocked and real array loading forbidden.
+
+Preservation:
+  Old science SOURCE/raw/results/conditions/STOP unchanged; new data only in
+  this technical document directory and the two relevant indexes.
+  New real H4 numerical work/reanalysis, sampling/RNG replay, circuit
+  build/compile, cost/success recalculation and detailed science review: 0.
+  Old TECHNICAL_ADAPTER_PREPARED_KERNEL_UNRESOLVED and original contracts are
+  preserved as historical SOURCE. scientific_execution_ready=false,
+  U_exec=null, whole scientific_status=UNDETERMINED, old INCONSISTENT/u_num=null.
+  No grant/ledger/marker or approval-proof artifact added or modified.
+  No kernel replacement, no adoption of abstract-only model B or kernel C.
+  Original dirty workspace, SERVER2 H8, other branches/worktrees/jobs untouched.
+
+Preservation/public SOURCE checks:
+  Previous preparation directory and the four inclusion originals were byte
+  compared with fixed base contents, all identical.
+  GitHub fixed adapter at 728c90a2d: blob a3aa56936d2ce0d5f84b1c065da0e3eb80f68370.
+  GitHub fixed inclusion REPORT at 34840ce9b: blob 2d561258c8ed6e637c859b1122e671437d783a90.
+
+Completion: commit/push, remote SHA/tree/new-file blob comparison, then
+MANDATORY STOP. Publication verification is reported in the final chat.

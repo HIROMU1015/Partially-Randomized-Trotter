@@ -1,0 +1,724 @@
+{
+  "status": "PASSIVE_FIXED_EVIDENCE_CHECK_PASS",
+  "Stage_C": "NOT_READY_BOUND_INPUTS",
+  "execution_ready": false,
+  "scientific_calls": 0,
+  "Stage_C_calls": 0,
+  "H4_array_decode": 0,
+  "B2": "FIXED_REFERENCE_LEGS_AVAILABLE",
+  "B1": "P0_UNIFORM_NOT_ESTABLISHED",
+  "missing": [
+    "categorical:qualified_bound",
+    "categorical_unitary_trajectory_premise",
+    "synthesis",
+    "whole_P0_uniform_synthesis"
+  ],
+  "records": {
+    "reference_bridge": {
+      "identity": {
+        "candidate": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+        "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+        "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+        "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+        "model": {
+          "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+          "bits": 53,
+          "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+          "independent_events": true,
+          "independent_coherent_occurrences": true,
+          "independent_measurement_shots": true,
+          "independent_XY_measurements": true,
+          "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+          "PCG64_joint_stream_qualified": false
+        },
+        "compiler": {
+          "qiskit": "1.3.0",
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "approximation_degree": 1.0,
+          "qubits_initially_zero": false
+        },
+        "conditions": {
+          "molecule": "linear H4",
+          "distance_A": 1.0,
+          "basis": "STO-3G",
+          "Nalpha": 2,
+          "Nbeta": 2,
+          "sector_dimension": 36,
+          "controlled_dimension": 512,
+          "rank": 8,
+          "ld": 2,
+          "s": 1,
+          "r": 32,
+          "K": 0,
+          "h": "1/10",
+          "rounds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "oracle": "own_DF_ground_state_oracle",
+          "state_preparation": "EXCLUDED",
+          "CA_Ha": 0.00159,
+          "DF_reserve_Ha": 0.00019875
+        },
+        "accuracy_target": {
+          "energy_ha": 0.00159,
+          "df_reserve_fraction": 0.125,
+          "base_time": 0.1,
+          "beta_total": 0.5235987755982988,
+          "beta_stat": 0.2617993877991494,
+          "alpha_axis": 0.0003846153846153846,
+          "alpha_total": 0.01
+        },
+        "phase_policy": "qiskit_P0_mpfr160_declared_phase_v1",
+        "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+      },
+      "quantity": "reference_bridge",
+      "norm": "raw_complex_signal",
+      "space": "sector36_reference",
+      "phase_sensitive": true,
+      "coherent_model": "independent_IID_kernels",
+      "scope": "model_reference",
+      "reference_target": "saved_CAR_raw_finite_RTE",
+      "qualification": "bound",
+      "numerical_qualification": "rigorous_enclosure",
+      "included_error_terms": [
+        "atom_to_mathematical_CAR"
+      ],
+      "raw_conversion": "uniform over all normalized sector36 states;no saved-state approximation",
+      "error_model": {
+        "targets": {
+          "atom": "exact saved atom coefficients,dyadic saved U,saved angle bits;exact p;literal CAR Z/ZZ",
+          "CAR": "exact dyadic saved sector generators and lambda/tau/identity;h=1/10;K0 polynomial;A=(1+tau^2)^(-16*q)",
+          "numeric": "binary64 saved corrected matrix;shared NumPy power chain;each saved binary64 attenuation",
+          "state": "all normalized sector36 vectors;no saved-state expectation or oracle-precision assertion"
+        },
+        "precision_bits": 384,
+        "rounding_enclosed": true,
+        "saved_state_used": false,
+        "ground_oracle_precision_claimed": false,
+        "physical_input_error_included": false,
+        "generator_construction_error_included": false
+      },
+      "unresolved": [],
+      "proofs_verified_by_schema": false,
+      "rows": [
+        {
+          "m": 0,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "19916357736129202622375893699999478939455688835888832785019844266843530063570866680815765717758866232349777907900599/709803441694928604052074031140629428079727891296209043243642772637343054798240159498233447962659731992932150006119314388217384402944",
+          "bound": "19916357736129202622375893699999478939455688835888832785019844266843530063570866680815765717758866232349777907900599/709803441694928604052074031140629428079727891296209043243642772637343054798240159498233447962659731992932150006119314388217384402944",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 1,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "9954269470433424424665760263658665984620794691041491503686530947718960006060415441970564892648719518581859205344207/177450860423732151013018507785157357019931972824052260810910693159335763699560039874558361990664932998233037501529828597054346100736",
+          "bound": "9954269470433424424665760263658665984620794691041491503686530947718960006060415441970564892648719518581859205344207/177450860423732151013018507785157357019931972824052260810910693159335763699560039874558361990664932998233037501529828597054346100736",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 2,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "19878919474339508823929042987898641500416930986475301426495811156306297278731353143975287818530480831748533741842833/177450860423732151013018507785157357019931972824052260810910693159335763699560039874558361990664932998233037501529828597054346100736",
+          "bound": "19878919474339508823929042987898641500416930986475301426495811156306297278731353143975287818530480831748533741842833/177450860423732151013018507785157357019931972824052260810910693159335763699560039874558361990664932998233037501529828597054346100736",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 3,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "19766064731270326224499995283084380653560392430206439406057626704384198985084379209596497464944837369909063598385723/88725430211866075506509253892578678509965986412026130405455346579667881849780019937279180995332466499116518750764914298527173050368",
+          "bound": "19766064731270326224499995283084380653560392430206439406057626704384198985084379209596497464944837369909063598385723/88725430211866075506509253892578678509965986412026130405455346579667881849780019937279180995332466499116518750764914298527173050368",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 4,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "2419928857861051044739826653402975975634605142137010570861241550969826386489175763893397810479937566459957965013145/5545339388241629719156828368286167406872874150751633150340959161229242615611251246079948812208279156194782421922807143657948315648",
+          "bound": "2419928857861051044739826653402975975634605142137010570861241550969826386489175763893397810479937566459957965013145/5545339388241629719156828368286167406872874150751633150340959161229242615611251246079948812208279156194782421922807143657948315648",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 5,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "36395048530013499278224664838309692007348847468696265607561210927113642221410778704197587342328469179165904475542837/44362715105933037753254626946289339254982993206013065202727673289833940924890009968639590497666233249558259375382457149263586525184",
+          "bound": "36395048530013499278224664838309692007348847468696265607561210927113642221410778704197587342328469179165904475542837/44362715105933037753254626946289339254982993206013065202727673289833940924890009968639590497666233249558259375382457149263586525184",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 6,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "32698894324848000433572985833252027779574434157910015231534705192547113403967018112559132694458838760705405901240657/22181357552966518876627313473144669627491496603006532601363836644916970462445004984319795248833116624779129687691228574631793262592",
+          "bound": "32698894324848000433572985833252027779574434157910015231534705192547113403967018112559132694458838760705405901240657/22181357552966518876627313473144669627491496603006532601363836644916970462445004984319795248833116624779129687691228574631793262592",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 7,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "29581390305794147632375891276479199179499864004627578484950158682102524787155301875854952634716336236324831039972155/11090678776483259438313656736572334813745748301503266300681918322458485231222502492159897624416558312389564843845614287315896631296",
+          "bound": "29581390305794147632375891276479199179499864004627578484950158682102524787155301875854952634716336236324831039972155/11090678776483259438313656736572334813745748301503266300681918322458485231222502492159897624416558312389564843845614287315896631296",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 8,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "28369923823087654114581636811424091427626089184836034157219998346694315260795812690746788966111329180421363008084501/5545339388241629719156828368286167406872874150751633150340959161229242615611251246079948812208279156194782421922807143657948315648",
+          "bound": "28369923823087654114581636811424091427626089184836034157219998346694315260795812690746788966111329180421363008084501/5545339388241629719156828368286167406872874150751633150340959161229242615611251246079948812208279156194782421922807143657948315648",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 9,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "27464305286718117082403051640510510487052767438736120112044996309091444985414704460083070957156662146964612386636479/2772669694120814859578414184143083703436437075375816575170479580614621307805625623039974406104139578097391210961403571828974157824",
+          "bound": "27464305286718117082403051640510510487052767438736120112044996309091444985414704460083070957156662146964612386636479/2772669694120814859578414184143083703436437075375816575170479580614621307805625623039974406104139578097391210961403571828974157824",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 10,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "26749179117727678931294580390153263655116629356943672048665146865916807756037499195876411079562049915845809976366363/1386334847060407429789207092071541851718218537687908287585239790307310653902812811519987203052069789048695605480701785914487078912",
+          "bound": "26749179117727678931294580390153263655116629356943672048665146865916807756037499195876411079562049915845809976366363/1386334847060407429789207092071541851718218537687908287585239790307310653902812811519987203052069789048695605480701785914487078912",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 11,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "25630634840536750215585615676660276151830979214514150978181310681835203712180900324676455642240997188609578811454975/693167423530203714894603546035770925859109268843954143792619895153655326951406405759993601526034894524347802740350892957243539456",
+          "bound": "25630634840536750215585615676660276151830979214514150978181310681835203712180900324676455642240997188609578811454975/693167423530203714894603546035770925859109268843954143792619895153655326951406405759993601526034894524347802740350892957243539456",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        },
+        {
+          "m": 12,
+          "quantity": "reference_bridge",
+          "norm": "raw_complex_signal",
+          "value": "23707278362939968897043662534769142621182191085135961367875974801445290135053799126123919294982945161982514514507801/346583711765101857447301773017885462929554634421977071896309947576827663475703202879996800763017447262173901370175446478621769728",
+          "bound": "23707278362939968897043662534769142621182191085135961367875974801445290135053799126123919294982945161982514514507801/346583711765101857447301773017885462929554634421977071896309947576827663475703202879996800763017447262173901370175446478621769728",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract",
+          "reference_uncertainty_included": false
+        }
+      ],
+      "provenance": "B2 state-independent Arb384 reference contract",
+      "actual_CA_achieved": null,
+      "PCG64_joint_stream_qualified": false,
+      "mandatory_stop": true,
+      "fixed_publication": {
+        "result_commit": "b7a3db09e395d36965e5b9dc28ae4a299db3b2f0",
+        "science_SOURCE": "01baf2b5e400773e00a5ae548941265f85b9882b",
+        "implementation_SOURCE": "918c63cc2a959f59f2817388bf6be549b905e3e6"
+      }
+    },
+    "reference_uncertainty": {
+      "identity": {
+        "candidate": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+        "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+        "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+        "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+        "model": {
+          "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+          "bits": 53,
+          "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+          "independent_events": true,
+          "independent_coherent_occurrences": true,
+          "independent_measurement_shots": true,
+          "independent_XY_measurements": true,
+          "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+          "PCG64_joint_stream_qualified": false
+        },
+        "compiler": {
+          "qiskit": "1.3.0",
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "approximation_degree": 1.0,
+          "qubits_initially_zero": false
+        },
+        "conditions": {
+          "molecule": "linear H4",
+          "distance_A": 1.0,
+          "basis": "STO-3G",
+          "Nalpha": 2,
+          "Nbeta": 2,
+          "sector_dimension": 36,
+          "controlled_dimension": 512,
+          "rank": 8,
+          "ld": 2,
+          "s": 1,
+          "r": 32,
+          "K": 0,
+          "h": "1/10",
+          "rounds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "oracle": "own_DF_ground_state_oracle",
+          "state_preparation": "EXCLUDED",
+          "CA_Ha": 0.00159,
+          "DF_reserve_Ha": 0.00019875
+        },
+        "accuracy_target": {
+          "energy_ha": 0.00159,
+          "df_reserve_fraction": 0.125,
+          "base_time": 0.1,
+          "beta_total": 0.5235987755982988,
+          "beta_stat": 0.2617993877991494,
+          "alpha_axis": 0.0003846153846153846,
+          "alpha_total": 0.01
+        },
+        "phase_policy": "qiskit_P0_mpfr160_declared_phase_v1",
+        "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+      },
+      "quantity": "reference_uncertainty",
+      "norm": "raw_complex_signal",
+      "space": "sector36_reference",
+      "phase_sensitive": true,
+      "coherent_model": "independent_IID_kernels",
+      "scope": "model_reference",
+      "reference_target": "saved_CAR_raw_finite_RTE",
+      "qualification": "bound",
+      "numerical_qualification": "rigorous_enclosure",
+      "included_error_terms": [
+        "mathematical_CAR_to_binary64_reference"
+      ],
+      "raw_conversion": "uniform over all normalized sector36 states;no saved-state approximation",
+      "error_model": {
+        "targets": {
+          "atom": "exact saved atom coefficients,dyadic saved U,saved angle bits;exact p;literal CAR Z/ZZ",
+          "CAR": "exact dyadic saved sector generators and lambda/tau/identity;h=1/10;K0 polynomial;A=(1+tau^2)^(-16*q)",
+          "numeric": "binary64 saved corrected matrix;shared NumPy power chain;each saved binary64 attenuation",
+          "state": "all normalized sector36 vectors;no saved-state expectation or oracle-precision assertion"
+        },
+        "precision_bits": 384,
+        "rounding_enclosed": true,
+        "saved_state_used": false,
+        "ground_oracle_precision_claimed": false,
+        "physical_input_error_included": false,
+        "generator_construction_error_included": false
+      },
+      "unresolved": [],
+      "proofs_verified_by_schema": false,
+      "rows": [
+        {
+          "m": 0,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "6961821575708302155893151284312525336146292700304498577970784054858219182409962110028725860622027006026315516244663/693167423530203714894603546035770925859109268843954143792619895153655326951406405759993601526034894524347802740350892957243539456",
+          "bound": "6961821575708302155893151284312525336146292700304498577970784054858219182409962110028725860622027006026315516244663/693167423530203714894603546035770925859109268843954143792619895153655326951406405759993601526034894524347802740350892957243539456",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 1,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "28558911518874727578639139711894221124625649930417819539767367971752771198479429991018572484949975190069167648822071/1386334847060407429789207092071541851718218537687908287585239790307310653902812811519987203052069789048695605480701785914487078912",
+          "bound": "28558911518874727578639139711894221124625649930417819539767367971752771198479429991018572484949975190069167648822071/1386334847060407429789207092071541851718218537687908287585239790307310653902812811519987203052069789048695605480701785914487078912",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 2,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "14172801136384787816469840456638717850090615279386724410929749306864194882957674263391572684845590769048058123883199/346583711765101857447301773017885462929554634421977071896309947576827663475703202879996800763017447262173901370175446478621769728",
+          "bound": "14172801136384787816469840456638717850090615279386724410929749306864194882957674263391572684845590769048058123883199/346583711765101857447301773017885462929554634421977071896309947576827663475703202879996800763017447262173901370175446478621769728",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 3,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "28248674558587486044766415522076281409483533490630802975367135732688482055439732133433095820506482342568361940347563/346583711765101857447301773017885462929554634421977071896309947576827663475703202879996800763017447262173901370175446478621769728",
+          "bound": "28248674558587486044766415522076281409483533490630802975367135732688482055439732133433095820506482342568361940347563/346583711765101857447301773017885462929554634421977071896309947576827663475703202879996800763017447262173901370175446478621769728",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 4,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "27878643796717403861290027753326610160999802697124854106994496000163566343686513757880827773274937699732599192425559/173291855882550928723650886508942731464777317210988535948154973788413831737851601439998400381508723631086950685087723239310884864",
+          "bound": "27878643796717403861290027753326610160999802697124854106994496000163566343686513757880827773274937699732599192425559/173291855882550928723650886508942731464777317210988535948154973788413831737851601439998400381508723631086950685087723239310884864",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 5,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "26704232620802727996402879018011632119239598068204282189473799751816607215133512304423674465041384855637701503068661/86645927941275464361825443254471365732388658605494267974077486894206915868925800719999200190754361815543475342543861619655442432",
+          "bound": "26704232620802727996402879018011632119239598068204282189473799751816607215133512304423674465041384855637701503068661/86645927941275464361825443254471365732388658605494267974077486894206915868925800719999200190754361815543475342543861619655442432",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 6,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "24550633710077172341284757229760663927385939108814540464485946519145533952333901794540142439281316600851989364079923/43322963970637732180912721627235682866194329302747133987038743447103457934462900359999600095377180907771737671271930809827721216",
+          "bound": "24550633710077172341284757229760663927385939108814540464485946519145533952333901794540142439281316600851989364079923/43322963970637732180912721627235682866194329302747133987038743447103457934462900359999600095377180907771737671271930809827721216",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 7,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "2749661926789616043074836335524986351017171160483674570583853298119973485428524830673061103500663873773671958370435/2707685248164858261307045101702230179137145581421695874189921465443966120903931272499975005961073806735733604454495675614232576",
+          "bound": "2749661926789616043074836335524986351017171160483674570583853298119973485428524830673061103500663873773671958370435/2707685248164858261307045101702230179137145581421695874189921465443966120903931272499975005961073806735733604454495675614232576",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 8,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "2561958534170875406378718743814116580836984843963945219819853584260750781497436067167021191094254847462575243322333/1353842624082429130653522550851115089568572790710847937094960732721983060451965636249987502980536903367866802227247837807116288",
+          "bound": "2561958534170875406378718743814116580836984843963945219819853584260750781497436067167021191094254847462575243322333/1353842624082429130653522550851115089568572790710847937094960732721983060451965636249987502980536903367866802227247837807116288",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 9,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "19830557857962173576981068026552586626836391578711888987941382144666233447411416465068898377271566130633693764136959/5415370496329716522614090203404460358274291162843391748379842930887932241807862544999950011922147613471467208908991351228465152",
+          "bound": "19830557857962173576981068026552586626836391578711888987941382144666233447411416465068898377271566130633693764136959/5415370496329716522614090203404460358274291162843391748379842930887932241807862544999950011922147613471467208908991351228465152",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 10,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "4836778590614927726399242650667586485326865432424602083716708827578579992473714322504388798436828556966268901311111/676921312041214565326761275425557544784286395355423968547480366360991530225982818124993751490268451683933401113623918903558144",
+          "bound": "4836778590614927726399242650667586485326865432424602083716708827578579992473714322504388798436828556966268901311111/676921312041214565326761275425557544784286395355423968547480366360991530225982818124993751490268451683933401113623918903558144",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 11,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "18578744348206221691074134852845502010380585334151282880944845679395629431919270367373241285832643514890904225205969/1353842624082429130653522550851115089568572790710847937094960732721983060451965636249987502980536903367866802227247837807116288",
+          "bound": "18578744348206221691074134852845502010380585334151282880944845679395629431919270367373241285832643514890904225205969/1353842624082429130653522550851115089568572790710847937094960732721983060451965636249987502980536903367866802227247837807116288",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        },
+        {
+          "m": 12,
+          "quantity": "reference_uncertainty",
+          "norm": "raw_complex_signal",
+          "value": "8590897806680440583876944196090006934908705349973510845451786852433447210232287167296643746003790101156686735874045/338460656020607282663380637712778772392143197677711984273740183180495765112991409062496875745134225841966700556811959451779072",
+          "bound": "8590897806680440583876944196090006934908705349973510845451786852433447210232287167296643746003790101156686735874045/338460656020607282663380637712778772392143197677711984273740183180495765112991409062496875745134225841966700556811959451779072",
+          "kind": "rigorous_bound",
+          "rounding_enclosed": true,
+          "provenance": "B2 state-independent Arb384 reference contract"
+        }
+      ],
+      "provenance": "B2 state-independent Arb384 reference contract",
+      "actual_CA_achieved": null,
+      "PCG64_joint_stream_qualified": false,
+      "mandatory_stop": true,
+      "fixed_publication": {
+        "result_commit": "b7a3db09e395d36965e5b9dc28ae4a299db3b2f0",
+        "science_SOURCE": "01baf2b5e400773e00a5ae548941265f85b9882b",
+        "implementation_SOURCE": "918c63cc2a959f59f2817388bf6be549b905e3e6"
+      }
+    },
+    "synthesis": null,
+    "categorical": {
+      "identity": {
+        "candidate": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+        "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+        "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+        "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+        "model": {
+          "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+          "bits": 53,
+          "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+          "independent_events": true,
+          "independent_coherent_occurrences": true,
+          "independent_measurement_shots": true,
+          "independent_XY_measurements": true,
+          "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+          "PCG64_joint_stream_qualified": false
+        },
+        "compiler": {
+          "qiskit": "1.3.0",
+          "optimization_level": 1,
+          "seed_transpiler": 17,
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "approximation_degree": 1.0,
+          "qubits_initially_zero": false
+        },
+        "conditions": {
+          "molecule": "linear H4",
+          "distance_A": 1.0,
+          "basis": "STO-3G",
+          "Nalpha": 2,
+          "Nbeta": 2,
+          "sector_dimension": 36,
+          "controlled_dimension": 512,
+          "rank": 8,
+          "ld": 2,
+          "s": 1,
+          "r": 32,
+          "K": 0,
+          "h": "1/10",
+          "rounds": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12
+          ],
+          "oracle": "own_DF_ground_state_oracle",
+          "state_preparation": "EXCLUDED",
+          "CA_Ha": 0.00159,
+          "DF_reserve_Ha": 0.00019875
+        },
+        "accuracy_target": {
+          "energy_ha": 0.00159,
+          "df_reserve_fraction": 0.125,
+          "base_time": 0.1,
+          "beta_total": 0.5235987755982988,
+          "beta_stat": 0.2617993877991494,
+          "alpha_axis": 0.0003846153846153846,
+          "alpha_total": 0.01
+        },
+        "phase_policy": "qiskit_P0_mpfr160_declared_phase_v1",
+        "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+      },
+      "quantity": "categorical",
+      "norm": "raw_complex_signal",
+      "included_error_terms": [
+        "categorical_p_to_q_only"
+      ],
+      "space": "ideal_trajectory_signal",
+      "phase_sensitive": true,
+      "coherent_model": "independent_IID_kernels",
+      "qualification": "conditional_bound_pending_trajectory_premise",
+      "numerical_qualification": "conditional_on_unitary_trajectory",
+      "scope": "model_reference",
+      "rows": [
+        {
+          "m": 0,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/340312477548670022181929088168467890176",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 1,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/170156238774335011090964544084233945088",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 2,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/85078119387167505545482272042116972544",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 3,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/42539059693583752772741136021058486272",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 4,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/21269529846791876386370568010529243136",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 5,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/10634764923395938193185284005264621568",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 6,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/5317382461697969096592642002632310784",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 7,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/2658691230848984548296321001316155392",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 8,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/1329345615424492274148160500658077696",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 9,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/664672807712246137074080250329038848",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 10,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/332336403856123068537040125164519424",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 11,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/166168201928061534268520062582259712",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        },
+        {
+          "m": 12,
+          "quantity": "categorical",
+          "norm": "raw_complex_signal",
+          "bound": "74656384577585465687339807/83084100964030767134260031291129856",
+          "kind": "numerical_bound",
+          "provenance": "fixed Stage A conditional categorical coupling;unitary premise unresolved"
+        }
+      ],
+      "categorical_unitary_trajectory_premise_qualified": false
+    }
+  },
+  "actual_CA_achieved": null,
+  "PCG64_joint_stream_qualified": false,
+  "mandatory_stop": true
+}

@@ -1,0 +1,118 @@
+{
+  "schema": "C_NEAR_OBJECTIVE_COMPARISON_DESIGN_V1",
+  "status": "UNAPPROVED_DESIGN_NOT_EXECUTABLE",
+  "scientific_execution_authorized": false,
+  "entry": null,
+  "base_commit": "ba0f280c8be9e7038c5fa6b5fd390a235b113833",
+  "technical_implementation_commit": "acc32878daa9591597a4677b459e5454dd96aeda",
+  "technical_source_manifest": "artifacts/research_c_near_objective/2026-11-03/technical/SOURCE.json",
+  "technical_source_manifest_sha256": "e3d8e5918b304eeb95f97e1f4e48fac906042db48595f795743daba51bec0934",
+  "research_question": "Does the fixed-tail mapped mass provide additional physically admissible tail or conditional-resource benefit beyond its entrywise triangle envelope?",
+  "objectives": {
+    "PR": "f/f_star + gamma*(M_epsilon/M_star)^2; current coefficients T and original tail",
+    "ENTRY": "f/f_star + beta*(B_eta/B_star)^2; B=sum ordered w_ij*hypot(J_ij,eta), tail only; w_ii=5/4,w_ij=3/2",
+    "entry_epsilon_policy": "eta=epsilon*(2*n+1)/(1.5*n-0.25); same zero floor, not identical smoothing",
+    "exact_diagnostic": "B_0-lambda=sum_tail_rows(sum_j abs(J_ij)-abs(sum_j J_ij)); exact zero-epsilon limit",
+    "historical_RC2": "context only; no new full-L2 arm planned"
+  },
+  "conditions": {
+    "model": "linear H4",
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "ld": 2,
+    "frame_order": "original; no sort",
+    "J": "general signed real symmetric",
+    "U": "frame-wise real orthogonal; existing corrected codec",
+    "kappa": "original_g_corrected_fixed",
+    "nuclear_scalar": "once; candidate identity phase retained",
+    "epsilon_Ha": 1e-08,
+    "DF_budget_Ha": 0.00019875,
+    "loss_scale_Ha_squared": 2.1839632053132894e-09,
+    "PR_saved_mass_scale_Ha": 2.2093719370722074
+  },
+  "inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8"
+  },
+  "input_policy": "Byte identities reusable; no array decoding in this preparation. Original qualified common start recommended; no PR-only warm start as neutral evidence. B_star evaluated once only inside a future approved setup call.",
+  "candidate_identity_policy": "Per-arm objective version, input/scales, initialization, SOURCE and endpoint J/U hashes; never relabel old endpoint as new comparator. No new endpoint exists.",
+  "comparison_I": {
+    "meaning": "objective capability at common physical budget and comparable engineering stationarity",
+    "strength_values": null,
+    "strength_policy": "finite prespecified symmetric relative-strength selection; all outcomes retained; common physical budget admission, compare exact lambda over common feasible accuracy range; no selection using held-out native prices",
+    "optimizer": "reuse latest recentered reduced search after both arms have same-array coefficient/gradient/Hessian and stability adaptation",
+    "stationarity": "proposed common J-infinity and physical U-tangent engineering thresholds 1e-5 with existing margins; numerical admission separate from raw solver success",
+    "inner_outer_limits": null,
+    "primary_effect_threshold": null
+  },
+  "comparison_II": {
+    "meaning": "practical fixed-budget recipe comparison, not objective superiority",
+    "initial_strength_proposal": 0.1,
+    "policy": "same initial penalty contribution is one reproducible pilot policy only; same start and counts of solves/evaluations with recorded CPU/wall; beta/gamma not treated as comparable final error",
+    "update_and_trial_budget": null,
+    "unconverged_endpoint": "descriptive finite-recipe outcome; no objective-capability claim"
+  },
+  "stages": [
+    {
+      "id": "O",
+      "scope": "paired optimization and independent physical error/tail diagnostics",
+      "progression": "both arms correctness and DF admission; if one unqualified report without winner for comparison I; no automatic restart"
+    },
+    {
+      "id": "D",
+      "scope": "candidate-specific physical/ground/alias -> PF/RTE -> attenuation -> RPE W/shots -> native -> shell total -> same-J/U strong D",
+      "progression": "requires separately fixed downstream contract and permission; no automatic continuation"
+    }
+  ],
+  "downstream": {
+    "common_r_comparison": "recommend same r32 for DF-only conditional comparison; PR-derived choice disclosed; not best-r certification",
+    "candidate_retuning": "optional common finite r policy for both objectives, fixed before results; existing 16/32/64/128 policy is a possible reuse, not adopted here",
+    "r_values": null,
+    "s": 1,
+    "delta_h": 0.1,
+    "K": 0,
+    "rounds": "m=0..12",
+    "oracle": "own-DF ground; state-preparation cost excluded",
+    "native_profile": "P0 Qiskit1.3.0,opt1,seed17,rz/sx/x/cx,fenced serial",
+    "calibration_N": null,
+    "statistics": "new holdout seeds, no pooling design/exploration cohorts; fix estimand/precision/interval/multiplicity before calibration",
+    "qualification": "conditional ideal accounting remains separate from all-law error, ideal-law price, actual CA and validated coverage"
+  },
+  "logical_calls": {
+    "maximum": null,
+    "optimization_template": "C_shared + sum_over_arms_and_registered_strengths_starts(C_setup_arm + 6*P + 2*A + 1) + C_comparison, only if unchanged stable-oracle instrumentation is validated; P<=1+accepted_update_limit*trial_limit. Six=3 inner+2 precision+1 admission; 2 per accepted update=independent terminal+physical; +1 initial physical. Not a closed bound for new runner.",
+    "native_template": "9*N per registered candidate/r cell + candidate-specific preparation/reference/shell + calibration/final summaries; old published N256 maximum2374 is not transferred",
+    "reason_unfixed": "strength/start grid, common stopping budget, stable ENTRY oracle adaptation and downstream calibration not yet fixed"
+  },
+  "fresh_run": true,
+  "retry": 0,
+  "resume": 0,
+  "correctness_FAIL": "retain partial evidence and STOP; never relax thresholds or replace an arm",
+  "mandatory_stop": true,
+  "resources": {
+    "artificial_CPU_RAM_GPU_worker_wall_caps": null,
+    "acceleration": "reuse cached ffsim/JAX, fixed-U linear map/Hessian, same-array extended arithmetic; parallel independent arms/strengths only in separate processes after actual resource check",
+    "noninterference": "task-local cache/output; shared environments and other jobs unchanged"
+  },
+  "unresolved_before_execution": [
+    "choose comparison I or II and finite strength/initialization/optimization budget policy",
+    "adapt and synthetically verify ENTRY same-array extended coefficient and reduced-oracle path; PR-only checks must not silently dispatch ENTRY as RC2",
+    "freeze endpoint selection and scientific effect/precision thresholds without native holdout leakage",
+    "close exact call counts and full SOURCE/runtime/input manifest for the future runner",
+    "if saved XDF added, reconcile Codex-A audit; not a prerequisite for this two-objective design",
+    "obtain separate explicit scientific execution permission after concrete fixed scope"
+  ],
+  "forbidden_now": [
+    "real H4 fit/U optimization",
+    "saved scientific numerical reanalysis",
+    "NPZ/QPY numerical decoding",
+    "PF/RTE/RPE/native build or compile",
+    "novelty or manuscript GO adoption",
+    "changes to old SOURCE/raw/contracts/grants/ledgers/markers/STOP"
+  ]
+}

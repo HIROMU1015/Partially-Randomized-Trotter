@@ -1,0 +1,70 @@
+{
+  "status": "PREPARATION_COMPLETE_SCIENTIFIC_EXECUTION_NOT_STARTED_MANDATORY_STOP",
+  "parent_design_commit": "be0757472ffa6bed60ecbeef4df27f1985046045",
+  "reused_A_SOURCE": "d0b1da1b04c266a1f7abf8e43966ca6e289a8695",
+  "legacy_SOURCE_carrier": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+  "fixed_scope": "linear H4/1.00 Angstrom/STO-3G/legacy DF12; 8 qubits, N=4 sector70; saved B physical state; L_D3, delta .02, m17/q131072/r32/K2; both axes",
+  "artificial_tests": {
+    "tests_run": 13,
+    "failures": 0,
+    "errors": 0,
+    "observed_seconds": 0.04,
+    "names": [
+      "test_grouping_keeps_weight_sources_and_shares_basis_transform",
+      "test_literal_law_matches_full_small_support_including_order2_and_negative_time",
+      "test_r_lives_inside_q_and_scalar_normalization_is_applied_once",
+      "test_a_reference_mismatch_is_reported_without_tolerance_inflation",
+      "test_scalar_reserve_uses_saved_n_alpha_epsilon_on_synthetic_values",
+      "test_invalid_scalar_inputs_and_nonpositive_reserve_do_not_become_passes",
+      "test_default_cli_cannot_enter_science_or_open_outputs",
+      "test_actual_fixed_row_only_transfers_literals",
+      "test_context_passes_threshold_and_r32_without_r1_fallback",
+      "test_context_inventory_failure_retains_actual_values",
+      "test_complete_context_schema_with_synthetic_components_and_cached_basis",
+      "test_interruption_retains_scalar_stage_and_error_without_overwriting",
+      "test_synthetic_completion_saves_two_means_and_seven_operators_without_certification"
+    ],
+    "command": "OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 python -m unittest -v test_m17_mean_validation.py",
+    "fixtures": "Synthetic scalars/2x2 operators; real selected CSV row used only for literal metadata transfer",
+    "actual_H4_context_mocked": true,
+    "RNG_draws": 0,
+    "independent_important_review": false
+  },
+  "code_sha256": {
+    "run_m17_mean_validation.py": "2065baf3ec9c6ead789ee85f2432fc3c42d3bec0d2a0282b7c69c08bfa851356",
+    "test_m17_mean_validation.py": "76775f6a14248cecba9157e596a9682e92c14c12a25311aea30bc74227e9d459"
+  },
+  "synthetic_performance": {
+    "fixture": "Deterministic synthetic 70x70 matrix_power, 12 repetitions; no molecular input",
+    "seconds_by_BLAS_threads": {
+      "1": 0.02126022893935442,
+      "4": 0.006767595186829567,
+      "32": 0.06921354681253433
+    },
+    "initial_execution_configuration_BLAS_threads": 4,
+    "H4_speedup_measured": false,
+    "resource_cap_imposed": false
+  },
+  "numeric_interpretation": {
+    "scalar_Decimal_precision": 80,
+    "matrix_dtype": "complex128",
+    "comparison_atol": 1e-10,
+    "comparison_atol_is_a_proved_numerical_error_bound": false,
+    "u_num_bound": null,
+    "RPE_tolerance_certified": false,
+    "scientific_status_after_planned_run": "UNDETERMINED with separate numerical diagnostic"
+  },
+  "real_H4_scientific_calls_executed": {
+    "saved_scalar_reserve_evaluation": 0,
+    "state_or_H_generation": 0,
+    "NPZ_numeric_decode": 0,
+    "DF_preparation_operator_or_state_action": 0,
+    "sampling_or_virtual_shots": 0,
+    "controlled_build_compile_or_price": 0,
+    "important_scientific_review": 0
+  },
+  "scientific_result_directory_created": false,
+  "old_source_raw_manifest_statuses_STOPs_preserved": true,
+  "mandatory_STOP": true,
+  "next_owner": "User permits the published SOURCE for the fixed scalar/mean evaluation; Codex executes only after permission"
+}

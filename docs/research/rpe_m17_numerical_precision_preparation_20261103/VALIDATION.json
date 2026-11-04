@@ -1,0 +1,83 @@
+{
+  "status": "PREPARATION_COMPLETE_NO_NEW_H4_NUMERICAL_EVALUATION_MANDATORY_STOP",
+  "parent_result_commit": "cd749066904d3f29b28b03c19ab69370372b157f",
+  "original_scientific_SOURCE": "128e9a5bf2630cd0333ec5f69b81b25def78eb79",
+  "legacy_SOURCE_carrier": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+  "scope": "Task A adapter, metadata/header inspection, static B1/B2 analysis, artificial tests and fixed future execution plan only",
+  "artificial_tests": {
+    "command": "OPENBLAS_NUM_THREADS=4 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 python -m unittest -q test_precision_isolation.py",
+    "tests_run": 18,
+    "failures": 0,
+    "errors": 0,
+    "observed_seconds": 0.142,
+    "names": [
+      "test_precision_ladder_is_derived_and_bounded",
+      "test_binary64_conversion_preserves_exact_dyadics_not_decimal_substitution",
+      "test_shape_dtype_and_nonfinite_inputs_are_rejected",
+      "test_known_large_q_nilpotent_power",
+      "test_binary_power_matches_closed_form_and_backend_on_toy",
+      "test_noncommuting_factor_order_is_not_reversed",
+      "test_saved_attenuation_is_not_applied_twice_or_rebuilt",
+      "test_modes_use_distinct_fixed_step_and_factor_inputs",
+      "test_clone_context_does_not_change_global_precision",
+      "test_convergence_and_candidate_labels_do_not_certify_rpe",
+      "test_unconverged_or_threshold_edge_is_insufficient",
+      "test_ladder_third_tier_is_only_used_after_failed_convergence",
+      "test_actual_metadata_uses_canonical_archive_names_without_array_decode",
+      "test_default_cli_does_not_enter_science",
+      "test_interruption_preserves_stop_record_and_rejects_overwrite",
+      "test_spawned_workers_and_synthetic_driver_preserve_stage_scope",
+      "test_factor_stage_is_conditional_on_converged_retained_gap",
+      "test_baseline_failure_stops_before_high_precision_pool"
+    ],
+    "fixtures": "2x2/scalars including q131072, plus synthetic 70x70 timing; real files read only as bytes/JSON/NPY headers",
+    "real_array_decode_or_power": false,
+    "independent_important_scientific_review": false
+  },
+  "backend": {
+    "numpy": "1.26.4",
+    "mpmath": "1.3.0",
+    "mpmath_arithmetic_backend": "python",
+    "precision_bits": [
+      96,
+      160,
+      224
+    ],
+    "third_tier_conditional": true,
+    "no_package_install_or_shared_environment_change": true,
+    "synthetic_dense_70x70_product_bits": 96,
+    "synthetic_product_seconds": 0.3536949548870325,
+    "H4_speedup_measured": false
+  },
+  "code_sha256": {
+    "precision_adapter.py": "a58e7032bb0c3ff4c63bb0faa9fb3a2823112be13e528cac6d3e24500613428f",
+    "run_precision_isolation.py": "84018be00807b4ff4497493b0aaf9ba3adbf518974afd6fb0dc5ee52fb80c0c4",
+    "test_precision_isolation.py": "49bfcd9edd66ee1430d7e38c3b08f821d303bdb6509dba0415cc33f775d47fce"
+  },
+  "planned_scientific_scope": {
+    "float_baseline_means": 2,
+    "initial_high_precision_means": 4,
+    "maximum_high_precision_means": 12,
+    "fixed_factors_conditional_on_converged_retained_gap": true,
+    "B1_B2_executed_by_driver": false,
+    "H_state_DF_generation_sampling_compile_other_rounds": 0
+  },
+  "old_evidence_unchanged": {
+    "numeric_diagnostic_status": "INCONSISTENT",
+    "u_num_bound": null,
+    "RPE_tolerance_certified": false,
+    "scientific_status": "UNDETERMINED",
+    "current_cause": "INSUFFICIENT_EVIDENCE"
+  },
+  "real_H4_calls_executed": {
+    "array_numeric_decode": 0,
+    "new_matrix_power_or_expectation": 0,
+    "high_precision_evaluation": 0,
+    "new_mean_difference_or_error_bound": 0,
+    "new_H_state_DF_sampling_compile_cost": 0,
+    "important_scientific_review": 0
+  },
+  "new_scientific_artifact_directory_created": false,
+  "original_SOURCE_RESULTS_OPERATORS_manifests_STOPs_preserved": true,
+  "mandatory_STOP": true
+}

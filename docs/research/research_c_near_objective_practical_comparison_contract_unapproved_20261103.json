@@ -1,0 +1,308 @@
+{
+  "base_commit": "2459e018ea2276c359d6fe96253fbcad0bfd65bb",
+  "scope": "C_NEAR_OBJECTIVE_PRACTICAL_COMPARISON_II_O_V1",
+  "entry": "scripts/run_research_c_near_practical.py",
+  "comparison": "II_practical_finite_recipe",
+  "arms": [
+    "PR",
+    "ENTRY"
+  ],
+  "PR_objective": {
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "loss_scale": 2.1839632053132894e-09,
+    "mass_scale": 2.2093719370722074,
+    "gamma": 0.1,
+    "epsilon": 1e-08
+  },
+  "initial_penalty_contribution": 0.1,
+  "policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_xtol": 1e-12,
+    "metric_singular_floor": 1.0,
+    "u_max_nfev": 25,
+    "u_solver_gtol": 1e-12,
+    "u_xtol": 1e-14,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10,
+    "outer_maxiter": 16,
+    "max_points": 33,
+    "outer_gtol": 1e-07,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "inner_refinements": 2
+  },
+  "step_policy": {
+    "max_trials": 32,
+    "max_updates": 16,
+    "contraction": 0.5,
+    "c1": 0.0001,
+    "alpha_max": 1.0,
+    "displacement_cap": 1.01,
+    "accepted_alpha_growth": 2.0
+  },
+  "maximum_total_trials_per_arm": 128,
+  "maximum_U_points_per_arm": 129,
+  "DF_budget_Ha": 0.00019875,
+  "fresh_output": "artifacts/research_c_near_practical/2026-11-03/run01",
+  "call_limits": {
+    "saved_load": 1,
+    "initial_identity": 1,
+    "physical_context": 1,
+    "common_physical_assessment": 1,
+    "objective_setup": 1,
+    "comparison": 1,
+    "export": 1,
+    "optimization_driver": 2,
+    "inner_J_solve": 774,
+    "precision_state": 516,
+    "reduced_admission": 258,
+    "independent_terminal_assessment": 34,
+    "physical_assessment": 34,
+    "endpoint_diagnostics": 2,
+    "arm_export": 2
+  },
+  "per_arm_call_limits": {
+    "optimization_driver": 1,
+    "inner_J_solve": 387,
+    "precision_state": 258,
+    "reduced_admission": 129,
+    "independent_terminal_assessment": 17,
+    "physical_assessment": 17,
+    "endpoint_diagnostics": 1,
+    "arm_export": 1
+  },
+  "maximum_logical_units": 1629,
+  "included_stage": "O_optimization_physical_tail_only",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "schema": "C_NEAR_PRACTICAL_UNAPPROVED_CONTRACT_V1",
+  "status": "UNAPPROVED_EXECUTABLE_TECHNICAL_PROPOSAL",
+  "permission": "Separate explicit user chat permission needed before science;no approval record or grant",
+  "source_manifest": "artifacts/research_c_near_practical/2026-11-03/technical/SOURCE.json",
+  "source_manifest_sha256": "6442b2061e0be7533344d96a13e5059d738af343ffa98122841a405e0457e8fb",
+  "input_paths": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8"
+  },
+  "fit_python": "/tmp/prt-c1-h6-corrected-fit-preparation-20261025/.venv-fit/bin/python",
+  "evaluation_python": "/tmp/prt-c1-stage2-preparation-20261025/.venv/bin/python",
+  "fit_packages": {
+    "ffsim": "0.0.83",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "jax": "0.4.38",
+    "jaxlib": "0.4.38",
+    "qiskit": "2.4.2",
+    "pyscf": "2.14.0"
+  },
+  "evaluation_packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0",
+    "symengine": "0.13.0",
+    "qiskit-aer": "0.15.1"
+  },
+  "ffsim_sources": {
+    "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+    "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+  },
+  "input_provenance": {
+    "original_P_H4": {
+      "generation_SOURCE": "0c329b30a81accb35c212be8defa66fee0dd0f12",
+      "publication": "86b8b002704aced8ca239414080f53793de81658",
+      "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+    },
+    "neutral_CDF8": {
+      "fit_SOURCE": "da2edb465d5ae6432439fbd1df8e57512ee59c11",
+      "export_sha256": "c33f782d3224aa80968e1e6ea70f5ae3f764b872b5bce545c38875c83f3c4e08",
+      "qualification_prepare_SOURCE": "e1085c95f5c01b68566e17d543ace5832cb94061",
+      "policy": "unregularized tensor-only CDF8,faithful saved real-Schur J/U/x0;not PR update005 or064"
+    },
+    "initial_validation": "unpack saved x0,validate J/U/schema/orthogonality then independent sector DF budget before any solver",
+    "optimization_x0": "same isometric pack(J0),local eta=0;global saved ffsim x0 is identity not a full-fitter call"
+  },
+  "physics": {
+    "model": "linear H4",
+    "adjacent_Angstrom": 1.0,
+    "basis": "STO-3G",
+    "charge": 0,
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "rank": 8,
+    "J": "general signed symmetric;no PSD/rank compression",
+    "U": "frame-wise real orthogonal",
+    "frame_order": "original,never sorted",
+    "LD": 2,
+    "kappa": "h-0.5*einsum(prrq->pq,g) from original g,never gDF",
+    "scalar": "nuclear once;fragment identity phase retained",
+    "CA_Ha": 0.00159,
+    "physical_error_policy": "independent sector operator 2-norm+unchanged engineering guard<=CA/8 per candidate",
+    "guard_policy": "sector_operation_scale_guard8_proposal_v1",
+    "guard": "8*eps64*(n^4+R*n^3)*(d+1)*max(1,||H||F+sum||G_t||F)",
+    "GeneralK_raw_CAR_max_entry_allowance": 1e-10,
+    "orthogonality": 1e-10,
+    "strict_DF_enclosure": null
+  },
+  "objectives": {
+    "tensor": "0.5*||g-gDF(J,U)||F^2;shared fixed loss_scale from neutral start",
+    "PR": "f/f_star+gamma*(M_epsilon(J)/M_star)^2;existing mapped nonidentity number I/Z/ZZ tail norm",
+    "ENTRY": "f/f_star+beta*(B_eta(J)/B_star)^2;reuse c_near_objective.VERSION",
+    "entry_weights_ordered": {
+      "diagonal": 1.25,
+      "off_diagonal": 1.5
+    },
+    "entry_epsilon": "epsilon*(2*n+1)/(1.5*n-0.25);zero floor matching only",
+    "scales": "PR f_star/M_star fixed saved values;B_star=B_eta(J0) once in approved objective_setup;no endpoint rescaling",
+    "strength_policy": "one strength per arm,no search:gamma=.1,beta=.1 only because own mass scales make BOTH starting penalty contributions exactly .1;no assertion of equivalent final accuracy or optimal tuning",
+    "alternative_not_in_scope": "symmetric finite relative-strength grid;would answer strength sensitivity at larger scope",
+    "common_metrics": [
+      "sector_error",
+      "engineering_guard",
+      "exact_tail_lambda",
+      "exact_entry_mass",
+      "cancellation_gap",
+      "J/U attainment",
+      "solver counts/CPU/wall"
+    ],
+    "self_F_between_arm_winner": null
+  },
+  "finite_budget": {
+    "per_arm": {
+      "total_trial_proposals": 128,
+      "accepted_U_updates": 16,
+      "backtracks_per_direction": 32,
+      "new_U_points_including_initial": 129,
+      "inner_Newton_CG_invocations": 387,
+      "refinements_included": 258,
+      "maxiter_per_inner": 1000,
+      "xtol": 1e-12,
+      "same_first_order_thresholds": "J infinity/U physical tangent L2 1e-5 with unchanged margin",
+      "same_precision_and_acceptance": "same-array LD residual,full-direction metric,2 refinements,rank/head gauge,stability1e-6,Armijo comparison scale"
+    },
+    "compute_accounting": "record nfev/njev/nhev/nit,V+G/Hessian calls,raw status,all trials incl rejected,CPU/wall;shared finite call/proposal/solve/inner-maxiter opportunity,not equal FLOPs",
+    "CPU_interpretation": "thread CPU excludes asynchronous JAX pool;raw solve process CPU overlaps across arms,not additive;overall process CPU and wall saved",
+    "finite_nonconvergence": "retain finite endpoint and attainment;not objective optimum or global capability ranking",
+    "no_extra_grid_restart_warmstart": true
+  },
+  "call_contents": {
+    "common_7": "saved_load,initial_identity,physical_context,common_physical_assessment,objective_setup,comparison,export each1",
+    "per_arm": "optimization_driver1+3P inner+2P precision+P admission+(A+1)independent_terminal+(A+1)physical+endpoint_diagnostics1+arm_export1",
+    "arithmetic": "P<=129,A<=16;common7+2*(1+387+258+129+17+17+1+1)=1629",
+    "internal_library_calls": "bundled exactly as existing stable/physical call definitions;recursive driver call included,not a floating operation count",
+    "new_ffsim_double_factorized_fits": 0,
+    "outer_BFGS_calls": 0
+  },
+  "execution_order": [
+    "passive byte/source/runtime/resource preflight",
+    "saved load and common x0/schema identity",
+    "one original-H sector CAR context",
+    "common initial physical budget and GeneralK/raw CAR gate",
+    "one normalized objective setup",
+    "parallel independent arms with same finite policy",
+    "each new U:3 Newton solves,2 precision states,rank/latest-pair admission",
+    "each provisional Armijo:independent terminal then physical DF budget before acceptance",
+    "independent final state,exact mass/cancellation diagnostics,candidate export",
+    "common finite-recipe comparison,call/resource/partial evidence,publication,mandatory STOP"
+  ],
+  "endpoint_policy": "only last physically qualified accepted or refined-initial point;no best-of-trials or fallback to old snapshot;unqualified initial has no eligible endpoint;all failed trials retained",
+  "STOP_rules": [
+    "SOURCE/input/runtime/schema/nonfinite/codec/GeneralK-CAR/consistency correctness FAIL:stop dependent work,drain in-flight calls,preserve partial evidence",
+    "common initial DF budget NOT_MET:skip both optimizers",
+    "arm numerical admission/precision-loss/J first-order/rank/stability/Armijo/value resolution:unchanged rules;precision loss flag alone neither admits nor fails",
+    "arm physical provisional budget NOT_MET:stop that arm,preserve diagnostic rejected candidate and prior accepted endpoint without automatic fallback/retry",
+    "maximum total trials/points or16updates,first-order MET,registered stall or halving exhaustion:finite completion",
+    "ordinary arm unqualification does not erase peer arm;correctness failure stops both dependent continuations",
+    "retry/resume0,no old call balance transfer,no downstream automatic continuation"
+  ],
+  "downstream_design_only": {
+    "included_in_1629_call_scope": false,
+    "next_stage": "candidate-specific physical identity/ground-alias -> PF/RTE -> attenuation/phase -> RPE shots/W -> native -> shell totalRZ -> same-J/U strongD",
+    "stage1_common_execution": {
+      "r": 32,
+      "s": 1,
+      "K": 0,
+      "delta_h": 0.1,
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "LD": 2,
+      "reason": "existing H4 r-retuning motivates r32 as common anchor,not candidate-specific optimum;both arms same registered choice",
+      "oracle": "own DF sector ground;state preparation excluded",
+      "CA_Ha": 0.00159,
+      "DF_reserve_Ha": 0.00019875,
+      "phase_policy": "beta_total pi/6,beta_stat pi/12;failure .01 per candidate,uniform .01/26 per round-axis",
+      "compiler": "P0 Qiskit1.3.0,opt1,seed17,rz/sx/x/cx,approximation1,qubits_initially_zero false,fenced serial"
+    },
+    "stage2_retuning": "optional only after separately permitted contract;both arms identical r in[16,32,64,128],same selection budget/criterion;not automatic",
+    "price_calibration": "no N adopted in this optimization-only contract. Freeze candidate/r after exploration,then independent cohort/no reuse or pooling;reuse existing t/SE implementation with new fixed estimand,N/precision/multiplicity in separate contract",
+    "why_no_N_yet": "current endpoints/r feasibility do not exist;N256/640 and old prices are not universally transferable precision policies",
+    "call_templates_not_execution_limits": {
+      "PF_RTE": "2 candidates x13 registered rounds=26 cells plus fixed candidate load,ground-alias and kernel/reference/RPE/selection overhead to close in next contract",
+      "native": "existing nine logical units per calibration trajectory plus per-candidate reference/head/readout/setup and comparison;no N or maximum adopted",
+      "strongD": "one candidate-specific all-frame ordered S2/s1 denominator per endpoint,never old064 denominator"
+    },
+    "qualification": "ideal/assumed/evidence lanes separate;no transfer old064 data,observed samplemax not support bound,unknown full-law synthesis/signal/actualCA remain null",
+    "same_CA_claim_before_downstream": false
+  },
+  "qualification": {
+    "true_reduced_gradient_error_bound": null,
+    "rigorous_stationarity": false,
+    "all_law_synthesis": null,
+    "implemented_law_signal": null,
+    "actual_CA_achieved": null,
+    "guaranteed_resource_superiority": null,
+    "important_scientific_review_performed": false
+  },
+  "resources": {
+    "artificial_CPU_RAM_worker_wall_caps": null,
+    "backend": "existing vectorized fixed-U tensor map/LD/SciPy Newton/JAX x64;shape cache reused",
+    "parallelism": "resource_plan(2,256) after actual affinity/quota/memory;two arm threads,one locked CAR child pipe;sequential within arm;process-local BLAS coordination",
+    "noninterference": "existing venvs read-only;task-owned cache/tmp/output;no global/other-user changes"
+  },
+  "forbidden": [
+    "science during this technical preparation",
+    "additional strengths/starts/fit/rank/LD candidates",
+    "XDF refit,UWC implementation or important scientific review",
+    "PF/RTE/RPE/native build/compile/sampling/shots/price CI or totalcost in this scope",
+    "condition/allowance changes after result",
+    "old SOURCE/raw/grant/ledger/marker/STOP changes"
+  ],
+  "implementation_source_commit": "9e9fc8391590aeb7f9d36b76d90b5a25bbe2fe5e"
+}

@@ -1,0 +1,105 @@
+{
+  "status": "TECHNICAL_PREPARATION_COMPLETE_MANDATORY_STOP",
+  "date_jst": "2026-11-03",
+  "scope": "SOURCE inspection, settings-only transfer, artificial/mock measurements and decoder tests; no new scientific evaluation",
+  "parent_commit": "8fde197c64da671f1d428f0d3e8fdb762dc21930",
+  "source_carrier_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+  "existing_status_preserved": {
+    "V1": "CONDITIONAL; Full 7 radius discrepancies at 1e-10; Full same-delta control unresolved and diagnostic state fingerprint missing",
+    "V2": "Both CONDITIONAL_SUCCESS",
+    "V3": "Long-q compiled prices include extrapolation",
+    "R1": "Partial point preference about 4.858 percent; overall UNDETERMINED; R2/R3 nonrecommended for current ranking purpose"
+  },
+  "environment": {
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "existing_environment_modified": false
+  },
+  "artificial_tests": {
+    "command": "python -m unittest -v test_measurement_adapter.py",
+    "working_directory": "docs/research/rpe_18round_measurement_connection_20261103",
+    "tests_run": 15,
+    "failures": 0,
+    "errors": 0,
+    "observed_unittest_seconds": 0.386,
+    "test_names": [
+      "test_fresh_factory_is_called_for_every_axis_shot",
+      "test_reuse_is_two_factory_calls_and_explicitly_non_v2",
+      "test_full_never_samples_an_rte_trajectory",
+      "test_partial_full_control_and_corrected_laws_are_separated",
+      "test_exp_minus_itH_sine_and_energy_sign",
+      "test_known_artificial_phase_reconstructs_18_rounds",
+      "test_low_nonzero_radius_is_not_a_success_certificate",
+      "test_zero_signal_does_not_decode_arg_zero",
+      "test_branch_tie_retains_original_choice_but_withholds_energy",
+      "test_alias_edges_are_flagged_and_wrap_neighbours_remain_conditional",
+      "test_invalid_means_outcomes_and_policy_are_rejected",
+      "test_estimated_sample_radius_above_one_is_not_clamped",
+      "test_settings_are_immutable_and_mismatches_rejected",
+      "test_decoder_has_no_E0_or_oracle_input_and_unchanged_definitions",
+      "test_saved_metadata_only_preserves_all_N_alpha_beta_and_tuples"
+    ],
+    "kind": "AUTHOR_TECHNICAL_CHECKS_NOT_INDEPENDENT_SCIENTIFIC_REVIEW"
+  },
+  "metadata_checks": {
+    "matrix_items": 13,
+    "local_document_links_resolve": true,
+    "fixed_settings_rounds": 36,
+    "fixed_N_alpha_beta_epsilon_q_r_K_preserved": true,
+    "saved_complex_signal_JSON_not_decoded_or_evaluated": true
+  },
+  "source_functions_reused": {
+    "_wrap_phase": {
+      "source_path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "first_line": 60,
+      "last_line": 64,
+      "function_text_sha256": "296c6c2dda6e00d1e84377473bb0d551a26116b1cb5666b82cdbb60c46b9723c",
+      "unchanged_ast": true
+    },
+    "_phase_distance": {
+      "source_path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "first_line": 67,
+      "last_line": 71,
+      "function_text_sha256": "5e36b014ac55408c409662097898f5df68541e3c1dfff159a9edca4def999698",
+      "unchanged_ast": true
+    },
+    "reconstruct_rpe_phase": {
+      "source_path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "source_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "first_line": 74,
+      "last_line": 123,
+      "function_text_sha256": "b2264cea0f0d099ce09c6c96fd70b24244f8a6017dd06cbcaa3fa9234c19ddce",
+      "unchanged_ast": true
+    }
+  },
+  "code_sha256": {
+    "measurement_adapter.py": "1822d5e692e4afaaa936cda5faed571b85ba45b499238513c49b1fc377cb7096",
+    "test_measurement_adapter.py": "cda94e2d29fb2f1283050d626886f058a5155ba72910a457b4550bce43d6cb7a"
+  },
+  "new_scientific_calls_executed": {
+    "H_or_DF_generation": 0,
+    "saved_NPZ_decode": 0,
+    "state_solve": 0,
+    "physical_signal_or_state_action": 0,
+    "scientific_saved_value_reanalysis": 0,
+    "RNG_draw_or_replay": 0,
+    "H4_trajectory_sampling": 0,
+    "real_circuit_build": 0,
+    "compile_or_transpile": 0,
+    "cost_reranking": 0,
+    "V1_V2_V3_R1_rerun": 0,
+    "independent_detailed_scientific_review": 0
+  },
+  "limitations": [
+    "Callback call contract does not prove statistical IID or forbid a dishonest/caching backend",
+    "Artificial phase reconstruction is not H4 measurement success",
+    "New H4 backend/runner not implemented; new scientific execution needs explicit permission",
+    "State vector is absent from the Hamiltonian snapshot writer; saved physical fingerprint is not state bytes",
+    "No rigorous radius, alias, state preparation, compiled correctness or final cost guarantee"
+  ],
+  "next_recommendation": "B: fixed-request physical-state raw controlled/Hadamard mean comparison at saved q1 and q8; proposal only",
+  "mandatory_STOP_after_publication_verification": true,
+  "publication_verification": "Remote SHA and all changed-file bytes to be checked after commit/push and reported in final chat"
+}

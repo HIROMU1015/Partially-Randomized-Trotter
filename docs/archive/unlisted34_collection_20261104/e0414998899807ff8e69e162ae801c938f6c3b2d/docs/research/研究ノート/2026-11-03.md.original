@@ -1,0 +1,45 @@
+# 2026-11-03 研究ノート
+
+## 07:19 JST：研究Cの公開済み11月3日成果を統合（技術資料）
+
+状態：確認済み（既存証拠・文書の静的照合）。[新版Evidence Map](../research_c_evidence_map_updated_20261103.md)にA〜Eの固定SOURCEと結果commit、candidate identity、旧24 Claim＋新8項目、貢献候補・構成案への影響を接続した。共通起点は `a4d24682e79857f1e97f105cc03448d0e1786ea2`、独立branch `codex/research-c-latest-evidence-integration-20261103`。
+
+固定H4・直鎖1.00 Å/STO-3G、number CDF8・sector36、update064/r32（元順LD2、partial S2/s1、δ=h=.1、K0、m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み）の条件付き総RZは、独立256件の価格校正で同一J/U強決定論S2より約4.48%低い点比を得た。Nominal95%近似t比区間[.946594634483,.963772600308]、登録1%精度PASS、`NOMINAL_MODEL_PR_LOWER`。全law誤差・実装lawのsignal・actual CA・一般性は未資格。
+
+005/r32独立640件はUNRESOLVED_PRECISION_TARGET。新旧候補間の母平均検定はしていない。追加64 U更新の終端U一次未達、全law/actual CA等の未資格、旧技術NO-GOの射程と過去判定を保全する。論文化・新規性・継続/終了は未採択。
+
+検証は公開25本文/10commit、SOURCE/契約/候補hash、保存JSON scalarの一致、追加Markdownリンク、JSON構文・manifest旧record・差分保全。既存 `scripts/check_validation_manifest.py` の旧schema不一致はclean起点からの既知FAILで、今回の追記で変更しない。詳細は[静的照合](../../../artifacts/research_c_latest_evidence_integration/2026-11-03/static_verification.json)。科学テストの再実行PASSとは扱わない。
+
+新科学call、NPZ/QPY数値decode、fit/U更新、PF/RTE/native/shots再計算、raw統計再解析、重要科学レビューはいずれも0。旧SOURCE/raw/契約/grant/ledger/marker/STOPは統合差分で不変。次の担当はユーザー／研究C（中心claimと追加検証の要否を判断）。CodexはGitHub公開・remote SHA/tree/本文照合後mandatory STOPし、追加科学作業を開始しない。
+
+## 研究C：近接weighted L1との有限手順比較を実行
+
+研究C近接目的比較II：共通保存H4・直鎖1Å/STO-3G、number CDF8/sector36/元順LD2、初期penalty寄与.1、各arm最大16更新の固定政策でPR/weighted L1を実行。645/1,629 units COMPLETE、correctness FAIL/retry/resume0、両arm16更新・DF予算PASS。終端exact λはPR .500044243591Ha、ENTRY .941312847393Ha。両J一次MET/U一次NOT_METで有限endpointの比較。PRの量子資源優位・厳密CAは未判定。
+
+[固定実行報告](../research_c_near_objective_practical_comparison_execution_20261103.md)。科学SOURCE70a98adfb、実装9e9fc8391、契約/入力/旧SOURCE/raw/STOP不変。比較IIの有限手順結果を記録し、目的能力・PR資源の勝敗・正式レビューへ拡張しない。未使用984 unitsを流用せず、公開照合後mandatory STOP。次の判断はユーザー／研究C。
+
+## 16:28 JST：固定7-callでPR対保存XDF/CDFを直接比較
+
+固定H4・直鎖1.00 Å/STO-3G、sector36/rank8、PR元順LD2・partial S2/s1/r32/K0・δ=h=.1/m0..12、XDF/CDF全frame S2/s1、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。保存PR native32の事後的探索的一標本t比較を固定7/7callで実行。PR/XDF点比.940365699780、近似95%区間[.912991218406,.967740181154]、一側p=5.26154e-5（α=.025）、精度/診断PASS、POSTHOC_EXPLORATORY_NOMINAL_MODEL_PR_LOWER。CDFは同一区間から導く副比較で追加検定0。Actual CA・全law・ideal-law価格移送・confirmatory資格は未認定。
+
+[固定実行報告](../research_c_pr_xdf_cdf_statistical_comparison_execution_20261103.md)。実行SOURCE e2884a071d60ff8d2ffcacc98705e2e5cfafb206、元契約/SOURCE/hash/STOP条件を変更せずfresh run01で一度実行。標本追加・除外・poolingなし。一側pとCIの一致、精度と診断を確認したため近似モデル内の探索的結果として記録する。新規prospective holdoutや保証へ昇格させない。旧Claim/結果/STOPを保全し、次の判断はユーザー／研究C。公開・照合後mandatory STOP、追加科学作業なし。
+
+## IID-grid条件付き数値精度モデルの採用とStage A技術準備
+
+ユーザー指定の独立一様53-bit/event・occurrence・shotモデルを第一対象にした。実PCG64のjoint stream保証は未資格のまま。固定H4/1Å/STO-3G・新PR/rank8/LD2・S2/s1/r32/K0/h=.1/m0..12の[現在候補reference bridge](../research_c_iid_grid_all_law_readiness_20261103.md)を既存C2/accuracyの再利用で接続し、Stage Aのみ未承認38-callで実行可能にした。実装SOURCE55fc3f301、182 unique人工/回帰PASS、passive preflight PASS。実H4のTV・bridge・native compile・sampling・RPE評価0。
+
+Whole-P0の全word一様誤差とreference uncertainty等が未取得で、Stage B/CはNOT_READY。新IID-grid資格は旧actual-law evidenceと分離し、PCG64/厳密CA/actual CAへ自動昇格しない。旧Claim/結果/契約/SOURCE/raw/STOPを保全。次はユーザーが固定38-call Stage Aの科学実行可否を判断し、Codexは公開照合後mandatory STOPする。
+
+## IID-grid reference bridge・固定Stage A実行完了
+
+固定H4・直鎖1.00 Å/STO-3G、Nα=Nβ=2、sector36/number CDF8、元順LD2・partial ordered S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground oracle/準備除外。SOURCE ddd8333488e07a3b3af9095b5cb193ef9f90b3c3と元契約を変更せず、fresh Stage Aを一度だけ38/38 calls COMPLETE、correctness FAIL/retry/resume0で実行した。[結果・provenance・限界](../research_c_iid_grid_stage_a_execution_20261103.md)。独立53-bit IID-gridのcategorical TV約3.42775e-15、m12条件付きraw上界約8.98564e-10。保存raw信号再生差は全13roundで最大6.02111e-15、grid対saved CARのm12信号差観測は3.90914e-12。これらを丸め包囲・native全law保証へ昇格しない。
+
+Stage AはP0一様評価から独立した数値対応の確認として完了した。Whole-P0一様bound・reference数値不確かさが未取得なのでStage B/Cへ進まない。実PCG64差を0にせず、厳密CA/actual CAは未資格。新native compile/sampling/PF-RTE生成/ground/shots評価0、元SOURCE/raw/契約/STOPを保全。次の対象範囲はユーザーが判断し、Codexは結果公開・照合後mandatory STOPする。
+
+## B2状態非依存reference上界・固定27-call実行完了
+
+実行時SOURCE commit `01baf2b5e400773e00a5ae548941265f85b9882b`、実装SOURCE `918c63cc2a959f59f2817388bf6be549b905e3e6`と固定契約を変更せず、fresh run01を一度評価した。27/27 COMPLETE、FAIL/retry/resume0、wall約3.77秒。[固定対象・全13row・結果と限界](../research_c_reference_bound_execution_20261103.md)。Linear H4・1Å/STO-3G、Nα=Nβ=2、sector36/Number CDF8/元LD2/S2/s1/r32/K0/h=.1/m0..12、own-DF oracle・準備費用除外、独立53-bit IID-grid条件を維持した。
+
+前回の状態誤差未確定に対し、保存stateの期待値を再評価せず、任意正規化状態へのoperator boundを使う固定方針を実行した。Arb384でatom→数学的CARのbridgeと数学的CAR→binary64 referenceの評価誤差を別legとして包囲した。m12の上向き表示B≤6.84027481910e-14、U≤2.53822642422e-11、合計≤2.54506669904e-11。これは保存literal入力のreference資格であり、Stage Aのbinary64 atom残差・ground期待値誤差や元G構築の誤差を取得済みとはしない。旧Stage Aのraw/null/STOPを変更しない。
+
+全law Whole-P0、categoricalのunitary trajectory前提、実PCG64、物理モデル/元積分/DF誤差、Stage C/actual CA/保証shots/総資源は未資格。新ground/native/sampling/PF誤差/shots/Stage C・重要レビュー0。次の担当はCodex（技術的なB1/B2 scope対応と残存前提整理）。追加科学実行・重要レビューは必要な固定範囲の別許可まで行わず、公開照合後mandatory STOPする。

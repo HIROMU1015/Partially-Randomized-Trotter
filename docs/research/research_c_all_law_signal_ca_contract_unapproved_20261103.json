@@ -1,0 +1,286 @@
+{
+  "scope": "C_PR_R32_ALL_LAW_SIGNAL_CA_READINESS_V1",
+  "base_commit": "2f1c86f161fb76e84dfa6b31f6912eb8a01ccb8f",
+  "status": "UNAPPROVED_DESIGN_NOT_EXECUTABLE",
+  "executable": false,
+  "entry": "scripts/prepare_research_c_all_law_signal_ca.py",
+  "candidate_sha256": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+  "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+  "records": {
+    "PR_result": "artifacts/research_c_near_practical_r32/2026-11-03/run01/result.json",
+    "PR_contract": "artifacts/research_c_near_practical_r32/2026-11-03/run01/contract.json",
+    "PR_SOURCE": "artifacts/research_c_near_practical_r32/2026-11-03/run01/SOURCE.json",
+    "PR_STOP": "artifacts/research_c_near_practical_r32/2026-11-03/run01/STOP.json",
+    "PR_law": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/law.json",
+    "PR_normalization": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/normalization.json",
+    "statistics_result": "artifacts/research_c_pr_xdf_statistics/2026-11-03/run01/result.json",
+    "statistics_STOP": "artifacts/research_c_pr_xdf_statistics/2026-11-03/run01/STOP.json",
+    "old_compiler": "artifacts/research_c_pr_aware_df_c2_bridge/2026-10-27/technical/compiler_coverage.json",
+    "old_primitives": "artifacts/research_c_pr_aware_df_c2_bridge/2026-10-27/technical/primitive_coverage.json"
+  },
+  "fresh_output": "artifacts/research_c_all_law_signal_ca/2026-11-03/run01",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "error_evidence": null,
+  "maximum_logical_units": null,
+  "accuracy_adapter_call_limits": {
+    "signal_qualification": 1,
+    "round_accuracy": 13,
+    "energy_assessment": 1,
+    "qualification_summary": 1
+  },
+  "conditions": {
+    "molecule": "linear H4",
+    "distance_A": 1.0,
+    "basis": "STO-3G",
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "controlled_dimension": 512,
+    "rank": 8,
+    "ld": 2,
+    "s": 1,
+    "r": 32,
+    "K": 0,
+    "h": "1/10",
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "oracle": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED",
+    "CA_Ha": 0.00159,
+    "DF_reserve_Ha": 0.00019875
+  },
+  "blockers": [
+    "whole-kernel P0 uniform transformation/reference coverage",
+    "current-candidate atom/angle/normalization to saved CAR reference bound",
+    "actual PCG64 joint stream versus IID-grid model and independent-shot premise"
+  ],
+  "schema": "C_ALL_LAW_SIGNAL_CA_UNAPPROVED_DESIGN_V1",
+  "technical_implementation_commit": "ff80264447158c02d1f5d2f075e06f2ee8c970a4",
+  "source_manifest": "artifacts/research_c_all_law_signal_ca/2026-11-03/technical/SOURCE.json",
+  "source_manifest_sha256": "04ce07003015734ccbe7f723f4d8634ad4111f1d6c59cd50a55cec22b2d70fa3",
+  "scientific_input_roles": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "candidate": "artifacts/research_c_near_practical/2026-11-03/run01/PR/endpoint.npz",
+    "factors": "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.npz",
+    "physical_qualification": "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.json",
+    "own_ground": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/ground_candidate.npz",
+    "PF_RTE_reference": "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/B/sector_reference.npz"
+  },
+  "saved_inputs": {
+    "artifacts/research_c_near_practical/2026-11-03/run01/PR/endpoint.npz": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+    "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.json": "b686eb6a6c60aa731c7cb74093ce0a12e2ccdcefdfe5703aeb321ab8f59acf29",
+    "artifacts/research_c_near_practical/2026-11-03/run01/physical/PR_update016.npz": "ebdebe8f2c3f156c8202834181e143298d667490b3f33fc611dc0fab97b976cd",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/ground_candidate.npz": "40fb36a7b236a527eea158e7682fe7baf15daa2c52252e96b16ff913f06deef8",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/law.json": "c347d7f2ec2ed40adb6f2490960dbebf693862cddcce96418c1027c48a68d6a5",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/A/normalization.json": "4f8c8c7910f7a52fcf791e45f6647c55c6500fe0e020725133c48c7db588d440",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/PR/B/sector_reference.npz": "9516410485c83e5f2e7b712e1bead6367f6e4eca64c79ad36d5a3aa10ae7368b",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/SOURCE.json": "103c8ba7ecda6e5da48cc0e73f267befcf104c4ad3c18c32de875289fa532739",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/STOP.json": "c94855e426074cfaa8510dec817525bef033ee657ae4919a3f0d6aa6ef80a6fc",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/contract.json": "79830424ae479a21b862178e7b50dfc2d71ef922fe46200153341245cef41b2c",
+    "artifacts/research_c_near_practical_r32/2026-11-03/run01/result.json": "10a739d50e0e42f865d0e385ce9375bfd7e8ecc703b55331aa4173ac9664c3a9",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df_c2_bridge/2026-10-27/technical/compiler_coverage.json": "f052da084d9dec43234db75873af7e1cbda118a99cc9725c10c190ab46a62c63",
+    "artifacts/research_c_pr_aware_df_c2_bridge/2026-10-27/technical/primitive_coverage.json": "f597328cad5063f655c478e39f3f155513f39407f80e18388b18c2591dae739f",
+    "artifacts/research_c_pr_xdf_statistics/2026-11-03/run01/STOP.json": "0911a4c3d9b58867124abeab7273bbd836e4d515c83c817d7c79035cf5e6b2f8",
+    "artifacts/research_c_pr_xdf_statistics/2026-11-03/run01/result.json": "9059cebc9eef5f6a483d4dbb435b8c178443bc8ce97479267a6126864598605c"
+  },
+  "packages": {
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "qiskit": "1.3.0",
+    "qiskit-nature": "0.7.2",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "pyscf": "2.7.0",
+    "threadpoolctl": "3.6.0",
+    "symengine": "0.13.0",
+    "qiskit-aer": "0.15.1"
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "saved_correctness_allowances": {
+    "component_abs": 1e-10,
+    "unitarity_abs": 1e-10,
+    "signal_abs": 2e-10,
+    "normalization": 1e-12,
+    "ground_residual": 1e-10,
+    "mass_relative": 1e-12,
+    "mass_absolute": 1e-14,
+    "algebra_absolute": 1e-12,
+    "rtol": 0,
+    "global_phase_fit": false,
+    "strict_enclosure": null
+  },
+  "sampling": {
+    "master": 2026110304,
+    "cohort": "near_practical_PR_r32_fixed32_v1",
+    "axis": "NEAR_PRACTICAL_PR_PRICE_ONLY",
+    "samples": 32,
+    "events_per_sample": 32,
+    "PRNG": "numpy.random.PCG64",
+    "paired": false,
+    "adaptive": false
+  },
+  "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1",
+  "required_coverage": {
+    "trajectory": "every length32 word of current signed-atom alphabet,including all orderings",
+    "coherent_occurrences": "every length2^m chain of freshly independently selected kernels,not one sample reused coherently",
+    "compiler": "complete final whole-kernel P0 output,all cross-event 1q runs,phase updates,translation paths,optimization iteration counts",
+    "operator": "full controlled512 input/output or separately established invariant restricted-domain proof;sector36 probes alone insufficient",
+    "shell": "forward,actual inverse where used,head,X/Y readout and declared/control relative phase"
+  },
+  "estimation_scope": {
+    "all_law_synthesis": null,
+    "implemented_law_signal": null,
+    "actual_CA_achieved": null,
+    "ideal_law_mean_cost_transfer_qualified": false,
+    "rigorous_CA": null,
+    "important_scientific_review": false,
+    "relation": "Existing ideal/assumed resources and exploratory price comparisons remain conditional;no new costs computed."
+  },
+  "error_partition": [
+    "A_m*(saved PF + corrected RTE),only in existing assess_round",
+    "synthesis:actual compiled trajectory to exact saved-atom trajectory map under the same actual stream,including native basis/angle/control/shell differences",
+    "categorical:IID grid versus ideal atom probabilities under identical exact trajectory map,raw units,no A rescaling",
+    "reference_bridge:exact saved-atom IID mean versus saved raw CAR finite-RTE reference;normalization/angle/lambda/identity mapping only",
+    "reference_uncertainty:uncertainty of bridge/reference evaluation,not already included in reference_bridge;old PF/DF numerical qualifications retained",
+    "stream_model:actual full joint stream versus assumed IID-grid stream,not proven by distinct seeds or marginal TV",
+    "DF once in assess_energy;RPE statistical error only through fixed beta/alpha/shot rule"
+  ],
+  "complexity": {
+    "catalog_atoms": 216,
+    "events_per_kernel": 32,
+    "catalog_word_upper_count": "504103876157462118901767181449118688686067677834070116931382690099920633856",
+    "maximum_round_kernel_occurrences": 4096,
+    "maximum_round_events": 131072,
+    "raw_inventory": "9 bases,4 directed head relative transitions,6 tail frames with up to36 supports/signs each,2 half-heads,scalar/identity phase and3 shells;current numerical identities require permitted replay",
+    "exhaustive": "not a proposed execution;finite-bit support may be smaller and requires analysis,not deletion by underflow assumption",
+    "numerical_family_method": "Uniform structural bounds and limited complete-column diagnostics;no all-word compile",
+    "columns_per_full_controlled_instance": 512
+  },
+  "stages": [
+    {
+      "stage": 1,
+      "name": "All-law synthesis",
+      "status": "METHOD_INCOMPLETE",
+      "scientific_task": "Establish finite raw primitive/reference bounds and a uniform final whole-P0 transformation bound;then propagate13 rounds.",
+      "reuse": [
+        "c1_h4_full_synthesis.segment/propagate",
+        "c1_subspace_synthesis_bound.ColumnStream",
+        "c1_h6_synthesis_bound.column_batch",
+        "c1_h4_strong_baseline.StrongBuilder",
+        "c1_h6_compiler_precision.compiled_wrapper"
+      ],
+      "new_computation": "Only after bounded compiler/fusion family and whole-output coverage are fixed.Independent families/columns can batch/parallelize.",
+      "logical_calls": {
+        "saved_load": 1,
+        "identity_and_inventory": "1+N_inventory",
+        "primitive_reference_and_compile": "N_ref+N_build+N_compile",
+        "complete_column_actions": "512*N_verified_instances,charged by existing column_batch independently of batching",
+        "uniform_coverage_gate": 1,
+        "synthesis_round_propagation": 13,
+        "stage_summary": 1
+      },
+      "maximum_logical_units": null,
+      "progression": "Do not enter Stage2/3 as qualified if all-word/final-P0/reference/phase/adjoint coverage is absent or only finite diagnostics."
+    },
+    {
+      "stage": 2,
+      "name": "Implemented-law signal",
+      "status": "JOINT_STREAM_AND_REFERENCE_GAP_UNRESOLVED",
+      "scientific_task": "Replay this candidate K0 table;reuse exact choice_grid/analyze_table and finite event/CAR reference bridge;bound actual joint stream difference.",
+      "reuse": [
+        "c_pr_aware_df_stage_b.prepare_arm/configure/atom_operators",
+        "c_pr_aware_df_stage_c2.analyze_table/choice_grid/tv/upper_float",
+        "c_pr_aware_df_c2_bridge.event_mean/kernel_bridge math"
+      ],
+      "required_changes": "Old replay_saved_table/heads/kernel_bridge/law_round hardcode r16/s4/h1/40;reuse generic math,prepare candidate-bound r32/s1/h.1 replay before any scientific run.",
+      "logical_calls": {
+        "candidate_table_replay": 1,
+        "choice_grid_analysis": 1,
+        "atom_reference_bridge": "N_bridge_inputs_and_evaluations,not fixed",
+        "joint_stream_bound": "METHOD_NOT_ESTABLISHED",
+        "round_law_and_reference_propagation": 13,
+        "stage_summary": 1
+      },
+      "maximum_logical_units": null,
+      "progression": "IID-only categorical TV or observed sector bridge residual does not produce actual-law evidence;missing/error terms remain null."
+    },
+    {
+      "stage": 3,
+      "name": "RPE numerical sufficient condition",
+      "status": "ADAPTER_READY_INPUTS_NOT_READY",
+      "scientific_task": "Use disjoint raw-error packet and existing qualification/assess_round/assess_energy;never promote to actual measured CA.",
+      "logical_calls": {
+        "signal_qualification": 1,
+        "round_accuracy": 13,
+        "energy_assessment": 1,
+        "qualification_summary": 1
+      },
+      "adapter_maximum_logical_units": 16,
+      "prerequisites": "Candidate/SOURCE/compiler/law identity,all13 error rows,full coverage,actual joint stream and independent-shot premises,own-DF/alias references.",
+      "progression": "First non-PASS round ends dependent rounds/energy;retain partial.Different error budget or r/h/CA is not an automatic rescue."
+    },
+    {
+      "stage": 4,
+      "name": "Separate follow-up decision",
+      "status": "OUT_OF_SCOPE",
+      "scientific_task": "If needed,design separately approved physical shot-level RPE and/or rigorously enclosed guarantees;no automatic simulation or quantum shots."
+    }
+  ],
+  "CA_levels": {
+    "A": "Existing ideal counterfactual conditional CA only.",
+    "B": "Numerical sufficient condition for declared implemented-law/raw-error and independent-shot premises;still subject to saved PF/DF/reference numerical qualifications.",
+    "C": "Needs rigorous reference,all-law,numerical rounding,randomness and RPE assumptions,not merely kind labels;not produced by current adapter.",
+    "D": "Actual_CA_achieved stays null without execution of a precisely named RPE protocol using actual quantum shots,recorded outcomes and accuracy/failure evaluation against a qualified energy reference. Classical state actions or simulated shot observations have separate labels."
+  },
+  "execution_boundary": "Current technical design cannot execute,even with an opt-in flag.Permission is explicit chat permission,not an approval record.ID/grant/approval-text storage not required.",
+  "stop_rules": [
+    "Correctness/source/input/identity mismatch:STOP and retain available partial evidence;do not relabel sampled residuals as uniform bounds.",
+    "Unknown bound remains null;loose/phase-infeasible bounds are outcomes,not permission to change CA,r,h,shots policy or compiler.",
+    "Fresh run01 only,retry/resume0;if a future executable contract is prepared it needs separately fixed call/source scope and explicit scientific permission.",
+    "Normal preparation completion:mandatory STOP;no real H4 law/synthesis/raw reanalysis,compile,sampling,RPE or important review."
+  ],
+  "resources": {
+    "artificial_CPU_RAM_GPU_worker_wall_caps": null,
+    "strategy": "First remove exponential enumeration through valid structural coverage;batch full columns with existing StateActions/ColumnStream,parallel independent verified families and13 scalar rounds only after qualification;coordinate process-local BLAS/backend threads with actual memory/quota.",
+    "noninterference": "Task-local files/cache only;shared venv,OS,global cache,other jobs and protected SOURCE/raw/contracts/grant/ledger/marker/STOP untouched."
+  }
+}

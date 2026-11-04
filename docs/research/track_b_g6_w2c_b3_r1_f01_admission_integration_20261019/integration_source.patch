@@ -1,0 +1,246 @@
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py
+index 7d4d62bd..2dc32127 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py
+@@ -16,0 +17 @@ import stat
++import sys
+@@ -23,0 +25,3 @@ BASE_SHA = 'dba9ed5b85fbb0a6599baf248a392aa8d3be30f8e816f1956a48563a49fd577c'
++F01_DRIVER_SHA = '5e6904e782526e96cc6a2dc9e94642a8237b4aa69ce8743aec24ccde5f212694'
++HOST = 'src/trottertracks/algorithm_codesign/g6_w2c_b3_host.py'
++HOST_SCHEMA = 'b3_formal_admission_v2'
+@@ -230 +234,4 @@ def validate_r1(contract, root, artificial):
+-    require(contract.get('schema') == 'b3_formal_admission_v1', 'FORMAL_CONTRACT_REQUIRED')
++    schema = contract.get('schema')
++    require(schema == HOST_SCHEMA or (artificial and schema == 'b3_formal_admission_v1'),
++            'HOST_V2_CONTRACT_REQUIRED')
++    with_host = schema == HOST_SCHEMA
+@@ -261 +268,2 @@ def validate_r1(contract, root, artificial):
+-    require(set(roles) == {'science', 'driver', 'guard', 'admission'} and
++    expected_roles = {'science', 'driver', 'guard', 'admission'} | ({'host'} if with_host else set())
++    require(set(roles) == expected_roles and
+@@ -263,0 +272,4 @@ def validate_r1(contract, root, artificial):
++    if with_host:
++        require(roles['host'] == [HOST] and contract.get('entrypoint') == {
++            'path': HOST, 'sha256': contract['source_pins'].get(HOST), 'api': 'execute_approved_v1'} and
++            HEX.fullmatch(contract['source_pins'].get(HOST) or ''), 'PINNED_HOST_REQUIRED')
+@@ -278,0 +291,3 @@ def validate_r1(contract, root, artificial):
++        loaded_host = sys.modules.get(__package__ + '.g6_w2c_b3_host')
++        require(loaded_host is not None and Path(loaded_host.__file__).resolve() == root / HOST,
++                'LOADED_HOST_ROOT_MISMATCH')
+@@ -395,2 +410,13 @@ class _Admission:
+-        self.stop('RETURNED' if kind is None else 'FAILED',
+-                  None if exc is None else {'type': kind.__name__, 'message': str(exc)})
++        try:
++            report = self.stop('RETURNED' if kind is None else 'FAILED',
++                               None if exc is None else {'type': kind.__name__, 'message': str(exc)})
++            if report['record_errors']:
++                raise Denied('MANDATORY_STOP_RECORD_FAILURE:' + repr(report['record_errors']))
++        except BaseException as stop_error:
++            if exc is None:
++                raise  # A failed STOP save cannot be reported as normal completion.
++            try:
++                exc.b3_admission_stop_failure = {'type': type(stop_error).__name__, 'reason': str(stop_error)}
++            except BaseException:
++                pass
++            # Preserve the original driver/F01 exception. The spent row is never released.
+diff --git a/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py b/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py
+index 374ade20..6af9cc1d 100644
+--- a/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py
++++ b/src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py
+@@ -191,0 +192 @@ class Stream:
++        self.file_hash_covers_written_bytes = True
+@@ -197,0 +199 @@ class Stream:
++        stage = 'SERIALIZATION'
+@@ -201,0 +204 @@ class Stream:
++                stage = 'CHAIN_HASH'
+@@ -205,0 +209 @@ class Stream:
++            stage = 'WRITE'
+@@ -210,0 +215 @@ class Stream:
++                    self.bytes += written
+@@ -211,0 +217,2 @@ class Stream:
++                        stage = 'FILE_HASH'
++                        self.file_hash_covers_written_bytes = False
+@@ -213 +220,3 @@ class Stream:
+-                    self.bytes += written;view = view[written:]
++                        self.file_hash_covers_written_bytes = True
++                    stage = 'WRITE'
++                    view = view[written:]
+@@ -216,0 +226 @@ class Stream:
++                stage = 'FLUSH'
+@@ -220 +230 @@ class Stream:
+-            self.failed = {'type': type(exc).__name__, 'reason': str(exc),
++            self.failed = {'type': type(exc).__name__, 'reason': str(exc), 'stage': stage,
+@@ -222 +232,3 @@ class Stream:
+-                           'last_complete_hash': self.previous, 'mandatory_STOP': True}
++                           'last_complete_hash': self.previous,
++                           'file_hash_covers_written_bytes': self.file_hash_covers_written_bytes,
++                           'mandatory_STOP': True}
+@@ -502,3 +514,30 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-    counts = Counter();digest = sha256();axis_summaries = [];max_rss = None
+-    with meter.span('setup.share_identity'):
+-        shared = endpoint.shared_identity()
++    # Published as one reference only after emit returns. Candidate hash/counter
++    # copies never mutate the last completed prefix on a failed attempt.
++    committed = {'counts': Counter(), 'digest': sha256(), 'last_trial': None}
++    axis_summaries = [];max_rss = None
++    current_result = current_event = pending = None
++
++    def context(cell=None, trial=None, stage='PAIR_IDENTITY'):
++        return {'axis': cell['axis'] if cell else None, 'trial_index': trial,
++                'trial_id': (f"{phase}/{pass_name}/{cell['arm']}/{cell['layer']}/{cell['axis']}/{trial}"
++                             if cell is not None and trial is not None else None),
++                'stage': stage, 'result_acquired': False, 'event_present': False,
++                'record_constructed': False, 'candidate_ready': False,
++                'stream_emit_started': False, 'stream_emit_returned': False}
++
++    def stream_prefix():
++        # Observed writes only: no reread or fsync, and a partial tail may exist.
++        try:
++            h = getattr(stream, 'file_hash', None)
++            return {'complete_rows': getattr(stream, 'rows', None),
++                    'written_bytes_including_possible_partial_tail': getattr(stream, 'bytes', None),
++                    'last_complete_chain_sha256': getattr(stream, 'previous', None),
++                    'written_bytes_sha256': (h.hexdigest() if h is not None and
++                                              getattr(stream, 'file_hash_covers_written_bytes', True) else None),
++                    'file_hash_covers_written_bytes': getattr(stream, 'file_hash_covers_written_bytes', None),
++                    'failure': getattr(stream, 'failed', None),
++                    'readback_verified': False, 'fsync_durability_verified': False}
++        except BaseException as error:
++            return {'status': 'UNAVAILABLE', 'type': type(error).__name__, 'reason': str(error)}
++
++    current = context()
+@@ -505,0 +545,2 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++        with meter.span('setup.share_identity'):
++            shared = endpoint.shared_identity()
+@@ -506,0 +548,4 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++            current_result = current_event = pending = None
++            current = context(cell, stage='AXIS_IDENTITY')
++            committed = committed | {'axis_counts': Counter(), 'axis_digest': sha256(),
++                                     'prefix_digest': sha256()}
+@@ -508,0 +554 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++            current['stage'] = 'BITS_FACTORY'
+@@ -509,0 +556 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++            current['stage'] = 'TRIAL_BUDGET'
+@@ -512 +558,0 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-            axis_counts = Counter();axis_digest = sha256();prefix_digest = sha256()
+@@ -514 +560,3 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                trial_id = f"{phase}/{pass_name}/{cell['arm']}/{cell['layer']}/{cell['axis']}/{trial}"
++                current_result = current_event = pending = None
++                current = context(cell, trial, 'SAMPLING')
++                trial_id = current['trial_id']
+@@ -516 +564,6 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                    result = endpoint.sample(bits, trial_id)
++                    current_result = result = endpoint.sample(bits, trial_id)
++                    current['result_acquired'] = True
++                    current['stage'] = 'RESULT_ACCESS'
++                    current_event = result.event
++                    current['event_present'] = current_event is not None
++                    current['stage'] = 'RESULT_VALIDATION'
+@@ -519,0 +573 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                    current['stage'] = 'EVENT_VALIDATION'
+@@ -522,0 +577 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                current['stage'] = 'RECORD_CONSTRUCTION'
+@@ -526,0 +582 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                    current['stage'] = 'ANGLE_AND_REQUERY'
+@@ -530,0 +587 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                    current['stage'] = 'EVIDENCE_CONSTRUCTION'
+@@ -534,0 +592 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                    current['record_constructed'] = True
+@@ -536,2 +594,11 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                    axis_digest.update(event_text);digest.update(event_text)
+-                    if trial < correctness_trials:prefix_digest.update(event_text)
++                    current['stage'] = 'CANDIDATE_DIGEST'
++                    pending = {'counts': committed['counts'].copy(),
++                               'digest': committed['digest'].copy(),
++                               'axis_counts': committed['axis_counts'].copy(),
++                               'axis_digest': committed['axis_digest'].copy(),
++                               'prefix_digest': committed['prefix_digest'].copy(),
++                               'last_trial': {'axis': cell['axis'], 'trial_id': trial_id,
++                                              'trial_index': trial}}
++                    pending['axis_digest'].update(event_text);pending['digest'].update(event_text)
++                    if trial < correctness_trials:pending['prefix_digest'].update(event_text)
++                    pending['counts'][result.kind] += 1;pending['axis_counts'][result.kind] += 1
+@@ -546,0 +614,4 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                    current['record_constructed'] = True
++                    current['candidate_ready'] = True
++                current['stage'] = 'STREAM_EMIT'
++                current['stream_emit_started'] = True
+@@ -548 +619,3 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                counts[result.kind] += 1;axis_counts[result.kind] += 1
++                current['stream_emit_returned'] = True
++                committed = pending  # Single publication of counts, hashes and last trial.
++                current['stage'] = 'TRIAL_COMPLETED'
+@@ -549,0 +623 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++                    current['stage'] = 'MEMORY_OBSERVATION'
+@@ -555,3 +629,5 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-            axis_summaries.append({'axis': cell['axis'], 'N_executed': n, 'counts': dict(axis_counts),
+-                                   'event_trace_sha256': axis_digest.hexdigest(),
+-                                   'first_correctness_prefix_sha256': prefix_digest.hexdigest(),
++            current_result = current_event = pending = None
++            current = context(cell, stage='AXIS_COMPLETION')
++            axis_summaries.append({'axis': cell['axis'], 'N_executed': n, 'counts': dict(committed['axis_counts']),
++                                   'event_trace_sha256': committed['axis_digest'].hexdigest(),
++                                   'first_correctness_prefix_sha256': committed['prefix_digest'].hexdigest(),
+@@ -560 +636,2 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                need(axis_counts['EVENT'] > 0, 'CORRECTNESS_ACCEPTED_PATH_NOT_OBSERVED_NO_EXTRA_TRIALS')
++                need(committed['axis_counts']['EVENT'] > 0, 'CORRECTNESS_ACCEPTED_PATH_NOT_OBSERVED_NO_EXTRA_TRIALS')
++        current = context(stage='FINAL_IDENTITY')
+@@ -563 +640 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-        return {'counts': dict(counts), 'axes': axis_summaries, 'trace_sha256': digest.hexdigest(),
++        return {'counts': dict(committed['counts']), 'axes': axis_summaries, 'trace_sha256': committed['digest'].hexdigest(),
+@@ -567,0 +645,2 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
++        completed = (current['trial_id'] is not None and committed['last_trial'] is not None and
++                     committed['last_trial']['trial_id'] == current['trial_id'])
+@@ -569,2 +648,10 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-                   'completed_prefix': dict(counts), 'completed_axes': axis_summaries,
+-                   'trace_sha256': digest.hexdigest(), 'mandatory_STOP': True,
++                   'failure_provenance_schema': 'g6_w2c_b3_f01_failure_v1',
++                   'completed_prefix': dict(committed['counts']), 'completed_axes': axis_summaries,
++                   'trace_sha256': committed['digest'].hexdigest(),
++                   'trace_scope': 'COMPLETED_TRIALS_AFTER_NORMAL_EMIT_RETURN',
++                   'last_completed_trial': committed['last_trial'],
++                   'current_attempt': current | {'trial_completed': completed},
++                   'inflight_event': current_event,
++                   'candidate_trace_sha256': (pending['digest'].hexdigest()
++                                               if current['candidate_ready'] and pending is not None else None),
++                   'stream_prefix_before_failure_record': stream_prefix(), 'mandatory_STOP': True,
+@@ -572,3 +659,7 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-        if 'result' in locals():
+-            failure['inflight_event'] = result.event
+-        if hasattr(exc, 'to_dict'):failure['frozen_failure_evidence'] = exc.to_dict()
++        if hasattr(exc, 'to_dict'):
++            try:failure['frozen_failure_evidence'] = exc.to_dict()
++            except BaseException as error:
++                failure['frozen_failure_evidence_error'] = {'type': type(error).__name__, 'reason': str(error)}
++        # Preserve the original exception and context even if saving failure fails.
++        try:exc.b3_failure_provenance = failure
++        except BaseException:pass
+@@ -576 +667,3 @@ def run_pair(endpoint, bits_factory, cells, stream, meter, *, phase, pass_name,
+-        except BaseException:pass  # Stream.failed plus the original exception remain available.
++        except BaseException as error:
++            failure['failure_record_write_error'] = {'type': type(error).__name__, 'reason': str(error)}
++            failure['stream_prefix_after_failure_record_attempt'] = stream_prefix()
+@@ -704,0 +798,5 @@ def execute(candidate, *, root, output, approval_port=None, boundary=None):
++                            provenance = getattr(exc, 'b3_failure_provenance', None)
++                            if provenance is not None:
++                                try:fail['trial_failure_provenance'] = audit.canonical(exact(provenance))
++                                except BaseException as error:
++                                    fail['trial_failure_provenance_error'] = type(error).__name__+': '+str(error)
+@@ -707 +805 @@ def execute(candidate, *, root, output, approval_port=None, boundary=None):
+-                            except OSError:pass
++                            except BaseException:pass  # Never replace the original trial failure.
+@@ -709 +807,6 @@ def execute(candidate, *, root, output, approval_port=None, boundary=None):
+-                        finally:stream.close()
++                        finally:
++                            if sys.exc_info()[0] is None:
++                                stream.close()
++                            else:
++                                try:stream.close()
++                                except BaseException:pass  # Cleanup must not hide the original cause.
+diff --git a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py
+index 8827a297..051213f7 100644
+--- a/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py
++++ b/tests/tracks/algorithm_codesign/test_g6_w2c_b3_admission.py
+@@ -28 +28 @@ def fixture(root):
+-    for name in (M.GUARD, M.ADMISSION):
++    for name in (M.DRIVER, M.GUARD, M.ADMISSION):
