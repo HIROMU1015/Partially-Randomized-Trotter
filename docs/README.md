@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled IID平均から成功確率・数学的energyへの接続SOURCE](research/rpe_controlled_iid_success_energy_preparation_20261105/NEXT_STAGE_DECISION.md)
+（2026-11-05）。旧Hoeffding adapterとG→branch→energy証明を再利用。人工148件PASS、新H4の確率評価0。
+全36軸のArb160・1 pass限定計画を準備。新Controlled成功確率は未判定、全体false/UNDETERMINED・両U null、公開照合後STOP。
+
 [Support期待転送：ideal controlled IID平均の全18round接続](research/rpe_support_weighted_transfer_execution_20261105/REPORT.md)
 （2026-11-05）。H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2、SOURCE7a39a78ecを96 bit/1 passで実行し全36軸strict。
 m17平均追加上端約7.56e-9。

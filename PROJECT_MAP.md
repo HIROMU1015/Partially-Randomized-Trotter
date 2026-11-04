@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[Controlled IID平均→RPE成功確率・数学的energy：接続SOURCE準備（2026-11-05）](docs/research/rpe_controlled_iid_success_energy_preparation_20261105/NEXT_STAGE_DECISION.md)：
+H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2。旧alpha/aggregateを無変更で再利用し、U_cat+Δ_meanから36 tail＋exact和へ接続。
+Gと保存入力の同一性により旧Dの17 strict branch・旧Cのreference込みenergy証明を再利用可能。人工148件PASS。
+新Controlled成功確率は未実行・未判定。Arb160・1 pass計画を公開し別途承認待ち、false/UNDETERMINED・両U null、公開照合後STOP。
+
 [Support期待転送：ideal controlled IID平均の全36軸十分条件（2026-11-05）](docs/research/rpe_support_weighted_transfer_execution_20261105/REPORT.md)：
 H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2、SOURCE7a39a78ec。保存218 certificateを使う96 bit/1 passで全36軸strict。
 m17平均専用追加上端約7.56e-9。新H/basis/column/mean matrix/長q build/sampling0、旧一様18/36結果は保持。
