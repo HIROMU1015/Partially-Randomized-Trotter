@@ -1,0 +1,80 @@
+{
+  "kind": "TECHNICAL_SOURCE_AND_ARTIFICIAL_TESTS_ONLY",
+  "base_commit": "d4c016960ff4b1ca16cc73770147cde326989427",
+  "interface_commit": "8722b5a461c617b8846c2754275895f152df78f3",
+  "kernel_evidence_commit": "ccbd7aa974eda1e017138066a70dc8ac35221907",
+  "new_tests": 18,
+  "reused_tests": 24,
+  "total_passed": 42,
+  "test_groups": [
+    {
+      "kind": "new callback contract fixtures",
+      "passed": 18,
+      "command": "python -m pytest -q docs/research/rpe_measurement_backend_contract_20261105/test_backend_contract.py",
+      "pytest_seconds": 0.24
+    },
+    {
+      "kind": "unchanged legacy interface",
+      "passed": 15,
+      "command": "python -m unittest -q test_measurement_adapter",
+      "cwd": "docs/research/rpe_18round_measurement_connection_20261103",
+      "unittest_seconds": 0.496
+    },
+    {
+      "kind": "unchanged signed-event/negative-sine/relative-and-scalar-phase",
+      "passed": 5,
+      "selectors": [
+        "tests/test_rte.py::test_signed_product_phase_and_rotation_angle_are_separate",
+        "tests/test_rpe_hadamard_interrogation.py::test_known_negative_sine_sign_matches_exp_minus_i_energy_time",
+        "tests/test_rpe_hadamard_interrogation.py::test_relative_phases_and_input_global_phase_are_preserved",
+        "tests/test_df_partial_s2_repeated.py::test_scalar_phase_metadata_is_applied_once_per_repetition"
+      ],
+      "pytest_seconds": 1.49
+    },
+    {
+      "kind": "unchanged support policy",
+      "passed": 2,
+      "selectors": [
+        "tests/test_research_direction_sequence_policy.py::test_run_threshold_plan_switches_whole_source_basis_run",
+        "tests/test_research_direction_sequence_policy.py::test_explicit_support_plan_preserves_controlled_sequence_and_phase"
+      ],
+      "pytest_seconds": 1.31
+    },
+    {
+      "kind": "unchanged artificial categorical law",
+      "passed": 2,
+      "command": "python -m unittest -q test_mean_enclosure.EnclosureTests.test_cdf_exact_grid_and_boundary_side_right test_mean_enclosure.EnclosureTests.test_component_renormalization_matches_source",
+      "cwd": "docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103",
+      "unittest_seconds": 0.001
+    }
+  ],
+  "runtime": {
+    "Python": "3.11.0rc1",
+    "NumPy": "1.26.4",
+    "Qiskit": "1.3.0",
+    "python_flint": "0.9.0"
+  },
+  "source_objects": 29,
+  "saved_setting_literal_join": "18_OF_18",
+  "saved_N_range": [
+    261,
+    510
+  ],
+  "H4_arrays_decoded": 0,
+  "new_H4_scientific_calls": 0,
+  "H4_success_energy_reanalysis": 0,
+  "H4_mean_support_law_reanalysis": 0,
+  "new_H4_trajectory_sampling_state_action_build_compile": 0,
+  "Float64_kernel_proof_or_runtime_inspection": 0,
+  "new_random_sampler": 0,
+  "production_backend_adopted": false,
+  "existing_source_modified": false,
+  "independent_scientific_review": false,
+  "scope": "artificial inputs, immutable SOURCE/input bytes and settings literals only; not CI/external reproduction/backend certification",
+  "RPE_tolerance_certified": false,
+  "scientific_status": "UNDETERMINED",
+  "U_virtual_IID_upper": null,
+  "U_exec_upper": null,
+  "mandatory_STOP": true,
+  "external_SOURCE_objects": 4
+}

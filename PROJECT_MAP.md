@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[H4 RPE 18round：測定interface・backend契約の技術準備（2026-11-05）](docs/research/rpe_measurement_backend_contract_20261105/NEXT_STAGE_DECISION.md)：
+既存8722b5aのload/collect/decodeを再利用し、全18設定の同一性、fresh callback、per-step run_le_1、strict int±1、cmath経路を整理。
+人工42件PASS。standard wrapperはq1/2/4、production provider/callerとFloat64全域証拠は不足。新H4科学実行0、backend未採択。
+既存条件付き95%証拠を再計算せず保持。全体false/UNDETERMINED・両U null、公開照合後mandatory STOP。
+
 [Controlled IID測定→数学的energy：条件付き95%十分保証（2026-11-05）](docs/research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md)：
 H4/1Å/STO-3G/保存legacy DF12・L_D3/δ=.02/K2、保存ray/N4 sector70。SOURCEffa1e22b3、Arb160・1 pass、36 tail＋1 exact集約。
 失敗上界≤.0496929886343339467、成功下界≥.950307011365666053。G→旧Dのbranch/alias→旧Cの保存DF energy上端を再利用。

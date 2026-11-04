@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[18round測定interfaceとbackendの接続契約](research/rpe_measurement_backend_contract_20261105/NEXT_STAGE_DECISION.md)
+（2026-11-05）。既存interface・callback・uniform53・integer sum/cmath経路・backend候補の不足を確定、人工42件PASS。
+新H4科学実行0、production backend未採択、Float64 STOP・既存条件付き結果・全体false/UNDETERMINED・両U nullを保持し公開照合後STOP。
+
 [Controlled IID測定と数学的energy：条件付き95%の限定実行結果](research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md)
 （2026-11-05）。H4/1Å/STO-3G/保存DF12・L_D3/δ=.02/K2、SOURCEffa1e22b3、Arb160・36軸＋1 exact集約。
 成功下界≥.950307011365666053。既存G→branch/alias→reference込み保存DF energy証拠を再利用。全体false/UNDETERMINED・両U null、STOP。
