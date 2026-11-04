@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[Support上界の保守性：構造改善・IID平均転送の準備（2026-11-05）](docs/research/rpe_support_bound_sharpness_20261105/SUPPORT_BOUND_ANALYSIS.md)：
+subspace parity上界、singleton word DP、neighbor依存policyを含む期待telescopingを導出し人工173件PASS。
+採用候補は保存218 certificate＋保存lawだけの6r/18round/36軸限定平均転送。新H4数値評価0・旧18/36判定保持。
+専用SOURCEを公開し別途科学承認待ち、全体UNDETERMINED/false・両U null、公開照合後mandatory STOP。
+
 [Controlled Hadamard全18round接続：追加上界取得・18軸未判定（2026-11-05）](docs/research/rpe_controlled_connection_certificate_execution_20261105/REPORT.md)：
 SOURCE5605ea6fd、96 bit/1 pass。229 Gaussian basis・218成分・141 control constructor、全18追加上界を取得。
 m0..5,7..9の18軸strict、m6,10..17の18軸UNDETERMINED。support一様上界が残余予算に収まらず全18認定せず。

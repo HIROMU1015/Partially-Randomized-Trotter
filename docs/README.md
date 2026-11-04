@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Support上界の保守性と改善候補](research/rpe_support_bound_sharpness_20261105/SUPPORT_BOUND_ANALYSIS.md)
+（2026-11-05）。projector/word/期待転送を条件付きで導出、人工173件PASS。実装平均のevent積分解は使わない。
+新H4評価0。旧certificateを再利用する限定平均転送SOURCEを公開、旧判定・両U nullを保持してSTOP。
+
 [Controlled Hadamard全18round：追加上界取得・全体未判定](research/rpe_controlled_connection_certificate_execution_20261105/REPORT.md)
 （2026-11-05）。固定SOURCE5605ea6fdを96 bit/1 passで実行。229 basis・218 componentの全18転送上界を取得。
 18/36軸だけstrict、m6とm10..17は未判定。sampling/長q build/compile0、追加実行なし、全体UNDETERMINED/false・両U null、STOP。
