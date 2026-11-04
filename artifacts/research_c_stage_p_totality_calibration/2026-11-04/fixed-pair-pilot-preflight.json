@@ -1,0 +1,48 @@
+{
+  "SOURCE_commit": "ce3185513578a8329efe364c748b5ce2aacdda45",
+  "SOURCE_tree": "ba132cca7ea72019583baa5ebbe1be656fc08a4f",
+  "contract": "C_FIXED_P_NATIVE_PAIR_BATCH_PILOT_V1",
+  "contract_sha256": "e1a9ab73dcb5f6ffa4815ea6ed21bea98c5d413cea4fe7c478969203e838cfd4",
+  "preflight": {
+    "status": "PASSIVE_FIXED_PAIR_READY_FOR_PERMISSION",
+    "scientific_calls": 0,
+    "arrays_decoded": 0,
+    "maximum_logical_units": 7,
+    "calibration_ready": false,
+    "Stage_C_ready": false
+  },
+  "runtime": {
+    "basic_model": "finite binary64 bit values;process FE_TONEAREST observed",
+    "FMA_build_policy": "UNRESOLVED;not needed for captured-pair residual",
+    "gradual_underflow": "probe only,not a universal libm accuracy proof",
+    "Rust_atan2_arg_accuracy": null,
+    "Rust_trig_accuracy": null,
+    "Rust_remainder_accuracy": null,
+    "recorded_output_evaluated_by": "FLINT3.3.1 validated ball arithmetic",
+    "arbitrary_Rust_reexecution_covered": false
+  },
+  "resource_plan": {
+    "workers": 32,
+    "CPU_affinity": 32,
+    "cgroup_CPU_quota": null,
+    "available_RAM_bytes": 55955587072,
+    "estimated_RAM_per_worker_bytes": 538968064,
+    "method": "independent full-basis columns;process-local gate cache;FLINT block matmul;recenter after each gate",
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "wall_cap": null
+  },
+  "loadavg": [
+    1.6484375,
+    1.37451171875,
+    1.7314453125
+  ],
+  "disk_free_bytes": 40994312192,
+  "source_files": 172,
+  "saved_inputs": 74,
+  "maximum_logical_units": 7,
+  "shared_environment_modified": false,
+  "worker_BLAS_OMP_threads": 1,
+  "reason": "32 independent Arb batches;single-thread numerical libraries per process avoid oversubscription",
+  "scientific_calls": 0
+}

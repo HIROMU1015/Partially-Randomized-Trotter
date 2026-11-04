@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：保存native pair・7-call実行完了（2026-11-05）
+
+[Arb192/full512・新旧包囲・実測費用・限界](../../docs/research/research_c_fixed_pair_batch_pilot_execution_20261105.md)。SOURCE ce3185513無変更、固定2組・7/7 COMPLETE、FAIL/retry/resume0。C→R上界約1.585733058571e-11・1173.09秒、compiled inverse上界約5.542118759907e-15・1.73秒。前者は旧単発wallより遅く、後者は共通11,386 gate削減が有効。総wall約19.6分。Sampling/build/compile/校正/Stage C 0、全law/CA未資格、旧原本保全、mandatory STOP。
+
 ## 研究C：Stage P／compiler適用性・校正実行可能性の技術準備（2026-11-04）
 
 [統合・Arb全基底高速化・失敗scope・未承認契約](../../docs/research/research_c_stage_p_totality_calibration_feasibility_20261104.md)。`c_arb_column_batch`／`c_totality_calibration`／`c_batch_pair_pilot`、passive entry `scripts/prepare_research_c_totality_calibration.py`、人工テスト `tests/management/test_research_c_totality_calibration.py`、証拠 `artifacts/research_c_stage_p_totality_calibration/2026-11-04/technical/`。固定1-wordと全word資格を区別し、期待bias校正はNOT_READY。保存native pair高速化の7-call案のみ実行経路固定・未承認、今回の新実H4科学0、mandatory STOP。
