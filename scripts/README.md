@@ -2,7 +2,9 @@
 
 文書隣接の[`run_limited_validation.py`](../docs/research/rpe_branch_energy_preparation_20261104/run_limited_validation.py)は
 defaultでbyte・literal照合のみ。`--run`は公開SOURCEへの別途許可後の限定科学再解析。
-現状は人工検証のみ、実H4新評価0。[証明・計画・限界](../docs/research/rpe_branch_energy_preparation_20261104/REPORT.md)。
+[準備時点の証明・計画・限界](../docs/research/rpe_branch_energy_preparation_20261104/REPORT.md)。
+[限定実行結果](../docs/research/rpe_branch_energy_execution_20261104/REPORT.md)：SOURCE6942e5176、160 bit・1 passで終了。
+幾何・理想branch・literal energy成立、exact Σα>.05で総合UNKNOWN/STOP。再実行せずmandatory STOP。
 
 ## 2026-10-26 H2 純RTE追加検証
 

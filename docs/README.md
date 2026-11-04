@@ -1,5 +1,10 @@
 # 文書の現在の入口
 
+[RPE D：branch・energy限定検証結果（2026-11-04）](research/rpe_branch_energy_execution_20261104/REPORT.md)：
+H4/1Å/STO-3G/保存legacy DF12/L_D3/δ=.02、160 bit・1 pass、旧36軸再利用。
+全phase・理想branch・literal energy条件成立、exact Σα>.05で総合UNKNOWN/STOP。
+Float64/reference・実測定未保証、global false/UNDETERMINED・元bridge null保持。
+
 [RPE D：全18roundのbranch・energy接続準備（2026-11-04）](research/rpe_branch_energy_preparation_20261104/REPORT.md)：
 共通E_refへの幾何・strict branch・alias/lift・exact α和・reference/Float64条件。
 人工24＋既存V2人工10件PASS、実H4新評価0。次の限定科学SOURCE未実行、global false/UNDETERMINED・元bridge nullでSTOP。

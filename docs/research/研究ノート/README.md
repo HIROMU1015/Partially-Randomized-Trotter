@@ -1,3 +1,9 @@
+## 2026-11-04 RPE D：理想branch・literal energy成立、保存α基準は未確認
+
+[当日記録](2026-11-04_rpe_branch_energy_connection.md)。SOURCE6942e5176、H4/1Å/STO-3G/legacy DF12/L_D3/δ=.02。
+160-bit・1 pass、旧36軸再利用。幾何・理想branch・alias/energy条件成立、exact Σα>.05により総合UNKNOWN/STOP。
+Float64/reference・実測定は未保証、global false/UNDETERMINED・元bridge U=null保持。
+
 ## 2026-11-04 RPE Partial18round：ideal categorical局所条件
 
 [当日記録](2026-11-04_rpe_18round_ideal_categorical.md)。SOURCEf4905fff5923、H4/1Å/STO-3G/legacy DF12/L_D3/δ=.02。

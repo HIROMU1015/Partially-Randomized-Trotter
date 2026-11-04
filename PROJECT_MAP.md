@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE D：branch・energy限定検証結果（2026-11-04）](docs/research/rpe_branch_energy_execution_20261104/REPORT.md)：
+H4/1Å/STO-3G/保存legacy DF12/L_D3/δ=.02/保存state ray・sector70、旧36軸再利用、160 bit・1 pass。
+幾何・理想branch・literal energy条件成立、exact Σα>.05で総合UNKNOWN/STOP。Float64/reference・実測定未保証、global false・元bridge null保持。
+
 [RPE全18round：ideal categoricalの局所十分条件が全36軸成立（2026-11-04）](docs/research/rpe_18round_ideal_enclosure_execution_20261104/REPORT.md)：
 H4/1Å/STO-3G/保存legacy DF12/L_D3/δ=.02、m0..16を96 bit・1 pass、m17旧結果を再利用。
 17新セル・5新law、全36軸strict条件を確認。branch/energy・実測定の保証は未完了、global false/UNDETERMINED・元bridge U=nullを維持しSTOP。

@@ -579,8 +579,10 @@ PM-1の[contract module](../trottertracks/resource_applicability/pm1_discard_con
 
 保存中心から全round branch・energyへの接続用の純関数は、科学moduleの自動起動を避けて
 [`文書隣接adapter`](../../docs/research/rpe_branch_energy_preparation_20261104/adapter.py)へ置く。
-既存decoder・外向き和・Arb helperを再利用。人工検証のみ、実H4新評価なし。
-[証明条件・次の限定SOURCE](../../docs/research/rpe_branch_energy_preparation_20261104/REPORT.md)。
+既存decoder・外向き和・Arb helperを再利用。
+[準備時点の証明条件](../../docs/research/rpe_branch_energy_preparation_20261104/REPORT.md)、
+[固定SOURCE限定実行結果](../../docs/research/rpe_branch_energy_execution_20261104/REPORT.md)。
+160-bitで幾何・理想branch・literal energy条件成立、exact Σα>.05で総合UNKNOWN/STOP。元decoder/sourceは無変更。
 
 - `rpe_hadamard_interrogation.py`：X/Y Hadamard interrogation回路
 - `df_rpe_resource.py`、`rpe_resource_accounting.py`：誤差・shot・1 shot costの資源集計

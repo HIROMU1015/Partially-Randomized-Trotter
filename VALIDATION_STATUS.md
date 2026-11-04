@@ -1,3 +1,13 @@
+## 2026-11-04 RPE D：幾何・理想branch・literal energy成立、保存α基準は未確認
+
+[報告・原RESULT・全round表示](docs/research/rpe_branch_energy_execution_20261104/REPORT.md)。
+SOURCE6942e5176d2dec115ac3c271e48f84377abda915、linear H4/1Å/STO-3G/保存legacy DF12/保存state ray/sector70、
+Partial L_D3/単一δ=.02、m0..17の保存q/r/K/N/α/β/ε・E_ref、160 bit・1 pass。
+旧36軸包含を再利用し、全18phase条件・全17理想branch条件・alias/lift・literal energy目標を確認。
+exact Σα=0.050000000000000004626684>.05、成功下界0.949999999999999995373316、総合UNKNOWN/STOPを保持。
+実装Float64一様誤差・η_ref・実測定bridgeは未保証。retry/精度追加/条件変更/新mean/sampling/compile/cost0。
+LOCAL固定SOURCEの結果であり、global false/UNDETERMINED・元bridge null。公開照合後mandatory STOP。
+
 ## 2026-11-04 RPE Partial18round：ideal categoricalの全36軸局所条件が成立
 
 [報告・SOURCE・原結果・全18roundのU_cat](docs/research/rpe_18round_ideal_enclosure_execution_20261104/REPORT.md)。
