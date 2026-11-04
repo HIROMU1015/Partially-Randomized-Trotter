@@ -52,6 +52,12 @@ raw・大きなCSV・QPY/NPZ・運用記録等の不足pathを、未収録の研
 元の公開snapshot、既存のサーバー保全記録・保存先を維持する。
 非公開原本・SOURCE withheldの範囲を拡張して公開する作業は含まない。
 
+大型metadata CSVの個別の所在は、[原データ所在表](main_collection_20261103_raw_locations.tsv)にも登録した。
+[LOCAL/INVENTORY.csvの固定公開snapshot](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/17aacf67ee854657652ade8035c5fdfad1eb077a/docs/research/pr_cross_host_coverage_audit_20261102/inventory/LOCAL/INVENTORY.csv)は87,368,032 bytes、
+blob `a092fff8805684a61d550aca2028c5d281490314`、mode `100644`である。
+これは当時のcoverage棚卸しmetadataであり、現在の全研究結果を確定する台帳には読み替えない。
+CSV本体をmainへ複製せず、元snapshotとその履歴保持先を維持する。
+
 ## 確認範囲と次の処理
 
 53項目の出典path/blob/modeと配置先bytesを照合した。
