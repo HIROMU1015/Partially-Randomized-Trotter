@@ -1,0 +1,32 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+____________ test_real_passive_contract_cold_no_numeric_imports[H] _____________
+tests/management/test_research_c_head_bridge_stage_p.py:174: in test_real_passive_contract_cold_no_numeric_imports
+    subprocess.run([sys.executable,'-B','-c',code,stage],cwd=Path(__file__).resolve().parents[2],check=True)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self, name, *args):\n  if name.split('.')[0] in ('numpy','scipy','flint','qiskit','ffsim','pyscf','openfermion'):\n   raise AssertionError('NO_MOLECULAR_IMPORT:'+name)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_head_stage_p_execution as m\nr=m.preflight(Path.cwd(),m.CONTRACTS[sys.argv[1]])\nassert r['scientific_calls']==r['arrays_decoded']==0\nassert r['head_bridge_upper_exact'] is None and r['per_word_upper_exact'] is None\n", 'H']' returned non-zero exit status 1.
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-iid-integration-fixed-B/src/trottertracks/c_head_stage_p_execution.py", line 93, in preflight
+    if (root/c['fresh_output']).exists():raise ValueError('FRESH_NO_RETRY_RESUME')
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: FRESH_NO_RETRY_RESUME
+____________ test_real_passive_contract_cold_no_numeric_imports[P] _____________
+tests/management/test_research_c_head_bridge_stage_p.py:174: in test_real_passive_contract_cold_no_numeric_imports
+    subprocess.run([sys.executable,'-B','-c',code,stage],cwd=Path(__file__).resolve().parents[2],check=True)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self, name, *args):\n  if name.split('.')[0] in ('numpy','scipy','flint','qiskit','ffsim','pyscf','openfermion'):\n   raise AssertionError('NO_MOLECULAR_IMPORT:'+name)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_head_stage_p_execution as m\nr=m.preflight(Path.cwd(),m.CONTRACTS[sys.argv[1]])\nassert r['scientific_calls']==r['arrays_decoded']==0\nassert r['head_bridge_upper_exact'] is None and r['per_word_upper_exact'] is None\n", 'P']' returned non-zero exit status 1.
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-iid-integration-fixed-B/src/trottertracks/c_head_stage_p_execution.py", line 93, in preflight
+    if (root/c['fresh_output']).exists():raise ValueError('FRESH_NO_RETRY_RESUME')
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: FRESH_NO_RETRY_RESUME
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_head_bridge_stage_p.py::test_real_passive_contract_cold_no_numeric_imports[H]
+FAILED tests/management/test_research_c_head_bridge_stage_p.py::test_real_passive_contract_cold_no_numeric_imports[P]
+2 failed in 1.28s

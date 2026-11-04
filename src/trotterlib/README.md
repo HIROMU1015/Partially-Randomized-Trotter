@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Stage P／Compiler／Fresh IID-grid技術統合（2026-11-04識別子）
+
+[接続仕様・人工検証・未採択条件](../../docs/research/research_c_iid_calibration_integration_20261104.md)。B固定commitを起点にAの未収録差分を追加。`c_iid_calibration_integration.py` とpassive専用 `prepare_research_c_iid_calibration_integration.py` が、fresh標本→P0状態→batch C/R・literal R/D→既存統計の接続を検査する。全word成功・科学READYはfalse、7-call pilot未実行、mandatory STOP。
+
 ## 研究C：Fresh IID-grid校正基盤（2026-11-04）
 
 [技術実装・人工検証・未承認契約](../../docs/research/research_c_fresh_iid_calibration_infrastructure_20261104.md)。`c_fresh_iid_calibration.py`、passive入口`prepare_research_c_fresh_iid_calibration.py`。53-bit入力・K0 order/atom消費・SOURCE/wordを記録し、失敗/未完了wordを保持。Tail/variance/direct統計へ条件付き接続し、不足はNOT_READY。方法/N/δ/failure policyは未採択、新実H4科学0、mandatory STOP。

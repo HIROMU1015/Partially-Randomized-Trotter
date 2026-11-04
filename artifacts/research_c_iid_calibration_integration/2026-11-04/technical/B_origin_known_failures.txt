@@ -1,0 +1,30 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__________ test_real_contract_passive_cold_without_numerical_imports ___________
+tests/management/test_research_c_per_word_population_range.py:378: in test_real_contract_passive_cold_without_numerical_imports
+    subprocess.run([sys.executable,'-B','-c',code],check=True)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self,fullname,*args):\n  if fullname.split('.')[0] in ('numpy','scipy','qiskit','flint','ffsim','pyscf','openfermion'):\n   raise AssertionError('NO_SCIENTIFIC_IMPORT:'+fullname)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_per_word_range_execution as m\nr=m.preflight(Path.cwd(),m.method.CONTRACT)\nassert r['scientific_calls']==r['arrays_decoded']==0 and r['Stage_C_ready'] is False\nassert r['Stage_R_maximum_logical_units']==256\n"]' returned non-zero exit status 1.
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-iid-integration-fixed-B/src/trottertracks/c_per_word_range_execution.py", line 43, in preflight
+    if (root/output).exists():raise ValueError('FRESH_NO_RETRY_RESUME')
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: FRESH_NO_RETRY_RESUME
+__________________ test_passive_current_contract_drift[none] ___________________
+tests/management/test_research_c_iid_grid_bridge.py:236: in test_passive_current_contract_drift
+    if fault=='none':assert m.preflight(ROOT,cp)[1]['scientific_calls']==0
+                            ^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_iid_grid_bridge.py:235: in preflight
+    old,_=previous.preflight(root,root/previous.CONTRACT)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_all_law_signal_ca.py:202: in preflight
+    if not p.is_relative_to(root) or io.sha(p)!=digest:raise ValueError('SOURCE_INPUT:'+name)
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ValueError: SOURCE_INPUT:src/trottertracks/c_pr_integrated_performance.py
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_per_word_population_range.py::test_real_contract_passive_cold_without_numerical_imports
+FAILED tests/management/test_research_c_iid_grid_bridge.py::test_passive_current_contract_drift[none]
+2 failed in 1.00s

@@ -1,0 +1,18 @@
+............................................................F........... [ 75%]
+........................                                                 [100%]
+=================================== FAILURES ===================================
+______________ test_real_contract_passive_cold_no_numeric_imports ______________
+tests/management/test_research_c_stage_p_completion.py:188: in test_real_contract_passive_cold_no_numeric_imports
+    subprocess.run([sys.executable,'-B','-c',code],cwd=Path(__file__).resolve().parents[2],check=True)
+/home/abe/.pyenv/versions/3.11.1/lib/python3.11/subprocess.py:571: in run
+    raise CalledProcessError(retcode, process.args,
+E   subprocess.CalledProcessError: Command '['/tmp/prt-c-pr-aware-df-zsxx-enclosure-preparation-20261027/.venv/bin/python', '-B', '-c', "\nimport sys\nfrom pathlib import Path\nclass Block:\n def find_spec(self,name,*args):\n  if name.split('.')[0] in ('numpy','scipy','flint','qiskit','ffsim','pyscf','openfermion'):\n   raise AssertionError('NO_SCIENTIFIC_IMPORT:'+name)\nsys.meta_path.insert(0,Block())\nfrom trottertracks import c_stage_p_completion as m\nr=m.preflight(Path.cwd(),m.CONTRACT)\nassert r['scientific_calls']==r['arrays_decoded']==0 and r['maximum_logical_units']==15\n"]' returned non-zero exit status 1.
+----------------------------- Captured stderr call -----------------------------
+Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+  File "/tmp/prt-c-iid-calibration-integration-20261104/src/trottertracks/c_stage_p_completion.py", line 97, in preflight
+    raise ValueError('FRESH_NO_RETRY_RESUME')
+ValueError: FRESH_NO_RETRY_RESUME
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_stage_p_completion.py::test_real_contract_passive_cold_no_numeric_imports
+1 failed, 95 passed, 2 deselected in 143.72s (0:02:23)

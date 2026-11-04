@@ -1,0 +1,67 @@
+{
+  "A_commit": "ce3185513578a8329efe364c748b5ce2aacdda45",
+  "N": null,
+  "base_commit": "9098de49f1bd816dbaf810eb63815c841169236d",
+  "comparisons": {
+    "C_to_D": {
+      "cap2": false,
+      "implementation": "same-raw disjoint triangle legs"
+    },
+    "C_to_R": {
+      "cap2": true,
+      "implementation": "c_arb_column_batch.compare",
+      "unitary_common_factors": true
+    },
+    "R_to_D": {
+      "cap2": false,
+      "implementation": "c_per_word_population_range.compare_literal",
+      "unitary_common_factors": false
+    }
+  },
+  "data_flow": [
+    "fresh.validate_sample",
+    "bind_operator/raw and compiled parent identity",
+    "unchanged P0 compile_once in authorized caller",
+    "batch C/R and unchanged literal R/D",
+    "persist outcome/partial evidence;STOP on failure",
+    "check_certificate",
+    "fresh.calibration_payload",
+    "fresh.evaluate_calibration"
+  ],
+  "delta_cal": null,
+  "delta_compile": null,
+  "executable": false,
+  "failure_policy": null,
+  "mandatory_stop": true,
+  "maximum_logical_units": null,
+  "method": null,
+  "new_scientific_execution_permitted": false,
+  "readonly_contracts": {
+    "docs/research/research_c_fixed_pair_batch_pilot_contract_unapproved_20261104.json": "e1a9ab73dcb5f6ffa4815ea6ed21bea98c5d413cea4fe7c478969203e838cfd4",
+    "docs/research/research_c_fresh_iid_calibration_contract_unapproved_20261104.json": "eefd4165019f06f9eb994badbdcd323ea423bf1554754cc4506abaf81050f58f",
+    "docs/research/research_c_p0_compiler_totality_contract_unapproved_20261104.json": "e59406ba14f0ba649cf976ef393e68efdefe2c17bb1b57c350c3aeab6ef8e915",
+    "docs/research/research_c_stage_p_totality_calibration_contract_unapproved_20261104.json": "2a9308826e8efbbfbcae715d5736a281703f016c6f53d43680f3de1c2c213db8"
+  },
+  "resume": 0,
+  "retry": 0,
+  "runner_limitations": [
+    "callback adapter only;no real-H4 runner",
+    "direct round rigorous state/shell evaluator remains caller-supplied and unqualified",
+    "fixed-N continuation and failure-aware estimator not implemented",
+    "7-call pilot is readonly/passive only"
+  ],
+  "scientific_choices_unadopted": [
+    "all-word P0 termination/success",
+    "PCG64 joint IID qualification",
+    "all-word synthesis bound",
+    "failure/abort and unknown/nontermination treatment",
+    "tail/variance/direct selection",
+    "N and delta_cal/delta_compile",
+    "operational RPE abort accounting",
+    "actual CA"
+  ],
+  "scope": "C_IID_CALIBRATION_TECHNICAL_INTEGRATION_V1",
+  "source_manifest": "artifacts/research_c_iid_calibration_integration/2026-11-04/technical/SOURCE.json",
+  "source_manifest_sha256": "a0cf9e6bebd27c8657aa2d8c4b8e5631957d1afd596159e2510034fbbc4707ff",
+  "status": "UNAPPROVED_NONEXECUTABLE_CONNECTION_SPECIFICATION"
+}
