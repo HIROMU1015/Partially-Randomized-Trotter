@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-04：Head target間のsector36 bridge取得
+
+保存H4・直鎖1.00 Å/STO-3G、number CDF8・Nα=Nβ2/sector36、元順LD2・partial S2/s1/r32/K0・h=δ=.1/m0..12、own-DF ground oracle/状態準備除外。固定SOURCEf658f72d5を無変更で一度実行し26/26 COMPLETE、FAIL/retry/resume0。Exact sector不変性・candidate/共通位相を確認し、Arb384でhead kernel差上界約3.059775044622e-16、m12 head transport上界約1.253283858278e-12を取得した。B2既存二項との一回ずつの接続はm12で約2.670395084860e-11。正本はexact rational endpoint。Sector36のreference接続で、Stage P・全law synthesis・校正・actual CAは未資格。旧SOURCE/raw/STOPを保全しmandatory STOP。 [固定実行報告](docs/research/research_c_head_bridge_execution_20261104.md)。以下は各時点の証拠として保持する。
+
 ## 2026-11-04：Stage Rのliteral norm/range取得とB2 head未一致
 
 固定H4・直鎖1.00 Å/STO-3G、Nα=Nβ2、number CDF8・sector36/full256/controlled512、元順LD2・partial ordered S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground oracle/状態準備除外。固定SOURCE60cdba8feを一度実行し256/256 COMPLETE、correctness FAIL/retry/resume0。正q-support216 atomからなる全length32 wordのliteral norm上界a−1≈1.761834625567096e-16、条件付きrange M=1+a>2、m12 norm上界−1≈7.216474626325427e-13を取得した。Exact rational/dyadic endpointを保存しclipしない。保存B2 headとのbit一致は0/3で追加bridgeが必要。All-q compiler domain・per-word synthesis・期待bias校正・Stage C/actual CAは未資格。旧SOURCE/raw/契約/STOPを保全しmandatory STOP。 [固定実行報告と範囲](docs/research/research_c_population_range_schema_execution_20261104.md)。以下は各時点の証拠として保持する。

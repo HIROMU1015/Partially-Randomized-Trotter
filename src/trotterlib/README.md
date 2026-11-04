@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Head bridge・26-call実行完了（2026-11-04）
+
+[Sector36 Head上界・B2三項接続・残件](../../docs/research/research_c_head_bridge_execution_20261104.md)。SOURCEf658f72d5無変更、26/26 COMPLETE・FAIL/retry/resume0。Kernel head差上界約3.05978e-16、m12約1.25328e-12、B2接続合計約2.67040e-11。全law/native/校正/CA未資格、P41-call未実行、旧原本保全、mandatory STOP。
+
 ## 研究C：Head bridge／Stage Pの技術準備（2026-11-04）
 
 [Head経路・二leg・full512/inverse/shell・未承認契約](../../docs/research/research_c_head_bridge_stage_p_readiness_20261104.md)。`c_head_reference_bridge.py` / `c_stage_p_literal.py` / `c_head_stage_p_execution.py`、`prepare_research_c_head_bridge_stage_p.py`。人工43／関連355 PASS。H26-call、P41-callは独立した未承認契約、passive科学0。実H4の両boundはnull、旧SOURCE/raw/STOP保全、mandatory STOP。
