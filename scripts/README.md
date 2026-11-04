@@ -1,5 +1,10 @@
 # scripts 索引
 
+## 研究C：Direct round rigorous信号・人工準備（2026-11-05）
+
+[技術報告・未承認契約・人工benchmark](../docs/research/research_c_direct_round_rigorous_signal_readiness_20261105.md)。新規 `src/trottertracks/c_direct_round_signal.py` と人工fixture、`scripts/prepare_research_c_direct_round_signal.py`（passive専用）、`scripts/benchmark_research_c_direct_round_signal.py`（人工専用）、`tests/management/test_research_c_direct_round_signal.py`、`artifacts/research_c_direct_round_signal/2026-11-05/`。Arb192の指定状態・全round X/Y区間。Full512 operator資格とは別。実H4科学0、SCIENCE_NOT_READY、mandatory STOP。
+
+
 ## 研究C：Stage P／Compiler／Fresh IID-grid技術統合（2026-11-04識別子）
 
 [接続仕様・人工検証・未採択条件](../docs/research/research_c_iid_calibration_integration_20261104.md)。B固定commitを起点にAの未収録差分を追加。`c_iid_calibration_integration.py` とpassive専用 `prepare_research_c_iid_calibration_integration.py` が、fresh標本→P0状態→batch C/R・literal R/D→既存統計の接続を検査する。全word成功・科学READYはfalse、7-call pilot未実行、mandatory STOP。

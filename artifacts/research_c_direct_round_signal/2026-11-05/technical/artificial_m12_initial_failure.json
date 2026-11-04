@@ -1,0 +1,18 @@
+{
+  "kind": "ARTIFICIAL_ONLY",
+  "status": "OUTPUT_SERIALIZATION_FAILED",
+  "m": 12,
+  "system_dimension": 2,
+  "controlled_dimension": 4,
+  "exception": {
+    "type": "ValueError",
+    "message": "Exceeds the limit (4300) for integer string conversion; use sys.set_int_max_str_digits() to increase the limit"
+  },
+  "failure_location": "observable_z -> interval -> str(Fraction), after occurrence propagation and before a complete X/Y result",
+  "completed_occurrences_inferred_from_failure_location": 4096,
+  "partial_enclosures_persisted": false,
+  "cause": "exact rational norm-bound powers inflate denominator; numeric partial state existed only in failed process",
+  "remedy": "outward dyadic radius re-enclosure at Arb192 after each literal occurrence; no interpreter-wide digit-limit change",
+  "scientific_calls": 0,
+  "mandatory_stop": true
+}

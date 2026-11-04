@@ -1,0 +1,61 @@
+{
+  "kind": "ARTIFICIAL_ONLY",
+  "measurements": 24,
+  "repetitions": 3,
+  "results": [
+    {
+      "qubits": 3,
+      "m": 0,
+      "median_wall_seconds": {
+        "direct": 0.009024146012961864,
+        "operator": 0.004106680862605572
+      },
+      "observed_operator_over_direct_wall_ratio": 0.4550769520691405
+    },
+    {
+      "qubits": 5,
+      "m": 0,
+      "median_wall_seconds": {
+        "direct": 0.016028673388063908,
+        "operator": 0.06546173617243767
+      },
+      "observed_operator_over_direct_wall_ratio": 4.084039557583421
+    },
+    {
+      "qubits": 5,
+      "m": 2,
+      "median_wall_seconds": {
+        "direct": 0.14391130581498146,
+        "operator": 0.2645088052377105
+      },
+      "observed_operator_over_direct_wall_ratio": 1.8379987850139747
+    },
+    {
+      "qubits": 6,
+      "m": 2,
+      "median_wall_seconds": {
+        "direct": 0.09443576727062464,
+        "operator": 1.1821093410253525
+      },
+      "observed_operator_over_direct_wall_ratio": 12.517601912819547
+    }
+  ],
+  "resource_plan": {
+    "workers": 32,
+    "CPU_affinity": 32,
+    "cgroup_CPU_quota": null,
+    "available_RAM_bytes": 55539109888,
+    "estimated_RAM_per_worker_bytes": 537133056,
+    "method": "independent full-basis columns;process-local gate cache;FLINT block matmul;recenter after each gate",
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "wall_cap": null
+  },
+  "workers_used": 24,
+  "whole_batch_wall_seconds": 1.9638335714116693,
+  "comparison": "same invented native/literal pair;direct includes shells and state inverse witnesses;operator certifies all columns without shell/inverse costs",
+  "parallelism": "independent isolated cases;each tiny operator uses serial columns to avoid nested oversubscription",
+  "runtime_imports_warmed_for_both_methods": true,
+  "scientific_calls": 0,
+  "real_H4_speedup_claimed": false
+}
