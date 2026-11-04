@@ -62,3 +62,6 @@ PRの6件では、`to_dict()`中のtupleが保存JSONからlistとして復元�
 残る2件はm5 prefix8・q1とS2 prefix8・q32の代表で、いずれもHOLDを保全して自動再試行していない。計算workerは終了しており、現在は計算待ちではない。補正実装・同じ標本での必要な再検証は、上記修正案への追加許可待ち。Stage B全体の価格集計・順位は未確定で、Stage Cは未実行。
 
 追加修正として、[位相会計](../../../scripts/h8_compiler_phase_bookkeeping.py)と[残る2代表の再検証・集計入口](../../../scripts/repair_h8_compiler_phase.py)を実装した。元の科学SOURCE・入力はそのまま、実際の局所gate operatorに基づくglobal phaseだけを補正する。人工operator検査、人工3qubit回路から元の7検査を通す検査、補助SOURCEの集計来歴を含む34テストPASS。補助SOURCE公開後に、同じ元標本2件だけを並列実行する。49件の完了結果、元HOLD、元raw/QPYを保全し、Stage Cは実行しない。
+
+補助SOURCE `f04ef60c960fd2a68bcf0506f4c505f0bc872b78`を公開・照合し、17:45頃から元の2代表をtmux内の2 workerで並列再検証している。
+ユーザーの中間集計依頼により、[17:50 JST時点の保存結果](INTERIM_RESULTS_20261104_1750JST.md)と全19候補のCSV・匿名価格metadataを保存した。49/51標本、17/19候補の代表検証完了。未完了2候補の8標本平均は記述値として区別し、確定した比較に使わない。稼働中の科学SOURCEは変更していない。

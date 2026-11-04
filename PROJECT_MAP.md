@@ -178,3 +178,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [Stage A/B実行記録](docs/research/h8_long_time_execution_20261103/REPORT.md)。固定H8 DF28・T1.6・ε.0005のStage Aは69候補完了。Stage B探索を進め、Stage Cは未実行。
 
 11月4日の[compiler位相補助実装・再検証範囲](docs/research/h8_long_time_execution_20261103/COMPILER_PHASE_REPAIR_PROPOSAL_20261104.md#追加修正の実装11月4日上記提案後)は、元の2代表と保存標本に限定する。元の失敗・HOLDと補正後の来歴を区別する。
+
+[11月4日17:50の中間集計](docs/research/h8_long_time_execution_20261103/INTERIM_RESULTS_20261104_1750JST.md)は49/51標本の保存価格。代表検証待ち2候補の値は暫定で、最終順位・母集団保証を主張しない。
