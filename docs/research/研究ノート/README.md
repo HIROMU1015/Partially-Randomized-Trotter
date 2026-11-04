@@ -1,3 +1,9 @@
+## 2026-11-05 Controlled Hadamard全18round：追加上界取得・全体未判定
+
+[当日記録](2026-11-05_rpe_controlled_connection_certificate.md)。SOURCE5605ea6fdを96 bit/1 pass実行。
+H4/DF12/L_D3/δ=.02/K2/cutoff1e-12、229 basis・218 componentの全18追加上界を取得。
+18軸strict・18軸未判定、既存categorical条件を保全し全18production予算内保証は認定せず。全体UNDETERMINED/false・両U null、STOP。
+
 ## 2026-11-04 Controlled RTE・Hadamard v2：12局所probe整合
 
 [当日記録](2026-11-04_rpe_controlled_local_probes_v2.md)。selectorを実保存payloadで固定し、SOURCE7279f700aをrun02へ1回実行。

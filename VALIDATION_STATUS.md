@@ -1,3 +1,13 @@
+## 2026-11-05 Controlled Hadamard全18round：追加上界取得・18軸未判定
+
+[報告・6原本](docs/research/rpe_controlled_connection_certificate_execution_20261105/REPORT.md)。
+SOURCE5605ea6fdb90fb7de2dac8768d392c81435217a3、linear H4/1Å/STO-3G/保存DF12、Partial L_D3/δ=.02/K2/cutoff1e-12、
+B physical-state normalized ray/sector70、保存18q/r/N/α/β/ε/law/support。96 bit/1 pass、229 basis・218成分・141 control constructor。
+全18追加上界は取得。m0..5,7..9の18軸strict、m6,10..17の18軸UNDETERMINEDで、統合UNDETERMINED。
+boundary最大約6.54e-13、最大component約7.09e-8、m17追加上端約.892。実bias超過の証拠ではない。
+COMPLETED_MANDATORY_STOP/exit2、欠測・エラーなし。既存categorical全36条件は保全し、production側の全18予算内保証は認定しない。
+旧SOURCE/raw/判定、全体UNDETERMINED/false・両U nullを保持。追加precision/retry/長q build/compile/samplingなし、公開照合後STOP。
+
 ## 2026-11-04 Controlled RTE・Hadamard v2：固定12局所probe・24軸整合
 
 [報告・8原本](docs/research/rpe_controlled_hadamard_local_probes_v2_execution_20261104/REPORT.md)。

@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled Hadamard全18round：追加上界取得・全体未判定](research/rpe_controlled_connection_certificate_execution_20261105/REPORT.md)
+（2026-11-05）。固定SOURCE5605ea6fdを96 bit/1 passで実行。229 basis・218 componentの全18転送上界を取得。
+18/36軸だけstrict、m6とm10..17は未判定。sampling/長q build/compile0、追加実行なし、全体UNDETERMINED/false・両U null、STOP。
+
 [Controlled Hadamard全18round：接続保証の統合runner](research/rpe_controlled_connection_runner_20261104/IMPLEMENTATION_REPORT.md)
 （2026-11-05）。boundary・Gaussian support差・lowering・36軸strict classifierを接続し、人工147件PASS。
 新H4評価0、defaultは静的照合のみ。固定Acb96 bit/1 pass科学SOURCEを公開し別途実行承認待ち、mandatory STOP。

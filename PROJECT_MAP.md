@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[Controlled Hadamard全18round接続：追加上界取得・18軸未判定（2026-11-05）](docs/research/rpe_controlled_connection_certificate_execution_20261105/REPORT.md)：
+SOURCE5605ea6fd、96 bit/1 pass。229 Gaussian basis・218成分・141 control constructor、全18追加上界を取得。
+m0..5,7..9の18軸strict、m6,10..17の18軸UNDETERMINED。support一様上界が残余予算に収まらず全18認定せず。
+旧SOURCE/rawを保全、再実行/precision追加なし。全体UNDETERMINED/false・両U null、公開照合後mandatory STOP。
+
 [Controlled Hadamard全18round接続：統合runner準備（2026-11-05）](docs/research/rpe_controlled_connection_runner_20261104/IMPLEMENTATION_REPORT.md)：
 boundary有理数差・Gaussian/CAR support包含・control lowering・保存36軸strict判定を統合。人工147件PASS。
 defaultはbyte/schema/literalのみ、新H4評価0。Acb96 bit/1 pass・最大229 basisの限定科学SOURCEを公開し別途承認待ち。
