@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE B追補：Float64 decoderの一様誤差保証・技術準備（2026-11-05）](docs/research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md)：
+mean丸め・wrap前rootの条件付き補題、scalar一roundの全成功格子angle/wrap上界を準備。人工16＋既存28件PASS。
+全候補distance契約・全18round測定callerは未確定、H4科学runner未準備・新H4評価0。A/C不変、global false・両bridge nullでSTOP。
+
 [RPE A/C限定実行：95%条件・保存DF referenceを確認（2026-11-04）](docs/research/rpe_three_gaps_execution_20261104/REPORT.md)：
 H4/1Å/STO-3G/DF12/L_D3/δ=.02/保存state ray・sector70、A160-bit/C256-bit各1 pass。
 α不変の直接成功下界≥.950307、保存DF最小固有値のreference込み理想energy目標内。B全域はUNKNOWN、global false・両bridge null保持。

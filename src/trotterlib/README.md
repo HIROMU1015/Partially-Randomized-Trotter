@@ -577,6 +577,10 @@ PM-1の[contract module](../trottertracks/resource_applicability/pm1_discard_con
 
 ### RPE
 
+[Float64一様保証のB追補](../../docs/research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md)では
+既存decoderを無変更で使用し、有限人工roundのmean→angle→wrap被覆だけを隣接helperで追加。
+mean/root基本演算の条件付き補題は構成したが、distance全域契約は未取得。人工16＋既存28件PASS、H4科学runner未準備・新H4評価0。
+
 残存α/Float64/reference条件は[`文書隣接の3課題adapter`](../../docs/research/rpe_three_gaps_preparation_20261104/REPORT.md)。
 既存D/Arb/V2 loader/DF整数excitation関数を再利用。A/C科学SOURCEを準備、B全域は未解決。
 準備時の人工28件PASS。[後続A/C限定結果](../../docs/research/rpe_three_gaps_execution_20261104/REPORT.md)では

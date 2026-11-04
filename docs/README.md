@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE B追補：Float64 decoder一様保証の技術準備（2026-11-05）](research/rpe_three_gaps_preparation_20261104/FLOAT64_ADDENDUM_20261105.md)：
+SOURCE/runtime/mean経路を区別し、mean・wrap前rootの条件付き補題と有限roundのangle/wrap被覆を追加。
+人工16＋既存28件PASS。distance全域・全18round測定callerは未確定、H4科学SOURCE未準備。A/C・旧STOPを保持、新H4評価0。
+
 [RPE A/C限定実行：95%条件・保存DF referenceを確認（2026-11-04）](research/rpe_three_gaps_execution_20261104/REPORT.md)：
 H4/1Å/STO-3G/保存DF12/L_D3/δ=.02、A160-bit/C256-bit各1 pass。
 α不変の直接成功下界≥.950307、保存DF sector reference込みの数学的energy目標内。

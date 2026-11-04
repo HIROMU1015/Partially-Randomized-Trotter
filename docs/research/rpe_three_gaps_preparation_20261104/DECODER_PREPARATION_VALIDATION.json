@@ -1,0 +1,170 @@
+{
+  "schema": "RPE_B_FLOAT64_TECHNICAL_PREPARATION_V1",
+  "date_jst": "2026-11-05",
+  "parent_commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+  "branch": "codex/rpe-float64-decoder-preparation-20261104",
+  "decision": "UNKNOWN/STOP",
+  "H4_scientific_execution_ready": false,
+  "scientific_runner_added": false,
+  "technical_stages": {
+    "source_paths": "1_CONFIRMED_WITH_FULL18_MEASUREMENT_CALLER_UNRESOLVED",
+    "mean": "2_CONDITIONAL_RN_LEMMA",
+    "angle_input": "2_COMPLETE_SUPPLIED_FINITE_ROUND_ONLY",
+    "prewrap": "2_CONDITIONAL_RN_LEMMA_NOT_FULL_c",
+    "candidate": "CONDITIONAL_EXACT_FMOD_LEMMA_RUNTIME_BINDING_UNRESOLVED",
+    "distance": "4_UNRESOLVED_FULL_DOMAIN_CONTRACT",
+    "H4": "3_NOT_REACHED"
+  },
+  "production_mean_path": null,
+  "production_float_envelopes": null,
+  "implementation_energy_upper": null,
+  "scope": {
+    "new_H4_scientific_calls": 0,
+    "H4_success_lattice_evaluations": 0,
+    "sampling": 0,
+    "RNG_replays": 0,
+    "circuit_build_compile": 0,
+    "cost_evaluations": 0,
+    "A_C_recomputed": false,
+    "decoder_modified": false,
+    "old_virtual_float_guard_BLAS_series_resumed": false
+  },
+  "tests": {
+    "new_artificial": 16,
+    "reused_artificial": 28,
+    "total": 44,
+    "result": "PASS",
+    "new_Arb_bits": 192,
+    "outward_bound_crosscheck_bits": 384,
+    "command": "python -m unittest -v test_decoder_numeric_preparation test_three_gaps"
+  },
+  "runtime": {
+    "python": "3.11.0rc1",
+    "executable": "/usr/bin/python3.11",
+    "numpy": "1.26.4",
+    "python_flint": "0.9.0",
+    "libc": [
+      "glibc",
+      "2.35"
+    ],
+    "machine": "x86_64",
+    "float_radix": 2,
+    "float_mant_dig": 53,
+    "fegetround_observed": 0,
+    "numpy_cpu_features": {
+      "AVX": true,
+      "AVX2": true,
+      "AVX512F": false,
+      "AVX512CD": false,
+      "AVX512ER": false,
+      "AVX512PF": false,
+      "AVX5124FMAPS": false,
+      "AVX5124VNNIW": false,
+      "AVX512VPOPCNTDQ": false,
+      "AVX512VL": false,
+      "AVX512BW": false,
+      "AVX512DQ": false,
+      "AVX512VNNI": false,
+      "AVX512IFMA": false,
+      "AVX512VBMI": false,
+      "AVX512VBMI2": false,
+      "AVX512BITALG": false,
+      "AVX512FP16": false,
+      "AVX512_KNL": false,
+      "AVX512_KNM": false,
+      "AVX512_SKX": false,
+      "AVX512_CLX": false,
+      "AVX512_CNL": false,
+      "AVX512_ICL": false,
+      "AVX512_SPR": false
+    },
+    "numpy_extension": {
+      "path": "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/numpy/core/_multiarray_umath.cpython-311-x86_64-linux-gnu.so",
+      "sha256": "a735e4e8355b75c800112af8a5b1731b891b2016ed57067352eea6cab0aa00bc"
+    },
+    "mapped_libm": [
+      {
+        "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "sha256": "1a08a427bbf3790aa434d2310e8c724846ec72ba7811982e85b0002dd296ca92"
+      }
+    ],
+    "dynamic_trace": "NOT_OBTAINED: own-child gdb ptrace Operation not permitted",
+    "dispatch_evidence": "SOURCE + ELF/disassembly only; no dynamic full-domain claim",
+    "gradual_underflow_uniform_runtime_contract": null
+  },
+  "github_fixed_files_verified": [
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "docs/research/rpe_three_gaps_execution_20261104/REPORT.md",
+      "git_blob": "77f30cddadf459c41b2a1958d621addd355f55dd",
+      "sha256": "60a1b24609b97f379543c60eaa0a6631383b0b966cdb33b7852f9d459d023ca2"
+    },
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/decoder_finite.py",
+      "git_blob": "fe8865780c594fc68ccdbbcfa96d91b10f39c9a5",
+      "sha256": "336f1efb585037cd86250c0eda4061086244e5c29d3fc3618fec280025dc913f"
+    },
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/PROOF_AND_SCOPE.md",
+      "git_blob": "5016a22a18566858131692957a14d34341368ca7",
+      "sha256": "d319e1ce20dcbb56928d3a5aa0c73f361e8a0b7dce95bff3e553feb40dcf83c7"
+    },
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "docs/research/rpe_branch_energy_preparation_20261104/PROOF.md",
+      "git_blob": "29b1aaafb560b3560c3b29fbc46fd564f7382c58",
+      "sha256": "593680e71566a890ad7e9be2d96daa4f7064a5cab60f3dcc738b20a46009be16"
+    },
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "src/trotterlib/rpe_four_round_phase_validation.py",
+      "git_blob": "928e662fe9734ab267674ee9d6f4ff62931ec2b1",
+      "sha256": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4"
+    },
+    {
+      "commit": "61f569c32a94c2b698df10a62a51e515b12160ed",
+      "path": "artifacts/rpe_three_gaps_validation/2026-11-04/run01/RESULT.json",
+      "git_blob": "3afdc47cf16065976b881ea937af898f0c3ea549",
+      "sha256": "707c22df15d690348bc081d9249a5598deeec1353447a4e5c85a12a9be5434f3"
+    },
+    {
+      "commit": "6942e5176d2dec115ac3c271e48f84377abda915",
+      "path": "docs/research/rpe_branch_energy_preparation_20261104/PROOF.md",
+      "git_blob": "29b1aaafb560b3560c3b29fbc46fd564f7382c58",
+      "sha256": "593680e71566a890ad7e9be2d96daa4f7064a5cab60f3dcc738b20a46009be16"
+    },
+    {
+      "commit": "d29a86963f91044a95217d7d2e2ee9703d2f1dc1",
+      "path": "docs/research/rpe_three_gaps_preparation_20261104/PROOF_AND_SCOPE.md",
+      "git_blob": "5016a22a18566858131692957a14d34341368ca7",
+      "sha256": "d319e1ce20dcbb56928d3a5aa0c73f361e8a0b7dce95bff3e553feb40dcf83c7"
+    },
+    {
+      "commit": "89cb94fe4db1d39d574877c3bc2db79a6d7a5f9f",
+      "path": "docs/research/rpe_branch_energy_execution_20261104/REPORT.md",
+      "git_blob": "3c6ddce7a310d87809ac51e81028db9154c61d00",
+      "sha256": "d4b9794a730349e759fda146489633d60f0038f5d0fe533dfa08f76489789166"
+    },
+    {
+      "commit": "d2e7a7db683e116243eae061c0e4c87865054e9e",
+      "path": "docs/research/rpe_18round_ideal_enclosure_execution_20261104/REPORT.md",
+      "git_blob": "81841c814e4ead53aa42679f26c864a9db603043",
+      "sha256": "c3e066ab90d1b54e2051bff727eb2335ead1c9eddf751238cecddd6adf1ca149"
+    }
+  ],
+  "status": {
+    "RPE_tolerance_certified": false,
+    "scientific_status": "UNDETERMINED",
+    "U_virtual_IID_upper": null,
+    "U_exec_upper": null,
+    "mandatory_STOP": true
+  },
+  "minimum_missing_evidence": [
+    "full18 measurement-to-scalar production caller and mean path",
+    "runtime binding of RN/subnormal and exact-fmod lemmas",
+    "uniform complex-exp and atan2 distance contracts on all candidate inputs, or a complete certified reachable-domain cover"
+  ],
+  "next_scientific_plan": "NOT_PREPARED: technical stage 3 not reached; separate permission required after a feasible fixed SOURCE is published"
+}
