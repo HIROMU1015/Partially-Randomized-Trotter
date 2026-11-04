@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：相殺損失・phase会計と保持Pauli-frameの技術準備（2026-11-05）
+
+[調査・導出・人工benchmark・新契約](../docs/research/research_c_block_witness_cancellation_readiness_20261105.md)。保存値会計を照合し、1q約12.6374＋内部約11.0764とphase補償を確認。非central補正を保持して共通CXへ伝播するopt-in局所Arb192/full512経路を人工実証。連続回転の相殺限界も保存。実H4の新Arb上界はnull、未承認・独立6-call、旧SOURCE/raw/STOPとDirect-round作業保全、mandatory STOP。
+
 ## 研究C：内部block C/Rの6-call完了・上界の鋭さ不足（2026-11-05）
 
 [実行報告・保全照合](../docs/research/research_c_cx_structural_block_pilot_execution_20261105.md)。保存H4/1.00 Å/STO-3G、number CDF8/LD2・partial S2/s1/r32/K0・h=.1、固定交互32-event word。SOURCE7f70ca0af無変更、6/6 COMPLETE・FAIL/retry/resume0。Full512/Arb192の局所block包囲は上界2、VALID_BUT_LOOSER。新plan＋certificate約2.65秒だが、旧保存約1.586e-11より大幅に粗く実用的高速化成功とは認定しない。旧証拠を維持し、校正/Stage C/CAへ進まずmandatory STOP。
