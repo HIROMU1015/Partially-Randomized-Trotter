@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：局所support C/R pilot・登録4-call早期STOP（2026-11-05）
+
+[構造不対応・部分予算・旧証拠保全](../docs/research/research_c_compiled_raw_local_pilot_execution_20261105.md)。固定SOURCE6bcf68d55無変更、4/6 COMPLETE、FAIL/retry/resume0。正規化CX eventsはcompiled2894/raw候補2912で、NOT_APPLICABLE_NO_SHARED_CX_SKELETON。局所Arb0・新上界null、残2 units転用なし。全wall約1.37秒は適用性判定であり上界計算のspeedupではない。旧包囲・SOURCE/raw/STOP保全、校正/Stage C 0、mandatory STOP。
+
 ## 研究C：Compiled→raw局所support包囲・abort scope（2026-11-05）
 
 [導出・人工benchmark・未承認6-call契約](../docs/research/research_c_compiled_raw_certificate_acceleration_20261105.md)。`c_compiled_raw_local`／`c_compiled_raw_readiness`／`c_compiler_abort_scope`、passive入口 `scripts/prepare_research_c_compiled_raw_acceleration.py`。Primitive bridge＋SU(2)局所誤差＋保持phaseのunitary telescopeで全register operatorを包囲する。人工full512の融合例で約162倍、粗くなる反例も保全。実H4の構造対応・新上界・速度は未検証、旧column schemaへ未接続。新規人工55 PASS、実H4 Arb/校正/Stage C 0、6-callは未承認・未実行、mandatory STOP。
