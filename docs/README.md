@@ -1,5 +1,9 @@
 # 文書索引
 
+## 研究C：Fresh IID-grid校正基盤（2026-11-04）
+
+[技術実装・人工検証・未承認契約](research/research_c_fresh_iid_calibration_infrastructure_20261104.md)。`c_fresh_iid_calibration.py`、passive入口`prepare_research_c_fresh_iid_calibration.py`。53-bit入力・K0 order/atom消費・SOURCE/wordを記録し、失敗/未完了wordを保持。Tail/variance/direct統計へ条件付き接続し、不足はNOT_READY。方法/N/δ/failure policyは未採択、新実H4科学0、mandatory STOP。
+
 ## 研究C：Stage P未完了項目・15-call完了（2026-11-04）
 
 [全512列inverse・shell・raw信号・範囲](research/research_c_stage_p_completion_execution_20261104.md)。保存直鎖H4・1.00 Å/STO-3G、number CDF8/LD2・partial S2/s1/r32/K0・h=δ=.1、固定F6/F7交互32-event word。SOURCE2c454ed08無変更、独立15/15 COMPLETE・FAIL/retry/resume0。Arb192・全512列のcompiled actual inverse上界約5.542118759907e-15、3 shellと単一occurrenceのraw complex signal上界約4.496362061560e-11を取得。旧C→R→D/raw inverseは再利用、旧41-call部分STOPと残11 unitsは維持。全law/校正/CAへ進まずmandatory STOP。
@@ -35,6 +39,9 @@
 ## 研究C：literal per-word包囲・population range（2026-11-04）
 
 [per-word誤差包囲・population range](research/research_c_per_word_population_range_readiness_20261104.md)。`c_per_word_population_range.py` / `c_per_word_range_execution.py` / `prepare_research_c_per_word_population_range.py`。既存Arb/CAR/全columnを再利用し、literal U・非Hermitian headを保持する。Stage Rは未承認256-call、Pは非実行65-call案、校正/accuracyは未採択。人工検証のみ・新H4科学0、mandatory STOP。
+## 研究C：P0 compiler全word適用性・技術準備（2026-11-04）
+
+[全word未資格の技術的理由・確率的代替・期待biasへの影響](research/research_c_p0_compiler_totality_readiness_20261104.md)、[非実行の未承認契約](research/research_c_p0_compiler_totality_contract_unapproved_20261104.json)。Module`c_p0_compiler_totality.py`、passive entry`prepare_research_c_p0_compiler_totality.py`、人工test同名、技術証拠`artifacts/research_c_p0_compiler_totality/2026-11-04/technical/`。Stage P非干渉、新実H4科学0、mandatory STOP。
 
 ## 研究C：fresh IID-grid期待bias・技術設計（2026-11-04）
 

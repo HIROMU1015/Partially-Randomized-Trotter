@@ -1,0 +1,93 @@
+{
+  "scope": "C_FRESH_IID_GRID_CALIBRATION_INFRASTRUCTURE_V1",
+  "kind": "technical_reproducibility_source_not_execution_permission",
+  "base_commit": "c01bd2742ca88071d17db1fc3e3aec6cb9f3cb9e",
+  "dependency_commit": "60dcaa94fd44675bc3184e409aa4ebdef7a07dbf",
+  "identity": {
+    "candidate": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+    "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+    "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+    "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+    "model": {
+      "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+      "bits": 53,
+      "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+      "independent_events": true,
+      "independent_coherent_occurrences": true,
+      "independent_measurement_shots": true,
+      "independent_XY_measurements": true,
+      "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+      "PCG64_joint_stream_qualified": false
+    },
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "conditions": {
+      "molecule": "linear H4",
+      "distance_A": 1.0,
+      "basis": "STO-3G",
+      "Nalpha": 2,
+      "Nbeta": 2,
+      "sector_dimension": 36,
+      "controlled_dimension": 512,
+      "rank": 8,
+      "ld": 2,
+      "s": 1,
+      "r": 32,
+      "K": 0,
+      "h": "1/10",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "oracle": "own_DF_ground_state_oracle",
+      "state_preparation": "EXCLUDED",
+      "CA_Ha": 0.00159,
+      "DF_reserve_Ha": 0.00019875
+    },
+    "accuracy_target": {
+      "energy_ha": 0.00159,
+      "df_reserve_fraction": 0.125,
+      "base_time": 0.1,
+      "beta_total": 0.5235987755982988,
+      "beta_stat": 0.2617993877991494,
+      "alpha_axis": 0.0003846153846153846,
+      "alpha_total": 0.01
+    },
+    "phase_policy": "qiskit_P0_mpfr160_declared_phase_v1",
+    "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+  },
+  "files": {
+    "src/trottertracks/c_fresh_iid_calibration.py": "e655c3496edc3a0e64807b9f8f3475374f2d2143d25a58ab0d671f4a58318cdc",
+    "scripts/prepare_research_c_fresh_iid_calibration.py": "c54380870094e895d6622818c32a7c3b484face40a774c1dde08789342b5c91c",
+    "tests/management/test_research_c_fresh_iid_calibration.py": "54133dcf5a48af5de9986063fedc3916e65c3646ca706c5bf493bca03a1e91d3",
+    "src/trottertracks/c_iid_grid_expected_bias.py": "f598a934bb90b859826e1b7d7d524b964c01eeb57e548f093478818f18e6f2c6",
+    "src/trottertracks/c_pr_aware_df_stage_c2.py": "197e91a122800f7d8466597812146f0e65e2e5c45d2aab45c19542f795f0c77a",
+    "src/trottertracks/c_per_word_population_range.py": "8b87b094879dea99142ab7237570bb82453d6a4b596469de269f53d27400d164",
+    "src/trottertracks/c_p0_compiler_totality.py": "40da611edc381c2f8e9f7bc426ed119443d826886bbf6507b92589ac57cab9aa",
+    "src/trottertracks/c_pr_aware_df_stage_b.py": "c38efda0021322bea2c9d2b7d19b3cb720fbe4675254cf324d4d6d532528bf7e",
+    "src/trottertracks/c1_stage3_connection.py": "b64292fd5d9961b2617e0adf74159a520663905a0f2b2b490ab3318b9d0c6f1e",
+    "src/trotterlib/rte.py": "a208e31ebd0c3f2e973d9ab06820a48defd2d9d0eb97410383575d7e09d589ff"
+  }
+}

@@ -1,0 +1,191 @@
+{
+  "scope": "C_FRESH_IID_GRID_CALIBRATION_INFRASTRUCTURE_V1",
+  "status": "UNAPPROVED_NONEXECUTABLE_DESIGN",
+  "base_commit": "c01bd2742ca88071d17db1fc3e3aec6cb9f3cb9e",
+  "dependency_commit": "60dcaa94fd44675bc3184e409aa4ebdef7a07dbf",
+  "executable": false,
+  "source_manifest": "artifacts/research_c_fresh_iid_calibration/2026-11-04/technical/SOURCE.json",
+  "source_manifest_sha256": "9af76b935ad1204ac1639f6a3d773b7e29355cf7243f22caf410bf1c14649c41",
+  "identity": {
+    "candidate": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a",
+    "PR_scientific_SOURCE": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+    "stage_A_scientific_SOURCE": "ddd8333488e07a3b3af9095b5cb193ef9f90b3c3",
+    "stage_A_result": "ae9a4e13d1ab6f48fc4d38cbbcd0fddca30e9c53",
+    "model": {
+      "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+      "bits": 53,
+      "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+      "independent_events": true,
+      "independent_coherent_occurrences": true,
+      "independent_measurement_shots": true,
+      "independent_XY_measurements": true,
+      "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+      "PCG64_joint_stream_qualified": false
+    },
+    "compiler": {
+      "qiskit": "1.3.0",
+      "optimization_level": 1,
+      "seed_transpiler": 17,
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "approximation_degree": 1.0,
+      "qubits_initially_zero": false
+    },
+    "conditions": {
+      "molecule": "linear H4",
+      "distance_A": 1.0,
+      "basis": "STO-3G",
+      "Nalpha": 2,
+      "Nbeta": 2,
+      "sector_dimension": 36,
+      "controlled_dimension": 512,
+      "rank": 8,
+      "ld": 2,
+      "s": 1,
+      "r": 32,
+      "K": 0,
+      "h": "1/10",
+      "rounds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "oracle": "own_DF_ground_state_oracle",
+      "state_preparation": "EXCLUDED",
+      "CA_Ha": 0.00159,
+      "DF_reserve_Ha": 0.00019875
+    },
+    "accuracy_target": {
+      "energy_ha": 0.00159,
+      "df_reserve_fraction": 0.125,
+      "base_time": 0.1,
+      "beta_total": 0.5235987755982988,
+      "beta_stat": 0.2617993877991494,
+      "alpha_axis": 0.0003846153846153846,
+      "alpha_total": 0.01
+    },
+    "phase_policy": "qiskit_P0_mpfr160_declared_phase_v1",
+    "native_policy": "common_precision_spin_kappa_relative_head_full_frame_tail_v1"
+  },
+  "saved_input_bytes": {
+    "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/categorical_table.json": "9827934f51a03f54de1a9c73488fa322821185ae140662906096e27862078503",
+    "artifacts/research_c_iid_grid_all_law/2026-11-03/stageA-run01/atoms.json": "8b5bcadb458e2eb345aa779e171f8cc4f28467a648c73c4bc9ec4f1e8f70bfbf",
+    "artifacts/research_c_population_range_schema/2026-11-04/stageR-run01/population.json": "4c417ca8728d4d74f5aa645ee71680117ceee168dc403901900289a01406a338",
+    "artifacts/research_c_population_range_schema/2026-11-04/stageR-run01/STOP.json": "8b77ed6fc9b69e0f1091b134e435620a008a7c8dd25b13fe8cd28004ef149c7c",
+    "artifacts/research_c_stage_p_completion/2026-11-04/run01/STOP.json": "5f50a636c1dd59874fd7c029a67d4801a97f6b8d4d5e93e3c2158cdb881d3b8e",
+    "artifacts/research_c_near_practical/2026-11-03/run01/PR/endpoint.npz": "a8813acaa6dd67abf843c50b103c29b84f015e4f3cabdb636e2a2db6401a863a"
+  },
+  "sampling_model": {
+    "id": "IID_UNIFORM_53_BIT_WORDS_COUNTERFACTUAL",
+    "bits": 53,
+    "mapping": "NumPy1.26.4 binary64 normalize/cumsum/normalize;searchsorted_right",
+    "independent_events": true,
+    "independent_coherent_occurrences": true,
+    "independent_measurement_shots": true,
+    "independent_XY_measurements": true,
+    "inverse": "inverse of the same realized circuit where used;not an independently redrawn inverse",
+    "PCG64_joint_stream_qualified": false
+  },
+  "stream_policy": "existing_trajectory_seed_per_occurrence;K0_order_then_atom;raw64_high53_v1",
+  "future_scientific_SOURCE": null,
+  "frozen_context_id": null,
+  "frozen_law_id": null,
+  "method": null,
+  "N": null,
+  "N_by_round": null,
+  "delta_cal": null,
+  "delta_compile": null,
+  "compiler_failure_policy": null,
+  "maximum_logical_units": null,
+  "PRNG": {
+    "implementation_supported": "numpy1.26.4.PCG64",
+    "adopted_backend": null,
+    "master": null,
+    "domain": [
+      "fresh_IID_grid_calibration",
+      "new_SOURCE",
+      "law_id",
+      "dataset_id",
+      "master"
+    ],
+    "seed": "reuse c1_stage3_connection.trajectory_seed(domain,proposed,candidate,m-or-minus1,axis,sample,occurrence)",
+    "consumption": "each occurrence:32*(order-choice high53 uint64,atom-choice high53 uint64);never omit K0 order-choice",
+    "mathematical_IID_guarantee": false,
+    "PCG64_joint_stream_qualified": false,
+    "explicit_bit_replay": "all 64 integers per kernel;order choice then atom choice;searchsorted_right"
+  },
+  "calibration_schema": {
+    "kernel": "one length32 word per sample;joint calibration event may propagate to all13rounds",
+    "direct_round": "2**m occurrences per sample;paired classical X/Y evaluations;not shared measurement shots",
+    "numerical_qualification": null,
+    "per_word": "full512 two-leg rigorous enclosure with sample/SOURCE/candidate/law/word binding;phase fit false",
+    "round": "paired raw complex compiled/literal signals plus rigorous X/Y intervals including shells",
+    "population": "Stage R literal norm/range retained;conditional compiler-totality premise remains unqualified",
+    "confidence": "delta_cal distinct from RPE alpha=.01;delta_compile if needed remains separate;no reallocation adopted",
+    "qualification": "conditional mathematical IID model only;never actual PCG64 IID,Stage C,or actual CA"
+  },
+  "failure_policies_unadopted": [
+    "stop_on_failure",
+    "record_all_fixed_N"
+  ],
+  "failure_rules": [
+    "retain generated sample before build;keep partial evidence and exceptions",
+    "no discard,re-extraction,replacement,success-only filtering or old fixed4/native32 pooling",
+    "INCOMPLETE includes absent outcome;unknown numerical quantities remain null",
+    "existing Calls is stop-on-failure;do not reset its stop event for fixed-N continuation",
+    "failure-aware estimator and runner are not implemented;any non-success remains NOT_READY"
+  ],
+  "logical_calls": {
+    "kernel": "L_setup+N*(L_draw+L_build+L_compile+L_native_checks+L_literal_reference+L_per_word_certificate+L_numerical_eval+L_record)+L_population+L_calibration+L_summary",
+    "direct_round": "L_setup+sum_m N_m*(L_draw_round+2**m*L_kernel_evaluation+L_round_enclosure+L_record)+L_population+L_calibration+L_summary",
+    "unresolved": [
+      "adopted method,N,N_by_round,confidence and failure policy",
+      "event/column/basis/Gaussian/cache call granularity",
+      "all-word domain or separate adopted failure-aware algorithm",
+      "per-word precision,actual inverse and shell coverage",
+      "reference target/ground-state scope and complete transport chain",
+      "stop scheduling,partial attempts and output/log limits"
+    ],
+    "inherited_budget_reused": false,
+    "upper_limit_fixed": false
+  },
+  "resource_plan": {
+    "CPU_cap": null,
+    "RAM_cap": null,
+    "worker_cap": null,
+    "wall_cap": null,
+    "before_substantial_run": "inspect actual affinity/quota/free RAM/GPU and existing timing;choose workload-specific workers/backend",
+    "acceleration": "independent sample/occurrence/column batches;immutable job-local inputs and caches;matrix-free/sector/Arb reuse when applicable",
+    "Qiskit": "reuse existing SharedQiskitCalls or process-local compilation;no global monkeypatch",
+    "coordination": "coordinate workers with BLAS/OpenMP/Rayon;Arb context process-local;preserve task seeds",
+    "shared_environment_changes": false,
+    "speedup_measured": false
+  },
+  "fresh_output": "artifacts/research_c_fresh_iid_calibration/2026-11-04/run01",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "new_real_H4_sampling": 0,
+  "new_native_build_compile": 0,
+  "new_error_evaluation": 0,
+  "new_expected_bias_calibration": 0,
+  "new_Stage_C": 0,
+  "actual_CA_decision": null,
+  "important_reviews": 0,
+  "next_stage": "fix scientific choices,SOURCE/context/law,call budget and fresh output;obtain separate explicit user permission before science",
+  "authorization": "chat instruction suffices for its stated scope;no approval-proof system or new grant"
+}

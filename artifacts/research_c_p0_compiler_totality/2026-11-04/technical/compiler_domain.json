@@ -1,0 +1,189 @@
+{
+  "readiness": {
+    "scope": "C_P0_COMPILER_TOTALITY_READINESS_V1",
+    "status": "ALL_WORD_SUCCESS_NOT_ESTABLISHED",
+    "all_q_words_compile_success_qualified": false,
+    "structural_budget": {
+      "initial_one_qubit": 100914,
+      "initial_cx": 6608,
+      "initial_size": 107522,
+      "max_1q_run_length": 100914,
+      "accepted_1q_rewrites_max": 107522,
+      "accepted_gate_visits_max": 645132,
+      "phase_updates_max": 107522,
+      "successful_output_iterations_max": 1000,
+      "candidate_matrix_products_max": 100914000,
+      "candidate_resyntheses_max": 100914000,
+      "ZSXX_output_gates_max": 5,
+      "assumptions": "post-translation native RZ/SX/X/CX;target=None;no calibrations/control flow;fixed opt1 passes",
+      "proves_all_words_compile_successfully": false,
+      "uniform_error_bound": null
+    },
+    "monotone_iterations_upper": 107523,
+    "fixed_controller_iterations": 1000,
+    "missing": [
+      "prove fixed-point convergence within unchanged 1000 iterations",
+      "all reachable finite numeric/phase and definition paths",
+      "bound saved input/frame/support identity under current SOURCE",
+      "all native output/register/layout invariants without exceptions"
+    ],
+    "synthesis_error_bound": null,
+    "calibration_ready": false,
+    "maximum_logical_units": null,
+    "scientific_calls": 0,
+    "mandatory_stop": true
+  },
+  "graph_check": {
+    "status": "PINNED_GRAPH_MATCH_NOT_NUMERIC_CERTIFICATE",
+    "mismatches": [],
+    "all_law_qualified": false
+  },
+  "expanded_stage_graph": {
+    "pre_init": [
+      {
+        "name": "ContainsInstruction"
+      },
+      {
+        "name": "ConditionalController",
+        "nested": [
+          {
+            "name": "Error"
+          }
+        ]
+      }
+    ],
+    "init": [
+      {
+        "name": "InverseCancellation",
+        "parameter_free": true,
+        "gates": [
+          "cx",
+          "ecr",
+          "cz",
+          "cy",
+          "x",
+          "y",
+          "z",
+          "h",
+          "swap",
+          "t",
+          "tdg",
+          "s",
+          "sdg",
+          "sx",
+          "sxdg"
+        ]
+      }
+    ],
+    "translation": [
+      {
+        "name": "UnitarySynthesis"
+      },
+      {
+        "name": "HighLevelSynthesis"
+      },
+      {
+        "name": "BasisTranslator"
+      }
+    ],
+    "pre_optimization": [],
+    "optimization": [
+      {
+        "name": "Depth"
+      },
+      {
+        "name": "FixedPoint"
+      },
+      {
+        "name": "Size"
+      },
+      {
+        "name": "FixedPoint"
+      },
+      {
+        "name": "DoWhileController",
+        "nested": [
+          {
+            "name": "Optimize1qGatesDecomposition",
+            "target_none": true,
+            "decomposers": [
+              "ZSXX"
+            ],
+            "error_map_none": true
+          },
+          {
+            "name": "InverseCancellation",
+            "parameter_free": true,
+            "gates": [
+              "cx",
+              "ecr",
+              "cz",
+              "cy",
+              "x",
+              "y",
+              "z",
+              "h",
+              "swap",
+              "t",
+              "tdg",
+              "s",
+              "sdg",
+              "sx",
+              "sxdg"
+            ]
+          },
+          {
+            "name": "GatesInBasis"
+          },
+          {
+            "name": "ConditionalController",
+            "nested": [
+              {
+                "name": "FlowControllerLinear",
+                "nested": [
+                  {
+                    "name": "UnitarySynthesis"
+                  },
+                  {
+                    "name": "HighLevelSynthesis"
+                  },
+                  {
+                    "name": "BasisTranslator"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Depth"
+          },
+          {
+            "name": "FixedPoint"
+          },
+          {
+            "name": "Size"
+          },
+          {
+            "name": "FixedPoint"
+          }
+        ]
+      }
+    ],
+    "scheduling": [
+      {
+        "name": "ContainsInstruction"
+      },
+      {
+        "name": "ConditionalController",
+        "nested": [
+          {
+            "name": "TimeUnitConversion"
+          }
+        ]
+      }
+    ]
+  },
+  "all_q_words_compile_success_qualified": false,
+  "full_word_exhaustion": false,
+  "new_real_H4_compile_count": 0
+}
