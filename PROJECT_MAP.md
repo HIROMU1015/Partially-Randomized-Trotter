@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE全18round：ideal categorical包含の拡張準備（2026-11-04）](docs/research/rpe_18round_ideal_enclosure_preparation_20261104/NEXT_STAGE_DECISION.md)：
+Partial L_D3/δ=.02の18保存tupleを照合。m17再利用、他17セルの96-bit限定runner・6群並列と科学SOURCEを準備。
+人工18＋既存25件PASS。新H4数値評価0、global UNDETERMINED/falseを維持。公開SOURCEの別途実行許可待ちSTOP。
+
 [RPE m17：列挙不要な不変領域・radial包絡の検証と打切り判断（2026-11-04）](docs/research/rpe_m17_invariant_radial_preflight_20261104/REPORT.md)：
 人工dense収縮系の球/box保証は成立、dense unitary例では汎用包絡が閉じず、H4適用根拠は未確立。
 人工44件PASS、新H4評価0。科学SOURCEは準備せず、このadapter系列は終了。両U null・旧status/STOP保持。
