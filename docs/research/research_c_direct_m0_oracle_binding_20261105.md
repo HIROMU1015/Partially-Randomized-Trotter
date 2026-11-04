@@ -79,14 +79,14 @@ RuntimeでSOURCE/input/word/phase/register/inverseが不一致、Hが非real/非
 新契約：[research_c_direct_m0_bound_contract_20261105.json](research_c_direct_m0_bound_contract_20261105.json)。
 旧契約を上書きせず、今回の固定検証候補を別に記載した。旧grant・残call・STOPは転用しない。
 
-Scientific SOURCE commitは固定追補で記録する。Numerical sourceのmanifestは
+Scientific SOURCE commitは `098e1bac4a9aa0bd6d1c3c61d19a38a1ac47bc6d`。このcommit内のmanifestと実worktreeのbytesもpreflightで照合する。Numerical sourceのmanifestは
 [technical/SOURCE.json](../../artifacts/research_c_direct_m0_oracle_binding/2026-11-05/technical/SOURCE.json)。
 25 source fileを識別し、その他の継承依存は起点commitへ固定する。
 前段の13実入力roleに、旧producer契約/SOURCEと親m0準備契約の3 provenance fileを追加し、16 fileのbytesをpinした。
 SOURCEやhashは科学的再現性のためのもので、ユーザー承認の証明ではない。
 
 入口は`PYTHONPATH=src <固定venv>/bin/python -B scripts/run_research_c_direct_m0_bound.py`。
-**Defaultはbytes/JSONだけのpreflight**。Scientific SOURCEが固定された後も、`execution_ready=true`は条件が具体化済みという意味で、実行許可や科学的GOではない。
+**Defaultはbytes/JSONだけのpreflight**。Scientific SOURCEを固定し、最終preflightは`FIXED_SCOPE_READY_AWAITING_EXPLICIT_EXECUTION_PERMISSION`。`execution_ready=true`は条件が具体化済みという意味で、実行許可や科学的GOではない。
 実行は別の明示許可後に同じ入口の`--execute-science`を一度だけ使う。今回はこのflagを使っていない。
 Fresh科学出力は`artifacts/research_c_direct_m0_oracle_binding/2026-11-05/science-run01`で、今回作成していない。
 
