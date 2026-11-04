@@ -1,3 +1,9 @@
+## 2026-11-04 RPE branch・energy接続準備
+
+文書隣接の[`run_limited_validation.py`](../docs/research/rpe_branch_energy_preparation_20261104/run_limited_validation.py)は
+defaultでbyte・literal照合のみ。`--run`は公開SOURCEへの別途許可後の限定科学再解析。
+現状は人工検証のみ、実H4新評価0。[証明・計画・限界](../docs/research/rpe_branch_energy_preparation_20261104/REPORT.md)。
+
 ## 2026-10-26 H2 純RTE追加検証
 
 `run_h2_pauli_rte_validation.py`：元H2 price_job/seed、target/shot会計、event-extension dispatchを再利用。H2専用SOURCE・Phase A保存N・Phase B限定law/target、96→192→384固定確認。完了STOPを再開しない。

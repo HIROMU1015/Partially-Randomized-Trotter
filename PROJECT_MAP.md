@@ -713,6 +713,10 @@ H6 DBA限定並列検証：`docs/research/track_a_h6_dba_20261018.md`。D2軸・
 
 # プロジェクト案内
 
+[RPE D：全18roundのbranch・energy接続準備（2026-11-04）](docs/research/rpe_branch_energy_preparation_20261104/REPORT.md)：
+共通E_ref位相の幾何、strict branch、alias/lift、exact α和、reference/Float64誤差の条件と人工adapter。
+新規人工24件＋既存V2人工10件PASS。実H4の新評価0、次の160-bit限定SOURCEは未実行。global false/UNDETERMINED・元bridge null、公開照合後STOP。
+
 ## 2026-10-16 Track A V1 実行準備
 
 [報告・実装・人工テスト・証跡](docs/research/track_a_v1_h6_deterministic_readiness_20261016.md)。科学計算未実施、未認可draft、mandatory STOP。
