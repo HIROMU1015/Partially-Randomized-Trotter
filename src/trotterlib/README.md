@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：Stage P未完了項目・15-call完了（2026-11-04）
+
+[全512列inverse・shell・raw信号・範囲](../../docs/research/research_c_stage_p_completion_execution_20261104.md)。保存直鎖H4・1.00 Å/STO-3G、number CDF8/LD2・partial S2/s1/r32/K0・h=δ=.1、固定F6/F7交互32-event word。SOURCE2c454ed08無変更、独立15/15 COMPLETE・FAIL/retry/resume0。Arb192・全512列のcompiled actual inverse上界約5.542118759907e-15、3 shellと単一occurrenceのraw complex signal上界約4.496362061560e-11を取得。旧C→R→D/raw inverseは再利用、旧41-call部分STOPと残11 unitsは維持。全law/校正/CAへ進まずmandatory STOP。
+
 ## 研究C：Stage P未完了項目だけの後続実行（2026-11-04）
 
 [15-call契約・列別進捗・終了記録・人工検証](../../docs/research/research_c_stage_p_completion_preparation_20261104.md)。保存C→R→Dとraw inverseは再利用し、compiled inverse/full512・shell・単一occurrence信号だけを新fresh出力へ評価する。旧run/残11 unitsは保全、retry/resume0、全law/CAへ進まない。
