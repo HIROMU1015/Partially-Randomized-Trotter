@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/scripts/run_research_c_direct_m0_bound.py", line 14, in <module>
+    result=m.run(root,args.contract,execute_science=True) if args.execute_science else m.preflight(root,args.contract)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_bound.py", line 124, in run
+    result=prior.execute(root,c,out,call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_runner.py", line 221, in execute
+    return evaluate(b,d,c,out,call,root=root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_runner.py", line 168, in evaluate
+    id_record,H,v=call('target_identity','exact candidate/target/register/no projection',lambda:identity(bundle,data,c))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c1_stage3_integrated.py", line 108, in __call__
+    value = function()
+            ^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_runner.py", line 168, in <lambda>
+    id_record,H,v=call('target_identity','exact candidate/target/register/no projection',lambda:identity(bundle,data,c))
+                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_runner.py", line 107, in identity
+    exact_H=oracle.symmetric_matrix([[complex(x) for x in row] for row in H])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_oracle.py", line 28, in symmetric_matrix
+    raise ValueError('EXACT_SYMMETRY_REQUIRED_NO_HERMITIANIZATION')
+ValueError: EXACT_SYMMETRY_REQUIRED_NO_HERMITIANIZATION
