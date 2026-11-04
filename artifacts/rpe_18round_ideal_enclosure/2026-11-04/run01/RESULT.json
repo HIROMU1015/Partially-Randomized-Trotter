@@ -1,0 +1,1252 @@
+{
+  "RPE_tolerance_certified": false,
+  "scientific_status": "UNDETERMINED",
+  "U_virtual_IID_upper": null,
+  "U_exec_upper": null,
+  "mandatory_STOP": true,
+  "SOURCE": {
+    "commit": "f4905fff592351d33ba07b927892fb9532c99711",
+    "versions": {
+      "numpy": "1.26.4",
+      "python-flint": "0.9.0"
+    },
+    "FLINT": "3.6.0",
+    "files_sha256": {
+      "round_adapter.py": "571378a444d5385973632fa9310118f075c387c85e382390812119e4a6fbc181",
+      "run_round_enclosures.py": "05f51c7e8956ec10b2c523b8b923841a16943d4397e9e6073cbcb17d41fd9249",
+      "fixed_inputs.json": "72644832c1c8a159809efc30ff2909aaa576e49d69197d7ee007bf8a19d57673",
+      "ENCLOSURE_EXTENSION_PLAN.md": "d4408a4f04cfd3d1c5b8fbaa175eaa51387d918566ce91bddd0319f2c382a566",
+      "requirements.txt": "59838f1c7190fc90edbe71b5084129e87aef29f2e70d1451cc01642868829423"
+    }
+  },
+  "inputs": {
+    "V2ROWS": {
+      "commit": "78c49d0b5f1d71e63b5959e78813237923bbc648",
+      "path": "docs/research/pr_rpe_v2_branch_success_20261103/V2_ROUND_RESULTS.csv",
+      "blob": "c90f35a5e1bf411bcef0e7c8a761cfbdb62f9e34",
+      "sha256": "e830057532c0d7b5700b4d723ddfb77e6b0734d714177d18706331996d1b42b0",
+      "bytes": 132793
+    },
+    "GRID": {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "path": "artifacts/research_direction_ablation/2026-09-21/wp04_ld3_full_schedule_signal_grid_v1.json",
+      "blob": "1abb90ebd647356223160f3fb889c89112a3294a",
+      "sha256": "56bca166b3fcbf6d5b235b77b8819b6bb0f51a99245fe87357479d3d55fa38d3",
+      "bytes": 481626
+    },
+    "OPT2": {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "path": "artifacts/research_direction_full_opt2/2026-09-25/wp11_all_r_opt2_coherent_analysis_20260925_065827.json",
+      "blob": "fa6f6e154fd60e135a9e6901a186976ad8bf34be",
+      "sha256": "3a86b356a0e602506577141c1c1d7ced7acb06f629818ca5a6bc59fb33633a88",
+      "bytes": 335692
+    },
+    "STATE": {
+      "commit": "e22d7718c47358ff650dbc04e8e72f6ab1c8bf41",
+      "path": "artifacts/rpe_fixed_request_measurement_b/2026-11-03/run01/physical_state.npz",
+      "blob": "04d49c9847af57b0854c1fc354cf388ea74491f0",
+      "sha256": "793300c86417f52569289ce86980c5f9a87292e130199355a0f4f7056225c9c4",
+      "bytes": 3750
+    },
+    "H": {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+      "blob": "77a69d5021b33a7fa1fde723fd3d1806f3c77950",
+      "sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b",
+      "bytes": 3589
+    },
+    "M17RESULT": {
+      "commit": "34840ce9bf81d985b32764d9bc9d77645ed52e59",
+      "path": "artifacts/rpe_m17_rigorous_mean_enclosure/2026-11-03/run01/RESULT.json",
+      "blob": "a2a1389bec686f7061fea3921180c4de269222da",
+      "sha256": "b58caa9dd8a0267eb20c049636e6d8c0b56d67125912e6b5a6a872334a1a2938",
+      "bytes": 7695
+    },
+    "EXPORT": {
+      "commit": "34840ce9bf81d985b32764d9bc9d77645ed52e59",
+      "path": "artifacts/rpe_m17_rigorous_mean_enclosure/2026-11-03/run01/source_replay.json",
+      "blob": "fe2db2e1d2e59d35d80e80d603979fe89fcd8bcb",
+      "sha256": "ad7fd3617a524207fbc86a77de471ed6222b010046822a11bd9675edcace1f08",
+      "bytes": 763344
+    },
+    "LAWS": {
+      "commit": "34840ce9bf81d985b32764d9bc9d77645ed52e59",
+      "path": "artifacts/rpe_m17_rigorous_mean_enclosure/2026-11-03/run01/categorical_laws.json",
+      "blob": "681af7ebe3ddcbc5f346559e1ea7e50a936c4936",
+      "sha256": "a75324a1ca014bedf56fbd4e8eacbe6c9829f4bfbc3f8ccf248b5db6cc897e91",
+      "bytes": 29314
+    },
+    "OPERATORS": {
+      "commit": "34840ce9bf81d985b32764d9bc9d77645ed52e59",
+      "path": "artifacts/rpe_m17_rigorous_mean_enclosure/2026-11-03/run01/enclosure_operators.zip",
+      "blob": "360f47090d36f0f5ba5ec96519576d6aebcaa704",
+      "sha256": "708095a92f7d3080f595388b80be6b6b9a26b4e4536f416edd8d7434731a5d56",
+      "bytes": 1266687
+    },
+    "BALL_SOURCE": {
+      "commit": "18fffce48e33136b91eb6ac5a6f9a5f77a08d36f",
+      "path": "docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103/ball_adapter.py",
+      "blob": "0a4ed2841dfa23636713c6a93e18e59a326cd496",
+      "sha256": "c222319a65104dbd890f85f62b8ddd25af885ae1556609ffab2df065d0920588",
+      "bytes": 8180
+    },
+    "MEAN_SOURCE": {
+      "commit": "18fffce48e33136b91eb6ac5a6f9a5f77a08d36f",
+      "path": "docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103/mean_adapter.py",
+      "blob": "2576b5a378973a7bbddcb40becb4aed56d24cbc4",
+      "sha256": "4df337055c1d22ee3778d0458230a76ea9f1f170ec59d860082a98a45b728183",
+      "bytes": 10258
+    },
+    "DISTRIBUTION_SOURCE": {
+      "commit": "18fffce48e33136b91eb6ac5a6f9a5f77a08d36f",
+      "path": "src/trotterlib/rte.py",
+      "blob": "53601b7c524653f5e1966b3955b9f51373e54002",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "bytes": 77103
+    }
+  },
+  "groups": [
+    {
+      "r": 32,
+      "rounds": [
+        {
+          "m": 15,
+          "q": 32768,
+          "r": 32,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "16738017614704498658260980853/19807040628566084398385987584",
+                "upper": "16738021802520665784141386869/19807040628566084398385987584"
+              },
+              "U_cat_upper": "2094999115396044985461/19807040628566084398385987584",
+              "shot_half_width": {
+                "lower": "36679516882344938449398400671/158456325028528675187087900672",
+                "upper": "18339758441172469224699200337/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "-32725770883682614728736274971/158456325028528675187087900672",
+                "upper": "-32725737381153277721693026843/158456325028528675187087900672"
+              },
+              "U_cat_upper": "16752896904636354364901/158456325028528675187087900672",
+              "shot_half_width": {
+                "lower": "36679516882344938449398400671/158456325028528675187087900672",
+                "upper": "18339758441172469224699200337/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "66952078834450328884335966765/79228162514264337593543950336",
+              "upper": "66952078834450328885273504123/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "-16362877066208973113076094129/79228162514264337593543950336",
+              "upper": "-8181438533104486556069278389/39614081257132168796771975168"
+            }
+          },
+          "builder_phase_transfer_upper": "70259896271184415359263715527/664613997892457936451903530140172288",
+          "powered_radius_upper": "34589023034476403245528677657/5846006549323611672814739330865132078623730171904",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 16,
+          "q": 65536,
+          "r": 32,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "53198706801735666650273011557/79228162514264337593543950336",
+                "upper": "53198740304265003657316259685/79228162514264337593543950336"
+              },
+              "U_cat_upper": "16758977607474002253669/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "31905960520712844119640807957/158456325028528675187087900672",
+                "upper": "3988245065089105514955100995/19807040628566084398385987584"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "-55310094999888352988307905743/158456325028528675187087900672",
+                "upper": "-55310027994829678974221409487/158456325028528675187087900672"
+              },
+              "U_cat_upper": "33503375920170375306447/158456325028528675187087900672",
+              "shot_half_width": {
+                "lower": "31905960520712844119640807957/158456325028528675187087900672",
+                "upper": "3988245065089105514955100995/19807040628566084398385987584"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "26599361776500167576428549125/39614081257132168796771975168",
+              "upper": "831230055515630236792690203/1237940039285380274899124224"
+            },
+            "imag": {
+              "lower": "-55310061497359015983139732353/158456325028528675187087900672",
+              "upper": "-55310061497359015979389582877/158456325028528675187087900672"
+            }
+          },
+          "builder_phase_transfer_upper": "70259896271184415359263715527/332306998946228968225951765070086144",
+          "powered_radius_upper": "17294511841770159290197552937/1461501637330902918203684832716283019655932542976",
+          "norm2_source": "saved m17 96-bit interval"
+        }
+      ],
+      "started_m": [
+        15,
+        16
+      ],
+      "stage": "group_finished_or_stopped",
+      "FLINT_threads": 5,
+      "law": {
+        "kind": "REUSED_M17_STEP_LAW",
+        "new_CDF_calls": 0,
+        "theta64_hex": [
+          "0x1.7e4088e024c5fp-12",
+          "0x1.fdab627b8d37ap-14"
+        ],
+        "order_law": {
+          "input_probability64_hex": [
+            "0x1.fffffdc53b58ap-1",
+            "0x1.1d6253b014ca4p-24"
+          ],
+          "component_fsum64_hex": null,
+          "choice_input64_hex": [
+            "0x1.fffffdc53b58ap-1",
+            "0x1.1d6253b014ca4p-24"
+          ],
+          "cdf64_hex": [
+            "0x1.fffffdc53b58ap-1",
+            "0x1.0000000000000p+0"
+          ],
+          "grid_masses": [
+            "4503599328123589/4503599627370496",
+            "299246907/4503599627370496"
+          ],
+          "grid_bits": 53,
+          "assumption": "independent uniform 53-bit words; not a statement about fixed PCG64 streams"
+        }
+      }
+    },
+    {
+      "r": 4,
+      "rounds": [
+        {
+          "m": 10,
+          "q": 1024,
+          "r": 4,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "17727143778793472783631054223/19807040628566084398385987584",
+                "upper": "17727143780890466350877439375/19807040628566084398385987584"
+              },
+              "U_cat_upper": "1091138105319295601/19807040628566084398385987584",
+              "shot_half_width": {
+                "lower": "20339492487796832102111958057/79228162514264337593543950336",
+                "upper": "20339492487796832102111958059/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "14375465488969007619527323467/39614081257132168796771975168",
+                "upper": "14375465493162994754020093771/39614081257132168796771975168"
+              },
+              "U_cat_upper": "2097129761719275701/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "20339492487796832102111958057/79228162514264337593543950336",
+                "upper": "20339492487796832102111958059/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "35454287559683939134501887899/39614081257132168796771975168",
+              "upper": "35454287559683939134515099297/39614081257132168796771975168"
+            },
+            "imag": {
+              "lower": "28750930982132002373534205843/79228162514264337593543950336",
+              "upper": "28750930982132002373560628633/79228162514264337593543950336"
+            }
+          },
+          "builder_phase_transfer_upper": "9006518776376814663048531139/170141183460469231731687303715884105728",
+          "powered_radius_upper": "62389036251432347555230523963/374144419156711147060143317175368453031918731001856",
+          "norm2_source": "saved m17 96-bit interval"
+        }
+      ],
+      "started_m": [
+        10
+      ],
+      "stage": "group_finished_or_stopped",
+      "FLINT_threads": 5,
+      "law": {
+        "kind": "NEW_SOURCE_REPLAY_NOT_HISTORICAL_PAYLOAD",
+        "new_CDF_calls": 1,
+        "theta64_hex": [
+          "0x1.7e4042f6dfd7dp-9",
+          "0x1.fdab582017950p-11"
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "order_law": {
+          "input_probability64_hex": [
+            "0x1.ffff714f20194p-1",
+            "0x1.1d61bfcda935dp-18"
+          ],
+          "component_fsum64_hex": null,
+          "choice_input64_hex": [
+            "0x1.ffff714f20194p-1",
+            "0x1.1d61bfcda935dp-18"
+          ],
+          "cdf64_hex": [
+            "0x1.ffff714f20192p-1",
+            "0x1.0000000000000p+0"
+          ],
+          "grid_masses": [
+            "4503580475719881/4503599627370496",
+            "19151650615/4503599627370496"
+          ],
+          "grid_bits": 53,
+          "assumption": "independent uniform 53-bit words; not a statement about fixed PCG64 streams"
+        }
+      }
+    },
+    {
+      "r": 2,
+      "rounds": [
+        {
+          "m": 8,
+          "q": 256,
+          "r": 2,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "59892077334657235422664470901/633825300114114700748351602688",
+                "upper": "59892077338970448740465258869/633825300114114700748351602688"
+              },
+              "U_cat_upper": "2269692966548287861/633825300114114700748351602688",
+              "shot_half_width": {
+                "lower": "20706893901745768437161774039/79228162514264337593543950336",
+                "upper": "20706893901745768437161774041/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "-77499344312098518583714206273/79228162514264337593543950336",
+                "upper": "-77499344311559366918989107777/79228162514264337593543950336"
+              },
+              "U_cat_upper": "291853379071684031/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "20706893901745768437161774039/79228162514264337593543950336",
+                "upper": "20706893901745768437161774041/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "59892077336813842081538647507/633825300114114700748351602688",
+              "upper": "59892077336813842081591082263/633825300114114700748351602688"
+            },
+            "imag": {
+              "lower": "-38749672155914471375677467101/39614081257132168796771975168",
+              "upper": "-9687418038978617843918547481/9903520314283042199192993792"
+            }
+          },
+          "builder_phase_transfer_upper": "18525110106990976180187008195/5444517870735015415413993718908291383296",
+          "powered_radius_upper": "61904021858491863068909563311/1496577676626844588240573268701473812127674924007424",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 9,
+          "q": 512,
+          "r": 2,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "-75100827204088394712242902103/79228162514264337593543950336",
+                "upper": "-75100827203010091382792705111/79228162514264337593543950336"
+              },
+              "U_cat_upper": "585424632822967209/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "20346704917944423987859172711/79228162514264337593543950336",
+                "upper": "20346704917944423987859172713/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "-58585187070349203999199331705/316912650057057350374175801344",
+                "upper": "-58585187066035990681398543737/316912650057057350374175801344"
+              },
+              "U_cat_upper": "2250379978088908153/316912650057057350374175801344",
+              "shot_half_width": {
+                "lower": "20346704917944423987859172711/79228162514264337593543950336",
+                "upper": "20346704917944423987859172713/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "-75100827203549243047524357977/79228162514264337593543950336",
+              "upper": "-75100827203549243047511249237/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "-29292593534096298670162577593/158456325028528675187087900672",
+              "upper": "-457696773970254666720880627/2475880078570760549798248448"
+            }
+          },
+          "builder_phase_transfer_upper": "18525110106990976180187008195/2722258935367507707706996859454145691648",
+          "powered_radius_upper": "30952113751764286141310838541/374144419156711147060143317175368453031918731001856",
+          "norm2_source": "saved m17 96-bit interval"
+        }
+      ],
+      "started_m": [
+        8,
+        9
+      ],
+      "stage": "group_finished_or_stopped",
+      "FLINT_threads": 5,
+      "law": {
+        "kind": "NEW_SOURCE_REPLAY_NOT_HISTORICAL_PAYLOAD",
+        "new_CDF_calls": 1,
+        "theta64_hex": [
+          "0x1.7e3f6de7ecb83p-8",
+          "0x1.fdab388f78cbbp-10"
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "order_law": {
+          "input_probability64_hex": [
+            "0x1.fffdc54005c02p-1",
+            "0x1.1d5ffd1fec971p-16"
+          ],
+          "component_fsum64_hex": null,
+          "choice_input64_hex": [
+            "0x1.fffdc54005c02p-1",
+            "0x1.1d5ffd1fec971p-16"
+          ],
+          "cdf64_hex": [
+            "0x1.fffdc54005c02p-1",
+            "0x1.0000000000000p+0"
+          ],
+          "grid_masses": [
+            "4503523022614017/4503599627370496",
+            "76604756479/4503599627370496"
+          ],
+          "grid_bits": 53,
+          "assumption": "independent uniform 53-bit words; not a statement about fixed PCG64 streams"
+        }
+      }
+    },
+    {
+      "r": 16,
+      "rounds": [
+        {
+          "m": 13,
+          "q": 8192,
+          "r": 16,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "-36881654571295744102523877565/39614081257132168796771975168",
+                "upper": "-36881654045911104622457927869/39614081257132168796771975168"
+              },
+              "U_cat_upper": "262745031695569139901/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "78545783178033679475006537823/316912650057057350374175801344",
+                "upper": "78545783178033679475006537829/316912650057057350374175801344"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "35404248263114699026419810027/633825300114114700748351602688",
+                "upper": "35404256669268930707475005163/633825300114114700748351602688"
+              },
+              "U_cat_upper": "4206901850881605370133/633825300114114700748351602688",
+              "shot_half_width": {
+                "lower": "78545783178033679475006537823/316912650057057350374175801344",
+                "upper": "78545783178033679475006537829/316912650057057350374175801344"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "-73763308617206848725092425721/79228162514264337593543950336",
+              "upper": "-73763308617206848724871185147/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "8851063116547953716515611335/158456325028528675187087900672",
+              "upper": "17702126233095907433916184925/316912650057057350374175801344"
+            }
+          },
+          "builder_phase_transfer_upper": "2203622892134460048743578819/332306998946228968225951765070086144",
+          "powered_radius_upper": "65298688646884843168954752967/46768052394588893382517914646921056628989841375232",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 14,
+          "q": 16384,
+          "r": 16,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "68428196658908378626309327765/79228162514264337593543950336",
+                "upper": "68428198760446936546573126549/79228162514264337593543950336"
+              },
+              "U_cat_upper": "1051018951962031917973/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "73297636948489066907636451605/316912650057057350374175801344",
+                "upper": "73297636948489066907636451611/316912650057057350374175801344"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "-32962207546941914981054383303/316912650057057350374175801344",
+                "upper": "-32962199140787683299999188167/316912650057057350374175801344"
+              },
+              "U_cat_upper": "4206590937929497606969/316912650057057350374175801344",
+              "shot_half_width": {
+                "lower": "73297636948489066907636451605/316912650057057350374175801344",
+                "upper": "73297636948489066907636451611/316912650057057350374175801344"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "68428197709677657586219986569/79228162514264337593543950336",
+              "upper": "68428197709677657586662467745/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "-8240550835966199785352937017/79228162514264337593543950336",
+              "upper": "-16481101671932399569820911701/158456325028528675187087900672"
+            }
+          },
+          "builder_phase_transfer_upper": "2203622892134460048743578819/166153499473114484112975882535043072",
+          "powered_radius_upper": "16324673603189655695532783117/5846006549323611672814739330865132078623730171904",
+          "norm2_source": "saved m17 96-bit interval"
+        }
+      ],
+      "started_m": [
+        13,
+        14
+      ],
+      "stage": "group_finished_or_stopped",
+      "FLINT_threads": 5,
+      "law": {
+        "kind": "NEW_SOURCE_REPLAY_NOT_HISTORICAL_PAYLOAD",
+        "new_CDF_calls": 1,
+        "theta64_hex": [
+          "0x1.7e40858be37eap-11",
+          "0x1.fdab61fd4aa56p-13"
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "order_law": {
+          "input_probability64_hex": [
+            "0x1.fffff714ed9adp-1",
+            "0x1.1d624ca548913p-22"
+          ],
+          "component_fsum64_hex": null,
+          "choice_input64_hex": [
+            "0x1.fffff714ed9adp-1",
+            "0x1.1d624ca548913p-22"
+          ],
+          "cdf64_hex": [
+            "0x1.fffff714ed9adp-1",
+            "0x1.0000000000000p+0"
+          ],
+          "grid_masses": [
+            "9007196860766637/9007199254740992",
+            "2393974355/9007199254740992"
+          ],
+          "grid_bits": 53,
+          "assumption": "independent uniform 53-bit words; not a statement about fixed PCG64 streams"
+        }
+      }
+    },
+    {
+      "r": 8,
+      "rounds": [
+        {
+          "m": 11,
+          "q": 2048,
+          "r": 8,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "1715911377705634072436750263/2475880078570760549798248448",
+                "upper": "1715911379772821092782389175/2475880078570760549798248448"
+              },
+              "U_cat_upper": "1039109039165458505/2475880078570760549798248448",
+              "shot_half_width": {
+                "lower": "40698939856680987675975565881/158456325028528675187087900672",
+                "upper": "40698939856680987675975565885/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "26644062191287258145790961721/39614081257132168796771975168",
+                "upper": "26644062224362250471321184313/39614081257132168796771975168"
+              },
+              "U_cat_upper": "16538352499200960569/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "40698939856680987675975565881/158456325028528675187087900672",
+                "upper": "40698939856680987675975565885/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "54909164119655282643479397431/79228162514264337593543950336",
+              "upper": "54909164119655282643533064585/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "53288124415649508617085312457/79228162514264337593543950336",
+              "upper": "53288124415649508617138979611/79228162514264337593543950336"
+            }
+          },
+          "builder_phase_transfer_upper": "4439250318908743346507238595/10633823966279326983230456482242756608",
+          "powered_radius_upper": "63358981403194765456818526285/187072209578355573530071658587684226515959365500928",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 12,
+          "q": 4096,
+          "r": 8,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "35420151578967171867548636585/1267650600228229401496703205376",
+                "upper": "35420153695766680701482882473/1267650600228229401496703205376"
+              },
+              "U_cat_upper": "1062350869008276466263/1267650600228229401496703205376",
+              "shot_half_width": {
+                "lower": "39287683238029644076830846789/158456325028528675187087900672",
+                "upper": "4910960404753705509603855849/19807040628566084398385987584"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "73862785012875497224471875793/79228162514264337593543950336",
+                "upper": "73862785145175466526592766161/79228162514264337593543950336"
+              },
+              "U_cat_upper": "66385079667212381999/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "39287683238029644076830846789/158456325028528675187087900672",
+                "upper": "4910960404753705509603855849/19807040628566084398385987584"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "8855038159341731570914271221/316912650057057350374175801344",
+              "upper": "17710076318683463142687217087/633825300114114700748351602688"
+            },
+            "imag": {
+              "lower": "36931392539512740937739326903/39614081257132168796771975168",
+              "upper": "18465696269756370468896497037/19807040628566084398385987584"
+            }
+          },
+          "builder_phase_transfer_upper": "4439250318908743346507238595/5316911983139663491615228241121378304",
+          "powered_radius_upper": "15839751356089689647197882527/23384026197294446691258957323460528314494920687616",
+          "norm2_source": "saved m17 96-bit interval"
+        }
+      ],
+      "started_m": [
+        11,
+        12
+      ],
+      "stage": "group_finished_or_stopped",
+      "FLINT_threads": 5,
+      "law": {
+        "kind": "NEW_SOURCE_REPLAY_NOT_HISTORICAL_PAYLOAD",
+        "new_CDF_calls": 1,
+        "theta64_hex": [
+          "0x1.7e40783adf6cap-10",
+          "0x1.fdab60044060dp-12"
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "order_law": {
+          "input_probability64_hex": [
+            "0x1.ffffdc53b9f0bp-1",
+            "0x1.1d62307a1bba5p-20"
+          ],
+          "component_fsum64_hex": null,
+          "choice_input64_hex": [
+            "0x1.ffffdc53b9f0bp-1",
+            "0x1.1d62307a1bba5p-20"
+          ],
+          "cdf64_hex": [
+            "0x1.ffffdc53b9f0cp-1",
+            "0x1.0000000000000p+0"
+          ],
+          "grid_masses": [
+            "2251797419714499/2251799813685248",
+            "2393970749/2251799813685248"
+          ],
+          "grid_bits": 53,
+          "assumption": "independent uniform 53-bit words; not a statement about fixed PCG64 streams"
+        }
+      }
+    },
+    {
+      "r": 1,
+      "rounds": [
+        {
+          "m": 0,
+          "q": 1,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "39571518730021113244335930631/39614081257132168796771975168",
+                "upper": "39571518730021391055961914631/39614081257132168796771975168"
+              },
+              "U_cat_upper": "184324920247033/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "21080450809170173542636363783/79228162514264337593543950336",
+                "upper": "21080450809170173542636363785/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "27449828903627754862606111159/633825300114114700748351602688",
+                "upper": "27449828903632199848621855159/633825300114114700748351602688"
+              },
+              "U_cat_upper": "2697432809165239/633825300114114700748351602688",
+              "shot_half_width": {
+                "lower": "21080450809170173542636363783/79228162514264337593543950336",
+                "upper": "21080450809170173542636363785/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "39571518730021252150148916261/39614081257132168796771975168",
+              "upper": "39571518730021252150148929001/39614081257132168796771975168"
+            },
+            "imag": {
+              "lower": "54899657807259954711227762561/1267650600228229401496703205376",
+              "upper": "54899657807259954711228170075/1267650600228229401496703205376"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/11150372599265311570767859136324180752990208",
+          "powered_radius_upper": "30790100641233961449493544845/191561942608236107294793378393788647952342390272950272",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 1,
+          "q": 2,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "39454701776537645746096980635/39614081257132168796771975168",
+                "upper": "39454701776538201369348948635/39614081257132168796771975168"
+              },
+              "U_cat_upper": "386967957388645/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "42165341804115886605018766337/158456325028528675187087900672",
+                "upper": "42165341804115886605018766343/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "54840672009787254417907281729/633825300114114700748351602688",
+                "upper": "54840672009796144389938769729/633825300114114700748351602688"
+              },
+              "U_cat_upper": "5309976494763841/633825300114114700748351602688",
+              "shot_half_width": {
+                "lower": "42165341804115886605018766337/158456325028528675187087900672",
+                "upper": "42165341804115886605018766343/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "78909403553075847115445903779/79228162514264337593543950336",
+              "upper": "78909403553075847115445954761/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "27420336004895849701961410919/316912650057057350374175801344",
+              "upper": "13710168002447924850980807405/158456325028528675187087900672"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/5575186299632655785383929568162090376495104",
+          "powered_radius_upper": "30810360116400490872887084417/95780971304118053647396689196894323976171195136475136",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 2,
+          "q": 4,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "77998802399630990661483989563/79228162514264337593543950336",
+                "upper": "77998802399633213154491861563/79228162514264337593543950336"
+              },
+              "U_cat_upper": "1614896454989253/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "42154609890820135523090312931/158456325028528675187087900672",
+                "upper": "42154609890820135523090312937/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "27310015664960507609848912625/158456325028528675187087900672",
+                "upper": "27310015664964952595864656625/158456325028528675187087900672"
+              },
+              "U_cat_upper": "2561886291401457/158456325028528675187087900672",
+              "shot_half_width": {
+                "lower": "42154609890820135523090312931/158456325028528675187087900672",
+                "upper": "42154609890820135523090312937/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "77998802399632101907987874569/79228162514264337593543950336",
+              "upper": "77998802399632101907987976557/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "13655007832481365051428341323/79228162514264337593543950336",
+              "upper": "6827503916240682525714221651/39614081257132168796771975168"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/2787593149816327892691964784081045188247552",
+          "powered_radius_upper": "15410264081290874979081756315/23945242826029513411849172299223580994042798784118784",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 3,
+          "q": 8,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "74435071440673206757124540237/79228162514264337593543950336",
+                "upper": "74435071440677651743140284237/79228162514264337593543950336"
+              },
+              "U_cat_upper": "3300705317353651/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "42087690034264071415583035315/158456325028528675187087900672",
+                "upper": "42087690034264071415583035321/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "53772508355135678252426672985/158456325028528675187087900672",
+                "upper": "53772508355144568224458160985/158456325028528675187087900672"
+              },
+              "U_cat_upper": "4737817914587993/158456325028528675187087900672",
+              "shot_half_width": {
+                "lower": "42087690034264071415583035315/158456325028528675187087900672",
+                "upper": "42087690034264071415583035321/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "37217535720337714625066155119/39614081257132168796771975168",
+              "upper": "18608767860168857312533128559/19807040628566084398385987584"
+            },
+            "imag": {
+              "lower": "53772508355140123238442212993/158456325028528675187087900672",
+              "upper": "53772508355140123238442620977/158456325028528675187087900672"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/1393796574908163946345982392040522594123776",
+          "powered_radius_upper": "30825655078195319256316831815/23945242826029513411849172299223580994042798784118784",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 4,
+          "q": 16,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "60808039007297306265119090411/79228162514264337593543950336",
+                "upper": "60808039007306196237150578411/79228162514264337593543950336"
+              },
+              "U_cat_upper": "6576376211052821/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "21028794751617884537704792651/79228162514264337593543950336",
+                "upper": "21028794751617884537704792653/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "3157463499976330733434122473/4951760157141521099596496896",
+                "upper": "3157463499976886356686090473/4951760157141521099596496896"
+              },
+              "U_cat_upper": "306624326586135/4951760157141521099596496896",
+              "shot_half_width": {
+                "lower": "21028794751617884537704792651/79228162514264337593543950336",
+                "upper": "21028794751617884537704792653/79228162514264337593543950336"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "60808039007301751251134630401/79228162514264337593543950336",
+              "upper": "60808039007301751251135038421/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "25259707999812868360480749779/39614081257132168796771975168",
+              "upper": "25259707999812868360480953789/39614081257132168796771975168"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/696898287454081973172991196020261297061888",
+          "powered_radius_upper": "61656687849926171864054641373/23945242826029513411849172299223580994042798784118784",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 5,
+          "q": 32,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "57828235744842678602918918197/316912650057057350374175801344",
+                "upper": "57828235744913798379170822197/316912650057057350374175801344"
+              },
+              "U_cat_upper": "46337131948410827/316912650057057350374175801344",
+              "shot_half_width": {
+                "lower": "41968904777394727435260850695/158456325028528675187087900672",
+                "upper": "41968904777394727435260850699/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "77547844634780429715875573243/79228162514264337593543950336",
+                "upper": "77547844634798209659938549243/79228162514264337593543950336"
+              },
+              "U_cat_upper": "12358474674196997/79228162514264337593543950336",
+              "shot_half_width": {
+                "lower": "41968904777394727435260850695/158456325028528675187087900672",
+                "upper": "41968904777394727435260850699/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "57828235744878238491043238077/316912650057057350374175801344",
+              "upper": "57828235744878238491046502317/316912650057057350374175801344"
+            },
+            "imag": {
+              "lower": "77547844634789319687906653209/79228162514264337593543950336",
+              "upper": "77547844634789319687907469277/79228162514264337593543950336"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/348449143727040986586495598010130648530944",
+          "powered_radius_upper": "61659569734922739657202182747/11972621413014756705924586149611790497021399392059392",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 6,
+          "q": 64,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "-9158141294292921293995525747/9903520314283042199192993792",
+                "upper": "-9158141294288476307979781747/9903520314283042199192993792"
+              },
+              "U_cat_upper": "2954628929403277/9903520314283042199192993792",
+              "shot_half_width": {
+                "lower": "41811904897430553100651325715/158456325028528675187087900672",
+                "upper": "41811904897430553100651325719/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "56601780197149079840580435477/158456325028528675187087900672",
+                "upper": "56601780197220199616832339477/158456325028528675187087900672"
+              },
+              "U_cat_upper": "48666965561311723/158456325028528675187087900672",
+              "shot_half_width": {
+                "lower": "41811904897430553100651325715/158456325028528675187087900672",
+                "upper": "41811904897430553100651325719/158456325028528675187087900672"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "-73265130354325590407902046059/79228162514264337593543950336",
+              "upper": "-73265130354325590407900413893/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "14150445049296159932176188829/39614081257132168796771975168",
+              "upper": "28300890098592319864354009819/79228162514264337593543950336"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/174224571863520493293247799005065324265472",
+          "powered_radius_upper": "61661105037318218224274702909/5986310706507378352962293074805895248510699696029696",
+          "norm2_source": "saved m17 96-bit interval"
+        },
+        {
+          "m": 7,
+          "q": 128,
+          "r": 1,
+          "K": 2,
+          "axes": {
+            "cosine": {
+              "interval": {
+                "lower": "28820805643220035660044885943/39614081257132168796771975168",
+                "upper": "28820805643255595548170837943/39614081257132168796771975168"
+              },
+              "U_cat_upper": "20853853260816457/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "10352569070793677067528104305/39614081257132168796771975168",
+                "upper": "5176284535396838533764052153/19807040628566084398385987584"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            },
+            "sine": {
+              "interval": {
+                "lower": "-26170850568264409669139783461/39614081257132168796771975168",
+                "upper": "-26170850568228849781013831461/39614081257132168796771975168"
+              },
+              "U_cat_upper": "25940507798446299/39614081257132168796771975168",
+              "shot_half_width": {
+                "lower": "10352569070793677067528104305/39614081257132168796771975168",
+                "upper": "5176284535396838533764052153/19807040628566084398385987584"
+              },
+              "categorical_decision": "SUFFICIENT_CONDITION_CONFIRMED",
+              "exec_bridge_upper": null,
+              "U_exec_upper": null,
+              "exec_decision": "UNDETERMINED"
+            }
+          },
+          "logical_signed_mean_interval": {
+            "real": {
+              "lower": "57641611286475631208214091703/79228162514264337593543950336",
+              "upper": "57641611286475631208217356069/79228162514264337593543950336"
+            },
+            "imag": {
+              "lower": "-52341701136493259450155247105/79228162514264337593543950336",
+              "upper": "-52341701136493259450151982739/79228162514264337593543950336"
+            }
+          },
+          "builder_phase_transfer_upper": "39098510430931374750687530179/87112285931760246646623899502532662132736",
+          "powered_radius_upper": "3853870923762933791188516135/187072209578355573530071658587684226515959365500928",
+          "norm2_source": "saved m17 96-bit interval"
+        }
+      ],
+      "started_m": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "stage": "group_finished_or_stopped",
+      "FLINT_threads": 5,
+      "law": {
+        "kind": "NEW_SOURCE_REPLAY_NOT_HISTORICAL_PAYLOAD",
+        "new_CDF_calls": 1,
+        "theta64_hex": [
+          "0x1.7e3c19bcd3089p-7",
+          "0x1.fdaaba4d44069p-9"
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "order_law": {
+          "input_probability64_hex": [
+            "0x1.fff715386ab19p-1",
+            "0x1.1d58f2a9cea9fp-14"
+          ],
+          "component_fsum64_hex": null,
+          "choice_input64_hex": [
+            "0x1.fff715386ab19p-1",
+            "0x1.1d58f2a9cea9fp-14"
+          ],
+          "cdf64_hex": [
+            "0x1.fff715386ab19p-1",
+            "0x1.0000000000000p+0"
+          ],
+          "grid_masses": [
+            "9006586475752217/9007199254740992",
+            "612778988775/9007199254740992"
+          ],
+          "grid_bits": 53,
+          "assumption": "independent uniform 53-bit words; not a statement about fixed PCG64 streams"
+        }
+      }
+    }
+  ],
+  "execution_status": "COMPLETED_MANDATORY_STOP",
+  "categorical_local_conditions": "CONDITIONAL_IDEAL_CATEGORICAL_LOCAL_CONDITIONS_CONFIRMED",
+  "m17_recomputed": false,
+  "scientific_call_scope": "five order laws; six shared steps; 17 complex enclosures at 96 bits",
+  "sampling_RNG_build_compile_H_DF_state_generation": 0,
+  "resources": {
+    "available_CPUs": 32,
+    "workers": 6,
+    "threads_per_worker": 5
+  }
+}

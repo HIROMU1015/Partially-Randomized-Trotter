@@ -1,3 +1,12 @@
+## 2026-11-04 RPE Partial18round：ideal categoricalの全36軸局所条件が成立
+
+[報告・SOURCE・原結果・全18roundのU_cat](docs/research/rpe_18round_ideal_enclosure_execution_20261104/REPORT.md)。
+SOURCEf4905fff592351d33ba07b927892fb9532c99711、linear H4/1Å/STO-3G/保存legacy DF12/4電子sector70、
+Partial L_D3/単一δ=.02、保存state ray・各roundのq/r/K/N/α/β/εで17新セルを96 bit・1 pass評価。m17は再計算せず旧2軸を再利用。
+5新order law、6群並列、全36軸でstrict十分条件を確認。入力不一致・未判定・中断なし、retry/精度追加0。
+指定IID uniform53・ideal未compile scopeの局所結果。branch/energy/実PRNG/実測定・state preparationは未保証。
+RPE全体false/UNDETERMINED、元bridge U=null、旧SOURCE/raw/STOP・V2 CONDITIONAL_SUCCESS保持。公開照合後mandatory STOP。
+
 ## 2026-11-04 RPE m17：作用上界は取得、全support測定完了は未保証
 
 [報告・SOURCE・原本](docs/research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)。

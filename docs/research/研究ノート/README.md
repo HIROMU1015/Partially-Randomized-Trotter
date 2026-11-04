@@ -1,3 +1,8 @@
+## 2026-11-04 RPE Partial18round：ideal categorical局所条件
+
+[当日記録](2026-11-04_rpe_18round_ideal_categorical.md)。SOURCEf4905fff5923、H4/1Å/STO-3G/legacy DF12/L_D3/δ=.02。
+m0..16を96 bit・1 pass、m17再利用で36軸の局所条件を確認。branch/energy保証は別段階、global未判定・元bridge U=nullを保全してSTOP。
+
 ## 2026-11-04 RPE m17：数値作用上界は取得、全support guardは未保証
 
 [当日記録](2026-11-04_rpe_m17_virtual_bridge.md)。SOURCEc3a5cc387、固定H4/DF12/L_D3/δ=.02/m17 q131072/r32 K2を96 bit・1 pass。
