@@ -1,5 +1,10 @@
 # リポジトリの現在の入口
 
+[Controlled Hadamard全18round接続：統合runner準備（2026-11-05）](docs/research/rpe_controlled_connection_runner_20261104/IMPLEMENTATION_REPORT.md)：
+boundary有理数差・Gaussian/CAR support包含・control lowering・保存36軸strict判定を統合。人工147件PASS。
+defaultはbyte/schema/literalのみ、新H4評価0。Acb96 bit/1 pass・最大229 basisの限定科学SOURCEを公開し別途承認待ち。
+旧SOURCE/raw/STOP、UNDETERMINED/false・両U nullを保全。公開照合後mandatory STOP。
+
 [全18round categorical平均・Controlled Hadamard・長q位相転送の接続調査（2026-11-04）](docs/research/rpe_categorical_circuit_connection_20261104/CONNECTION_ANALYSIS.md)：
 任意wordの条件付き代数、boundary parameter差、Gaussian/CAR support上界を整理。人工114件PASS・新H4評価0。
 6rの保存τ/θ・18tupleを静的照合。全18回路transferは未評価、有限audit計画を固定（H4統合runner未実装）。

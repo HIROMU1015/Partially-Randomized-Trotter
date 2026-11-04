@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled Hadamard全18round：接続保証の統合runner](research/rpe_controlled_connection_runner_20261104/IMPLEMENTATION_REPORT.md)
+（2026-11-05）。boundary・Gaussian support差・lowering・36軸strict classifierを接続し、人工147件PASS。
+新H4評価0、defaultは静的照合のみ。固定Acb96 bit/1 pass科学SOURCEを公開し別途実行承認待ち、mandatory STOP。
+
 [全18round categorical平均とControlled Hadamard回路の接続調査](research/rpe_categorical_circuit_connection_20261104/CONNECTION_ANALYSIS.md)
 （2026-11-04）。任意wordの条件付き代数・boundary有理数差・Gaussian/CAR support上界を整理し人工114件PASS。
 新H4評価0。全18回路接続の上界は未評価、次の有限audit計画を固定（H4統合runner未実装）。全体UNDETERMINED/false・両U null、mandatory STOP。
