@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled RTE・Hadamard：12局所probeのrunner実装・固定実行範囲](research/rpe_controlled_hadamard_runner_preparation_20261104/IMPLEMENTATION_REPORT.md)
+（2026-11-04）。signal τ adapter、96-bit occupation-energy参照、並列batchとraw/STOP。人工60件PASS、実H4科学実行0。
+公開SOURCEの別途実行承認待ち。旧SOURCE/結果/判定と全体UNDETERMINED/falseを保持。
+
 [Controlled RTE・Hadamard：SOURCE対応・不足・限定計画](research/rpe_controlled_hadamard_preparation_20261104/NEXT_STAGE_DECISION.md)
 （2026-11-04）。Codex Cの静的準備・人工34件PASS。新H4科学実行0、旧結果/STOP保持。
 science runner固定と別途実行承認を経る次の12局所probe案。全18roundの回路保証ではない。
