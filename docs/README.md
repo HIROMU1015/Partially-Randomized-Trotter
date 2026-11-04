@@ -1,5 +1,10 @@
 # 文書索引
 
+## 研究C：固定1-word・m0 runner準備（2026-11-05）
+
+[runner・oracle距離・入力13件・未承認15-call案](research/research_c_direct_m0_runner_preparation_20261105.md)。新規 `c_direct_m0_oracle.py` / `c_direct_m0_runner.py`、passive専用 `prepare_research_c_direct_m0.py`、人工テスト `test_research_c_direct_m0_runner.py`、artifact `research_c_direct_m0_runner/2026-11-05/`。保存Hとown-DF targetの同一性が未確定でNOT_READY、実H4科学0、mandatory STOP。
+
+
 ## 研究C：Direct round rigorous信号・人工準備（2026-11-05）
 
 [技術報告・未承認契約・人工benchmark](research/research_c_direct_round_rigorous_signal_readiness_20261105.md)。新規 `src/trottertracks/c_direct_round_signal.py` と人工fixture、`scripts/prepare_research_c_direct_round_signal.py`（passive専用）、`scripts/benchmark_research_c_direct_round_signal.py`（人工専用）、`tests/management/test_research_c_direct_round_signal.py`、`artifacts/research_c_direct_round_signal/2026-11-05/`。Arb192の指定状態・全round X/Y区間。Full512 operator資格とは別。実H4科学0、SCIENCE_NOT_READY、mandatory STOP。
