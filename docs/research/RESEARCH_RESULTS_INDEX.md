@@ -152,3 +152,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## サーバー1の準備済み原本からの追補
 
 [過去の草稿・技術SOURCE・索引の保存原版](server1_onsite_collection_20261103.md)から今回の出典対応へ進める。現在の仕様・科学的採否・実行許可は変更しない。
+
+## H8長時間・高次PR：Stage C独立確認（2026-11-05）
+
+[固定9標本の確認結果・代表7検査・SOURCE](h8_stage_c_execution_20261105/REPORT.md)、[確認価格と会計](../../artifacts/resource_applicability/track_a_h8_long_time/2026-11-05/confirmation.json)。PR m5/prefix8/q1と保存PF B0I/m5/prefix15/q1の観測比較・記述的SE目標を確認した。母集団保証は未確立。探索とpoolせず、結果公開後mandatory STOP。

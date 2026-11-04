@@ -186,3 +186,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## H8長時間・高次PR Stage Cの準備（2026-11-04依頼）
 
 [独立標本比較の計画・実装・人工検証](docs/research/h8_stage_c_preparation_20261104/PLAN.md)と[次段判断](docs/research/h8_stage_c_preparation_20261104/NEXT_STAGE_DECISION.md)。保存探索nとSEを引用したn9・同等SE目標の提案、固定PF対照、別cohortの最小入口を準備した。Stage C、価格再集計、分散再解析は未実行。技術準備後はmandatory STOP。
+
+## H8長時間・高次PR Stage C独立確認（2026-11-05）
+
+[新9標本の結果・代表7検査・記述的SE](docs/research/h8_stage_c_execution_20261105/REPORT.md)と[確認価格・provenance](artifacts/resource_applicability/track_a_h8_long_time/2026-11-05/confirmation.json)。固定SOURCE82fdbdd0で確認cohortを完了し、固定PFとの観測比較・SE目標を達成。母集団保証なし。元の探索・準備・失敗/STOPを保持し、今回の結果公開後はmandatory STOP。

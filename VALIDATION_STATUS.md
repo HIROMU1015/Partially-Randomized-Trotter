@@ -607,3 +607,8 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 分類はlocal validation / exploration complete。[結果と限定条件](docs/research/h8_long_time_execution_20261103/EXPLORATION_RESULTS_20261104.md)。Linear H8、1.00 Å、STO-3G、保存tol-only1e-8 DF28、T=1.6、ε=.0005、P=0、PR R_outer32/K4。69候補のsignal/shot、選定19候補・51標本・102軸の直接価格とpaired Gを保存した。全19代表の計133検査が許容内。これは今回の固定scopeの完了であり、上記の歴史的DF/UWC監査や他研究の状態を変更しない。
 Signal SOURCE `d1272016592ff06c0567862f770ed796fd61b366`、native SOURCE `df93fbb88761b61c2691bf01f761ed20a7987d7f`、位相補助SOURCE `18ce41942051065fa097644a8a937bd11adba708`。元の失敗/HOLDを保持し、状態vectorの位相整列や許容誤差緩和はしていない。入力raw・seed/event・QPYはprivate保全、匿名価格・検査metadataは公開対象。外部独立再現、確認Stage C、母集団保証、全domain最適性と全RPE総費用は未検証。
+
+## H8 Stage C独立確認（2026-11-05）
+
+分類はlocal validation / independent confirmation cohort complete。[結果・7検査・限界](docs/research/h8_stage_c_execution_20261105/REPORT.md)。固定Linear H8（1.00 Å、STO-3G、tol-only1e-8 DF28、T=1.6、ε=.0005、P=0）のPR m5/prefix8/q1/R_outer32/K4。新CONFIRMATION 9標本・18軸が完了し、代表index0の7検査が元の許容値・位相整列なしでPASS。平均G=67335317264200、固定PF B0I/m5/prefix15/q1のG=89291219516568との比0.754109056061、paired sample variance=95815404731724237421200、SE=103180211675.02368 RZ。固定h_G=121655623062.28098を達成した。
+Stage Bとpoolせず、PFは保存価格を再利用。order0/2/4は288/0/0で、未観測条件付き費用・population tail cost boundはunknown/null。独立cohortの観測比較と記述的SEの確認であり、母集団優位・全domain最適・総RPE費用・外部独立再現を保証しない。結果公開後mandatory STOP。希少費用検証・詳細科学レビュー等へ自動移行しない。 原Stage A/B・HOLD・SOURCE・STOPを保全。科学SOURCE `82fdbdd098e9d3edae01a930437e3d76c1f8bf36`。上記の確認未実行は11月4日時点の履歴。
