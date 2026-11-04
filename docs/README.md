@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：guard上界を鋭くするための静的検討](research/rpe_m17_guard_bound_static_assessment_20261104/GUARD_BOUND_ASSESSMENT.md)
+（2026-11-04）。作用誤差とノルム増幅の分離、rotation/roundoffの式、保守性と証明限界を整理。
+人工24件PASS、実H4追加評価0。新科学SOURCEは未完成、guard未判定・旧status/STOPを保持。
+
 [RPE m17：仮想測定bridgeの1 pass結果](research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)
 （2026-11-04）。runtime/finite確認、作用誤差majorantを取得したが全support guardは未保証。
 両軸U_virtual/U_exec=null、旧status保持。96 bitの1回で終了し、原本5件を保全してmandatory STOP。

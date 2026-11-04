@@ -1,0 +1,65 @@
+2026-11-04 JST / static SOURCE analysis and artificial examples only
+Base: 81fa6813194e4e14189092626f66dd10793225e1
+Branch: codex/rpe-m17-guard-bound-static-assessment-20261104
+
+Status: STATIC_GUARD_BOUND_REFINEMENT_CANDIDATE
+Scientific execution ready: false
+No new real H4 array load, action, norm, defect, mean, budget evaluation,
+sampling, RNG replay, circuit build/compile, or result reanalysis.
+No scientific runner, legacy adapter, KernelBounds, or raw result was changed.
+No independent scientific review was conducted.
+
+Reuse and scope
+- Read applicable AGENTS.md / PROJECT_MAP.md and the available original-workspace
+  research_project_instructions_unified_2026-10-25.md sections 8.1, 8.4 and 10.
+- Inspected the unchanged bridge adapter/pipeline, kernel derivation and kernel
+  coefficients, actual state-action and conditional_probability SOURCE.
+- Quoted existing REPORT.md literals without new differences, ratios, budgets,
+  rankings, component aggregates, or H4 numerical evaluation.
+- Reused ball_adapter exact rational/Acb/Frobenius primitives and existing
+  affine composition, support and guard/axis behavior in artificial examples.
+- The new test is a mathematical illustration, not a production norm-only
+  adapter. Import is inert; no real-data CLI/loader or approval machinery added.
+
+Environment (existing isolated venv, read only)
+  /tmp/prt-rpe-m17-enclosure-venv-20261103/bin/python
+  Python 3.11.0rc1 / NumPy 1.26.4 / python-flint 0.9.0 / FLINT 3.6.0
+  Qiskit 1.3.0 for the unchanged existing artificial adapter tests only.
+  PYTHONWARNINGS=ignore PYTHONDONTWRITEBYTECODE=1
+  MPLCONFIGDIR=/tmp/prt-rpe-m17-enclosure-mpl
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1
+  FLINT threads=1, 96-bit precision for tiny artificial matrices; restored after
+  each test. This is not a resource policy or cap on future scientific work.
+
+New artificial tests: 8 PASS / 0.003 s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_guard_bound_static_assessment_20261104 -p test_guard_bound_examples.py -v
+  - Phase error with no norm inflation; using norm gain as action error would
+    falsely give zero mean error for an opposite-phase signal.
+  - Defect-based norm inclusion on a nonunitary exact 2x2 dyadic matrix.
+  - Exact T^*T identity and a counterexample to dropping P^*-P.
+  - Rotation roundoff formula against exact artificially injected errors,
+    including nonzero scale/matvec/subtract additive terms.
+  - Positive rare mass retained in uniform support; exact zero mass excluded.
+  - Kernel roundoff majorant remains when construction residual is zero.
+  - Coupled component extrema versus separately maximized residual/norm.
+  - Unproved completion retains null means and UNDETERMINED axes.
+  np.load, numeric_components and bound_context were patched to raise if called.
+
+Existing artificial adapter tests: 16 PASS / 0.126 s / exit 0
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104 -p test_virtual_bridge.py -v
+  Unchanged 2x2 fixture/sector/legacy artificial gate comparison, affine powers,
+  average vs uniform law, underflow/additive terms, strict/null and STOP behavior.
+
+Total: 24 PASS. LOCAL author checks, not CI, an independent review, or an H4
+scientific result. The symbolic norm formulas were checked against SOURCE;
+these finite examples do not by themselves prove a universal theorem.
+
+Publication checks
+- Dedicated /tmp worktree; original dirty workspace is not cleaned or changed.
+- Changed-path allowlist: this new assessment directory, PROJECT_MAP.md and
+  docs/README.md. No changes to old scientific SOURCE/raw/status/STOP paths.
+- Byte-only verification of the five existing run01 raw files against hashes
+  published in the prior REPORT; no array decoding or numerical reanalysis.
+- git diff --check and relative document links checked before commit.
+- Commit, remote branch SHA/tree and changed-file blob checks are reported in
+  the final chat after publication. Mandatory STOP after those checks.

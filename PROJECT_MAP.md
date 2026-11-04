@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：guard上界の保守性・静的検討（2026-11-04）](docs/research/rpe_m17_guard_bound_static_assessment_20261104/GUARD_BOUND_ASSESSMENT.md)：
+作用誤差とノルム増幅を分ける証明案、rotationの非Hermitian項、現行kernel丸め項が残る限界を整理。
+新人工8＋既存16件PASS。新H4評価0、guard改善量は未評価、旧status/SOURCE/raw/STOP保持。
+
 [RPE m17：仮想測定bridge実行・全support guardは未保証（2026-11-04）](docs/research/rpe_m17_virtual_bridge_scientific_execution_20261104/REPORT.md)：
 H4/1Å/STO-3G/保存DF12/B raw state/sector70、L_D3/δ=.02/m17 q131072/r32 K2。固定SOURCEc3a5cc387で96 bit・1 pass。
 runtime/finite確認、作用誤差majorant取得、guard完了は未証明。両軸U_virtual/U_exec=null・旧status保持、原本5件保存でSTOP。
