@@ -11,7 +11,7 @@ import multiprocessing
 import h8_long_time_adapter as a
 
 BASIS = frozenset(('rz', 'sx', 'x', 'cx', 'measure', 'barrier'))
-NONBASIS = frozenset(('xx_plus_yy', 'rzz', 'crzz', 'crz', 'h', 'p'))
+NONBASIS = frozenset(('xx_plus_yy', 'rzz', 'crzz', 'crz', 'h', 'p', 'sdg'))
 POLICY = 'XX_PLUS_YY_EXTRA_PLUS_I_IN_THIS_FIXED_COMPILER'
 
 

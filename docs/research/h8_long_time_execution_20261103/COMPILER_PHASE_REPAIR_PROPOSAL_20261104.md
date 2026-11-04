@@ -65,3 +65,9 @@ gate列・命令数・RZ数を変えず、許容誤差1e-8/1e-7も緩めない�
 修正後の価格は元RZ数と一致させる。集計には元native SOURCEと補助SOURCEを併記し、過去の実行記録を残した別の結果文書を出力する。
 人工3qubit回路で元の7検査と来歴保存までを通す検査を含め、関連34テストPASS。これは人工検証であり、H8の補正後PASSを意味しない。
 補助SOURCEを専用branchへ公開・固定してから、残る2件だけを並列実行する。科学条件・標本追加・Stage Cの範囲は変更しない。
+
+## 最初の補助実行後の技術修正
+
+最初の補助SOURCE `f04ef60c960fd2a68bcf0506f4c505f0bc872b78`では、m5のcosine検査が7.80e-12で通過した。その後のsineのS†未登録と、S2の復旧QPY参照先不足によりHOLDとなった。これらのHOLDを保存し、同じ2代表に限って技術修正を行う。
+S†の局所operator検査も実施し、検査を省略しない。元run・既知の復旧先・最初の補助実行のcacheを探索対象とし、元と同じfingerprint・compiler・RZ価格を要求する。元のnative wrapperの構造を検査してevolutionを復元し、既存builderでcosine wrapperを再構築したfingerprintが完全一致する場合だけ再利用する。
+保存済みの補正後vectorを使うときは補正回路の命令・qubit/clbit・parameter・global phaseの一致を照合し、既に会計した位相を再度加えない。未補正の元vectorには局所operator由来の位相だけを一回加える。人工3qubitのS†・7検査・全checkpoint再利用・位相二重加算防止など36テストが通過した。科学的条件の追加、許容誤差緩和、標本追加、Stage Cは含まない。

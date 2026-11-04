@@ -65,3 +65,6 @@ PRの6件では、`to_dict()`中のtupleが保存JSONからlistとして復元�
 
 補助SOURCE `f04ef60c960fd2a68bcf0506f4c505f0bc872b78`を公開・照合し、17:45頃から元の2代表をtmux内の2 workerで並列再検証している。
 ユーザーの中間集計依頼により、[17:50 JST時点の保存結果](INTERIM_RESULTS_20261104_1750JST.md)と全19候補のCSV・匿名価格metadataを保存した。49/51標本、17/19候補の代表検証完了。未完了2候補の8標本平均は記述値として区別し、確定した比較に使わない。稼働中の科学SOURCEは変更していない。
+
+20:27 JSTの確認では、最初の位相補助実行は2件とも技術的HOLDで終了していた。m5は18:20に補正後cosine vector差7.80e-12（許容1e-7、位相整列なし）まで通過したが、sine wrapperの`sdg`が局所operator検査の対象に未登録だった。S2は18:58に、元run以外の復旧先に保存されていたcompiled QPYを再利用対象から漏らしたため、`SAME_ORIGINAL_RAW_COMPILED_CIRCUIT`で停止した。S2の復旧QPYと再compile QPYのhashは一致した。
+追加修正の範囲内で、S†も小operator検査を要求する対象に加え、既知の復旧cacheを検索するよう修正した。保存済みcosine wrapperから元evolutionを取り出し、同じnative builderによるcosine再構築fingerprintの一致を要求する。これにより重い同一回路の再構成を避ける。保存vector・局所operator検査は元のSOURCE・標本・preparation・hashを照合して再利用し、補正済みvectorには位相を二重に加えない。人工3qubit回路のS†と完全な保存再利用を含め関連36テストPASS。元の全HOLDと最初の補助SOURCE `f04ef60c960fd2a68bcf0506f4c505f0bc872b78`は保全し、次の補助SOURCEと別のprivate保存先で同じ2標本だけを継続する。科学条件・許容誤差・標本数は変更しない。
