@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[RPE m17：保存norm²の再利用とguard証明の改善候補](research/rpe_m17_guard_proof_refinement_preflight_20261104/TECHNICAL_FINDINGS.md)
+（2026-11-04）。同じraw stateへの96 bit norm²適用をbyte/SOURCEで確認。現行kernelのrow/energy/相関を静的検討。
+人工37件PASS、実H4追加評価0。保証は未確定、次は人工graph接続。旧status/STOPを保持。
+
 [RPE m17：ノルム専用adapterの可否と限定診断準備](research/rpe_m17_norm_only_adapter_preparation_20261104/PROOF_LIMIT.md)
 （2026-11-04）。欠損ゼロ時にも残る積型上界の限界を静的導出。完全adapterを見送り、保存stateの最小診断SOURCEを準備。
 人工35件PASS。実H4追加評価0、診断実行は公開SOURCEに対する別途許可後。全体未判定・旧STOP保持。

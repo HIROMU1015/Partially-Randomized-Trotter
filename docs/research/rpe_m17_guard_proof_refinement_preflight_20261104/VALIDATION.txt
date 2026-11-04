@@ -1,0 +1,77 @@
+2026-11-04 JST / static investigation and artificial tests only
+Base: 6d4b1434945bad2d16c91ce87dbeb58d6946e16c
+Branch: codex/rpe-m17-guard-proof-refinement-preflight-20261104
+
+Read applicable AGENTS/PROJECT_MAP and the accessible original-workspace
+unified 2026-10-25 instructions sections 8.1, 8.4 and 10. Primary agent only.
+No independent scientific review; no skill or subagent used.
+
+State identity and saved interval applicability
+- Five original inputs matched fixed Git bytes and SHA256:
+  e22d7718 / physical_state.npz: 793300c86417f52569289ce86980c5f9a87292e130199355a0f4f7056225c9c4
+  34840ce9 / source_replay.json: ad7fd3617a524207fbc86a77de471ed6222b010046822a11bd9675edcace1f08
+  34840ce9 / RESULT.json: b58caa9dd8a0267eb20c049636e6d8c0b56d67125912e6b5a6a872334a1a2938
+  81fa6813 / numeric_context.npz: f8c1f3185423f479d82ba0bc1eb94bfb8fd9d0cafa487c618964f3bd22bddbae
+  81fa6813 / RESULT.json: d2989174012c41e6908d21ccc65d894820e763749e922835f9c5e191eb3c8735
+- Only NPY header and payload bytes were read from state.npy/psi.npy; no
+  np.load or array arithmetic. Headers: v1.0, <c16, C order, shape70.
+- B raw state payload = context psi payload = export hex-to-bytes, preserving
+  signed zero. Size1120, SHA256 a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90.
+- SOURCE18fffce48 computes raw psi*psi before expectation/norm2 division.
+  Saved 96-bit raw norm2 interval copied verbatim; no new square, sum, interval
+  width, decimal conversion, threshold comparison or scientific reanalysis.
+- Existing bridge SOURCEc3a5cc387 already uses that interval for the same psi.
+- A new exact norm2 pass is not a prerequisite for ordinary bound reuse.
+  The previous optional diagnostic SOURCE/plan remain unchanged and unexecuted.
+
+Implementation scope
+- energy_prototype.py is inert: no real loader, RNG or scientific CLI.
+- Reuses old kernel coefficients for real-output forest errors, including
+  additive underflow; adds signed energy algebra and norm-only affine/prefix
+  composition. Caller must establish every bound and reachable-set hypothesis.
+- Old action-error Growth/signal_error, runtime, finite, abs, guard and strict
+  axes functions remain unchanged. No U/GO certification path was added.
+
+Existing isolated environment used read only
+  Python3.11.0rc1 / NumPy1.26.4 / python-flint0.9.0 / FLINT3.6.0 / Qiskit1.3.0
+  /tmp/prt-rpe-m17-enclosure-venv-20261103/bin/python
+  PYTHONWARNINGS=ignore PYTHONDONTWRITEBYTECODE=1
+  MPLCONFIGDIR=/tmp/prt-rpe-m17-enclosure-mpl
+  OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 for tiny fixtures.
+  New artificial ball comparisons use96 bits and restore precision afterwards.
+  No global settings, package installation or future resource caps.
+
+New artificial tests: 12 PASS / 0.012s / exit0
+  python -m unittest discover -s docs/research/rpe_m17_guard_proof_refinement_preflight_20261104 -p test_energy_prototype.py -v
+  Real-row and underflow bound; row information vs Frobenius/Cauchy;
+  signed phase/radial energy; missing radial term rejected; coherent error
+  countermodel to sqrt(L); inverse F/R does not cancel unconstrained roundoff;
+  intervening noncommuting events; internal prefix expansion despite contraction;
+  additive affine prefix enclosure; exact signed-permutation orbit and long
+  symbolic identity map; metric observable penalty; invalid bounds and distinct
+  norm/action interfaces. np.load and old real context functions patched to fail.
+
+Reused static examples: 8 PASS / 0.003s / exit0
+  python -m unittest discover -s docs/research/rpe_m17_guard_bound_static_assessment_20261104 -p test_guard_bound_examples.py
+Reused bridge adapter tests: 16 PASS / 0.139s / exit0
+  python -m unittest discover -s docs/research/rpe_m17_virtual_measurement_bridge_preparation_20261104 -p test_virtual_bridge.py
+Targeted saved-ray semantics test: 1 PASS / 0.000s / exit0
+  From docs/research/rpe_m17_rigorous_mean_enclosure_preparation_20261103:
+  python -m unittest test_mean_enclosure.EnclosureTests.test_measurement_re_im_and_normalized_saved_ray -v
+  Artificial raw norm2=4 is recorded while the expectation uses normalized ray.
+
+Total37 PASS. LOCAL author checks, not CI or a scientific GO. Finite examples
+are not extrapolated into an H4 certificate. Abstract coherent-error models are
+not claimed to be actual errors of fl(Iv) in the installed kernel.
+
+No real H4 norm, matrix/metric/defect/energy/radial/mean/budget evaluation,
+sampling, RNG replay, trajectory, circuit build/compile or prior runner --run.
+U_virtual_IID_upper=null, U_exec_upper=null, global UNDETERMINED preserved.
+
+Publication checks
+- Only this new folder plus PROJECT_MAP.md and docs/README.md change.
+- Old SOURCE/raw/result/status/grant/ledger/marker/STOP paths unchanged.
+- Relative links and git diff --check before commit.
+- Commit/remote SHA/tree/changed-file blob agreement reported after publication.
+- Mandatory STOP after publication; next science requires a fixed SOURCE and
+  separate explicit user permission.

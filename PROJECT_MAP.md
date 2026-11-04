@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[RPE m17：保存norm²再利用とguard証明改善の技術調査（2026-11-04）](docs/research/rpe_m17_guard_proof_refinement_preflight_20261104/TECHNICAL_FINDINGS.md)：
+B/export/contextのraw bytes一致で既存96 bit norm²の適用を確認。行ごとの丸め・signed energy・prefixを検討。
+人工37件PASS、新H4評価0。H4 guardは未保証、旧U/status/STOP保持。次は人工graph接続の技術準備案。
+
 [RPE m17：ノルム専用証明の限界と限定診断SOURCE（2026-11-04）](docs/research/rpe_m17_norm_only_adapter_preparation_20261104/PROOF_LIMIT.md)：
 現行係数の積型上界は欠損ゼロでも単位norm時のguardを認定できず、完全adapterは見送り。
 保存stateだけを使う将来の診断SOURCEを固定、人工35件PASS。新H4評価0・両U null・旧status/STOP保持。
