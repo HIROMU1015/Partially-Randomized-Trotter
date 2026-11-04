@@ -1,5 +1,9 @@
 # リポジトリの現在の入口
 
+[Controlled RTE・Hadamard全18round接続準備（2026-11-04）](docs/research/rpe_controlled_hadamard_preparation_20261104/NEXT_STAGE_DECISION.md)：
+Codex Cの独立worktree。回路/条件付き平均/categorical平均を分離、Bのcutoff既定0と固定1e-12・signal/model τの対応差を整理。
+人工34件PASS、新H4科学実行0。次の6r×2局所probe案、全体UNDETERMINED/false保持、公開照合後mandatory STOP。
+
 [RPE全18round：ideal categorical包含の拡張準備（2026-11-04）](docs/research/rpe_18round_ideal_enclosure_preparation_20261104/NEXT_STAGE_DECISION.md)：
 Partial L_D3/δ=.02の18保存tupleを照合。m17再利用、他17セルの96-bit限定runner・6群並列と科学SOURCEを準備。
 人工18＋既存25件PASS。新H4数値評価0、global UNDETERMINED/falseを維持。公開SOURCEの別途実行許可待ちSTOP。

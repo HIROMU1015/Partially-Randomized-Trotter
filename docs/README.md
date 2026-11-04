@@ -1,5 +1,9 @@
 # 文書の現在の入口
 
+[Controlled RTE・Hadamard：SOURCE対応・不足・限定計画](research/rpe_controlled_hadamard_preparation_20261104/NEXT_STAGE_DECISION.md)
+（2026-11-04）。Codex Cの静的準備・人工34件PASS。新H4科学実行0、旧結果/STOP保持。
+science runner固定と別途実行承認を経る次の12局所probe案。全18roundの回路保証ではない。
+
 [RPE全18round：ideal categorical包含の拡張準備（2026-11-04）](research/rpe_18round_ideal_enclosure_preparation_20261104/NEXT_STAGE_DECISION.md)：
 Partial L_D3/δ=.02の18保存tupleを照合。m17再利用、他17セルの96-bit限定runner・6群並列と科学SOURCEを準備。
 人工18＋既存25件PASS。新H4数値評価0、global UNDETERMINED/falseを維持。公開SOURCEの別途実行許可待ちSTOP。
