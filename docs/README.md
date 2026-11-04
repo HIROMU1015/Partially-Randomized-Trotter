@@ -1,5 +1,10 @@
 # 文書索引
 
+## 研究C：保存oracle対応・固定m0 15-call案（2026-11-05）
+
+[producer対応・SOURCE・固定契約](research/research_c_direct_m0_oracle_binding_20261105.md)。`c_direct_m0_bound.py` / `run_research_c_direct_m0_bound.py`はdefaultでbytes-only preflight。旧numerical oracleと同じ保存H入力をbindし、exact symmetryは実行時gate。科学実行は別途明示許可待ち、実H4科学0、mandatory STOP。
+
+
 ## 研究C：固定1-word・m0 runner準備（2026-11-05）
 
 [runner・oracle距離・入力13件・未承認15-call案](research/research_c_direct_m0_runner_preparation_20261105.md)。新規 `c_direct_m0_oracle.py` / `c_direct_m0_runner.py`、passive専用 `prepare_research_c_direct_m0.py`、人工テスト `test_research_c_direct_m0_runner.py`、artifact `research_c_direct_m0_runner/2026-11-05/`。保存Hとown-DF targetの同一性が未確定でNOT_READY、実H4科学0、mandatory STOP。
