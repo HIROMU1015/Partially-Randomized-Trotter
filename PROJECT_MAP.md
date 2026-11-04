@@ -1,5 +1,10 @@
 # プロジェクト案内
 
+## 研究C：Direct m0固定実行・exact symmetry STOP（2026-11-05）
+
+[3 attempts／2 COMPLETE／1 FAIL・原本・STOP](docs/research/research_c_direct_m0_bound_execution_20261105.md)。SOURCE098e1bac4の固定15-callを一度実行し、保存sector Hの厳密対称性で停止。Oracle距離・X/Y未取得、retry/resume0、残12 units転用なし。
+
+
 ## 研究C：保存oracle対応・固定m0 15-call案（2026-11-05）
 
 [producer対応・SOURCE・固定契約](docs/research/research_c_direct_m0_oracle_binding_20261105.md)。`c_direct_m0_bound.py` / `run_research_c_direct_m0_bound.py`はdefaultでbytes-only preflight。旧numerical oracleと同じ保存H入力をbindし、exact symmetryは実行時gate。科学実行は別途明示許可待ち、実H4科学0、mandatory STOP。

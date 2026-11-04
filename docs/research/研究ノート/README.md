@@ -1,5 +1,8 @@
 # 研究ノート
 
+- [2026-11-05](2026-11-05.md)：研究C Direct m0の固定15-call実行は保存Hのexact symmetryで3 attempts／2 COMPLETE／1 FAIL STOP。X/Y未取得、retry/resume0。
+
+
 - [2026-11-03](2026-11-03.md)：研究C A〜Eの公開証拠統合、旧24 Claimを保全し8項目追加。新科学計算・重要科学レビュー0。
 
 - [2026-10-27](2026-10-27.md)：研究C PR-aware DF Stage A・optimizer前x0接続STOP、18/30 units、追加fitなし。

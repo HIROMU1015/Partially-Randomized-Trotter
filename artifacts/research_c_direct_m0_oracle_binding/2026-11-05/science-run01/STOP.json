@@ -1,0 +1,21 @@
+{
+  "call_counts": {
+    "metadata_load": 1,
+    "arrays_load": 1,
+    "target_identity": 1
+  },
+  "scientific_units": 3,
+  "maximum": 15,
+  "failed": {
+    "kind": "target_identity",
+    "label": "exact candidate/target/register/no projection",
+    "error_type": "ValueError",
+    "error": "EXACT_SYMMETRY_REQUIRED_NO_HERMITIANIZATION",
+    "traceback": "Traceback (most recent call last):\n  File \"/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_runner.py\", line 168, in <lambda>\n    id_record,H,v=call('target_identity','exact candidate/target/register/no projection',lambda:identity(bundle,data,c))\n                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_runner.py\", line 107, in identity\n    exact_H=oracle.symmetric_matrix([[complex(x) for x in row] for row in H])\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/prt-c-direct-m0-bound-execution-20261105/src/trottertracks/c_direct_m0_oracle.py\", line 28, in symmetric_matrix\n    raise ValueError('EXACT_SYMMETRY_REQUIRED_NO_HERMITIANIZATION')\nValueError: EXACT_SYMMETRY_REQUIRED_NO_HERMITIANIZATION\n"
+  },
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "Stage_C_executed": false,
+  "actual_CA_achieved": null
+}
