@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：P0 compiler全word適用性・技術準備（2026-11-04）
+
+[`trottertracks.c_p0_compiler_totality`](../trottertracks/c_p0_compiler_totality.py)は既存P0を一回呼ぶopt-in domain検査。既存compiler・law・qualificationは無変更。[技術報告](../../docs/research/research_c_p0_compiler_totality_readiness_20261104.md)、passive入口`prepare_research_c_p0_compiler_totality.py`、人工test同名、artifact`research_c_p0_compiler_totality/2026-11-04/technical/`。全word未資格、科学0、mandatory STOP。
+
 ## 研究C：fresh IID-grid期待bias・技術設計（2026-11-04）
 
 [期待bias校正の技術準備](../../docs/research/research_c_iid_grid_expected_bias_readiness_20261104.md)。`c_iid_grid_expected_bias.py` / `prepare_research_c_iid_grid_expected_bias.py`。Kernel/round校正、両norm反復、per-word enclosure境界、同時confidenceと既存RPE算術を別期待値qualificationへ接続。人工検証のみ、新H4科学0。方法・N・δ・数値資格は未採択、非実行契約/call上限null、mandatory STOP。

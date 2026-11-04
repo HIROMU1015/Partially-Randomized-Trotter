@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：P0 compiler全word適用性・技術準備（2026-11-04）
+
+`prepare_research_c_p0_compiler_totality.py`は[報告・未承認設計](../docs/research/research_c_p0_compiler_totality_readiness_20261104.md)のpassive SOURCE照合のみ。`c_p0_compiler_totality.py`／`test_research_c_p0_compiler_totality.py`／`artifacts/research_c_p0_compiler_totality/2026-11-04/technical/`に対応。科学実行flagなし、全word資格false、N/calls null、mandatory STOP。
+
 ## 研究C：fresh IID-grid期待bias・技術設計（2026-11-04）
 
 [技術報告](../docs/research/research_c_iid_grid_expected_bias_readiness_20261104.md)。`c_iid_grid_expected_bias.py` / `prepare_research_c_iid_grid_expected_bias.py`。Kernel/round校正、両norm反復、per-word enclosure境界、同時confidenceと既存RPE算術を別期待値qualificationへ接続。人工検証のみ、新H4科学0。方法・N・δ・数値資格は未採択、非実行契約/call上限null、mandatory STOP。
