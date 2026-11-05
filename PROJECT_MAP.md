@@ -886,3 +886,14 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-10-26：H4強baselineの共通CA・serial総資源比較完了
 
 [全結果・26round・shots・総費用・資格の限界](docs/research/research_c_c1_h4_strong_baseline_ca_resources_execution_20261026.md)。固定SOURCE1aeedd961…／binding-v2無変更、86/86 COMPLETE、correctness FAIL/retry/resume0。H4直鎖1Å/STO-3G、B2 CDF8/B3 XDF8、Nα=Nβ2、全frame S2 s1のみ・δ.1/m0..12、PRなし、own-ground/ideal IID Born/状態準備除外、共通precision/P0/CA.00159。両候補のCA数値十分条件PASS、shots13606/13600、条件付き総RZ102056444569/100267421030でXDFが1.75297%少ない。level B数値pilotの限定比較で、厳密enclosure・無条件／一般の優位は未資格。旧結果保全、公開照合後mandatory STOP。上の準備・未実行表示は履歴。
+
+## 2026-11-05：研究Cの頑健性・公平retuning・移送の統合準備
+
+[統合技術報告](docs/research/research_c_integrated_preparation_20261105.md)と
+[未承認科学契約](docs/research/research_c_integrated_contract_unapproved_20261105.json)が入口。
+`src/trottertracks/c_integrated_{plan,robustness,retuning_adapter,retuning_policy,transfer_input}.py`、
+`scripts/prepare_research_c_integrated.py`、対応する`tests/management/test_research_c_integrated_*.py`、
+`artifacts/research_c_integrated/2026-11-05/technical/`を一組で読む。
+最大172,835 logical unitsの新科学実行案で、今回は人工/mock検証・SOURCE固定のみ。
+実H4計算・保存実配列の再解析・科学レビューは0、別途実行許可前はmandatory STOP。
+旧SOURCE/結果/契約/STOPの再開・変更ではない。

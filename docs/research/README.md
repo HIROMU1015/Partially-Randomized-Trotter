@@ -355,3 +355,9 @@ Gaussian singletonの[改善候補設計](pr_gaussian_singleton_synthesis_design
 ## 2026-10-26：H4強baselineの共通CA・serial総資源比較完了
 
 [全結果・26round・shots・総費用・資格の限界](research_c_c1_h4_strong_baseline_ca_resources_execution_20261026.md)。固定SOURCE1aeedd961…／binding-v2無変更、86/86 COMPLETE、correctness FAIL/retry/resume0。H4直鎖1Å/STO-3G、B2 CDF8/B3 XDF8、Nα=Nβ2、全frame S2 s1のみ・δ.1/m0..12、PRなし、own-ground/ideal IID Born/状態準備除外、共通precision/P0/CA.00159。両候補のCA数値十分条件PASS、shots13606/13600、条件付き総RZ102056444569/100267421030でXDFが1.75297%少ない。level B数値pilotの限定比較で、厳密enclosure・無条件／一般の優位は未資格。旧結果保全、公開照合後mandatory STOP。上の準備・未実行表示は履歴。
+
+## 2026-11-05：研究Cの頑健性・公平retuning・移送
+
+[統合準備](research_c_integrated_preparation_20261105.md)からA/B/Cの再利用・人工テスト・
+[未承認科学契約](research_c_integrated_contract_unapproved_20261105.json)と最大callへ進む。
+新実H4計算・重要科学レビューは未実施、別途明示許可前はmandatory STOP。

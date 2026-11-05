@@ -75,3 +75,11 @@
 Hadamard 1 shot全体や最終総コストの検証ではない。
 
 `management/test_pr_dictionary_f2_attribution.py` は、保存F2寄与分析の分類保存則・共有metadata・joint origin・欠落／重複拒否・非零の記述分解を人工recordだけで検査する。新しい科学回路は生成しない。[結果とSOURCE対応](../docs/research/pr_algorithm_improvement_phase2d_f2_attribution_20261024.md)。
+
+## 2026-11-05：研究C統合準備の人工検証
+
+`management/test_research_c_integrated_*.py`はpaired start/既存APIへのtask-local接続、
+r/PF cache・N64会計/統計・選択/評価分離、1.15 Å入力の完全mock dispatch、passive境界を確認する。
+[技術報告](../docs/research/research_c_integrated_preparation_20261105.md)と
+[ローカル検証記録](../artifacts/research_c_integrated/2026-11-05/technical/verification.json)を参照。
+実H4科学性能・実CA・CI/外部再現の証拠ではない。
