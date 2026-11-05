@@ -133,7 +133,8 @@ def specs(g,J,U):
     return dict(PR=s,ENTRY=entry)
 
 
-def run_arm(name,g,cold,spec,physical,call,record,*,trajectory=algorithm.trajectory):
+def run_arm(name,g,cold,spec,physical,call,record,*,trajectory=algorithm.trajectory,
+            step=STEP,policy=POLICY,maximum_points=MAX_POINTS,arm_limits=ARM_LIMITS):
     """Same policy; independent endpoint, counts and raw flags for each arm."""
     import numpy as np
     expected=algorithm.near.pr.Objective if name=='PR' else algorithm.near.Objective if name=='ENTRY' else None
@@ -142,7 +143,7 @@ def run_arm(name,g,cold,spec,physical,call,record,*,trajectory=algorithm.traject
     metrics=Counter();raw_flags=Counter();local_counts=Counter();physics={}
     def local_call(kind,label,fn):
         local_counts[kind]+=1
-        if kind not in ARM_LIMITS or local_counts[kind]>ARM_LIMITS[kind]:raise ValueError('ARM_CALL_LIMIT:'+name+':'+kind)
+        if kind not in arm_limits or local_counts[kind]>arm_limits[kind]:raise ValueError('ARM_CALL_LIMIT:'+name+':'+kind)
         return call(kind,name+'_'+label,fn)
     local_call.counts=local_counts
     def evidence(kind,label,data,arrays):
@@ -155,14 +156,14 @@ def run_arm(name,g,cold,spec,physical,call,record,*,trajectory=algorithm.traject
     def assess(label,J,U):
         row=physical(name+'_'+label,J,U);physics[key(J,U)]=row;return row
     result=local_call('optimization_driver','paired finite recipe',lambda:trajectory(
-        g,cold['J'].copy(),cold['U'].copy(),spec,assess,step=STEP,policy=POLICY,
-        maximum_total_points=MAX_POINTS,call=local_call,record=evidence))
+        g,cold['J'].copy(),cold['U'].copy(),spec,assess,step=step,policy=policy,
+        maximum_total_points=maximum_points,call=local_call,record=evidence))
     point=result['terminal'];post=None;row=None
     if point is not None:
         assessor=algorithm.control.small.assess if name=='PR' else partial(
             algorithm.control.small.assess,state_evaluator=algorithm.state)
         post=local_call('independent_terminal_assessment','final_endpoint',lambda:assessor(
-            g,point,point['U'],spec,POLICY,record=evidence))
+            g,point,point['U'],spec,policy,record=evidence))
         row=physics.get(key(point['J'],point['U']))
         if row is None:raise ValueError('TERMINAL_PHYSICAL_IDENTITY')
     summary=dict(arm=name,objective_version=algorithm.near.pr.VERSION if name=='PR' else algorithm.near.VERSION,

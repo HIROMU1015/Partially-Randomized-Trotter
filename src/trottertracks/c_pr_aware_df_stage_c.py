@@ -153,7 +153,7 @@ def attach(bundle,c,arm):
         error_evidence=None,DF_and_reference_qualification='binary64 numerical pilot with engineering guard')
 
 
-def cost_calibration(packet,*,support=None,alpha_per_metric=None):
+def cost_calibration(packet,*,support=None,alpha_per_metric=None,expected_n=32):
     """Unknown support -> existing point-only path. Sample extrema are rejected."""
     if support is not None and (support.get('kind') not in ('analytic_all_law','exhaustive_all_law')
             or support.get('law')!='actual_implemented_law' or not support.get('provenance')):
@@ -161,7 +161,8 @@ def cost_calibration(packet,*,support=None,alpha_per_metric=None):
     out=accuracy.bounded_cost_intervals(packet['kernel_samples'],
         support_bounds=None if support is None else support['bounds'],alpha_per_metric=alpha_per_metric,
         support_provenance=None if support is None else support['provenance'])
-    if out['mean']!=packet['saved_calibration']['sample_mean'] or out['classical_cost_samples']!=32:
+    if type(expected_n) is not int or expected_n<2:raise ValueError('INVALID_FIXED_CALIBRATION_COUNT')
+    if out['mean']!=packet['saved_calibration']['sample_mean'] or out['classical_cost_samples']!=expected_n:
         raise ValueError('SAVED_KERNEL_CALIBRATION_IDENTITY')
     return dict(out,target_id=packet['target_id'],policy='native_kernel_repeat_with_fences',
         estimand='finite-bit implementation kernel cost',cost_support=None if support is None else support)

@@ -75,12 +75,27 @@ def integrals(n,call,*,factory=None):
     Only chemistry interfaces/geometry generalized; no new integral engine.
     Output is chemist ERI, not OpenFermion's (ps|qr) array convention.
     """
-    p=specification(n)
+    return integrals_from_specification(specification(n),call,factory=factory)
+
+
+def integrals_from_specification(p,call,*,factory=None):
+    """Reuse the integral engine for an explicitly supplied input recipe.
+
+    Existing H2/H6 contracts still enter through ``integrals(n)`` and retain
+    their original fixed specification. This lower-level adapter does not
+    authorize generating any new molecule or geometry.
+    """
+    n=p['norb']
+    distance=p['distance_angstrom']
+    if (type(n) is not int or n < 2 or n % 2 or p['atoms'] != n
+            or p['basis'].lower() != 'sto-3g' or p['charge'] != 0 or p['spin'] != 0
+            or isinstance(distance,bool) or not math.isfinite(distance) or distance <= 0):
+        raise ValueError('CLOSED_SHELL_LINEAR_H_INPUT_RECIPE')
     if factory is not None:return factory(p,call)
     import numpy as np
     from pyscf import ao2mo,gto,scf
     def run_scf():
-        mol=gto.M(atom=[('H',(0.,0.,float(i))) for i in range(n)],unit='Angstrom',
+        mol=gto.M(atom=[('H',(0.,0.,float(i)*distance)) for i in range(n)],unit='Angstrom',
                   basis=p['basis'],charge=0,spin=0,verbose=0)
         mf=scf.RHF(mol);mf.conv_tol=1e-12;mf.kernel()
         if not mf.converged:raise ValueError('SCF_NOT_CONVERGED')

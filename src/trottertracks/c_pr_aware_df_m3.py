@@ -345,12 +345,12 @@ def serial_cost(packet,kernel,m,axis):
     return compose_serial_cost(kernel,record,m=m,substeps=1,target_id=packet['target_id'])
 
 
-def calibration_uncertainty(packet,plans,totals):
+def calibration_uncertainty(packet,plans,totals,*,expected_n=32):
     if totals.get('totals') is None:return dict(status='UNRESOLVED_ACCURACY',weighted_SE=None)
     W=sum(2*p['shots']*(1<<p['m']) for p in plans)
     return dict(status='DESCRIPTIVE_SHARED_CALIBRATION_ONLY',kernel_reuse_weight=W,
         weighted_SE={k:W*packet['saved_calibration']['sample_mean_standard_error'][k] for k in accuracy.METRICS},
-        samples=32,independent_round_calibrations=1,paired_with_old=False,
+        samples=expected_n,independent_round_calibrations=1,paired_with_old=False,
         guaranteed_CI=None,ideal_law_cost_transfer_qualified=False)
 
 
