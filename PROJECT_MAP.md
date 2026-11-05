@@ -1,5 +1,7 @@
 # リポジトリの現在の入口
 
+2026-11-05：[O2（DF＋Pauli-JW）研究データ台帳](docs/research/o2_data_catalog_20261105/README.md)。既存研究・候補表・保存比較・比較可能性への参照とliteral転記。新科学計算・主要claim採択なし。既存35行mapと原status/STOPは保持。
+
 2026-11-05の[PR統合](docs/research/pr_research_paper_evidence_synthesis_20261103/RESEARCH_SYNTHESIS.md)にSERVER1境界R・SERVER2 P1/P2/P3・B3/旧H8 custodyを最小追補。既存H8 StageCは二重登録せず、35行・原status/STOPを保持。
 
 **2026-11-05 PR資源評価の統合更新**：[主張・機構・派生成果](docs/research/pr_research_paper_evidence_synthesis_20261103/RESEARCH_SYNTHESIS.md)／[最新claim-evidence CSV](docs/research/pr_research_paper_evidence_synthesis_20261103/CLAIM_EVIDENCE_MAP.csv)／[必要十分性A/B/C/D](docs/research/pr_research_paper_evidence_synthesis_20261103/STATUS_AND_OPEN_QUESTIONS.md)。H8 StageCとH4条件付きRPE保証を追加。記述的判断はCURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT、主要claimの正式採択・既存科学status変更ではない。新科学計算なし、公開照合後mandatory STOP。
