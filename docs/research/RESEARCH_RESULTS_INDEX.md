@@ -4,6 +4,8 @@
 
 [保留7枝の再現用ファイル・保存別版の追加収録（11月4日）](priority7_collection_20261104.md)。
 
+研究Cの[先行研究・新規性候補と固定証拠（11月5日）](research_c_related_work_novelty_evidence_20261105.md)／[論文構成・図表・A〜D結果の受取計画](research_c_paper_outline_figure_plan_20261105.md)。文献・保存結果の整理であり、新科学結果、正式新規性、論文化GO、実行許可・STOPを変更しない。
+
 既存成果のmainへの収録は[収録済み成果と原SOURCEの案内](main_collection_20261103.md)を参照。第1回はTrack B G6の結果・文書・再現用SOURCEである。
 
 2026-11-02 JST。複数ブランチに分かれた既存成果を、総括・結果・SOURCE・raw・検証状態へ辿るための入口である。
