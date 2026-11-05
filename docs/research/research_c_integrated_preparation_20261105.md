@@ -48,7 +48,7 @@
 
 旧移送準備のSystem/objective_specs/recipe_arm/PhysicalContext/handoffを再利用した。元h/g/scalar生成は既存PySCF RHF/ao2mo本体へ新metadataだけ渡す。STO-3G、canonical RHF、spin0、Nα=Nβ=2、rank8/LD2/sector36、元g補正κを固定する。
 
-研究C用の1.15 Å packetと中立CDF8は未生成である。新SCF/積分、explicit Cholesky XDF8からのneutral fit、二摂動restoreを将来の科学scopeに明示した。1.00 Åの数値J/U・f*・λ・ground・価格を流用しない。targetのf*はC0の正のtensor lossから一度だけ、各目的のmassは各paired startから一度だけ固定する。target結果を見たstrength/seed/solver/retuning規則変更は認めない。
+研究C用の1.15 Å packetと中立CDF8は未生成である。新SCF/積分、explicit Cholesky XDF8からのneutral fit、二摂動restoreを将来の科学scopeに明示した。1.00 Åの数値J/U・f*・λ・ground・価格を流用しない。C0自身のgamma0 restoreにはraw XDF8の正のtensor objectiveを初期scaleとして用いる。C0完成後、外側PR/ENTRYとP1/P2 restore用f*はC0の正のtensor lossから一度だけ、各目的のmassは各paired startから一度だけ固定する。両scaleを区別して保存し、未完成C0の値を初期fitに要求しない。target結果を見たstrength/seed/solver/retuning規則変更は認めない。
 
 1.15 Åには別PF研究のrank12/LD3/sector70記録がある。今回のPR/ENTRY recipeには未使用だが、全研究から秘匿された条件とは扱わない。旧PF結果を研究Cのsector36物理入力に代用しない。rank8でDF予算を満たせるかは未検証で、失敗時にrank ladderへ自動拡張しない。
 

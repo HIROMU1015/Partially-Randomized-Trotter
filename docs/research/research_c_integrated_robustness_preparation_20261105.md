@@ -35,6 +35,9 @@
 
 開発のtensor loss scale f*=2.1839632053132894e-9 Ha²は旧neutralの物理スケールを保持する。PR/ENTRYそれぞれのsmooth initial massは各paired restored startで一度だけ固定し、endpointで再正規化しない。移送側のf*は移送neutral C0から一度だけ求める正のtensor lossで、旧H4の数値を流用しない。exact zero/非有限のscaleは未解決として停止し、任意のfloorへ置換しない。
 
+
+移送C0のrestoreに必要なscaleと、C0完成後のPR/ENTRY用scaleを区別する。C0 fit前は、既存 `c1_h6_initialization.tensor_metrics` のraw XDF8 tensor objectiveを一度取り、正ならC0 gamma0 fitのloss_scaleとして使う。これはexplicit initializer1unitに含めて記録する。C0 fit後に同じ既存helperで正のtensor lossを求め、登録したneutral_scale1unitとして外側PR/ENTRYおよびP1/P2 restoreに固定する。rawとrestoredの二scaleを保存し、未完成C0の値を初期fitへ要求する循環を作らない。zero/nonfiniteをfloorで補わない。開発P1/P2 restoreは保存neutralの固定f*を用いる。科学実行前の条件明確化であり、追加call・計算・結果変更は0。
+
 ## 科学適格性・記録・候補選択
 
 DF reserve=CA/8=.00019875 Ha（CA=.00159 Ha）。既存sector operator2-norm＋`sector_operation_scale_guard8_proposal_v1`を保持する。guardは数値pilotの工程尺度であり厳密enclosureではない。General-K/raw CAR max-entry1e-10、J∞/物理U接空間L2各1e-5、latest-pair stability1e-6、直交性1e-10、既存rank/nullspaceと値/勾配整合を継承する。U一次未達だけで有限適格DF候補を消さない。
