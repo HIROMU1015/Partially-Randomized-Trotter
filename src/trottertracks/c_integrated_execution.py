@@ -514,5 +514,15 @@ def preflight(root, execution_source):
         code='import importlib.metadata,json; print(json.dumps({k:importlib.metadata.version(k) for k in '+repr(pins)+'}))'
         actual=json.loads(subprocess.check_output([python,'-B','-c',code],text=True))
         if actual!=pins:raise ValueError('PACKAGE_METADATA:'+role)
+    expected=c['environment']['ffsim_sources']
+    code=('import hashlib,importlib.metadata,json;from pathlib import Path;'
+          'd=importlib.metadata.distribution("ffsim");'
+          'print(json.dumps({k:hashlib.sha256(Path(d.locate_file("ffsim/"+k)).read_bytes()).hexdigest() for k in '+repr(expected)+'}))')
+    actual=json.loads(subprocess.check_output([c['environment']['fit_python'],'-B','-c',code],text=True))
+    if actual!=expected:raise ValueError('FIXED_FFSIM_IMPLEMENTATION')
+    code=('import sys;sys.path.insert(0,'+repr(str(root/'src'))+');'
+          'from trottertracks.c_j_u_precision import require_extended;require_extended();print("EXTENDED_PASS")')
+    if subprocess.check_output([c['environment']['fit_python'],'-B','-c',code],text=True).strip()!='EXTENDED_PASS':
+        raise ValueError('EXTENDED_ACCUMULATION_UNAVAILABLE')
     result.update(execution_SOURCE_sha256=io.sha(execution_source),storage_root=str(root))
     return result
