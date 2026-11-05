@@ -30,6 +30,11 @@ COLUMNS = ORIGINAL_COLUMNS + ('integration_as_of research_role candidate_acquisi
            'cost_and_compiler source_input_identity verification_level scoped_conclusion '
            'current_scope_gap_class necessary_remaining_work').split()
 PREVIOUS = '2ce2b5f161e94567fec322d694fd8b01d03cd854'
+LOCAL_BASE = '9de335a7c49367356fca43f077e8f5157b3a95f2'
+FINAL_COMPONENTS = {'A11.BASE', 'P05.BASE', 'F01.BASE', 'A12.BASE', 'A08.BASE'}
+APPEND_FIELDS = {'reviewed_fixed_refs', 'physical_domain', 'candidate_acquisition_scope',
+                 'source_input_identity', 'supporting_results', 'verification_level',
+                 'unassured_scope', 'followup_evidence_separate_from_phase3'}
 NEW_COMPONENTS = {'A14.H8_AB', 'A14.H8_C', 'R02.POLICY_MEAN', 'R02.IID_ENERGY',
                   'R02.BACKEND', 'R02.FLOAT64'}
 ENV = dict(os.environ, GIT_OPTIONAL_LOCKS='0', GIT_NO_LAZY_FETCH='1')
@@ -77,13 +82,33 @@ def main():
     columns, rows = table((out / 'CLAIM_EVIDENCE_MAP.csv').read_bytes())
     assert columns == COLUMNS and len(rows) == 35
     assert len({row['component_id'] for row in rows}) == 35
-    # All old columns, including formal statuses, remain byte-for-text identical.
+    # Validate previous preservation, then today's explicitly permitted append-only edits.
     _, previous_rows = table(git(args.repo, 'show', PREVIOUS + ':' +
         'docs/research/pr_research_paper_evidence_synthesis_20261103/CLAIM_EVIDENCE_MAP.csv'))
     by_component = {row['component_id']: row for row in rows}
+    _, local_rows = table(git(args.repo, 'show', LOCAL_BASE + ':' +
+        'docs/research/pr_research_paper_evidence_synthesis_20261103/CLAIM_EVIDENCE_MAP.csv'))
+    local_by_component = {row['component_id']: row for row in local_rows}
+    assert [row['component_id'] for row in rows] == [row['component_id'] for row in local_rows]
+    updated = set()
+    for previous in local_rows:
+        current = by_component[previous['component_id']]
+        changed = {key for key in COLUMNS if current[key] != previous[key]}
+        if not changed:
+            continue
+        updated.add(previous['component_id'])
+        assert previous['component_id'] in FINAL_COMPONENTS and changed <= APPEND_FIELDS
+        for key in changed:
+            if key == 'reviewed_fixed_refs':
+                before, after = json.loads(previous[key]), json.loads(current[key])
+                assert after[:len(before)] == before
+                assert len({ref['evidence_id'] for ref in after}) == len(after)
+            else:
+                assert current[key].startswith(previous[key] + ' | 3環境追補2026-11-05: ')
+    assert updated == FINAL_COMPONENTS
     assert len(previous_rows) == 29
     for previous in previous_rows:
-        assert {key: by_component[previous['component_id']][key] for key in ORIGINAL_COLUMNS} == previous
+        assert {key: local_by_component[previous['component_id']][key] for key in ORIGINAL_COLUMNS} == previous
     assert set(by_component) - {row['component_id'] for row in previous_rows} == NEW_COMPONENTS
     old_by_id = {row['claim_id']: row for row in oldclaims}
     bases = {row['claim_id'] for row in rows if row['component_id'].endswith('.BASE')}
@@ -209,6 +234,77 @@ def main():
         for field in fields:
             assert matched[0][field] in synthesis, (id, selector, field)
 
+    # Reuse server projections and primary saved fields, without re-accounting results.
+    s1 = json.loads(fixed('S1_CHECKS'))
+    s2 = json.loads(fixed('S2_EVIDENCE'))
+    assert s1['verdict'] == 'NO_MATERIAL_DIFFERENCE'
+    assert s2['verdict'] == 'MATERIAL_NEW_EVIDENCE'
+    assert s1['previous_synthesis_commit'] == PREVIOUS
+    assert s2['previous_synthesis'] == PREVIOUS
+    # Original boundary rows intentionally have missing signal/diagnostic cells.
+    boundary = list(csv.DictReader(io.StringIO(fixed('BOUNDARY_RESULTS').decode())))
+    boundary_by = {(row['id'], row['cohort'], row['epsilon']): row for row in boundary}
+    for id, cohort, reference, diagnostic, n in [
+        ('f85eb7b56ba5131d1eb1', 'BOUNDARY_20261027_CONFIRMATION',
+         '45f9fc0a53c1a37c7345', 'HIGHER', '745'),
+        ('3a55c1dac3947ae23c76', 'BOUNDARY_20261027_CONFIRMATION',
+         '45f9fc0a53c1a37c7345', 'HIGHER', '1185'),
+        ('0e0e9fb6da33cb6ab2ab', 'BOUNDARY_20261027_CONFIRMATION',
+         'efbb07c848b303a6abab', 'INCONCLUSIVE', '229'),
+    ]:
+        row = boundary_by[id, cohort, '0.0005']
+        assert row['reference_id'] == reference and row['diagnostic'] == diagnostic and row['n'] == n
+        for field in ['N_cos', 'N_sin', 'C_cos', 'C_sin', 'G']:
+            assert row[field] in synthesis, (id, field)
+        assert row['T'] == '2.0' and row['q'] == '1' and row['formula'] == '4th(m5_best)'
+    assert boundary_by['0e0e9fb6da33cb6ab2ab', 'BOUNDARY_20261027_CONFIRMATION', '0.0005']['point_lower'] == 'True'
+    assert boundary_by['d9cb4e923530349e940a', 'EXPLORATION', '0.0005']['n'] == '9'
+    summary = json.loads(fixed('BOUNDARY_SUMMARY'))
+    assert summary['execution_SOURCE'] == 'ad1286021bdc0e5a0b1760064cefb3c1168b24eb'
+    assert summary['accounting_SOURCE'] == '0f2d167f9c928ba94bfad1a167bf4d3f5964ad1a'
+    assert summary['mandatory_STOP'] is True and summary['original_tables_overwritten'] is False
+    for id, source in [
+        ('H6_P1_BINDINGS', 'a0a3aff915f98456733d6bf09ed641a1be423628'),
+        ('H6_P2_BINDINGS', '11e50e262f95630b14fa4070ad30894ba3f64b74'),
+        ('P3_STAGE4_BINDINGS', '2f0d31f75ab1ecacc73d9ee5c34ddfc997396102'),
+        ('P3_BIT_BINDINGS', 'd22ca967955a664260a3a9857df243b3f151610f'),
+    ]:
+        binding = json.loads(fixed(id))
+        assert binding['commit'] == source
+        for path, expected in binding['code_sha256'].items():
+            assert hashlib.sha256(git(args.repo, 'show', source + ':' + path)).hexdigest() == expected
+        # Hash bound public inputs without decoding scientific arrays or archives.
+        if id in {'P3_STAGE4_BINDINGS', 'P3_BIT_BINDINGS'}:
+            for path, entry in binding.get('input_files', binding.get('inputs', {})).items():
+                assert hashlib.sha256(git(args.repo, 'show', entry['ref'] + ':' + path)).hexdigest() == entry['sha256']
+    p1_binding, p2_binding = json.loads(fixed('H6_P1_BINDINGS')), json.loads(fixed('H6_P2_BINDINGS'))
+    for key in ['commit', 'path', 'sha256']:
+        assert p1_binding['inputs']['model'][key] == p2_binding['inputs']['model'][key]
+    for binding in [p1_binding, p2_binding]:
+        model = binding['inputs']['model']
+        assert hashlib.sha256(git(args.repo, 'show', model['commit'] + ':' + model['path'])).hexdigest() == model['sha256']
+    assert p2_binding['cohort'] == 'confirmation' and p2_binding['index'] == 0
+    assert all(p1_binding['candidates'][key] == value for key, value in p2_binding['candidates'].items())
+    primary = s2['b3_primary_table_identity']
+    assert len(primary) == 8
+    for item in primary:
+        assert item['same_blob'] is True
+        assert git(args.repo, 'rev-parse', item['public_commit'] + ':' + item['path']).decode().strip() == item['public_blob']
+    assert s2['legacy_h8_custody']['present_in_known_server2_object_store'] is True
+    assert s2['legacy_h8_custody']['complete_raw_audit_performed'] is False
+    assert 'EXPLAINED_NO_SCIENTIFIC_IMPACT' in fixed('P8_CAUSE').decode()
+    assert "saved_exact_export_match" in fixed('P8_LOADER').decode()
+    assert "('faithful:p' + str(p)) in export" in fixed('P8_LOADER').decode()
+    for id, literals in {
+        'H6_P1': ['STOP_UNRESOLVED_COMPONENTS', 'H32/H64', 'UNRESOLVED'],
+        'H6_P2': ['confirmation/0000', '4732', '6735', '3081', '2500'],
+        'P3_STAGE4': ['ELIGIBLE_CONDITIONAL', 'compiled ρ=0'],
+        'P3_BIT': ['certified_gap_upper=null', 'implemented_accuracy_guaranteed=false',
+                   'actual_implemented_headroom=null'],
+    }.items():
+        for literal in literals:
+            assert literal in fixed(id).decode(), (id, literal)
+
     # Check link definitions and known local output links; fixed sources above are immutable.
     document_links = 0
     for path in out.glob('*.md'):
@@ -240,6 +336,9 @@ def main():
                           claim_rows=len(rows), original_claims=21, original_coverage_projection=42,
                           historical_lookup_rows_retained_in_original=2,
                           fixed_reference_links=reference_links, document_links=document_links,
+                          previous_LOCAL_rows_retained=35, components_appended=len(updated),
+                          other_components_unchanged=30, H8_stage_AB_C_unchanged=True,
+                          descriptive_current_scope='CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT',
                           new_scientific_execution=False, saved_numeric_reanalysis=False), indent=2))
 
 

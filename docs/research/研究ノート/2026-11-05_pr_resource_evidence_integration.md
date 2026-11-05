@@ -22,3 +22,18 @@ policy-aware平均、条件付きRPE、次数×partition、DF/Pauli、TrackBを�
 SOURCE/raw/grant/ledger/marker/STOP、元29行の既存列、Phase3原status/coverageを保全。
 科学runnerをimport/起動せず、文書metadata checkerだけを拡張して使用する。
 専用branchで公開SHAと変更公開fileを照合後mandatory STOP。Codexの追加作業なし。
+
+## 3環境差分の最終追補
+
+起点はLOCAL9de335a7c49367356fca43f077e8f5157b3a95f2。
+SERVER1 0a2b54650527094306f619e3d08dbb2bbc94ba14の境界R補足をA11へ、
+SERVER2 5b0971a2d9fc6ef474008d26d14af85e324b4b24のP1/P2/P3をP05/F01へ追記。
+旧2ce2b5f基準で新規とされたH8 StageA/B/Cは最新LOCALに反映済みで、二重登録しない。
+35行のまま、旧Phase3欄と他行、探索/確認、旧33/40二系列を保全した。
+
+B3は主要8blob一致と全raw未認定を区別。旧H8はSERVER2 custody、G04匿名監査公開、
+p8 false原因の限定解明（キー欠落・任意比較未実施）を時点別に追記し、falseと旧STOPを保持。
+現在の限定主張に具体的な重大不足は今回検出せず、CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENTを維持。
+正式主要claim採択ではなく、現scopeの追加科学計算は不要。
+文書metadata checkerのみを再利用・拡張し、新しい科学計算/算術再解析/詳細レビューは行わない。
+公開照合後mandatory STOP。次はユーザーによる主要claim正式採否・研究範囲・論文構成の判断。

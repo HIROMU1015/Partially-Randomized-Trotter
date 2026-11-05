@@ -1,5 +1,7 @@
 # PR研究の成果・主張・証拠と論文化候補
 
+**3環境最終追補（2026-11-05）**：[SERVER1/2差分・最終判断](#three-environments-final)を追加。35行を維持し、A11/P05/F01とcustody2行へ追記。CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENTを維持する。
+
 **2026-11-05更新**：[後続結果・資源機構・派生成果](#integration-20261105)と[必要十分性A/B/C/D表](STATUS_AND_OPEN_QUESTIONS.md)を追記した。現在の限定claimの記述的判断は `CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT`。以下の11月3日原統合は時点を保って読む。
 
 2026-11-03 JST。LOCALが主担当となり、3環境に由来するGitHub公開済み成果を統合した。これは既存資料の整理と構成候補であり、新しい独立科学レビュー、中心claim・論文分割・投稿先の正式採択ではない。新科学計算・数値再解析・平均/SE/順位算出・sampling・compile・完成原稿執筆は行っていない。
@@ -172,6 +174,74 @@ RPE V3/R1のPartial約4.858%低い点費用は旧opt2モデルの結果で、共
 今回変更したのは統合文書、既存対応CSV・文書用metadata checkerと入口・当日ノートだけ。SOURCE/raw/既存manifestの科学status/grant/ledger/marker/STOPを変更せず、新しい科学runnerをimport・起動しない。全repository再棚卸し・新規証拠計算・詳細科学レビューは行わない。**公開SHAと変更公開fileのblob/bytes照合後mandatory STOP。Codexに追加科学作業はない。ユーザーによる主要claimの正式採否は別判断であり、今回の終了の前提にはしない。**
 
 
+<a id="three-environments-final"></a>
+
+## 2026-11-05：3環境差分を反映した最終追補
+
+**現在の限定的なPRリソース評価の検証を一区切りにできる。記述的判断 `CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT` を維持する。** 同じ保存有限時間signal task、取得候補域、元の精度政策・compiler、有限価格標本に限定する。今回の追加照合では、その主要結論を変える具体的なSOURCE/input不一致・必要証拠の欠落は見つからなかった。Bがないことを成功条件にした判定ではない。主要claimの正式採択・独立詳細科学レビュー・原status更新は行っていない。
+
+### 差分の基準と二重登録の防止
+
+統合先はLOCAL `9de335a7c49367356fca43f077e8f5157b3a95f2`。SERVER1 `0a2b54650527094306f619e3d08dbb2bbc94ba14` はNO_MATERIAL_DIFFERENCEとA11へのMEDIUM補足2件、SERVER2 `5b0971a2d9fc6ef474008d26d14af85e324b4b24` は旧 `2ce2b5f1…` 基準でMATERIAL_NEW_EVIDENCEを報告した。SERVER2の原判定を現在のLOCAL未統合判定として転記せず、次のように対応させた。[SERVER1][S1_REPORT]、[SERVER2][S2_REPORT]
+
+| サーバー差分 | 最新LOCALに対する扱い | 反映先 |
+|---|---|---|
+| S1-BOUNDARY-H4/H6 | 固定境界3候補の直接参照を補足。別実験の新実行ではない | A11.BASE |
+| S2-D01/D02 H8 Stage A/B・C | ALREADY_INTEGRATED_IN_LOCAL_9DE335A。A14.H8_AB/Cの固定参照・候補・cohortが既存のまま対応 | 行追加・結果再掲なし |
+| S2-D03/D04 H6 P1/P2・H4 P3 | 固定機構・matched分割の直接参照を追加 | P05.BASE/F01.BASE |
+| S2-D06/D07 B3・旧H8 custody | 科学結果を変更せず、取得・保全の保証水準だけ追補 | A12.BASE/A08.BASE |
+| 追加7候補、14/15、Track B等 | 既存参照を維持。再引用・main収録を独立実験へ加算しない | 既存行を保持 |
+
+対応表は35行のまま。Phase3原欄・旧数値・過去時点を保持し、上記5行に追補と固定参照だけを加えた。H8 T1.6の確認n9／探索n9は別cohort、固定PF価格は探索由来、約24.59%は有限確認標本の観測平均、旧T.8・H4/H6の33/40とは別、という既存記述を確認した。H4 RPE保証・policy-aware平均certificateも変更していない。
+
+### A11：固定R境界比較とC/N/Gの競合
+
+原結果は `202d25eb34be365aaa6638c6353e25f51acebe42`。Linear H4/H6、1.00 Å、STO-3G、tol-only1e-8 DF10/19、H6は保存weighted-Hermitian completion。保存H/state/reference/scalar/fragment順、T=2/q1/δ=2/m5_bestの11 signed piece/ABS_TIME_PER_OUTER、signal ε=.0005/P0。H4 L_D3/K2、H6 L_D7/K6。symmetric-directional/actual adjoint、cosine/+Im sine測定込みfull Hadamard wrapper、Qiskit1.3.0/NumPy1.26.4/rz-sx-x-cx/opt1/seed17/topologyなし。[原報告][BOUNDARY_REPORT]
+
+以下はRESULTS.csvの確認行・保存対照をそのまま引用した。Cは各行でcos/sin同じ保存単価。算術、平均・SE・比・順位の新計算はない。[原CSV][BOUNDARY_RESULTS]
+
+| 系・R | cohort・価格標本n | 保存N_cos/N_sin | 保存C（RZ） | 保存G（RZ×shot） | 保存比較判定 |
+|---|---|---|---:|---:|---|
+| H4 R16 | BOUNDARY_20261027_CONFIRMATION / 745 | 145036571/114372825 | 34281.51946308725 | 8892948257881.707 | R64対比HIGHER |
+| H4 R64対照 | SEVEN_20261027_CONFIRMATION / 800 | 101917842/84750408 | 39705.8275 | 7411817334226.875 | 保存対照を再利用 |
+| H4 R128 | BOUNDARY_20261027_CONFIRMATION / 1185 | 96764648/80505864 | 46492.60675105485 | 8241768202974.15 | R64対比HIGHER |
+| H6 R11 | BOUNDARY_20261027_CONFIRMATION / 229 | 82807345/113255472 | 176731.54148471614 | 34650483876245.812 | point_lower=True / diagnostic=INCONCLUSIVE |
+| H6 R16対照 | CONFIRMATION / 33 | 81429322/111370753 | 180032.18181818182 | 34710218156959.09 | 保存対照を再利用 |
+
+H4 R16はR64より単価が低い一方B/Nが大きく、R128はB/Nが小さくても単価が大きい、という原報告の説明を追加する。同じprefix/q/Kの固定対照でRの両側に総G増の例がある。**R64の全R領域最適性ではない。** R32はEXPLORATION n9のみで、独立確認済み比較へ加えない。H6 R11の低い点費用は、保存の新旧不確かさ込み診断ではINCONCLUSIVEであり、確定改善と呼ばない。±2 combined-SEは原正規近似感度診断で、厳密CI・母平均順位保証ではない。
+
+H4のR16=f85eb7b56ba5131d1eb1、R128=3a55c1dac3947ae23c76は同じR64=45f9fc0a53c1a37c7345を共有する。H6はR11=0e0e9fb6da33cb6ab2ab対R16=efbb07c848b303a6abab。旧長時間33/40、G01追加7後の33/40、今回の境界固定集合は別の保存版であり、旧40セルへ事後追加しない。実行SOURCE ad1286021bdc0e5a0b1760064cefb3c1168b24ebと会計SOURCE 0f2d167f9c928ba94bfad1a167bf4d3f5964ad1aは公開summaryに記録された識別子で、完全private SOURCE/rawの独立照合完了を意味しない。[SOURCE・終了記録][BOUNDARY_SUMMARY]
+
+### P05/F01：H6 P1/P2とH4 P3の条件付き機構証拠
+
+| 証拠・固定条件 | 既存説明を補強する保存結果 | 支持しない拡張 |
+|---|---|---|
+| H6 P1：linear1Å/STO-3G/Pauli918+constant、T=.8/S2/q8/δ=.1/K2、Hybrid p78 r16/32/64と純RTE r64 | 共通outer splitの信号差を、可換I/Z保持内の理想PF差と区別した。rだけ増やしても同q8の外側split差は残るという固定分解の観測。理想保持内差0という構造と数値整合 | H32/H64 finite項・全grid差はUNRESOLVED。未解像を0とせず、全biasの一意因果寄与率・新N/G・全law精度へ転用しない [P1][H6_P1] |
+| H6 P2：同H、central制御/Qiskit1.3.0 opt1 seed17/P0、confirmation/index0000のH32/H64/R64、測定込みfull wrapper | 保存Full RZ=4732/6735/3081、Hybrid共通R=2500。R/E/Empty削除対照の保存interaction RZはH32=89/91、H64=72/75、R64=-3/0（cos/sin）。Full価格は孤立部品和ではなく、保持回路価格と結合非加法性を分けられる | 固定programの操作的対照であり母平均配賦ではない。H64/R64は同q/r/Kでもtail/law/event内容・E価格が異なる。保持78項だけの因果効果、特定compiler passの寄与率ではない [P2][H6_P2] |
+| H4 P3 Stage4：linear1Å/STO-3G/tol-onlyDF10、共通Gaussian T_eff保持/V_square残差、Pauli184対DF rotated Z/ZZ360・10basis、T=.8/S2/q8/r4/K4/P0、run04各方式n32 | 保存5精度のnominal条件付き会計は、DFが少shotでもPauliの小さい単回価格が総Gを下げるという既存N/C競合の別case study。ELIGIBLE_CONDITIONALを引用 | finite-bit law/angle gap=0、compiledρ=0、B engineering上界候補のnominal振幅coverageが仮定。純RTE対DF B3・最新最良候補同士の完全matched順位とは別。表現単独の一般因果効果ではない [Stage4][P3_STAGE4] |
+| H4 P3 finite-bit：同じencoded model・保存law/basisの工程 | CDF/角度/bridgeのengineering診断と20軸POSITIVE_CONDITIONAL。旧Stage4仮定に対する限定補足で、N/G順位更新なし | 直接差は未解像。certified_gap_upper=null、implemented_accuracy_guaranteed=false、native_bridgeの一様上端=null、actual_implemented_headroom=null。compiled residual等の仮定を全面解除しない [finite-bit][P3_BIT] |
+
+P1科学SOURCE=a0a3aff915f98456733d6bf09ed641a1be423628、P2=11e50e262f95630b14fa4070ad30894ba3f64b74、P3 Stage4=2f0d31f75ab1ecacc73d9ee5c34ddfc997396102、finite-bit=d22ca967955a664260a3a9857df243b3f151610f。各結果のsource_and_inputsを使い、SOURCEと結果carrierを分離した。保存入力・program・cohortへの接続を照合し、QPY decodeやSOURCE実行はしない。既存[Pauli追補][PAULI_ADDENDUM]の条件・因果境界を再利用した。14/15と元DF比較の数値・方向は変更していない。
+
+### B3・旧H8：custodyと後続説明の保証水準
+
+B3はSERVER2で公開ebe9e2aa…と保存最終f794a2aa4c76bc024540c808bf9400d9f523bb76の主要8表/provenance blob一致が確認された。LOCALは公開側8blobをその照合記録へ結んだ。全treeには6path差があり、圧縮raw2件の内容完全比較は行われていない。主要負結果の一致と全raw identityを区別し、G03原status・B3負結果を変更しない。[SERVER2限定照合][S2_EVIDENCE]
+
+旧H8 T=.8については、SERVER2で既存候補2commitの現存と公開mainのcomparisons/paired_metricsへの限定custodyが確認された。加えてG04の匿名completion、SOURCE/hash、192軸対応は37694741…で公開され、879a2894…はその範囲をANONYMIZED_COMPLETION_METADATA_AVAILABLE_WITH_REMAINING_LIMITSと整理している。旧「LOCALで404／所在候補のみ」は当時の観測として残し、現在も一切未取得であるかのようには扱わない。private全rawの第三者再監査・完全公開audit・全履歴独立性・新n48実験を意味しない。[SERVER2][S2_REPORT]、[G04公開][G04_REPORT]、[後続統合][G04_INTEGRATION]
+
+p8のsaved_exact_export_match=falseは保存のまま。後続d829ead8…は、flagがfaithful:p8キーのmembershipであり、キー欠落により同prefixの独立export比較を実施しなかったことをEXPLAINED_NO_SCIENTIFIC_IMPACTと整理した。これは**flag原因だけ**の説明で、科学データの比較不一致・逆に独立export照合済みのいずれも意味しない。旧G04の「原因未解決」は当時の状態、原因の限定解明は後続である。同prefix直接照合のcoverage不足・原profile等の限界は残る。p8旧1＋新47、p7新48というresumeと同cohort aliasを維持し、追加実験へ数えない。[原因報告][P8_CAUSE]、[flag生成SOURCE][P8_LOADER]
+
+H8 T=.8/q16/ε=.001の元signal原記録不足によるSOURCE_OR_DATA_MISSING_STOPは、このcustody確認やT1.6 StageCとは別で残る。.0005の価格から.001のN/Gを逆算しない。現在の主張はその未成立の精度拡張を含めない。[境界報告][BOUNDARY_REPORT]
+
+### 最終整合・終了
+
+追加差分は現主張の比較方向を置換せず、新たな必須未取得証拠・SOURCE/input不一致は今回検出しなかった。Aの必要証拠を補強し、Cの限定機構理解を増やし、Dの未要求保証を維持する。現scopeに該当するBは今回の照合ではなし。完全因果分解、全law/母平均、実装全体Float64・noise、最終RPE費用の優位は未保証のまま。[最終A/B/C/D](STATUS_AND_OPEN_QUESTIONS.md)
+
+新科学値の算術、signal/bias/N/G、平均/SE/比/順位、sampling、build/compile、旧研究retry/resume、詳細科学レビューは0。既存35行・Phase3原欄・サーバー差分原本・科学SOURCE/raw/QPY/grant/ledger/marker/STOPを保全し、文書checkerだけを最小拡張した。SERVER2へのSSH・push復旧、追加inventory、private raw再公開は行わない。
+
+**公開SHAと変更fileのblob/本文一致確認後mandatory STOP。** Codexの今回の統合作業は完了し、現scopeの追加科学計算は不要。次の担当はユーザー：主要claimの正式採否・研究範囲・論文構成を判断する。正式採択、詳細レビュー、科学実行、完成稿執筆へは自動移行しない。
+
+
 <!-- fixed-reference-definitions -->
 [G01]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fdc7fe58e7e887786322c6204db3654111873958/docs/research/pr_cross_host_coverage_audit_20261102/g01_g02_reconciliation/G01_CANDIDATE_BINDINGS.csv>
 [G02]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fdc7fe58e7e887786322c6204db3654111873958/docs/research/pr_cross_host_coverage_audit_20261102/g01_g02_reconciliation/G02_COHORT_BINDINGS.csv>
@@ -240,3 +310,33 @@ RPE V3/R1のPartial約4.858%低い点費用は旧opt2モデルの結果で、共
 [BACKEND]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/655bf6cb84ab161706baf843a8ae255da39bf7a6/docs/research/rpe_measurement_backend_contract_20261105/NEXT_STAGE_DECISION.md>
 
 [FLOAT64]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ccbd7aa974eda1e017138066a70dc8ac35221907/docs/research/rpe_three_gaps_preparation_20261104/INPUT_KERNEL_ADDENDUM_20261105.md>
+
+[S1_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0a2b54650527094306f619e3d08dbb2bbc94ba14/docs/research/pr_server1_evidence_delta_20261105/REPORT.md>
+
+[S2_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5b0971a2d9fc6ef474008d26d14af85e324b4b24/docs/research/pr_server2_evidence_delta_20261105/REPORT.md>
+
+[BOUNDARY_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/REPORT.md>
+
+[BOUNDARY_RESULTS]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/RESULTS.csv>
+
+[BOUNDARY_SUMMARY]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/202d25eb34be365aaa6638c6353e25f51acebe42/analysis/pr_boundary_execution_20261027/EXECUTION_SUMMARY.json>
+
+[H6_P1]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/bfb4ca75437a9b3605a8f57b5f82100615dd034f/artifacts/pauli_pure_rte_mechanism_validation/2026-11-01/bias/REPORT.md>
+
+[H6_P2]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/c9073274daee69c9b69d8db3dc332bf6132c2259/artifacts/pauli_pure_rte_mechanism_validation/2026-11-01/cost/REPORT.md>
+
+[P3_STAGE4]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/a1d3f32aba6416fd1e200cd66a97d1a825b5dd73/artifacts/df_pauli_matched_partition_validation/2026-11-02/stage4/run01/REPORT.md>
+
+[P3_BIT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/426ccda5df044d2e94d4a18d98cde75a96ab1e6b/artifacts/df_pauli_matched_partition_validation/2026-11-02/finite_bit/run01/REPORT.md>
+
+[PAULI_ADDENDUM]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f6eb34dad982f8f753a618c609b528fb3c20d142/docs/research/pauli_h2_h4_h6_paper_evidence_addendum_20261102.md>
+
+[S2_EVIDENCE]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/5b0971a2d9fc6ef474008d26d14af85e324b4b24/docs/research/pr_server2_evidence_delta_20261105/EVIDENCE.json>
+
+[G04_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/37694741ee356fd09b5dfcb56130c55ab381044c/docs/research/h8_g04_evidence_reconciliation_20261103/REPORT.md>
+
+[G04_INTEGRATION]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/879a28940392a1f2ea58f32f1a320d4b6822a6dc/docs/research/h8_g04_o1_evidence_integration_20261103/REPORT.md>
+
+[P8_CAUSE]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d829ead865e7ff5defe38ba9d97a5662c75441aa/docs/research/h8_p8_long_time_preflight_20261103/P8_ROOT_CAUSE_REPORT.md>
+
+[P8_LOADER]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0c49a88134066177816feca2741f36f6b88d23ba/scripts/h8_ab_native.py>
