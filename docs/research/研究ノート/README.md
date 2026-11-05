@@ -1,5 +1,7 @@
 ## 2026-10-23 H4 K静的調査・L production実装
 
+2026-11-05：[PR資源評価・証拠統合の技術記録](2026-11-05_pr_resource_evidence_integration.md)。文書更新だけで、科学的主張の正式採択・新科学計算なし。
+
 [K静的調査・L production記録](2026-10-23_H4_KL_production.md)。SOURCE eb195bf2d、T/binding100＋L48＝148 PASS。固定128・148/148/11/324のkernel/one-shot制御・無効契約を封印。K全体保証とC/L overlapは未解決、実H4診断/科学grant/compile/受理/N_G0、技術STOP。以下は各時点の履歴。
 
 ## 2026-10-23 H4実証拠adapter・旧compiled program保証可能性

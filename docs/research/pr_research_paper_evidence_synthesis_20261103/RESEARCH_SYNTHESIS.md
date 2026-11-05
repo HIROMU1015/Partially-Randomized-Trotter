@@ -1,5 +1,7 @@
 # PR研究の成果・主張・証拠と論文化候補
 
+**2026-11-05更新**：[後続結果・資源機構・派生成果](#integration-20261105)と[必要十分性A/B/C/D表](STATUS_AND_OPEN_QUESTIONS.md)を追記した。現在の限定claimの記述的判断は `CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT`。以下の11月3日原統合は時点を保って読む。
+
 2026-11-03 JST。LOCALが主担当となり、3環境に由来するGitHub公開済み成果を統合した。これは既存資料の整理と構成候補であり、新しい独立科学レビュー、中心claim・論文分割・投稿先の正式採択ではない。新科学計算・数値再解析・平均/SE/順位算出・sampling・compile・完成原稿執筆は行っていない。
 
 **最も直接的な中心メッセージ候補は、固定DF表現の有限時間signal推定において、partial randomizationの競争力が、強い決定論対照、要求精度、時間、入力・候補集合に依存することを実装資源で示した、という適用条件の研究である。** B2が有利な保存条件と、B0/B0+I・高次PFが有利な条件、DF B3の負結果を同じ論旨に置く。partial randomizationという一般原理や、常にPRが最良という論文にはしない。[全体地図][LANDSCAPE]、[旧claim matrix][LANDMATRIX]
@@ -103,6 +105,73 @@ LOCALは取りまとめ担当であり、証拠対象をLOCAL実験に限定し�
 
 ユーザーが決めるのは、DF中心の範囲、Pauliを別稿にするか、RPEを補足に置くか、Track Bを構成noteとして分けるか、現在の限定証拠でどの主張を正式採択するかである。新しい完成稿・詳細科学レビュー・投稿は別指示の対象。**本統合成果を公開・remote本文照合後mandatory STOP。**
 
+<a id="integration-20261105"></a>
+
+## 2026-11-05追補：検証を一区切りにできる範囲
+
+**記述的判断：`CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT`。** 固定Hamiltonian・保存候補域・解析的shot会計・固定compilerの取得価格について、有限標本／モデル条件付きのPR資源比較を述べる範囲では、今回照合した資料に主要結論を変える具体的な証拠欠落・入力不整合は見つからなかった。追加科学計算を現在の完了条件にしない。これは主要claimの正式採択・独立科学レビュー・既存正式statusの置換ではない。
+
+現在の範囲は、同じ有限時間signal推定課題での **G=N_cos C_cos+N_sin C_sin** の保存比較である。Nは解析上の十分量子shot数、Cは測定付きfull Hadamard wrapperのcompiled RZ、nは古典価格trajectory標本数。状態準備P=0。保存bias/reference・数値allowance、law、compiler残差の仮定を各原結果のまま付す。「要求signal精度を実compiled/noisy実装で無条件に達成」「PR母平均がPFに勝つ」「全PF候補の最適性」「同energy taskの頑健な総費用優位」へは拡張しない。
+
+本書§1–8と旧対応表の原欄は11月3日時点の統合として保持する。以下はその後続であり、旧H8 T=.8・DF12/DF10・RPE V2等を上書きしない。最新対応表には候補取得範囲、価格・compiler、入力/SOURCE、確認水準、支持区分、必要な残作業を追記した。[最新CSV](CLAIM_EVIDENCE_MAP.csv)、[必要十分性表](STATUS_AND_OPEN_QUESTIONS.md)
+
+### 1. H8 Stage A/BとStage Cを分けた最新結果
+
+Linear H8／1.00 Å／STO-3G／保存tol-only1e-8 DF28、16 system qubit・保存spin sector4900、同state・fragment順0..27。T=1.6、signal ε=.0005、P=0。PRは4th(m5_best)/prefix8/q1/R_outer32/K4、固定PFはB0I/4th(m5_best)/prefix15/q1。compilerはQiskit1.3.0、rz/sx/x/cx、opt1、seed17、backend/target/topologyなし。[探索][H8_AB]、[確認][H8_C]
+
+| 保存cohort | 取得・固定の範囲 | 引用結果と確認水準 |
+|---|---|---|
+| Stage A/B EXPLORATION | signal69候補、適格40・不適格29。PR4候補各n9、PF15候補各1回、51trajectory/102価格 | m5/p8/q1探索平均G=67323362591920。PF15候補内最小は上記B0I。探索19代表133検査PASS。最小という語は取得集合内だけ |
+| Stage C CONFIRMATION | 固定PR1候補、別seed namespace n9/18価格。固定PFはStage B由来の価格を引用しEXPLORATION cohortを維持 | 平均G=67335317264200、固定PF G=89291219516568、PR/PF=0.754109056061、観測削減24.58909439%。記述的SE=103180211675.02368、固定h_G=121655623062.28098に対する保存判定達成。代表index0の7検査PASS |
+
+PRの固定N_cos/N_sin=84916951/88339169、PFは71893270/73757762、PF両軸C=613049 RZ。探索平均・確認平均・比・SEはすべて既存表示の転記で、再計算していない。確認後の候補選抜、探索とのpool、新しい信頼区間はない。[原確認JSON][H8_C_RAW]、[paired価格CSV][H8_C_PRICES]
+
+確認でもorder0=288、order2/4は未観測。未観測群の条件付き価格・population tail boundはnullのまま。小さいsample SEと独立seed namespaceは、PRNGの数学的IID性や母平均精度・母平均優位を保証しない。追加sampling/compile・希少費用研究は現在の限定観測の完了条件でない。位相補助は実小gate operator由来のfull-wrapper global phase会計であり、statevectorの位相整列ではない。元HOLD/失敗を保全する。[確認と限界][H8_C]
+
+結果commitと科学SOURCEは別。Stage C実行SOURCE=82fdbdd098e9d3edae01a930437e3d76c1f8bf36、signal=d1272016592ff06c0567862f770ed796fd61b366、native=df93fbb88761b61c2691bf01f761ed20a7987d7f、位相補助=18ce41942051065fa097644a8a937bd11adba708。原JSONのH/state/DF binding、candidate ID、source_files hashを固定Git objectへ照合する。private raw/QPYの外部再現まで認定しない。
+
+### 2. 資源競合：何を説明できるか
+
+以下は旧長時間研究の保存比・保存価格を引用する。新しい比・順位・統計量・scaling則は作らない。H4/H6長時間はlinear1.00 Å/STO-3G/tol-only1e-8 DF10/19、H6は保存weighted-Hermitian completion込み。Qiskit1.3.0/opt1/seed17/rz-sx-x-cx、symmetric-directional制御・scalar一回・P0・full wrapper。R_outerは1 outer内の総short-step数で、総event数q R_outer。δは原表のT/q。[元条件・結果][SRC_LONG]
+
+| 要因・保存対照 | 直接支持される説明 | 解釈・未分離の境界 |
+|---|---|---|
+| 次数×時間×精度：H4 PF、m5/S2保存比 | T=.8/ε=.05ではq1→1、prefix5→7、N比0.7878447452676515、C_eff比14.463692453725676、G比11.395144096835159。shot減を単価増が上回る。T=1.6/ε=.0005ではq32→1、同prefix7、N比0.9927333346654413、C_eff比0.34489002563333576、G比0.34238382523983096 | C_effは元表の実効単価で、片軸Cやdet/random/basis別価格ではない。各公式の取得域内選択を比較し、q単独の因果効果ではない [保存分解][CNG] |
+| 同じH4のPR m5/S2 | T=.8/ε=.0005でq8→1、prefix1→3、N比0.4937986570180657、C_eff比2.0302213375166436、G比1.0025205699151396。T=1.6ではq32→1、prefix1→3、N比0.7104277461318325、C_eff比0.5461571223523415、G比0.3880051734666214 | q減少だけでは高次PRの利益を決めない。厳精度・長時間の取得条件ではN/Cの交換が改善するが、一般漸近優位ではない [分解][CNG] |
+| matched q/prefix/R/K：H4 T=.8/ε=.05、p3/q1/R32/K4 | S2: log_B=0.006803284160668892、N=11197/7515、G=125783311.46666667。m5: log_B=0.016709032397037187、N=7250/7250、G=526014303.030303。qとprefixを揃えても高次の費用は増え得る | 次数がsigned piece・law・bias・B・compiler入力も変える。normalization単独の寄与率ではない [matched保存値][MATCHED] |
+| r/R_outer・K：同H4/p3/q1/m5/ε=.05 | R16 K2/4/6で保存Nは各7529/7529、C_cos=C_sinは34312.11111111111／34223.666666666664／34243.0。R32 K4ではN=7250/7250、C=36276.84848484849。R増によるshot節約と価格負担を別欄で確認できる | R32 K2/K6やR64の一部は適格でもNOT_ACQUIRED。空欄Gを0にしない。K間の有限標本差から母平均順位や単調則を作らない [感度原表][RK] |
+| partition：B0/B0I/B2/B3 | B0Iはdiscard tailの既知identityを一回戻す強い対照。H6 T=.8/ε=.05の実測p7で旧PR点より低費用。長時間DF B3は取得40条件でB2・決定論envelopeより低G0/40 | prefix増はtail負担と保持回路を同時に変える。DF B3はone-body保持で、全Hamiltonian純RTEではない。全ランダム化一般の不可能性ではない [H6][SRC_H6STRONG]、[B3][SRC_B3] |
+| 表現・basis/control | Pauli内部ではH2/H4/H6の保存比較14/15で純RTE低G、H4粗精度ではHybrid低G。低Cが大Nを補う場合と、bias/headroomによるN減が効く場合がある | DFとPauliで保持配分の観測が違う。law、Hamiltonian/ray、basis、control、候補域も違い、表現単独の因果効果ではない。D1/D2対照と最新family比較を分ける [既存原因整理][SRC_MECH]、[表現対照][SRC_PX] |
+
+有限RTE biasと正normalization/attenuationは別。補正後signalを推定するNには元のrange/B²会計とbias後headroomを使い、raw meanを補正signalに読み替えない。R/K変更はbias・B・N・Cを一緒に動かす。これらは元SOURCEの会計上の直接関係で、個別機構の因果寄与率の新推定ではない。
+
+粗精度でS2が両系・全Tの取得域内点最良だった結果、長時間・厳精度で高次が低Gだった結果、確認で探索方向が反転したH4 T=1.6/ε=.005も併記する。H8 T=.8の強化184域とT=1.6の固定確認は別条件。保存されていない時間・精度のscaling則、未使用入力のselectorは導出しない。[長時間原報告][SRC_LONG]、[H8探索][H8_AB]
+
+説明水準は、**matched対照で直接支持／複数観測と整合する解釈／未分離の因果／新検証を要する仮説**を区別する。上表のN/C交換は前二者。q・表現・basis/control各々の一意寄与、未使用入力へ移る選択則は後二者であり、今回の自動レビュー・計算対象ではない。
+
+### 3. 本体から分けて活用できる成果
+
+| 派生成果 | 既存成果・再利用できる部分 | 新規性と将来利用の境界 |
+|---|---|---|
+| Policy-aware平均certificate | 保存component certificateをrun≤1 policy、order/role、source-basis隣接確率で重み付けする期待telescoping。固定ideal IID平均の全18round/36軸局所十分条件が成立。m17追加上端の保存上向き表示7.55735552e-9 | telescoping・三角不等式・期待値の線形性自体は既知。今回の具体的な追加部分はpolicy依存のsingleton端/内部確率とproduct/rotation係数を結んだSOURCE固有の閉形式・認証接続。独立な定理的新規性・priorityは未判定。適用仮定を満たす別basis簡略化・回路近似の平均誤差と価格の共同設計へ利用候補となるが、別policy/lawへ自動適用しない [導出§5][MEAN_ANALYSIS]、[結果][MEAN_REPORT] |
+| 固定H4条件付きRPE保証 | 同一legacy DF12/L_D3/δ=.02/K2/N4 sector70の保存18round/36軸について、指定ideal controlled IID測定＋数学的decoder＋外部alias条件で失敗≤0.0496929886343339467、成功≥0.950307011365666053、energy誤差≤0.000138689200360119854 Ha | 一般RPE成功理論を新発見としない。保存matrix/mean包含、確率tail、矩形幾何、strict branch、reference込みenergy接続を固定入力で数値認証した成果。成功頻度の実測でも真の分子energy保証でもない。新入力での再利用には再bindingと別科学実行許可が必要 [保証報告][ENERGY_REPORT]、[SOURCE証明][ENERGY_PROOF] |
+| PF次数×partition共同設計 | 上記C/N/Gとmatched対照、DF B0I/B2/B3、H8高次固定確認により、次数だけを選んでも資源順位は定まらないことを固定域で説明できる | 適用条件の分類・未使用入力の選択則を考える材料。独立なselectorや移送保証は未実証。新しい選択・再ランキングは行わない |
+| DF／Pauli-JW | 同じG会計でも保持・全ランダム化の有利な配分が異なるという有限観測、既存D1/D2の操作的対照 | 表現・law・control・basis・候補域の交絡を残す。独立研究テーマの候補として価値を整理できるが、表現単独の因果効果・独立論文成立は未判定 [既存統合][PAULISYNTH] |
+| Track B構成・native会計 | return集約・局所生成・finite-bit補正、matched CTS、G9/D3のnative T/CX/shot交換、H4 C1各1024pathのtail-only logical接続 | DF本体のRZ×shotと別系列に置く。既知Green/Euler/importance weightingとSOURCE固有の構成を区別する。独立新規性・共通認証N付き分子full-wrapper優位は未確立。一時凍結を維持 [構成claim表][SRC_BLATEST]、[C1限界][SRC_C1] |
+
+policy-aware保証は単一event平均の積への誤因数分解や符号相殺を使わず、word依存の実装差の加法上端を期待化する。旧任意trajectory一様上界18/36未判定を、新平均上界で上書きしない。平均対象の違いが核心で、全trajectory最悪保証を完成条件に戻さない。[平均結果][MEAN_REPORT]
+
+H4のenergy対象は保存DF exact polynomialの4電子sector最小固有値。各軸内fresh独立uniform53 trajectoryとideal±1測定を仮定し、round/axis間独立は不要。数学的decoderと外部alias/liftを使う。固定PCG64の数学的IID性、Float64 decoder、compiled/noisy全回路、実状態準備、上流DF誤差・真分子energy、実装全体の成功は保証していない。正式`RPE_tolerance_certified=false`、`scientific_status=UNDETERMINED`、`U_virtual_IID_upper=null`、`U_exec_upper=null`を維持する。[確率・energy原結果][ENERGY_RAW]
+
+RPE V3/R1のPartial約4.858%低い点費用は旧opt2モデルの結果で、共有較正共分散・長q systematicを含む総合順位は引き続きUNDETERMINED。今回の条件付き95%成功保証をFullとのRPE費用優位に移さない。測定backend契約とFloat64追補は技術準備・限定証明の成果であり、production接続・停止済みkernel証明を自動再開しない。[R1][R1]、[backend判断][BACKEND]、[Float64追補][FLOAT64]
+
+### 4. 終了判断と保全
+
+現在の限定的な保存比較の必要証拠は揃い、A/B/C/D表のBに該当する具体的不足は今回見つからなかった。母平均優位・全PF最適性・無条件実装保証を中心claimに選べば必要証拠は変わるが、それを今回の主要claimに正式採用していない。新規性の独立性や論文成立性も未判定のまま残す。
+
+今回変更したのは統合文書、既存対応CSV・文書用metadata checkerと入口・当日ノートだけ。SOURCE/raw/既存manifestの科学status/grant/ledger/marker/STOPを変更せず、新しい科学runnerをimport・起動しない。全repository再棚卸し・新規証拠計算・詳細科学レビューは行わない。**公開SHAと変更公開fileのblob/bytes照合後mandatory STOP。Codexに追加科学作業はない。ユーザーによる主要claimの正式採否は別判断であり、今回の終了の前提にはしない。**
+
+
 <!-- fixed-reference-definitions -->
 [G01]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fdc7fe58e7e887786322c6204db3654111873958/docs/research/pr_cross_host_coverage_audit_20261102/g01_g02_reconciliation/G01_CANDIDATE_BINDINGS.csv>
 [G02]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fdc7fe58e7e887786322c6204db3654111873958/docs/research/pr_cross_host_coverage_audit_20261102/g01_g02_reconciliation/G02_COHORT_BINDINGS.csv>
@@ -143,3 +212,31 @@ LOCALは取りまとめ担当であり、証拠対象をLOCAL実験に限定し�
 [V1]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e520e6e396f7e0def9e522ea1cff58eb10ddfa8f/docs/research/pr_rpe_v1_e0_state_radius_20261103/REPORT.md>
 [V2]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/78c49d0b5f1d71e63b5959e78813237923bbc648/docs/research/pr_rpe_v2_branch_success_20261103/REPORT.md>
 [V3]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cc60beb51930d4311d2ded84440682e583ccafc7/docs/research/pr_rpe_v3_cost_transfer_preflight_20261103/REPORT.md>
+
+[H8_AB]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7fb1d125e05238a7d932fc89b8dab6ac6a7f8c84/docs/research/h8_long_time_execution_20261103/EXPLORATION_RESULTS_20261104.md>
+
+[H8_C]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eb07156a37b1938ed3aed95c13abbb545466c573/docs/research/h8_stage_c_execution_20261105/REPORT.md>
+
+[H8_C_RAW]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eb07156a37b1938ed3aed95c13abbb545466c573/artifacts/resource_applicability/track_a_h8_long_time/2026-11-05/confirmation.json>
+
+[H8_C_PRICES]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eb07156a37b1938ed3aed95c13abbb545466c573/artifacts/resource_applicability/track_a_h8_long_time/2026-11-05/paired_prices.csv>
+
+[CNG]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/C_N_G_decomposition.csv>
+
+[MATCHED]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/same_q_prefix_R32_K4.csv>
+
+[RK]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/155529e20a8fac39e00786c40b57830b71203c4f/artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/r_K_sensitivity.csv>
+
+[MEAN_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/1789a8ca731a1de631e80a34d2b8c90657d24458/docs/research/rpe_support_weighted_transfer_execution_20261105/REPORT.md>
+
+[MEAN_ANALYSIS]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7a39a78eccdbe457786978e14d36b2f0d7abc290/docs/research/rpe_support_bound_sharpness_20261105/SUPPORT_BOUND_ANALYSIS.md>
+
+[ENERGY_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d4c016960ff4b1ca16cc73770147cde326989427/docs/research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md>
+
+[ENERGY_RAW]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d4c016960ff4b1ca16cc73770147cde326989427/artifacts/rpe_controlled_iid_success_energy/2026-11-05/run01/RESULT.json>
+
+[ENERGY_PROOF]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ffa1e22b3001ad1c4eb275ff1121ed17111452ec/docs/research/rpe_controlled_iid_success_energy_preparation_20261105/CONNECTION_PROOF.md>
+
+[BACKEND]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/655bf6cb84ab161706baf843a8ae255da39bf7a6/docs/research/rpe_measurement_backend_contract_20261105/NEXT_STAGE_DECISION.md>
+
+[FLOAT64]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ccbd7aa974eda1e017138066a70dc8ac35221907/docs/research/rpe_three_gaps_preparation_20261104/INPUT_KERNEL_ADDENDUM_20261105.md>

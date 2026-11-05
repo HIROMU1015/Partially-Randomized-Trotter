@@ -1,5 +1,7 @@
 # Status・未保証事項・次の判断
 
+**2026-11-05更新**：最新判断とA/B/C/D表は[本追補](#sufficiency-20261105)。元29行・元statusは保持し、後続6部品行を追加した。以下§1–5は11月3日時点の記録。
+
 2026-11-03 JST。LOCALが統合担当。対象はLOCALに限定せず、GitHub公開済み3環境の固定成果、Phase0–3、G01/G02、研究別結果を優先した。これは新しい独立科学レビューでも、主要claimの正式採択でもない。
 
 ## 1. 原statusを残した追補
@@ -77,6 +79,76 @@ SERVER1/2 inventoryは所在候補の根拠であり、今回SERVERの現在状�
 
 **公開・照合後mandatory STOP。** 次の担当はユーザー：DF中心範囲、Pauli／RPE／Track Bの配置、正式claimの強さ、次に原稿化・限定資料回収・独立レビューのどれを指示するかを選ぶ。Codexは新科学計算、完成原稿、詳細科学レビュー、投稿、branch整理、既存STOP解除へ自動進行しない。
 
+<a id="sufficiency-20261105"></a>
+
+## 2026-11-05：必要十分性・残存gapのA/B/C/D整理
+
+**`CURRENT_CLAIM_SCOPE_EVIDENCE_SUFFICIENT`。現在の限定的なPR資源比較について検証を一区切りにできる。** 今回照合した範囲で、主要結論を変え得る具体的な必要証拠の欠落・SOURCE/input不整合は見つからなかった。独立科学レビュー、主要claimの正式採択、全実装成功・母平均優位の認定ではない。11月3日の記録、Phase3原status/A–E、旧STOPはそのまま保つ。
+
+### 今回判断した主張範囲
+
+有限時間signalの同一保存H/state/reference、元bias/normalization/shot十分条件と数値allowance、固定compilerの価格会計による、取得候補内の有限標本・モデル条件付き比較。Nは解析上の量子shot、nは古典trajectory価格標本、Cは測定付きfull wrapperのRZ、G=N_cos C_cos+N_sin C_sin、P=0。energy、母平均、全候補最適、実compiled/noisy精度の無条件保証を含めない。
+
+H8 Stage Cはlinear1Å/STO-3G/tol-onlyDF28、T1.6/ε.0005、m5/p8/q1/R32/K4の固定PR n9と、保存B0I m5/p15/q1 PFとの比較。確認cohortを探索とpoolせず、24.58909439%は保存観測平均の削減率。H4条件付きenergy保証はlegacyDF12/L_D3/δ=.02/K2/N4sector70、全18round/36軸、指定ideal IID測定・数学的decoder・外部alias priorという別成果。[H8確認][H8_C]、[H4保証][ENERGY_REPORT]
+
+### A：現在の主要主張に必要で、既存証拠が揃うもの
+
+| 必要証拠 | 既存証拠・成立水準 | なお記す限定／追加実行 |
+|---|---|---|
+| 同一推定課題・入力 | 既存M1/M2/PM、共通PF・長時間provenance、H8固定binding/IDとsource_files | H4 legacy12≠tol-only10、H6 weighted completion、H8 T=.8≠1.6。跨系列を同じscaling実験にしない。追加なし |
+| signal bias・十分N・normalization | 保存finite mean/reference、bias/headroom、既知Bによる補正とrange/B²会計、元u/allowance政策 | 数値reference/経験allowanceを厳密全域certificateに格上げしない。量子shot実測ではない。追加なし |
+| Hadamard意味論 | 既存ordinary-controlled/control/phase検査、H8代表7検査、Re/+Im・measurement込み価格 | 代表・局所correctnessを全trajectory/compiled/noisy保証にしない。追加なし |
+| compiled価格・G会計 | 保存両軸価格と固定N、cos/sin paired G、actual/model区分、C/N/G・r/K・matched表 | nとNの分離、model・長q外挿・未知費用nullを保持。新平均/比/SE算出なし |
+| 強い決定論対照 | B0/B0I/Full、高次共通PF、H6 p7実測、H8 StageB PF15とStageC固定B0I | 価格取得域の強対照であり、全PF/global最適の証拠ではない。追加全探索を要求しない |
+| 探索と確認 | 既存G01/G02の記録範囲、固定H8 StageC別seed namespace n9、cohort/alias注記 | 旧回復・同seed継続・H8 T=.8 aliasを独立確認へ加算しない。StageCは外部再現でない |
+| SOURCE・原結果への追跡 | 最新CSVの固定commit/path/blob、既存VALIDATION.jsonを拡張した入力索引、最新REPORTと原JSONのliteral照合 | 結果公開commitと科学SOURCEを区別。private全rawの復元認定はしない。追加回収なし |
+
+出典は[最新CSV](CLAIM_EVIDENCE_MAP.csv)の各行と[固定入力索引・技術確認](VALIDATION.json)。上表は既存証拠の必要性を整理したもので、原結果に新しい科学的PASSを出すものではない。
+
+### B：現在の主要主張に必要だが不足するもの
+
+**該当する具体的不足は今回の照合では見つからなかった。** Bを空欄にするために不足を隠したのではなく、主張を有限標本・取得域・原精度政策・compiler/モデル条件付きの保存比較に固定したためである。
+
+| Bの必須記載項目 | 今回の判定 |
+|---|---|
+| 1 不足している具体的証拠 | 現scopeに不可欠な欠落・不整合は検出せず |
+| 2 影響する主要主張 | 現scopeの主張を改める具体的事案なし |
+| 3 既存結果が不十分な理由 | 現scopeでは該当なし。母平均・全PF最適・実装保証には不足があるが採用中の結論に含めない |
+| 4 主張限定で解消できるか | 有限標本・保存取得域・精度/価格モデルへの条件を明示して解消する。条件を省いた強い文言は支持しない |
+| 5 本当に新規検証が必要か | 現scopeには不要 |
+| 6 必要な最小作業 | 今回の文書・出典照合と公開照合で完了。追加の科学作業なし |
+| 7 新しい科学計算の要否 | 不要。正式なclaim拡張を選んだときだけ必要性を再判定 |
+
+### C／D：現在の主要主張には必須でないもの
+
+分類は今回の目的への必要性であり、成果の優劣や既存正式statusの再分類ではない。Cは独立科学価値をもつ成果／問い、Dは現目的では追加実施を要求しない検証。別の強いclaimを選んだときの不足を隠さず、現在のBへ自動昇格させない。
+
+| 区分 | 系列・対象 | 既存成果と未保証事項／必要となる強いclaim | 今回の扱い・担当 |
+|---|---|---|---|
+| C | Policy-aware平均certificate | 旧任意trajectory一様転送の未判定を保持したまま、run≤1とcomponent/order確率を使う平均専用転送で全36軸局所十分条件。既知telescoping等とSOURCE固有の閉形式を区別。別policy/law・新規性priorityは未判定 | 成果として分離して利用可能。独立した先行研究確認・別入力評価は必要と選ばれた場合のみユーザーの別指示。現在は追加なし [導出][MEAN_ANALYSIS]、[結果][MEAN_REPORT] |
+| C | 固定H4条件付きRPE成功・energy | 成功≥0.950307011365666053、energy≤.000138689200360119854 Ha。保存DF N4sector対象、ideal IID・数学的decoder・外部aliasに条件付き。一般RPE理論や実機成功の新証明ではない | 本体のfinite-time資源比較と別成果。認証接続の再利用可能性を整理済み。追加計算なし [原結果][ENERGY_RAW] |
+| C | 次数×partition／未使用入力選択則 | 高次化・保持prefix・N/Cが独立でない保存観測とmatched対照。未使用入力へ移るselector・漸近優位・一意因果寄与は未実証 | 適用条件分類の研究資産。新selectorの正式採択・新評価を今回行わない |
+| C | DF対Pauli-JW | 保持／全ランダム化配分の異なる観測、既存共通H/ray・D1/D2操作的対照。表現/law/control等は交絡 | 独立テーマ候補。表現単独因果効果・独立論文成立の追加判断は未実施 |
+| C | Track B構成/native会計 | formal/local/finite-bit構成、T/CX/shot交換、分子C1 tail-only logical。共通認証N付きstrict native full-wrapper分子資源優位・独立新規性は未確立 | 別系列に保持。一時凍結を解除しない。DF本体の必須検証にしない |
+| D | H8未観測rare群／母平均tail | StageCの小sample SEだけでは母平均費用・分散の保証にならない。母平均優位を主張するなら追加のtail情報が必要 | 限定標本比較には不要。希少event追加検証・StageC sampling/compileを提案・再開しない |
+| D | 最強PF・全domain最適／候補対称探索 | 未価格候補と探索域差が残る。全PF最適性やPRの普遍的勝利には不足 | 取得範囲を明示する現claimには不要。未測定値0補完・新候補選択なし |
+| D | 全18round Float64 decoder／atan2・sincos全域証明 | 入力経路・限定fmod証明はあるがa/c/d一様保証は未完成。数学的decoderの保証と別 | 停止済みkernel証明を自動再開しない。無条件Float64実装成功を中心claimに選ぶ場合だけ別判断 [追補][FLOAT64] |
+| D | 固定PCG64の数学的IID性 | 保存lawの診断・seed一意性と数学的IID証明は別。energy保証ではideal IIDを明示仮定 | 本体の有限標本記述に証明を要求しない。IID証明研究を自動開始しない |
+| D | StageT production backend全round接続 | callback契約・意味論は接続可能。provider binding、全roundcaller、backend適合性・実装保証は未取得 | 現claimの完了条件でない。StageTを自動実装しない [backend][BACKEND] |
+| D | RPE全費用順位・長q production価格 | V3/R1はPartial約4.858%点選好でもsystematic/共分散込みUNDETERMINED。条件付き95%成功とは別 | 「未確定」という結果を保持。順位を決める目的のR2/R3・長q計算を推奨しない [R1][R1] |
+| D | 全trajectory最悪・compiled/noisy全体保証 | 局所correctness、ideal IID平均、実装全体の保証対象が異なる。強い無条件保証には不足 | 有限標本／モデル条件付き比較に追加形式保証を課さない。全compiler監査を再開しない |
+| D | 初期状態準備・実機noise・physical runtime・別native指標 | P=0のRZ×shot比較から準備込み／物理runtime／native T/CX優位は導けない | 現目的外。初期状態準備費用評価を新しい必須検証として提案しない |
+| D | 旧T=.8 H8詳細audit候補／B3 private custody | §2の未取得資料を回収済みに変更していない。最新T1.6 StageCは別系列で、その公開SOURCE/raw bindingを照合 | 旧限定主表・公開B3取得域負結果に必要な範囲は既存証拠で記述。全履歴独立性・全raw復元を主張しない。全サーバー再棚卸しなし |
+
+### 技術照合・旧status・終了
+
+既存validate_synthesis.pyを最小拡張し、元29行の全既存列・Phase3文字列・coverage投影を保護する。最新6部品行と必要列を追加し、SOURCE/input binding・保存数値literal・固定Git blob・リンクを確認する。report生成器はN/G/SEを再集計するため起動しない。文書checkerだけを実行する。文書用VALIDATION.jsonの入力索引を拡張し、全体artifacts/validation_manifest.jsonの科学statusは編集しない。
+
+H4の正式`RPE_tolerance_certified=false`、`scientific_status=UNDETERMINED`、`U_virtual_IID_upper=null`、`U_exec_upper=null`と、旧uniform18/36未判定を維持する。条件付き数学的成功という新成果と矛盾しない。科学SOURCE・raw・grant/ledger/marker/STOPは変更しない。
+
+**公開SHAと変更公開fileのblob/bytes照合後mandatory STOP。Codex担当の本統合作業はそこで完了、追加作業なし。** ユーザーは必要な場合だけ主要claimの正式採否・派生成果の配置を選べる。これは本統合の終了を保留する承認依頼ではなく、次の科学計算や詳細レビューも自動開始しない。
+
+
 <!-- fixed-reference-definitions -->
 [G01]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fdc7fe58e7e887786322c6204db3654111873958/docs/research/pr_cross_host_coverage_audit_20261102/g01_g02_reconciliation/G01_CANDIDATE_BINDINGS.csv>
 [G02]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/fdc7fe58e7e887786322c6204db3654111873958/docs/research/pr_cross_host_coverage_audit_20261102/g01_g02_reconciliation/G02_COHORT_BINDINGS.csv>
@@ -90,3 +162,17 @@ SERVER1/2 inventoryは所在候補の根拠であり、今回SERVERの現在状�
 [V1]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/e520e6e396f7e0def9e522ea1cff58eb10ddfa8f/docs/research/pr_rpe_v1_e0_state_radius_20261103/REPORT.md>
 [V2]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/78c49d0b5f1d71e63b5959e78813237923bbc648/docs/research/pr_rpe_v2_branch_success_20261103/REPORT.md>
 [V3]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/cc60beb51930d4311d2ded84440682e583ccafc7/docs/research/pr_rpe_v3_cost_transfer_preflight_20261103/REPORT.md>
+
+[H8_C]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/eb07156a37b1938ed3aed95c13abbb545466c573/docs/research/h8_stage_c_execution_20261105/REPORT.md>
+
+[MEAN_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/1789a8ca731a1de631e80a34d2b8c90657d24458/docs/research/rpe_support_weighted_transfer_execution_20261105/REPORT.md>
+
+[MEAN_ANALYSIS]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/7a39a78eccdbe457786978e14d36b2f0d7abc290/docs/research/rpe_support_bound_sharpness_20261105/SUPPORT_BOUND_ANALYSIS.md>
+
+[ENERGY_REPORT]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d4c016960ff4b1ca16cc73770147cde326989427/docs/research/rpe_controlled_iid_success_energy_execution_20261105/REPORT.md>
+
+[ENERGY_RAW]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/d4c016960ff4b1ca16cc73770147cde326989427/artifacts/rpe_controlled_iid_success_energy/2026-11-05/run01/RESULT.json>
+
+[BACKEND]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/655bf6cb84ab161706baf843a8ae255da39bf7a6/docs/research/rpe_measurement_backend_contract_20261105/NEXT_STAGE_DECISION.md>
+
+[FLOAT64]: <https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ccbd7aa974eda1e017138066a70dc8ac35221907/docs/research/rpe_three_gaps_preparation_20261104/INPUT_KERNEL_ADDENDUM_20261105.md>

@@ -1,5 +1,7 @@
 # 論文ストーリーと旧原稿の再利用案
 
+**2026-11-05追記（構成候補のみ）**：節5のH8 T1.6固定確認は旧T.8と別panelにし、探索と確認を分ける。Discussionには保存C/N/G・matched・r/Kの説明水準を示す。SI-Bは旧V1–R1に加えpolicy-aware平均36軸と条件付き95%energy保証を別段で扱う。Float64/PCG64/compiled-noisy実装保証・Fullとの費用順位は保証していない。新完成稿・図生成は行わない。[最新統合](RESEARCH_SYNTHESIS.md)、[残存gap](STATUS_AND_OPEN_QUESTIONS.md)。以下は11月3日の構成案。
+
 2026-11-03 JST。推奨候補O1の構成設計であり、新しい完成原稿・abstract・投稿判断ではない。番号は設計用。図表は既存保存値・既存assetの配置計画で、今回の再描画、数値join、再ランキングはない。[範囲候補](PAPER_SCOPE_OPTIONS.md)、[主張対応CSV](CLAIM_EVIDENCE_MAP.csv)
 
 ## 1. 論理の順序

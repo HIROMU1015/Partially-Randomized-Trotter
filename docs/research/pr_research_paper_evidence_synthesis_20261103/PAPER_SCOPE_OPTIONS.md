@@ -1,5 +1,7 @@
 # 論文化範囲の候補
 
+**2026-11-05追記（未採択）**：O1のH8長時間例は探索StageA/Bと固定独立確認StageCを分離して加える。O3には固定H4のideal controlled IID・数学的decoder・外部alias条件下の95%成功／保存DF sector energy保証を加え、実装全体UNDETERMINED・R1費用順位未確定を併記する。policy-aware平均certificateは別成果候補。O1の限定保存比較には追加科学計算を必須としない。[最新統合](RESEARCH_SYNTHESIS.md)、[A/B/C/D必要十分性](STATUS_AND_OPEN_QUESTIONS.md)。以下は11月3日の範囲案であり正式採択ではない。
+
 2026-11-03 JST。以下は既存証拠から作る編集・科学的メッセージの候補であり、正式採択、独立した新規性レビュー、投稿可能性の認定ではない。主張IDは[対応CSV](CLAIM_EVIDENCE_MAP.csv)。数値は元資料の保存値を引用し、今回の再解析・再ランキングはない。
 
 ## 1. 推奨候補：DFの資源・適用条件を中心にする
