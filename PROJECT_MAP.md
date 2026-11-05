@@ -897,3 +897,5 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 最大172,835 logical unitsの新科学実行案で、今回は人工/mock検証・SOURCE固定のみ。
 実H4計算・保存実配列の再解析・科学レビューは0、別途実行許可前はmandatory STOP。
 旧SOURCE/結果/契約/STOPの再開・変更ではない。
+
+統合実行の新接続・T7配置・局所/最終STOPの区別は[実行経路](docs/research/research_c_integrated_execution_20261105.md)。固定科学SOURCEを保ち、新driverのSOURCE補足を実行前に固定する。

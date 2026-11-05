@@ -729,3 +729,5 @@ PS48の[科学実行結果](../docs/research/pr_rectangular_givens_ps48_executio
 `prepare_research_c_integrated.py`は[未承認契約](../docs/research/research_c_integrated_contract_unapproved_20261105.json)の
 byte/JSON/fresh-output確認のみ。`--execute`なし、科学call0。
 [統合報告](../docs/research/research_c_integrated_preparation_20261105.md)に候補集合・API・call積算・STOPを記載。
+
+`run_research_c_integrated_execution.py`は固定統合scopeの実行接続。`--execute`なしはpassive。[実行経路とT7配置](../docs/research/research_c_integrated_execution_20261105.md)。

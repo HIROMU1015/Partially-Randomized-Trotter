@@ -799,3 +799,5 @@ update005/r32の独立640件は0.5%精度目標未達・`UNRESOLVED_PRECISION_TA
 [頑健性・公平retuning・条件外移送の統合報告](research/research_c_integrated_preparation_20261105.md)／
 [未承認科学契約](research/research_c_integrated_contract_unapproved_20261105.json)。
 科学実行0、人工/mock検証とSOURCE固定のみ。公開照合後mandatory STOP。
+
+研究Cの[統合実行接続・T7保存配置](research/research_c_integrated_execution_20261105.md)。科学条件・call上限は準備版契約を保持する。

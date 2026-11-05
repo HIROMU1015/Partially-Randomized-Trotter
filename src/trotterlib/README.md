@@ -699,3 +699,5 @@ DF部分ランダム化研究と混同しない。
 既存最適化・PF/RPE/native/会計を再利用する。[統合報告](../../docs/research/research_c_integrated_preparation_20261105.md)。
 頑健性・r16/32/64公平retuning・H4 1.15 Å移送の未承認案で、実H4科学実行は0。
 旧APIのdefaultと旧固定SOURCE/契約/STOPを保持する。
+
+研究C実行接続は `trottertracks/c_integrated_{execution,execution_rpc,fit_worker,downstream_execution}.py`。 [SOURCE補足と保存配置](../../docs/research/research_c_integrated_execution_20261105.md)。
