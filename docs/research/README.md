@@ -1,5 +1,7 @@
 # 研究資料の現在の入口
 
+2026-11-06：[O2の優先図表・保存値による可視化](o2_visualization_20261106/README.md)。DF/Pauli内部・P3条件付き横断・R境界・P1/P2の14候補を11暫定図表へ。元数値の再算出や候補再選択をせず、原台帳/計画/status/STOPを保持。
+
 2026-11-06：[O2図表候補・データ対応と利用可能性](o2_figure_planning_20261105/README.md)。DF/Pauli内部・条件付き横断・資源機構の33仮候補。固定selector・既存図の再利用条件・不足を整理し、図や新数値は生成しない。
 
 2026-11-05：[O2研究データ整理・比較可能性台帳](o2_data_catalog_20261105/README.md)／[データ辞書](o2_data_catalog_20261105/data_dictionary.md)。23既存scope、元表への参照と主要保存レコードを整理。既存SOURCE/claim mapを置き換えず、算術再解析・論文執筆なし。
