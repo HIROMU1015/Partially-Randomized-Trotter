@@ -1,5 +1,7 @@
 # 文書索引
 
+[C3 q4/q8補完結果](research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。
+
 [Track D C3 q4/q8固定PLAN](research/track_d_c3_q4_q8_20261106/PLAN.md)：whole-path correctnessとstrong境界融合を維持した最大8 wrapper P0価格検証。q1/q2再実行・全law/RPE費用は対象外。
 
 [C2固定q2結果](research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。

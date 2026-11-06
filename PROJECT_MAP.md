@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C3 q4/q8補完結果](docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。
+
 [C3保存回路の中断補完PLAN](docs/research/track_d_c3_q4_q8_20261106/COMPLETION_PLAN.md)：run02の8 compile・7 postcheckを保持し、最後のq8 Reference Y postcheckと最終照合のみを別出力で実施。回路再生成・再compileなし。
 
 [C3 run02再実行PLAN](docs/research/track_d_c3_q4_q8_20261106/RUN02_PLAN.md)：利用者承認によりcontract参照先を修正。同じq4/q8 fixture/cut/精度で再実行し、run01のSOURCE・失敗・STOPを保持する。

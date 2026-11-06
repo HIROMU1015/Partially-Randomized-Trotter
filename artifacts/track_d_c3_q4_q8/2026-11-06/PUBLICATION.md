@@ -1,0 +1,7 @@
+# C3公開成果物とローカル保全資料
+
+`run02`は中断時点の保存結果、`run03_completion`は保存compiled回路を使う最後のpostcheckと最終照合の結果である。科学SOURCE・入力identity・回路・検証結果・STOPは元bytesを保全する。
+
+CPU空き・メモリ等の共有サーバー内部観測を含む各runの`resources.json`は、内部環境情報をGitHubへ公開しない条件に従いローカルだけに保全する。自動承認レビューで送信が却下されたため、公開対象から除外した。元のinventoryと中断input一覧にはそのbytes/SHA256が残るが、非公開ファイルの内容は収録しない。検証結果にある科学的再現条件のstate-action thread数や固定package/compiler条件とは区別する。
+
+raw/compiled QPYと検証NPZは`run03_completion/payload_archives.json`のlossless archiveで取得する。元run02の37binaryは同じrelative member bytesに一致し、`run02/payload_archive_reference.json`から対応を辿れる。元の各binaryや非公開運用log/PID/cacheはローカルに保持する。公開後mandatory STOP。
