@@ -1,5 +1,8 @@
 # scripts 索引
 
+Exact O1/O2の独立人工runnerは [benchmark.py](../docs/research/exact_engine_o1_o2_artificial_20261107/benchmark.py)。
+[SOURCE・人工test・raw・結果](../docs/research/exact_engine_o1_o2_artificial_20261107/REPORT.md)を参照。科学runner/既存engineへの組込みではない。
+
 A1の非sampling限定runnerは [run_a1_q1_q2l.py](tracks/algorithm_codesign/run_a1_q1_q2l.py)。
 [固定H4 m0のidentity不一致STOP](../docs/research/o2_a1_q1_q2l_20261106/REPORT.md)：一回実行、CDF前に停止。自動再実行・測定への進行はしない。
 

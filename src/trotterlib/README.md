@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+Exact O1/O2の[独立人工prototype](../../docs/research/exact_engine_o1_o2_artificial_20261107/prototype.py)と
+[人工test・benchmark・raw・結果](../../docs/research/exact_engine_o1_o2_artificial_20261107/REPORT.md)（2026-11-07）。
+旧dense算術を再利用した技術検証で、trotterlib/科学engineは未変更。実H4認証・科学的GOを意味しない。
+
 A1 Q1/Q2-Lは既存DF/RTE処理を再利用する[研究別接続](../trottertracks/algorithm_codesign/a1_law_validation.py)。
 [runner・人工test・identity不一致STOP](../../docs/research/o2_a1_q1_q2l_20261106/REPORT.md)を参照する。core採択・CDF/bias取得成功を意味しない。
 

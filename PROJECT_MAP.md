@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+[Exact Fraction O1/O2人工技術検証（2026-11-07）](docs/research/exact_engine_o1_o2_artificial_20261107/REPORT.md)：
+独立prototype・人工test・benchmark・rawへ辿れる。旧科学engine未変更、実H4未投入、科学認証移転なし。公開照合後STOP。
+
 A1 Q1/Q2-Lの[実行SOURCE・identity不一致STOP](docs/research/o2_a1_q1_q2l_20261106/REPORT.md)（2026-11-06）：
 許可された固定H4 m0の一回取得はCDF評価前に停止。実CDF/ν/biasは未取得、再試行なし。library・runner・人工test・原STOPへ同報告から辿れる。
 

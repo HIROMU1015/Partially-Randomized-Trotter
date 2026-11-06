@@ -1,5 +1,8 @@
 # 文書索引
 
+[Exact Fraction O1/O2人工実装・厳密同値性・benchmark（2026-11-07）](research/exact_engine_o1_o2_artificial_20261107/REPORT.md)：
+独立SOURCE・人工test・固定人工fixture・raw・correctness/性能報告。実H4未投入、旧科学SOURCE/証明未変更。
+
 [A1 Q1/Q2-L：固定H4 m0のidentity不一致STOP](research/o2_a1_q1_q2l_20261106/REPORT.md)（2026-11-06）：
 公開実行SOURCE・原STOP・静的SOURCE差。実CDF/ν/bias未取得、科学retryなし。
 
