@@ -86,3 +86,6 @@
 
 
 A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/REPORT.md)（2026-11-06）：actual-Q/selected full複素signalの定義、Raw/2層/5層/CV、公平なconfidence/全費用と後日の科学call。設計のみ、未採択・科学実行0件。
+
+
+2026-11-07 A1対B1-OL：[採択済み752-shot予備検証](../../docs/research/o2_a1_n3_pilot_science_20261107/REPORT.md)。保存H4/1 Å/STO-3G/DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y、seed20261108。既存pilot driverとqualified managerを新activationで接続。人工テスト後SOURCE公開照合して一campaignだけ実行し、完了/中断でmandatory STOP。精度・期待費用保証は対象外。

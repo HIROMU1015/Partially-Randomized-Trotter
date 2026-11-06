@@ -155,3 +155,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](research/o2_a1_n3_B_science_20
 
 
 2026-11-07 A1 N3：[新Bの正規停止・保全と752-shot実行準備](research/o2_a1_n3_pilot_preparation_20261107/REPORT.md)。保存H4/1.00 Å/STO-3G/legacy DF12/L_D3/m0/q1/δ.02/r1/K2/atol0の新Bを親TERM一回で停止し、1339 bit/1318価格、既知RZ6,435,609・総費用UNKNOWNを保全。新pilotは準備版、人工34件PASS、科学実行0。seed/規則/科学実行承認待ちでSTOP。
+
+
+2026-11-07 A1対B1-OL：[採択済み752-shot予備検証](../docs/research/o2_a1_n3_pilot_science_20261107/REPORT.md)。保存H4/1 Å/STO-3G/DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y、seed20261108。既存pilot driverとqualified managerを新activationで接続。人工テスト後SOURCE公開照合して一campaignだけ実行し、完了/中断でmandatory STOP。精度・期待費用保証は対象外。
