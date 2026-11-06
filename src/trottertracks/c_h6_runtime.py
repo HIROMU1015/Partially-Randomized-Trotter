@@ -15,7 +15,7 @@ from .c_integrated_execution_rpc import PhysicalWorker, RpcProcess
 
 ENTRY='scripts/run_research_c_h6.py'
 FAMILY='artifacts/research_c_h6_independent_validation/2026-11-06-ready'
-CONTRACT='docs/research/research_c_h6_conditionfix_contract_20261106.json'
+CONTRACT='docs/research/research_c_h6_stablemetric_contract_20261106.json'
 
 
 def save(path,value):

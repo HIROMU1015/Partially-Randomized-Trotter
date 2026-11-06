@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：H6前処理の誤差増幅修正（2026-11-06）
+
+[増幅率の制御・decode原点の整合・保存7点回帰](docs/research/research_c_h6_stablemetric_20261106.md)。許容差と物理方向を維持し、新SOURCE/契約/fresh出力を定義。旧値不適格点は拒否したまま保持する。停止済みrunのSOURCE/raw/STOPを保全する。
+
 ## 研究C：H6数値条件修正・fresh再実行（2026-11-06）
 
 [headの残差確認・既知gauge・前処理・inner solver修正](docs/research/research_c_h6_conditionfix_20261106.md)。目的/rank14/LD4/C0・比較条件と受理許容差を維持し、新SOURCE/契約/fresh出力へ接続。旧runのSOURCE/raw/STOPを保全しretry/resume0。

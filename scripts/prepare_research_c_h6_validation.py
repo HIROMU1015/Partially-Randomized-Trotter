@@ -13,7 +13,7 @@ from trottertracks import c_h6_validation_preparation as design
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--contract', type=Path,
-        default=ROOT/'docs/research/research_c_h6_conditionfix_contract_20261106.json')
+        default=ROOT/'docs/research/research_c_h6_stablemetric_contract_20261106.json')
     args = parser.parse_args()
     c = json.loads(args.contract.read_text())
     if c.get('execution_ready') is True:

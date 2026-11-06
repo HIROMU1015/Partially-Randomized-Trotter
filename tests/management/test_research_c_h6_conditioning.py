@@ -40,6 +40,9 @@ def test_full_physical_objective_and_gradient_preserved_in_new_coordinates(arm):
     p=fix.backend(specs[arm]).Coefficients(g,u,specs[arm]);chart=fix.Chart(p,j,fix.inner.DEFAULT)
     assert chart.dimension==len(p.w)-1
     assert p._h6_metric.gauge_map_residual<1e-10
+    metric=p._h6_metric
+    assert metric.scaling_condition_limit==1/np.sqrt(np.finfo(float).eps)
+    assert np.all(np.isfinite(metric.W))
     z=np.zeros(chart.dimension);z[0]=.001
     value,gradient=chart.vg(z);centered,_=chart.centered(z)
     assert centered==pytest.approx(value-float(chart.origin_primal[-1]),abs=1e-12)
@@ -122,3 +125,36 @@ def test_bad_SVD_vectors_cannot_reduce_uncertainty_guard(monkeypatch):
     g,j,u,specs=invented()
     p=fix.backend(specs['PR']).Coefficients(g,u,specs['PR'])
     assert not fix.head_report(p)['admitted']
+
+
+@pytest.mark.parametrize('arm',['PR','ENTRY'])
+def test_near_gauge_cancellation_remains_consistent_without_direction_truncation(arm):
+    g,j,u,specs=invented()
+    # Large cancelling coefficients at nearly identical head frames mimic the
+    # precision risk of the failed run, without reading a molecular array.
+    rng=np.random.default_rng(87);delta=rng.normal(size=j[0].shape)*1e4
+    delta=(delta+delta.T)/2;j[0]+=delta;j[1]-=delta
+    p=fix.backend(specs[arm]).Coefficients(g,u,specs[arm]);chart=fix.Chart(p,j,fix.inner.DEFAULT)
+    z=np.zeros(chart.dimension)
+    direct=chart.vg(z)[1];independent=chart.independent(z)[2]
+    check=fix.inner.point.compare(direct,independent,atol=1e-8,rtol=1e-7)
+    assert check['PASS']
+    assert p._h6_metric.limited_directions>0
+    assert chart.W.shape[1]==len(p.w)-(specs[arm].ld-1)
+    assert np.linalg.matrix_rank(np.asarray(chart.W,float))==chart.dimension
+
+
+@pytest.mark.parametrize('arm',['PR','ENTRY'])
+def test_centered_cost_is_exactly_zero_at_the_actual_decoded_origin(arm):
+    g,j,u,specs=invented(n=2,rank=3,ld=2,angle=.01)
+    # Choose a coefficient whose actual binary64 pack/unpack moves one ulp.
+    bits=np.float64(1e5).view(np.uint64)
+    candidates=(bits+np.arange(256,dtype=np.uint64)).view(np.float64)
+    restored=(candidates*np.sqrt(2.))/np.sqrt(2.)
+    value=candidates[np.flatnonzero(restored!=candidates)[0]]
+    j[0,0,1]=j[0,1,0]=value
+    p=fix.backend(specs[arm]).Coefficients(g,u,specs[arm]);chart=fix.Chart(p,j,fix.inner.DEFAULT)
+    zero=np.zeros(chart.dimension)
+    assert chart.point(zero)[1][0,0,1]!=j[0,0,1]
+    assert chart.centered(zero)[0]==0.
+    np.testing.assert_array_equal(chart.origin_J,chart.point(zero)[1])

@@ -11,7 +11,7 @@ import time
 from . import c_near_stable as near
 from . import c_pr_inner_point_solver as inner
 
-VERSION='H6_known_gauge_full_metric_centered_trust_exact_v1'
+VERSION='H6_known_gauge_bounded_metric_centered_trust_exact_v2'
 
 
 def fro(a):
@@ -84,10 +84,18 @@ def metric(p,policy):
     _,singular,vh=svd(np.asarray(B@Q.astype(np.longdouble),float),full_matrices=False)
     if not len(singular) or not np.isfinite(singular).all() or singular[-1]<=0:
         raise ValueError('NONGAUGE_METRIC_NOT_INVERTIBLE')
-    W=(Q.astype(np.longdouble)@vh.T.astype(np.longdouble))/singular.astype(np.longdouble)
+    # Do not invert near-null singular values without bound. Every nongauge
+    # direction remains present with a positive scale; no truncated SVD or
+    # objective regularization is introduced. Bound the inverse metric's
+    # condition by1/sqrt(binary64 eps), the coordinate precision of SciPy.
+    floor=np.longdouble(singular[0])*np.sqrt(np.longdouble(np.finfo(float).eps))
+    scales=np.maximum(singular.astype(np.longdouble),floor)
+    W=(Q.astype(np.longdouble)@vh.T.astype(np.longdouble))/scales
     if not np.isfinite(W).all():raise ValueError('NONFINITE_NONGAUGE_METRIC')
     p._h6_metric=SimpleNamespace(W=W,singular=singular,known_gauges=len(gauges),
-        gauge_map_residual=gauge_error)
+        gauge_map_residual=gauge_error,scaling_floor=float(floor),
+        scaling_condition_limit=float(1/np.sqrt(np.finfo(float).eps)),
+        limited_directions=int(np.count_nonzero(singular<floor)))
     return p._h6_metric
 
 
@@ -99,7 +107,10 @@ class Chart(inner.point.CoefficientChart):
         self.dimension=self.W.shape[1]
         self._primal_key=None;self._primal_value=None
         self.T64=np.asarray(self.T,float);self.Q64=np.asarray(self.Q,float)
-        self.origin_J=J.astype(self.ld);self.origin_primal=self._primal(np.zeros(self.dimension))
+        self.origin_primal=self._primal(np.zeros(self.dimension))
+        # Anchor the centered difference at the actual decoded point. pack /
+        # unpack can move an offdiagonal coefficient by one binary64 ulp.
+        self.origin_J=self.origin_primal[1].astype(self.ld)
 
     def _primal(self,z):
         key=z.tobytes()
@@ -170,6 +181,9 @@ def solve_j(p,J,policy=inner.DEFAULT,*,record=lambda *a:None,parts_evaluator=Non
         known_gauge_coordinates_fixed=p._h6_metric.known_gauges,
         nongauge_directions_dropped=0,objective_regularization_added=False,
         gauge_map_residual=p._h6_metric.gauge_map_residual,
+        metric_scaling_floor=p._h6_metric.scaling_floor,
+        metric_condition_limit=p._h6_metric.scaling_condition_limit,
+        metric_condition_limited_directions=p._h6_metric.limited_directions,
         search_Hessian_arithmetic='BLAS binary64 assembly; same analytic formula; acceptance uses independent LD and binary64 gates',
         iteration_trace=trace,initial_objective=before,initial_J_gradient_infinity=float(np.max(abs(g0))),
         consistency=checks,raw_jac_available=True,gradient_qualification_route='RETURNED_ENDPOINT_JAC',
