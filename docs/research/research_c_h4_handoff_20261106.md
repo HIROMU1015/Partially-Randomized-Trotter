@@ -1,5 +1,7 @@
 # 研究C：H4再配置下流計算の一回の高速化引継ぎ
 
+継続実行は23:02:51 JSTに完了。288再利用＋512新計算＝800標本、全5 final組、correctness FAIL0・STOP済み。[最終科学結果](research_c_h4_relocated_downstream_results_20261106.md)。以下は引継ぎ時点の記録を保持する。
+
 2026-11-06 JST。ユーザーが今回の実際の引継ぎを明示許可した範囲。基点は高速化版 `6301b630569a9371db26ff511fde819c6fe97060`。旧科学SOURCE `a67036a6baafc00deaa38a1b0b801d313d519ad5`、元16入力、3候補、r8/16/32/64/128、selection32/final64、統計・correctness・会計・最終mandatory STOPは維持する。H2/H6等には進まない。
 
 [契約](research_c_h4_handoff_contract_20261106.json) ／ [SOURCE](../../artifacts/research_c_h4_handoff/2026-11-06/technical/SOURCE.json) ／ [checkpoint](../../artifacts/research_c_h4_handoff/2026-11-06/technical/checkpoint.json) ／ [人工検証](../../artifacts/research_c_h4_handoff/2026-11-06/technical/verification.json)。本報告のこの段階では科学的な比較結果を新たに主張しない。

@@ -1,0 +1,336 @@
+{
+  "status": "REGISTERED_RELOCATED_DOWNSTREAM_COMPLETE",
+  "selection": {
+    "tuned_r": {
+      "P": 16,
+      "E1": 16,
+      "E2": 16
+    },
+    "PR_final_pairs": [
+      [
+        "E1",
+        16
+      ],
+      [
+        "E1",
+        32
+      ],
+      [
+        "E2",
+        16
+      ],
+      [
+        "P",
+        16
+      ],
+      [
+        "P",
+        32
+      ]
+    ],
+    "best_execution": {
+      "P": "PR",
+      "E1": "PR",
+      "E2": "PR"
+    },
+    "selected_using": "selection_only",
+    "overlap_is_independent_replication": false
+  },
+  "comparisons": {
+    "A_common_r32": {
+      "samples_per_arm": 64,
+      "total_points": {
+        "PR": 92464828249.0,
+        "ENTRY": 86352772151.0
+      },
+      "point_ratio_PR_ENTRY": 1.0707800797328453,
+      "difference_point": 6112056098.0,
+      "difference_interval": [
+        3233654155.7099366,
+        8990458040.290066
+      ],
+      "ratio_interval": null,
+      "confidence": 0.975,
+      "method": "existing SciPy Welch affine-total difference; approximate IID model, coverage not validated",
+      "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+      "actual_CA_achieved": null,
+      "guaranteed_resource_superiority": null,
+      "ideal_law_price_transfer_qualified": false,
+      "simultaneous_secondary_superiority": null,
+      "observed_extrema_are_support": false,
+      "Welch_df": 125.85860677655698,
+      "diagnostics": {
+        "PR": {
+          "moment_skewness": -0.01233512397135205,
+          "maximum_delete_one_mean_shift": 25.081349206349206,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.15125836154445155,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        },
+        "ENTRY": {
+          "moment_skewness": -0.8128639385406038,
+          "maximum_delete_one_mean_shift": 36.072916666666664,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.19728779065763588,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        }
+      },
+      "halfwidth": 2878401942.290065,
+      "precision_met": true,
+      "decision": "NOMINAL_MODEL_ENTRY_LOWER"
+    },
+    "B_fair_retuned": {
+      "samples_per_arm": 64,
+      "total_points": {
+        "PR": 87514417699.0,
+        "ENTRY": 75621395471.0
+      },
+      "point_ratio_PR_ENTRY": 1.1572705998603379,
+      "difference_point": 11893022228.0,
+      "difference_interval": [
+        9453375634.38987,
+        14332668821.610132
+      ],
+      "ratio_interval": null,
+      "confidence": 0.975,
+      "method": "existing SciPy Welch affine-total difference; approximate IID model, coverage not validated",
+      "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+      "actual_CA_achieved": null,
+      "guaranteed_resource_superiority": null,
+      "ideal_law_price_transfer_qualified": false,
+      "simultaneous_secondary_superiority": null,
+      "observed_extrema_are_support": false,
+      "Welch_df": 124.78361737752282,
+      "diagnostics": {
+        "PR": {
+          "moment_skewness": -0.9707816105644826,
+          "maximum_delete_one_mean_shift": 24.950396825396826,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.21859960564988432,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        },
+        "ENTRY": {
+          "moment_skewness": -0.35178623895707684,
+          "maximum_delete_one_mean_shift": 17.433531746031747,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.14428821130770597,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        }
+      },
+      "halfwidth": 2439646593.6101313,
+      "precision_met": true,
+      "decision": "NOMINAL_MODEL_ENTRY_LOWER"
+    },
+    "secondary_best_policy_P_vs_E1": {
+      "choices": [
+        "PR",
+        "PR"
+      ],
+      "selection_frozen": true,
+      "individual_nominal_only": true,
+      "result": {
+        "samples_per_arm": 64,
+        "total_points": {
+          "PR": 87514417699.0,
+          "ENTRY": 76465702876.0
+        },
+        "point_ratio_PR_ENTRY": 1.1444924248053674,
+        "difference_point": 11048714823.0,
+        "difference_interval": [
+          8920723295.103466,
+          13176706350.896534
+        ],
+        "ratio_interval": null,
+        "confidence": 0.95,
+        "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+        "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+        "actual_CA_achieved": null,
+        "guaranteed_resource_superiority": null,
+        "ideal_law_price_transfer_qualified": false,
+        "simultaneous_secondary_superiority": null,
+        "observed_extrema_are_support": false,
+        "Welch_df": 124.77780188675227,
+        "diagnostics": {
+          "PR": {
+            "moment_skewness": -0.9707816105644826,
+            "maximum_delete_one_mean_shift": 24.950396825396826,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.25118664314278466,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": true,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          },
+          "ENTRY": {
+            "moment_skewness": -0.3885916448789465,
+            "maximum_delete_one_mean_shift": 16.749007936507937,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.15923066731982988,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": false,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          }
+        },
+        "halfwidth": 2127991527.896534,
+        "precision_met": true,
+        "decision": "UNRESOLVED_DISTRIBUTION_DIAGNOSTIC"
+      }
+    },
+    "secondary_best_policy_P_vs_E2": {
+      "choices": [
+        "PR",
+        "PR"
+      ],
+      "selection_frozen": true,
+      "individual_nominal_only": true,
+      "result": {
+        "samples_per_arm": 64,
+        "total_points": {
+          "PR": 87514417699.0,
+          "ENTRY": 75621395471.0
+        },
+        "point_ratio_PR_ENTRY": 1.1572705998603379,
+        "difference_point": 11893022228.0,
+        "difference_interval": [
+          9764801167.909786,
+          14021243288.090214
+        ],
+        "ratio_interval": null,
+        "confidence": 0.95,
+        "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+        "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+        "actual_CA_achieved": null,
+        "guaranteed_resource_superiority": null,
+        "ideal_law_price_transfer_qualified": false,
+        "simultaneous_secondary_superiority": null,
+        "observed_extrema_are_support": false,
+        "Welch_df": 124.78361737752282,
+        "diagnostics": {
+          "PR": {
+            "moment_skewness": -0.9707816105644826,
+            "maximum_delete_one_mean_shift": 24.950396825396826,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.25118664314278466,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": true,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          },
+          "ENTRY": {
+            "moment_skewness": -0.35178623895707684,
+            "maximum_delete_one_mean_shift": 17.433531746031747,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.1657975152137637,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": false,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          }
+        },
+        "halfwidth": 2128221060.0902138,
+        "precision_met": true,
+        "decision": "UNRESOLVED_DISTRIBUTION_DIAGNOSTIC"
+      }
+    }
+  },
+  "call_counts": {
+    "car_context": 1,
+    "relocated_model": 3,
+    "sector_context": 3,
+    "relocated_sector": 3,
+    "original_factor_gate": 27,
+    "Hamiltonian_gate": 3,
+    "ground_restore": 2,
+    "ground_gate": 3,
+    "relocated_full_CAR": 3,
+    "law_restore": 10,
+    "law_restore_gate": 10,
+    "kernel_cache_restore": 2,
+    "full_sector_gate": 3,
+    "reference_context": 3,
+    "full_law_gate": 3,
+    "gaussian_build": 36,
+    "relative_gaussian": 28,
+    "trajectory_sample": 512,
+    "kernel_build": 513,
+    "trajectory_reference": 512,
+    "raw_operator_gate": 512,
+    "compile": 513,
+    "compiled_operator_gate": 512,
+    "adjoint_pair_gate": 512,
+    "XY_gate": 513,
+    "kernel_metrics": 512,
+    "calibration_summary": 16,
+    "cost_calibration": 11,
+    "serial_cost": 286,
+    "total_aggregation": 33,
+    "calibration_uncertainty": 33,
+    "candidate_ground": 1,
+    "native_model": 1,
+    "sector_gate": 1,
+    "PF_kernel": 1,
+    "PF_round": 13,
+    "ideal_round_accuracy": 13,
+    "ideal_energy": 1,
+    "full_reference": 1,
+    "reference_sector_gate": 1,
+    "shell_load": 6,
+    "shell_decode": 6,
+    "shell_structure": 3,
+    "shell_segment": 3,
+    "fusion_gate": 1,
+    "adjoint_build": 2,
+    "adjoint_decode": 2,
+    "operator_decode": 2,
+    "segment_assessment": 1,
+    "adjoint_gate": 2,
+    "metrics": 1,
+    "round_synthesis": 13,
+    "round_accuracy": 208,
+    "energy": 1,
+    "round_serial_cost": 13,
+    "aggregate": 1,
+    "ideal_aggregate": 1,
+    "law_prepare": 5,
+    "law_gate": 5,
+    "normalization_gate": 5,
+    "kernel_reference": 1,
+    "exact_evolution": 13,
+    "round_reference": 65,
+    "round_classification": 65,
+    "feasibility_summary": 5,
+    "signal_qualification": 15,
+    "energy_assessment": 15,
+    "shots_summary": 15,
+    "native_admission": 5,
+    "corrected_kernel": 4,
+    "final_calibration": 5
+  },
+  "actual_CA_achieved": null,
+  "whole_law_synthesis_bound": null,
+  "implemented_law_error": null,
+  "FT_resources": null,
+  "quantum_shots_drawn": 0,
+  "mandatory_stop": true
+}

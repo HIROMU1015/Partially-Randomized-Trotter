@@ -1,0 +1,635 @@
+{
+  "status": "COMPLETE_MANDATORY_STOP",
+  "source_commit": "cfc64b70861a6482dddd042da8a110abebd6ad7a",
+  "SOURCE_sha256": "6bd88bc86bd1da2876f87b8ae67be509b15727f01517cea9c7219f91c350c4cc",
+  "sampling_SOURCE_sha256": "bb102f16c3bf757853f9e9fc98d811dc230592d71cd6bad57bcce0363fa2046e",
+  "counts": {
+    "prior_verified_samples_reused": 288,
+    "new_samples_computed": 512,
+    "unique_price_samples": 800,
+    "selection_policies": 15,
+    "final_unique_pairs": 5,
+    "correctness_failure": 0,
+    "planned_handoffs": 1
+  },
+  "comparisons": {
+    "A_common_r32": {
+      "samples_per_arm": 64,
+      "total_points": {
+        "PR": 92464828249.0,
+        "ENTRY": 86352772151.0
+      },
+      "point_ratio_PR_ENTRY": 1.0707800797328453,
+      "difference_point": 6112056098.0,
+      "difference_interval": [
+        3233654155.7099366,
+        8990458040.290066
+      ],
+      "ratio_interval": null,
+      "confidence": 0.975,
+      "method": "existing SciPy Welch affine-total difference; approximate IID model, coverage not validated",
+      "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+      "actual_CA_achieved": null,
+      "guaranteed_resource_superiority": null,
+      "ideal_law_price_transfer_qualified": false,
+      "simultaneous_secondary_superiority": null,
+      "observed_extrema_are_support": false,
+      "Welch_df": 125.85860677655698,
+      "diagnostics": {
+        "PR": {
+          "moment_skewness": -0.01233512397135205,
+          "maximum_delete_one_mean_shift": 25.081349206349206,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.15125836154445155,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        },
+        "ENTRY": {
+          "moment_skewness": -0.8128639385406038,
+          "maximum_delete_one_mean_shift": 36.072916666666664,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.19728779065763588,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        }
+      },
+      "halfwidth": 2878401942.290065,
+      "precision_met": true,
+      "decision": "NOMINAL_MODEL_ENTRY_LOWER"
+    },
+    "B_fair_retuned": {
+      "samples_per_arm": 64,
+      "total_points": {
+        "PR": 87514417699.0,
+        "ENTRY": 75621395471.0
+      },
+      "point_ratio_PR_ENTRY": 1.1572705998603379,
+      "difference_point": 11893022228.0,
+      "difference_interval": [
+        9453375634.38987,
+        14332668821.610132
+      ],
+      "ratio_interval": null,
+      "confidence": 0.975,
+      "method": "existing SciPy Welch affine-total difference; approximate IID model, coverage not validated",
+      "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+      "actual_CA_achieved": null,
+      "guaranteed_resource_superiority": null,
+      "ideal_law_price_transfer_qualified": false,
+      "simultaneous_secondary_superiority": null,
+      "observed_extrema_are_support": false,
+      "Welch_df": 124.78361737752282,
+      "diagnostics": {
+        "PR": {
+          "moment_skewness": -0.9707816105644826,
+          "maximum_delete_one_mean_shift": 24.950396825396826,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.21859960564988432,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        },
+        "ENTRY": {
+          "moment_skewness": -0.35178623895707684,
+          "maximum_delete_one_mean_shift": 17.433531746031747,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.14428821130770597,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        }
+      },
+      "halfwidth": 2439646593.6101313,
+      "precision_met": true,
+      "decision": "NOMINAL_MODEL_ENTRY_LOWER"
+    },
+    "secondary_best_policy_P_vs_E1": {
+      "choices": [
+        "PR",
+        "PR"
+      ],
+      "selection_frozen": true,
+      "individual_nominal_only": true,
+      "result": {
+        "samples_per_arm": 64,
+        "total_points": {
+          "PR": 87514417699.0,
+          "ENTRY": 76465702876.0
+        },
+        "point_ratio_PR_ENTRY": 1.1444924248053674,
+        "difference_point": 11048714823.0,
+        "difference_interval": [
+          8920723295.103466,
+          13176706350.896534
+        ],
+        "ratio_interval": null,
+        "confidence": 0.95,
+        "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+        "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+        "actual_CA_achieved": null,
+        "guaranteed_resource_superiority": null,
+        "ideal_law_price_transfer_qualified": false,
+        "simultaneous_secondary_superiority": null,
+        "observed_extrema_are_support": false,
+        "Welch_df": 124.77780188675227,
+        "diagnostics": {
+          "PR": {
+            "moment_skewness": -0.9707816105644826,
+            "maximum_delete_one_mean_shift": 24.950396825396826,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.25118664314278466,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": true,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          },
+          "ENTRY": {
+            "moment_skewness": -0.3885916448789465,
+            "maximum_delete_one_mean_shift": 16.749007936507937,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.15923066731982988,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": false,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          }
+        },
+        "halfwidth": 2127991527.896534,
+        "precision_met": true,
+        "decision": "UNRESOLVED_DISTRIBUTION_DIAGNOSTIC"
+      }
+    },
+    "secondary_best_policy_P_vs_E2": {
+      "choices": [
+        "PR",
+        "PR"
+      ],
+      "selection_frozen": true,
+      "individual_nominal_only": true,
+      "result": {
+        "samples_per_arm": 64,
+        "total_points": {
+          "PR": 87514417699.0,
+          "ENTRY": 75621395471.0
+        },
+        "point_ratio_PR_ENTRY": 1.1572705998603379,
+        "difference_point": 11893022228.0,
+        "difference_interval": [
+          9764801167.909786,
+          14021243288.090214
+        ],
+        "ratio_interval": null,
+        "confidence": 0.95,
+        "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+        "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+        "actual_CA_achieved": null,
+        "guaranteed_resource_superiority": null,
+        "ideal_law_price_transfer_qualified": false,
+        "simultaneous_secondary_superiority": null,
+        "observed_extrema_are_support": false,
+        "Welch_df": 124.78361737752282,
+        "diagnostics": {
+          "PR": {
+            "moment_skewness": -0.9707816105644826,
+            "maximum_delete_one_mean_shift": 24.950396825396826,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.25118664314278466,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": true,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          },
+          "ENTRY": {
+            "moment_skewness": -0.35178623895707684,
+            "maximum_delete_one_mean_shift": 17.433531746031747,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.1657975152137637,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": false,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          }
+        },
+        "halfwidth": 2128221060.0902138,
+        "precision_met": true,
+        "decision": "UNRESOLVED_DISTRIBUTION_DIAGNOSTIC"
+      }
+    }
+  },
+  "frozen_selection": {
+    "tuned_r": {
+      "P": 16,
+      "E1": 16,
+      "E2": 16
+    },
+    "PR_final_pairs": [
+      [
+        "E1",
+        16
+      ],
+      [
+        "E1",
+        32
+      ],
+      [
+        "E2",
+        16
+      ],
+      [
+        "P",
+        16
+      ],
+      [
+        "P",
+        32
+      ]
+    ],
+    "best_execution": {
+      "P": "PR",
+      "E1": "PR",
+      "E2": "PR"
+    },
+    "selected_using": "selection_only",
+    "overlap_is_independent_replication": false
+  },
+  "selection": {
+    "P": [
+      {
+        "candidate_sha256": "1bd7c00ec11ef468993b36edcd267b84f921d66acb8994a4f6a9c751ddb66cfb:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 32,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 94802365173.0
+      },
+      {
+        "candidate_sha256": "1bd7c00ec11ef468993b36edcd267b84f921d66acb8994a4f6a9c751ddb66cfb:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 8,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 131214105119.0
+      },
+      {
+        "candidate_sha256": "1bd7c00ec11ef468993b36edcd267b84f921d66acb8994a4f6a9c751ddb66cfb:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 16,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 90317450828.0
+      },
+      {
+        "candidate_sha256": "1bd7c00ec11ef468993b36edcd267b84f921d66acb8994a4f6a9c751ddb66cfb:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 64,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 122198570708.0
+      },
+      {
+        "candidate_sha256": "1bd7c00ec11ef468993b36edcd267b84f921d66acb8994a4f6a9c751ddb66cfb:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 128,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 195209806364.0
+      }
+    ],
+    "E1": [
+      {
+        "candidate_sha256": "97eb7d540d15d13d961237445912f73536fb0c857de88cb1c9f9fcc20370a7a9:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 32,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 86251469188.0
+      },
+      {
+        "candidate_sha256": "97eb7d540d15d13d961237445912f73536fb0c857de88cb1c9f9fcc20370a7a9:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 8,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 90564987681.0
+      },
+      {
+        "candidate_sha256": "97eb7d540d15d13d961237445912f73536fb0c857de88cb1c9f9fcc20370a7a9:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 16,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 77083529218.0
+      },
+      {
+        "candidate_sha256": "97eb7d540d15d13d961237445912f73536fb0c857de88cb1c9f9fcc20370a7a9:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 64,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 122374622771.0
+      },
+      {
+        "candidate_sha256": "97eb7d540d15d13d961237445912f73536fb0c857de88cb1c9f9fcc20370a7a9:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 128,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 202911771706.0
+      }
+    ],
+    "E2": [
+      {
+        "candidate_sha256": "0e1119dfb6be9b75fb5e592b7a65c76cda61e348fd7cad65d7f104bf997929f5:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 32,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 88656967108.0
+      },
+      {
+        "candidate_sha256": "0e1119dfb6be9b75fb5e592b7a65c76cda61e348fd7cad65d7f104bf997929f5:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 8,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 92082809671.0
+      },
+      {
+        "candidate_sha256": "0e1119dfb6be9b75fb5e592b7a65c76cda61e348fd7cad65d7f104bf997929f5:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 16,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 74474175539.0
+      },
+      {
+        "candidate_sha256": "0e1119dfb6be9b75fb5e592b7a65c76cda61e348fd7cad65d7f104bf997929f5:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 64,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 122962502926.0
+      },
+      {
+        "candidate_sha256": "0e1119dfb6be9b75fb5e592b7a65c76cda61e348fd7cad65d7f104bf997929f5:tail_linear_Z_to_existing_kappa_keep_frame_identity_v1:LD2",
+        "r": 128,
+        "split": "selection",
+        "samples": 32,
+        "actual_samples": 32,
+        "correctness": "PASS",
+        "eligible": true,
+        "total_rz": 198199213802.0
+      }
+    ]
+  },
+  "D": {
+    "P": {
+      "total_RZ": 103256682350.0,
+      "metrics": {
+        "rz_count": 10907,
+        "cx_count": 6840,
+        "rz_depth": 5482,
+        "cx_depth": 6122,
+        "total_depth": 11875,
+        "circuit_size": 20696,
+        "measurement_count": 0,
+        "quantum_only_depth": 11875
+      },
+      "native_admitted": true
+    },
+    "E1": {
+      "total_RZ": 105217244042.0,
+      "metrics": {
+        "rz_count": 10909,
+        "cx_count": 6840,
+        "rz_depth": 5482,
+        "cx_depth": 6122,
+        "total_depth": 11875,
+        "circuit_size": 20698,
+        "measurement_count": 0,
+        "quantum_only_depth": 11875
+      },
+      "native_admitted": true
+    },
+    "E2": {
+      "total_RZ": 105217244042.0,
+      "metrics": {
+        "rz_count": 10909,
+        "cx_count": 6840,
+        "rz_depth": 5482,
+        "cx_depth": 6122,
+        "total_depth": 11875,
+        "circuit_size": 20698,
+        "measurement_count": 0,
+        "quantum_only_depth": 11875
+      },
+      "native_admitted": true
+    }
+  },
+  "final": [
+    {
+      "candidate": "E1",
+      "r": 16,
+      "samples": 64,
+      "total_RZ": 76465702876.0,
+      "kernel_RZ_mean": 5577.1875,
+      "W": 13710432,
+      "shots": 15116,
+      "same_JU_D_RZ": 105217244042.0,
+      "PR_D_ratio": 0.7267411684483664,
+      "PR_D_ratio_interval": [
+        0.7130346678249428,
+        0.7404476690717899
+      ],
+      "PR_D_decision": "NOMINAL_MODEL_PR_LOWER",
+      "diagnostics": {
+        "moment_skewness": -0.3885916448789465,
+        "maximum_delete_one_mean_shift": 16.749007936507937,
+        "delete_one_shift_exceeds_halfwidth": false,
+        "delete_one_shift_fraction_of_halfwidth": 0.15923066731982988,
+        "influence_fraction_threshold": 0.25,
+        "influence_warning": false,
+        "skewness_warning": false,
+        "observations_removed": 0,
+        "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+      },
+      "actual_selection_scope": "Selection32-frozen r from registered grid, or mandatory common r32; disjoint prospective final64"
+    },
+    {
+      "candidate": "E1",
+      "r": 32,
+      "samples": 64,
+      "total_RZ": 86352772151.0,
+      "kernel_RZ_mean": 7538.59375,
+      "W": 11454752,
+      "shots": 14376,
+      "same_JU_D_RZ": 105217244042.0,
+      "PR_D_ratio": 0.8207093137369214,
+      "PR_D_ratio_interval": [
+        0.8033859330160598,
+        0.8380326944577831
+      ],
+      "PR_D_decision": "NOMINAL_MODEL_PR_LOWER",
+      "diagnostics": {
+        "moment_skewness": -0.8128639385406038,
+        "maximum_delete_one_mean_shift": 36.072916666666664,
+        "delete_one_shift_exceeds_halfwidth": false,
+        "delete_one_shift_fraction_of_halfwidth": 0.22669783745044106,
+        "influence_fraction_threshold": 0.25,
+        "influence_warning": false,
+        "skewness_warning": false,
+        "observations_removed": 0,
+        "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+      },
+      "actual_selection_scope": "Selection32-frozen r from registered grid, or mandatory common r32; disjoint prospective final64"
+    },
+    {
+      "candidate": "E2",
+      "r": 16,
+      "samples": 64,
+      "total_RZ": 75621395471.0,
+      "kernel_RZ_mean": 5512.3125,
+      "W": 13718624,
+      "shots": 15118,
+      "same_JU_D_RZ": 105217244042.0,
+      "PR_D_ratio": 0.7187167479963066,
+      "PR_D_ratio_interval": [
+        0.7050069520663036,
+        0.7324265439263095
+      ],
+      "PR_D_decision": "NOMINAL_MODEL_PR_LOWER",
+      "diagnostics": {
+        "moment_skewness": -0.35178623895707684,
+        "maximum_delete_one_mean_shift": 17.433531746031747,
+        "delete_one_shift_exceeds_halfwidth": false,
+        "delete_one_shift_fraction_of_halfwidth": 0.1657975152137637,
+        "influence_fraction_threshold": 0.25,
+        "influence_warning": false,
+        "skewness_warning": false,
+        "observations_removed": 0,
+        "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+      },
+      "actual_selection_scope": "Selection32-frozen r from registered grid, or mandatory common r32; disjoint prospective final64"
+    },
+    {
+      "candidate": "P",
+      "r": 16,
+      "samples": 64,
+      "total_RZ": 87514417699.0,
+      "kernel_RZ_mean": 5457.875,
+      "W": 16034512,
+      "shots": 15862,
+      "same_JU_D_RZ": 103256682350.0,
+      "PR_D_ratio": 0.8475424128228346,
+      "PR_D_ratio_interval": [
+        0.8321176499877813,
+        0.862967175657888
+      ],
+      "PR_D_decision": "UNRESOLVED_DISTRIBUTION_DIAGNOSTIC",
+      "diagnostics": {
+        "moment_skewness": -0.9707816105644826,
+        "maximum_delete_one_mean_shift": 24.950396825396826,
+        "delete_one_shift_exceeds_halfwidth": false,
+        "delete_one_shift_fraction_of_halfwidth": 0.25118664314278466,
+        "influence_fraction_threshold": 0.25,
+        "influence_warning": true,
+        "skewness_warning": false,
+        "observations_removed": 0,
+        "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+      },
+      "actual_selection_scope": "Selection32-frozen r from registered grid, or mandatory common r32; disjoint prospective final64"
+    },
+    {
+      "candidate": "P",
+      "r": 32,
+      "samples": 64,
+      "total_RZ": 92464828249.0,
+      "kernel_RZ_mean": 7570.125,
+      "W": 12214432,
+      "shots": 14630,
+      "same_JU_D_RZ": 103256682350.0,
+      "PR_D_ratio": 0.8954851748536737,
+      "PR_D_ratio_interval": [
+        0.8784149420404839,
+        0.9125554076668637
+      ],
+      "PR_D_decision": "NOMINAL_MODEL_PR_LOWER",
+      "diagnostics": {
+        "moment_skewness": -0.01233512397135205,
+        "maximum_delete_one_mean_shift": 25.081349206349206,
+        "delete_one_shift_exceeds_halfwidth": false,
+        "delete_one_shift_fraction_of_halfwidth": 0.17380671831806005,
+        "influence_fraction_threshold": 0.25,
+        "influence_warning": false,
+        "skewness_warning": false,
+        "observations_removed": 0,
+        "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+      },
+      "actual_selection_scope": "Selection32-frozen r from registered grid, or mandatory common r32; disjoint prospective final64"
+    }
+  ],
+  "completion": {
+    "failed": null,
+    "wall_seconds": 442.1481176710222,
+    "CPU_seconds": 37.836157437,
+    "children_CPU_seconds": 11370.408749999999,
+    "peak_RSS_KiB": 1320012,
+    "end_UTC": "2026-11-06T14:02:51Z",
+    "planned_handoffs": 1,
+    "retry": 0,
+    "resume": 0,
+    "mandatory_stop": true
+  },
+  "raw_file_count": 9318,
+  "raw_result_bytes": 2761495069,
+  "raw_manifest_sha256": "5ac733450b1d8d3f37ced744ee064074ccee1442ef500e23a18a864ca148c463",
+  "price_samples_csv_sha256": "103acda3f3e77d6bcfe8a65b8e44664de094635a62298f3c74294710e8882ae8",
+  "scientific_qualification": "Conditional ideal-law/exact-native finite-bit price proxy, approximate fixed-N IID statistics; no actual CA/all-law or unconditional superiority guarantee",
+  "metadata_note": "Inherited statistics helper labels all individual PR/D rows as preselected r32. Actual r16/r32 and selection/final domains are preserved in frozen_selection/events. Raw records unchanged; actual_selection_scope above describes the registered procedure.",
+  "important_scientific_review": false,
+  "new_fits_or_JU_optimization": 0,
+  "other_geometries_or_H2_H6_runs": 0,
+  "mandatory_stop": true
+}
