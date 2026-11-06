@@ -143,3 +143,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## C2-B強baseline
 
 `../trottertracks/track_c2_b_strong_baseline.py`は既存配分・誤差会計を再利用し、保存候補のMILP/alpha比較を行う。[報告](../../docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。旧SOURCE・raw不変更。
+
+## DF接口の新A限定pilotでの再利用（2026-11-06）
+
+[REPORT](../../docs/research/pr_reference_interference_pilot_20261106/REPORT.md)。`rte`、DF builder、repeated-S2 boundary fusionを変更せず、`trottertracks/pr_reference_interference_*.py` から再利用した。新2-register gadgetの検査と短q資源差は限定結果で、全RPE・T価格は未確定。旧SOURCE・STOPを維持する。

@@ -630,3 +630,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## Track C2-B強baseline（2026-11-06）
 
 [数値上の総T削減0.514072%が残るが、全alpha下界とのgapが残り最適性未確定。登録72配分・保存7603 recordだけで検証しmandatory STOP。](docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。27/72 caseで厳密LP下界との一致を確認。solver全72最適表示とは区別する。
+
+## 2026-11-06 新A reference干渉：限定correctnessと短round価格
+
+[REPORT](docs/research/pr_reference_interference_pilot_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3 h=.02 K2。A1/A2の数値correctnessを通過しq1/2/8の48 paired priceを保存。Simon–Love後のCX/depth差は局所MC観測で、RZ/size増加と追加qubitを伴う。全18round価格、T、新構成の全support native diskは未資格／未取得。旧shot scheduleを新回路の無条件保証にせずmandatory STOP。第三者CI成功とは扱わない。

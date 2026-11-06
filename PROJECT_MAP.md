@@ -192,3 +192,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track C2-B強baseline（2026-11-06）
 
 [数値上の総T削減0.514072%が残るが、全alpha下界とのgapが残り最適性未確定。登録72配分・保存7603 recordだけで検証しmandatory STOP。](docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。新合成・compile・候補追加なし。
+
+## 新A reference干渉限定pilot（2026-11-06）
+
+[成立条件・強baseline・短round資源差と全RPE未確定](docs/research/pr_reference_interference_pilot_20261106/REPORT.md)。SOURCEは `src/trottertracks/pr_reference_interference_*.py`、runnerは `scripts/run_pr_reference_interference_pilot.py`。A1/A2の検査関数・raw・入力・STOPは同報告から辿る。旧C/C2保留・STOPは維持。

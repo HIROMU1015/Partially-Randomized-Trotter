@@ -173,3 +173,7 @@ artifacts/<validation_name>/
 ## C2-B強baseline
 
 `run_track_c2_b_strong_baseline.py`は承認された保存2精度の限定MILP/再会計入口。`check_track_c2_b_strong_baseline.py`は人工検査、`--saved`は結果の読取検査。[報告](../docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。STOP済み出力は再開しない。
+
+## 新A reference干渉限定pilot
+
+`run_pr_reference_interference_pilot.py` は [固定scope・結果](../docs/research/pr_reference_interference_pilot_20261106/REPORT.md)の限定入口。scientific SOURCEは `src/trottertracks/pr_reference_interference_pilot.py`。保存出力はSTOP済みで再実行しない。A1/A2検査はSOURCE内の明示関数であり、旧科学suiteを再実行していない。

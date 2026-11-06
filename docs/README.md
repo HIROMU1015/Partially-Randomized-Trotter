@@ -122,3 +122,7 @@
 ## Track C2-B強baseline
 
 [数値上の総T削減0.514072%が残るが、全alpha下界とのgapが残り最適性未確定。登録72配分・保存7603 recordだけで検証しmandatory STOP。](research/track_c2_b_strong_baseline_20261106/REPORT.md)
+
+## 新A reference干渉限定pilot（2026-11-06）
+
+[REPORT](research/pr_reference_interference_pilot_20261106/REPORT.md)：同じDF trajectoryの信号復元を確認。Simon–Love後も短qのCX/depth差が残るがRZ/sizeは増加、全18roundは未確定。mandatory STOP。

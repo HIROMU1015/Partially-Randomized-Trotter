@@ -1,0 +1,37 @@
+{
+  "scientific_base": "602ca4b67b1037e221e910a2733444630c5add62",
+  "static_base": "2397c5ac511148423ae89f25f74f1de967d1d39a",
+  "source_sha256": {
+    "src/trottertracks/pr_reference_interference_pilot.py": "ac00f1ca2832a2d60a770bd5b6b7774750d9862f1edc2cf9850ab6ca0e01c778",
+    "src/trottertracks/pr_reference_interference_factor_checks.py": "3000f0287bd3acaae0f933dec50d3565102e93120d2046df61aa821090a1b442",
+    "src/trottertracks/pr_reference_interference_accounting.py": "917d6cbbad4c53bd9f6a29dfd3f93ac16511d8f1db7003fe5ea143f062543ec2",
+    "scripts/run_pr_reference_interference_pilot.py": "3fc5a8b788df7d1fe391a2cbd3fe1917447c098917afe4179b91cbdbaf3ad509",
+    "artifacts/pr_reference_interference_pilot/2026-11-06/EXECUTED_SOURCE_A12.py": "ed9cf9da0d645e7f31bf5e1654146feeb2c2ad26c287e332311803689be7611b",
+    "artifacts/pr_reference_interference_pilot/2026-11-06/EXECUTED_SOURCE_A23.py": "ac00f1ca2832a2d60a770bd5b6b7774750d9862f1edc2cf9850ab6ca0e01c778"
+  },
+  "archive_sha256": {
+    "common.pkl.xz": "85d7e21a41e770596b92327d909f38f0ae091c875e2dad3651abeb660f26ae16",
+    "raw_prices.tar.xz": "7eb635d20b25efd723b0c9d644117e4378d2e014331073776bcf137fc80a8f7c",
+    "native_circuits.tar.xz": "d945f4d26338d133d10c8b0e60f1ea0a6917eedb6a4b2f279282ae5f2c32ec21"
+  },
+  "executed_stages": [
+    "init_inputs; stage_a1",
+    "stage_a2_synthetic; stage_a2_h4(False/True)",
+    "fusion_check(q2/q8, both strata)",
+    "factor_checks.check (16 artificial sign/identity/time cases)",
+    "stage_a3 (48 paired realizations); finish -> account -> STOP"
+  ],
+  "workers": {
+    "H4_signal": 2,
+    "fusion_full_operator": 4,
+    "prices": 48
+  },
+  "compiler": "same compiler A; source control before lowering; one common joint phase only",
+  "new_source_tests": {
+    "synthetic": "artifacts/pr_reference_interference_pilot/2026-11-06/A2_SYNTHETIC.json",
+    "real_input": "artifacts/pr_reference_interference_pilot/2026-11-06/A2_H4_rare0.json",
+    "fusion": "artifacts/pr_reference_interference_pilot/2026-11-06/A2_FUSION_q8_rare0.json"
+  },
+  "old_runners_called": false,
+  "old_scientific_source_changed": false
+}
