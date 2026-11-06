@@ -1,5 +1,6 @@
 """Run only the fixed six-cell S2 finite-table forecast; no sampling or build."""
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from multiprocessing import get_context
 from fractions import Fraction as F
 from pathlib import Path
 from time import perf_counter, process_time
@@ -16,7 +17,7 @@ from trottertracks.algorithm_codesign.parent_experiment.design import integer_io
 from trottertracks.algorithm_codesign.rte_development.accounting import error_budget
 
 ROOT = Path(__file__).resolve().parents[3]
-OUTPUT = ROOT/'artifacts/o2_s2_multi_event_validation/2026-11-06/v1'
+OUTPUT = ROOT/'artifacts/o2_s2_multi_event_validation/2026-11-06/v2'
 
 
 def git(*args):
@@ -96,7 +97,7 @@ def main():
         print('Fixed pair table saved; positive T prices verified.',flush=True)
         start=perf_counter()
         # Three independent finite-law tasks are the dominant rational workload.
-        with ProcessPoolExecutor(max_workers=3) as pool:
+        with integer_io_limit(1_000_000), ProcessPoolExecutor(max_workers=3, mp_context=get_context('fork')) as pool:
             jobs={pool.submit(evaluate_law,name,pairs,err['remaining'],F(49,24000)):name for name in ('P0','qA','qB')}
             for job in as_completed(jobs):
                 name=jobs[job]; law=job.result()
