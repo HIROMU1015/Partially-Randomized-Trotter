@@ -102,3 +102,21 @@ def test_precision_path_measures_nonzero_model_difference_without_state_solve():
     assert all(v["passed"] for v in r["stability_80_vs_120"].values())
     assert float(r["model_differences_120"]["H_phys_minus_H_src"]["max_abs_entry"]) > .01
     assert r["certified_interval"] is False
+
+
+def test_full_precision_crosscheck_requires_explicit_bit_order_mapping():
+    c, one, two = toy()
+    pairs = {"H_phys": (one, two), "H_src": (one, two)}
+    payload = (c, pairs, one, np.array([-.2]), np.array([one]), list(range(4)))
+    low, high = [m.precision_task((dps, *payload)) for dps in (80, 120)]
+    a = ref.annihilators(2)
+    car = c*np.eye(4)+ref.one_body(one, a).toarray()+ref.quartic(two, a).toarray()
+    lifted = ref.one_body(one, a)
+    df = c*np.eye(4)+lifted.toarray()-.2*(lifted@lifted).toarray()
+    qiskit = {"H_phys": car, "H_src": car, "H_DF12": df}
+    wrong = m.precision_comparisons(low, high, qiskit)
+    assert wrong["binary64_vs_120"]["H_phys"]["max_abs_entry"] > .1
+    reversal = [0, 2, 1, 3]
+    mapped = {k: v[np.ix_(reversal, reversal)] for k, v in qiskit.items()}
+    correct = m.precision_comparisons(low, high, mapped)
+    assert max(x["max_abs_entry"] for x in correct["binary64_vs_120"].values()) < 1e-14

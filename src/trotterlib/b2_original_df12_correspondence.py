@@ -322,7 +322,10 @@ def run(hdf_path, output):
     with ProcessPoolExecutor(max_workers=min(len(tasks), len(os.sched_getaffinity(0)))) as pool:
         precision = list(pool.map(precision_task, tasks))
     mp_result = dict(sector_36=precision_comparisons(*precision[:2], binary_sector),
-                     full_256=precision_comparisons(*precision[2:], matrices))
+                     full_256=precision_comparisons(*precision[2:],
+                         {name: matrix[np.ix_(permutation, permutation)] for name, matrix in matrices.items()}))
+    mp_result["sector_36"]["comparison_basis"] = "saved OpenFermion sector order; binary64 uses bit-reversed Qiskit indices in this same row order"
+    mp_result["full_256"]["comparison_basis"] = "OpenFermion MSB; binary64 Qiskit full matrix is bit-reversed before precision comparison"
     for space, diagnostic in mp_result.items():
         for name, comparison in diagnostic["binary64_vs_120"].items():
             checks.append(dict(name=name+"_binary64_vs_120_"+space, **comparison,

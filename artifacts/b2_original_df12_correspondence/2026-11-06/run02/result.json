@@ -1,0 +1,922 @@
+{
+  "schema_version": "b2_original_df12_operator_v1",
+  "source_commit": "c6dbfe140452969e4d716d9639c068f1c8522338",
+  "started_at_utc": "2026-11-06T14:03:04.710771+00:00",
+  "status": "STOP_OPERATOR_VALIDATION_INELIGIBLE",
+  "identity": {
+    "HDF5_SHA256": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958",
+    "DF12_NPZ_SHA256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "DF12_commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+    "DF12_path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "saved_DF_hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "generation_SOURCE_commit": "c644925b50587072784846df09bf02c39e8453e1",
+    "generation_SOURCE_hashes": {
+      "src/trotterlib/pr2_s0_s1_validation.py": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+      "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52"
+    },
+    "execution_SOURCE_hashes": {
+      "src/trotterlib/b2_original_df12_correspondence.py": "c643f0046319dd7dc7410aa06bf4a04121c742814dddea4325aaeb98da81482b",
+      "scripts/run_b2_original_df12_correspondence.py": "2ab2ba9312d8a7bdbf23a3a66ed53b18206ead3632590b1d1304df4b6896c9ae",
+      "docs/research/b2_original_df12_correspondence_20261106/PLAN.md": "ef96c017527ca90a00807f32ba46c966324e21d260b6ef548b509963662ad01c",
+      "scripts/run_o1_m1_h4_operator_correctness.py": "552c874240ea88f4608d7680db452906ecce5ee214b1db85c8cf505d499aa0db",
+      "src/trottertracks/resource_applicability/ax2b_independent_reference.py": "90a70f8aee18190a8441ba19b021782d85695a86f0d3224fc995ddf24b2022b5",
+      "src/trotterlib/pr2_s0_s1_validation.py": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+      "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+      "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+      "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6"
+    },
+    "original_integral_hashes": {
+      "one_MO": "0d42f14a8eb8e7b67b3aecbd589fd4bcc7b6c94e83e559de6363b6381fb728b1",
+      "two_MO_OF": "3c1acac23cec486755409e8cf2f0f5357391e5a0271e97f8cf5452c240f689ba",
+      "MO": "7c553b0709972bb2f7b0cb63aad683cbc442765b6d7d6fc2cb9ac9b4065c7a91",
+      "AO_overlap": "00c8c7961d5c060f41dd714a080a02ca97bed74946f4e6a0b4b9edcdbda741ef"
+    },
+    "operator_matrix_hashes": {
+      "H_phys": "bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+      "H_src": "99032eed3490aeae8ccd936d4169f1a15064b6dd5cdc1019d70fc254f40caa2f",
+      "H_DF12": "525cdfbe81b5b4990fbf9477cf97b1cea79cc5439b4615d31a5800969996ef2b"
+    },
+    "complete_historical_provenance_proven": false
+  },
+  "conditions": {
+    "model": "linear_H4",
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "spatial_orbitals": 4,
+    "spin_orbitals": 8,
+    "electrons": 4,
+    "nelec_alpha": 2,
+    "nelec_beta": 2,
+    "full_dimension": 256,
+    "sector_dimension": 36,
+    "DF_rank": 12,
+    "generation_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "B2_L_D": 3,
+    "delta_window": null,
+    "validation_scope": "operator reconstruction only; no evolution or state evaluation",
+    "tensor": "W[p,q,r,s] a†p a†q a_r a_s; W=spin_lift(g_OF)/2; g_OF=(ps|qr)",
+    "H_src": "spinorb_from_spatial cutoff before 1/2; InteractionOperator supplied to DF",
+    "state_order": "Qiskit LSB; bit_reverse(OpenFermion MSB)",
+    "original_RPE_target_selected": null,
+    "nuclear_scalar_hex": "0x1.25845777d3feap+1"
+  },
+  "numerical_rule": {
+    "m": 18624,
+    "epsilon": 2.220446049250313e-16,
+    "operand_scale": 103.50446476572802,
+    "gamma": 4.135358722140884e-12,
+    "max_entry_tolerance": 4.2802809114947716e-10,
+    "MO_orthonormality_tolerance": 1e-10,
+    "mp_dps": [
+      80,
+      120
+    ],
+    "mp_stability_relative": "1e-60",
+    "rigorous_roundoff_bound": false,
+    "model_error_acceptance_threshold": null
+  },
+  "checks": [
+    {
+      "name": "factor_0_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_0_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_1_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_1_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_2_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_2_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_3_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_3_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_4_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_4_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_5_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_5_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_6_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_6_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_7_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_7_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_8_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_8_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_9_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_9_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_10_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_10_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_11_Hermiticity",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "factor_11_exact_spin_lift",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_CAR_vs_sparse_JW_full",
+      "max_abs_entry": 5.773159728050814e-15,
+      "frobenius": 2.2395704009854048e-14,
+      "induced_infinity_norm": 5.773159728050814e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_full_vs_independent_sector",
+      "max_abs_entry": 1.3322676295501878e-15,
+      "frobenius": 2.6530371067487705e-15,
+      "induced_infinity_norm": 1.4016565685892601e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_CAR_vs_sparse_JW_full",
+      "max_abs_entry": 6.661338147750939e-15,
+      "frobenius": 2.2162467190723688e-14,
+      "induced_infinity_norm": 6.716849298982197e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_full_vs_independent_sector",
+      "max_abs_entry": 1.3322676295501878e-15,
+      "frobenius": 2.6530371067487705e-15,
+      "induced_infinity_norm": 1.4016565685892601e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "DF_CAR_vs_existing_full_matvec",
+      "max_abs_entry": 8.43769498715119e-15,
+      "frobenius": 2.1059556209548822e-14,
+      "induced_infinity_norm": 8.520961713998076e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "DF_full_vs_existing_sector_matvec",
+      "max_abs_entry": 1.9984014443252818e-15,
+      "frobenius": 6.103815949495542e-15,
+      "induced_infinity_norm": 2.196634470795337e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "DF_full_vs_independent_occupation",
+      "max_abs_entry": 5.329070518200751e-15,
+      "frobenius": 1.4935731878213314e-14,
+      "induced_infinity_norm": 5.440092820663267e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "saved_one_body_vs_SOURCE_correction_and_Hermitianization",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "DF_signed_squares_vs_normal_order_full",
+      "max_abs_entry": 4.440892098500626e-15,
+      "frobenius": 2.0942717560984044e-14,
+      "induced_infinity_norm": 4.551914400963142e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "scalar_full_vacuum_once",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "MO_orthonormality",
+      "max_abs_entry": 1.3322676295501878e-15,
+      "frobenius": 1.5316576854043113e-15,
+      "induced_infinity_norm": 1.887379141862766e-15,
+      "tolerance": 1e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_Hermiticity_full",
+      "max_abs_entry": 3.3306690738754696e-16,
+      "frobenius": 6.996167091960781e-15,
+      "induced_infinity_norm": 1.4988010832439613e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_Hermiticity_sector",
+      "max_abs_entry": 3.3306690738754696e-16,
+      "frobenius": 3.020834530803632e-15,
+      "induced_infinity_norm": 1.4988010832439613e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_commutator_N",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_commutator_Nalpha",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_commutator_Nbeta",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_commutator_Sz",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_commutator_S_squared",
+      "max_abs_entry": 1.7763568394002505e-15,
+      "frobenius": 5.6392453084970255e-15,
+      "induced_infinity_norm": 1.8318679906315083e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_sector_leakage",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_Hermiticity_full",
+      "max_abs_entry": 2.498001805406602e-16,
+      "frobenius": 3.720489711892769e-15,
+      "induced_infinity_norm": 6.661338147750939e-16,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_Hermiticity_sector",
+      "max_abs_entry": 2.220446049250313e-16,
+      "frobenius": 1.5947987598934805e-15,
+      "induced_infinity_norm": 6.661338147750939e-16,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_commutator_N",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_commutator_Nalpha",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_commutator_Nbeta",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_commutator_Sz",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_commutator_S_squared",
+      "max_abs_entry": 1.7763568394002505e-15,
+      "frobenius": 5.6392453084970255e-15,
+      "induced_infinity_norm": 1.8318679906315083e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_sector_leakage",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_Hermiticity_full",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_Hermiticity_sector",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_commutator_N",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_commutator_Nalpha",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_commutator_Nbeta",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_commutator_Sz",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_commutator_S_squared",
+      "max_abs_entry": 2.1094237467877974e-15,
+      "frobenius": 1.0245652219249373e-14,
+      "induced_infinity_norm": 4.551914400963142e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_sector_leakage",
+      "max_abs_entry": 0.0,
+      "frobenius": 0.0,
+      "induced_infinity_norm": 0.0,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_binary64_vs_120_sector_36",
+      "max_abs_entry": 1.3322676295501878e-15,
+      "frobenius": 3.32333223810768e-15,
+      "induced_infinity_norm": 1.3964523981613297e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_src_binary64_vs_120_sector_36",
+      "max_abs_entry": 1.3322676295501878e-15,
+      "frobenius": 3.32333223810768e-15,
+      "induced_infinity_norm": 1.3964523981613297e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_DF12_binary64_vs_120_sector_36",
+      "max_abs_entry": 2.4424906541753444e-15,
+      "frobenius": 4.944113225567345e-15,
+      "induced_infinity_norm": 2.67841304690819e-15,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": true
+    },
+    {
+      "name": "H_phys_binary64_vs_120_full_256",
+      "max_abs_entry": 2.7317900804601893,
+      "frobenius": 18.082586218306332,
+      "induced_infinity_norm": 3.027988410865852,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": false
+    },
+    {
+      "name": "H_src_binary64_vs_120_full_256",
+      "max_abs_entry": 2.7317900804601893,
+      "frobenius": 18.082586218306332,
+      "induced_infinity_norm": 3.0279884108658512,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": false
+    },
+    {
+      "name": "H_DF12_binary64_vs_120_full_256",
+      "max_abs_entry": 2.731790080460192,
+      "frobenius": 18.08258621830635,
+      "induced_infinity_norm": 3.027988410865856,
+      "tolerance": 4.2802809114947716e-10,
+      "passed": false
+    }
+  ],
+  "model_differences": {
+    "full_256": {
+      "H_phys_minus_H_src": {
+        "max_abs_entry": 1.2663481374630692e-15,
+        "frobenius": 1.558132339106012e-14,
+        "induced_infinity_norm": 5.4990734188464785e-15,
+        "spectral_norm": 2.4699529159768663e-15
+      },
+      "H_src_minus_H_DF12": {
+        "max_abs_entry": 9.769962616701378e-15,
+        "frobenius": 6.607960535645828e-14,
+        "induced_infinity_norm": 1.1791946693741614e-14,
+        "spectral_norm": 9.932820585122047e-15
+      },
+      "H_phys_minus_H_DF12": {
+        "max_abs_entry": 9.769962616701378e-15,
+        "frobenius": 6.783165397408368e-14,
+        "induced_infinity_norm": 1.6263196453071836e-14,
+        "spectral_norm": 1.0694198222812167e-14
+      }
+    },
+    "sector_36": {
+      "H_phys_minus_H_src": {
+        "max_abs_entry": 1.2663481374630692e-15,
+        "frobenius": 6.736150711743119e-15,
+        "induced_infinity_norm": 5.4990734188464785e-15,
+        "spectral_norm": 2.469952915976866e-15
+      },
+      "H_src_minus_H_DF12": {
+        "max_abs_entry": 6.217248937900877e-15,
+        "frobenius": 2.2003401635063186e-14,
+        "induced_infinity_norm": 8.515789705198556e-15,
+        "spectral_norm": 6.471055019262664e-15
+      },
+      "H_phys_minus_H_DF12": {
+        "max_abs_entry": 6.217248937900877e-15,
+        "frobenius": 2.2961767876182773e-14,
+        "induced_infinity_norm": 1.0133706746652535e-14,
+        "spectral_norm": 7.023004151159825e-15
+      }
+    }
+  },
+  "high_precision": {
+    "sector_36": {
+      "stability_80_vs_120": {
+        "H_phys": {
+          "max_abs_entry": "0.0",
+          "tolerance": "2.09854593699771752035587724095e-60",
+          "passed": true
+        },
+        "H_src": {
+          "max_abs_entry": "0.0",
+          "tolerance": "2.09854593699771752035587724095e-60",
+          "passed": true
+        },
+        "H_DF12": {
+          "max_abs_entry": "4.39166923578415336581871886581e-80",
+          "tolerance": "2.09854593699771524675921160194e-60",
+          "passed": true
+        }
+      },
+      "binary64_vs_120": {
+        "H_phys": {
+          "max_abs_entry": 1.3322676295501878e-15,
+          "frobenius": 3.32333223810768e-15,
+          "induced_infinity_norm": 1.3964523981613297e-15
+        },
+        "H_src": {
+          "max_abs_entry": 1.3322676295501878e-15,
+          "frobenius": 3.32333223810768e-15,
+          "induced_infinity_norm": 1.3964523981613297e-15
+        },
+        "H_DF12": {
+          "max_abs_entry": 2.4424906541753444e-15,
+          "frobenius": 4.944113225567345e-15,
+          "induced_infinity_norm": 2.67841304690819e-15
+        }
+      },
+      "model_differences_120": {
+        "H_phys_minus_H_src": {
+          "max_abs_entry": "1.266348137463069178920704871416091918945e-15",
+          "frobenius": "6.736150711743118663974110787357213585867e-15",
+          "induced_infinity_norm": "5.499073418846478489285800606012344360352e-15",
+          "spectral_norm_of_high_precision_difference_binary64_SVD": 2.469952915976866e-15
+        },
+        "H_src_minus_H_DF12": {
+          "max_abs_entry": "4.278830322712303598776033223173126822714e-15",
+          "frobenius": "1.810314553659218295578880638934384772262e-14",
+          "induced_infinity_norm": "6.662258814858539301724469741827052943756e-15",
+          "spectral_norm_of_high_precision_difference_binary64_SVD": 4.8671329066135276e-15
+        },
+        "H_phys_minus_H_DF12": {
+          "max_abs_entry": "4.278830322712303598776033223173126822714e-15",
+          "frobenius": "1.925660870467163806439684985368968905712e-14",
+          "induced_infinity_norm": "1.028783856685523752409091513130877769009e-14",
+          "spectral_norm_of_high_precision_difference_binary64_SVD": 6.2334292592242185e-15
+        }
+      },
+      "precision_elapsed_seconds": {
+        "80": 0.405083553001532,
+        "120": 0.40958702600073593
+      },
+      "certified_interval": false,
+      "description": "Exact integer-ratio lift of fixed binary64 coefficients; no original-H eigensolve"
+    },
+    "full_256": {
+      "stability_80_vs_120": {
+        "H_phys": {
+          "max_abs_entry": "0.0",
+          "tolerance": "2.87056094521223886806282621365e-60",
+          "passed": true
+        },
+        "H_src": {
+          "max_abs_entry": "0.0",
+          "tolerance": "2.87056094521223886806282621365e-60",
+          "passed": true
+        },
+        "H_DF12": {
+          "max_abs_entry": "4.88708616769898592452553191083e-80",
+          "tolerance": "2.87056094521224814149457474176e-60",
+          "passed": true
+        }
+      },
+      "binary64_vs_120": {
+        "H_phys": {
+          "max_abs_entry": 2.7317900804601893,
+          "frobenius": 18.082586218306332,
+          "induced_infinity_norm": 3.027988410865852
+        },
+        "H_src": {
+          "max_abs_entry": 2.7317900804601893,
+          "frobenius": 18.082586218306332,
+          "induced_infinity_norm": 3.0279884108658512
+        },
+        "H_DF12": {
+          "max_abs_entry": 2.731790080460192,
+          "frobenius": 18.08258621830635,
+          "induced_infinity_norm": 3.027988410865856
+        }
+      },
+      "model_differences_120": {
+        "H_phys_minus_H_src": {
+          "max_abs_entry": "1.266348137463069178920704871416091918945e-15",
+          "frobenius": "1.558132339106012031218274514692075059644e-14",
+          "induced_infinity_norm": "5.499073418846478489285800606012344360352e-15",
+          "spectral_norm_of_high_precision_difference_binary64_SVD": 2.469952915976864e-15
+        },
+        "H_src_minus_H_DF12": {
+          "max_abs_entry": "9.27343174852811850503417436796259306593e-15",
+          "frobenius": "5.680504874522314170762513939227090880078e-14",
+          "induced_infinity_norm": "9.27343174852811850503417436796259306593e-15",
+          "spectral_norm_of_high_precision_difference_binary64_SVD": 9.273431748528118e-15
+        },
+        "H_phys_minus_H_DF12": {
+          "max_abs_entry": "9.27343174852811850503417436796259306593e-15",
+          "frobenius": "5.883394088229790427488878979422982927719e-14",
+          "induced_infinity_norm": "1.188841851916570577541114818677942934243e-14",
+          "spectral_norm_of_high_precision_difference_binary64_SVD": 9.273431748528118e-15
+        }
+      },
+      "precision_elapsed_seconds": {
+        "80": 2.684850904000996,
+        "120": 2.6900670529994386
+      },
+      "certified_interval": false,
+      "description": "Exact integer-ratio lift of fixed binary64 coefficients; no original-H eigensolve"
+    }
+  },
+  "factor_identity_checks": [
+    {
+      "index": 0,
+      "sign": 1,
+      "saved_G_hash": "99dd4e60d5a145716954436aa40051dee0de1bdf107344e0d7c07548f40f8f77"
+    },
+    {
+      "index": 1,
+      "sign": 1,
+      "saved_G_hash": "ee8bd051791b3d899e049a3cc68da254f97e02f2c2826f16867b48c2d2c17487"
+    },
+    {
+      "index": 2,
+      "sign": 1,
+      "saved_G_hash": "16a960728988a2556d7383410852f8537c0caea773a35e38dff3a5f0e8c6af0a"
+    },
+    {
+      "index": 3,
+      "sign": 1,
+      "saved_G_hash": "8d5825bfb7a8e8fcf4ce9feda0c9c95e951cbfbd0e46d33ba356b0dce80724bb"
+    },
+    {
+      "index": 4,
+      "sign": 1,
+      "saved_G_hash": "c804eefd5d4f6f576458a3f43957b81f3942d2c4106d5bb872f2104706fc0bd5"
+    },
+    {
+      "index": 5,
+      "sign": 1,
+      "saved_G_hash": "6ab8a4ff6d41044f1b2be2691dfb120a152779ad12326ae8998465a397d2fc0c"
+    },
+    {
+      "index": 6,
+      "sign": 1,
+      "saved_G_hash": "a9b4d36b5a100fff246d1da1e2d92ee223cc01a6b9472ef023d88ec347ca7dcd"
+    },
+    {
+      "index": 7,
+      "sign": 1,
+      "saved_G_hash": "bd1400aa81a3cdd3cf0f556c21e6add5db356a407bd2639c33893fd15523bae9"
+    },
+    {
+      "index": 8,
+      "sign": 1,
+      "saved_G_hash": "c8168088a0e2deb9b405be586486e243f2085096f3f99739e8fb5b071d35f530"
+    },
+    {
+      "index": 9,
+      "sign": 1,
+      "saved_G_hash": "ef1a27a5a5982751246c5ae0aed22a52e679da7657642bd56073d05d07f94748"
+    },
+    {
+      "index": 10,
+      "sign": -1,
+      "saved_G_hash": "c8e97452fb80c79e53722fffa94dbc686efd4cb59f61562df0eb13d95f42a4d2"
+    },
+    {
+      "index": 11,
+      "sign": -1,
+      "saved_G_hash": "27b0836959b57b6599304915872545e36c35d706cfe2aad3871789ae4e5f4ea5"
+    }
+  ],
+  "component_diagnostics": {
+    "one_body_correction_vs_saved": {
+      "max_abs_entry": 1.249000902703301e-16,
+      "frobenius": 3.110528983648179e-16,
+      "induced_infinity_norm": 2.0469737016526324e-16
+    },
+    "normal_order_one_body_vs_source": {
+      "max_abs_entry": 4.440892098500626e-16,
+      "frobenius": 1.168347971011133e-15,
+      "induced_infinity_norm": 6.412514289145256e-16
+    },
+    "normal_order_quartic_vs_source": {
+      "max_abs_entry": 5.828670879282072e-15,
+      "frobenius": 3.056761706443224e-14,
+      "induced_infinity_norm": 5.9618537248330855e-15,
+      "spectral_norm": 5.828670879282072e-15
+    }
+  },
+  "cutoff_diagnostics": {
+    "EQ_TOLERANCE": 1e-08,
+    "removed_spin_one_coefficients": 14,
+    "removed_spin_two_coefficients": 512,
+    "symbolic_get_sparse_vs_H_src": {
+      "max_abs_entry": 6.661338147750939e-15,
+      "frobenius": 2.2162467190723688e-14,
+      "induced_infinity_norm": 6.716849298982197e-15,
+      "spectral_norm": 6.663367491242199e-15
+    },
+    "symbolic_conversion_is_target_definition": false
+  },
+  "resources": {
+    "cpu_affinity": 32,
+    "gpu_available": false,
+    "precision_workers": 4,
+    "DF_backend": "python excitation tables",
+    "CAR_backend": "SciPy sparse",
+    "BLAS_env": {
+      "OPENBLAS_NUM_THREADS": null,
+      "OMP_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    },
+    "DF_action_counts": {
+      "full": 256,
+      "sector": 36
+    }
+  },
+  "environment": {
+    "python": "3.11.0rc1",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "h5py": "3.16.0",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "qiskit": "1.3.0",
+      "mpmath": "1.3.0"
+    },
+    "package_SOURCE_hashes": {
+      "MolecularData": "f6489483082534354131466f92c43eb726a39082bc514977475d36ddb7e57e38",
+      "low_rank_correction": "de74fb802550417788362845515ed9e56a180e4ff85ab21ab43ba8445156dbbe"
+    }
+  },
+  "limitations": [
+    "No rigorous interval certification or historical h/g-to-DF receipt",
+    "No target adoption or RPE model-error budget qualification",
+    "No original-H ground state computed; saved DF state was not used"
+  ],
+  "forbidden_work_executed": {
+    "SCF": 0,
+    "DF_decomposition": 0,
+    "ground_state_solve": 0,
+    "time_evolution": 0,
+    "circuit_build_compile": 0,
+    "sampling": 0,
+    "shot_cost": 0
+  },
+  "mandatory_stop": true,
+  "elapsed_seconds": 11.488207316000626
+}
