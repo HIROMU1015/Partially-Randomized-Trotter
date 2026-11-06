@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Track D B4-1](../docs/research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)は科学runnerを追加しない。人工検証入口は `PYTHONPATH=src python -B -m pytest -p no:cacheprovider -q tests/check_track_d_original_h_accuracy.py`。実H4評価は別許可。
+
 [C2固定q2結果](../docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 
 [Track D C2固定q2 compile](../docs/research/track_d_c2_q2_compile_20261106/PLAN.md)：C1の保存rawを使う2方式×X/Yの4 wrapper限定。P0・cut・phase固定、公開後mandatory STOP。
