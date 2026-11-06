@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C H4計算の一回の高速化引継ぎ：[保全・元乱数系列・129人工回帰・実行条件](research/research_c_h4_handoff_20261106.md)。
+
 研究C native process並列化：[技術報告・人工速度比較](research/research_c_h4_native_process_preparation_20261106.md)。旧科学SOURCEを保全し、新SOURCEでの実分子再実行は未実施。
 
 [研究C・H4再配置後下流比較の技術準備と未承認科学契約](research/research_c_h4_relocated_downstream_preparation_20261106.md)：固定P/E1/E2、人工Hamiltonian/全512、PF/RTE/RPE/native/D接続。実H4新下流計算0。

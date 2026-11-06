@@ -174,14 +174,15 @@ def native_cohort(root, contract, out, call, a, result, packet, *, split, cohort
     if result['candidate']!=candidate or a['config'].rte_steps!=r:raise ValueError('MIXED_NATIVE_CANDIDATE_OR_R')
     result=deepcopy(result);packet=dict(packet)
     ret,_,_=_engines();perf=ret.perf;io=ret.io
+    from .c_h4_relocated_handoff import restore_cohort,sampling_policy
+    restored=restore_cohort(contract,out,a,result,packet,split=split,key=cohort_key)
+    if restored is not None:return restored
     out=Path(out);out.mkdir(parents=True,exist_ok=False)
     shared={} if prepared is None else prepared
     rows=[];cal=None
     for batch in range(1 if split=='selection' else 2):
         folder=out/f'batch{batch:02d}';folder.mkdir()
-        sampling=dict(master=2026110501,cohort=f'integrated:{cohort_key}:{split}:r{r}:batch{batch:02d}',
-            axis=f'INTEGRATED_{split.upper()}_PRICE_ONLY',samples=32,events_per_sample=r,
-            PRNG='numpy.random.PCG64',paired=False,adaptive=False)
+        sampling=sampling_policy(cohort_key,split,r,batch)
         options={} if 'native_backend' not in contract else dict(backend=contract['native_backend'])
         current,cal=perf.native(root,contract,folder,call,a,sampling=sampling,prepared=shared,**options)
         rows.extend(current)

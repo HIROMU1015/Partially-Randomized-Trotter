@@ -161,6 +161,10 @@ def strong_d(root,contract,out,call,a,full_generators):
     """Reuse the SAME relocated model and the entire registered D evaluator."""
     from .c_update064_strong_d import evaluate
     from .c1_stage3_connection import split_native_model
+    from .c_h4_relocated_handoff import restore_d
+    restored=restore_d(contract,out,a)
+    if restored is not None:return restored
+    if a.get('restored_ground_only'):raise ValueError('D_REQUIRES_FULL_EIGENPAIR_OR_COMPLETE_SAVED_D')
     arm=a['arm'];d=replace(arm,plan=split_native_model(arm.model,len(arm.model.blocks)-1))
     return evaluate(root,contract,out,call,a,prepared_arm=d,full_generators=full_generators)
 
@@ -196,7 +200,7 @@ def logical_work(final_pairs=5):
 
 
 def prepare_candidate(kappa,constant,J,U,saved_sector,physical,*,candidate,input_identity,
-                      role,out,call,shell_reports):
+                      role,out,call,shell_reports,saved_ground=None):
     """Connect already byte-bound saved data to the existing reference A packet.
 
     No original h/g correction, DF norm recomputation, fit or optimization.
@@ -229,7 +233,13 @@ def prepare_candidate(kappa,constant,J,U,saved_sector,physical,*,candidate,input
     for i,(x,y) in enumerate(zip(before,saved_sector['generators'],strict=True)):
         call('original_factor_gate',str(i),lambda x=x,y=y:component_check(x,y,1e-10,label='saved original factor'))
     call('Hamiltonian_gate',candidate,lambda:component_check(sum(G),saved_sector['H'],1e-10,label='same saved H after relocation'))
-    pair=call('candidate_ground',candidate,lambda:loader.ground(saved_sector['H'],out,'candidate'))
+    if saved_ground is None or not Path(saved_ground).exists():
+        pair=call('candidate_ground',candidate,lambda:loader.ground(saved_sector['H'],out,'candidate'))
+    else:
+        from .c_h4_relocated_handoff import copy_file
+        saved=call('ground_restore',candidate,lambda:loader.load(saved_ground,('energy','sector_state')))
+        pair=(np.asarray([saved['energy'].item()]),saved['sector_state'][:,None])
+        copy_file(Path(saved_ground),out/'ground_candidate.npz')
     try:report=call('ground_gate',candidate,lambda:loader.ground_gate(saved_sector['H'],pair))
     except ValueError as exc:
         if str(exc)!='UNRESOLVED_GROUND_ALIAS':raise
@@ -238,7 +248,8 @@ def prepare_candidate(kappa,constant,J,U,saved_sector,physical,*,candidate,input
         full_input_indices=molecule.stage1.bit_reverse_indices(8)[ctx.sector.basis_indices])
     return rel,dict(candidate_identity=rel.arm.model.source_identity,candidate_label=candidate,
         arm=rel.arm,ctx=ctx,sector=sector,ground=pair[1][:,0],pair=pair,d=dict(J=J,U=U),p={},
-        target=AccuracyTarget(**TARGET),saved=dict(physical=df,shells=shell_reports)),report
+        target=AccuracyTarget(**TARGET),saved=dict(physical=df,shells=shell_reports),
+        restored_ground_only=saved_ground is not None and Path(saved_ground).exists()),report
 
 
 def final_plan(selection,deterministic):
@@ -289,7 +300,11 @@ def candidate_selection(root,contract,out,call,rel,a,*,car,shells):
     D=strong_d(root,contract,dpath,call,a,G)
     states={};rows=[];cache=None;prepared=None
     for r in (32,8,16,64,128):
-        ar,result,packet,cache=reference_r(a,r,out/f'r{r}'/'reference',call,pf_cache=cache)
+        from .c_h4_relocated_handoff import restore_reference
+        restored=restore_reference(contract,a,r,out/f'r{r}'/'reference',call,cache)
+        if restored is None:
+            ar,result,packet,cache=reference_r(a,r,out/f'r{r}'/'reference',call,pf_cache=cache)
+        else:ar,result,packet,cache=restored
         io.save(out/f'r{r}'/'reference_result.json',result)
         value=None
         if result['native_admitted']:

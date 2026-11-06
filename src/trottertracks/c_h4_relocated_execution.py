@@ -30,6 +30,9 @@ def preflight(root,path=CONTRACT):
     output=(root/c['fresh_output']).resolve()
     if not output.is_relative_to(root):raise ValueError('LOCAL_FRESH_OUTPUT')
     if output.exists():raise FileExistsError('FRESH_OUTPUT_RETRY_RESUME_ZERO')
+    if 'handoff' in c:
+        from .c_h4_relocated_handoff import validate_checkpoint
+        validate_checkpoint(root,c)
     return c
 
 
@@ -113,8 +116,10 @@ def execute(root,path=CONTRACT):
                 qs[kind]=items[0]
             shells[label],_=b2.shell_assessment(qs['raw'],qs['compiled'],label)
         car=call('car_context','shared immutable H4 CAR',lambda:car_bilinears(8))
-        runtime=dict(source_manifest_sha256=c['SOURCE_sha256'],shells=c['shells'])
+        runtime=dict(source_manifest_sha256=c.get('sampling_SOURCE_sha256',c['SOURCE_sha256']),shells=c['shells'])
         if 'native_backend' in c:runtime['native_backend']=c['native_backend']
+        if 'handoff' in c:
+            runtime['handoff']=dict(prior_output=c['handoff']['prior_output'],new_output=str(output.resolve()))
         for label in ('P','E1','E2'):
             row=c['candidates'][label];d=loader.load(root/row['path'],('J','U'))
             for name,value in d.items():
@@ -122,7 +127,9 @@ def execute(root,path=CONTRACT):
             sector=loader.load(root/row['reference_path'],('J','U','generators','H'))
             rel,a,report=bridge.prepare_candidate(exported['kappa'],float(exported['constant']),**d,
                 saved_sector=sector,physical=row['physical'],candidate=row['file_sha256'],input_identity=c['input_identity'],
-                role='proposed' if label=='P' else 'baseline',out=output/label/'A',call=call,shell_reports=shell_reports)
+                role='proposed' if label=='P' else 'baseline',out=output/label/'A',call=call,shell_reports=shell_reports,
+                **({} if 'handoff' not in c else dict(saved_ground=(Path(c['handoff']['prior_output'])/label/'A'/'ground_candidate.npz'
+                    if (Path(c['handoff']['prior_output'])/label/'selection'/'D'/'result.json').exists() else None))))
             if a is None:
                 identity=rel.arm.model.source_identity
                 states[label]=dict(a=dict(candidate_identity=identity),rows=[dict(
@@ -146,6 +153,9 @@ def execute(root,path=CONTRACT):
             actual_CA_achieved=None,whole_law_synthesis_bound=None,implemented_law_error=None,
             FT_resources=None,quantum_shots_drawn=0,mandatory_stop=True)
         preflight_bytes(root,c)
+        if 'handoff' in c:
+            from .c_h4_relocated_handoff import validate_checkpoint
+            validate_checkpoint(root,c)
         if io.sha(root/path)!=contract_sha:raise ValueError('FIXED_CONTRACT_CHANGED')
         return result
     return bridge.run_fresh(root/c['fresh_output'],[dict(id='comparison')],work)

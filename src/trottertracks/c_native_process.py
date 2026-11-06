@@ -220,14 +220,25 @@ def native(root, c, out, call, a, *, sampling=None, prepared=None):
         raise ValueError('PROCESS_REQUIRES_PREPARED_RELOCATED_ARM')
     tick = time.monotonic(); cpu = time.process_time()
     for leaf in ('circuits', 'samples', 'references'): (Path(out)/leaf).mkdir()
-    rows, plan, reports = run_samples(c, out, call, a, policy, prepared)
+    from .c_h4_relocated_handoff import restore_samples
+    restored=restore_samples(c,out,policy,a)
+    pending=[i for i in range(32) if i not in restored]
+    if pending:
+        current,plan,reports=run_samples(c,out,call,a,policy,prepared,indices=pending)
+        restored.update(zip(pending,current))
+    else:
+        plan=dict(workers=0,backend=VERSION,policy='All32 verified original samples restored')
+        reports=[]
+    rows=[restored[i] for i in range(32)]
+    perf.io.save(Path(out)/'handoff_samples.json',dict(reused=32-len(pending),computed=len(pending),
+        pending_indices=pending,sampling_SOURCE=c['source_manifest_sha256']))
     calibration = call('calibration_summary', 'fixed32 new-candidate cohort',
                        lambda: perf.b2.calibration(rows))
     perf.io.save(Path(out)/'native_timing.json', dict(samples=len(rows), events_per_sample=steps,
         cohort=policy['cohort'], backend=VERSION, wall_seconds=time.monotonic()-tick,
         CPU_seconds=time.process_time()-cpu, worker_CPU_seconds=sum(x['CPU_seconds'] for x in reports),
         resource_plan=plan, parent_peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
-        max_worker_peak_RSS_KiB=max(x['peak_RSS_KiB'] for x in reports),
+        max_worker_peak_RSS_KiB=max((x['peak_RSS_KiB'] for x in reports),default=0),
         worker_pids=sorted({x['pid'] for x in reports}), full_operator_evaluator=evaluator,
         full_input_output_dimension=2*len(prepared['psi']), actual_inverse_circuits_independently_evaluated=True))
     return rows, calibration
