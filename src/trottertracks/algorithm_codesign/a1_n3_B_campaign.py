@@ -21,10 +21,11 @@ from . import a1_n3_lifecycle_observer as obs
 
 CAMPAIGN = 'A1-N3-B-H4-m0-q1-20261106-run01'
 SEED = 20261107
-BASE = '2438170a7d1eada04e8760cedd6fe5f959a2c87a'
-DOC = Path('docs/research/o2_a1_n3_B_science_20261106')
+BASE = 'ade6a25fa554903bb477e0f32142c154d01fad1d'
+DOC = Path('docs/research/o2_a1_n3_B_retry_20261106')
 OUTPUT = Path('artifacts/o2_a1_new_target/2026-11-06/n3_campaign_B_run01')
-CONTROL = OUTPUT.with_name('n3_campaign_B_manager_run01')
+CONTROL = OUTPUT.with_name('n3_campaign_B_manager_run02')
+REMOTE_BRANCH = 'codex/o2-a1-n3-B-retry-20261106'
 ENTRY = Path('scripts/tracks/algorithm_codesign/run_a1_n3_B_campaign.py')
 PYTHON = '/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/bin/python'
 
@@ -80,7 +81,7 @@ def submit(root):
     table = 'MAILTO=""\n* * * * * '+shlex.join(args)+' >> '+shlex.quote(str(out/'cron.log'))+' 2>&1\n'
     source = c.kernel.n2.git(root,'rev-parse','HEAD')
     # Publication is checked by the caller before submission, and recorded here.
-    remote = subprocess.check_output(['git','ls-remote','origin','refs/heads/codex/o2-a1-n3-B-science-20261106'],cwd=root,text=True).split()[0]
+    remote = subprocess.check_output(['git','ls-remote','origin','refs/heads/'+REMOTE_BRANCH],cwd=root,text=True).split()[0]
     if remote != source:raise ValueError('published branch SHA differs from SOURCE')
     spec = dict(kind='authorized_N3_B_once',root=str(root),output=str(root/OUTPUT),
         campaign=CAMPAIGN,seed=SEED,python=PYTHON,source_commit=source,
@@ -190,13 +191,14 @@ def finalize(out,runtime,campaign,pool,status,reason,started):
         runtime.request_stop('ledger finalization failure')
     if failures:status='STOPPED'
     c.save(out/'STOP.json',dict(status='MANDATORY_STOP',campaign_status=status,reason=reason,
-        finalization_errors=failures,no_retry=True,additional_campaign_authorized=False,
+        finalization_errors=failures,automatic_restart=False,technical_recovery_authorized=True,
+        scientific_gate_failure_retry=False,additional_campaign_authorized=False,
         elapsed_wall_seconds=time.monotonic()-started))
     text = ('# A1 N3 B campaign\n\nCampaign: '+CAMPAIGN+'\n\nStatus: '+status+
             '\n\nReason: '+json.dumps(reason,ensure_ascii=False)+
             '\n\nAll durable worker tails are authoritative; see ACCOUNTING.json, CALL_COUNTS.json and ATTEMPTS.json.\n'+
             'Incomplete comparisons carry no precision or CV improvement claim. Expected cost improvement is UNKNOWN.\n'+
-            'Mandatory STOP; no automatic retry or additional campaign.\n')
+            'Mandatory STOP for this attempt; technical recovery authorized, scientific gates unchanged.\n')
     (out/'REPORT.md').write_text(text)
     return 0 if status=='COMPLETED' else 1
 

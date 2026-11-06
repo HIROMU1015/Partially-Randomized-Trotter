@@ -164,3 +164,6 @@ A1 N3の[持続manager接続と案B草案](../../docs/research/o2_a1_n3_manager_
 
 
 A1 N3案Bの[新しい一campaignの実行仕様](../../docs/research/o2_a1_n3_B_science_20261106/REPORT.md)（2026-11-06）：seed20261107、旧397件を分離、旧数値SOURCEとqualified managerを再利用する薄い入口。SOURCE公開照合後に一回開始し、成功・中断でmandatory STOP。
+
+
+2026-11-06 A1 N3案B：[修正入口・manager_run02・限定再実行](../../docs/research/o2_a1_n3_B_retry_20261106/REPORT.md)。ユーザーは技術的な意図しない中断の修復/再投入も許可。科学条件・取得済bit・旧SOURCE/STOPは維持する。
