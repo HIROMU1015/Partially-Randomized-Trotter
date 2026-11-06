@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D C3 q4/q8 stopped before raw construction
+
+[結果](docs/research/track_d_c3_q4_q8_20261106/RESULT.md)／[STOP](artifacts/track_d_c3_q4_q8/2026-11-06/run01/STOP.json)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1、固定q4=保存00..03/cut2、q8=00..07/cut4。SOURCE `f18adc46dffcb69a6b1028d5c38793f9b4c0b948`。新workerのcontract参照先誤りで両qともraw構築前に停止し、correctness・価格は未評価。compile/retry/resume0、人工3test PASSはH4の科学的証拠ではない。停止後の静的SOURCE/input照合は一致。元H厳密ground仮定・準備費除外。旧証拠・今回SOURCE/result/STOPは保全し、修正・再実行は新たな承認待ち。mandatory STOP、B2・追加q・N・全RPE費用・詳細科学レビューには進まない。
+
 ## 2026-11-06 Track D C2 fixed q2 P0 wrapper compile
 
 [結果](docs/research/track_d_c2_q2_compile_20261106/RESULT.md)／[PLAN](docs/research/track_d_c2_q2_compile_20261106/PLAN.md)／[evidence](artifacts/track_d_c2_q2_compile/2026-11-06/run01/result.json)。SOURCE `e0befa619a14b956ad64349a86ec2f261962883c`。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1、保存sample00→01・q2・step境界cut。C1 raw bytesを保持し同P0で4 wrapper compile/postcheck PASS。X/Y各価格はsymmetric→ReferenceでRZ10773→11114、CX4100→3860、depth6096→3014、qubits9→17。最大postcheck成分差1.84962e−12。固定一fixture・local binary64 evidenceで、全law母平均・長q・N・全RPE費用の保証ではない。元H厳密ground仮定・準備費除外、sampling/ground solve/DF refit/N評価/retry/resume0、mandatory STOP。

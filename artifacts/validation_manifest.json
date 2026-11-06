@@ -290,13 +290,17 @@
       {
         "path": "artifacts/track_d_h4_reference_validation/2026-11-06",
         "kind": "directory",
-        "supports": ["track_d_h4_reference_validation"],
+        "supports": [
+          "track_d_h4_reference_validation"
+        ],
         "reason": "Fixed real H4 number-CDF8 word02/cut: 27 precompile checks, six full-wrapper compiles/postchecks, fifteen QPY circuits and numerical observables. No all-law or full-RPE qualification."
       },
       {
         "path": "artifacts/track_d_minimal_reference_validation/2026-11-06",
         "kind": "directory",
-        "supports": ["track_d_minimal_reference_validation"],
+        "supports": [
+          "track_d_minimal_reference_validation"
+        ],
         "reason": "One fixed artificial DF word: result JSON and twelve raw/compiled QPY circuits, with six explicit full-wrapper compiles. No molecular or all-RPE claim."
       },
       {
@@ -1439,6 +1443,40 @@
   },
   "result_sets": [
     {
+      "id": "track_d_c3_q4_q8",
+      "status": "STOP_FAILURE",
+      "science_source_commit": "f18adc46dffcb69a6b1028d5c38793f9b4c0b948",
+      "C2_result_commit": "c8fe5091c42ec786688b6931105ad64d10c87d18",
+      "result_path": "artifacts/track_d_c3_q4_q8/2026-11-06/run01/result.json",
+      "document_path": "docs/research/track_d_c3_q4_q8_20261106/RESULT.md",
+      "stop_path": "artifacts/track_d_c3_q4_q8/2026-11-06/run01/STOP.json",
+      "summary": "Fixed H4 CDF8 q4/q8, global half-path cuts, planned strong cross-step fusion. Both workers fail reading contract from origin instead of execution worktree before raw circuit construction. No molecular correctness or resource result. Preserve failed source/evidence; no retry.",
+      "counts": {
+        "execution_attempts": 1,
+        "fixtures_attempted": 2,
+        "raw_circuits_generated": 0,
+        "correctness_harness_calls": 0,
+        "compile_calls": 0,
+        "qpy_files": 0,
+        "npz_files": 0,
+        "synthetic_tests_passed": 3,
+        "sampling_calls": 0,
+        "ground_solves": 0,
+        "DF_refits": 0,
+        "N_evaluations": 0,
+        "retry": 0,
+        "resume": 0
+      },
+      "static_post_stop_SOURCE_input_match": true,
+      "scientific_GO": false,
+      "immutable_CI": false,
+      "next_stage_authorized": false,
+      "B2_started": false,
+      "whole_law_qualified": false,
+      "RPE_total_cost_evaluated": false,
+      "mandatory_stop": true
+    },
+    {
       "id": "track_d_c2_q2_compile",
       "status": "TECHNICAL_PASS_MANDATORY_STOP",
       "science_source_commit": "e0befa619a14b956ad64349a86ec2f261962883c",
@@ -1544,7 +1582,18 @@
       "result_path": "artifacts/track_d_h4_reference_validation/2026-11-06/run01/result.json",
       "document_path": "docs/research/track_d_h4_reference_validation_20261106/RESULT.md",
       "summary": "Linear H4/1A/STO-3G/Nalpha=Nbeta=2, number CDF8/LD2/S2/s1/r32/K0/h=delta=.1, saved 32-event word02 and cut after event16. Raw and compiled one-shot X/Y observables pass numerical checks over all 256 system basis columns with vacuum reference. Strong symmetric/shared/fused RZ/CX/depth/qubits 4482/1794/3952/9 versus reference 4721/1734/1955/17. Exact original-H ground assumed, preparation excluded, no ground vector used. No dense 17-qubit Operator, all-law, shots, energy-accuracy or full-RPE conclusion.",
-      "counts": {"scientific_executions": 1, "precompile_checks": 27, "compile_calls": 6, "qpy_files": 15, "quantum_shots": 0, "sampling_calls": 0, "ground_solves": 0, "DF_refits": 0, "retry": 0, "resume": 0},
+      "counts": {
+        "scientific_executions": 1,
+        "precompile_checks": 27,
+        "compile_calls": 6,
+        "qpy_files": 15,
+        "quantum_shots": 0,
+        "sampling_calls": 0,
+        "ground_solves": 0,
+        "DF_refits": 0,
+        "retry": 0,
+        "resume": 0
+      },
       "scientific_GO": false,
       "immutable_CI": false,
       "next_stage_authorized": false
@@ -1556,7 +1605,15 @@
       "result_path": "artifacts/track_d_minimal_reference_validation/2026-11-06/result.json",
       "document_path": "docs/research/track_d_minimal_reference_validation_20261106/RESULT.md",
       "summary": "Fixed two-mode native-partial-closed:B word, T=.8/q=2/c=.17/K=0/tau=.4, same-basis Zplus then ZZminus. Eighteen checks and six full-wrapper compiles pass absolute 3e-12 operator/observable checks. Reference reduces CX/depth versus shared/fused symmetric control but increases RZ/qubits. Local binary64 evidence; no molecule, all-law, shots, T synthesis, or end-to-end resource qualification.",
-      "counts": {"scientific_executions": 1, "precompile_checks": 18, "compile_calls": 6, "qpy_files": 12, "quantum_shots": 0, "sampling_calls": 0, "molecular_calculations": 0},
+      "counts": {
+        "scientific_executions": 1,
+        "precompile_checks": 18,
+        "compile_calls": 6,
+        "qpy_files": 12,
+        "quantum_shots": 0,
+        "sampling_calls": 0,
+        "molecular_calculations": 0
+      },
       "scientific_GO": false,
       "immutable_CI": false,
       "next_stage_authorized": false
