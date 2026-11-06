@@ -4,7 +4,7 @@ Molecular preparation/build/pricing/shot arithmetic require a separately fixed
 execution scope. Only caller-supplied complete event sets are priced exactly;
 representative circuit checks are never treated as an expectation or MC sample.
 """
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from fractions import Fraction
 import math
 from types import SimpleNamespace
@@ -90,13 +90,17 @@ def configure_law(preparation, *, delta_time, r, K):
             preparation.tail.lambda_r*delta_time/r,K))
 
 
-def _canonical_events(preparation, config, distribution, events, q):
-    q = require_integer_count(q, name="q", minimum=1)
+def _validate_law(preparation, config, distribution):
     if (config.tail_hash != preparation.tail.tail_hash or config.lambda_r != preparation.tail.lambda_r
             or distribution.exact_finite_distribution != config.distribution_normalization
             or distribution.dimensionless_step_time != config.dimensionless_step_time
             or distribution.finite_taylor_order != config.finite_taylor_order):
         raise ValueError("Event law differs from the prepared dictionary/config")
+
+
+def _canonical_events(preparation, config, distribution, events, q):
+    q = require_integer_count(q, name="q", minimum=1)
+    _validate_law(preparation, config, distribution)
     if len(events) != q*config.rte_steps:
         raise ValueError("One independently specified event per q*r short step required")
     index = {c.component_id:i for i,c in enumerate(preparation.tail.components)}
@@ -178,11 +182,11 @@ def _compile_pair(circuit, compiler, *, compile_function, backend):
 
 
 class MatchedNoPrepCostProvider:
-    """Exact complete-trajectory expectation using existing full-wrapper primitives.
+    """Complete-exact or fresh-IID MC prices using existing full-wrapper primitives.
 
     A representative set cannot be relabelled exact: count, uniqueness,
     canonical finite-law events and complete probability mass are checked before
-    any build. No sampling implementation or molecular defaults are introduced.
+    any build. MC reuses the existing sampler; no molecular defaults or proxy.
     """
     def __init__(self, compiler, *, compile_function=transpile_and_measure_cost, backend=None):
         self.compiler, self.compile_function, self.backend = compiler, compile_function, backend
@@ -240,6 +244,79 @@ class MatchedNoPrepCostProvider:
         for axis,cost in pair.items(): accumulators[axis].update(cost,weight=1.)
         return self._result(accumulators,context_hash=context_hash,arm_hash=arm_hash,q=q,
             delta_time=delta_time,law_hash="deterministic_no_RTE",method="deterministic_full_no_prep")
+
+    def monte_carlo(self, preparation, config, distribution, *, q, sample_count, seed):
+        """Stream fresh q*r events/trajectory; compile both full axes per draw.
+
+        Classical price sampling is separate from quantum shots. Repeated draws
+        are retained, not deduplicated or reweighted by event probability. SE is
+        a sample diagnostic, not a confidence guarantee or a calibrated proxy.
+        """
+        from itertools import islice
+        from .rte import iter_sample_rte_events
+        q = require_integer_count(q, name="q", minimum=1)
+        sample_count = require_integer_count(sample_count, name="sample_count", minimum=2)
+        seed = require_integer_count(seed, name="seed")
+        # Validate context before opening the RNG stream or invoking the compiler.
+        _validate_law(preparation, config, distribution)
+        length = q*config.rte_steps
+        stream = iter_sample_rte_events(preparation.tail.components, distribution,
+                                       sample_count=sample_count*length, seed=seed)
+        accumulators = {axis:CompiledMetricAccumulator(weighted=False) for axis in ("cosine","sine")}
+        for _ in range(sample_count):
+            events = tuple(islice(stream, length))
+            pair = _compile_pair(build_controlled_trajectory(preparation, config, distribution,
+                q=q, events=events), self.compiler, compile_function=self.compile_function, backend=self.backend)
+            for axis, cost in pair.items():
+                accumulators[axis].update(cost)
+        result = self._result(accumulators, context_hash=preparation.context_hash,
+            arm_hash=preparation.preparation_hash, q=q, delta_time=config.evolution_time,
+            law_hash=_law_hash(config), method="fresh_iid_matched_full_no_prep_monte_carlo")
+        errors = {axis:circuit_cost_from_metric_statistics(acc.finalize(), compiler=self.compiler,
+            estimate_kind="compiled_cost_standard_error", use_standard_error=True, fidelity_level=5)
+            for axis,acc in accumulators.items()}
+        return replace(result, cosine_standard_error=errors["cosine"], sine_standard_error=errors["sine"],
+            classical_sample_count=sample_count,
+            cost_model_fingerprint=digest(dict(context=result.cost_model_fingerprint,
+                method=result.evaluation_method, sample_count=sample_count, seed=seed)),
+            metadata=result.metadata+(("classical_price_seed",seed),("fresh_events_per_trajectory",length),
+                ("paired_axes",True),("price_uncertainty","sample_SE_only; no confidence interval")))
+
+
+def observed_signal_bounds(preparation, config, specification, record, *,
+                           radius_allowance, complex_signal_allowance, phase_allowance):
+    """Existing matched-signal record -> conditional accounting bounds.
+
+    Caller must generate the record from this fixed input/state and qualify the
+    numerical allowances. Observed errors plus margins are not rigorous PF/model
+    bounds. Long-round records must be generated, never copied from short q.
+    """
+    if any(not math.isfinite(v) or v<0 for v in
+           (radius_allowance,complex_signal_allowance,phase_allowance)):
+        raise ValueError("Explicit nonnegative numerical allowances required")
+    if (record['q']!=specification.q_m or record['delta']!=specification.delta_time
+            or record['delta']!=config.evolution_time or record['r']!=config.rte_steps
+            or record['K']!=config.finite_taylor_order or config.tail_hash!=preparation.tail.tail_hash):
+        raise ValueError("Signal record must match this q/delta/r/K; no extrapolation")
+    data=record['dictionaries'][preparation.dictionary]
+    attenuation=finite_rte_attenuation(config,tail_evolutions=specification.q_m)
+    if (data['lambda_r']!=preparation.tail.lambda_r
+            or not math.isclose(data['attenuation'],attenuation,rel_tol=1e-12,abs_tol=0.)
+            or not math.isclose(data['normalization']*attenuation,1.,rel_tol=1e-12,abs_tol=0.)):
+        raise ValueError("Dictionary/normalization differs from this law")
+    radius=record['PF_signal']['radius']-radius_allowance
+    phase=lambda entry:entry['wrapped_phase_absolute']
+    pf=phase(record['PF_signal_error_vs_saved_DF_exact'])
+    model=phase(record['original_vs_DF_exact_signal_difference'])
+    implementation=phase(data['implementation_signal_error'])
+    disk=data['finite_RTE_signal_error_vs_PF']['complex_absolute']+complex_signal_allowance
+    if (not 0<radius<=1 or any(v is None or not math.isfinite(v) or v<0
+            for v in (pf,model,implementation,disk))):
+        raise ValueError("Nonpositive radius or undefined/nonfinite signal error")
+    return dict(reference_radius_lower_bound=radius,corrected_signal_error_bound=disk,
+        pf_phase_bound=pf+phase_allowance,model_phase_bound=model+phase_allowance,
+        implementation_phase_bound=implementation+phase_allowance,
+        radius_provenance='same-round original-state PF signal minus declared allowance; empirical, not certified')
 
 
 def account_radius_round(*, context_hash, arm_hash, specification, allocation,
@@ -302,6 +379,12 @@ def account_radius_round(*, context_hash, arm_hash, specification, allocation,
         pf_phase_bound=pf_phase_bound,model_phase_bound=model_phase_bound,
         implementation_phase_bound=implementation_phase_bound,finite_rte_phase_bound=beta_rte,
         radius_provenance=radius_provenance,alpha_bound=allocation.round_failure_probability_bound,
+        price_evaluation_method=None if cost is None else cost.evaluation_method,
+        classical_price_sample_count=None if cost is None else cost.classical_sample_count,
+        price_standard_errors=None if cost is None else {
+            axis:None if error is None else circuit_cost_metric(error,cost_metric)
+            for axis,error in (("cosine",cost.cosine_standard_error),("sine",cost.sine_standard_error))},
+        price_uncertainty_qualified=False,
         cost_scope=RPE_HADAMARD_INTERROGATION_SCOPE,guarantee_status="not_certified",
         qualification="conditional_shot_arithmetic_only; energy/alias/PF-state and IID law require separate qualification")
 
@@ -323,4 +406,5 @@ def aggregate_registered_rounds(rounds, *, required_max_round, total_alpha_budge
     if alpha>total_alpha_budget: raise ValueError("Total failure budget exceeded")
     return dict(scope="registered_rounds_only",round_count=len(rounds),maximum_round=required_max_round,
         total_cost=math.fsum(r['round_total_cost'] for r in rounds),alpha_bound=alpha,
+        price_uncertainty_qualified=False,
         guarantee_status="not_certified",context={k:rounds[0][k] for k in keys})
