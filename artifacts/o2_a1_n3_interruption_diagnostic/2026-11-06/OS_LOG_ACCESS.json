@@ -1,0 +1,99 @@
+{
+  "collected_at_utc": "2026-11-06T12:08:55.811702+00:00",
+  "uid": 30038,
+  "commands": [
+    {
+      "argv": [
+        "journalctl",
+        "-k",
+        "--since",
+        "2026-11-06 10:35:00 UTC",
+        "--until",
+        "2026-11-06 11:50:00 UTC",
+        "--utc",
+        "--no-pager",
+        "-o",
+        "json"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "journalctl",
+        "--user",
+        "--since",
+        "2026-11-06 10:35:00 UTC",
+        "--until",
+        "2026-11-06 11:50:00 UTC",
+        "--utc",
+        "--no-pager",
+        "-o",
+        "json"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "dmesg",
+        "--time-format",
+        "iso",
+        "--level",
+        "err,crit,alert,emerg"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": "dmesg: read kernel buffer failed: Operation not permitted\n"
+    },
+    {
+      "argv": [
+        "loginctl",
+        "show-user",
+        "30038",
+        "-p",
+        "Linger",
+        "-p",
+        "State",
+        "-p",
+        "RuntimePath"
+      ],
+      "returncode": 0,
+      "stdout": "RuntimePath=/run/user/30038\nState=active\nLinger=no\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "--user",
+        "show",
+        "-p",
+        "SystemState",
+        "-p",
+        "Version"
+      ],
+      "returncode": 0,
+      "stdout": "Version=255.4-1ubuntu8.18\nSystemState=running\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "last",
+        "-x",
+        "-F",
+        "-s",
+        "20261106183500",
+        "-t",
+        "20261106210000",
+        "AbeHiromu"
+      ],
+      "returncode": 0,
+      "stdout": "\nwtmp begins Sun Aug 23 11:32:14 2026\n",
+      "stderr": ""
+    }
+  ],
+  "scope": "read only; no sudo, service change, or other-user process operation",
+  "historical_signal_sender": "UNKNOWN"
+}

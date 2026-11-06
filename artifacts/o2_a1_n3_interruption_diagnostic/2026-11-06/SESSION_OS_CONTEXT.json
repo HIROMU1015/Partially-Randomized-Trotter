@@ -1,0 +1,88 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "journalctl",
+        "--list-boots",
+        "--no-pager"
+      ],
+      "returncode": 0,
+      "stdout": "IDX BOOT ID                          FIRST ENTRY                 LAST ENTRY\n  0 a5c5749e48144dd19d54cada2cceb1ae Fri 2026-10-16 06:08:44 JST Fri 2026-11-06 13:58:23 JST\n",
+      "stderr": "Hint: You are currently not seeing messages from other users and the system.\n      Users in groups 'adm', 'systemd-journal' can see all messages.\n      Pass -q to turn off this notice.\n"
+    },
+    {
+      "argv": [
+        "systemctl",
+        "show",
+        "session-212829.scope",
+        "-p",
+        "ActiveEnterTimestamp",
+        "-p",
+        "Result",
+        "-p",
+        "ControlGroup"
+      ],
+      "returncode": 0,
+      "stdout": "Result=success\nControlGroup=/user.slice/user-30038.slice/session-212829.scope\nActiveEnterTimestamp=Fri 2026-11-06 20:40:40 JST\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "loginctl",
+        "show-session",
+        "212829",
+        "-p",
+        "Timestamp",
+        "-p",
+        "Leader",
+        "-p",
+        "Remote",
+        "-p",
+        "Service"
+      ],
+      "returncode": 0,
+      "stdout": "Timestamp=Fri 2026-11-06 20:40:40 JST\nRemote=yes\nService=sshd\nLeader=2769695\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ps",
+        "-p",
+        "2650356,2698496,2698500",
+        "-o",
+        "user,pid,ppid,lstart,etime,stat,args"
+      ],
+      "returncode": 1,
+      "stdout": "USER         PID    PPID                  STARTED     ELAPSED STAT COMMAND\n",
+      "stderr": ""
+    }
+  ],
+  "log_paths": {
+    "/var/log/kern.log": {
+      "exists": true,
+      "mode": "0o100640",
+      "size": 1653944
+    },
+    "/var/log/syslog": {
+      "exists": true,
+      "mode": "0o100640",
+      "size": 100775196
+    },
+    "/var/log/auth.log": {
+      "exists": true,
+      "mode": "0o100640",
+      "size": 81995007
+    },
+    "/run/log/journal": {
+      "exists": true,
+      "mode": "0o42755",
+      "size": 40
+    },
+    "/var/log/journal": {
+      "exists": true,
+      "mode": "0o42755",
+      "size": 4096
+    }
+  },
+  "scope": "current state is supporting evidence only; not historical membership certificate"
+}

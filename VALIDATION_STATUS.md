@@ -736,3 +736,11 @@ N3には条件の採択と有限測定/real-state/Born/必要compileへの別明
 A1 X train320件はrank4・D_CV約3.1875≤4で合格、Yは77件の途中。474 trial開始中397 bit/397価格、保存bit分の実現RZは1,935,700。未完了77 trialのbit/価格/古典末尾はUNKNOWN。
 全方式のcalibration・N凍結・productionは未実行、四方式のε達成とA1対B1-OL改善は未判定。未着手方式の費用0は優位性比較に使わない。期待費用改善もUNKNOWN。
 科学再起動なし、既存journal専用集計でUNKNOWNと後付けSTOPを保存した。元SOURCE542ファイル・固定入力・元main HEAD/status/3087既存ファイル・旧結果/STOP/C1凍結を保全。公開照合後mandatory STOPし、再開/再実行は別途明示許可を要する。
+
+
+## 2026-11-06 A1 N3：中断の技術調査・直接原因UNKNOWN
+
+[中断診断・再発防止・復旧案](docs/research/o2_a1_n3_interruption_20261106/REPORT.md)：科学SOURCE03928/中断結果d97e/事前判定基準a53cを固定し、旧397bit/397価格・全79journalを照合した。対象は保存linear H4/1.00 Å/STO-3G/legacy DF12/8qubit/全4電子sector/L_D3、m0/q1/δ.02/r1/K2/coefficient_atol0、X/Y。
+未完了77件はA1/Y/trainの層1=51・層2=26。selected_full_buildは入口記録で、build後のgate適用と区別できない。管理processの交代・会話usage limit・WebSocket resetは記録されたが、直接の終了原因/exit/signal/送信元はUNKNOWN。kernel/authログは読取不可で、現在の別cgroupの0counterを旧OOM否定へ流用しない。
+旧reconcile/atomic writer/shared_cpuを再利用し、journal診断と未接続のdirect-child観測prototypeを追加、人工19件PASS。新科学call・実RNG/測定/compile・N3再開/再実行は0。旧SOURCE/bit/価格/係数/STOP・元main/既存dirty・C1凍結を保全。
+技術上は持続manager/終了・cgroup/call return記録の接続後、案Bの独立campaignを既定推奨としたが未採択・未実行。案AはPCG64 prefix復元と77追加attempt・元one-shot契約の限定変更が必要。両案とも新SOURCEと有限scopeへの別途明示許可が必要で、今回公開照合後mandatory STOP。

@@ -1,0 +1,5 @@
+# 固定資料の参照コピー
+
+このdirectoryのN3_RESULT_DECISION_FRAMEWORK.md、EXPECTED_RZ_COST_GUARANTEE_PLAN.md、SOURCE.jsonは、固定a53c1d6eedea0d85fb484425db9012aa89738129の原blobを変更せず保存した。原文の相対linkは元repository pathを基準に読む。現在の実行許可や今回の結果へ読み替えない。
+
+[元directory（固定commit）](https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/a53c1d6eedea0d85fb484425db9012aa89738129/docs/research/o2_a1_n3_decision_expected_rz_20261106)。blob/bytesの照合値は今回のartifact SOURCE.jsonに記録する。
