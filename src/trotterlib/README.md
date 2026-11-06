@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 研究C：H6独立検証の技術準備（2026-11-06）
+
+[再利用調査・人工検証・検査資格・未承認契約](../../docs/research/research_c_h6_feasibility_preparation_20261106.md)。`c_h6_validation_preparation.py`、passive `prepare_research_c_h6_validation.py`、人工benchmark、同名management testへ接続。実H6/H2新科学0。科学runnerの接続は未完で、検査subset・rank/LD等の判断後に別の固定SOURCEと実行許可が必要。公開照合後mandatory STOP。
+
 ## 研究C：PR対weighted L1・共通r32の条件付き資源比較（2026-11-03）
 
 [1,231-call結果・全26round・各native32・同J/U強D・資格の限界](../../docs/research/research_c_near_practical_r32_downstream_execution_20261103.md)。固定H4/1Å/STO-3G・number CDF8/sector36、元順LD2・S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground/状態準備除外、P0/fenced serial。PR/ENTRY総RZ点比.49418、名目Welch95%モデルでPR低費用。全law/actual CAは未資格、旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。

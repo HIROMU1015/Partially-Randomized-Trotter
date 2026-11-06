@@ -32,7 +32,8 @@ def _cost(row):
     return value
 
 
-def select_training(rows, *, strengths=STRENGTHS):
+def select_training(rows, *, strengths=STRENGTHS, r_values=R_VALUES,
+                    common_r=32, tie_order=(32, 16, 64)):
     """Select independently at common r32 and over the same strength x r grid.
 
     Supply exactly one arm/start/update checkpoint. Ineligible policies remain
@@ -40,7 +41,11 @@ def select_training(rows, *, strengths=STRENGTHS):
     Caller supplies existing serial-accounting totals, never raw objectives.
     """
     rows = list(rows)
-    expected = {(g, r) for g in strengths for r in R_VALUES}
+    if (not r_values or any(type(r) is not int or r < 1 for r in r_values)
+            or len(set(r_values)) != len(r_values) or common_r not in r_values
+            or len(tie_order) != len(r_values) or set(tie_order) != set(r_values)):
+        raise ValueError("FIXED_COMMON_AND_RETUNING_R_GRID")
+    expected = {(g, r) for g in strengths for r in r_values}
     keys = [(x["strength"], x["r"]) for x in rows]
     if len(keys) != len(set(keys)) or set(keys) != expected:
         raise ValueError("COMPLETE_EQUAL_STRENGTH_R_OPPORTUNITIES")
@@ -54,10 +59,11 @@ def select_training(rows, *, strengths=STRENGTHS):
         if len({x["candidate_sha256"] for x in block}) != 1:
             raise ValueError("R_SEARCH_CHANGED_DF_CANDIDATE")
     out = {}
-    for name, candidates in (("common_r32", [x for x in rows if x["r"] == 32]),
+    common_name = f"common_r{common_r}"
+    for name, candidates in ((common_name, [x for x in rows if x["r"] == common_r]),
                              ("fair_retuned", rows)):
         eligible = [x for x in candidates if math.isfinite(_cost(x))]
-        out[name] = (min(eligible, key=lambda x: (_cost(x), x["strength"], (32, 16, 64).index(x["r"])))
+        out[name] = (min(eligible, key=lambda x: (_cost(x), x["strength"], tie_order.index(x["r"])))
                      if eligible else None)
     return out
 
