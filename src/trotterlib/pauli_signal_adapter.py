@@ -159,6 +159,12 @@ class PauliHamiltonian:
 
 
 def append_pauli_evolution(circuit, label, coefficient, time):
+    # Explicit identity phase avoids an all-I PauliEvolutionGate synthesis
+    # path that doubles the phase in the pinned Qiskit 1.3 runtime. It also
+    # remains correct when the enclosing gate is subsequently controlled.
+    if set(label) == {"I"}:
+        circuit.global_phase -= coefficient * time
+        return
     circuit.append(PauliEvolutionGate(SparsePauliOp.from_list([(label, coefficient)]), time=time),
                    range(len(label)))
 

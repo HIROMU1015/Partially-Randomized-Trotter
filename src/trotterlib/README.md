@@ -119,3 +119,7 @@ DF部分ランダム化研究と混同しない。
 
 [収録ファイル・保存版と確認範囲](../../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## B2 RPE接続（人工検証のみ、2026-11-06）
+
+`b2_rpe_connection.py`はgeneration-prefix B2のround/native回路・信号・M1会計・強PFを接続する。M1会計の`o1_m1_resource_bridge.py`等は固定版から再利用。[REPORT](../../docs/research/track_a_b2_rpe_implementation_20261106/REPORT.md)と`tests/test_b2_rpe_connection.py`を参照。

@@ -117,6 +117,38 @@ class RPEHadamardInterrogationResult:
     )
 
 
+def wrap_controlled_no_prep(
+    evolution: QuantumCircuit, *, ancilla_qubit: int, axis: RPEHadamardAxis,
+    include_measurement: bool = True,
+) -> QuantumCircuit:
+    """Wrap a supplied ordinary-controlled evolution; no new control or prep.
+
+    The caller supplies/qualifies diag(I,U) semantics. This circuit-only entry
+    reuses the same gates as the existing DF result wrapper without pretending
+    that a Pauli trajectory is a DFPartialS2RepeatedCircuitResult.
+    """
+    if not isinstance(evolution, QuantumCircuit) or evolution.num_qubits < 2:
+        raise TypeError("Expected a controlled system-plus-ancilla circuit")
+    ancilla = require_integer_count(ancilla_qubit, name="ancilla_qubit")
+    if ancilla != evolution.num_qubits - 1 or evolution.num_clbits or any(
+        item.operation.name == "measure" for item in evolution.data
+    ):
+        raise ValueError("Expected ancilla-last evolution with no measurement")
+    if axis not in ("cosine", "sine") or not isinstance(include_measurement, bool):
+        raise ValueError("Explicit Hadamard axis and boolean measurement required")
+    circuit = QuantumCircuit(*evolution.qregs, name="rpe_hadamard_interrogation")
+    circuit.h(ancilla)
+    circuit.compose(evolution, qubits=tuple(range(evolution.num_qubits)), inplace=True)
+    if axis == "sine":
+        circuit.sdg(ancilla)
+    circuit.h(ancilla)
+    if include_measurement:
+        register = ClassicalRegister(1, "rpe_measure")
+        circuit.add_register(register)
+        circuit.measure(ancilla, register[0])
+    return circuit
+
+
 class QiskitRPEHadamardInterrogationBuilder:
     """Wrap an already-controlled short trajectory without re-controlling it."""
 
@@ -317,27 +349,19 @@ class QiskitRPEHadamardInterrogationBuilder:
             "real" if request.axis == "cosine" else "imaginary"
         )
 
-        circuit = self._new_wrapper_circuit(evolution.circuit)
-        circuit.h(ancilla)
-        circuit.compose(
-            evolution.circuit,
-            qubits=tuple(range(evolution.circuit.num_qubits)),
-            inplace=True,
+        circuit = wrap_controlled_no_prep(
+            evolution.circuit, ancilla_qubit=ancilla, axis=request.axis,
+            include_measurement=request.include_measurement,
         )
-        if request.axis == "sine":
-            circuit.sdg(ancilla)
-        circuit.h(ancilla)
 
         measurement_clbit: Clbit | None = None
         measurement_clbit_index: int | None = None
         measurement_register_name: str | None = None
         if request.include_measurement:
-            measurement_register = ClassicalRegister(1, "rpe_measure")
-            circuit.add_register(measurement_register)
+            measurement_register = circuit.cregs[0]
             measurement_clbit = measurement_register[0]
             measurement_clbit_index = circuit.find_bit(measurement_clbit).index
             measurement_register_name = measurement_register.name
-            circuit.measure(ancilla, measurement_clbit)
 
         wrapper_fingerprint = self._wrapper_fingerprint(
             request=request,

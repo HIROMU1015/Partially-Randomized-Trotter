@@ -149,3 +149,7 @@ artifacts/<validation_name>/
 既存公開リストを使い、固定commitの文書・SOURCE・小さなmetadataのbytesを読み取り専用で確認する。
 使い方・対象外ファイル・原検証との違いは[固定commit参照の案内](../docs/research/branch_reference_navigation_20261103.md#削除したbranchへ問い合わせない公開bytes確認)を参照する。
 科学runnerや原結果の再解析は実行しない。
+
+## B2 RPE接続の人工検証（2026-11-06）
+
+[REPORTとpytest入口](../docs/research/track_a_b2_rpe_implementation_20261106/REPORT.md)を参照。新しい科学runnerは追加していない。固定M1版から取り込んだ`run_o1_m1_h4_operator_correctness.py`は既存人工テストの参照helperとしてのみ使用し、実H4 mainは実行していない。

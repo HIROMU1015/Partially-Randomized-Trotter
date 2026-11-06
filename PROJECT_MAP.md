@@ -168,3 +168,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## ローカルに残っていた文書・SOURCEの収録（2026-11-03）
 
 [原稿・受領レビュー・研究ノート・SOURCEと保存別版の対応](docs/research/main_local_results_collection_20261103.md)から辿る。元の科学SOURCE・status・STOPは維持する。
+
+## B2から総RPE費用への接続実装（2026-11-06）
+
+[人工検証・入力契約・STOP](docs/research/track_a_b2_rpe_implementation_20261106/REPORT.md)。`b2_rpe_connection.py`と`tests/test_b2_rpe_connection.py`。実H4未適用。
