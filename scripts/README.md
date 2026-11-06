@@ -1,5 +1,7 @@
 # scripts 索引
 
+C6a結果のC6b提案整理は `summarize_track_d_c6a.py`（完全pilotの既存統計・モデルだけ、q8実行なし）。[結果](../docs/research/track_d_c6a_paired_price_20261106/RESULT.md)。
+
 C6a専用入口：`run_track_d_c6a.py`。[固定PLAN](../docs/research/track_d_c6a_paired_price_20261106/PLAN.md)。既存canonical sampler/CAR/C3/C5/P0を再利用し、明示実行だけ。
 
 [C5結果](../docs/research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。

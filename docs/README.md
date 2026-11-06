@@ -1,5 +1,7 @@
 # 文書索引
 
+[C6a結果](research/track_d_c6a_paired_price_20261106/RESULT.md)：fresh q2/q4各16、raw32/P0 postcheck128/pairedχ PASS。有限pilot統計・共有校正共分散・C6b提案、rawローカル保全、mandatory STOP。
+
 [Track D C6a固定PLAN](research/track_d_c6a_paired_price_20261106/PLAN.md)：q2/q4各16 fresh paired価格pilot、最大128 P0、C6b未実施。
 
 [C5結果](research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。

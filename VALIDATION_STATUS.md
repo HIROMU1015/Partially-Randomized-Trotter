@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-07 Track D C6a paired price pilot
+
+[Track D C6a](docs/research/track_d_c6a_paired_price_20261106/RESULT.md)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、fresh q2/q4各16・half-step cut。SOURCE `6b6667026ec8b670f610e41141d195883a9eb513`。人工23件、raw32/32・P0 postcheck128/128・最終paired/χ PASS、完全pilotのddof1統計/共分散と探索的affine係数を取得。n16/qは母平均保証でなく、q8 holdout・長q資格・N/全RPE費用なし。rawはローカル保全、公開は科学要約/価格/統計/hash索引。C6bは提案のみ、mandatory STOP。 [result](artifacts/track_d_c6a_paired_price/2026-11-06/run01/result.json)／[payload availability](artifacts/track_d_c6a_paired_price/2026-11-06/run01/payload_publication.json)。
+
 ## 2026-11-06 Track D C5 common whole-path and fixed q2 fair comparison
 
 [結果](docs/research/track_d_c5_q2_20261106/RESULT.md)／[evidence](artifacts/track_d_c5_q2/2026-11-06/run01/result.json)／[STOP](artifacts/track_d_c5_q2/2026-11-06/run01/STOP.json)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、保存00→01/q2/cut1。SOURCE `976c898fbdb79477c1db3178b5d32df1fe5aeb5c`。C3固定入口を残し、明示ordered request・method/axis・SOURCE/law/cutと有限fixture価格recordを最小実装。人工/回帰16件、raw22項目＋paired X/Y、4 P0 wrapper postcheck、最終paired/χはPASS。C3と同じstrong境界融合・位相集約をq2へ適用したが、全7資源は旧C2と一致した。各axisのsymmetric→ReferenceはRZ10773→11114、CX4100→3860、depth6096→3014、qubits9→17。raw byte不一致によりcompiled再利用0・新compile4。元H厳密ground仮定・準備費除外、全256入力のlocal binary64証拠。新sampling/fit/holdout/N/全RPE評価0、q4/q8再実行0、source/input一致、retry/resume0、mandatory STOP。

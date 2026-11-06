@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C6a結果](docs/research/track_d_c6a_paired_price_20261106/RESULT.md)：fresh q2/q4各16、raw32/P0 postcheck128/pairedχ PASS。有限pilot統計/共分散・C6b提案、rawローカル保全、全RPE未評価、mandatory STOP。
+
 [Track D C6a](docs/research/track_d_c6a_paired_price_20261106/PLAN.md)：C5公開基点。canonical fresh q2/q4各16 path、fixed half-step cut、paired価格pilot。raw PASS後最大128 P0 wrapper、q8 holdout/全RPE対象外、公開後mandatory STOP。
 
 [C5結果](docs/research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。
