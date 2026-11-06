@@ -106,3 +106,5 @@
 - [B2 P1全18roundのshot会計（2026-11-07）](research/track_a_b2_p1_shots_20261107/REPORT.md)：条件付き十分shot数7,805,784。実機95%・価格・総費用は未認証/未評価、mandatory STOP。
 
 - [B2 P1強決定論PFの固定8 arm（2026-11-07）](research/track_a_b2_p1_strong_pf_20261107/REPORT.md)：3 armは全18round条件付きPASS、5 armは独立数値照合でSTOP。shot・価格・総費用は未実行。
+
+- [強PF 3 PASS armのP1 branch・shot会計（2026-11-07）](research/track_a_b2_p1_strong_pf_branch_shots_20261107/REPORT.md)：保存18round、価格未評価、mandatory STOP。

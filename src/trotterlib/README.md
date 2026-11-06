@@ -135,3 +135,5 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_shot_accounting.py`は既存`B2SignalRecord.bounds`/`account_radius_round`を使う保存JSON adapterと整数集計。[条件付きshot数・未保証範囲](../../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。新signal/branch/price計算なし。
 
 `b2_p1_strong_pf_validation.py`は既存spin-aware XDF基底・signed schedule・CAR指数行列を接続する数値専用adapter。[8 armの範囲・結果](../../docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。対応runnerと`tests/test_b2_p1_strong_pf_validation.py`、`artifacts/track_a_b2_p1_strong_pf/`を参照。
+
+- `b2_p1_strong_pf_branch_shots.py`：固定3 PASS strong-PF armの保存JSONから、既存P1 branch/energy・実半径shot会計へ接続する薄いadapter。[REPORT](../../docs/research/track_a_b2_p1_strong_pf_branch_shots_20261107/REPORT.md)。

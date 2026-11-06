@@ -165,3 +165,5 @@ artifacts/<validation_name>/
 `run_b2_p1_shot_accounting.py`は固定保存18roundのboundsを既存Hoeffding会計へ接続する。[shot結果とSTOP](../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。価格・費用は算出しない。
 
 `run_b2_p1_strong_pf_validation.py`は固定Full S2/Yoshida4×substeps1/2/4/8の数値信号を評価する。[結果とSTOP](../docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。回路・shot・価格は実行しない。
+
+- `run_b2_p1_strong_pf_branch_shots.py`：固定3 PASS armの保存18roundを既存decoder/shot APIへ接続。新PF信号・回路・価格なし。[結果とSTOP](../docs/research/track_a_b2_p1_strong_pf_branch_shots_20261107/REPORT.md)。
