@@ -171,3 +171,6 @@ A1新targetの[N1限定実行](../docs/research/o2_a1_new_target_n1_20261106/EXE
 
 
 A1新targetの[N1結果・完全payload・correctness](../docs/research/o2_a1_new_target_n1_20261106/REPORT.md)（2026-11-06）：同じ一回の準備からCDF/Q/νと層質量・basis対応を取得。N1成功後STOP、N2/N3・測定・価格/費用は未実行。
+
+
+A1の[N2限定SOURCE・state/engine検証](../docs/research/o2_a1_new_target_n2_20261106/EXECUTION.md)：N1保存payloadを再利用するmodule/runner/人工test、state inventoryと環境lock。N3なし、公開後STOP。

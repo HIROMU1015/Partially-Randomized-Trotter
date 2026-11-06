@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "total": 55,
+  "new_N2": 15,
+  "reused_A1": 40,
+  "scope": "invented/artificial/mock only; no molecular NPZ or saved scientific state evaluated",
+  "command": "python -B -m unittest discover -s tests/tracks/algorithm_codesign -p test_a1*.py -v",
+  "checks": [
+    "independent FermionOperator assembly",
+    "exact spectral enclosure and separated ground",
+    "reject zero-residual excited state and degenerate ground",
+    "complex norm/normalized Rayleigh",
+    "existing Hadamard X/Y Sdg-H and bit mapping",
+    "controlled scalar/identity/event phases and negative signs",
+    "whole number sector and mode bit reversal",
+    "small grid Bernoulli endpoints",
+    "N1/N3 forbidden calls and fresh UNKNOWN/STOP"
+  ],
+  "preflight_correction": "initial combined suite failed passive-import isolation because new test imported Qiskit at discovery; fixed by lazy test imports before final SOURCE freeze; no scientific input was used"
+}
