@@ -1,0 +1,171 @@
+{
+  "kind": "artificial_qualification",
+  "science_calls": 0,
+  "cases": {
+    "normal": {
+      "status": "PASS",
+      "manager_wait": {
+        "status": "EXITED",
+        "exit_code": 0,
+        "signal": null,
+        "raw_returncode": 0
+      },
+      "parent_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "worker_wait": {
+        "2918395": {
+          "exit_code": 0,
+          "raw_returncode": 0,
+          "signal": null,
+          "status": "EXITED"
+        }
+      },
+      "attempts": {
+        "toy-0": "BIT_AND_PRICE_DURABLE"
+      },
+      "owned_workers_quiescent": true
+    },
+    "worker_failure": {
+      "status": "PASS",
+      "manager_wait": {
+        "status": "EXITED",
+        "exit_code": 0,
+        "signal": null,
+        "raw_returncode": 0
+      },
+      "parent_wait": {
+        "exit_code": 17,
+        "raw_returncode": 17,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "worker_wait": {
+        "2918400": {
+          "exit_code": 23,
+          "raw_returncode": 23,
+          "signal": null,
+          "status": "EXITED"
+        }
+      },
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "owned_workers_quiescent": true
+    },
+    "parent_failure": {
+      "status": "PASS",
+      "manager_wait": {
+        "status": "EXITED",
+        "exit_code": 0,
+        "signal": null,
+        "raw_returncode": 0
+      },
+      "parent_wait": {
+        "raw_returncode": -9,
+        "sender": "UNKNOWN",
+        "signal": 9,
+        "signal_name": "SIGKILL",
+        "status": "SIGNALED"
+      },
+      "worker_wait": {
+        "status": "UNKNOWN: parent wait owner lost"
+      },
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "owned_workers_quiescent": true
+    },
+    "client_disconnect": {
+      "status": "PASS",
+      "manager_wait": {
+        "status": "EXITED",
+        "exit_code": 0,
+        "signal": null,
+        "raw_returncode": 0
+      },
+      "parent_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "worker_wait": {
+        "2918411": {
+          "exit_code": 0,
+          "raw_returncode": 0,
+          "signal": null,
+          "status": "EXITED"
+        }
+      },
+      "attempts": {
+        "toy-0": "BIT_AND_PRICE_DURABLE"
+      },
+      "owned_workers_quiescent": true
+    },
+    "stop": {
+      "status": "PASS",
+      "manager_wait": {
+        "status": "EXITED",
+        "exit_code": 0,
+        "signal": null,
+        "raw_returncode": 0
+      },
+      "parent_wait": {
+        "exit_code": 17,
+        "raw_returncode": 17,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "worker_wait": {
+        "2918416": {
+          "exit_code": 0,
+          "raw_returncode": 0,
+          "signal": null,
+          "status": "EXITED"
+        }
+      },
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "owned_workers_quiescent": true
+    },
+    "manager_failure": {
+      "status": "PASS",
+      "manager_wait": {
+        "status": "SIGNALED",
+        "signal": 9,
+        "signal_name": "SIGKILL",
+        "raw_returncode": -9,
+        "sender": "UNKNOWN"
+      },
+      "parent_wait": {
+        "status": "UNKNOWN"
+      },
+      "worker_wait": {
+        "status": "UNKNOWN: parent wait owner lost"
+      },
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "owned_workers_quiescent": true
+    }
+  },
+  "submission_client_exited_before_job": true,
+  "cron_identity": {
+    "pid": 2918392,
+    "ppid": 2918387,
+    "pgid": 2918386,
+    "sid": 2918386,
+    "start_ticks": 574649231,
+    "boot_id": "a5c5749e-4814-4dd1-9d54-cada2cceb1ae",
+    "cgroup": "0::/system.slice/cron.service"
+  },
+  "duplicate_dispatch_exit": 72,
+  "temporary_crontab_removed_before_application_start": true,
+  "restart_policy": "no; consumed receipt retained, trigger removed",
+  "status": "PASS"
+}

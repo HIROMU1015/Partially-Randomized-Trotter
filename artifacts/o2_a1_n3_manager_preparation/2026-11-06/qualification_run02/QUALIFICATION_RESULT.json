@@ -1,0 +1,171 @@
+{
+  "cases": {
+    "client_disconnect": {
+      "attempts": {
+        "toy-0": "BIT_AND_PRICE_DURABLE"
+      },
+      "manager_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "owned_workers_quiescent": true,
+      "parent_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "status": "PASS",
+      "worker_wait": {
+        "2918411": {
+          "exit_code": 0,
+          "raw_returncode": 0,
+          "signal": null,
+          "status": "EXITED"
+        }
+      }
+    },
+    "manager_failure": {
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "manager_wait": {
+        "raw_returncode": -9,
+        "sender": "UNKNOWN",
+        "signal": 9,
+        "signal_name": "SIGKILL",
+        "status": "SIGNALED"
+      },
+      "owned_workers_quiescent": true,
+      "parent_wait": {
+        "status": "UNKNOWN"
+      },
+      "status": "PASS",
+      "worker_wait": {
+        "status": "UNKNOWN: parent wait owner lost"
+      }
+    },
+    "normal": {
+      "attempts": {
+        "toy-0": "BIT_AND_PRICE_DURABLE"
+      },
+      "manager_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "owned_workers_quiescent": true,
+      "parent_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "status": "PASS",
+      "worker_wait": {
+        "2918395": {
+          "exit_code": 0,
+          "raw_returncode": 0,
+          "signal": null,
+          "status": "EXITED"
+        }
+      }
+    },
+    "parent_failure": {
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "manager_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "owned_workers_quiescent": true,
+      "parent_wait": {
+        "raw_returncode": -9,
+        "sender": "UNKNOWN",
+        "signal": 9,
+        "signal_name": "SIGKILL",
+        "status": "SIGNALED"
+      },
+      "status": "PASS",
+      "worker_wait": {
+        "status": "UNKNOWN: parent wait owner lost"
+      }
+    },
+    "stop": {
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "manager_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "owned_workers_quiescent": true,
+      "parent_wait": {
+        "exit_code": 17,
+        "raw_returncode": 17,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "status": "PASS",
+      "worker_wait": {
+        "2918416": {
+          "exit_code": 0,
+          "raw_returncode": 0,
+          "signal": null,
+          "status": "EXITED"
+        }
+      }
+    },
+    "worker_failure": {
+      "attempts": {
+        "toy-0": "BIT_DURABLE_PRICE_MISSING"
+      },
+      "manager_wait": {
+        "exit_code": 0,
+        "raw_returncode": 0,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "owned_workers_quiescent": true,
+      "parent_wait": {
+        "exit_code": 17,
+        "raw_returncode": 17,
+        "signal": null,
+        "status": "EXITED"
+      },
+      "status": "PASS",
+      "worker_wait": {
+        "2918400": {
+          "exit_code": 23,
+          "raw_returncode": 23,
+          "signal": null,
+          "status": "EXITED"
+        }
+      }
+    }
+  },
+  "cron_identity": {
+    "boot_id": "a5c5749e-4814-4dd1-9d54-cada2cceb1ae",
+    "cgroup": "0::/system.slice/cron.service",
+    "pgid": 2918386,
+    "pid": 2918392,
+    "ppid": 2918387,
+    "sid": 2918386,
+    "start_ticks": 574649231
+  },
+  "duplicate_dispatch_exit": 72,
+  "kind": "artificial_qualification",
+  "restart_policy": "no; consumed receipt retained, trigger removed",
+  "science_calls": 0,
+  "status": "PASS",
+  "submission_client_exited_before_job": true,
+  "temporary_crontab_removed_before_application_start": true
+}

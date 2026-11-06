@@ -1,0 +1,858 @@
+{
+  "status": "TECHNICAL_QUALIFIED_MANDATORY_STOP",
+  "manager_SOURCE": "5cb542ece4d208878a1dfc7011007b99297a5a55",
+  "initial_SOURCE": "d139cf8dd7d3ff8de6527bc27815cde35a1b4076",
+  "science_calls": 0,
+  "test_scope": "unit13 plus six synthetic cron-route cases; old scientific data never reacquired",
+  "first_qualification": "failed in postprocessing; source/log/data retained",
+  "second_qualification": "PASS",
+  "application_restart": "no; exclusive receipt plus trigger removal",
+  "shared_cron_daemon_Restart": "on-failure, unchanged",
+  "own_crontab_after": "absent, restored",
+  "unresolved": [
+    "loss of outer recorder/whole host or cron service",
+    "worker exit after original wait owner loss UNKNOWN",
+    "actual SSH logout not tested",
+    "real engine long-run memory/performance not measured",
+    "group-specific PSI timeseries not captured; host PSI and group memory counters retained",
+    "B seed/contract not adopted; B scientific entry/SOURCE/environment lock pending"
+  ],
+  "evidence": [
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/LOG_COPIES.json",
+      "sha256": "d51be7d4d9ddfd730e3f11b7456e5492c5d628266ef7b35baaf5ad81ffa0b3b4",
+      "bytes": 5939,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/PREFLIGHT.json",
+      "sha256": "02ec97e15a1c7886350bc8073f7fd398720c38f6b96e62b94909d90bc6ebcc70",
+      "bytes": 1383,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/PRESERVATION.json",
+      "sha256": "d014fb5f222d5c19f52acb383a089edf1a88b367286bd15a9f30a9521d655c3f",
+      "bytes": 4290,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/QUIESCENCE.json",
+      "sha256": "15359e705bdad8864e806d06d377d69404c361af3b9ddc5a90725c75b8120282",
+      "bytes": 2713,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/SOURCE.json",
+      "sha256": "3b89cd550e7e4e3069a9bc9b73ce399ab2ec5d935fe394bfc1ea886e8e6f2356",
+      "bytes": 1552,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/STOP.json",
+      "sha256": "3b0051e17120e31735e106587e8c329fba69cd40ef6d3a23b164ab4dc7a13c87",
+      "bytes": 351,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/UNIT_TESTS.json",
+      "sha256": "532d0d0e5b1baddb23ca5eb953386689dbce499ad879d8e45d9812d4fb3afa27",
+      "bytes": 324,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/UNIT_TESTS.txt",
+      "sha256": "b85a0e6446b0aa4abdf0d5b8343af4982260514a9593851f38b6f2818b891ba5",
+      "bytes": 2004,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/UNIT_TESTS_V1.json",
+      "sha256": "58bafcd16d86d708b3529617c7d2d766ed6d4c12227b58ec527411a88b9abb3c",
+      "bytes": 378,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/UNIT_TESTS_V1.txt",
+      "sha256": "dc2d705f90d4b91c506425ed84b3fe533317d5811337e17a4dda0b6c7330e34e",
+      "bytes": 1855,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/CONSUMED.json",
+      "sha256": "af1fa42cc6b8557d49cb8818a2abdb6e520b1fab13e2a543c6bbe7ddaf9adbe7",
+      "bytes": 219,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/CRONTAB_RESTORED.json",
+      "sha256": "2683b0028d216fd4a7a5a35e4a774938ceeb84f2a4238bd6f12c1daa256bc2dd",
+      "bytes": 50,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/CRON_IDENTITY.json",
+      "sha256": "aae519f4a3d8b8cd62832f97873b1be7ffd7f1da22dcc1bd72a25046d2caa698",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/DISPATCH.jsonl",
+      "sha256": "58cdbe728219552a8b99185757bea3a74a0f1de61937f3544c6f30c6a6dabd3c",
+      "bytes": 134,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/DISPATCH_EXIT.json",
+      "sha256": "d99a97943a87a3ecc330f25ca43ec6adcf4e9458c8b11b2e454d6f6854992113",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/SPEC.json",
+      "sha256": "630a7d97f40f89e690c2c0555ff41c3f5270088d09713f0d9a326ea44393e9a9",
+      "bytes": 3501,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/cron.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/ATTEMPTS.json",
+      "sha256": "3011c2bbf45758d4f2be86db223c11a13f2f6b74d64065f62246423679ca477d",
+      "bytes": 131,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/MANAGER.jsonl",
+      "sha256": "bf19227b780961e41f8cea1dbd43f4ad2fa1414cbf589563dc1542e01da7a58a",
+      "bytes": 4124,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/OBS_parent.jsonl",
+      "sha256": "db6ecf25dfd9055b7b2389835cf557d88a8a7e0303216b973727c3eee8ac9d01",
+      "bytes": 1010,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/OBS_worker_2916239.jsonl",
+      "sha256": "990caa3b67a0b2843dda620b2c167e6665cebde60eacd39d55fc011a0c3e3cb7",
+      "bytes": 4557,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/PARENT_EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/PARENT_IDENTITY.json",
+      "sha256": "0cae10efe78bc7d1dec122732cbdd3f0cdbcf38f724a281d323fecb017364b74",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/WORKER_2916239.json",
+      "sha256": "83d10f0669bafbe59046e2888d5872be6d461bdb6a9e4f3534563867da4e03fd",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/WORKER_EXIT_CODES.json",
+      "sha256": "80905ace8c5a0026bf7066e7f778c3997653b1d51e5a1ff0c59af813748dd176",
+      "bytes": 111,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/outer/EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/outer/LIFECYCLE.jsonl",
+      "sha256": "c845e3062d80d03d2f3af89b91220efaa4610a74c655925136c11d8c3d28f122",
+      "bytes": 14272,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/normal/worker_2916239.jsonl",
+      "sha256": "64e78b00e08def7422ac451c4389d79931c239411ed8d8d2f08e1d211d84b70e",
+      "bytes": 531,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run01/qualification.log.txt",
+      "sha256": "0697d9afbb3d26bc0947caf6ed72c4d9e508590c025ddfafdc294c0ef1835c9a",
+      "bytes": 1268,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/CONSUMED.json",
+      "sha256": "a0e36e6ef728f7f525956d5f03a0d3fd34b20a31975a5bd2ac8a804d2407416c",
+      "bytes": 219,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/CRONTAB_RESTORED.json",
+      "sha256": "2683b0028d216fd4a7a5a35e4a774938ceeb84f2a4238bd6f12c1daa256bc2dd",
+      "bytes": 50,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/CRON_IDENTITY.json",
+      "sha256": "89dc98772d2f6d5179116d8ddc76bef05dfab7b72d9828b5dbe33fe992a599ea",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/DISPATCH.jsonl",
+      "sha256": "01bd9282e78a2eedaf7241f0a13ecf51da6ecdd984079135761b64feb2267d37",
+      "bytes": 259,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/DISPATCH_EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/QUALIFICATION_RESULT.json",
+      "sha256": "b88311418860ce877e02109b79bbaf0f25c04b681792d34736ec184b82daaa1e",
+      "bytes": 4045,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/SPEC.json",
+      "sha256": "7ac54570f9c6eeb0d72069382dfba669da804fad4bf58b5dcf199474b85845ec",
+      "bytes": 3501,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/ATTEMPTS.json",
+      "sha256": "3011c2bbf45758d4f2be86db223c11a13f2f6b74d64065f62246423679ca477d",
+      "bytes": 131,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/MANAGER.jsonl",
+      "sha256": "bff5934417b660193f042a2060184b658a687a6ef4adf584f348fbae5c4e67f8",
+      "bytes": 4124,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/OBS_parent.jsonl",
+      "sha256": "024f6925a3996eb5833edb6f682179f14799e2229dbffd4b1d298bd01eadfd7c",
+      "bytes": 1010,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/OBS_worker_2918411.jsonl",
+      "sha256": "d270833ccd4d9df51afac3478c61a55f24f369aadfca4dd326f44e0e992e7a96",
+      "bytes": 4557,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/PARENT_EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/PARENT_IDENTITY.json",
+      "sha256": "83e53e69a3387acc79d20a16a0ae88bf566e08cb8d1e1fc71278f3f454023824",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/WORKER_2918411.json",
+      "sha256": "3f0b906dc7cbb1a04fb04baa349b6aef1a86c1aaa535d77cb9b8571a92b72038",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/WORKER_EXIT_CODES.json",
+      "sha256": "7768747c36473ddd72b3c3bce2c9677e57147baea84497bd5929109d4200edfd",
+      "bytes": 111,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/outer/EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/outer/LIFECYCLE.jsonl",
+      "sha256": "9fa3a8c947273802f98ac6834534e05846c088b81d22080dc695752c19625d90",
+      "bytes": 14272,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/client_disconnect/worker_2918411.jsonl",
+      "sha256": "8409d4177d16a82ec930235c97681a56e0aff466ec7c3c242911ac90be9fe2fd",
+      "bytes": 531,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/cron.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/ATTEMPTS.json",
+      "sha256": "f8ab045b6748e3802f48a09030bdb8c34db1b6e4a33c5628ee2e7c6a5e8f5f7a",
+      "bytes": 135,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/MANAGER.jsonl",
+      "sha256": "6f3a62a5c7d003fe4277e602a46d38471eb2293e4143d0c1e62db6c9e17c0d7c",
+      "bytes": 3926,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/OBS_parent.jsonl",
+      "sha256": "91d47a73cbe03dfc352947e42e491bb0c9594350e979b22b5150373a1e2455f7",
+      "bytes": 1665,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/OBS_worker_2918422.jsonl",
+      "sha256": "5aac25aad12ce6b750255d4b62092f143af8a2de2079fd129259f8311923a76f",
+      "bytes": 4214,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/OUTER_CLEANUP.jsonl",
+      "sha256": "65b8e7e26b4aa7a9d69475a4c669dc0b06037143ecc793f3c3b6d57780b83a98",
+      "bytes": 256,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/PARENT_IDENTITY.json",
+      "sha256": "f8573aae9009a13768bd878da077feb49e863d2a7291eed260f5991faed23f1a",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/STOP_REQUESTED.json",
+      "sha256": "2aa17b4edb2e4f2388bff9437d1dd05a2028a0a4c96936e98aa94f834c163adf",
+      "bytes": 114,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/WORKER_2918422.json",
+      "sha256": "1617d431be7c6782e2eecfa2c34390b0c3295edfb463b95fbddfd58a9c824089",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/WORKER_EXIT_CODES.json",
+      "sha256": "21e8a628628ea1b6ba166bcf6434078544f82f21d766d33931160fd1cfb8221e",
+      "bytes": 148,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/outer/EXIT.json",
+      "sha256": "59ac4c6d7873f94554f1b1fc53177ed4dc497504fdc45872a1510ce8ca6e44ba",
+      "bytes": 117,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/outer/LIFECYCLE.jsonl",
+      "sha256": "e4cef16e870813a0924dbde00985ce3e7787dd17056d0733330fb863dc206700",
+      "bytes": 14305,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/manager_failure/worker_2918422.jsonl",
+      "sha256": "718987f9d6cc86d4364f0ae370a0ecfe66ff677d618244594d35b36965328124",
+      "bytes": 335,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/ATTEMPTS.json",
+      "sha256": "3011c2bbf45758d4f2be86db223c11a13f2f6b74d64065f62246423679ca477d",
+      "bytes": 131,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/MANAGER.jsonl",
+      "sha256": "ff6b7bb136a23f1d9f16e32bafccbc6f1940f7a67f62c8d862740876b138aef6",
+      "bytes": 4124,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/OBS_parent.jsonl",
+      "sha256": "e2f0c4b0bc1632d05297e1ca2109495cb87d3fb74e9a65fe9d1a0f175521170d",
+      "bytes": 1010,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/OBS_worker_2918395.jsonl",
+      "sha256": "8c1857bf362707cbf5a2a51c24ba391da8ea5aa7d0b2e14f57e76ac09f3883e2",
+      "bytes": 4557,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/PARENT_EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/PARENT_IDENTITY.json",
+      "sha256": "e6b676eac95e6aa00e6265b2871833d7b344d74e1288d1ffdc82b4bf755ecef6",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/WORKER_2918395.json",
+      "sha256": "5d8f2a2e0e8fd8bead40c0ef53d39a5a5bfc365c4290bbd547593291f9deaecd",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/WORKER_EXIT_CODES.json",
+      "sha256": "9c3754f131f3d0b5e501881b7797c32a695863a4de0c9afecc468ade08612eb9",
+      "bytes": 111,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/outer/EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/outer/LIFECYCLE.jsonl",
+      "sha256": "3d60360bde377790a18d8e00d9eb9b3d799f8ac9444e25570dde2d8936dcf631",
+      "bytes": 14272,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/normal/worker_2918395.jsonl",
+      "sha256": "f90fe9ea6991941752baaeaebdf300d13fd1cbc6078bb9338a9c13cb03bca81b",
+      "bytes": 531,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/ATTEMPTS.json",
+      "sha256": "f8ab045b6748e3802f48a09030bdb8c34db1b6e4a33c5628ee2e7c6a5e8f5f7a",
+      "bytes": 135,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/MANAGER.jsonl",
+      "sha256": "4fbca20b5a1465fdb5f11d8f0c3f5983bc26ca0a7921a060a8b4c52decaafdac",
+      "bytes": 4155,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/OBS_parent.jsonl",
+      "sha256": "7a3fd7be32150a63bd8d8bae9ce9b85a332eb6751d94098a932b9228e39ba1a5",
+      "bytes": 1112,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/OBS_worker_2918405.jsonl",
+      "sha256": "3e0be8ee3dedc923cb7504f2a3847b3388423030cfe98e833fc536f96f898728",
+      "bytes": 4214,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/OWN_CLEANUP.json",
+      "sha256": "32db3052be4b3f7c7865eb5f957b992a17168cfa3f20b096c6a19fe71e147031",
+      "bytes": 236,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/PARENT_EXIT.json",
+      "sha256": "59ac4c6d7873f94554f1b1fc53177ed4dc497504fdc45872a1510ce8ca6e44ba",
+      "bytes": 117,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/PARENT_IDENTITY.json",
+      "sha256": "89aba75f6a57da4cce23892c1809b2fa911fdd2c77018c7e9970a8d33dc52591",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/STOP_REQUESTED.json",
+      "sha256": "7c724f7cf38d8c8c6574571dda8141ac3d46f2349d004af6adf85541481520f8",
+      "bytes": 101,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/WORKER_2918405.json",
+      "sha256": "e636f4d839a3f0becfaf5bd890cca77e287ff984fa5e84b18f5cb090df63e32e",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/outer/EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/outer/LIFECYCLE.jsonl",
+      "sha256": "4f6ca70d24ec63f1d14555c44c5d0523169d7e8a223717b5bc592b131acae8c9",
+      "bytes": 14272,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/parent_failure/worker_2918405.jsonl",
+      "sha256": "8beece3f0d3545a996f0ecb5b3bc4fc11e756aa8daec94271f8ddb05831172e5",
+      "bytes": 335,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/qualification.log.txt",
+      "sha256": "ed534d76f0d169a2364bb5492746c84158fde58224b7b948b9be1601cdbe9a8f",
+      "bytes": 4045,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/ATTEMPTS.json",
+      "sha256": "f8ab045b6748e3802f48a09030bdb8c34db1b6e4a33c5628ee2e7c6a5e8f5f7a",
+      "bytes": 135,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/MANAGER.jsonl",
+      "sha256": "4c26fc8b037bf4dcd002fc844115ee88eec7db21c68c96621e1cb2133bda1f58",
+      "bytes": 4126,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/OBS_parent.jsonl",
+      "sha256": "2586dcf25fc03358ceb24da4c78042b2ca0a689d90a1d41949f8dbe9867f55e4",
+      "bytes": 1486,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/OBS_worker_2918416.jsonl",
+      "sha256": "63ca83fc86c47583ba47abc34b2280e432e51610ff0d85297fe98191b73444db",
+      "bytes": 4240,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/OWN_CLEANUP.json",
+      "sha256": "159a2abfca11c04aba621b55699ec5359efa0f2beed6bb31bf196d847e3f3388",
+      "bytes": 245,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/PARENT_EXIT.json",
+      "sha256": "f8e0d50eec9d7df7540fa7b7a87133b0ea5d9c21d6901ca4aba233e8135bc9c8",
+      "bytes": 86,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/PARENT_IDENTITY.json",
+      "sha256": "f6427ff310ae0613ae33e08ec34c8b18318d9a075339d3a9132672d62a72aaa6",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/STOP_REQUESTED.json",
+      "sha256": "31377ec5b23fbd5f76ffb0b37a7f38fd21813eaaf9ac09dff2799909bfbf0cd9",
+      "bytes": 104,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/WORKER_2918416.json",
+      "sha256": "ca4dc8a5d95e46272353d0aea1208548c3ee7e4d44757408a2ba4c994dd1729d",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/WORKER_EXIT_CODES.json",
+      "sha256": "288529c532e7072deefbec0bfed4011bc121c830134240488896e9bae92021bd",
+      "bytes": 111,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/outer/EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/outer/LIFECYCLE.jsonl",
+      "sha256": "6bd04026c6ac089d1a5d938bd40c0d10a1be1e96dafc6d5f18095c248c42d0ee",
+      "bytes": 14274,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/stop/worker_2918416.jsonl",
+      "sha256": "36b2e3f114c5dceac5b37789b92b023312db914b469657b877b76469e9fb1922",
+      "bytes": 335,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/ATTEMPTS.json",
+      "sha256": "f8ab045b6748e3802f48a09030bdb8c34db1b6e4a33c5628ee2e7c6a5e8f5f7a",
+      "bytes": 135,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/BIT_READY",
+      "sha256": "729cd4435656683931ea719191f6786bbca51754bd7e573f413a655d71fdde49",
+      "bytes": 20,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/MANAGER.jsonl",
+      "sha256": "d8d39b95c4d99dc49431a2c068be6b60ffd7491e4bffd15892459e4465d1e632",
+      "bytes": 4126,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/OBS_parent.jsonl",
+      "sha256": "d3c101f9887d80fe7608af1a0cdcdaea823c6dc0096e988194b70aa4df3a54c2",
+      "bytes": 1482,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/OBS_worker_2918400.jsonl",
+      "sha256": "69a7342d949075b972dd1f23b215f349e085cae14955bb0f493a126d7b11f298",
+      "bytes": 4078,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/OWN_CLEANUP.json",
+      "sha256": "d02d7741c15b8744b12903eefc677c66a03ac955a00882286a3d28a89863062b",
+      "bytes": 245,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/PARENT_EXIT.json",
+      "sha256": "f8e0d50eec9d7df7540fa7b7a87133b0ea5d9c21d6901ca4aba233e8135bc9c8",
+      "bytes": 86,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/PARENT_IDENTITY.json",
+      "sha256": "aaa53c862c7ba46814e4b0b3ab548c3bb1178c458a713f35ff1a49207bb12c93",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/STOP_REQUESTED.json",
+      "sha256": "1630aa392fc8c0bce073551ae798ffe748a5a51c00c409b85463b288efb121b6",
+      "bytes": 98,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/WORKER_2918400.json",
+      "sha256": "3e83e70178351618be0d0e7384a90dc98c0f1762cad4f4c05dde130702dc13ec",
+      "bytes": 187,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/WORKER_EXIT_CODES.json",
+      "sha256": "21e79fac23a7af64ad733486174c348b5f8a21f43c56b08c93b8158f2308444c",
+      "bytes": 113,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/outer/EXIT.json",
+      "sha256": "1b5907efff73f1af7f75d66c61f8da5e0461000330892883093bf9d7f2972f9f",
+      "bytes": 84,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/outer/LIFECYCLE.jsonl",
+      "sha256": "6a58b5dcc9c37e055c4700307576fc6ccf3657c368c2b2208b05e3559753a2ba",
+      "bytes": 14272,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/outer/child.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/parent.log.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "artifacts/o2_a1_n3_manager_preparation/2026-11-06/qualification_run02/worker_failure/worker_2918400.jsonl",
+      "sha256": "e49ab6845cd4da60ae02ef648d0decc4599e65a2f73a06b918e32fe341bbcd63",
+      "bytes": 335,
+      "scope": "synthetic/provenance only"
+    },
+    {
+      "path": "docs/research/o2_a1_n3_manager_preparation_20261106/N3_LIFECYCLE_TESTS.md",
+      "sha256": "15f077897720f5849ae86d60f12b33f4604657c7eb169609e01d65c345546bb6",
+      "bytes": 5079,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "docs/research/o2_a1_n3_manager_preparation_20261106/N3_MANAGER_CONNECTION.md",
+      "sha256": "4cceb7c283143c7b4127cd174d97b716da2e3a5fd474503c2c2d45aadc84d0bb",
+      "bytes": 7134,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "docs/research/o2_a1_n3_manager_preparation_20261106/N3_NEW_CAMPAIGN_CONTRACT_DRAFT.md",
+      "sha256": "a236062a56915963c54c820b8264d1e2f00f1c7f797f4a70b985e814c8a5982c",
+      "bytes": 7816,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "docs/research/o2_a1_n3_manager_preparation_20261106/REPORT.md",
+      "sha256": "27d3c28c39a6a497397208862c8adb3b331ee90e56b8ab94e2ed0e9973dae288",
+      "bytes": 3903,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "scripts/diagnostics/run_a1_n3_manager_qualification.py",
+      "sha256": "f81d58b9181016216e81156e2f1fe2075514f8d1e001a7095c123b7e0a81ffb3",
+      "bytes": 6839,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/a1_n3_cron_manager.py",
+      "sha256": "a4e3fff0536182ab7ca0aebc0fcb6db55dfde603ffbd9c78f03d72d5a347ffad",
+      "bytes": 5283,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "src/trottertracks/algorithm_codesign/a1_n3_managed_runtime.py",
+      "sha256": "7d5b4122828e07c68ad4e9ae9bc6b5faa6140b495af232c78ae9df5cbe10da40",
+      "bytes": 10769,
+      "scope": "technical code/test or unadopted document"
+    },
+    {
+      "path": "tests/test_a1_n3_managed_runtime.py",
+      "sha256": "06317bc32cb6dc3b190f95ec841f20d61fc52bd78a653ec0fc44d62aa7093ce6",
+      "bytes": 6516,
+      "scope": "technical code/test or unadopted document"
+    }
+  ],
+  "manifest_self_hash_omitted": true,
+  "recorded_at_utc": "2026-11-06T13:04:00.412783+00:00"
+}

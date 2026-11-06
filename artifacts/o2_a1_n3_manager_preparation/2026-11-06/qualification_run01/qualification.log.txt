@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/o2-a1-n3-manager-preparation-20261106/scripts/diagnostics/run_a1_n3_manager_qualification.py", line 136, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/o2-a1-n3-manager-preparation-20261106/scripts/diagnostics/run_a1_n3_manager_qualification.py", line 126, in main
+    if args.suite:return suite(args.suite)
+                         ^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/o2-a1-n3-manager-preparation-20261106/scripts/diagnostics/run_a1_n3_manager_qualification.py", line 85, in suite
+    assert quiescent(path),'owned workers did not stop'
+           ^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter/.server-preparation/worktrees/o2-a1-n3-manager-preparation-20261106/scripts/diagnostics/run_a1_n3_manager_qualification.py", line 59, in quiescent
+    identity=json.loads(path.read_text());p=Path('/proc',str(identity['pid']),'stat')
+                                                             ~~~~~~~~^^^^^^^
+KeyError: 'pid'
