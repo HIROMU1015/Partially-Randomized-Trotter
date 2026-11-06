@@ -127,3 +127,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C compiler A
 
 `../trottertracks/track_c_compiler_a.py`と`track_c_compiler_a_validation.py`、runner `scripts/run_track_c_compiler_a_correctness.py`、人工test `synthetic_checks()`、rawは[限定correctness報告](../../docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)から辿る。H4 q1数値PASS、全RPE未資格。
+
+## Track C compiler A 18round
+
+`../trottertracks/track_c_compiler_a_18round.py`、runner `scripts/run_track_c_compiler_a_18round.py`、同moduleの`arithmetic_tests`/`verify_saved_models`、rawへの入口は[報告](../../docs/research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。全supportの構造上界を会計し、保存mean下で予算内、全RPEは未資格。

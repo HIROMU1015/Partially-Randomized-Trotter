@@ -614,3 +614,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-06 Track C compiler A：限定correctness
 
 [実装・結果・未資格事項](docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、LD3/12、h=.02・q1。人工44ケースとX/Yの全512次元operator・強baseline・負時間検証は数値PASS。control前のscalarを保持し、既にcontrolledなjoint全体の共通global phaseだけを許容する。18round native RPE・総Gは未資格。新価格/T合成0件、旧STOP保持、限定検証でmandatory STOP。
+
+## 2026-11-06 Track C compiler A：18round誤差会計
+
+[局所区間上界・全support・18round会計](docs/research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3/Full Y4 LD12、h=.02。128 basis contextと1,302局所変換を192-bit区間評価し、全36条件で保存meanモデル下の正半径・統計予算が残る。SOURCE→mean、旧数値disk、alias保証が未完のため全RPEはUNQUALIFIED。価格/T合成0件、旧STOP保全、mandatory STOP。

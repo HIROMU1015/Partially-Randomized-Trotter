@@ -172,3 +172,5 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 Track C H4の後続：[compiler誤差の静的原因調査と対処案](track_c_compiler_static_investigation_20261106/REPORT.md)（2026-11-06、基準a78054dc）。新profileの実行・採択ではなく、旧STOPを保持した静的調査。
 
 Track C H4の後続：[参照compiler Aの実装・限定correctness](track_c_compiler_a_correctness_20261106/REPORT.md)（2026-11-06、基準05d9c5d）。人工44ケース・H4 q1全operatorとX/Y・強baseline・負時間は数値PASS。全RPE未資格、価格追加なしでSTOP。
+
+Track C H4の後続：[compiler Aの18round局所区間上界・全support誤差会計](track_c_compiler_a_18round_qualification_20261106/REPORT.md)（基準f45e9b07）。全36条件で条件付き予算は残る。SOURCE→mean等の保証は未完、全RPEはUNQUALIFIED、追加価格なしでSTOP。

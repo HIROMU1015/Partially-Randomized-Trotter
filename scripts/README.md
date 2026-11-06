@@ -157,3 +157,7 @@ artifacts/<validation_name>/
 ## Track C compiler A correctness
 
 `run_track_c_compiler_a_correctness.py`は読み取り専用`--common-cache`と新規`--out`で限定suiteを実行する入口。compiler/人工test/結果は[報告](../docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)を参照。完了出力のSTOPを再開しない。追加実行には科学実行許可が必要。
+
+## Track C compiler A 18round
+
+`run_track_c_compiler_a_18round.py`は128局所context・区間上界・36行会計の限定入口。新しいoutputと明示実行許可が必要。[SOURCE・人工算術検査・評価器照合・結果](../docs/research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。旧44ケースやq1 suite、価格runnerは再実行しない。
