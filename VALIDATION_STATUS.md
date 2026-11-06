@@ -719,3 +719,11 @@ N2のb_state≤7.81e-7を再利用し、実gateのδ*/列長/Eと総b_engineはU
 新規22＋既存24の人工/mock46件PASS。実入力はbyte/identity照合のみで、実state作用/Born・RNG/測定・full build/compile・variance/N/費用等の新科学callは0。
 1024無条件trainでg2/g3を十分学習できるとは置かず、3-control維持・5層×64 conditional train/axisを推奨案とした。ε_axis=1/8、同時α=1/20、cal512/cell/axis、prod≤8192/method/axis、D_CV≤4を含む全新条件は未採択。
 N3には条件の採択と有限測定/real-state/Born/必要compileへの別明示許可が必要。CV改善・期待費用改善は未評価。旧SOURCE/結果/STOP・元main・C1凍結を保全し、今回の公開照合後mandatory STOPする。
+
+
+## 2026-11-06 A1 N3：推奨条件を採択・一campaignを許可
+
+[実行仕様](docs/research/o2_a1_n3_science_20261106/EXECUTION.md)の一条件4方式×X/Yをユーザーが明示許可した。保存H4/1.00 Å/STO-3G/legacy DF12/8qubit/全4電子sector/L_D3、m0/q1/δ.02/r1/K2/coefficient_atol0、N1 actual Q/selected policyとN2保証ground・認証済みexact engineを維持する。
+固定a167effの推奨ε_axis=1/8・同時α=1/20・A1五層×64 train/axis・B1各層64 pilot/axis・cal512/cell・prod≤8192/method/axis・D_CV≤4・直接conditional・seed20261106/J8を採択。1/32は不採択。
+最小driver/serializer、追加人工11件PASS、旧人工46件再利用、SOURCE/環境/inputの静的lockを準備した。ここまで科学campaign開始0、実state作用/Born/RNG/測定/価格0。
+一回のみの取得を公開SOURCEから実行し、最初のSTOP条件または完了後、結果保全・公開照合してmandatory STOP。元main・旧SOURCE/結果/STOPとC1凍結は保全する。

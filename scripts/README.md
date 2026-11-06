@@ -189,3 +189,6 @@ A1の[一回の総engine誤差認証・全gate証明・STOP](../docs/research/o2
 
 
 A1 N3の[技術接続・科学条件草案](../docs/research/o2_a1_n3_connection_20261106/REPORT.md)：`a1_n3_connection.py`、人工専用runner/test、保存証拠への入口。人工46件PASS、実科学0・未採択・公開後STOP。
+
+
+A1 N3の[採択済み一campaign・SOURCE/実行仕様](../docs/research/o2_a1_n3_science_20261106/EXECUTION.md)：追加driver/test、固定exact engine・実call境界・保存とmandatory STOP。
