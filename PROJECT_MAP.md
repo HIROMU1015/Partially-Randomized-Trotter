@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D C4価格モデル準備](docs/research/track_d_c4_price_model_preparation_20261106/REPORT.md)：保存q1/2/4/8の条件差、whole-pathとfenced kernel会計の境界、全law期待価格・共分散・長q holdoutの不足と最小実行案。静的調査のみ、科学実行・実装変更なし、公開後mandatory STOP。
+
 [C3 q4/q8補完結果](docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。
 
 [C3保存回路の中断補完PLAN](docs/research/track_d_c3_q4_q8_20261106/COMPLETION_PLAN.md)：run02の8 compile・7 postcheckを保持し、最後のq8 Reference Y postcheckと最終照合のみを別出力で実施。回路再生成・再compileなし。
