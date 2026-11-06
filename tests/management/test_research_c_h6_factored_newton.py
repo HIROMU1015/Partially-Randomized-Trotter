@@ -62,3 +62,16 @@ def test_weak_direction_retained_without_normal_equation_loss():
 def test_exhaustion_is_not_reported_as_success():
     result = newton.solve(chart('PR'), maxiter=1)
     assert not result.success and result.status == 1
+
+
+def test_actual_scipy_flat_value_zero_division_retains_last_point(monkeypatch):
+    c = chart('ENTRY')
+    original = c.centered
+    # The real SciPy1.14.1 interpolation, not a mocked exception: a rounded
+    # constant value and the nonzero derivative reproduce the observed crash.
+    monkeypatch.setattr(c, 'centered', lambda z: (0., original(z)[1]))
+    result = newton.solve(c)
+    assert not result.success and result.status == 2 and result.nit == 0
+    assert 'ZeroDivisionError' in result.line_search_error
+    np.testing.assert_array_equal(result.x, np.zeros(c.dimension))
+    np.testing.assert_array_equal(result.jac, c.vg(result.x)[1])

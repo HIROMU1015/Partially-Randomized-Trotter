@@ -47,3 +47,11 @@ ENTRYはcone19/20反復で`Solved`を返したが、J norm約7.77e4、extended J
 Codex：Armijoの技術的例外を別SOURCEで失敗扱いへ修正し、人工回帰を行う。ENTRYの適格化は未完了として残す。
 
 ユーザー：この証拠を踏まえ、ENTRYの高精度表現を含む追加の限定診断を行うか判断する。現状で頑健性6本を再投入しても、両armが適格になる根拠はない。重要科学レビューは実施していない。
+
+## 後続のArmijo技術修正（科学再実行なし）
+
+停止済み診断は[公開固定commit f97c2257](https://github.com/HIROMU1015/Partially-Randomized-Trotter/commit/f97c2257d131c6196601803ed442ed87a7708ae6)で保全した。別worktreeの`c_h6_factored_newton.py`で、SciPy補間内のZeroDivisionErrorをstatus2の探索失敗として返し、最後の受理点とそのjacを保持するよう修正した。成功や物理適格へ自動分類しない。丸め後のJが動かない場合のmessageも、物理gateの結論と探索終了を区別する表現へ改めた。
+
+実際のSciPy関数へ定数値と非零導関数を与えて例外を再現する回帰を追加し、新QR7件＋既存conditioning15件＋小次元conic4件＝26件PASS。既知の同次元収束目標2件はこの技術回帰から除外し、前述の2件FAILを未解決として保持している。[技術検証記録](../../artifacts/research_c_h6_linesearchfix/2026-11-06/technical/verification.json)。修正後の実H6再計算は行っていない。元の26件の回路部分空間検査やprice評価には進んでいない。
+
+次の判断：ENTRYは元のJ閾値を満たしておらず、両armの頑健性6本の再投入は未実施。係数の高精度表現等を検証する場合、[固定契約の数値条件](research_c_h6_stablemetric_contract_20261106.json)が規定するactual binary64 array・独立受理gateとの違いを別条件として明記し、適用範囲を判断する。既存gateを黙って外すことはしない。

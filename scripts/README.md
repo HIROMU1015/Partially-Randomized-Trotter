@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：H6固定U solverの限定診断（2026-11-06）
+
+[trust-region観測・QR Newton・同値な二次錐形式・技術修正](../docs/research/research_c_h6_trustmodel_diagnosis_20261106.md)。`diagnose_research_c_h6_trustmodel.py`／`run_research_c_h6_factored_diagnostic.py`／`run_research_c_h6_conic_diagnostic.py`、`c_h6_factored_newton.py`／`c_h6_conic_diagnostic.py`と対応test。PRの固定U gateは満たすがENTRY未適格、同次元人工例2件未達。全6本・PF/nativeは再投入していない。
+
 ## 研究C：H6統合runner完成・科学実行直前準備（2026-11-06）
 
 [接続実装・人工E2E・固定SOURCE・実行条件](../docs/research/research_c_h6_runner_completion_20261106.md)。`run_research_c_h6.py`を接続し、採用済みrank14/LD4/C0・selection32/final128・subset26条件を維持。execution_ready=true、scientific_execution_authorized=false。実H6科学0、公開照合後MANDATORY STOP。以下の未接続の記述は前段時点の履歴。

@@ -9,7 +9,7 @@ from scipy.linalg import qr, solve_triangular
 from scipy.optimize import OptimizeResult
 from scipy.optimize._linesearch import scalar_search_armijo
 
-VERSION = 'H6_factored_Newton_QR_Armijo_diagnostic_v1'
+VERSION = 'H6_factored_Newton_QR_Armijo_diagnostic_v2_safe_failure'
 
 
 def factor(chart, z):
@@ -68,6 +68,7 @@ def solve(chart, *, maxiter=1000, gtol=1e-13, record=lambda *a: None):
         return chart.centered(point)[0]
     current = value(z)
     status, message = 1, 'Maximum number of iterations reached.'
+    line_search_error = None
     for iteration in range(maxiter):
         D, gradient, rhs = factor(chart, z)
         if np.linalg.norm(np.asarray(gradient, float)) < gtol:
@@ -78,8 +79,16 @@ def solve(chart, *, maxiter=1000, gtol=1e-13, record=lambda *a: None):
         if not np.isfinite(step).all() or not np.isfinite(slope) or slope >= 0:
             status, message = 2, 'Factored Newton direction is not a finite descent direction.'
             break
-        alpha, proposed = scalar_search_armijo(
-            lambda a: value(z+a*step), current, slope, alpha0=1.)
+        try:
+            alpha, proposed = scalar_search_armijo(
+                lambda a: value(z+a*step), current, slope, alpha0=1.)
+        except ZeroDivisionError as exc:
+            # SciPy1.14.1's cubic interpolation divides by zero for a flat
+            # rounded objective with a nonzero supplied derivative. Preserve
+            # the last accepted point and expose search failure to the gates.
+            line_search_error = repr(exc)
+            status, message = 2, 'Armijo interpolation failed (ZeroDivisionError); last accepted point retained.'
+            break
         if alpha is None or alpha <= 0 or not np.isfinite(proposed):
             status, message = 2, 'Armijo search failed.'
             break
@@ -88,7 +97,7 @@ def solve(chart, *, maxiter=1000, gtol=1e-13, record=lambda *a: None):
         # Avoid hundreds of numerically identical iterations. This is a failed
         # search, never evidence that the physical stationarity gate passed.
         if np.array_equal(chart.point(next_z)[1], chart.point(z)[1]):
-            status, message = 2, 'Binary64 coefficient point did not change; endpoint remains unqualified.'
+            status, message = 2, 'Binary64 coefficient point did not change; independent physical gates still required.'
             break
         predicted = -float(gradient@displacement + .5*np.sum((D@displacement)**2))
         actual = current-proposed
@@ -103,4 +112,5 @@ def solve(chart, *, maxiter=1000, gtol=1e-13, record=lambda *a: None):
     endpoint = chart.vg(z)[1]
     return OptimizeResult(x=z, fun=current, jac=endpoint, nit=len(trace),
         nfev=evaluations, nhev=len(trace), status=status, success=status==0,
-        message=message, iteration_trace=trace, method=VERSION)
+        message=message, iteration_trace=trace, method=VERSION,
+        line_search_error=line_search_error)
