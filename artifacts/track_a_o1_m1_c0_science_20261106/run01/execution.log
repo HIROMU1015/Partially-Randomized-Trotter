@@ -1,0 +1,67 @@
+signal round m=0 q=1
+signal round m=1 q=2
+signal round m=2 q=4
+signal round m=3 q=8
+signal round m=4 q=16
+signal round m=5 q=32
+signal round m=6 q=64
+strong baseline round m=0 q=1
+strong baseline round m=1 q=2
+strong baseline round m=2 q=4
+strong baseline round m=3 q=8
+strong baseline round m=4 q=16
+strong baseline round m=5 q=32
+strong baseline round m=6 q=64
+price round m=0 q=1 arm=P
+price round m=0 q=1 arm=DF
+price round m=0 q=1 arm=strong_DF_PF
+price round m=1 q=2 arm=P
+price round m=1 q=2 arm=DF
+price round m=1 q=2 arm=strong_DF_PF
+price round m=2 q=4 arm=P
+price round m=2 q=4 arm=DF
+price round m=2 q=4 arm=strong_DF_PF
+price round m=3 q=8 arm=P
+price round m=3 q=8 arm=DF
+price round m=3 q=8 arm=strong_DF_PF
+price round m=4 q=16 arm=P
+price round m=4 q=16 arm=DF
+price round m=4 q=16 arm=strong_DF_PF
+price round m=5 q=32 arm=P
+price round m=5 q=32 arm=DF
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/scripts/run_o1_m1_c0_pilot.py", line 250, in <module>
+    if __name__=='__main__': raise SystemExit(main())
+                                              ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/scripts/run_o1_m1_c0_pilot.py", line 246, in main
+    result=run(args.input.resolve(),args.output_dir.resolve())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/scripts/run_o1_m1_c0_pilot.py", line 217, in run
+    cost=provider.monte_carlo(p,config,distribution,q=q,sample_count=32,seed=2026110600+100*arm_index+m)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/src/trotterlib/o1_m1_resource_bridge.py", line 268, in monte_carlo
+    pair = _compile_pair(build_controlled_trajectory(preparation, config, distribution,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/src/trotterlib/o1_m1_resource_bridge.py", line 176, in _compile_pair
+    fp = canonical_qiskit_circuit_fingerprint(wrapper)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/src/trotterlib/rte_compiled_cost.py", line 378, in canonical_qiskit_circuit_fingerprint
+    payload = _circuit_payload(circuit)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/src/trotterlib/rte_compiled_cost.py", line 354, in _circuit_payload
+    "operation": _operation_payload(
+                 ^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-c0-science-20261106/src/trotterlib/rte_compiled_cost.py", line 318, in _operation_payload
+    definition = getattr(operation, "definition", None)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-minimal-implementation-20261106/.venv/lib/python3.12/site-packages/qiskit/circuit/instruction.py", line 329, in definition
+    self._define()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-minimal-implementation-20261106/.venv/lib/python3.12/site-packages/qiskit/circuit/library/standard_gates/xx_plus_yy.py", line 156, in _define
+    (RZGate(-pi / 2), [q[1]], []),
+     ^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-minimal-implementation-20261106/.venv/lib/python3.12/site-packages/qiskit/circuit/library/standard_gates/rz.py", line 72, in __init__
+    super().__init__("rz", 1, [phi], label=label, duration=duration, unit=unit)
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/track-a-o1-m1-minimal-implementation-20261106/.venv/lib/python3.12/site-packages/qiskit/circuit/gate.py", line 28, in __init__
+    def __init__(
+
+KeyboardInterrupt
