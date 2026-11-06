@@ -108,3 +108,10 @@ requirementsのversion pinと同じversion表記だけでは、原binary環境�
 
 公開済み資料への参照と非識別的な結果に絞った[公開要約](REPORT_PUBLIC.md)を別branchへ保存した。公開commitは`0a4ea78f7af60cd405787f98c33d25798d468461`、本文8件とtreeを照合済み。元一式を含むlocal commitは公開branchの祖先ではない。
 詳細証拠一式はlocalに保管する。全証拠の公開にはその搬出への明示許可を待つ。科学再実行の許可とは別である。
+
+
+## 同日：明示許可後の詳細公開
+
+ユーザーが未公開checkpoint抜粋・内部path・環境詳細を含む一式の公開を明示許可したため、詳細証拠を専用branch `codex/o2-a1-opt2-provenance-20261106` へ公開した。初回詳細公開commitは `89ebffaabc52e114467c31f061065195ecda37f1`。保存済み23ファイルの本文・blobとlocal/remote treeの一致を照合した。前段の公開保留は解消している。
+
+この追記とPUBLICATION_STATUS/manifestの公開状態更新だけを追加し、科学計算は再実行していない。旧SOURCE・raw・STOP、元main、C1凍結を維持し、公開照合後mandatory STOPする。
