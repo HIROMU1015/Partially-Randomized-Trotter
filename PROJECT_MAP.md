@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C・保存CDF8/XDF8強DへのLD2線形Z再配置：[技術準備・人工full512・未承認2候補契約](docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。adapterは`src/trottertracks/c_h4_strong_d_relocation.py`、runnerは`c_h4_strong_d_relocation_execution.py`、人工testは`tests/management/test_research_c_h4_strong_d_relocation.py`、証拠は`artifacts/research_c_h4_strong_d_relocation/2026-11-07/technical/`。実H4の新規PF/RPE/native評価は未実行。
+
 研究C・再配置後の下流完了：[主比較A/BでENTRY低費用、800標本・一回の引継ぎ・STOP](docs/research/research_c_h4_relocated_downstream_results_20261106.md)。旧条件のPR優位を新辞書へ流用せず、P/r16の個別診断未解決も維持する。
 
 研究Cのnative並列化：独立spawn worker・読み取り専用mmap・同一標本処理を使う[技術報告](docs/research/research_c_h4_native_process_preparation_20261106.md)。人工入力だけで速度・全512検査を確認。既存固定SOURCEの実行は継続し、新backendの実H4実行は0。

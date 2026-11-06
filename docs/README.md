@@ -1,5 +1,7 @@
 # 文書索引
 
+研究C・保存CDF8/XDF8強Dの線形Z再配置：[技術準備・人工full512検査・未承認2候補契約](research/research_c_h4_strong_d_relocation_preparation_20261107.md)。実H4の新規科学計算は未実行。
+
 研究C H4再配置下流の結果：[共通r32・公平r16・全512検査・800標本・STOP](research/research_c_h4_relocated_downstream_results_20261106.md)。
 
 研究C H4計算の一回の高速化引継ぎ：[保全・元乱数系列・129人工回帰・実行条件](research/research_c_h4_handoff_20261106.md)。

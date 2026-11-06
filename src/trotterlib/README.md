@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究Cの保存強D再配置adapterは`trottertracks/c_h4_strong_d_relocation.py`、固定2候補runnerは`c_h4_strong_d_relocation_execution.py`。既存number-CAR、XDF signed-square/spin-lift、StrongBuilder、PF/RPEと会計を再利用。[技術準備と人工検証](../../docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。実H4実行は別許可。
+
 研究C nativeのopt-in process backendは `trottertracks/c_native_process.py`。`c_native_sample.py` の同じ標本本体を既存thread経路と共有する。[人工検証と速度比較](../../docs/research/research_c_h4_native_process_preparation_20261106.md)。
 
 H4再配置後の接続は `trottertracks/c_h4_relocated_downstream.py` / `c_h4_relocated_execution.py`。既存number-CAR・PF/RTE/RPE・native・Dエンジンを再利用するopt-in経路。実科学実行は別許可。[技術報告](../../docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。

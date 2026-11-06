@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_research_c_h4_strong_d_relocation.py`：保存CDF8/XDF8強Dの固定LD2再配置。既定はbyte-only preflight、`--execute`は別途科学実行許可後だけ使用する。[人工検証・未承認契約・規模](../docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。今回の実H4評価は0。
+
 native高速化の人工benchmark：`benchmark_research_c_native_process.py --output <fresh-dir> --samples 8 --r 32`。保存分子入力を使わず旧threadとspawnを比較する。`check_research_c_h4_relocated_downstream.py --contract docs/research/research_c_h4_native_process_contract_unapproved_20261106.json` は新SOURCEのpassive preflight。[技術報告](../docs/research/research_c_h4_native_process_preparation_20261106.md)。
 
 H4再配置後の下流技術準備：`check_research_c_h4_relocated_downstream.py` はSOURCE/入力bytes/fresh outputだけのpassive preflight。科学起動optionなし。[技術報告](../docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。
