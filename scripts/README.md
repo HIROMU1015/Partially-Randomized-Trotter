@@ -181,3 +181,5 @@ artifacts/<validation_name>/
 既存公開リストを使い、固定commitの文書・SOURCE・小さなmetadataのbytesを読み取り専用で確認する。
 使い方・対象外ファイル・原検証との違いは[固定commit参照の案内](../docs/research/branch_reference_navigation_20261103.md#削除したbranchへ問い合わせない公開bytes確認)を参照する。
 科学runnerや原結果の再解析は実行しない。
+
+[Track D C7-1 q16](run_track_d_c7_1_q16.py)：[固定PLAN](../docs/research/track_d_c7_1_q16_20261107/PLAN.md)の16 fresh whole-path・raw PASS後最大64 P0 wrapperだけ。凍結C6aモデル/CX残差、既存高速化再利用、公開後mandatory STOP。通常testから分子実行しない。

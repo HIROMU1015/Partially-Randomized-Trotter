@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C7-1実行前PLAN](research/track_d_c7_1_q16_20261107/PLAN.md)：独立q16/cut8/16 path、凍結モデル・新seed、raw gateと最大64 P0 wrapperの探索的paired検証。旧SOURCE/STOP保全、原本ローカル、公開照合後mandatory STOP。
+
 [Track D C7-0構造解析](research/track_d_c7_0_structural_preparation_20261107/REPORT.md)／[C7-1以降の条件案](research/track_d_c7_0_structural_preparation_20261107/C7_1_EXECUTION_DRAFT.md)：保存q2/4/8とSOURCEの静的調査。CXの条件付き構造、RZ/size、DAG/lane、estimand/校正/biasと最小q16案。新科学計算・再解析・実装・テストなし、全path/長q/全RPE未資格、公開照合後mandatory STOP。
 
 [Track D C6b](research/track_d_c6b_q8_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1/q8/cut4、独立domainの32 path。元H厳密ground仮定・準備費除外。SOURCE44a58b9fへ承認済み限定引継ぎ、raw32・postcheck128・pairedχ32 PASS。一次frozen条件付き12量は探索的幅内、別population-line診断4量は幅外。統計未資格、全law/長q/N/全RPE未評価、raw非公開、mandatory STOP。
