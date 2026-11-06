@@ -188,3 +188,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [全18roundの条件付き復元・SOURCE・STOP](docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。
 既存decoderを無変更で使用し、元H energyは復元後のcorrectness参照のみ。95%測定成功・shot・価格は未評価。
+
+## B2 P1の全18round shot会計（2026-11-07）
+
+[条件付き十分shot数・SOURCE・STOP](docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。
+保存実半径/diskからX/Y各3,902,892、計7,805,784 shots。実機95%・厳密実装保証・価格・総費用は未評価。

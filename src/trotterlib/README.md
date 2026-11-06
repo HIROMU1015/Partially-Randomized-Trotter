@@ -131,3 +131,5 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_remaining_rounds.py`は保存law・mean-only projectionでm1..16へ限定接続する。[結果・範囲](../../docs/research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)。共有`evaluate_signal_round`を再利用し、回路preparation/controlled buildを呼ばない。
 
 `b2_p1_branch_validation.py`はraw平均だけの既存decoder接続と復元後のenergy correctness。[結果・来歴・未保証事項](../../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。decoderとbranch閾値は不変更。
+
+`b2_p1_shot_accounting.py`は既存`B2SignalRecord.bounds`/`account_radius_round`を使う保存JSON adapterと整数集計。[条件付きshot数・未保証範囲](../../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。新signal/branch/price計算なし。
