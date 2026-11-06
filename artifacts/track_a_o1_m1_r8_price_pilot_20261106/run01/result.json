@@ -1,0 +1,891 @@
+{
+  "arms": {
+    "DF": {
+      "component_count": 370,
+      "config": {
+        "dimensionless_step_time": 0.11502103176291567,
+        "distribution_normalization": 1.013212962831578,
+        "evolution_time": 0.05,
+        "finite_taylor_order": 2,
+        "lambda_r": 18.403365082066507,
+        "numpy_version": "1.26.4",
+        "prng_type": "numpy.random.PCG64",
+        "rte_steps": 8,
+        "sampling_convention_version": "rte_order_then_components_v2",
+        "seed": 0,
+        "step_time": 0.00625,
+        "tail_hash": "21681dd9d2586b47a1a74162ceaf27f4303eeaf5d9fc32857df415b592245611",
+        "tail_id": "M1_A_V_square",
+        "taylor_distribution": "rte_even_taylor_paired",
+        "truncation_residual_bound": 7.463894769206107e-06,
+        "truncation_tolerance": 7.4638947692061075e-06
+      },
+      "context_hash": "7a5bb322878f5b6480f93d4bc9b5150f75c51a555fd71873f8e3fc2c3a28c648",
+      "distribution": {
+        "dimensionless_step_time": 0.11502103176291567,
+        "exact_finite_distribution": 1.013212962831578,
+        "finite_taylor_order": 2,
+        "order_probabilities": [
+          0.9934665472738015,
+          0.006533452726198638
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "paper_upper_bound": 1.013317739264411,
+        "truncation_residual_bound": 7.463894769206107e-06,
+        "unnormalized_order_weights": [
+          1.0065931838373463,
+          0.006619778994231773
+        ]
+      },
+      "execution": {
+        "configured_workers": 15,
+        "granularity": "axis",
+        "memory_probe": {
+          "available_memory_kb": 511588328,
+          "memory_peak_multiplier": 2,
+          "pilot_peak_rss_kb": 4443756
+        },
+        "numerical_threads_per_worker": 1,
+        "reduction": "submission order",
+        "start_method": "spawn",
+        "task_count": 16,
+        "worker_pids": [
+          2394474,
+          2396398,
+          2396401,
+          2396402,
+          2396403,
+          2396404,
+          2396405,
+          2396406,
+          2396407,
+          2396408,
+          2396409,
+          2396410,
+          2396411,
+          2396412,
+          2396413,
+          2396414
+        ]
+      },
+      "law_hash": "3604aa2675719c8e21f9fabff65b036e0473d14be976bbfa373da0e47751b09c",
+      "preparation_hash": "4ba2466c786301bc76541ee9b64d424b8892b9608cdc00c5fd89bd3341102520",
+      "price": {
+        "circuit_cost_scope": "single_hadamard_interrogation_without_state_preparation",
+        "classical_sample_count": 8,
+        "cosine_expected_cost": {
+          "circuit_size": 137760.12500000003,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 24313.25,
+          "cx_depth": 11479.875,
+          "estimate_kind": "fresh_iid_matched_full_no_prep_monte_carlo",
+          "fidelity_level": 5,
+          "rz_count": 72943.37500000001,
+          "rz_depth": 16836.25,
+          "total_depth": 36428.125
+        },
+        "cosine_standard_error": {
+          "circuit_size": 2184.8108404349664,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 356.10350371365746,
+          "cx_depth": 163.27337258851665,
+          "estimate_kind": "compiled_cost_standard_error",
+          "fidelity_level": 5,
+          "rz_count": 1149.652912489865,
+          "rz_depth": 272.2353072252018,
+          "total_depth": 584.8655962056582
+        },
+        "cost_model_fingerprint": "15cfd1b610d0f29b45a9b44c35af5989c6571d72cdd31c89ee8a86fa4bb2de19",
+        "evaluation_method": "fresh_iid_matched_full_no_prep_monte_carlo",
+        "metadata": [
+          [
+            "context_hash",
+            "7a5bb322878f5b6480f93d4bc9b5150f75c51a555fd71873f8e3fc2c3a28c648"
+          ],
+          [
+            "arm_hash",
+            "4ba2466c786301bc76541ee9b64d424b8892b9608cdc00c5fd89bd3341102520"
+          ],
+          [
+            "q",
+            64
+          ],
+          [
+            "delta_time",
+            0.05
+          ],
+          [
+            "law_hash",
+            "3604aa2675719c8e21f9fabff65b036e0473d14be976bbfa373da0e47751b09c"
+          ],
+          [
+            "backend_hash",
+            "no_backend"
+          ],
+          [
+            "state_preparation_included",
+            false
+          ],
+          [
+            "classical_price_seed",
+            2026110613
+          ],
+          [
+            "fresh_events_per_trajectory",
+            512
+          ],
+          [
+            "paired_axes",
+            true
+          ],
+          [
+            "price_uncertainty",
+            "sample_SE_only; no confidence interval"
+          ]
+        ],
+        "sine_expected_cost": {
+          "circuit_size": 137760.12500000003,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 24313.25,
+          "cx_depth": 11479.875,
+          "estimate_kind": "fresh_iid_matched_full_no_prep_monte_carlo",
+          "fidelity_level": 5,
+          "rz_count": 72943.37500000001,
+          "rz_depth": 16836.25,
+          "total_depth": 36428.125
+        },
+        "sine_standard_error": {
+          "circuit_size": 2184.8108404349664,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 356.10350371365746,
+          "cx_depth": 163.27337258851665,
+          "estimate_kind": "compiled_cost_standard_error",
+          "fidelity_level": 5,
+          "rz_count": 1149.652912489865,
+          "rz_depth": 272.2353072252018,
+          "total_depth": 584.8655962056582
+        }
+      },
+      "raw_prices": [
+        {
+          "cosine": {
+            "circuit_size": 131171,
+            "cx_count": 23351,
+            "cx_depth": 11117,
+            "rz_count": 69689,
+            "rz_depth": 16246,
+            "total_depth": 35063
+          },
+          "sine": {
+            "circuit_size": 131171,
+            "cx_count": 23351,
+            "cx_depth": 11117,
+            "rz_count": 69689,
+            "rz_depth": 16246,
+            "total_depth": 35063
+          },
+          "trajectory": 0
+        },
+        {
+          "cosine": {
+            "circuit_size": 145799,
+            "cx_count": 25678,
+            "cx_depth": 12151,
+            "rz_count": 77209,
+            "rz_depth": 17905,
+            "total_depth": 38711
+          },
+          "sine": {
+            "circuit_size": 145799,
+            "cx_count": 25678,
+            "cx_depth": 12151,
+            "rz_count": 77209,
+            "rz_depth": 17905,
+            "total_depth": 38711
+          },
+          "trajectory": 1
+        },
+        {
+          "cosine": {
+            "circuit_size": 141959,
+            "cx_count": 25034,
+            "cx_depth": 11790,
+            "rz_count": 75237,
+            "rz_depth": 17395,
+            "total_depth": 37585
+          },
+          "sine": {
+            "circuit_size": 141959,
+            "cx_count": 25034,
+            "cx_depth": 11790,
+            "rz_count": 75237,
+            "rz_depth": 17395,
+            "total_depth": 37585
+          },
+          "trajectory": 2
+        },
+        {
+          "cosine": {
+            "circuit_size": 132559,
+            "cx_count": 23473,
+            "cx_depth": 11116,
+            "rz_count": 70148,
+            "rz_depth": 16200,
+            "total_depth": 35079
+          },
+          "sine": {
+            "circuit_size": 132559,
+            "cx_count": 23473,
+            "cx_depth": 11116,
+            "rz_count": 70148,
+            "rz_depth": 16200,
+            "total_depth": 35079
+          },
+          "trajectory": 3
+        },
+        {
+          "cosine": {
+            "circuit_size": 140748,
+            "cx_count": 24778,
+            "cx_depth": 11732,
+            "rz_count": 74471,
+            "rz_depth": 17178,
+            "total_depth": 37186
+          },
+          "sine": {
+            "circuit_size": 140748,
+            "cx_count": 24778,
+            "cx_depth": 11732,
+            "rz_count": 74471,
+            "rz_depth": 17178,
+            "total_depth": 37186
+          },
+          "trajectory": 4
+        },
+        {
+          "cosine": {
+            "circuit_size": 131953,
+            "cx_count": 23266,
+            "cx_depth": 10932,
+            "rz_count": 69778,
+            "rz_depth": 15965,
+            "total_depth": 34599
+          },
+          "sine": {
+            "circuit_size": 131953,
+            "cx_count": 23266,
+            "cx_depth": 10932,
+            "rz_count": 69778,
+            "rz_depth": 15965,
+            "total_depth": 34599
+          },
+          "trajectory": 5
+        },
+        {
+          "cosine": {
+            "circuit_size": 144825,
+            "cx_count": 25393,
+            "cx_depth": 11899,
+            "rz_count": 76603,
+            "rz_depth": 17628,
+            "total_depth": 38173
+          },
+          "sine": {
+            "circuit_size": 144825,
+            "cx_count": 25393,
+            "cx_depth": 11899,
+            "rz_count": 76603,
+            "rz_depth": 17628,
+            "total_depth": 38173
+          },
+          "trajectory": 6
+        },
+        {
+          "cosine": {
+            "circuit_size": 133067,
+            "cx_count": 23533,
+            "cx_depth": 11102,
+            "rz_count": 70412,
+            "rz_depth": 16173,
+            "total_depth": 35029
+          },
+          "sine": {
+            "circuit_size": 133067,
+            "cx_count": 23533,
+            "cx_depth": 11102,
+            "rz_count": 70412,
+            "rz_depth": 16173,
+            "total_depth": 35029
+          },
+          "trajectory": 7
+        }
+      ],
+      "required_price_display": 6.292396396272071,
+      "saved_required_price": {
+        "denominator": 260287907,
+        "numerator": 1637834688
+      },
+      "saved_shots": {
+        "cosine": 780863721,
+        "sine": 780863721
+      },
+      "statistics": {
+        "sample_mean_below_necessary_ceiling": false,
+        "shot_weighted_mean": 24313.25,
+        "shot_weighted_mean_fraction": {
+          "denominator": 4,
+          "numerator": 97253
+        },
+        "shot_weighted_sample_SE": 356.10350371365746,
+        "uncertainty": "paired sample SE only; no confidence interval"
+      },
+      "status": "PILOT_COMPLETE"
+    },
+    "P": {
+      "component_count": 185,
+      "config": {
+        "dimensionless_step_time": 0.11661672825131729,
+        "distribution_normalization": 1.013581634444875,
+        "evolution_time": 0.05,
+        "finite_taylor_order": 2,
+        "lambda_r": 18.658676520210765,
+        "numpy_version": "1.26.4",
+        "prng_type": "numpy.random.PCG64",
+        "rte_steps": 8,
+        "sampling_convention_version": "rte_order_then_components_v2",
+        "seed": 0,
+        "step_time": 0.00625,
+        "tail_hash": "b81ff874c0b6029f6ff71b89c23bbaf85afbebeb1b349c8ecde806e99aa1770e",
+        "tail_id": "M1_matched_P",
+        "taylor_distribution": "rte_even_taylor_paired",
+        "truncation_residual_bound": 7.889339502169177e-06,
+        "truncation_tolerance": 7.889339502169179e-06
+      },
+      "context_hash": "7a5bb322878f5b6480f93d4bc9b5150f75c51a555fd71873f8e3fc2c3a28c648",
+      "distribution": {
+        "dimensionless_step_time": 0.11661672825131729,
+        "exact_finite_distribution": 1.013581634444875,
+        "finite_taylor_order": 2,
+        "order_probabilities": [
+          0.9932863167067159,
+          0.006713683293284111
+        ],
+        "orders": [
+          0,
+          2
+        ],
+        "paper_upper_bound": 1.013692354603911,
+        "truncation_residual_bound": 7.889339502169177e-06,
+        "unnormalized_order_weights": [
+          1.0067767683593227,
+          0.00680486608555216
+        ]
+      },
+      "execution": {
+        "configured_workers": 15,
+        "granularity": "axis",
+        "memory_probe": {
+          "available_memory_kb": 511704316,
+          "memory_peak_multiplier": 2,
+          "pilot_peak_rss_kb": 1343612
+        },
+        "numerical_threads_per_worker": 1,
+        "reduction": "submission order",
+        "start_method": "spawn",
+        "task_count": 16,
+        "worker_pids": [
+          2394475,
+          2394915,
+          2394918,
+          2394919,
+          2394920,
+          2394921,
+          2394922,
+          2394923,
+          2394924,
+          2394925,
+          2394926,
+          2394927,
+          2394928,
+          2394929,
+          2394930,
+          2394931
+        ]
+      },
+      "law_hash": "564b18ef1844aa81772be3305aedd77187262aae505ed46f089a27c99239fa67",
+      "preparation_hash": "c1cb9181761c04ab6d8bc5f6f2d5d5203783abb5ed8bfdbf50d030a1b0ae97d8",
+      "price": {
+        "circuit_cost_scope": "single_hadamard_interrogation_without_state_preparation",
+        "classical_sample_count": 8,
+        "cosine_expected_cost": {
+          "circuit_size": 56662.375,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 14280.375,
+          "cx_depth": 10288.75,
+          "estimate_kind": "fresh_iid_matched_full_no_prep_monte_carlo",
+          "fidelity_level": 5,
+          "rz_count": 29785.5,
+          "rz_depth": 10846.75,
+          "total_depth": 24070.624999999996
+        },
+        "cosine_standard_error": {
+          "circuit_size": 748.2385968177912,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 237.56081458228758,
+          "cx_depth": 217.23512196301434,
+          "estimate_kind": "compiled_cost_standard_error",
+          "fidelity_level": 5,
+          "rz_count": 375.76954373658333,
+          "rz_depth": 223.97088060090064,
+          "total_depth": 498.1670666947848
+        },
+        "cost_model_fingerprint": "ab048c31cdc6b97e375a3e60e06a4a77efb213fef398ee6721a1459cda1ed9fc",
+        "evaluation_method": "fresh_iid_matched_full_no_prep_monte_carlo",
+        "metadata": [
+          [
+            "context_hash",
+            "7a5bb322878f5b6480f93d4bc9b5150f75c51a555fd71873f8e3fc2c3a28c648"
+          ],
+          [
+            "arm_hash",
+            "c1cb9181761c04ab6d8bc5f6f2d5d5203783abb5ed8bfdbf50d030a1b0ae97d8"
+          ],
+          [
+            "q",
+            64
+          ],
+          [
+            "delta_time",
+            0.05
+          ],
+          [
+            "law_hash",
+            "564b18ef1844aa81772be3305aedd77187262aae505ed46f089a27c99239fa67"
+          ],
+          [
+            "backend_hash",
+            "no_backend"
+          ],
+          [
+            "state_preparation_included",
+            false
+          ],
+          [
+            "classical_price_seed",
+            2026110612
+          ],
+          [
+            "fresh_events_per_trajectory",
+            512
+          ],
+          [
+            "paired_axes",
+            true
+          ],
+          [
+            "price_uncertainty",
+            "sample_SE_only; no confidence interval"
+          ]
+        ],
+        "sine_expected_cost": {
+          "circuit_size": 56662.375,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 14280.375,
+          "cx_depth": 10288.75,
+          "estimate_kind": "fresh_iid_matched_full_no_prep_monte_carlo",
+          "fidelity_level": 5,
+          "rz_count": 29785.5,
+          "rz_depth": 10846.75,
+          "total_depth": 24070.624999999996
+        },
+        "sine_standard_error": {
+          "circuit_size": 748.2385968177912,
+          "compiler": {
+            "backend_name": null,
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "coupling_map": null,
+            "layout_method": null,
+            "optimization_level": 1,
+            "qiskit_version": "1.3.0",
+            "routing_method": null,
+            "transpiler_seed": 7
+          },
+          "cx_count": 237.56081458228758,
+          "cx_depth": 217.23512196301434,
+          "estimate_kind": "compiled_cost_standard_error",
+          "fidelity_level": 5,
+          "rz_count": 375.76954373658333,
+          "rz_depth": 223.97088060090064,
+          "total_depth": 498.1670666947848
+        }
+      },
+      "raw_prices": [
+        {
+          "cosine": {
+            "circuit_size": 55368,
+            "cx_count": 13847,
+            "cx_depth": 9850,
+            "rz_count": 29157,
+            "rz_depth": 10406,
+            "total_depth": 23082
+          },
+          "sine": {
+            "circuit_size": 55368,
+            "cx_count": 13847,
+            "cx_depth": 9850,
+            "rz_count": 29157,
+            "rz_depth": 10406,
+            "total_depth": 23082
+          },
+          "trajectory": 0
+        },
+        {
+          "cosine": {
+            "circuit_size": 54539,
+            "cx_count": 13586,
+            "cx_depth": 9656,
+            "rz_count": 28691,
+            "rz_depth": 10180,
+            "total_depth": 22623
+          },
+          "sine": {
+            "circuit_size": 54539,
+            "cx_count": 13586,
+            "cx_depth": 9656,
+            "rz_count": 28691,
+            "rz_depth": 10180,
+            "total_depth": 22623
+          },
+          "trajectory": 1
+        },
+        {
+          "cosine": {
+            "circuit_size": 57447,
+            "cx_count": 14511,
+            "cx_depth": 10511,
+            "rz_count": 30176,
+            "rz_depth": 11109,
+            "total_depth": 24653
+          },
+          "sine": {
+            "circuit_size": 57447,
+            "cx_count": 14511,
+            "cx_depth": 10511,
+            "rz_count": 30176,
+            "rz_depth": 11109,
+            "total_depth": 24653
+          },
+          "trajectory": 2
+        },
+        {
+          "cosine": {
+            "circuit_size": 54387,
+            "cx_count": 13541,
+            "cx_depth": 9615,
+            "rz_count": 28630,
+            "rz_depth": 10133,
+            "total_depth": 22488
+          },
+          "sine": {
+            "circuit_size": 54387,
+            "cx_count": 13541,
+            "cx_depth": 9615,
+            "rz_count": 28630,
+            "rz_depth": 10133,
+            "total_depth": 22488
+          },
+          "trajectory": 3
+        },
+        {
+          "cosine": {
+            "circuit_size": 57194,
+            "cx_count": 14557,
+            "cx_depth": 10578,
+            "rz_count": 30102,
+            "rz_depth": 11119,
+            "total_depth": 24618
+          },
+          "sine": {
+            "circuit_size": 57194,
+            "cx_count": 14557,
+            "cx_depth": 10578,
+            "rz_count": 30102,
+            "rz_depth": 11119,
+            "total_depth": 24618
+          },
+          "trajectory": 4
+        },
+        {
+          "cosine": {
+            "circuit_size": 55633,
+            "cx_count": 13973,
+            "cx_depth": 10018,
+            "rz_count": 29273,
+            "rz_depth": 10579,
+            "total_depth": 23462
+          },
+          "sine": {
+            "circuit_size": 55633,
+            "cx_count": 13973,
+            "cx_depth": 10018,
+            "rz_count": 29273,
+            "rz_depth": 10579,
+            "total_depth": 23462
+          },
+          "trajectory": 5
+        },
+        {
+          "cosine": {
+            "circuit_size": 58058,
+            "cx_count": 14708,
+            "cx_depth": 10682,
+            "rz_count": 30471,
+            "rz_depth": 11279,
+            "total_depth": 25047
+          },
+          "sine": {
+            "circuit_size": 58058,
+            "cx_count": 14708,
+            "cx_depth": 10682,
+            "rz_count": 30471,
+            "rz_depth": 11279,
+            "total_depth": 25047
+          },
+          "trajectory": 6
+        },
+        {
+          "cosine": {
+            "circuit_size": 60673,
+            "cx_count": 15520,
+            "cx_depth": 11400,
+            "rz_count": 31784,
+            "rz_depth": 11969,
+            "total_depth": 26592
+          },
+          "sine": {
+            "circuit_size": 60673,
+            "cx_count": 15520,
+            "cx_depth": 11400,
+            "rz_count": 31784,
+            "rz_depth": 11969,
+            "total_depth": 26592
+          },
+          "trajectory": 7
+        }
+      ],
+      "required_price_display": 4.335396744008651,
+      "saved_required_price": {
+        "denominator": 188890981,
+        "numerator": 818917344
+      },
+      "saved_shots": {
+        "cosine": 1133345886,
+        "sine": 1133345886
+      },
+      "statistics": {
+        "sample_mean_below_necessary_ceiling": false,
+        "shot_weighted_mean": 14280.375,
+        "shot_weighted_mean_fraction": {
+          "denominator": 8,
+          "numerator": 114243
+        },
+        "shot_weighted_sample_SE": 237.56081458228752,
+        "uncertainty": "paired sample SE only; no confidence interval"
+      },
+      "status": "PILOT_COMPLETE"
+    }
+  },
+  "compiler": {
+    "backend_name": null,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "coupling_map": null,
+    "layout_method": null,
+    "optimization_level": 1,
+    "qiskit_version": "1.3.0",
+    "routing_method": null,
+    "transpiler_seed": 7
+  },
+  "elapsed_seconds": 263.64985892002005,
+  "finished_utc": "2026-11-06T12:08:35.158950+00:00",
+  "fixed": {
+    "K": 2,
+    "delta": 0.05,
+    "identity_policy": "faithful_identity_in_tail",
+    "metric": "cx_count",
+    "q": 64,
+    "r": 8,
+    "samples_per_arm": 8,
+    "scope": "single_hadamard_interrogation_without_state_preparation",
+    "seeds": {
+      "DF": 2026110613,
+      "P": 2026110612
+    },
+    "state_field": "state",
+    "state_preparation_included": false
+  },
+  "full_rpe_improvement": null,
+  "full_rpe_total_cost": null,
+  "guarantee_status": "not_certified",
+  "input": {
+    "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+    "local_path": "/tmp/o1_m1_r8_price_pilot_20261106_6hh9wcl5/snapshot.npz",
+    "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+    "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+  },
+  "mandatory_stop": true,
+  "mathematical_exclusion": "UNDETERMINED; sample estimates are not lower bounds",
+  "original_state_sha256": "d4432409eb6b1d4f9f9f86a3b57664d9e3c84a4fe3fe9de400d64b7ba60270af",
+  "price_confidence_interval": null,
+  "runtime": {
+    "available_cpus": 64,
+    "host": "GPUA100-gleap02",
+    "packages": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]"
+  },
+  "source": {
+    "base": "2263000e203f8b9b075f7296a9e33f34e8ea24db",
+    "baseline_commit": "50ee55bc30f30838e1ac0704bc94f720914640de",
+    "files_sha256": {
+      "scripts/run_o1_m1_c0_pilot.py": "0b6da463853bc3b6ba881cae636e6169ef751e3311e5dcc8f92d1cb42c24f8e3",
+      "scripts/run_o1_m1_r8_price_pilot.py": "48e50034370b1ae54914f60405ad75554c049de2488dcf685009790823e3d553",
+      "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+      "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+      "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "src/trotterlib/o1_m1_circuit_signal_validation.py": "b84594b4b0f63732d02e8157f83b3677e4608da3ba934fb206265dfaad29b292",
+      "src/trotterlib/o1_m1_matched_split.py": "fa9b775c887437ded5ce3f5b08bcf7a390f20f0174986dc564ec4d0ee8397c20",
+      "src/trotterlib/o1_m1_resource_bridge.py": "d1dc2c6d813873a793dadc98d31d0a3e347ca24b4b91e2c81fc1f16ebdeb064d",
+      "src/trotterlib/pauli_signal_adapter.py": "ce8a3ba3cead30d29e0f291e7ce9b6be31b82a630bc0e46cdaa2fd395427d47e",
+      "src/trotterlib/rpe_hadamard_interrogation.py": "8d00036f8e7d7ee0d3cfe738d32805885edb52e3d3e185e9f6bc8e9677b91ba7",
+      "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+      "src/trottertracks/o1_m1_parallel_price.py": "f24897a59f76456a95192d267a67e29a71a76c80f12a73fb4c0b9872b2c7a769"
+    },
+    "head": "1b64e46c7305e34c2a16aba9ac2e01256153838d",
+    "saved_shots": {
+      "commit": "c7e9587fb7398ebdab156d83abc869d82e5f42c9",
+      "path": "artifacts/track_a_o1_m1_cost_feasibility_science_20261106/run01/result.json",
+      "sha256": "4713a5b92b1bf582bc14d5785ca2c85ab59eda7ce6d4961e9e4b69572eaf890e"
+    },
+    "signal_commit": "185104f64a4594355a3813d04d9e50bd4abdb6b5"
+  },
+  "started_utc": "2026-11-06T12:04:11.514908+00:00",
+  "status": "FIXED_R8_PRICE_PILOT_COMPLETE"
+}
