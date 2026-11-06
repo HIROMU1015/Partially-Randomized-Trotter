@@ -1,5 +1,7 @@
 # tests の役割
 
+[check_track_d_h4_reference_adapter.py](check_track_d_h4_reference_adapter.py) は人工配列だけの明示regression。`--origin`に固定C SOURCEを渡す。[track_d_h4_reference_checks.py](track_d_h4_reference_checks.py) は実H4 runner専用の科学検証harnessで、通常test収集から実行しない。[scope](../docs/research/track_d_h4_reference_validation_20261106/PLAN.md)参照。
+
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、
 `tests/test_<name>.py`、`docs/<name>.md`、`artifacts/<name>/`を一組として読む。

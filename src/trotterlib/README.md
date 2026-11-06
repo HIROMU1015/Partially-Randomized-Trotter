@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[実H4 Reference adapter](../trottertracks/track_d_h4_reference.py) は[固定word02検証](../../docs/research/track_d_h4_reference_validation_20261106/PLAN.md)専用。元CのStrongBuilder・event/phase compiler、既存directional diagonalと人工Track D shellを再利用する。共通libraryの既定動作は変更しない。
+
 [track_d_minimal_reference.py](track_d_minimal_reference.py) は[Track D固定人工検証](../../docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)専用adapter。既存DF primitive/event/native controlとphase保持compileを再利用し、分子・sampling・全RPEの実行入口を持たない。
 
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、

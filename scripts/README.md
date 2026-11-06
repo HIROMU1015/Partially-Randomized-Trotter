@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_track_d_h4_reference.py](run_track_d_h4_reference.py) は[実H4固定word02](../docs/research/track_d_h4_reference_validation_20261106/PLAN.md)のcorrectnessとPASS時6 full-wrapper compileに限定する。元SOURCEと保存結果の隔離入力が必要で、終了後mandatory STOP。
+
 [run_track_d_minimal_reference.py](run_track_d_minimal_reference.py) は[固定人工path](../docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)のcorrectnessとPASS時の6 wrapper compileだけを実行し、mandatory STOPする。通常の回帰testではない。
 
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
