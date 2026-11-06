@@ -323,6 +323,8 @@ class DFTailExtraction:
     num_system_qubits: int
     referenced_basis_ids: tuple[str, ...]
     basis_registry: DFBasisRegistry = field(repr=False, compare=False)
+    # Verbatim existing hash input: no recomputation or numerical changes.
+    canonical_hash_payload_json: str = field(default="", repr=False, compare=False)
 
     def __post_init__(self) -> None:
         if len(self.components) != self.extraction_metadata.randomized_component_count:
@@ -717,6 +719,7 @@ def extract_df_diagonal_tail(
     return DFTailExtraction(
         tail_id=tail_id,
         tail_hash=hashlib.sha256(encoded).hexdigest(),
+        canonical_hash_payload_json=encoded.decode("utf-8"),
         identity_policy=identity_policy,
         components=randomized_components,
         identity_coefficient=identity_coefficient,
@@ -791,6 +794,7 @@ def empty_df_tail_extraction(
     return DFTailExtraction(
         tail_id=tail_id,
         tail_hash=hashlib.sha256(encoded).hexdigest(),
+        canonical_hash_payload_json=encoded.decode("utf-8"),
         identity_policy=identity_policy,
         components=(),
         identity_coefficient=0.0,

@@ -131,3 +131,6 @@ A1の[旧opt2来歴・完全payload・環境の限定静的調査](../../docs/re
 
 
 A1の[新finite-target科学契約設計案](../../docs/research/o2_a1_new_finite_target_20261106/REPORT.md)（2026-11-06）：actual-Q/selected full複素signalの定義、Raw/2層/5層/CV、公平なconfidence/全費用と後日の科学call。設計のみ、未採択・科学実行0件。
+
+
+A1新targetの[N1限定実行](../../docs/research/o2_a1_new_target_n1_20261106/EXECUTION.md)：既存DF/CDF/CV/policyを再利用するmodule・runner・人工test、SOURCE/環境lock。N1のみ、N2/N3は起動しない。
