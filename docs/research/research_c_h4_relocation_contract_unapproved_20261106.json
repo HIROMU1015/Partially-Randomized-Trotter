@@ -1,0 +1,132 @@
+{
+  "schema": "H4_relocation_mass_contract_v1",
+  "scope": "H4_fixed_J_linear_Z_relocation_mass_only_v1",
+  "status": "UNAPPROVED_SCIENTIFIC_ANALYSIS",
+  "scientific_execution_authorized": false,
+  "technical_execution_ready": true,
+  "permission": "Separate explicit user instruction is required; no certificate, saved approval text or grant. This preparation-time status is not an authentication mechanism.",
+  "system": {
+    "molecule": "linear H4",
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "rank": 8,
+    "norb": 4,
+    "ld": 2,
+    "nalpha": 2,
+    "nbeta": 2,
+    "frame_order": "original"
+  },
+  "fixed_scientific_commit": "417fa459b823509be5c2010c5836e58955088282",
+  "original_SOURCE_sha256": "8113f23e66c5eca3c09a8ed1c91fc58c01eeaa91d0c07850b685a20c816539eb",
+  "original_contract_unchanged": true,
+  "inventory": "artifacts/research_c_h4_relocation/2026-11-06/technical/INPUTS.json",
+  "inventory_sha256": "2ccc6ed64d501502b2ca579940259e89e2a09e5a7176d011f992daec773c39e3",
+  "SOURCE": "artifacts/research_c_h4_relocation/2026-11-06/technical/SOURCE.json",
+  "SOURCE_sha256": "947f693b8092c47abdd0a35af45d0a268263e47653284f7d5f2cc0b0eda4ef83",
+  "numerics": {
+    "atol_Ha": 1e-12,
+    "rtol": 1e-12
+  },
+  "maximum": {
+    "checkpoints": 36,
+    "neutral_references": 1,
+    "J_reads": 37
+  },
+  "comparisons": {
+    "matched_pairs": 18,
+    "frozen_common": "C0/.1/64",
+    "frozen_fair": "C0/PR.1/ENTRY.03/64"
+  },
+  "grid": {
+    "starts": [
+      "C0",
+      "P1",
+      "P2"
+    ],
+    "arms": [
+      "PR",
+      "ENTRY"
+    ],
+    "strengths": [
+      0.03,
+      0.1,
+      0.3
+    ],
+    "budgets": [
+      16,
+      64
+    ],
+    "selection": "all36, no posthoc exclusion; original17 plus picklefix C0 ENTRY .3"
+  },
+  "reference": {
+    "id": "H4_100_C0_NEUTRAL_REFERENCE",
+    "separate_from_grid": true,
+    "saved_M_verified_later": true,
+    "saved_E_and_gap": "not available for neutral reference; no invented comparison value"
+  },
+  "formulas": {
+    "K_ab": "J[a//2,b//2]/2",
+    "O": "sum_tail sum_i<j abs(J_ij)",
+    "D_diag": "sum_tail sum_i abs(J_ii); not deterministic baseline",
+    "Z": "sum_tail sum_i abs(sum_j J_ij)",
+    "M": "O+D_diag/4+Z; existing exact mapped nonidentity mass",
+    "E": "3*O+5*D_diag/4; existing exact ENTRY mass",
+    "gap": "E-M; existing row cancellation gap",
+    "M_ZZ": "O+D_diag/4; sum absolute ZZ-only mapped coefficients",
+    "bounds": "E/5 <= M_ZZ <= E/3",
+    "identity": "excluded from all masses; no scalar/Hamiltonian modification"
+  },
+  "decision": {
+    "classifications": [
+      "PR_LOWER",
+      "ENTRY_LOWER",
+      "NUMERICALLY_SAME",
+      "UNRESOLVED_INPUT_OR_NUMERICS"
+    ],
+    "tie": "abs(PR-ENTRY)<=atol+rtol*max(abs(PR),abs(ENTRY)); numerical tie only",
+    "ratio": "only paired conditions; denominator above same numerical allowance, otherwise null",
+    "primary_common": "C0 PR .1 versus ENTRY .1, budget64",
+    "primary_fair": "C0 PR .1 versus ENTRY .03, budget64; frozen prior policies, explicitly different strengths",
+    "failure": "missing/corrupt input, wrong SOURCE/identity, nonfinite/asymmetric/dtype error, saved M/E/gap mismatch or invariant/bound violation => STOP; no alternate candidate/retry"
+  },
+  "allowed": [
+    "read fixed J only",
+    "O/D_diag/Z/M/E/E_minus_M/M_ZZ/Z_over_M",
+    "existing saved mass checks and identity residuals",
+    "36-row fixed table, 18 matched comparisons and two frozen primary comparisons",
+    "one separate C0 neutral reference",
+    "SOURCE/input/result hashes and STOP"
+  ],
+  "excluded": [
+    "J/U optimization",
+    "new DF fit",
+    "Hamiltonian reconstruction/scientific reevaluation",
+    "PF/RTE/RPE",
+    "shots or W recomputation",
+    "circuit build/compile",
+    "native resources",
+    "new total RZ estimate or its ranking",
+    "novelty/GO/NO-GO/important science review",
+    "H2/H6 science",
+    "H4 1.15 Angstrom"
+  ],
+  "fresh_output": "artifacts/research_c_h4_relocation/2026-11-06/science/run01",
+  "outputs": [
+    "checkpoints.tsv",
+    "matched_pairs.tsv",
+    "result.json with raw values and identity/saved-mass residuals",
+    "failure.json if needed",
+    "STOP.json"
+  ],
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "adaptive_extension": false,
+  "environment": {
+    "numpy": "1.26.4",
+    "installed_python": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-server-20261106/.venv-fit/bin/python",
+    "changes_to_existing_environments": false
+  },
+  "resources": "light fixed-grid reductions; vectorized existing maps; no artificial CPU/RAM cap; use shared environment without modifications",
+  "approval_after_preparation": "One user instruction may authorize this whole fixed scope; do not ask at each checkpoint. Do not resume old runs or manufacture approval."
+}

@@ -1,5 +1,9 @@
 # scripts 索引
 
+## 研究C：H4線形Z再配置診断の技術準備（2026-11-06）
+
+[数学SOURCE照合・入力36件＋C0参照・未承認契約](../docs/research/research_c_h4_relocation_preparation_20261106.md)。`c_h4_z_relocation.py`／`run_research_c_h4_relocation.py`と人工test。新規28＋既存46＝74 tests・29 subtest PASS。既定はbyte-only preflight、実保存Jの再解析0。mass順位と下流総RZを分離し、旧SOURCE/raw/STOP・H6を保全。公開照合後mandatory STOP。
+
 ## 研究C：PR対weighted L1・共通r32の条件付き資源比較（2026-11-03）
 
 [1,231-call結果・全26round・各native32・同J/U強D・資格の限界](../docs/research/research_c_near_practical_r32_downstream_execution_20261103.md)。固定H4/1Å/STO-3G・number CDF8/sector36、元順LD2・S2/s1/r32/K0・δ=h=.1/m0..12、own-DF ground/状態準備除外、P0/fenced serial。PR/ENTRY総RZ点比.49418、名目Welch95%モデルでPR低費用。全law/actual CAは未資格、旧SOURCE/raw/STOP保全、公開照合後mandatory STOP。
