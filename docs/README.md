@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C6b独立q8](research/track_d_c6b_q8_20261107/PLAN.md)：32 fresh whole-path、凍結C6aモデル、paired12量の探索的価格診断。確認的PASS・長q・全RPE費用は対象外、rawローカル保全、公開後mandatory STOP。
+
 [Track D C6b-0](research/track_d_c6b0_preparation_20261107/REPORT.md)／[C6b実行前契約案](research/track_d_c6b0_preparation_20261107/C6B_EXECUTION_DRAFT.md)：C6a固定保存値とSOURCEの静的調査だけ。paired優先・追加校正要否・q8事前条件を整理、未採択・未実行、mandatory STOP。
 
 [C6a結果](research/track_d_c6a_paired_price_20261106/RESULT.md)：fresh q2/q4各16、raw32/P0 postcheck128/pairedχ PASS。有限pilot統計・共有校正共分散・C6b提案、rawローカル保全、mandatory STOP。

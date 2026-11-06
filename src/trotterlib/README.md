@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+The opt-in `../trottertracks/track_d_c6b_holdout.py`, `../../scripts/run_track_d_c6b.py` and `../../tests/check_track_d_c6b.py` share the existing canonical/CAR/whole-path/P0 primitives. The [C6b PLAN](../../docs/research/track_d_c6b_q8_20261107/PLAN.md) limits new execution to q8/n32 exploratory paired pricing; import does not execute a scientific run.
+
 Track D C6a：`trottertracks/track_d_c6a_pilot.py` はfresh canonical event接続・paired統計、既存C3/C5 builder/価格検査を共用する。[PLAN](../../docs/research/track_d_c6a_paired_price_20261106/PLAN.md)。旧ライブラリ入口からは起動しない。
 
 [C5結果](../../docs/research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。
