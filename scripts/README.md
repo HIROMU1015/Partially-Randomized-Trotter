@@ -167,3 +167,5 @@ artifacts/<validation_name>/
 `run_b2_p1_strong_pf_validation.py`は固定Full S2/Yoshida4×substeps1/2/4/8の数値信号を評価する。[結果とSTOP](../docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。回路・shot・価格は実行しない。
 
 `diagnose_b2_p1_strong_pf_numerics.py`は小さい人工行列だけで構成誤差・累乗丸め・Schur置換の負例を確認する。[技術調査と未承認の実H4診断範囲](../docs/research/track_a_b2_p1_strong_pf_numerical_diagnosis_20261107/REPORT.md)。実H4や旧5 STOP armは再評価しない。
+
+`run_b2_p1_strong_pf_h4_diagnosis.py`は固定5 arm/15点のbinary64・80/120桁累乗を比較する。[実H4の原因診断とSTOP](../docs/research/track_a_b2_p1_strong_pf_h4_diagnosis_20261107/REPORT.md)。元構成/旧判定を保持し、修正・shot・価格を行わない。

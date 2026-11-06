@@ -199,3 +199,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [信号適格性・SOURCE・STOP](docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。
 `b2_p1_strong_pf_validation.py` / `run_b2_p1_strong_pf_validation.py` / `test_b2_p1_strong_pf_validation.py`。
 Full S2 s1/s2・Yoshida4 s1が全18round条件付きPASS、5 armは固定独立数値閾値でSTOP。shot/価格未実行。
+
+## B2 P1強PF：実H4の15点数値原因診断（2026-11-07）
+
+[結果・SOURCE・STOP](docs/research/track_a_b2_p1_strong_pf_h4_diagnosis_20261107/REPORT.md)。`b2_p1_strong_pf_h4_diagnosis.py`、対応runner/test、`artifacts/track_a_b2_p1_strong_pf_h4_diagnosis/`。5元STOP点でHP累乗後にもstep間差が残る。再適格化・修正なし。
