@@ -83,3 +83,6 @@
 
 [索引の統合・SOURCEの版差・保存原版](main_collection_versions_20261103.md)から、同名ファイルの各公開版とmainの配置を確認できる。
 過去のSOURCE・test・結果は元snapshotの条件で読む。科学実行と元の研究testの再実行は行っていない。
+
+
+A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/REPORT.md)（2026-11-06）：actual-Q/selected full複素signalの定義、Raw/2層/5層/CV、公平なconfidence/全費用と後日の科学call。設計のみ、未採択・科学実行0件。

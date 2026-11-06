@@ -645,3 +645,10 @@ SOURCE `2121a455d8d84557a26fef969aac4d92d6da8b0f`で完全preparation payloadを
 [来歴調査](docs/research/o2_a1_opt2_provenance_20261106/REPORT.md)：旧期待3hashを保存するWP05/WP06の記録はPython3.11.0rc1、SERVER1 opt2はPython3.12.3。記録SOURCEはWP05a4/4・WP06b4/4・本実行opt2の10/10を固定commitから回収したが、これは全推移的依存の回収ではない。
 元WP11 checkpoint53件にも3hash/完全payloadはなく、旧期待hashとSERVER1 workerの実preparationの同一性を保存記録だけでは確定できない。WP06bと現payloadのtail basis hash集合は9種類中共通2種類だが、operator/target差は未認定。
 完全partition/basis/component・原binary環境は未回収。準備・CDF・bias・RNG・測定・compile等の新科学callは0件。新しい具体的な原証拠の回収か、新しい一貫したfinite-target契約を判断する。旧SOURCE・STOP/C1凍結を維持し、今回の限定調査は公開後STOP。
+
+
+## 2026-11-06 A1：新finite-target科学契約の設計案
+
+[新target定義](docs/research/o2_a1_new_finite_target_20261106/A1_NEW_FINITE_TARGET.md)と[科学実行契約草案](docs/research/o2_a1_new_finite_target_20261106/A1_NEW_SCIENCE_EXECUTION_CONTRACT_DRAFT.md)、[報告](docs/research/o2_a1_new_finite_target_20261106/REPORT.md)を追加した。旧opt2来歴は固定6381f81の結論を継承し、旧hash再現を新契約の要件にしない。
+候補は保存linear H4/1.00 Å/STO-3G/legacy DF12/全4電子number sector/8qubit/L_D3/m0/q1/δ.02/r1/K2/threshold0。一次targetはactual finite-grid Qと同じselected full回路のattenuated複素meanとし、Raw/層別/CVを公平に比較する設計。
+新target・ε/α/予算・取得法・RZの採否、N1–N3の実行scopeは未採択。新partition/CDF/ν/state/bias/価格/Nは未取得。科学call0、旧SOURCE/結果/STOPとC1凍結を維持し、草案公開照合後mandatory STOP。

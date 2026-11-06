@@ -128,3 +128,6 @@ A1 v2の[payload保存修正・限定診断とSTOP](../../docs/research/o2_a1_q1
 
 
 A1の[旧opt2来歴・完全payload・環境の限定静的調査](../../docs/research/o2_a1_opt2_provenance_20261106/REPORT.md)（2026-11-06）：記録SOURCEの回収先と未回収payload、元checkpoint抜粋、stdlib-only collector。科学再実行・library変更は0件、STOP維持。
+
+
+A1の[新finite-target科学契約設計案](../../docs/research/o2_a1_new_finite_target_20261106/REPORT.md)（2026-11-06）：actual-Q/selected full複素signalの定義、Raw/2層/5層/CV、公平なconfidence/全費用と後日の科学call。設計のみ、未採択・科学実行0件。
