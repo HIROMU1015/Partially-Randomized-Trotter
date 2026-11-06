@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C・保存強Dの共通LD2再配置：[2候補とも適格、E2の条件付き総RZ点値利益を維持](docs/research/research_c_h4_strong_d_relocation_results_20261107.md)。286/286 COMPLETE、全512/実逆/2 lane、SOURCE/入力保全、登録STOP。
+
 研究C・保存CDF8/XDF8強DへのLD2線形Z再配置：[技術準備・人工full512・未承認2候補契約](docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。adapterは`src/trottertracks/c_h4_strong_d_relocation.py`、runnerは`c_h4_strong_d_relocation_execution.py`、人工testは`tests/management/test_research_c_h4_strong_d_relocation.py`、証拠は`artifacts/research_c_h4_strong_d_relocation/2026-11-07/technical/`。実H4の新規PF/RPE/native評価は未実行。
 
 研究C・再配置後の下流完了：[主比較A/BでENTRY低費用、800標本・一回の引継ぎ・STOP](docs/research/research_c_h4_relocated_downstream_results_20261106.md)。旧条件のPR優位を新辞書へ流用せず、P/r16の個別診断未解決も維持する。

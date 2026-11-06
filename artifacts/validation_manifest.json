@@ -1688,6 +1688,14 @@
           "research_c_near_practical_comparison_execution_20261103"
         ],
         "reason": "New fixed paired Stage O raw results,source,call journal,physical assessments,endpoint arrays and STOP;no old-run reuse"
+      },
+      {
+        "path": "artifacts/research_c_h4_strong_d_relocation/2026-11-07",
+        "kind": "directory",
+        "supports": [
+          "research_c_h4_strong_d_relocation_results_20261107"
+        ],
+        "reason": "Two fixed relocated strong D candidates, full512/actual inverses, two lanes, 286 COMPLETE, STOP and exact-byte raw bundle; saved E2 point only"
       }
     ],
     "quarantined": [
@@ -14092,6 +14100,56 @@
       "retry_within_continuation": 0,
       "resume_within_continuation": 0,
       "mandatory_stop": true
+    },
+    {
+      "id": "research_c_h4_strong_d_relocation_results_20261107",
+      "status": "REGISTERED_COMPLETE_MANDATORY_STOP",
+      "report": "docs/research/research_c_h4_strong_d_relocation_results_20261107.md",
+      "artifacts": "artifacts/research_c_h4_strong_d_relocation/2026-11-07",
+      "scientific_SOURCE_commit": "e6652ab841aae5ae700286bf1ab249ad4fb85461",
+      "scientific_SOURCE_manifest_sha256": "8323d7c76847b24276b500a80545172fd92719b7a82f6a5b298ca601adec4f53",
+      "contract_sha256": "b011325203f1b6e1f5a69f3a32ed058ff9c097f0bb45645135aea93924527bb6",
+      "result": "artifacts/research_c_h4_strong_d_relocation/2026-11-07/science/run01/comparison.json",
+      "STOP": "artifacts/research_c_h4_strong_d_relocation/2026-11-07/science/run01/STOP.json",
+      "audit": "artifacts/research_c_h4_strong_d_relocation/2026-11-07/execution/result_audit.json",
+      "raw_manifest": "artifacts/research_c_h4_strong_d_relocation/2026-11-07/publication/raw_files.json",
+      "raw_binary_bundle": "artifacts/research_c_h4_strong_d_relocation/2026-11-07/publication/raw_binary_bundle.tar.gz",
+      "scope": "linear H4/1.00A/STO-3G; saved CDF8 and XDF8; sector36; original-order LD2 tail Z relocation; all-frame S2/s1/h.1/m0..12; own-DF ground; state preparation excluded; P0/fenced serial",
+      "comparison": {
+        "status": "FIXED_TWO_CANDIDATE_IDEAL_POINT_COMPARISON",
+        "E2_point_RZ": 75621395471.0,
+        "D_points_RZ": {
+          "XDF": 101780388260.0,
+          "CDF": 108561283488.0
+        },
+        "E2_lower_than": {
+          "XDF": true,
+          "CDF": true
+        },
+        "decision": "E2_POINT_BENEFIT_REMAINS",
+        "new_CI": null,
+        "new_PR_samples": 0,
+        "actual_CA_achieved": null,
+        "guaranteed_resource_superiority": null
+      },
+      "logical_calls": 286,
+      "COMPLETE": 286,
+      "FAIL": 0,
+      "inflight": 0,
+      "retry": 0,
+      "resume": 0,
+      "ideal_numerical_D_totals_equal": true,
+      "new_DF_fit": 0,
+      "new_E2_samples": 0,
+      "actual_CA_achieved": null,
+      "limitations": [
+        "fixed two candidates and original-order LD2 policy only",
+        "own-DF ground oracle; state preparation excluded",
+        "E2 price is saved finite-bit proxy with ideal law/synthesis assumptions; no new E2 sampling",
+        "D numerical synthesis is level B, not rigorous rounding enclosure",
+        "no new CI or population guarantee",
+        "PR whole-law synthesis, implemented-law error, ideal-law price transfer, actual CA and FT remain unqualified"
+      ]
     }
   ],
   "repository_completion_criteria": [
