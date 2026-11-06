@@ -211,3 +211,7 @@ Full S2 s1/s2・Yoshida4 s1が全18round条件付きPASS、5 armは固定独立�
 ## 強PFの高精度・停止5 arm再適格化（2026-11-07）
 
 [90点の結果・SOURCE・STOP](docs/research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)。`b2_strong_pf_hp_requalification.py`、対応runner/test、`artifacts/track_a_b2_strong_pf_hp_requalification/`。5 arm全18round条件付きPASS。旧履歴保全、branch/shot/価格未実行。
+
+## 新HP 5 armのP1 branch・shotと全8 arm比較（2026-11-07）
+
+[固定SOURCE・90点結果・旧3 arm転記・精度変換・STOP](docs/research/track_a_b2_p1_hp_branch_shots_20261107/REPORT.md)。全8 armは別SOURCEの独立候補で、価格・総費用は未評価。

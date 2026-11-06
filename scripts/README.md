@@ -173,3 +173,5 @@ artifacts/<validation_name>/
 `validate_b2_strong_pf_precision.py`は人工入力だけで新HP基本stepと独立Pauli-JW/spectral参照を比較する。[SOURCE・精度改善・STOP](../docs/research/track_a_b2_strong_pf_precision_20261107/REPORT.md)。分子入力の引数はない。
 
 `run_b2_strong_pf_hp_requalification.py`は固定停止5 armの全18roundを同じP1条件・80/120桁構成で評価する。[再適格化とSTOP](../docs/research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)。input gate不適格で全体STOP、round不適格でそのarmをSTOP。
+
+- `run_b2_p1_hp_branch_shots.py`：保存HP5 armを既存branch/shotへ接続し、旧3 armを転記。[変換検査・全8比較・STOP](../docs/research/track_a_b2_p1_hp_branch_shots_20261107/REPORT.md)。PF生成・価格入口なし。

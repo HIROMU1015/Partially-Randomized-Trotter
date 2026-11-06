@@ -114,3 +114,5 @@
 - [強PF基本stepの構成精度改善・人工検証（2026-11-07）](research/track_a_b2_strong_pf_precision_20261107/REPORT.md)：SYNTHETIC_PRECISION_IMPROVED、46テストPASS。実H4は3 PASS／5 STOPを維持、mandatory STOP。
 
 - [強PFの停止5 arm・高精度全18round再適格化（2026-11-07）](research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)：90/90点条件付きPASS。旧3 PASS/5 STOPを保全し、新SOURCEの5 PASSを追加。branch/shot/価格は未実行、mandatory STOP。
+
+- [新HP強PF5 armのP1 branch・shotと全8 arm比較](research/track_a_b2_p1_hp_branch_shots_20261107/REPORT.md)：保存90点、旧3 arm非再計算、価格未評価、mandatory STOP。

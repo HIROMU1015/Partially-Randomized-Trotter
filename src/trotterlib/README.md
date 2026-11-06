@@ -141,3 +141,5 @@ DF部分ランダム化研究と混同しない。
 `b2_strong_pf_precision.py`は既存PF scheduleを保つ明示選択の高精度native/CAR adapter。旧実装は維持する。対応`validate_b2_strong_pf_precision.py`、`tests/test_b2_strong_pf_precision.py`と[人工結果・入力条件](../../docs/research/track_a_b2_strong_pf_precision_20261107/REPORT.md)を参照。実H4は未再評価。
 
 `b2_strong_pf_hp_requalification.py`は既存HP構成・保存元H/DF参照・P1 radius/phase判定を接続する。対応`run_b2_strong_pf_hp_requalification.py`、`tests/test_b2_strong_pf_hp_requalification.py`、[90点結果](../../docs/research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)。旧SOURCEを上書きしない。
+
+- `b2_p1_hp_branch_shots.py`：保存HP5 armのschema/scalar変換を、固定旧`b2_p1_strong_pf_branch_shots.py`へ接続。[REPORT](../../docs/research/track_a_b2_p1_hp_branch_shots_20261107/REPORT.md)。decoder/shot式は再実装しない。
