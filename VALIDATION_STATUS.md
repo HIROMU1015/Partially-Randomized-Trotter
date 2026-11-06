@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D C2 fixed q2 P0 wrapper compile
+
+[結果](docs/research/track_d_c2_q2_compile_20261106/RESULT.md)／[PLAN](docs/research/track_d_c2_q2_compile_20261106/PLAN.md)／[evidence](artifacts/track_d_c2_q2_compile/2026-11-06/run01/result.json)。SOURCE `e0befa619a14b956ad64349a86ec2f261962883c`。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1、保存sample00→01・q2・step境界cut。C1 raw bytesを保持し同P0で4 wrapper compile/postcheck PASS。X/Y各価格はsymmetric→ReferenceでRZ10773→11114、CX4100→3860、depth6096→3014、qubits9→17。最大postcheck成分差1.84962e−12。固定一fixture・local binary64 evidenceで、全law母平均・長q・N・全RPE費用の保証ではない。元H厳密ground仮定・準備費除外、sampling/ground solve/DF refit/N評価/retry/resume0、mandatory STOP。
+
 ## 2026-11-06 Track D B1/C1 operator transport and saved q2 correctness
 
 [結果](docs/research/track_d_b1_c1_validation_20261106/RESULT.md)／[PLAN](docs/research/track_d_b1_c1_validation_20261106/PLAN.md)／[保存result](artifacts/track_d_b1_c1_validation/2026-11-06/run01/result.json)。SOURCE `8c6eeb02e89f6cf14870789719493e75482f62f8`。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1。B1は保存DF norm＋guardとPF/RTE operator誤差を元Hへ接続し、13-roundすべてで条件付き十分条件成立（旧phase配分の最小slack .140877844576 rad）。own-DF signal/Nを使わずstate-vector不要。C1は保存sample00→01のq2・step境界cut・一回gadgetで22 check＋paired X/Y PASS、最大成分差2.04281e−14。元H厳密ground仮定・準備費除外。ideal law/numerical-pilot条件、全law・実装成功保証・N・価格は未資格。compile/sampling/ground solve/DF refit/retry/resume0、B2/C2未実施、mandatory STOP。
