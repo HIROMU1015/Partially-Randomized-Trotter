@@ -1,0 +1,113 @@
+{
+  "status": "SYNTHETIC_TECHNICAL_DIAGNOSTICS_PASS",
+  "synthetic_only": true,
+  "real_H4_evaluated": false,
+  "saved_molecular_numerics_reanalyzed": false,
+  "production_algorithm_modified": false,
+  "historical_status_changed": false,
+  "script_SHA256": "69614a8713dc72a19554549681db002b0c8b0cf388c228e6c438836d3bd2d9ba",
+  "numpy_matrix_power_source_SHA256": "209dd3eb391d30eb104fbe7a1594ec26d9ebee62e4e4707cf83d35d003fb59c0",
+  "fixed_scientific_SOURCE": "a7940b58c6cb939d77e9f8e44d214b3787b7e101",
+  "fixed_result": "2583ce4957ed44e914ce6571e3e676830439dfa7",
+  "unchanged_P1_independent_threshold": 1e-09,
+  "environment": {
+    "host": "GPUA100-gleap02",
+    "python": "3.11.0rc1",
+    "numpy": "1.26.4",
+    "mpmath": "1.3.0"
+  },
+  "cases": {
+    "exact_unitary_control": {
+      "status": "PASS",
+      "q": 131072,
+      "max_error": 0.0,
+      "meaning": "Exactly representable unitary powers need not drift"
+    },
+    "radial_input_defect": {
+      "status": "PASS",
+      "eta": 1.4210854715202004e-14,
+      "base_unitarity_max_abs": 2.842170943040401e-14,
+      "rounds": [
+        {
+          "q": 1,
+          "measured_difference": 1.4210854715202004e-14,
+          "predicted_input_amplification": 1.4210854715202004e-14,
+          "power_arithmetic_error": 0.0
+        },
+        {
+          "q": 256,
+          "measured_difference": 3.637978807091713e-12,
+          "predicted_input_amplification": 3.6379788070983045e-12,
+          "power_arithmetic_error": 6.59159550628987e-24
+        },
+        {
+          "q": 32768,
+          "measured_difference": 4.656612873077393e-10,
+          "predicted_input_amplification": 4.656612874161562e-10,
+          "power_arithmetic_error": 1.0841690854292772e-19
+        },
+        {
+          "q": 131072,
+          "measured_difference": 1.862645149230957e-09,
+          "predicted_input_amplification": 1.8626451509656673e-09,
+          "power_arithmetic_error": 1.7347102421640396e-18
+        }
+      ],
+      "meaning": "Known radial input defect is amplified even by an exact power"
+    },
+    "construction_vs_power_precision": {
+      "status": "PASS",
+      "q": 131072,
+      "decimal_precision": 80,
+      "exact_binary64_angle": 0.3,
+      "high_precision_power_of_stored_input_error": 5.9947536848329554e-12,
+      "binary64_power_arithmetic_error": 2.0124276330845034e-12,
+      "binary64_total_error": 4.259805535243413e-12,
+      "high_precision_construction_and_power_error": "3.9158994260129778517e-77",
+      "meaning": "Raising precision after storing a step removes neither its input error nor its nonunitarity"
+    },
+    "schur_counterexamples": {
+      "status": "PASS",
+      "q": 131072,
+      "examples": [
+        {
+          "example": "radial",
+          "faithful_Schur_power_error": 0.0,
+          "phase_only_wrong_operator_error": 1.862645149230957e-09
+        },
+        {
+          "example": "nonnormal",
+          "faithful_Schur_power_error": 0.0,
+          "phase_only_wrong_operator_error": 1.862645149230957e-09
+        }
+      ],
+      "meaning": "Full Schur T preserves the input defect; phase-only replacement can hide it by changing the operator"
+    },
+    "zero_time_gaussian_control": {
+      "status": "PASS",
+      "q": 131072,
+      "examples": [
+        {
+          "orbital_scale": 1.0,
+          "base_identity_error": 0.0,
+          "base_unitarity_error": 0.0,
+          "powered_identity_error": 0.0
+        },
+        {
+          "orbital_scale": 1.0000000000000142,
+          "base_identity_error": 5.684341886080802e-14,
+          "base_unitarity_error": 1.1368683772161603e-13,
+          "powered_identity_error": 7.450580596923828e-09
+        }
+      ],
+      "meaning": "Exterior lifts of near-unitary matrices need not be unitary, even for a zero-time diagnostic"
+    },
+    "wrong_order_control": {
+      "status": "PASS",
+      "high_precision_wrong_order_difference": 0.007485751487621285,
+      "same_order_binary64_vs_high_precision": 8.946853058470742e-17,
+      "meaning": "A genuine order mismatch survives high precision; increasing precision is not a semantic repair"
+    }
+  },
+  "mandatory_stop": true
+}
