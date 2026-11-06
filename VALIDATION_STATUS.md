@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D B4-2 original-H ideal 13-round shots
+
+[結果](docs/research/track_d_b4_2_rpe_shots_20261106/RESULT.md)／[保存値](artifacts/track_d_b4_2_rpe_shots/2026-11-06/run01/result.json)。SOURCE local `8e472b5001278e51b9919a8302d0a4bd3fcf9209`、B4-1公開版を無変更再利用。同H4/1Å/STO-3G/Nα=Nβ=2・CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、元H厳密ground・準備費除外。ideal finite-RTE IID/exact native・B1保存binary64 norm＋guardを前提に13/13 PASS、X/Y合計14738、energy幅.0012783173232380342 Ha≤.00159、failure和.01。DF再加算なし。aliasは元Hへbindingした保存数値groundによる条件付き資格。actual law／compiled／Reference実装誤差・実測成功率・総費用は未資格。人工7件PASS、科学1回・retry/resume0、B2/sampling/ground solve/fit/compile/C4操作0。mandatory STOP。
+
 ## 2026-11-06 Track D C2 fixed q2 P0 wrapper compile
 
 [結果](docs/research/track_d_c2_q2_compile_20261106/RESULT.md)／[PLAN](docs/research/track_d_c2_q2_compile_20261106/PLAN.md)／[evidence](artifacts/track_d_c2_q2_compile/2026-11-06/run01/result.json)。SOURCE `e0befa619a14b956ad64349a86ec2f261962883c`。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1、保存sample00→01・q2・step境界cut。C1 raw bytesを保持し同P0で4 wrapper compile/postcheck PASS。X/Y各価格はsymmetric→ReferenceでRZ10773→11114、CX4100→3860、depth6096→3014、qubits9→17。最大postcheck成分差1.84962e−12。固定一fixture・local binary64 evidenceで、全law母平均・長q・N・全RPE費用の保証ではない。元H厳密ground仮定・準備費除外、sampling/ground solve/DF refit/N評価/retry/resume0、mandatory STOP。

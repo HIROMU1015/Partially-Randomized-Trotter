@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_track_d_b4_2.py](run_track_d_b4_2.py)は[B4-2固定PLAN](../docs/research/track_d_b4_2_rpe_shots_20261106/PLAN.md)の保存B1→元H ideal統計専用。明示`--execute`、fresh run01、retry/resume0、mandatory STOP。一般testや旧runnerから自動実行しない。
+
 [Track D B4-1](../docs/research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)は科学runnerを追加しない。人工検証入口は `PYTHONPATH=src python -B -m pytest -p no:cacheprovider -q tests/check_track_d_original_h_accuracy.py`。実H4評価は別許可。
 
 [C2固定q2結果](../docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。

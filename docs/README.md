@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D B4-2：元H十分shot数](research/track_d_b4_2_rpe_shots_20261106/RESULT.md)：固定13-round、ideal IID/exact nativeで14738 shots。元H energy/failure条件付きPASS、actual保証・総回路費用なし、mandatory STOP。
+
 [Track D B4-1実装・人工検証](research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)：元H統計・energy／decoder接続、互換性、interface、B4-2許可境界。73人工／回帰PASS、実H4科学計算なし。
 
 [Track D B3：元H向けRPE統計の接続準備](research/track_d_b3_rpe_statistics_preparation_20261106/REPORT.md)：元H専用接続、N・alias・decoder資格、ReferenceとのN共通化、資源会計とC3受取条件。静的調査・計画のみ、公開後mandatory STOP。
