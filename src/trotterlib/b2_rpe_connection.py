@@ -284,6 +284,21 @@ def aggregate_b2_rounds(rounds, *, required_max_round, total_alpha_budget, conte
                                                  total_alpha_budget=total_alpha_budget)
 
 
+def strong_baseline_schedule(block_count, *, substeps, formula, delta_time, q=1):
+    """Existing chronological Full S2/Yoshida4 schedule, usable without gates."""
+    from .product_formula import _get_w_list
+    from trottertracks import c1_h4_strong_baseline as strong
+    substeps = require_integer_count(substeps, name='substeps', minimum=1)
+    q = require_integer_count(q, name='q', minimum=1)
+    if formula not in ('Full_S2', 'Yoshida4'):
+        raise ValueError('Explicit Full_S2 or standard Yoshida4 required')
+    weights = (1.,) if formula == 'Full_S2' else _get_w_list('4th')
+    pieces = weights if formula == 'Full_S2' else (weights[1], weights[0], weights[1])
+    dt = Fraction(delta_time)/substeps
+    return tuple(item for w in pieces for item in strong.native.ordered_schedule(
+        block_count, dt*Fraction(w)))*(q*substeps)
+
+
 def build_strong_baseline(hamiltonian, *, context, specification, substeps, formula,
                           basis_policy, relative_fusion):
     """Full S2 or standard three-stage Yoshida4 on the same complete saved factors.
@@ -293,7 +308,6 @@ def build_strong_baseline(hamiltonian, *, context, specification, substeps, form
     vacuum-phase correction. No phase alignment or state preparation is applied.
     """
     from .df_partial_randomized_pf import df_hamiltonian_hash
-    from .product_formula import _get_w_list
     from trottertracks import c1_h4_strong_baseline as strong
     if df_hamiltonian_hash(hamiltonian) != context.df_hamiltonian:
         raise ValueError('Baseline DF input mismatch')
@@ -303,11 +317,8 @@ def build_strong_baseline(hamiltonian, *, context, specification, substeps, form
     model, reports = strong.prepare_xdf_basis(hamiltonian.one_body, hamiltonian.lambdas,
         hamiltonian.g_matrices, hamiltonian.constant, source_identity=context.source,
         input_identity=context.df_hamiltonian, basis_policy=basis_policy)
-    weights = (1.,) if formula == 'Full_S2' else _get_w_list('4th')
-    pieces = weights if formula == 'Full_S2' else (weights[1], weights[0], weights[1])
-    dt = Fraction(specification.delta_time)/substeps
-    schedule = tuple(item for w in pieces for item in strong.native.ordered_schedule(
-        len(model.blocks), dt*Fraction(w)))*(specification.q_m*substeps)
+    schedule = strong_baseline_schedule(len(model.blocks), substeps=substeps, formula=formula,
+        delta_time=specification.delta_time, q=specification.q_m)
     circuit = strong.StrongBuilder(relative_fusion=relative_fusion, basis_policy=basis_policy).sequence(
         model, schedule, optimized=True, scalar_time=Fraction(specification.delta_time)*specification.q_m)
     arm_hash = digest(dict(context=context.context_hash, formula=formula, substeps=substeps,
