@@ -1,5 +1,9 @@
 # 研究別SOURCE
 
+[O2-S2 pair adapter](algorithm_codesign/s2_multi_event.py) は保存ordered-pair価格を既存Parent IS/統計へ接続する。
+[途中結果・SOURCE・runner・test](../../docs/research/o2_s2_multi_event_validation_20261106/REPORT.md)：
+六cell評価は有理数process転送でSTOP。元研究のSTOPは維持し、無断retryしない。
+
 共通 `trotterlib` APIと区別した実験別SOURCEの名前空間。
 [mainへの収録範囲・原SOURCE・元の制約](../../docs/research/main_collection_20261103.md)を参照する。
 

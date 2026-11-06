@@ -602,3 +602,13 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 [収録ファイル・保存版と確認範囲](docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## 2026-11-06 O2-S2 finite pair-table evaluation: STOPPED
+
+[途中報告](docs/research/o2_s2_multi_event_validation_20261106/REPORT.md)と
+[科学SOURCE](artifacts/o2_s2_multi_event_validation/2026-11-06/v1/SOURCE.json)、
+[途中結果](artifacts/o2_s2_multi_event_validation/2026-11-06/v1/RESULT.json)を追加した。
+固定synthetic D2 Closed P5 r2／x=5/14の3,969 pairとP0の2cellを取得したが、
+ISの大きなFractionのprocess転送で整数文字列桁数制限に触れSTOP。qA/qBの4cellは未取得。
+科学実行前の人工38件と停止後の転送回帰1件はPASS。六cell完了・IS追加利益・独立再現/CI・分子全RPE評価は未認定。
+実行SOURCEは16d10faabb1f6aa4bda42f3aef81d89bf9ca9832。修正patchは未適用・科学retry未実施。
