@@ -237,3 +237,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 
 
 2026-11-06 A1 N3：[範囲見直し・752-shot予備契約案・現行状態と停止手順](docs/research/o2_a1_n3_scope_redesign_20261106/REPORT.md)。A1対B1-OLの段階的予備検証を優先するユーザー指示に沿う設計。具体shot/seedは未採択・科学実行0、人工11件PASS。現行jobの停止/変更/signal送信は0、現行jobは観測時RUNNING。
+
+
+2026-11-07 A1 N3：[新Bの正規停止・保全と752-shot実行準備](docs/research/o2_a1_n3_pilot_preparation_20261107/REPORT.md)。保存H4/1.00 Å/STO-3G/legacy DF12/L_D3/m0/q1/δ.02/r1/K2/atol0の新Bを親TERM一回で停止し、1339 bit/1318価格、既知RZ6,435,609・総費用UNKNOWNを保全。新pilotは準備版、人工34件PASS、科学実行0。seed/規則/科学実行承認待ちでSTOP。
