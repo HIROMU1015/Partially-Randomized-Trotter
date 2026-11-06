@@ -45,7 +45,7 @@ def array_hash(value):
 
 
 def basic_metrics(delta, *, spectral=False):
-    a = np.asarray(delta, dtype=np.complex128)
+    a = np.atleast_2d(np.asarray(delta, dtype=np.complex128))
     result = dict(max_abs_entry=float(np.max(abs(a), initial=0)),
                   frobenius=float(np.linalg.norm(a)),
                   induced_infinity_norm=float(np.max(np.sum(abs(a), axis=1), initial=0)))

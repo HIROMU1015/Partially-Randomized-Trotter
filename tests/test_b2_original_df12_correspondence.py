@@ -34,6 +34,11 @@ def toy():
     return .73, one, two
 
 
+def test_scalar_and_vector_diagnostics_accept_vacuum_check_shape():
+    assert m.basic_metrics(np.zeros(3))["max_abs_entry"] == 0
+    assert m.basic_metrics(np.array(0.))["induced_infinity_norm"] == 0
+
+
 def test_CAR_sparse_JW_and_occupation_agree_with_complex_signs_and_scalar():
     c, one, two = toy()
     a = ref.annihilators(2)
