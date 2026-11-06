@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "kind": "O2_S2_FIXED_MULTI_EVENT_NUMERICAL_FORECAST",
+  "design_commit": "5eb90e8241e69e85a1ca3e79938a367700c24a48",
+  "base_commit": "5eb90e8241e69e85a1ca3e79938a367700c24a48",
+  "inputs": {
+    "events": {
+      "commit": "fc96571881f301435a655f057709df4d6c1678e0",
+      "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/events/row_10.json",
+      "sha256": "5c39af0183cd934c1a79ad4a436bfa22ad15bdbf536277c574f5ba1aeff40a95",
+      "git_blob": "a84047e2bcc9575fd9baf061678e1552d4cf264f"
+    },
+    "cache": {
+      "commit": "fc96571881f301435a655f057709df4d6c1678e0",
+      "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/synthesis_cache.json",
+      "sha256": "77e35784673f187c9cb7b00eb74ba52a11a39c3c623ce63ce888bc33c12895d0",
+      "git_blob": "4d93806c6ed46c0b9ce160a780637e7c33c74c57"
+    },
+    "d1_map": {
+      "commit": "fc96571881f301435a655f057709df4d6c1678e0",
+      "path": "artifacts/track_b_rte_development_d1_result/2026-10-13/v1/resource_map.json",
+      "sha256": "1f7210560d98f2bd0904568621d5f95d3d0cebfb2ee1fc3b460ff0237af3145d",
+      "git_blob": "1630b12fe701a1eb2b50fcc9b29f637f942b4c62"
+    },
+    "d2_map": {
+      "commit": "d1c59b28f4370cc7be65cff60d1ec877fd1491f5",
+      "path": "artifacts/track_b_d2_saved_boundary_result/2026-10-13/v1/resource_map.json",
+      "sha256": "31d8c23a33176c0b3b9b091c342d31e9cf8331764c8832f95b3489ef60ba0b9e",
+      "git_blob": "a56aea9385d29097e2337c4117f9028088bfd7e9"
+    }
+  },
+  "reused_code": [
+    {
+      "commit": "28fc3ca17ec51bb7656a498e3eea9b72966eb3fa",
+      "path": "src/trottertracks/algorithm_codesign/rte_development/boundary.py"
+    },
+    {
+      "commit": "874ca12d347f8f35e5d8d64f65f24abc4a2df523",
+      "path": "src/trottertracks/algorithm_codesign/rte_development/accounting.py"
+    },
+    {
+      "commit": "4ccc1832f63cd323b23fc05623f7e0b58cf34f37",
+      "path": "src/trottertracks/algorithm_codesign/parent_allocation.py"
+    },
+    {
+      "commit": "4ccc1832f63cd323b23fc05623f7e0b58cf34f37",
+      "path": "src/trottertracks/algorithm_codesign/return_aggregation.py"
+    },
+    {
+      "commit": "4ccc1832f63cd323b23fc05623f7e0b58cf34f37",
+      "path": "src/trottertracks/algorithm_codesign/g8_bounds.py"
+    },
+    {
+      "commit": "4ccc1832f63cd323b23fc05623f7e0b58cf34f37",
+      "path": "src/trottertracks/algorithm_codesign/parent_experiment/design.py"
+    }
+  ],
+  "new_code_sha256": {
+    "src/trottertracks/algorithm_codesign/s2_multi_event.py": "53802ee6fe9c521dfd57cc32802ba5221cec0bb409f06fbff2f425e71a9c64eb",
+    "scripts/tracks/algorithm_codesign/run_s2_multi_event_validation.py": "af33d847c83f01aba6087abbe75ca6e8a2073a6bfb9221459f2a2c97b84e40ce",
+    "tests/tracks/algorithm_codesign/test_s2_multi_event.py": "76a9608dc2d2103a4ada1507248c882ce6da31cf54ed82300f8249b30a789220"
+  },
+  "conditions": {
+    "p": [
+      "1/5",
+      "3/10",
+      "1/2"
+    ],
+    "tau": "5/7",
+    "x": "5/14",
+    "steps": 2,
+    "degree": 5,
+    "state": "000",
+    "sigma": 1,
+    "arm": "closed_P5_full",
+    "row": 10,
+    "ordered_pairs": 3969,
+    "epsilon_axis": "1/200",
+    "alpha_axis": "49/24000",
+    "probability_bits": 160,
+    "root_bits": 256,
+    "eta": "1/1000000000000",
+    "rho": "1/1000000000000",
+    "primitive_error": "1/1000000",
+    "interval_dps": 100,
+    "arithmetic": "exact rational, certified fixed-bit sqrt and log enclosures; no floating scientific arithmetic"
+  },
+  "operator": {
+    "system_qubits": 3,
+    "Q0": "Z0",
+    "V1": "R_XX01(pi/4)",
+    "V2": "R_XX12(pi/4) R_ZZ01(pi/4)",
+    "Qi": "Vi adjoint Zi Vi",
+    "rotation": "exp(-i theta P/2)",
+    "finite_target": "[P5(-i (5/14) R)]^2",
+    "time_order": "i then j; matrix Vj Vi",
+    "geometry_basis_DF_rank_LD_delta": "not applicable: synthetic input"
+  },
+  "laws": [
+    "P0",
+    "qA",
+    "qB"
+  ],
+  "cells": [
+    "P0/A",
+    "P0/B",
+    "qA/A",
+    "qA/B",
+    "qB/A",
+    "qB/B"
+  ],
+  "confidence": "alternative forecasts at the same per-axis conditions; no six-cell familywise experiment",
+  "price_boundary": {
+    "primary": "T",
+    "auxiliary": [
+      "CX",
+      "1Q"
+    ],
+    "system_preparation": "excluded",
+    "controlled": "included in saved IR",
+    "wrapper_X": [
+      "H",
+      "H",
+      "measure"
+    ],
+    "wrapper_Y": [
+      "H",
+      "Sdg",
+      "H",
+      "measure"
+    ],
+    "wrapper_known_T": 0,
+    "wrapper_known_CX": 0,
+    "wrapper_known_1Q_X": 2,
+    "wrapper_known_1Q_Y": 3,
+    "unknown_common_cost": "per-axis per-trial h_metric; report affine 2*N*h, never silently zero",
+    "IS_price": "known controlled-pair T; unknown h not optimized",
+    "RZ_depth_wall_conversion": "not performed"
+  },
+  "implementation_difference": "new ordered-pair identity/price adapter and six-cell orchestration only; reuse fixed boundary, Parent IS/statistics, error and log routines unchanged",
+  "resources": {
+    "CPU_affinity": 32,
+    "MemAvailable_kB_observed": 51830824,
+    "GPU": "driver unavailable",
+    "law_workers": 3,
+    "acceleration": "shared prepared pair data; suffix price cache; three independent law tasks in parallel; no matrix/BLAS workload",
+    "artificial_resource_or_wall_cap": null
+  },
+  "online_cost": "NOT_MEASURED; no draws or independent benchmark",
+  "mandatory_STOP": true,
+  "stop_conditions": [
+    "target or event/IR/phase/cache/sequence identity mismatch",
+    "negative price",
+    "support loss or finite-bit precision failure",
+    "nonpositive statistical remaining",
+    "zero T price: no regularizer/floor/metric switch",
+    "essential undefined full-price component invalidates comparison",
+    "existing scientific contract conflict or shared-environment interference"
+  ],
+  "prohibited": [
+    "RNG/quantum shots",
+    "new H/state/reference or signal matrices",
+    "circuit build/compile or native synthesis",
+    "new optimizer/sampler",
+    "new r/degree/time/precision/input",
+    "comparisons beyond six cells",
+    "important scientific review"
+  ]
+}
