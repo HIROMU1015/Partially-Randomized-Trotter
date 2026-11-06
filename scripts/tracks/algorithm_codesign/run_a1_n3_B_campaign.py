@@ -2,6 +2,10 @@
 """Fixed authorized B campaign, consume-once persistent manager; no resume."""
 import argparse
 from pathlib import Path
+import sys
+
+ROOT=Path(__file__).resolve().parents[3]
+sys.path.insert(0,str(ROOT/'src'))
 from trottertracks.algorithm_codesign import a1_n3_B_campaign as b
 
 if __name__=='__main__':

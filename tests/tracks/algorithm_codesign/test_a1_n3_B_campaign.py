@@ -11,6 +11,16 @@ from trottertracks.algorithm_codesign import a1_n3_B_campaign as b
 
 
 class BCampaignTests(unittest.TestCase):
+    def test_cli_imports_own_source_without_pythonpath_or_working_directory(self):
+        import os,subprocess
+        root=Path(__file__).resolve().parents[3]
+        env={k:os.environ[k] for k in ('HOME','USER','LOGNAME','SHELL','PATH','LANG') if k in os.environ}
+        self.assertNotIn('PYTHONPATH',env)
+        result=subprocess.run([b.PYTHON,'-B',str(root/b.ENTRY),'--help'],cwd='/tmp',env=env,capture_output=True,text=True)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertIn('--submit',result.stdout)
+        self.assertNotIn('Traceback',result.stderr)
+
     def test_new_fixed_identity_seed_and_output(self):
         self.assertNotEqual(b.SEED,b.c.SEED)
         self.assertEqual(b.SEED,20261107)
