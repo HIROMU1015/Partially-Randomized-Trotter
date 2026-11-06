@@ -2,6 +2,8 @@
 
 - [LOCAL元H–DF12対応検証・結果前条件](research/b2_original_df12_correspondence_20261106/PLAN.md)：
   第一段階operator検証だけ。元H state solveとRPE実行は次の明示承認対象。
+  [最終REPORT](research/b2_original_df12_correspondence_20261106/REPORT.md)、
+  [技術修正履歴](research/b2_original_df12_correspondence_20261106/TECHNICAL_CORRECTIONS.md)。
 
 研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
 このcheckoutにない後続資料も、固定commitから参照できる。

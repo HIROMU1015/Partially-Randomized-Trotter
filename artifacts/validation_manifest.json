@@ -2258,6 +2258,112 @@
         "Keep canonical file placement separate from archived alternatives and original scientific execution context.",
         "Resolve unavailable source objects and private/uncommitted originals before claiming complete environment coverage."
       ]
+    },
+    {
+      "id": "local_b2_original_df12_correspondence_20261106",
+      "status": "local_operator_validation_pass_not_RPE_scientific_GO",
+      "source_commit": "126b9d4480c7937b39c8be3aef7fbecda48cb556",
+      "report": "docs/research/b2_original_df12_correspondence_20261106/REPORT.md",
+      "plan": "docs/research/b2_original_df12_correspondence_20261106/PLAN.md",
+      "result": "artifacts/b2_original_df12_correspondence/2026-11-06/run03/result.json",
+      "result_sha256": "f8f31b02b8d4dd4e816c443c98dbd7132c49614af3447893a33972f114177005",
+      "input_sha256": {
+        "HDF5": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958",
+        "DF12_NPZ": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a"
+      },
+      "conditions": {
+        "model": "linear_H4",
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "spatial_orbitals": 4,
+        "spin_orbitals": 8,
+        "electrons": 4,
+        "nelec_alpha": 2,
+        "nelec_beta": 2,
+        "full_dimension": 256,
+        "sector_dimension": 36,
+        "DF_rank": 12,
+        "generation_order": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "B2_L_D": 3,
+        "delta_window": null,
+        "validation_scope": "operator reconstruction only; no evolution or state evaluation",
+        "tensor": "W[p,q,r,s] a†p a†q a_r a_s; W=spin_lift(g_OF)/2; g_OF=(ps|qr)",
+        "H_src": "spinorb_from_spatial cutoff before 1/2; InteractionOperator supplied to DF",
+        "state_order": "Qiskit LSB; bit_reverse(OpenFermion MSB)",
+        "original_RPE_target_selected": null,
+        "nuclear_scalar_hex": "0x1.25845777d3feap+1"
+      },
+      "counts": {
+        "technical_checks": 65,
+        "passed": 65,
+        "precision_stability_checks": 6,
+        "state_solves": 0
+      },
+      "model_differences_120": {
+        "sector_36": {
+          "H_phys_minus_H_src": {
+            "max_abs_entry": "1.266348137463069178920704871416091918945e-15",
+            "frobenius": "6.736150711743118663974110787357213585867e-15",
+            "induced_infinity_norm": "5.499073418846478489285800606012344360352e-15",
+            "spectral_norm_of_high_precision_difference_binary64_SVD": 2.469952915976866e-15
+          },
+          "H_src_minus_H_DF12": {
+            "max_abs_entry": "4.278830322712303598776033223173126822714e-15",
+            "frobenius": "1.810314553659218295578880638934384772262e-14",
+            "induced_infinity_norm": "6.662258814858539301724469741827052943756e-15",
+            "spectral_norm_of_high_precision_difference_binary64_SVD": 4.8671329066135276e-15
+          },
+          "H_phys_minus_H_DF12": {
+            "max_abs_entry": "4.278830322712303598776033223173126822714e-15",
+            "frobenius": "1.925660870467163806439684985368968905712e-14",
+            "induced_infinity_norm": "1.028783856685523752409091513130877769009e-14",
+            "spectral_norm_of_high_precision_difference_binary64_SVD": 6.2334292592242185e-15
+          }
+        },
+        "full_256": {
+          "H_phys_minus_H_src": {
+            "max_abs_entry": "1.266348137463069178920704871416091918945e-15",
+            "frobenius": "1.558132339106012031218274514692075059644e-14",
+            "induced_infinity_norm": "5.499073418846478489285800606012344360352e-15",
+            "spectral_norm_of_high_precision_difference_binary64_SVD": 2.469952915976864e-15
+          },
+          "H_src_minus_H_DF12": {
+            "max_abs_entry": "9.27343174852811850503417436796259306593e-15",
+            "frobenius": "5.680504874522314170762513939227090880078e-14",
+            "induced_infinity_norm": "9.27343174852811850503417436796259306593e-15",
+            "spectral_norm_of_high_precision_difference_binary64_SVD": 9.273431748528118e-15
+          },
+          "H_phys_minus_H_DF12": {
+            "max_abs_entry": "9.27343174852811850503417436796259306593e-15",
+            "frobenius": "5.883394088229790427488878979422982927719e-14",
+            "induced_infinity_norm": "1.188841851916570577541114818677942934243e-14",
+            "spectral_norm_of_high_precision_difference_binary64_SVD": 9.273431748528118e-15
+          }
+        }
+      },
+      "limitations": [
+        "No rigorous interval certification or historical h/g-to-DF receipt",
+        "No target adoption or RPE model-error budget qualification",
+        "No original-H ground state computed; saved DF state was not used"
+      ],
+      "prior_technical_failures_preserved": [
+        "artifacts/b2_original_df12_correspondence/2026-11-06/run01/technical_failure.json",
+        "artifacts/b2_original_df12_correspondence/2026-11-06/run02/result.json"
+      ],
+      "mandatory_stop": true
     }
   ],
   "repository_completion_criteria": [

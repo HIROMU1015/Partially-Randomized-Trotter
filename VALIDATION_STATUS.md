@@ -1,5 +1,17 @@
 # Validation status
 
+## 2026-11-06 LOCAL original-H / DF12 operator correspondence
+
+`OPERATOR_CHECKS_PASS_MODEL_DIFFERENCES_RECORDED`：linear H4、1 Å、STO-3G、8 spin orbitals、
+固定DF rank12全factor、full256/ Nα=Nβ=2 sector36。接続先B2 L_D3はcontextのみ、delta窓なし。
+65 checksと80/120桁安定性6件が通過した。120桁参照でH_phys−DF12のspectral normは
+full`9.27343e-15 Ha`、sector`6.23343e-15 Ha`。厳密interval保証・完全な生成来歴・
+元H state・RPE科学GOを与えない。state solve/時間発展/回路/費用実行は0。
+計算SOURCE `126b9d4480c7937b39c8be3aef7fbecda48cb556`、
+[REPORT](docs/research/b2_original_df12_correspondence_20261106/REPORT.md)、
+[最終JSON](artifacts/b2_original_df12_correspondence/2026-11-06/run03/result.json)。
+run01/02のdriver失敗と修正は保存し、旧研究STOPは解除しない。mandatory STOP。
+
 ## 2026-09-20 delta-schedule central-RTE compiled-cost note
 
 H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
