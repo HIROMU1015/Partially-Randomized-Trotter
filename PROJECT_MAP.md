@@ -208,3 +208,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A V3：回転分類・18round再会計
 
 [REPORT](docs/research/pr_reference_rotation_v3_20261107/REPORT.md)、[規約](docs/research/pr_reference_rotation_v3_20261107/CLASSIFICATION_RULES.md)、[SOURCE・結果](artifacts/pr_reference_rotation_v3/2026-11-07/README.md)。固定H4/STO-3G/DF12・Partial S2 LD3 h=.02 K2・compiler A。確定任意角部分はB′比2.818200%減だが、未確定角度を含む全任意角数の改善は未資格。SOURCE型と実native型を分離。2165 local/384 cohort/14 QPY/15人工検査。旧CX/RZ/shot会計を維持、新compile/T合成0、V5未開始、mandatory STOP。新SOURCE `src/trottertracks/pr_reference_rotation_v3.py` の明示関数を使用。
+
+## 2026-11-07 新A V5：全18round native DAG depth
+
+[REPORT](docs/research/pr_reference_depth_v5_20261107/REPORT.md)、[導出](docs/research/pr_reference_depth_v5_20261107/DERIVATION.md)、[SOURCE・結果](artifacts/pr_reference_depth_v5/2026-11-07/README.md)。固定H4/STO-3G/DF12・Partial S2 LD3 h=.02 K2・compiler A・canonical finite-bit lawで、referenceの期待総depth上界がB′下界を下回り、≥40.995952%削減。max-plus frontierと独立2 laneの期待max上界。追加8qubit、RZ増加、総T未取得を維持。新SOURCE `src/trottertracks/pr_reference_depth_v5.py`、人工13検査・保存256価格・8 QPY照合。科学対象の新build/compile0、旧STOP保全、mandatory STOP。

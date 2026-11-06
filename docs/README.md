@@ -138,3 +138,7 @@
 ## 新A V3：回転資源（2026-11-07）
 
 [REPORT](research/pr_reference_rotation_v3_20261107/REPORT.md)・[SCOPE](research/pr_reference_rotation_v3_20261107/SCOPE.md)・[分類規約](research/pr_reference_rotation_v3_20261107/CLASSIFICATION_RULES.md)。確定任意角部分のB′比2.818200%減と、未確定を含む全任意角の優越未資格を区別する。旧CX/RZ/shot不変更、総T/depth未取得・未資格。V3でSTOP、V5へ進まない。
+
+## 新A V5：native DAG depth（2026-11-07）
+
+[REPORT](research/pr_reference_depth_v5_20261107/REPORT.md)、[SCOPE](research/pr_reference_depth_v5_20261107/SCOPE.md)、[構造導出](research/pr_reference_depth_v5_20261107/DERIVATION.md)。固定モデル下でreferenceの全18round shot加重depth上界がB′下界を下回り、≥40.995952%減。追加8 qubit・RZ増加・総T未取得を別記。科学対象の新build/compileなし、mandatory STOP。

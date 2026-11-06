@@ -189,3 +189,7 @@ artifacts/<validation_name>/
 ## 新A V3：保存回転分類（2026-11-07）
 
 [呼出順・検査結果](../artifacts/pr_reference_rotation_v3/2026-11-07/README.md)、[REPORT](../docs/research/pr_reference_rotation_v3_20261107/REPORT.md)。`trottertracks.pr_reference_rotation_v3` の明示関数で保存local/cohort/QPYを分類・再会計した。人工検査は同moduleの `synthetic_tests`。自動再開runnerは作らず、旧runnerも実行していない。保存runはmandatory STOP済み、V5・新compile・T合成へ進まない。
+
+## 新A V5：保存DAG depthの構造境界（2026-11-07）
+
+[呼出順・SOURCE・検査](../artifacts/pr_reference_depth_v5/2026-11-07/README.md)、[REPORT](../docs/research/pr_reference_depth_v5_20261107/REPORT.md)。`trottertracks.pr_reference_depth_v5` の明示関数でlocal matrix・fence・保存cohort/QPY・人工検査・18round会計を実施した。科学runnerや新自動再開入口は作らず、既存builder/compiler/runnerを再実行していない。保存runはmandatory STOP済み。

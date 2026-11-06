@@ -159,3 +159,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## 新A V3：既存DF/RTEの保存出力を分類（2026-11-07）
 
 [REPORT](../../docs/research/pr_reference_rotation_v3_20261107/REPORT.md)、[SOURCE・人工検査・raw](../../artifacts/pr_reference_rotation_v3/2026-11-07/README.md)。`../trottertracks/pr_reference_rotation_v3.py` が既存B′保存path、finite-bit分布、D primitive、区間helperを再利用。既存builder/compilerは変更せず、新build/compile/合成0。実native型と解析的由来を分離し、全任意角優越は未資格。mandatory STOP。
+
+## 新A V5：保存DF/RTE frontier（2026-11-07）
+
+[REPORT](../../docs/research/pr_reference_depth_v5_20261107/REPORT.md)、[SOURCE・人工検査・結果](../../artifacts/pr_reference_depth_v5/2026-11-07/README.md)。`../trottertracks/pr_reference_depth_v5.py` は旧 `frontier_depth`、保存DF/RTE catalogue、B′ saved_samples、finite-bit distributionsを再利用。既存builder/compilerは変更せず、max-plus状態と2 laneの期待上界だけ追加。全18round depth条件付き削減、総T未取得、mandatory STOP。

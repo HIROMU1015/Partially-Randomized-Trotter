@@ -646,3 +646,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-07 新A V3：部分分類完了・全任意角優越は未資格
 
 [報告](docs/research/pr_reference_rotation_v3_20261107/REPORT.md)、[機械可読値](artifacts/pr_reference_rotation_v3/2026-11-07/CLASSIFIED_18ROUND.json)。Linear H4 1Å/STO-3G/DF12、Partial S2 LD3 h=.02 K2、元H ground供給・準備費除外、固定compiler A/finite-bit law。18roundの確定任意角部分はB′比2.818200%減少。未確定を含む総任意角数は区間が重なりUNQUALIFIED。実native binary値の分類と解析的C/T由来を分離し、T総費用を認定しない。2165 local・384保存whole価格・14保存QPY・15人工検査、著者検証。新compile/合成0、既存CX/RZ/shot保証は不変更、V5未開始、mandatory STOP。
+
+## 2026-11-07 新A V5：条件付き全18round depth削減
+
+[REPORT](docs/research/pr_reference_depth_v5_20261107/REPORT.md)、[機械可読境界](artifacts/pr_reference_depth_v5/2026-11-07/DEPTH_18ROUND.json)。Linear H4 1Å/STO-3G/DF12、Partial S2 LD3 h=.02 K2、元H ground供給・準備費除外、compiler A/保存finite-bit law・shot schedule。referenceの期待総native DAG depth上界≤5.4244718400e11、B′下界≥9.19338940794e11、削減率≥40.995952%。exact期待値ではなく構造上下界。referenceの8 reset/測定を含む保存規約、追加8qubit。5284局所context行列・268 fence・256価格包含・8 QPY exact frontier・人工13検査。著者検証で外部再現ではない。旧CX/RZ/回転・誤差/shot不変更、科学対象の新build/compile/T合成0、mandatory STOP。
