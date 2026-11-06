@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_track_d_h4_paired_reference.py](run_track_d_h4_paired_reference.py) は[Stage A保存32 path](../docs/research/track_d_h4_paired32_reference_20261106/PLAN.md)専用。元SOURCE・保存events/reference/rawを必要とし、全precompile PASS後だけ最大128 wrapper compile。新sampling・RPE統計／全費用へ進まない。
+
 [run_track_d_h4_reference.py](run_track_d_h4_reference.py) は[実H4固定word02](../docs/research/track_d_h4_reference_validation_20261106/PLAN.md)のcorrectnessとPASS時6 full-wrapper compileに限定する。元SOURCEと保存結果の隔離入力が必要で、終了後mandatory STOP。
 
 [run_track_d_minimal_reference.py](run_track_d_minimal_reference.py) は[固定人工path](../docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)のcorrectnessとPASS時の6 wrapper compileだけを実行し、mandatory STOPする。通常の回帰testではない。
