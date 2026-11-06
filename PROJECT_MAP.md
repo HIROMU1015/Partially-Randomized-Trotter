@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+2026-11-06 LOCAL固定H_phys基底状態：
+[結果前条件](docs/research/b2_hphys_ground_state_20261106/PLAN.md)。
+実装 `src/trotterlib/b2_hphys_ground_state.py`、runner `scripts/run_b2_hphys_ground_state.py`、
+人工test `tests/test_b2_hphys_ground_state.py`、公開結果先
+`artifacts/b2_hphys_ground_state/2026-11-06/run01/`。state配列は別LOCAL checkoutのprivate領域。
+指定sector36のみのsolveであり、RPE実行は含めない。
+
 2026-11-06 LOCAL元H–DF12対応検証：
 [結果REPORT](docs/research/b2_original_df12_correspondence_20261106/REPORT.md)・
 [結果前条件](docs/research/b2_original_df12_correspondence_20261106/PLAN.md)。

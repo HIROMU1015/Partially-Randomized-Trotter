@@ -1,5 +1,8 @@
 # scripts 索引
 
+- `run_b2_hphys_ground_state.py`：固定H_physのNα=Nβ=2 sector36を一回solveし、
+  private stateと公開metadataを保存。[結果前条件](../docs/research/b2_hphys_ground_state_20261106/PLAN.md)。
+
 - `run_b2_original_df12_correspondence.py`：固定保存HDF5と旧DF12だけのoperator対応検証。
   [結果前条件](../docs/research/b2_original_df12_correspondence_20261106/PLAN.md)。
   state solve・時間発展・回路/費用実行なし。

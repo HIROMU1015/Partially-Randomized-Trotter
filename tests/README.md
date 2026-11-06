@@ -1,5 +1,8 @@
 # tests の役割
 
+- `test_b2_hphys_ground_state.py`：既存solverへmock固有pairを渡す人工検査。
+  sector選択、raw/symmetrized残差、事前拒否、phase/bit-order。実分子入力・追加eighなし。
+
 - `test_b2_original_df12_correspondence.py`：人工複素CAR/JW、quartic順序、sector漏れ、
   signed DF squares、cutoffの区別、80/120桁のoperator参照。実分子入力・state solveなし。
 

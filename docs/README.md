@@ -1,5 +1,8 @@
 # 文書索引
 
+- [LOCAL固定H_phys基底状態・結果前条件](research/b2_hphys_ground_state_20261106/PLAN.md)：
+  指定sector36のstate solve・correctnessだけ。RPE実行・SERVER 2統合は含めない。
+
 - [LOCAL元H–DF12対応検証・結果前条件](research/b2_original_df12_correspondence_20261106/PLAN.md)：
   第一段階operator検証だけ。元H state solveとRPE実行は次の明示承認対象。
   [最終REPORT](research/b2_original_df12_correspondence_20261106/REPORT.md)、

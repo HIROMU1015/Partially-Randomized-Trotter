@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+- `b2_hphys_ground_state.py`：既存H_phys CAR構築と`canonical_ground`の限定接続。
+  raw/symmetrized residual・bit-order・private保存を検証する。
+
 - `b2_original_df12_correspondence.py`：既存CAR/JW、DF sector、独立occupation参照を
   再利用する固定元H/DF12対応検証。[条件](../../docs/research/b2_original_df12_correspondence_20261106/PLAN.md)。
 
