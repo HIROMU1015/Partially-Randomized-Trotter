@@ -193,3 +193,7 @@ artifacts/<validation_name>/
 ## 新A V5：保存DAG depthの構造境界（2026-11-07）
 
 [呼出順・SOURCE・検査](../artifacts/pr_reference_depth_v5/2026-11-07/README.md)、[REPORT](../docs/research/pr_reference_depth_v5_20261107/REPORT.md)。`trottertracks.pr_reference_depth_v5` の明示関数でlocal matrix・fence・保存cohort/QPY・人工検査・18round会計を実施した。科学runnerや新自動再開入口は作らず、既存builder/compiler/runnerを再実行していない。保存runはmandatory STOP済み。
+
+## 新A V5保証の限定補強（2026-11-07）
+
+[実行順・SOURCE・検査](../artifacts/pr_reference_depth_v5_reinforcement/2026-11-07/README.md)、[REPORT](../docs/research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)。`trottertracks.pr_reference_depth_v5_reinforcement` の明示関数で局所inverse・保存非X鎖・人工3検査・旧会計への対応照合を実施。旧runnerや全18round計算は再実行せず、新自動再開入口は作らない。保存runはmandatory STOP済み。

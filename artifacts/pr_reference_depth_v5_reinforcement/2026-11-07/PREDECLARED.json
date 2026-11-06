@@ -1,0 +1,79 @@
+{
+  "new_trajectory_whole_compile_sampling_simulation_synthesis": 0,
+  "review_text": "not provided at known path/base tree",
+  "stage_A": {
+    "blocks": [
+      {
+        "block": 0,
+        "direction": "actual source QuantumCircuit.inverse",
+        "time": 0.01
+      },
+      {
+        "block": 1,
+        "direction": "actual source QuantumCircuit.inverse",
+        "time": 0.01
+      },
+      {
+        "block": 2,
+        "direction": "actual source QuantumCircuit.inverse",
+        "time": 0.01
+      },
+      {
+        "block": 3,
+        "direction": "actual source QuantumCircuit.inverse",
+        "time": 0.01
+      },
+      {
+        "block": 0,
+        "direction": "actual source QuantumCircuit.inverse",
+        "time": 0.02
+      }
+    ],
+    "comparison": "actual inverse native span <= saved positive span, no integer tolerance",
+    "compile_batches": 4,
+    "inverse_records": 20,
+    "reference_contexts": [
+      [
+        false,
+        false
+      ],
+      [
+        false,
+        true
+      ],
+      [
+        true,
+        false
+      ],
+      [
+        true,
+        true
+      ]
+    ],
+    "revision": "max of saved G D span and validated F inverse D span; no new candidate"
+  },
+  "stage_B": {
+    "comparison": "non-X protected subcircuit delta versus old delta",
+    "contexts": [
+      [
+        false,
+        false
+      ],
+      [
+        false,
+        true
+      ],
+      [
+        true,
+        false
+      ],
+      [
+        true,
+        true
+      ]
+    ],
+    "new_scientific_compile": 0,
+    "records": "all saved Bprime D/frame; flag exact V5 lower-bound dependencies"
+  },
+  "stage_C": "no all18 recomputation if A/B bounds unchanged; otherwise substitute changed local bounds only"
+}

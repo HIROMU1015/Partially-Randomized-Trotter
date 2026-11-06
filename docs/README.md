@@ -142,3 +142,7 @@
 ## 新A V5：native DAG depth（2026-11-07）
 
 [REPORT](research/pr_reference_depth_v5_20261107/REPORT.md)、[SCOPE](research/pr_reference_depth_v5_20261107/SCOPE.md)、[構造導出](research/pr_reference_depth_v5_20261107/DERIVATION.md)。固定モデル下でreferenceの全18round shot加重depth上界がB′下界を下回り、≥40.995952%減。追加8 qubit・RZ増加・総T未取得を別記。科学対象の新build/compileなし、mandatory STOP。
+
+## 新A V5保証の限定補強（2026-11-07）
+
+[REPORT](research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)・[SCOPE](research/pr_reference_depth_v5_reinforcement_20261107/SCOPE.md)。inverse Dの行列差を確認したうえでspan上界を維持。B′の下界はX-free局所鎖とCX→Xの順序で補強。A/B PASS、旧≥40.995952%を維持、新18round総計計算0、mandatory STOP。

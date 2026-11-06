@@ -650,3 +650,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-07 新A V5：条件付き全18round depth削減
 
 [REPORT](docs/research/pr_reference_depth_v5_20261107/REPORT.md)、[機械可読境界](artifacts/pr_reference_depth_v5/2026-11-07/DEPTH_18ROUND.json)。Linear H4 1Å/STO-3G/DF12、Partial S2 LD3 h=.02 K2、元H ground供給・準備費除外、compiler A/保存finite-bit law・shot schedule。referenceの期待総native DAG depth上界≤5.4244718400e11、B′下界≥9.19338940794e11、削減率≥40.995952%。exact期待値ではなく構造上下界。referenceの8 reset/測定を含む保存規約、追加8qubit。5284局所context行列・268 fence・256価格包含・8 QPY exact frontier・人工13検査。著者検証で外部再現ではない。旧CX/RZ/回転・誤差/shot不変更、科学対象の新build/compile/T合成0、mandatory STOP。
+
+## 2026-11-07 新A V5：inverse Dと非X鎖の補強PASS
+
+[REPORT](docs/research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)。固定Linear H4 1Å/STO-3G/DF12、Partial S2 LD3 h=.02 K2、元H ground供給・準備費除外、compiler A/保存finite-bit law。Stage Aは20 actual SOURCE inverse Dのspan≤旧値、Stage Bは19下界target×4 contextを含む144保存recordの非X鎖保持を確認しPASS。旧18round上下界・削減率≥40.995952%を維持し、新総計再計算は0回。4 local batch compile、人工3検査、whole compile/sampling/simulation/T合成0。著者検証で新しい独立レビューではない。旧値・SOURCE・STOP不変更、mandatory STOP。

@@ -212,3 +212,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A V5：全18round native DAG depth
 
 [REPORT](docs/research/pr_reference_depth_v5_20261107/REPORT.md)、[導出](docs/research/pr_reference_depth_v5_20261107/DERIVATION.md)、[SOURCE・結果](artifacts/pr_reference_depth_v5/2026-11-07/README.md)。固定H4/STO-3G/DF12・Partial S2 LD3 h=.02 K2・compiler A・canonical finite-bit lawで、referenceの期待総depth上界がB′下界を下回り、≥40.995952%削減。max-plus frontierと独立2 laneの期待max上界。追加8qubit、RZ増加、総T未取得を維持。新SOURCE `src/trottertracks/pr_reference_depth_v5.py`、人工13検査・保存256価格・8 QPY照合。科学対象の新build/compile0、旧STOP保全、mandatory STOP。
+
+## 2026-11-07 新A V5：レビュー指摘2点の限定補強
+
+[REPORT](docs/research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)、[SOURCE・結果](artifacts/pr_reference_depth_v5_reinforcement/2026-11-07/README.md)。5 inverse D×4 contextを4 batch compileし、正逆の行列は異なるが全spanが旧上界以下。B′144 D/frame record（下界対象19×4を含む）はX-freeで、CX→X相殺後も非X鎖とδを保持。A/B PASS、18round再計算0、旧≥40.995952%保証を固定モデル下で維持。新SOURCE `src/trottertracks/pr_reference_depth_v5_reinforcement.py`、人工3検査。独立レビュー本文は未提供・未確認、著者技術検証。旧SOURCE/結果/STOP保全、mandatory STOP。
