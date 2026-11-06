@@ -216,3 +216,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A V5：レビュー指摘2点の限定補強
 
 [REPORT](docs/research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)、[SOURCE・結果](artifacts/pr_reference_depth_v5_reinforcement/2026-11-07/README.md)。5 inverse D×4 contextを4 batch compileし、正逆の行列は異なるが全spanが旧上界以下。B′144 D/frame record（下界対象19×4を含む）はX-freeで、CX→X相殺後も非X鎖とδを保持。A/B PASS、18round再計算0、旧≥40.995952%保証を固定モデル下で維持。新SOURCE `src/trottertracks/pr_reference_depth_v5_reinforcement.py`、人工3検査。独立レビュー本文は未提供・未確認、著者技術検証。旧SOURCE/結果/STOP保全、mandatory STOP。
+
+## 2026-11-07 新A：Clifford+T評価の静的再利用調査
+
+[REPORT](docs/research/pr_reference_clifford_t_survey_20261107/REPORT.md)、[REUSE_APPLICABILITY](docs/research/pr_reference_clifford_t_survey_20261107/REUSE_APPLICABILITY.md)。strict RZ engine・actual adjoint・raw disk会計の再利用条件を整理。全support位相key、precision、期待価格、T-depthは追加資格が必要で、総T/T-depthは未取得のまま。有理期待Tへ整数ceil/gcd下界を直接移さない。新規合成・価格再集計・回路/数値検証0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。

@@ -146,3 +146,7 @@
 ## 新A V5保証の限定補強（2026-11-07）
 
 [REPORT](research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)・[SCOPE](research/pr_reference_depth_v5_reinforcement_20261107/SCOPE.md)。inverse Dの行列差を確認したうえでspan上界を維持。B′の下界はX-free局所鎖とCX→Xの順序で補強。A/B PASS、旧≥40.995952%を維持、新18round総計計算0、mandatory STOP。
+
+## 新A：Clifford+T資源評価の技術準備（2026-11-07）
+
+[REPORT](research/pr_reference_clifford_t_survey_20261107/REPORT.md)、[再利用対応表](research/pr_reference_clifford_t_survey_20261107/REUSE_APPLICABILITY.md)。既存strict合成・key・精度配分・RPE接続の静的調査。新Aの全support phase/T価格、precision採択、T-depthは未資格。新規科学計算を行わずmandatory STOP。
