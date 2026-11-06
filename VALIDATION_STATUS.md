@@ -612,3 +612,14 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ISの大きなFractionのprocess転送で整数文字列桁数制限に触れSTOP。qA/qBの4cellは未取得。
 科学実行前の人工38件と停止後の転送回帰1件はPASS。六cell完了・IS追加利益・独立再現/CI・分子全RPE評価は未認定。
 実行SOURCEは16d10faabb1f6aa4bda42f3aef81d89bf9ca9832。修正patchは未適用・科学retry未実施。
+
+## 2026-11-06 O2-S2 v2: fixed-input six-cell forecast complete
+
+[v2報告](docs/research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)、
+[SOURCE](artifacts/o2_s2_multi_event_validation/2026-11-06/v2/SOURCE.json)、
+[RESULT](artifacts/o2_s2_multi_event_validation/2026-11-06/v2/RESULT.json)。
+ユーザー許可の転送修正再実行で、同じsynthetic D2 Closed P5 r2／x=5/14の六cellを完了した。
+科学SOURCEは4c9f3fb32deef5c50fd98517ccbcd03311f0b059。人工39件と保存law接続確認はPASS、旧D2価格はexact一致。
+T主指標ではqB/BはqA/Bより約0.00134476%低いがP0/Bより約0.01296807%高い。共通非負h_Tを残してもこの向きは変わらない。
+分類はlocal fixed-input forecast。外部独立再現・CI、古典online費込み全実行時間・分子全RPEの優位は未認定。
+v1途中SOURCE/raw/STOPは保全し、v2公開後mandatory STOP。追加条件探索は未許可。

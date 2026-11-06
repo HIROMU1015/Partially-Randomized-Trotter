@@ -1,7 +1,7 @@
 # 文書索引
 
-[O2-S2複数event有限table評価・途中STOP（2026-11-06）](research/o2_s2_multi_event_validation_20261106/REPORT.md)：
-固定SOURCE、3,969 pair/P0の2cell、IS転送エラー、未適用修正案と次の許可範囲。
+[O2-S2複数event有限table評価v2・六cell完了（2026-11-06）](research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)：
+転送修正後の固定SOURCE、3,969 pair/三law、量子T主指標の不改善、古典費の制約とSTOP。v1途中結果も保全。
 
 研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
 このcheckoutにない後続資料も、固定commitから参照できる。

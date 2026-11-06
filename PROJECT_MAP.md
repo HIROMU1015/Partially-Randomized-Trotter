@@ -1,10 +1,10 @@
 # プロジェクト案内
 
-O2-S2固定pair-table限定評価（2026-11-06）：[途中報告・SOURCE・raw](docs/research/o2_s2_multi_event_validation_20261106/REPORT.md)。
-3,969 pairと元lawの2cell取得後、ISの有理数転送エラーでSTOP。六cell完了・sampling追加利益は未判定。
+O2-S2固定pair-table限定評価（2026-11-06）：[v2六cell結果・SOURCE・raw](docs/research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)。
+許可された転送修正再実行で六cell完了。T主指標は元law P0/Bが最小で、qB/Bによる追加改善なし。v1途中停止結果は保全。
 実装は `src/trottertracks/algorithm_codesign/s2_multi_event.py`、runnerは
 `scripts/tracks/algorithm_codesign/run_s2_multi_event_validation.py`、人工testは
-`tests/tracks/algorithm_codesign/test_s2_multi_event.py`。再実行には停止後retryの許可が必要。
+`tests/tracks/algorithm_codesign/test_s2_multi_event.py`。限定評価・公開後はmandatory STOP。
 
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
 複数ブランチの総括・後続結果・SOURCE・raw・検証状態を固定commitで辿れる。

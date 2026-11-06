@@ -1,8 +1,8 @@
 # scripts 索引
 
 O2-S2の固定pair-table runnerは [run_s2_multi_event_validation.py](tracks/algorithm_codesign/run_s2_multi_event_validation.py)。
-[途中報告](../docs/research/o2_s2_multi_event_validation_20261106/REPORT.md)：P0の2cell取得後、ISの有理数転送エラーでSTOP。
-原結果を上書きせず、停止後retryの許可前には再実行しない。修正patchは報告directoryに保存した未適用案。
+[v2六cell報告](../docs/research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)：許可された転送修正再実行で完了、T主指標でqB/BはP0/Bを改善せず。
+runnerの出力先はv2。v1のSOURCE・途中結果は保全し、新しい科学再実行・条件探索は自動開始しない。
 
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
