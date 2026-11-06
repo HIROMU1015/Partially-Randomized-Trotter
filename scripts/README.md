@@ -222,3 +222,8 @@ A1 N3案Bの[新しい一campaignの実行仕様](../docs/research/o2_a1_n3_B_sc
 
 
 2026-11-07 A1/B1-OL：[752-shot予備検証attempt02の完了結果](../docs/research/o2_a1_n3_pilot_admission_20261107/REPORT.md)。保存H4/1 Å/STO-3G/legacy DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y、actual Q/保証ground/exact engineを維持。752 bit/価格を完備、A1 2,009,673 RZ、B1-OL 1,622,442 RZ、全3,632,115 RZ。両軸zero-variance保留規則により全体INCONCLUSIVE。人工52 PASS、旧SOURCE/STOPとC1凍結を保全、公開照合後mandatory STOP。本検証の精度・期待費用保証ではない。
+
+
+## 2026-11-07 SCV scalar / paired pilot preparation
+
+Artificial-only SCV implementation; real 224-shot execution remains unadopted. [module](../src/trottertracks/algorithm_codesign/scv_scalar.py) [driver](../src/trottertracks/algorithm_codesign/scv224_pilot.py) [plan-only CLI](../scripts/tracks/algorithm_codesign/prepare_scv224_pilot.py) [control tests](../tests/tracks/algorithm_codesign/test_scv_scalar.py) [driver tests](../tests/tracks/algorithm_codesign/test_scv224_pilot.py) [report](../docs/research/scv224_preparation_20261107/REPORT.md) [evidence](../artifacts/scv224_preparation/2026-11-07/SOURCE.json)

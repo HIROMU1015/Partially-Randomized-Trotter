@@ -255,3 +255,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 
 
 2026-11-07：[層内control・層別＋CVの未採択設計](docs/research/intrastratum_cv_design_20261107/REPORT.md)。固定理論8d8a290/752結果3c8e55a/N1 law744e1a0を静的確認。rotation fragment群、signed support、product label一致を候補化し、一層一特徴・224-shot paired診断を提案。追加測定なしのmetadata特徴とexact条件付き平均の式を整理したが、相関・分散/費用改善は未検証。実装・新科学計算・保存結果再解析・test実行0、正式採択なし、C1凍結・旧STOP保全、公開照合後mandatory STOP。
+
+
+2026-11-07：[SCV最小実装・224-shot準備](docs/research/scv224_preparation_20261107/REPORT.md)。rotation fragment群indicator/条件付き平均/h1 scalar fit/freeze/全5層paired評価を独立SOURCEへ追加。新規人工34＋再利用72＝106件PASS。実H4群・平均/moment・科学RNG/Born/compile/測定・保存結果数値再解析0。224 shots/seed20261109/streamは未採択案。旧SOURCE/結果/STOP・C1凍結を保全し、公開照合後mandatory STOP。

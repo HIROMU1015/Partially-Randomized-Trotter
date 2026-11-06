@@ -1,0 +1,52 @@
+{
+  "status": "PREPARATION_ONLY",
+  "scientific_execution_enabled": false,
+  "purpose": "O2_SCV224_PAIRED_DIAGNOSTIC",
+  "campaign_candidate": "O2-SCV224-H4-m0-q1-20261107-v1",
+  "seed_candidate": 20261109,
+  "train_per_axis": 32,
+  "evaluation_per_axis": [
+    4,
+    64,
+    4,
+    4,
+    4
+  ],
+  "total_physical_shots": 224,
+  "paired_evaluation_shots": 160,
+  "range_guard": "4",
+  "domain_tokens": [
+    "[\"A1\",\"X\",\"train\",\"1\"]",
+    "[\"A1\",\"Y\",\"train\",\"1\"]",
+    "[\"B1-OL\",\"X\",\"prod\",\"0\"]",
+    "[\"B1-OL\",\"X\",\"prod\",\"1\"]",
+    "[\"B1-OL\",\"X\",\"prod\",\"2\"]",
+    "[\"B1-OL\",\"X\",\"prod\",\"3\"]",
+    "[\"B1-OL\",\"X\",\"prod\",\"4\"]",
+    "[\"B1-OL\",\"Y\",\"prod\",\"0\"]",
+    "[\"B1-OL\",\"Y\",\"prod\",\"1\"]",
+    "[\"B1-OL\",\"Y\",\"prod\",\"2\"]",
+    "[\"B1-OL\",\"Y\",\"prod\",\"3\"]",
+    "[\"B1-OL\",\"Y\",\"prod\",\"4\"]"
+  ],
+  "child_streams": 24,
+  "spawn_rule": "lexical domain token, path child then bit child",
+  "path_words_per_trial": 64,
+  "bit_words_per_trial": 1,
+  "total_words_cap": 14560,
+  "call_caps": {
+    "exact_engine": 224,
+    "Born": 224,
+    "selected_full_build": 448,
+    "compile": 224
+  },
+  "retry": 0,
+  "precision": "NOT_CERTIFIED",
+  "pending": [
+    "224-shot science scope and settings adoption",
+    "campaign identity and seed/spawn adoption",
+    "real metadata-only group/mean evaluation",
+    "activation SOURCE/environment/input lock",
+    "certified service, fresh streams and qualified manager activation"
+  ]
+}
