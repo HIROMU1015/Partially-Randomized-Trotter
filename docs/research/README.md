@@ -89,3 +89,6 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 
 
 2026-11-07 A1対B1-OL：[採択済み752-shot予備検証](../../docs/research/o2_a1_n3_pilot_science_20261107/REPORT.md)。保存H4/1 Å/STO-3G/DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y、seed20261108。既存pilot driverとqualified managerを新activationで接続。人工テスト後SOURCE公開照合して一campaignだけ実行し、完了/中断でmandatory STOP。精度・期待費用保証は対象外。
+
+
+2026-11-07 A1対B1-OL予備検証：科学SOURCE a139d7dからconsume-once managerで一回起動したが、資源判定で最初のtrial前に正規STOP。取得0/752、Born/compile/RZ0、bundle decode1。比較は未評価、科学retry0。停止原本と全会計を[結果報告](../../docs/research/o2_a1_n3_pilot_science_20261107/REPORT.md)へ保全。次attemptは空き資源確認と別途明示承認が必要。C1凍結維持。
