@@ -1,0 +1,61 @@
+{
+  "host": "GPUA100-gleap-01",
+  "checked_at_utc": "2026-11-06T12:50:51.510821+00:00",
+  "tools": {
+    "crontab": "/usr/bin/crontab",
+    "at": null,
+    "sbatch": null,
+    "qsub": null,
+    "systemd-run": "/usr/bin/systemd-run",
+    "tmux": "/usr/bin/tmux"
+  },
+  "commands": [
+    {
+      "argv": [
+        "loginctl",
+        "show-user",
+        "30038",
+        "-p",
+        "Linger",
+        "-p",
+        "State"
+      ],
+      "code": 0,
+      "stdout": "State=active\nLinger=no\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "systemctl",
+        "show",
+        "cron.service",
+        "-p",
+        "ActiveState",
+        "-p",
+        "ControlGroup",
+        "-p",
+        "Restart",
+        "-p",
+        "KillMode"
+      ],
+      "code": 0,
+      "stdout": "Restart=on-failure\nControlGroup=/system.slice/cron.service\nKillMode=process\nActiveState=active\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "crontab",
+        "-l"
+      ],
+      "code": 1,
+      "stdout": "",
+      "stderr": "no crontab for AbeHiromu\n"
+    }
+  ],
+  "shared_settings_changed": false,
+  "own_crontab_initially_absent": true,
+  "cron_service_already_active": true,
+  "real_SSH_test": false,
+  "manager_decision": "conditional on own synthetic cron job proving /system.slice/cron.service membership; not tmux or user-manager persistence",
+  "science_calls": 0
+}
