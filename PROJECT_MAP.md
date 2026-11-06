@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D C6b-0静的準備](docs/research/track_d_c6b0_preparation_20261107/REPORT.md)：paired12量と絶対24量、旧20 floorの所在、CX構造の証明義務、追加校正/独立q8の最小案と未採択契約。新計算・再解析・実装0、公開照合後mandatory STOP。
+
 [C6a結果](docs/research/track_d_c6a_paired_price_20261106/RESULT.md)：fresh q2/q4各16、raw32/P0 postcheck128/pairedχ PASS。有限pilot統計/共分散・C6b提案、rawローカル保全、全RPE未評価、mandatory STOP。
 
 [Track D C6a](docs/research/track_d_c6a_paired_price_20261106/PLAN.md)：C5公開基点。canonical fresh q2/q4各16 path、fixed half-step cut、paired価格pilot。raw PASS後最大128 P0 wrapper、q8 holdout/全RPE対象外、公開後mandatory STOP。

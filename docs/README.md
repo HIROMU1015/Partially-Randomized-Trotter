@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C6b-0](research/track_d_c6b0_preparation_20261107/REPORT.md)／[C6b実行前契約案](research/track_d_c6b0_preparation_20261107/C6B_EXECUTION_DRAFT.md)：C6a固定保存値とSOURCEの静的調査だけ。paired優先・追加校正要否・q8事前条件を整理、未採択・未実行、mandatory STOP。
+
 [C6a結果](research/track_d_c6a_paired_price_20261106/RESULT.md)：fresh q2/q4各16、raw32/P0 postcheck128/pairedχ PASS。有限pilot統計・共有校正共分散・C6b提案、rawローカル保全、mandatory STOP。
 
 [Track D C6a固定PLAN](research/track_d_c6a_paired_price_20261106/PLAN.md)：q2/q4各16 fresh paired価格pilot、最大128 P0、C6b未実施。
