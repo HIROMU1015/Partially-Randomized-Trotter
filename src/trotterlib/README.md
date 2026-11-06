@@ -133,3 +133,5 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_branch_validation.py`はraw平均だけの既存decoder接続と復元後のenergy correctness。[結果・来歴・未保証事項](../../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。decoderとbranch閾値は不変更。
 
 `b2_p1_shot_accounting.py`は既存`B2SignalRecord.bounds`/`account_radius_round`を使う保存JSON adapterと整数集計。[条件付きshot数・未保証範囲](../../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。新signal/branch/price計算なし。
+
+`b2_p1_strong_pf_validation.py`は既存spin-aware XDF基底・signed schedule・CAR指数行列を接続する数値専用adapter。[8 armの範囲・結果](../../docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。対応runnerと`tests/test_b2_p1_strong_pf_validation.py`、`artifacts/track_a_b2_p1_strong_pf/`を参照。

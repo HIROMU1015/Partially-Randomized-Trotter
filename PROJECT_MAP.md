@@ -193,3 +193,9 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [条件付き十分shot数・SOURCE・STOP](docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。
 保存実半径/diskからX/Y各3,902,892、計7,805,784 shots。実機95%・厳密実装保証・価格・総費用は未評価。
+
+## B2 P1強決定論PFの固定8 arm（2026-11-07）
+
+[信号適格性・SOURCE・STOP](docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。
+`b2_p1_strong_pf_validation.py` / `run_b2_p1_strong_pf_validation.py` / `test_b2_p1_strong_pf_validation.py`。
+Full S2 s1/s2・Yoshida4 s1が全18round条件付きPASS、5 armは固定独立数値閾値でSTOP。shot/価格未実行。

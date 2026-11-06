@@ -163,3 +163,5 @@ artifacts/<validation_name>/
 `run_b2_p1_branch_validation.py`は固定保存raw平均を既存nearest-branch decoderへ渡す。[branch/energy結果とSTOP](../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。新信号・private読込・shot・価格なし。
 
 `run_b2_p1_shot_accounting.py`は固定保存18roundのboundsを既存Hoeffding会計へ接続する。[shot結果とSTOP](../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。価格・費用は算出しない。
+
+`run_b2_p1_strong_pf_validation.py`は固定Full S2/Yoshida4×substeps1/2/4/8の数値信号を評価する。[結果とSTOP](../docs/research/track_a_b2_p1_strong_pf_20261107/REPORT.md)。回路・shot・価格は実行しない。
