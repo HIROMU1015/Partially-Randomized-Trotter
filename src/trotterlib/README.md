@@ -119,3 +119,7 @@ DF部分ランダム化研究と混同しない。
 
 [収録ファイル・保存版と確認範囲](../../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## Track C H4の再利用adapter
+
+DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_y8.py`、runner `scripts/run_track_c_h4_pilots.py`、人工test `tests/test_track_c_h4_pilots.py` は[報告](../../docs/research/track_c_h4_pilots_20261106/REPORT.md)から辿る。coreは変更せず、native compiler資格不一致で比較STOP。

@@ -149,3 +149,7 @@ artifacts/<validation_name>/
 既存公開リストを使い、固定commitの文書・SOURCE・小さなmetadataのbytesを読み取り専用で確認する。
 使い方・対象外ファイル・原検証との違いは[固定commit参照の案内](../docs/research/branch_reference_navigation_20261103.md#削除したbranchへ問い合わせない公開bytes確認)を参照する。
 科学runnerや原結果の再解析は実行しない。
+
+## Track C H4 pilot
+
+`run_track_c_h4_pilots.py`：固定H4のPF/残差/Processing・価格・会計・native診断。[実行報告](../docs/research/track_c_h4_pilots_20261106/REPORT.md)。run01はcompiler精度資格の不一致でSTOP。再実行の許可を意味しない。

@@ -602,3 +602,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 [収録ファイル・保存版と確認範囲](docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## 2026-11-06 Track C H4 pilot：native比較の資格不一致でSTOP
+
+[報告](docs/research/track_c_h4_pilots_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、LD3/12、元H ground仮定、18round。SOURCE meanの20設定、部分価格、strict key、人工test8件PASSを保存。Qiskit1.3 opt2の微小controlled rotation省略とH4差を確認し、native全G・同精度成功率・優越は未資格。ローカル実行でありCI・外部再現ではない。

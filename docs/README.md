@@ -98,3 +98,7 @@
 ## ローカルの未コミット資料からの追加収録（2026-11-03）
 
 [原稿・レビュー・研究ノートと保存版の対応](research/main_local_results_collection_20261103.md)。原文の科学的採用や新規実行の認定ではない。
+
+## Track C H4（2026-11-06）
+
+[PF native境界・合成/残差・Processing pilot](research/track_c_h4_pilots_20261106/REPORT.md)。条件付きSOURCE mean診断、normalization負担、compiler精度不一致とSTOPを記録。最終総Gや優位性の確立ではない。

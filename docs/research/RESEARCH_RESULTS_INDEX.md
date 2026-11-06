@@ -164,3 +164,7 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## 追加34枝の公開成果（2026-11-04）
 
 [報告・再現用SOURCE・保存原版と元snapshotの対応](unlisted34_collection_20261104.md)から辿る。元の科学SOURCE・入力・status・STOPを維持し、選択収録と実行採択・枝全体のmergeを区別する。
+
+## Track C O3 H4 pilot（2026-11-06）
+
+[実行結果・負材料・native compiler資格不一致によるSTOP](track_c_h4_pilots_20261106/REPORT.md)。基準7db4792、Linear H4 1Å/STO-3G/DF12・LD3/12。研究CのHamiltonian表現系列とは別。全RPE総Gは未資格。

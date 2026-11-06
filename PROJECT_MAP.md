@@ -168,3 +168,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## ローカルに残っていた文書・SOURCEの収録（2026-11-03）
 
 [原稿・受領レビュー・研究ノート・SOURCEと保存別版の対応](docs/research/main_local_results_collection_20261103.md)から辿る。元の科学SOURCE・status・STOPは維持する。
+
+## Track C H4 pilot（2026-11-06）
+
+[3候補の実行・compiler資格不一致によるSTOP](docs/research/track_c_h4_pilots_20261106/REPORT.md)。新adapterは `src/trottertracks/track_c_h4*.py`、runner・人工test・rawへの入口も同報告を参照。全RPE総G・勝者は未資格。
