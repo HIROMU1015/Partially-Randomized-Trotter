@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究Cのnative並列化：独立spawn worker・読み取り専用mmap・同一標本処理を使う[技術報告](docs/research/research_c_h4_native_process_preparation_20261106.md)。人工入力だけで速度・全512検査を確認。既存固定SOURCEの実行は継続し、新backendの実H4実行は0。
+
 ## 研究C：H4再配置後の下流比較・技術準備（2026-11-06）
 
 [3保存候補・再配置head/tail/scalar・人工全512・未承認契約](docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。PF/RTE/RPE/native・同JU Dを既存経路へ接続。推奨r8/16/32/64/128、selection32/final64、実H4新下流計算0。公開照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+研究C nativeのopt-in process backendは `trottertracks/c_native_process.py`。`c_native_sample.py` の同じ標本本体を既存thread経路と共有する。[人工検証と速度比較](../../docs/research/research_c_h4_native_process_preparation_20261106.md)。
+
 H4再配置後の接続は `trottertracks/c_h4_relocated_downstream.py` / `c_h4_relocated_execution.py`。既存number-CAR・PF/RTE/RPE・native・Dエンジンを再利用するopt-in経路。実科学実行は別許可。[技術報告](../../docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。
 
 ## 研究C：H4線形Z再配置診断の技術準備（2026-11-06）

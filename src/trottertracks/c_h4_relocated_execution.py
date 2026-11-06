@@ -114,6 +114,7 @@ def execute(root,path=CONTRACT):
             shells[label],_=b2.shell_assessment(qs['raw'],qs['compiled'],label)
         car=call('car_context','shared immutable H4 CAR',lambda:car_bilinears(8))
         runtime=dict(source_manifest_sha256=c['SOURCE_sha256'],shells=c['shells'])
+        if 'native_backend' in c:runtime['native_backend']=c['native_backend']
         for label in ('P','E1','E2'):
             row=c['candidates'][label];d=loader.load(root/row['path'],('J','U'))
             for name,value in d.items():

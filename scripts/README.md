@@ -1,5 +1,7 @@
 # scripts 索引
 
+native高速化の人工benchmark：`benchmark_research_c_native_process.py --output <fresh-dir> --samples 8 --r 32`。保存分子入力を使わず旧threadとspawnを比較する。`check_research_c_h4_relocated_downstream.py --contract docs/research/research_c_h4_native_process_contract_unapproved_20261106.json` は新SOURCEのpassive preflight。[技術報告](../docs/research/research_c_h4_native_process_preparation_20261106.md)。
+
 H4再配置後の下流技術準備：`check_research_c_h4_relocated_downstream.py` はSOURCE/入力bytes/fresh outputだけのpassive preflight。科学起動optionなし。[技術報告](../docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。
 
 ## 研究C：H4線形Z再配置診断の技術準備（2026-11-06）

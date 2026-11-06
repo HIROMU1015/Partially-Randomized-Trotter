@@ -1,0 +1,65 @@
+{
+  "status": "ARTIFICIAL_EQUIVALENCE_AND_TIMING_COMPLETE",
+  "molecular_inputs_loaded": 0,
+  "invented_fixture": "seed724 symmetric random J, QR real U; n4/rank8/LD2 linear-Z relocated",
+  "samples": 8,
+  "events_per_sample": 32,
+  "full_input_output_dimension": 512,
+  "checks": "raw/compiled/actual raw+compiled adjoint/full512/phase/XY; same events and all six metrics",
+  "setup_seconds": 4.13063836900983,
+  "measurements": {
+    "threads": {
+      "wall_seconds": 168.36087357904762,
+      "CPU_seconds": 178.28329855200002,
+      "average_CPU_cores": 1.0589354566890727
+    },
+    "process": {
+      "wall_seconds": 22.680203849915415,
+      "CPU_seconds": 166.187701268,
+      "average_CPU_cores": 7.327434196259211
+    }
+  },
+  "speedup": 7.423252220004871,
+  "process": {
+    "plan": {
+      "workers": 8,
+      "available_affinity_cpus": 64,
+      "available_memory_bytes": 522908868608,
+      "quota_cpus": null,
+      "estimated_bytes_per_candidate": 268435456,
+      "BLAS_threads_per_worker": 1,
+      "policy": "Independent candidates; process-local BLAS coordination; no shared settings changed",
+      "estimated_bytes_per_worker": 1618849792,
+      "backend": "native_complete_sample_spawn_mmap_v1",
+      "start_method": "spawn",
+      "Qiskit_shared_mutex": false,
+      "samples": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "reference_storage": "read-only mmap",
+      "shared_context": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-h4-relocated-process-parallel-20261106/.cache/h4_process_benchmark_r32_final/process/shared_context"
+    },
+    "worker_pids": [
+      2461037,
+      2461040,
+      2461041,
+      2461042,
+      2461043,
+      2461044,
+      2461045,
+      2461046
+    ],
+    "worker_CPU_seconds": 143.286113361,
+    "max_worker_peak_RSS_KiB": 1318764,
+    "all_reference_mmaps_readonly": true
+  },
+  "scientific_performance_claim": false,
+  "limitations": "single paired local artificial timing; current fixed scientific run is unchanged; startup and per-sample output included"
+}

@@ -182,7 +182,8 @@ def native_cohort(root, contract, out, call, a, result, packet, *, split, cohort
         sampling=dict(master=2026110501,cohort=f'integrated:{cohort_key}:{split}:r{r}:batch{batch:02d}',
             axis=f'INTEGRATED_{split.upper()}_PRICE_ONLY',samples=32,events_per_sample=r,
             PRNG='numpy.random.PCG64',paired=False,adaptive=False)
-        current,cal=perf.native(root,contract,folder,call,a,sampling=sampling,prepared=shared)
+        options={} if 'native_backend' not in contract else dict(backend=contract['native_backend'])
+        current,cal=perf.native(root,contract,folder,call,a,sampling=sampling,prepared=shared,**options)
         rows.extend(current)
     if split=='final':cal=call('final_calibration',candidate,lambda:perf.b2.calibration(rows))
     packet.update(kernel_samples=rows,saved_calibration=cal)
