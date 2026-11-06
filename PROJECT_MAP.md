@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D C7-0静的構造解析](docs/research/track_d_c7_0_structural_preparation_20261107/REPORT.md)／[次段階条件案](docs/research/track_d_c7_0_structural_preparation_20261107/C7_1_EXECUTION_DRAFT.md)：C6a/C6b保存価格とSOURCEからCX・RZ/size・lane/depth、校正不確かさと長q移送条件を整理。CX一次式は全path未資格。新計算/計数/fit/テスト/compileなし、q16案は未採択・未実行、公開照合後mandatory STOP。
+
 [Track D C6b](docs/research/track_d_c6b_q8_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1/q8/cut4、独立domainの32 path。元H厳密ground仮定・準備費除外。SOURCE44a58b9fへ承認済み限定引継ぎ、raw32・postcheck128・pairedχ32 PASS。一次frozen条件付き12量は探索的幅内、別population-line診断4量は幅外。統計未資格、全law/長q/N/全RPE未評価、raw非公開、mandatory STOP。
 
 [C6b高速化・限定引継ぎ](docs/research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)：旧SOURCE/raw16・compile/postcheck48を保全し、新SOURCEで未着手raw16/未compile80だけ。sampling0、旧新合算128上限、同じq8/cohort/精度/モデル、完了公開後mandatory STOP。
