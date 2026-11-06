@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D fixed artificial reference validation
+
+[結果](docs/research/track_d_minimal_reference_validation_20261106/RESULT.md)／[固定scope](docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)／[machine-readable evidence](artifacts/track_d_minimal_reference_validation/2026-11-06/result.json)。SOURCE `1cc8c87c297e3b526b4e18f20f44da3b70f86157`、既存2-mode artificial DF word、T=.8/q=2/c=.17/K=0/τ=.4、同basis Zplus→ZZminus、Qiskit1.3.0 opt1。18 precompile checks、3方式×X/Yの6 compile、compile後の位相付きunitary/誘導observable照合が3e-12以内でPASS。Referenceは対称制御＋共有・融合よりCX/depthが小さくRZ/qubitsが増えた。local binary64 evidenceでありimmutable CI、分子・全law・要求energy精度・N・全RPE優位ではない。raw/compiled QPYを保存し、`TECHNICAL_PASS_MANDATORY_STOP`。
+
 ## 2026-09-20 delta-schedule central-RTE compiled-cost note
 
 H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、
