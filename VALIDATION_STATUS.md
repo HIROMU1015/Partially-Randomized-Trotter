@@ -1,5 +1,13 @@
 # Validation status
 
+## 2026-11-06：研究C・線形Z再配置で固定Jのmass順位が逆転
+
+H4直鎖1.00 Å/STO-3G、number-CDF8、Nα=Nβ=2/元順LD2、保存36 checkpointと中立C0参照を固定したmass診断を実行した。C0・64更新ではPR/.1のZZ-only mass=.472231656968 Ha、ENTRY/.1=.380831546723 Ha、ENTRY/.03=.381048738058 Ha。事前固定common/fair政策候補のPR/ENTRY比は1.240001415407/1.239294635574でENTRYが小さく、元mapped tail massの順位と逆転。同一start/strength/予算18組ではENTRY_LOWER17、PR_LOWER1（P1/.1/64）、数値tie/判断不能0。
+
+全37入力でJ identity・保存mass・恒等式/上下限検査PASS、最大保存値残差3.89e-16 Ha、SOURCE/契約不変、retry/resume0・mandatory STOP。これは固定Jと辞書の選択に依存するmassの観察であり、再配置後のPF/RTE・shots/W・native/総RZの順位や新規性は未評価。旧辞書の条件付き費用結果を数値的に否定したことにはならない。再最適化・H6/H4・1.15 Å・重要レビューは実施しない。
+
+[固定診断の全結果](docs/research/research_c_h4_relocation_execution_20261106.md)。次はユーザー／GPTが、再配置後の公平な下流比較の要否・科学条件を判断する。以下は各時点の履歴を保持する。
+
 ## 2026-11-06：研究C・1.00 Åの頑健性と公平retuningを完了
 
 直鎖H4・1.00 Å/STO-3G、number CDF8/sector36/元順LD2、partial S2/s1/δ=h=.1/K0/m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込み。3start×3strength×2armの18有限trajectory・16/64更新36checkpointを揃え、DF予算は全PASS、J MET/U NOT_MET。selection native2,880件と独立final1,408件、同J/U強D19候補を評価した。

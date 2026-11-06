@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：H4線形Z再配置・保存J診断完了（2026-11-06）
+
+[全36 checkpoint・主比較のmass順位逆転](docs/research/research_c_h4_relocation_execution_20261106.md)。SOURCE/契約不変で37入力を診断。主C0/64のM_ZZはPR .472232、ENTRY .380832/.381049 Ha。同条件18組でENTRY17/PR1。PF/RTE・native/総RZは未評価、旧証拠/H6保全、mandatory STOP。
+
 ## 研究C：H4線形Z再配置診断の技術準備（2026-11-06）
 
 [数学SOURCE照合・入力36件＋C0参照・未承認契約](docs/research/research_c_h4_relocation_preparation_20261106.md)。`c_h4_z_relocation.py`／`run_research_c_h4_relocation.py`と人工test。新規28＋既存46＝74 tests・29 subtest PASS。既定はbyte-only preflight、実保存Jの再解析0。mass順位と下流総RZを分離し、旧SOURCE/raw/STOP・H6を保全。公開照合後mandatory STOP。

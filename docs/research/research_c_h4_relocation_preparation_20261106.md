@@ -1,5 +1,7 @@
 # H4線形Z項再配置診断：技術準備（2026-11-06）
 
+後続の明示許可に基づく[固定J診断の実行結果](research_c_h4_relocation_execution_20261106.md)を追加した。以下は科学実行前の準備記録として保持する。
+
 **技術準備完了、実H4保存Jの新規数値再解析は未実施。公開照合後MANDATORY STOP。**
 
 H4直鎖・隣接1.00 Å/STO-3G、number-CDF8、Nα=Nβ=2、元frame順LD2を固定する。H4・1.15 Å、H6、既存SOURCE・契約・raw・STOP、J/Uは変更しない。新しいoptimizer、DF fit、Hamiltonian評価、PF/RTE/RPE、shots/W、回路、native価格、総RZ、新規性・GO判断は実装・実行しない。
