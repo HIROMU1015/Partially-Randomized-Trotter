@@ -222,3 +222,6 @@ A1 N3の[一campaign中断結果](docs/research/o2_a1_n3_science_20261106/REPORT
 A1 N3の[中断診断・再発防止・復旧2案](docs/research/o2_a1_n3_interruption_20261106/REPORT.md)：journal専用runner `scripts/diagnostics/a1_n3_interruption_audit.py`、`a1_n3_interruption_diagnostics`/`a1_n3_lifecycle_observer`（src/trottertracks/algorithm_codesign）、人工test `tests/test_a1_n3_interruption_diagnostics.py`。直接原因UNKNOWN、新科学0、mandatory STOP。
 
 A1 N3の[持続manager接続と案B草案](docs/research/o2_a1_n3_manager_preparation_20261106/REPORT.md)：`a1_n3_cron_manager.py`/`a1_n3_managed_runtime.py`（src/trottertracks/algorithm_codesign）、人工入口 `scripts/diagnostics/run_a1_n3_manager_qualification.py`、unit `tests/test_a1_n3_managed_runtime.py`。旧数値SOURCE不変、科学0。
+
+
+A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_science_20261106/REPORT.md)（2026-11-06）：seed20261107、旧397件を分離、旧数値SOURCEとqualified managerを再利用する薄い入口。SOURCE公開照合後に一回開始し、成功・中断でmandatory STOP。
