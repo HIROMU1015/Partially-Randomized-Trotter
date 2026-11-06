@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C5：共通whole-path入口とq2公平比較](research/track_d_c5_q2_20261106/PLAN.md)：保存sample00→01/cut1、C3と同じ強い境界融合・位相集約、raw PASS後だけ最大4 P0 wrapper。C6や新価格標本は未許可。
+
 [Track D C4：期待価格・長qモデルの技術準備](research/track_d_c4_price_model_preparation_20261106/REPORT.md)：強いwhole-path比較の費用境界、保存価格の条件差、校正・独立holdout・不確かさ・B側Nとのinterface。新集計/fit/sampling/回路生成/compile/実装は行わない静的報告。
 
 [C3 q4/q8補完結果](research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。

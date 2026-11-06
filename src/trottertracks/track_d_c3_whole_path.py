@@ -1,4 +1,4 @@
-"""Fixed q4/q8 whole paths; reuse emitters, CAR data and Track D checks."""
+"""Fixed C3 entry plus opt-in ordered saved paths; reuse emitters/CAR/checks."""
 from __future__ import annotations
 
 import json
@@ -89,10 +89,22 @@ def physical_segment(context, tails):
 def prepare(context, saved, q):
     if q not in FIXTURES:
         raise ValueError("ONLY_FIXED_Q4_Q8")
+    return prepare_ordered(context, saved, FIXTURES[q], CUTS[q],
+        fixture_selection="ascending saved IDs, fixed before results; not fresh-IID law sample")
+
+
+def prepare_ordered(context, saved, ordered_samples, cut, *, fixture_selection):
+    """Opt-in ordered saved request; the fixed C3 entry remains unchanged."""
+    ordered_samples = tuple(ordered_samples)
+    q = len(ordered_samples)
+    if q < 2 or type(cut) is not int or not 0 < cut < q:
+        raise ValueError("COMPLETE_INTERNAL_STEP_CUT")
+    if any(type(i) is not int or not 0 <= i < 32 for i in ordered_samples):
+        raise ValueError("SAVED_SAMPLE_ID")
     saved = Path(saved); events, phases, tails, target_rows, raw_rows, bindings = [], [], [], [], [], []
     c = context
     atoms = {a.atom_id: a for a in c.arm.plan.atoms}
-    for sample in FIXTURES[q]:
+    for sample in ordered_samples:
         label = f"sample{sample:02d}"
         record = json.loads((saved / "samples" / (label + "_events.json")).read_text())
         step = paired.saved_record(record, sample)
@@ -118,16 +130,15 @@ def prepare(context, saved, q):
         symmetric.compose(mixed_head(c, head_recipe("last")) if i == q - 1 else bridge, inplace=True)
     scalar_phase = math.fsum([c.scalar_phase] * q)
     symmetric.p(scalar_phase, base.N)
-    cut = CUTS[q]
     earlier, later = physical_segment(c, tails[:cut]), physical_segment(c, tails[cut:])
     phase = math.fsum(phases)
     cores = dict(symmetric_directional=symmetric, reference=base.reference_gadget(later, earlier, phase))
     wrappers = {(arm, axis): base.artificial.hadamard_wrapper(core, axis)
                 for arm, core in cores.items() for axis in base.AXES}
-    target = np.eye(256, dtype=complex); raw = QuantumCircuit(base.N + 1)
+    target = np.eye(1 << base.N, dtype=complex); raw = QuantumCircuit(base.N + 1)
     for matrix, circuit in zip(target_rows, raw_rows):
         target = matrix @ target; raw.compose(circuit, inplace=True)
-    info = dict(q=q, h="1/10", time=str(q * base.H), ordered_samples=list(FIXTURES[q]),
+    info = dict(q=q, h="1/10", time=str(q * base.H), ordered_samples=list(ordered_samples),
         cohort=paired.COHORT, endpoint=paired.ENDPOINT, event_count=len(events),
         model="linear H4/1.00A/STO-3G/number-CDF8/Nalpha=Nbeta=2/LD2/S2/s1/r32/K0",
         cut_after_complete_step=cut, AB_order="A=last half, B=first half; V=U_last ... U_first=A B",
@@ -144,7 +155,7 @@ def prepare(context, saved, q):
         reference_optimization=dict(internal_step_boundaries_fused=q-2, global_cut_breaks_boundary_fusion=1,
             head_relative_fusion=True, tail_same_basis_sharing=True, scalar_aggregated_per_A_B=True),
         C2_difference="C2 concatenated saved strong cores without new manual cross-step fusion",
-        fixture_selection="ascending saved IDs, fixed before results; not fresh-IID law sample")
+        fixture_selection=fixture_selection)
     return base.Bundle(c.arm, tuple(events), cores, wrappers, earlier, later, later.inverse(),
                        target, raw, phase, info, list(c.builder.fusion_records))
 
@@ -152,21 +163,25 @@ def prepare(context, saved, q):
 def raw_checks(origin, saved, contract, output, q, checks, threads):
     from threadpoolctl import threadpool_limits
     output = Path(output)
-    records = []
     with threadpool_limits(limits=1):
         context = paired.prepare_common(origin, contract)
         bundle = prepare(context, saved, q)
-        (output / "circuits").mkdir()
-        (output / "conditions.json").write_text(json.dumps(bundle.identity, indent=2) + "\n")
-        (output / "fusion.json").write_text(json.dumps(bundle.fusion, indent=2) + "\n")
-        for name, circuit in (("A", bundle.later), ("B", bundle.earlier), ("A_actual_adjoint", bundle.later_adjoint),
-                              ("ordinary_raw", bundle.saved_raw), *[(k+"_core", v) for k,v in bundle.cores.items()]):
-            base.save_qpy(output / "circuits" / (name + ".qpy"), circuit)
-        for (arm, axis), circuit in bundle.wrappers.items():
-            base.save_qpy(output / "circuits" / f"{arm}_{axis}_raw.qpy", circuit)
-        try:
-            result = paired.run_prechecks(bundle, checks, output, records, threads)
-        except BaseException:
-            (output / "partial_checks.json").write_text(json.dumps(dict(status="FAIL", checks=records), indent=2) + "\n")
-            raise
-    return result
+        return save_and_check(bundle, output, checks, threads)
+
+
+def save_and_check(bundle, output, checks, threads):
+    """Shared raw persistence/harness; never compiles or samples."""
+    output = Path(output); records = []
+    (output / "circuits").mkdir()
+    (output / "conditions.json").write_text(json.dumps(bundle.identity, indent=2) + "\n")
+    (output / "fusion.json").write_text(json.dumps(bundle.fusion, indent=2) + "\n")
+    for name, circuit in (("A", bundle.later), ("B", bundle.earlier), ("A_actual_adjoint", bundle.later_adjoint),
+                          ("ordinary_raw", bundle.saved_raw), *[(k+"_core", v) for k,v in bundle.cores.items()]):
+        base.save_qpy(output / "circuits" / (name + ".qpy"), circuit)
+    for (arm, axis), circuit in bundle.wrappers.items():
+        base.save_qpy(output / "circuits" / f"{arm}_{axis}_raw.qpy", circuit)
+    try:
+        return paired.run_prechecks(bundle, checks, output, records, threads)
+    except BaseException:
+        (output / "partial_checks.json").write_text(json.dumps(dict(status="FAIL", checks=records), indent=2) + "\n")
+        raise

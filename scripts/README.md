@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_track_d_c5_q2.py](run_track_d_c5_q2.py)は[C5固定q2 PLAN](../docs/research/track_d_c5_q2_20261106/PLAN.md)専用。共通ordered requestでrawを検査し、PASS時だけ最大4 wrapper。完全byte一致のC2 compiled保存回路は再利用し、新samplingやq4/q8再実行はしない。
+
 [C3 q4/q8補完結果](../docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。 補完入口は[`complete_track_d_c3_run02.py`](complete_track_d_c3_run02.py)、保全回帰testは`tests/check_track_d_c3_completion.py`。
 
 Track D C3は[`run_track_d_c3_q4_q8.py`](run_track_d_c3_q4_q8.py)。[固定PLAN](../docs/research/track_d_c3_q4_q8_20261106/PLAN.md)でq4/q8だけを扱い、既存compile/postcheckを再利用する。通常testから科学実行しない。
