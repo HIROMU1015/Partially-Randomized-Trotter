@@ -1,0 +1,83 @@
+{
+  "schema": "a1_new_target_n2_engine_v1",
+  "status": "PARTIAL_CONVENTIONS_VERIFIED_TOTAL_ERROR_UNKNOWN",
+  "N1_identities": {
+    "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+    "partition_hash": "900342ad6262021ff9b919c36ee182a8ed83914a697524e3fae07248d0d082f8",
+    "preparation_hash": "f02980a5cbec9478aa1f4e6dd010f117d152f89770c40389544cf876dd197299",
+    "tail_hash": "890442900e605a262201338f19afdad638302d670c75a9d95371c10b83ea38d8",
+    "catalog_sha256": "ca897db7be52ad30dcfab0512d7530188fc13a9d8ca0c78430809492d01f738b",
+    "law_sha256": "b77980d198cc9edc620daec9bf87df02b66e96575fd85327aed0793f3e86ecef",
+    "selected_policy_fingerprint": "f6eba8633890dbf09b5388928a369650251bf53567d51ab4179282c7c239b2cc"
+  },
+  "state_identity": "405636138c2d5ccf6835beeb6e08337523fc04b513732110d3d0125874c49de3",
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "conventions": {
+    "controlled": "diag(I,U); ancilla last",
+    "X": "real; H readout",
+    "Y": "imaginary; Sdg then H",
+    "bit_value_mapping": {
+      "0": 1,
+      "1": -1
+    },
+    "scalar_identity_phase": "existing _append_step_phases uses PhaseGate on controlled ancilla",
+    "event_phase": "existing RTE n=2 phase=-1 retained as controlled relative phase",
+    "ordering": "saved full-space bit reversal; exact permutation"
+  },
+  "artificial_checks": {
+    "passed": true,
+    "total": 55,
+    "new_N2": 15,
+    "reused_A1": 40,
+    "scope": "invented/artificial/mock only; no molecular NPZ or saved scientific state evaluated",
+    "command": "python -B -m unittest discover -s tests/tracks/algorithm_codesign -p test_a1*.py -v",
+    "checks": [
+      "independent FermionOperator assembly",
+      "exact spectral enclosure and separated ground",
+      "reject zero-residual excited state and degenerate ground",
+      "complex norm/normalized Rayleigh",
+      "existing Hadamard X/Y Sdg-H and bit mapping",
+      "controlled scalar/identity/event phases and negative signs",
+      "whole number sector and mode bit reversal",
+      "small grid Bernoulli endpoints",
+      "N1/N3 forbidden calls and fresh UNKNOWN/STOP"
+    ],
+    "preflight_correction": "initial combined suite failed passive-import isolation because new test imported Qiskit at discovery; fixed by lazy test imports before final SOURCE freeze; no scientific input was used"
+  },
+  "coordinate_error_terms": {
+    "state": {
+      "exact": "45204629168973729661907156982789355205714704203996908551006727887412275/57896044618658097711785492504343953926634992332820282019728792003956564819968",
+      "float_preview": 7.807895939475921e-07
+    },
+    "measurement_uniform_53bit_grid": {
+      "upper_exact": "1/4503599627370496",
+      "status": "PROVED_CONDITIONAL_ON_U=k/2^53_AND_U<p_hat",
+      "meaning": "coordinate mean error; threshold count ceil(M*p_hat); endpoints included"
+    },
+    "selected_gate_application_arithmetic": "UNKNOWN",
+    "Born_probability_arithmetic": "UNKNOWN",
+    "normalization_and_probability_range_guard": "UNKNOWN_NOT_BOUND_TO_FUTURE_ENGINE",
+    "compiled_vs_logical": "NOT_APPLICABLE_UNCOMPILED_IDEAL_TARGET"
+  },
+  "total_b_engine": "UNKNOWN",
+  "draft_budget": {
+    "rule": "b_engine <= epsilon_axis/8",
+    "epsilon_candidate": "1/4",
+    "candidate_threshold": "1/32",
+    "adopted": false,
+    "comparison": "UNKNOWN_TOTAL_BOUND_MISSING"
+  },
+  "unresolved": [
+    "No end-to-end engine reconstructs the saved N1 selected operations here; no molecular path is built/evaluated.",
+    "A uniform gate-application and Born-probability arithmetic bound tied to that implementation is required.",
+    "Exact normalization, [0,1] probability validation and bit generation must be bound before N3; no unsupported clipping.",
+    "Ideal IID word/Born model is an assumption; a PRNG independence proof is not supplied."
+  ],
+  "N3_ready": false,
+  "oracle_information_sent_to_estimator": false,
+  "controls_changed": false,
+  "pilot_changed": false
+}

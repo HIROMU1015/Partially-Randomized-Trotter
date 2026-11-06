@@ -47,3 +47,6 @@ A1新targetの[N1結果・完全payload・correctness](../../docs/research/o2_a1
 
 
 A1の[N2限定SOURCE・state/engine検証](../../docs/research/o2_a1_new_target_n2_20261106/EXECUTION.md)：N1保存payloadを再利用するmodule/runner/人工test、state inventoryと環境lock。N3なし、公開後STOP。
+
+
+A1の[N2結果・state/engine保証範囲・STOP](../../docs/research/o2_a1_new_target_n2_20261106/REPORT.md)：一意ground/state誤差を確認。総b_engineはUNKNOWN、N3未準備。SOURCE/payload/人工test/保全へ辿れる。
