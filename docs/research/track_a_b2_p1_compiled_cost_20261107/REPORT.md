@@ -15,6 +15,10 @@ X/Yは各CX **3,262**、RZ **6,025**、depth **5,504**。
 - 実行SOURCE：[`5aa5d061600382abe438707c14eaf665466ae383`][SOURCE]。
   shot成果`0d5ca357ccfd8fcc850bef800c5bcadfde2a153e`から専用worktree/branchを作成。
   SOURCEは実行前にcommit固定し、消費するcoreの作業ファイル一致、終了時の不変を確認した。
+  通常のHTTPS pushは認証情報未設定で失敗したため、接続GitHub APIで**同一tree**を公開した。
+  このSOURCEリンクは公開snapshot `b443f25…`へ向く。元commitと公開commitのmetadata差、
+  SOURCE/result両treeの一致は[publication.json][PUBLICATION]に記録。
+  元SOURCE/結果commitは[標準Git bundle][BUNDLE]から復元でき、科学SOURCE/raw値は不変更。
 - Linear H4/1.00Å/STO-3G、energy target=cutoff前H_phys、保存DF12、generation-prefix LD3、
   partial-S2/r4/K2、delta=.02、m0/Q1、元H保存基底stateの仮定、prep費用除外。
   核scalar 2.29310124732、tail identity .09261516589219072、signed factorsとbit-orderを保持。
@@ -126,7 +130,7 @@ proxyを使うなら較正/独立holdout/誤差の扱いを別途固定・承認
 新信号/shot/branch、追加trajectory、他m/強PF compile、価格MC/外挿/総RPE費用、GPT詳細科学レビューは実行していない。
 旧SOURCE/input/raw/result/grant/ledger/marker/STOPとCodex A/Bのworktree・成果物は不変更。
 
-[SOURCE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/5aa5d061600382abe438707c14eaf665466ae383
+[SOURCE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/tree/b443f25b30160917c5b4446380456c49e746fe82
 [PRICE]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/0daf01d51c022977a1c0a7d29dde34a1c4c82d7c/artifacts/track_a_o1_m1_r8_price_pilot_20261106/run01/result.json
 [CORRECT]: https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/ea2c0915ba2f7e11a6dac58dc01cf1af3c0d0ff5/artifacts/track_a_b2_p1_two_round/2026-11-07/run01/result.json
 [ADAPTER]: ../../../src/trotterlib/b2_p1_compiled_cost.py
@@ -138,3 +142,5 @@ proxyを使うなら較正/独立holdout/誤差の扱いを別途固定・承認
 [RESULT]: ../../../artifacts/track_a_b2_p1_compiled_cost/2026-11-07/run01/result.json
 [FEASIBILITY]: ../../../artifacts/track_a_b2_p1_compiled_cost/2026-11-07/feasibility.json
 [VALIDATION]: ../../../artifacts/track_a_b2_p1_compiled_cost/2026-11-07/synthetic_validation.json
+[PUBLICATION]: ../../../artifacts/track_a_b2_p1_compiled_cost/2026-11-07/publication.json
+[BUNDLE]: ../../../artifacts/track_a_b2_p1_compiled_cost/2026-11-07/execution_commits.bundle
