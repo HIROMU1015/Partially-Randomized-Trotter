@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-Track Dの実H4移送検証は[固定word02/cutと実行範囲](docs/research/track_d_h4_reference_validation_20261106/PLAN.md)を参照する。旧SOURCEを別treeから再利用し、通常のtestや旧研究runnerから実行しない。
+Track Dの実H4移送検証は[固定word02/cutと実行範囲](docs/research/track_d_h4_reference_validation_20261106/PLAN.md)／[結果](docs/research/track_d_h4_reference_validation_20261106/RESULT.md)を参照する。旧SOURCEを別treeから再利用し、通常のtestや旧研究runnerから実行しない。
 
 Track Dの限定人工検証は[固定scopeとSOURCE](docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)を参照する。分子・全RPE検証とは別で、明示runnerだけが実行入口である。
 

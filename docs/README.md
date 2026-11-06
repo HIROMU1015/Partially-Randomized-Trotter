@@ -1,6 +1,6 @@
 # 文書索引
 
-[Track D実H4 Reference移送](research/track_d_h4_reference_validation_20261106/PLAN.md)：保存word02・固定cut、strong symmetric対照、correctnessと6 full-wrapper compileの限定scope。
+[Track D実H4 Reference移送](research/track_d_h4_reference_validation_20261106/PLAN.md)／[結果](research/track_d_h4_reference_validation_20261106/RESULT.md)：保存word02・固定cut、strong symmetric対照、correctnessと6 full-wrapper compileの限定scope。
 
 [Track D人工Reference検証](research/track_d_minimal_reference_validation_20261106/PLAN.md)：固定1 wordのcorrectness、3方式×X/Yの6 wrapper比較、SOURCE・STOP範囲。
 

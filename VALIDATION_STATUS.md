@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D fixed real-H4 reference transfer
+
+[結果](docs/research/track_d_h4_reference_validation_20261106/RESULT.md)／[scope](docs/research/track_d_h4_reference_validation_20261106/PLAN.md)／[evidence](artifacts/track_d_h4_reference_validation/2026-11-06/run01/result.json)。SOURCE `b21b5faff1fcbcabbb7f674c4b6d8818b8bb08ea`。linear H4/1.00 Å/STO-3G/Nα=Nβ=2、number CDF8/LD2/S2/s1/r32/K0/h=δ=.1、保存word02・固定16-event cut、1 h-step。27 precompile検査と6 full-wrapper compile後の数値照合PASS。Referenceは強いsymmetric＋共有・融合よりCX/depthを削減しRZ/qubits増。全256 system入力列・reference/ancilla=0のobservable検証であり、17-qubit全Operatorや全law/chemical accuracy/全RPE総費用の保証ではない。元H厳密groundを仮定し準備費除外、保存ground vector使用0。`TECHNICAL_PASS_MANDATORY_STOP`、local binary64 evidence、immutable CI=false。
+
 ## 2026-11-06 Track D fixed artificial reference validation
 
 [結果](docs/research/track_d_minimal_reference_validation_20261106/RESULT.md)／[固定scope](docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)／[machine-readable evidence](artifacts/track_d_minimal_reference_validation/2026-11-06/result.json)。SOURCE `1cc8c87c297e3b526b4e18f20f44da3b70f86157`、既存2-mode artificial DF word、T=.8/q=2/c=.17/K=0/τ=.4、同basis Zplus→ZZminus、Qiskit1.3.0 opt1。18 precompile checks、3方式×X/Yの6 compile、compile後の位相付きunitary/誘導observable照合が3e-12以内でPASS。Referenceは対称制御＋共有・融合よりCX/depthが小さくRZ/qubitsが増えた。local binary64 evidenceでありimmutable CI、分子・全law・要求energy精度・N・全RPE優位ではない。raw/compiled QPYを保存し、`TECHNICAL_PASS_MANDATORY_STOP`。
