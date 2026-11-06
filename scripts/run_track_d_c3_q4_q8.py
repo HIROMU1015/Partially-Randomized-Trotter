@@ -14,12 +14,19 @@ import time
 import run_track_d_c2_q2 as c2
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = "artifacts/track_d_c3_q4_q8/2026-11-06/run01"
+OUTPUT = "artifacts/track_d_c3_q4_q8/2026-11-06/run02"
 C2_COMMIT = "c8fe5091c42ec786688b6931105ad64d10c87d18"
 C2_OUTPUT = "artifacts/track_d_c2_q2_compile/2026-11-06/run01"
 NEW = ("src/trottertracks/track_d_c3_whole_path.py", "scripts/run_track_d_c3_q4_q8.py",
-       "tests/check_track_d_c3.py", "docs/research/track_d_c3_q4_q8_20261106/PLAN.md")
+       "tests/check_track_d_c3.py", "docs/research/track_d_c3_q4_q8_20261106/PLAN.md",
+       "docs/research/track_d_c3_q4_q8_20261106/RUN02_PLAN.md")
 QS = (4, 8)
+PREVIOUS_ATTEMPT = "18d303288d4852b8ec6e5ae378b5e91e7e53965a"
+
+
+def load_contract(root=ROOT):
+    """The fixed contract belongs to the execution tree, not old SOURCE."""
+    return json.loads((Path(root) / c2.old().CONTRACT).read_text())
 
 
 def preflight(origin, saved):
@@ -39,6 +46,7 @@ def preflight(origin, saved):
         raise ValueError("C2_SAVED_STOP")
     source.update(C3_source={n:p.sha((ROOT/n).read_bytes()) for n in NEW},
                   C2_result=C2_COMMIT, C2_saved=prior,
+                  previous_C3_attempt=PREVIOUS_ATTEMPT, C3_attempt="run02_contract_path_fix",
                   C3_policy="fixed_q4_q8_global_half_step_cut_legal_boundary_fusion_max8_P0")
     return source
 
@@ -50,7 +58,7 @@ def raw_worker(q, origin, saved, output, threads, stop):
         if stop.is_set(): raise RuntimeError("STOP_BEFORE_RAW")
         runner = c2.old(); runner.bootstrap(origin)
         from trottertracks import track_d_c3_whole_path as implementation
-        contract = json.loads((Path(origin) / runner.CONTRACT).read_text())
+        contract = load_contract()
         checks = c2.load("c3_raw_checks", ROOT / "tests/track_d_h4_reference_checks.py")
         value = implementation.raw_checks(origin, saved, contract, out, q, checks, threads)
         value.update(wall_seconds=time.monotonic()-tick,
@@ -153,6 +161,7 @@ def main():
             stop.set(); c2.write(output/"failure.json",dict(status="STOP",error_type=type(error).__name__,error=str(error).replace(str(ROOT),"<task>")))
         count=len(list(output.glob("q*/*_compile.json")))
         result=dict(status="TECHNICAL_PASS_MANDATORY_STOP" if success else "STOP_FAILURE",
+            attempt="run02", authorized_rerun_of=PREVIOUS_ATTEMPT,
             source_commit=source["execution_source"], raw_results=raw, compiled=compiled, compile_calls_started=count,
             source_input_preserved=preserved, wall_seconds=time.monotonic()-tick,
             sampling_calls=0,ground_solves=0,DF_refits=0,N_evaluations=0,quantum_shots=0,
@@ -160,6 +169,7 @@ def main():
             scientific_GO=False,retry=0,resume=0,mandatory_stop=True)
         c2.write(output/"result.json",result)
         c2.write(output/"STOP.json",dict(status=result["status"],mandatory_stop=True,compile_calls_started=count,
+                                      attempt="run02",authorized_rerun_of=PREVIOUS_ATTEMPT,
                                       retry=0,resume=0,next_stage_authorized=False))
     inventory={str(p.relative_to(output)):dict(bytes=p.stat().st_size,sha256=c2.prior().sha(p.read_bytes()))
                for p in sorted(output.rglob("*")) if p.is_file() and "matplotlib-cache" not in p.parts}

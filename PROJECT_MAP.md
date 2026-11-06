@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C3 run02再実行PLAN](docs/research/track_d_c3_q4_q8_20261106/RUN02_PLAN.md)：利用者承認によりcontract参照先を修正。同じq4/q8 fixture/cut/精度で再実行し、run01のSOURCE・失敗・STOPを保持する。
+
 [Track D C3結果](docs/research/track_d_c3_q4_q8_20261106/RESULT.md)：contract参照先の実装誤りでq4/q8ともraw構築前STOP。科学的correctness・価格未評価、compile/retry/resume0。SOURCE・失敗・STOPを保全し、修正／再実行は新たな判断へ戻す。
 
 [Track D C3固定q4/q8](docs/research/track_d_c3_q4_q8_20261106/PLAN.md)：ascending保存fixture・complete半path cutを固定し、合法なstep境界融合を含むstrong対照でraw correctness、PASS時だけ最大8 P0 wrapper。公開後mandatory STOP。

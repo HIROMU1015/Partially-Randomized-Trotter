@@ -4,6 +4,8 @@ import importlib.util
 from pathlib import Path
 import sys
 from types import SimpleNamespace
+import json
+import tempfile
 import unittest
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -17,6 +19,17 @@ class C3Tests(unittest.TestCase):
         runner.c2.old().bootstrap("/tmp/track-d-paired32-20261106/origin")
         from trottertracks import track_d_c3_whole_path
         cls.m=track_d_c3_whole_path
+
+    def test_contract_loads_from_execution_tree_without_origin_contract(self):
+        with tempfile.TemporaryDirectory(prefix="track-d-c3-contract-") as directory:
+            root=Path(directory)/"execution"; origin=Path(directory)/"original_SOURCE";origin.mkdir()
+            relative=runner.c2.old().CONTRACT
+            path=root/relative;path.parent.mkdir(parents=True)
+            packet={"input":"saved-input.npz","candidate":"saved-endpoint.npz"}
+            path.write_text(json.dumps(packet))
+            self.assertFalse((origin/relative).exists())
+            self.assertEqual(runner.load_contract(root),packet)
+        self.assertEqual(runner.load_contract(),json.loads((ROOT/relative).read_text()))
 
     def test_fixtures_and_half_step_boundary_control_mode(self):
         self.assertEqual(self.m.FIXTURES,{4:tuple(range(4)),8:tuple(range(8))})
