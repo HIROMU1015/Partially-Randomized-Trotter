@@ -110,3 +110,5 @@
 - [強PF 5 STOP armの数値不一致・技術調査（2026-11-07）](research/track_a_b2_p1_strong_pf_numerical_diagnosis_20261107/REPORT.md)：人工6診断/既存人工18テストPASS。実H4の原因寄与は未確定、本体修復・再評価なし、旧判定維持。
 
 - [B2 P1強PF・実H4の5 arm/15点原因診断（2026-11-07）](research/track_a_b2_p1_strong_pf_h4_diagnosis_20261107/REPORT.md)：元結果完全再現、HP参照安定。全5 STOP点で基本step間差が残る。構成内の誤差所在は未確定、旧判定維持・mandatory STOP。
+
+- [強PF基本stepの構成精度改善・人工検証（2026-11-07）](research/track_a_b2_strong_pf_precision_20261107/REPORT.md)：SYNTHETIC_PRECISION_IMPROVED、46テストPASS。実H4は3 PASS／5 STOPを維持、mandatory STOP。

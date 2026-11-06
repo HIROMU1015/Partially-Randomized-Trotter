@@ -203,3 +203,7 @@ Full S2 s1/s2・Yoshida4 s1が全18round条件付きPASS、5 armは固定独立�
 ## B2 P1強PF：実H4の15点数値原因診断（2026-11-07）
 
 [結果・SOURCE・STOP](docs/research/track_a_b2_p1_strong_pf_h4_diagnosis_20261107/REPORT.md)。`b2_p1_strong_pf_h4_diagnosis.py`、対応runner/test、`artifacts/track_a_b2_p1_strong_pf_h4_diagnosis/`。5元STOP点でHP累乗後にもstep間差が残る。再適格化・修正なし。
+
+## 強PFの基本step精度adapter（人工検証、2026-11-07）
+
+[改善範囲・結果・STOP](docs/research/track_a_b2_strong_pf_precision_20261107/REPORT.md)。`b2_strong_pf_precision.py`、`validate_b2_strong_pf_precision.py`、`tests/test_b2_strong_pf_precision.py`、`artifacts/track_a_b2_strong_pf_precision/`。native/CARのopt-in HP構成。実H4再評価なし。
