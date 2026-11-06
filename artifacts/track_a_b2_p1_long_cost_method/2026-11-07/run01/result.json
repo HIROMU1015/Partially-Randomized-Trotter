@@ -1,0 +1,4126 @@
+{
+  "schema_version": "b2_artificial_cost_method_validation_v1",
+  "status": "ARTIFICIAL_METHOD_VALIDATION_COMPLETE",
+  "source_commit": "c897389643a8d3b81ff63f9a0d71b250b17a565e",
+  "source_sha256": {
+    "src/trotterlib/b2_streamed_native_cost.py": "1bc9650ae67534374ae7592c03e35590bbb3afafc193faa95a2bebbceb50bcba",
+    "src/trottertracks/o1_m1_parallel_price.py": "f24897a59f76456a95192d267a67e29a71a76c80f12a73fb4c0b9872b2c7a769",
+    "tests/b2_cost_method_cases.py": "10a2f9fa5ed9a3fb6881460f7e11374a0c7eb89e2bb343f17ce6a7243e0e8471",
+    "scripts/run_b2_cost_method_validation.py": "678e1d0d2338381a16298096a91c93f315219257d058b76d510613b6f473c001",
+    "tests/test_b2_streamed_native_cost.py": "be3c77e7d412859a754b0038b051c2fb86b81931129180f33552bbc8c8c573f8"
+  },
+  "artificial_only": true,
+  "real_H4_build_compile": 0,
+  "price_MC": null,
+  "expected_B2_prices": null,
+  "confidence_intervals": null,
+  "total_RPE_cost": null,
+  "mandatory_stop": true,
+  "compiler": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "backend_name": null,
+    "coupling_map": null,
+    "optimization_level": 1,
+    "layout_method": null,
+    "routing_method": null,
+    "transpiler_seed": 7,
+    "qiskit_version": "1.3.0"
+  },
+  "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+  "backend_fingerprint": "no_backend",
+  "scope": "single_hadamard_interrogation_without_state_preparation",
+  "cases": [
+    {
+      "case": [
+        0,
+        2,
+        "mixed"
+      ],
+      "Q": 1,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "411686b2334ff7a95ebf0d92911db7aa31fc062bce4d5893401a12d91c4d3c4e",
+      "stream_native_fingerprint": "411686b2334ff7a95ebf0d92911db7aa31fc062bce4d5893401a12d91c4d3c4e",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 9.914623809710498e-16,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 9.914623809710498e-16,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 6.593044732505606e-16,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 0.4504630070878193,
+          "Python_traced_peak_bytes": 7770785,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 86
+        },
+        "stream": {
+          "elapsed_seconds": 0.4245572439394891,
+          "Python_traced_peak_bytes": 7315181,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 86
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "reference_compile_seconds": 0.11715423094574362,
+          "wrapper_fingerprint": "765f0e2151569734e25eaeec6608ef81419a4adcbf6041f12cde3b3e83b28272",
+          "uncompiled_DAG_operation_nodes": 89,
+          "compiled_DAG_operation_nodes": 490,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "candidate": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 6.054757511946551e-15,
+                "measured_Z_effect_max_abs": 3.33066923973404e-15
+              },
+              "compile_cold_seconds": 0.18345585907809436,
+              "cache_warm_lookup_seconds": 0.2874575690366328,
+              "wrapper_instructions": 89
+            },
+            "boundary_fusion": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "candidate": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 4.6909386238354046e-15,
+                "measured_Z_effect_max_abs": 3.2196467929596826e-15
+              },
+              "compile_cold_seconds": 0.32803609292022884,
+              "cache_warm_lookup_seconds": 0.16967192303854972,
+              "wrapper_instructions": 89
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "candidate": {
+                "rz_count": 246,
+                "cx_count": 140,
+                "rz_depth": 155,
+                "cx_depth": 140,
+                "total_depth": 342,
+                "circuit_size": 494
+              },
+              "signed_difference": {
+                "rz_count": 3,
+                "cx_count": 0,
+                "rz_depth": 2,
+                "cx_depth": 0,
+                "total_depth": 2,
+                "circuit_size": 4
+              },
+              "absolute_difference": {
+                "rz_count": 3,
+                "cx_count": 0,
+                "rz_depth": 2,
+                "cx_depth": 0,
+                "total_depth": 2,
+                "circuit_size": 4
+              },
+              "relative_difference": {
+                "rz_count": 0.012345679012345678,
+                "cx_count": 0.0,
+                "rz_depth": 0.013071895424836602,
+                "cx_depth": 0.0,
+                "total_depth": 0.0058823529411764705,
+                "circuit_size": 0.00816326530612245
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 4.773560608001184e-15,
+                "measured_Z_effect_max_abs": 4.3298697960381105e-15
+              },
+              "compile_seconds": 0.29322222096379846,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 246,
+                "cx_count": 140,
+                "rz_depth": 155,
+                "cx_depth": 140,
+                "total_depth": 342,
+                "circuit_size": 494
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 4.440892098500626e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 6.054757511946551e-15,
+            "measured_Z_effect_max_abs": 3.33066923973404e-15
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "reference_compile_seconds": 0.10116905008908361,
+          "wrapper_fingerprint": "9a0d85d739e31e7b242e63dc58fb949f2b5290427fd0d39650747b5cf33df1c2",
+          "uncompiled_DAG_operation_nodes": 90,
+          "compiled_DAG_operation_nodes": 490,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "candidate": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.99766959316215e-15,
+                "measured_Z_effect_max_abs": 3.0369208255180886e-15
+              },
+              "compile_cold_seconds": 0.1847834000363946,
+              "cache_warm_lookup_seconds": 0.30186919099651277,
+              "wrapper_instructions": 90
+            },
+            "boundary_fusion": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "candidate": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.811553842982841e-15,
+                "measured_Z_effect_max_abs": 3.885780755932007e-15
+              },
+              "compile_cold_seconds": 0.325812979019247,
+              "cache_warm_lookup_seconds": 0.18259899504482746,
+              "wrapper_instructions": 90
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 243,
+                "cx_count": 140,
+                "rz_depth": 153,
+                "cx_depth": 140,
+                "total_depth": 340,
+                "circuit_size": 490
+              },
+              "candidate": {
+                "rz_count": 247,
+                "cx_count": 140,
+                "rz_depth": 155,
+                "cx_depth": 140,
+                "total_depth": 342,
+                "circuit_size": 495
+              },
+              "signed_difference": {
+                "rz_count": 4,
+                "cx_count": 0,
+                "rz_depth": 2,
+                "cx_depth": 0,
+                "total_depth": 2,
+                "circuit_size": 5
+              },
+              "absolute_difference": {
+                "rz_count": 4,
+                "cx_count": 0,
+                "rz_depth": 2,
+                "cx_depth": 0,
+                "total_depth": 2,
+                "circuit_size": 5
+              },
+              "relative_difference": {
+                "rz_count": 0.01646090534979424,
+                "cx_count": 0.0,
+                "rz_depth": 0.013071895424836602,
+                "cx_depth": 0.0,
+                "total_depth": 0.0058823529411764705,
+                "circuit_size": 0.01020408163265306
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.5095789528138458e-15,
+                "measured_Z_effect_max_abs": 3.1363182808035483e-15
+              },
+              "compile_seconds": 0.3255572209600359,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 247,
+                "cx_count": 140,
+                "rz_depth": 155,
+                "cx_depth": 140,
+                "total_depth": 343,
+                "circuit_size": 495
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 2.714842239903703e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 2.99766959316215e-15,
+            "measured_Z_effect_max_abs": 3.0369208255180886e-15
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        0,
+        3,
+        "mixed"
+      ],
+      "Q": 1,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "5ee530810c99308e95ec5aa73a783efd8b248f2e2ae400992a0aa6aee5f8d2f8",
+      "stream_native_fingerprint": "5ee530810c99308e95ec5aa73a783efd8b248f2e2ae400992a0aa6aee5f8d2f8",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 1.998043023131693e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 1.998043023131693e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 1.432843787967409e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 0.458818151964806,
+          "Python_traced_peak_bytes": 8484194,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 94
+        },
+        "stream": {
+          "elapsed_seconds": 0.4361777260201052,
+          "Python_traced_peak_bytes": 8110597,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 94
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 292,
+            "cx_count": 176,
+            "rz_depth": 185,
+            "cx_depth": 176,
+            "total_depth": 409,
+            "circuit_size": 583
+          },
+          "reference_compile_seconds": 0.1157571910880506,
+          "wrapper_fingerprint": "d79b2f8a48b050087163de460c51b38eb98f9a849c7197f20022e45e36bb6303",
+          "uncompiled_DAG_operation_nodes": 97,
+          "compiled_DAG_operation_nodes": 583,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "candidate": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 5.134781488891349e-15,
+                "measured_Z_effect_max_abs": 4.329869928636697e-15
+              },
+              "compile_cold_seconds": 0.20799223193898797,
+              "cache_warm_lookup_seconds": 0.32912281597964466,
+              "wrapper_instructions": 97
+            },
+            "boundary_fusion": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "candidate": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 5.88418205192369e-15,
+                "measured_Z_effect_max_abs": 5.88418203051333e-15
+              },
+              "compile_cold_seconds": 0.34462878096383065,
+              "cache_warm_lookup_seconds": 0.19078509998507798,
+              "wrapper_instructions": 97
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "candidate": {
+                "rz_count": 295,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 588
+              },
+              "signed_difference": {
+                "rz_count": 3,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 5
+              },
+              "absolute_difference": {
+                "rz_count": 3,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 5
+              },
+              "relative_difference": {
+                "rz_count": 0.010273972602739725,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.008576329331046312
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 5.942808183512519e-15,
+                "measured_Z_effect_max_abs": 5.884182032544095e-15
+              },
+              "compile_seconds": 0.18231523700524122,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 295,
+                "cx_count": 176,
+                "rz_depth": 186,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 588
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 3.3306690738754696e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 5.134781488891349e-15,
+            "measured_Z_effect_max_abs": 4.329869928636697e-15
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 292,
+            "cx_count": 176,
+            "rz_depth": 185,
+            "cx_depth": 176,
+            "total_depth": 409,
+            "circuit_size": 583
+          },
+          "reference_compile_seconds": 0.2571034280117601,
+          "wrapper_fingerprint": "a6e04da0ae94892371e4de19a86a880c0cd42974648b47d61fdde82c15a365c6",
+          "uncompiled_DAG_operation_nodes": 98,
+          "compiled_DAG_operation_nodes": 583,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "candidate": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 3.509324583076376e-15,
+                "measured_Z_effect_max_abs": 5.117871376605518e-15
+              },
+              "compile_cold_seconds": 0.34693438606336713,
+              "cache_warm_lookup_seconds": 0.3361657690256834,
+              "wrapper_instructions": 98
+            },
+            "boundary_fusion": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "candidate": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.947884896934154e-15,
+                "measured_Z_effect_max_abs": 3.1966499433284885e-15
+              },
+              "compile_cold_seconds": 0.20993680891115218,
+              "cache_warm_lookup_seconds": 0.3310334850102663,
+              "wrapper_instructions": 98
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 292,
+                "cx_count": 176,
+                "rz_depth": 185,
+                "cx_depth": 176,
+                "total_depth": 409,
+                "circuit_size": 583
+              },
+              "candidate": {
+                "rz_count": 296,
+                "cx_count": 176,
+                "rz_depth": 186,
+                "cx_depth": 176,
+                "total_depth": 410,
+                "circuit_size": 589
+              },
+              "signed_difference": {
+                "rz_count": 4,
+                "cx_count": 0,
+                "rz_depth": 1,
+                "cx_depth": 0,
+                "total_depth": 1,
+                "circuit_size": 6
+              },
+              "absolute_difference": {
+                "rz_count": 4,
+                "cx_count": 0,
+                "rz_depth": 1,
+                "cx_depth": 0,
+                "total_depth": 1,
+                "circuit_size": 6
+              },
+              "relative_difference": {
+                "rz_count": 0.0136986301369863,
+                "cx_count": 0.0,
+                "rz_depth": 0.005405405405405406,
+                "cx_depth": 0.0,
+                "total_depth": 0.0024449877750611247,
+                "circuit_size": 0.010291595197255575
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 3.892345330225158e-15,
+                "measured_Z_effect_max_abs": 5.329146104279947e-15
+              },
+              "compile_seconds": 0.35179002303630114,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 296,
+                "cx_count": 176,
+                "rz_depth": 187,
+                "cx_depth": 176,
+                "total_depth": 413,
+                "circuit_size": 589
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 1.8648277366750676e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 3.509324583076376e-15,
+            "measured_Z_effect_max_abs": 5.117871376605518e-15
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        1,
+        2,
+        "mixed"
+      ],
+      "Q": 2,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "7edfbfc22ef5d1f23d0c0cc10927a2f44fb1c4127a2f05f108daab7138bce1ee",
+      "stream_native_fingerprint": "7edfbfc22ef5d1f23d0c0cc10927a2f44fb1c4127a2f05f108daab7138bce1ee",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 1.5801531297513493e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 1.5801531297513493e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 1.5091894846178047e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 0.859040766954422,
+          "Python_traced_peak_bytes": 14819605,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 171
+        },
+        "stream": {
+          "elapsed_seconds": 0.8371800270397216,
+          "Python_traced_peak_bytes": 14476338,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 171
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "reference_compile_seconds": 0.34408562700264156,
+          "wrapper_fingerprint": "1dc0b6ba85389c1c5d3c5449d130ff8eada84e6a2f0d61e9b9eaf11a0bdb9802",
+          "uncompiled_DAG_operation_nodes": 174,
+          "compiled_DAG_operation_nodes": 940,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "candidate": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 9.608571792678244e-15,
+                "measured_Z_effect_max_abs": 8.548717289613705e-15
+              },
+              "compile_cold_seconds": 0.5186105580069125,
+              "cache_warm_lookup_seconds": 0.494688862003386,
+              "wrapper_instructions": 174
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "candidate": {
+                "rz_count": 460,
+                "cx_count": 272,
+                "rz_depth": 293,
+                "cx_depth": 272,
+                "total_depth": 652,
+                "circuit_size": 931
+              },
+              "signed_difference": {
+                "rz_count": -5,
+                "cx_count": -4,
+                "rz_depth": -3,
+                "cx_depth": -4,
+                "total_depth": -7,
+                "circuit_size": -9
+              },
+              "absolute_difference": {
+                "rz_count": 5,
+                "cx_count": 4,
+                "rz_depth": 3,
+                "cx_depth": 4,
+                "total_depth": 7,
+                "circuit_size": 9
+              },
+              "relative_difference": {
+                "rz_count": -0.010752688172043012,
+                "cx_count": -0.014492753623188406,
+                "rz_depth": -0.010135135135135136,
+                "cx_depth": -0.014492753623188406,
+                "total_depth": -0.010622154779969651,
+                "circuit_size": -0.009574468085106383
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 6.133181517190765e-15,
+                "measured_Z_effect_max_abs": 5.21804858243762e-15
+              },
+              "compile_cold_seconds": 0.5084973080083728,
+              "cache_warm_lookup_seconds": 0.48016346991062164,
+              "wrapper_instructions": 165
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "candidate": {
+                "rz_count": 467,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 942
+              },
+              "signed_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "absolute_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "relative_difference": {
+                "rz_count": 0.004301075268817204,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.002127659574468085
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 8.559265560404665e-15,
+                "measured_Z_effect_max_abs": 8.548717289613705e-15
+              },
+              "compile_seconds": 0.4549135729903355,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 467,
+                "cx_count": 276,
+                "rz_depth": 297,
+                "cx_depth": 276,
+                "total_depth": 660,
+                "circuit_size": 942
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 6.661338147750939e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 9.608571792678244e-15,
+            "measured_Z_effect_max_abs": 8.548717289613705e-15
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "reference_compile_seconds": 0.35647037299349904,
+          "wrapper_fingerprint": "42add695f6392abda4f6ad72805e4a1c315fb0a5759a1802b0bd365b9f3c61ef",
+          "uncompiled_DAG_operation_nodes": 175,
+          "compiled_DAG_operation_nodes": 940,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "candidate": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 4.745965026614315e-15,
+                "measured_Z_effect_max_abs": 5.825237365947029e-15
+              },
+              "compile_cold_seconds": 0.5342540829442441,
+              "cache_warm_lookup_seconds": 0.5029737659497187,
+              "wrapper_instructions": 175
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "candidate": {
+                "rz_count": 460,
+                "cx_count": 272,
+                "rz_depth": 293,
+                "cx_depth": 272,
+                "total_depth": 652,
+                "circuit_size": 931
+              },
+              "signed_difference": {
+                "rz_count": -5,
+                "cx_count": -4,
+                "rz_depth": -3,
+                "cx_depth": -4,
+                "total_depth": -7,
+                "circuit_size": -9
+              },
+              "absolute_difference": {
+                "rz_count": 5,
+                "cx_count": 4,
+                "rz_depth": 3,
+                "cx_depth": 4,
+                "total_depth": 7,
+                "circuit_size": 9
+              },
+              "relative_difference": {
+                "rz_count": -0.010752688172043012,
+                "cx_count": -0.014492753623188406,
+                "rz_depth": -0.010135135135135136,
+                "cx_depth": -0.014492753623188406,
+                "total_depth": -0.010622154779969651,
+                "circuit_size": -0.009574468085106383
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 4.984106891655981e-15,
+                "measured_Z_effect_max_abs": 7.384530235240721e-15
+              },
+              "compile_cold_seconds": 0.6620778640499339,
+              "cache_warm_lookup_seconds": 0.4884278860408813,
+              "wrapper_instructions": 166
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 465,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 940
+              },
+              "candidate": {
+                "rz_count": 467,
+                "cx_count": 276,
+                "rz_depth": 296,
+                "cx_depth": 276,
+                "total_depth": 659,
+                "circuit_size": 942
+              },
+              "signed_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "absolute_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "relative_difference": {
+                "rz_count": 0.004301075268817204,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.002127659574468085
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 4.9583848003168506e-15,
+                "measured_Z_effect_max_abs": 6.95952565670088e-15
+              },
+              "compile_seconds": 0.30625729507301,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 467,
+                "cx_count": 276,
+                "rz_depth": 297,
+                "cx_depth": 276,
+                "total_depth": 660,
+                "circuit_size": 942
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 8.621575675604731e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 4.745965026614315e-15,
+            "measured_Z_effect_max_abs": 5.825237365947029e-15
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        1,
+        3,
+        "mixed"
+      ],
+      "Q": 2,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "797611722d0f2c92100dae2b29c9e39f0a3266a6b34197f4658f4a71510ba014",
+      "stream_native_fingerprint": "797611722d0f2c92100dae2b29c9e39f0a3266a6b34197f4658f4a71510ba014",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 3.412419343809127e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 3.412419343809127e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 2.7834566603920693e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 0.9202699579764158,
+          "Python_traced_peak_bytes": 16507102,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 187
+        },
+        "stream": {
+          "elapsed_seconds": 0.894535084022209,
+          "Python_traced_peak_bytes": 16160915,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 187
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 563,
+            "cx_count": 348,
+            "rz_depth": 360,
+            "cx_depth": 348,
+            "total_depth": 797,
+            "circuit_size": 1126
+          },
+          "reference_compile_seconds": 0.37874227296561,
+          "wrapper_fingerprint": "6f99576ba55b557611a0ca932e63267a80c3f4016ea6ca6eeb403bb40b81fe93",
+          "uncompiled_DAG_operation_nodes": 190,
+          "compiled_DAG_operation_nodes": 1126,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "candidate": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.0445600576039925e-14,
+                "measured_Z_effect_max_abs": 1.0547118733938987e-14
+              },
+              "compile_cold_seconds": 0.5708104559453204,
+              "cache_warm_lookup_seconds": 0.697907283087261,
+              "wrapper_instructions": 190
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "candidate": {
+                "rz_count": 558,
+                "cx_count": 344,
+                "rz_depth": 357,
+                "cx_depth": 344,
+                "total_depth": 790,
+                "circuit_size": 1117
+              },
+              "signed_difference": {
+                "rz_count": -5,
+                "cx_count": -4,
+                "rz_depth": -3,
+                "cx_depth": -4,
+                "total_depth": -7,
+                "circuit_size": -9
+              },
+              "absolute_difference": {
+                "rz_count": 5,
+                "cx_count": 4,
+                "rz_depth": 3,
+                "cx_depth": 4,
+                "total_depth": 7,
+                "circuit_size": 9
+              },
+              "relative_difference": {
+                "rz_count": -0.008880994671403197,
+                "cx_count": -0.011494252873563218,
+                "rz_depth": -0.008333333333333333,
+                "cx_depth": -0.011494252873563218,
+                "total_depth": -0.00878293601003764,
+                "circuit_size": -0.007992895204262877
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 9.153152161068374e-15,
+                "measured_Z_effect_max_abs": 8.770761898365094e-15
+              },
+              "compile_cold_seconds": 0.5605928869917989,
+              "cache_warm_lookup_seconds": 0.6845195650821552,
+              "wrapper_instructions": 181
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "candidate": {
+                "rz_count": 565,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1128
+              },
+              "signed_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "absolute_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "relative_difference": {
+                "rz_count": 0.003552397868561279,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0017761989342806395
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 8.881784222049337e-15,
+                "measured_Z_effect_max_abs": 8.770761919774558e-15
+              },
+              "compile_seconds": 0.3542739599943161,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 565,
+                "cx_count": 348,
+                "rz_depth": 361,
+                "cx_depth": 348,
+                "total_depth": 798,
+                "circuit_size": 1128
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 5.551115123125783e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 1.0445600576039925e-14,
+            "measured_Z_effect_max_abs": 1.0547118733938987e-14
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 563,
+            "cx_count": 348,
+            "rz_depth": 360,
+            "cx_depth": 348,
+            "total_depth": 797,
+            "circuit_size": 1126
+          },
+          "reference_compile_seconds": 0.22924889100249857,
+          "wrapper_fingerprint": "4aee75b7b4a3c3320ab42d78ed339e190d99897fc1f2060775a4b950b6170940",
+          "uncompiled_DAG_operation_nodes": 191,
+          "compiled_DAG_operation_nodes": 1126,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "candidate": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 5.773165827860298e-15,
+                "measured_Z_effect_max_abs": 6.9963861527065494e-15
+              },
+              "compile_cold_seconds": 0.5898476899601519,
+              "cache_warm_lookup_seconds": 0.552703402005136,
+              "wrapper_instructions": 191
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "candidate": {
+                "rz_count": 558,
+                "cx_count": 344,
+                "rz_depth": 357,
+                "cx_depth": 344,
+                "total_depth": 790,
+                "circuit_size": 1117
+              },
+              "signed_difference": {
+                "rz_count": -5,
+                "cx_count": -4,
+                "rz_depth": -3,
+                "cx_depth": -4,
+                "total_depth": -7,
+                "circuit_size": -9
+              },
+              "absolute_difference": {
+                "rz_count": 5,
+                "cx_count": 4,
+                "rz_depth": 3,
+                "cx_depth": 4,
+                "total_depth": 7,
+                "circuit_size": 9
+              },
+              "relative_difference": {
+                "rz_count": -0.008880994671403197,
+                "cx_count": -0.011494252873563218,
+                "rz_depth": -0.008333333333333333,
+                "cx_depth": -0.011494252873563218,
+                "total_depth": -0.00878293601003764,
+                "circuit_size": -0.007992895204262877
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 6.772365820643035e-15,
+                "measured_Z_effect_max_abs": 8.108478697553213e-15
+              },
+              "compile_cold_seconds": 0.5576531989499927,
+              "cache_warm_lookup_seconds": 0.5243761850288138,
+              "wrapper_instructions": 182
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 563,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1126
+              },
+              "candidate": {
+                "rz_count": 565,
+                "cx_count": 348,
+                "rz_depth": 360,
+                "cx_depth": 348,
+                "total_depth": 797,
+                "circuit_size": 1128
+              },
+              "signed_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "absolute_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "relative_difference": {
+                "rz_count": 0.003552397868561279,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0017761989342806395
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 4.934805119100375e-15,
+                "measured_Z_effect_max_abs": 5.692062257968785e-15
+              },
+              "compile_seconds": 0.503937975037843,
+              "pieces": 2,
+              "naive_block_metric_sum": {
+                "rz_count": 565,
+                "cx_count": 348,
+                "rz_depth": 361,
+                "cx_depth": 348,
+                "total_depth": 798,
+                "circuit_size": 1128
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 5.30825383648903e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 5.773165827860298e-15,
+            "measured_Z_effect_max_abs": 6.9963861527065494e-15
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        2,
+        2,
+        "mixed"
+      ],
+      "Q": 4,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "9b498a3f73a982bdea00c2944c0ca1c644bda315e3a275716bb9219314a15ced",
+      "stream_native_fingerprint": "9b498a3f73a982bdea00c2944c0ca1c644bda315e3a275716bb9219314a15ced",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 2.7423646438498505e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 2.7423646438498505e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 2.207408187795886e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 1.8004832740407437,
+          "Python_traced_peak_bytes": 27279557,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 329
+        },
+        "stream": {
+          "elapsed_seconds": 1.7774552629562095,
+          "Python_traced_peak_bytes": 27044241,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 329
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 891,
+            "cx_count": 540,
+            "rz_depth": 572,
+            "cx_depth": 540,
+            "total_depth": 1271,
+            "circuit_size": 1798
+          },
+          "reference_compile_seconds": 0.6977264499291778,
+          "wrapper_fingerprint": "fdb605c0605557316e3984325647a394679d38cd2f2c08698d017379c000ec00",
+          "uncompiled_DAG_operation_nodes": 332,
+          "compiled_DAG_operation_nodes": 1798,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "candidate": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.2431058930508997e-14,
+                "measured_Z_effect_max_abs": 8.881784250027113e-15
+              },
+              "compile_cold_seconds": 1.0557539300061762,
+              "cache_warm_lookup_seconds": 1.0168498440179974,
+              "wrapper_instructions": 332
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "candidate": {
+                "rz_count": 876,
+                "cx_count": 528,
+                "rz_depth": 563,
+                "cx_depth": 528,
+                "total_depth": 1250,
+                "circuit_size": 1771
+              },
+              "signed_difference": {
+                "rz_count": -15,
+                "cx_count": -12,
+                "rz_depth": -9,
+                "cx_depth": -12,
+                "total_depth": -21,
+                "circuit_size": -27
+              },
+              "absolute_difference": {
+                "rz_count": 15,
+                "cx_count": 12,
+                "rz_depth": 9,
+                "cx_depth": 12,
+                "total_depth": 21,
+                "circuit_size": 27
+              },
+              "relative_difference": {
+                "rz_count": -0.016835016835016835,
+                "cx_count": -0.022222222222222223,
+                "rz_depth": -0.015734265734265736,
+                "cx_depth": -0.022222222222222223,
+                "total_depth": -0.016522423288749016,
+                "circuit_size": -0.015016685205784204
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.3443286781311023e-14,
+                "measured_Z_effect_max_abs": 1.2545520181664087e-14
+              },
+              "compile_cold_seconds": 1.017547660972923,
+              "cache_warm_lookup_seconds": 0.9827752680284902,
+              "wrapper_instructions": 305
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "candidate": {
+                "rz_count": 893,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1800
+              },
+              "signed_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "absolute_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "relative_difference": {
+                "rz_count": 0.002244668911335578,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0011123470522803114
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.1639824411078878e-14,
+                "measured_Z_effect_max_abs": 1.0436096431476471e-14
+              },
+              "compile_seconds": 0.7650405960157514,
+              "pieces": 4,
+              "naive_block_metric_sum": {
+                "rz_count": 893,
+                "cx_count": 540,
+                "rz_depth": 575,
+                "cx_depth": 540,
+                "total_depth": 1274,
+                "circuit_size": 1800
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 1.1102230246251565e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 1.2431058930508997e-14,
+            "measured_Z_effect_max_abs": 8.881784250027113e-15
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 891,
+            "cx_count": 540,
+            "rz_depth": 572,
+            "cx_depth": 540,
+            "total_depth": 1271,
+            "circuit_size": 1798
+          },
+          "reference_compile_seconds": 0.5741959429578856,
+          "wrapper_fingerprint": "e324e4b83e54161c9fbdb9823b7409b6855e21b8a74794dcedf4ba0d0c1f1c1c",
+          "uncompiled_DAG_operation_nodes": 333,
+          "compiled_DAG_operation_nodes": 1798,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "candidate": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 8.929016559611117e-15,
+                "measured_Z_effect_max_abs": 1.1104993455027979e-14
+              },
+              "compile_cold_seconds": 0.919152433052659,
+              "cache_warm_lookup_seconds": 1.040184571989812,
+              "wrapper_instructions": 333
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "candidate": {
+                "rz_count": 876,
+                "cx_count": 528,
+                "rz_depth": 563,
+                "cx_depth": 528,
+                "total_depth": 1250,
+                "circuit_size": 1771
+              },
+              "signed_difference": {
+                "rz_count": -15,
+                "cx_count": -12,
+                "rz_depth": -9,
+                "cx_depth": -12,
+                "total_depth": -21,
+                "circuit_size": -27
+              },
+              "absolute_difference": {
+                "rz_count": 15,
+                "cx_count": 12,
+                "rz_depth": 9,
+                "cx_depth": 12,
+                "total_depth": 21,
+                "circuit_size": 27
+              },
+              "relative_difference": {
+                "rz_count": -0.016835016835016835,
+                "cx_count": -0.022222222222222223,
+                "rz_depth": -0.015734265734265736,
+                "cx_depth": -0.022222222222222223,
+                "total_depth": -0.016522423288749016,
+                "circuit_size": -0.015016685205784204
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.0103052776521281e-14,
+                "measured_Z_effect_max_abs": 1.176916304969349e-14
+              },
+              "compile_cold_seconds": 1.0085606679785997,
+              "cache_warm_lookup_seconds": 0.9723865339765325,
+              "wrapper_instructions": 306
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 891,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1798
+              },
+              "candidate": {
+                "rz_count": 893,
+                "cx_count": 540,
+                "rz_depth": 572,
+                "cx_depth": 540,
+                "total_depth": 1271,
+                "circuit_size": 1800
+              },
+              "signed_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "absolute_difference": {
+                "rz_count": 2,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 2
+              },
+              "relative_difference": {
+                "rz_count": 0.002244668911335578,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0011123470522803114
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 7.889404173609774e-15,
+                "measured_Z_effect_max_abs": 1.0288966516052161e-14
+              },
+              "compile_seconds": 0.7715156769845635,
+              "pieces": 4,
+              "naive_block_metric_sum": {
+                "rz_count": 893,
+                "cx_count": 540,
+                "rz_depth": 575,
+                "cx_depth": 540,
+                "total_depth": 1274,
+                "circuit_size": 1800
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 1.8735013540549517e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 8.929016559611117e-15,
+            "measured_Z_effect_max_abs": 1.1104993455027979e-14
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        2,
+        3,
+        "mixed"
+      ],
+      "Q": 4,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "9bb3b9d7b46509737f376698b0885ec59759b402f84e79d0e90ee911b311ba7a",
+      "stream_native_fingerprint": "9bb3b9d7b46509737f376698b0885ec59759b402f84e79d0e90ee911b311ba7a",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 6.080957780253812e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 6.080957780253812e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 5.397460449486732e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 2.029920283006504,
+          "Python_traced_peak_bytes": 32038629,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 373
+        },
+        "stream": {
+          "elapsed_seconds": 2.036047446075827,
+          "Python_traced_peak_bytes": 31803352,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 373
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 1106,
+            "cx_count": 692,
+            "rz_depth": 712,
+            "cx_depth": 692,
+            "total_depth": 1576,
+            "circuit_size": 2213
+          },
+          "reference_compile_seconds": 0.6368224129546434,
+          "wrapper_fingerprint": "1905ef26784fc5379344b4e258e2bcda1c89547be9f0e89cba244e691a9a4d32",
+          "uncompiled_DAG_operation_nodes": 376,
+          "compiled_DAG_operation_nodes": 2213,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "candidate": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.6758116906701664e-14,
+                "measured_Z_effect_max_abs": 1.543210006427737e-14
+              },
+              "compile_cold_seconds": 1.2615091110346839,
+              "cache_warm_lookup_seconds": 1.2201421620557085,
+              "wrapper_instructions": 376
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "candidate": {
+                "rz_count": 1091,
+                "cx_count": 680,
+                "rz_depth": 703,
+                "cx_depth": 680,
+                "total_depth": 1555,
+                "circuit_size": 2186
+              },
+              "signed_difference": {
+                "rz_count": -15,
+                "cx_count": -12,
+                "rz_depth": -9,
+                "cx_depth": -12,
+                "total_depth": -21,
+                "circuit_size": -27
+              },
+              "absolute_difference": {
+                "rz_count": 15,
+                "cx_count": 12,
+                "rz_depth": 9,
+                "cx_depth": 12,
+                "total_depth": 21,
+                "circuit_size": 27
+              },
+              "relative_difference": {
+                "rz_count": -0.013562386980108499,
+                "cx_count": -0.017341040462427744,
+                "rz_depth": -0.012640449438202247,
+                "cx_depth": -0.017341040462427744,
+                "total_depth": -0.0133248730964467,
+                "circuit_size": -0.012200632625395391
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.3970304909302795e-14,
+                "measured_Z_effect_max_abs": 1.3100631691205541e-14
+              },
+              "compile_cold_seconds": 1.2064578369027004,
+              "cache_warm_lookup_seconds": 1.170930698979646,
+              "wrapper_instructions": 349
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "candidate": {
+                "rz_count": 1127,
+                "cx_count": 696,
+                "rz_depth": 722,
+                "cx_depth": 696,
+                "total_depth": 1597,
+                "circuit_size": 2250
+              },
+              "signed_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "absolute_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "relative_difference": {
+                "rz_count": 0.0189873417721519,
+                "cx_count": 0.005780346820809248,
+                "rz_depth": 0.014044943820224719,
+                "cx_depth": 0.005780346820809248,
+                "total_depth": 0.0133248730964467,
+                "circuit_size": 0.016719385449615907
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.6905543798777125e-14,
+                "measured_Z_effect_max_abs": 1.5765166949912344e-14
+              },
+              "compile_seconds": 0.8980560679920018,
+              "pieces": 4,
+              "naive_block_metric_sum": {
+                "rz_count": 1127,
+                "cx_count": 696,
+                "rz_depth": 724,
+                "cx_depth": 696,
+                "total_depth": 1599,
+                "circuit_size": 2250
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 1.2212453270876722e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 1.6758116906701664e-14,
+            "measured_Z_effect_max_abs": 1.543210006427737e-14
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 1106,
+            "cx_count": 692,
+            "rz_depth": 712,
+            "cx_depth": 692,
+            "total_depth": 1576,
+            "circuit_size": 2213
+          },
+          "reference_compile_seconds": 0.6742397450143471,
+          "wrapper_fingerprint": "74813be0b1d20d66155ab76d2b172c54221fc316344a54cdf9334072aa4ac42e",
+          "uncompiled_DAG_operation_nodes": 377,
+          "compiled_DAG_operation_nodes": 2213,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "candidate": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 9.766495018477643e-15,
+                "measured_Z_effect_max_abs": 1.4052718675916342e-14
+              },
+              "compile_cold_seconds": 1.4260290749371052,
+              "cache_warm_lookup_seconds": 1.2069674299564213,
+              "wrapper_instructions": 377
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "candidate": {
+                "rz_count": 1091,
+                "cx_count": 680,
+                "rz_depth": 703,
+                "cx_depth": 680,
+                "total_depth": 1555,
+                "circuit_size": 2186
+              },
+              "signed_difference": {
+                "rz_count": -15,
+                "cx_count": -12,
+                "rz_depth": -9,
+                "cx_depth": -12,
+                "total_depth": -21,
+                "circuit_size": -27
+              },
+              "absolute_difference": {
+                "rz_count": 15,
+                "cx_count": 12,
+                "rz_depth": 9,
+                "cx_depth": 12,
+                "total_depth": 21,
+                "circuit_size": 27
+              },
+              "relative_difference": {
+                "rz_count": -0.013562386980108499,
+                "cx_count": -0.017341040462427744,
+                "rz_depth": -0.012640449438202247,
+                "cx_depth": -0.017341040462427744,
+                "total_depth": -0.0133248730964467,
+                "circuit_size": -0.012200632625395391
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.1102230692612971e-14,
+                "measured_Z_effect_max_abs": 1.424182061093259e-14
+              },
+              "compile_cold_seconds": 1.365884155035019,
+              "cache_warm_lookup_seconds": 1.1642671610461548,
+              "wrapper_instructions": 350
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1106,
+                "cx_count": 692,
+                "rz_depth": 712,
+                "cx_depth": 692,
+                "total_depth": 1576,
+                "circuit_size": 2213
+              },
+              "candidate": {
+                "rz_count": 1127,
+                "cx_count": 696,
+                "rz_depth": 722,
+                "cx_depth": 696,
+                "total_depth": 1597,
+                "circuit_size": 2250
+              },
+              "signed_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "absolute_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "relative_difference": {
+                "rz_count": 0.0189873417721519,
+                "cx_count": 0.005780346820809248,
+                "rz_depth": 0.014044943820224719,
+                "cx_depth": 0.005780346820809248,
+                "total_depth": 0.0133248730964467,
+                "circuit_size": 0.016719385449615907
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.1549255247831338e-14,
+                "measured_Z_effect_max_abs": 1.5543426638255173e-14
+              },
+              "compile_seconds": 0.9037237259326503,
+              "pieces": 4,
+              "naive_block_metric_sum": {
+                "rz_count": 1127,
+                "cx_count": 696,
+                "rz_depth": 724,
+                "cx_depth": 696,
+                "total_depth": 1599,
+                "circuit_size": 2250
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 9.367506770274758e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 9.766495018477643e-15,
+            "measured_Z_effect_max_abs": 1.4052718675916342e-14
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        3,
+        2,
+        "mixed"
+      ],
+      "Q": 8,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "3ce7c7085c89dd93dc4d279871ffdfc5d88144f688cb11afa48a2a10d66f88d4",
+      "stream_native_fingerprint": "3ce7c7085c89dd93dc4d279871ffdfc5d88144f688cb11afa48a2a10d66f88d4",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 5.170886829540642e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 5.170886829540642e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 4.731023148821525e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 3.3963376639876515,
+          "Python_traced_peak_bytes": 54954028,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 657
+        },
+        "stream": {
+          "elapsed_seconds": 3.359669720986858,
+          "Python_traced_peak_bytes": 54525290,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 657
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "reference_compile_seconds": 0.9909050120040774,
+          "wrapper_fingerprint": "1dbe4b553e2f58eba4169444e284adc0e455b8bd70b8a7bec55203bcc6e2c4b5",
+          "uncompiled_DAG_operation_nodes": 660,
+          "compiled_DAG_operation_nodes": 3556,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "candidate": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.8051888449650598e-14,
+                "measured_Z_effect_max_abs": 2.1649348980190553e-14
+              },
+              "compile_cold_seconds": 2.1531704319640994,
+              "cache_warm_lookup_seconds": 2.3542122669750825,
+              "wrapper_instructions": 660
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "candidate": {
+                "rz_count": 1726,
+                "cx_count": 1048,
+                "rz_depth": 1113,
+                "cx_depth": 1048,
+                "total_depth": 2472,
+                "circuit_size": 3493
+              },
+              "signed_difference": {
+                "rz_count": -35,
+                "cx_count": -28,
+                "rz_depth": -21,
+                "cx_depth": -28,
+                "total_depth": -49,
+                "circuit_size": -63
+              },
+              "absolute_difference": {
+                "rz_count": 35,
+                "cx_count": 28,
+                "rz_depth": 21,
+                "cx_depth": 28,
+                "total_depth": 49,
+                "circuit_size": 63
+              },
+              "relative_difference": {
+                "rz_count": -0.019875070982396367,
+                "cx_count": -0.026022304832713755,
+                "rz_depth": -0.018518518518518517,
+                "cx_depth": -0.026022304832713755,
+                "total_depth": -0.01943673145577152,
+                "circuit_size": -0.017716535433070866
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.5743136470484646e-14,
+                "measured_Z_effect_max_abs": 2.3425705820069986e-14
+              },
+              "compile_cold_seconds": 2.0737251070095226,
+              "cache_warm_lookup_seconds": 2.0115890180459246,
+              "wrapper_instructions": 597
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "candidate": {
+                "rz_count": 1767,
+                "cx_count": 1076,
+                "rz_depth": 1135,
+                "cx_depth": 1076,
+                "total_depth": 2522,
+                "circuit_size": 3562
+              },
+              "signed_difference": {
+                "rz_count": 6,
+                "cx_count": 0,
+                "rz_depth": 1,
+                "cx_depth": 0,
+                "total_depth": 1,
+                "circuit_size": 6
+              },
+              "absolute_difference": {
+                "rz_count": 6,
+                "cx_count": 0,
+                "rz_depth": 1,
+                "cx_depth": 0,
+                "total_depth": 1,
+                "circuit_size": 6
+              },
+              "relative_difference": {
+                "rz_count": 0.0034071550255536627,
+                "cx_count": 0.0,
+                "rz_depth": 0.0008818342151675485,
+                "cx_depth": 0.0,
+                "total_depth": 0.0003966679888932963,
+                "circuit_size": 0.001687289088863892
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.4487375266250168e-14,
+                "measured_Z_effect_max_abs": 1.931788063651569e-14
+              },
+              "compile_seconds": 1.6443665398983285,
+              "pieces": 8,
+              "naive_block_metric_sum": {
+                "rz_count": 1767,
+                "cx_count": 1076,
+                "rz_depth": 1139,
+                "cx_depth": 1076,
+                "total_depth": 2527,
+                "circuit_size": 3562
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 1.7763568394002505e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 2.8051888449650598e-14,
+            "measured_Z_effect_max_abs": 2.1649348980190553e-14
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "reference_compile_seconds": 1.0464976269286126,
+          "wrapper_fingerprint": "3e81822a50d3d23b671238a0b4a2a4a30c8360cb2ac4cfca61db42c4fb21c48b",
+          "uncompiled_DAG_operation_nodes": 661,
+          "compiled_DAG_operation_nodes": 3556,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "candidate": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.776357347148088e-14,
+                "measured_Z_effect_max_abs": 2.2289617631335494e-14
+              },
+              "compile_cold_seconds": 2.1611942410236225,
+              "cache_warm_lookup_seconds": 2.3645962909795344,
+              "wrapper_instructions": 661
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "candidate": {
+                "rz_count": 1726,
+                "cx_count": 1048,
+                "rz_depth": 1113,
+                "cx_depth": 1048,
+                "total_depth": 2472,
+                "circuit_size": 3493
+              },
+              "signed_difference": {
+                "rz_count": -35,
+                "cx_count": -28,
+                "rz_depth": -21,
+                "cx_depth": -28,
+                "total_depth": -49,
+                "circuit_size": -63
+              },
+              "absolute_difference": {
+                "rz_count": 35,
+                "cx_count": 28,
+                "rz_depth": 21,
+                "cx_depth": 28,
+                "total_depth": 49,
+                "circuit_size": 63
+              },
+              "relative_difference": {
+                "rz_count": -0.019875070982396367,
+                "cx_count": -0.026022304832713755,
+                "rz_depth": -0.018518518518518517,
+                "cx_depth": -0.026022304832713755,
+                "total_depth": -0.01943673145577152,
+                "circuit_size": -0.017716535433070866
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.009504586923e-14,
+                "measured_Z_effect_max_abs": 2.047215434350979e-14
+              },
+              "compile_cold_seconds": 2.072383015998639,
+              "cache_warm_lookup_seconds": 1.7507089379942045,
+              "wrapper_instructions": 598
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 1761,
+                "cx_count": 1076,
+                "rz_depth": 1134,
+                "cx_depth": 1076,
+                "total_depth": 2521,
+                "circuit_size": 3556
+              },
+              "candidate": {
+                "rz_count": 1784,
+                "cx_count": 1080,
+                "rz_depth": 1145,
+                "cx_depth": 1080,
+                "total_depth": 2543,
+                "circuit_size": 3595
+              },
+              "signed_difference": {
+                "rz_count": 23,
+                "cx_count": 4,
+                "rz_depth": 11,
+                "cx_depth": 4,
+                "total_depth": 22,
+                "circuit_size": 39
+              },
+              "absolute_difference": {
+                "rz_count": 23,
+                "cx_count": 4,
+                "rz_depth": 11,
+                "cx_depth": 4,
+                "total_depth": 22,
+                "circuit_size": 39
+              },
+              "relative_difference": {
+                "rz_count": 0.01306076093128904,
+                "cx_count": 0.0037174721189591076,
+                "rz_depth": 0.009700176366843033,
+                "cx_depth": 0.0037174721189591076,
+                "total_depth": 0.00872669575565252,
+                "circuit_size": 0.010967379077615299
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.7126905463039696e-14,
+                "measured_Z_effect_max_abs": 2.0112836924269523e-14
+              },
+              "compile_seconds": 1.6438737909775227,
+              "pieces": 8,
+              "naive_block_metric_sum": {
+                "rz_count": 1784,
+                "cx_count": 1080,
+                "rz_depth": 1148,
+                "cx_depth": 1080,
+                "total_depth": 2547,
+                "circuit_size": 3595
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 3.2612801348363973e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 1.776357347148088e-14,
+            "measured_Z_effect_max_abs": 2.2289617631335494e-14
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        3,
+        3,
+        "mixed"
+      ],
+      "Q": 8,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "7a628723c70416d32e0cf53156a55dd288b60190c1fe651e94ef7af75efbbab0",
+      "stream_native_fingerprint": "7a628723c70416d32e0cf53156a55dd288b60190c1fe651e94ef7af75efbbab0",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 9.423212085903505e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 9.423212085903505e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 7.73360193344466e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 3.910503581049852,
+          "Python_traced_peak_bytes": 64185034,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 745
+        },
+        "stream": {
+          "elapsed_seconds": 4.140631490969099,
+          "Python_traced_peak_bytes": 62704690,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 745
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 2191,
+            "cx_count": 1380,
+            "rz_depth": 1414,
+            "cx_depth": 1380,
+            "total_depth": 3131,
+            "circuit_size": 4386
+          },
+          "reference_compile_seconds": 1.1551399229792878,
+          "wrapper_fingerprint": "c46c8527bef109b8da68430927db01498dce5a1712a382b39f48d4b3ad1878bf",
+          "uncompiled_DAG_operation_nodes": 748,
+          "compiled_DAG_operation_nodes": 4386,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "candidate": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 3.49442207860764e-14,
+                "measured_Z_effect_max_abs": 3.14193116094901e-14
+              },
+              "compile_cold_seconds": 2.7976495540933684,
+              "cache_warm_lookup_seconds": 2.475302687031217,
+              "wrapper_instructions": 748
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "candidate": {
+                "rz_count": 2156,
+                "cx_count": 1352,
+                "rz_depth": 1393,
+                "cx_depth": 1352,
+                "total_depth": 3082,
+                "circuit_size": 4323
+              },
+              "signed_difference": {
+                "rz_count": -35,
+                "cx_count": -28,
+                "rz_depth": -21,
+                "cx_depth": -28,
+                "total_depth": -49,
+                "circuit_size": -63
+              },
+              "absolute_difference": {
+                "rz_count": 35,
+                "cx_count": 28,
+                "rz_depth": 21,
+                "cx_depth": 28,
+                "total_depth": 49,
+                "circuit_size": 63
+              },
+              "relative_difference": {
+                "rz_count": -0.01597444089456869,
+                "cx_count": -0.020289855072463767,
+                "rz_depth": -0.01485148514851485,
+                "cx_depth": -0.020289855072463767,
+                "total_depth": -0.01564995209198339,
+                "circuit_size": -0.014363885088919288
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 3.0864200085273045e-14,
+                "measured_Z_effect_max_abs": 3.042011087526163e-14
+              },
+              "compile_cold_seconds": 2.4182979359757155,
+              "cache_warm_lookup_seconds": 2.377371054957621,
+              "wrapper_instructions": 685
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "candidate": {
+                "rz_count": 2235,
+                "cx_count": 1388,
+                "rz_depth": 1434,
+                "cx_depth": 1388,
+                "total_depth": 3173,
+                "circuit_size": 4462
+              },
+              "signed_difference": {
+                "rz_count": 44,
+                "cx_count": 8,
+                "rz_depth": 20,
+                "cx_depth": 8,
+                "total_depth": 42,
+                "circuit_size": 76
+              },
+              "absolute_difference": {
+                "rz_count": 44,
+                "cx_count": 8,
+                "rz_depth": 20,
+                "cx_depth": 8,
+                "total_depth": 42,
+                "circuit_size": 76
+              },
+              "relative_difference": {
+                "rz_count": 0.020082154267457783,
+                "cx_count": 0.005797101449275362,
+                "rz_depth": 0.014144271570014143,
+                "cx_depth": 0.005797101449275362,
+                "total_depth": 0.01341424465027148,
+                "circuit_size": 0.017327861377108983
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 3.086373286010671e-14,
+                "measured_Z_effect_max_abs": 2.919886557164161e-14
+              },
+              "compile_seconds": 1.9540093049872667,
+              "pieces": 8,
+              "naive_block_metric_sum": {
+                "rz_count": 2235,
+                "cx_count": 1388,
+                "rz_depth": 1439,
+                "cx_depth": 1388,
+                "total_depth": 3178,
+                "circuit_size": 4462
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 2.220446049250313e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 3.49442207860764e-14,
+            "measured_Z_effect_max_abs": 3.14193116094901e-14
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 2191,
+            "cx_count": 1380,
+            "rz_depth": 1414,
+            "cx_depth": 1380,
+            "total_depth": 3131,
+            "circuit_size": 4386
+          },
+          "reference_compile_seconds": 1.4993727130349725,
+          "wrapper_fingerprint": "eac0d11ac245ad3499c1f616795fd5c80bfc0a0688324520dd3ad791dc397d47",
+          "uncompiled_DAG_operation_nodes": 749,
+          "compiled_DAG_operation_nodes": 4386,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "candidate": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.0428119053185557e-14,
+                "measured_Z_effect_max_abs": 2.7727515771855858e-14
+              },
+              "compile_cold_seconds": 2.5410529889632016,
+              "cache_warm_lookup_seconds": 2.7788371359929442,
+              "wrapper_instructions": 749
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "candidate": {
+                "rz_count": 2156,
+                "cx_count": 1352,
+                "rz_depth": 1393,
+                "cx_depth": 1352,
+                "total_depth": 3082,
+                "circuit_size": 4323
+              },
+              "signed_difference": {
+                "rz_count": -35,
+                "cx_count": -28,
+                "rz_depth": -21,
+                "cx_depth": -28,
+                "total_depth": -49,
+                "circuit_size": -63
+              },
+              "absolute_difference": {
+                "rz_count": 35,
+                "cx_count": 28,
+                "rz_depth": 21,
+                "cx_depth": 28,
+                "total_depth": 49,
+                "circuit_size": 63
+              },
+              "relative_difference": {
+                "rz_count": -0.01597444089456869,
+                "cx_count": -0.020289855072463767,
+                "rz_depth": -0.01485148514851485,
+                "cx_depth": -0.020289855072463767,
+                "total_depth": -0.01564995209198339,
+                "circuit_size": -0.014363885088919288
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.564616590092339e-14,
+                "measured_Z_effect_max_abs": 2.897686250579202e-14
+              },
+              "compile_cold_seconds": 2.4278156589716673,
+              "cache_warm_lookup_seconds": 2.3501796739874408,
+              "wrapper_instructions": 686
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 2191,
+                "cx_count": 1380,
+                "rz_depth": 1414,
+                "cx_depth": 1380,
+                "total_depth": 3131,
+                "circuit_size": 4386
+              },
+              "candidate": {
+                "rz_count": 2233,
+                "cx_count": 1388,
+                "rz_depth": 1434,
+                "cx_depth": 1388,
+                "total_depth": 3173,
+                "circuit_size": 4460
+              },
+              "signed_difference": {
+                "rz_count": 42,
+                "cx_count": 8,
+                "rz_depth": 20,
+                "cx_depth": 8,
+                "total_depth": 42,
+                "circuit_size": 74
+              },
+              "absolute_difference": {
+                "rz_count": 42,
+                "cx_count": 8,
+                "rz_depth": 20,
+                "cx_depth": 8,
+                "total_depth": 42,
+                "circuit_size": 74
+              },
+              "relative_difference": {
+                "rz_count": 0.019169329073482427,
+                "cx_count": 0.005797101449275362,
+                "rz_depth": 0.014144271570014143,
+                "cx_depth": 0.005797101449275362,
+                "total_depth": 0.01341424465027148,
+                "circuit_size": 0.0168718650250798
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 2.5202068756211138e-14,
+                "measured_Z_effect_max_abs": 2.930998939110322e-14
+              },
+              "compile_seconds": 1.9547121520154178,
+              "pieces": 8,
+              "naive_block_metric_sum": {
+                "rz_count": 2233,
+                "cx_count": 1388,
+                "rz_depth": 1439,
+                "cx_depth": 1388,
+                "total_depth": 3178,
+                "circuit_size": 4460
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 2.310651670001107e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 2.0428119053185557e-14,
+            "measured_Z_effect_max_abs": 2.7727515771855858e-14
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    },
+    {
+      "case": [
+        2,
+        2,
+        "repeat"
+      ],
+      "Q": 4,
+      "source_input": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+      "hamiltonian_hash": "8000d303fabaf7bd93b234f1c5e8555006fe2f17cb3f9f9585ae6f919a4a363f",
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "original_native_fingerprint": "dde78d9a04950b3ce5a4c27293af143fcf7544995b7b1d6610757fd59779c749",
+      "stream_native_fingerprint": "dde78d9a04950b3ce5a4c27293af143fcf7544995b7b1d6610757fd59779c749",
+      "mathematical_correctness": {
+        "reference": {
+          "controlled_operator_max_abs": 2.925284931233429e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "stream": {
+          "controlled_operator_max_abs": 2.925284931233429e-15,
+          "phase_fitting": false,
+          "passed": true
+        },
+        "boundary_fusion": {
+          "controlled_operator_max_abs": 2.404754748257236e-15,
+          "phase_fitting": false,
+          "passed": true
+        }
+      },
+      "build_performance": {
+        "reference": {
+          "elapsed_seconds": 1.6579452850855887,
+          "Python_traced_peak_bytes": 29181223,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 341
+        },
+        "stream": {
+          "elapsed_seconds": 1.641297637950629,
+          "Python_traced_peak_bytes": 28866499,
+          "process_peak_RSS_KiB": 1183200,
+          "instructions": 341
+        }
+      },
+      "axes": {
+        "cosine": {
+          "reference": {
+            "rz_count": 909,
+            "cx_count": 548,
+            "rz_depth": 582,
+            "cx_depth": 548,
+            "total_depth": 1297,
+            "circuit_size": 1840
+          },
+          "reference_compile_seconds": 0.6551543049281463,
+          "wrapper_fingerprint": "5d1cccb8634a8e1338e3b5f9fa4b87c1cd9f737373985832db1f424063509783",
+          "uncompiled_DAG_operation_nodes": 344,
+          "compiled_DAG_operation_nodes": 1840,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "candidate": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.665854872690766e-14,
+                "measured_Z_effect_max_abs": 1.1324274859666987e-14
+              },
+              "compile_cold_seconds": 0.9456487289862707,
+              "cache_warm_lookup_seconds": 1.2876185349887237,
+              "wrapper_instructions": 344
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "candidate": {
+                "rz_count": 894,
+                "cx_count": 536,
+                "rz_depth": 573,
+                "cx_depth": 536,
+                "total_depth": 1276,
+                "circuit_size": 1813
+              },
+              "signed_difference": {
+                "rz_count": -15,
+                "cx_count": -12,
+                "rz_depth": -9,
+                "cx_depth": -12,
+                "total_depth": -21,
+                "circuit_size": -27
+              },
+              "absolute_difference": {
+                "rz_count": 15,
+                "cx_count": 12,
+                "rz_depth": 9,
+                "cx_depth": 12,
+                "total_depth": 21,
+                "circuit_size": 27
+              },
+              "relative_difference": {
+                "rz_count": -0.0165016501650165,
+                "cx_count": -0.021897810218978103,
+                "rz_depth": -0.015463917525773196,
+                "cx_depth": -0.021897810218978103,
+                "total_depth": -0.016191210485736313,
+                "circuit_size": -0.014673913043478261
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.4626062546284974e-14,
+                "measured_Z_effect_max_abs": 1.1768364710206381e-14
+              },
+              "compile_cold_seconds": 1.0626743859611452,
+              "cache_warm_lookup_seconds": 1.0157052699942142,
+              "wrapper_instructions": 317
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "candidate": {
+                "rz_count": 930,
+                "cx_count": 552,
+                "rz_depth": 592,
+                "cx_depth": 552,
+                "total_depth": 1318,
+                "circuit_size": 1877
+              },
+              "signed_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "absolute_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "relative_difference": {
+                "rz_count": 0.0231023102310231,
+                "cx_count": 0.0072992700729927005,
+                "rz_depth": 0.01718213058419244,
+                "cx_depth": 0.0072992700729927005,
+                "total_depth": 0.016191210485736313,
+                "circuit_size": 0.02010869565217391
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.4799273178526924e-14,
+                "measured_Z_effect_max_abs": 1.0436096734215078e-14
+              },
+              "compile_seconds": 0.971294139046222,
+              "pieces": 4,
+              "naive_block_metric_sum": {
+                "rz_count": 930,
+                "cx_count": 552,
+                "rz_depth": 594,
+                "cx_depth": 552,
+                "total_depth": 1320,
+                "circuit_size": 1877
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 8.881784197001252e-16,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 1.665854872690766e-14,
+            "measured_Z_effect_max_abs": 1.1324274859666987e-14
+          }
+        },
+        "sine": {
+          "reference": {
+            "rz_count": 909,
+            "cx_count": 548,
+            "rz_depth": 582,
+            "cx_depth": 548,
+            "total_depth": 1297,
+            "circuit_size": 1840
+          },
+          "reference_compile_seconds": 0.5772509609814733,
+          "wrapper_fingerprint": "416290417e3eb70f624057a9c047f6bd96dfed1070c8300a3ee6f8b66d780c26",
+          "uncompiled_DAG_operation_nodes": 345,
+          "compiled_DAG_operation_nodes": 1840,
+          "process_peak_RSS_KiB": 1183200,
+          "candidates": {
+            "stream": {
+              "status": "EXACT_MATCH",
+              "reference": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "candidate": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "signed_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "absolute_difference": {
+                "rz_count": 0,
+                "cx_count": 0,
+                "rz_depth": 0,
+                "cx_depth": 0,
+                "total_depth": 0,
+                "circuit_size": 0
+              },
+              "relative_difference": {
+                "rz_count": 0.0,
+                "cx_count": 0.0,
+                "rz_depth": 0.0,
+                "cx_depth": 0.0,
+                "total_depth": 0.0,
+                "circuit_size": 0.0
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 1.0325076109681267e-14,
+                "measured_Z_effect_max_abs": 1.1064805111930007e-14
+              },
+              "compile_cold_seconds": 1.1348805540474132,
+              "cache_warm_lookup_seconds": 1.0610057699959725,
+              "wrapper_instructions": 345
+            },
+            "boundary_fusion": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "candidate": {
+                "rz_count": 894,
+                "cx_count": 536,
+                "rz_depth": 573,
+                "cx_depth": 536,
+                "total_depth": 1276,
+                "circuit_size": 1813
+              },
+              "signed_difference": {
+                "rz_count": -15,
+                "cx_count": -12,
+                "rz_depth": -9,
+                "cx_depth": -12,
+                "total_depth": -21,
+                "circuit_size": -27
+              },
+              "absolute_difference": {
+                "rz_count": 15,
+                "cx_count": 12,
+                "rz_depth": 9,
+                "cx_depth": 12,
+                "total_depth": 21,
+                "circuit_size": 27
+              },
+              "relative_difference": {
+                "rz_count": -0.0165016501650165,
+                "cx_count": -0.021897810218978103,
+                "rz_depth": -0.015463917525773196,
+                "cx_depth": -0.021897810218978103,
+                "total_depth": -0.016191210485736313,
+                "circuit_size": -0.014673913043478261
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 8.725986709683016e-15,
+                "measured_Z_effect_max_abs": 1.3767783835108686e-14
+              },
+              "compile_cold_seconds": 1.0494993889005855,
+              "cache_warm_lookup_seconds": 1.0082413950003684,
+              "wrapper_instructions": 318
+            },
+            "split_join": {
+              "status": "APPROXIMATE",
+              "reference": {
+                "rz_count": 909,
+                "cx_count": 548,
+                "rz_depth": 582,
+                "cx_depth": 548,
+                "total_depth": 1297,
+                "circuit_size": 1840
+              },
+              "candidate": {
+                "rz_count": 930,
+                "cx_count": 552,
+                "rz_depth": 592,
+                "cx_depth": 552,
+                "total_depth": 1318,
+                "circuit_size": 1877
+              },
+              "signed_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "absolute_difference": {
+                "rz_count": 21,
+                "cx_count": 4,
+                "rz_depth": 10,
+                "cx_depth": 4,
+                "total_depth": 21,
+                "circuit_size": 37
+              },
+              "relative_difference": {
+                "rz_count": 0.0231023102310231,
+                "cx_count": 0.0072992700729927005,
+                "rz_depth": 0.01718213058419244,
+                "cx_depth": 0.0072992700729927005,
+                "total_depth": 0.016191210485736313,
+                "circuit_size": 0.02010869565217391
+              },
+              "mathematical_correctness": {
+                "channel_max_abs": 8.920689607779852e-15,
+                "measured_Z_effect_max_abs": 1.14401077135669e-14
+              },
+              "compile_seconds": 0.9691019580932334,
+              "pieces": 4,
+              "naive_block_metric_sum": {
+                "rz_count": 930,
+                "cx_count": 552,
+                "rz_depth": 594,
+                "cx_depth": 552,
+                "total_depth": 1320,
+                "circuit_size": 1877
+              },
+              "depth_policy": "measure composed compiled DAG; never sum block depths"
+            }
+          },
+          "wrapper_Re_Im_error": 1.6861512186494565e-15,
+          "reference_compiled_meaning": {
+            "channel_max_abs": 1.0325076109681267e-14,
+            "measured_Z_effect_max_abs": 1.1064805111930007e-14
+          }
+        }
+      },
+      "cache": {
+        "hits": 4,
+        "misses": 4,
+        "draws_removed": 0,
+        "policy": "reuse compilation only; retain each observation"
+      }
+    }
+  ],
+  "runtime": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "host": "GPUA100-gleap02",
+    "available_cpus": 64,
+    "load_average": [
+      1.15625,
+      0.80908203125,
+      1.095703125
+    ],
+    "packages": {
+      "qiskit": "1.3.0",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "openfermion": "1.6.1",
+      "qiskit-nature": "0.7.2"
+    }
+  },
+  "request_memory_diagnostic": {
+    "Q": 64,
+    "artificial_only": true,
+    "circuit_builds": 0,
+    "compile_calls": 0,
+    "methods": {
+      "materialized": {
+        "request_count": 64,
+        "Python_traced_peak_bytes": 182856,
+        "elapsed_seconds": 0.07230587606318295
+      },
+      "stream": {
+        "request_count": 64,
+        "Python_traced_peak_bytes": 191960,
+        "elapsed_seconds": 0.08086968900170177
+      }
+    }
+  },
+  "parallel": {
+    "status": "EXACT_MATCH",
+    "serial_seconds": 23.107861700002104,
+    "parallel_seconds": 13.026761819026433,
+    "speedup": 1.7738761191021064,
+    "execution": {
+      "start_method": "spawn",
+      "configured_workers": 10,
+      "task_count": 11,
+      "worker_pids": [
+        2898021,
+        2898217,
+        2898220,
+        2898221,
+        2898222,
+        2898223,
+        2898224,
+        2898225,
+        2898226,
+        2898227,
+        2898228
+      ],
+      "reduction": "submission order",
+      "numerical_threads_per_worker": 1,
+      "memory_probe": {
+        "pilot_peak_rss_kb": 472456,
+        "available_memory_kb": 516667012,
+        "memory_peak_multiplier": 2
+      }
+    },
+    "ordered_task_count": 11,
+    "repeated_observations_retained": true,
+    "rows": [
+      {
+        "case": [
+          0,
+          2,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "sine": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "411686b2334ff7a95ebf0d92911db7aa31fc062bce4d5893401a12d91c4d3c4e",
+        "elapsed_seconds": 0.5469011740060523
+      },
+      {
+        "case": [
+          0,
+          3,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 292,
+            "cx_count": 176,
+            "rz_depth": 185,
+            "cx_depth": 176,
+            "total_depth": 409,
+            "circuit_size": 583
+          },
+          "sine": {
+            "rz_count": 292,
+            "cx_count": 176,
+            "rz_depth": 185,
+            "cx_depth": 176,
+            "total_depth": 409,
+            "circuit_size": 583
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "5ee530810c99308e95ec5aa73a783efd8b248f2e2ae400992a0aa6aee5f8d2f8",
+        "elapsed_seconds": 0.6354684429243207
+      },
+      {
+        "case": [
+          1,
+          2,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "sine": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "7edfbfc22ef5d1f23d0c0cc10927a2f44fb1c4127a2f05f108daab7138bce1ee",
+        "elapsed_seconds": 1.2151748300530016
+      },
+      {
+        "case": [
+          1,
+          3,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 563,
+            "cx_count": 348,
+            "rz_depth": 360,
+            "cx_depth": 348,
+            "total_depth": 797,
+            "circuit_size": 1126
+          },
+          "sine": {
+            "rz_count": 563,
+            "cx_count": 348,
+            "rz_depth": 360,
+            "cx_depth": 348,
+            "total_depth": 797,
+            "circuit_size": 1126
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "797611722d0f2c92100dae2b29c9e39f0a3266a6b34197f4658f4a71510ba014",
+        "elapsed_seconds": 1.2916339489165694
+      },
+      {
+        "case": [
+          2,
+          2,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 891,
+            "cx_count": 540,
+            "rz_depth": 572,
+            "cx_depth": 540,
+            "total_depth": 1271,
+            "circuit_size": 1798
+          },
+          "sine": {
+            "rz_count": 891,
+            "cx_count": 540,
+            "rz_depth": 572,
+            "cx_depth": 540,
+            "total_depth": 1271,
+            "circuit_size": 1798
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "9b498a3f73a982bdea00c2944c0ca1c644bda315e3a275716bb9219314a15ced",
+        "elapsed_seconds": 2.316503260983154
+      },
+      {
+        "case": [
+          2,
+          3,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 1106,
+            "cx_count": 692,
+            "rz_depth": 712,
+            "cx_depth": 692,
+            "total_depth": 1576,
+            "circuit_size": 2213
+          },
+          "sine": {
+            "rz_count": 1106,
+            "cx_count": 692,
+            "rz_depth": 712,
+            "cx_depth": 692,
+            "total_depth": 1576,
+            "circuit_size": 2213
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "9bb3b9d7b46509737f376698b0885ec59759b402f84e79d0e90ee911b311ba7a",
+        "elapsed_seconds": 2.9136606219690293
+      },
+      {
+        "case": [
+          3,
+          2,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "sine": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "3ce7c7085c89dd93dc4d279871ffdfc5d88144f688cb11afa48a2a10d66f88d4",
+        "elapsed_seconds": 4.7244676949921995
+      },
+      {
+        "case": [
+          3,
+          3,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 2191,
+            "cx_count": 1380,
+            "rz_depth": 1414,
+            "cx_depth": 1380,
+            "total_depth": 3131,
+            "circuit_size": 4386
+          },
+          "sine": {
+            "rz_count": 2191,
+            "cx_count": 1380,
+            "rz_depth": 1414,
+            "cx_depth": 1380,
+            "total_depth": 3131,
+            "circuit_size": 4386
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "7a628723c70416d32e0cf53156a55dd288b60190c1fe651e94ef7af75efbbab0",
+        "elapsed_seconds": 5.6101268290076405
+      },
+      {
+        "case": [
+          2,
+          2,
+          "repeat"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 909,
+            "cx_count": 548,
+            "rz_depth": 582,
+            "cx_depth": 548,
+            "total_depth": 1297,
+            "circuit_size": 1840
+          },
+          "sine": {
+            "rz_count": 909,
+            "cx_count": 548,
+            "rz_depth": 582,
+            "cx_depth": 548,
+            "total_depth": 1297,
+            "circuit_size": 1840
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "dde78d9a04950b3ce5a4c27293af143fcf7544995b7b1d6610757fd59779c749",
+        "elapsed_seconds": 2.73083472403232
+      },
+      {
+        "case": [
+          0,
+          2,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "sine": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "411686b2334ff7a95ebf0d92911db7aa31fc062bce4d5893401a12d91c4d3c4e",
+        "elapsed_seconds": 0.6281992819858715
+      },
+      {
+        "case": [
+          0,
+          3,
+          "mixed"
+        ],
+        "axes": {
+          "cosine": {
+            "rz_count": 292,
+            "cx_count": 176,
+            "rz_depth": 185,
+            "cx_depth": 176,
+            "total_depth": 409,
+            "circuit_size": 583
+          },
+          "sine": {
+            "rz_count": 292,
+            "cx_count": 176,
+            "rz_depth": 185,
+            "cx_depth": 176,
+            "total_depth": 409,
+            "circuit_size": 583
+          }
+        },
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "evolution_fingerprint": "5ee530810c99308e95ec5aa73a783efd8b248f2e2ae400992a0aa6aee5f8d2f8",
+        "elapsed_seconds": 0.6456345760961995
+      }
+    ]
+  },
+  "elapsed_seconds": 221.45122121507302
+}

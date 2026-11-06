@@ -1,0 +1,61 @@
+{
+  "schema_version": "b2_price_MC_readiness_design_v1",
+  "scope": "technical design only; no real H4 expectation estimate or MC execution",
+  "canonical_sampling": {
+    "reuse": "rte.iter_sample_rte_events; PCG64; order then component choices; rte_order_then_components_v2",
+    "events_per_trajectory": "Q*r",
+    "draw_policy": "fresh disjoint sequential event blocks; retain repeated draws",
+    "paired_axes": "one event trajectory shared by X/Y prices",
+    "parallel_reproducibility": "preserve serial event sequence and task IDs; ordered reduction; no resampling on a cache miss",
+    "streamed_request_replay": "iter_b2_step_requests validates r events at a time with the existing explicit canonical API",
+    "remaining_materialization": "existing monte_carlo_with_builder still materializes one Q*r event tuple; existing parallel MC queues all event tuples",
+    "seed_design": "round/replicate stream separation and serial-parallel equivalence must be fixed before real MC",
+    "rare_events": "do not discard, trim, deduplicate, or silently oversample; a rare stratum design changes sampling and requires separate weights/variance validation"
+  },
+  "existing_statistics": {
+    "reuse": "CompiledMetricAccumulator, weighted=False",
+    "metrics": ["rz_count", "cx_count", "rz_depth", "cx_depth", "total_depth", "circuit_size"],
+    "mean": "online Welford per metric and axis",
+    "sample_variance": "M2/(n-1) for n>=2",
+    "standard_error": "sqrt(sample_variance/n)",
+    "single_observation_SE": null,
+    "weighted_exact_mode_SE": null,
+    "confidence_interval": "not provided by the current B2 provider",
+    "paired_covariance": "not provided by the current per-axis accumulators"
+  },
+  "prospective_paired_total_uncertainty": {
+    "formula_only": true,
+    "total_mean": "G_m = N_X*mean(C_X) + N_Y*mean(C_Y)",
+    "estimated_variance_of_mean": "[N_X^2*s_X^2 + N_Y^2*s_Y^2 + 2*N_X*N_Y*s_XY]/n",
+    "simple_reuse_option": "feed each paired W_i=N_X*C_X_i+N_Y*C_Y_i to the same existing accumulator; no independent-axis approximation",
+    "total_cost_computed": false,
+    "quantum_shots": "the quantum measurement failure budget is distinct from classical MC uncertainty"
+  },
+  "CI_choices_not_adopted": [
+    "Fixed-n normal/t diagnostic only after adequate distribution checks; not a finite-sample rare-event coverage guarantee",
+    "Bootstrap is a diagnostic and may miss unseen rare tails",
+    "A bounded concentration interval requires a valid whole-compiled metric range or variance bound for the fixed source/compiler/scope",
+    "Adaptive precision stopping requires an optional-stopping-valid interval or a fixed terminal confirmation sample",
+    "Any approximate price method requires independent same-scope holdout and separate model-error accounting"
+  ],
+  "next_real_MC_fixed_items": [
+    "scientific SOURCE, saved input identities, canonical law",
+    "unchanged compiler hash/backend/full measured no-prep scope",
+    "round execution set and sample count",
+    "seed/stream separation, ordered task identity and replay",
+    "paired X/Y, six metrics, variance/SE/covariance method",
+    "CI coverage objective and precision target",
+    "stopping rule and rare-event treatment",
+    "bounded task submission and representative per-worker memory measurements",
+    "real H4 qualification of streamed construction and any approximation",
+    "independent holdout plan if a proxy or fused alternative is used"
+  ],
+  "adopted_real_MC_sample_count": null,
+  "adopted_real_MC_seed": null,
+  "adopted_real_MC_rounds": null,
+  "adopted_precision_target": null,
+  "real_H4_expected_prices": null,
+  "real_H4_confidence_intervals": null,
+  "total_RPE_cost": null,
+  "mandatory_stop": true
+}

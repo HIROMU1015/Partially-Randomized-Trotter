@@ -1,0 +1,157 @@
+{
+  "schema_version": "b2_artificial_method_summary_v1",
+  "execution_SOURCE": "c897389643a8d3b81ff63f9a0d71b250b17a565e",
+  "artificial_cases": 9,
+  "paired_axes": 18,
+  "methods": {
+    "stream": {
+      "classification_counts": {
+        "EXACT_MATCH": 18
+      },
+      "maximum_absolute_difference": {
+        "rz_count": 0,
+        "cx_count": 0,
+        "rz_depth": 0,
+        "cx_depth": 0,
+        "total_depth": 0,
+        "circuit_size": 0
+      },
+      "maximum_absolute_relative_difference": {
+        "rz_count": 0,
+        "cx_count": 0,
+        "rz_depth": 0,
+        "cx_depth": 0,
+        "total_depth": 0,
+        "circuit_size": 0
+      },
+      "measurement_effect_max_abs": 3.14193116094901e-14
+    },
+    "boundary_fusion": {
+      "classification_counts": {
+        "EXACT_MATCH": 4,
+        "APPROXIMATE": 14
+      },
+      "maximum_absolute_difference": {
+        "rz_count": 35,
+        "cx_count": 28,
+        "rz_depth": 21,
+        "cx_depth": 28,
+        "total_depth": 49,
+        "circuit_size": 63
+      },
+      "maximum_absolute_relative_difference": {
+        "rz_count": 0.019875070982396367,
+        "cx_count": 0.026022304832713755,
+        "rz_depth": 0.018518518518518517,
+        "cx_depth": 0.026022304832713755,
+        "total_depth": 0.01943673145577152,
+        "circuit_size": 0.017716535433070866
+      },
+      "measurement_effect_max_abs": 3.042011087526163e-14
+    },
+    "split_join": {
+      "classification_counts": {
+        "APPROXIMATE": 18
+      },
+      "maximum_absolute_difference": {
+        "rz_count": 44,
+        "cx_count": 8,
+        "rz_depth": 20,
+        "cx_depth": 8,
+        "total_depth": 42,
+        "circuit_size": 76
+      },
+      "maximum_absolute_relative_difference": {
+        "rz_count": 0.0231023102310231,
+        "cx_count": 0.0072992700729927005,
+        "rz_depth": 0.01718213058419244,
+        "cx_depth": 0.0072992700729927005,
+        "total_depth": 0.016191210485736313,
+        "circuit_size": 0.02010869565217391
+      },
+      "measurement_effect_max_abs": 2.930998939110322e-14
+    }
+  },
+  "mandatory_stop": true,
+  "controlled_operator_max_abs": 9.423212085903505e-15,
+  "X_Y_wrapper_max_abs": 3.2612801348363973e-15,
+  "compiled_channel_max_abs": 3.49442207860764e-14,
+  "cache": {
+    "hits": 36,
+    "misses": 36,
+    "observations_deduplicated": false,
+    "first_lookup_may_hit_shared_cache": true,
+    "timing_field_note": "compile_cold_seconds denotes the first cached request, including hashing; not a pure transpiler timer"
+  },
+  "parallel": {
+    "status": "EXACT_MATCH",
+    "serial_seconds": 23.107861700002104,
+    "parallel_seconds": 13.026761819026433,
+    "speedup": 1.7738761191021064,
+    "execution": {
+      "start_method": "spawn",
+      "configured_workers": 10,
+      "task_count": 11,
+      "worker_pids": [
+        2898021,
+        2898217,
+        2898220,
+        2898221,
+        2898222,
+        2898223,
+        2898224,
+        2898225,
+        2898226,
+        2898227,
+        2898228
+      ],
+      "reduction": "submission order",
+      "numerical_threads_per_worker": 1,
+      "memory_probe": {
+        "pilot_peak_rss_kb": 472456,
+        "available_memory_kb": 516667012,
+        "memory_peak_multiplier": 2
+      }
+    },
+    "ordered_task_count": 11,
+    "repeated_observations_retained": true
+  },
+  "unit_tests": {
+    "passed": 21,
+    "failures": 0,
+    "elapsed_seconds": 9.77,
+    "scope": "synthetic inputs only"
+  },
+  "real_H4_expected_price": null,
+  "real_H4_CI": null,
+  "total_RPE_cost": null,
+  "m17": {
+    "Q": 131072,
+    "RTE_events_per_trajectory": 524288,
+    "deterministic_block_appends_per_trajectory": 1048576,
+    "actual_native_instructions": null,
+    "actual_peak_memory_bytes": null,
+    "actual_compile_seconds": null,
+    "actual_compiled_cost": null,
+    "feasibility_status": "INCONCLUSIVE; no real m17 build/compile"
+  },
+  "evidence_levels": {
+    "synthetic_validated": [
+      "same-native-gate streaming",
+      "actual-circuit/compiler/backend cache reuse",
+      "ordered parallel B2 tasks",
+      "observed fusion/split discrepancies"
+    ],
+    "requires_real_H4_qualification": [
+      "streamed circuit identity and all-six prices",
+      "representative memory/compile time",
+      "production MC/parallel integration"
+    ],
+    "proposal_only": [
+      "bounded submission and event memory removal",
+      "bounded-memory fingerprint",
+      "incremental whole-equivalent compiler",
+      "independently validated proxy"
+    ]
+  }
+}

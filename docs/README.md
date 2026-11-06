@@ -109,3 +109,8 @@
 
 [REPORT](research/track_a_b2_p1_compiled_cost_20261107/REPORT.md)に既存pipeline・compiler根拠、
 人工検証、指定m0 trajectoryの軸別価格、長round技術成立性、次回固定項目、mandatory STOPを記録。
+
+## B2長round価格方式（2026-11-07）
+
+[人工技術検証REPORT](research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)：streaming18軸一致、
+fusion/分割価格差、意味・性能・メモリ・cache/parallel検査、実H4とMCの残条件。mandatory STOP。

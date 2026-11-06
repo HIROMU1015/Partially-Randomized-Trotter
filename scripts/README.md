@@ -168,3 +168,8 @@ artifacts/<validation_name>/
 
 `run_b2_p1_compiled_cost.py`：固定済みcompiler・入力・代表trajectory一つのm0 X/Y接続検証。
 [実行条件とSTOP](../docs/research/track_a_b2_p1_compiled_cost_20261107/REPORT.md)。保存実行の再実行や価格MCを許可する入口ではない。
+
+## B2人工価格方式比較（2026-11-07）
+
+`run_b2_cost_method_validation.py`は人工二mode回路だけでwhole/stream/fusion/split/cache/parallelを比較する。
+[固定SOURCE・結果・STOP](../docs/research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)。実H4や本格MCの実行入口ではない。

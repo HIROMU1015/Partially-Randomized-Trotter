@@ -139,3 +139,8 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_compiled_cost.py`は既存B2 native・full X/Y wrapper・pair compilerへの薄いadapter。
 指定trajectory価格を期待値へ変換しない。[REPORT](../../docs/research/track_a_b2_p1_compiled_cost_20261107/REPORT.md)、
 `tests/test_b2_p1_compiled_cost.py`、`artifacts/track_a_b2_p1_compiled_cost/`を参照。
+
+## B2 streamed native cost（2026-11-07）
+
+`b2_streamed_native_cost.py`は既存emitterを再利用してrequest/tailを順次処理し、元のgate列を保つ。
+最終回路/DAGは保持する。[人工検証と限界](../../docs/research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)。

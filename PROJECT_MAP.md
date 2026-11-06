@@ -198,3 +198,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [専用REPORT・固定SOURCE・限定m0価格・長round成立性・STOP](docs/research/track_a_b2_p1_compiled_cost_20261107/REPORT.md)。
 既存native/価格pipelineを再利用し、指定trajectoryのX/Y各CX3262・RZ6025を計測。期待価格・全18round価格MC・総費用は未評価。
+
+## B2長round価格方式の人工検証（2026-11-07）
+
+[REPORT・人工比較・MC準備条件・STOP](docs/research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)。
+同一gate列streamingは18軸で全6指標一致。fusion/分割との差、メモリと並列実測を保存。追加実H4・価格MCは未実行。
