@@ -25,7 +25,7 @@ Python3.12.3/NumPy1.26.4/SciPy1.14.1/Qiskit1.3.0と既存CPU import helperを第
 | g3 | 1[n=2,L0=a,L1=b] | ν3=Q2 Qa Qb |
 
 joint momentは既存 `ControlBank.joint_mean`。g1g2=g1g3=0、g2g3=g3、g_j²=g_j。これは未知量子共分散を与えるものではない。
-B0はraw平均、B1-Oはn0/n2の正層を合成、B1-OLは次の5層、A1は独立trainで凍結したλによる \(X_b=Y_b-\lambda_b^T(g-\nu)\) のproduction平均。
+B0はraw平均、B1-Oはn0/n2の正層を合成、B1-OLは次の5層、A1は独立trainで凍結したλによる $X_b=Y_b-\lambda_b^T(g-\nu)$ のproduction平均。
 
 | B1-OL層 | 質量p_h |
 |---|---|
@@ -74,26 +74,26 @@ attempt capは完走確率保証ではない。未完了・失敗campaignと費�
 
 λは既存 `fit_and_freeze` のminimum-norm OLSで取得し、binary64 slopesをexact Fractionにして凍結する。rank不足・rare control未観測を記録し、学習できたことにしない。
 出力rangeは既存 `FrozenCV.output_range` のbox enclosure、D_CV=2W+sum|λ_j|。B0/未補正の層はD=2W。sample最小最大でrangeを狭めない。
-νを丸める場合は \(b_{center}=\sum_j|\lambda_j|e_j\)。exact-Q/有理数処理のモデル内でのみ0とできる。
+νを丸める場合は $b_{center}=\sum_j|\lambda_j|e_j$。exact-Q/有理数処理のモデル内でのみ0とできる。
 
 独立calの不偏sample variance s²から
-\[
+$$
 V_U=\min\{D^2/4,(\sqrt{s^2}+D\sqrt{2\log(1/\delta_{cal,cell})/(n_{cal}-1)})^2\}
-\]
+$$
 を用いる。[Maurer–Pontil v1 Theorem10][MP]のrange変換であり、IID、有界、固定n、λ凍結を要する。s²=0を真variance0とはしない。
 共通b_engineにstate/sector/basis ordering、probability数値誤差、bit生成誤差、必要ならcompile等を含め、
-\(e=\epsilon_b-b_{engine}-b_{center}>0\)を要求する。
+$e=\epsilon_b-b_{engine}-b_{center}>0$を要求する。
 state residualだけからこの上界を発行しない。uniform errorまたは同じ保証を与える事前上界が不足なら測定へ進まない。旧opt2 bias/半径で穴埋めしない。
 
 fresh productionに対する二側bounded Bernsteinの保守的十分数とHoeffdingを全方式に認める。
-\[
+$$
 N_B=\max(1,\lceil\log(2/\delta_{prod,cell})[2V_U/e^2+2D/(3e)]\rceil),\quad
 N_H=\max(1,\lceil D^2\log(2/\delta_{prod,cell})/(2e^2)\rceil),\quad N=\min(N_B,N_H).
-\]
+$$
 選択はproduction前。√/log/ceilingは外向き評価で十分性を保つ。これらは既知不等式の利用案であり新定理・新Nの数値結果ではない。[一次資料][MP]
 cal失敗とprod失敗をunionする。補正outcomeは非binaryであり、旧V2二項tailを適用しない。
 
-B1の具体的配分案：pilot価格平均 \(\widehat C_h\) と独立calのV_U,hを使用する。各層のε_hに対し上式でN_hを求め、sum p_h ε_h≤e、N_h≥1、sum N_h≤8192を満たすものからprod予測価格sum max(1,Ĉ_h)N_h最小を選ぶ。
+B1の具体的配分案：pilot価格平均 $\widehat C_h$ と独立calのV_U,hを使用する。各層のε_hに対し上式でN_hを求め、sum p_h ε_h≤e、N_h≥1、sum N_h≤8192を満たすものからprod予測価格sum max(1,Ĉ_h)N_h最小を選ぶ。
 候補集合は、等ε_h=eと、正整数j_hのsum j_h=J=64に対するε_h=e j_h/(J p_h)という有限集合を第一候補とする。tieは層順の辞書順。比較対象はこの有限集合内であり、真の最適Neyman配分とは呼ばない。
 独立calに条件付けてε_h/N_hを凍結し、fresh層平均に適用する。層ごとの失敗をunionし、座標誤差をsum p_h ε_hへ戻す。pilot/calをprod平均へ混ぜない。
 B0にもvariance-sensitive routeを認める。この初期案では全方式を同じcal→Bernstein/Hoeffding routeへ固定し、結果後に別confidence方式へ切り替えない。
