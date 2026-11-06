@@ -2364,6 +2364,92 @@
         "artifacts/b2_original_df12_correspondence/2026-11-06/run02/result.json"
       ],
       "mandatory_stop": true
+    },
+    {
+      "id": "local_b2_hphys_sector_ground_state_20261106",
+      "status": "HPHYS_SECTOR_GROUND_STATE_CORRECTNESS_PASS",
+      "source_commit": "b168cbf93d7c319045057e8b67ea7ff014c8d7dc",
+      "report": "docs/research/b2_hphys_ground_state_20261106/REPORT.md",
+      "plan": "docs/research/b2_hphys_ground_state_20261106/PLAN.md",
+      "result": "artifacts/b2_hphys_ground_state/2026-11-06/run01/result.json",
+      "result_SHA256": "468b3a4bc3150c055b4fcdf37a72acaa01e2ae171eccfc39d62419e3998c4e3b",
+      "input_spec": "artifacts/b2_hphys_ground_state/2026-11-06/run01/agent_b_input_spec.json",
+      "target": "H_phys",
+      "state_role": "original_H_ground_state",
+      "conditions": {
+        "model": "linear_H4",
+        "distance_angstrom": 1.0,
+        "basis": "STO-3G",
+        "spatial_orbitals": 4,
+        "spin_orbitals": 8,
+        "nelec_alpha": 2,
+        "nelec_beta": 2,
+        "sector_dimension": 36,
+        "full_vector_dimension": 256,
+        "spin_order": "2p=alpha,2p+1=beta",
+        "coefficient_cutoff": 0.0,
+        "nuclear_scalar_hex": "0x1.25845777d3feap+1",
+        "DF12_rank": 12,
+        "B2_L_D": 3,
+        "delta_window": null,
+        "state_preparation_cost_included": false
+      },
+      "energy_Ha": -2.1663874486347607,
+      "state_identity": {
+        "state_vector_hash": "1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+        "sector_state_vector_hash": "c579f9da9d4097667418288630ad7bd601f1c1b9176ac5a2a5d4d704102a8280",
+        "hash_definition": "sha256(dtype.str UTF8 + compact JSON(shape) UTF8 + C-order contiguous array bytes); S0 _array_hash convention",
+        "state_dtype": "<c16",
+        "index_dtype": "<i8",
+        "full_vector_order": "Qiskit little-endian",
+        "sector_vector_order": "saved OpenFermion MSB sector basis order",
+        "phase_policy": "numpy first argmax(abs(full_Qiskit_vector)); multiply exp(-i angle(pivot)); L2 normalize (existing canonical_ground)"
+      },
+      "private_payload": {
+        "filename": "state.npz",
+        "published": false,
+        "file_SHA256": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+        "save_reload_arrays_exact": true,
+        "file_mode": "0o600",
+        "directory_mode": "0o700"
+      },
+      "provenance": {
+        "HDF5_SHA256": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958",
+        "DF12_NPZ_SHA256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+        "DF12_hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+        "DF12_commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+        "prior_result_commit": "275813d0a12a4bca62a8c972312c80386829de22",
+        "prior_result_path": "artifacts/b2_original_df12_correspondence/2026-11-06/run03/result.json",
+        "prior_result_SHA256": "f8f31b02b8d4dd4e816c443c98dbd7132c49614af3447893a33972f114177005",
+        "prior_comparison_SOURCE": "126b9d4480c7937b39c8be3aef7fbecda48cb556",
+        "raw_H_phys_operator_hash": "bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+        "solve_operator_hash": "037ea63618bd595a3525f432871de0d7c8429727bb6ea282e313f52b0716c4bd",
+        "sector_basis_hash": "665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+        "Qiskit_indices_hash": "fb77bac352d1fcbf66bc005160faae2d21acf7bd7f848f0d2333d8159eb0be07",
+        "execution_SOURCE_hashes": {
+          "src/trotterlib/b2_hphys_ground_state.py": "a1db2a259cc05184167a259a6e305432da947bc52d076dc0fa740b448d11c98a",
+          "scripts/run_b2_hphys_ground_state.py": "70bd9dd67782a1aeb65f27c9f4aac3768c7cb665a93295cb8d1f6222eb59d4b8",
+          "docs/research/b2_hphys_ground_state_20261106/PLAN.md": "e44cb14e850be3177b765911fea65b3662f88424a1cf394a36fceb195a61df7a",
+          "src/trotterlib/b2_original_df12_correspondence.py": "6c056672c90d34a84b74b3767040497d71f781c34ac977c4f1c5af792fd5d7e7",
+          "scripts/run_o1_m1_h4_operator_correctness.py": "552c874240ea88f4608d7680db452906ecce5ee214b1db85c8cf505d499aa0db",
+          "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+          "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6",
+          "src/trottertracks/resource_applicability/ax2b_independent_reference.py": "90a70f8aee18190a8441ba19b021782d85695a86f0d3224fc995ddf24b2022b5"
+        },
+        "historical_generation_SOURCE": "c644925b50587072784846df09bf02c39e8453e1",
+        "historical_generation_SOURCE_hashes": {
+          "src/trotterlib/pr2_s0_s1_validation.py": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+          "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52"
+        }
+      },
+      "counts": {
+        "state_solve_calls": 1,
+        "correctness_checks": 21,
+        "passed": 21,
+        "artificial_mock_tests": 4
+      },
+      "RPE_executed": false,
+      "mandatory_stop": true
     }
   ],
   "repository_completion_criteria": [

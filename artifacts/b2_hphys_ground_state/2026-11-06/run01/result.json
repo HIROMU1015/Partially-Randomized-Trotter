@@ -1,0 +1,298 @@
+{
+  "schema_version": "b2_hphys_sector_ground_state_v1",
+  "target": "H_phys",
+  "state_role": "original_H_ground_state",
+  "source_commit": "b168cbf93d7c319045057e8b67ea7ff014c8d7dc",
+  "started_at_utc": "2026-11-06T14:33:16.082660+00:00",
+  "status": "HPHYS_SECTOR_GROUND_STATE_CORRECTNESS_PASS",
+  "conditions": {
+    "model": "linear_H4",
+    "distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "spatial_orbitals": 4,
+    "spin_orbitals": 8,
+    "nelec_alpha": 2,
+    "nelec_beta": 2,
+    "sector_dimension": 36,
+    "full_vector_dimension": 256,
+    "spin_order": "2p=alpha,2p+1=beta",
+    "coefficient_cutoff": 0.0,
+    "nuclear_scalar_hex": "0x1.25845777d3feap+1",
+    "DF12_rank": 12,
+    "B2_L_D": 3,
+    "delta_window": null,
+    "state_preparation_cost_included": false
+  },
+  "provenance": {
+    "HDF5_SHA256": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958",
+    "DF12_NPZ_SHA256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "DF12_hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "DF12_commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+    "prior_result_commit": "275813d0a12a4bca62a8c972312c80386829de22",
+    "prior_result_path": "artifacts/b2_original_df12_correspondence/2026-11-06/run03/result.json",
+    "prior_result_SHA256": "f8f31b02b8d4dd4e816c443c98dbd7132c49614af3447893a33972f114177005",
+    "prior_comparison_SOURCE": "126b9d4480c7937b39c8be3aef7fbecda48cb556",
+    "raw_H_phys_operator_hash": "bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+    "solve_operator_hash": "037ea63618bd595a3525f432871de0d7c8429727bb6ea282e313f52b0716c4bd",
+    "sector_basis_hash": "665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+    "Qiskit_indices_hash": "fb77bac352d1fcbf66bc005160faae2d21acf7bd7f848f0d2333d8159eb0be07",
+    "execution_SOURCE_hashes": {
+      "src/trotterlib/b2_hphys_ground_state.py": "a1db2a259cc05184167a259a6e305432da947bc52d076dc0fa740b448d11c98a",
+      "scripts/run_b2_hphys_ground_state.py": "70bd9dd67782a1aeb65f27c9f4aac3768c7cb665a93295cb8d1f6222eb59d4b8",
+      "docs/research/b2_hphys_ground_state_20261106/PLAN.md": "e44cb14e850be3177b765911fea65b3662f88424a1cf394a36fceb195a61df7a",
+      "src/trotterlib/b2_original_df12_correspondence.py": "6c056672c90d34a84b74b3767040497d71f781c34ac977c4f1c5af792fd5d7e7",
+      "scripts/run_o1_m1_h4_operator_correctness.py": "552c874240ea88f4608d7680db452906ecce5ee214b1db85c8cf505d499aa0db",
+      "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+      "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6",
+      "src/trottertracks/resource_applicability/ax2b_independent_reference.py": "90a70f8aee18190a8441ba19b021782d85695a86f0d3224fc995ddf24b2022b5"
+    },
+    "historical_generation_SOURCE": "c644925b50587072784846df09bf02c39e8453e1",
+    "historical_generation_SOURCE_hashes": {
+      "src/trotterlib/pr2_s0_s1_validation.py": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+      "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52"
+    }
+  },
+  "state_identity": {
+    "state_vector_hash": "1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+    "sector_state_vector_hash": "c579f9da9d4097667418288630ad7bd601f1c1b9176ac5a2a5d4d704102a8280",
+    "hash_definition": "sha256(dtype.str UTF8 + compact JSON(shape) UTF8 + C-order contiguous array bytes); S0 _array_hash convention",
+    "state_dtype": "<c16",
+    "index_dtype": "<i8",
+    "full_vector_order": "Qiskit little-endian",
+    "sector_vector_order": "saved OpenFermion MSB sector basis order",
+    "phase_policy": "numpy first argmax(abs(full_Qiskit_vector)); multiply exp(-i angle(pivot)); L2 normalize (existing canonical_ground)"
+  },
+  "validation": {
+    "energy_Ha": -2.1663874486347607,
+    "same_sector_gap_Ha": 0.23263021512018667,
+    "checks": [
+      {
+        "name": "raw_full_spectral_norm",
+        "error": 1.0837863579113954e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "solve_full_spectral_norm",
+        "error": 0.0,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "solve_minus_raw_spectral_norm",
+        "error": 5.421182282286408e-16,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "raw_sector_spectral_norm",
+        "error": 1.0837863579113968e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "solve_sector_spectral_norm",
+        "error": 0.0,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "independent_raw_sector_difference_spectral_norm",
+        "error": 1.3330264453498296e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "full_state_norm",
+        "error": 0.0,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "name": "sector_state_norm",
+        "error": 0.0,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "name": "solve_full_residual",
+        "error": 2.5359435268147786e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "solve_sector_residual",
+        "error": 2.1076922291910726e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "raw_full_residual",
+        "error": 2.5572810765019255e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "raw_sector_residual",
+        "error": 2.1285527811596237e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "independent_raw_sector_residual",
+        "error": 2.5431173932257038e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "state_leakage_outside_sector",
+        "error": 0.0,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "name": "phase_pivot_imaginary",
+        "error": 0.0,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "name": "phase_pivot_real_positive",
+        "passed": true
+      },
+      {
+        "name": "phase_reapplication_l2",
+        "error": 0.0,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "name": "global_phase_recovery_l2",
+        "error": 1.3030512028843871e-16,
+        "tolerance": 1e-12,
+        "passed": true
+      },
+      {
+        "name": "raw_Rayleigh_energy_real",
+        "error": 3.1086244689504383e-15,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "raw_Rayleigh_energy_imaginary",
+        "error": 0.0,
+        "tolerance": 1e-10,
+        "passed": true
+      },
+      {
+        "name": "OF_Qiskit_and_embedding_exact_roundtrip",
+        "passed": true
+      }
+    ],
+    "symmetry": {
+      "raw_full": {
+        "max_abs_entry": 3.3306690738754696e-16,
+        "frobenius": 6.996167091960781e-15,
+        "induced_infinity_norm": 1.4988010832439613e-15,
+        "spectral_norm": 1.0837863579113954e-15
+      },
+      "solve_full": {
+        "max_abs_entry": 0.0,
+        "frobenius": 0.0,
+        "induced_infinity_norm": 0.0,
+        "spectral_norm": 0.0
+      },
+      "solve_minus_raw": {
+        "max_abs_entry": 1.6653345369377348e-16,
+        "frobenius": 3.499143227269303e-15,
+        "induced_infinity_norm": 7.494005416219807e-16,
+        "spectral_norm": 5.421182282286408e-16
+      },
+      "raw_sector": {
+        "max_abs_entry": 3.3306690738754696e-16,
+        "frobenius": 3.020834530803632e-15,
+        "induced_infinity_norm": 1.4988010832439613e-15,
+        "spectral_norm": 1.0837863579113968e-15
+      },
+      "solve_sector": {
+        "max_abs_entry": 0.0,
+        "frobenius": 0.0,
+        "induced_infinity_norm": 0.0,
+        "spectral_norm": 0.0
+      },
+      "independent_raw_sector_difference": {
+        "max_abs_entry": 1.3322676295501878e-15,
+        "frobenius": 2.6530371067487705e-15,
+        "induced_infinity_norm": 1.4016565685892601e-15,
+        "spectral_norm": 1.3330264453498296e-15
+      }
+    },
+    "solve_operator_hash": "037ea63618bd595a3525f432871de0d7c8429727bb6ea282e313f52b0716c4bd",
+    "phase_pivot_Qiskit_index": 15,
+    "phase_policy": "numpy first argmax(abs(full_Qiskit_vector)); multiply exp(-i angle(pivot)); L2 normalize (existing canonical_ground)",
+    "state_norm": 1.0,
+    "sector_state_norm": 1.0,
+    "raw_Rayleigh": {
+      "real": -2.166387448634764,
+      "imag": 0.0
+    },
+    "state_solve_calls": 1,
+    "eigh_calls": 1,
+    "solver": "h2_non_df_pilot.canonical_ground -> scipy.linalg.eigh on supplied sector; values[0], vectors[:,0]",
+    "lowest_in": "supplied Nalpha=Nbeta=2 sector only; not full Fock minimum",
+    "numerical_Hermitianization": "(raw H_phys + raw H_phys.conj().T)/2; target remains raw H_phys",
+    "status": "HPHYS_SECTOR_GROUND_STATE_CORRECTNESS_PASS"
+  },
+  "numerical_criteria": {
+    "state_norm": 1e-12,
+    "residual_Ha": 1e-10,
+    "Hermiticity_spectral_Ha": 1e-10,
+    "phase_L2": 1e-12,
+    "certified_interval": false
+  },
+  "environment": {
+    "python": "3.11.0rc1",
+    "platform": "Linux-6.8.0-47-generic-x86_64-with-glibc2.35",
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "h5py": "3.16.0",
+      "qiskit": "1.3.0"
+    },
+    "cpu_affinity": 32,
+    "gpu_used": false,
+    "algorithm": "SciPy sparse CAR construction + single dense36 Hermitian eigh; default BLAS settings",
+    "BLAS_env": {
+      "OPENBLAS_NUM_THREADS": null,
+      "OMP_NUM_THREADS": null,
+      "MKL_NUM_THREADS": null
+    }
+  },
+  "timings": {
+    "solve_and_validation_seconds": 0.06287555600101769,
+    "total_seconds": 0.261104854000223
+  },
+  "forbidden_work_executed": {
+    "SCF": 0,
+    "integral_generation": 0,
+    "DF_decomposition": 0,
+    "other_Hamiltonian_state_solve": 0,
+    "DF_state_use": 0,
+    "simulation": 0,
+    "circuit_build_compile": 0,
+    "RPE_round_shot_cost": 0,
+    "sampling": 0,
+    "scientific_review": 0
+  },
+  "private_payload": {
+    "filename": "state.npz",
+    "published": false,
+    "file_SHA256": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+    "save_reload_arrays_exact": true,
+    "file_mode": "0o600",
+    "directory_mode": "0o700"
+  },
+  "mandatory_stop": true
+}

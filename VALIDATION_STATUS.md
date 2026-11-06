@@ -1,5 +1,17 @@
 # Validation status
 
+## 2026-11-06 LOCAL fixed H_phys sector ground state
+
+`HPHYS_SECTOR_GROUND_STATE_CORRECTNESS_PASS`：ユーザー採用のcutoff前H_phys、H4 linear、
+1 Å、STO-3G、8 spin orbitals、Nα=Nβ=2 sector36。1回の既存eighでE≈`−2.1663874486347607 Ha`、
+raw full残差`2.56e-15 Ha`、21/21 checks PASS。solve用の明示的Hermitian化差は
+spectral norm `5.42e-16 Ha`。全Fock最低性・厳密interval・RPE GOは主張しない。
+stateはLOCAL private保存、公開はhash/metadataのみ。対応DF12/B2 L_D3はcontext、delta窓なし。
+実行SOURCE `b168cbf93d7c319045057e8b67ea7ff014c8d7dc`、
+[REPORT](docs/research/b2_hphys_ground_state_20261106/REPORT.md)、
+[公開JSON](artifacts/b2_hphys_ground_state/2026-11-06/run01/result.json)。
+旧STOPは維持し、今回の公開・remote照合後mandatory STOP。SERVER 2/RPE実行へ進まない。
+
 ## 2026-11-06 LOCAL original-H / DF12 operator correspondence
 
 `OPERATOR_CHECKS_PASS_MODEL_DIFFERENCES_RECORDED`：linear H4、1 Å、STO-3G、8 spin orbitals、

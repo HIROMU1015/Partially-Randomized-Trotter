@@ -35,6 +35,7 @@
 
 | 日付 | 主題 | 基準commit | 到達点 | 次の主要課題 |
 |---|---|---|---|---|
+| [2026-11-06 後続](2026-11-06.md) | 固定H_phys sector基底状態 | `b168cbf93` | ユーザー採用H_physを一回solve、21 checks PASS。state private保存 | 新しいB2/RPE条件・実行は別途承認。mandatory STOP |
 | [2026-11-06](2026-11-06.md) | LOCAL元H–固定DF12 operator対応 | `126b9d448` | full256/sector36で65 checks、80/120桁安定性6件PASS。state solveなし | target採用・元H state solveは別途承認。mandatory STOP |
 | [2026-09-20](2026-09-20.md) | 4段RPE分枝復元、目標round診断、$\delta$/round別scheduleと中央RTE cost検証 | `2bf3116` + dirty worktree | H4の固定長round設定を棄却し、3個の$\delta$に行列検査を通るscheduleを構成。局所角度・$L=8,16,32$検証後の中央RTE proxyは0.02を全6指標で最小とした | $\delta=0.02$と0.01の制御付きpartial-$S_2$反復・Hadamard 1 shot costを検証 |
 | [2026-09-18](2026-09-18.md) | 暫定配分を使った限定4段集計と新配分の短段失敗率 | `2bf3116` + dirty worktree | H4固定条件の$q=1,2,4,8$で1,572 shot、RZ数$3.2673961\times10^7$、8軸$\alpha$和0.05。$q=1,2,4$の厳密二項座標失敗率$2.2246\times10^{-4}$ | $q=8$物理信号、branch復元、必要全round・最終コストを別途検証 |

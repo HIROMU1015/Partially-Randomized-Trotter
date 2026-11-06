@@ -1,6 +1,7 @@
 # プロジェクト案内
 
 2026-11-06 LOCAL固定H_phys基底状態：
+[REPORT](docs/research/b2_hphys_ground_state_20261106/REPORT.md)・
 [結果前条件](docs/research/b2_hphys_ground_state_20261106/PLAN.md)。
 実装 `src/trotterlib/b2_hphys_ground_state.py`、runner `scripts/run_b2_hphys_ground_state.py`、
 人工test `tests/test_b2_hphys_ground_state.py`、公開結果先
