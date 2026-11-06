@@ -65,6 +65,14 @@ class RuntimeTests(unittest.TestCase):
         with patch.object(m.old,'process_identity',return_value={'pid':5,'start_ticks':9}):
             self.assertEqual(m.owned_signal({'pid':5,'start_ticks':8},signal.SIGTERM),'IDENTITY_GONE_OR_CHANGED')
 
+    def test_aggregate_exit_file_is_not_a_worker_identity(self):
+        with TemporaryDirectory() as d:
+            (Path(d)/'WORKER_123.json').write_text('{"pid":123,"pgid":9,"sid":9}')
+            (Path(d)/'WORKER_EXIT_CODES.json').write_text('{"123":{"exit_code":0}}')
+            self.assertEqual(list(m.worker_identities(d)),[{'pid':123,'pgid':9,'sid':9}])
+            with patch.object(m,'owned_signal',return_value='IDENTITY_GONE_OR_CHANGED'):
+                self.assertEqual(len(m.cleanup_owned(d,{'pid':9,'pgid':9,'sid':9})),2)
+
     def test_adapter_preserves_arguments_result_and_restores_functions(self):
         class Engine:
             def selected_circuit(self,*args,**kwargs):return args,kwargs

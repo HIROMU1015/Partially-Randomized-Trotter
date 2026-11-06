@@ -50,12 +50,17 @@ def owned_signal(identity, number, *, group=False):
     return 'SENT_TO_OWN_JOB'
 
 
+def worker_identities(out):
+    for path in Path(out).glob('WORKER_*.json'):
+        if path.stem.removeprefix('WORKER_').isdigit():
+            yield json.loads(path.read_text())
+
+
 def cleanup_owned(out,identity):
     result=owned_signal(identity,signal.SIGTERM,group=True)
     records=[dict(role='parent_group',result=result)]
     if result=='IDENTITY_GONE_OR_CHANGED':
-        for path in Path(out).glob('WORKER_*.json'):
-            worker=json.loads(path.read_text())
+        for worker in worker_identities(out):
             if worker.get('pgid')!=identity.get('pgid') or worker.get('sid')!=identity.get('sid'):
                 raise ValueError('worker outside recorded job session')
             records.append(dict(pid=worker['pid'],result=owned_signal(worker,signal.SIGTERM),

@@ -55,8 +55,8 @@ def parent(case,out):
 def quiescent(out):
     for _ in range(500):
         live=[]
-        for path in Path(out).glob('WORKER_*.json'):
-            identity=json.loads(path.read_text());p=Path('/proc',str(identity['pid']),'stat')
+        for identity in managed.worker_identities(out):
+            p=Path('/proc',str(identity['pid']),'stat')
             if not p.exists():continue
             try:state=p.read_text().rsplit(')',1)[1].split()[0]
             except FileNotFoundError:continue
