@@ -131,3 +131,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C compiler A 18round
 
 `../trottertracks/track_c_compiler_a_18round.py`、runner `scripts/run_track_c_compiler_a_18round.py`、同moduleの`arithmetic_tests`/`verify_saved_models`、rawへの入口は[報告](../../docs/research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。全supportの構造上界を会計し、保存mean下で予算内、全RPEは未資格。
+
+## Track C SOURCE保証とA価格
+
+`../trottertracks/track_c_source_guarantee.py`、`track_c_cn_a_price.py`、runner `scripts/run_track_c_guarantee_cn_price.py`、技術検査`check_track_c_guarantee_cn_price.py`、[報告とraw](../../docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)を参照。Aは固定行列モデル条件成立、Bはcohort内full/強対照差0・長q未判定。

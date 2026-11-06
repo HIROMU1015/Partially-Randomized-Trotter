@@ -161,3 +161,7 @@ artifacts/<validation_name>/
 ## Track C compiler A 18round
 
 `run_track_c_compiler_a_18round.py`は128局所context・区間上界・36行会計の限定入口。新しいoutputと明示実行許可が必要。[SOURCE・人工算術検査・評価器照合・結果](../docs/research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。旧44ケースやq1 suite、価格runnerは再実行しない。
+
+## Track C 保証検証・限定C-N価格
+
+`run_track_c_guarantee_cn_price.py A|B --common-cache ... --out <fresh-output>`と新しい技術検査`check_track_c_guarantee_cn_price.py`の[報告](../docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)。保証と価格は別process/出力で評価。39セルでSTOPし、旧run・全gridを再開しない。

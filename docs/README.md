@@ -110,3 +110,7 @@
 ## Track C compiler A 18round（2026-11-06）
 
 [局所区間上界と全18roundの誤差会計](research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。H4 S2 LD3/Full Y4 LD12、h=.02。全36条件の条件付き数値判定は成立。全RPEの保証はUNQUALIFIED、価格追加なしでSTOP。
+
+## Track C 保証検証A・C-N価格B（2026-11-06）
+
+[総合報告](research/track_c_guarantee_cn_price_20261106/REPORT.md)、[保証](research/track_c_guarantee_cn_price_20261106/A_REPORT.md)、[価格](research/track_c_guarantee_cn_price_20261106/B_REPORT.md)。固定行列モデルでの18round条件、元H表現の未資格、有限cohortの価格差0、長q総G未判定を区別する。

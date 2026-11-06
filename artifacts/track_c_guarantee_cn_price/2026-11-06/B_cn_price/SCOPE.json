@@ -1,0 +1,51 @@
+{
+  "A_independent": true,
+  "additional_sampling_batches": false,
+  "base_commit": "3258a89f225d9530fba38e9d2343bc0165dd6d7d",
+  "calibration_q": [
+    1,
+    2
+  ],
+  "cells": 39,
+  "holdout_q": 8,
+  "new_seed_cohort": true,
+  "old_run_restarted": false,
+  "pricing_metrics": [
+    "rz",
+    "cx",
+    "depth",
+    "size"
+  ],
+  "profile": {
+    "angle_cutoff": null,
+    "approximate_commutation": false,
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "control_after_compilation": "not qualified; preserve control before lowering",
+    "equivalence": "already-controlled full joint circuit, up to one common global phase",
+    "name": "Track C reference A",
+    "numeric_optimization": false,
+    "passes": [
+      "reject opaque unitary",
+      "fixed inverse cancellation",
+      "UnrollCustomDefinitions",
+      "reject opaque unitary",
+      "BasisTranslator",
+      "fixed X/CX inverse cancellation"
+    ],
+    "qiskit": "1.3.0",
+    "seed": 17,
+    "seed_scope": "no stochastic pass is used",
+    "topology": null
+  },
+  "samples": 2307,
+  "seed_namespace": "trackC_AB_3258_20261106",
+  "stratum_n_calibration": 32,
+  "stratum_n_holdout": 128,
+  "strong_baseline": "maximal D runs and complete R occurrences; actual composed depth",
+  "workers": 64
+}

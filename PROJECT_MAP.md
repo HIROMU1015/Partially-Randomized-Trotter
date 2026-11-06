@@ -180,3 +180,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-06 Track C compiler A：18round誤差会計
 
 [局所区間上界・全support・18round会計](docs/research/track_c_compiler_a_18round_qualification_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3/Full Y4 LD12、h=.02。128 basis contextと1,302局所変換を192-bit区間評価し、全36条件で保存meanモデル下の正半径・統計予算が残る。SOURCE→mean、旧数値disk、alias保証が未完のため全RPEはUNQUALIFIED。価格/T合成0件、旧STOP保全、mandatory STOP。
+
+## 2026-11-06 Track C 保証検証A・C-N価格B
+
+[結果・SOURCE・raw](docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3/Full Y4 LD12、h=.02。Aは固定保存行列・理想gate・独立bitsモデルで全18roundの十分条件成立（shot8598/6914）。元H表現の無条件包含は未資格。Bは参照Aで39セル2307標本を完了し、S2の全2304paired標本でfull/強baselineのRZ/CX/depth/sizeが一致。q8最大点誤差6.09%、長q総G・勝者はUNDETERMINED。旧run保全、T合成0、mandatory STOP。
