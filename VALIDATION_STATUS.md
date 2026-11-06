@@ -710,3 +710,12 @@ N2のb_state≤7.81e-7を再利用し、実gateのδ*/列長/Eと総b_engineはU
 同じ保存EとN2の厳密な有理数state上界を合成し、exact engine・理想uniform53-bit wordモデルの条件付きで総b_engine≤7.8079008e-7を得た。旧kernel/raw結果は変更していない。
 実state作用/Born評価、preparation/CDF/solve/eigh、実path列挙、RNG/測定、compile/variance/N/費用は0。1/32は未採択、N3は未許可。
 旧SOURCE・結果・STOP、元mainとC1凍結を維持し、公開照合後mandatory STOPする。N3には同じengineの測定facade・独立stream・精度/予算等の採択と別の明示許可が必要。
+
+
+## 2026-11-06 A1 N3：技術接続・科学条件草案（実科学なし）
+
+[技術接続・契約草案・報告](docs/research/o2_a1_n3_connection_20261106/REPORT.md)を追加した。対象は保存linear H4/1.00 Å/STO-3G/legacy DF12/8qubit/全4電子sector/L_D3、m0/q1/δ.02/r1/K2/coefficient_atol0、X/Y、N1 actual Q/selected policyとN2保証ground。
+固定exact engineを使うbit-only facade、actual-count直接条件付き取得、stage/domain分離、3-control凍結・rank/range guard、独立calとbounded confidence・全正層配分、同selected full RZ/全段階会計を接続した。
+新規22＋既存24の人工/mock46件PASS。実入力はbyte/identity照合のみで、実state作用/Born・RNG/測定・full build/compile・variance/N/費用等の新科学callは0。
+1024無条件trainでg2/g3を十分学習できるとは置かず、3-control維持・5層×64 conditional train/axisを推奨案とした。ε_axis=1/8、同時α=1/20、cal512/cell/axis、prod≤8192/method/axis、D_CV≤4を含む全新条件は未採択。
+N3には条件の採択と有限測定/real-state/Born/必要compileへの別明示許可が必要。CV改善・期待費用改善は未評価。旧SOURCE/結果/STOP・元main・C1凍結を保全し、今回の公開照合後mandatory STOPする。
