@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D B5：ideal→actual保証接続の静的調査](docs/research/track_d_b5_actual_rpe_static_survey_20261106/REPORT.md)：finite-bit law／shot joint-law／Reference・compile誤差の不足、共通Nの条件、最小追加検証案。科学実行・実装変更なし、公開後mandatory STOP。
+
 [Track D B4-2結果](docs/research/track_d_b4_2_rpe_shots_20261106/RESULT.md)：元H向けideal IID/exact nativeの13-round十分NはX/Y合計14738、energy幅.0012783173232380342 Ha・failure和.01。条件付き数値pilot、actual・費用未資格、mandatory STOP。
 
 [Track D B4-1：元H統計adapter](docs/research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)：own-DF guardを保持した共通化、元H用N／energy／decoder接続。人工52件＋既存21件PASS、実H4評価なし、mandatory STOP。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D B5：ideal→actual保証接続](research/track_d_b5_actual_rpe_static_survey_20261106/REPORT.md)：sampling law・IID／joint-law・whole-path測定保存・raw誤差予算・方式間共通Nの資格と最小追加検証案。静的調査のみ、公開後mandatory STOP。
+
 [Track D B4-2：元H十分shot数](research/track_d_b4_2_rpe_shots_20261106/RESULT.md)：固定13-round、ideal IID/exact nativeで14738 shots。元H energy/failure条件付きPASS、actual保証・総回路費用なし、mandatory STOP。
 
 [Track D B4-1実装・人工検証](research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)：元H統計・energy／decoder接続、互換性、interface、B4-2許可境界。73人工／回帰PASS、実H4科学計算なし。
