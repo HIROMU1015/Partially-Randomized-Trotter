@@ -1,5 +1,7 @@
 # scripts 索引
 
+H4再配置後の下流技術準備：`check_research_c_h4_relocated_downstream.py` はSOURCE/入力bytes/fresh outputだけのpassive preflight。科学起動optionなし。[技術報告](../docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。
+
 ## 研究C：H4線形Z再配置診断の技術準備（2026-11-06）
 
 [数学SOURCE照合・入力36件＋C0参照・未承認契約](../docs/research/research_c_h4_relocation_preparation_20261106.md)。`c_h4_z_relocation.py`／`run_research_c_h4_relocation.py`と人工test。新規28＋既存46＝74 tests・29 subtest PASS。既定はbyte-only preflight、実保存Jの再解析0。mass順位と下流総RZを分離し、旧SOURCE/raw/STOP・H6を保全。公開照合後mandatory STOP。

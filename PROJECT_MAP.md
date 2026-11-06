@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：H4再配置後の下流比較・技術準備（2026-11-06）
+
+[3保存候補・再配置head/tail/scalar・人工全512・未承認契約](docs/research/research_c_h4_relocated_downstream_preparation_20261106.md)。PF/RTE/RPE/native・同JU Dを既存経路へ接続。推奨r8/16/32/64/128、selection32/final64、実H4新下流計算0。公開照合後mandatory STOP。
+
 ## 研究C：H4線形Z再配置・保存J診断完了（2026-11-06）
 
 [全36 checkpoint・主比較のmass順位逆転](docs/research/research_c_h4_relocation_execution_20261106.md)。SOURCE/契約不変で37入力を診断。主C0/64のM_ZZはPR .472232、ENTRY .380832/.381049 Ha。同条件18組でENTRY17/PR1。PF/RTE・native/総RZは未評価、旧証拠/H6保全、mandatory STOP。

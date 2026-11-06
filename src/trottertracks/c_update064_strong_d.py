@@ -12,7 +12,7 @@ from . import c_same_ju_strong_d as reused
 io, m2, accuracy, integrated = reused.io, reused.m2, reused.accuracy, reused.integrated
 
 
-def evaluate(root, c, out, call, a):
+def evaluate(root, c, out, call, a, *, prepared_arm=None, full_generators=None):
     import numpy as np
     from qiskit import qpy
     from threadpoolctl import threadpool_limits
@@ -29,11 +29,19 @@ def evaluate(root, c, out, call, a):
     candidate_label=a.get('candidate_label','update064')
     # Same in-memory J/U, input and freshly solved ground as PR. No old candidate
     # ground/PF/error/price path is accepted by this interface.
-    arm = call('native_model', 'same '+candidate_label+' full-frame D', lambda: b.prepare_arm(**p, **d,
+    if (prepared_arm is None) != (full_generators is None):
+        raise ValueError('PREPARED_D_MODEL_AND_CAR_REQUIRED_TOGETHER')
+    arm = call('native_model', 'same '+candidate_label+' full-frame D', lambda: prepared_arm if prepared_arm is not None else b.prepare_arm(**p, **d,
         role='proposed', source_identity=identity, input_identity=a['arm'].model.input_identity, ld=8))
-    car = call('car_context', 'independent full256 CAR', lambda: b.stage1.car_bilinears(8))
-    G = [call('raw_factor', str(i), lambda i=i: b.stage1.raw_base(b.stage1.corrected_kappa(p['h'],p['g']), p['constant'], car)
-        if i == 0 else b.stage1.raw_frame(d['J'][i-1], d['U'][i-1], car)[0]) for i in range(9)]
+    if prepared_arm is None:
+        car = call('car_context', 'independent full256 CAR', lambda: b.stage1.car_bilinears(8))
+        G = [call('raw_factor', str(i), lambda i=i: b.stage1.raw_base(b.stage1.corrected_kappa(p['h'],p['g']), p['constant'], car)
+            if i == 0 else b.stage1.raw_frame(d['J'][i-1], d['U'][i-1], car)[0]) for i in range(9)]
+    else:
+        if (arm.model != a['arm'].model or arm.plan.ld != 8
+                or not np.array_equal(arm.J,d['J']) or not np.array_equal(arm.U,d['U'])):
+            raise ValueError('SAME_PREPARED_D_REPRESENTATION_REQUIRED')
+        G = full_generators
     ix, checks = call('sector_gate', 'all9 same-candidate full/sector factors', lambda: m2.sector_match(G, sector))
     io.save(out/'sector.json', checks)
     ground = dict(energy=a['pair'][0][0], sector_state=a['ground'])

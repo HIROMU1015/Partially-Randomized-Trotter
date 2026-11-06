@@ -12,7 +12,7 @@ SELECTION_SAMPLES = 32
 FINAL_SAMPLES = 64
 
 
-def select_r(rows, candidate_sha256):
+def select_r(rows, candidate_sha256, *, r_values=R_VALUES, tie_order=TIE_ORDER):
     """Choose the least selection-cohort total RZ among all eligible fixed r.
 
     Missing policy opportunities and correctness failures are errors. Scientific
@@ -20,7 +20,10 @@ def select_r(rows, candidate_sha256):
     never be supplied here. Tie preference keeps the common-r32 baseline first.
     """
     rows = list(rows)
-    if len(rows) != len(R_VALUES) or {x['r'] for x in rows} != set(R_VALUES):
+    if (len(set(r_values)) != len(r_values) or set(tie_order) != set(r_values)
+            or any(type(r) is not int or r < 1 for r in r_values)):
+        raise ValueError('FIXED_R_GRID_AND_TIE_ORDER')
+    if len(rows) != len(r_values) or {x['r'] for x in rows} != set(r_values):
         raise ValueError('ALL_THREE_FIXED_R_REQUIRED')
     eligible = []
     for row in rows:
@@ -42,7 +45,7 @@ def select_r(rows, candidate_sha256):
         eligible.append(row)
     if not eligible:
         return {'status': 'UNRESOLVED_NO_ELIGIBLE_R', 'selected_r': None}
-    best = min(eligible, key=lambda x: (x['total_rz'], TIE_ORDER.index(x['r'])))
+    best = min(eligible, key=lambda x: (x['total_rz'], tie_order.index(x['r'])))
     return {'status': 'SELECTION_FIXED', 'selected_r': best['r'],
             'selection_total_rz': best['total_rz'], 'candidate_sha256': candidate_sha256}
 

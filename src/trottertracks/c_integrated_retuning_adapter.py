@@ -97,14 +97,14 @@ def strong_d(root, contract, out, call, a):
     return value
 
 
-def reference_r(a, r, out, call, *, pf_cache=None):
+def reference_r(a, r, out, call, *, pf_cache=None, r_values=R_VALUES, tail_gate=None):
     """Reuse qualified candidate A-packet; compute r32 first, then r16/r64.
 
     Returns (native A-packet, result, accounting packet, candidate-bound PF
     cache). PF/exact-H references are made once per candidate and reused across
     r. No old-candidate scalar values, eigenpairs or prices are substituted.
     """
-    if type(r) is not int or r not in R_VALUES:raise ValueError('REGISTERED_R_ONLY')
+    if type(r) is not int or r not in r_values:raise ValueError('REGISTERED_R_ONLY')
     ret, feasibility, distribution_gate = _engines()
     b, m4, io = ret.perf.b, ret.m4, ret.io
     candidate = a['arm'].model.source_identity
@@ -115,7 +115,7 @@ def reference_r(a, r, out, call, *, pf_cache=None):
     out = Path(out); out.mkdir(parents=True, exist_ok=False)
     tail, config, dist = call('law_prepare', str(r), lambda:b.configure(a['arm'],Fraction(1,10),r,0))
     def law():
-        row = b.tail_gate(a['ctx'],a['arm'],a['sector']['generators'],tail)
+        row = (b.tail_gate if tail_gate is None else tail_gate)(a['ctx'],a['arm'],a['sector']['generators'],tail)
         distribution_gate(tail,config,dist,expected_steps=r)
         return row
     io.save(out/'law.json',call('law_gate',str(r),law))
