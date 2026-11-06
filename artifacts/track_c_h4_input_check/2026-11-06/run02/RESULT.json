@@ -1,0 +1,161 @@
+{
+  "circuits_built_or_compiled": 0,
+  "diagnostic_tolerances": {
+    "matrix_agreement_Ha": 1e-09,
+    "orbital": 1e-10,
+    "source": "original saved H4 receipt, not RPE contract adoption",
+    "state_residual_Ha": 1e-10
+  },
+  "environment": {
+    "numpy": "1.26.4",
+    "python": "3.12.3"
+  },
+  "gates": {
+    "DF_convention": true,
+    "basis_intertwining": true,
+    "ground_reference": true,
+    "hermiticity": true,
+    "operator_agreement": true,
+    "orbital_map": true,
+    "original_source_rebuild": true,
+    "saved_source_state": true,
+    "saved_state_ground": true,
+    "state_norm": true
+  },
+  "ground_reference_sha256": "6a350e7dd107f242bb00eae6a8d552ab4f4d1fc8df850c39ba8f838174994ae3",
+  "hamiltonian_hash": "56e4df83655aa2f2f8132126f2635996516dc2cfb1bf4cb8d95490184ad631e5",
+  "host": "GPUA100-gleap02",
+  "implementation_sha256": "37d9fa5934255cd917f2adc5bd25429549ee9fc0520046533acd7cc7627c32ef",
+  "input_provenance": {
+    "legacy_df": {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+      "sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b"
+    },
+    "legacy_state": {
+      "commit": "e22d7718c47358ff650dbc04e8e72f6ab1c8bf41",
+      "path": "artifacts/rpe_fixed_request_measurement_b/2026-11-03/run01/physical_state.npz",
+      "sha256": "793300c86417f52569289ce86980c5f9a87292e130199355a0f4f7056225c9c4"
+    },
+    "original": {
+      "commit": "e22d7718c47358ff650dbc04e8e72f6ab1c8bf41",
+      "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+      "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+    },
+    "original_receipt": {
+      "commit": "e22d7718c47358ff650dbc04e8e72f6ab1c8bf41",
+      "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/receipt.json",
+      "sha256": "6a2304db448845aef6f86da06a7bffd5d5c708273964e7e797c3d8ec71fcb6bf"
+    }
+  },
+  "limitations": [
+    "Numerical equivalence after an inferred orbital map, not byte identity with the legacy pre-DF integral file.",
+    "No new PySCF FCI call; FCI comparison uses the existing saved scalar.",
+    "No PF/RPE signal, shot, synthesis or resource-cost evaluation; pilot contract remains unadopted."
+  ],
+  "mandatory_STOP": true,
+  "metrics": {
+    "DF_hermiticity_norm2_Ha": 1.45258408545116e-16,
+    "constant_difference_Ha": 0.0,
+    "core_eigenvalue_max_difference_Ha": 1.3322676295501878e-15,
+    "core_min_eigenvalue_spacing_Ha": 0.3000324291787486,
+    "df_matvec_normal_order_agreement_norm2_Ha": 1.7797512005891584e-15,
+    "direct_unaligned_one_body_max_difference_Ha": 1.5712332618322833e-07,
+    "direct_unaligned_two_body_max_difference_Ha": 4.4682822206154604e-08,
+    "ground_energy_Ha": -2.166387448634761,
+    "ground_gap_Ha": 0.23263021512018023,
+    "ground_reference_residual_l2_Ha": 1.9069976415519017e-15,
+    "ground_vs_saved_FCI_energy_difference_Ha": 3.1086244689504383e-15,
+    "orbital_distance_to_identity_norm2": 2.6662388016851734e-07,
+    "orbital_orthogonality_norm2": 7.672768511403082e-16,
+    "original_basis_intertwining_norm2_Ha": 2.2545237762284823e-15,
+    "original_full_saved_matrix_rebuild_fro_Ha": 2.640880837611689e-14,
+    "original_spin_one_rebuild_max_difference_Ha": 0.0,
+    "original_spin_two_rebuild_max_difference_Ha": 0.0,
+    "physical_H_hermiticity_norm2_Ha": 3.780701126791475e-16,
+    "physical_H_vs_legacy_DF_sector_norm2_Ha": 9.480991703075102e-15,
+    "rotated_one_body_max_difference_Ha": 2.4424906541753444e-15,
+    "rotated_two_body_max_difference_Ha": 9.159339953157541e-16,
+    "saved_source_state_mapped_infidelity_abs": 0.0,
+    "saved_source_state_norm_error": 0.0,
+    "saved_state_DF_residual_l2_Ha": 1.5939726126819812e-15,
+    "saved_state_norm_error": 2.220446049250313e-16,
+    "saved_state_original_energy_Ha": -2.166387448634762,
+    "saved_state_original_ground_energy_difference_Ha": 8.881784197001252e-16,
+    "saved_state_original_ground_infidelity_abs": 8.881784197001252e-16,
+    "saved_state_original_ground_residual_l2_Ha": 2.804036590734226e-15,
+    "tensor_fit_max_difference_Ha": 1.8318679906315083e-15,
+    "wedge_unitarity_norm2": 2.837227184488438e-15
+  },
+  "no_new_SCF_or_DF": true,
+  "orbital_map": {
+    "maps_within_orbital_tolerance": 4,
+    "matrix": [
+      [
+        0.9999999999999647,
+        9.884414012616297e-16,
+        -2.6662388011300386e-07,
+        -2.0301283358309796e-16
+      ],
+      [
+        -9.970009675205254e-16,
+        0.9999999999999823,
+        -7.845407370266019e-17,
+        1.8671709775541778e-07
+      ],
+      [
+        2.6662388011300386e-07,
+        -2.71323951648458e-16,
+        0.9999999999999648,
+        -8.592420183433637e-16
+      ],
+      [
+        2.0301325121781504e-16,
+        -1.8671709767215106e-07,
+        8.734700142518929e-16,
+        0.9999999999999826
+      ]
+    ],
+    "method": "nondegenerate bare one-body eigensystems + 16 sign choices; tensor check; near-identity tie-break",
+    "signs": [
+      1,
+      -1,
+      -1,
+      1
+    ]
+  },
+  "physical_sector": {
+    "dimension": 70,
+    "n_electrons": 4,
+    "n_qubits": 8,
+    "ordering": "OpenFermion big-endian, sorted number-sector indices"
+  },
+  "pilots_executed": 0,
+  "reused_source": [
+    {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "definitions": [
+        "DFHamiltonian",
+        "PhysicalSector",
+        "_ExcitationTable",
+        "_before_mode_masks",
+        "_build_excitation_table",
+        "_apply_one_body",
+        "_df_matvec_python"
+      ],
+      "path": "src/trotterlib/df_hamiltonian.py",
+      "sha256": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52"
+    },
+    {
+      "commit": "e22d7718c47358ff650dbc04e8e72f6ab1c8bf41",
+      "definitions": [
+        "spin_lift_unthresholded"
+      ],
+      "path": "src/trotterlib/h4_molecular_inputs.py",
+      "sha256": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea"
+    }
+  ],
+  "scope": "saved H4 original-integral/legacy-DF/state numerical check only",
+  "state_fingerprint": "a07d6c7fdbbb23a035f9fc54b9956ee79e557a2185e29b1870748b771958be90",
+  "status": "PASS"
+}
