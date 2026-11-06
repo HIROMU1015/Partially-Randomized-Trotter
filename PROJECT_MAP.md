@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D B3：元H向けRPE統計の接続準備](docs/research/track_d_b3_rpe_statistics_preparation_20261106/REPORT.md)：B1保存誤差から統計・decoder・全RPE会計へ接続する既存部品と不足、次の最小実装・実行許可範囲。静的調査のみ、N算定・科学実装なし、公開後mandatory STOP。
+
 [C2固定q2結果](docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 
 [Track D C2固定q2 compile](docs/research/track_d_c2_q2_compile_20261106/PLAN.md)：C1の保存rawを使う2方式×X/Yの4 wrapper限定。P0・cut・phase固定、公開後mandatory STOP。

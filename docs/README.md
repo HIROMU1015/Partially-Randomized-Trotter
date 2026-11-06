@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D B3：元H向けRPE統計の接続準備](research/track_d_b3_rpe_statistics_preparation_20261106/REPORT.md)：元H専用接続、N・alias・decoder資格、ReferenceとのN共通化、資源会計とC3受取条件。静的調査・計画のみ、公開後mandatory STOP。
+
 [C2固定q2結果](research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 
 [Track D C2固定q2 compile](research/track_d_c2_q2_compile_20261106/PLAN.md)：C1の保存rawを使う2方式×X/Yの4 wrapper限定。P0・cut・phase固定、公開後mandatory STOP。
