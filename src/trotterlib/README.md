@@ -129,3 +129,5 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_signal_validation.py`は既存平均kernelと`radius_phase_diagnostics`を使うsignal-only入口。[人工検査・条件付き結果・STOP](../../docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。実行は明示承認scopeのみ。
 
 `b2_p1_remaining_rounds.py`は保存law・mean-only projectionでm1..16へ限定接続する。[結果・範囲](../../docs/research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)。共有`evaluate_signal_round`を再利用し、回路preparation/controlled buildを呼ばない。
+
+`b2_p1_branch_validation.py`はraw平均だけの既存decoder接続と復元後のenergy correctness。[結果・来歴・未保証事項](../../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。decoderとbranch閾値は不変更。

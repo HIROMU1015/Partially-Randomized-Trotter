@@ -102,3 +102,4 @@
 - [B2総RPE接続の実装・人工検証（2026-11-06）](research/track_a_b2_rpe_implementation_20261106/REPORT.md)：実H4未適用、公開後STOP。
 - [B2 P1実H4 m0/m17限定信号検証（2026-11-07）](research/track_a_b2_p1_two_round_20261107/REPORT.md)：5信号・半径・代表controlledの条件付きPASS。全RPE保証・shot・価格は未評価、mandatory STOP。
 - [B2 P1残り16roundと全18点の条件付き信号検証（2026-11-07）](research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)：m0/17は再利用。branch・shot・価格・全RPE成功保証は未評価、mandatory STOP。
+- [B2 P1保存raw平均の全18round branch/energy復元（2026-11-07）](research/track_a_b2_p1_branch_20261107/REPORT.md)：条件付きPASS。実測95%保証・shot・価格は未評価、mandatory STOP。

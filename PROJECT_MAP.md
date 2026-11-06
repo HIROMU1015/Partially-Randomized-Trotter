@@ -183,3 +183,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [全18roundの条件付き信号適格性・SOURCE・STOP](docs/research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)。
 新規m1..16を順次検証し、m0/17と代表controlled証拠は固定結果を再利用。回路build・branch・shot・価格は今回未実施。
+
+## B2 P1保存raw平均のbranch/energy復元（2026-11-07）
+
+[全18roundの条件付き復元・SOURCE・STOP](docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。
+既存decoderを無変更で使用し、元H energyは復元後のcorrectness参照のみ。95%測定成功・shot・価格は未評価。

@@ -159,3 +159,5 @@ artifacts/<validation_name>/
 `run_b2_p1_signal_validation.py`は明示private入力でm0/m17だけを実行する。[SOURCE・結果・STOP](../docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。他round・shot・価格へ進まない。
 
 `run_b2_p1_remaining_rounds.py`は別承認されたm1..16を固定順で評価し、初回不適格で停止する。[全18点の条件付き信号結果](../docs/research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)。回路build・endpoint再計算・branch・shot・価格なし、公開後STOP。
+
+`run_b2_p1_branch_validation.py`は固定保存raw平均を既存nearest-branch decoderへ渡す。[branch/energy結果とSTOP](../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。新信号・private読込・shot・価格なし。
