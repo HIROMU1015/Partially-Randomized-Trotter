@@ -133,3 +133,9 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_branch_validation.py`はraw平均だけの既存decoder接続と復元後のenergy correctness。[結果・来歴・未保証事項](../../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。decoderとbranch閾値は不変更。
 
 `b2_p1_shot_accounting.py`は既存`B2SignalRecord.bounds`/`account_radius_round`を使う保存JSON adapterと整数集計。[条件付きshot数・未保証範囲](../../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。新signal/branch/price計算なし。
+
+## B2 P1 explicit compiled cost（2026-11-07）
+
+`b2_p1_compiled_cost.py`は既存B2 native・full X/Y wrapper・pair compilerへの薄いadapter。
+指定trajectory価格を期待値へ変換しない。[REPORT](../../docs/research/track_a_b2_p1_compiled_cost_20261107/REPORT.md)、
+`tests/test_b2_p1_compiled_cost.py`、`artifacts/track_a_b2_p1_compiled_cost/`を参照。

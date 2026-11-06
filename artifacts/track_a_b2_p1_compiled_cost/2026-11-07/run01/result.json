@@ -1,0 +1,3888 @@
+{
+  "schema_version": "b2_p1_explicit_compiled_cost_v1",
+  "status": "PASS_SPECIFIED_TRAJECTORY_M0_ONLY",
+  "started_utc": "2026-11-06T20:02:30.332945+00:00",
+  "mandatory_stop": true,
+  "fixed_conditions": {
+    "target": "H_phys",
+    "model": "linear H4; 1.00 Angstrom; STO-3G",
+    "DF_rank": 12,
+    "L_D": 3,
+    "r": 4,
+    "K": 2,
+    "delta": 0.02,
+    "m": 0,
+    "Q": 1,
+    "state_role": "original_H_ground_state",
+    "state_preparation_included": false
+  },
+  "axes": {
+    "cosine": {
+      "axis": "cosine",
+      "SOURCE": "5aa5d061600382abe438707c14eaf665466ae383",
+      "round_binding": "3983c97a895bb76896ba6e05090b64b12b616fecccf05493b4850e229ab107ab",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "state_preparation_included": false,
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "actual_circuit_fingerprint": "732d8feae6af04838c687b390e6d257e19edb138c3fdc91c204cb0b17add043f",
+      "compiled_circuit_fingerprint": "45706a6e8f066499e2206691041deffda6406ded4d69e51c7e4f9b2a4d87df32",
+      "metrics": {
+        "rz_count": 6025,
+        "cx_count": 3262,
+        "rz_depth": 2526,
+        "cx_depth": 2658,
+        "total_depth": 5504,
+        "circuit_size": 11494
+      },
+      "pretranspile_gate_counts": {
+        "crz": 68,
+        "crzz": 168,
+        "cz": 6,
+        "h": 2,
+        "measure": 1,
+        "p": 10,
+        "rz": 144,
+        "xx_plus_yy": 416
+      },
+      "posttranspile_gate_counts": {
+        "cx": 3262,
+        "measure": 1,
+        "rz": 6025,
+        "sx": 2198,
+        "x": 8
+      },
+      "qubits": 9,
+      "compiled_global_phase": 1.5741111049269154,
+      "elapsed_seconds": 6.170310797053389,
+      "process_peak_RSS_KiB": 1183200
+    },
+    "sine": {
+      "axis": "sine",
+      "SOURCE": "5aa5d061600382abe438707c14eaf665466ae383",
+      "round_binding": "3983c97a895bb76896ba6e05090b64b12b616fecccf05493b4850e229ab107ab",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "state_preparation_included": false,
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "actual_circuit_fingerprint": "c4dea7a8b62faa17a8dc07328787ec56d38b8a765b35d7bb49302b863a975e5f",
+      "compiled_circuit_fingerprint": "5d556741ef8a2d2500ea22f71ee706e62479041e7f4ae4692c72442b908c5cca",
+      "metrics": {
+        "rz_count": 6025,
+        "cx_count": 3262,
+        "rz_depth": 2526,
+        "cx_depth": 2658,
+        "total_depth": 5504,
+        "circuit_size": 11494
+      },
+      "pretranspile_gate_counts": {
+        "crz": 68,
+        "crzz": 168,
+        "cz": 6,
+        "h": 2,
+        "measure": 1,
+        "p": 10,
+        "rz": 144,
+        "sdg": 1,
+        "xx_plus_yy": 416
+      },
+      "posttranspile_gate_counts": {
+        "cx": 3262,
+        "measure": 1,
+        "rz": 6025,
+        "sx": 2198,
+        "x": 8
+      },
+      "qubits": 9,
+      "compiled_global_phase": 0.7887129415294574,
+      "elapsed_seconds": 6.10681049793493,
+      "process_peak_RSS_KiB": 1183200
+    }
+  },
+  "expected_trajectory_cost": null,
+  "price_MC": null,
+  "total_rpe_cost": null,
+  "guarantee_status": "not_certified",
+  "compile_calls_started": 2,
+  "source": {
+    "commit": "5aa5d061600382abe438707c14eaf665466ae383",
+    "tree": "d5dea2e134f15bce34eabb39ce6ed72ad4dc362f",
+    "sha256": {
+      "src/trotterlib/b2_rpe_connection.py": "d41f336d333c6a66c7c5b73db241f2c415a4d501a208e7808c4bbcbaf5631c08",
+      "src/trotterlib/o1_m1_resource_bridge.py": "4cd367f7f0ab363866f9238bb4dfac869af76d5a345e9f786790093336b7fbc9",
+      "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+      "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+      "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+      "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "src/trotterlib/rpe_hadamard_interrogation.py": "8d00036f8e7d7ee0d3cfe738d32805885edb52e3d3e185e9f6bc8e9677b91ba7",
+      "src/trottertracks/resource_applicability/ax2a_native_df.py": "b67cc43993fa23b671407f75cc0a2d8e3cceedfe9fc7e3c97ee3e5b39a735e2d",
+      "src/trotterlib/b2_p1_compiled_cost.py": "fd7edec1f9402a0887a77493024e3bdcdb4d6aba7819091d097c9734ee8a3c48",
+      "scripts/run_b2_p1_compiled_cost.py": "f67a5744c2dc74933d6df9f9d1e882dabb3bc05aa54a2a5d4e8d819817ad23b8"
+    }
+  },
+  "input": {
+    "df_commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+    "df_path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "df_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "private_file_sha256": {
+      "state.npz": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+      "provenance.json": "468b3a4bc3150c055b4fcdf37a72acaa01e2ae171eccfc39d62419e3998c4e3b",
+      "H4_sto-3g_singlet_df_d100.hdf5": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958"
+    },
+    "scientific_identity": {
+      "original_hamiltonian": "H_phys:S0_array_hash:bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+      "original_state": "S0_array_hash:1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+      "df_hamiltonian": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+      "sector": "Nalpha=2,Nbeta=2;OF_basis_S0_hash:665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+      "spin_orbital_order": "2p=alpha,2p+1=beta;Qiskit full index=sum(n_q*2**q)",
+      "state_role": "original_H_ground_state"
+    },
+    "state_vectors_used": false,
+    "physical_H_rebuilt": false
+  },
+  "reused_evidence": {
+    "correctness": {
+      "commit": "ea2c0915ba2f7e11a6dac58dc01cf1af3c0d0ff5",
+      "path": "artifacts/track_a_b2_p1_two_round/2026-11-07/run01/result.json",
+      "blob": "79a85f454714d3d1b8bb9a53cf595fb1553a0b36",
+      "sha256": "a72a199f8aa72460a465c7d677db566ff1686b8e27e6a6675f56e69c75a22a7f"
+    },
+    "input_spec": {
+      "commit": "89165cf70958e7e4676d0580e3acb7faf588772c",
+      "path": "artifacts/b2_hphys_ground_state/2026-11-06/run01/agent_b_input_spec.json",
+      "blob": "b8be687248487f61a214fad9c95a8bb7814729d4",
+      "sha256": "0244e3160ef489a5be5e11153c1495f79a3e1250a0fbdf010f65a3674809ee15"
+    },
+    "measured_compiler": {
+      "commit": "0daf01d51c022977a1c0a7d29dde34a1c4c82d7c",
+      "path": "artifacts/track_a_o1_m1_r8_price_pilot_20261106/run01/result.json",
+      "blob": "c1a9d5578630e631e29501ec69b5d7c1bc3e7e54",
+      "sha256": "2949579df39a4ce92de5083177ab9e7fce49e07106447abba2f3dd5c319cecb7"
+    }
+  },
+  "compiler": {
+    "settings": {
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "backend_name": null,
+      "coupling_map": null,
+      "optimization_level": 1,
+      "layout_method": null,
+      "routing_method": null,
+      "transpiler_seed": 7,
+      "qiskit_version": "1.3.0"
+    },
+    "settings_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+    "backend_fingerprint": "no_backend",
+    "target": null,
+    "connectivity": "all_to_all_logical",
+    "signal_seed_17_adopted": false
+  },
+  "runtime": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "packages": {
+      "qiskit": "1.3.0",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "openfermion": "1.6.1",
+      "qiskit-nature": "0.7.2"
+    },
+    "host": "GPUA100-gleap02",
+    "available_cpus": 64,
+    "load_average": [
+      1.03173828125,
+      1.5263671875,
+      4.14697265625
+    ]
+  },
+  "preflight_status": "PASS",
+  "trajectory_selection": {
+    "prior_case": 1,
+    "representative_indices": [
+      0,
+      4,
+      4,
+      0
+    ],
+    "rule": "existing controlled_checks case1: first, first negative order2, last, first",
+    "random_sampling": false,
+    "price_based_selection": false
+  },
+  "law": {
+    "config": {
+      "tail_id": "partial-s2-tail-de7a549238e3a21f-ld-3",
+      "tail_hash": "57e4bf36084310c1ce279a4a01936896fd0e8d7edacbc0463520d4299ccab219",
+      "lambda_r": 0.5832704246339983,
+      "evolution_time": 0.02,
+      "rte_steps": 4,
+      "step_time": 0.005,
+      "dimensionless_step_time": 0.0029163521231699912,
+      "taylor_distribution": "rte_even_taylor_paired",
+      "finite_taylor_order": 2,
+      "truncation_tolerance": 3.0157959834177137e-12,
+      "distribution_normalization": 1.0000085051026735,
+      "truncation_residual_bound": 3.0157959834177133e-12,
+      "seed": 0,
+      "sampling_convention_version": "rte_order_then_components_v2",
+      "prng_type": "numpy.random.PCG64",
+      "numpy_version": "1.26.4"
+    },
+    "distribution": {
+      "dimensionless_step_time": 0.0029163521231699912,
+      "finite_taylor_order": 2,
+      "orders": [
+        0,
+        2
+      ],
+      "unnormalized_order_weights": [
+        1.000004252545811,
+        4.252556862516669e-06
+      ],
+      "order_probabilities": [
+        0.9999957474793058,
+        4.252520694391542e-06
+      ],
+      "exact_finite_distribution": 1.0000085051026735,
+      "truncation_residual_bound": 3.0157959834177133e-12,
+      "paper_upper_bound": 1.000008505145875
+    },
+    "preparation_hash": "1750dbcc44f387e0eac0ae33a2eea84f9aabecc3f05be16d1360578cf2dde25f",
+    "scalar": 2.29310124732,
+    "tail_identity": 0.09261516589219072
+  },
+  "price": {
+    "evaluation_method": "specified_trajectory_full_no_prep_compiled_cost",
+    "circuit_cost_scope": "single_hadamard_interrogation_without_state_preparation",
+    "state_preparation_included": false,
+    "round_index": 0,
+    "q": 1,
+    "delta": 0.02,
+    "round_binding": "3983c97a895bb76896ba6e05090b64b12b616fecccf05493b4850e229ab107ab",
+    "context_hash": "8277d824b35fb76b6013f193dfa1eb5605c8a9b877d1d5df6c034b9f57348ed1",
+    "preparation_hash": "655f4546c5324e95d4fef09be2c39c8a3a2d69a8310965753877d642d440824f",
+    "trajectory": [
+      {
+        "taylor_order": 0,
+        "rotation_component_id": "df-fragment-10:Z0",
+        "product_component_ids": [],
+        "selected_component_ids": [
+          "df-fragment-10:Z0"
+        ],
+        "df_fragment_ids": [
+          "df-fragment-10"
+        ],
+        "event_probability": 3.6723764780083336e-41,
+        "event_coefficient": 3.672407711947335e-41,
+        "phase": {
+          "real": 1.0,
+          "imag": 0.0
+        },
+        "rotation_angle": 0.0029163438552472663,
+        "event_normalization": 1.0000085051026735,
+        "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+        "basis_reuse_intervals": [],
+        "application_sequence": [
+          {
+            "application_index": 0,
+            "role": "rotation",
+            "component_id": "df-fragment-10:Z0",
+            "coefficient_abs": 2.1419976966333596e-41,
+            "coefficient_sign": -1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              0
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          }
+        ],
+        "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+      },
+      {
+        "taylor_order": 2,
+        "rotation_component_id": "df-fragment-10:Z2",
+        "product_component_ids": [
+          "df-fragment-10:Z0Z1",
+          "df-fragment-10:Z0"
+        ],
+        "selected_component_ids": [
+          "df-fragment-10:Z0Z1",
+          "df-fragment-10:Z0",
+          "df-fragment-10:Z2"
+        ],
+        "df_fragment_ids": [
+          "df-fragment-10",
+          "df-fragment-10",
+          "df-fragment-10"
+        ],
+        "event_probability": 1.2792588300199305e-123,
+        "event_coefficient": 1.2792697102476258e-123,
+        "phase": {
+          "real": -1.0,
+          "imag": 0.0
+        },
+        "rotation_angle": 0.0009721170681692479,
+        "event_normalization": 1.0000085051026735,
+        "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+        "basis_reuse_intervals": [
+          {
+            "start": 0,
+            "stop": 3,
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          }
+        ],
+        "application_sequence": [
+          {
+            "application_index": 0,
+            "role": "product",
+            "component_id": "df-fragment-10:Z0Z1",
+            "coefficient_abs": 1.3022713302029293e-37,
+            "coefficient_sign": -1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              0,
+              1
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          },
+          {
+            "application_index": 1,
+            "role": "product",
+            "component_id": "df-fragment-10:Z0",
+            "coefficient_abs": 2.1419976966333596e-41,
+            "coefficient_sign": -1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              0
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          },
+          {
+            "application_index": 2,
+            "role": "rotation",
+            "component_id": "df-fragment-10:Z2",
+            "coefficient_abs": 2.1399389095471805e-41,
+            "coefficient_sign": 1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              2
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          }
+        ],
+        "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+      },
+      {
+        "taylor_order": 2,
+        "rotation_component_id": "df-fragment-10:Z2",
+        "product_component_ids": [
+          "df-fragment-10:Z0Z1",
+          "df-fragment-10:Z0"
+        ],
+        "selected_component_ids": [
+          "df-fragment-10:Z0Z1",
+          "df-fragment-10:Z0",
+          "df-fragment-10:Z2"
+        ],
+        "df_fragment_ids": [
+          "df-fragment-10",
+          "df-fragment-10",
+          "df-fragment-10"
+        ],
+        "event_probability": 1.2792588300199305e-123,
+        "event_coefficient": 1.2792697102476258e-123,
+        "phase": {
+          "real": -1.0,
+          "imag": 0.0
+        },
+        "rotation_angle": 0.0009721170681692479,
+        "event_normalization": 1.0000085051026735,
+        "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+        "basis_reuse_intervals": [
+          {
+            "start": 0,
+            "stop": 3,
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          }
+        ],
+        "application_sequence": [
+          {
+            "application_index": 0,
+            "role": "product",
+            "component_id": "df-fragment-10:Z0Z1",
+            "coefficient_abs": 1.3022713302029293e-37,
+            "coefficient_sign": -1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              0,
+              1
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          },
+          {
+            "application_index": 1,
+            "role": "product",
+            "component_id": "df-fragment-10:Z0",
+            "coefficient_abs": 2.1419976966333596e-41,
+            "coefficient_sign": -1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              0
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          },
+          {
+            "application_index": 2,
+            "role": "rotation",
+            "component_id": "df-fragment-10:Z2",
+            "coefficient_abs": 2.1399389095471805e-41,
+            "coefficient_sign": 1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              2
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          }
+        ],
+        "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+      },
+      {
+        "taylor_order": 0,
+        "rotation_component_id": "df-fragment-10:Z0",
+        "product_component_ids": [],
+        "selected_component_ids": [
+          "df-fragment-10:Z0"
+        ],
+        "df_fragment_ids": [
+          "df-fragment-10"
+        ],
+        "event_probability": 3.6723764780083336e-41,
+        "event_coefficient": 3.672407711947335e-41,
+        "phase": {
+          "real": 1.0,
+          "imag": 0.0
+        },
+        "rotation_angle": 0.0029163438552472663,
+        "event_normalization": 1.0000085051026735,
+        "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+        "basis_reuse_intervals": [],
+        "application_sequence": [
+          {
+            "application_index": 0,
+            "role": "rotation",
+            "component_id": "df-fragment-10:Z0",
+            "coefficient_abs": 2.1419976966333596e-41,
+            "coefficient_sign": -1,
+            "is_identity": false,
+            "df_fragment_id": "df-fragment-10",
+            "basis_id": "df-basis-48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108",
+            "diagonal_pauli_support": [
+              0
+            ],
+            "basis_change_operations": [
+              {
+                "name": "rz",
+                "qubits": [
+                  0
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  1
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  2
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  3
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  4
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  5
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  6
+                ],
+                "parameters": [
+                  "0.0"
+                ],
+                "matrix_sha256": "0fdea6ca3d6006053c50e6cc39c328b15c3011a02670abc93def3ed1ebadfeab"
+              },
+              {
+                "name": "rz",
+                "qubits": [
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793"
+                ],
+                "matrix_sha256": "80f0c927c71e16a6cce085b0c5f876bebb4a2e9667822a6a8d9bf922f84266ea"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.009919090253394791",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "74c4813714302e91a9b10d34d399d8484a0a1751f50eed9d619de0f181d82806"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.3372836392821235",
+                  "-4.71238898038469"
+                ],
+                "matrix_sha256": "2ac37cfe8a0b05f764727d6e70aab7afea8a666aafd8a235ef7d0184e63c7bd6"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.124060584548297",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "f50e6166910cf1d7286fea2d7a16568adf4ff7282ca44d9e10e70452938a73fb"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "3.133490295903362",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "54b7a3ad2099586a067bdfca5a8a59ec0e8f465b46a40fdcc94356d433cc965c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.8684910007299866",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "97cff61c658a135e5a6e8fa1d8f5eb01885af2922f4871559aa686ab06322d56"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "2.9155367164016432",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "7acdd554e34e6b674f331436dd8f48c5c381d3be84b48dc973deb44ea4d0c205"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  1
+                ],
+                "parameters": [
+                  "0.003301144035233178",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e54cae45b445b0066f0b4311273171a0b3b3617e2050aa9fbede79441954c962"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  2
+                ],
+                "parameters": [
+                  "3.139040544194904",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "e3cb36e6b8eab92221dfad5c83460743ae3c8fab46df1286147db2cb9b4122e7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  3
+                ],
+                "parameters": [
+                  "3.1412548107388756",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "46711d3d68ade41d6c341b8601e81d4e1f858429286ba747f5c9ad7c186bd6e9"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  4
+                ],
+                "parameters": [
+                  "2.9155509433261098",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "99a0475ff96cd71ead241e4491034981ac5d6da80865707efcbcb607a430544f"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  5
+                ],
+                "parameters": [
+                  "0.868450839671974",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "25a56b565b8802649cd8db26351fe2bab33bce9989a66d64e0975881cf6cbfe7"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  7,
+                  6
+                ],
+                "parameters": [
+                  "3.1411319040504955",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "6949669a0d0bf7ad7080c3f67739c8151193076e316762dffff95554d1aec552"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "3.1411319044848454",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "879d363734c2e99181cd53547b39844d458f47aa09fd9e855083a4ccb9b70875"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138847004971471",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "b4d139f7107ff56a9918345c76d6283b02e23819592952bd29ca21aa72276eef"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.978166305187564",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "d221a0b5c2ea970a3d993ea363f2a0e88a48891a09d48a5e6b65823c5663a961"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1257840960226018",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "cf28a384c9c5a8ca0a25f53e0424722e81751567198620c645a8c7e716be85b5"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "3.1414933262037072",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "39e608255df9c34421c34ffb8b2ab32d3d1c828d91ef474303522bca9a90c171"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  5,
+                  6
+                ],
+                "parameters": [
+                  "0.0018318829938359627",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "de4ae60c2f52020e7d0600f108873a6c957d2cf32835167c5109201f182149cd"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  6,
+                  7
+                ],
+                "parameters": [
+                  "3.141592653589793",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "1945b1ebacc2c1827ef503c58997b0bbbfb54b7b8471d3f4a27380703ca5184c"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.9781108680048645",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "880a2e291a9e5b50f3f307c9a1c75fa26f89fa4d5c4db260098aafda802f7146"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "1.7138206110289",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e11c9aa3a89a8243c35dccd396c72b7166377e4c6c0d366269d1c3b720941e28"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "3.1379092296794555",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "bcadd5080cc6865f37632143c2177a605273936d1b9c2bba57fe0f930e3c7a20"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  3,
+                  4
+                ],
+                "parameters": [
+                  "3.1368413476152996",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "267761692995e3a25f34ea99c4d9646ba227fd05f39e59a3fe55d8404f7044fa"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  4,
+                  5
+                ],
+                "parameters": [
+                  "0.00046074973351245893",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "dcea1b405e1522d2a066ed64dbd4c60fd27789b955581076eb27575a18ad8d41"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "2.3373035494591257",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "171516c9d53b614557b1f0da068d65af4e2a1e9bba440f56883577a411b1a204"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  1,
+                  2
+                ],
+                "parameters": [
+                  "0.017874642682791042",
+                  "-1.5707963267948966"
+                ],
+                "matrix_sha256": "29cb6ab82562c6706dcb4357df96c6f58407dd71ea106853d5394a0df73b4dc2"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  2,
+                  3
+                ],
+                "parameters": [
+                  "2.892178425568327",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "b8e957865fc2483b6860ac67002f0d52e8dc234c6e975a997e55b33350b52fe1"
+              },
+              {
+                "name": "xx_plus_yy",
+                "qubits": [
+                  0,
+                  1
+                ],
+                "parameters": [
+                  "0.5549036456355396",
+                  "1.5707963267948966"
+                ],
+                "matrix_sha256": "e52909b6e2e4904cefdbfcef909dabf5177fb688ee5823ee56191ae63c1d84b8"
+              }
+            ],
+            "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+          }
+        ],
+        "basis_hash": "48e9eb82b09846e1f479a92da16fb891cf5d5d0c80dbfffbe852bbab35a09108"
+      }
+    ],
+    "trajectory_identity": "c3ea48da7dcd082f948b6df9879b3105fc44145c438342396a9777d0b409fbc5",
+    "evolution_fingerprint": "78dd305c8c9e31b4c97942c76152ea79e0c2beffc1cf0e94c373e747186ab0de",
+    "evolution_instructions": 812,
+    "request_instruction_upper_bound": 1316,
+    "native_instruction_upper_bound": 812,
+    "compiler_settings_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+    "backend_fingerprint": "no_backend",
+    "axes": {
+      "cosine": {
+        "rz_count": 6025,
+        "cx_count": 3262,
+        "rz_depth": 2526,
+        "cx_depth": 2658,
+        "total_depth": 5504,
+        "circuit_size": 11494
+      },
+      "sine": {
+        "rz_count": 6025,
+        "cx_count": 3262,
+        "rz_depth": 2526,
+        "cx_depth": 2658,
+        "total_depth": 5504,
+        "circuit_size": 11494
+      }
+    },
+    "expected_trajectory_cost": null,
+    "classical_sample_count": null,
+    "standard_error": null,
+    "confidence_interval": null,
+    "total_rpe_cost": null
+  },
+  "elapsed_seconds": 24.614810876897536,
+  "finished_utc": "2026-11-06T20:02:54.947752+00:00"
+}

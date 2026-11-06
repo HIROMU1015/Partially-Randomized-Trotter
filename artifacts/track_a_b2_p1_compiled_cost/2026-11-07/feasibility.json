@@ -1,0 +1,71 @@
+{
+  "schema_version": "b2_p1_long_round_technical_feasibility_v1",
+  "analysis_kind": "static SOURCE inspection plus permitted m0 resource observation; no long-round expansion",
+  "source_commit": "5aa5d061600382abe438707c14eaf665466ae383",
+  "longest_round": {
+    "m": 17,
+    "Q": 131072,
+    "RTE_events_per_trajectory": 524288,
+    "deterministic_block_appends_per_trajectory": 1048576,
+    "actual_instruction_count": null,
+    "actual_peak_memory_bytes": null,
+    "actual_compile_seconds": null,
+    "compiled_cost": null
+  },
+  "m0_observation": {
+    "native_instruction_count": 812,
+    "request_instruction_bound": 1316,
+    "X_wrapper_instructions": 815,
+    "Y_wrapper_instructions": 816,
+    "process_peak_RSS_KiB": 1183200,
+    "memory_measurement_scope": "process high-water; imports/preparation/compiler/fingerprint included; not incremental compiler memory"
+  },
+  "materialization": [
+    "Q occurrence requests and seed tuple",
+    "Q step request tuple",
+    "Q controlled-tail circuits retained as list",
+    "flat whole evolution and X/Y wrapper circuits",
+    "transpiler DAG, gate definitions, optimization temporaries",
+    "recursive canonical fingerprint payloads"
+  ],
+  "existing_acceleration": {
+    "RTE_adjacent_basis_cancellation": "used",
+    "scalar_phase_aggregation": "used",
+    "legacy_repeated_boundary_fusion": "not injected into native B2; needs same-scope validation",
+    "compiled_cost_cache": "available in legacy pipeline; not used by current MatchedNoPrepCostProvider",
+    "parallel_provider": "matched builder only in prior branch; needs narrow B2 injection and bounded task streaming",
+    "legacy_full_wrapper_provider": "planner restricts Q to 1,2,4; not a direct long-round path"
+  },
+  "uncertainty": {
+    "accumulator": "existing CompiledMetricAccumulator; unbiased sample variance; SE=s/sqrt(n)",
+    "confidence_interval": "not implemented by the current B2 provider; method and coverage remain to be fixed",
+    "X_Y_design": "paired within draw; independent trajectories between draws; do not discard duplicates",
+    "paired_total_uncertainty": "retain covariance; do not treat X/Y prices as independent",
+    "quantum_shot_budget": "separate from classical price sampling"
+  },
+  "full_18round_MC_status": "practical feasibility unestablished; no full-length run performed",
+  "candidate_methods_not_adopted": [
+    "exact repeat/boundary simplification",
+    "streaming or partitioned compiler processing with whole-circuit equivalence",
+    "B2-adapted existing worker and memory-probe provider",
+    "cluster or short-block proxy with independent same-scope holdout and uncertainty"
+  ],
+  "next_MC_fixed_items_required": [
+    "SOURCE and saved scientific inputs",
+    "canonical event law and compiler/backend profile",
+    "round execution scope",
+    "sample count",
+    "seed/stream independence",
+    "paired X/Y and metric definitions",
+    "SE/CI method, target precision and stopping rule",
+    "rare-event treatment",
+    "long-circuit processing and equivalence",
+    "cache and parallel reduction rules",
+    "proxy calibration/independent holdout and error treatment if used"
+  ],
+  "new_MC_sample_count": null,
+  "new_MC_seed": null,
+  "new_MC_round_scope": null,
+  "price_extrapolation_performed": false,
+  "mandatory_stop": true
+}

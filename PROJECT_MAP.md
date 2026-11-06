@@ -193,3 +193,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [条件付き十分shot数・SOURCE・STOP](docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。
 保存実半径/diskからX/Y各3,902,892、計7,805,784 shots。実機95%・厳密実装保証・価格・総費用は未評価。
+
+## B2 P1 full no-prep compiler接続（2026-11-07）
+
+[専用REPORT・固定SOURCE・限定m0価格・長round成立性・STOP](docs/research/track_a_b2_p1_compiled_cost_20261107/REPORT.md)。
+既存native/価格pipelineを再利用し、指定trajectoryのX/Y各CX3262・RZ6025を計測。期待価格・全18round価格MC・総費用は未評価。
