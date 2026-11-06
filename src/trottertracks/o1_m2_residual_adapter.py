@@ -73,13 +73,12 @@ class WholeCoreResidual:
     def pauli_parts(self):
         """Explicit JW mapping for a future physical=core+residual check.
 
-        Returns (physical, core, residual). Uses the existing mapper unchanged;
-        its OpenFermion arithmetic tolerances remain a qualification condition.
+        Returns (physical, core, residual). Local unit-monomial JW collection
+        avoids OpenFermion arithmetic on physical small coefficients.
         No matrix, state, time evolution or circuit is constructed.
         """
-        mapper = _pauli_module().PauliHamiltonian
-        return tuple(mapper.from_spatial_integrals(
-            p.h, p.g, nuclear_repulsion=p.nuclear_constant,
+        from .o1_m2_cutoff_free_pauli import map_integrals
+        return tuple(map_integrals(p,
             model_id="M2_" + role,
             metadata=dict(core_generation_source_identity=self.general_core.source_identity,
                           input_identity=self.general_core.input_identity,
@@ -96,9 +95,8 @@ class WholeCoreResidual:
         """
         module = _pauli_module()
         p = self.residual
-        residual = module.PauliHamiltonian.from_spatial_integrals(
-            p.h, p.g, nuclear_repulsion=p.nuclear_constant,
-            model_id="M2_physical_minus_whole_core")
+        from .o1_m2_cutoff_free_pauli import map_integrals
+        residual = map_integrals(p, model_id="M2_physical_minus_whole_core")
         return module.PauliSignalAdapter(residual, "PR", 0, step_time, r, K)
 
     def native_core(self):
