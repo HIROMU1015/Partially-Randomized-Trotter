@@ -1,5 +1,8 @@
 # 文書索引
 
+[A1 Q1/Q2-L：固定H4 m0のidentity不一致STOP](research/o2_a1_q1_q2l_20261106/REPORT.md)（2026-11-06）：
+公開実行SOURCE・原STOP・静的SOURCE差。実CDF/ν/bias未取得、科学retryなし。
+
 [O2-S2複数event有限table評価v2・六cell完了（2026-11-06）](research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)：
 転送修正後の固定SOURCE、3,969 pair/三law、量子T主指標の不改善、古典費の制約とSTOP。v1途中結果も保全。
 

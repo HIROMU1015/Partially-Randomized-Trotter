@@ -1,5 +1,8 @@
 # 研究別SOURCE
 
+[A1 Q1/Q2-L](algorithm_codesign/a1_law_validation.py)：元DF/RTEとrational enclosureを再利用する非sampling実行。
+[固定SOURCE・runner・人工test・原STOP](../../docs/research/o2_a1_q1_q2l_20261106/REPORT.md)。固定identity不一致でCDF前に停止、retry/後続測定なし。
+
 [A1-0接続](algorithm_codesign/a1_connections.py)：既存sampler入力→CDF/law/control、selected-only full価格の薄い接続。
 [人工test](../../tests/tracks/algorithm_codesign/test_a1_connections.py)と[接続状況・未承認の科学scope](../../docs/research/o2_a1_0_connections_20261106/REPORT.md)を参照する。実科学入力・build/compileの実行は別許可、科学runnerなし。
 

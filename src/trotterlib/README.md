@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+A1 Q1/Q2-Lは既存DF/RTE処理を再利用する[研究別接続](../trottertracks/algorithm_codesign/a1_law_validation.py)。
+[runner・人工test・identity不一致STOP](../../docs/research/o2_a1_q1_q2l_20261106/REPORT.md)を参照する。core採択・CDF/bias取得成功を意味しない。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 

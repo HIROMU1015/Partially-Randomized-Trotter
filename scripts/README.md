@@ -1,5 +1,8 @@
 # scripts 索引
 
+A1の非sampling限定runnerは [run_a1_q1_q2l.py](tracks/algorithm_codesign/run_a1_q1_q2l.py)。
+[固定H4 m0のidentity不一致STOP](../docs/research/o2_a1_q1_q2l_20261106/REPORT.md)：一回実行、CDF前に停止。自動再実行・測定への進行はしない。
+
 O2-S2の固定pair-table runnerは [run_s2_multi_event_validation.py](tracks/algorithm_codesign/run_s2_multi_event_validation.py)。
 [v2六cell報告](../docs/research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)：許可された転送修正再実行で完了、T主指標でqB/BはP0/Bを改善せず。
 runnerの出力先はv2。v1のSOURCE・途中結果は保全し、新しい科学再実行・条件探索は自動開始しない。

@@ -623,3 +623,10 @@ ISの大きなFractionのprocess転送で整数文字列桁数制限に触れSTO
 T主指標ではqB/BはqA/Bより約0.00134476%低いがP0/Bより約0.01296807%高い。共通非負h_Tを残してもこの向きは変わらない。
 分類はlocal fixed-input forecast。外部独立再現・CI、古典online費込み全実行時間・分子全RPEの優位は未認定。
 v1途中SOURCE/raw/STOPは保全し、v2公開後mandatory STOP。追加条件探索は未許可。
+
+
+## 2026-11-06 A1 Q1/Q2-L: STOPPED before CDF evaluation
+
+[報告](docs/research/o2_a1_q1_q2l_20261106/REPORT.md)、[SOURCE](artifacts/o2_a1_q1_q2l/2026-11-06/v1/SOURCE.json)、[identity比較](artifacts/o2_a1_q1_q2l/2026-11-06/v1/IDENTITY_MISMATCH.json)、[STOP](artifacts/o2_a1_q1_q2l/2026-11-06/v1/STOP.json)。
+保存linear H4/1.00 Å/STO-3G/legacy DF12/4電子/8qubit/L_D3、m0/q1/δ.02/r1/K2、threshold0。SOURCEは8e002a3815fb4fba709cf090e9c975052f8dd892、人工28件PASS後の一回preparation取得でH hashは一致、partition/preparation/tail hashは不一致だった。実CDF/support/ν/joint/bias値は未取得、測定・RNG・state solve・full compile・科学retryなし。
+元WP11と現df_partial_s2.pyの版差を静的確認したが、数値原因は未特定。旧SOURCE/結果/STOPを変更せず、measurement-ready・独立再現/CI・CV改善を認定しない。

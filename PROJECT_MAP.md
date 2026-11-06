@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+A1 Q1/Q2-Lの[実行SOURCE・identity不一致STOP](docs/research/o2_a1_q1_q2l_20261106/REPORT.md)（2026-11-06）：
+許可された固定H4 m0の一回取得はCDF評価前に停止。実CDF/ν/biasは未取得、再試行なし。library・runner・人工test・原STOPへ同報告から辿れる。
+
 A1-0の[技術接続状況・後日の限定実行scope](docs/research/o2_a1_0_connections_20261106/REPORT.md)（2026-11-06）：
 実CDF/固定controlとselected-only full価格への薄い接続を人工入力で検査する。科学runner・実入力評価・新しい科学結果・実行許可ではない。
 
