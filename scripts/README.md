@@ -1,5 +1,7 @@
 # scripts 索引
 
+Track D C3は[`run_track_d_c3_q4_q8.py`](run_track_d_c3_q4_q8.py)。[固定PLAN](../docs/research/track_d_c3_q4_q8_20261106/PLAN.md)でq4/q8だけを扱い、既存compile/postcheckを再利用する。通常testから科学実行しない。
+
 [C2固定q2結果](../docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 
 [Track D C2固定q2 compile](../docs/research/track_d_c2_q2_compile_20261106/PLAN.md)：C1の保存rawを使う2方式×X/Yの4 wrapper限定。P0・cut・phase固定、公開後mandatory STOP。

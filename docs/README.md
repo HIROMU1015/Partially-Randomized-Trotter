@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C3 q4/q8固定PLAN](research/track_d_c3_q4_q8_20261106/PLAN.md)：whole-path correctnessとstrong境界融合を維持した最大8 wrapper P0価格検証。q1/q2再実行・全law/RPE費用は対象外。
+
 [C2固定q2結果](research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 
 [Track D C2固定q2 compile](research/track_d_c2_q2_compile_20261106/PLAN.md)：C1の保存rawを使う2方式×X/Yの4 wrapper限定。P0・cut・phase固定、公開後mandatory STOP。
