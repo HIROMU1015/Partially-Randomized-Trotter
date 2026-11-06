@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="41" time="3.596" timestamp="2026-11-06T18:11:41.368302+09:00" hostname="GPUA100-gleap02"><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_fixed_plan_and_arithmetic" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_rotation_is_fixed_and_does_not_mutate_inputs" time="0.087" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_objectives_match_initial_contribution_but_not_raw_mass" time="0.049" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_tensor_only_restore_delegates_one_fitter_without_fallback[True]" time="0.002" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_tensor_only_restore_delegates_one_fitter_without_fallback[False]" time="0.001" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_real_arm_wrapper_receives_task_policy_and_preserves_prefix[8-True]" time="0.008" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_real_arm_wrapper_receives_task_policy_and_preserves_prefix[64-True]" time="0.002" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_real_arm_wrapper_receives_task_policy_and_preserves_prefix[64-False]" time="0.002" /><testcase classname="tests.management.test_research_c_integrated_robustness" name="test_real_ffsim_tensor_restore_route_with_optimizer_mocked" time="1.546" /><testcase classname="tests.management.test_research_c_integrated_fit_worker" name="test_real_restore_engine_mock_optimizer_exact_five_units[P1-True]" time="0.014" /><testcase classname="tests.management.test_research_c_integrated_fit_worker" name="test_real_restore_engine_mock_optimizer_exact_five_units[P2-False]" time="0.011" /><testcase classname="tests.management.test_research_c_integrated_fit_worker" name="test_real_restore_engine_mock_optimizer_exact_five_units[C0-True]" time="0.010" /><testcase classname="tests.management.test_research_c_integrated_fit_worker" name="test_paired_setup_once_and_real_recipe_wrapper_with_mock_trajectory" time="0.045" /><testcase classname="tests.management.test_research_c_integrated_fit_worker" name="test_failure_preserves_checkpoint_partial_stop_and_forbids_retry" time="0.006" /><testcase classname="tests.management.test_research_c_integrated_fit_worker" name="test_wrong_input_refused_before_any_array_decode" time="0.002" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_common_r_tie_and_distinct_final_policy" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_correctness_failure_does_not_remove_a_policy" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_fair_policy_opportunities" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_final_cohort_and_mixed_candidate_rejected" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_ineligible_is_not_free_and_cannot_win" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_invalid_totals_and_unregistered_final_policy" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_no_qualified_policy_has_no_retuned_winner" time="0.000" /><testcase classname="tests.management.test_research_c_integrated_retuning_policy.SelectionTests" name="test_selection_uses_existing_total_and_preserves_input" time="0.000" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_passive_import_and_registered_scope" time="0.188" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_invented_finite_RTE_normalization_raw_signal_identity_and_events[16]" time="0.157"><failure message="ModuleNotFoundError: No module named 'matplotlib'">r = 16
+
+    @pytest.mark.parametrize('r', m.R_VALUES)
+    def test_invented_finite_RTE_normalization_raw_signal_identity_and_events(r):
+        from test_research_c_pr_aware_df_stage_b2 import artificial
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           arm, p = artificial(n=2, role='proposed')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/management/test_research_c_pr_aware_df_stage_b2.py:31: in artificial
+    arm = b.prepare_arm(h,g,.31,J,np.array(U),role=role,source_identity='invented:'+role,input_identity='I',ld=2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_pr_aware_df_stage_b.py:39: in prepare_arm
+    from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+src/trotterlib/__init__.py:1: in &lt;module&gt;
+    from .plots_timeevo_error import (
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    from multiprocessing import Pool
+    from typing import Any, List, Sequence, Tuple
+    
+    import numpy as np
+&gt;   import matplotlib.pyplot as plt
+E   ModuleNotFoundError: No module named 'matplotlib'
+
+src/trotterlib/plots_timeevo_error.py:7: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_invented_finite_RTE_normalization_raw_signal_identity_and_events[32]" time="0.006"><failure message="ModuleNotFoundError: No module named 'matplotlib'">r = 32
+
+    @pytest.mark.parametrize('r', m.R_VALUES)
+    def test_invented_finite_RTE_normalization_raw_signal_identity_and_events(r):
+        from test_research_c_pr_aware_df_stage_b2 import artificial
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           arm, p = artificial(n=2, role='proposed')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/management/test_research_c_pr_aware_df_stage_b2.py:31: in artificial
+    arm = b.prepare_arm(h,g,.31,J,np.array(U),role=role,source_identity='invented:'+role,input_identity='I',ld=2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_pr_aware_df_stage_b.py:39: in prepare_arm
+    from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+src/trotterlib/__init__.py:1: in &lt;module&gt;
+    from .plots_timeevo_error import (
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    from multiprocessing import Pool
+    from typing import Any, List, Sequence, Tuple
+    
+    import numpy as np
+&gt;   import matplotlib.pyplot as plt
+E   ModuleNotFoundError: No module named 'matplotlib'
+
+src/trotterlib/plots_timeevo_error.py:7: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_invented_finite_RTE_normalization_raw_signal_identity_and_events[64]" time="0.006"><failure message="ModuleNotFoundError: No module named 'matplotlib'">r = 64
+
+    @pytest.mark.parametrize('r', m.R_VALUES)
+    def test_invented_finite_RTE_normalization_raw_signal_identity_and_events(r):
+        from test_research_c_pr_aware_df_stage_b2 import artificial
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           arm, p = artificial(n=2, role='proposed')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/management/test_research_c_pr_aware_df_stage_b2.py:31: in artificial
+    arm = b.prepare_arm(h,g,.31,J,np.array(U),role=role,source_identity='invented:'+role,input_identity='I',ld=2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_pr_aware_df_stage_b.py:39: in prepare_arm
+    from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+src/trotterlib/__init__.py:1: in &lt;module&gt;
+    from .plots_timeevo_error import (
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    from multiprocessing import Pool
+    from typing import Any, List, Sequence, Tuple
+    
+    import numpy as np
+&gt;   import matplotlib.pyplot as plt
+E   ModuleNotFoundError: No module named 'matplotlib'
+
+src/trotterlib/plots_timeevo_error.py:7: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_invented_finite_RTE_normalization_raw_signal_identity_and_events[128]" time="0.005"><failure message="ModuleNotFoundError: No module named 'matplotlib'">r = 128
+
+    @pytest.mark.parametrize('r', m.R_VALUES)
+    def test_invented_finite_RTE_normalization_raw_signal_identity_and_events(r):
+        from test_research_c_pr_aware_df_stage_b2 import artificial
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           arm, p = artificial(n=2, role='proposed')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:32: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/management/test_research_c_pr_aware_df_stage_b2.py:31: in artificial
+    arm = b.prepare_arm(h,g,.31,J,np.array(U),role=role,source_identity='invented:'+role,input_identity='I',ld=2)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c_pr_aware_df_stage_b.py:39: in prepare_arm
+    from trotterlib.df_trotter.ops import one_body_diagonal_primitives
+src/trotterlib/__init__.py:1: in &lt;module&gt;
+    from .plots_timeevo_error import (
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    from multiprocessing import Pool
+    from typing import Any, List, Sequence, Tuple
+    
+    import numpy as np
+&gt;   import matplotlib.pyplot as plt
+E   ModuleNotFoundError: No module named 'matplotlib'
+
+src/trotterlib/plots_timeevo_error.py:7: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_metadata_identity_FAILURE_before_decode[candidate]" time="0.001" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_metadata_identity_FAILURE_before_decode[DF]" time="0.001" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_metadata_identity_FAILURE_before_decode[source]" time="0.001" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_metadata_identity_FAILURE_before_decode[ground]" time="0.001" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_metadata_identity_FAILURE_before_decode[cohort]" time="0.001" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_passive_preflight_source_drift_freshness_and_fixed_grid" time="0.003" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_artificial_RTE_RPE_accounting_pipeline_and_STOP[pass]" time="0.054"><failure message="ModuleNotFoundError: No module named 'openfermion'">tmp_path = PosixPath('/tmp/h6-parallel-technical-compat-20261106/test_artificial_RTE_RPE_accoun0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x1061482d3ec0&gt;
+mode = 'pass'
+
+    @pytest.mark.parametrize('mode', ['pass','infeasible','unresolved','correctness'])
+    def test_artificial_RTE_RPE_accounting_pipeline_and_STOP(tmp_path, monkeypatch, mode):
+        from test_research_c_pr_integrated_pipeline import synthetic_packet
+        from trottertracks.c1_molecule_extension import SectorCAR
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           p, J, U = synthetic_packet(); ctx = SectorCAR(4)
+                                                ^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_molecule_extension.py:171: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+&gt;   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_artificial_RTE_RPE_accounting_pipeline_and_STOP[infeasible]" time="0.010"><failure message="ModuleNotFoundError: No module named 'openfermion'">tmp_path = PosixPath('/tmp/h6-parallel-technical-compat-20261106/test_artificial_RTE_RPE_accoun1')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10614828ccb0&gt;
+mode = 'infeasible'
+
+    @pytest.mark.parametrize('mode', ['pass','infeasible','unresolved','correctness'])
+    def test_artificial_RTE_RPE_accounting_pipeline_and_STOP(tmp_path, monkeypatch, mode):
+        from test_research_c_pr_integrated_pipeline import synthetic_packet
+        from trottertracks.c1_molecule_extension import SectorCAR
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           p, J, U = synthetic_packet(); ctx = SectorCAR(4)
+                                                ^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_molecule_extension.py:171: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+&gt;   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_artificial_RTE_RPE_accounting_pipeline_and_STOP[unresolved]" time="0.010"><failure message="ModuleNotFoundError: No module named 'openfermion'">tmp_path = PosixPath('/tmp/h6-parallel-technical-compat-20261106/test_artificial_RTE_RPE_accoun2')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106148245490&gt;
+mode = 'unresolved'
+
+    @pytest.mark.parametrize('mode', ['pass','infeasible','unresolved','correctness'])
+    def test_artificial_RTE_RPE_accounting_pipeline_and_STOP(tmp_path, monkeypatch, mode):
+        from test_research_c_pr_integrated_pipeline import synthetic_packet
+        from trottertracks.c1_molecule_extension import SectorCAR
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           p, J, U = synthetic_packet(); ctx = SectorCAR(4)
+                                                ^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_molecule_extension.py:171: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+&gt;   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_artificial_RTE_RPE_accounting_pipeline_and_STOP[correctness]" time="0.010"><failure message="ModuleNotFoundError: No module named 'openfermion'">tmp_path = PosixPath('/tmp/h6-parallel-technical-compat-20261106/test_artificial_RTE_RPE_accoun3')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x106148246d20&gt;
+mode = 'correctness'
+
+    @pytest.mark.parametrize('mode', ['pass','infeasible','unresolved','correctness'])
+    def test_artificial_RTE_RPE_accounting_pipeline_and_STOP(tmp_path, monkeypatch, mode):
+        from test_research_c_pr_integrated_pipeline import synthetic_packet
+        from trottertracks.c1_molecule_extension import SectorCAR
+        from threadpoolctl import threadpool_limits
+        b = m.perf.b
+        with threadpool_limits(limits=1):
+&gt;           p, J, U = synthetic_packet(); ctx = SectorCAR(4)
+                                                ^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:142: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_molecule_extension.py:171: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+&gt;   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_run_failure_preserves_STOP_and_forbids_resume" time="0.002" /><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_actual_artificial_Stage_A_reuses_sector_PF_and_ground" time="0.009"><failure message="ModuleNotFoundError: No module named 'openfermion'">tmp_path = PosixPath('/tmp/h6-parallel-technical-compat-20261106/test_actual_artificial_Stage_A0')
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10614810ab10&gt;
+
+    def test_actual_artificial_Stage_A_reuses_sector_PF_and_ground(tmp_path, monkeypatch):
+        from test_research_c_pr_integrated_pipeline import synthetic_packet
+        from trottertracks.c1_molecule_extension import SectorCAR
+        from threadpoolctl import threadpool_limits
+&gt;       p,J,U=synthetic_packet();ctx=SectorCAR(4)
+                                     ^^^^^^^^^^^^
+
+tests/management/test_research_c_rte_r_retuning.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+src/trottertracks/c1_molecule_extension.py:171: in __init__
+    df=stage1.legacy_df_module()
+       ^^^^^^^^^^^^^^^^^^^^^^^^^
+src/trottertracks/c1_stage1.py:123: in legacy_df_module
+    return importlib.import_module(namespace+".df_hamiltonian")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1387: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1360: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1331: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:935: in _load_unlocked
+    ???
+&lt;frozen importlib._bootstrap_external&gt;:995: in exec_module
+    ???
+&lt;frozen importlib._bootstrap&gt;:488: in _call_with_frames_removed
+    ???
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    from __future__ import annotations
+    
+    import inspect
+    import time
+    from dataclasses import dataclass
+    from typing import Any, Sequence
+    
+    import numpy as np
+&gt;   from openfermion import low_rank_two_body_decomposition
+E   ModuleNotFoundError: No module named 'openfermion'
+
+src/trotterlib/df_hamiltonian.py:9: ModuleNotFoundError</failure></testcase><testcase classname="tests.management.test_research_c_rte_r_retuning" name="test_custom_native32_dispatch_and_shared_context" time="0.414" /></testsuite></testsuites>

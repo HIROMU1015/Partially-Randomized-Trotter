@@ -54,15 +54,18 @@ def solve(chart, *, maxiter=1000):
         epsilon_unchanged=True,objective_regularization_added=False)
 
 
-def solve_and_polish(chart, *, maxiter=1000, record=lambda *a:None, record_endpoint=lambda *a:None):
+def solve_and_polish(chart, *, maxiter=1000, record=lambda *a:None,
+                     record_endpoint=lambda *a:None, record_conic=lambda *a:None):
     """Use the cone solution as a start; retain the original physical gates.
 
     Conic gap tolerances alone do not resolve an epsilon=1e-8 derivative.
     The same analytic Newton search polishes the unaltered primal objective.
+    record_conic observes a copy of the cone coordinates before J decoding.
     """
     from . import c_h6_fit_conditioning as fit
     from . import c_h6_factored_newton as newton
     z,meta=solve(chart,maxiter=maxiter)
+    record_conic(dict(meta), z.copy())
     start=chart.point(z)[1]
     local=fit.Chart(chart.p,start,chart.policy)
     remaining=maxiter-meta['iterations']

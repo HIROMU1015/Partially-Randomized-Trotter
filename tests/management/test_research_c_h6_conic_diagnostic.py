@@ -35,8 +35,8 @@ def test_small_conic_solution_is_checked_with_original_physical_gate(arm):
     assert np.max(abs(gx))<1e-5
 
 
-@pytest.mark.parametrize('arm',['PR','ENTRY'])
-def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
+def near_degenerate_chart(arm):
+    """The two original failing fixtures, shared with the artificial diagnosis."""
     from test_research_c_h6_conditioning import invented
     from trottertracks import c_h6_fit_conditioning as fit
     from trottertracks.c_near_transfer import objective_specs,System
@@ -47,7 +47,14 @@ def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
     g=reconstruct(J+1e-5*perturb,U)
     s=objective_specs(g,J,U,System(6,14,4,1.,'a'*64),strength=.1,epsilon=1e-8)[arm]
     p=fit.backend(s).Coefficients(g,U,s)
-    c=fit.Chart(p,J,fit.inner.DEFAULT)
+    return fit.Chart(p,J,fit.inner.DEFAULT)
+
+
+@pytest.mark.parametrize('arm',['PR','ENTRY'])
+def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
+    from trottertracks import c_h6_fit_conditioning as fit
+    c=near_degenerate_chart(arm)
+    p=c.p
     endpoint,meta=conic.solve_and_polish(c)
     local=fit.Chart(p,endpoint,c.policy)
     _,gx,_=local.independent(np.zeros(local.dimension))

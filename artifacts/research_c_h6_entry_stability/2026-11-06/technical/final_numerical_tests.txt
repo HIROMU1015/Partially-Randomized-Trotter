@@ -1,0 +1,46 @@
+..........................FF......                                       [100%]
+=================================== FAILURES ===================================
+____________ test_rank14_near_degenerate_head_and_nonzero_tail[PR] _____________
+
+arm = 'PR'
+
+    @pytest.mark.parametrize('arm',['PR','ENTRY'])
+    def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
+        from trottertracks import c_h6_fit_conditioning as fit
+        c=near_degenerate_chart(arm)
+        p=c.p
+        endpoint,meta=conic.solve_and_polish(c)
+        local=fit.Chart(p,endpoint,c.policy)
+        _,gx,_=local.independent(np.zeros(local.dimension))
+>       assert np.max(abs(gx))<1e-5,dict(meta=meta,J_norm=float(np.linalg.norm(endpoint)))
+E       AssertionError: {'meta': {'conic': {'method': 'H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1', 'solver': 'clarabel', 'version': '0.11...quired.', 'iterations': 2, 'objective': 0.02024488978608997, ...}, 'total_iterations': 16}, 'J_norm': 45631308.4316605}
+E       assert 0.08370066861009615216 < 1e-05
+E        +  where 0.08370066861009615216 = <function max at 0x8a5d0c627b0>(array([0.03853418, 0.04231404, 0.02291317, 0.01965793, 0.01190582,\n       0.01548114, 0.01071766, 0.05587555, 0.019999...0.02704131, 0.01724972, 0.00969718, 0.00874185,\n       0.00539338, 0.00813308, 0.0066655 , 0.01215322], dtype=float128))
+E        +    where <function max at 0x8a5d0c627b0> = np.max
+E        +    and   array([0.03853418, 0.04231404, 0.02291317, 0.01965793, 0.01190582,\n       0.01548114, 0.01071766, 0.05587555, 0.019999...0.02704131, 0.01724972, 0.00969718, 0.00874185,\n       0.00539338, 0.00813308, 0.0066655 , 0.01215322], dtype=float128) = abs(array([ 0.03853418, -0.04231404, -0.02291317,  0.01965793,  0.01190582,\n        0.01548114, -0.01071766, -0.05587555, ...131, -0.01724972, -0.00969718,  0.00874185,\n       -0.00539338, -0.00813308, -0.0066655 ,  0.01215322], dtype=float128))
+
+tests/management/test_research_c_h6_conic_diagnostic.py:61: AssertionError
+___________ test_rank14_near_degenerate_head_and_nonzero_tail[ENTRY] ___________
+
+arm = 'ENTRY'
+
+    @pytest.mark.parametrize('arm',['PR','ENTRY'])
+    def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
+        from trottertracks import c_h6_fit_conditioning as fit
+        c=near_degenerate_chart(arm)
+        p=c.p
+        endpoint,meta=conic.solve_and_polish(c)
+        local=fit.Chart(p,endpoint,c.policy)
+        _,gx,_=local.independent(np.zeros(local.dimension))
+>       assert np.max(abs(gx))<1e-5,dict(meta=meta,J_norm=float(np.linalg.norm(endpoint)))
+E       AssertionError: {'meta': {'conic': {'method': 'H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1', 'solver': 'clarabel', 'version': '0.11...ailed.', 'iterations': 0, 'objective': 0.05881815089096185, ...}, 'total_iterations': 18}, 'J_norm': 71871577.94179416}
+E       assert 0.16948259206943180914 < 1e-05
+E        +  where 0.16948259206943180914 = <function max at 0x8a5d0c627b0>(array([2.81130881e-02, 4.40394879e-02, 1.03451239e-01, 2.99667433e-02,\n       8.24217982e-03, 4.49355908e-02, 3.408311...2.71113978e-03, 3.39150790e-02, 2.09683162e-02, 1.88218817e-02,\n       8.07976921e-03, 4.98028158e-03], dtype=float128))
+E        +    where <function max at 0x8a5d0c627b0> = np.max
+E        +    and   array([2.81130881e-02, 4.40394879e-02, 1.03451239e-01, 2.99667433e-02,\n       8.24217982e-03, 4.49355908e-02, 3.408311...2.71113978e-03, 3.39150790e-02, 2.09683162e-02, 1.88218817e-02,\n       8.07976921e-03, 4.98028158e-03], dtype=float128) = abs(array([ 2.81130881e-02,  4.40394879e-02, -1.03451239e-01,  2.99667433e-02,\n        8.24217982e-03, -4.49355908e-02,  3...13978e-03,  3.39150790e-02, -2.09683162e-02, -1.88218817e-02,\n        8.07976921e-03,  4.98028158e-03], dtype=float128))
+
+tests/management/test_research_c_h6_conic_diagnostic.py:61: AssertionError
+=========================== short test summary info ============================
+FAILED tests/management/test_research_c_h6_conic_diagnostic.py::test_rank14_near_degenerate_head_and_nonzero_tail[PR]
+FAILED tests/management/test_research_c_h6_conic_diagnostic.py::test_rank14_near_degenerate_head_and_nonzero_tail[ENTRY]
+2 failed, 32 passed in 69.43s (0:01:09)
