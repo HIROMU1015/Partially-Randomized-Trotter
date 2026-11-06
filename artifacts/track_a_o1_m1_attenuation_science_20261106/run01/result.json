@@ -1,0 +1,156 @@
+{
+  "c0_control": {
+    "commit": "50ee55bc30f30838e1ac0704bc94f720914640de",
+    "path": "docs/research/track_a_o1_m1_c0_parallel_science_20261106/REPORT.md",
+    "use": "quotation only; no saved-result load/reanalysis"
+  },
+  "conditions": {
+    "K": 2,
+    "beta_RPE": 0.3,
+    "controlled_coverage": "selected Gaussian/Pauli/DF primitives and one complete controlled step including scalar; independent q64 finite mean; not full q64 trajectory operator certification",
+    "delta": 0.05,
+    "dictionaries": [
+      "P",
+      "DF"
+    ],
+    "phase_budgets": {
+      "PF": 0.06,
+      "RTE": 0.03,
+      "implementation": 0.01,
+      "model": 0.03,
+      "reserve": 0.02,
+      "stat": 0.15
+    },
+    "q": 64,
+    "r_values": [
+      4,
+      8
+    ],
+    "state_assumption": "original H exact ground state",
+    "state_field": "state",
+    "state_preparation_included": false
+  },
+  "limitation": "No shots, prices, compile, sampling, all-round costs or optimization; not energy/success certification",
+  "mandatory_stop": true,
+  "provenance": {
+    "base": "8820c41bc5beb32208447fe78fee6854088cbcd5",
+    "host": "GPUA100-gleap02",
+    "input": {
+      "commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+      "local_path": "/tmp/track_a_o1_m1_c0_science_20261106/snapshot.npz",
+      "path": "artifacts/non_df_h4_pilot/2026-10-23/run01/input_run/input_generation/data/snapshot.npz",
+      "sha256": "8a9c45429dab53cb2a4def7f38ccb2872b211011166423c281e92549b2deaf50"
+    },
+    "runtime": {
+      "numpy": "1.26.4",
+      "openfermion": "1.6.1",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "scipy": "1.14.1"
+    },
+    "source_commit": "8b58cff3679c10aee0dd950874e5e344d0844b7a",
+    "source_files_sha256": {
+      "scripts/run_o1_m1_attenuation_validation.py": "1b99dae1fc65cbc9e97390aaa6577b149a7413403d0209f307f743cf5fb3bf84",
+      "scripts/run_o1_m1_c0_pilot.py": "0b6da463853bc3b6ba881cae636e6169ef751e3311e5dcc8f92d1cb42c24f8e3",
+      "scripts/run_o1_m1_h4_operator_correctness.py": "552c874240ea88f4608d7680db452906ecce5ee214b1db85c8cf505d499aa0db",
+      "src/trotterlib/o1_m1_circuit_signal_validation.py": "b84594b4b0f63732d02e8157f83b3677e4608da3ba934fb206265dfaad29b292",
+      "src/trotterlib/o1_m1_matched_split.py": "fa9b775c887437ded5ce3f5b08bcf7a390f20f0174986dc564ec4d0ee8397c20",
+      "src/trotterlib/o1_m1_resource_bridge.py": "d1dc2c6d813873a793dadc98d31d0a3e347ca24b4b91e2c81fc1f16ebdeb064d",
+      "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    "utc": "2026-11-06T10:20:40.844641+00:00"
+  },
+  "rows": [
+    {
+      "K": 2,
+      "arms": {
+        "DF": {
+          "attenuation": 1.9709257011328482e-06,
+          "bounds": {
+            "corrected_signal_error_bound": 0.0003035389761662735,
+            "implementation_phase_bound": 0.0002354830778403197,
+            "model_phase_bound": 0.00023548307782422255,
+            "pf_phase_bound": 0.00032731382818756885,
+            "radius_provenance": "same-round original-state PF signal minus declared allowance; empirical, not certified",
+            "reference_radius_lower_bound": 0.9998822664309601
+          },
+          "feasible": true,
+          "finite_rte_phase_bound": 0.000303574721763975,
+          "normalization_product": 507375.7977914745,
+          "reasons": [],
+          "rho_observed_lower_bound": 1.9700954042463196e-06
+        },
+        "P": {
+          "attenuation": 1.380930057473568e-06,
+          "bounds": {
+            "corrected_signal_error_bound": 0.0003035389761662735,
+            "implementation_phase_bound": 0.00023548307783766633,
+            "model_phase_bound": 0.00023548307782422255,
+            "pf_phase_bound": 0.00032731382818756885,
+            "radius_provenance": "same-round original-state PF signal minus declared allowance; empirical, not certified",
+            "reference_radius_lower_bound": 0.9998822664309601
+          },
+          "feasible": true,
+          "finite_rte_phase_bound": 0.000303574721763975,
+          "normalization_product": 724149.6371145074,
+          "reasons": [],
+          "rho_observed_lower_bound": 1.3803483095535042e-06
+        }
+      },
+      "delta": 0.05,
+      "numerical_allowances": {
+        "complex_signal_allowance": 0.0002354553513844019,
+        "phase_allowance": 0.00023548307782369194,
+        "radius_allowance": 0.00011772767569220095
+      },
+      "q": 64,
+      "r": 4
+    },
+    {
+      "K": 2,
+      "arms": {
+        "DF": {
+          "attenuation": 0.001205653297127858,
+          "bounds": {
+            "corrected_signal_error_bound": 0.00047919200706603057,
+            "implementation_phase_bound": 0.0004707918067817679,
+            "model_phase_bound": 0.0004707918067701822,
+            "pf_phase_bound": 0.0005626225571335285,
+            "radius_provenance": "same-round original-state PF signal minus declared allowance; empirical, not certified",
+            "reference_radius_lower_bound": 0.9997646536115369
+          },
+          "feasible": true,
+          "finite_rte_phase_bound": 0.0004793048280740036,
+          "normalization_product": 829.4258410624586,
+          "reasons": [],
+          "rho_observed_lower_bound": 0.001204791811555364
+        },
+        "P": {
+          "attenuation": 0.0010007574341075218,
+          "bounds": {
+            "corrected_signal_error_bound": 0.00047919200706603057,
+            "implementation_phase_bound": 0.0004707918067777881,
+            "model_phase_bound": 0.0004707918067701822,
+            "pf_phase_bound": 0.0005626225571335285,
+            "radius_provenance": "same-round original-state PF signal minus declared allowance; empirical, not certified",
+            "reference_radius_lower_bound": 0.9997646536115369
+          },
+          "feasible": true,
+          "finite_rte_phase_bound": 0.0004793048280740036,
+          "normalization_product": 999.2431391646896,
+          "reasons": [],
+          "rho_observed_lower_bound": 0.0010000423544962408
+        }
+      },
+      "delta": 0.05,
+      "numerical_allowances": {
+        "complex_signal_allowance": 0.00047068099023086775,
+        "phase_allowance": 0.0004707918067696516,
+        "radius_allowance": 0.00023534049511543387
+      },
+      "q": 64,
+      "r": 8
+    }
+  ],
+  "status": "LIMITED_SIGNAL_PROBE_COMPLETE"
+}
