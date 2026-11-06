@@ -1,0 +1,103 @@
+{
+  "all_numerical_checks_passed": true,
+  "diagnostic_tolerance": 1e-09,
+  "j": 0,
+  "measurement_retained_during_compile": true,
+  "original_stratum": 0,
+  "profile": {
+    "angle_cutoff": null,
+    "approximate_commutation": false,
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "control_after_compilation": "not qualified; preserve control before lowering",
+    "equivalence": "already-controlled full joint circuit, up to one common global phase",
+    "name": "Track C reference A",
+    "numeric_optimization": false,
+    "passes": [
+      "reject opaque unitary",
+      "fixed inverse cancellation",
+      "UnrollCustomDefinitions",
+      "reject opaque unitary",
+      "BasisTranslator",
+      "fixed X/CX inverse cancellation"
+    ],
+    "qiskit": "1.3.0",
+    "seed": 17,
+    "seed_scope": "no stochastic pass is used",
+    "topology": null
+  },
+  "q": 1,
+  "r": 1,
+  "results": {
+    "full": {
+      "common_joint_phase": 3.141592653587535,
+      "complex_signal_error": 1.4312248620873948e-13,
+      "control0_calibrated_operator_error": 1.6260586678183436e-13,
+      "expectation_error": 1.432187701766452e-13,
+      "native_coherence": {
+        "imag": 0.04374054542010286,
+        "real": 0.9989781394193368
+      },
+      "native_control0_identity_error": 1.595855644710538e-13,
+      "native_control_mixing_error": 1.0260210110529575e-14,
+      "native_expectation": 0.9989781394193374,
+      "native_radius": 0.9999352770811558,
+      "numerical_consistency_pass": true,
+      "phase_error": 8.313871058055942e-15,
+      "radius_error": 1.4288570326925765e-13,
+      "source_coherence": {
+        "imag": 0.04374054542010081,
+        "real": 0.9989781394194799
+      },
+      "source_control0_identity_error": 2.0836934113078386e-15,
+      "source_expectation": 0.9989781394194807,
+      "source_radius": 0.9999352770812987,
+      "strict_wrapper_operator_error": 1.9999999999999294,
+      "unitarity_error": 1.7146469625090348e-13
+    },
+    "strong": {
+      "common_joint_phase": 3.1415926535875287,
+      "complex_signal_error": 1.440082040883764e-13,
+      "control0_calibrated_operator_error": 1.6245623416245085e-13,
+      "expectation_error": 1.4410694859634532e-13,
+      "native_coherence": {
+        "imag": 0.04374054542010269,
+        "real": 0.9989781394193359
+      },
+      "native_control0_identity_error": 1.5927542302196085e-13,
+      "native_control_mixing_error": 1.0285107710396644e-14,
+      "native_expectation": 0.9989781394193366,
+      "native_radius": 0.9999352770811549,
+      "numerical_consistency_pass": true,
+      "phase_error": 8.182015006216998e-15,
+      "radius_error": 1.4377388168895777e-13,
+      "source_coherence": {
+        "imag": 0.04374054542010081,
+        "real": 0.9989781394194799
+      },
+      "source_control0_identity_error": 2.0836934113078386e-15,
+      "source_expectation": 0.9989781394194807,
+      "source_radius": 0.9999352770812987,
+      "strict_wrapper_operator_error": 1.9999999999999292,
+      "unitarity_error": 1.7148663632654993e-13
+    }
+  },
+  "scope": "full 512x512 joint operators plus supplied original-H ground; no intermediate sector projection",
+  "seed": 16373604943140389348,
+  "source_input": "same fixed source trajectory as old q1/j0; no new statistical sample batch",
+  "strong_policy": "maximal D runs separated by R; tail-free Full uses actual full wrapper",
+  "task": {
+    "axis": "X",
+    "formula": "S2",
+    "h": 0.02,
+    "ld": 3,
+    "name": "CN_S2_h0.02_ld3",
+    "pilot": "C-N"
+  },
+  "tolerance_scope": "numerical implementation diagnostic, not an all-round allowance",
+  "wall_seconds": 140.36487320403103
+}

@@ -12,6 +12,7 @@ import hashlib
 import io
 import json
 import math
+import os
 from pathlib import Path
 import pickle
 import subprocess
@@ -144,7 +145,9 @@ def prepare_common():
 
 @lru_cache(None)
 def common():
-    with (OUT/'common.pkl').open('rb') as f:return pickle.load(f)
+    # Reuse a read-only preparation without restarting the old run.
+    cache=Path(os.environ.get('TRACK_C_H4_COMMON_CACHE',str(OUT/'common.pkl')))
+    with cache.open('rb') as f:return pickle.load(f)
 
 
 def evolution(spectrum,time):

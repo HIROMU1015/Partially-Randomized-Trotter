@@ -123,3 +123,7 @@ DF部分ランダム化研究と混同しない。
 ## Track C H4の再利用adapter
 
 DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_y8.py`、runner `scripts/run_track_c_h4_pilots.py`、人工test `tests/test_track_c_h4_pilots.py` は[報告](../../docs/research/track_c_h4_pilots_20261106/REPORT.md)から辿る。coreは変更せず、native compiler資格不一致で比較STOP。
+
+## Track C compiler A
+
+`../trottertracks/track_c_compiler_a.py`と`track_c_compiler_a_validation.py`、runner `scripts/run_track_c_compiler_a_correctness.py`、人工test `synthetic_checks()`、rawは[限定correctness報告](../../docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)から辿る。H4 q1数値PASS、全RPE未資格。

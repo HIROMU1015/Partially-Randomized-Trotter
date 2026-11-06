@@ -170,3 +170,5 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 [実行結果・負材料・native compiler資格不一致によるSTOP](track_c_h4_pilots_20261106/REPORT.md)。基準7db4792、Linear H4 1Å/STO-3G/DF12・LD3/12。研究CのHamiltonian表現系列とは別。全RPE総Gは未資格。
 
 Track C H4の後続：[compiler誤差の静的原因調査と対処案](track_c_compiler_static_investigation_20261106/REPORT.md)（2026-11-06、基準a78054dc）。新profileの実行・採択ではなく、旧STOPを保持した静的調査。
+
+Track C H4の後続：[参照compiler Aの実装・限定correctness](track_c_compiler_a_correctness_20261106/REPORT.md)（2026-11-06、基準05d9c5d）。人工44ケース・H4 q1全operatorとX/Y・強baseline・負時間は数値PASS。全RPE未資格、価格追加なしでSTOP。

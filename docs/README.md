@@ -102,3 +102,7 @@
 ## Track C H4（2026-11-06）
 
 [PF native境界・合成/残差・Processing pilot](research/track_c_h4_pilots_20261106/REPORT.md)。条件付きSOURCE mean診断、normalization負担、compiler精度不一致とSTOPを記録。最終総Gや優位性の確立ではない。
+
+## Track C compiler A correctness（2026-11-06）
+
+[実装・人工44ケース・H4限定検証](research/track_c_compiler_a_correctness_20261106/REPORT.md)。LD3 S2/LD12 Y4、h=.02、q1の全joint operatorとX/Yが数値PASS。既にcontrolledな回路に適用し、共通global phaseを許容する。全18roundと価格は未資格、mandatory STOP。

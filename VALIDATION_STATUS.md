@@ -610,3 +610,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-06 Track C compiler：静的原因調査
 
 [静的調査報告](docs/research/track_c_compiler_static_investigation_20261106/REPORT.md)。a78054dcの保存traceと公式Qiskit1.3.0のRust実装を照合し、微小回転の近似的な交換判定による最小CRZ消失機構を特定。H4誤差全量の帰属、新profileのcorrectness・価格は未検証。新規compile/科学計算/テスト起動なし。旧run01の未資格・STOPは不変更。
+
+## 2026-11-06 Track C compiler A：限定correctness
+
+[実装・結果・未資格事項](docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、LD3/12、h=.02・q1。人工44ケースとX/Yの全512次元operator・強baseline・負時間検証は数値PASS。control前のscalarを保持し、既にcontrolledなjoint全体の共通global phaseだけを許容する。18round native RPE・総Gは未資格。新価格/T合成0件、旧STOP保持、限定検証でmandatory STOP。

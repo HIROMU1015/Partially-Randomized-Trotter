@@ -153,3 +153,7 @@ artifacts/<validation_name>/
 ## Track C H4 pilot
 
 `run_track_c_h4_pilots.py`：固定H4のPF/残差/Processing・価格・会計・native診断。[実行報告](../docs/research/track_c_h4_pilots_20261106/REPORT.md)。run01はcompiler精度資格の不一致でSTOP。再実行の許可を意味しない。
+
+## Track C compiler A correctness
+
+`run_track_c_compiler_a_correctness.py`は読み取り専用`--common-cache`と新規`--out`で限定suiteを実行する入口。compiler/人工test/結果は[報告](../docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)を参照。完了出力のSTOPを再開しない。追加実行には科学実行許可が必要。

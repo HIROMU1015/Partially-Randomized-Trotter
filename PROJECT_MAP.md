@@ -172,3 +172,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track C H4 pilot（2026-11-06）
 
 [3候補の実行・compiler資格不一致によるSTOP](docs/research/track_c_h4_pilots_20261106/REPORT.md)。新adapterは `src/trottertracks/track_c_h4*.py`、runner・人工test・rawへの入口も同報告を参照。全RPE総G・勝者は未資格。
+
+## 2026-11-06 Track C compiler A：限定correctness
+
+[実装・結果・未資格事項](docs/research/track_c_compiler_a_correctness_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、LD3/12、h=.02・q1。人工44ケースとX/Yの全512次元operator・強baseline・負時間検証は数値PASS。control前のscalarを保持し、既にcontrolledなjoint全体の共通global phaseだけを許容する。18round native RPE・総Gは未資格。新価格/T合成0件、旧STOP保持、限定検証でmandatory STOP。
