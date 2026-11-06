@@ -107,3 +107,6 @@
 
 
 A1 v2の[payload保存修正・限定診断とSTOP](research/o2_a1_q1_q2l_20261106/REPORT_V2.md)（2026-11-06）：旧target同値は未閉鎖、CDF以降は未実行。元runnerの`--diagnose`、完全payload、人工29件と原v1保全を記録する。
+
+
+A1の[旧opt2来歴・限定静的調査の公開要約](research/o2_a1_opt2_provenance_20261106/REPORT_PUBLIC.md)（2026-11-06）：SOURCE回収先・来歴の区別・完全payload未回収。新科学計算0件、STOP維持。
