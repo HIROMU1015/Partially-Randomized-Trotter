@@ -183,3 +183,6 @@ A1の[保存engine接続・一様誤差評価plan・人工correctness](../docs/r
 
 
 A1の[一回のengine数値認証・runner仕様](../docs/research/o2_a1_engine_qualification_20261106/EXECUTION.md)：固定kernel、厳密state上界による最終会計、旧SOURCE保全とSTOP。
+
+
+A1の[一回の総engine誤差認証・全gate証明・STOP](../docs/research/o2_a1_engine_qualification_20261106/REPORT.md)：固定exact engine/理想モデルの条件付き上界取得。N3・費用評価は未実行。

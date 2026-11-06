@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "scope": "serialization/identity/exact sum checks only; no gate generation/interval/physics repeated",
+  "matrix_zero_note": "Fraction serialization preserves numeric zero but not IEEE signed-zero bits; for three 2x2 matrices only, at most 64 zero-sign byte patterns restored the original raw hash; witnesses below verify all hashes without regenerating gates or intervals",
+  "checks": {
+    "unique_local_gate_proofs": 4315,
+    "all_exact_rational_entries_binary64_representable": true,
+    "raw_hash_reconstructed_without_zero_sign": 4312,
+    "raw_hash_restored_by_signed_zero_witness": [
+      {
+        "key": [
+          "rz",
+          [
+            "-0x0.0p+0"
+          ]
+        ],
+        "zero_indices": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7
+        ],
+        "negative_zero_mask": 1
+      },
+      {
+        "key": [
+          "rz",
+          [
+            "0x0.0p+0"
+          ]
+        ],
+        "zero_indices": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7
+        ],
+        "negative_zero_mask": 1
+      },
+      {
+        "key": [
+          "sdg",
+          []
+        ],
+        "zero_indices": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "negative_zero_mask": 32
+      }
+    ],
+    "all_4315_raw_matrix_hashes_verified": true,
+    "local_interval_radii_nonnegative": true,
+    "max_local_radius_matches": true,
+    "exact_N2_state_bound_reused": true,
+    "exact_total_sum": true,
+    "E_below_one": true,
+    "L_max": 955,
+    "single_qualification": true,
+    "all_prohibited_calls_zero": true,
+    "fixed_payloads_and_sources_unchanged": true,
+    "mandatory_STOP": true
+  },
+  "artifact_sha256": {
+    "ENGINE_ERROR_CERTIFIED.json": "31cd9bf0527387c4f7fb6933e3b17c3f0f64afe62b8a55b022370ea8b99cd9bf",
+    "EXECUTION_SOURCE.json": "ebe29dd46fa7cf2fdeb77746a13642b5d5a9c25b7909c470f1c8d44e25424c9d",
+    "GATE_CERTIFICATES.json": "b018822595e7a2cbd666fa1df804ce0d02a67f1b23c674cbaad4b1cad8115536",
+    "INVOCATION.json": "328fb3d8a91241b90160dda74dd8dfaa9fc487a469c6b85bb09de21753b4f131",
+    "RESOURCE_OBSERVATION.json": "a85583a5d78b464af32433d74424430541089636ee1062e1fa3d217001f1fdf8",
+    "SOURCE.json": "4db05c18e96b1a9d0c31dc5b04b8164b0d6b163416f4d5e6aa64dfd05f0af0b5",
+    "STOP.json": "0779963ed3f17eb1571cc1be101aab4b99d2ad7140fcd4a039e4294a7cfbf9dd",
+    "UNIFORM_ERROR.json": "219006fcef99bf62f9ac8da583cc80caf4ccc13d64d38edc03c569a6c047f60e"
+  }
+}
