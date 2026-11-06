@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D C5 common whole-path and fixed q2 fair comparison
+
+[結果](docs/research/track_d_c5_q2_20261106/RESULT.md)／[evidence](artifacts/track_d_c5_q2/2026-11-06/run01/result.json)／[STOP](artifacts/track_d_c5_q2/2026-11-06/run01/STOP.json)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、保存00→01/q2/cut1。SOURCE `976c898fbdb79477c1db3178b5d32df1fe5aeb5c`。C3固定入口を残し、明示ordered request・method/axis・SOURCE/law/cutと有限fixture価格recordを最小実装。人工/回帰16件、raw22項目＋paired X/Y、4 P0 wrapper postcheck、最終paired/χはPASS。C3と同じstrong境界融合・位相集約をq2へ適用したが、全7資源は旧C2と一致した。各axisのsymmetric→ReferenceはRZ10773→11114、CX4100→3860、depth6096→3014、qubits9→17。raw byte不一致によりcompiled再利用0・新compile4。元H厳密ground仮定・準備費除外、全256入力のlocal binary64証拠。新sampling/fit/holdout/N/全RPE評価0、q4/q8再実行0、source/input一致、retry/resume0、mandatory STOP。
+
 ## 2026-11-06 Track D C3 fixed q4/q8 completed after interrupted postcheck
 
 [結果](docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)／[evidence](artifacts/track_d_c3_q4_q8/2026-11-06/run03_completion/result.json)／[STOP](artifacts/track_d_c3_q4_q8/2026-11-06/run03_completion/STOP.json)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、固定q4=保存00..03/cut2・q8=00..07/cut4。回路SOURCE `52b3cab50d5c5edcbd7e3249637168e9978be535`、補完SOURCE `88f0496349c056d0736f08487889f942c1aa4d37`。raw両q・全8 P0 wrapper postcheck・最終paired/χ照合PASS。X/Y各価格はsymmetric→Referenceでq4のRZ19867→20092・CX7686→6998・depth11116→5583、q8のRZ39610→39602・CX15360→13776・depth22259→10093、qubitsはいずれも9→17。強い対照のq−1境界融合、Reference内部q−2融合とglobal cutの1境界損失を含む。元H厳密ground仮定・準備費除外。run02中断後は保存回路の最後のpostcheckだけを補完し、新compile0・旧結果保全。q/path/cut/融合条件の差を含む固定fixture・local binary64証拠で、全law母平均・長q・N・全RPE優位は未評価。新sampling/ground solve/DF refit/N評価0、mandatory STOP、後続計算・詳細科学レビューへ進まない。

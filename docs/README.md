@@ -1,5 +1,7 @@
 # 文書索引
 
+[C5結果](research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。
+
 [Track D C5：共通whole-path入口とq2公平比較](research/track_d_c5_q2_20261106/PLAN.md)：保存sample00→01/cut1、C3と同じ強い境界融合・位相集約、raw PASS後だけ最大4 P0 wrapper。C6や新価格標本は未許可。
 
 [Track D C4：期待価格・長qモデルの技術準備](research/track_d_c4_price_model_preparation_20261106/REPORT.md)：強いwhole-path比較の費用境界、保存価格の条件差、校正・独立holdout・不確かさ・B側Nとのinterface。新集計/fit/sampling/回路生成/compile/実装は行わない静的報告。

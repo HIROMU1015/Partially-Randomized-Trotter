@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[C5結果](../../docs/research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。
+
 [C5共通request/有限fixture価格](../trottertracks/track_d_whole_path_price.py)は、C3の共通化した演算を再利用するopt-in入口。method/axis、SOURCE/law/cut、full-wrapper scopeと資格を記録し、未検証q/母平均を誤受理しない。[固定PLAN](../../docs/research/track_d_c5_q2_20261106/PLAN.md)、人工testは`tests/check_track_d_c5.py`。
 
 [C3 q4/q8補完結果](../../docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。
