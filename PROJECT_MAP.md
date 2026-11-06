@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D Stage B・Cの技術準備](docs/research/track_d_bc_static_preparation_20261106/REPORT.md)：元H向け信号・統計とwhole-round Reference価格の再利用条件・不足・最小検証案。静的調査のみ、科学計算・実装0、公開後mandatory STOP。
+
 [Stage A結果](docs/research/track_d_h4_paired32_reference_20261106/RESULT.md)：保存32本すべてでCX/depth減、RZ増、qubits9→17。32 precompile／128 postcheck PASS、有限cohort限定、mandatory STOP。
 
 Track D Stage Aの[保存32 trajectory paired検証](docs/research/track_d_h4_paired32_reference_20261106/PLAN.md)は同CDF8 endpoint・event16後cut・2方式×X/Yに限定する。全32 precompile PASS時のみ最大128 wrapper compile、公開後mandatory STOP。B/C段階は対象外。
