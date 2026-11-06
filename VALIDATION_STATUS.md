@@ -626,3 +626,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## Track C2-B（2026-11-06）
 
 [固定Full Y4/LD12/h=.02の18round。共役block合成配分は登録非一様policy比で総T 0.5470%減。強baseline下界には勝てず優位性未資格、STOP。](docs/research/track_c2_b_pilot_20261106/REPORT.md)。固定保存行列モデルの範囲を維持し、無条件な元H保証へ拡張しない。
+
+## Track C2-B強baseline（2026-11-06）
+
+[数値上の総T削減0.514072%が残るが、全alpha下界とのgapが残り最適性未確定。登録72配分・保存7603 recordだけで検証しmandatory STOP。](docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。27/72 caseで厳密LP下界との一致を確認。solver全72最適表示とは区別する。

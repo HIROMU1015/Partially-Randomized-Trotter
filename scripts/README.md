@@ -169,3 +169,7 @@ artifacts/<validation_name>/
 ## Track C2-B
 
 `run_track_c2_b_pilot.py`は固定scopeの入口、`check_track_c2_b_pilot.py`は保存artifactの読取専用検査。[結果と境界](../docs/research/track_c2_b_pilot_20261106/REPORT.md)。STOP済みrunは再開しない。
+
+## C2-B強baseline
+
+`run_track_c2_b_strong_baseline.py`は承認された保存2精度の限定MILP/再会計入口。`check_track_c2_b_strong_baseline.py`は人工検査、`--saved`は結果の読取検査。[報告](../docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。STOP済み出力は再開しない。

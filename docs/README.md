@@ -118,3 +118,7 @@
 ## Track C2-B
 
 [固定Full Y4/LD12/h=.02の18round。共役block合成配分は登録非一様policy比で総T 0.5470%減。強baseline下界には勝てず優位性未資格、STOP。](research/track_c2_b_pilot_20261106/REPORT.md)
+
+## Track C2-B強baseline
+
+[数値上の総T削減0.514072%が残るが、全alpha下界とのgapが残り最適性未確定。登録72配分・保存7603 recordだけで検証しmandatory STOP。](research/track_c2_b_strong_baseline_20261106/REPORT.md)

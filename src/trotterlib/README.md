@@ -139,3 +139,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C2-B adapter
 
 `../trottertracks/track_c2_b_pilot.py`と[限定pilot報告](../../docs/research/track_c2_b_pilot_20261106/REPORT.md)。既存core/過去の結果は変更せず、専用SOURCE・出力でSTOP。
+
+## C2-B強baseline
+
+`../trottertracks/track_c2_b_strong_baseline.py`は既存配分・誤差会計を再利用し、保存候補のMILP/alpha比較を行う。[報告](../../docs/research/track_c2_b_strong_baseline_20261106/REPORT.md)。旧SOURCE・raw不変更。
