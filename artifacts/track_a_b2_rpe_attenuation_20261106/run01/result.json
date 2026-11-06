@@ -1,0 +1,3292 @@
+{
+  "schema": "b2_fixed_rpe_attenuation_screen_v1",
+  "status": "FIXED_SCREEN_COMPLETE",
+  "mandatory_stop": true,
+  "started_utc": "2026-11-06T14:06:32.243479+00:00",
+  "finished_utc": "2026-11-06T14:06:32.258958+00:00",
+  "source": {
+    "library_commit": "66a41ad9219f12377e7d325e272c1a90d66ab7e5",
+    "execution_head": "66a41ad9219f12377e7d325e272c1a90d66ab7e5",
+    "source_files_sha256": {
+      "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+      "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "src/trotterlib/pr2_matched_accuracy_m1_execution.py": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+      "src/trotterlib/rpe_target_round_horizon_validation.py": "4547fab9c3a3311814a93118859989b416be6ed567daf427a9be2df2f4641892",
+      "src/trotterlib/b2_rpe_connection.py": "d41f336d333c6a66c7c5b73db241f2c415a4d501a208e7808c4bbcbaf5631c08"
+    },
+    "runner_path": "scripts/run_b2_rpe_attenuation_screen.py",
+    "runner_sha256": "9b540c8865129fea0bc2a66a7cbee2abee457f51858aa83a2b9e4d21df08de7f"
+  },
+  "input": {
+    "commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+    "path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "df_hamiltonian_hash": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "decoded_members": [
+      "metadata_json",
+      "lambdas",
+      "g_matrices"
+    ],
+    "state_decoded": false
+  },
+  "conditions": {
+    "system": "linear H4 / 1.00 Angstrom / STO-3G",
+    "DF_rank": 12,
+    "L_D": 3,
+    "deterministic_fragments": [
+      0,
+      1,
+      2
+    ],
+    "randomized_fragments": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "retained_one_body": true,
+    "nuclear_scalar_hex": "0x1.25845777d3feap+1",
+    "identity_policy": "extract_identity_phase",
+    "coefficient_atol": 0.0,
+    "PF": "partial_S2",
+    "r": 4,
+    "K": 2,
+    "delta": 0.02,
+    "epsilon_E_screen_only": 0.00015936001019904,
+    "success_probability_screen_only": 0.95,
+    "beta_RPE_screen_only": 0.4
+  },
+  "coefficient_projection": {
+    "lambda_R": 0.5832704246339983,
+    "extracted_tail_identity": 0.09261516589219072,
+    "identities": [
+      {
+        "fragment": 10,
+        "support": [],
+        "coefficient": -2.602042069105684e-37
+      },
+      {
+        "fragment": 11,
+        "support": [],
+        "coefficient": -7.530856316443234e-37
+      },
+      {
+        "fragment": 3,
+        "support": [],
+        "coefficient": 0.07701578599117598
+      },
+      {
+        "fragment": 4,
+        "support": [],
+        "coefficient": 0.006686042112715665
+      },
+      {
+        "fragment": 5,
+        "support": [],
+        "coefficient": 0.004729806611385378
+      },
+      {
+        "fragment": 6,
+        "support": [],
+        "coefficient": 0.004138229112201033
+      },
+      {
+        "fragment": 7,
+        "support": [],
+        "coefficient": 3.3075436522169456e-05
+      },
+      {
+        "fragment": 8,
+        "support": [],
+        "coefficient": 1.2174694679251967e-05
+      },
+      {
+        "fragment": 9,
+        "support": [],
+        "coefficient": 5.193351124166071e-08
+      }
+    ],
+    "components": [
+      {
+        "fragment": 10,
+        "support": [
+          0
+        ],
+        "coefficient": -2.1419976966333596e-41
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1
+        ],
+        "coefficient": -2.1419976966333573e-41
+      },
+      {
+        "fragment": 10,
+        "support": [
+          2
+        ],
+        "coefficient": 2.1399389095471805e-41
+      },
+      {
+        "fragment": 10,
+        "support": [
+          3
+        ],
+        "coefficient": 2.1399389095471792e-41
+      },
+      {
+        "fragment": 10,
+        "support": [
+          4
+        ],
+        "coefficient": 2.3358210844259867e-44
+      },
+      {
+        "fragment": 10,
+        "support": [
+          5
+        ],
+        "coefficient": 2.3358210844253863e-44
+      },
+      {
+        "fragment": 10,
+        "support": [
+          6
+        ],
+        "coefficient": -1.0087431377992544e-45
+      },
+      {
+        "fragment": 10,
+        "support": [
+          7
+        ],
+        "coefficient": -1.008743137798633e-45
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": -1.3022713302029293e-37
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": 1.301019648466047e-37
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": 1.3010196484660461e-37
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": 1.4201102249140986e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": 1.4201102249137336e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": -6.132860319876285e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": -6.132860319872508e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": 1.3010196484660455e-37
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": 1.3010196484660449e-37
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": 1.4201102249140972e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": 1.4201102249137322e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": -6.132860319876279e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": -6.132860319872501e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": -1.2997691697865701e-37
+      },
+      {
+        "fragment": 10,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": -1.4187452819934788e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": -1.418745281993114e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": 6.126965704000767e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": 6.126965703996992e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": -1.418745281993478e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": -1.4187452819931132e-40
+      },
+      {
+        "fragment": 10,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": 6.126965704000763e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": 6.126965703996988e-42
+      },
+      {
+        "fragment": 10,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": -1.5486120320185445e-43
+      },
+      {
+        "fragment": 10,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": 6.687805717775497e-45
+      },
+      {
+        "fragment": 10,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": 6.687805717771377e-45
+      },
+      {
+        "fragment": 10,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": 6.687805717773778e-45
+      },
+      {
+        "fragment": 10,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": 6.687805717769659e-45
+      },
+      {
+        "fragment": 10,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": -2.8881827335651222e-46
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0
+        ],
+        "coefficient": -9.361547604702733e-41
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1
+        ],
+        "coefficient": -9.36154760470273e-41
+      },
+      {
+        "fragment": 11,
+        "support": [
+          2
+        ],
+        "coefficient": 9.353024710626677e-41
+      },
+      {
+        "fragment": 11,
+        "support": [
+          3
+        ],
+        "coefficient": 9.353024710626669e-41
+      },
+      {
+        "fragment": 11,
+        "support": [
+          4
+        ],
+        "coefficient": 9.465016014403252e-44
+      },
+      {
+        "fragment": 11,
+        "support": [
+          5
+        ],
+        "coefficient": 9.465016014399396e-44
+      },
+      {
+        "fragment": 11,
+        "support": [
+          6
+        ],
+        "coefficient": 2.2054622164613502e-45
+      },
+      {
+        "fragment": 11,
+        "support": [
+          7
+        ],
+        "coefficient": 2.2054622164534333e-45
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": -3.76885583398167e-37
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": 3.765424610810322e-37
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": 3.765424610810318e-37
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": 3.810511074760099e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": 3.810511074758547e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 8.87894768271111e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 8.878947682679238e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": 3.7654246108103205e-37
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": 3.765424610810316e-37
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": 3.8105110747600975e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": 3.810511074758546e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 8.878947682711107e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 8.878947682679234e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": -3.761996511476274e-37
+      },
+      {
+        "fragment": 11,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": -3.807041928029541e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": -3.807041928027991e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -8.870864154879818e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -8.870864154847974e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": -3.8070419280295376e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": -3.807041928027987e-40
+      },
+      {
+        "fragment": 11,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -8.870864154879809e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -8.870864154847965e-42
+      },
+      {
+        "fragment": 11,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": -3.852626709662056e-43
+      },
+      {
+        "fragment": 11,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -8.977082161681523e-45
+      },
+      {
+        "fragment": 11,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -8.977082161649298e-45
+      },
+      {
+        "fragment": 11,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -8.977082161677868e-45
+      },
+      {
+        "fragment": 11,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -8.977082161645643e-45
+      },
+      {
+        "fragment": 11,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": -2.091767778465293e-46
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0
+        ],
+        "coefficient": 1.0505712786935265e-17
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1
+        ],
+        "coefficient": -1.050571278693526e-17
+      },
+      {
+        "fragment": 3,
+        "support": [
+          2
+        ],
+        "coefficient": -1.0505712786935255e-17
+      },
+      {
+        "fragment": 3,
+        "support": [
+          3
+        ],
+        "coefficient": 1.0505712786935251e-17
+      },
+      {
+        "fragment": 3,
+        "support": [
+          4
+        ],
+        "coefficient": -5.987576254643991e-18
+      },
+      {
+        "fragment": 3,
+        "support": [
+          5
+        ],
+        "coefficient": -5.98757625464399e-18
+      },
+      {
+        "fragment": 3,
+        "support": [
+          6
+        ],
+        "coefficient": 5.98757625464399e-18
+      },
+      {
+        "fragment": 3,
+        "support": [
+          7
+        ],
+        "coefficient": 5.987576254643987e-18
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": -0.029066373116948506
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -0.029066373116948496
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": 0.029066373116948478
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -0.01656595121276237
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -0.01656595121276237
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 0.01656595121276237
+      },
+      {
+        "fragment": 3,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 0.01656595121276236
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": 0.02906637311694848
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -0.029066373116948464
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": 0.016565951212762362
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": 0.016565951212762362
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": -0.016565951212762362
+      },
+      {
+        "fragment": 3,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": -0.016565951212762352
+      },
+      {
+        "fragment": 3,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": -0.029066373116948454
+      },
+      {
+        "fragment": 3,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 0.016565951212762355
+      },
+      {
+        "fragment": 3,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 0.016565951212762355
+      },
+      {
+        "fragment": 3,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -0.016565951212762355
+      },
+      {
+        "fragment": 3,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -0.016565951212762345
+      },
+      {
+        "fragment": 3,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": -0.01656595121276235
+      },
+      {
+        "fragment": 3,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": -0.016565951212762345
+      },
+      {
+        "fragment": 3,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": 0.016565951212762345
+      },
+      {
+        "fragment": 3,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": 0.016565951212762338
+      },
+      {
+        "fragment": 3,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 0.009441519878639528
+      },
+      {
+        "fragment": 3,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -0.009441519878639528
+      },
+      {
+        "fragment": 3,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -0.009441519878639525
+      },
+      {
+        "fragment": 3,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -0.009441519878639526
+      },
+      {
+        "fragment": 3,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -0.009441519878639523
+      },
+      {
+        "fragment": 3,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 0.009441519878639523
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0
+        ],
+        "coefficient": -6.806253847062742e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1
+        ],
+        "coefficient": -6.806253847062741e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          2
+        ],
+        "coefficient": 6.486941162532785e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          3
+        ],
+        "coefficient": 6.486941162532773e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          4
+        ],
+        "coefficient": 1.7602524768672058e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          5
+        ],
+        "coefficient": 1.7602524768672037e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          6
+        ],
+        "coefficient": -1.5110838319631388e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          7
+        ],
+        "coefficient": -1.5110838319631354e-05
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": 0.0033021402586538933
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -0.003147221665492656
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": -0.0031472216654926505
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -0.0008540087836669325
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -0.0008540087836669313
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 0.0007331214597410061
+      },
+      {
+        "fragment": 4,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 0.0007331214597410044
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": -0.0031472216654926557
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -0.0031472216654926497
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": -0.0008540087836669324
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": -0.0008540087836669312
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 0.000733121459741006
+      },
+      {
+        "fragment": 4,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 0.0007331214597410043
+      },
+      {
+        "fragment": 4,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": 0.002999571016339594
+      },
+      {
+        "fragment": 4,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 0.0008139433022064468
+      },
+      {
+        "fragment": 4,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 0.0008139433022064457
+      },
+      {
+        "fragment": 4,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -0.0006987273588660518
+      },
+      {
+        "fragment": 4,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -0.0006987273588660502
+      },
+      {
+        "fragment": 4,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": 0.0008139433022064453
+      },
+      {
+        "fragment": 4,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": 0.0008139433022064442
+      },
+      {
+        "fragment": 4,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -0.0006987273588660506
+      },
+      {
+        "fragment": 4,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -0.000698727358866049
+      },
+      {
+        "fragment": 4,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 0.00022086614905860534
+      },
+      {
+        "fragment": 4,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -0.00018960192998245537
+      },
+      {
+        "fragment": 4,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -0.00018960192998245494
+      },
+      {
+        "fragment": 4,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -0.00018960192998245513
+      },
+      {
+        "fragment": 4,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -0.0001896019299824547
+      },
+      {
+        "fragment": 4,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 0.00016276324826731587
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0
+        ],
+        "coefficient": 4.166292417516498e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1
+        ],
+        "coefficient": 4.166292417516497e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          2
+        ],
+        "coefficient": -4.16629241751647e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          3
+        ],
+        "coefficient": -4.166292417516466e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          4
+        ],
+        "coefficient": -3.1088569353096536e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          5
+        ],
+        "coefficient": -3.108856935309653e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          6
+        ],
+        "coefficient": 3.1088569353096177e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          7
+        ],
+        "coefficient": 3.1088569353096173e-18
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": 0.0015190762772590756
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -0.0015190762772590658
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": -0.0015190762772590647
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -0.0011335236096165226
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -0.0011335236096165224
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 0.0011335236096165098
+      },
+      {
+        "fragment": 5,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 0.0011335236096165092
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": -0.0015190762772590656
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -0.0015190762772590643
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": -0.0011335236096165224
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": -0.0011335236096165222
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 0.0011335236096165096
+      },
+      {
+        "fragment": 5,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 0.0011335236096165092
+      },
+      {
+        "fragment": 5,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": 0.0015190762772590545
+      },
+      {
+        "fragment": 5,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 0.001133523609616515
+      },
+      {
+        "fragment": 5,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 0.0011335236096165148
+      },
+      {
+        "fragment": 5,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -0.0011335236096165022
+      },
+      {
+        "fragment": 5,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -0.0011335236096165018
+      },
+      {
+        "fragment": 5,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": 0.0011335236096165142
+      },
+      {
+        "fragment": 5,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": 0.001133523609616514
+      },
+      {
+        "fragment": 5,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -0.0011335236096165014
+      },
+      {
+        "fragment": 5,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -0.001133523609616501
+      },
+      {
+        "fragment": 5,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 0.0008458270284336334
+      },
+      {
+        "fragment": 5,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -0.000845827028433624
+      },
+      {
+        "fragment": 5,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -0.0008458270284336237
+      },
+      {
+        "fragment": 5,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -0.0008458270284336239
+      },
+      {
+        "fragment": 5,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -0.0008458270284336236
+      },
+      {
+        "fragment": 5,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 0.000845827028433614
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0
+        ],
+        "coefficient": 0.00032551790705147255
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1
+        ],
+        "coefficient": 0.00032551790705147255
+      },
+      {
+        "fragment": 6,
+        "support": [
+          2
+        ],
+        "coefficient": -0.0002653214160649514
+      },
+      {
+        "fragment": 6,
+        "support": [
+          3
+        ],
+        "coefficient": -0.000265321416064951
+      },
+      {
+        "fragment": 6,
+        "support": [
+          4
+        ],
+        "coefficient": -0.0001251314020451279
+      },
+      {
+        "fragment": 6,
+        "support": [
+          5
+        ],
+        "coefficient": -0.0001251314020451279
+      },
+      {
+        "fragment": 6,
+        "support": [
+          6
+        ],
+        "coefficient": 4.13937973772452e-05
+      },
+      {
+        "fragment": 6,
+        "support": [
+          7
+        ],
+        "coefficient": 4.139379737724511e-05
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": 0.002250571261101087
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -0.0018343837343977622
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": -0.0018343837343977598
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -0.0008651356229674945
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -0.0008651356229674945
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 0.0002861891427384323
+      },
+      {
+        "fragment": 6,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 0.0002861891427384317
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": -0.0018343837343977622
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -0.0018343837343977598
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": -0.0008651356229674945
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": -0.0008651356229674945
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 0.0002861891427384323
+      },
+      {
+        "fragment": 6,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 0.0002861891427384317
+      },
+      {
+        "fragment": 6,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": 0.0014951598037276873
+      },
+      {
+        "fragment": 6,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 0.0007051501733134258
+      },
+      {
+        "fragment": 6,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 0.0007051501733134258
+      },
+      {
+        "fragment": 6,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -0.0002332655346108765
+      },
+      {
+        "fragment": 6,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -0.000233265534610876
+      },
+      {
+        "fragment": 6,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": 0.0007051501733134248
+      },
+      {
+        "fragment": 6,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": 0.0007051501733134248
+      },
+      {
+        "fragment": 6,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -0.00023326553461087618
+      },
+      {
+        "fragment": 6,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -0.00023326553461087567
+      },
+      {
+        "fragment": 6,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 0.0003325642955918545
+      },
+      {
+        "fragment": 6,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -0.00011001314491522155
+      },
+      {
+        "fragment": 6,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -0.00011001314491522131
+      },
+      {
+        "fragment": 6,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -0.00011001314491522155
+      },
+      {
+        "fragment": 6,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -0.00011001314491522131
+      },
+      {
+        "fragment": 6,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 3.6392638099042965e-05
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0
+        ],
+        "coefficient": 2.7251532421655995e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1
+        ],
+        "coefficient": 2.7251532421655984e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          2
+        ],
+        "coefficient": -2.6656509894025775e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          3
+        ],
+        "coefficient": -2.6656509894025765e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          4
+        ],
+        "coefficient": -2.1711056937867007e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          5
+        ],
+        "coefficient": -2.1711056937866993e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          6
+        ],
+        "coefficient": 2.0759907148108165e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          7
+        ],
+        "coefficient": 2.0759907148108144e-07
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": 1.042669430710884e-05
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -1.0199033054690126e-05
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": -1.0199033054690123e-05
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -8.306855932823824e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -8.30685593282382e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 7.942937018296827e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 7.94293701829682e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": -1.0199033054690123e-05
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -1.019903305469012e-05
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": -8.30685593282382e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": -8.306855932823817e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 7.942937018296826e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 7.942937018296817e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": 9.976342663056833e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 8.125480209164297e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 8.125480209164294e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -7.769507268060881e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -7.769507268060874e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": 8.125480209164294e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": 8.12548020916429e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -7.769507268060878e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -7.76950726806087e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 6.617999286853936e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -6.32806827850508e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -6.328068278505074e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -6.328068278505076e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -6.3280682785050704e-06
+      },
+      {
+        "fragment": 7,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 6.050838992528588e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0
+        ],
+        "coefficient": -7.679836405774819e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1
+        ],
+        "coefficient": -7.679836405774816e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          2
+        ],
+        "coefficient": 7.679836405774107e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          3
+        ],
+        "coefficient": 7.679836405774105e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          4
+        ],
+        "coefficient": 5.68943817372043e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          5
+        ],
+        "coefficient": 5.689438173720426e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          6
+        ],
+        "coefficient": -5.6894381737197264e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          7
+        ],
+        "coefficient": -5.6894381737197264e-21
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": 3.930297268155735e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -3.930297268155372e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": -3.930297268155371e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -2.9116744328954684e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -2.9116744328954663e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 2.911674432895108e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 2.911674432895108e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": -3.9302972681553705e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -3.93029726815537e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": -2.911674432895467e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": -2.9116744328954655e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 2.911674432895107e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 2.911674432895107e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": 3.930297268155007e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 2.9116744328951986e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 2.911674432895197e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -2.9116744328948386e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -2.9116744328948386e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": 2.9116744328951982e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": 2.911674432895196e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -2.911674432894838e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -2.911674432894838e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 2.1570500714708816e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -2.157050071470616e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -2.157050071470616e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -2.157050071470615e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -2.157050071470615e-06
+      },
+      {
+        "fragment": 8,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 2.1570500714703492e-06
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0
+        ],
+        "coefficient": 4.805893994982914e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1
+        ],
+        "coefficient": 4.805893994982912e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          2
+        ],
+        "coefficient": -4.8013922125092566e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          3
+        ],
+        "coefficient": -4.8013922125092525e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          4
+        ],
+        "coefficient": -5.21702586334885e-15
+      },
+      {
+        "fragment": 9,
+        "support": [
+          5
+        ],
+        "coefficient": -5.217025863348387e-15
+      },
+      {
+        "fragment": 9,
+        "support": [
+          6
+        ],
+        "coefficient": 2.709251561293395e-16
+      },
+      {
+        "fragment": 9,
+        "support": [
+          7
+        ],
+        "coefficient": 2.709251561286698e-16
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          1
+        ],
+        "coefficient": 2.599107502964984e-08
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          2
+        ],
+        "coefficient": -2.5966728640369908e-08
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          3
+        ],
+        "coefficient": -2.5966728640369888e-08
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          4
+        ],
+        "coefficient": -2.8214544637788213e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          5
+        ],
+        "coefficient": -2.8214544637785706e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          6
+        ],
+        "coefficient": 1.465208360344265e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          0,
+          7
+        ],
+        "coefficient": 1.4652083603406428e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1,
+          2
+        ],
+        "coefficient": -2.5966728640369894e-08
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1,
+          3
+        ],
+        "coefficient": -2.5966728640369875e-08
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1,
+          4
+        ],
+        "coefficient": -2.8214544637788197e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1,
+          5
+        ],
+        "coefficient": -2.821454463778569e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1,
+          6
+        ],
+        "coefficient": 1.4652083603442642e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          1,
+          7
+        ],
+        "coefficient": 1.465208360340642e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          2,
+          3
+        ],
+        "coefficient": 2.5942405056867322e-08
+      },
+      {
+        "fragment": 9,
+        "support": [
+          2,
+          4
+        ],
+        "coefficient": 2.8188115477535147e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          2,
+          5
+        ],
+        "coefficient": 2.8188115477532643e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          2,
+          6
+        ],
+        "coefficient": -1.4638358687071748e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          2,
+          7
+        ],
+        "coefficient": -1.463835868703556e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          3,
+          4
+        ],
+        "coefficient": 2.8188115477535128e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          3,
+          5
+        ],
+        "coefficient": 2.8188115477532624e-11
+      },
+      {
+        "fragment": 9,
+        "support": [
+          3,
+          6
+        ],
+        "coefficient": -1.4638358687071738e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          3,
+          7
+        ],
+        "coefficient": -1.463835868703555e-12
+      },
+      {
+        "fragment": 9,
+        "support": [
+          4,
+          5
+        ],
+        "coefficient": 3.062822635114363e-14
+      },
+      {
+        "fragment": 9,
+        "support": [
+          4,
+          6
+        ],
+        "coefficient": -1.5905531664017001e-15
+      },
+      {
+        "fragment": 9,
+        "support": [
+          4,
+          7
+        ],
+        "coefficient": -1.5905531663977682e-15
+      },
+      {
+        "fragment": 9,
+        "support": [
+          5,
+          6
+        ],
+        "coefficient": -1.590553166401559e-15
+      },
+      {
+        "fragment": 9,
+        "support": [
+          5,
+          7
+        ],
+        "coefficient": -1.590553166397627e-15
+      },
+      {
+        "fragment": 9,
+        "support": [
+          6,
+          7
+        ],
+        "coefficient": 8.259895124647115e-17
+      }
+    ],
+    "fragments": [
+      {
+        "index": 3,
+        "signed_weight": 0.15403157198235193,
+        "eta": [
+          -0.6143354064830817,
+          0.6143354064830814,
+          0.6143354064830812,
+          -0.6143354064830808,
+          0.35013141581593,
+          0.35013141581592994,
+          -0.35013141581592994,
+          -0.35013141581592977
+        ]
+      },
+      {
+        "index": 4,
+        "signed_weight": 0.013370681344638802,
+        "eta": [
+          0.702806851227052,
+          0.7028068512270519,
+          -0.6698349481194118,
+          -0.6698349481194106,
+          -0.1817618808275189,
+          -0.18176188082751865,
+          0.15603297992484227,
+          0.1560329799248419
+        ]
+      },
+      {
+        "index": 5,
+        "signed_weight": 0.009459613222770748,
+        "eta": [
+          -0.5667194249059218,
+          -0.5667194249059216,
+          0.566719424905918,
+          0.5667194249059175,
+          0.42288189064360043,
+          0.4228818906436004,
+          -0.42288189064359566,
+          -0.4228818906435955
+        ]
+      },
+      {
+        "index": 6,
+        "signed_weight": 0.008229375997039351,
+        "eta": [
+          0.7395676898106027,
+          0.7395676898106027,
+          -0.6028029256940571,
+          -0.6028029256940564,
+          -0.2842950877004858,
+          -0.2842950877004858,
+          0.0940455638096022,
+          0.094045563809602
+        ]
+      },
+      {
+        "index": 7,
+        "signed_weight": 6.614375049909639e-05,
+        "eta": [
+          0.5614924357208048,
+          0.5614924357208045,
+          -0.549232550912186,
+          -0.5492325509121858,
+          -0.4473361003518655,
+          -0.4473361003518653,
+          0.4277385451052982,
+          0.4277385451052978
+        ]
+      },
+      {
+        "index": 8,
+        "signed_weight": 2.4349389358503938e-05,
+        "eta": [
+          -0.5681770144799871,
+          -0.5681770144799869,
+          0.5681770144799345,
+          0.5681770144799344,
+          0.42092146561640287,
+          0.4209214656164026,
+          -0.4209214656163508,
+          -0.4209214656163508
+        ]
+      },
+      {
+        "index": 9,
+        "signed_weight": 1.0386702159468497e-07,
+        "eta": [
+          -0.7074378304678476,
+          -0.7074378304678473,
+          0.7067751585009404,
+          0.7067751585009399,
+          0.0007679573170184501,
+          0.0007679573170183819,
+          -3.988075993173966e-05,
+          -3.988075993164107e-05
+        ]
+      },
+      {
+        "index": 10,
+        "signed_weight": -8.646382535751784e-17,
+        "eta": [
+          -5.488434867679335e-11,
+          -5.488434867679329e-11,
+          5.483159643132328e-11,
+          5.4831596431323246e-11,
+          5.985068006643384e-14,
+          5.985068006641845e-14,
+          -2.5846997962376163e-15,
+          -2.584699796236024e-15
+        ]
+      },
+      {
+        "index": 11,
+        "signed_weight": -4.528670771621254e-17,
+        "eta": [
+          1.2901327080670046e-10,
+          1.290132708067004e-10,
+          -1.2889581517992583e-10,
+          -1.288958151799257e-10,
+          -1.3043918867031585e-13,
+          -1.3043918867026274e-13,
+          -3.039389492003861e-15,
+          -3.0393894919929505e-15
+        ]
+      }
+    ],
+    "zero_coefficients_excluded": 0,
+    "probability_sum": 1.0,
+    "projection_hash": "0d92473ed3e94cbb131a3cda2f6ad2a69303962fd2aef75574219f5a2c991bda",
+    "executable_tail_hash": false,
+    "basis_operations_generated": false,
+    "state_independent": true
+  },
+  "canonical_law": {
+    "taylor_distribution": "rte_even_taylor_paired",
+    "orders": [
+      0,
+      2
+    ],
+    "order_weights": [
+      1.000004252545811,
+      4.252556862516669e-06
+    ],
+    "order_probabilities": [
+      0.9999957474793058,
+      4.252520694391542e-06
+    ],
+    "normalization_per_event": 1.0000085051026735,
+    "corrected_polynomial": "I - i*tau*h - tau^2*h^2/2 + i*tau^3*h^3/6; h=H_R/lambda_R",
+    "normalization_formula": "b_2(tau)=sqrt(1+tau^2)+(tau^2/2)*sqrt(1+(tau/3)^2)",
+    "scalar_event_phase": {
+      "0": "+1",
+      "2": "-1"
+    },
+    "sampling_performed": false,
+    "truncation_tolerance_role": "existing fixed-K constructor consistency only; no phase-error allocation"
+  },
+  "horizon": {
+    "target_energy_precision_ha": 0.00015936001019904,
+    "required_q_continuous": 125502.00000000051,
+    "maximum_round_index_M": 17,
+    "round_count_M_plus_one": 18,
+    "q_max": 131072,
+    "achieved_energy_resolution_ha": 0.000152587890625,
+    "previous_q_energy_resolution_ha": 0.00030517578125,
+    "target_met": true,
+    "previous_power_fails": true,
+    "minimal_power_of_two_horizon": true
+  },
+  "rounds": [
+    {
+      "m": 0,
+      "Q_m": 1,
+      "T_m": 0.02,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 4,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.000034020844717,
+      "attenuation": 0.9999659803126615,
+      "log_attenuation": -3.402026602116861e-05,
+      "log_normalization_total": 3.402026602116861e-05,
+      "attenuation_decimal80": "0.99996598031266099927565878823973418490783142490447285646550016637738535445037450",
+      "normalization_total_decimal80": "1.0000340208447175010224204186156239106415420320138840006437216007252394456766120",
+      "log_attenuation_decimal80": "-0.000034020266021688485969747773269562471854158837622613928277771195638375566249753784",
+      "attenuation_decimal80_fixed_binary64_b": "0.99996598031266151913421541444411087145828616186988428733029171647732489275289003",
+      "relative_difference_vs_decimal_formula": 4.850602348116515e-16,
+      "relative_difference_vs_decimal_fixed_b": 3.481600784178297e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 1,
+      "Q_m": 2,
+      "T_m": 0.04,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 8,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0000680428468518,
+      "attenuation": 0.9999319617826622,
+      "log_attenuation": -6.804053204233722e-05,
+      "log_normalization_total": 6.804053204233722e-05,
+      "attenuation_decimal80": "0.99993196178266112519468376112357004360603897198806041883149222987360648903624676",
+      "normalization_total_decimal80": "1.0000680428468528773371580592500932693031942084244674252870560213217126914167260",
+      "log_attenuation_decimal80": "-0.000068040532043376971939495546539124943708317675245227856555542391276751132499507567",
+      "attenuation_decimal80_fixed_binary64_b": "0.99993196178266216487642616241873831733751257077284238589409307120721703564676154",
+      "relative_difference_vs_decimal_formula": 1.0679724744331928e-15,
+      "relative_difference_vs_decimal_fixed_b": 2.821998912632369e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 2,
+      "Q_m": 4,
+      "T_m": 0.08,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 16,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0001360903235328,
+      "attenuation": 0.9998639281945233,
+      "log_attenuation": -0.00013608106408467444,
+      "log_normalization_total": 0.00013608106408467444,
+      "attenuation_decimal80": "0.99986392819452126904133171696130236208599507694011296628493331032402689746241371",
+      "normalization_total_decimal80": "1.0001360903235347625184354641717452023718797249023750907442156859449126047987164",
+      "log_attenuation_decimal80": "-0.00013608106408675394387899109307824988741663535049045571311108478255350226499901513",
+      "attenuation_decimal80_fixed_binary64_b": "0.99986392819452334826334033484720110810013171687630843584680057483212088448824690",
+      "relative_difference_vs_decimal_formula": 2.0305103948257657e-15,
+      "relative_difference_vs_decimal_fixed_b": 4.8994575787973367e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 3,
+      "Q_m": 8,
+      "T_m": 0.16,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 32,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0002721991676415,
+      "attenuation": 0.9997278749045829,
+      "log_attenuation": -0.0002721621281693489,
+      "log_normalization_total": 0.0002721621281693489,
+      "attenuation_decimal80": "0.99972787490457878432425997385327416457019365239430685081889405971453524059205812",
+      "normalization_total_decimal80": "1.0002721991676456848332079386659891036480465808873028979108360749542104363963743",
+      "log_attenuation_decimal80": "-0.00027216212817350788775798218615649977483327070098091142622216956510700452999803027",
+      "attenuation_decimal80_fixed_binary64_b": "0.99972787490458294220243022422189635076708601941799036948843859671022244942279906",
+      "relative_difference_vs_decimal_formula": 4.141722600324552e-15,
+      "relative_difference_vs_decimal_fixed_b": 1.7287340902931093e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 4,
+      "Q_m": 16,
+      "T_m": 0.32,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 64,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.00054447242767,
+      "attenuation": 0.9994558238612334,
+      "log_attenuation": -0.0005443242563386978,
+      "log_normalization_total": 0.0005443242563386978,
+      "attenuation_decimal80": "0.99945582386122512665425667761681477877104925480728015365867169455579248152848647",
+      "normalization_total_decimal80": "1.0005444724276782366700527817105673807101560017284216703837712806728906121751421",
+      "log_attenuation_decimal80": "-0.00054432425634701577551596437231299954966654140196182285244433913021400905999606054",
+      "attenuation_decimal80_fixed_binary64_b": "0.99945582386123344014767119071300470559517767000617694733705766401619976498298208",
+      "relative_difference_vs_decimal_formula": 8.316747702728892e-15,
+      "relative_difference_vs_decimal_fixed_b": 1.272179726090707e-18,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 5,
+      "Q_m": 32,
+      "T_m": 0.64,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 128,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0010892413055643,
+      "attenuation": 0.9989119438501369,
+      "log_attenuation": -0.0010886485126773955,
+      "log_normalization_total": 0.0010886485126773955,
+      "attenuation_decimal80": "0.99891194385012026523872740714215904237218109841160452832713440105955938229751997",
+      "normalization_total_decimal80": "1.0010892413055809751727666714986674733728398137345786479533831792202830467821784",
+      "log_attenuation_decimal80": "-0.0010886485126940315510319287446259990993330828039236457048886782604280181199921211",
+      "attenuation_decimal80_fixed_binary64_b": "0.99891194385013688317754694132350448482212297725293282348003723896646776353759856",
+      "relative_difference_vs_decimal_formula": 1.668260299027253e-14,
+      "relative_difference_vs_decimal_fixed_b": 4.656322536249357e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 6,
+      "Q_m": 64,
+      "T_m": 1.28,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 256,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0021796690577505,
+      "attenuation": 0.997825071566459,
+      "log_attenuation": -0.002177297025354791,
+      "log_normalization_total": 0.002177297025354791,
+      "attenuation_decimal80": "0.99782507156642582158928957160101657076393055079240800245147840820702236648204006",
+      "normalization_total_decimal80": "1.0021796690577837340928693944689337477383911965011077657384616113175717929519542",
+      "log_attenuation_decimal80": "-0.0021772970253880631020638574892519981986661656078472914097773565208560362399842422",
+      "attenuation_decimal80_fixed_binary64_b": "0.99782507156645902130442757840117180860318065628507667741536934567428420109431326",
+      "relative_difference_vs_decimal_formula": 3.3305064388002017e-14,
+      "relative_difference_vs_decimal_fixed_b": 3.298485818166744e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 7,
+      "Q_m": 128,
+      "T_m": 2.56,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 512,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0043640890727021,
+      "attenuation": 0.9956548734466091,
+      "log_attenuation": -0.004354594050709582,
+      "log_normalization_total": 0.004354594050709582,
+      "attenuation_decimal80": "0.99565487344654281260797061060778958693834144242384479711332951159271387406964574",
+      "normalization_total_decimal80": "1.0043640890727689280168906899439283449648733781188912967524508617563913729888507",
+      "log_attenuation_decimal80": "-0.0043545940507761262041277149785039963973323312156945828195547130417120724799684843",
+      "attenuation_decimal80_fixed_binary64_b": "0.99565487344660906762423774488218458995106750476648225612646461147119796559889887",
+      "relative_difference_vs_decimal_formula": 6.655545251215802e-14,
+      "relative_difference_vs_decimal_fixed_b": 1.1293452516214326e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 8,
+      "Q_m": 256,
+      "T_m": 5.12,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 1024,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0087472234188386,
+      "attenuation": 0.9913286270179831,
+      "log_attenuation": -0.008709188101419164,
+      "log_normalization_total": 0.008709188101419164,
+      "attenuation_decimal80": "0.99132862701785118395190403767669954450558066124863943612983636632119171581067831",
+      "normalization_total_decimal80": "1.0087472234189729171956773057209575253449309617800635707856821937333535764065772",
+      "log_attenuation_decimal80": "-0.0087091881015522524082554299570079927946646624313891656391094260834241449599369686",
+      "attenuation_decimal80_fixed_binary64_b": "0.99132862701798311821157734648914675878628011676064061189973912578950006974050617",
+      "relative_difference_vs_decimal_formula": 1.3304700024278264e-13,
+      "relative_difference_vs_decimal_fixed_b": 4.1317876505383906e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 9,
+      "Q_m": 512,
+      "T_m": 10.24,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 2048,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0175709607552164,
+      "attenuation": 0.9827324467453595,
+      "log_attenuation": -0.01741837620283833,
+      "log_normalization_total": 0.01741837620283833,
+      "attenuation_decimal80": "0.98273244674509790835504959218008237494861795526190663144347977414793211286600425",
+      "normalization_total_decimal80": "1.0175709607554872626422351648437317053608127824726639167059695009490118010820145",
+      "log_attenuation_decimal80": "-0.017418376203104504816510859914015985589329324862778331278218852166848289919873937",
+      "attenuation_decimal80_fixed_binary64_b": "0.98273244674535948877204672533938981839905390648398197740780846247763743649711900",
+      "relative_difference_vs_decimal_formula": 2.6622223125066065e-13,
+      "relative_difference_vs_decimal_fixed_b": 4.559501206685231e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 10,
+      "Q_m": 1024,
+      "T_m": 20.48,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 4096,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0354506601722941,
+      "attenuation": 0.9657630618861208,
+      "log_attenuation": -0.03483675240567666,
+      "log_normalization_total": 0.03483675240567666,
+      "attenuation_decimal80": "0.96576306188560669652965433738393953049481418157912065253413653848594041113064589",
+      "normalization_total_decimal80": "1.0354506601728453988000237504862462597211638737350771702501414938599122791498366",
+      "log_attenuation_decimal80": "-0.034836752406209009633021719828031971178658649725556662556437704333696579839747874",
+      "attenuation_decimal80_fixed_binary64_b": "0.96576306188612082365608679714066432118374068786565655650024014545589097290902934",
+      "relative_difference_vs_decimal_formula": 5.323511409134041e-13,
+      "relative_difference_vs_decimal_fixed_b": 2.1315638542916205e-18,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 11,
+      "Q_m": 2048,
+      "T_m": 40.96,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 8192,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.0721580696512398,
+      "attenuation": 0.9326982917036553,
+      "log_attenuation": -0.06967350481135332,
+      "log_normalization_total": 0.06967350481135332,
+      "attenuation_decimal80": "0.93269829170266218994945332122584761820500283649635005921588216579404548134951963",
+      "normalization_total_decimal80": "1.0721580696523813645607711327996572728661549559713961322184394482794106076458171",
+      "log_attenuation_decimal80": "-0.069673504812418019266043439656063942357317299451113325112875408667393159679495749",
+      "attenuation_decimal80_fixed_binary64_b": "0.93269829170365523992509730709344971951368201577720454755601194679860391987954798",
+      "relative_difference_vs_decimal_formula": 1.0647257459320582e-12,
+      "relative_difference_vs_decimal_fixed_b": 1.9200977258001814e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 12,
+      "Q_m": 4096,
+      "T_m": 81.92,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 16384,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.149522926318273,
+      "attenuation": 0.8699261033469168,
+      "log_attenuation": -0.13934700962270663,
+      "log_normalization_total": 0.13934700962270663,
+      "attenuation_decimal80": "0.86992610334506432892607913136780581704566337726411592696464018892542439408379488",
+      "normalization_total_decimal80": "1.1495229263207206495837242666130199804057609502894397648045651099060523861052402",
+      "log_attenuation_decimal80": "-0.13934700962483603853208687931212788471463459890222665022575081733478631935899150",
+      "attenuation_decimal80_fixed_binary64_b": "0.86992610334691676095779714934357171666768167749498561842202042741093921832574055",
+      "relative_difference_vs_decimal_formula": 2.129434062094337e-12,
+      "relative_difference_vs_decimal_fixed_b": 2.0972183602934285e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 13,
+      "Q_m": 8192,
+      "T_m": 163.84,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 32768,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.3214029581313254,
+      "attenuation": 0.7567714252843505,
+      "log_attenuation": -0.27869401924541326,
+      "log_normalization_total": 0.27869401924541326,
+      "attenuation_decimal80": "0.75677142528112754301301777873804607930466365740803764133693637292564096545823990",
+      "normalization_total_decimal80": "1.3214029581369529551790685369378117277360736090308285938963306071574997763441893",
+      "log_attenuation_decimal80": "-0.27869401924967207706417375862425576942926919780445330045150163466957263871798300",
+      "attenuation_decimal80_fixed_binary64_b": "0.75677142528435050097114928221937407165586436833408375320640124036955985624283826",
+      "relative_difference_vs_decimal_formula": 4.258805320376601e-12,
+      "relative_difference_vs_decimal_fixed_b": 2.0859449401422337e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 14,
+      "Q_m": 16384,
+      "T_m": 327.68,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 65536,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 1.7461057777582172,
+      "attenuation": 0.5727029901269073,
+      "log_attenuation": -0.5573880384908265,
+      "log_normalization_total": 0.5573880384908265,
+      "attenuation_decimal80": "0.57270299012202920774445321137238782760616518267946411404644425615827143575380895",
+      "normalization_total_decimal80": "1.7461057777730898441796812807209933137494620961734147591779067711470003981677894",
+      "log_attenuation_decimal80": "-0.55738803849934415412834751724851153885853839560890660090300326933914527743596599",
+      "attenuation_decimal80_fixed_binary64_b": "0.57270299012690729271965625978830932652069235754178606650681838423364253041204924",
+      "relative_difference_vs_decimal_formula": 8.517639493059925e-12,
+      "relative_difference_vs_decimal_fixed_b": 1.2866610218100308e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 15,
+      "Q_m": 32768,
+      "T_m": 655.36,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 131072,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 3.0488853871206283,
+      "attenuation": 0.32798871490030046,
+      "log_attenuation": -1.114776076981653,
+      "log_normalization_total": 1.114776076981653,
+      "attenuation_decimal80": "0.32798871489471308430005014767887594423827300562997785966709045221792252312485088",
+      "normalization_total_decimal80": "3.0488853871725670157220105277451341832295298130866240271561712499499544715669503",
+      "log_attenuation_decimal80": "-1.1147760769986883082566950344970230777170767912178132018060065386782905548719320",
+      "attenuation_decimal80_fixed_binary64_b": "0.32798871490030047200281020445139555540564441209532812191784867167890826560070474",
+      "relative_difference_vs_decimal_formula": 1.7035267609959292e-11,
+      "relative_difference_vs_decimal_fixed_b": 3.7109453544172256e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 16,
+      "Q_m": 65536,
+      "T_m": 1310.72,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 262144,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 9.295702103797705,
+      "attenuation": 0.10757659710195058,
+      "log_attenuation": -2.229552153963306,
+      "log_normalization_total": 2.229552153963306,
+      "attenuation_decimal80": "0.10757659709828538463760557936311785389136891196277220267144442283441326395443722",
+      "normalization_total_decimal80": "9.2957021041144138740558536795197959718697920037248719407085763869060284917622803",
+      "log_attenuation_decimal80": "-2.2295521539973766165133900689940461554341535824356264036120130773565811097438640",
+      "attenuation_decimal80_fixed_binary64_b": "0.10757659710195058486213038657666344823364985455873170697343790779503816775531760",
+      "relative_difference_vs_decimal_formula": 3.4070591115611684e-11,
+      "relative_difference_vs_decimal_fixed_b": 1.8323504190320426e-17,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    },
+    {
+      "m": 17,
+      "Q_m": 131072,
+      "T_m": 2621.44,
+      "r_m": 4,
+      "K_m": 2,
+      "lambda_R": 0.5832704246339983,
+      "tau_m": 0.0029163521231699912,
+      "event_count": 524288,
+      "normalization_per_event": 1.0000085051026735,
+      "normalization_total": 86.41007760254907,
+      "attenuation": 0.0115727242440354,
+      "log_attenuation": -4.459104307926612,
+      "log_normalization_total": 4.459104307926612,
+      "attenuation_decimal80": "0.011572724243246823437959389745557366886187252690010604178165051698408363060777181",
+      "normalization_total_decimal80": "86.410077608437141395588670659033086998426648953313671802178128236112600464648663",
+      "log_attenuation_decimal80": "-4.4591043079947532330267801379880923108683071648712528072240261547131622194877279",
+      "attenuation_decimal80_fixed_binary64_b": "0.011572724244035402973649324070154316285065426582522488360038625801147511489912555",
+      "relative_difference_vs_decimal_formula": 6.814102871926307e-11,
+      "relative_difference_vs_decimal_fixed_b": 1.9016012947367183e-16,
+      "attenuation_binary64_underflow": false,
+      "attenuation_binary64_subnormal": false,
+      "normalization_binary64_overflow": false
+    }
+  ],
+  "precision": {
+    "scalar_crosscheck": "Decimal precision 80; same binary64 tau, no high-precision DF solve",
+    "b_decimal_formula": "1.0000085051026736027898403798337078364876173497081504483133977819862552665401429",
+    "b_binary64_hex": "0x1.00008eb12348fp+0",
+    "tau_binary64_hex": "0x1.7e4089fc3ab0ep-9",
+    "max_relative_attenuation_difference_vs_formula": 6.814102871926307e-11,
+    "max_relative_attenuation_difference_vs_fixed_b": 1.9016012947367183e-16,
+    "interval_certification": false
+  },
+  "environment": {
+    "host": "GPUA100-gleap02",
+    "python": "3.11.0rc1 (main, Oct 11 2026, 23:36:22) [GCC 13.3.0]",
+    "executable": "/home/AbeHiromu/projects/h6-environments/20261012/native-dependency-v2/venv/bin/python",
+    "versions": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5"
+    },
+    "platform": "Linux-6.8.0-50-generic-x86_64-with-glibc2.39",
+    "resources_before": {
+      "available_cpus": 64,
+      "memory": {
+        "MemTotal": "528127736 kB",
+        "MemAvailable": "401349748 kB"
+      }
+    },
+    "resources_after": {
+      "available_cpus": 64,
+      "memory": {
+        "MemTotal": "528127736 kB",
+        "MemAvailable": "401349772 kB"
+      }
+    },
+    "numerical_workers": "one small scalar/matrix workload; no resource cap or worker pool"
+  },
+  "not_evaluated": [
+    "original_H/state correspondence",
+    "energy_interval/alias/branch",
+    "PF/RTE/stat/model/implementation phase allocation",
+    "signal/radius",
+    "quantum_shots",
+    "circuit_build/compile",
+    "sampling/prices",
+    "total_RPE_cost",
+    "energy_success_guarantee"
+  ],
+  "guarantee_status": "normalization_diagnostic_only_not_energy_or_success_certified"
+}
