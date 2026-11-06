@@ -267,6 +267,11 @@ def run_cell(task, physical, *, loader=None, recipe=None, call_factory=Calls):
     """
     evidence = Evidence(task, fit.call_limits(), call_factory)
     loader, recipe = loader or _load, recipe or fit.recipe_cell
+    if task.get('numerical_backend') is not None:
+        from . import c_h6_fit_conditioning as conditioned
+        if task['numerical_backend']!=conditioned.VERSION or (task['system']['norb'],task['system']['rank'],task['system']['ld'])!=(6,14,4):
+            raise ValueError('FIXED_H6_CONDITIONING_BACKEND')
+        recipe=conditioned.recipe_cell
     failure = None
     try:
         g, cold = _inputs(task, loader)

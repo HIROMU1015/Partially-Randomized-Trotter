@@ -15,7 +15,7 @@ from .c_integrated_execution_rpc import PhysicalWorker, RpcProcess
 
 ENTRY='scripts/run_research_c_h6.py'
 FAMILY='artifacts/research_c_h6_independent_validation/2026-11-06-ready'
-CONTRACT='docs/research/research_c_h6_contract_unapproved_20261106.json'
+CONTRACT='docs/research/research_c_h6_conditionfix_contract_20261106.json'
 
 
 def save(path,value):
@@ -128,7 +128,8 @@ class Run:
     def base_task(self,**fields):
         return dict(root=str(self.root),system=self.system,input_path=self.c['physical_generation']['input_path'],
             input_sha256=self.system['input_sha256'],cold_path=self.cold['path'],cold_sha256=self.cold['sha256'],
-            geometry='H6_100',start='C0',source_sha256=self.c['source_sha256'],**fields)
+            geometry='H6_100',start='C0',source_sha256=self.c['source_sha256'],
+            numerical_backend=self.c['numerical_repair']['backend'],**fields)
 
     def optimize(self,physical):
         from .c_near_transfer import System

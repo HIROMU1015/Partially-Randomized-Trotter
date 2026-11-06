@@ -131,9 +131,19 @@ class PRReducedOracle(stable.StableReducedOracle):
             def initial():
                 V=stable.precision.geometry(self.U0,eta)
                 if np.max(abs(V.transpose(0,2,1)@V-np.eye(s.norb)))>pcy.orthogonality:raise ValueError('U_ORTHOGONALITY_FAIL_NO_PROJECTION')
-                p=(self.backend.Coefficients if self.backend else stable.Coefficients)(self.g,V,s);j,info=self._solve(p,self.J0,pcy,record=raw('solve'))
+                p=(self.backend.Coefficients if self.backend else stable.Coefficients)(self.g,V,s)
+                precheck=getattr(self.backend,'early_applicability',None)
+                if precheck is not None:
+                    report=precheck(p,pcy)
+                    if not report['admitted']:return V,p,None,dict(early_structural_report=report)
+                j,info=self._solve(p,self.J0,pcy,record=raw('solve'))
                 return V,p,j,info
             V,p,J0,i0=self.call('inner_J_solve',label+'_solve',initial)
+            if J0 is None:
+                qualification=dict(status='REDUCED_GRADIENT_UNQUALIFIED',applicability=i0['early_structural_report'])
+                self.points.append(dict(label=label,qualification=qualification))
+                self.record('early_structural_rejection',label,qualification,None)
+                raise stable.Unqualified(qualification['status'])
             J1,i1=self.call('inner_J_solve',label+'_refine1',lambda:self._solve(p,J0,pcy,record=raw('refine1')))
             a,j1,u1,c1,binary1=self.call('precision_state',label+'_refine1',lambda:self._state(self.g,J1,V,s,pcy,base_U=self.U0,eta=eta))
             self.record('precision_state',label+'_refine1',a,dict(J=J1,U=V,eta=eta,gradient_J=j1,physical_gradient_U=u1,chart_gradient=c1,binary64_gradient_U=binary1))

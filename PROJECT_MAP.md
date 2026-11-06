@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：H6数値条件修正・fresh再実行（2026-11-06）
+
+[headの残差確認・既知gauge・前処理・inner solver修正](docs/research/research_c_h6_conditionfix_20261106.md)。目的/rank14/LD4/C0・比較条件と受理許容差を維持し、新SOURCE/契約/fresh出力へ接続。旧runのSOURCE/raw/STOPを保全しretry/resume0。
+
 ## 研究C：H6統合runner完成・科学実行直前準備（2026-11-06）
 
 [接続実装・人工E2E・固定SOURCE・実行条件](docs/research/research_c_h6_runner_completion_20261106.md)。`run_research_c_h6.py`を接続し、採用済みrank14/LD4/C0・selection32/final128・subset26条件を維持。execution_ready=true、scientific_execution_authorized=false。実H6科学0、公開照合後MANDATORY STOP。以下の未接続の記述は前段時点の履歴。

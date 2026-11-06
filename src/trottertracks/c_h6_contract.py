@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import subprocess
 
-CONTRACT='docs/research/research_c_h6_contract_unapproved_20261106.json'
+CONTRACT='docs/research/research_c_h6_conditionfix_contract_20261106.json'
 
 
 def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
