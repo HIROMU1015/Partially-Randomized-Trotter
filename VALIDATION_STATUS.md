@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D saved32 paired Reference (Stage A)
+
+[結果](docs/research/track_d_h4_paired32_reference_20261106/RESULT.md)／[固定PLAN](docs/research/track_d_h4_paired32_reference_20261106/PLAN.md)／[evidence](artifacts/track_d_h4_paired32_reference/2026-11-06/run01/result.json)／[raw・compiled archive index](artifacts/track_d_h4_paired32_reference/2026-11-06/run01/payload_archives.json)。SOURCE `2dd012dc77dcc877d5918c7d212819eb79b97557`、同一H4/CDF8/LD2/S2/s1/r32/K0/h=δ=.1・保存32 path・event16後cut。全32 precompileと128 wrapper postcheckはPASS。各軸32本の平均はsymmetric→ReferenceでRZ 5531.09375→5814.15625、CX 2089→2042.9375、depth 3071.71875→1649.53125、qubits 9→17。CX/depthは全32本で減、RZは全32本で増。X/Yは同値で64独立pathではない。元H厳密ground仮定・準備費除外、local binary64 evidence。全law母平均・RPE shot数・全round費用・immutable CIは未評価。sampling/ground solve/DF fit/retry/resume0、mandatory STOP、B/Cと詳細科学レビューへ進まない。
+
 ## 2026-11-06 Track D fixed real-H4 reference transfer
 
 [結果](docs/research/track_d_h4_reference_validation_20261106/RESULT.md)／[scope](docs/research/track_d_h4_reference_validation_20261106/PLAN.md)／[evidence](artifacts/track_d_h4_reference_validation/2026-11-06/run01/result.json)。SOURCE `b21b5faff1fcbcabbb7f674c4b6d8818b8bb08ea`。linear H4/1.00 Å/STO-3G/Nα=Nβ=2、number CDF8/LD2/S2/s1/r32/K0/h=δ=.1、保存word02・固定16-event cut、1 h-step。27 precompile検査と6 full-wrapper compile後の数値照合PASS。Referenceは強いsymmetric＋共有・融合よりCX/depthを削減しRZ/qubits増。全256 system入力列・reference/ancilla=0のobservable検証であり、17-qubit全Operatorや全law/chemical accuracy/全RPE総費用の保証ではない。元H厳密groundを仮定し準備費除外、保存ground vector使用0。`TECHNICAL_PASS_MANDATORY_STOP`、local binary64 evidence、immutable CI=false。

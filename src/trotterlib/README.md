@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[Stage A結果](../../docs/research/track_d_h4_paired32_reference_20261106/RESULT.md)：保存32本すべてでCX/depth減、RZ増、qubits9→17。32 precompile／128 postcheck PASS、有限cohort限定、mandatory STOP。
+
 [保存32 path Reference拡張](../trottertracks/track_d_h4_paired_reference.py) は[Track D Stage A](../../docs/research/track_d_h4_paired32_reference_20261106/PLAN.md)に限定し、既存H4 adapter／check／P0 pipelineを再利用する。通常libraryの既定動作を変更しない。
 
 [実H4 Reference adapter](../trottertracks/track_d_h4_reference.py) は[固定word02検証](../../docs/research/track_d_h4_reference_validation_20261106/PLAN.md)専用。元CのStrongBuilder・event/phase compiler、既存directional diagonalと人工Track D shellを再利用する。共通libraryの既定動作は変更しない。

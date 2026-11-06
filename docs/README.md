@@ -1,5 +1,7 @@
 # 文書索引
 
+[Stage A結果](research/track_d_h4_paired32_reference_20261106/RESULT.md)：保存32本すべてでCX/depth減、RZ増、qubits9→17。32 precompile／128 postcheck PASS、有限cohort限定、mandatory STOP。
+
 [Track D Stage A：保存32 trajectoryのpaired Reference検証](research/track_d_h4_paired32_reference_20261106/PLAN.md)：同endpoint・固定cut、全precompile PASS後だけ2方式×X/Y×32の最大128 wrapper比較。元H厳密ground仮定・準備費除外、B/C段階は対象外。
 
 [Track D実H4 Reference移送](research/track_d_h4_reference_validation_20261106/PLAN.md)／[結果](research/track_d_h4_reference_validation_20261106/RESULT.md)：保存word02・固定cut、strong symmetric対照、correctnessと6 full-wrapper compileの限定scope。

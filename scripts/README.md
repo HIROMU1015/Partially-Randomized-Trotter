@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Stage A結果](../docs/research/track_d_h4_paired32_reference_20261106/RESULT.md)：保存32本すべてでCX/depth減、RZ増、qubits9→17。32 precompile／128 postcheck PASS、有限cohort限定、mandatory STOP。
+
 [run_track_d_h4_paired_reference.py](run_track_d_h4_paired_reference.py) は[Stage A保存32 path](../docs/research/track_d_h4_paired32_reference_20261106/PLAN.md)専用。元SOURCE・保存events/reference/rawを必要とし、全precompile PASS後だけ最大128 wrapper compile。新sampling・RPE統計／全費用へ進まない。
 
 [run_track_d_h4_reference.py](run_track_d_h4_reference.py) は[実H4固定word02](../docs/research/track_d_h4_reference_validation_20261106/PLAN.md)のcorrectnessとPASS時6 full-wrapper compileに限定する。元SOURCEと保存結果の隔離入力が必要で、終了後mandatory STOP。
