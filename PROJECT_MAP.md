@@ -234,3 +234,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 
 
 2026-11-06 A1 N3案B稼働確認：修正SOURCE ee49b53f…でmanager/親/125workerが起動。13:47:32 UTC snapshotは125 bit/価格、A1 X train中。最終精度/CV比較は未判定、科学jobは継続中。[途中記録・固定SOURCE・復旧方針](docs/research/o2_a1_n3_B_retry_20261106/REPORT.md)。
+
+
+2026-11-06 A1 N3：[範囲見直し・752-shot予備契約案・現行状態と停止手順](docs/research/o2_a1_n3_scope_redesign_20261106/REPORT.md)。A1対B1-OLの段階的予備検証を優先するユーザー指示に沿う設計。具体shot/seedは未採択・科学実行0、人工11件PASS。現行jobの停止/変更/signal送信は0、現行jobは観測時RUNNING。

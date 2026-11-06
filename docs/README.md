@@ -149,3 +149,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](research/o2_a1_n3_B_science_20
 
 
 2026-11-06 A1 N3案B：[修正入口・manager_run02・限定再実行](research/o2_a1_n3_B_retry_20261106/REPORT.md)。ユーザーは技術的な意図しない中断の修復/再投入も許可。科学条件・取得済bit・旧SOURCE/STOPは維持する。
+
+
+2026-11-06 A1 N3：[範囲見直し・752-shot予備契約案・現行状態と停止手順](research/o2_a1_n3_scope_redesign_20261106/REPORT.md)。A1対B1-OLの段階的予備検証を優先するユーザー指示に沿う設計。具体shot/seedは未採択・科学実行0、人工11件PASS。現行jobの停止/変更/signal送信は0、現行jobは観測時RUNNING。
