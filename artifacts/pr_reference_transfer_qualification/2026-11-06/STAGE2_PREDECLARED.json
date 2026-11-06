@@ -1,0 +1,113 @@
+{
+  "T_synthesis": false,
+  "arms": [
+    "Simon_Love",
+    "reference"
+  ],
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "cells": [
+    {
+      "n_per_stratum": 2,
+      "q": 4,
+      "r": 1
+    },
+    {
+      "n_per_stratum": 2,
+      "q": 32,
+      "r": 1
+    },
+    {
+      "n_per_stratum": 2,
+      "q": 128,
+      "r": 1
+    },
+    {
+      "n_per_stratum": 2,
+      "q": 256,
+      "r": 2
+    }
+  ],
+  "expansion_allowed": false,
+  "model_rejection": "unexplained context/cancellation or critical-path discrepancy prevents claiming all18 prices",
+  "model_scope": "diagnostic only, not certified; no r2 estimate filled from r1",
+  "paired": true,
+  "r1_model": {
+    "Simon_Love": {
+      "intercept": [
+        [
+          671.9405273115717,
+          72.3268059135703,
+          220.52981431665376,
+          964.2477508177726
+        ],
+        [
+          672.9405273115754,
+          72.3268059135703,
+          220.52981431665376,
+          965.2477508177726
+        ]
+      ],
+      "qualification": "diagnostic affine r1 model only; fitted anchors, not a structural certificate",
+      "slope": [
+        [
+          7170.313887313879,
+          1209.5904747429577,
+          2455.3694554456574,
+          10644.67551424047
+        ],
+        [
+          7170.313887313878,
+          1209.5904747429577,
+          2455.3694554456574,
+          10644.67551424047
+        ]
+      ]
+    },
+    "reference": {
+      "intercept": [
+        [
+          1527.9403454081876,
+          272.3268057654859,
+          321.9495411220373,
+          2276.247568470135
+        ],
+        [
+          1528.9403454081876,
+          272.3268057654859,
+          322.9495411220364,
+          2277.247568470135
+        ]
+      ],
+      "qualification": "diagnostic affine r1 model only; fitted anchors, not a structural certificate",
+      "slope": [
+        [
+          7135.313008840635,
+          1091.5902026977196,
+          1096.1585290770274,
+          10487.673819631511
+        ],
+        [
+          7135.313008840635,
+          1091.5902026977196,
+          1096.1585290770279,
+          10487.673819631513
+        ]
+      ]
+    }
+  },
+  "results_seen": false,
+  "roles": {
+    "q128_r1": "last r1 schedule round",
+    "q256_r2": "first r2 schedule round",
+    "q32_r1": "out-of-anchor growth holdout",
+    "q4_r1": "missing short round / interpolation holdout"
+  },
+  "seed_namespace": "newA-transfer-fixed-20261106",
+  "strata": [
+    "no_order2",
+    "at_least_one_order2"
+  ]
+}

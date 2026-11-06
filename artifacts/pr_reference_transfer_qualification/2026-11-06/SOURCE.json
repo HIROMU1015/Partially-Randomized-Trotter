@@ -1,0 +1,89 @@
+{
+  "base_commit": "79cba2fc4882bc42282f8feee7257a69f7628072",
+  "started_JST": "2026-11-06",
+  "completed_JST": "2026-11-07",
+  "branch": "codex/pr-reference-transfer-qualification-20261106",
+  "new_source_sha256": {
+    "src/trottertracks/pr_reference_transfer_accounting.py": "3085f5f7cb9f9c7e30ff62d97ac149115af4d6774adf67b05d6aefb2be16c5e8",
+    "src/trottertracks/pr_reference_transfer_catalogue.py": "dc9e4e314de01b914c412e40dc54b1f5f5145c7022f8c91c67390c23a72d732e",
+    "src/trottertracks/pr_reference_transfer_cost_bounds.py": "32187fe59eb8f216626c3c330d81008a45163908d9a304a4c80d72f041085579",
+    "src/trottertracks/pr_reference_transfer_error.py": "59d066e743d82eeeb399feccce2f449996a77df43c4fe4b5ea2dfeed07a0cf1a",
+    "src/trottertracks/pr_reference_transfer_qualification.py": "85b1bf2e84b4caec18435f4d722304be284aee3558057cc0831f71a8d922705b"
+  },
+  "executed_intermediate_source_sha256": {
+    "EXECUTED_CATALOGUE_SOURCE.py": "a691ee3d571f9595f6c9563875d20f621886833c7dd999f3926cf28a78e6bb5e",
+    "EXECUTED_STAGE1_SOURCE.py": "af1b6655656aeb2f50a4040f64ad823584bcb8ddce52d562985344bbf112025a",
+    "EXECUTED_STAGE2_SOURCE.py": "85b1bf2e84b4caec18435f4d722304be284aee3558057cc0831f71a8d922705b",
+    "EXECUTED_STAGE3_SOURCE_INITIAL.py": "236f560ee7d28e77ffd981fe7355569a520120aeba4fef0cac2a55f4aabc695b"
+  },
+  "inherited_unchanged_source_sha256": {
+    "src/trottertracks/pr_reference_interference_pilot.py": "ac00f1ca2832a2d60a770bd5b6b7774750d9862f1edc2cf9850ab6ca0e01c778",
+    "src/trottertracks/pr_reference_interference_factor_checks.py": "3000f0287bd3acaae0f933dec50d3565102e93120d2046df61aa821090a1b442",
+    "src/trottertracks/pr_reference_interference_accounting.py": "917d6cbbad4c53bd9f6a29dfd3f93ac16511d8f1db7003fe5ea143f062543ec2",
+    "src/trottertracks/track_c_compiler_a.py": "940c5ec3503f9083d43122da9d4b128a26639ea55bba63dfa6adbaef6d92d559",
+    "src/trottertracks/track_c_compiler_a_18round.py": "f9288d8e877383ed4e9a5bbeffbc205052ffc6b52a44f51d222281546f65d9ba",
+    "src/trottertracks/track_c_h4_finite_bits.py": "e3dd4c27c9a7a8e770e2d58437fcd105bf59fa749ca9eaa9f85ae342d2ef2fe0",
+    "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+    "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+    "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+    "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+  },
+  "old_input_archive": {
+    "commit": "79cba2fc4882bc42282f8feee7257a69f7628072",
+    "path": "artifacts/pr_reference_interference_pilot/2026-11-06/common.pkl.xz",
+    "unpacked_sha256": "68269aa0415f048a0220beb4054daa1bba715c6eb29fbbe9d5ba779baf0346f2"
+  },
+  "execution_order": [
+    "qualification.initialize(); qualification.stage1()",
+    "qualification.adapter_checks(); qualification.stage2_prices()",
+    "catalogue.run() initially wrote catalogue/ with EXECUTED_CATALOGUE_SOURCE.py",
+    "catalogue.run() with pre_last_cancel observation wrote catalogue_boundary/",
+    "cost_bounds.qualify()",
+    "error.qualify(): local intervals completed; missing mp.iv.asin prevented final accounting",
+    "error.qualify(): matching cached local keys reused; atan2 interval form and conservative phase accounting completed",
+    "accounting.account(): RZ path checks, 18round shot/cost accounting, STOP"
+  ],
+  "intermediate_notes": [
+    "EXECUTED_STAGE1_SOURCE.py is the Stage1 implementation before price/adapter extensions.",
+    "EXECUTED_STAGE2_SOURCE.py captures the fixed price source used for all16 paired holdouts.",
+    "EXECUTED_CATALOGUE_SOURCE.py captures initial post-translation catalogue; current catalogue source adds pre-cancellation boundary observations.",
+    "EXECUTED_STAGE3_SOURCE_INITIAL.py preserves the first error-accounting version. It did not produce an adopted all18 result. Cached interval records were retained and their exact keys checked.",
+    "Minor import syntax errors were corrected before those functions executed; no failed-import numerical outputs adopted.",
+    "No new universal runner, approval/grant infrastructure, synthesis, PF/law/placement search, old-suite rerun, or science after STOP."
+  ],
+  "publication_archives": {
+    "local_catalogue_boundary.tar.xz": {
+      "sha256": "17381211fd460170b3dc36005980b5ad54f3a89844672c1c2c3b423327808522",
+      "bytes": 88112
+    },
+    "local_catalogue_initial.tar.xz": {
+      "sha256": "ba7f64a989f3795e5e0962e951e64ed89ea0f556d770e6a81350754acda7e088",
+      "bytes": 87432
+    },
+    "native_circuits.tar.xz": {
+      "sha256": "87b5374b6e7814ae249aeb4e8ce05bc81b577f51ce3762afe32afa506c853a86",
+      "bytes": 23740
+    },
+    "raw_prices.tar.xz": {
+      "sha256": "d0d306e2c5923a255f8d53c8c57ca8f449a1ad8d657cc471e1e4bf1a0000c966",
+      "bytes": 14508
+    }
+  },
+  "result_sha256": {
+    "ADAPTER_CHECKS.json": "c36d17b7df40972b9142e349ea2b64be59a76fdb9e3dfcad2261db88e93ab359",
+    "ENVIRONMENT.json": "d1c883fe1c8a19283e30a663f71ac0d5ebe972321cd1561bd2db86096f383a22",
+    "EXECUTION.json": "e36527a1d11677a638f971fa5adee8098b8a57a5c8a24a7d9c234f90a61b1ebe",
+    "INPUTS.json": "dd3e4e10e410c25a3efc88fa7fce7c593645c501582b3e87703b738563e47510",
+    "LOCAL_CATALOGUE_SCOPE.json": "dda012eabd33fb721849119772cba0e5c16e56527657b3ffde3973eb87145be7",
+    "RZ_PATH_BOUND_CHECKS.json": "29c87c5fca56b4b4218258baf265ee4f9e0b4d54dbbc79cdedc549878088b9b6",
+    "STAGE1_STRUCTURE.json": "28619098bb05eb5906131455d0d166777161d8a3a6205fe9501473d690a9934f",
+    "STAGE2_CX_CERTIFICATE.json": "48bdab3ae30c6e55290dab187ef0c96f3c38083d85ec7f702f2010ade7826c34",
+    "STAGE2_PREDECLARED.json": "ddec2373b4f568ffd60a694b127b54d85ce542f0f7ab33d6da28e5e83059de4f",
+    "STAGE3_ALL_SUPPORT.json": "54574d5b193665ab617cf82917d0aec7b3d24e456c0d223239fa5c579e032bde",
+    "STAGE3_LOCAL_INTERVALS.json": "d39495937f1810902d501625260fff652702167c40c6e4548d4dd273dfbb60c2",
+    "STAGE4_RPE.json": "54db0ec9689eab57e765e8cec76ee1054f849a3cd9d0a53f4e6283929fb37769",
+    "STOP.json": "6ee84adcc0176c9d77917a6ddd3ff86df60b8123634c803d24ba333b80808bf4"
+  },
+  "old_sources_and_STOPs_preserved": true,
+  "review_status": "author verification only; no independent or formal scientific review"
+}

@@ -634,3 +634,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-06 新A reference干渉：限定correctnessと短round価格
 
 [REPORT](docs/research/pr_reference_interference_pilot_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3 h=.02 K2。A1/A2の数値correctnessを通過しq1/2/8の48 paired priceを保存。Simon–Love後のCX/depth差は局所MC観測で、RZ/size増加と追加qubitを伴う。全18round価格、T、新構成の全support native diskは未資格／未取得。旧shot scheduleを新回路の無条件保証にせずmandatory STOP。第三者CI成功とは扱わない。
+
+## 2026-11-07 新A：固定モデル下の18round CX/RZ上界
+
+[REPORT](docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。旧48組を再利用し新16 paired path・64 whole compile、12 contextの局所価格と境界観測、445局所区間評価を実施。全support誤差・naive位相丸めを含む十分shotはbaseline8598/reference8606。CX/RZの上界対下界で条件付き改善。全round depth/size/T、元H表現の無条件包含、別中央制御分解baselineは未資格。著者検証であり外部再現ではない。mandatory STOP。

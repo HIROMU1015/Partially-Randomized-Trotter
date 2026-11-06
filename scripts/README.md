@@ -177,3 +177,7 @@ artifacts/<validation_name>/
 ## 新A reference干渉限定pilot
 
 `run_pr_reference_interference_pilot.py` は [固定scope・結果](../docs/research/pr_reference_interference_pilot_20261106/REPORT.md)の限定入口。scientific SOURCEは `src/trottertracks/pr_reference_interference_pilot.py`。保存出力はSTOP済みで再実行しない。A1/A2検査はSOURCE内の明示関数であり、旧科学suiteを再実行していない。
+
+## 新A：長round移送・全support資格（2026-11-07）
+
+[実行順・SOURCE・結果](../docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。`trottertracks.pr_reference_transfer_*` の明示Stage関数を使用。旧pilot runnerは再実行せず、新しい自動再開runnerも作らない。保存runはmandatory STOP済み。

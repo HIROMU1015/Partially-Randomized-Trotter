@@ -196,3 +196,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 新A reference干渉限定pilot（2026-11-06）
 
 [成立条件・強baseline・短round資源差と全RPE未確定](docs/research/pr_reference_interference_pilot_20261106/REPORT.md)。SOURCEは `src/trottertracks/pr_reference_interference_*.py`、runnerは `scripts/run_pr_reference_interference_pilot.py`。A1/A2の検査関数・raw・入力・STOPは同報告から辿る。旧C/C2保留・STOPは維持。
+
+## 2026-11-07 新A：長round移送・全support資格
+
+[REPORT](docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、再算出shotを含む18round総CX/RZのreference上界が登録baseline下界を下回る。SOURCEは `src/trottertracks/pr_reference_transfer_*.py`、検査は `adapter_checks` / `qualify` / `validate_rz_paths`。depth/size/T・別制御分解への優位は未資格。mandatory STOP、旧結果・STOP保全。

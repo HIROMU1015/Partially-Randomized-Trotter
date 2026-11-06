@@ -126,3 +126,7 @@
 ## 新A reference干渉限定pilot（2026-11-06）
 
 [REPORT](research/pr_reference_interference_pilot_20261106/REPORT.md)：同じDF trajectoryの信号復元を確認。Simon–Love後も短qのCX/depth差が残るがRZ/sizeは増加、全18roundは未確定。mandatory STOP。
+
+## 新A：長round移送・全support資格（2026-11-07）
+
+[REPORT](research/pr_reference_transfer_qualification_20261106/REPORT.md)。固定入力・compiler・算術モデルの全18roundでCX/RZ総費用の条件付き不等式を得た。depth/size/Tと別制御分解への優位は未資格。科学実行完了、mandatory STOP。

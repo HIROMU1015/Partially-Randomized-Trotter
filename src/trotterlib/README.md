@@ -147,3 +147,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## DF接口の新A限定pilotでの再利用（2026-11-06）
 
 [REPORT](../../docs/research/pr_reference_interference_pilot_20261106/REPORT.md)。`rte`、DF builder、repeated-S2 boundary fusionを変更せず、`trottertracks/pr_reference_interference_*.py` から再利用した。新2-register gadgetの検査と短q資源差は限定結果で、全RPE・T価格は未確定。旧SOURCE・STOPを維持する。
+
+## 新A：長round移送での既存DF/RTE再利用（2026-11-07）
+
+[REPORT](../../docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。既存DF/RTE/repeated-S2とcompiler Aを変更せず `../trottertracks/pr_reference_transfer_*.py` から再利用。`adapter_checks`、局所context、区間上界、価格包含検査を実施。固定モデルで総CX/RZの条件付き改善、depth/size/Tは未資格、mandatory STOP。
