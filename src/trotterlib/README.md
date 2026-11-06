@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+Track D C6a：`trottertracks/track_d_c6a_pilot.py` はfresh canonical event接続・paired統計、既存C3/C5 builder/価格検査を共用する。[PLAN](../../docs/research/track_d_c6a_paired_price_20261106/PLAN.md)。旧ライブラリ入口からは起動しない。
+
 [C5結果](../../docs/research/track_d_c5_q2_20261106/RESULT.md)：共通request入口・人工16件・固定q2 raw/4postcheck PASS。strong手動境界融合/位相集約を統一し、P0後7価格は旧C2と一致。有限fixture限定、C6未実施、mandatory STOP。
 
 [C5共通request/有限fixture価格](../trottertracks/track_d_whole_path_price.py)は、C3の共通化した演算を再利用するopt-in入口。method/axis、SOURCE/law/cut、full-wrapper scopeと資格を記録し、未検証q/母平均を誤受理しない。[固定PLAN](../../docs/research/track_d_c5_q2_20261106/PLAN.md)、人工testは`tests/check_track_d_c5.py`。

@@ -79,10 +79,18 @@ def wrapper_for(bundle, request, *, method, axis):
 def price_record(request, *, method, axis, postcheck, raw_status, paired_status,
                  execution_source, compiler, cost_scope=SCOPE):
     """C5 prices only its qualified fixed fixture; no q/law extrapolation."""
-    if method not in METHODS or axis not in AXES:
-        raise ValueError("METHOD_AXIS")
     if (request.q, request.ordered_samples, request.cut_after_complete_step) != (2, (0, 1), 1):
         raise ValueError("UNVALIDATED_PRICE_FIXTURE_OR_Q")
+    return _checked_price(request, method=method, axis=axis, postcheck=postcheck,
+        raw_status=raw_status, paired_status=paired_status, execution_source=execution_source,
+        compiler=compiler, cost_scope=cost_scope)
+
+
+def _checked_price(request, *, method, axis, postcheck, raw_status, paired_status,
+                   execution_source, compiler, cost_scope=SCOPE):
+    """Shared full-wrapper validation; entry points retain their own domains."""
+    if method not in METHODS or axis not in AXES:
+        raise ValueError("METHOD_AXIS")
     if cost_scope != SCOPE:
         raise ValueError("FULL_WRAPPER_NOT_KERNEL_SHELL")
     if (raw_status != "PASS" or paired_status != "PASS" or postcheck.get("status") != "PASS"

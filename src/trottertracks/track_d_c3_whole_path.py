@@ -1,4 +1,4 @@
-"""Fixed C3 entry plus opt-in ordered saved paths; reuse emitters/CAR/checks."""
+"""Fixed C3 entry plus opt-in bound ordered steps; reuse emitters/CAR/checks."""
 from __future__ import annotations
 
 import json
@@ -101,13 +101,28 @@ def prepare_ordered(context, saved, ordered_samples, cut, *, fixture_selection):
         raise ValueError("COMPLETE_INTERNAL_STEP_CUT")
     if any(type(i) is not int or not 0 <= i < 32 for i in ordered_samples):
         raise ValueError("SAVED_SAMPLE_ID")
-    saved = Path(saved); events, phases, tails, target_rows, raw_rows, bindings = [], [], [], [], [], []
-    c = context
-    atoms = {a.atom_id: a for a in c.arm.plan.atoms}
+    saved = Path(saved); steps = []
     for sample in ordered_samples:
         label = f"sample{sample:02d}"
         record = json.loads((saved / "samples" / (label + "_events.json")).read_text())
-        step = paired.saved_record(record, sample)
+        with np.load(saved / "references" / (label + ".npz"), allow_pickle=False) as z:
+            reference = z["system_reference"].copy()
+        steps.append(dict(sample=sample, events=paired.saved_record(record, sample),
+            reference=reference, raw=base.load_qpy(saved / "circuits" / (label + "_raw.qpy"))))
+    return prepare_steps(context, steps, cut, ordered_samples=ordered_samples,
+        fixture_selection=fixture_selection, cohort=paired.COHORT)
+
+
+def prepare_steps(context, steps, cut, *, ordered_samples, fixture_selection, cohort):
+    """Same C3 emitters for explicit bound steps, saved or fresh; no sampling."""
+    q = len(steps)
+    if q < 2 or type(cut) is not int or not 0 < cut < q or len(ordered_samples) != q:
+        raise ValueError("COMPLETE_INTERNAL_STEP_CUT")
+    events, phases, tails, target_rows, raw_rows, bindings = [], [], [], [], [], []
+    c = context
+    atoms = {a.atom_id: a for a in c.arm.plan.atoms}
+    for record in steps:
+        sample, step = record["sample"], tuple(record["events"])
         for event in step:
             atom = atoms[event.rotation_component_id]; app = event.application_sequence[0]
             if (app.coefficient_sign != (1 if atom.coefficient > 0 else -1)
@@ -117,9 +132,7 @@ def prepare_ordered(context, saved, ordered_samples, cut, *, fixture_selection):
                 raise ValueError("EVENT_SIGN_FRAME_OR_ANGLE")
         events.extend(step); phases.append(paired.path_phase(step, c.scalar_phase))
         tails.append(base.build_event_sequence(step, c.arm.plan.atoms, c.provider, optimized=True))
-        raw_rows.append(base.load_qpy(saved / "circuits" / (label + "_raw.qpy")))
-        with np.load(saved / "references" / (label + ".npz"), allow_pickle=False) as z:
-            target_rows.append(z["system_reference"].copy())
+        raw_rows.append(record["raw"]); target_rows.append(record["reference"])
         bindings.append(dict(sample=sample, signed_angles=[e.unsigned_rotation_angle for e in step],
                              event_normalization=[e.event_normalization for e in step]))
     symmetric = QuantumCircuit(base.N + 1)
@@ -139,7 +152,7 @@ def prepare_ordered(context, saved, ordered_samples, cut, *, fixture_selection):
     for matrix, circuit in zip(target_rows, raw_rows):
         target = matrix @ target; raw.compose(circuit, inplace=True)
     info = dict(q=q, h="1/10", time=str(q * base.H), ordered_samples=list(ordered_samples),
-        cohort=paired.COHORT, endpoint=paired.ENDPOINT, event_count=len(events),
+        cohort=cohort, endpoint=paired.ENDPOINT, event_count=len(events),
         model="linear H4/1.00A/STO-3G/number-CDF8/Nalpha=Nbeta=2/LD2/S2/s1/r32/K0",
         cut_after_complete_step=cut, AB_order="A=last half, B=first half; V=U_last ... U_first=A B",
         initial_state="exact original-H ground assumed; all256 input columns checked", state_preparation="EXCLUDED",
