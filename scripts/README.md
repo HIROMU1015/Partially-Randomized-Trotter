@@ -185,3 +185,7 @@ artifacts/<validation_name>/
 ## 新A B′限定検証（2026-11-07）
 
 [呼出順・SOURCE・結果](../docs/research/pr_reference_bprime_20261107/REPORT.md)。`pr_reference_bprime` と `pr_reference_bprime_accounting` の明示関数を使用した。旧runnerの再実行や自動再開runnerは作らない。保存runはmandatory STOP済み。
+
+## 新A V3：保存回転分類（2026-11-07）
+
+[呼出順・検査結果](../artifacts/pr_reference_rotation_v3/2026-11-07/README.md)、[REPORT](../docs/research/pr_reference_rotation_v3_20261107/REPORT.md)。`trottertracks.pr_reference_rotation_v3` の明示関数で保存local/cohort/QPYを分類・再会計した。人工検査は同moduleの `synthetic_tests`。自動再開runnerは作らず、旧runnerも実行していない。保存runはmandatory STOP済み、V5・新compile・T合成へ進まない。

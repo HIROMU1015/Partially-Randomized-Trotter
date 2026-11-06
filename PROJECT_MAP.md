@@ -204,3 +204,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A：強baseline B′限定検証
 
 [REPORT](docs/research/pr_reference_bprime_20261107/REPORT.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、referenceは4-CX B′に対し期待総CXを少なくとも4.681782%削減。一方、期待総RZは少なくとも0.150597%増加。B′ shot8598、reference8606。depth/size/Tは未資格、mandatory STOP。旧結果・STOP保全。 SOURCEは `src/trottertracks/pr_reference_bprime.py` / `pr_reference_bprime_accounting.py`。検査・実行関数、raw、構造補遺は同報告を参照。
+
+## 2026-11-07 新A V3：回転分類・18round再会計
+
+[REPORT](docs/research/pr_reference_rotation_v3_20261107/REPORT.md)、[規約](docs/research/pr_reference_rotation_v3_20261107/CLASSIFICATION_RULES.md)、[SOURCE・結果](artifacts/pr_reference_rotation_v3/2026-11-07/README.md)。固定H4/STO-3G/DF12・Partial S2 LD3 h=.02 K2・compiler A。確定任意角部分はB′比2.818200%減だが、未確定角度を含む全任意角数の改善は未資格。SOURCE型と実native型を分離。2165 local/384 cohort/14 QPY/15人工検査。旧CX/RZ/shot会計を維持、新compile/T合成0、V5未開始、mandatory STOP。新SOURCE `src/trottertracks/pr_reference_rotation_v3.py` の明示関数を使用。

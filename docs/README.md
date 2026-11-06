@@ -134,3 +134,7 @@
 ## 新A 強baseline B′（2026-11-07）
 
 [REPORT](research/pr_reference_bprime_20261107/REPORT.md)、[構造・算術補遺](research/pr_reference_bprime_20261107/STRUCTURAL_APPENDIX.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、referenceは4-CX B′に対し期待総CXを少なくとも4.681782%削減。一方、期待総RZは少なくとも0.150597%増加。B′ shot8598、reference8606。depth/size/Tは未資格、mandatory STOP。旧結果・STOP保全。
+
+## 新A V3：回転資源（2026-11-07）
+
+[REPORT](research/pr_reference_rotation_v3_20261107/REPORT.md)・[SCOPE](research/pr_reference_rotation_v3_20261107/SCOPE.md)・[分類規約](research/pr_reference_rotation_v3_20261107/CLASSIFICATION_RULES.md)。確定任意角部分のB′比2.818200%減と、未確定を含む全任意角の優越未資格を区別する。旧CX/RZ/shot不変更、総T/depth未取得・未資格。V3でSTOP、V5へ進まない。

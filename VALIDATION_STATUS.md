@@ -642,3 +642,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-07 新A B′：CX条件付き改善・RZ増加
 
 [REPORT](docs/research/pr_reference_bprime_20261107/REPORT.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、referenceは4-CX B′に対し期待総CXを少なくとも4.681782%削減。一方、期待総RZは少なくとも0.150597%増加。B′ shot8598、reference8606。depth/size/Tは未資格、mandatory STOP。旧結果・STOP保全。 保存64 pathの128 B′ whole compile、24角correctness、4 context、9境界を検査。相殺一致は有限cohortの観測に限定し、全support下界には用いない。著者検証で外部再現ではない。
+
+## 2026-11-07 新A V3：部分分類完了・全任意角優越は未資格
+
+[報告](docs/research/pr_reference_rotation_v3_20261107/REPORT.md)、[機械可読値](artifacts/pr_reference_rotation_v3/2026-11-07/CLASSIFIED_18ROUND.json)。Linear H4 1Å/STO-3G/DF12、Partial S2 LD3 h=.02 K2、元H ground供給・準備費除外、固定compiler A/finite-bit law。18roundの確定任意角部分はB′比2.818200%減少。未確定を含む総任意角数は区間が重なりUNQUALIFIED。実native binary値の分類と解析的C/T由来を分離し、T総費用を認定しない。2165 local・384保存whole価格・14保存QPY・15人工検査、著者検証。新compile/合成0、既存CX/RZ/shot保証は不変更、V5未開始、mandatory STOP。

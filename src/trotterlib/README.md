@@ -155,3 +155,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## 新A B′でのDF/RTE再利用（2026-11-07）
 
 [REPORT](../../docs/research/pr_reference_bprime_20261107/REPORT.md)。既存DF/RTE builderを変更せず、RTE出力のcontrolled-RZZだけを新adapterで置換。既存compiler・catalogue・区間・価格/RPE会計を再利用し、24角とr2 joint、128 whole価格を確認。CX条件付き改善・RZ増加でmandatory STOP。
+
+## 新A V3：既存DF/RTEの保存出力を分類（2026-11-07）
+
+[REPORT](../../docs/research/pr_reference_rotation_v3_20261107/REPORT.md)、[SOURCE・人工検査・raw](../../artifacts/pr_reference_rotation_v3/2026-11-07/README.md)。`../trottertracks/pr_reference_rotation_v3.py` が既存B′保存path、finite-bit分布、D primitive、区間helperを再利用。既存builder/compilerは変更せず、新build/compile/合成0。実native型と解析的由来を分離し、全任意角優越は未資格。mandatory STOP。
