@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C6b高速化・限定引継ぎ](docs/research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)：旧SOURCE/raw16・compile/postcheck48を保全し、新SOURCEで未着手raw16/未compile80だけ。sampling0、旧新合算128上限、同じq8/cohort/精度/モデル、完了公開後mandatory STOP。
+
 [Track D C6b独立q8](docs/research/track_d_c6b_q8_20261107/PLAN.md)：fresh32 whole-path/cut4、凍結C6aモデル・paired12量の探索的診断。各path raw PASS後最大128 P0 wrapper。旧SOURCE/STOP保全、raw非公開、長q/全RPE未資格、公開後mandatory STOP。
 
 [Track D C6b-0静的準備](docs/research/track_d_c6b0_preparation_20261107/REPORT.md)：paired12量と絶対24量、旧20 floorの所在、CX構造の証明義務、追加校正/独立q8の最小案と未採択契約。新計算・再解析・実装0、公開照合後mandatory STOP。

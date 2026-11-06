@@ -1,5 +1,7 @@
 # 文書索引
 
+[C6b高速化による残task限定引継ぎ](research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)：旧科学条件・eventを保持し、完了済みraw/compile/postcheckを再実行しない。追加sampling0、全32本/旧新合算128 compile、公開後mandatory STOP。
+
 [Track D C6b独立q8](research/track_d_c6b_q8_20261107/PLAN.md)：32 fresh whole-path、凍結C6aモデル、paired12量の探索的価格診断。確認的PASS・長q・全RPE費用は対象外、rawローカル保全、公開後mandatory STOP。
 
 [Track D C6b-0](research/track_d_c6b0_preparation_20261107/REPORT.md)／[C6b実行前契約案](research/track_d_c6b0_preparation_20261107/C6B_EXECUTION_DRAFT.md)：C6a固定保存値とSOURCEの静的調査だけ。paired優先・追加校正要否・q8事前条件を整理、未採択・未実行、mandatory STOP。

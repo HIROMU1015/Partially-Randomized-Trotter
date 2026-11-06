@@ -29,3 +29,7 @@
 この引継ぎ制御・新実行は**未実装・未実施**であり、固定PLANの変更に対する明示許可が必要。許可前に正常jobへsignalを送らず、pendingを奪わず、再sampling/再compileしない。単に「高速化済み」として現runに適用したことにしない。
 
 次の担当：ユーザーが、現runを維持するか、調整停止・固定SOURCE切替・残task限定引継ぎを許可するかを判断する。Codexは許可された場合だけ具体的な移管制御と新SOURCEを固定して適用する。どちらの場合もC6b結果整理・公開照合・mandatory STOPを維持し、追加q/追加calibration/N/全RPE/詳細科学レビューには進まない。
+
+## 後続：限定引継ぎの採択
+
+上記は高速化部品公開時点の記録として保持する。その後、利用者がSOURCE切替・残task引継ぎを明示許可した。[採択した限定引継ぎPLAN](ACCELERATED_COMPLETION_PLAN.md)に従い、旧controllerの新規投入を止め、投入済みworkerを完了まで待った。旧runはraw16 PASS・compile/postcheck48 PASSを保存し、KeyboardInterruptによる運用STOPとして保全した。controller集約には割込み時点のpostcheck32件だけが残ったが、drain中に完成した16件を含むローカルPASS証拠48件をhash付きで継承する。新SOURCEは残raw16・未compile80だけ、追加sampling0・完了済み科学task再実行0・旧新合算128 compileを上限とする。人工／回帰41件PASS。新SOURCEの公開照合後だけ実行し、最終結果は別RESULTへ記録する。
