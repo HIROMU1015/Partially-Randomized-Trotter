@@ -307,6 +307,56 @@ def controlled_checks(inputs, preparation, round0, det_full):
         scope='uncompiled selected primitives and Q=1 complete outer steps; not all support, trajectories, or compiler'), halves, reconstructed_tail
 
 
+def evaluate_signal_round(inputs, round_, *, kernel, steps, independent, native_step):
+    """Existing P1 five-signal/match evaluation; no preparation/build/shots.
+
+    Mean kernels and the explicitly bound round are supplied by the caller.
+    """
+    config=round_.config
+    indices=inputs['indices'];ix=np.ix_(indices,indices)
+    psi=inputs['sector_state']
+    signal=lambda op:complex(np.vdot(psi,op@psi))
+    m=round_.specification.round_index;q=round_.q;t=round_.specification.t_m
+    print('Evaluating permitted round m='+str(m),flush=True)
+    values={'phys':signal(expm(-1j*t*inputs['physical'][ix])),
+            'DF':signal(expm(-1j*t*inputs['df'][ix]))}
+    other={name:complex(np.vdot(inputs['state'],expm_multiply(-1j*t*csr_matrix(inputs[key]),inputs['state'])))
+           for name,key in (('phys','physical'),('DF','df'))}
+    for name,key in (('PF','ideal_tail'),('finite','corrected'),('raw','raw')):
+        values[name]=signal(np.linalg.matrix_power(steps[key],q))
+        other[name]=signal(np.linalg.matrix_power(independent[key],q))
+    comparisons={name:signal_difference(values[name],other[name]) for name in values}
+    normalization=math.exp(q*kernel['occurrence_log_normalization'])
+    direct_B=config.distribution_normalization**(q*R)
+    A=connection.finite_rte_attenuation(config,tail_evolutions=q)
+    normalization_checks=dict(B_log_vs_direct=abs(normalization-direct_B),
+        A_log_vs_inverse_direct=abs(A-1/direct_B),BA_residual=abs(normalization*A-1))
+    numerical_pass=(all(c['complex_absolute']<=MATCH and c['radius_absolute']<=MATCH and
+                       c['phase_rad'] is not None and c['phase_rad']<=MATCH for c in comparisons.values())
+                    and all(v<=MATCH for v in normalization_checks.values()))
+    native_value=signal(np.linalg.matrix_power(native_step,q))
+    implementation=phase_distance(native_value,values['finite'])
+    require(implementation is not None,'UNDEFINED_IMPLEMENTATION_PHASE')
+    fields=[connection.SignalValue(values[name],round_.context.original_state,
+        round_.context.original_hamiltonian if name=='phys' else round_.context.df_hamiltonian)
+        for name in ('phys','DF','PF','finite','raw')]
+    record=connection.B2SignalRecord(round_.binding,*fields,normalization,implementation)
+    item=dict(m=m,Q=q,T_Ha_inverse=t,signals={k:signal_record(v) for k,v in values.items()},
+        exact_ground_assumption_reference=signal_record(complex(np.exp(-1j*t*inputs['energy']))),
+        independent_differences=comparisons,independent_numerical_match=numerical_pass,
+        adjacent_errors={name:signal_difference(values[a],values[b]) for name,a,b in
+            (('model','DF','phys'),('PF','PF','DF'),('RTE','finite','PF'),('normalization','raw','finite'))},
+        normalization=normalization,attenuation=connection.finite_rte_attenuation(config,tail_evolutions=q),
+        independent_normalization_differences=normalization_checks,
+        raw_corrected_residual=float(abs(values['raw']-values['finite']/normalization)),
+        independent_raw_path='finite_rte_operator_moments attenuated event mean, composed before Q power',
+        implementation_native_mean=signal_record(native_value),implementation_phase_observed=implementation,
+        implementation_scope='conditional ideal native mean Q power; selected native semantics checked; no full long circuit/all-support floating point certificate')
+    if numerical_pass:
+        item['qualification']=qualify_signals(round_,record)
+    return item
+
+
 def run(private_dir, output):
     """Execute only m=0 and m=17. Stop on first failed scientific qualification."""
     started=time.perf_counter()
@@ -367,46 +417,11 @@ def run(private_dir, output):
             b_event=config.distribution_normalization,K_mean_polynomial_degree=K+1,
             preparation_hash=preparation.preparation_hash,tail_hash=round_at(0).tail.tail_hash)
         for m in (0,17):
-            round_=round_at(m);q=round_.q;t=round_.specification.t_m
-            print('Evaluating permitted round m='+str(m),flush=True)
-            values={'phys':signal(expm(-1j*t*inputs['physical'][ix])),
-                    'DF':signal(expm(-1j*t*inputs['df'][ix]))}
-            other={name:complex(np.vdot(inputs['state'],expm_multiply(-1j*t*csr_matrix(inputs[key]),inputs['state'])))
-                   for name,key in (('phys','physical'),('DF','df'))}
-            for name,key in (('PF','ideal_tail'),('finite','corrected'),('raw','raw')):
-                values[name]=signal(np.linalg.matrix_power(steps[key],q))
-                other[name]=signal(np.linalg.matrix_power(independent[key],q))
-            comparisons={name:signal_difference(values[name],other[name]) for name in values}
-            normalization=math.exp(q*kernel['occurrence_log_normalization'])
-            direct_B=config.distribution_normalization**(q*R)
-            A=connection.finite_rte_attenuation(config,tail_evolutions=q)
-            normalization_checks=dict(B_log_vs_direct=abs(normalization-direct_B),
-                A_log_vs_inverse_direct=abs(A-1/direct_B),BA_residual=abs(normalization*A-1))
-            numerical_pass=(all(c['complex_absolute']<=MATCH and c['radius_absolute']<=MATCH and
-                               c['phase_rad'] is not None and c['phase_rad']<=MATCH for c in comparisons.values())
-                            and all(v<=MATCH for v in normalization_checks.values()))
-            native_value=signal(np.linalg.matrix_power(native_step,q))
-            implementation=phase_distance(native_value,values['finite'])
-            require(implementation is not None,'UNDEFINED_IMPLEMENTATION_PHASE')
-            fields=[connection.SignalValue(values[name],ctx.original_state,
-                ctx.original_hamiltonian if name=='phys' else ctx.df_hamiltonian)
-                for name in ('phys','DF','PF','finite','raw')]
-            record=connection.B2SignalRecord(round_.binding,*fields,normalization,implementation)
-            item=dict(m=m,Q=q,T_Ha_inverse=t,signals={k:signal_record(v) for k,v in values.items()},
-                exact_ground_assumption_reference=signal_record(complex(np.exp(-1j*t*inputs['energy']))),
-                independent_differences=comparisons,independent_numerical_match=numerical_pass,
-                adjacent_errors={name:signal_difference(values[a],values[b]) for name,a,b in
-                    (('model','DF','phys'),('PF','PF','DF'),('RTE','finite','PF'),('normalization','raw','finite'))},
-                normalization=normalization,attenuation=connection.finite_rte_attenuation(config,tail_evolutions=q),
-                independent_normalization_differences=normalization_checks,
-                raw_corrected_residual=float(abs(values['raw']-values['finite']/normalization)),
-                independent_raw_path='finite_rte_operator_moments attenuated event mean, composed before Q power',
-                implementation_native_mean=signal_record(native_value),implementation_phase_observed=implementation,
-                implementation_scope='conditional ideal native mean Q power; selected native semantics checked; no full long circuit/all-support floating point certificate')
+            item=evaluate_signal_round(inputs,round_at(m),kernel=kernel,steps=steps,
+                independent=independent,native_step=native_step)
             result['rounds'].append(item)
-            if not numerical_pass:
+            if not item['independent_numerical_match']:
                 item['status']='STOP_NUMERICAL_MATCH';result['status']='STOP_NUMERICAL_MATCH';break
-            item['qualification']=qualify_signals(round_,record)
             item['status']='CONDITIONAL_PASS' if item['qualification']['feasible'] else 'STOP_P1_INELIGIBLE'
             print('Round m='+str(m)+': '+item['status'],flush=True)
             if item['status']!='CONDITIONAL_PASS':
