@@ -638,3 +638,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-07 新A：固定モデル下の18round CX/RZ上界
 
 [REPORT](docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。旧48組を再利用し新16 paired path・64 whole compile、12 contextの局所価格と境界観測、445局所区間評価を実施。全support誤差・naive位相丸めを含む十分shotはbaseline8598/reference8606。CX/RZの上界対下界で条件付き改善。全round depth/size/T、元H表現の無条件包含、別中央制御分解baselineは未資格。著者検証であり外部再現ではない。mandatory STOP。
+
+## 2026-11-07 新A B′：CX条件付き改善・RZ増加
+
+[REPORT](docs/research/pr_reference_bprime_20261107/REPORT.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、referenceは4-CX B′に対し期待総CXを少なくとも4.681782%削減。一方、期待総RZは少なくとも0.150597%増加。B′ shot8598、reference8606。depth/size/Tは未資格、mandatory STOP。旧結果・STOP保全。 保存64 pathの128 B′ whole compile、24角correctness、4 context、9境界を検査。相殺一致は有限cohortの観測に限定し、全support下界には用いない。著者検証で外部再現ではない。

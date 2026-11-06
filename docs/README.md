@@ -130,3 +130,7 @@
 ## 新A：長round移送・全support資格（2026-11-07）
 
 [REPORT](research/pr_reference_transfer_qualification_20261106/REPORT.md)。固定入力・compiler・算術モデルの全18roundでCX/RZ総費用の条件付き不等式を得た。depth/size/Tと別制御分解への優位は未資格。科学実行完了、mandatory STOP。
+
+## 新A 強baseline B′（2026-11-07）
+
+[REPORT](research/pr_reference_bprime_20261107/REPORT.md)、[構造・算術補遺](research/pr_reference_bprime_20261107/STRUCTURAL_APPENDIX.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、referenceは4-CX B′に対し期待総CXを少なくとも4.681782%削減。一方、期待総RZは少なくとも0.150597%増加。B′ shot8598、reference8606。depth/size/Tは未資格、mandatory STOP。旧結果・STOP保全。

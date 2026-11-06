@@ -200,3 +200,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A：長round移送・全support資格
 
 [REPORT](docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、再算出shotを含む18round総CX/RZのreference上界が登録baseline下界を下回る。SOURCEは `src/trottertracks/pr_reference_transfer_*.py`、検査は `adapter_checks` / `qualify` / `validate_rz_paths`。depth/size/T・別制御分解への優位は未資格。mandatory STOP、旧結果・STOP保全。
+
+## 2026-11-07 新A：強baseline B′限定検証
+
+[REPORT](docs/research/pr_reference_bprime_20261107/REPORT.md)。固定H4/S2/LD3/h=.02/K2・compiler A・算術モデルで、referenceは4-CX B′に対し期待総CXを少なくとも4.681782%削減。一方、期待総RZは少なくとも0.150597%増加。B′ shot8598、reference8606。depth/size/Tは未資格、mandatory STOP。旧結果・STOP保全。 SOURCEは `src/trottertracks/pr_reference_bprime.py` / `pr_reference_bprime_accounting.py`。検査・実行関数、raw、構造補遺は同報告を参照。

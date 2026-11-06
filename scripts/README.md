@@ -181,3 +181,7 @@ artifacts/<validation_name>/
 ## 新A：長round移送・全support資格（2026-11-07）
 
 [実行順・SOURCE・結果](../docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。`trottertracks.pr_reference_transfer_*` の明示Stage関数を使用。旧pilot runnerは再実行せず、新しい自動再開runnerも作らない。保存runはmandatory STOP済み。
+
+## 新A B′限定検証（2026-11-07）
+
+[呼出順・SOURCE・結果](../docs/research/pr_reference_bprime_20261107/REPORT.md)。`pr_reference_bprime` と `pr_reference_bprime_accounting` の明示関数を使用した。旧runnerの再実行や自動再開runnerは作らない。保存runはmandatory STOP済み。

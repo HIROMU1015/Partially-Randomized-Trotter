@@ -151,3 +151,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## 新A：長round移送での既存DF/RTE再利用（2026-11-07）
 
 [REPORT](../../docs/research/pr_reference_transfer_qualification_20261106/REPORT.md)。既存DF/RTE/repeated-S2とcompiler Aを変更せず `../trottertracks/pr_reference_transfer_*.py` から再利用。`adapter_checks`、局所context、区間上界、価格包含検査を実施。固定モデルで総CX/RZの条件付き改善、depth/size/Tは未資格、mandatory STOP。
+
+## 新A B′でのDF/RTE再利用（2026-11-07）
+
+[REPORT](../../docs/research/pr_reference_bprime_20261107/REPORT.md)。既存DF/RTE builderを変更せず、RTE出力のcontrolled-RZZだけを新adapterで置換。既存compiler・catalogue・区間・価格/RPE会計を再利用し、24角とr2 joint、128 whole価格を確認。CX条件付き改善・RZ増加でmandatory STOP。

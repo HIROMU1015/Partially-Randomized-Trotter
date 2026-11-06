@@ -1,0 +1,97 @@
+{
+  "base_commit": "da9fceb944dae27f397e48734be30c6864e15f44",
+  "date_JST": "2026-11-07",
+  "branch": "codex/pr-reference-strong-baseline-bprime-20261107",
+  "source_sha256": {
+    "src/trottertracks/pr_reference_bprime.py": "b77523c21d5d058445c59cc9a83d852322415b45494820f16aadb0c1a5c93650",
+    "src/trottertracks/pr_reference_bprime_accounting.py": "7dae4b617384bbbcb284b56440f5c1f57c65901202a23c84c1b9ca85d3a4a539"
+  },
+  "inherited_source_sha256": {
+    "src/trottertracks/pr_reference_transfer_qualification.py": "85b1bf2e84b4caec18435f4d722304be284aee3558057cc0831f71a8d922705b",
+    "src/trottertracks/pr_reference_transfer_catalogue.py": "dc9e4e314de01b914c412e40dc54b1f5f5145c7022f8c91c67390c23a72d732e",
+    "src/trottertracks/pr_reference_transfer_cost_bounds.py": "32187fe59eb8f216626c3c330d81008a45163908d9a304a4c80d72f041085579",
+    "src/trottertracks/pr_reference_transfer_error.py": "59d066e743d82eeeb399feccce2f449996a77df43c4fe4b5ea2dfeed07a0cf1a",
+    "src/trottertracks/pr_reference_transfer_accounting.py": "3085f5f7cb9f9c7e30ff62d97ac149115af4d6774adf67b05d6aefb2be16c5e8",
+    "src/trottertracks/pr_reference_interference_pilot.py": "ac00f1ca2832a2d60a770bd5b6b7774750d9862f1edc2cf9850ab6ca0e01c778",
+    "src/trottertracks/track_c_compiler_a.py": "940c5ec3503f9083d43122da9d4b128a26639ea55bba63dfa6adbaef6d92d559",
+    "src/trottertracks/track_c_compiler_a_18round.py": "f9288d8e877383ed4e9a5bbeffbc205052ffc6b52a44f51d222281546f65d9ba",
+    "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+    "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+    "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+    "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+  },
+  "executed_SOURCE_snapshots": {
+    "EXECUTED_ACCOUNTING_SOURCE.py": "7dae4b617384bbbcb284b56440f5c1f57c65901202a23c84c1b9ca85d3a4a539",
+    "EXECUTED_PRICE_SOURCE.py": "b77523c21d5d058445c59cc9a83d852322415b45494820f16aadb0c1a5c93650"
+  },
+  "review_received": {
+    "path": "docs/research/pr_reference_bprime_20261107/CLAUDE_REVIEW_RECEIVED.md",
+    "sha256": "15f2fc28c1796bbd9983fde5a704a5cc4de0872493d923360adaa95ea4cf210d",
+    "role": "received independent review; predictions not automatically adopted"
+  },
+  "input_pickle": {
+    "base": "da9fceb944dae27f397e48734be30c6864e15f44",
+    "compressed_archive": "artifacts/pr_reference_interference_pilot/2026-11-06/common.pkl.xz",
+    "unpacked_sha256": "68269aa0415f048a0220beb4054daa1bba715c6eb29fbbe9d5ba779baf0346f2"
+  },
+  "execution_order": [
+    "initialize; v2_inputs_and_constants",
+    "correctness; local_catalogue",
+    "boundary_checks; whole_prices (64 saved paths, both axes, Bprime only)",
+    "validate_saved_prices; v2_builder_witness(q4); error_and_shots",
+    "v2_builder_witness(q1); validate_reference_rz_lower",
+    "platform observation; totals_and_stop"
+  ],
+  "calls": {
+    "local_correctness_compiles": 24,
+    "context_compiles": 4,
+    "boundary_compiles": 9,
+    "whole_Bprime_compiles": 128,
+    "new_scientific_samples": 0,
+    "old_baseline_reference_recompiles": 0,
+    "new_interval_jobs": 0,
+    "old_full_suite_reruns": 0,
+    "new_synthesis": 0
+  },
+  "reuse_notes": [
+    "same saved64 event sequences, no random trajectory resampling",
+    "old catalogues expanded read-only into this run; cost.OUT redirected in this process only",
+    "saved local intervals reused after per-context lowering equality",
+    "q1/q4 setter observation restored in finally; no shared setting changes",
+    "old shot and reference resource results are inherited; Bprime sufficient integer shots recomputed",
+    "no scientific execution after STOP"
+  ],
+  "result_sha256": {
+    "BOUNDARY_CHECKS.json": "d1adab70f314745849c2f1414cbf4d9e38fbbe7cf741e4352acd94e9e4186e74",
+    "CATALOGUE_SUMMARY.json": "8068e8295ff8bfccfb722445e98fcf44fdcae6735394952ae5f918022c279dad",
+    "CORRECTNESS.json": "d3adedc0570dde8df6ec8f6e92fff9d383a5000227eb027e48145a7d359f6fdb",
+    "ENVIRONMENT.json": "bcee11b72aa363e44d4ae86d85cf7311e0bb92d583f14f04a47958df1fa940ae",
+    "ERROR_RPE.json": "3c9d8480a5ae65141fdacfb4500789e598834d713b98724b236ded1c085bbb6d",
+    "INPUTS.json": "ef4a6a54e53488ed1363ce24c31ef837dd750b869db44053b2b235d886d4192c",
+    "LOCAL_SCOPE.json": "3108ac85b886e886dbbf5cd0c9edb62e84dc7df4a833748a3045fda6c80a0c85",
+    "PRICE_BOUND_CHECKS.json": "4f44a9555c886c276dd0e4dce35a9ee6eb78e828ef07fe5557ad25b7a39f53d8",
+    "PRICE_EXECUTION.json": "918531356c8ebc91186b259ac0e9bfabe065be7f79312f915eafb9d0a9c2c4ac",
+    "REFERENCE_RZ_LOWER_CHECKS.json": "4d144a9136382a7f2954ffc4407f8aba01a6886b7b601e472252afb78a2f43e8",
+    "STOP.json": "284e7e54b3dace2c04d5627ec66055a34d78e129381b29dbcff5a42a15efb64b",
+    "TOTALS_18ROUND.json": "60148d3f0915e8097f663989560a257ae598b8adaa79ea7353546e4584b0935b",
+    "V2_BUILDER_WITNESS.json": "19a3213f635796bd3239c93dc4705b542b452ae80bdd1f9fe4637aeb8f3ea8ca",
+    "V2_INPUTS_CONSTANTS.json": "cb09dbbf342fe0cca5c4eea555575bc66de616fcd16b3ebddc21a5231bb0c9d6",
+    "V2_PLATFORM_DETAILS.json": "843aed9918385673a778343d9d72c8f474aed964370ef1de8da982b65a5fbbe6",
+    "V2_Q1_BUILDER_WITNESS.json": "3d6dbdce28dea35ee2e590e535c3f46d015c1eabc4edce9133bbe85b536a5dde"
+  },
+  "archives": {
+    "Bprime_local_catalogue.tar.xz": {
+      "bytes": 78392,
+      "sha256": "d6b8329c94590bf77669f354100c9a48401b3c4619c9e1eb00209ca7e30012cb"
+    },
+    "Bprime_native_qpy.tar.xz": {
+      "bytes": 11456,
+      "sha256": "85a0597e963db57c20323acc954fa0203384761a6d410f9131f69f573379c37a"
+    },
+    "paired_Bprime_prices.tar.xz": {
+      "bytes": 485680,
+      "sha256": "bbb7452bebf747b9c603ad20308dcc08e2548130cc477d954292f272d686e648"
+    }
+  },
+  "verification": "author technical checks, not an independent new review or external reproduction"
+}
