@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C3保存回路の中断補完PLAN](docs/research/track_d_c3_q4_q8_20261106/COMPLETION_PLAN.md)：run02の8 compile・7 postcheckを保持し、最後のq8 Reference Y postcheckと最終照合のみを別出力で実施。回路再生成・再compileなし。
+
 [C3 run02再実行PLAN](docs/research/track_d_c3_q4_q8_20261106/RUN02_PLAN.md)：利用者承認によりcontract参照先を修正。同じq4/q8 fixture/cut/精度で再実行し、run01のSOURCE・失敗・STOPを保持する。
 
 [Track D C3結果](docs/research/track_d_c3_q4_q8_20261106/RESULT.md)：contract参照先の実装誤りでq4/q8ともraw構築前STOP。科学的correctness・価格未評価、compile/retry/resume0。SOURCE・失敗・STOPを保全し、修正／再実行は新たな判断へ戻す。
