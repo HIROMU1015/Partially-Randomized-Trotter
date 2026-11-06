@@ -171,3 +171,5 @@ artifacts/<validation_name>/
 `run_b2_p1_strong_pf_h4_diagnosis.py`は固定5 arm/15点のbinary64・80/120桁累乗を比較する。[実H4の原因診断とSTOP](../docs/research/track_a_b2_p1_strong_pf_h4_diagnosis_20261107/REPORT.md)。元構成/旧判定を保持し、修正・shot・価格を行わない。
 
 `validate_b2_strong_pf_precision.py`は人工入力だけで新HP基本stepと独立Pauli-JW/spectral参照を比較する。[SOURCE・精度改善・STOP](../docs/research/track_a_b2_strong_pf_precision_20261107/REPORT.md)。分子入力の引数はない。
+
+`run_b2_strong_pf_hp_requalification.py`は固定停止5 armの全18roundを同じP1条件・80/120桁構成で評価する。[再適格化とSTOP](../docs/research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)。input gate不適格で全体STOP、round不適格でそのarmをSTOP。

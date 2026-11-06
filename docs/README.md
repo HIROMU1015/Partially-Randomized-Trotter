@@ -112,3 +112,5 @@
 - [B2 P1強PF・実H4の5 arm/15点原因診断（2026-11-07）](research/track_a_b2_p1_strong_pf_h4_diagnosis_20261107/REPORT.md)：元結果完全再現、HP参照安定。全5 STOP点で基本step間差が残る。構成内の誤差所在は未確定、旧判定維持・mandatory STOP。
 
 - [強PF基本stepの構成精度改善・人工検証（2026-11-07）](research/track_a_b2_strong_pf_precision_20261107/REPORT.md)：SYNTHETIC_PRECISION_IMPROVED、46テストPASS。実H4は3 PASS／5 STOPを維持、mandatory STOP。
+
+- [強PFの停止5 arm・高精度全18round再適格化（2026-11-07）](research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)：90/90点条件付きPASS。旧3 PASS/5 STOPを保全し、新SOURCEの5 PASSを追加。branch/shot/価格は未実行、mandatory STOP。

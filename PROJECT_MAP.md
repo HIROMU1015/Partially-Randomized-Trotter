@@ -207,3 +207,7 @@ Full S2 s1/s2・Yoshida4 s1が全18round条件付きPASS、5 armは固定独立�
 ## 強PFの基本step精度adapter（人工検証、2026-11-07）
 
 [改善範囲・結果・STOP](docs/research/track_a_b2_strong_pf_precision_20261107/REPORT.md)。`b2_strong_pf_precision.py`、`validate_b2_strong_pf_precision.py`、`tests/test_b2_strong_pf_precision.py`、`artifacts/track_a_b2_strong_pf_precision/`。native/CARのopt-in HP構成。実H4再評価なし。
+
+## 強PFの高精度・停止5 arm再適格化（2026-11-07）
+
+[90点の結果・SOURCE・STOP](docs/research/track_a_b2_strong_pf_hp_requalification_20261107/REPORT.md)。`b2_strong_pf_hp_requalification.py`、対応runner/test、`artifacts/track_a_b2_strong_pf_hp_requalification/`。5 arm全18round条件付きPASS。旧履歴保全、branch/shot/価格未実行。
