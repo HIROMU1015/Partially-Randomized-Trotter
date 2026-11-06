@@ -1,0 +1,2039 @@
+{
+  "schema": "a1_n1_static_profile_v1",
+  "python": "3.12.3",
+  "executable": "/usr/bin/python3.12",
+  "executable_sha256": "e50d468e8b0adfb05733f5b87b3cff34829c4a8c1aea50c865aa8bdfe4bb150f",
+  "platform": "Linux-6.8.0-49-generic-x86_64-with-glibc2.39",
+  "node": "GPUA100-gleap-01",
+  "thread_environment": {
+    "OMP_NUM_THREADS": null,
+    "OPENBLAS_NUM_THREADS": null,
+    "MKL_NUM_THREADS": null,
+    "NUMEXPR_NUM_THREADS": null,
+    "NUMBA_NUM_THREADS": null,
+    "CUDA_VISIBLE_DEVICES": null,
+    "MPLCONFIGDIR": "/tmp/a1-engine-connection-cache-20261106/mpl",
+    "NUMBA_CACHE_DIR": "/tmp/a1-engine-connection-cache-20261106/numba",
+    "XDG_CACHE_HOME": "/tmp/a1-engine-connection-cache-20261106/xdg"
+  },
+  "numpy_build": {
+    "Compilers": {
+      "c": {
+        "name": "gcc",
+        "linker": "ld.bfd",
+        "version": "10.2.1",
+        "commands": "cc",
+        "args": "-fno-strict-aliasing",
+        "linker args": "-Wl,--strip-debug, -fno-strict-aliasing"
+      },
+      "cython": {
+        "name": "cython",
+        "linker": "cython",
+        "version": "3.0.8",
+        "commands": "cython"
+      },
+      "c++": {
+        "name": "gcc",
+        "linker": "ld.bfd",
+        "version": "10.2.1",
+        "commands": "c++",
+        "linker args": "-Wl,--strip-debug"
+      }
+    },
+    "Machine Information": {
+      "host": {
+        "cpu": "x86_64",
+        "family": "x86_64",
+        "endian": "little",
+        "system": "linux"
+      },
+      "build": {
+        "cpu": "x86_64",
+        "family": "x86_64",
+        "endian": "little",
+        "system": "linux"
+      }
+    },
+    "Build Dependencies": {
+      "blas": {
+        "name": "openblas64",
+        "found": true,
+        "version": "0.3.23.dev",
+        "detection method": "pkgconfig",
+        "include directory": "/usr/local/include",
+        "lib directory": "/usr/local/lib",
+        "openblas configuration": "USE_64BITINT=1 DYNAMIC_ARCH=1 DYNAMIC_OLDER= NO_CBLAS= NO_LAPACK= NO_LAPACKE= NO_AFFINITY=1 USE_OPENMP= HASWELL MAX_THREADS=2",
+        "pc file directory": "/usr/local/lib/pkgconfig"
+      },
+      "lapack": {
+        "name": "dep140551260102944",
+        "found": true,
+        "version": "1.26.4",
+        "detection method": "internal",
+        "include directory": "unknown",
+        "lib directory": "unknown",
+        "openblas configuration": "unknown",
+        "pc file directory": "unknown"
+      }
+    },
+    "Python Information": {
+      "path": "/opt/python/cp312-cp312/bin/python",
+      "version": "3.12"
+    },
+    "SIMD Extensions": {
+      "baseline": [
+        "SSE",
+        "SSE2",
+        "SSE3"
+      ],
+      "found": [
+        "SSSE3",
+        "SSE41",
+        "POPCNT",
+        "SSE42",
+        "AVX",
+        "F16C",
+        "FMA3",
+        "AVX2"
+      ],
+      "not found": [
+        "AVX512F",
+        "AVX512CD",
+        "AVX512_KNL",
+        "AVX512_KNM",
+        "AVX512_SKX",
+        "AVX512_CLX",
+        "AVX512_CNL",
+        "AVX512_ICL"
+      ]
+    }
+  },
+  "distributions": {
+    "Jinja2": {
+      "version": "3.1.6",
+      "metadata_sha256": {
+        "METADATA": "68c5548fb67c4132a13898d9b31ec50c6bea2abdd915d921f214355c3a6499c8",
+        "RECORD": "1bb3b46d00f55f63d24c3a34a7f955ef6692d4691217a53b15261769607f9f7c",
+        "WHEEL": "ff6a3334508b59cf776cae1628708ef9e0d410d0e5a3e76073d714deaa2460ee"
+      }
+    },
+    "MarkupSafe": {
+      "version": "3.0.3",
+      "metadata_sha256": {
+        "METADATA": "12b4cc61a7fa288cf7667ee3f213786d9619db57fb33ff6f934afbcb5c12ec81",
+        "RECORD": "cf94542b5c0d5a7bb16c08bcd035ef0c71d9bf579a9cd21e4c52626155144b3c",
+        "WHEEL": "0f1467590cfe2a9f7ee1ae217431ec4afd0a502dc7eec37d35b79fdfef118d75"
+      }
+    },
+    "PubChemPy": {
+      "version": "1.0.5",
+      "metadata_sha256": {
+        "METADATA": "48bee6a6ab131ef2a608d5f702f182989ff25e0ec43ea5ddfdf789f14dc896a8",
+        "RECORD": "556e23258771112a490990a8e84064f3aba03210966b21a7a840a0334aa3cd04",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "PyYAML": {
+      "version": "6.0.3",
+      "metadata_sha256": {
+        "METADATA": "03c3b415ed38d09faedc49360e930769b40c58f68585e6de00e2e4916a858d34",
+        "RECORD": "dc055c2d5a393702e5d36a3752bd97d380761dd6e9bc50b22234b3bcbe8b4ce3",
+        "WHEEL": "0f1467590cfe2a9f7ee1ae217431ec4afd0a502dc7eec37d35b79fdfef118d75"
+      }
+    },
+    "Pygments": {
+      "version": "2.21.0",
+      "metadata_sha256": {
+        "METADATA": "1dde075570136774c706bf0009183a793fe0ee262e4a5590cc6eff8453eedd43",
+        "RECORD": "c57d2c675dd226ca404341b0df0ec2d7778c884a3bc7b9cb1ac1891652bb7c20",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "Send2Trash": {
+      "version": "2.1.0",
+      "metadata_sha256": {
+        "METADATA": "04ea43f17e94fa7c08678432c37d5f608a4ca4384b868c8f53d25ec42da44533",
+        "RECORD": "2964634b63be10be74c5e2512170c79f3e8e17f3ca7c666940ffd0f5dc576077",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "anyio": {
+      "version": "4.15.1",
+      "metadata_sha256": {
+        "METADATA": "043aecb571af7189e8a6c528f5d8e32545f1b2cdfaaf761d51e6d5b67ea3ca81",
+        "RECORD": "355dd9cacd66cf28a25030f5380ac56a5cb6cbd8086423ccf1a46433d420f763",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "argon2-cffi": {
+      "version": "25.1.0",
+      "metadata_sha256": {
+        "METADATA": "e90851075b68261faccf407b29430f45e6a5b1a0759a0d50b8d93101b0de2179",
+        "RECORD": "a6d99732a61a1b7dc5dcadfa0a1c8ecd20ab6b342a99d1deec9879ec9406a77f",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "argon2-cffi-bindings": {
+      "version": "26.1.0",
+      "metadata_sha256": {
+        "METADATA": "f6bd89c593104a1d78990be57cdf022b414b666c7630a480de6d67309a02323b",
+        "RECORD": "bd3d4ae36d2a8e4f6ad2c214fa9387168a76399f229131722d8d4c2dd394decc",
+        "WHEEL": "66f7c2b2717ef404f454242757e4e89b868bd3a0d570988f46bd7838e630ca52"
+      }
+    },
+    "arrow": {
+      "version": "1.4.0",
+      "metadata_sha256": {
+        "METADATA": "36407a40cd6a7f3147f8c8ab802d516fb4c152d7e2aabab52718ff3407a1706d",
+        "RECORD": "6f2cee97724bf984b73ee9fee4f842d752785a24dedfe451dab9d4fc0f04da92",
+        "WHEEL": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+      }
+    },
+    "asttokens": {
+      "version": "3.0.2",
+      "metadata_sha256": {
+        "METADATA": "8b3567b29654e6e9a60ab50fde2c317899152790acadaab7868a708bf931c3d3",
+        "RECORD": "639113d15bad6ec1821e028a5ded1a4b896d3bdaa6770a135d90d61194d3a97f",
+        "WHEEL": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0"
+      }
+    },
+    "async-lru": {
+      "version": "2.3.0",
+      "metadata_sha256": {
+        "METADATA": "ce20436dd22cbc90f0da0491c01ec43edc37953a3beaa9b9cb15d6b48bb469a8",
+        "RECORD": "28dbdf88724c6d1faf9dd8ef20635effdb68db57b0e7f9c9b99132c96e499829",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "attrs": {
+      "version": "26.1.0",
+      "metadata_sha256": {
+        "METADATA": "4cd40e690f23bf37cbcad34efd6758e062df1df07c86833f7e3ce95bf1fa38cc",
+        "RECORD": "a5151f0461f45abf44fdc57c2ccdb73151bb54a0abfd22133f7ea7ad48f8dc23",
+        "WHEEL": "41c708c5adba6e097513ab8ccb9f1d7865a2fb469e22491a9e01dcc64da459fc"
+      }
+    },
+    "babel": {
+      "version": "2.18.0",
+      "metadata_sha256": {
+        "METADATA": "11399bc03a6b81fd20e8b82823392052a8db969a8ef150382b0cf5996afcf41a",
+        "RECORD": "61b6cee98d96b881f44cf927287a6b7f1040ac4305a535e25677e7c9a520d2cc",
+        "WHEEL": "c14c80f0e6ae95195b7f032d990b2f367806af140702f90a72f466762ce5262d"
+      }
+    },
+    "beautifulsoup4": {
+      "version": "4.15.0",
+      "metadata_sha256": {
+        "METADATA": "b2f888103259f1607c85f3b1163be1bc49fc9941a3243c3b89a21075bfc6d4fb",
+        "RECORD": "e711fd13c2c3eb28c6a5853b39edae8c28ab49253b5cd54e26682e5fdd1582d3",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "bleach": {
+      "version": "6.4.0",
+      "metadata_sha256": {
+        "METADATA": "637c3e9ddff6d87427411cb7cb2a55b15fe47b6145f78b940f8faf1a97360e72",
+        "RECORD": "bbecbf5b996176c1c2d4e48c9c0e1b0a2dfed7522043f140216eaf88cbbcfcb0",
+        "WHEEL": "9064fbe0b5b245466b2f85602e1ebf835d8879597ff6ef5956169dae05d95046"
+      }
+    },
+    "certifi": {
+      "version": "2026.7.22",
+      "metadata_sha256": {
+        "METADATA": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090",
+        "RECORD": "54fa8ebe7e5d1cd4a48064f94e706e5f7a6cdcccef364379692ed7657bfed982",
+        "WHEEL": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0"
+      }
+    },
+    "cffi": {
+      "version": "2.1.1",
+      "metadata_sha256": {
+        "METADATA": "558bafb9093a8e790175d9ecff9688382981d744877dad86fd6770db0f4dc918",
+        "RECORD": "7a2d8f13afe61a9a4657cba4b8dd3d47c69a7e32744c4a9d78cec76f4f8690f2",
+        "WHEEL": "504ac80cc95190c99aea177550563d7939b8fca6b1431c01c0d435e74afbbd0e"
+      }
+    },
+    "charset-normalizer": {
+      "version": "3.5.1",
+      "metadata_sha256": {
+        "METADATA": "955c93827d59f1280f6d6a76b1e11bfb999cc65a55df83a6f9b28b7bc0e467f6",
+        "RECORD": "28604c7dd07102f216c87dc0b25d7517f2ba2ea0f0ae353a26d3ada1cd2c396a",
+        "WHEEL": "797631520e4ac7d96fb6e40cd3e5f2d32e39caeb9cf024f466babe3777b7c296"
+      }
+    },
+    "cirq-core": {
+      "version": "1.6.1",
+      "metadata_sha256": {
+        "METADATA": "098abb2ab565f7ddea597e21f8ab9dda9dfe0c0bea18a95efc99ee5e018bfc8a",
+        "RECORD": "251a1fb41ff4199db03ed416913f8a4cc4ff572b2bf32bd24cb88b65ebd7343e",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "comm": {
+      "version": "0.2.3",
+      "metadata_sha256": {
+        "METADATA": "e475291f8fdedbecbbfd788a2c5de9c912424d23574aba7b9fc51985d7158878",
+        "RECORD": "bd95108003994ad410892f0356998265773aa92dc14026efb6007768ad030461",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "contourpy": {
+      "version": "1.3.3",
+      "metadata_sha256": {
+        "METADATA": "c43cef86baef09cff9c77975e578fa8cca0c9454df40dc176938b499a63de54a",
+        "RECORD": "ba168c0e5b1ffc80a56f7d1617a3e2bec1d9f17d21a3afdef01aaa17c64018c0",
+        "WHEEL": "ac90a994678616346852fc495a154e351832198199a0e921c9e8f4b372b28e82"
+      }
+    },
+    "cycler": {
+      "version": "0.12.1",
+      "metadata_sha256": {
+        "METADATA": "23289e19b76f1e01394227696e6af2b6cd1ce79e89731209bf9195148b18ed36",
+        "RECORD": "0dd0246dcaff5aaa3e9bbb1d8fb35134b6d04659180f94e77491162f0e1f2ab3",
+        "WHEEL": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+      }
+    },
+    "debugpy": {
+      "version": "1.8.22",
+      "metadata_sha256": {
+        "METADATA": "c9d6ef5712b5e28d2cd2146a0fc764260381f1729ff0e0da9b0c77dd2230bc64",
+        "RECORD": "d8df5e82e031a75bc57e388ffd47c4f9f4e24ec528c2e780b39e3a295ae47d28",
+        "WHEEL": "6ef25722e993423cdfac6da77524eac56044551c26e886a20005af49cdddf002"
+      }
+    },
+    "decorator": {
+      "version": "5.3.1",
+      "metadata_sha256": {
+        "METADATA": "2133792485403bbd739e1db5960228bedbcde6d00c0acc052b27f39dbae5b5c4",
+        "RECORD": "01897326e2ccc7b1bbb9ea2727663e6fc591679b279bf44d56e39e3598bccb11",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "defusedxml": {
+      "version": "0.7.1",
+      "metadata_sha256": {
+        "METADATA": "369d3cef64870daf849fba711cb8d05a7efe3c8d9ab0f763adc34079fe378bb1",
+        "RECORD": "d5bf1cc282d7d85ab0432e77a778fcbb6349aec6a15073d4480e12900a1636a7",
+        "WHEEL": "9064fbe0b5b245466b2f85602e1ebf835d8879597ff6ef5956169dae05d95046"
+      }
+    },
+    "deprecation": {
+      "version": "2.1.0",
+      "metadata_sha256": {
+        "METADATA": "02696153ceadfe541087ce7c8d2319319a6860cea07e79cb48a29ee4380653cf",
+        "RECORD": "00a7fd4f007b9c2bc1e6e491d87a19523047aeba240ddecb9c57af3d589852c7",
+        "WHEEL": "9064fbe0b5b245466b2f85602e1ebf835d8879597ff6ef5956169dae05d95046"
+      }
+    },
+    "dill": {
+      "version": "0.4.1",
+      "metadata_sha256": {
+        "METADATA": "040d6c84eddf29c8c14dc2aef214962a919803f557243824dd4f8aa3b49e3868",
+        "RECORD": "1948086950b601f064360b1f8267e8925614f17b27801c1986323b7b54f6914a",
+        "WHEEL": "3d9504c5d7fbd548bfb28ebb417a724ae1ed0a2dfe277c2f1783912ba93f4bc5"
+      }
+    },
+    "duet": {
+      "version": "0.2.9",
+      "metadata_sha256": {
+        "METADATA": "3ed83e04acd588ca4daad930e9bc8c97af9b54a560df6dc17fa02464326237cc",
+        "RECORD": "7738c6fbe0fea2392001bc3e842b60ecc6b8318e9a734665c4ff4aad3e007b7f",
+        "WHEEL": "1b5e87e00dc87a84269cead8578b9e6462928e18a95f1f3373c9eef451a5bcc0"
+      }
+    },
+    "executing": {
+      "version": "2.2.1",
+      "metadata_sha256": {
+        "METADATA": "d7586d1ae225bee126c4237eb0c4d7699a8580b81eb558cc500c263d29a633ff",
+        "RECORD": "7c636cc05f6456631be2065326e886c51b6ec43a4d83267ba65008be9c80bbac",
+        "WHEEL": "2e5ef68b2aadb7a45bc69f90ec549a7d80352de46ff7c5f5e71719591b051266"
+      }
+    },
+    "fastjsonschema": {
+      "version": "2.22.2",
+      "metadata_sha256": {
+        "METADATA": "fb4512dbb43517f2c8cbca21b3052bf74b2113ba67df8eb7eb9b53d8349aebbb",
+        "RECORD": "14609bf97d983778f71f443de7bd231cedaabe07f5297a63818ab119c506972e",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "fonttools": {
+      "version": "4.65.0",
+      "metadata_sha256": {
+        "METADATA": "767c772df5fec424631e48baa13cfa55498f4d7be9b41d1071b34bf52cc28fa8",
+        "RECORD": "1e5c63575d10c049b6555ffdb63cc128394b70be02aa414931e8215c5b059139",
+        "WHEEL": "1fe26894683c1fdfa102306a92539238acc4adbebebc8e3c4b15b7123746138e"
+      }
+    },
+    "fqdn": {
+      "version": "1.5.1",
+      "metadata_sha256": {
+        "METADATA": "b8f4f402018d1dc56fb20d41eb2c39b9f8faca17f6e8080fbe05abdd0be8b8fb",
+        "RECORD": "26b48bd31166b0641681f5f1f3b7eea14618fa4da5610579260721865c5362c8",
+        "WHEEL": "3aa464174798e461ecb0ca2b16395b4c8ab4ef6be91e917ad1f21003a952f710"
+      }
+    },
+    "h11": {
+      "version": "0.16.0",
+      "metadata_sha256": {
+        "METADATA": "28f326098ac09fcba79b8f180f96087c841fe2456215cb7b872a9c7d5cd19d64",
+        "RECORD": "ac020206998e31ee6a749a207c7746245805e64814bb88642302a572f557fb24",
+        "WHEEL": "0a6c85234931e5c7443132e238d4116c64308c8a11d5a21807b782010e0a3c9d"
+      }
+    },
+    "h5py": {
+      "version": "3.16.0",
+      "metadata_sha256": {
+        "METADATA": "e461fcf7eb9fee6242205f9225cc178455a0212d1c0cb8f997f7eebf8cd9695e",
+        "RECORD": "cbd9ea6e630dd21ad7b6725d9756c7745bceae84811185292add596cbb586db2",
+        "WHEEL": "0635a71fda73bafbe27da888a2157eddbb0183b0f1b16cf8fcdbd4bd5af2d0e0"
+      }
+    },
+    "httpcore": {
+      "version": "1.0.9",
+      "metadata_sha256": {
+        "METADATA": "fe2d4fda6199128978779e0cf27f3c045c531863fcdd987eacc74f3a18d41c21",
+        "RECORD": "b2dabdfa67b814f4441d3ff8ccb37ffb2f6262970d605b49115641e382c9745f",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "httpx": {
+      "version": "0.28.1",
+      "metadata_sha256": {
+        "METADATA": "febb9b0f8f3e80d57c8199c304f35c4336e8581d1d18d7983c92766b82793b25",
+        "RECORD": "f6882e4528f11137d666721fa05df62a919997a6cac0160787f0474a23f4ff05",
+        "WHEEL": "0b615483066088b6f39d1fa4d1bff9937022ff568048e5c3b2cde5cc252c52e8"
+      }
+    },
+    "idna": {
+      "version": "3.20",
+      "metadata_sha256": {
+        "METADATA": "dbd8c14c1e4ca1e0c9824a6dbc7cbbf78884f38eb52d91148cd3025f671e4b85",
+        "RECORD": "8f8f36f96915325daa360455b9d9b1ba8eef1804dab232a70731660275656b8f",
+        "WHEEL": "96a37c8d7b7f425a05386731f644adbd66ebca17c45e8236176cfe614466df9d"
+      }
+    },
+    "iniconfig": {
+      "version": "2.3.0",
+      "metadata_sha256": {
+        "METADATA": "40d773f84e4e112f495bbf4f1be9cbd2d456c0aeb6ef5311f75d1bf322f2165b",
+        "RECORD": "35ac7262caa2981ee781f2072c5052a0f729d4a59929e1dcf444b1e4fa3a6036",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "ipykernel": {
+      "version": "6.29.5",
+      "metadata_sha256": {
+        "METADATA": "88b36a93089e4fe0d18e361d67a26d90fcef596e3306b7ccac153d479a46bef0",
+        "RECORD": "c6b2ec87492f2e2aa1e6db901821ec2d5b48ff6e54bd9765a56de54c692c9472",
+        "WHEEL": "d7215d7625cc9af60aed0613aad44db57eba589d0ccfc3d8122114a0e514c516"
+      }
+    },
+    "ipython": {
+      "version": "8.27.0",
+      "metadata_sha256": {
+        "METADATA": "5f264ef85a4e0c55b8157a76df490f20a1eca564f3db00e477b9ecd24e149a9e",
+        "RECORD": "1aab4dfbff25ecaa157f84cc99de5b42e2bc6b0569fc991c04aa30818ee5d002",
+        "WHEEL": "52f71060a047a05a9a41de8b2b2a87c3d7f11289562d09e5ccfd21fcb80901f2"
+      }
+    },
+    "ipywidgets": {
+      "version": "8.1.5",
+      "metadata_sha256": {
+        "METADATA": "4c949fb505e40d7c4002326bb3c0c3a3c308e2dcef36c3aab135f82acb638efe",
+        "RECORD": "5daf7364e957c509440534e060ec328ffea0888329b04017b17fd6d494b5f15b",
+        "WHEEL": "31d8bd3c3370119a6d3a34e551c02d87b5c90c5b4aac761a40c3ee9597810a24"
+      }
+    },
+    "isoduration": {
+      "version": "20.11.0",
+      "metadata_sha256": {
+        "METADATA": "440045201154827793cad24bafbd54deca6800819259e3b17f6edbc06ca7b56b",
+        "RECORD": "cb64ce2ab1fbe32b9c92bf1b1708cef17c341505b6e40c3fa7f1f6245d7d4b43",
+        "WHEEL": "11546323af45e6a5639bf620a9c4d73e74c0bf705f494af4595007b923f75e8a"
+      }
+    },
+    "jedi": {
+      "version": "0.20.0",
+      "metadata_sha256": {
+        "METADATA": "436bd0fb249b82dee15e85e2fb91d08d8e797481a16af48a725b8e4fb5340478",
+        "RECORD": "f5e89f16b3c5438cd81368e4b7f7c1dbb1a089ee75667efbd9156f5b511beb19",
+        "WHEEL": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79"
+      }
+    },
+    "json5": {
+      "version": "0.15.0",
+      "metadata_sha256": {
+        "METADATA": "4c3b0f1382e4c994a7762b5b142543e19b31d5f7a6dbdecfe1674fc9c3276404",
+        "RECORD": "ccd0864d9811d6ccf9f4c2f3b842bc4ea0aee267a1bd9b8affd39b1abfcf865c",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "jsonpointer": {
+      "version": "3.1.1",
+      "metadata_sha256": {
+        "METADATA": "b461427459b7a1d595585ba05a9d0466b134b849204f4ddfbc1b1ed20775ba5d",
+        "RECORD": "358ed7f761200dac226e2418ea81b78b34834efb4168d450401ce4892b909fbf",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "jsonschema": {
+      "version": "4.26.0",
+      "metadata_sha256": {
+        "METADATA": "05b189866ca98a96da3934bf6b83687ced3ff85325273b77e16b705f6d8b26d2",
+        "RECORD": "10e685db383b51c89b03167c67618b430d96b9b14b2c3eeca24533cb580fbd3f",
+        "WHEEL": "58b82a17209f9bf2804afe161f2632d0fde933f9bb2792fd936b2474a2e2ac2f"
+      }
+    },
+    "jsonschema-specifications": {
+      "version": "2025.9.1",
+      "metadata_sha256": {
+        "METADATA": "35abd41757f32b4ea24756920ded47b70173d77cbc052a5a6d3ab583b2e8d89d",
+        "RECORD": "9cc3b56b6becdd45482310d7d2ff9d98dbf8a5775e36f7ccde49a09146e389da",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "jupyter-events": {
+      "version": "0.12.1",
+      "metadata_sha256": {
+        "METADATA": "eaba123d824409959b98e9d5ab4e725f7bc64de041da34779df7bc993b03d4fa",
+        "RECORD": "968b5bd52562015a3fc81a257e4e7f054c7aa039e2f9359ecec4530715334aa9",
+        "WHEEL": "41c708c5adba6e097513ab8ccb9f1d7865a2fb469e22491a9e01dcc64da459fc"
+      }
+    },
+    "jupyter-lsp": {
+      "version": "2.3.1",
+      "metadata_sha256": {
+        "METADATA": "75517195ccde8ffad9eecfc42bb39d26f12d55cfe5623e1f369497eff4d3c334",
+        "RECORD": "e8fc04edcb2e843c032c02122acd8bab05b8ed2dc0f6413284ca025e0766b6a8",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "jupyter_client": {
+      "version": "8.10.0",
+      "metadata_sha256": {
+        "METADATA": "95ec04e32a2decceb7325efa691e6e160201e4e8184db1b1e36a239f9170f560",
+        "RECORD": "dd2fe5bd27ee25d51b44d84419de84c1bd77c042708636b616e6c2b65ccff9aa",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "jupyter_core": {
+      "version": "5.9.1",
+      "metadata_sha256": {
+        "METADATA": "68a656d7e2ebe45d40becf6032998192790d8a7536942f72167d79b8559e5ded",
+        "RECORD": "b0613e15c40624ae687b2656a0a7399bd7e774c94d4f3dfdf163398e0ee726ea",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "jupyter_server": {
+      "version": "2.21.1",
+      "metadata_sha256": {
+        "METADATA": "8226733ae338cde3da8cf2ca7f4e3f338ec3518485602cad0f49fddf1bf6d11d",
+        "RECORD": "82b48e7bfe7ad94f35a32a6ebf7eb7d200129c7aac44a254000e6c5ae5b0e818",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "jupyter_server_terminals": {
+      "version": "0.5.4",
+      "metadata_sha256": {
+        "METADATA": "811110bdf2240b02fde7baf2a6ace5ba8e6726739daf00547922675919daae8e",
+        "RECORD": "03dd8ba7ef7d01feb44201f005ca3ed0e4e000b25d091bf51d0932a09aba8c03",
+        "WHEEL": "58b82a17209f9bf2804afe161f2632d0fde933f9bb2792fd936b2474a2e2ac2f"
+      }
+    },
+    "jupyterlab": {
+      "version": "4.2.5",
+      "metadata_sha256": {
+        "METADATA": "64655a0622dcbb6e964872066a43dd5facedb257555d3e2ac0680ce6524125c1",
+        "RECORD": "8e309da03075f3cb3aedda88a0d1f5aa25a30937fea1ddddd4ade0e5d6bafc76",
+        "WHEEL": "d7215d7625cc9af60aed0613aad44db57eba589d0ccfc3d8122114a0e514c516"
+      }
+    },
+    "jupyterlab_pygments": {
+      "version": "0.3.0",
+      "metadata_sha256": {
+        "METADATA": "779802ccb231a915a67e42fd6247daacf6c6f5c2a29d3a61914b58b4c35cae46",
+        "RECORD": "5e76c7ece930a5df428d65dfeb1bdaa49dfb78f281db2593abd69a8f2322d086",
+        "WHEEL": "f5006e1e183a14d5bb969a5ba05daf2956c2193573b05ca48114238e56a3ae10"
+      }
+    },
+    "jupyterlab_server": {
+      "version": "2.28.1",
+      "metadata_sha256": {
+        "METADATA": "f569da8b222c13982ba106fff96f2eeadf68c877faf5897f867dbf2839d89eaf",
+        "RECORD": "1a73df24a17e6a54581848d1ee02f405e185e0eaa6d5a5ee1084ab852d268a60",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "jupyterlab_widgets": {
+      "version": "3.0.17",
+      "metadata_sha256": {
+        "METADATA": "4afc9ec69f8ecf916f2620116b0906efccda8e29a2f1940bedd8632237fadcac",
+        "RECORD": "ef716ef66e399efcd5a051169c70af048d3a3a97c20bf4796bf6f7ed699a9fe0",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "kiwisolver": {
+      "version": "1.5.1",
+      "metadata_sha256": {
+        "METADATA": "f07b7b6c0c9c2a624c8a31f931e16712f2cf3490e7dfd51643d68e9d42d4b2c9",
+        "RECORD": "757987e90ab6469f3a67df4dd076f19f9dab5722549d327c19b81401ae966bb6",
+        "WHEEL": "1fe26894683c1fdfa102306a92539238acc4adbebebc8e3c4b15b7123746138e"
+      }
+    },
+    "lark": {
+      "version": "1.3.1",
+      "metadata_sha256": {
+        "METADATA": "730d3f056045a9096bc0a65e4faccae53fe7f3634055174d4b8245cd19cb4cde",
+        "RECORD": "f371cb327b7131e69ce050506a1bbccaf7d01337c586671eb37258addfcd1c44",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "llvmlite": {
+      "version": "0.43.0",
+      "metadata_sha256": {
+        "METADATA": "c6710850d5edab7abf79ab145561feed103c67af9e3faab5af720a26b1548636",
+        "RECORD": "a7d53e58e334b65927f92e783dd715dc735e0b9907512493dca36b6504412275",
+        "WHEEL": "bc9329ee652413e7cc218c84e7127d4367183e75958077f6d1c9557703125c08"
+      }
+    },
+    "matplotlib": {
+      "version": "3.9.2",
+      "metadata_sha256": {
+        "METADATA": "249eeb451c3fe8b1487bf4a44e76ec2b356c686e6b46107e220a71761fed5a5f",
+        "RECORD": "0a476a709aa606dea445ee5d211f2970936699c632be6b64207c25593251d734",
+        "WHEEL": "dea2037170a4e7bec05e22b7a4389f3be804f54fcc61660682d0fbf202dadbf5"
+      }
+    },
+    "matplotlib-inline": {
+      "version": "0.2.2",
+      "metadata_sha256": {
+        "METADATA": "fedb3d587ec2d3fa4b0a81fd5353df697d2534c8ee714dbf050009afc60bcab7",
+        "RECORD": "d33b288a362b66906daa970cd59afa8adc966f8b76e513770292ebbaa286d3e2",
+        "WHEEL": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+      }
+    },
+    "mistune": {
+      "version": "3.3.4",
+      "metadata_sha256": {
+        "METADATA": "0655c262ad851c4ac26b84a0830dc0ab38a302f58c9bf86fe0d31ee2ab03d650",
+        "RECORD": "73549172538677ee83d18df4642c23669f19f66bbbfdcbc81f97f00d1c16d7ce",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "mpmath": {
+      "version": "1.3.0",
+      "metadata_sha256": {
+        "METADATA": "44b66ea444b9c0d19ae94815d356bf047ae6b680c19268b5c265687cd6a81406",
+        "RECORD": "89869bb99d259b6078aa20ebadb44d921aa20595ffa58ab929e3082d7f3f5529",
+        "WHEEL": "db07a93359e4e034b8785a58ad6d534ea3dca0635f1e184efe2e66e1c3a299ba"
+      }
+    },
+    "nbclient": {
+      "version": "0.11.0",
+      "metadata_sha256": {
+        "METADATA": "97b199c27c838caf67939deb40ea5432a3cc0ce2b68deb5bb20043dd7e295191",
+        "RECORD": "795010ae8b0514dad0619b6711692f55a10a7117720ae85b7434f543ec8faad2",
+        "WHEEL": "99f7cfcbcc019d9427d959c9514e6313df4ab316927e2c8c1d5f58b7468b571b"
+      }
+    },
+    "nbconvert": {
+      "version": "7.17.1",
+      "metadata_sha256": {
+        "METADATA": "ff2b5c1e1f14cc033f39305cc753cc53f5c5735c127a5c3289f68c63a490202e",
+        "RECORD": "19b0bb8d9000b537d4e7bd08d0f15d511f0c56f5670ebf0008f78afeb20a1910",
+        "WHEEL": "41c708c5adba6e097513ab8ccb9f1d7865a2fb469e22491a9e01dcc64da459fc"
+      }
+    },
+    "nbformat": {
+      "version": "5.11.1",
+      "metadata_sha256": {
+        "METADATA": "6a25a2f961025655ed80a66f794ac6b8ded4e4ea4c0600ad1801876c0bec6c74",
+        "RECORD": "c67c13a2944b79cfd89e41068620a9f12341f399f0c12e093bd56d301d0dc3ed",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "nest-asyncio": {
+      "version": "1.6.0",
+      "metadata_sha256": {
+        "METADATA": "7f7b98f9e1a28a9597d70df9158175a22d05446ce4b328908d920e7293d35bd2",
+        "RECORD": "09b5b8b6bd2dd0d47df69fa63f3b4190c76bc7515beea879027f39d0f07cc0c2",
+        "WHEEL": "a6472d658cd44b8018567e9d27eef7ebb389662bc5d9ef1103d6ff6418e27f5f"
+      }
+    },
+    "networkx": {
+      "version": "3.7",
+      "metadata_sha256": {
+        "METADATA": "ffcf42a343af6ffc54ff9cc4c09cf9638cd73b131370f395abd11b630186c90c",
+        "RECORD": "4bb484fd2163c6b74594a75cd0cf0092354e64218ca63b6ac4cab3a51399a22a",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "notebook_shim": {
+      "version": "0.2.4",
+      "metadata_sha256": {
+        "METADATA": "2eb0313d82c04428a5606bf2b3c79987fa778bf6c28bfe315072e607c264eb57",
+        "RECORD": "b25c121bed22903bc5c21135fd2be18ff4850906646ddbf161a1056f45aeef62",
+        "WHEEL": "4c93e729db6b4ae7bbc59fc0546929f585dcbc3ae86ec8c176cd5dbb7371e9d7"
+      }
+    },
+    "numba": {
+      "version": "0.60.0",
+      "metadata_sha256": {
+        "METADATA": "c137352b9eeebf0c181b8de591c4bddce435d860c16228548481eee3a1cdfead",
+        "RECORD": "1b3a652c887c3f87957188c2b1accaae6ce53f062b7a40eb9a0b480dd49237af",
+        "WHEEL": "3afb6f9dba5c6b11dae5381781f0b8f04e8903bccbafbb2f32ca4f3fb564e68f"
+      }
+    },
+    "numpy": {
+      "version": "1.26.4",
+      "metadata_sha256": {
+        "METADATA": "b09734a7fed44e84b4c8161934ce532dff1e779ec6822d415644d117f6381070",
+        "RECORD": "fe7fccbde461b6385c4278d0ebebe4392de2c0828ca9629263ae65e913b3aae3",
+        "WHEEL": "dea2037170a4e7bec05e22b7a4389f3be804f54fcc61660682d0fbf202dadbf5"
+      }
+    },
+    "openfermion": {
+      "version": "1.6.1",
+      "metadata_sha256": {
+        "METADATA": "24c87f9fcb66eeea9439e07f0e248e23a136c70f552cc0d91dc9f25567e5cff5",
+        "RECORD": "46d08e792a12ad879c094cf6a416aff0a39bb2d384b3fb327820f78ef441d490",
+        "WHEEL": "a2241587fe4f9d033413780f762cf4f5608d9b08870cc6867abfde96a0777283"
+      }
+    },
+    "openfermionpyscf": {
+      "version": "0.5",
+      "metadata_sha256": {
+        "METADATA": "5fa99c2440e114af4361a05f6e69e9f3232d40693848fc643e8d7e6249f0b9dd",
+        "RECORD": "ad5c95d5ede76469ddd2aa4a8f973eaac97d232b2de073007ba4b776067ed3b6",
+        "WHEEL": "8389ccb3b77e5e5f7ec42f57a2f52bb031c65edf854f4135ed8aa8f760c47ef6"
+      }
+    },
+    "packaging": {
+      "version": "26.3",
+      "metadata_sha256": {
+        "METADATA": "70fdb89fc4d4a9a043bf7372b8972bcc883fddff34ab55e9cf80d73875384763",
+        "RECORD": "a2cd431afc6ca596c9bf35faf2b902709cad9c48a55d264a71c71e70c6cb2e7a",
+        "WHEEL": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+      }
+    },
+    "pandas": {
+      "version": "2.3.3",
+      "metadata_sha256": {
+        "METADATA": "40ee953dc7ca155840b639a1881ff84578075187fce0ac20eeda55a7fa0d9a90",
+        "RECORD": "d76b79c44e7cb0d9da9d3e56a257d3aea66a2c3d5d29eadfbd15b790a8688cfa",
+        "WHEEL": "e424f5c4056d500dd22b82d6fd776833d2ada373c93d53f5ac121f2bc058a9c3"
+      }
+    },
+    "pandocfilters": {
+      "version": "1.5.1",
+      "metadata_sha256": {
+        "METADATA": "c3ef8768dba260dd46311e1acc3a67863a0e5671a9d23fcd2e1a7b7256aab52e",
+        "RECORD": "0d1a2561f1c683240eeb88b932d1a56f31c35718bbbdcd3c6d81f9d0663be0b7",
+        "WHEEL": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79"
+      }
+    },
+    "parso": {
+      "version": "0.8.7",
+      "metadata_sha256": {
+        "METADATA": "2fd8c9f8209218163a6c086ba8075d177122430645fea770cc02c53cd426119d",
+        "RECORD": "6fc2c5261e6fc7d3221c39f1583324dc952e110300f8d09b6bcaf044c6eff7bd",
+        "WHEEL": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79"
+      }
+    },
+    "pexpect": {
+      "version": "4.9.0",
+      "metadata_sha256": {
+        "METADATA": "2d7c5ac5fdefde4a0194ec522fbcc0ca70e99e1a2a956eea444168f8591650aa",
+        "RECORD": "3973d48e96db33631ec606dcc66c909a91ebb819d5b04f5298f5d589fafe7cb3",
+        "WHEEL": "6dbd8eb7db1c7251ca30e2c310763a076b227163a0ba08c529a26c4fbbf0310a"
+      }
+    },
+    "pillow": {
+      "version": "12.3.0",
+      "metadata_sha256": {
+        "METADATA": "8fc07146cab33ef7582361dab6eac596d340b03ec648f18217da7894f73838c8",
+        "RECORD": "3b3fd94822d6677fc40ee7c5925a81e71796ca822b0e0b53e3fadc3a051b3c06",
+        "WHEEL": "b40ad1e4df54976de0a343902219f27fbed3bc20eb34efbef032b05c5a0f93e9"
+      }
+    },
+    "pip": {
+      "version": "24.0",
+      "metadata_sha256": {
+        "METADATA": "90d11f277fd5868da679ee257c97656dde511c8aac7d025231407e6ce90839e2",
+        "RECORD": "142231c69292ad8fbbf8869c512fc9e421d2cc55b86e344ccb986e741469c74e",
+        "WHEEL": "a2241587fe4f9d033413780f762cf4f5608d9b08870cc6867abfde96a0777283"
+      }
+    },
+    "platformdirs": {
+      "version": "4.11.12",
+      "metadata_sha256": {
+        "METADATA": "b056db328e61f0dd222ad8576b4c10fc395037bbe4c54f4e12ee452c28688ddf",
+        "RECORD": "df791ae9239bf0983e459b0fa5a39a55a53c2d1fe2139a546ae9289935bf6b5e",
+        "WHEEL": "5b77e4a649bbfb07fdbc123967eeecd1e5a478cfaca6eefc23c35e6fdf037848"
+      }
+    },
+    "pluggy": {
+      "version": "1.6.0",
+      "metadata_sha256": {
+        "METADATA": "7438c35ee25a095eb7416f84b461c2d74425c5e734ad54c3912453c65244e01c",
+        "RECORD": "6bb7a9d0ece8e716b9b2d61c5656639449d6408e413e5ba2526119bfc4f629f6",
+        "WHEEL": "370dfa0e3ba1ff9543ba42b41fbf10cce5fefc5404a3a577ee6de7926f7a82d5"
+      }
+    },
+    "prometheus_client": {
+      "version": "0.26.0",
+      "metadata_sha256": {
+        "METADATA": "ea4a4f111b1723da4c588baa002fe7b7886f0e8f653c4dd3d05738686ea85004",
+        "RECORD": "fed3663df5a6324d0e6584ff3114928a90f60d7e0c7df3ede3ce8f23079e7743",
+        "WHEEL": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0"
+      }
+    },
+    "prompt_toolkit": {
+      "version": "3.0.53",
+      "metadata_sha256": {
+        "METADATA": "d04994e4401b88abf884ca54fb3b85e50a8b4fb1fde1ed7eb3ece9d8bf5459a9",
+        "RECORD": "5fc7e3b3c575bfea5b6fdcb6fc37cac98182c6ad43dcd2be3d018708ea1ff826",
+        "WHEEL": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0"
+      }
+    },
+    "psutil": {
+      "version": "7.2.2",
+      "metadata_sha256": {
+        "METADATA": "525f8ba78523cf7bc3759d62a105e7c57fd679ea702402b9449fb0746aa0217f",
+        "RECORD": "305c47d9965c33fe5c264e86dbd71394fefa94b317e3b49b6ef0f3a08b3c869e",
+        "WHEEL": "aca9cca3026cd7b9774535accd80fde13f5a55cf32141be943e4575a4e8835cd"
+      }
+    },
+    "ptyprocess": {
+      "version": "0.7.0",
+      "metadata_sha256": {
+        "METADATA": "c3c2b96b5d9a55da5958c34d08c18a0849f56609026cc46d5c95b8b77fcf3e0c",
+        "RECORD": "e90385a1d9141803081b7fb272782e81309aaec1a131ddb8dad70029ddaa4d69",
+        "WHEEL": "34baa6b31f99159ea00dabd8821da81f465237e2919a971d1172190e7632f4f8"
+      }
+    },
+    "pure_eval": {
+      "version": "0.2.4",
+      "metadata_sha256": {
+        "METADATA": "4fe70f69411b9963d7275084210743afa819c2350899a29150bc43b1abf105d0",
+        "RECORD": "8215373d803b5a5bbb2280f622ea223c9928bb343a79cb62e5f07bfc2bda7639",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "pycparser": {
+      "version": "3.0",
+      "metadata_sha256": {
+        "METADATA": "f547a60b0ab54cc2f242213d1f87960ad80df7dd5dfeb98d17a444d48bfb6b93",
+        "RECORD": "2cfa55ddc9e41745c714874107384803e14799e60143250d5ef37f7c0e25adfa",
+        "WHEEL": "a842dba36b35633977f599ab0226d70368e33cb5187e756150d4e5c85d6bab46"
+      }
+    },
+    "pyparsing": {
+      "version": "3.3.3",
+      "metadata_sha256": {
+        "METADATA": "f2ca34052d720622d300023472ef8ae94fe5b57d69acbb28a8667f6dd0e13497",
+        "RECORD": "77216a1dd17a9936b9d567f9432137ba5846b37737abeec118d7b995bcb0ea52",
+        "WHEEL": "96a37c8d7b7f425a05386731f644adbd66ebca17c45e8236176cfe614466df9d"
+      }
+    },
+    "pyscf": {
+      "version": "2.7.0",
+      "metadata_sha256": {
+        "METADATA": "ff8cc3232fa77fa35fceeee22d97833f176fb272df980d12a980ac6516ef52a9",
+        "RECORD": "683245e9888901075852c6a7a5f1145b85c67e26a8ad2bced11eb98642c7097a",
+        "WHEEL": "b3c233088205c4b18b5d4292e3ec1eca5c1cd744fdc3bd5456755a447de2e319"
+      }
+    },
+    "pytest": {
+      "version": "9.1.1",
+      "metadata_sha256": {
+        "METADATA": "c5d032518012789cabc870d46589aca3aeda36cf9fa4399ee88bda3d10438451",
+        "RECORD": "0dc95aad41309f68170abcf864ed0fc086e7c9b72b06eb4066541ce152e626bc",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "python-dateutil": {
+      "version": "2.9.0.post0",
+      "metadata_sha256": {
+        "METADATA": "a9d436da322be808332f98d88325998e87cb693a678a9969feb4cfad729a6e93",
+        "RECORD": "0c26b4b1542dbd1ebd8d2babdd501aed583d6ada9595517f936f00fe4ff9d254",
+        "WHEEL": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79"
+      }
+    },
+    "python-json-logger": {
+      "version": "4.2.0",
+      "metadata_sha256": {
+        "METADATA": "92071f7474963816ff791dd78383abf06cf2b83c3d1db0a5633f5c4f1e32e465",
+        "RECORD": "702dc1ececf4c78040545bd36342e067bce5d916842e6835fbd2654e0125069f",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "pytz": {
+      "version": "2026.3.post1",
+      "metadata_sha256": {
+        "METADATA": "25ef8a562377a28d8c6bd8c5c9e80d761d0e22ac4a7bed24e512f589644ed33d",
+        "RECORD": "0464136101bc23f08af5f6f09023db4afa53a5960ef594cfc84cb0fa115ca0ab",
+        "WHEEL": "f86fedd281ae13b503d03ad2a55667ab584730157d0c3d97912e6fed7a664e79"
+      }
+    },
+    "pyzmq": {
+      "version": "27.2.0",
+      "metadata_sha256": {
+        "METADATA": "efca840a7cf3173e6ffce4c77e50b5b449a6c44388abc272bc3e82bb27e97043",
+        "RECORD": "1642a613c2e40c0efa5cdf9c506ea2ea05a4633c4f7c8ae375c08e4b2f52ef70",
+        "WHEEL": "a42c207902772910013dd69326dabcea55d1e4c2be25be4c77a07930bd15d2e1"
+      }
+    },
+    "qiskit": {
+      "version": "1.3.0",
+      "metadata_sha256": {
+        "METADATA": "3cada854405638c029ac6db7898c6cf3c2c16a7b371dd221df970950e7ff8908",
+        "RECORD": "856f0ece55a0a63019626fab49a54a6933711b6a7d30d26511e9535f9fca49e0",
+        "WHEEL": "a92aa78b8adea4f45698cd8189b53073f84b949189bb374d2ca0d3d3a3a07d2a"
+      }
+    },
+    "qiskit-aer": {
+      "version": "0.15.1",
+      "metadata_sha256": {
+        "METADATA": "dbcf89c6fd36b31fe49e947472492c291913f6ece8606e781542f81fd7740907",
+        "RECORD": "ac371be0e66c4ba587f7e1c4e4bed8496f30639b9559d3020c29a9fdd4fcf3f2",
+        "WHEEL": "d9cd3eeadabe3d3543d5f1f3280577c1ea5298d275e7bbb2d9bb3b4f902998a4"
+      }
+    },
+    "qiskit-algorithms": {
+      "version": "0.4.0",
+      "metadata_sha256": {
+        "METADATA": "054e501f38a3331c889fb5f2285375c6fea1d733db465566eeec381a464ee510",
+        "RECORD": "07ff8fc91da0090fb39f07e00679a06d7fc24a6f0a6318c89a0e43fc8380030f",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "qiskit-nature": {
+      "version": "0.7.2",
+      "metadata_sha256": {
+        "METADATA": "4261a937fe5609c85f7694e6eddadb4de55fdfa1c31ba50037c160fc9ab7d61e",
+        "RECORD": "809dea62b8da4ce72b7a5bb9487edd4a83527ebd78d85838fa70e7b53b868747",
+        "WHEEL": "a2241587fe4f9d033413780f762cf4f5608d9b08870cc6867abfde96a0777283"
+      }
+    },
+    "referencing": {
+      "version": "0.37.0",
+      "metadata_sha256": {
+        "METADATA": "c93b00e6ab1524fd60848376604c189a114374776475c25a31d57be47b29de6a",
+        "RECORD": "6bb85471519901d877804e8dc05f032e6fa362b72c8a73b21b7486517e36c90e",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "requests": {
+      "version": "2.34.2",
+      "metadata_sha256": {
+        "METADATA": "8c384ba3e979480faae2859d3c5e6c1276dd2c3616e322e124d52c8cfc556f27",
+        "RECORD": "9fe8a6fba6bb2091ccd8e5c3d279392ba36c03fc42e7854c792c74c98d5b3e91",
+        "WHEEL": "69e6228a0d35958183cc1812f07c565ce837b95eb51bd8a33acba9fa4f68d6c9"
+      }
+    },
+    "rfc3339-validator": {
+      "version": "0.1.4",
+      "metadata_sha256": {
+        "METADATA": "ac4dc2cdea6a8b61c16babbf35c0e9fa6e22e45f1c0338e66e089108dde872d2",
+        "RECORD": "22cc56c8b9047c4131e42b6ebf4aab000ac2c1f82f01a6d6918e3ee2456c4674",
+        "WHEEL": "f3335865bc10497a01f487d73a33df78dc2f02c00b0237df824dbb16abc259ba"
+      }
+    },
+    "rfc3986-validator": {
+      "version": "0.1.1",
+      "metadata_sha256": {
+        "METADATA": "feddd8265433ba7be465e1649b486ec83c4c78f593f36284e7ae6d655cae163c",
+        "RECORD": "ad28a21450eb35c5d48b18bf74573983045da1650fa48bb71a8ab31149055ca3",
+        "WHEEL": "f3335865bc10497a01f487d73a33df78dc2f02c00b0237df824dbb16abc259ba"
+      }
+    },
+    "rfc3987-syntax": {
+      "version": "1.1.0",
+      "metadata_sha256": {
+        "METADATA": "7a518ae5bb5685568b537061e8207a4dbba766ae785b16ad26d930ad3853cb0d",
+        "RECORD": "ca9d53622e171297fb1b4028488d6c7109b5b409584a830876bffa7d8ec69587",
+        "WHEEL": "aad0b0a12256807936d52d4a6f88a1773236ae527564a688bab4e3fe780e8724"
+      }
+    },
+    "rpds-py": {
+      "version": "2026.6.3",
+      "metadata_sha256": {
+        "METADATA": "f8be7b17da3980b2c48596941411a43c70ac41b1e2d530aa531f2c15eab2eb1c",
+        "RECORD": "ca48c32a18f9570bc6a1dcb731571525c27eabc24e24f0635d6e800fd41901ef",
+        "WHEEL": "c5e3da21766d0e72af45ff0d32b3b67a77ca97b6891d3f9fe3274b05a38b67c1"
+      }
+    },
+    "rustworkx": {
+      "version": "0.18.1",
+      "metadata_sha256": {
+        "METADATA": "8ca4f6330a2589ae529b2a112a8339d8aa489ffb7217210b50b68ad9eb5a0718",
+        "RECORD": "a6899fff8f5b26cca60565dd7ac7f00fbe2d73c6fcf99700e87aa3c9e14ce05b",
+        "WHEEL": "c40ea32c3be36b0a9524d4f5057e98c0c78198fd7bb6af400bb12ae6d19838e5"
+      }
+    },
+    "scipy": {
+      "version": "1.14.1",
+      "metadata_sha256": {
+        "METADATA": "031edf0fce95ede724b72a1edcf8c26f4b8bf6030516581d13dc11baa54b7a92",
+        "RECORD": "e6a1060abf3de5bec40d503fab87c699afee34dcb41e119072141e1c51d04130",
+        "WHEEL": "dea2037170a4e7bec05e22b7a4389f3be804f54fcc61660682d0fbf202dadbf5"
+      }
+    },
+    "setuptools": {
+      "version": "84.0.0",
+      "metadata_sha256": {
+        "METADATA": "bdd67d4d16cf0bf3b893e7d18cd3d2d774adb82f37ed985bc7770c607226b35b",
+        "RECORD": "3bfab660a24704f84228e4bb1ce1f0e3fa9ff80e5c806352a626b2f460ead836",
+        "WHEEL": "ff309ddcdd65ebd02bc724dbf2bcc4a0ff53a5b61792a44548d383e4ebb19d3b"
+      }
+    },
+    "six": {
+      "version": "1.17.0",
+      "metadata_sha256": {
+        "METADATA": "562042078c2752549f6d8a7c86dbc5dd708088a7be6d80672ec7b07100b72468",
+        "RECORD": "d834e846ba51c0e7371968d0b5a0cdebdaa2f9ea2f0447a40b594fa96ca5d89f",
+        "WHEEL": "a7178d5f925db427b9f0f51260ff6ea6673b8dd44f82f4f41a6f646f5487955c"
+      }
+    },
+    "sortedcontainers": {
+      "version": "2.4.0",
+      "metadata_sha256": {
+        "METADATA": "eedf115109e215001e904da0882851beae50b03c0b0161a8b9e74b7cfd679473",
+        "RECORD": "73170c6ce9aafaabbbd800465ed252e0b5c5abea9aefe68ac965bb9bc392b532",
+        "WHEEL": "9064fbe0b5b245466b2f85602e1ebf835d8879597ff6ef5956169dae05d95046"
+      }
+    },
+    "soupsieve": {
+      "version": "2.9.2",
+      "metadata_sha256": {
+        "METADATA": "25ade6580817381657a42b7c18aaa903223eb696401be3eea9850d3d4a1af182",
+        "RECORD": "f8e89ca8febf043f3aedbd1b19e00556d570c3cebc313271cc935d7331e53708",
+        "WHEEL": "942926c567d0b1273d09f20295879abd37507845f6b683eab9f87d808df91100"
+      }
+    },
+    "stack-data": {
+      "version": "0.6.3",
+      "metadata_sha256": {
+        "METADATA": "f28a66f2adde54e7031355e09a166e437bc0d023a31c10c973ac494288ca4c6f",
+        "RECORD": "510f6be5d288937e92a1e1da8449b7bbbb6c0b09592ad6bcc25b98001bc4840b",
+        "WHEEL": "c903798389a0e00c9b4639208bef72cb889010589b1909a5cfbf0f8a4e4eafe0"
+      }
+    },
+    "stevedore": {
+      "version": "5.9.1",
+      "metadata_sha256": {
+        "METADATA": "96c8d2d90ab8173cd5cbf5045b8dec06bff69286059bda12d4755201b5ceea82",
+        "RECORD": "ec03409c984c355ab711c9d39b8d4721c0914988a44a5a129a333015c11a3791",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "symengine": {
+      "version": "0.13.0",
+      "metadata_sha256": {
+        "METADATA": "d9a84e3649afbf7b922ea801884a73e6b8fd2c22800221e2c42d3656032edab3",
+        "RECORD": "bfb376d201786c2b3f1e9cd42e3a71870a555aaec79ceb7ea5c0a2b989317958",
+        "WHEEL": "d693f8ca1adb8a946d75b9b845b8376a84e3cdcee90e1a4728ed02118db808d3"
+      }
+    },
+    "sympy": {
+      "version": "1.14.0",
+      "metadata_sha256": {
+        "METADATA": "b756c2fbfd5be05ac5bdb0ebca61f55618f30f633ed92d88a5687429313a7595",
+        "RECORD": "1b3a0252881b6b1438b6abf465e531e14b963e9cabf90619baba4d2adc639a0e",
+        "WHEEL": "4a63b1614ee9ccd281a804af409ec38d7dd719417dda5ac684c6f747afe28aa2"
+      }
+    },
+    "terminado": {
+      "version": "0.18.1",
+      "metadata_sha256": {
+        "METADATA": "b8fbc894ff0bdf734736edc53bdac8456eb8a8f251762bcfde4ab89fb4d5ba65",
+        "RECORD": "9493a63940b1422daf29df8c0bc4e502bdb6d7ea5fd8fd6a0fedeff4d010b4b6",
+        "WHEEL": "4c93e729db6b4ae7bbc59fc0546929f585dcbc3ae86ec8c176cd5dbb7371e9d7"
+      }
+    },
+    "tinycss2": {
+      "version": "1.5.1",
+      "metadata_sha256": {
+        "METADATA": "97a184ce0b479d613e7bb4bbc693067ae4c04e5665fd78e8381252f855bcab59",
+        "RECORD": "92ecc35364b042ae0608af6e2695cb4d270b563c4065739acecde728e9309545",
+        "WHEEL": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+      }
+    },
+    "tornado": {
+      "version": "6.5.10",
+      "metadata_sha256": {
+        "METADATA": "36c44104b9c3b4a601e40aff328960ab81168962dc24e00c0b95e45cf2df66c1",
+        "RECORD": "893d2528d845b75195bb5481727ede58def882b7095642872d04e9e8d93d7df5",
+        "WHEEL": "3e551b29b4473328f28a39ad8adbdcf98c6161890b4feffb29e72ee8dddc161b"
+      }
+    },
+    "tqdm": {
+      "version": "4.70.1",
+      "metadata_sha256": {
+        "METADATA": "a5da70b966afea3a759716041bad7187f2ece02c22348cf9e7c0a512bbf15f57",
+        "RECORD": "52fabee77a72df61bc9336874c83d87e00af96e17be00164a2b6391258c1c66e",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "traitlets": {
+      "version": "5.16.1",
+      "metadata_sha256": {
+        "METADATA": "e42b503240c058625ffb30c390818d72933117840cb25060614cb24f0be9e587",
+        "RECORD": "6c127f9852c9dbc8e4fc481da4281209e069eb43d0109ec82bf7acf64f32418b",
+        "WHEEL": "942926c567d0b1273d09f20295879abd37507845f6b683eab9f87d808df91100"
+      }
+    },
+    "trotterlib": {
+      "version": "0.1.0",
+      "metadata_sha256": {}
+    },
+    "typing_extensions": {
+      "version": "4.16.0",
+      "metadata_sha256": {
+        "METADATA": "b05084ca1d50879865178d9fff9fabeab61bdfb1f361bfbde95421ffc8f9be46",
+        "RECORD": "78f74ed46a377d6e1debed78b3e994ff9cfe02a529d393d7c8ab80989bd25079",
+        "WHEEL": "1b68144734c4b66791f27add5d425f3620775585718a03d0f9b110ba3a4d88db"
+      }
+    },
+    "tzdata": {
+      "version": "2026.4",
+      "metadata_sha256": {
+        "METADATA": "b022fde14c390c66d53c9cbccf614ebfa7224c453b1b5bec11f2923beaa7c96a",
+        "RECORD": "cce8f3d936f0a16f465a049d3abb2bdd89c57d6e7c015ece7991700d5a7d2c97",
+        "WHEEL": "e1805f098347e3094ba6fde9cead616c4b8895703858969b28b16ead9ede4cbd"
+      }
+    },
+    "uri-template": {
+      "version": "1.3.0",
+      "metadata_sha256": {
+        "METADATA": "3a8c53a915e5755c13b09faa29a4211fcff0c6ee188a169fc02cc092d89f46bc",
+        "RECORD": "307fb20da9738743ab335a856b40e2b1dd95c11eac7b4198f5e7bbfe8c7f2bec",
+        "WHEEL": "a6472d658cd44b8018567e9d27eef7ebb389662bc5d9ef1103d6ff6418e27f5f"
+      }
+    },
+    "urllib3": {
+      "version": "2.8.0",
+      "metadata_sha256": {
+        "METADATA": "10898c620e8007c030e07fa5622b68358a43010025dfbd78a1cb797699de2bb4",
+        "RECORD": "5d88c4832d0406a7fd3c000f924b00394c2d7f694b332bc441370d1a7f5fe392",
+        "WHEEL": "ccec20e2307acd7da453dd7437e70c6b08e2bc3ead3bc3445af135da37b56d59"
+      }
+    },
+    "wcwidth": {
+      "version": "0.9.0",
+      "metadata_sha256": {
+        "METADATA": "4216c4049854de45369dc9c6b9232ac2fbb1e57625b0e952870aa498a76a5439",
+        "RECORD": "981b894efcee18974f3904cfe4695bb0c0bf41ec5f55c2bf3792b0d5ada0c134",
+        "WHEEL": "9bb7127115cc7c8747b59f1c6286d9debbb36fc849194bf022cf976105a106b8"
+      }
+    },
+    "webcolors": {
+      "version": "25.10.0",
+      "metadata_sha256": {
+        "METADATA": "53b0da874b2e90dd8f1ccaa9c75c41e8db9107eb2568fc7a4e605b71c955d099",
+        "RECORD": "535125b43c23a601a18ac9b1d8ca9a60303135ae2fbb13d0550ed6bc383168b4",
+        "WHEEL": "f4fdb2811c43ad3273de0b1a81cd19f7aba4af18ebf8b14118e82fdc0b8a9420"
+      }
+    },
+    "webencodings": {
+      "version": "0.6.1",
+      "metadata_sha256": {
+        "METADATA": "3d9819d1209e5b56d4c6315efca7d5ca452ba7e55d4c3617ec63555c099bfb70",
+        "RECORD": "f361c4bc680747418bcb1f22da40e9ec4b3238ebdc217a943ffceb3d851ee721",
+        "WHEEL": "ff23073da055face9f40cc14a28f3735275308cddcf315d6157461a9a7cdfbb6"
+      }
+    },
+    "websocket-client": {
+      "version": "1.9.2",
+      "metadata_sha256": {
+        "METADATA": "4a97c326e009bd602e900d0059912bc57c56b5fa1129f6198d10533b6e89450c",
+        "RECORD": "2cfba98ce3959c163e7b20b2973730149aaf038158cf200887aee30bac65ff2d",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    },
+    "widgetsnbextension": {
+      "version": "4.0.16",
+      "metadata_sha256": {
+        "METADATA": "d8a9a76b9ad68a2a105fe37e05c6e2258e37c33175f73cec4d7b1cb62008b894",
+        "RECORD": "55ce4e718bc4781edea71d3f9ec781aae31f6b8727a7b1efd05680c8fa1506f6",
+        "WHEEL": "61532836a2b3111b7ec23519c09df7c41180c27165fb872a6d8913b566b88ad1"
+      }
+    }
+  },
+  "native_sha256": {
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_avif.cpython-312-x86_64-linux-gnu.so": "c0c30b196f5e42fe990291eb0fb5aade70803399f6be4bc08da9fb7ced9957dd",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_imaging.cpython-312-x86_64-linux-gnu.so": "94310f4a073e9773a067df88513804649f50a974f78bd85a52c52d21170783f2",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_imagingcms.cpython-312-x86_64-linux-gnu.so": "2d4600dbd8c29d7cb243560ddf6a7c6ce36d13e15cf359d14050623ad7d153ac",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_imagingft.cpython-312-x86_64-linux-gnu.so": "31e284b6b2a9fd39d09cc6ab26cf24d0f20fdbd992f9e6bac98f926e38d584cb",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_imagingmath.cpython-312-x86_64-linux-gnu.so": "95bd69209560c9fd64e6665204f33207c7b61cccd4c29797f0f522561bc5c693",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_imagingmorph.cpython-312-x86_64-linux-gnu.so": "c2f3731339aea5260810b6028f1c6940e54e9a8005bd119b1b9f8463f23fc089",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_imagingtk.cpython-312-x86_64-linux-gnu.so": "e8f9d96fbfa0ccfd816d82d3c880eb05872f4d1079e09d63dfd7b513c9af73ff",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/PIL/_webp.cpython-312-x86_64-linux-gnu.so": "54806394ca07d141f07663d6629108be51795e7371c3c13db94ba808fbf15fd8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/_argon2_cffi_bindings/_ffi.abi3.so": "c16944f0fe69f501255092d4f6e8f92f89b62ede92e60904ab30b5486601e784",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/_cffi_backend.cpython-312-x86_64-linux-gnu.so": "9bc1d08072255a5ec2db10fc75df1dd9e73097a75cd9150cfe875ebd6712f17c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/charset_normalizer/cd.cpython-312-x86_64-linux-gnu.so": "b16e644c978a0f7661a6c7b8640556f645bc5840c752b2d8e80c67fdb1f1857d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/charset_normalizer/md.cpython-312-x86_64-linux-gnu.so": "8efd70bb6f5b91f780b0aaf9eaaaed9e2098321c015853c569ef52bb6534df1b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/contourpy/_contourpy.cpython-312-x86_64-linux-gnu.so": "e0b9b191d388233fd9dea1ac3fd25828b40f65f19d52e6dd56478cb29271da58",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/debugpy/_vendored/pydevd/_pydevd_bundle/pydevd_cython.cpython-312-x86_64-linux-gnu.so": "fbf792dfd7bd3c896f1b802905bfea4d575423378652899dae1ee0df2f654e59",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/debugpy/_vendored/pydevd/_pydevd_sys_monitoring/_pydevd_sys_monitoring_cython.cpython-312-x86_64-linux-gnu.so": "2fd90518e8c712cbfc8e02d1cd2d5efffb12c438ca97eac49795262eb3ecb890",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/debugpy/_vendored/pydevd/pydevd_attach_to_process/attach_linux_amd64.so": "8fafec366c6a3b38d3429c7a9ad9957fd029f170eac9fd37bdecbbbebb3e9441",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/fontTools/cu2qu/cu2qu.cpython-312-x86_64-linux-gnu.so": "9d82368151af0707da1fa806a7bd77880a357778fe1fab6f1446f5de8794db76",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/fontTools/feaLib/lexer.cpython-312-x86_64-linux-gnu.so": "5b787422f384ae03416f8c6e31cab8572a96aecfbf4f3f9ac9aa3bd724cc5196",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/fontTools/misc/bezierTools.cpython-312-x86_64-linux-gnu.so": "a0d9854548f2763a42f3a2f428e7b52e99cce64e80c60df66b9cc14555d6041e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/fontTools/pens/momentsPen.cpython-312-x86_64-linux-gnu.so": "f239eed97efce6ba1a7fe274686fa761008123c9b2a66eb7e2669808c8183b49",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/fontTools/qu2cu/qu2cu.cpython-312-x86_64-linux-gnu.so": "0db2c9f7140e839f3bb289c7c8a796016ce5b2cb0a9c32afb2bcd47b13edf752",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/fontTools/varLib/iup.cpython-312-x86_64-linux-gnu.so": "19902adfebdacda7d86c774aa5c0d8bf7c8aa9e62682eb80981219993416cd6b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py.libs/libaec-a27cf049.so.0.1.4": "9a7239926b162e0dbe41a1fc0181e55ecd29d5dbfa56ffde42bec8ad4b4f2db6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py.libs/libhdf5-9e18f0c6.so.320.0.0": "1f63f3c02f02dcd702fce63a0f6dc6786430bf1b989926c6850d2026b2c8b424",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py.libs/libhdf5_hl-69da89c9.so.320.0.0": "c42fb5846fa65835756661844c59a60dde848212f4b35e04bae1d9fb177536f9",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py.libs/libsz-c6be10dd.so.2.0.1": "a4a964d66f834b7787c9697de019565333ecd190ad19579ea1805056f9bc7d56",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/_conv.cpython-312-x86_64-linux-gnu.so": "a9813aafc825505e9892b9a38f0473afb3bc0ed6b8b209e1652464e407893efc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/_errors.cpython-312-x86_64-linux-gnu.so": "3bdc1c33a669ac9592de530b2b4e10577912a1a582957b4db0ba490d6f5747f0",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/_npystrings.cpython-312-x86_64-linux-gnu.so": "bd14d6d5feaa34cb0f82d1014221ba9345203dce062508ff43ed3e4769b59f33",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/_objects.cpython-312-x86_64-linux-gnu.so": "689bdc7373095f87409557e8e031dc190fd34b7d4bac8ec1e7686e569162b1a5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/_proxy.cpython-312-x86_64-linux-gnu.so": "093b8a51bbf58c87a8b31d98e4eb32d0702e4c10d6264a05fa23827120654c1b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/_selector.cpython-312-x86_64-linux-gnu.so": "be2cdae48b53021a3e6f93ef2e92e0a5a19667e41275f1812e17c9eee75ff36f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/defs.cpython-312-x86_64-linux-gnu.so": "0de28ce1c93f7ebf9c09f52b581d596e3cee8e0f3955571d099e9ddebdc3775d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5.cpython-312-x86_64-linux-gnu.so": "05d335c462693aeecc3ecf590335eb5c2d1e323f5671e34c2a7ee9bc9b837f21",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5a.cpython-312-x86_64-linux-gnu.so": "4f8d7796d755042efdd5479cf956996f0b1a76e347367649a7112a077b01c0ec",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5ac.cpython-312-x86_64-linux-gnu.so": "5bdbadc219d10d95c3b15e0f4912abea14a39a47a7dfa0a28c47593d302fc0d2",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5d.cpython-312-x86_64-linux-gnu.so": "44139febe2dcc9cf8ff0c4f73f0111e15932e86984225f83b89749cfa6cfe565",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5ds.cpython-312-x86_64-linux-gnu.so": "529a0c32c77ca69801608c14db64d176944dcb5f6054c9883792b5a3c7fce3c6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5f.cpython-312-x86_64-linux-gnu.so": "20d1ef40e840907b01933326d190350b8344129b508b87aa292c24a205ee221d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5fd.cpython-312-x86_64-linux-gnu.so": "478e52c7a7ea427c4b9b3d1644cfca6dc4a2b5cfcdcc7b1e46242dfec1bc5d0a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5g.cpython-312-x86_64-linux-gnu.so": "a7e8b67d56504df4fa3393f977685560c81cbcbe82897d4fd9c5657b88f67e71",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5i.cpython-312-x86_64-linux-gnu.so": "2ec9c95fe17c31f6c2729c84933a8172a74b21d95b58e12edd5f2a637420d759",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5l.cpython-312-x86_64-linux-gnu.so": "086a81eaf6bb99c2109c60c60303db35936730b3640202b8da9a7e896fc65502",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5o.cpython-312-x86_64-linux-gnu.so": "d706d98ba83bc6723d044ebb769f56f7445f593fb847713ecfb55cb250219144",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5p.cpython-312-x86_64-linux-gnu.so": "ce9a8f5dbc6c2a4f02537b4bf36914e601ae128835be519aa8b0a501eed8df4a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5pl.cpython-312-x86_64-linux-gnu.so": "6cf634e36017dd5a4131f65e6390e7590239df9cfe62fdaa477629d9891aab44",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5r.cpython-312-x86_64-linux-gnu.so": "6b7ee8f596f412083b690fbaad5f3da22347e55f97e1f8fa1c69ca771aea34bf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5s.cpython-312-x86_64-linux-gnu.so": "6d5a6cce986c482d93cc3ff088d43fb49e2cc5b5ce6160d81d695986fec41f5b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5t.cpython-312-x86_64-linux-gnu.so": "db05bb9c8c231813b2bcc092fce9da4eaadaa4945c9625e9bc4abd9541b55306",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/h5z.cpython-312-x86_64-linux-gnu.so": "60a341572bb8d52ba894483fbabd3a0dfc10d0d343f3c18372787657beae1800",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/h5py/utils.cpython-312-x86_64-linux-gnu.so": "cbdfcefe278343b1f504408ad9ea5e9c7059b205b3e2ecfefadaa9b389d24ae8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/kiwisolver/_cext.cpython-312-x86_64-linux-gnu.so": "587aff4260609430fca627c9b56fb42ad87935e32535e8bb8928571413ce1f39",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/llvmlite/binding/libllvmlite.so": "5fe889d51aaf204bad637d6249dab1b34d2b472885ebbf3283f8c0b786016eca",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/markupsafe/_speedups.cpython-312-x86_64-linux-gnu.so": "f4a31de071c565959002db29bf36c6f8d35ae7929f64700adeeba46fa4f90daf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/_c_internal_utils.cpython-312-x86_64-linux-gnu.so": "b58ffc964ccca3beaeb3acc5bcadfc7f32458948687839c0c1b81c9aae9d4dad",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/_image.cpython-312-x86_64-linux-gnu.so": "4b4e59b089841f77018c9afb9eb2a9bcf8a8f37f36db8532ccda3aa345d148ec",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/_path.cpython-312-x86_64-linux-gnu.so": "0a6078217043ed88b55780ebae5a27254f12e20dd78188641c4b227961b6bd22",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/_qhull.cpython-312-x86_64-linux-gnu.so": "d703234ef9ade73098bd0298f7b341abd3bea78b7e377cca10bb7b79d291408f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/_tri.cpython-312-x86_64-linux-gnu.so": "14872e604e25a5295e43659700cd4168b8905306aa7612dcafc478fb1bdd9963",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/_ttconv.cpython-312-x86_64-linux-gnu.so": "f033d906da59c5a2cf0f310cc3dae3701b185d57f7e8e87d077d3fd0cfd51beb",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/backends/_backend_agg.cpython-312-x86_64-linux-gnu.so": "ef8c9f7dbaaca388975838e6517f64bc4e11c4511341e2fe5e46b3c5457ea3d4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/backends/_tkagg.cpython-312-x86_64-linux-gnu.so": "6d17adf6f77ec385cfdf2b6dbd887b75aea4694d271f846fd0b5446983f53ed1",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/matplotlib/ft2font.cpython-312-x86_64-linux-gnu.so": "0b208209654cee09e3c450a8016636e419607efdbcbf4f2d3758f3228291ec2a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/_devicearray.cpython-312-x86_64-linux-gnu.so": "40b964412cc58b75dfff81f3eec77b0a0baf90a62b2e3af9b2a0207728df20cf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/_dispatcher.cpython-312-x86_64-linux-gnu.so": "398470b4bef9a9bcde48179980e64d22a933afd01e51205e635fd50ab4eaaa31",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/_dynfunc.cpython-312-x86_64-linux-gnu.so": "7c5ea77176d69b8f2906a4c1b4d82302f4befe5d9abc2cd85c1c65e07e878729",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/_helperlib.cpython-312-x86_64-linux-gnu.so": "98254c7635dea396cbc0f2117adc9c10c966213db2cbe18364c3e19335fd9d10",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/core/runtime/_nrt_python.cpython-312-x86_64-linux-gnu.so": "7c8daa362033f8f9fb8a15c9ef1c955619a7d5157e39648e953269f28676dbab",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/core/typeconv/_typeconv.cpython-312-x86_64-linux-gnu.so": "a678dfb80ea500cb5bee81cd5351782a836a4b53da67df8f7511bd50ad70c173",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/cuda/cudadrv/_extras.cpython-312-x86_64-linux-gnu.so": "78a8f53811ba55ae0af0da36a198f3d2a8e7567ffc2169209a162554bd971a88",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/experimental/jitclass/_box.cpython-312-x86_64-linux-gnu.so": "c05fc65ad1cbcab2ab61e99f14d9186dffc12a73375d4cbfd7a685609822edf5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/mviewbuf.cpython-312-x86_64-linux-gnu.so": "70a00708dd5cf032ed2417bcf61289fe5742f6488640bb057b3d0d0ebcb22282",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/np/ufunc/_internal.cpython-312-x86_64-linux-gnu.so": "18ab9c84273790d87277794ecfb20ced6bf3db000146b15d566eabd994f382ae",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/np/ufunc/_num_threads.cpython-312-x86_64-linux-gnu.so": "bccbab875c388bde9d5a927fb235daca24deb0d25c369fca5f43dec713b044d9",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/np/ufunc/omppool.cpython-312-x86_64-linux-gnu.so": "6ce52e60b384a7283a7473afc3cc7aeb7d5f5f7b629f67e4ec4d10a81808af8a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/np/ufunc/tbbpool.cpython-312-x86_64-linux-gnu.so": "f6df80d4cdb5bf0e84c25e7e1d08287a4bba7052e1fbcbb054e48b3c3282ece0",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numba/np/ufunc/workqueue.cpython-312-x86_64-linux-gnu.so": "0634a9663e53638810a4b6b72d2295d4f0fc5bcb39946f537f4a9dd1854ba2b3",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy.libs/libgfortran-040039e1.so.5.0.0": "14afb3129b1a8b50bc40a3b0820c7f1152ea9bc10121aab152943f7057472886",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy.libs/libopenblas64_p-r0-0cf96a72.3.23.dev.so": "9254d0854dd7615e11de28d771ae408878ca8123a7ac204f21e4cc7a376cc2e5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy.libs/libquadmath-96973f99.so.0.0.0": "934c22ded0e7d169c4d4678876c96051adf3d94545da962f60b41659b075da3b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_multiarray_tests.cpython-312-x86_64-linux-gnu.so": "0b2cbb7419ffc2f712987aabaf518a3b1d9de8406093f79dcb1d712a34ab6057",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_multiarray_umath.cpython-312-x86_64-linux-gnu.so": "6a650810a8735cbdb988f74729973740a337645dd1585fef696e73e2dbc65beb",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_operand_flag_tests.cpython-312-x86_64-linux-gnu.so": "54f6c67f03a4cf05a834d5528778da86e05323c2eb29b37f74268c70eb437d01",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_rational_tests.cpython-312-x86_64-linux-gnu.so": "d0998fa51d048f9799e2fac737fe9fbeb29509e515b906a6f370315624a43769",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_simd.cpython-312-x86_64-linux-gnu.so": "9402bc6bcb8a8da62816a3106415a756f8de526f8a0ec9d9cf21ff453865f5da",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_struct_ufunc_tests.cpython-312-x86_64-linux-gnu.so": "3c1e91a846e29b61338bde86553cf2aa2f48baa35c54608a7203f1c070550803",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/core/_umath_tests.cpython-312-x86_64-linux-gnu.so": "913ef3de025cdadfc681a9a0a807f730d456795a3c2ab4963d9561de62ecfedf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/fft/_pocketfft_internal.cpython-312-x86_64-linux-gnu.so": "38d22249f351b1d50e9269c596889ffc638639ebc150c1e75fc9f55a0f331ab5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/linalg/_umath_linalg.cpython-312-x86_64-linux-gnu.so": "8822e772d743d405983f1b9c6b34b704dd297780890dc245454f1081adf50a4c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/linalg/lapack_lite.cpython-312-x86_64-linux-gnu.so": "50064fb8ddb0635bbb6028b8f7dd28f90c04ad9ab1c3faddd1117c2bb7dc8ffd",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_bounded_integers.cpython-312-x86_64-linux-gnu.so": "b39f7e2b4ccfd6904ae60fe1517f6bda8be7835b5bf69d54dec0d693c5e8b793",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_common.cpython-312-x86_64-linux-gnu.so": "abd88ca8f447f22c4f51f226734d34732966bae61edd2aa25f74bfec954bee28",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_generator.cpython-312-x86_64-linux-gnu.so": "5b3ef2ac8b78aa83bc869b70e30e2a70fbd3ab373c5253ed6eba9982a55fd7e2",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_mt19937.cpython-312-x86_64-linux-gnu.so": "3619f7f91b9ee7197c2902c0e197e69b2e5dd45fb11cd22e572e9b0b886514a9",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_pcg64.cpython-312-x86_64-linux-gnu.so": "577c1468f4fb40bb23184343e2c1b645a17d1d493641ea92c052f286dc6eb556",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_philox.cpython-312-x86_64-linux-gnu.so": "2c9b1fe53ef119e3ed2acb73c802cf2996502b0fd51d4926d4047576cea57514",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/_sfc64.cpython-312-x86_64-linux-gnu.so": "5883302ce33afd54db6631adbf5e000297b8eb42c0ec894bbec318b5e6b14268",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/bit_generator.cpython-312-x86_64-linux-gnu.so": "87c5c730887943c603b16c53cf213398336ee410ef46595518093977afd5b0cb",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/numpy/random/mtrand.cpython-312-x86_64-linux-gnu.so": "8d866b4b6107401ab9546044564208e0a5899c3903da09277d1c4875d98bcf0f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/algos.cpython-312-x86_64-linux-gnu.so": "f7dbddc90ed3ff5b388019b9e8a89b34671a95f8be0c3d6379a0274a5fdeac6d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/arrays.cpython-312-x86_64-linux-gnu.so": "af2e729a8f454263e05a2ce596e5a8d6a045868d0b9df4fa31f4274f7b8781d8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/byteswap.cpython-312-x86_64-linux-gnu.so": "c515cb68894de9630abc8511e963adfcc0f265909133e1832f8fa13d21bad420",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/groupby.cpython-312-x86_64-linux-gnu.so": "853ac21b5790edf6f2e5bb2ad4dc4bcdcfde128e00c57481b62791078604e969",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/hashing.cpython-312-x86_64-linux-gnu.so": "d5d4d4994866c5f30124242ec08e5865b7b05d48ac7df1e5686c7d449f92f8dc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/hashtable.cpython-312-x86_64-linux-gnu.so": "066a3b2fff06494701ead45899980b28c209469e5b194bcd75d587971abe2dd0",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/index.cpython-312-x86_64-linux-gnu.so": "9af2ac804938c99f111f3d2c7f56d0e41b80db2d5eb408e4ba26be118aefbb2f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/indexing.cpython-312-x86_64-linux-gnu.so": "c756d6f91efb65ff1a0b40291e629071f6ebec68f584fff7af1e159db160d54d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/internals.cpython-312-x86_64-linux-gnu.so": "845b9d6b328c753de0197566e164512d56b3af484c427d2818b8b4672e8b14c4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/interval.cpython-312-x86_64-linux-gnu.so": "b32f55e7ca178b5353ec74e367d9c2fb0311307bbacd24933dbd65f7ce8113a0",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/join.cpython-312-x86_64-linux-gnu.so": "38f8ccef6cc424566b540a9e064f8bac1074e4709adc391d1ad046324a4b8e74",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/json.cpython-312-x86_64-linux-gnu.so": "6d4809898d52aa3cb8ef5c8ce469a11f7b3ac0ad404201e60f450ed602e87243",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/lib.cpython-312-x86_64-linux-gnu.so": "a78afd7f170ea90cdd8871b708a81e5a912652e008aae92864a40c176354f0dc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/missing.cpython-312-x86_64-linux-gnu.so": "3b4290d4e9f5c09e3300a916a2be27885e3e5db3e5cb2d8e15dc30a3104fb212",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/ops.cpython-312-x86_64-linux-gnu.so": "976e45a066b89a2ddcce0315856cfff3cda641908abae6d71d501ff0c324888f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/ops_dispatch.cpython-312-x86_64-linux-gnu.so": "c7b367d5312ca356c43a67aae5b68022a3361e6d2b88ed99df843254a0fdd7bc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/pandas_datetime.cpython-312-x86_64-linux-gnu.so": "862331aaba59e6d59e486338d23b4f1d111c468d8719c9b20914e029505315e6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/pandas_parser.cpython-312-x86_64-linux-gnu.so": "f43a0c5171bac5f9c21cbd9df9fb454dd901b841802763fe48d659ce3f371d8f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/parsers.cpython-312-x86_64-linux-gnu.so": "f9dc50733725c7e81bb1872424fd1ded1093b309efbc72db1e3a4408a483e9e4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/properties.cpython-312-x86_64-linux-gnu.so": "af74234e33ff7a0a1547197da8de3ca893a9ce61ff7bebb5ec7500f1b5aef5c1",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/reshape.cpython-312-x86_64-linux-gnu.so": "eac9f6369c1848f5900ca7d478bd22ae968f31d97f3820860d7d837d98b5fd29",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/sas.cpython-312-x86_64-linux-gnu.so": "7c42b771939cd25c4264b1f7fd421ee5738d7d230ff34b9ff66486bca1746cbc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/sparse.cpython-312-x86_64-linux-gnu.so": "746de22e0c74edbc6903e32191247b96e169b45152968454ca9b64b7ef5bd143",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/testing.cpython-312-x86_64-linux-gnu.so": "ea843f9f57aaab216c0b85a1fce0610b639cab8ca4c2d23a8bcea632af8b74b3",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslib.cpython-312-x86_64-linux-gnu.so": "dee53cebc61f07b1b1fcc6067cde0501d7ac44244f11b9db9f566a0cd076037c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/base.cpython-312-x86_64-linux-gnu.so": "d516594a851036f99444daeaaa7cc6324d8ee7b7fed065d8020530644a65ecb7",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/ccalendar.cpython-312-x86_64-linux-gnu.so": "c2d84be99bdcbc31ed6a058a8fb67f7986e717da736aa7723642a8fa7a9fad90",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/conversion.cpython-312-x86_64-linux-gnu.so": "ed088aa302c67f720636e1157ad18a4c75ad72636ea50b0bf2b2d886acb03560",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/dtypes.cpython-312-x86_64-linux-gnu.so": "9ce2a1cb87e1ae40c09749750031401a0f8be4ad405b47ad26fa3d654a6f552f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/fields.cpython-312-x86_64-linux-gnu.so": "90830b093cd8c8ebfffcd96893b638f1733ed9b222d59499c3dc95d8a3e14201",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/nattype.cpython-312-x86_64-linux-gnu.so": "11fb4001cbae020908e42f7264eaf63c56820128fdb1f42a7e9f6f196477cf68",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/np_datetime.cpython-312-x86_64-linux-gnu.so": "6ade9f57f5b4d828135d6a1afdb30ff6d471a7726db616656168e4551696fe2b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/offsets.cpython-312-x86_64-linux-gnu.so": "e0263991535e30ce3000a0da915d389250cdc6a7730f175e925981b2c280855b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/parsing.cpython-312-x86_64-linux-gnu.so": "86732698b15e8a6149a2c1ef4f249c1cc3b506362a8a8a33ad141e6b796f4b12",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/period.cpython-312-x86_64-linux-gnu.so": "5d47d3b21b05af0d061676dfb865549ad47098334996e0891f3775b304db0e12",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/strptime.cpython-312-x86_64-linux-gnu.so": "47bc18fed9e8f53691aa30f8420d395cbff09daa31109daa0f31bd74836e9e0b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/timedeltas.cpython-312-x86_64-linux-gnu.so": "aed9c104e8a06c23b430c8294c62aeb9f0154b077a20de3b2bb52bf8706b0471",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/timestamps.cpython-312-x86_64-linux-gnu.so": "3bd997f8cef00647286268704233fc7e4ce56f9f2c61f7a1f17afcbc66b06122",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/timezones.cpython-312-x86_64-linux-gnu.so": "d5387dba2f9372185822a8b712a0a9372cd4d3f2a7269cb041dde0662c984437",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/tzconversion.cpython-312-x86_64-linux-gnu.so": "7315f3e5334be689c972fa4981742d30ddd6d943cccaf60cd20b2f6d64bb08ab",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/tslibs/vectorized.cpython-312-x86_64-linux-gnu.so": "3157b2f24077b3ec602f865505881f4c485a2cf5e22c51a3c523da12b55f1260",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/window/aggregations.cpython-312-x86_64-linux-gnu.so": "fb6bf55cbeaf3c5e7192f97464ee07707ee78d5e64853942533a8d8af4285b36",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/window/indexers.cpython-312-x86_64-linux-gnu.so": "e2edbdb0e3bd4cea847c7be7511eefcfe1c6fe2fb7de04f35e226ae13f478f0f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pandas/_libs/writers.cpython-312-x86_64-linux-gnu.so": "e7aeb5e82631d053b09442c3fdc4fc13a36f8dbdfb56930e0631fa50150ddc9e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libXau-154567c4.so.6.0.0": "05484d24bf78cb8ed03169f1cb067204d829cb7af21de8820400d29d115e4320",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libavif-8a7f9d56.so.16.4.2": "3a8819e60f0fd7c716ef14776085a81c941db354002a9f9a679da38447e5507f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libbrotlicommon-53534446.so.1.2.0": "d0034d3c0dc0dc698266f9ce61ef1701402960eb0f18c0defadc61b91f793d88",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libbrotlidec-7e5462ba.so.1.2.0": "301d8f1b7365c0204485f7bdc89165936fa8212b36c4f78563fe4229df53863c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libfreetype-9fc94c80.so.6.20.6": "994d650f4fe686013580524dd868d7001325fa3bbf408800eaa4778138a7e690",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libharfbuzz-172d1f63.so.0.61421.0": "7ff87422406706600619c8467a2daa42a8122207dcb95337273ae18419f7a220",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libjpeg-31e2ca52.so.62.4.0": "6d7c754529b30aff22efaaf88ba02061714591702c03f297f00ccb32ee6d9d9a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/liblcms2-dade1fbf.so.2.0.19": "2549d6886e7de9960792e10ac87acfb9895e2afae85b7aac02108080cc7d3a71",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/liblzma-2be87c3e.so.5.8.3": "535737fa00b49f62d14d6d9bce76482440df700b33d2666d636894f751dd25f1",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libopenjp2-b07f72ad.so.2.5.4": "185cb358047fd8b351c1d05b84a7e906c59d68d7f41222805f7042895ae266d8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libpng16-abb096d5.so.16.58.0": "44f1d1d821c9b57cda2b32d4a278eeaa03bc9930ae9da0ec0f384c3daf165e12",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libsharpyuv-0066295b.so.0.1.2": "c2c5e89368b3bf9276a3cfea7e52ceb624db1c0c986c127169616219d5325807",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libtiff-fc87e79d.so.6.2.0": "522bafb6812978fc53db6c32e5c57786186b551fc5fd6a7c61b857ca01261d16",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libwebp-51b0b3f7.so.7.2.0": "7df9ad3680dd09d756511334791c8c896207863816eb2910840e5fc4ae10028a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libwebpdemux-9fe2abcc.so.2.0.17": "a7ccaaf4388d8ec212ca85be17907e8e021b7da113f7f48c47722c1ebe602f8e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libwebpmux-8fb1c9f6.so.3.1.2": "48ebf91c4d208901a48f851fb4c851d380fededd2a272104e3ca24c17499deba",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libxcb-ad31f5a3.so.1.1.0": "633fe8df9f1bfc0ef60de6a3495a599ec56e56216491b90b79604cfecfb88000",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pillow.libs/libzstd-44be1190.so.1.5.7": "9501ab40e92a57491cadd2d02df46b596f24e74e6c0476b8500793f822fa0072",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/psutil/_psutil_linux.abi3.so": "8085c743a77f6059be6d18d54317ccce2e715425bb5f15aa8835770463d6b9fd",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/deps/lib/libcint.so": "493513dea3123ccad1175e1217f01c7b277041909c0123d428e1fb6e0d8c8b5e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/deps/lib/libxc.so": "a67db49e7021deba8b6a000d8eb5c43803219c23822d4b132e250f9cd8137c02",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/deps/lib64/libxcfun.so": "69a381159a6dc1646a963d23f3376f2770f8d2cb2148cce015c2b9184ec55c5e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libagf2.so": "83bdc600122011b31f16d1fde04b30b4a764fb05ebd871dcd48def2b1ea088ea",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libao2mo.so": "3868c0bbfbea2855f4f4e12f447a666be3c9f2e69b8c8884bfdb1dfbcebcd12f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libcc.so": "89c711fc7e8aa449e6b0a4e5813f81b3d54a0023a347cb4171102a330b971504",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libcgto.so": "c58670cba6de96b65ce47c0a0b610b108be149df32aa1ee8023783cf3e4f0b4e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libcvhf.so": "e1538a3e9d12bd1d2ae02e67851d8d38b99fa07d952cd9ba30459c24a1eddf14",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libdft.so": "c67cf979d57d0b46a4365e9085a88008ab9419221b56f48a71c317796a67f315",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libfci.so": "f79bc6958853f328ab424a1b6538bd20782d0f6f6902f1c0fb1a263775147622",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libgfortran-040039e1.so.5.0.0": "14afb3129b1a8b50bc40a3b0820c7f1152ea9bc10121aab152943f7057472886",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libgfortran-91cc3cb1.so.3.0.0": "55e3eb67306c2ff17e6f8a0810eaa0dcb26e94cd83924c5065d5040e87814608",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libgomp-a34b3233.so.1.0.0": "3a7eaece7231911be2fbb1b3e7cb4cb5c2e0f84e0c2bb73739472b5a1feec8c1",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libmcscf.so": "bc8749dec4e62c2a3c0ccda6a0e5d62a1fe9a508314d34f9c4034d3a5b7f39c4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libnp_helper.so": "c2b4bbc5660bb1adecaf570d615f21933e84b33188e57e09f8f5b34fcb966441",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libopenblas-r0-f650aae0.3.3.so": "79ec02b53f573cd7116a89f04c397473018e7fda05720b354d43505c19d47958",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libpbc.so": "040b4afa20144a136506c06498b3d387d00a144b8cbdea6a9a55f1920021f037",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libquadmath-96973f99.so.0.0.0": "934c22ded0e7d169c4d4678876c96051adf3d94545da962f60b41659b075da3b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libri.so": "719bd368bb674ea0a7e7016c019e008917fc8d2672284435d8e85bc9410cf4d1",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libsolvent.so": "6b5ac2a3e60e71c71f905c9506ddac773ae3ffa2582d0ee7c6915520d2f53bdf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libxc_itrf.so": "9be441e20616e25b88ba8b5b0b9f604e9fda4fe82999f7fdb79f281b4583e696",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyscf/lib/libxcfun_itrf.so": "5ba15b20c81767b2ef434b087caceb2f4f163db5fe376d2ec267501b25136aac",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyzmq.libs/libsodium-1c6bac97.so.26.4.0": "da846206ca1bc70816538fd87fa546a6b689b7572b0b5476cc41d9179c2f8d26",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/pyzmq.libs/libzmq-82f916e6.so.5.2.5": "cde39c02a800c1d0569a1d9368f28b7996f732fcda8849f1457863db18f80d6f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit/_accelerate.abi3.so": "b4cb2ebbf8fba43f86ffc44e14cc554cadde2d90cfb9c378eaf57687c9289396",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_aer.libs/libgfortran-91cc3cb1.so.3.0.0": "55e3eb67306c2ff17e6f8a0810eaa0dcb26e94cd83924c5065d5040e87814608",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_aer.libs/libgomp-a34b3233.so.1.0.0": "3a7eaece7231911be2fbb1b3e7cb4cb5c2e0f84e0c2bb73739472b5a1feec8c1",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_aer.libs/libopenblas-r0-f650aae0.3.3.so": "79ec02b53f573cd7116a89f04c397473018e7fda05720b354d43505c19d47958",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_aer.libs/libquadmath-96973f99.so.0.0.0": "934c22ded0e7d169c4d4678876c96051adf3d94545da962f60b41659b075da3b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_aer/backends/controller_wrappers.cpython-312-x86_64-linux-gnu.so": "1dc921c28c6203eaaea76c24496be6f7b5ffd14081ae7735e446a33bfdef0e23",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-310-darwin.so": "c7815acc06b6dcfda5b034d0535e3981c3746aeaf1ec3e8137a6938f6bba1cc8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-310-x86_64-linux-gnu.so": "12339174ea70a79adec9698b7fc6e0e136996ab63f2b63438ef161a577795db2",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-311-darwin.so": "b7764031f84890b40014477a0f5a83827d0824bb4d16581986b54ee4d789499c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-311-x86_64-linux-gnu.so": "ae2dea3bbae19025b02ae05dee1f4d844fb5d666f8b5fde35ba3bfbfdb1490fa",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-37m-darwin.so": "c90e82fc3558dba048dd820c3884129d5d84bd70053db610aac21c309eb9c79f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-37m-x86_64-linux-gnu.so": "34320f5432aa0c1cdd6526caf2735f5e3d738c4960461deffac54e74666581f7",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-38-darwin.so": "db6658046f09b4a1507a91766cfb54b63d749ecf6a88ba83e15d0477a6c68dd9",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-38-x86_64-linux-gnu.so": "35a65e3b27f309c92436e8ca189ccfdf5f240d4ac7fd05a3671c749992a049ae",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-39-darwin.so": "001a30a877e7582ea9ce68a9804e2ad6c7586512da3b3f2cfb258dcbb3cb93f6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/qiskit_nature/second_q/drivers/gaussiand/gauopen/qcmatrixio.cpython-39-x86_64-linux-gnu.so": "bfaaa2c2fea953a3eea5989749a52fe42e037b3a471f716139f9be0ed15644bf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/rpds/rpds.cpython-312-x86_64-linux-gnu.so": "8022895ab80b26f9e40fd5160223cfdfb41d421d6fecbc93ef49199c750a45ab",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/rustworkx/rustworkx.abi3.so": "c1722078e1f1b9e94aa059c769a8a6453e308f9c23b8a913cd120b444b5a3986",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy.libs/libgfortran-040039e1-0352e75f.so.5.0.0": "c6090048eccc763522c12ef016f81da6b627cb3a044f55cf0479a839c41c0980",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy.libs/libgfortran-040039e1.so.5.0.0": "14afb3129b1a8b50bc40a3b0820c7f1152ea9bc10121aab152943f7057472886",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy.libs/libquadmath-96973f99-934c22de.so.0.0.0": "6ed5137f412781ad7863439fb543613f620b43c32b63292a0029246162f5bbc6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy.libs/libquadmath-96973f99.so.0.0.0": "934c22ded0e7d169c4d4678876c96051adf3d94545da962f60b41659b075da3b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy.libs/libscipy_openblas-c128ec02.so": "95121ba2173f1838ca08d988af0cc03a4959d50d9f8adea42d10d8fe8f3be61d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/_ccallback_c.cpython-312-x86_64-linux-gnu.so": "2d6cb713ca616122b086d00e5b572e4d8795bfb4110172f9c59656b01386bbac",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/_fpumode.cpython-312-x86_64-linux-gnu.so": "2a4d66a55635967b383a92e3bcdad6e01f56fa72c03a0b7a9c7fb43b9a124538",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/_test_ccallback.cpython-312-x86_64-linux-gnu.so": "a3741878fbd2b7610f3d17cb3234d4fabc28410772ef7b19f56c20a97cf0e8b6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/_test_deprecation_call.cpython-312-x86_64-linux-gnu.so": "18088121acc32c8d8a86c2261fefac1149dd647e51175152297a339363246624",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/_test_deprecation_def.cpython-312-x86_64-linux-gnu.so": "07ee431b99a2cd9f20b7af97e7571cbbc3af7eb96de8e03177f951b09a4bef63",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/_uarray/_uarray.cpython-312-x86_64-linux-gnu.so": "f786b0c595872caf12e2e8d9b32af14fad5d7e9e5006855b986f6dbe3fb58bc5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/_lib/messagestream.cpython-312-x86_64-linux-gnu.so": "a6a321bde17600ee735d073ad9e5995ae663315dbd7e8dca0e980035cd7ea474",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/cluster/_hierarchy.cpython-312-x86_64-linux-gnu.so": "76e396ef365e6c4e2b3aef04e4a0d76c4896a66220dea5b07f3fdb2c227c6244",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/cluster/_optimal_leaf_ordering.cpython-312-x86_64-linux-gnu.so": "4247dfa2cd2589de06340f4de909da05252a6720b021e43731222575ed2194b8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/cluster/_vq.cpython-312-x86_64-linux-gnu.so": "31dd0c10fedf384f4f38dc1e7d6781a2e574c7462dbb360493dd8aa1d34c6071",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/fft/_pocketfft/pypocketfft.cpython-312-x86_64-linux-gnu.so": "e0e2100aec8f263fde5ea4b7cf4abed15f4f160ed8cdf117c92ffd37df7ee1ff",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/fftpack/convolve.cpython-312-x86_64-linux-gnu.so": "2a413232df9815e399618cbca12e3cbb0fd0654abff62887d7d2a6dedc59298b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_dop.cpython-312-x86_64-linux-gnu.so": "89d0e5d59c3445f9fbfde77b421b10e870d137fc400c86b026ccbefec3ccb0f4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_lsoda.cpython-312-x86_64-linux-gnu.so": "a75712933b9678efabacfc8e124d6bb8094606300052c232bb0ac245df9caa97",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_odepack.cpython-312-x86_64-linux-gnu.so": "96fbbfac56714470e0851aaf42f19960febddccf7f061b67a4e1a3bc8aa5e5e4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_quadpack.cpython-312-x86_64-linux-gnu.so": "f13e0db7dc81ba4c6541acef73fdf8a09e334d33056bdfec76672fc85fcc9778",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_test_multivariate.cpython-312-x86_64-linux-gnu.so": "a21a7ed4cc626dec13b43243d5f3125db07e5ecfd4fac1f11b8c03edd67f114d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_test_odeint_banded.cpython-312-x86_64-linux-gnu.so": "d4c9a501e39868dc0c11c6a443e24f7bf0fa14cae5c2ddb49a0a9fcf413ab431",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/integrate/_vode.cpython-312-x86_64-linux-gnu.so": "cdc12b57eac5befefe7076f017e06923b3cb329920be0315d206535823eadc66",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/_bspl.cpython-312-x86_64-linux-gnu.so": "170f47c31aec08129db7b67ea2b831ef827208d9a1807f5631142cc6866a2657",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/_dfitpack.cpython-312-x86_64-linux-gnu.so": "ea3b2293bcbcc87eaefa97f8bb8f4b96ec5c4a629caf031d89b4ee7ac7406390",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/_fitpack.cpython-312-x86_64-linux-gnu.so": "e08d93a042998b2fe5d08b8a69b7873d5191689c35837564673e4ba73c9f9562",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/_ppoly.cpython-312-x86_64-linux-gnu.so": "19085c75889b201e634c18571795a14b56899ca500e79110ca69cc4fd79f4b09",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/_rbfinterp_pythran.cpython-312-x86_64-linux-gnu.so": "107d90e7b07c47a782a2172904cafc300c5c8ecc6678327455552fdc017a26a8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/_rgi_cython.cpython-312-x86_64-linux-gnu.so": "02c8290c48aece26dfcdce8b28ea8eaea3831d29557e59d6ed61d80688e5d175",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/interpolate/interpnd.cpython-312-x86_64-linux-gnu.so": "8f70c6293849699ca00654f6b3ed6017dd4c9a046b3b94b0f20cdfea76350c34",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/io/_fast_matrix_market/_fmm_core.cpython-312-x86_64-linux-gnu.so": "3a2fd1e80229dcf3b51509fc16fafba8f54973a67c1ca286997fa367dd647d59",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/io/_test_fortran.cpython-312-x86_64-linux-gnu.so": "882cfbf2167bea7539666d4dcbaf6d2ba0582d60afc81deb4df9b941f29f79c5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/io/matlab/_mio5_utils.cpython-312-x86_64-linux-gnu.so": "e5f55ef13ad307ba26b49237d665f7453f5117dfdaa405148172c1943a4cd6d3",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/io/matlab/_mio_utils.cpython-312-x86_64-linux-gnu.so": "8f2e4302a3e3c75cf7f899ab994599bcdf285fb71b46f079155a5e47cf72a732",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/io/matlab/_streams.cpython-312-x86_64-linux-gnu.so": "55bbd05c000e08ee0ceae646ed60a439fc2cff56222f505540e1618bb9a13205",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_cythonized_array_utils.cpython-312-x86_64-linux-gnu.so": "f6148044dffa586b4ecba4b9d3efc7d00e6a28cfd9260b0d9a4018e01db0c541",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_decomp_lu_cython.cpython-312-x86_64-linux-gnu.so": "0df53cb68d4c3dad6f9d754367eec69d0e554e2b8de3ae50750484b54bd1c789",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_decomp_update.cpython-312-x86_64-linux-gnu.so": "51a8f98a6158e0dcf4be252a91c9de684bb4429fc8a253198702b3265415aae2",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_fblas.cpython-312-x86_64-linux-gnu.so": "e85ebcf057241f9af47fe64d5f8af4571cc5037d88c3aa4f6b94f1e30ac33ba8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_flapack.cpython-312-x86_64-linux-gnu.so": "7562212e18a9612087a72a2ee6eba009eff389d91599138d9ec9f84951ae0660",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_interpolative.cpython-312-x86_64-linux-gnu.so": "44042df54879e72003df6648cb3bd0c763fe00bace79ffbdcef70198f8426ff6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_matfuncs_expm.cpython-312-x86_64-linux-gnu.so": "fd1ecaa4ca89652170dd1db636745ccf8b133e42fa0dbbcc6c36ca0248d50425",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_matfuncs_sqrtm_triu.cpython-312-x86_64-linux-gnu.so": "9ccda7436c983d84fc64ad5b6b529b6ce5b5da1f2f1e28375286fa67a09bb54d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/_solve_toeplitz.cpython-312-x86_64-linux-gnu.so": "871eb8cf47f269e05738f14f79f333a5d9fce02498db2e83a13dde91ef2b6440",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/cython_blas.cpython-312-x86_64-linux-gnu.so": "d0996dae267597f77e2a59007b15616eeba442c09b9ebb09c03b5128799c1bc6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/linalg/cython_lapack.cpython-312-x86_64-linux-gnu.so": "9a42b8227e5eae1df8ee763c307b55c872e79c80db9eef5b8bf21bd19032bddc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/ndimage/_ctest.cpython-312-x86_64-linux-gnu.so": "ab091465baaea7192fa1aab9b4a3f58441397648465be1c4c8efcd5a679b9d95",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/ndimage/_cytest.cpython-312-x86_64-linux-gnu.so": "890b3be7cce3dc26302e5fcf7c69b153bf3a7e68564eaf46f45ad207ddca9ae7",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/ndimage/_nd_image.cpython-312-x86_64-linux-gnu.so": "0028f0fd42aeb6d3261755334fbf818867eefaac9c85e991752ec5bad51bea3e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/ndimage/_ni_label.cpython-312-x86_64-linux-gnu.so": "5811e6b912596230bcc82716b004d83fabf3b09fc295b799f6afc91e6c8d88a7",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/odr/__odrpack.cpython-312-x86_64-linux-gnu.so": "862e08ecb0e27cef06fa85980d26f424db66692898b311a02e69000ab79a50f4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_bglu_dense.cpython-312-x86_64-linux-gnu.so": "3c8beaadf1230cb5950482d4ca7510ff08b477b03a2fb106a3077e526b7dd369",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_cobyla.cpython-312-x86_64-linux-gnu.so": "faf5cf524e950ac1de83712a613c586b6c4939c5282772e176a2dcc8d44cf44c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_direct.cpython-312-x86_64-linux-gnu.so": "f5f0440a65f6c9319fe657b540c6c8dbfa9e5a44bfac0054bad2b64802f83579",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_group_columns.cpython-312-x86_64-linux-gnu.so": "7b122837b7fa027fae5f42fbf0f20699cf9ae8105954ef57300d34b7272d1dae",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_highs/_highs_constants.cpython-312-x86_64-linux-gnu.so": "e318f75c641ec1ebbd70a889394b459926f1ed9fee36b36e9a5e3c1433a3e48b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_highs/_highs_wrapper.cpython-312-x86_64-linux-gnu.so": "689f620ba2d47aabd5216853cfeb084151fc85d8b5317cea1bc6d705910e0e3a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_lbfgsb.cpython-312-x86_64-linux-gnu.so": "2e956c73297c5cfbf83b760eeec299c8c9a53c9bfc94ea11316d2a6c1510d943",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_lsap.cpython-312-x86_64-linux-gnu.so": "bb5e2231cdf4381bc3e141e956e37e8ee74902f308f5dca5db458abdd06edb26",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_lsq/givens_elimination.cpython-312-x86_64-linux-gnu.so": "99872acccfbdb823953de561a183d05334d6c8a90910bfcacd60562b34fdc346",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_minpack.cpython-312-x86_64-linux-gnu.so": "82deb57782b5dfa7d99ef141626faccce6a54c1b42e11b51907502653970b5da",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_minpack2.cpython-312-x86_64-linux-gnu.so": "ff5a251a099509bac52afd9049582159a0353fdd9b73e8d972495ca1d40cc8bf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_moduleTNC.cpython-312-x86_64-linux-gnu.so": "5bab1b0b1172d978dbd20bd59585353a3ecb3da883cd9b5c2f852811a9afd23c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_pava_pybind.cpython-312-x86_64-linux-gnu.so": "0b581c13145b46428d34edbcaeafacfe65db0965cd585aa6741791c20ec70160",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_slsqp.cpython-312-x86_64-linux-gnu.so": "97af6aefc23c6447d4f7bfc5d0b07c4441fb3c333e88777cd2c72a9a470a6342",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_trlib/_trlib.cpython-312-x86_64-linux-gnu.so": "0b9a6326a06f8d4656106281ac8d288a35615b6f449b8622e2e14be942c7443a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/_zeros.cpython-312-x86_64-linux-gnu.so": "bc536ad880dd3aec95a95f56ffb46c8d1307342f0d78eef6fc8099f4042dcccc",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/optimize/cython_optimize/_zeros.cpython-312-x86_64-linux-gnu.so": "bae20be3fc99488869bc73848379d9a7c6de18b3f379bd9da5a6337f2b4e35d6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_max_len_seq_inner.cpython-312-x86_64-linux-gnu.so": "20b535f31055108efeeb0ad71acc0127e9a32a0cd369b6fbd6c5b3678594a4d9",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_peak_finding_utils.cpython-312-x86_64-linux-gnu.so": "f705b1c12ce9e40b11c8eb03702efa554299397dac210c22332ace2479c4a808",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_sigtools.cpython-312-x86_64-linux-gnu.so": "a288ef9f11c9eea0c107640e567b525152c5db9ba3aed2c5dc53b9081371301f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_sosfilt.cpython-312-x86_64-linux-gnu.so": "3ca89b548d5449cbbea712cf7593fc1b6bf952676e08fd6426aa39ca88580351",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_spectral.cpython-312-x86_64-linux-gnu.so": "14d3a5df3e7bed3b8eb492c7e7e199ff78f5f79f4da753d8d1b8d16e5b7ff5f7",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_spline.cpython-312-x86_64-linux-gnu.so": "cd68a32b1552fe3b0e36840ca9d7f70394919da0b69a9f9eae7996f134591414",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/signal/_upfirdn_apply.cpython-312-x86_64-linux-gnu.so": "8f268731a468afdd83733339e9831192269d03f602bc44e9f9fc5f09c8ed9ae8",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/_csparsetools.cpython-312-x86_64-linux-gnu.so": "b14556930a8c61b9d3ebbd57748a5093ceed69cf1951ba6e9efba147f3f8e283",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/_sparsetools.cpython-312-x86_64-linux-gnu.so": "d296372c121579e02ffeb746cd011e5fdefa2425fbcbeac7680d95614648d53c",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_flow.cpython-312-x86_64-linux-gnu.so": "9f55561cc1a87a49282da671f0bcff44279d0aab40317fb3a95f4ca537d0afe5",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_matching.cpython-312-x86_64-linux-gnu.so": "eac4edfe786ad26a181f0891c5b8d26f4bc7901afb7de10fb0a3ef5727952113",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_min_spanning_tree.cpython-312-x86_64-linux-gnu.so": "87410e732fef4d53c89537cb5daecfc07dfe88176f008d100ccc9f7c2d0d922b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_reordering.cpython-312-x86_64-linux-gnu.so": "3ca826c6e31d475484cefd12669c534085dab5471cc62da1092b73c79f839a93",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_shortest_path.cpython-312-x86_64-linux-gnu.so": "523d008973840a3cfe5ae3885f6eac060974c402cf2af4ca32ef12bf10f14c86",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_tools.cpython-312-x86_64-linux-gnu.so": "ef39bb5284fcbe0c2cfd84fefee4de0b0245c330c1dbc727e569f2c29bf00aaf",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/csgraph/_traversal.cpython-312-x86_64-linux-gnu.so": "344ed60798c6ed0cb5ca69b527c2ccc057944321250bcdf5e1da5f34609bc407",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/linalg/_dsolve/_superlu.cpython-312-x86_64-linux-gnu.so": "2bc9cdbcd351939c1eef033d6b052f76e0c1bf87bcd17fac3fbf2a6e62c98745",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/linalg/_eigen/arpack/_arpack.cpython-312-x86_64-linux-gnu.so": "45206cb86401bd88f9a463c42efabcfcc84f07c5b01fb3db78b36a2035913de6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/linalg/_propack/_cpropack.cpython-312-x86_64-linux-gnu.so": "c72ce8d3d9999d3bee54b66e2eda4ccf1862c8bcd2b51c3df3761d9bc2004878",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/linalg/_propack/_dpropack.cpython-312-x86_64-linux-gnu.so": "c13de338c537de224ab5e717d842a73f278b3861f809eb8a69a948be8bad05e9",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/linalg/_propack/_spropack.cpython-312-x86_64-linux-gnu.so": "a24cc77e726a77189fdd72fd81fa5c484868c863e524f8b85272dc9b3862888e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/sparse/linalg/_propack/_zpropack.cpython-312-x86_64-linux-gnu.so": "aefa68d74e081135f44ea4f181ab4effec44e28a9e9b2e0feed4a89d0811093d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/_ckdtree.cpython-312-x86_64-linux-gnu.so": "85f29726c67e727537aa5fe1dd8f030ab8ce4228252532da0461ea116fc99c98",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/_distance_pybind.cpython-312-x86_64-linux-gnu.so": "1f4c576dfe4016803cb9ff0ca8b5b5bd3809939f95f5d586e2eb838c4b652096",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/_distance_wrap.cpython-312-x86_64-linux-gnu.so": "83acddd2af9b0f954b555543012dde5c407ddfa32d7d2d631cc36ef8548d7e4e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/_hausdorff.cpython-312-x86_64-linux-gnu.so": "6b0b024f8a870c73cccfc99dc91d50e2b50e3ad21d857177977fdec10984092e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/_qhull.cpython-312-x86_64-linux-gnu.so": "da0760df64bb3775f556dc66af11703028f5940ebf0e3c6c0925c06c5da1930a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/_voronoi.cpython-312-x86_64-linux-gnu.so": "90c61eed381acbbcda81534ab63ea7b8ad70f0b88ca2d5847a8366e69a563fdb",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/spatial/transform/_rotation.cpython-312-x86_64-linux-gnu.so": "65beaa0b83b6072acabab40c52b40b6b2adaad860c024bb7b3c0502f0d01f93f",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_comb.cpython-312-x86_64-linux-gnu.so": "0cf22783b7ea2027aaefc9382c7bcde943c1c9ef80c7ef5ce36ddeafb621c42d",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_ellip_harm_2.cpython-312-x86_64-linux-gnu.so": "2758f64ce488c0a2048a7ed8d0654714b70ed2fb82c880a605f3fec516a1f88b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_gufuncs.cpython-312-x86_64-linux-gnu.so": "e6bf5a9081ab36b2d30bb71b4c9886d7c9842f03edd624fe3f556f9eb5750c97",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_specfun.cpython-312-x86_64-linux-gnu.so": "0d8e7980f4701797bb629e6abf76e7b78c228f9a5ae77ab8409fac91b281eaab",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_special_ufuncs.cpython-312-x86_64-linux-gnu.so": "6e8cb4ccd320fb8c033b79db965cb85ca0eedd84be0226469dd1a7894187ee2b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_test_internal.cpython-312-x86_64-linux-gnu.so": "ea98bd2d2588eb7d6eedaea8249d98ea93f5949f0e797df9943d2e35459fdd40",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_ufuncs.cpython-312-x86_64-linux-gnu.so": "abfdd6cdad6dd1e54a94ffa5cc5f1e8dc3f7808bae895391966dfc96ba62a924",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/_ufuncs_cxx.cpython-312-x86_64-linux-gnu.so": "07a141a56e8d9669a382d22a505cd9bf0098172e94d30de606a4ec9648363c3b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/cython_special.cpython-312-x86_64-linux-gnu.so": "04f16e829d62aa5560e88cc4e1178a469face8406650712adf2b006ed756f418",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/special/libsf_error_state.so": "a29be768d3702eb3abc35ef185c14df325df5b03f2c4f0dfccadcc10bf0cd005",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_ansari_swilk_statistics.cpython-312-x86_64-linux-gnu.so": "2c74926bfa947d9bf401b1c8a5fae20d0b98136a7100de7e19e8ca6380249e99",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_biasedurn.cpython-312-x86_64-linux-gnu.so": "61ae05ce53810311c00fad34b132a4931dee9400f536e59c2f5eeef2dddb93ab",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_levy_stable/levyst.cpython-312-x86_64-linux-gnu.so": "4f7ef8c78abe7dd1a13b5f129904bd00ca14058ba67479ad9a3e2d4e60ebca08",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_mvn.cpython-312-x86_64-linux-gnu.so": "9e30db760a2cbb7ddfb1854ad5d25ad9177b1f75dbc187de48801cf0c68e7e8e",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_qmc_cy.cpython-312-x86_64-linux-gnu.so": "2d2e64a3c9d0cbbc5edbe18f1a6f179e47f4fd954bd791186ac845906a6f6339",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_rcont/rcont.cpython-312-x86_64-linux-gnu.so": "c83c9cc7dd27dc6a779a3cdec076252aa6d3bbb5e823047d4f3143e523409242",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_sobol.cpython-312-x86_64-linux-gnu.so": "8c1151493389c47526e98230a850d950c37d301d5d5b58b5f99d37214972f52a",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_stats.cpython-312-x86_64-linux-gnu.so": "f2ee24d6dd8b1e4299a38ec30faaf06bb225308a949ca3f9b608682ab6579bf4",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_stats_pythran.cpython-312-x86_64-linux-gnu.so": "fb9b5d79bdbb6c40aee708ca96250b4432ab0ca6b412b2d87b0e2380960a5450",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/scipy/stats/_unuran/unuran_wrapper.cpython-312-x86_64-linux-gnu.so": "ffd6d511390b23447e9112475e4f83fcdd5b36536f54d5f9622ec8eaa2239719",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/symengine.libs/libflint-83c087d5.so.18.0.1": "0cc9bd2c05ed8fa5c4d6c61e7d463403dc00c384dd65d5ac1d80a99676849b27",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/symengine.libs/libgmp-42d12c2b.so.10.5.0": "29814403d0422c134a276a2952f9414b3d331fe48526657d10557cc23cf3aa6b",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/symengine.libs/libmpc-9408b0d6.so.3.3.1": "a8ed8002326bc60d546c65bdac922259af4039efbcef53b258c5bb2fb7144901",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/symengine.libs/libmpfr-b62f4d19.so.6.2.1": "bc2e9d77037798e2182d9a2664296ee48cb20e411f71687d9d73830691698f26",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/symengine.libs/libzstd-0f56e521.so.1.5.6": "e3e92fcfaafec91bb719f41e336d168dba827634e12a2ac0163b263cdf13a2d0",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/symengine/lib/symengine_wrapper.cpython-312-x86_64-linux-gnu.so": "65ded03f0e5983c9caaa80fee6764e7c3e3aecf66ea14ae6af051b3707a20171",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/tornado/speedups.abi3.so": "780553046b6dd77a1e3e95fccda57a608661683c6d8d5f4b56a24f756559d4f6",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/wcwidth/_wcwidth_c.abi3.so": "c7d5a1d751297911321d8bc70bcd4bfb744855718f565cb3ca9c09199b99bf68",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/yaml/_yaml.cpython-312-x86_64-linux-gnu.so": "957a099a4521c1f7669306fb6f79ca63fa4b9a0b4c463f7cac833a65a5c5c0cb",
+    "/home/AbeHiromu/projects/partially-randomized-trotter-wp11/.venv-server-opt2/lib/python3.12/site-packages/zmq/backend/cython/_zmq.abi3.so": "6f11e1082c9ce3791d42219fc351ddcb15d0b9c578966a29ff2a882386cc6024"
+  },
+  "source_sha256": {
+    "scripts/tracks/algorithm_codesign/run_a1_new_target_n1.py": "7b02e7bd74b5080bc9aee88e493776d902e7353b999369c6ba8aa08b1d955276",
+    "scripts/tracks/algorithm_codesign/run_a1_new_target_n2.py": "1df6536e14fd97b7d06be84cd3808d8256934e308fd5d66e137c73f952c42404",
+    "src/trotterlib/Almost_optimal_grouping.py": "5eae25459c7a1895d1a3715b8aa747b36965a65b198ebeb78d6e52e461cf3874",
+    "src/trotterlib/__init__.py": "7955517339eae3f619a5985a287e057354c3902ac97d5b072e8a90f4f41dae1f",
+    "src/trotterlib/analysis_utils.py": "28613830f12f7762454c06e5be2ae864c6c29ffb464b5ac02fdc1351848af2bf",
+    "src/trotterlib/analytic_circuit_cng.py": "62a76eae2eb6d81c04d5d139df2e7b8e392c84e6a34dad0da90e571005468fd7",
+    "src/trotterlib/chemistry_hamiltonian.py": "dd4c87d3a35a551710c0f9f1945e3b2abf5c5594501b92e0616860dad488cf56",
+    "src/trotterlib/config.py": "15e12517f82ed3e9d56eac8a272693ced87226a8ae5e97351e1c2c9b4e3415ca",
+    "src/trotterlib/cost_extrapolation.py": "61726e460057b8fbc278b5d1ead615c4142f10acb6a6c5ae63e5df2948468e74",
+    "src/trotterlib/current_s2_theory.py": "554a2257e4bb91b6901653c196acdc44ad4445cbe2be65a49e6e9887a57e3a78",
+    "src/trotterlib/df_cost_plotting.py": "4f4262ffde111c62c5d2789a602d7044fbcd5eb7c6104f1461296966bdf6199a",
+    "src/trotterlib/df_gpu_statevector.py": "a200e7ef474091de1026c4d586e725da006540a7dc04654a09cf276164c51032",
+    "src/trotterlib/df_hamiltonian.py": "7d711e1c3c093079ae890ffc1907813d55d211a4fb622e4f36edee05fdea0c52",
+    "src/trotterlib/df_partial_randomized_pf.py": "53609655d47cabf4b8086e7992f91f77ad8d67443cce3401203430809d43cbcb",
+    "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+    "src/trotterlib/df_partial_s2_cost.py": "55e779228da08a2a0a0ef595637c941de38e6208449e4df18460a6b5a1fc1433",
+    "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+    "src/trotterlib/df_partial_s2_repeated_cost.py": "94171fe3b4d0f9215c624196a7b16181455c77f1da758df78da583dbfa16cd71",
+    "src/trotterlib/df_rpe_hadamard_compiled_cost.py": "2e6a026e3fbf6c6a6a91115dbba69018fdbb2b5eb5f36af90773e906b4c87715",
+    "src/trotterlib/df_rpe_resource.py": "9ac133b1f232f293050128929babf4348a8f19ae6887b201c298ec0c3bd19395",
+    "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+    "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+    "src/trotterlib/df_rte_tail.py": "ac7a45e3f5cffc9d055f3a3ce9c06946f9ca043730270b9e1282f3e498a76108",
+    "src/trotterlib/df_screening_cost.py": "6469a6a86c229b71bd268369712d8326c84334b32a7bb693d6c38aeb1f37b5f4",
+    "src/trotterlib/df_trotter/__init__.py": "5f9ad43aa005669821b7e8739ca04a46c2482fc19aae8be6ba5ed52677ee98d2",
+    "src/trotterlib/df_trotter/circuit.py": "28040c96b0622cd069be9c373c285dc5a679c3686f6be5ebab2f9e09b7c4f3d6",
+    "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+    "src/trotterlib/df_trotter/model.py": "ca8aa933fcbd5f7c2a0c1bb867a76bbd5b09a13cbddf5a2fda159f4adf625947",
+    "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+    "src/trotterlib/df_trotter/two_body.py": "d5f678f2533554b4b7f2b09626c169e3ca1b6dbdf6ac4ab0e603a50c8fc7353e",
+    "src/trotterlib/eig_error.py": "41bb8044fb93184684a96109184d8aea121e675d258a05cd633c1b9c164a1be7",
+    "src/trotterlib/finite_rte_phase_amplitude.py": "5091d044ded5b7ebda9e922b9ea042f95262adf22456eaf789f073ab48992e8b",
+    "src/trotterlib/finite_rte_signal_validation.py": "88bd1b209bcaec057ccc56c742c900bab0de2d1eb183890726640760215b1dd7",
+    "src/trotterlib/fixed_signal_accounting.py": "4e27bd062a27470728a43fe0b56404488961653d8d2d2030d4bd6972446dc098",
+    "src/trotterlib/fixed_signal_evaluation.py": "484ad98bd17ece8c8bf0ecbddf929a4682a7c426a7194935e57e920bc12ae54a",
+    "src/trotterlib/fixed_signal_io.py": "87a6d9a42db0a0d46d44edc695d71b422b57ef1c8b74652f51f99221d5eddab8",
+    "src/trotterlib/fr_revision_fr1a_posthoc.py": "6e6f093026e9a076398c025c1329a0476c1e98fd81316c2b674f8623a162a7f7",
+    "src/trotterlib/fr_revision_nonuniform.py": "a42e972d2f674cd481e8579e4b1b0bf7acc7f11776fbb12bdd65281e0798a7d5",
+    "src/trotterlib/grouped_uwc_comparison.py": "82f0368a2530724ac2b77de31e1c6fd141c07c3817574e39ac72e2fdb21246ad",
+    "src/trotterlib/grouped_uwc_theta_sweep.py": "db131f635e0cd7b0494f90cd0930d5dc621e9b6b52eec060ed51c0b2d3181e9a",
+    "src/trotterlib/h246_migration.py": "d20b8c77ea8851aaa188510c76b6690183256abb5faad3c120a3d7481754787a",
+    "src/trotterlib/h246_reconstruction_forward.py": "3c3f71e7b21c37ae75ec1e7844aeeaa8e0b445950cec08c36752241bcc6a8e8f",
+    "src/trotterlib/h2_common_native_policy.py": "ac4a0d2031e1d00f8bdd5f477bdf25854393e020f78979773821bae54dccb328",
+    "src/trotterlib/h2_non_df_pilot.py": "822dec24a211dde5a7f150ef32edfaa14609908b529c431d1b731d705f4a6cf6",
+    "src/trotterlib/h2_non_df_pilot_validation.py": "9929c6cdf076110c45fa42487134eb9d07f8cad592e5a1b6323353e238d5b7c5",
+    "src/trotterlib/h2_non_df_process_integration.py": "311d5d14ab1433e01a718598cd8eec82e2c36adf299621fc24a34654c7062301",
+    "src/trotterlib/h2_non_df_process_recovery.py": "45157309f25905bc0ea210a576ca16b3e70f5036c1f1fded46eba206126b44f5",
+    "src/trotterlib/h46_confirmation_design.py": "daa862334844b99d03e8705ae695b60c3eef0ac829518be6e69ac6e2185d3faf",
+    "src/trotterlib/h46_m5_plan.py": "2ad8cfa8e5ae71a8100fe16c71995e86236d2a2eee750af5e52034ab31e3e832",
+    "src/trotterlib/h4_a_axes.py": "0f0157af0e4247d0be13b7b9eff3d881a20d35a7be153ef194cc4c9e377a6348",
+    "src/trotterlib/h4_a_cohort.py": "e2759b3283def40b8a9e2757e7da370f2ca08b583e4893e80a5d719685a633f7",
+    "src/trotterlib/h4_a_gate.py": "d38b98a00878c17f97dd997a3e2fb5d31d042cb66b5271212beb2e8f5811c5b9",
+    "src/trotterlib/h4_arb_bridge.py": "999c9b1d1cf8b17c045b50150e89f4172b72d5b6753839146d282318e4629bb3",
+    "src/trotterlib/h4_arb_pf_cosine.py": "611e76f59e43c5aefd7c7730f3d201748e4c6b3e358c01f8b235857d6bc909f8",
+    "src/trotterlib/h4_arb_pf_pr0_sine.py": "9b2f486b09f1f2a61e1e141a0b299adc383f6e5c4e80169cca773143472c10f2",
+    "src/trotterlib/h4_arb_pr0_cosine.py": "f786d24092cecb24533e4a88f8645ef33bbc881c5b2e6b7867278176e0f82b83",
+    "src/trotterlib/h4_arb_pr0_preparation.py": "6295aef601b14b8d6c2b6b8d805dcaced7f7819dd0e888ddc2da49409a30a646",
+    "src/trotterlib/h4_arb_pr1_cosine.py": "5148159a82f0467a030f4e7dcc67105a18eda4251e18f3471f70a6906f5cb183",
+    "src/trotterlib/h4_arb_pr1_sine.py": "e3f1efc03bbcca6ae75566791c939a5d0de55381a2e2825a417a383708eb58b9",
+    "src/trotterlib/h4_audited_evaluation.py": "126ffd37749ea07b9368005b0c87916f9c9699ccdb6c36db5ad69b3e0d758030",
+    "src/trotterlib/h4_ball_evidence.py": "6b0764af44fd52d05a3fb2391458540f8ae98a56b66c9bb071d7a9d000e0a661",
+    "src/trotterlib/h4_central_cng.py": "1d9b24b069fbd1b81db4d9fc5dd2c1f269faadbe6a855c4f3e570185afba725b",
+    "src/trotterlib/h4_central_rho_plan.py": "baf8ea024d5e9bd0c86f1b78e6285213547cbd947ece44ed51eaa10944a1b9e5",
+    "src/trotterlib/h4_certificate_control.py": "a5a4a911069ffe87e49cc9acf0cb9f9e867e9fbf9c9f24beba32cbdb4adc89ad",
+    "src/trotterlib/h4_certificate_gates.py": "7ede7968bf0d82b4eb54620288206e56bd0a17eb3bfc276a762b2f4767e6a56c",
+    "src/trotterlib/h4_cl_binding.py": "1b898763bacc17601ba824dcf052dd9ad6e54ad18b5af28bec4b390c6147fd0d",
+    "src/trotterlib/h4_conditional_cng.py": "7c17e35f5f8cbf6d45f57c4ce34bbe2139b828ca1ca36ada85c3f4be5875a28b",
+    "src/trotterlib/h4_d1_adapter.py": "1c0dc5fb00a026c58a80c0fc52efd85f14f9d17e77fc19c2c3b4c347b6d7bf41",
+    "src/trotterlib/h4_d1_control.py": "0e099704c1b9558039533f8df86cc850c053ac0f2924375f8625c9dc076c8c6e",
+    "src/trotterlib/h4_d1_reproducibility.py": "a72e1145b04358eb2fe9470b4da539126966317a70735eee99b3deccc79523b4",
+    "src/trotterlib/h4_d1_source_control.py": "0fe1f0214de5a6f924ec14c0f6753bce4e4dcf6c5ddc433167257b5088a200c3",
+    "src/trotterlib/h4_d2_control.py": "758fbf7ccdfeff7c3fd5f1083653238753b6c30fada9932647b29d69f2d86b05",
+    "src/trotterlib/h4_d2_pauli_control.py": "08e3a88b238f73214c99ce94eb197ed7ac8a730098c6ecbe70cad7f3ed95e370",
+    "src/trotterlib/h4_enclosure_prototype.py": "df1b69448831b1c8152caf4eaffb6f87f98e0f012fd5c635aec035a7939dc8d3",
+    "src/trotterlib/h4_evidence_binding.py": "6dea206a0e1ca5604f8900607ed4afd35e65ab9b236a6e42f05a0d33e96790db",
+    "src/trotterlib/h4_execution_contract.py": "1b85a24eed4bdff422e85ac998bc010a0aa8a1ab33d39f1e4f1e63066b445f88",
+    "src/trotterlib/h4_legacy_export.py": "671a6228a11fd3b39d4e8e6e57d936c03044120d9ea95ffc700a765fcba8a6b6",
+    "src/trotterlib/h4_local_control.py": "2266e03d5673afeee612e2fa09334d7805e14ef62cc4f0dc2b21275189aa487a",
+    "src/trotterlib/h4_local_enclosure.py": "44ec2c6f0cafc770188d53b97ce84796ba8bbf97285775c60d33d390e507d6f8",
+    "src/trotterlib/h4_molecular_inputs.py": "fb53bf44459dc6ef18223d55594511c03766c53537f6c445dad7a0b7a42225ea",
+    "src/trotterlib/h4_pauli_b0.py": "b111b615ab363199e20dde50da3c0f1581cccd009c4f6f6759f7e7c70ea33829",
+    "src/trotterlib/h4_pauli_b0_comparison.py": "12f2a1c2ed1d01b23c7ef1918daa1a025548487ff53a0077ee27577c8b56efc5",
+    "src/trotterlib/h4_pauli_b0_execution.py": "8c39666eacc76c3227086aeb5d989483185af84c5598fe588c0244bf839bfdb5",
+    "src/trotterlib/h4_pauli_pr_mean.py": "edcf48d3a5ee15ad105ee07d1f8201d88a5c234ebfb441613ee4210b494a869c",
+    "src/trotterlib/h4_pauli_pr_search.py": "476d644c747bab8803ce53ab58b7fba31d0cecbce0d5b47be2fc362d3149f394",
+    "src/trotterlib/h4_pilot_execution.py": "be1f79f6b82c1dd5f4b7c3b0e2f35098e3f025a5d373100e719e68942f8a6418",
+    "src/trotterlib/h4_pilot_science.py": "5ef0344c482e972041bcb85c6477c36cf92265488a4f3296d213a803f4b5f3a5",
+    "src/trotterlib/h4_pr_mean_cost_scalar.py": "fef15ef271ff0f7cca6eccff1f9aafba10f1691a889b1550f7f628964c7c8a05",
+    "src/trotterlib/h4_precision_budget.py": "c85f899727cbcbe1f6c7467c786724efebf09bffe1ab49764aa5083d64f6d7a2",
+    "src/trotterlib/h4_precision_control.py": "2ee1ee574f5d49f307bf16ae6a8dc33c30a572e8a95028602b663deb4803cc6f",
+    "src/trotterlib/h4_r0_empirical.py": "3e2c7d3d0448e257225e0e9c4d8e4bf8ebdc259b089860b34a47837b5b2c7711",
+    "src/trotterlib/h4_r1_order2.py": "808bc1bdcea0798cc19e2872f330a1be92ce42ae18971504c9a2a19e33ce7f28",
+    "src/trotterlib/h4_r1_sine.py": "3f37ad830a1d3a38f0aff6c8bbaae8403610e14bce7526520eee70db2addf615",
+    "src/trotterlib/h4_transfer_rules.py": "96530960f9ffb762f668236e8067cbbdf1f9a37b787578dd77caeb2cda52bc7d",
+    "src/trotterlib/h6_hybrid_fairness_extension.py": "80d48c9975c8ad56adb38749bbf25f30d20a069053d983f69b900dc447ecb02b",
+    "src/trotterlib/h6_noncancellation_stage_a.py": "e6e776cc8017ded2f8f55fc616277cc70741b9eaf668f5269d0d10ffa73e9748",
+    "src/trotterlib/h6_noncancellation_stage_b.py": "071ad3a1fefbdfc8cf89925cdc152fd593ac9ac8ade601de14ba2b8933be2817",
+    "src/trotterlib/h6_rte_fairness.py": "803b46476cb18ad0962b2f54eb9344ba59a21e570f7fe0e2adfbd287b8f7f7a0",
+    "src/trotterlib/h6_selected_implementation.py": "203f722f08b53cafb486d736d0cf0f277e3a72c26f566102f675c221951e847f",
+    "src/trotterlib/h8_b0_anchor_plan.py": "a547daeec851c3a8249d8e27741b08ef626fb909c79943f5979d58e54a56b44e",
+    "src/trotterlib/h8_b0_saved_anchor_audit.py": "2cb2860c8701aa36863adec37b07bf4ee0b03ecc5ddd733b1d30828cf2bb2021",
+    "src/trotterlib/h8_b1_stop_acceptance.py": "d8489727b7dfea92733f2ece5ffdc3f9ddae1453db1683901370696923a93fb0",
+    "src/trotterlib/h8_bias_diagnostic_fixture.py": "3d6de2fcc6f24bdb25431f3a397e695a3d7308cc96cb09297537aad99d42a498",
+    "src/trotterlib/h8_bias_evidence.py": "bc76ca4db9ca6b8530d85ace66a9e60161ec6e4c8bfac11962b43abfe569e424",
+    "src/trotterlib/h8_epsilon_boundary.py": "6509dbae8fde02d8a49ce794bc2504ac424142924b58bc5dfad9e8fee96b6c86",
+    "src/trotterlib/h8_noncancellation.py": "2148a3123ea54a352dee8c0136f6d666846d8562b2daf8e78038006391e5c856",
+    "src/trotterlib/h8_noncancellation_cost.py": "abfbfe7a9675c4324f14439be4a2ae554899e1d5715e196a933632f6e57b659e",
+    "src/trotterlib/h8_phase_b1_contract.py": "88e67868e5e53e7c16f9c204789477528d831690f867989c9617e2061c1e9957",
+    "src/trotterlib/h8_phase_b1_fit.py": "ba27471a851d7d59d7c6c8acb63438c8a6a5ad81d60869c8be5f11ab8d945e72",
+    "src/trotterlib/h8_phase_b1_model.py": "24cee96f4d08e1ff624cb7ad2ece6cb5e8ee635c3462ef627a37011dea44dba9",
+    "src/trotterlib/h8_phase_c_accounting.py": "4cb7ff287282f6438749b7a3d2e51ed72499685e1b909d5ec6287838360762d5",
+    "src/trotterlib/h8_rare_tail_selection.py": "3815f02344557788026bfd862121013c92c5efd6fb200ff858ca93506c3aff14",
+    "src/trotterlib/h8_saved_analysis.py": "f3c5222f08a4f8b82351e85cdc1b49948018c9ad4feb3ab95bda6c29760876ef",
+    "src/trotterlib/h8_signed_bias.py": "1f080267e48fc3f4f8f531a118888bf571246beb034094b8b589c9e3d537eb32",
+    "src/trotterlib/h8_six_axis_reaccount.py": "e7fb34a15820b68983674c6cffdd8297881421bda824c3be3bf2d84aa2c9e7aa",
+    "src/trotterlib/hierarchical_cost_validation.py": "e6871c5e329429de8c2da9a39fc4cd6a43f3f7f54e3615309c2ad620229dc6d5",
+    "src/trotterlib/higher_pf_readiness.py": "ecea5f8b006a876aee90cd42aa50c098dd25bfb801225260b52ceab98923ce4a",
+    "src/trotterlib/io_cache.py": "e7504b620eabf71af5f88992113a7306ed0506d5e7b99ca705aa43afb1d00ca1",
+    "src/trotterlib/isolated_qiskit_execution.py": "6cf5b0c2c5ce53de4f874931ef2c3aa339112923153390a38ac644caa9059279",
+    "src/trotterlib/isolated_qiskit_supervisor.py": "d56893683a1d27539da0c7e6f8eddb25dc866aecdd1a24856e020e104fbd8752",
+    "src/trotterlib/matched_partition_finite_bit.py": "4ae7c67468e1f312471d44f8c506d2585b03499a1bd40c4fe9e71d45376f2ed3",
+    "src/trotterlib/matched_partition_price_mean.py": "b0625d7c91c8a2af9a33c3abc8fc9770da8a3eb8300633048d93ca50bdaf8e8a",
+    "src/trotterlib/matched_partition_stage1.py": "9bcdfcdb5bae59fac357fea5e836e02a8c6eca75eb11be5b66af2cb36c17431b",
+    "src/trotterlib/matched_partition_stage2.py": "9e9f21ad766d08bf46fe643b6409f9cdd01c8bd248921d0add935e5902d3db51",
+    "src/trotterlib/matched_partition_stage3.py": "964fed72ef5a229fe3544fd1dce314dc820a4ca08b3a7530037b805e07814e36",
+    "src/trotterlib/matched_partition_stage4.py": "699183cb10126b5f0754630bf311308e41b1b93d0ef68f2397006c6b0ca6a28f",
+    "src/trotterlib/matrix_multiply.py": "31c9323b9c0cfc8c076af5e9b0540ad933978ec133d84cca93aed5d242eb76f1",
+    "src/trotterlib/matrix_pf_build.py": "1473ed30e21401bad4898d1351bb02046b76f023b14325b0ea6e68892cc30a5c",
+    "src/trotterlib/mechanism_a82.py": "06a888001a11ac7941bf4d57fdb4cfd65d075e57c5178d255ef2bca2d9d16482",
+    "src/trotterlib/mechanism_a82_factors.py": "5e061d8331c2ad5d0d8094d5b6ede90a8e26b9108b6a67602a7773a7af99ae90",
+    "src/trotterlib/mechanism_analysis.py": "f382fc1abd8715a7ee73b4f1d67c9fbf8057ebd97ed65058d4d4648e179672c5",
+    "src/trotterlib/mechanism_explanation.py": "523fe6eea18963418498ab4ae7285e14cb3cc714056d0cfe1a471bfad2201acf",
+    "src/trotterlib/mechanism_paper.py": "93de86fe7e0ac514513377bf45aa95b4b00268d704be532b563ca1bb4dfff766",
+    "src/trotterlib/native_df_gate_model.py": "f7b9f4bb5dd828bb2609ad8e7b1491eda27d878fff9b73835a8c74eaff1685e5",
+    "src/trotterlib/native_df_h6_cost_adapter.py": "5207c55ac3295d41cb13ea17d0fec6f9fc4fc4a2f128d95fd4330169cca1af86",
+    "src/trotterlib/native_df_metadata_binding.py": "830e6ef2074a6964466a4c6ec3fcfbfe7f195157c3fe1e34d7d37840bb73fcaa",
+    "src/trotterlib/non_df_h4_readiness.py": "d549230fe63496fd5f95f635580bb5441af15eca5b7fbdd192347e9faaa98697",
+    "src/trotterlib/non_df_synthetic_dimension_preflight.py": "002fa4aa89b65a2c44499c8c80e36c9240f8fb90441ed676735d813ec2450236",
+    "src/trotterlib/optimal_trotter.py": "23333251a896bad70cc554babebdf2800b9fff84592a592cd29d5666197a52a5",
+    "src/trotterlib/parallel_validation_executor.py": "a22954ec737af3a7b2fe7f77536ca5ee7b718e28c7e9d681a0859f08fe7cd7c9",
+    "src/trotterlib/partial_randomized_pf.py": "c824c242d25dba77744b02c2416359c88ecc10cfd76f062b49bd7a80f0d1bf8d",
+    "src/trotterlib/pauli_hybrid_rte_comparison.py": "3e0f7421385a69177faade39caa1ded23fdf6d43a9b7112193fe281ae95105bf",
+    "src/trotterlib/pauli_mechanism_bias.py": "7512781a33a875d2ba906b511f5afefca069bb1ec01b67861093239caec614c3",
+    "src/trotterlib/pauli_mechanism_cost.py": "681535d4101083c94664147bd499c36c1b24679465a89c119aedaf8e1383b599",
+    "src/trotterlib/pauli_partial_cgs_validation.py": "d1d28e2d4b186736af490e901bab6839655667439b869468f094e844b41da55d",
+    "src/trotterlib/pauli_rte_event_extension.py": "edfe6677aafc2a90084d22d9c163ecb67bd92065f8286d9074062aae9ce8af88",
+    "src/trotterlib/pauli_signal_adapter.py": "bbd8d0d3de3248c71f16bd86679c9673828b83dc435870da946c425ee199f95e",
+    "src/trotterlib/pauli_vector_enclosure.py": "6d091f5b10697fe1ec9017faf5f3226925f29cb2401f163df897b74a5c5fae9a",
+    "src/trotterlib/pauli_vector_tight_enclosure.py": "16e2e1d64b7d3b35d2a6d63db933a0ab98ce239e92cf0d9f96b991c7cef69336",
+    "src/trotterlib/pf_c_system_size_validation.py": "723ecdac081689b99483deea37268f16b8980e926b5fe5ce5257b5dc5fa23df0",
+    "src/trotterlib/pf_common_domain.py": "e68f14c866ced888242e3811c959db440285d61bdd43b589fd5a9d7bf4876c0b",
+    "src/trotterlib/pf_decomposition.py": "d6dd0024e5312d69e43b2a498773dc8529bd5f50da39cb3df28fa9f7652e2e26",
+    "src/trotterlib/pf_delta_validation.py": "4c329e2b16aa2530b7621f9eac23a7c9a765d6ad60fbc97970b60e97d2bdd453",
+    "src/trotterlib/pf_q_model_diagnostics.py": "016437f6f232ef34461e57434fc99b5c57ea6e43f445489496ba2351173053b7",
+    "src/trotterlib/pf_selection_comparison_plan.py": "662d26e4ecb2798e042f82351cf4b583430495d1a0ef278fd350969c8bd237ae",
+    "src/trotterlib/pf_selection_cost_comparison.py": "cb1f272a85fdf48ad2d0800f4a2496a8c799178c2d6da8f58a0bed3246d9cfb8",
+    "src/trotterlib/plot_utils.py": "76ffac8c783b8facc7b3054e06304e661775c91fc5ae8a4ff9acc75d7138f72b",
+    "src/trotterlib/plots_timeevo_error.py": "ea7ef2942369bde86eb89c8c608f1d97cc9eefe2eb31443acfa0a639679c822b",
+    "src/trotterlib/pr2_matched_accuracy_m1_b1_contract.py": "3523a2fc27c3a39e6db46cf70fb985dbc93ee8b9028bddca2bff2a013adb643e",
+    "src/trotterlib/pr2_matched_accuracy_m1_b1_execution.py": "b7a3a479cbebdd3ff7a93de75c4ba030343769c308401395e208754c3d566987",
+    "src/trotterlib/pr2_matched_accuracy_m1_b1_result_validation.py": "11788a67af1e47736c8ef56b82be99878be72e1a59a99a1ce7bcbd68d1a81a4d",
+    "src/trotterlib/pr2_matched_accuracy_m1_contract.py": "aea16dd8e2d4602bc8ac143b9cd2beac3636008f24f26be53a5a02410631797b",
+    "src/trotterlib/pr2_matched_accuracy_m1_execution.py": "7528ebae754e14ee623d28212a668e4edc237575775a78d0d2bf4d34dc53c293",
+    "src/trotterlib/pr2_matched_accuracy_m1_precompile_barrier.py": "2a533ffc7f1311db12b063f10a156c9f3d0cf9786910f21b38a7b52e75c56430",
+    "src/trotterlib/pr2_matched_accuracy_m2_transfer_contract.py": "394f528b157ebb76a1a12ae0ab7d7336f81339319d235655a7ef5fa592c39534",
+    "src/trotterlib/pr2_matched_accuracy_m2_transfer_execution.py": "3b0d1e76ca488a28cf81165df1b36bdd671d07b17c4c155476ce38162c30c35b",
+    "src/trotterlib/pr2_new_series_validation.py": "fdfe7f35f357a3651c6b378b61c4d5525a10ded704733f7af942d84690b1bade",
+    "src/trotterlib/pr2_pr3_minimal_pilot.py": "8bc6d1e57af57341b3aead653f6477ae170c068de10d5d5b32bf628c5fbade6a",
+    "src/trotterlib/pr2_s0_s1_validation.py": "1ccf6505d2933699504db187e3849251d1fef7bc58d8dca0b5f19871896ca6fe",
+    "src/trotterlib/pr2_v4_s2_development_validation.py": "ade121de499b432ce35b39362d4e7336832ea8e9c604864e0d45be7222908210",
+    "src/trotterlib/pr2_v4_s2_parallel_execution.py": "edf4e264364342806d73574f5931c583bd923fa0551c5c284c0b52589d834900",
+    "src/trotterlib/pr_alpha_followup.py": "c1029b9f361925a40ffa00256f422ca2981acfac650ea2c85aece10e8ed2432d",
+    "src/trotterlib/pr_alpha_scalar_input.py": "4e051bd13aade4fe38966445ff67ac504367027bca10009dfaa24d20240ac197",
+    "src/trotterlib/pr_cost_integration.py": "26fdc184385c0a8136ac91355d92430b795c40210bfddff64d8c4cf39cb762d7",
+    "src/trotterlib/pr_theory_compiled.py": "56b37e8cdd5e19081201b6c2bef48df77205f223786af59391de766bdfbd694b",
+    "src/trotterlib/product_formula.py": "39c4e03748fcab03ea7e64936a19372cb5f1bd1bc9f72a4f09cef58c3c202eca",
+    "src/trotterlib/qiskit_time_evolution_grouping.py": "9145804f87f106025b6ec9c944e1c5cfb68f62c4ecbe9af430d167667031b9e0",
+    "src/trotterlib/qiskit_time_evolution_pyscf.py": "bf72e257f4e5884192d27a3a25d22016586b481d79bd839392f15140d1233d45",
+    "src/trotterlib/qiskit_time_evolution_ungrouped.py": "1b75e3f9be116ebaa0e8f7c3292a57f9a2ded079fdea4c57f45e4a5cac45bd3f",
+    "src/trotterlib/qiskit_time_evolution_utils.py": "65496e75af4c8320faea7464bfb351081e3fca495a6103145c8de588fb7a3625",
+    "src/trotterlib/qpe_beta.py": "cdbef27d4c1040af4f02d71eda7fd1238192b7a81ff5b597108f0457ab0d30ec",
+    "src/trotterlib/random_circuit_cost_validation.py": "cefb2cb2f04a60db08e5c6e9c85fa7c92832cfb955bdf87d10ea53cd5381a622",
+    "src/trotterlib/recomputed_s2_physics_validation.py": "8f38c989b70616fedc092b779337d1b127911d834ea86274d1df26b18a732b70",
+    "src/trotterlib/research_direction_ablation.py": "80219572a9933766a517064fd5187ace12a980964e4ca57f9246c0b871b23837",
+    "src/trotterlib/research_direction_compiler_transfer_analysis.py": "a32bccd03249fb55eb7bda0386ad34986ea1e664070c7bdab2f3bb4b3697bd54",
+    "src/trotterlib/research_direction_compiler_transfer_compute.py": "5b09bb012e30793b2d677ab7ae395430ab5e3263046410d061151ff65a63e411",
+    "src/trotterlib/research_direction_decision_cost.py": "3e9ac9a18749381409fab89c183a40a0ca4e0e556b19a7c50aba362272b0f435",
+    "src/trotterlib/research_direction_decision_synthesis.py": "422aa784c9aee05b5a40ca08ab9ff86e334ccf8bf037ca554940d33826b4b2bc",
+    "src/trotterlib/research_direction_energy_tail_pareto.py": "c9a3c5c4488be88bdb10b50d260939bfb7a1caf1f8699e3f45d6747c668558be",
+    "src/trotterlib/research_direction_full_opt2.py": "41a4066653c74a13090879355ce2f3cd0c9ee82df8cf414e2d2c98dc6c65b1a3",
+    "src/trotterlib/research_direction_full_opt2_completion.py": "1e3f43b48d3263897e2e467f99f42fb1012b682df45c6ded52849bc02c94da16",
+    "src/trotterlib/research_direction_full_opt2_extension_analysis.py": "b25af9a81e2d334e9a969574fefde13009d43c988712c4cb95f71e9d6527eb73",
+    "src/trotterlib/research_direction_full_scope.py": "fd823967674da65f05d6f06048393437ad3b950018bf64469df001fc45a10bcf",
+    "src/trotterlib/research_direction_full_scope_extension.py": "b67360541910cd7509c9f0444f7a9faf65aa5fc55a7d88587bd82aacc2fea6d0",
+    "src/trotterlib/research_direction_full_scope_replication.py": "585d717c5ad2cd445a9213890f7e94d1882fb485ca8c109b4f9446427fed6c1c",
+    "src/trotterlib/research_direction_gate_s1.py": "94b09189b68e49014ea502d40df241cced9f08cfa647acf9fd2c8fd781b5203b",
+    "src/trotterlib/research_direction_geometry_energy_difference_pilot.py": "da2cc9013100df2682f5f5379174145803b369b92608a4af0514c6c14e8ef977",
+    "src/trotterlib/research_direction_geometry_tracking_breakdown.py": "a77c427f569b36218baa0a6343ed77db96951767a12a0f9a373bef8f2da3195b",
+    "src/trotterlib/research_direction_joint_synthesis_blind_validation.py": "7dda48c11fd06b64cc364d3e021335608134c4e17dbe85dfac9ed128c3a6bf9e",
+    "src/trotterlib/research_direction_joint_synthesis_formalization.py": "50b2859d4bbbed91b70057ad829dd171df17a711273c88382f86101dc7e92bdc",
+    "src/trotterlib/research_direction_joint_synthesis_mechanism_validation.py": "3c5c939862b63805fc9103c2f16649687c5c6a4a5c108ab28089c749f928513e",
+    "src/trotterlib/research_direction_joint_synthesis_pilot.py": "6f239f0c1f11fda55f4949b730b2087eff3b3538bc003da035767f69dad0d92b",
+    "src/trotterlib/research_direction_m08_reaggregation.py": "caa59ff692e9fd9be3988f389a5a2eede66d06523c59a4931931efe4570344eb",
+    "src/trotterlib/research_direction_pd_fair_comparison.py": "417c20b894adf35ea2a76b5f9a636a6760c8751f0e7ecbed7cf44a0b40722dcc",
+    "src/trotterlib/research_direction_pd_realization.py": "a9f82b80e2df53898b096ad9040da9cee470f4529fe6d21d2f0ddb04f2b66738",
+    "src/trotterlib/research_direction_pd_s1_posthoc.py": "15359833b2674d9a5b49efe3b4abbba396e3be9433a50a8dcba06dc0615a6152",
+    "src/trotterlib/research_direction_pf_sensitivity.py": "28b651140d1cca1762e4e0d069782511cb7a64365353b88efb9ed40561d2dfd8",
+    "src/trotterlib/research_direction_prevalidation.py": "03c9aa2dbc9f9f8ce58d082636f666204a43097585e03d652358594f3a147708",
+    "src/trotterlib/research_direction_proxy_lineage_reconciliation.py": "3ca3fdee8f485ed8576e0273e76bcc9cf653fba0ecd094c2ce1aa6918af36302",
+    "src/trotterlib/research_direction_proxy_precision.py": "b39bb978db79d52494d3b90d4b9ab896e8994def964c47878cfb7f87bf34312c",
+    "src/trotterlib/research_direction_round_dominance.py": "b7d5e0a7d58f86cd7f8627689205d556546bb3981de27a3331e34964bb5b404f",
+    "src/trotterlib/research_direction_sequence_policy.py": "4d72aa3cbc5e9e487e94c327a8d6f331ddf18c9ece8ea38d62bf74f1084c9c3f",
+    "src/trotterlib/research_direction_signal_weight_pilot.py": "31290252fb2b0ea33bc4f7a0473d5b10aa5c4c9a48324092d79f0bb655ccb74e",
+    "src/trotterlib/research_direction_structure_pilot.py": "ffb7a2caadc8453a0d8a655a8de49fd25d8f6f7bb988edea0df2e3cc283624a6",
+    "src/trotterlib/research_direction_theme_selection.py": "c08aa0ed0d3128e6bf9282bcb4d619b1413652c2e2bec446ef14b20983cc60e4",
+    "src/trotterlib/research_direction_uncertainty_break_even.py": "bec4bad244ac0ebc2a08a75a5e742372c19e938ae3a0644f5ff9ec2a7271734e",
+    "src/trotterlib/research_direction_wp11_synthesis.py": "0539627d43a0ff271be9a1c7f1ee7dbb324f41cb4d9076387b1514e8406a6d26",
+    "src/trotterlib/rpe_allocation_sensitivity_validation.py": "e2ff0ebfec2df3420f43751c841cec3371be0e4ee46e2424b7d2343a1896e3b8",
+    "src/trotterlib/rpe_delta_compiled_cost_validation.py": "4e2ba7e9e3dab6228b36c218ad558b36e55653263e251ce7df6cd9049872883d",
+    "src/trotterlib/rpe_delta_round_schedule_validation.py": "7854a9f2b05cc4d29d06e0d731fe76b988aaf63878971fb5be6a49515b9595c8",
+    "src/trotterlib/rpe_four_round_accounting_validation.py": "afd0eeb63abfb2d4b79e99334dece0bb54d9482e6cdd13cdb23126ab2643b44e",
+    "src/trotterlib/rpe_four_round_phase_validation.py": "3f62733046962bb52254f58b83012ef8af3192612c68c2052cd48fbab73035b4",
+    "src/trotterlib/rpe_hadamard_compiled_cost_benchmark.py": "38cdd6f13fd8201516b455e6a167586cc5755f198d949e1a83d9ebe4e7345eca",
+    "src/trotterlib/rpe_hadamard_compiled_cost_proxy.py": "9c65a61b12d9f622734d37e13f3b8e49cee0822733d891705379c20a3c356067",
+    "src/trotterlib/rpe_hadamard_failure_validation.py": "5a7945059dac2f114329df0d7b06f79dec09a2170a481f105642448dbcb1abf3",
+    "src/trotterlib/rpe_hadamard_interrogation.py": "f1519d406c33465a7c0e42555d226b19237a87b464137bc7acfae80b8eae311d",
+    "src/trotterlib/rpe_hadamard_proxy_resource_validation.py": "06e22afefcc28fa9e49816c7885146eb6221f5c2ac65488db86d992060651002",
+    "src/trotterlib/rpe_hadamard_validated_proxy_provider.py": "d8a45438dbbafad06cea46917434513ed582508be358af16fd37a8c11f3b0e71",
+    "src/trotterlib/rpe_resource_accounting.py": "09c570a847ced735ae62cd4fb323a97caa2afb32fc548d41eed7a1c72ca52781",
+    "src/trotterlib/rpe_round_cost_connection_validation.py": "90bad226ad470c3af5d31431cf7cf2f32d3bc9258d7ffeaf0117fc261e7b07fb",
+    "src/trotterlib/rpe_short_round_optimization.py": "9314fad141d4c821f749a18deb9e42a9eefe97319afba997346d7c29e4e8f273",
+    "src/trotterlib/rpe_target_round_horizon_validation.py": "4547fab9c3a3311814a93118859989b416be6ed567daf427a9be2df2f4641892",
+    "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+    "src/trotterlib/rte_boundary_cost_validation.py": "bf5c97d0ff4cd4c0428b3d02fe181ff98d1a9e395994d553fad20849a38dbe19",
+    "src/trotterlib/rte_boundary_pair_validation.py": "8b1938360955166dd64b947ab3a66d607091aedfd1e6635abffc40e272e1e3a3",
+    "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+    "src/trotterlib/rte_connected_cluster_cost_validation.py": "8ade1ab145c4169225975c4ae461be23a1a22f44b75147e4ef896ad063a73dd7",
+    "src/trotterlib/rte_cost_angle_invariance_validation.py": "187a14784b6faabb48c5bb18e34b81c0b9c37f088623968c3a93abf1db1c9a6a",
+    "src/trotterlib/rte_event_audit.py": "6d3194b1bb012c7720c0d9fadead228c2586c5c74c78338bcf87ee8ffda925b5",
+    "src/trotterlib/rte_order_stratified_cost_validation.py": "f473c352c8eaac395feb9e3a38136091a2e5ea0327b28ed6dbc603d9a72e5cc1",
+    "src/trotterlib/rte_system_size_cost_validation.py": "91ad2c41bfa34bb3c6432a910ea7a6de3abe5906f4241b4ad4e51a6ca58bd6b5",
+    "src/trotterlib/rz_layers.py": "f4129fa4685455f9574c18ea3a3d51db58f7ba4dbb095587c78f36f13dd4cf5d",
+    "src/trotterlib/saved_rte_cost_diagnostics.py": "2c6ee065660d8fae1846dc1b76560c313353f310ca020be71c07a8e491685347",
+    "src/trotterlib/stable_gaussian_basis.py": "cedeace6053536d733ffcc42168795a004943d7fd5036e5fbf1fa4f129b68173",
+    "src/trotterlib/targeted_validation_plan.py": "da7c0a827a0e624bc558f5810afbf76ff615fad6474606f754e45db60acd90c1",
+    "src/trotterlib/track_a_v1_contract.py": "bd3e5cf92ad26c8f71d31cdcfdec708a2837553f4e668bd6309311692601db0d",
+    "src/trotterlib/track_a_v1_p7_contract.py": "7a7c4c20f20119cbaa0fb2b62c5bacb4eecd5a545911b8ca4a43e411d904ae04",
+    "src/trotterlib/track_a_v2_residual.py": "579ad6146709e99bd092fd5ddf9ec141fd1cd630488117636d145accd9818d43",
+    "src/trotterlib/uwc.py": "24107639fd4768eae39e1717b637c9c321874bd6685e7be5904cd7ec01cdf880",
+    "src/trottertracks/algorithm_codesign/__init__.py": "b6503716cfd51d52ca9038e6de5a411eb78380d30451f81df9b81c31b1be090f",
+    "src/trottertracks/algorithm_codesign/a1_connections.py": "7feeac68acab48712d8b43edc0db6d07ef90fc1503413feb99b5ac3fac08c6a5",
+    "src/trottertracks/algorithm_codesign/a1_control_variates.py": "22c8bea657f52b74ffb40e3e74b4f953fb67fee312cb801bccc3f7f369ec1960",
+    "src/trottertracks/algorithm_codesign/a1_engine_connection.py": "3fb23b8f6e838441645708bece6b1bc1d5de4baf394190e7853f66090d8a7bd9",
+    "src/trottertracks/algorithm_codesign/a1_law_validation.py": "8b64d06616b8e4b40d34b4196ffb287c6a8d34f0b53356adfa8b1e140b1c8329",
+    "src/trottertracks/algorithm_codesign/a1_new_target_n1.py": "649adbed70232371aa508e677d8dfdc2a3327143f8adc4624cc97b4dbd5f5f61",
+    "src/trottertracks/algorithm_codesign/a1_new_target_n2.py": "4adc026047c7b4c5c2068615bb69310d68c54d44cadb6b8218abe6e18cbf1c65",
+    "src/trottertracks/algorithm_codesign/adapter.py": "9ccf54e28c87e385e963662127792a5d7fbfcdc0ae84f0aac7ef13f8978b5ad0",
+    "src/trottertracks/algorithm_codesign/cross_objectives.py": "2e71b5c5bf5e9e88b3f6be97f237709ba13206733f8d2fb6e24c9b808d41c07f",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/__init__.py": "068d65713e74559764c504304b1f3c1640977b68c2f2193e65371c84f08f8ef3",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/angles.py": "84c4ff4c4cd5058794204ff02a7b912f807ea6c8cbb3ccc987bcb5f06abd1a49",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/certification.py": "8b8b7350a78056d9a3ee169744aa51a3c8e9ecb78f0059076b09714eaf88f317",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/comparison.py": "7d646ad05f0bcc30c28266c6498f6664511f051ea6893b288637beb776ceea5c",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/digital.py": "dd833270548c99bc634caafba5f232c564d675cc492d0cea525c32bd41d29714",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/fingerprint_diagnostics.py": "eb228f8c41deac3de35c2a72bd6020b5f791abac83e6ba1189257eddc66ae3af",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/guard.py": "dbb6b3adf3a7042bc40599b71df79969ce648ca348513e024943eb807550b47a",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/intervals.py": "aec65b0a7581655b93f0895ae40014f24932e3f3584f3afbdcf15576b2959726",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/inventory_integrity.py": "eda9b32deba8bb0e7965f0a2e4e514a53c862014340fb901fe26c71dc16eebd9",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/launch.py": "f887756a9ad0bf5bd0d6a3b2f2f6c2264bdd5b25cf4eb2afd4540d84841e05ac",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/native.py": "c9c65ac762ef00273aaa44aa5c1cabcb6767bf5edc45f7be1215246f9a2b163c",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/native_evaluation.py": "5fbc0d006cbe17794a1f88642c35285d3c4ab765425ab823c74a5c11e1d32485",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/storage.py": "a137cde07a9490f0988ef2279ee3a9aa95898b09a6c82497bd9ff7bcb1b873ab",
+    "src/trottertracks/algorithm_codesign/df_correction_comparison/worker.py": "64676b3b4763098735bbb1dcf88eb0d0a7185a07b7a87de76e6f762a466f52db",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/__init__.py": "465cac680d17c7db3d02882172dc5cbc0667fdf90af43ef7cebf32a87c3e64c4",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/acceptance.py": "6116b03cde2640b5823b83e36a432491574ace82d98d6df8b9328dffbbdaa3ee",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/accounting.py": "890c4077bdb71b151c2af269e10d76b649194162ee8510ca7ff3fb78e9e9d185",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/guard.py": "dbb6b3adf3a7042bc40599b71df79969ce648ca348513e024943eb807550b47a",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/launch.py": "9c7a88e861fbbac79f685a8d38464020da586f29afab924f3a8e56de9b46afee",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/native_evaluation.py": "c601a69a50e6c51b3d484e33cf7c5568aeff561e66f0c0a28cccbbad3702d646",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/saved_data.py": "fd083641d70017b5af5884364e008dec93144e49eaa289f6b4330b1efaa1a2ce",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/storage.py": "bd5041e605d1788e4482fba443eefd38fbcc13176df1029f355b6ff4453e7b70",
+    "src/trottertracks/algorithm_codesign/df_correction_et_numeric_v6/worker.py": "f2bcb57cba3a30381ba69e6fd431a4226b62543849fc01d6caa3cc10a4767853",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/__init__.py": "465cac680d17c7db3d02882172dc5cbc0667fdf90af43ef7cebf32a87c3e64c4",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/acceptance.py": "837b16194546e8b6d3891d42640c081f7c9604799eab7c3800241bcd025e3e98",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/accounting.py": "890c4077bdb71b151c2af269e10d76b649194162ee8510ca7ff3fb78e9e9d185",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/guard.py": "dbb6b3adf3a7042bc40599b71df79969ce648ca348513e024943eb807550b47a",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/launch.py": "31f88c39743f9e4ff42b9069ef6a7c525b74d00fb08b7aa1b485ad72335c9964",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/native_evaluation.py": "c601a69a50e6c51b3d484e33cf7c5568aeff561e66f0c0a28cccbbad3702d646",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/saved_data.py": "fd083641d70017b5af5884364e008dec93144e49eaa289f6b4330b1efaa1a2ce",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/storage.py": "bd5041e605d1788e4482fba443eefd38fbcc13176df1029f355b6ff4453e7b70",
+    "src/trottertracks/algorithm_codesign/df_correction_et_phase_v7/worker.py": "782205106c7fb7e6372498a351fdaa09b90e4d0ed0184d89206babb5f039fe23",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/__init__.py": "465cac680d17c7db3d02882172dc5cbc0667fdf90af43ef7cebf32a87c3e64c4",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/acceptance.py": "42bc3757153b4f994f0d693b0150b052f7966a0e8b9f8f95bc519c222b6a3b4a",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/accounting.py": "890c4077bdb71b151c2af269e10d76b649194162ee8510ca7ff3fb78e9e9d185",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/launch.py": "e0d5301901fe37366860e85339601f254d8c2d4fbfcef8f0ff93ebe7a1e93375",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/native_evaluation.py": "45a75b5b524cf99f6b176e019449798cb849d23f1902f70a807d096b0ae7e2a2",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/saved_data.py": "fd083641d70017b5af5884364e008dec93144e49eaa289f6b4330b1efaa1a2ce",
+    "src/trottertracks/algorithm_codesign/df_correction_et_resumption/worker.py": "0bd971f2126e2a098277b80913af8085d3f3387ae94881152a740a81ff504a22",
+    "src/trottertracks/algorithm_codesign/df_correction_et_saved_recovery/__init__.py": "e3db026ba84ea1bcebd7700257103b39d2ece31332ed4cb9e336b6e5368c6d92",
+    "src/trottertracks/algorithm_codesign/df_correction_et_saved_recovery/accounting.py": "5cfb1558e4fed0fd908c2912728f25fa37475c033dd5589d02e418e9dee74d08",
+    "src/trottertracks/algorithm_codesign/df_correction_et_saved_recovery/launch.py": "28155e98eded21d4a12309b44aa2c8686c1795035ed0b29a5230b450f971c64a",
+    "src/trottertracks/algorithm_codesign/df_correction_et_saved_recovery/storage.py": "d22b0be4607d795b9bb3d1db72054aba15043278b76f3380c8991331c9ba824d",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/__init__.py": "465cac680d17c7db3d02882172dc5cbc0667fdf90af43ef7cebf32a87c3e64c4",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/acceptance.py": "6116b03cde2640b5823b83e36a432491574ace82d98d6df8b9328dffbbdaa3ee",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/accounting.py": "890c4077bdb71b151c2af269e10d76b649194162ee8510ca7ff3fb78e9e9d185",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/guard.py": "dbb6b3adf3a7042bc40599b71df79969ce648ca348513e024943eb807550b47a",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/launch.py": "6c7df66a379dc72855dd18d8fc7cb0e6d0a4d78be206ea0df47c8bb7078f8b99",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/native_evaluation.py": "45a75b5b524cf99f6b176e019449798cb849d23f1902f70a807d096b0ae7e2a2",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/saved_data.py": "fd083641d70017b5af5884364e008dec93144e49eaa289f6b4330b1efaa1a2ce",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/storage.py": "bd5041e605d1788e4482fba443eefd38fbcc13176df1029f355b6ff4453e7b70",
+    "src/trottertracks/algorithm_codesign/df_correction_et_storage_v5/worker.py": "c68399f9f2ab45fe54e495460aad9a9a88fedff5e0a17951bee340b2769a7b0e",
+    "src/trottertracks/algorithm_codesign/domain.py": "33a754d8bf5f96ada07a19bd372b32aae1622069033edd6a9d2bda646b742898",
+    "src/trottertracks/algorithm_codesign/e_r3_identity_diagnostic/__init__.py": "d0ae12885bf1844cee2a52bd37a55ad97eee2e86a56af485441ba50bc882ff0f",
+    "src/trottertracks/algorithm_codesign/e_r3_identity_diagnostic/evaluation.py": "adb2c1e8b624751fac144a252b99670592eb00afecf46930b7c20d801ece77e6",
+    "src/trottertracks/algorithm_codesign/e_r3_identity_diagnostic/launch.py": "c3ca14069fb83c598e84bb15790194a6424764bf85b73719064d55b5fc458d12",
+    "src/trottertracks/algorithm_codesign/e_r3_identity_diagnostic/worker.py": "1c02e1b378f34e4e0e49b96250116d65209bcd428c356abbaed5af24ce02ed7b",
+    "src/trottertracks/algorithm_codesign/formal_check.py": "0cc981219906d48659a16158a08e74e2776c9bd1c5eea7edd4082935ad6fbaa1",
+    "src/trottertracks/algorithm_codesign/freeze.py": "c0c06c9de6d1b6e2710f074a11672ddc4d4101e5a160d5848adc5b30fcccf446",
+    "src/trottertracks/algorithm_codesign/g10_comparison.py": "2de98a3eb4490bb93dc1b0e632aae34ef753c9586cb9999c199cedb3151eacee",
+    "src/trottertracks/algorithm_codesign/g10_generator.py": "7dbcf43ac8b387c2f31790480c4be3b31e818d72effb18bbc95e262362ea3008",
+    "src/trottertracks/algorithm_codesign/g10_io.py": "b29c884840fa9377b071fb0fbda6b96520d06c237ab07e74c13ca97e0d0aa338",
+    "src/trottertracks/algorithm_codesign/g10_launch.py": "625ac84d408fdeee04471fdf1005a6e770c1632a4074eae1c8fa061dc3d0e4ac",
+    "src/trottertracks/algorithm_codesign/g10_reference.py": "f6f6874639b28748fdfcc57f84a1880701891a0e9c5a3424e27d8f679d627a20",
+    "src/trottertracks/algorithm_codesign/g10_saved.py": "bd48428e8ea07f404b59f0656b4c611c260519e519db3b3b2c5664b8cb7e6bfe",
+    "src/trottertracks/algorithm_codesign/g6_f3_contract.py": "754c27f72f3356b3072ced4a00bef174b8922d2efedd0eff18d86a887fa598e1",
+    "src/trottertracks/algorithm_codesign/g6_f3_generator.py": "2ccce19571cdf33527abc92f049f35ef4e0d33d8a876132b2d1d70f6e63ad751",
+    "src/trottertracks/algorithm_codesign/g6_f3_precision.py": "c2136326042fcf95240ecae41436cd953a1f857543ec9797e57f8fcbbe158706",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_admission.py": "b718047a96353f60bfda4ee08694e610be7e53c701185d1ceda539146f1ae750",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/__init__.py": "794bb6d12f78f64073f932cbf47ed18f30145a315bac89bddb89b9bf7eb7c781",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/authority.py": "5cf47cc928ac757bec21b0fd39e1afaacc0b326864fae247ef296f8fd924d786",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/exercise.py": "442264facd91d55cd7eb288651a5a83cfaa42c22942674bdffab219db9f2db07",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/offline.py": "bb8a2c97967c3372e8246a002ce58398c0daeba2a382444cde1fa0b2a5770c9e",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/ports.py": "b3269593d207779b90433bd9e7487e289b8fe67833efa26d3cf3d62216f434cb",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_binding_v1/static.py": "7d16a25d3ca3c1cc5648cc4ad1c96c579fc6c4f75957ff996d22792a4784c4e7",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_independent_v1/__init__.py": "7efd5e102ea83ab19818b79859f7bb8950648cee652f05baa998d2793e84b9ca",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_independent_v1/adapter.py": "a13069155c5072f45b101618e0d68541a9c143b571709905fcefce54262c7849",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_independent_v1/bits.py": "15479ee428ba3a8683438941ebc1879d4d56b7cf2186ebf20eab9829073f2230",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_independent_v1/contract.py": "c1f83389bfc00f9ae659ff09943bc80a164ef0070dad38f308e08d5f690b6a2b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_api_independent_v1/static.py": "4f78528fb036e09f478c5e8ba8b3e509a5f29330405e010156300210d7d9e338",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_bridge_v1.py": "cf35e8a2e6af0da6e9a680943300efddab9157e1b00a7325c6340f877be3b485",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_contract_v1.py": "bb292de38691d39b2687759da7ccefdbb1cc046544f560905638a6564a85cc12",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_fixture_v1.py": "0b44a56d029e88355dc0909e4670cc08225676bb82aca80ad189a90030537e05",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_independent_adapter_v1.py": "04d4f80037217cd4b9d29b944f0958c37ab36f09820788434a894af63fbfe361",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_independent_cli_v1.py": "fc4f638fb6011b8bd5d741b95ef0cce9f3fdee62dd8a4a7dc81feba880d4027b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_independent_cost_v1.py": "7864bb51de069b4e85b7c9b870d86d6a49f5df6b84939e55413a135b312789c8",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_independent_identity_v1.py": "7037ec7a4e88f083f4e71375f12c55c08e1117a665243f9d32618112111177ea",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_independent_storage_v1.py": "2d6a50e1163fb7f9bb48b6a4d1cf9e468455f673c9209084033faf59ac59db01",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_independent_trace_v1.py": "7522281ef1bec5ca18b1a144f28e484705feec0df85bd86ae4c45b2661c3930b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_offline_v1.py": "2e0a94f200745380c583f2cd69356628e507bd4a3e6f73077c8c1278adc1857b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_store_v1.py": "c680640ccf7c00520c67fd9dcd0b3769ca6ac3980f35d5875f996d689b555fd4",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_bundle_trace_v1.py": "964e9605d59ddce2de6fe373bc451ba83c19d0a1448c44c791c33af87d46a067",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_driver.py": "5e6904e782526e96cc6a2dc9e94642a8237b4aa69ce8743aec24ccde5f212694",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_exact_serialization.py": "e05326d95d6c8e91d779e23db3283ca2cd41b6eab2fb1024707c112c1c93087e",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/__init__.py": "7af7c03d8924bfec6fdd58db4eb6ade70288d25f089c575107a640f2c9c543df",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/activation.py": "9656b9a02b72df7cdffc1bc76acaf3f55fa9627e118dc7a79886dc6d51217f26",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/authorized_runner.py": "257b0a8018b78cc084caca76013dea96117a9848f034f81c0bb1fea4f8d27d56",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/bits.py": "93effd9391403395a5a981c76dde35dcf610494fa9c3b1dfdbe5bdf3ae305221",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/contract.py": "6d7b4e2943bd574c19aa40be0672e548d74e8d2db498cad8a646c85d39fd42ec",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/execution.py": "8e63d9141a52e1c142d3752b7732b3003bea9b2b2b4e63d6719a46be5c48a969",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/gate.py": "509287a5bc99267a355db7fd8bd55a90bea610290cf5689239f7b1bf57b6bb6c",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/guard.py": "78583b74341571ca5a064d5c13f3cea2c60fe9baac96edc386ab9ee4650a65cf",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/integration.py": "cb4afd16aa086022bac72b6783034ac79eedfba0e6cd7509fa04afb8d097b01b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/metadata.py": "d709aea9561a44c9b5daf7ffc34a76aed14ee9275b2686c4bdbf1f87f81e12a6",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/monitoring.py": "2f8df375e4046d7aa0ad545eed84426ede0990a2997324fc8d7ea50d2312caea",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/mutations.py": "f20ce1d3b4cc8cd1d70cb42f3d751e2c708b428748c14f69d131f0150da9b3a6",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/offline.py": "dd79326dc20627e4ea50c32c92f57cde766727dbca0925b4115e30f93beca717",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/pilot_readiness.py": "c434746a0f4673cb4fd0ea069db5e6c7ea8d7417bb99aad39434095a90f8950f",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/resolver.py": "f5fa7d74fad6ac0029e1f66f08893a675fb25fa4ce994f60faea1f32b9beebca",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/run_control.py": "802c01b707236f837e679eb9c4f9c6ca8c4797c0694af0206de52044e7b145c5",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/synthetic.py": "26d4f7c50d88fecdb64046b203bd1f4fdb083d2a3d7a649ac57b24fc7732b430",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_final_live_v1/wrapper.py": "9ff2c096c51a63803d65e50c3462efa2dab6f640de95e9f256a9aab476d19021",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_host.py": "49e753184b66b22b41287acade1c9ac6a43249321481c6fe53149b43c2bd03b9",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_integration_acceptance.py": "d67b1b63047e91d80fd37c63a4fee9474187d37e85c0123e8ec441bd96f2b4dd",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/__init__.py": "7af7c03d8924bfec6fdd58db4eb6ade70288d25f089c575107a640f2c9c543df",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/activation.py": "4d82d36321241bf239e39cb0730cf17b8bb45aa82e570a7cd78817922f8f783f",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/authorized_runner.py": "88b506755eebebb7b155d3e3a6a1e8d81087c379acf206f5a1146bd62dffc203",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/bits.py": "bd791eb9a3d05fdae64c2eae7b8a8f552008681c3784e86ada7268ed88b28421",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/contract.py": "dffcd19d4cf64b450001f065b9b5f7f19ea77784e0f3df28afcbfca2cf39c8a5",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/execution.py": "2d9463397a9a50e8743ea583ddd91cb82fc29bc24e07eb2d712106246b55c02a",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/gate.py": "3bc53d0329ab27eaa92abb1c132d073bc10e45b468ddc8d4ab679678cd19a300",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/guard.py": "78583b74341571ca5a064d5c13f3cea2c60fe9baac96edc386ab9ee4650a65cf",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/integration.py": "d80dcccfce9a931ce51af6b87bd734b0d8d255df5bfa5c52977fd43d6e5969cf",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/metadata.py": "3581c2a21225396c867f9e931989d694c4c0579e1c71e146f5bbbc6e03edaf32",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/monitoring.py": "2f8df375e4046d7aa0ad545eed84426ede0990a2997324fc8d7ea50d2312caea",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/offline.py": "0274a0ee49820795fdb991eebe12981f288b61739e623f5c88b2eeb65973a3ca",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/resolver.py": "115c238c6304f009c3baa50997ccbd23d18de1d2bad2c1995ffead50b5a71e69",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/retention.py": "5f410bbf16c34978be8d537614d8af119831a39b528f59074bfb7df5e8910a41",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/run_control.py": "f0f95eb636e1ef17e4e6f55ecd97c802f747cf23dbc04cadcd51b19663257aaf",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/spec.py": "6508624274c9c6c1701e6dcc484315c3d2b27941c6b76c3369ca398da5b17ca3",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/synthetic.py": "26d4f7c50d88fecdb64046b203bd1f4fdb083d2a3d7a649ac57b24fc7732b430",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_limited_pilot_live_v1/wrapper.py": "b2a6e96f78def9b1b35072f8bec1e1039348dec39b7fd88979ac90bb495a13f4",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/__init__.py": "6d05ecde3fa128d815263eab869105ce8ddeb96b9a3bf691043f79738097f8af",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/artificial.py": "3acf2325bf865b2bc610289ed9f1b759eb83201f53c8b6bf7806c8c223f5fdc9",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/contract.py": "72c8de2a40a28f6917496df68155ac60be3ead8cb652eb73ade7985d88c511ab",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/guard.py": "b1ed3e087228df56374be8515583adb734431a9ac9d1ee84c393d85c5de3a460",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/interface.py": "5cd103a407ad9671e20f2b263152f760388e63be0ae6470434170439ada8a555",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_preflight_v1/spec.py": "e169a0d9fda0458ba7154178a40722deef468681fad7b102499c122e493e7bb2",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/__init__.py": "7af7c03d8924bfec6fdd58db4eb6ade70288d25f089c575107a640f2c9c543df",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/authority.py": "56eb455e157e0d56912cf7f3875d03aad2b47f1b848e533f4eb65e6c04faafa1",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/bits.py": "85049dd2cd60c40ade71af1c9427ddaa16132246d17fa93b720158607d7fa296",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/contract.py": "2c0fc999c8badd35b6f0093b120d5c95994985316ad30558862458112bac6aeb",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/execution.py": "21dd71885159826cd6a90174c6b164404f0ef8d666a9c41ddcc27b4ac86b3456",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/guard.py": "064cef09b2d9eeedb938557d7e0f31015f19d9c468414b6edfbcac93f0f2cc24",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/integration.py": "a2e34341689ec1cf98264760aeeca5cdb80ff5f452b9b2c7e754039835b87b56",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/monitoring.py": "2f8df375e4046d7aa0ad545eed84426ede0990a2997324fc8d7ea50d2312caea",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/mutations.py": "f20ce1d3b4cc8cd1d70cb42f3d751e2c708b428748c14f69d131f0150da9b3a6",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/offline.py": "adf639058ce1683419202ad258a2c6c30cfbe57543bf7d958b068dad4d22c7e3",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/synthetic.py": "26d4f7c50d88fecdb64046b203bd1f4fdb083d2a3d7a649ac57b24fc7732b430",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_live_release_v1/wrapper.py": "398b5fe208b48512146499110e7ebf35b30c6b6266dfd8dd1a62c8227f501609",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_offline_cli.py": "c8d8187d477999d67baff92088812892f5f36d5d5c25605210e12379870be883",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_offline_cost.py": "cec5584ca988a3865cd5ff8d2c5f387a44ac8c17da0ddd5c5196dcc8cfb5c578",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_offline_result.py": "88d052c90dd140756d4153e2ad8d21a22d26677f656f76c2afe3bc2635c246cd",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_admission.py": "08fcac3171106ed3a8e1551ed12cbdfb5dfdf7e41a26b10c4242b41fc1d63c59",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_candidate.py": "3324b93087a104511c8c18f7bd12e38d643ff6614b53ccd29883b7cd112ff76d",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_driver.py": "4cf515a439334fcf893e1219f64c769a3bd9ba8ea6bf8eb9cedcc8b12ed7813f",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_host.py": "c3c7269bdd2d0f459248de22f2d64952d02a4170b606ad5a466b0caeca04f9b6",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_observer.py": "50533aec6e6b007df23372d1c4c0b01bc6dc6348a83fede4aef5e80e4abd66ef",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_offline_adapter.py": "74371b9ea9fccd59a501ec99d44578b1747dbcc373d30831bff68ad085261c4d",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_offline_cli.py": "f241c1be5e9acb0f252c537f854eff70c2d981565a30e6c1aa028d04fe38309e",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_offline_cost.py": "73051803a8a39491effbe04d26e1053652c183f7eba66d90fa9f4dae83f84051",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_overhead.py": "ff9213fa6ccbd65b8c20e9eec1576d2c43d5dc3b29a035f50271582804ba392e",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_scheduler.py": "48cbcbec290404b71392b1fe24742e0d07236c0bebbc6f2e5bfe641109e614ed",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_parallel_verifier_core.py": "e915594d780d2ef43a3dfd80017220389917267235fbb1d81c25e7c4b99ae4a1",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_performance_pilot.py": "e86a00a91b9fa643404868408c90146d9af53a778f209673c68d76b20500df02",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_candidate.py": "c3bc48ee7dd85b77645c763b5d883710c5f20e68116498f81b4723a474c489fa",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_adapter.py": "d8015cbc07b970addcc741c804cb826e243018f2706f6954a0f4ae30cd9473d0",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_cli.py": "8bc85e4ff6309501d8f2dc1852cfe510586d3ce91702749ad72f251f389acc6d",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_identity.py": "90cfab6d2b544773391b41558be1f84c1e7957697d4c07b44cabdc280397e867",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_independent_trace.py": "8380044d544c8374331b36372074cb2227c83797be132e17611120e7666a62cb",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_offline.py": "14f99fc953001907f160bab3f614c4ca552ee0845bfdd1612abde8a4df15e14c",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_pilot_storage_v2.py": "f97b917e49f694ec4a34546b27dde74c1db4096cfe05179fb61682f604c2ddab",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_independent_v1/__init__.py": "39ede025f61568e49d2a7284a2d24bccf3e7e376dae9b3d9b7c1c21e7c210cfb",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_independent_v1/adapter.py": "b3dbdcd1ae366af856d08bf041056a5a0b1fd9b07c148c2c94b2d2107e719ca4",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_independent_v1/dispatch.py": "d0988f0e5f25b022f7594976b1addf9fc6981cc177dc1c5e299dc8f21aef4c9b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_independent_v1/identity.py": "05efcc0008dfeef71df1b6fd5b2f604d6cb9ba03cb24737ddd4b146480029680",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/__init__.py": "513e96fa14aaef3f2b67e47c48ebc207cd40ed9f32c1de34573bafb5cf50ab7a",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/adapter.py": "31e836b9e488b5dbb6065410cc550476c4fbfb1d259ee490e4c66eb9f587f01b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/bridge.py": "d201cfe9e9c0abf01951d734c3fae1c3e46421f3c4e5527b59893bc02cafc7a6",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/contract.py": "616eb794be6d1782b62888b06d6209044da381271ee6bda9f9866612ce2143b7",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/offline.py": "c1b138838a73646fe20bbff7287cd8a4d2b5e39516ca8a839f057aa111aa3ea4",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_port_bundle_v1/storage_consumer.py": "992a37939bd0660eccb164662067fcd9b03946152f41c2f0ab7b026f653018c5",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_readiness.py": "f6cbb170b99bd67926c66eeb982df67a1dd4506dcc8fc40f5016cf482341b00a",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/__init__.py": "68f00781332b9bc99fde3b5d9f161c35dd4daf28f956b5beefbab34ead306311",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/adapter.py": "8189336d8b680a74e4d578ae88f97c0bcf82f6037e6e418d5ccbd625faef07fc",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/binding.py": "14eec8538408615fac115b764231bbf02f4869cfb9ee68ad6190a5645e5ed3f8",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/bits.py": "0459e0a6c9a7ef8442b346d8d78ccb7a6e37409f1e403631208f8bc5a846710c",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/bridge.py": "3bea33ea82576fd88ec816b7ddb97a05e97325ac919e49000abb021dabc6248a",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/codec.py": "9fd0f3478c85089db14063a4da26b75f460c08e725e685ffb4ac214236a53777",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/contract.py": "ab08ceec556019b06815d513129bd8f056d22197f9d3592b651981a6c6ba0153",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/fixture.py": "dc73658f6904e5cdca30769198ddf6d73682fdce2a1e4ca44ac3b776b7b69ebb",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/offline.py": "d18f7406e658f27937d791611d46555f52a048d7e468ca644232ba17436ff13b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/result.py": "b466ad740ad3dc377e609625e6d111c10f4dd71b6c289b5163031a493acd4c1c",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_real_adapter_v1/storage_consumer.py": "8591243f04eb27a75dde300123f850dc2e4ec61d77e5e5e742c1f6917ff5768e",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_storage_independent_adapter_v2.py": "9a307ca593286026819578e1547b6e8302beff8d3c9fd32d2538f46eff1705b2",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_storage_independent_identity_v2.py": "83ccec881394d6b1f6f1e8617e1ffe038bb2ff9188ae91a78d6e70c5d14209b7",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_storage_independent_trace_v2.py": "6dfd46d0d7bbab8b34b0fc1991742ea667c9be76d0fa95c36724d12970373e9b",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_storage_verify_v2.py": "605e0fdc1d829a77c93104aa236777461dd7f9dfbdc3978b09713f0eaf290fae",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_acceptance.py": "8cd352e84059e38c8961be4d53b8c39a4c0ceb845d0e83bdee1d5805db9f7d18",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_adapter.py": "d5563b33ed26f32e535a1e22d0fb639f384fae3cdd5b901b9050a53f313110bb",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_cli.py": "487d9be2cde7873c297a2ca21b403958c755b6bb3047b57a77c61adc588d3c41",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_cost.py": "5d8eb20c9f9020a7445a047d2329426c82b52745e0fc61744e5666b05df4495e",
+    "src/trottertracks/algorithm_codesign/g6_w2c_b3_v3_offline_identity.py": "0430b1ced11cd5b8d876bf3c674ee33d62e7e8f8c0bf466f944b497f7e069b2c",
+    "src/trottertracks/algorithm_codesign/g6_w2c_cost_preparation.py": "35a4a0d8b28fd1a50791cc2afd09ac86800a1f37b488dc4cee5906864ea7f0e1",
+    "src/trottertracks/algorithm_codesign/g7_generator.py": "bb4177d26f1cee9721c2b083de01f4aa309f3ad39f22597cfae3b662881269fb",
+    "src/trottertracks/algorithm_codesign/g7_launch.py": "f444423d3fb3fa1cb781e15dc7a49af1184113eeb0709e6c24019be1309561b9",
+    "src/trottertracks/algorithm_codesign/g7_provider.py": "17fff6d4d9fa9c9728091f6f01a4e6af1a389e8949c6e4a2ec6e3112f2fe3c62",
+    "src/trottertracks/algorithm_codesign/g7_reference.py": "57891e1764a9459dce345871b67ead82dd212bf55a07ceb6630ff1b1cc7eefc6",
+    "src/trottertracks/algorithm_codesign/g8_bounds.py": "7c6346c8d3e13a94041c18b666e28ec97968a472439805e10f73a7e81b10c9f0",
+    "src/trottertracks/algorithm_codesign/g8_pipeline.py": "ae791da161a6a574056ff102e2e2613d1f101224633e83b28afb539fab4fb462",
+    "src/trottertracks/algorithm_codesign/g8_reference_audit.py": "3d35135dc6708b383dbc0db8e60c3c4c1100564d62748b0e23445782f5ae7bf4",
+    "src/trottertracks/algorithm_codesign/g9_comparison.py": "8624cee69367fe59ff9c69077da18d6202299eb4d0987c7033a264ba0637609e",
+    "src/trottertracks/algorithm_codesign/g9_matrix.py": "ae1c6fb362dba83f7f329e7b5e7c7d6747949738097ead2f452efe4a41100630",
+    "src/trottertracks/algorithm_codesign/g9_native.py": "e1ce21cc3c4d607be0cdcbcb2dcfc5860d2635746a765dd413567007448273d5",
+    "src/trottertracks/algorithm_codesign/g9_p5.py": "322c4d340303e581aaefff1c3a6f58d019caf9e3f60beadc901425e766524d70",
+    "src/trottertracks/algorithm_codesign/g9_v2_launch.py": "97133d2107ccdff5de647aaf61b25e496606aed2e01feba6d4f0e36f84c871bc",
+    "src/trottertracks/algorithm_codesign/input_contract.py": "d06da3c81748f6fe55eed99872192549a795cc5f0aaeedd971af18786c1f18ab",
+    "src/trottertracks/algorithm_codesign/numerics.py": "761bc09d9ef7041803bf4b1495ec4da6f46143a95a3a8b5316ebb53292292c21",
+    "src/trottertracks/algorithm_codesign/parent_allocation.py": "6ebecaf81a446dcdeaafa89b9bd0018ac8d11d23695da57d58b5683b99a4709d",
+    "src/trottertracks/algorithm_codesign/parent_allocation_native.py": "f2a7ddbf313aaca7a7d7e9e9adeb991da00238c4a55aac5698112ba20844188e",
+    "src/trottertracks/algorithm_codesign/parent_experiment/__init__.py": "63f6ec2a42087b3c49b4a94f48bb8e6d9091342fe7d5520b71aedfdf4dc7300d",
+    "src/trottertracks/algorithm_codesign/parent_experiment/design.py": "11c5c37a0a8d0b7a9c5d1760463b33377fda86912b13a6407976db8c9777caca",
+    "src/trottertracks/algorithm_codesign/parent_experiment/evidence.py": "ed944942265a9b6c48d8b3cfeb903ab6354f5697809cc69a3da3762e11f5f02f",
+    "src/trottertracks/algorithm_codesign/parent_experiment/launch.py": "2c152dae28e690622dc49682a2a00470d6fca0807b25e15b1a814157188ce499",
+    "src/trottertracks/algorithm_codesign/parent_experiment/pipeline.py": "f9061d42a4da41560abae1e5d3827959732fc7ff4bddd6fdbdc243849db2c958",
+    "src/trottertracks/algorithm_codesign/parent_experiment/runner.py": "2b452daab90b78af59e90b5c96723d5fd075935e7f6cfc2cebff413c8c28e006",
+    "src/trottertracks/algorithm_codesign/parent_experiment/supplement.py": "2e06d01ece8d0e8b2da2059dcf4de6e1cf3a051318eff664b668bb08039a49c5",
+    "src/trottertracks/algorithm_codesign/parent_experiment/worker.py": "4a65c45502d0deb8ddd7c55d009d736416f15a9e70db400837eed1498d380598",
+    "src/trottertracks/algorithm_codesign/pilot.py": "f6b4559d0fdbe9724da46aa500416b9ff4c07d70782ffbe308581ebbcb59f12c",
+    "src/trottertracks/algorithm_codesign/ra_d0/__init__.py": "54d5d960a1ace164ac6e7f54b79d2c3081ce7772b32a5005e7cb6de9c1e50dbb",
+    "src/trottertracks/algorithm_codesign/ra_d0/backend.py": "407408fdabb2a6cd52a8fb21b70036225c243ea89e5f87ca2da9c0e896b2aa73",
+    "src/trottertracks/algorithm_codesign/ra_d0/engine.py": "d3132014b5399aabbc917bf86818ddc8b5bee7e3501c822914b90c8ec5bc9b50",
+    "src/trottertracks/algorithm_codesign/ra_d0/exact.py": "8a325c1297abe5ef650185bb039d9ead5d695b27af75a6a046c8b17e4a48543d",
+    "src/trottertracks/algorithm_codesign/ra_d0/freeze.py": "4ace9708e1afffbd1e8da9b111bba517345dae7cc96c6866ff5922f546f42ebc",
+    "src/trottertracks/algorithm_codesign/ra_d0/grid.py": "582dea0fb14fdf7a6f185555268fa2e67157d0a8ce9aeb530819e508b6a042bc",
+    "src/trottertracks/algorithm_codesign/ra_d0/guard.py": "971890e0159d5ae4e0def54066760fda13122be3cbd3057ee6391c35725f7428",
+    "src/trottertracks/algorithm_codesign/ra_d0/launch.py": "b44e76f35f82b9ddcabe1a411e85ef858fb2d32698c8e096b581abeca27accb4",
+    "src/trottertracks/algorithm_codesign/ra_d0/lp.py": "4c213a0d72b53b4855973f9b83921c3431dbd16f2d180f33c1e20bf40b9f9470",
+    "src/trottertracks/algorithm_codesign/ra_d0/numerical.py": "db62bdd6502b345d79720174ba0d7cd817f0bd845218fa5ea25c07b94d4dde13",
+    "src/trottertracks/algorithm_codesign/ra_d0/semantics.py": "811fcc3ee64839791eb6297db5f5a7f24350134d7c9ae2ff1b8d0322fed71154",
+    "src/trottertracks/algorithm_codesign/ra_d0/table.py": "dec7e02682a5aca2d6cb9094ff1fdeecaff28b5e27ac0f9b411a66a715f8c464",
+    "src/trottertracks/algorithm_codesign/recovery.py": "c19c76a6020271e1fb634fd51b6693ab62f1620e4f5709886b800ce20342e90c",
+    "src/trottertracks/algorithm_codesign/return_aggregation.py": "f716d3c69fc1063e47b7618022662715f6b34a9c1f35cc3e7ed26813f5ac69f0",
+    "src/trottertracks/algorithm_codesign/rte_development/__init__.py": "049b26e4270a508578e19778558e8560d0526a3e231d2a188eadf82bbdd570ed",
+    "src/trottertracks/algorithm_codesign/rte_development/accounting.py": "f4539bb23a975bff5d9c04aca7c1e59767d49fc0d2313767d87c800df5c5d0dd",
+    "src/trottertracks/algorithm_codesign/rte_development/boundary.py": "2577c5fba830686e3329f6205b23d97c8f9d785da693855437bdb32b072812d0",
+    "src/trottertracks/algorithm_codesign/rte_development/boundary_launch.py": "786f929deb9392d32b36195487cc4aa2459fa155a033ac7ebe71953c18f2bb78",
+    "src/trottertracks/algorithm_codesign/rte_development/evidence.py": "071889e0618889534ff213adacf29b47215b260dd849417859d106ec534817fd",
+    "src/trottertracks/algorithm_codesign/rte_development/key_mechanisms.py": "16fde224d6c511367ca519f7ec9881c550f8477f3a656d8f7d87694a393e0ab9",
+    "src/trottertracks/algorithm_codesign/rte_development/launch.py": "afe7d64205614b116961fd4e54c0748f47d9ac37bd96d1c60478f98b9ac91bd2",
+    "src/trottertracks/algorithm_codesign/rte_development/numeric.py": "d738ac2d473ae0d668cc4de0a24c1fc0a14319da69e1acb51529c4a54e6f0d56",
+    "src/trottertracks/algorithm_codesign/rte_development/pipeline.py": "971ceda9239890f4fddfddbd5625492f44ce0e4dc87ecf8b9aa21788196a40a6",
+    "src/trottertracks/algorithm_codesign/rte_development/worker.py": "7edeff627e0423dbfd24f38d73dfdb27c4846fce4f30cd51c3ba2d6f6eb4cba1",
+    "src/trottertracks/algorithm_codesign/rte_reallocation/__init__.py": "7ace33bd90dae5bee373f6677d07bf5c53ca89619c5326e6087cebd698c44ec9",
+    "src/trottertracks/algorithm_codesign/rte_reallocation/accounting.py": "fbcca2e08daeceebc28a20e45839bff943a05c3a0c0b53880b4ece546f766753",
+    "src/trottertracks/algorithm_codesign/rte_reallocation/launch.py": "5d49ba615868ae6dc22c435908a6d89789a0bf2b31e425e5804a552eb45d6ccc",
+    "src/trottertracks/algorithm_codesign/rte_reallocation/model.py": "17edc1fb850da2a4207f24b320ae403a5760b3e62788e2676f421489f038fefe",
+    "src/trottertracks/algorithm_codesign/rte_reallocation/native.py": "60955dbca4a591523ae3b4f84b368926ff8e9689267135f7ff0795740ffeb96c",
+    "src/trottertracks/algorithm_codesign/rte_reallocation/numeric.py": "5c86c2d6028950af6df3a620508572257f64512a3e3d3d193fcd473b739b2faa",
+    "src/trottertracks/algorithm_codesign/rte_robustness/__init__.py": "da60831f389cdf727e73865b3962700fdc618dece70b6cd0081ce265570b99fa",
+    "src/trottertracks/algorithm_codesign/rte_robustness/acquisition.py": "13986ad9112c1e6d15ebef1fb521aa1b9a84745f0d85525e56b17873ffb20256",
+    "src/trottertracks/algorithm_codesign/rte_robustness/launch.py": "aedad0c71c6c99cab59ef66dc8782e76b970e8ca63e5cd3efd557524b7fa5512",
+    "src/trottertracks/algorithm_codesign/rte_robustness/model.py": "4fabfdecc0f0cc5df56bdf4d7271107c1f65fcf0c41635f0451c7c2d86ee1a6d",
+    "src/trottertracks/algorithm_codesign/rte_robustness/pipeline.py": "19c3ec3fa5a3562aef9af07af7ec9701b12df1ed1ed55feda9f5f8a316cbda2e",
+    "src/trottertracks/algorithm_codesign/rte_robustness/runner.py": "2b2b528715b8dd4c59d403580c747d7d9dbaea8d3443130399b4ac48f0fed70b",
+    "src/trottertracks/algorithm_codesign/rte_robustness/worker.py": "34272088090da06925d17f2f96543f7ccbe64572033c810576b8012858965426",
+    "src/trottertracks/algorithm_codesign/s2_multi_event.py": "53802ee6fe9c521dfd57cc32802ba5221cec0bb409f06fbff2f425e71a9c64eb",
+    "src/trottertracks/algorithm_codesign/science_input.py": "ac74d6447be0cc6459e6c8050741cd2ac886004b989cbffc3e4883c7f3d09f33",
+    "src/trottertracks/algorithm_codesign/shared_cpu.py": "a22007ba2a0fd6d014e9da2ac86d58fb4a1e6333afc63f0964a1442195501e4a",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/__init__.py": "c1e30a900a644ccb21cb9a91631ac4ba7a2de812cd03de258ba29962d6a823be",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/economics.py": "42c6971773927535d4b9f9f362c33e17352780457dc9c1dd530ed3179f28b25a",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/launch.py": "745875ad02789d6905feaf1bbe6f7d3fd0b540e1e106244e006528259cf7b9f2",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/wrapper_accounting.py": "f2245824aa6ce202dafceb1bd8a84102a6a16cdd4868ed6746fe8b6d27a23d4b",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/wrapper_adapter.py": "e2e91cd26910f15f1e6a26fabe75821ea01132545f61bc482657b37e0812fe8a",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/wrapper_launch.py": "4b9fc927a5e75b831844a7ba2da9f6da141af9d6bb8442eaa13eab9576748869",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/wrapper_result.py": "7b570b337afed140eeccce37ec3227f442b6eb0be2552622d73df94783db5f0b",
+    "src/trottertracks/algorithm_codesign/synthesis_placement/wrapper_sequence.py": "9f4862ed61cd14475d97f5e25d44285c85b4ee3aac86a2a9e2c75d051600e2d8",
+    "tests/tracks/algorithm_codesign/test_a1_new_target_n1.py": "1b6cade907489813515194b3233ee679d6f47f72c4527da8e65965627aa7946f",
+    "tests/tracks/algorithm_codesign/test_a1_new_target_n2.py": "9b51f3a7287afbe50085c3ff45217fca63be29f302f6b95c4914e7144cefa45a",
+    "tests/tracks/algorithm_codesign/test_a1_engine_connection.py": "ac9f6ec4f7adca2af35a13752a3af418cd300b1b7642354bff82951725b418ec"
+  }
+}

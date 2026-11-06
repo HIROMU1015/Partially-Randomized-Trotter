@@ -177,3 +177,6 @@ A1の[N2限定SOURCE・state/engine検証](../docs/research/o2_a1_new_target_n2_
 
 
 A1の[N2結果・state/engine保証範囲・STOP](../docs/research/o2_a1_new_target_n2_20261106/REPORT.md)：一意ground/state誤差を確認。総b_engineはUNKNOWN、N3未準備。SOURCE/payload/人工test/保全へ辿れる。
+
+
+A1の[保存engine接続・一様誤差評価plan・人工correctness](../docs/research/o2_a1_engine_connection_20261106/REPORT.md)：最小adapter/test、接続/誤差計画/次回の限定科学scope。実上界未取得、N1/N2再計算・N3なし、公開後STOP。

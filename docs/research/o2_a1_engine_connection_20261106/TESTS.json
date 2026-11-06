@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "new_artificial_tests": 17,
+  "reused_A1_artificial_tests": 55,
+  "total": 72,
+  "scope": "invented 2-mode DF fixture and small gates/states only; no numerical processing of saved molecular components/state",
+  "command": "python -B -m unittest discover -s tests/tracks/algorithm_codesign -p test_a1*.py -v",
+  "checks": [
+    "literal gate name/angle/qubit/order equality for all invented positive paths and both axes against existing builders",
+    "local interval gate enclosures including nonzero-beta XXPlusYY",
+    "exact rational local contractions and norm/Born ratio",
+    "known X/Y phase signs",
+    "probability range rejection and exact 53bit threshold endpoints",
+    "uniform finite gate-alphabet and length coverage on artificial paths",
+    "charged final normalization and serialization of long envelopes",
+    "saved identity/local matrix mismatch STOP",
+    "no RNG, molecular solve/eigh/preparation/compile invoked by adapter"
+  ],
+  "development_corrections": "Before final freeze, artificial tests identified missing legacy metadata arguments and Qiskit1.3 controlled-RZZ matrix interface; fixed using existing Operator interface, no scientific retry"
+}

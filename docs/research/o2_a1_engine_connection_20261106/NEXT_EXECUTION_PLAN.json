@@ -1,0 +1,52 @@
+{
+  "status": "PLANNED_ONLY_NOT_AUTHORIZED_NOT_EXECUTED",
+  "function": "trottertracks.algorithm_codesign.a1_engine_connection.qualify_fixed_bundle(root, fresh_output)",
+  "calls": 1,
+  "fixed_N1": "744e1a09661ebba6841fe5faf456f88c41c47780",
+  "fixed_N2": "5e9bd08068738cdf1070bdc43bee8194b113ae33",
+  "input_hash_inventory": "STATIC_INPUTS.json",
+  "profile": "PROFILE_LOCK.json",
+  "output_suggestion": "artifacts/o2_a1_new_target/2026-11-06/engine_qualification_run01",
+  "internal_calls": {
+    "saved_bundle_rehydrate": 1,
+    "deterministic_half_step_subcircuits": 4,
+    "aggregate_scalar_subcircuit": 1,
+    "certify_gate": "once per unique finite gate key; number determined from full saved local catalog and all declared variants, not from path sampling",
+    "uniform_composition": 1
+  },
+  "zero_calls": [
+    "NPZ load",
+    "DF partition/preparation",
+    "CDF",
+    "state solve",
+    "eigh/spectral",
+    "real state norm/signal/evolution",
+    "real full path build",
+    "all path enumeration",
+    "RNG",
+    "Hadamard shots",
+    "train/cal/prod",
+    "compile",
+    "CV variance/N",
+    "cost"
+  ],
+  "outputs": [
+    "SOURCE.json",
+    "UNIFORM_ERROR.json",
+    "GATE_CERTIFICATES.json",
+    "STOP.json"
+  ],
+  "failure_STOP": [
+    "identity/profile/selector/matrix mismatch",
+    "unsupported gate",
+    "nonfinite interval",
+    "E>=1",
+    "existing output"
+  ],
+  "no_retry": true,
+  "mandatory_STOP": true,
+  "total_b_engine": "UNKNOWN",
+  "candidate_1_over_32_adopted": false,
+  "N3_authorized": false,
+  "control_or_pilot_change": false
+}
