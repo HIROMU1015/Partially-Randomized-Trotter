@@ -16,6 +16,10 @@ def main():
         default=ROOT/'docs/research/research_c_h6_contract_unapproved_20261106.json')
     args = parser.parse_args()
     c = json.loads(args.contract.read_text())
+    if c.get('execution_ready') is True:
+        from trottertracks.c_h6_contract import preflight
+        print(json.dumps(dict(preflight(ROOT,args.contract),executable=False)))
+        return
     if (c['status'] != 'UNAPPROVED_SCIENCE_CONTRACT_DRAFT'
             or c['execution_ready'] is not False or c['execution_entry'] is not None
             or c['physical_proposal'] != design.specification()

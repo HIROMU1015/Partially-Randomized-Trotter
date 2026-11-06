@@ -87,7 +87,7 @@ def saved_DF_gate(data,row,optimizer,*,rank,n,budget):
         norm_plus_guard_Ha=total,budget_Ha=budget,new_sector_error_evaluation=False)
 
 
-def ground_alias(H,output,label):
+def ground_alias(H,output,label,*,distinguish_alias=False):
     """Existing H6 eigh/residual/base-time alias rule, with reusable spectra."""
     import numpy as np
     molecule.stage1.finite_arrays(H)
@@ -96,7 +96,9 @@ def ground_alias(H,output,label):
     residual=float(np.linalg.norm(H@vecs[:,0]-vals[0]*vecs[:,0]))
     molecule.stage1.finite_arrays(vals,vecs,residual)
     alias_room=math.pi-(abs(float(vals[0])*.1)+math.pi/6)
-    if residual>1e-10 or alias_room<=0:raise ValueError('GROUND_OR_ALIAS_FAIL')
+    if residual>1e-10:raise ValueError('GROUND_OR_ALIAS_FAIL')
+    if alias_room<=0:
+        raise ValueError('UNRESOLVED_GROUND_ALIAS' if distinguish_alias else 'GROUND_OR_ALIAS_FAIL')
     with (output/('ground_'+label+'.npz')).open('xb') as f:
         np.savez_compressed(f,energies=vals,eigenvectors=vecs,energy=vals[0],state=vecs[:,0])
     return (vals,vecs),dict(energy=float(vals[0]),residual=residual,alias_margin=alias_room,

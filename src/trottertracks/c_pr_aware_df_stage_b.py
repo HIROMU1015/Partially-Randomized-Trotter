@@ -82,9 +82,10 @@ def configure(arm,h,r,K):
     return connection.configure_rte(arm.plan,h,r,K)
 
 
-def tail_gate(ctx,arm,generators,tail):
+def tail_gate(ctx,arm,generators,tail,*,operators=None):
     import numpy as np
-    operators=atom_operators(ctx,arm);identity=np.eye(ctx.d,dtype=complex)
+    operators=atom_operators(ctx,arm) if operators is None else operators
+    identity=np.eye(ctx.d,dtype=complex)
     total=arm.plan.extracted_identity*identity
     for atom in arm.plan.atoms:
         p=operators[atom.atom_id]

@@ -96,6 +96,9 @@ def fit_worker(root, task):
                 g,cold = fit._inputs(task,loader.load)
                 value = tensor_metrics(g,cold['J'],cold['U'])
                 if not value['objective_from_tensor'] > 0: raise ValueError('POSITIVE_NEUTRAL_SCALE_REQUIRED')
+            elif op == 'prepare_codec':
+                from .c_h6_runtime import prepare_codec
+                value = prepare_codec(task)
             elif op == 'generate_input':
                 from .c_integrated_transfer_input import generate
                 out = Path(root)/task['out'];out.mkdir(parents=True,exist_ok=False)
@@ -148,7 +151,7 @@ class Run:
         folder.mkdir(exist_ok=True)
         config=folder/(tag+'.json');io.save(config,task)
         log=(folder/(tag+'.log')).open('x')
-        p=subprocess.Popen([self.c['environment']['fit_python'],'-B',str(self.root/ENTRY),
+        p=subprocess.Popen([self.c['environment']['fit_python'],'-B',str(self.root/getattr(self,'entry',ENTRY)),
             '--root',str(self.root),'--worker','fit','--worker-config',str(config)],
             cwd=self.root,env=environment(self.root,tag),stdin=subprocess.PIPE,stdout=subprocess.PIPE,
             stderr=log,text=True)

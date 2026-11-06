@@ -73,7 +73,7 @@ def select_training(rows):
                     common_r=32, tie_order=R_VALUES)
 
 
-def sector_reference_context(arm, generators, context, h):
+def sector_reference_context(arm, generators, context, h, *, operators=None):
     """Reuse the random-path oracle with sector CAR, avoiding full-Fock CAR.
 
     Complete physical factors preserve spin sector. Individual native Gaussian
@@ -82,11 +82,12 @@ def sector_reference_context(arm, generators, context, h):
     from .c_pr_aware_df_stage_b2 import reference_context
     if context.n != arm.J.shape[-1] or len(generators) != len(arm.J)+1:
         raise ValueError('SAME_CANDIDATE_SECTOR_CONTEXT')
-    return reference_context(arm, generators, context.bilinears, h)
+    return reference_context(arm, generators, context.bilinears, h, atoms=operators)
 
 
 def check_kernel(raw, compiled, reference, sector_indices, *,
-                 batch_columns=16, threads=1, inverse_factory=None):
+                 batch_columns=16, threads=1, inverse_factory=None,
+                 action_call=None, column_observer=None):
     """All ancilla x sector inputs, full outputs, actual inverses and returns.
 
     This is NOT full-Fock input coverage. ColumnStream's floating-point level B
@@ -117,6 +118,9 @@ def check_kernel(raw, compiled, reference, sector_indices, *,
                 (('raw', raw), ('compiled', compiled))}
     engine = action.StateActions(threads)
     engine.backend.set_options(zero_threshold=0., enable_truncation=False)
+    def apply(qc, states):
+        fn = lambda: engine.apply(qc, states)
+        return fn() if action_call is None else action_call(len(states), fn)
     labels = ('raw_reference', 'compiled_raw', 'compiled_reference',
               'raw_inverse_reference', 'compiled_inverse_reference',
               'raw_inverse_return', 'compiled_inverse_return')
@@ -126,12 +130,14 @@ def check_kernel(raw, compiled, reference, sector_indices, *,
         ids = list(range(lo, min(lo+batch_columns, 2*d)))
         initial, expected = bounds.basis_batch(indices, system, w, ids)
         _, inverse_expected = bounds.basis_batch(indices, system, w.conj().T, ids)
-        r = engine.apply(raw, initial)
-        c = engine.apply(compiled, initial)
-        ri = engine.apply(inverses['raw'], initial)
-        ci = engine.apply(inverses['compiled'], initial)
-        rr = engine.apply(inverses['raw'], r)
-        cr = engine.apply(inverses['compiled'], c)
+        r = apply(raw, initial)
+        c = apply(compiled, initial)
+        ri = apply(inverses['raw'], initial)
+        ci = apply(inverses['compiled'], initial)
+        rr = apply(inverses['raw'], r)
+        cr = apply(inverses['compiled'], c)
+        if column_observer is not None:
+            column_observer(ids, r, c)
         pairs = ((r, expected), (c, r), (c, expected),
                  (ri, inverse_expected), (ci, inverse_expected),
                  (rr, initial), (cr, initial))

@@ -1,6 +1,10 @@
 # scripts 索引
 
-## 研究C：H6独立検証の技術準備（2026-11-06）
+## 研究C：H6統合runner完成・科学実行直前準備（2026-11-06）
+
+[接続実装・人工E2E・固定SOURCE・実行条件](../docs/research/research_c_h6_runner_completion_20261106.md)。`run_research_c_h6.py`を接続し、採用済みrank14/LD4/C0・selection32/final128・subset26条件を維持。execution_ready=true、scientific_execution_authorized=false。実H6科学0、公開照合後MANDATORY STOP。以下の未接続の記述は前段時点の履歴。
+
+## 研究C：H6独立検証の技術準備（2026-11-06、前段）
 
 [再利用調査・人工検証・検査資格・未承認契約](../docs/research/research_c_h6_feasibility_preparation_20261106.md)。`c_h6_validation_preparation.py`、passive `prepare_research_c_h6_validation.py`、人工benchmark、同名management testへ接続。実H6/H2新科学0。科学runnerの接続は未完で、検査subset・rank/LD等の判断後に別の固定SOURCEと実行許可が必要。公開照合後mandatory STOP。
 

@@ -146,13 +146,13 @@ def sample_trajectory(arm, tail, distribution, config, sample, source_digest):
         quantum_shots=0, reused_as_coherent_repetitions=False)
 
 
-def reference_context(arm, generators, car, h):
+def reference_context(arm, generators, car, h, *, atoms=None):
     """Share immutable CAR atoms and existing head exponentials over 32 samples."""
     from scipy.sparse import csr_matrix
     d = len(generators[0])
     ctx = SimpleNamespace(d=d, bilinears={(p,q):csr_matrix(car[p,q])
         for p in range(arm.model.modes) for q in range(arm.model.modes) if p%2 == q%2})
-    atoms = b.atom_operators(ctx, arm)
+    atoms = b.atom_operators(ctx, arm) if atoms is None else atoms
     half = tuple((i,Fraction(h)/2) for i in range(arm.plan.ld+1)); cache = {}
     left = b.reference._ordered_exponentials(generators, half, cache)
     right = b.reference._ordered_exponentials(generators, tuple(reversed(half)), cache)

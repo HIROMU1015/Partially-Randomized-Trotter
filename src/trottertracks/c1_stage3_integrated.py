@@ -97,12 +97,15 @@ class Calls:
         self.mark = io.journal(output, 'science', limits)
         self.first_failure = None
 
-    def __call__(self, kind, label, function):
+    def __call__(self, kind, label, function, *, count=1):
+        if type(count) is not int or count < 1:
+            raise ValueError('POSITIVE_LOGICAL_UNIT_COUNT')
         with self.lock:
             if self.stop.is_set(): raise Stopped('Dependent work stopped')
-            if sum(self.counts.values()) >= self.maximum: raise ValueError('TOTAL_CALL_LIMIT')
-            self.mark(kind, label)
-            self.counts[kind] += 1
+            if sum(self.counts.values())+count > self.maximum: raise ValueError('TOTAL_CALL_LIMIT')
+            if count == 1: self.mark(kind, label)
+            else: self.mark(kind, label, count)
+            self.counts[kind] += count
         tick = time.monotonic()
         try:
             value = function()
@@ -121,6 +124,14 @@ class Calls:
         with (self.output/'science_calls.jsonl').open('a') as f:
             f.write(json.dumps(dict(kind=kind, label=label, event=status,
                                    wall_seconds=time.monotonic()-tick))+'\n')
+
+    def record_external(self, kind, label, count):
+        """Record owned-worker attempts even after failure; start no work."""
+        if type(count) is not int or count < 1:raise ValueError('POSITIVE_LOGICAL_UNIT_COUNT')
+        with self.lock:
+            if sum(self.counts.values())+count > self.maximum:raise ValueError('TOTAL_CALL_LIMIT')
+            self.mark(kind,label,count);self.counts[kind]+=count
+            self._finish(kind,label,time.monotonic(),'EXTERNAL_ATTEMPTS_RECORDED')
 
 
 def resource_plan(task_count=20, full_dimension=256):

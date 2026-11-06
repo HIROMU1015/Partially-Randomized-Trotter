@@ -122,7 +122,7 @@ def sector_schema_gate(values):
     return component_check(sum(G),H,1e-10,label='unchanged M3 sector sum')
 
 
-def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf,expected_steps=128):
+def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf,expected_steps=128,exponential_cache=None):
     """Reuse existing head-exponential and finite-RTE functions, omitting PF.
 
     This is the RTE branch of reference_kernels verbatim in meaning. Its PF
@@ -133,7 +133,8 @@ def corrected_kernel(generators,config,*,ld,identity_tail,saved_pf,expected_step
     h=Fraction(1,10)
     if (type(expected_steps) is not int or expected_steps<1 or config.rte_steps!=expected_steps
             or config.evolution_time!=float(h)):raise ValueError(f'R{expected_steps}_H_CONFIG')
-    G=tuple(np.asarray(g,dtype=complex) for g in generators);cache={}
+    G=tuple(np.asarray(g,dtype=complex) for g in generators)
+    cache={} if exponential_cache is None else exponential_cache
     forward=tuple((i,h/2) for i in range(ld+1))
     left=ref._ordered_exponentials(G,forward,cache)
     right=ref._ordered_exponentials(G,tuple(reversed(forward)),cache)

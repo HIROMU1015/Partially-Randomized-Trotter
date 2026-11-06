@@ -1,9 +1,9 @@
 {
   "schema": "research_c_h6_independent_validation_draft_v1",
   "date_JST": "2026-11-06",
-  "status": "UNAPPROVED_SCIENCE_CONTRACT_DRAFT",
-  "execution_ready": false,
-  "execution_entry": null,
+  "status": "UNAPPROVED_SCIENCE_EXECUTION",
+  "execution_ready": true,
+  "execution_entry": "scripts/run_research_c_h6.py",
   "hypothesis": "Whether a fixed mapped-PR-tail objective retains incremental conditional total-RZ benefit over matched ENTRY on an independent H6 Hamiltonian; PR superiority is not assumed.",
   "reference_commits": {
     "H4_results": "417fa459b823509be5c2010c5836e58955088282",
@@ -201,44 +201,7 @@
       "unverified_sample_label": "NUMERICAL_EQUIVALENCE_NOT_CHECKED",
       "XY": "existing ancilla shell2x2 structure and complex X/Y on own-ground per checked circuit, signal atol2e-10",
       "qualification": "restricted numerical level B only on checked circuits; no full8192-input equality; no all1088-sample numerical equivalence claim",
-      "alternative_every_kernel": {
-        "trajectories": 6,
-        "optimizer_checkpoint_exports": 12,
-        "downstream_candidates": 6,
-        "candidate_r_policies": 18,
-        "selection_native_max": 576,
-        "final_pairs_max": 4,
-        "final_native_max": 512,
-        "stochastic_native_max": 1088,
-        "same_JU_D_max": 4,
-        "native_kernels_max": 1092,
-        "numerical_coverage": "every_kernel",
-        "numerically_checked_kernels_max": 1092,
-        "basis_inputs_per_kernel": 800,
-        "state_actions_per_kernel": 4800,
-        "state_action_columns_max": 5241600,
-        "optimizer_per_trajectory": {
-          "optimization_driver": 1,
-          "inner_J_solve": 1539,
-          "precision_state": 1026,
-          "reduced_admission": 513,
-          "independent_terminal_assessment": 65,
-          "physical_assessment": 65,
-          "endpoint_diagnostics": 2,
-          "arm_export": 2
-        },
-        "optimizer_units_max": 19278,
-        "stage_units": {
-          "input_neutral": 32,
-          "optimization": 19278,
-          "endpoint_reference": 4096,
-          "native_build_compile_and_reports": 69888,
-          "native_state_actions": 5241600,
-          "statistics_and_exports": 256
-        },
-        "maximum_logical_units": 5335150
-      },
-      "requires_explicit_acceptance_of_weaker_coverage_than_H4": true
+      "coverage_choice": "ADOPTED_D_PLUS_C"
     }
   },
   "accounting": {
@@ -322,7 +285,30 @@
     "fit": "separate dedicated fit environment, read-only or reproduced from pins",
     "evaluation": "separate dedicated eval environment; Qiskit1.3.0 compilation; fixed existing H6 physical input reused (no new PySCF SCF)",
     "local_absolute_paths_not_portable": true,
-    "GPU": "not in proposed runtime; installed Aer exposes CPU only"
+    "GPU": "not in proposed runtime; installed Aer exposes CPU only",
+    "package_pins": {
+      "fit": {
+        "numpy": "1.26.4",
+        "scipy": "1.14.1",
+        "ffsim": "0.0.83",
+        "jax": "0.4.38",
+        "jaxlib": "0.4.38",
+        "qiskit": "2.4.2",
+        "pyscf": "2.14.0",
+        "threadpoolctl": "3.6.0"
+      },
+      "evaluation": {
+        "numpy": "1.26.4",
+        "scipy": "1.14.1",
+        "qiskit": "1.3.0",
+        "qiskit-aer": "0.15.1",
+        "qiskit-nature": "0.7.2",
+        "pyscf": "2.7.0",
+        "symengine": "0.13.0",
+        "threadpoolctl": "3.6.0"
+      }
+    },
+    "python_version": "3.12.3"
   },
   "resources": {
     "policy": "measure effective affinity/quota, CPU idle/PSI, RAM, GPU, disk at authorized launch; coordinate process count and BLAS/OpenMP/Aer threads; no arbitrary permanent resource cap",
@@ -331,8 +317,8 @@
     "storage_model": "60GiB planning envelope conditional on <=40MiB QPY quartet per native sample; first registered batch updates time/storage predictions before further dispatch; no raw deletion"
   },
   "order": [
-    "complete technical blockers and fix user-selected science conditions",
-    "new connected-executor SOURCE, byte-fixed existing H6 input/C0, pinned environment and fresh output",
+    "Fixed adopted H6 conditions; completed synthetic E2E and passive checks; wait for separate scientific execution permission",
+    "Verify connected executor SOURCE and byte-fixed H6 input/C0, exact environments, fresh output and current resources",
     "load existing H6/C0 once; corrected codec and common physical DF/normalization gates (no SCF/neutral fit)",
     "six finite matched trajectories; retain16 diagnostic/64 endpoint",
     "fresh candidate ground/alias, cached PF/exact-H, all18 r policies classified",
@@ -350,19 +336,9 @@
   "retry": 0,
   "resume": 0,
   "mandatory_stop": true,
-  "technical_blockers": [
-    "connect c_near_transfer.PhysicalContext(6) RPC to fit parent; remove H4-specific binding shapes without duplicating optimizer",
-    "connect existing sector_reference_context and rank14/LD4 native builder to H6 parent; avoid full4096 CAR/reference; synthetic end-to-end mock still required",
-    "connect H6 r32/64/128 reference cache and selection32/final128 to existing statistics/accounting, preserving lane and numerical-coverage labels",
-    "wire fixed correctness subset, actual inverses and X/Y/shell checks, QPY retention and stage unit counters; validate synthetic integration",
-    "seal connected executable SOURCE, exact environment and existing H6 input/C0 hashes; current SOURCE is technical preparation only"
-  ],
+  "technical_blockers": [],
   "decisions_before_execution": [
-    "accept fixed existing H6/1.00A/STO3G input and unregularized finite CDF14 C0, rank14/LD4 without result-driven rank/head search",
-    "accept C0-only independent-Hamiltonian test, without H6 initialization/population or downstream-budget robustness claim",
-    "accept commonr32 versus r32/64/128 fair retuning, three strengths and final128",
-    "accept weaker D+C numerical coverage (maximum26 checked kernels), or freeze every-kernel alternative and larger unit ceiling separately",
-    "resolve technical blockers, then separately grant explicit execution permission for fixed H6 scientific SOURCE/input recipe/scope; no approval-proof artifact required"
+    "Separate explicit user permission for this fixed H6 scientific SOURCE/input/C0/scope; technical readiness is not permission."
   ],
   "excluded": [
     "new H2/H6 science in this preparation task",
@@ -370,5 +346,19 @@
     "H4 saved numerical reanalysis",
     "formal novelty/publication GO",
     "automatic important scientific review"
-  ]
+  ],
+  "scientific_execution_authorized": false,
+  "execution_SOURCE": "artifacts/research_c_h6_runner/2026-11-06/execution_preflight/SOURCE.json",
+  "execution_SOURCE_sha256": "0be3f9e073172018fc51fe30433dea9280c6d415a1fcfdd1d94ccabd61ac46ef",
+  "fresh_output": "artifacts/research_c_h6_independent_validation/2026-11-06-runner/run01",
+  "runtime_batch_columns": 16,
+  "storage_plan": {
+    "planning_envelope_GiB": 60,
+    "resource_cap": false,
+    "maximum_native_QPY": 2242,
+    "checked_reference_matrices": 26,
+    "maximum_physical_assessments": 391,
+    "physical_export_bytes_model_per_assessment": 40968064,
+    "notes": "raw/compiled each1092 + inverse2 each26 + shell6; physical J/U/G/H exports and optimizer raw are additional; first registered batch revises estimate, no raw deletion"
+  }
 }

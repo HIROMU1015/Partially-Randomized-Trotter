@@ -158,7 +158,10 @@ def test_preflight_only_reads_bytes_and_detects_source_input_changes(tmp_path):
              source_manifest='SOURCE.json',source_manifest_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
              input_sha256=hashlib.sha256(toy.read_bytes()).hexdigest(),saved_inputs={},runtime_required_packages={})
     contract=tmp_path/'contract.json';contract.write_text(json.dumps(c))
-    with patch.object(np,'load',side_effect=AssertionError('No NPZ decode in preflight')):
+    # Byte-only fixture supplies the historical Python3.11 metadata; this does
+    # not assert that the current interpreter satisfies that old science pin.
+    with patch.object(np,'load',side_effect=AssertionError('No NPZ decode in preflight')), \
+            patch.object(run.sys,'version_info',(3,11)):
         assert run.preflight(tmp_path,contract,toy)['contract']['scope']=='C1_STAGE3_INTEGRATED_CA_V1'
         toy.write_bytes(b'CHANGED')
         with pytest.raises(ValueError,match='SOURCE'):run.preflight(tmp_path,contract,toy)
