@@ -1,0 +1,378 @@
+{
+  "scope": "H6 1.00 Angstrom STO-3G CDF14 original LD4, fixed saved C0 U, strength .1 only; no outer/PF/native",
+  "scientific_full_rerun_started": false,
+  "original_thresholds_unchanged": true,
+  "limitations": [
+    "PR only: fixed-U stationarity and latest-refinement U stability meet unchanged gates; no outer/cost claim",
+    "ENTRY NOT_MET; solver status Solved is not sufficient",
+    "ENTRY third cone refinement ended in SciPy scalar_search_armijo ZeroDivisionError; STOP retained",
+    "Conic invented same-dimension weak-head benchmark: 4 tests passed, 2 convergence targets failed, original threshold unchanged",
+    "Neither impossibility of a binary64 solution nor necessity of a scientific condition change has been proved"
+  ],
+  "diagnostics": {
+    "diagnosis_fixed_io": {
+      "PR": {
+        "path": "artifacts/research_c_h6_trustmodel/2026-11-06/diagnosis_fixed_io/PR",
+        "source_sha256": "3fe486f2f3225a82f913a75a5793572d7b52a858acf2f4c05ee62c830817c0d0",
+        "array_files": {
+          "saved_final.npz": "5c7f686968074088bcdf0f2ca7af5555da48cb228229f1c92b465287f9b4ee07",
+          "C0.npz": "4ee3bd51ee12530a8cddff84fc3074450ad5c04c71fd2ce1fc28a98fd4daa380"
+        },
+        "STOP": {
+          "completed": true,
+          "retry": 0,
+          "resume": 0,
+          "scientific_trajectory": false
+        }
+      },
+      "ENTRY": {
+        "path": "artifacts/research_c_h6_trustmodel/2026-11-06/diagnosis_fixed_io/ENTRY",
+        "source_sha256": "6cddddce831eb5b9922c60a5fcbd67de400a9f780599faf9037c3a1af9cb2bef",
+        "array_files": {
+          "saved_final.npz": "c78f8570170b445a3c3e726a8de0904a86c7d0dd19fc4b92665d2051f86febb4",
+          "C0.npz": "36958c61b496687d7370f2be455a4b57e6b0b5aeaa232df32bf3f981ac4d6269"
+        },
+        "STOP": {
+          "completed": true,
+          "retry": 0,
+          "resume": 0,
+          "scientific_trajectory": false
+        }
+      }
+    },
+    "factored_diagnostic": {
+      "PR": {
+        "path": "artifacts/research_c_h6_trustmodel/2026-11-06/factored_diagnostic/PR",
+        "source_sha256": "8714a7a5f8a49e781c8f4ac3368abfc750424c1beb1787de06c63244653ec4af",
+        "array_files": {
+          "endpoint.npz": "5103bc9661aa030e0fa89a971fe22f22f3f82896bdcf84f74182ef1a51189d73"
+        },
+        "STOP": {
+          "completed": true,
+          "failed": false,
+          "retry": 0,
+          "resume": 0,
+          "downstream_started": false
+        },
+        "objective": 0.28710006918218184,
+        "J_gradient_infinity": 13.438813507260342,
+        "binary64_J_gradient_infinity": 13.438813823233875,
+        "J_norm": 51.070005189069995,
+        "J_max": 15.00375124432622,
+        "consistency": {
+          "chart_gradient": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 2.0621004903631501e-13,
+            "maximum_allowance_ratio": 1.223921324595444e-05,
+            "atol": 1e-08,
+            "rtol": 1e-07
+          },
+          "binary64_value": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 7.054357098468245e-13,
+            "maximum_allowance_ratio": 0.00023744043944081886,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "centered_value": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 1.6653345369377348e-16,
+            "maximum_allowance_ratio": 5.605298381524614e-08,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          }
+        },
+        "stationarity": {
+          "value": 13.438813823233875,
+          "threshold": 1e-05,
+          "engineering_margin": 1.3538813823233873e-06,
+          "status": "NOT_MET"
+        },
+        "wall_seconds": 145.77438856405206
+      },
+      "ENTRY": {
+        "path": "artifacts/research_c_h6_trustmodel/2026-11-06/factored_diagnostic/ENTRY",
+        "source_sha256": "d7fc07ac3f842d02129deb5a559eacbf81008492e9cde5c5e68b2e3a759d37ff",
+        "array_files": {
+          "endpoint.npz": "588cf1c0b24f2ef9689d5ff935d42c4122bb59ad86ae10f0004bbb602da7d0d2"
+        },
+        "STOP": {
+          "completed": true,
+          "failed": false,
+          "retry": 0,
+          "resume": 0,
+          "downstream_started": false
+        },
+        "objective": 0.5497639222935956,
+        "J_gradient_infinity": 615.1846040090334,
+        "binary64_J_gradient_infinity": 615.1645652713402,
+        "J_norm": 3003598.413509406,
+        "J_max": 687548.7753654189,
+        "consistency": {
+          "chart_gradient": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 9.002520950929238e-14,
+            "maximum_allowance_ratio": 8.154348877892941e-06,
+            "atol": 1e-08,
+            "rtol": 1e-07
+          },
+          "binary64_value": {
+            "PASS": false,
+            "finite_shape": true,
+            "maxabs": 2.9241664090129404e-08,
+            "maximum_allowance_ratio": 5.2239282406549465,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          },
+          "centered_value": {
+            "PASS": true,
+            "finite_shape": true,
+            "maxabs": 3.892441924335799e-13,
+            "maximum_allowance_ratio": 6.953720612051551e-05,
+            "atol": 1e-10,
+            "rtol": 1e-08
+          }
+        },
+        "stationarity": {
+          "value": 615.1846040090334,
+          "threshold": 1e-05,
+          "engineering_margin": 6.152846040090333e-05,
+          "status": "NOT_MET"
+        },
+        "wall_seconds": 113.19215488003101
+      }
+    },
+    "conic_diagnostic": {
+      "PR": {
+        "path": "artifacts/research_c_h6_trustmodel/2026-11-06/conic_diagnostic/PR",
+        "source_sha256": "36ca5e1c20f197f895eef0ce9d5bbb4facac1b8331b3edb7504a4717c874a71c",
+        "array_files": {
+          "raw_0.npz": "fbe6a3d2845016c7e6d6bf5142bede1f88fd7d648feb3518cee70c0f74b04f52",
+          "raw_2.npz": "29036a33711d878b09a23b4c2fc1ade1f5b5e1b6eccaeef9cd5b45f623384fd7",
+          "raw_1.npz": "b6979f4fc7ff09d31dfadcf836d1e302fd208ff6fd8d087ec6918117f221a852"
+        },
+        "STOP": {
+          "failed": false,
+          "error": null,
+          "retry": 0,
+          "resume": 0,
+          "downstream_started": false
+        },
+        "latest_U_shift_l2": 1.726253783512658e-07,
+        "U_stability_threshold": 1e-06,
+        "latest_J_MET": true,
+        "wall_seconds": 35.44772183999885,
+        "blocks": [
+          {
+            "block": 0,
+            "J_norm": 35.30722025486424,
+            "J_max": 4.745017660314304,
+            "cone_iterations": 24,
+            "polish": {
+              "status": 2,
+              "message": "Binary64 coefficient point did not change; endpoint remains unqualified.",
+              "iterations": 10,
+              "objective": 0.28153517720037,
+              "physical_gradient_infinity": 4.004999519804784e-07,
+              "consistency": {
+                "raw_jac_at_endpoint": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 5.0748251628883376e-14,
+                  "maximum_allowance_ratio": 5.074825162861485e-06,
+                  "atol": 1e-08,
+                  "rtol": 1e-07
+                },
+                "centered_value": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 3.3306690738754696e-16,
+                  "maximum_allowance_ratio": 1.1424587268884964e-07,
+                  "atol": 1e-10,
+                  "rtol": 1e-08
+                }
+              }
+            },
+            "J_stationarity": {
+              "value": 1.0762536770635416e-06,
+              "threshold": 1e-05,
+              "engineering_margin": 1.0001e-08,
+              "status": "MET"
+            }
+          },
+          {
+            "block": 1,
+            "J_norm": 35.30722025487802,
+            "J_max": 4.745017660315938,
+            "cone_iterations": 24,
+            "polish": {
+              "status": 2,
+              "message": "Binary64 coefficient point did not change; endpoint remains unqualified.",
+              "iterations": 11,
+              "objective": 0.2815351772003696,
+              "physical_gradient_infinity": 3.917866854695082e-07,
+              "consistency": {
+                "raw_jac_at_endpoint": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 1.1562150189818033e-13,
+                  "maximum_allowance_ratio": 1.1562150189804661e-05,
+                  "atol": 1e-08,
+                  "rtol": 1e-07
+                },
+                "centered_value": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 4.440892098500626e-16,
+                  "maximum_allowance_ratio": 1.5232783025179977e-07,
+                  "atol": 1e-10,
+                  "rtol": 1e-08
+                }
+              }
+            },
+            "J_stationarity": {
+              "value": 8.100482504986087e-07,
+              "threshold": 1e-05,
+              "engineering_margin": 1.0001e-08,
+              "status": "MET"
+            }
+          },
+          {
+            "block": 2,
+            "J_norm": 35.30722025487833,
+            "J_max": 4.745017660316627,
+            "cone_iterations": 24,
+            "polish": {
+              "status": 2,
+              "message": "Binary64 coefficient point did not change; endpoint remains unqualified.",
+              "iterations": 8,
+              "objective": 0.28153517720036997,
+              "physical_gradient_infinity": 4.0205930114048814e-07,
+              "consistency": {
+                "raw_jac_at_endpoint": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 6.276618755399464e-14,
+                  "maximum_allowance_ratio": 6.276618755395435e-06,
+                  "atol": 1e-08,
+                  "rtol": 1e-07
+                },
+                "centered_value": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 4.996003610813204e-16,
+                  "maximum_allowance_ratio": 1.713688090332745e-07,
+                  "atol": 1e-10,
+                  "rtol": 1e-08
+                }
+              }
+            },
+            "J_stationarity": {
+              "value": 9.083311072397016e-07,
+              "threshold": 1e-05,
+              "engineering_margin": 1.0001e-08,
+              "status": "MET"
+            }
+          }
+        ]
+      },
+      "ENTRY": {
+        "path": "artifacts/research_c_h6_trustmodel/2026-11-06/conic_diagnostic/ENTRY",
+        "source_sha256": "9784f92c6aa55f1e75cb1ba7a8454d5beab66bc2b2b95b22f4b05ebc0608bbd5",
+        "array_files": {
+          "raw_0.npz": "16d9d61a1a7bfdc9481712a77f438cae61dedb2c429439b209f6d0de3499cd2b",
+          "raw_1.npz": "c69be1cb4155f58b9b6b75568e8b4ba33a3a49b1a7fe07941c20a3819d20111c"
+        },
+        "STOP": {
+          "failed": true,
+          "error": "ZeroDivisionError('float division by zero')",
+          "retry": 0,
+          "resume": 0,
+          "downstream_started": false
+        },
+        "error": "ZeroDivisionError('float division by zero')",
+        "wall_seconds": 29.18633673293516,
+        "blocks": [
+          {
+            "block": 0,
+            "J_norm": 77711.9345738497,
+            "J_max": 24421.86531025628,
+            "cone_iterations": 19,
+            "polish": {
+              "status": 2,
+              "message": "Binary64 coefficient point did not change; endpoint remains unqualified.",
+              "iterations": 7,
+              "objective": 0.29123162110790685,
+              "physical_gradient_infinity": 0.0007852385952135357,
+              "consistency": {
+                "raw_jac_at_endpoint": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 1.273591175487347e-13,
+                  "maximum_allowance_ratio": 1.2735656812816195e-05,
+                  "atol": 1e-08,
+                  "rtol": 1e-07
+                },
+                "centered_value": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 5.645484080218921e-14,
+                  "maximum_allowance_ratio": 1.8741339502988638e-05,
+                  "atol": 1e-10,
+                  "rtol": 1e-08
+                }
+              }
+            },
+            "J_stationarity": {
+              "value": 0.002717232861868743,
+              "threshold": 1e-05,
+              "engineering_margin": 1.0271723286186875e-08,
+              "status": "NOT_MET"
+            }
+          },
+          {
+            "block": 1,
+            "J_norm": 77712.01312790901,
+            "J_max": 24421.89039960498,
+            "cone_iterations": 20,
+            "polish": {
+              "status": 2,
+              "message": "Binary64 coefficient point did not change; endpoint remains unqualified.",
+              "iterations": 11,
+              "objective": 0.2912316211061888,
+              "physical_gradient_infinity": 0.0007063479250033428,
+              "consistency": {
+                "raw_jac_at_endpoint": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 1.5856878095360126e-13,
+                  "maximum_allowance_ratio": 1.5856878082684355e-05,
+                  "atol": 1e-08,
+                  "rtol": 1e-07
+                },
+                "centered_value": {
+                  "PASS": true,
+                  "finite_shape": true,
+                  "maxabs": 4.650724250154781e-13,
+                  "maximum_allowance_ratio": 0.00015439030713562866,
+                  "atol": 1e-10,
+                  "rtol": 1e-08
+                }
+              }
+            },
+            "J_stationarity": {
+              "value": 0.002047329662145823,
+              "threshold": 1e-05,
+              "engineering_margin": 1.0204732966214582e-08,
+              "status": "NOT_MET"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 研究C：H6固定Uの停滞診断・同値な凸形式（2026-11-06）
+
+[限定診断と修正候補](docs/research/research_c_h6_trustmodel_diagnosis_20261106.md)。strength .1の固定C0 Uのみ。PRは元のJ gate・最新U安定性を満たしたが、ENTRYは未適格・技術例外でSTOP。人工の同次元困難例2件も未達。全6本・outer/PF/nativeは再投入していない。旧SOURCE/raw/STOP保全。
+
 ## 研究C：H6前処理の誤差増幅修正（2026-11-06）
 
 [増幅率の制御・decode原点の整合・保存7点回帰](docs/research/research_c_h6_stablemetric_20261106.md)。許容差と物理方向を維持し、新SOURCE/契約/fresh出力を定義。旧値不適格点は拒否したまま保持する。停止済みrunのSOURCE/raw/STOPを保全する。

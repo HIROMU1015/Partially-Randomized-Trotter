@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="6" time="15.682" timestamp="2026-11-06T17:05:32.267593+09:00" hostname="GPUA100-gleap02"><testcase classname="tests.management.test_research_c_h6_conic_diagnostic" name="test_epigraph_equals_original_value_at_actual_decoded_origin[PR]" time="0.043" /><testcase classname="tests.management.test_research_c_h6_conic_diagnostic" name="test_epigraph_equals_original_value_at_actual_decoded_origin[ENTRY]" time="0.006" /><testcase classname="tests.management.test_research_c_h6_conic_diagnostic" name="test_small_conic_solution_is_checked_with_original_physical_gate[PR]" time="0.014" /><testcase classname="tests.management.test_research_c_h6_conic_diagnostic" name="test_small_conic_solution_is_checked_with_original_physical_gate[ENTRY]" time="0.010" /><testcase classname="tests.management.test_research_c_h6_conic_diagnostic" name="test_rank14_near_degenerate_head_and_nonzero_tail[PR]" time="8.556"><failure message="AssertionError: {'meta': {'conic': {'method': 'H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1', 'solver': 'clarabel', 'version': '0.11...lified.', 'iterations': 1, 'objective': 0.02024488978875013, ...}, 'total_iterations': 15}, 'J_norm': 45631308.4293714}&#10;assert 0.07314249765562634651 &lt; 1e-05&#10;[+3 more lines; full report in element text]">arm = 'PR'
+
+    @pytest.mark.parametrize('arm',['PR','ENTRY'])
+    def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
+        from test_research_c_h6_conditioning import invented
+        from trottertracks import c_h6_fit_conditioning as fit
+        from trottertracks.c_near_transfer import objective_specs,System
+        from trottertracks.c1_h6_initialization import reconstruct
+        _,J,U,_=invented(angle=1e-8)
+        rng=np.random.default_rng(310)
+        perturb=rng.normal(size=J.shape);perturb=(perturb+perturb.transpose(0,2,1))/2
+        g=reconstruct(J+1e-5*perturb,U)
+        s=objective_specs(g,J,U,System(6,14,4,1.,'a'*64),strength=.1,epsilon=1e-8)[arm]
+        p=fit.backend(s).Coefficients(g,U,s)
+        c=fit.Chart(p,J,fit.inner.DEFAULT)
+        endpoint,meta=conic.solve_and_polish(c)
+        local=fit.Chart(p,endpoint,c.policy)
+        _,gx,_=local.independent(np.zeros(local.dimension))
+&gt;       assert np.max(abs(gx))&lt;1e-5,dict(meta=meta,J_norm=float(np.linalg.norm(endpoint)))
+E       AssertionError: {'meta': {'conic': {'method': 'H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1', 'solver': 'clarabel', 'version': '0.11...lified.', 'iterations': 1, 'objective': 0.02024488978875013, ...}, 'total_iterations': 15}, 'J_norm': 45631308.4293714}
+E       assert 0.07314249765562634651 &lt; 1e-05
+E        +  where 0.07314249765562634651 = &lt;function max at 0x10c82354b6b0&gt;(array([0.01079244, 0.0731425 , 0.01871653, 0.0173686 , 0.0020285 ,\n       0.00349908, 0.00107805, 0.01596706, 0.000205...0.01033191, 0.0234202 , 0.00183057, 0.00115983,\n       0.00051253, 0.00067516, 0.01707605, 0.00621325], dtype=float128))
+E        +    where &lt;function max at 0x10c82354b6b0&gt; = np.max
+E        +    and   array([0.01079244, 0.0731425 , 0.01871653, 0.0173686 , 0.0020285 ,\n       0.00349908, 0.00107805, 0.01596706, 0.000205...0.01033191, 0.0234202 , 0.00183057, 0.00115983,\n       0.00051253, 0.00067516, 0.01707605, 0.00621325], dtype=float128) = abs(array([ 0.01079244, -0.0731425 ,  0.01871653,  0.0173686 ,  0.0020285 ,\n       -0.00349908, -0.00107805, -0.01596706, ...191, -0.0234202 , -0.00183057, -0.00115983,\n        0.00051253, -0.00067516, -0.01707605, -0.00621325], dtype=float128))
+
+tests/management/test_research_c_h6_conic_diagnostic.py:54: AssertionError</failure></testcase><testcase classname="tests.management.test_research_c_h6_conic_diagnostic" name="test_rank14_near_degenerate_head_and_nonzero_tail[ENTRY]" time="6.740"><failure message="AssertionError: {'meta': {'conic': {'method': 'H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1', 'solver': 'clarabel', 'version': '0.11...failed.', 'iterations': 0, 'objective': 0.05881815048807424, ...}, 'total_iterations': 18}, 'J_norm': 73302456.6837891}&#10;assert 0.082847781231769203993 &lt; 1e-05&#10;[+3 more lines; full report in element text]">arm = 'ENTRY'
+
+    @pytest.mark.parametrize('arm',['PR','ENTRY'])
+    def test_rank14_near_degenerate_head_and_nonzero_tail(arm):
+        from test_research_c_h6_conditioning import invented
+        from trottertracks import c_h6_fit_conditioning as fit
+        from trottertracks.c_near_transfer import objective_specs,System
+        from trottertracks.c1_h6_initialization import reconstruct
+        _,J,U,_=invented(angle=1e-8)
+        rng=np.random.default_rng(310)
+        perturb=rng.normal(size=J.shape);perturb=(perturb+perturb.transpose(0,2,1))/2
+        g=reconstruct(J+1e-5*perturb,U)
+        s=objective_specs(g,J,U,System(6,14,4,1.,'a'*64),strength=.1,epsilon=1e-8)[arm]
+        p=fit.backend(s).Coefficients(g,U,s)
+        c=fit.Chart(p,J,fit.inner.DEFAULT)
+        endpoint,meta=conic.solve_and_polish(c)
+        local=fit.Chart(p,endpoint,c.policy)
+        _,gx,_=local.independent(np.zeros(local.dimension))
+&gt;       assert np.max(abs(gx))&lt;1e-5,dict(meta=meta,J_norm=float(np.linalg.norm(endpoint)))
+E       AssertionError: {'meta': {'conic': {'method': 'H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1', 'solver': 'clarabel', 'version': '0.11...failed.', 'iterations': 0, 'objective': 0.05881815048807424, ...}, 'total_iterations': 18}, 'J_norm': 73302456.6837891}
+E       assert 0.082847781231769203993 &lt; 1e-05
+E        +  where 0.082847781231769203993 = &lt;function max at 0x10c82354b6b0&gt;(array([6.53924980e-04, 3.74017138e-02, 3.33684987e-02, 2.63471854e-02,\n       4.33273192e-02, 4.70770250e-02, 5.150665...3.71404582e-03, 1.11040798e-02, 2.54123120e-02, 2.52514178e-02,\n       3.14398571e-03, 1.34088614e-03], dtype=float128))
+E        +    where &lt;function max at 0x10c82354b6b0&gt; = np.max
+E        +    and   array([6.53924980e-04, 3.74017138e-02, 3.33684987e-02, 2.63471854e-02,\n       4.33273192e-02, 4.70770250e-02, 5.150665...3.71404582e-03, 1.11040798e-02, 2.54123120e-02, 2.52514178e-02,\n       3.14398571e-03, 1.34088614e-03], dtype=float128) = abs(array([ 6.53924980e-04,  3.74017138e-02,  3.33684987e-02,  2.63471854e-02,\n       -4.33273192e-02, -4.70770250e-02, -5...04582e-03, -1.11040798e-02, -2.54123120e-02, -2.52514178e-02,\n        3.14398571e-03, -1.34088614e-03], dtype=float128))
+
+tests/management/test_research_c_h6_conic_diagnostic.py:54: AssertionError</failure></testcase></testsuite></testsuites>

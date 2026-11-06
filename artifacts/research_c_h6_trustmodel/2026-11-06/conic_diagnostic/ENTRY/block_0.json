@@ -1,0 +1,117 @@
+{
+  "block": 0,
+  "solver": {
+    "conic": {
+      "method": "H6_fixed_U_exact_smooth_mass_SOC_diagnostic_v1",
+      "solver": "clarabel",
+      "version": "0.11.1",
+      "status": "Solved",
+      "iterations": 19,
+      "objective": 0.29123162110909007,
+      "dual_objective": 0.2912316211089109,
+      "primal_residual": 1.9945788660213337e-14,
+      "dual_residual": 1.7596017574014536e-16,
+      "solve_seconds": 2.96206731,
+      "variables": 1798,
+      "constraints": 1927,
+      "coefficient_directions_dropped": 0,
+      "epsilon_unchanged": true,
+      "objective_regularization_added": false
+    },
+    "polish": {
+      "status": 2,
+      "message": "Binary64 coefficient point did not change; endpoint remains unqualified.",
+      "iterations": 7,
+      "objective": 0.29123162110790685,
+      "physical_gradient_infinity": 0.0007852385952135357,
+      "consistency": {
+        "raw_jac_at_endpoint": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 1.273591175487347e-13,
+          "maximum_allowance_ratio": 1.2735656812816195e-05,
+          "atol": 1e-08,
+          "rtol": 1e-07
+        },
+        "centered_value": {
+          "PASS": true,
+          "finite_shape": true,
+          "maxabs": 5.645484080218921e-14,
+          "maximum_allowance_ratio": 1.8741339502988638e-05,
+          "atol": 1e-10,
+          "rtol": 1e-08
+        }
+      }
+    },
+    "total_iterations": 26
+  },
+  "J_norm": 77711.9345738497,
+  "J_max": 24421.86531025628,
+  "state": {
+    "components": {
+      "objective": 0.29123162110790685,
+      "tensor_objective": 5.513757054032835e-10,
+      "normalized_tensor_objective": 0.2667645454772444,
+      "penalty": 0.024467075630662447,
+      "smooth_entry_mass_Ha": 3.069779194658426,
+      "smooth_tail_mass_Ha": 1.4716666500680584,
+      "exact_tail_mass_Ha": 1.471662807855665,
+      "full_ordered_Z_l2_Ha_squared": 6039144775.210299,
+      "objective_identity": "tail_triangle_entry_l1_squared_matched_zero_floor_v1"
+    },
+    "J_stationarity": {
+      "value": 0.002717232861868743,
+      "threshold": 1e-05,
+      "engineering_margin": 1.0271723286186875e-08,
+      "status": "NOT_MET"
+    },
+    "U_stationarity": {
+      "value": 16390.34060965216,
+      "threshold": 1e-05,
+      "engineering_margin": 0.001639044060965216,
+      "status": "NOT_MET"
+    },
+    "first_order_met": false,
+    "orthogonality_maxabs": 8.881784197001252e-16,
+    "rigorous_stationarity": false,
+    "stable_J_gradient_infinity": 0.0007852385952135357,
+    "stable_U_tangent_l2": 16387.558578506174,
+    "binary64_J_gradient_infinity": 0.002717232861868743,
+    "binary64_U_tangent_l2": 16390.34060965216,
+    "stationarity_policy": "Both same-array stable and binary64 norms must pass original thresholds/margins",
+    "value_same_array": {
+      "PASS": true,
+      "finite_shape": true,
+      "maxabs": 5.742173403433526e-10,
+      "maximum_allowance_ratio": 0.19062319530931598,
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "binary64_AD_value_same_array": {
+      "PASS": true,
+      "finite_shape": true,
+      "maxabs": 8.435346865454108e-11,
+      "maximum_allowance_ratio": 0.02800285983280045,
+      "atol": 1e-10,
+      "rtol": 1e-08
+    },
+    "forward_pullback_same_array": {
+      "PASS": true,
+      "finite_shape": true,
+      "maxabs": 3.422655936446972e-09,
+      "maximum_allowance_ratio": 0.0006282652753875473,
+      "atol": 1e-08,
+      "rtol": 1e-07
+    },
+    "binary64_U_difference_observation": 57.8942875178282,
+    "precision": {
+      "arithmetic": "longdouble_primal_binary64_JAX_array_Jacobian",
+      "longdouble_mantissa_bits": 64,
+      "array_point": "exact supplied binary64 J/U",
+      "rotation_pullback_separated": true,
+      "rigorous_gradient_error_bound": null
+    },
+    "wall_seconds": 3.492320911027491,
+    "CPU_seconds": 13.671851143
+  }
+}
