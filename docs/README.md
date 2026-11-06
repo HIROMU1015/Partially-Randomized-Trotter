@@ -167,3 +167,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](research/o2_a1_n3_B_science_20
 
 
 2026-11-07 A1/B1-OL：[752-shot予備検証attempt02の完了結果](../docs/research/o2_a1_n3_pilot_admission_20261107/REPORT.md)。保存H4/1 Å/STO-3G/legacy DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y、actual Q/保証ground/exact engineを維持。752 bit/価格を完備、A1 2,009,673 RZ、B1-OL 1,622,442 RZ、全3,632,115 RZ。両軸zero-variance保留規則により全体INCONCLUSIVE。人工52 PASS、旧SOURCE/STOPとC1凍結を保全、公開照合後mandatory STOP。本検証の精度・期待費用保証ではない。
+
+
+2026-11-07：[層内control・層別＋CVの未採択設計](../docs/research/intrastratum_cv_design_20261107/REPORT.md)。固定理論8d8a290/752結果3c8e55a/N1 law744e1a0を静的確認。rotation fragment群、signed support、product label一致を候補化し、一層一特徴・224-shot paired診断を提案。追加測定なしのmetadata特徴とexact条件付き平均の式を整理したが、相関・分散/費用改善は未検証。実装・新科学計算・保存結果再解析・test実行0、正式採択なし、C1凍結・旧STOP保全、公開照合後mandatory STOP。
