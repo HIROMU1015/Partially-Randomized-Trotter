@@ -58,7 +58,7 @@ class ActivationTests(unittest.TestCase):
     def test_binding_exception_stop_before_rng(self):
         with TemporaryDirectory() as tmp:
             root=Path(tmp);out=root/a.OUTPUT;out.mkdir(parents=True)
-            with patch.object(a,'read_spec',return_value=(root,dict(source_commit='toy',manager_SOURCE='toy'))),patch.object(a,'verify',return_value={}),patch.object(a.c,'forbidden_science',return_value=nullcontext()),patch.object(a.managed,'connect_legacy',return_value=nullcontext()),patch.object(a.c.n3,'load_certified_services',side_effect=ValueError('invented identity mismatch')) as load,patch.object(a.c.n3,'pcg64_streams') as rng,patch.object(a.c,'reconcile',return_value={}):
+            with patch.object(a,'read_spec',return_value=(root,dict(source_commit='toy',manager_SOURCE='toy'))),patch.object(a,'verify',return_value={}),patch.object(a.c,'forbidden_science',return_value=nullcontext()),patch.object(a.managed,'connect_legacy',return_value=nullcontext()),patch.object(a.admission,'wait_for_resources',return_value=1),patch.object(a.c.n3,'load_certified_services',side_effect=ValueError('invented identity mismatch')) as load,patch.object(a.c.n3,'pcg64_streams') as rng,patch.object(a.c,'reconcile',return_value={}):
                 self.assertEqual(a.parent('unused'),1)
             load.assert_called_once();rng.assert_not_called()
             self.assertEqual(json.loads((out/'STOP.json').read_text())['campaign_status'],'STOPPED')
@@ -71,7 +71,7 @@ class ActivationTests(unittest.TestCase):
             def run():
                 a.c.save(out/'STOP.json',dict(purpose=a.pilot.PURPOSE,campaign_status='COMPLETED',pilot_status='PILOT_DIAGNOSTIC_COMPLETED'))
             driver.run.side_effect=run
-            with patch.object(a,'read_spec',return_value=(root,dict(source_commit='toy',manager_SOURCE='toy'))),patch.object(a,'verify',return_value={'binding':'toy'}),patch.object(a.c,'forbidden_science',return_value=nullcontext()),patch.object(a.managed,'connect_legacy',return_value=nullcontext()),patch.object(a.c.n3,'load_certified_services',return_value=services) as load,patch.object(a.c.n3,'pcg64_streams') as rng,patch.object(a.c,'available_workers',return_value=1),patch.object(a.c,'ProcessPoolExecutor') as pool,patch.object(a.pilot,'connect_legacy_pipeline',return_value=driver) as connect:
+            with patch.object(a,'read_spec',return_value=(root,dict(source_commit='toy',manager_SOURCE='toy'))),patch.object(a,'verify',return_value={'binding':'toy'}),patch.object(a.c,'forbidden_science',return_value=nullcontext()),patch.object(a.managed,'connect_legacy',return_value=nullcontext()),patch.object(a.c.n3,'load_certified_services',return_value=services) as load,patch.object(a.c.n3,'pcg64_streams') as rng,patch.object(a.admission,'wait_for_resources',return_value=1),patch.object(a.c,'ProcessPoolExecutor') as pool,patch.object(a.pilot,'connect_legacy_pipeline',return_value=driver) as connect:
                 self.assertEqual(a.parent('unused'),0)
                 load.assert_called_once_with(root);rng.assert_called_once_with(20261108,a.pilot.pilot_domains(),path_word_cap=64)
                 driver.run.assert_called_once_with();connect.assert_called_once();pool.return_value.shutdown.assert_not_called()

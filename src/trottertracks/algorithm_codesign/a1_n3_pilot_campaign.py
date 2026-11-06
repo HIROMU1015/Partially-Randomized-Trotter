@@ -102,12 +102,12 @@ class LegacyCollector:
 
 
 class PilotDriver:
-    def __init__(self,out,campaign,sampler,scopes,collector,engine_bound=None):
+    def __init__(self,out,campaign,sampler,scopes,collector,engine_bound=None,attempt=1):
         if len(sampler.bank.controls)!=3 or len(sampler.cells('B1-OL'))!=5:raise ValueError('fixed 3 controls and 5 cells required')
         if set(scopes)!={'X','Y'} or any(v.axis!=k or v.law_id!=sampler.bank.law_id for k,v in scopes.items()):raise ValueError('X/Y target-law scope mismatch')
         self.engine_bound=engine_bound
         self.out=Path(out);self.out.mkdir(parents=True,exist_ok=True)
-        durable_new(self.out/'PILOT_DRIVER_INVOCATION.json',dict(campaign=campaign,purpose=PURPOSE,attempt=1))
+        durable_new(self.out/'PILOT_DRIVER_INVOCATION.json',dict(campaign=campaign,purpose=PURPOSE,attempt=attempt))
         self.campaign=campaign;self.sampler=sampler
         self.scopes,self.collector=scopes,collector
         self.envelopes=[];self.seen=set();self.models={};self.probes={};self.quotas={};self.results={}
@@ -246,7 +246,7 @@ def semantic_exit_code(out):
     return 0 if stop.get('purpose')==PURPOSE and stop.get('campaign_status')=='COMPLETED' and stop.get('pilot_status')=='PILOT_DIAGNOSTIC_COMPLETED' else 1
 
 
-def connect_legacy_pipeline(out,campaign,services,streams,pool,workers,runtime):
+def connect_legacy_pipeline(out,campaign,services,streams,pool,workers,runtime,attempt=1):
     """Deferred connector; caller must bind the fixed services/shared event.
 
     This does not load a model, create RNG/pool, compile, or submit a trial.
@@ -255,7 +255,7 @@ def connect_legacy_pipeline(out,campaign,services,streams,pool,workers,runtime):
     if legacy._SERVICES is not services:raise ValueError('legacy worker services not bound to this pilot')
     raw=legacy.Campaign(out,services,streams,pool,workers)
     collector=LegacyCollector(raw,campaign,runtime)
-    return PilotDriver(out,campaign,services[2],services[3],collector,services[4].get('total_engine_coordinate_upper_exact'))
+    return PilotDriver(out,campaign,services[2],services[3],collector,services[4].get('total_engine_coordinate_upper_exact'),attempt=attempt)
 
 
 def execution_blocked():

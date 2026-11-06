@@ -161,3 +161,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](research/o2_a1_n3_B_science_20
 
 
 2026-11-07 A1対B1-OL予備検証：科学SOURCE a139d7dからconsume-once managerで一回起動したが、資源判定で最初のtrial前に正規STOP。取得0/752、Born/compile/RZ0、bundle decode1。比較は未評価、科学retry0。停止原本と全会計を[結果報告](../docs/research/o2_a1_n3_pilot_science_20261107/REPORT.md)へ保全。次attemptは空き資源確認と別途明示承認が必要。C1凍結維持。
+
+
+2026-11-07 A1/B1-OL：[752-shot pilotのCPU判定改善とattempt02](../docs/research/o2_a1_n3_pilot_admission_20261107/REPORT.md)。前attemptの0件STOPを保全し、同じ科学条件・seed/streamで一回再投入する。実入力前にCPU tickを二窓観測し、最大30分の有限資源待機を行う。科学的STOP条件・exact kernel・C1凍結を維持。
