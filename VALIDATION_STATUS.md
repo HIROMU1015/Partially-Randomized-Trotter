@@ -606,3 +606,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-06 Track C H4 pilot：native比較の資格不一致でSTOP
 
 [報告](docs/research/track_c_h4_pilots_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、LD3/12、元H ground仮定、18round。SOURCE meanの20設定、部分価格、strict key、人工test8件PASSを保存。Qiskit1.3 opt2の微小controlled rotation省略とH4差を確認し、native全G・同精度成功率・優越は未資格。ローカル実行でありCI・外部再現ではない。
+
+## 2026-11-06 Track C compiler：静的原因調査
+
+[静的調査報告](docs/research/track_c_compiler_static_investigation_20261106/REPORT.md)。a78054dcの保存traceと公式Qiskit1.3.0のRust実装を照合し、微小回転の近似的な交換判定による最小CRZ消失機構を特定。H4誤差全量の帰属、新profileのcorrectness・価格は未検証。新規compile/科学計算/テスト起動なし。旧run01の未資格・STOPは不変更。

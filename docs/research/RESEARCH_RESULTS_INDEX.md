@@ -168,3 +168,5 @@ tagへの移行は科学的採否・元status・STOP・計算SOURCEを変更し�
 ## Track C O3 H4 pilot（2026-11-06）
 
 [実行結果・負材料・native compiler資格不一致によるSTOP](track_c_h4_pilots_20261106/REPORT.md)。基準7db4792、Linear H4 1Å/STO-3G/DF12・LD3/12。研究CのHamiltonian表現系列とは別。全RPE総Gは未資格。
+
+Track C H4の後続：[compiler誤差の静的原因調査と対処案](track_c_compiler_static_investigation_20261106/REPORT.md)（2026-11-06、基準a78054dc）。新profileの実行・採択ではなく、旧STOPを保持した静的調査。
