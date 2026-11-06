@@ -762,3 +762,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 
 
 2026-11-06 A1 N3案B：[修正入口・manager_run02・限定再実行](docs/research/o2_a1_n3_B_retry_20261106/REPORT.md)。ユーザーは技術的な意図しない中断の修復/再投入も許可。科学条件・取得済bit・旧SOURCE/STOPは維持する。
+
+
+2026-11-06 A1 N3案B稼働確認：修正SOURCE ee49b53f…でmanager/親/125workerが起動。13:47:32 UTC snapshotは125 bit/価格、A1 X train中。最終精度/CV比較は未判定、科学jobは継続中。[途中記録・固定SOURCE・復旧方針](docs/research/o2_a1_n3_B_retry_20261106/REPORT.md)。
