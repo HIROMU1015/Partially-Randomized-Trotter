@@ -127,3 +127,5 @@ DF部分ランダム化研究と混同しない。
 ## B2 P1の実H4 m0/m17（2026-11-07）
 
 `b2_p1_signal_validation.py`は既存平均kernelと`radius_phase_diagnostics`を使うsignal-only入口。[人工検査・条件付き結果・STOP](../../docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。実行は明示承認scopeのみ。
+
+`b2_p1_remaining_rounds.py`は保存law・mean-only projectionでm1..16へ限定接続する。[結果・範囲](../../docs/research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)。共有`evaluate_signal_round`を再利用し、回路preparation/controlled buildを呼ばない。

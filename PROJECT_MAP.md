@@ -178,3 +178,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [固定SOURCE・結果・限定PASS・STOP](docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。
 元H state/DF12入力照合、5信号・実半径、代表controlled correctnessを条件付き検証。
 他round・shot・価格・全RPE成功保証は未評価。
+
+## B2 P1の残り16round（2026-11-07）
+
+[全18roundの条件付き信号適格性・SOURCE・STOP](docs/research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)。
+新規m1..16を順次検証し、m0/17と代表controlled証拠は固定結果を再利用。回路build・branch・shot・価格は今回未実施。
