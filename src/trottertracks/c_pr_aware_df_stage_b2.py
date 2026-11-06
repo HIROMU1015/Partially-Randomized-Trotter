@@ -157,7 +157,8 @@ def reference_context(arm, generators, car, h):
     left = b.reference._ordered_exponentials(generators, half, cache)
     right = b.reference._ordered_exponentials(generators, tuple(reversed(half)), cache)
     for value in (left, right, *atoms.values()): value.setflags(write=False)
-    return dict(atoms=atoms, left=left, right=right, generators=generators)
+    return dict(atoms=atoms, left=left, right=right, generators=generators,
+        event_matrices={})
 
 
 def trajectory_reference(arm, ctx, h, events):
@@ -165,7 +166,20 @@ def trajectory_reference(arm, ctx, h, events):
     import numpy as np
     from trotterlib.rte import event_unitary
     middle = np.eye(len(ctx['left']), dtype=complex)
-    for event in events: middle = event_unitary(event,ctx['atoms']) @ middle
+    cache = ctx.setdefault('event_matrices', {})
+    for event in events:
+        # Every argument used by event_unitary is part of this key. Atoms are
+        # immutable and bound to this candidate's reference_context. Neither
+        # draw probabilities nor sample identity change the event operator.
+        key = (event.rotation_component_id, event.rotation_angle,
+            event.phase, tuple(event.product_component_ids))
+        value = cache.get(key)
+        if value is None:
+            value = event_unitary(event,ctx['atoms']); value.setflags(write=False)
+            # A concurrent miss may duplicate work but never share a partial
+            # matrix: publish only the completed, read-only value.
+            value = cache.setdefault(key, value)
+        middle = value @ middle
     return np.exp(-1j*float(h)*arm.plan.extracted_identity) * ctx['right'] @ middle @ ctx['left']
 
 

@@ -9,7 +9,7 @@ from . import c_pr_coefficient_point as point
 from . import c_j_u_stable as stable
 
 DEFAULT=stable.DEFAULT
-VERSION='PR_Newton_CG_same_decoded_point_v1'
+VERSION='PR_Newton_CG_same_decoded_point_captured_initial_CG_v2'
 
 
 def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None,parts_evaluator=None):
@@ -18,9 +18,15 @@ def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None,parts_evaluat
     if not p.is_pr and not getattr(p,'is_entry',False):raise ValueError('OPT_IN_PR_ONLY_NO_RC2_CHANGE_OR_EXPLICIT_ENTRY_BACKEND')
     tick,cpu=time.monotonic(),time.process_time();chart=point.CoefficientChart(p,J,policy)
     evaluations,hessians=0,0;trace=[];accepted=[np.zeros(len(chart.x0))]
+    solver_active=False;solver_point=None;solver_gradient=None
     def vg(z):
-        nonlocal evaluations
-        evaluations+=1;return chart.vg(z)
+        nonlocal evaluations,solver_point,solver_gradient
+        evaluations+=1;value,gradient=chart.vg(z)
+        if solver_active:
+            # Capture the exact callback return supplied to SciPy. Never
+            # substitute a later recomputation for missing optimizer output.
+            solver_point=np.array(z,copy=True);solver_gradient=np.array(gradient,copy=True)
+        return value,gradient
     def hess(z):
         nonlocal hessians
         hessians+=1;return chart.hess(z)
@@ -29,8 +35,11 @@ def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None,parts_evaluat
         accepted.append(np.array(intermediate_result.x,copy=True))
         if len(accepted)>2:accepted.pop(0)
     zero=np.zeros(len(chart.x0));before,g0,_=chart.independent(zero)
-    res=(solver or minimize)(vg,zero,jac=True,hess=hess,method='Newton-CG',callback=callback,
-        options=dict(xtol=policy.j_xtol,maxiter=policy.j_maxiter))
+    solver_active=True
+    try:
+        res=(solver or minimize)(vg,zero,jac=True,hess=hess,method='Newton-CG',callback=callback,
+            options=dict(xtol=policy.j_xtol,maxiter=policy.j_maxiter))
+    finally:solver_active=False
     z=np.asarray(res.x)
     if z.shape!=zero.shape or z.dtype!=np.float64 or not np.isfinite(z).all():
         record(dict(method=VERSION,**stable.old._raw(res),failure='NONFINITE_OR_MALFORMED_J_ENDPOINT'),None)
@@ -40,8 +49,13 @@ def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None,parts_evaluat
         metric_directions_dropped=0,objective_regularization_added=False,iteration_trace=trace,
         initial_objective=before,initial_J_gradient_infinity=float(np.max(abs(g0))))
     # Preserve raw jac AND the points defining its permitted pre-step meaning.
-    record(dict(info),dict(x0=chart.x0,x=x,J=j,z=z,solver_jac=np.asarray(res.jac),
-        coordinate_transform=chart.W,gradient0=g0,last_accepted_z=accepted[-1],last_step_start_z=accepted[0]))
+    info['raw_jac_available']=res.jac is not None
+    raw_arrays=dict(x0=chart.x0,x=x,J=j,z=z,
+        coordinate_transform=chart.W,gradient0=g0,last_accepted_z=accepted[-1],last_step_start_z=accepted[0])
+    if res.jac is not None:raw_arrays['solver_jac']=np.asarray(res.jac)
+    if solver_point is not None:
+        raw_arrays.update(captured_solver_point=solver_point,captured_solver_gradient=solver_gradient)
+    record(dict(info),raw_arrays)
     fv,gz=vg(z);value,gx,pullback=chart.independent(z)
     checks={}
     for name,q in [('last_step_start',accepted[0]),('last_accepted',accepted[-1])]:
@@ -54,11 +68,24 @@ def solve_j(p,J,policy=DEFAULT,*,solver=None,record=lambda *a:None,parts_evaluat
     # coefficient pack/unpack. Its J norm still participates in stationarity.
     binary,binary_g,_=(parts_evaluator or stable.precision.parts_gradient_J)(p.g,j,p.mapping.U,p.spec,extended=False)
     checks['binary64_same_array_value']=point.compare(value,binary['objective'],atol=policy.value_atol,rtol=policy.value_rtol)
+    captured_same_point=(solver_point is not None and np.array_equal(solver_point,z))
+    checks['captured_solver_gradient_at_endpoint']=point.compare(solver_gradient,gz,
+        atol=policy.gradient_atol,rtol=policy.gradient_rtol) if captured_same_point else dict(PASS=False)
+    returned_jac_consistent=(np.asarray(res.jac).dtype==np.float64 and
+        any(checks[k]['PASS'] for k in ('last_step_start','last_accepted','raw_jac_at_endpoint')))
+    # SciPy 1.14.1 terminates its initial CG failure before setting gfk.
+    # Keep raw jac=None and raw status=3/nit=0. Only the actually supplied
+    # callback gradient at the unchanged initial point can qualify this case.
+    missing_initial_cg_jac=(res.jac is None and res.status==3 and res.nit==0
+        and not trace and np.array_equal(z,zero) and captured_same_point
+        and np.asarray(solver_gradient).dtype==np.float64
+        and checks['captured_solver_gradient_at_endpoint']['PASS'])
     info.update(consistency=checks,raw_jac_semantics='SciPy1.14.1 may return pre-step jac;raw preserved;endpoint J gradient independently evaluated',
+        gradient_qualification_route=('RETURNED_RAW_JAC' if returned_jac_consistent else
+            'CAPTURED_SOLVER_INPUT_INITIAL_CG_FAILURE' if missing_initial_cg_jac else 'UNQUALIFIED'),
         rigorous_gradient_error_bound=None,thresholds_changed=False)
     record(dict(info,consistency_record=True),None)
-    if (np.asarray(res.jac).dtype!=np.float64 or
-        not any(checks[k]['PASS'] for k in ('last_step_start','last_accepted','raw_jac_at_endpoint')) or
+    if (not (returned_jac_consistent or missing_initial_cg_jac) or
         not all(checks[k]['PASS'] for k in ('chart_vs_physical_gradient','chart_vs_physical_value','raw_vs_endpoint_value','binary64_same_array_value'))):
         raise ValueError('PR_INNER_POINT_CONSISTENCY_MISMATCH')
     info.update(independent_objective=value,

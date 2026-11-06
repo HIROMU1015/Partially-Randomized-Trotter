@@ -1,0 +1,22 @@
+{
+  "status": "FAILED_MANDATORY_STOP",
+  "failed": true,
+  "failure": {
+    "error": "RuntimeError(\"FIT_WORKER_FAIL:H4_115_P1_restore:ValueError('INDEPENDENT_TERMINAL_VALUE_GRADIENT_MISMATCH')\")",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-picklefix-20261106/src/trottertracks/c_integrated_execution.py\", line 510, in execute\n    target=self.selection(self.optimize(self.initialize('H4_115',self.c['fresh_outputs'][1],recipe['strengths'])))\n                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-picklefix-20261106/src/trottertracks/c_integrated_cgfix.py\", line 125, in initialize\n    if geometry!='H4_100':return super().initialize(geometry,output,strengths)\n                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-picklefix-20261106/src/trottertracks/c_integrated_execution.py\", line 237, in initialize\n    for start,value in pool.map(restore,('P1','P2')):\n  File \"/usr/lib/python3.12/concurrent/futures/_base.py\", line 619, in result_iterator\n    yield _result_or_cancel(fs.pop())\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/concurrent/futures/_base.py\", line 317, in _result_or_cancel\n    return fut.result(timeout)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/concurrent/futures/_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/usr/lib/python3.12/concurrent/futures/thread.py\", line 58, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-picklefix-20261106/src/trottertracks/c_integrated_execution.py\", line 235, in restore\n    return start,self.fit(task,physical,affinity)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-picklefix-20261106/src/trottertracks/c_integrated_execution.py\", line 168, in fit\n    elif response['type']=='error':raise RuntimeError('FIT_WORKER_FAIL:'+tag+':'+response['error'])\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: FIT_WORKER_FAIL:H4_115_P1_restore:ValueError('INDEPENDENT_TERMINAL_VALUE_GRADIENT_MISMATCH')\n"
+  },
+  "stage_counts": {
+    "development_initialization": 1,
+    "development_optimization": 1005,
+    "freeze_transfer_recipe": 1,
+    "development_downstream": 56159
+  },
+  "completed_stage_units": 57166,
+  "maximum_logical_units": 118188,
+  "partial_task_journals": "preserved in fresh output; completed_stage_units excludes an interrupted stage",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "wall_seconds": 5115.630863237078,
+  "parent_peak_RSS_KiB": 255780
+}

@@ -12,7 +12,7 @@ COMPONENT_ATOL=1e-10
 SIGNAL_ATOL=2e-10
 
 
-def simulation_circuit(circuit):
+def simulation_circuit(circuit, *, native_basis=False):
     """Exact gate-input conversion for simulation only, never a cost circuit.
 
 Converting local matrices avoids a separate raw-circuit optimizing compiler and
@@ -21,12 +21,20 @@ Aer-specific native XXPlusYY semantics. Cost metrics use original P0 outputs.
     from qiskit import QuantumCircuit
     from qiskit.quantum_info import Operator
     from qiskit.circuit.library import UnitaryGate
+    from qiskit.circuit.library import RZGate, SXGate, SXdgGate, XGate, CXGate
     if circuit.num_clbits or circuit.parameters:raise ValueError('BOUND_UNITARY_CIRCUIT_REQUIRED')
     out=QuantumCircuit(circuit.num_qubits);out.global_phase=float(circuit.global_phase)
     def append(operation,qubits):
         if operation.name=='barrier':return
+        if getattr(operation,'condition',None) is not None:
+            raise ValueError('CLASSICAL_OPERATION')
         if operation.name in ('measure','reset','initialize','set_statevector','save_statevector'):
             raise ValueError('NONUNITARY_OR_PREPARATION_OPERATION')
+        # Keep only the fixed P0 primitives with their exact Qiskit semantics.
+        # Other gates (notably XXPlusYY) still use the established matrix path.
+        if native_basis and (isinstance(operation,(RZGate,SXGate,SXdgGate,XGate))
+                or (isinstance(operation,CXGate) and operation.ctrl_state==1)):
+            out.append(operation,qubits);return
         if operation.num_qubits<=3:
             matrix=Operator(operation).data
             if matrix.shape[0]>8:raise ValueError('LOCAL_MATRIX_DIMENSION')

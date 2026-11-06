@@ -24,6 +24,7 @@ SAMPLING=dict(master=2026110201,cohort='integrated_best_fixed32_v1',axis='INTEGR
 
 
 def native(root,c,out,call,a,*,sampling=None,prepared=None):
+    tick = time.monotonic(); cpu_tick = time.process_time()
     import numpy as np
     from qiskit import qpy
     from threadpoolctl import threadpool_limits
@@ -108,7 +109,15 @@ def native(root,c,out,call,a,*,sampling=None,prepared=None):
                 except BaseException as e:call.stop.set();errors.append(e)
     if errors:raise errors[0]
     samples=[rows[i] for i in range(32)]
-    return samples,call('calibration_summary','fixed32 new-candidate cohort',lambda:b2.calibration(samples))
+    calibration=call('calibration_summary','fixed32 new-candidate cohort',lambda:b2.calibration(samples))
+    from .c_full_unitary import VERSION as evaluator
+    io.save(out/'native_timing.json',dict(samples=len(samples),events_per_sample=steps,
+        cohort=policy['cohort'],wall_seconds=time.monotonic()-tick,
+        CPU_seconds=time.process_time()-cpu_tick,resource_plan=plan,
+        peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
+        full_operator_evaluator=evaluator,full_input_output_dimension=512,
+        actual_inverse_circuits_independently_evaluated=True))
+    return samples,calibration
 
 
 def run(root,c,out,p,ctx,physical,selected):

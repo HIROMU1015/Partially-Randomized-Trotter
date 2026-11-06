@@ -10,6 +10,18 @@ def arrays(path,**values):
 
 
 class Evaluation:
+    @classmethod
+    def from_context(cls,root,c,out,common):
+        """Reuse a byte-bound saved original-H context, without rebuilding it."""
+        from . import c1_molecule_extension as molecule
+        value=cls.__new__(cls)
+        value.root=Path(root);value.c=c;value.out=Path(out)
+        value.molecule=molecule;value.cache={}
+        value.packet=common['p'];value.ctx=common['ctx'];value.physical=common['physical_reference']
+        arrays(value.out/'physical_reference.npz',H=value.physical,
+            sector_basis_indices=value.ctx.sector.basis_indices)
+        return value
+
     def __init__(self,root,c,out):
         from . import c1_molecule_extension as molecule
         from .c_pr_aware_df_stage_b_runner import load

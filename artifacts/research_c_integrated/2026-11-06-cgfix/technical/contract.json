@@ -1,0 +1,500 @@
+{
+  "schema": "C_INTEGRATED_UNAPPROVED_CONTRACT_V1",
+  "scope": "C_INTEGRATED_ROBUSTNESS_FAIR_RETUNING_TRANSFER_V1",
+  "date_JST": "2026-11-06",
+  "status": "CGFIX_PREPARED_NOT_EXECUTED",
+  "science_executed": 0,
+  "permission": "Separate explicit user permission for this fixed scientific scope. No certificate, approval-text storage, grant or authentication requirement.",
+  "source_code_commit": null,
+  "implementation_base": "beb8de5cd8b71f80bb69556f92299435ff431c3e",
+  "technical_source": "artifacts/research_c_integrated/2026-11-06-cgfix/technical/SOURCE.json",
+  "hypothesis": "PR-aware additional conditional total-resource benefit versus ENTRY persists under paired initialization, relative-strength, finite-budget, fair r-retuning and recipe transfer.",
+  "inherited_sources": {
+    "optimization": "70a98adfb701a209db2c65ea60fb789ff62b1fe7",
+    "downstream": "4df8eca29c59ffd55e2dd898f05da16bb246ddbe",
+    "transfer_adapter": "f2a9baea08eeeeb2af7b4a87445acdc61932c911"
+  },
+  "saved_development_inputs": {
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz": "1d6087f60484c6c249f298be75437730e59a1e18e97d1529c19fdf24370603db",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz": "78f67ec50f8c286122be795abc77df398058d1a802d1c5a3373582fc80a8b856",
+    "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json": "78b337df677a622876c8bf6b4593e1f338d9de46bc7594e00fa74f8eeb68b1e8"
+  },
+  "input_roles": {
+    "input": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/input.npz",
+    "initial": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/initial.npz",
+    "scales": "artifacts/research_c_pr_aware_df/2026-10-27/run01/prepare/objective.json"
+  },
+  "physical_conditions": {
+    "development": "linear H4 adjacent 1.00 Angstrom",
+    "transfer": "linear H4 adjacent 1.15 Angstrom",
+    "basis": "STO-3G",
+    "charge": 0,
+    "spin": 0,
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "sector_dimension": 36,
+    "system_dimension": 256,
+    "controlled_dimension": 512,
+    "rank": 8,
+    "ld": 2,
+    "frame_order": "original unsorted",
+    "J": "general signed real symmetric",
+    "U": "real orthogonal",
+    "kappa": "original_g_corrected",
+    "scalar": "nuclear_once",
+    "spin_order": "interleaved_alpha_beta",
+    "bit_order": "existing OpenFermion to Qiskit bit reversal"
+  },
+  "grid": {
+    "starts": [
+      "C0",
+      "P1",
+      "P2"
+    ],
+    "perturbation_seeds": [
+      2026110501,
+      2026110502
+    ],
+    "perturbation": "C0 U right multiply exp(skew); aggregate Frobenius .05; J unchanged; one neutral gamma0 restore per P start",
+    "strengths": [
+      0.03,
+      0.1,
+      0.3
+    ],
+    "accepted_update_checkpoints": [
+      16,
+      64
+    ],
+    "development_trajectories": 18,
+    "development_endpoints": 36,
+    "transfer_trajectories": 6,
+    "transfer_endpoints": 12,
+    "total_trials_per_trajectory": 512,
+    "U_points_per_trajectory": 513,
+    "per_direction_trials": 32,
+    "checkpoint": "same 64-update trajectory; prefix16 and last qualified terminal; both have shared512trial allowance, not old16/128 replay"
+  },
+  "initialization": {
+    "development": "saved neutral CDF8 C0 plus exactly two neutral restores",
+    "transfer": "new canonical RHF h/g/constant; new explicit Cholesky rank8 initializer and neutral gamma0 C0 fit; two perturbed restores; do not import development J/U",
+    "SCF_conv_tol": 1e-12,
+    "MO_orthogonality": 1e-10,
+    "restore_options": {
+      "ftol": 1e-15,
+      "gtol": 1e-06,
+      "maxcor": 10,
+      "maxls": 20,
+      "maxiter": 15000,
+      "maxfun": 15000
+    },
+    "missing_start": "retain missing; no replacement seed/amplitude/rank/fit; target neutral failure prevents all target descendants",
+    "finite_solver_failure": "finite independent correctness and DF PASS may admit; retain raw success/residual flags",
+    "target_input_identity": "fixed generator/conditions before generation; hash original h/g/constant packet and separate MO provenance at first authorized production; not present or generated during preparation",
+    "blindness": "PR/ENTRY recipe unused; geometry previously used in different PF study, not globally blind",
+    "restore_loss_scales": {
+      "development_P1_P2": 2.1839632053132894e-09,
+      "transfer_C0": "positive raw XDF8 tensor objective from existing c1_h6_initialization.tensor_metrics, measured inside the one explicit-initializer unit before the C0 fit; zero/nonfinite unresolved; no floor",
+      "transfer_P1_P2": "positive restored C0 tensor objective, measured once by the registered neutral_scale unit; same value is the geometry-wide outer PR/ENTRY tensor scale",
+      "recording": "save both raw-initializer restore scale and restored-C0 outer scale; never infer one from the other"
+    }
+  },
+  "objective_policy": {
+    "development_tensor_scale": 2.1839632053132894e-09,
+    "transfer_tensor_scale": "positive tensor-only C0 loss computed once; zero/nonfinite unresolved, no floor",
+    "initial_mass_scale": "one separate mass per arm and paired restored start; initial regularization contribution equals chosen strength; never renormalize at endpoint",
+    "epsilon_Ha": 1e-08,
+    "raw_objective_comparison": false,
+    "common_fairness": "equal grid/opportunities; no claim of equal gradients, curvature, wall time or global optimality"
+  },
+  "optimizer_policy": {
+    "max_cycles": 64,
+    "j_maxiter": 1000,
+    "j_xtol": 1e-12,
+    "metric_singular_floor": 1.0,
+    "u_max_nfev": 25,
+    "u_solver_gtol": 1e-12,
+    "u_xtol": 1e-14,
+    "j_gradient_infinity": 1e-05,
+    "u_tangent_l2": 1e-05,
+    "gradient_atol": 1e-08,
+    "gradient_rtol": 1e-07,
+    "value_atol": 1e-10,
+    "value_rtol": 1e-08,
+    "stall_atol": 1e-12,
+    "stall_rtol": 1e-10,
+    "stall_cycles": 3,
+    "orthogonality": 1e-10,
+    "outer_maxiter": 64,
+    "max_points": 33,
+    "outer_gtol": 1e-07,
+    "refinement_U_l2": 1e-06,
+    "rank_guard_factor": 256.0,
+    "rank_gap_factor": 1024.0,
+    "inner_refinements": 2
+  },
+  "step_policy": {
+    "max_trials": 32,
+    "max_updates": 64,
+    "contraction": 0.5,
+    "c1": 0.0001,
+    "alpha_max": 1.0,
+    "displacement_cap": 1.01,
+    "accepted_alpha_growth": 2.0
+  },
+  "physical_qualification": {
+    "DF_budget_Ha": 0.00019875,
+    "policy": "sector operator2 norm + sector_operation_scale_guard8_proposal_v1 <= CA/8",
+    "strict_enclosure": null,
+    "U_first_order_required": false,
+    "first_order": "record J infinity and U tangent L2 with existing engineering criteria; independent oracle correctness remains mandatory"
+  },
+  "execution_policy": {
+    "r_candidates": [
+      16,
+      32,
+      64
+    ],
+    "common_r": 32,
+    "s": 1,
+    "K": 0,
+    "h": 0.1,
+    "delta": 0.1,
+    "round_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "PF": "partial ordered symmetric S2; strong D is all 9 factors s1 with same J/U",
+    "law": "existing paired finite RTE and signed atoms; candidate/r specific",
+    "retune_other_parameters": false
+  },
+  "target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "allowances": {
+    "component_abs": 1e-10,
+    "unitarity_abs": 1e-10,
+    "signal_abs": 2e-10,
+    "normalization": 1e-12,
+    "ground_residual": 1e-10,
+    "mass_relative": 1e-12,
+    "mass_absolute": 1e-14,
+    "algebra_absolute": 1e-12,
+    "rtol": 0,
+    "global_phase_fit": false,
+    "strict_enclosure": null
+  },
+  "gaussian": "nature_jw_exact_zero_lapack_atan2_v1",
+  "compiler_phase": "qiskit_P0_mpfr160_declared_phase_v1",
+  "selection": {
+    "development": "per start/budget/arm: common-r32 minimize over3 strengths; retuned minimize over3strengths x3r, using eligible selection total RZ only",
+    "transfer_strength": "per arm minimize median over all3 development starts at budget64 of best-r selection total RZ; strength eligible only if both arms have at least one feasible r at every registered start; tie ascending strength; freeze before target generation",
+    "transfer_r": "same three r opportunities per candidate at frozen method strength",
+    "tie": "ascending strength, then r32,r16,r64",
+    "ineligible": "explicit null cost; complete registered grid retained; correctness FAIL is not merely ineligible"
+  },
+  "sampling": {
+    "selection_samples_per_candidate_r": 32,
+    "final_samples_per_selected_pair": 64,
+    "final_batches": 2,
+    "batch_size": 32,
+    "master": 2026110501,
+    "PRNG": "numpy.random.PCG64",
+    "cohort_key": "geometry/arm/start/strength/budget/candidate plus selection-or-final/r/batch and SOURCE digest",
+    "final_independent_of_selection": true,
+    "old_samples_pooled": false,
+    "adaptive": false,
+    "drop_outliers": false,
+    "shared_final": "only exact same input/candidate/r within selected fixed/tuned group; retain dependency, not independent replication"
+  },
+  "statistics": {
+    "primary_family": "neutral C0, update64, common-r32 and retuned at both geometries; four prespecified comparisons",
+    "family_alpha": 0.05,
+    "per_comparison_confidence": 0.9875,
+    "method": "existing SciPy Welch difference interval over W*kernel_RZ+shell; approximate IID model, not validated coverage",
+    "samples": 64,
+    "precision_halfwidth_fraction_of_ENTRY": 0.05,
+    "skewness_abs_threshold": 2.0,
+    "maximum_delete_one_shift_fraction_of_halfwidth": 0.25,
+    "other_start_budget_strength": "descriptive complete grid and per-cell uncertainty; no simultaneous all-cell superiority",
+    "same_JU_D": "individual nominal secondary comparisons, not primary family superiority",
+    "ratio_interval": null,
+    "zero_variance": "unresolved",
+    "small_or_inconclusive": "no sample extension; retain unresolved sign/precision/diagnostic status"
+  },
+  "accounting": {
+    "formula": "W * mean(kernel metrics) + shell metrics",
+    "primary_metric": "rz_count",
+    "secondary_metrics": [
+      "rz_depth",
+      "cx_count",
+      "cx_depth",
+      "total_depth",
+      "size"
+    ],
+    "shots_W_unit_price_shell": "store separately",
+    "r_and_calibrationN_extra_multiplier": false,
+    "lanes": [
+      {
+        "id": "ideal_exact_native",
+        "synthesis_fraction_of_A": 0.0,
+        "law_fraction_of_A": 0.0,
+        "law_model": "ideal_finite_RTE_law",
+        "assumptions": [
+          "exact native synthesis",
+          "ideal finite-RTE IID law",
+          "finite-bit B2 sample mean is a proxy for ideal-law kernel cost"
+        ]
+      },
+      {
+        "id": "assumed_raw_signal_budget",
+        "synthesis_fraction_of_A": 0.001,
+        "law_fraction_of_A": 0.001,
+        "law_model": "actual_implemented_law",
+        "assumptions": [
+          "all-law synthesis raw-signal error <= .001*A_m",
+          "implemented-vs-ideal raw-signal law error <= .001*A_m",
+          "B2 finite-bit sample mean is a descriptive cost proxy for fresh independent occurrences"
+        ]
+      }
+    ],
+    "unknown_all_law_synthesis_and_law_signal": "null; evidence lane remains unqualified",
+    "actual_CA": null,
+    "own_DF_ground_state_oracle": true,
+    "state_preparation": "EXCLUDED"
+  },
+  "baselines": {
+    "same_JU_D": "new per selected unique candidate, maximum36; fixed all-factor s1 S2, not globally optimized deterministic method",
+    "saved_CDF8_XDF8": {
+      "result_commit": "39ee9705b7a459c40c205c542d660b5d2ab90d33",
+      "science_source": "2d20ad196a406752de8e4c0ce9516b101e49d927",
+      "use": "fixed 1.00Angstrom task-level ideal baseline only; distinct J/U and optimization effort; no new statistics or target transfer"
+    },
+    "saved_update064": "separate lineage; never substitute its lambda, ground, shots, D denominator or prices"
+  },
+  "sequence": [
+    "passive byte/environment/resource preflight",
+    "development common input/three paired starts",
+    "18 development finite trajectories and qualified16/64 exports",
+    "36 candidate x3r references and selection native32",
+    "freeze development selections and transfer strengths before target generation",
+    "independent final64 and same-JU D for development",
+    "new target input/three paired starts using frozen recipe",
+    "6 target trajectories and12endpoint x3r selection",
+    "independent target final64 and same-JU D",
+    "fixed family4 primary comparisons, all descriptive grid/limitations, result and STOP"
+  ],
+  "maximum_calls": {
+    "unit": "existing instrumented logical scientific work; internal nfev/njev/nhev/iterations/CPU recorded separately",
+    "components": {
+      "development_initialization": {
+        "saved_context_reuse": 1
+      },
+      "development_optimization": {
+        "optimization_driver": 1,
+        "inner_J_solve": 1539,
+        "precision_state": 1026,
+        "reduced_admission": 513,
+        "independent_terminal_assessment": 65,
+        "physical_assessment": 65,
+        "endpoint_diagnostics": 2,
+        "arm_export": 2
+      },
+      "development_downstream": {
+        "candidate_setup": 504,
+        "fixed_r32_references": 3348,
+        "additional_r_references": 5760,
+        "selection_native_and_accounting": 36036,
+        "final_native_and_accounting": 14688,
+        "same_JU_strong_D": 3384,
+        "common_selection_comparison_summary": 32,
+        "final_statistics_wrapper": 144
+      },
+      "freeze_transfer_recipe": {
+        "training_only_strength_freeze": 1
+      },
+      "transfer_initialization": {
+        "scf": 1,
+        "spatial_integrals": 1,
+        "physical_context": 1,
+        "neutral_scale": 1,
+        "paired_start_identity": 3,
+        "objective_setup": 3,
+        "start_summary": 1,
+        "neutral_restore": 15
+      },
+      "transfer_optimization": {
+        "optimization_driver": 6,
+        "inner_J_solve": 9234,
+        "precision_state": 6156,
+        "reduced_admission": 3078,
+        "independent_terminal_assessment": 390,
+        "physical_assessment": 390,
+        "endpoint_diagnostics": 12,
+        "arm_export": 12
+      },
+      "transfer_downstream": {
+        "candidate_setup": 168,
+        "fixed_r32_references": 1116,
+        "additional_r_references": 1920,
+        "selection_native_and_accounting": 12012,
+        "final_native_and_accounting": 14688,
+        "same_JU_strong_D": 1692,
+        "common_selection_comparison_summary": 32,
+        "final_statistics_wrapper": 144
+      },
+      "integrated_summary": {
+        "summary": 1
+      }
+    },
+    "stage_totals": {
+      "development_initialization": 1,
+      "development_optimization": 3213,
+      "development_downstream": 63896,
+      "freeze_transfer_recipe": 1,
+      "transfer_initialization": 26,
+      "transfer_optimization": 19278,
+      "transfer_downstream": 31772,
+      "integrated_summary": 1
+    },
+    "total": 118188,
+    "one_trajectory": 3213,
+    "maximum_PR_native_trajectories": 7680,
+    "maximum_D_native_kernels": 36,
+    "maximum_PR_QPY": 30720,
+    "maximum_D_QPY": 144,
+    "unused_calls_transferable": false
+  },
+  "fresh_outputs": [
+    "artifacts/research_c_integrated/2026-11-06-cgfix/development/run01",
+    "artifacts/research_c_integrated/2026-11-06-cgfix/transfer/run01"
+  ],
+  "output_records": [
+    "SOURCE and contract copy",
+    "original input and separate MO provenance",
+    "start/restore and candidate identities",
+    "J/U checkpoint arrays, independent sector generators/H and physical records",
+    "objective components, exact lambda, J/U residuals, raw status and counters",
+    "PF/RTE/attenuation/round/shot/W and shell bindings",
+    "selection rows and immutable transfer recipe",
+    "raw/compiled/adjoint QPY, reference arrays, correctness and native metric rows",
+    "final nominal statistics and all six resource totals",
+    "actual logical calls/resources/partial/failure/STOP"
+  ],
+  "environment": {
+    "fit_python": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-server-20261106/.venv-fit/bin/python",
+    "evaluation_python": "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-server-20261106/.venv-eval/bin/python",
+    "fit_packages": {
+      "ffsim": "0.0.83",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "jax": "0.4.38",
+      "jaxlib": "0.4.38",
+      "qiskit": "2.4.2",
+      "pyscf": "2.14.0"
+    },
+    "evaluation_packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "qiskit": "1.3.0",
+      "qiskit-nature": "0.7.2",
+      "openfermion": "1.6.1",
+      "openfermionpyscf": "0.5",
+      "pyscf": "2.7.0",
+      "threadpoolctl": "3.6.0",
+      "symengine": "0.13.0",
+      "qiskit-aer": "0.15.1"
+    },
+    "ffsim_sources": {
+      "linalg/util.py": "5ecfe167846b6d46fd0b3ec794b7c41c0a554c2ac51f1cf83c416a4da3ce0708",
+      "linalg/double_factorized_decomposition.py": "655453e75a8f593514ccc259090a6a574d3c180095d0fdb9c607c9bf910a09f4"
+    }
+  },
+  "resources": {
+    "artificial_CPU_RAM_worker_wall_cap": null,
+    "execution": "choose independent candidate processes and existing round/native batch parallelism from actual free resources/quota; coordinate BLAS/OpenMP/JAX threads",
+    "sequential": "within-trajectory refinement/line search and process-local fit hooks; r32 PF cache before other r",
+    "cache": "immutable candidate-bound CAR/Gaussian/PF/shell cache only; task-specific seed and outputs",
+    "preparation_observation": {
+      "CPU_affinity": 32,
+      "RAM_available_GiB_approx": 50,
+      "disk_free_GiB_approx": 21,
+      "GPU_driver_usable": false
+    },
+    "disk": "raw native grid is order tens of GiB; present free space may be insufficient; check output filesystem before authorized launch; no deletion of old evidence or other jobs",
+    "time": "existing timing supports tens of hours downstream plus initialization/optimization; no new benchmark or guaranteed runtime/speedup",
+    "shared_environment": "no global settings, shared package changes or other-user process/file operations"
+  },
+  "failure_stop": {
+    "correctness": "SOURCE/input/DF identity, nonfinite, representation, phase/adjoint/operator or call overrun: stop affected dependency and retain partial; no automatic retry",
+    "scientific_ineligible": "DF/alias/round/precision unqualified: retain null; independent registered cells may continue; no winner on missing prerequisites",
+    "transfer_freeze_failure": "if no common complete strength across3 starts, record no transferable recipe and skip target; no seed/grid replacement",
+    "terminal": "mandatory STOP after integrated authorized scope; no H6, new surrogate, additional policies, actual-CA guarantee project, publication GO or important GPT review"
+  },
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "server_delta": {
+    "reference_commit": "a7face80e10fd74e1a49dc530409db5b7f677aaa",
+    "base_contract": "docs/research/research_c_integrated_contract_unapproved_20261105.json",
+    "base_contract_sha256": "482b69947d6f0b9f13e30e7ea5bc88a50b5ff79d2a9f33b1c2023d1dc029fec9",
+    "old_SOURCE_and_outputs_modified": false,
+    "retry": 0,
+    "resume": 0,
+    "missing_post_stop_results": "17 successful trajectories are byte-bound saved inputs; exactly one failed trajectory needs new computation",
+    "evaluator": "full_identity_local_matrix_aer_cpu_double_v1",
+    "retained_checks": "all512 raw/compiled plus independently simulated actual inverses, unitarity and X/Y",
+    "reduced_samples": false,
+    "reduced_input_space": false,
+    "tolerances_changed": false,
+    "scientific_scope": "same registered development/transfer grid, selection32/final64, same-JU D; fresh lineage",
+    "source_changes": "full operator evaluation, immutable event cache, server paths and native timing only; capture actual solver-input gradient for initial CG jac=None; reuse saved original-H context and17 trajectories",
+    "scientific_execution": "Only after explicit user permission for this new SOURCE and contract"
+  },
+  "cgfix": {
+    "previous_SOURCE": "artifacts/research_c_integrated/2026-11-06/server_technical/SOURCE.json",
+    "previous_SOURCE_sha256": "200418968aa9e60e5ce842425e0373a4d8fafdb4f78c53a22df37b204989afd6",
+    "handoff": "artifacts/research_c_integrated/2026-11-06-cgfix/technical/saved_input_handoff.json",
+    "handoff_sha256": "93d6eabf5a194b039cbc599e39b5c272d0550b65cdb0fa16972004948ff14ca8",
+    "completed_trajectories_reused": 17,
+    "new_development_cells": [
+      "H4_100_C0_ENTRY_g03"
+    ],
+    "qualification_change": "Only status3/nit0/unchanged initial point with missing raw jac may use the actual captured solver-input gradient; all independent checks and thresholds remain required",
+    "missing_raw_jac_marked_unavailable": true,
+    "raw_optimizer_failure_preserved": true,
+    "extra_VG_or_optimizer_calls": 0,
+    "retry": 0,
+    "resume": 0,
+    "scientific_execution": "Separate explicit permission for this new SOURCE, qualification route and fresh scope"
+  }
+}

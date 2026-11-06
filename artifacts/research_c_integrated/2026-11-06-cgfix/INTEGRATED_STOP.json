@@ -1,0 +1,17 @@
+{
+  "status": "FAILED_MANDATORY_STOP",
+  "failed": true,
+  "failure": {
+    "error": "RuntimeError('RPC_WORKER_FAILURE:ModuleNotFoundError(\"No module named \\'trottertracks._c1_stage1_legacy\\'\"); log=/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/artifacts/research_c_integrated/2026-11-06-cgfix/development/run01/physical_service/rpc_worker.log')",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/src/trottertracks/c_integrated_execution.py\", line 498, in execute\n    development=self.selection(self.optimize(self.initialize('H4_100',self.c['fresh_outputs'][0])))\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/src/trottertracks/c_integrated_cgfix.py\", line 117, in initialize\n    context=call('saved_context_reuse','byte-bound original-H context; no new CAR/H',lambda:\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/src/trottertracks/c1_stage3_integrated.py\", line 108, in __call__\n    value = function()\n            ^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/src/trottertracks/c_integrated_cgfix.py\", line 118, in <lambda>\n    physical.request('initialize',system=initial['system'],\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/src/trottertracks/c_integrated_execution_rpc.py\", line 82, in request\n    raise RuntimeError('RPC_WORKER_FAILURE:'+response.get('error', 'unknown')+\nRuntimeError: RPC_WORKER_FAILURE:ModuleNotFoundError(\"No module named 'trottertracks._c1_stage1_legacy'\"); log=/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-cgfix-20261106/artifacts/research_c_integrated/2026-11-06-cgfix/development/run01/physical_service/rpc_worker.log\n"
+  },
+  "stage_counts": {},
+  "completed_stage_units": 0,
+  "maximum_logical_units": 118188,
+  "partial_task_journals": "preserved in fresh output; completed_stage_units excludes an interrupted stage",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "wall_seconds": 0.2963652489706874,
+  "parent_peak_RSS_KiB": 40488
+}

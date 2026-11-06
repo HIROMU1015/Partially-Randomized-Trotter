@@ -1,0 +1,19 @@
+{
+  "status": "FAILED_MANDATORY_STOP",
+  "failed": true,
+  "failure": {
+    "error": "RuntimeError(\"FIT_WORKER_FAIL:H4_100_C0_ENTRY_g03:ValueError('PR_INNER_POINT_CONSISTENCY_MISMATCH')\")",
+    "traceback": "Traceback (most recent call last):\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-server-20261106/src/trottertracks/c_integrated_execution.py\", line 496, in execute\n    development=self.selection(self.optimize(self.initialize('H4_100',self.c['fresh_outputs'][0])))\n                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-server-20261106/src/trottertracks/c_integrated_execution.py\", line 279, in optimize\n    t=fs[f];value=f.result();results[t['job_id']]=value;actual+=value['scientific_units']\n                  ^^^^^^^^^^\n  File \"/usr/lib/python3.12/concurrent/futures/_base.py\", line 449, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/usr/lib/python3.12/concurrent/futures/thread.py\", line 58, in run\n    result = self.fn(*self.args, **self.kwargs)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/research-c-integrated-server-20261106/src/trottertracks/c_integrated_execution.py\", line 168, in fit\n    elif response['type']=='error':raise RuntimeError('FIT_WORKER_FAIL:'+tag+':'+response['error'])\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: FIT_WORKER_FAIL:H4_100_C0_ENTRY_g03:ValueError('PR_INNER_POINT_CONSISTENCY_MISMATCH')\n"
+  },
+  "stage_counts": {
+    "development_initialization": 27
+  },
+  "completed_stage_units": 27,
+  "maximum_logical_units": 172835,
+  "partial_task_journals": "preserved in fresh output; completed_stage_units excludes an interrupted stage",
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true,
+  "wall_seconds": 865.2171259140596,
+  "parent_peak_RSS_KiB": 75264
+}

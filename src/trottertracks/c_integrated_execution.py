@@ -3,7 +3,7 @@
 Scientific engines and the proposal stay unchanged. A dedicated execution root
 holds byte-identical SOURCE/inputs and all fresh outputs. No retry or resume.
 """
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import Future, ThreadPoolExecutor, as_completed
 from dataclasses import asdict
 from pathlib import Path
 from collections import Counter
@@ -118,15 +118,17 @@ def fit_worker(root, task):
 
 
 class Run:
-    def __init__(self, root, source):
+    def __init__(self, root, source, *, contract_path=CONTRACT, family=FAMILY):
         self.root = Path(root).resolve()
-        self.c = io.read(self.root/CONTRACT)
+        self.family = family
+        self.c = io.read(self.root/contract_path)
         self.source, self.digest = source, io.sha(source)
         self.cpus = sorted(os.sched_getaffinity(0))
         self.summary, self.services, self.stages = {}, [], {}
         self.processes, self.lock = set(), threading.Lock()
         self.tick = time.monotonic()
-        self.progress_path = self.root/FAMILY/'execution_progress.jsonl'
+        self.progress_path = self.root/self.family/'execution_progress.jsonl'
+        self.native_timing_seen = False
 
     def progress(self, phase, **fields):
         row = dict(phase=phase,elapsed_seconds=time.monotonic()-self.tick,**fields)
@@ -142,7 +144,7 @@ class Run:
 
     def fit(self, task, physical=None, affinity=None):
         task = dict(task, affinity=self.cpus if affinity is None else affinity)
-        tag = task['job_id'];folder=self.root/FAMILY/'execution_jobs'
+        tag = task['job_id'];folder=self.root/self.family/'execution_jobs'
         folder.mkdir(exist_ok=True)
         config=folder/(tag+'.json');io.save(config,task)
         log=(folder/(tag+'.log')).open('x')
@@ -257,17 +259,19 @@ class Run:
             scale=scale,starts=starts,specs=specs,physical=physical,physical_context=context,strengths=strengths)
 
     def optimize(self, g):
-        jobs=[]
+        jobs=[];results=dict(g.get('reused_optimization',{}))
         for start in plan.STARTS:
             if start not in g['starts']:continue
             for arm in plan.ARMS:
                 for strength in plan.STRENGTHS if g['strengths'] is None else (g['strengths'][arm],):
                     tag=f"{g['geometry']}_{start}_{arm}_g{str(strength).replace('.','')}"
+                    if tag in results:continue
                     spec=g['specs'][start,strength][arm] if g['strengths'] is None else g['specs'][start,'transfer'][arm]
                     jobs.append(self.task(g['geometry'],g['system'],g['input_path'],g['starts'][start]['path'],
                         operation='cell',job_id=tag,arm=arm,start=start,strength=strength,loss_scale=g['scale'],
                         objective_spec=spec,out=str((g['output']/'optimization'/tag).relative_to(self.root))))
-        results={};actual=0
+        actual=0
+        if results:self.progress('saved_optimization_reused',geometry=g['geometry'],count=len(results),new_cells=len(jobs))
         # Tiny per-cell contractions predominantly use one CPU; split the whole
         # available affinity across all independent finite trajectories.
         partitions=[self.cpus[i::len(jobs)] for i in range(len(jobs))] if jobs else []
@@ -376,6 +380,23 @@ class Run:
                     found.append((task['id'],report,actual,worker))
                     self.progress('selection_candidate_complete',geometry=g['geometry'],id=task['id'],
                         eligible_r=[x['r'] for x in report['rows'] if x['eligible']],scientific_units=actual)
+                    # Report actual native32 work without an extra scientific
+                    # draw. Extrapolation excludes optimization/PF/D and is a
+                    # workload estimate, never a promised completion time.
+                    timing_files = [folder/f'r{r}/selection/batch00/native_timing.json'
+                        for r in (32,16,64) if (folder/f'r{r}/selection/batch00/native_timing.json').is_file()]
+                    if timing_files:
+                        with self.lock:
+                            first = not self.native_timing_seen
+                            self.native_timing_seen = True
+                        if first:
+                            timing = io.read(timing_files[0])
+                            self.progress('first_registered_native_batch_timing',
+                                measurement=timing, candidate_processes=count,
+                                maximum_native_samples=self.c['maximum_calls']['maximum_PR_native_trajectories'],
+                                rough_maximum_native_wall_seconds=(timing['wall_seconds']/timing['samples']
+                                    *self.c['maximum_calls']['maximum_PR_native_trajectories']/count),
+                                estimate_scope='native cohorts only at same measured parallelism; not total ETA')
                 return found
             with ThreadPoolExecutor(max_workers=count or 1) as pool:
                 fs=[pool.submit(bucket,w,b) for w,b in zip(workers,buckets)]
@@ -421,14 +442,24 @@ class Run:
                     key=(row['input_sha256'],candidate)
                     with registry_lock:
                         if key not in d_registry:
+                            d_registry[key]=Future(); owns_d=True
+                        else: owns_d=False
+                        pending=d_registry[key]
+                    # Deduplicate a candidate without serializing unrelated D
+                    # evaluations behind the process-independent registry lock.
+                    if owns_d:
+                        try:
                             out=g['downstream_output']/'deterministic'/state
                             response=worker.request('D',state_key=state,out=str(out.relative_to(self.root)))
-                            value=response['result'];d_registry[key]=(value,str(out))
+                            value=response['result']
                             units+=io.read(out/'call_summary.json')['scientific_units']
-                        else:
-                            value,path=d_registry[key]
-                            worker.request('attach_D',state_key=state,D_result=value,D_output=path,
-                                candidate_sha256=candidate,input_sha256=row['input_sha256'])
+                            pending.set_result((value,str(out)))
+                        except BaseException as exc:
+                            pending.set_exception(exc); raise
+                    else:
+                        value,path=pending.result()
+                        worker.request('attach_D',state_key=state,D_result=value,D_output=path,
+                            candidate_sha256=candidate,input_sha256=row['input_sha256'])
                     ds[state]=True
                 pair=(state,r)
                 if pair not in pairs:
@@ -465,7 +496,7 @@ class Run:
         try:
             self.progress('starting',source_sha256=self.digest,root=str(self.root),affinity=self.cpus)
             development=self.selection(self.optimize(self.initialize('H4_100',self.c['fresh_outputs'][0])))
-            freezeout=self.root/FAMILY/'recipe_freeze';freezeout.mkdir()
+            freezeout=self.root/self.family/'recipe_freeze';freezeout.mkdir()
             freeze=Calls(freezeout,dict(training_only_strength_freeze=1),1)
             def choose():
                 try:return dict(status='TRANSFER_RECIPE_FROZEN',strengths=plan.freeze_transfer_strength([x for x in development['rows'] if x['budget']==64]))
@@ -479,7 +510,7 @@ class Run:
                 target=self.selection(self.optimize(self.initialize('H4_115',self.c['fresh_outputs'][1],recipe['strengths'])))
                 self.finals(target)
             else:self.summary['H4_115']=dict(status='SKIPPED_NO_QUALIFIED_FROZEN_RECIPE')
-            end=self.root/FAMILY/'integrated_result';end.mkdir()
+            end=self.root/self.family/'integrated_result';end.mkdir()
             call=Calls(end,dict(summary=1),1)
             call('summary','fixed scope completed without formal research GO',lambda:io.save(end/'result.json',self.summary))
             self.stage('integrated_summary',1)
@@ -494,11 +525,11 @@ class Run:
                     if failure is None:failure=dict(error=repr(exc),phase='worker_cleanup')
             stop=dict(status='FAILED_MANDATORY_STOP' if failure else 'COMPLETE_MANDATORY_STOP',
                 failed=failure is not None,failure=failure,stage_counts=self.stages,
-                completed_stage_units=sum(self.stages.values()),maximum_logical_units=172835,
+                completed_stage_units=sum(self.stages.values()),maximum_logical_units=self.c['maximum_calls']['total'],
                 partial_task_journals='preserved in fresh output; completed_stage_units excludes an interrupted stage',
                 retry=0,resume=0,mandatory_stop=True,wall_seconds=time.monotonic()-self.tick,
                 parent_peak_RSS_KiB=resource.getrusage(resource.RUSAGE_SELF).ru_maxrss)
-            io.save(self.root/FAMILY/'INTEGRATED_STOP.json',stop)
+            io.save(self.root/self.family/'INTEGRATED_STOP.json',stop)
             self.progress('stopped',status=stop['status'],completed_stage_units=stop['completed_stage_units'])
 
 

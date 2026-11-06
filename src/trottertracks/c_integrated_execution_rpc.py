@@ -147,8 +147,15 @@ class PhysicalWorker:
             digest = self.io.sha(_path(self.root, input_rel))
             if digest != system['input_sha256']:
                 raise ValueError('PHYSICAL_INPUT_IDENTITY')
-            self.evaluation = self.evaluation_factory(self.root,
-                dict(input_paths=dict(input=input_rel), DF_budget_Ha=.00019875), self.out)
+            contract=dict(input_paths=dict(input=input_rel), DF_budget_Ha=.00019875)
+            if request.get('reuse_common_pickle'):
+                self.stage1.legacy_df_module()
+                with _path(self.root,request['reuse_common_pickle']).open('rb') as stream:
+                    saved=pickle.load(stream)
+                if saved['input_identity']!=digest:raise ValueError('SAVED_CONTEXT_INPUT_IDENTITY')
+                self.evaluation=self.evaluation_factory.from_context(self.root,contract,self.out,saved)
+            else:
+                self.evaluation = self.evaluation_factory(self.root,contract,self.out)
             ev = self.evaluation
             common = dict(p=ev.packet, ctx=ev.ctx, physical_reference=ev.physical,
                 input_identity=digest,

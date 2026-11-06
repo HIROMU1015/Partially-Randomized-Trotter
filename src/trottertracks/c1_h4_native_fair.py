@@ -183,7 +183,17 @@ def controlled(system):
     d=len(system);out=np.zeros((2*d,2*d),complex);out[:d,:d]=np.eye(d);out[d:,d:]=system;return out
 
 
-def decode(circuit):
+def decode(circuit, *, backend='aer_full', threads=1):
+    """Full operator, including actual inverse circuits, without projections.
+
+    The independent legacy evaluator remains available for synthetic parity
+    checks. Backend failures never silently substitute a reduced check.
+    """
+    if backend == 'aer_full':
+        from .c_full_unitary import decode as full_unitary
+        return full_unitary(circuit, threads=threads)
+    if backend != 'operator':
+        raise ValueError('UNKNOWN_FULL_UNITARY_BACKEND')
     from qiskit.quantum_info import Operator
     from .c1_h6_state_action import measured_tail
     clean=measured_tail(circuit) if circuit.num_clbits else circuit
