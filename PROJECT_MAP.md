@@ -203,3 +203,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [REPORT・人工比較・MC準備条件・STOP](docs/research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)。
 同一gate列streamingは18軸で全6指標一致。fusion/分割との差、メモリと並列実測を保存。追加実H4・価格MCは未実行。
+
+## B2 P1 m0実H4 streaming照合（2026-11-07）
+
+[REPORT・固定SOURCE・軸別価格・STOP](docs/research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)。
+同じ保存trajectoryでnative/wrapper/compiled fingerprintと全6価格が一致。新規compileはX/Y各1回のみ。

@@ -114,3 +114,8 @@
 
 [人工技術検証REPORT](research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)：streaming18軸一致、
 fusion/分割価格差、意味・性能・メモリ・cache/parallel検査、実H4とMCの残条件。mandatory STOP。
+
+## B2 m0実H4 streaming確認（2026-11-07）
+
+[REPORT](research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)：同一trajectoryのgate列と保存価格を再現。
+初回表現比較STOPを保全、native/reference各1回build・stream X/Y各1回compile後mandatory STOP。

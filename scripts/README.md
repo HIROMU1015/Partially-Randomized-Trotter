@@ -173,3 +173,8 @@ artifacts/<validation_name>/
 
 `run_b2_cost_method_validation.py`は人工二mode回路だけでwhole/stream/fusion/split/cache/parallelを比較する。
 [固定SOURCE・結果・STOP](../docs/research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)。実H4や本格MCの実行入口ではない。
+
+## B2 m0実H4 streaming限定照合（2026-11-07）
+
+`run_b2_m0_streaming_h4.py`は同じ保存trajectoryのnative2経路を照合後、stream X/Y各1回だけcompile。
+[保存結果・SOURCE・STOP](../docs/research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)。Q2以降や再実行の許可ではない。

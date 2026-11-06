@@ -144,3 +144,8 @@ DF部分ランダム化研究と混同しない。
 
 `b2_streamed_native_cost.py`は既存emitterを再利用してrequest/tailを順次処理し、元のgate列を保つ。
 最終回路/DAGは保持する。[人工検証と限界](../../docs/research/track_a_b2_p1_long_cost_method_20261107/REPORT.md)。
+
+## B2 streamingのm0実H4限定確認（2026-11-07）
+
+既存`b2_streamed_native_cost.py`を不変更で使用し、同じgate列・保存compiled identity/全6指標を再現。
+[実行SOURCE・結果・適用限界](../../docs/research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)。
