@@ -1,5 +1,9 @@
 # scripts 索引
 
+- `run_b2_original_df12_correspondence.py`：固定保存HDF5と旧DF12だけのoperator対応検証。
+  [結果前条件](../docs/research/b2_original_df12_correspondence_20261106/PLAN.md)。
+  state solve・時間発展・回路/費用実行なし。
+
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
 

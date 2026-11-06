@@ -1,5 +1,8 @@
 # tests の役割
 
+- `test_b2_original_df12_correspondence.py`：人工複素CAR/JW、quartic順序、sector漏れ、
+  signed DF squares、cutoffの区別、80/120桁のoperator参照。実分子入力・state solveなし。
+
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、
 `tests/test_<name>.py`、`docs/<name>.md`、`artifacts/<name>/`を一組として読む。

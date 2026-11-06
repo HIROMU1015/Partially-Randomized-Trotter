@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+- `b2_original_df12_correspondence.py`：既存CAR/JW、DF sector、独立occupation参照を
+  再利用する固定元H/DF12対応検証。[条件](../../docs/research/b2_original_df12_correspondence_20261106/PLAN.md)。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 

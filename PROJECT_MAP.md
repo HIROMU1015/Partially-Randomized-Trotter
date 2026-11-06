@@ -1,5 +1,13 @@
 # プロジェクト案内
 
+2026-11-06 LOCAL元H–DF12対応検証：
+[結果前条件](docs/research/b2_original_df12_correspondence_20261106/PLAN.md)。
+実装 `src/trotterlib/b2_original_df12_correspondence.py`、
+runner `scripts/run_b2_original_df12_correspondence.py`、
+人工test `tests/test_b2_original_df12_correspondence.py`、
+結果先 `artifacts/b2_original_df12_correspondence/2026-11-06/run01/`。
+元H state solve・B2/RPE実行は含めない。
+
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
 複数ブランチの総括・後続結果・SOURCE・raw・検証状態を固定commitで辿れる。
 以下の研究記述は、このcheckoutに保存された時点の履歴として読む。
