@@ -190,3 +190,6 @@ A1 N3案Bの[新しい一campaignの実行仕様](../../docs/research/o2_a1_n3_B
 ## 2026-11-07 SCV scalar / paired pilot preparation
 
 Artificial-only SCV implementation; real 224-shot execution remains unadopted. [module](../../src/trottertracks/algorithm_codesign/scv_scalar.py) [driver](../../src/trottertracks/algorithm_codesign/scv224_pilot.py) [plan-only CLI](../../scripts/tracks/algorithm_codesign/prepare_scv224_pilot.py) [control tests](../../tests/tracks/algorithm_codesign/test_scv_scalar.py) [driver tests](../../tests/tracks/algorithm_codesign/test_scv224_pilot.py) [report](../../docs/research/scv224_preparation_20261107/REPORT.md) [evidence](../../artifacts/scv224_preparation/2026-11-07/SOURCE.json)
+
+
+O2-SCV224 adopted activation: [module](../../src/trottertracks/algorithm_codesign/scv224_activation.py) [runner](../../scripts/tracks/algorithm_codesign/run_scv224_science.py) [test](../../tests/tracks/algorithm_codesign/test_scv224_activation.py) [report](../../docs/research/o2_scv224_science_20261107/REPORT.md) [artifact directory](../../artifacts/o2_scv224/2026-11-07/). One campaign, max224 physical shots, retry0, exact engine unchanged.
