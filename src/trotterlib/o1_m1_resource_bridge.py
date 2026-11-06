@@ -336,25 +336,16 @@ def observed_signal_bounds(preparation, config, specification, record, *,
         radius_provenance='same-round original-state PF signal minus declared allowance; empirical, not certified')
 
 
-def account_radius_round(*, context_hash, arm_hash, specification, allocation,
-    beta_rpe, reference_radius_lower_bound, corrected_signal_error_bound,
-    pf_phase_bound, model_phase_bound, implementation_phase_bound, radius_provenance,
-    cost_metric, config=None, cost=None, backend_hash="no_backend"):
-    """Conditional arithmetic, never automatic energy/branch certification.
-
-    Caller supplies a justified PF/reference radius, not a raw radius that has
-    already been attenuated. No unit-radius default and no copied total B field.
-    """
+def radius_phase_diagnostics(*, specification, allocation, beta_rpe,
+    reference_radius_lower_bound, corrected_signal_error_bound, pf_phase_bound,
+    model_phase_bound, implementation_phase_bound, config=None):
+    """Existing radius/phase feasibility only; no shot, price, or cost calls."""
     values = (reference_radius_lower_bound,corrected_signal_error_bound,pf_phase_bound,
               model_phase_bound,implementation_phase_bound,beta_rpe)
     if any(not math.isfinite(float(x)) or x<0 for x in values) or not 0<reference_radius_lower_bound<=1:
         raise ValueError("Finite nonnegative bounds and explicit reference radius in (0,1] required")
-    if not context_hash or not arm_hash or not radius_provenance or cost_metric not in RPE_COST_METRICS:
-        raise ValueError("Explicit context, arm, radius provenance and metric required")
     if not 0<beta_rpe<=RPE_NUMERICAL_PHASE_MODEL_LIMIT or not 0<allocation.beta_stat_budget<=RPE_NUMERICAL_PHASE_MODEL_LIMIT:
         raise ValueError("beta_rpe and statistical phase budget must lie in (0, pi/2]")
-    if not backend_hash:
-        raise ValueError("Explicit canonical backend context required")
     attenuation = 1. if config is None else finite_rte_attenuation(config,tail_evolutions=specification.q_m)
     if config is not None and config.evolution_time != specification.delta_time:
         raise ValueError("Config time differs from round delta")
@@ -367,6 +358,32 @@ def account_radius_round(*, context_hash, arm_hash, specification, allocation,
     if pf_phase_bound>allocation.beta_pf_budget: reasons.append("PF_phase_budget")
     if allocation.beta_total+model_phase_bound+implementation_phase_bound>beta_rpe: reasons.append("total_phase_budget")
     if allocation.beta_stat_budget<=0: reasons.append("nonpositive_statistical_budget")
+    return dict(attenuation=attenuation, rho_observed_lower_bound=rho,
+                finite_rte_phase_bound=beta_rte, reasons=reasons, feasible=not reasons)
+
+
+def account_radius_round(*, context_hash, arm_hash, specification, allocation,
+    beta_rpe, reference_radius_lower_bound, corrected_signal_error_bound,
+    pf_phase_bound, model_phase_bound, implementation_phase_bound, radius_provenance,
+    cost_metric, config=None, cost=None, backend_hash="no_backend"):
+    """Conditional arithmetic, never automatic energy/branch certification.
+
+    Caller supplies a justified PF/reference radius, not a raw radius that has
+    already been attenuated. No unit-radius default and no copied total B field.
+    """
+    if not context_hash or not arm_hash or not radius_provenance or cost_metric not in RPE_COST_METRICS:
+        raise ValueError("Explicit context, arm, radius provenance and metric required")
+    if not backend_hash:
+        raise ValueError("Explicit canonical backend context required")
+    diagnostic = radius_phase_diagnostics(specification=specification, allocation=allocation,
+        beta_rpe=beta_rpe, reference_radius_lower_bound=reference_radius_lower_bound,
+        corrected_signal_error_bound=corrected_signal_error_bound, pf_phase_bound=pf_phase_bound,
+        model_phase_bound=model_phase_bound, implementation_phase_bound=implementation_phase_bound,
+        config=config)
+    attenuation = diagnostic['attenuation']
+    rho = diagnostic['rho_observed_lower_bound']
+    beta_rte = diagnostic['finite_rte_phase_bound']
+    reasons = diagnostic['reasons']
     shots = {}
     if not reasons:
         for axis,alpha in (("cosine",allocation.alpha_cosine),("sine",allocation.alpha_sine)):
