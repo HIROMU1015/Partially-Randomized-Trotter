@@ -3,7 +3,8 @@
 No RNG, state solver, full interrogation, compilation, pilot, or shot allocation.
 Reuse the frozen sampler/CV connection and existing rational enclosures.
 """
-from dataclasses import asdict
+from dataclasses import asdict, replace
+import ast
 from fractions import Fraction as F
 import hashlib
 import importlib.metadata
@@ -122,6 +123,85 @@ def _write(path, value):
         out.write("\n")
 
 
+def preparation_payload(hamiltonian, partition, preparation, block_payload):
+    """Retain the scientific inputs to identity checks before stopping.
+
+    Runtime gate objects are omitted; complete named basis operations are
+    deduplicated by basis hash, with every component referring to that hash.
+    """
+    bases, components = {}, []
+    for component in preparation.rte_preparation.symbolic_tail.components:
+        row = asdict(component)
+        bases.setdefault(component.basis_hash, row.pop("basis_change_operations"))
+        row.update(coefficient_abs_hex=component.coefficient_abs.hex(),
+                   probability_hex=component.probability.hex())
+        components.append(row)
+    for block in preparation.deterministic_blocks:
+        bases.setdefault(block.basis_hash, [asdict(op) for op in block.basis_change_operations])
+    return dict(hamiltonian_hash=preparation.hamiltonian_hash,
+        partition_hash=preparation.partition_hash, preparation_hash=preparation.preparation_hash,
+        tail_hash=preparation.rte_preparation.symbolic_tail.tail_hash,
+        partition=asdict(partition), fragment_hex=[dict(index=f.original_index,
+                    lam_hex=f.lam.hex(), weight_hex=f.weight.hex()) for f in
+                    partition.deterministic_fragments+partition.randomized_fragments],
+        array_storage=[dict(dtype=str(g.dtype), strides=list(g.strides),
+                    c_contiguous=bool(g.flags.c_contiguous),
+                    f_contiguous=bool(g.flags.f_contiguous)) for g in hamiltonian.g_matrices],
+        deterministic_blocks=[block_payload(b) for b in preparation.deterministic_blocks],
+        lambda_r_hex=preparation.exact_rte_lambda_r.hex(),
+        identity_coefficient_hex=preparation.extracted_identity_coefficient.hex(),
+        components=components, basis_operations=bases)
+
+
+def diagnose(output_dir, *, root=None):
+    """Authorized source/layout diagnosis, no law/measurement/parameter search."""
+    import numpy as np
+    root = Path(root or Path(__file__).resolve().parents[3]).resolve()
+    output = Path(output_dir).resolve(); output.mkdir(parents=True, exist_ok=False)
+    archived = root/('docs/archive/server_collection_20261103/'
+        '98d1146f889bf36c2744ee90f997f352f9e7c51b/src/trotterlib/df_partial_s2.py.original')
+    _write(output/'SOURCE.json', dict(source_commit=subprocess.check_output(
+        ['git','rev-parse','HEAD'],cwd=root,text=True).strip(), snapshot_sha256=_sha(root/SNAPSHOT),
+        current_partial_sha256=_sha(root/'src/trotterlib/df_partial_s2.py'),
+        archived_partial_sha256=_sha(archived), diagnostic_source_sha256=_sha(__file__),
+        scope='same NPZ; source/default partition hash and four value-preserving storage cases',
+        no_sampling=True, no_state_solver=True, no_full_compile=True))
+    if _sha(root/SNAPSHOT) != SNAPSHOT_SHA:
+        raise ValueError('diagnostic snapshot mismatch')
+    loader=cpu_module('rte_connected_cluster_cost_validation')
+    split=cpu_module('df_partial_randomized_pf'); partial=cpu_module('df_partial_s2')
+    h=loader.load_connected_cluster_hamiltonian_snapshot(root/SNAPSHOT)
+    partition=split.split_df_hamiltonian_by_ld(h,3)
+    prep=partial.prepare_df_partial_s2(h,partition,identity_policy='extract_identity_phase',coefficient_atol=0.)
+    _write(output/'PREPARATION.json',preparation_payload(h,partition,prep,partial._block_hash_payload))
+    # Reuse only the old pure hash function, on the SAME already obtained data.
+    tree=ast.parse(archived.read_text());fn=next(n for n in tree.body
+        if isinstance(n,ast.FunctionDef) and n.name=='_partition_hash')
+    future=ast.ImportFrom(module='__future__',names=[ast.alias(name='annotations')],level=0)
+    code=ast.fix_missing_locations(ast.Module(body=[future,fn],type_ignores=[]))
+    ns=dict(asdict=asdict,hashlib=hashlib,json=json);exec(compile(code,str(archived),'exec'),ns)
+    legacy_hash=ns['_partition_hash'](prep.hamiltonian_hash,partition)
+    # Predeclared representations of exactly the same tensor values, not new
+    # scientific candidates or edits to the canonical sampler/preparation.
+    arrays=[('loaded',h.g_matrices),
+            ('complex_C',tuple(np.array(g,order='C',copy=True) for g in h.g_matrices)),
+            ('complex_F',tuple(np.array(g,order='F',copy=True) for g in h.g_matrices))]
+    if all(not np.any(g.imag) for g in h.g_matrices):
+        arrays.append(('real_C',tuple(np.array(g.real,order='C',copy=True) for g in h.g_matrices)))
+    cases=[]
+    for name,gs in arrays:
+        other=replace(h,g_matrices=gs)
+        p=split.split_df_hamiltonian_by_ld(other,3)
+        cases.append(dict(case=name,values_equal=all(np.array_equal(a,b) for a,b in zip(h.g_matrices,gs)),
+          hamiltonian_hash=split.df_hamiltonian_hash(other), partition=asdict(p),
+          partition_hash=partial._partition_hash(prep.hamiltonian_hash,p,partition_policy='weight_ranked_prefix')))
+    result=dict(status='DIAGNOSIS_COMPLETE_NO_SAMPLING', legacy_hash_on_current_payload=legacy_hash,
+        current_hash=prep.partition_hash,expected_hash=PARTITION_HASH,storage_cases=cases,
+        any_storage_case_matches_expected=any(c['partition_hash']==PARTITION_HASH for c in cases))
+    _write(output/'DIAGNOSIS.json',result)
+    return result
+
+
 def run(output_dir, *, root=None):
     root = Path(root or Path(__file__).resolve().parents[3]).resolve()
     output = Path(output_dir).resolve()
@@ -159,8 +239,11 @@ def run(output_dir, *, root=None):
         split = cpu_module("df_partial_randomized_pf")
         partial = cpu_module("df_partial_s2")
         h = loader.load_connected_cluster_hamiltonian_snapshot(root/SNAPSHOT)
-        prep = partial.prepare_df_partial_s2(h, split.split_df_hamiltonian_by_ld(h, 3),
+        partition = split.split_df_hamiltonian_by_ld(h, 3)
+        prep = partial.prepare_df_partial_s2(h, partition,
                  identity_policy="extract_identity_phase", coefficient_atol=0.)
+        _write(output/"PREPARATION.json", preparation_payload(h, partition, prep,
+                                                             partial._block_hash_payload))
         actual = (prep.hamiltonian_hash, prep.partition_hash, prep.preparation_hash,
                   prep.rte_preparation.symbolic_tail.tail_hash)
         if actual != (H_HASH, PARTITION_HASH, PREPARATION_HASH, TAIL_HASH):

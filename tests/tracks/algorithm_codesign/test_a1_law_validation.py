@@ -1,5 +1,6 @@
 """Artificial laws/Paulis only; no snapshot, preparation, RNG or quantum builder."""
 from fractions import Fraction as F
+from dataclasses import dataclass
 from itertools import product
 import math
 from types import SimpleNamespace as NS
@@ -9,7 +10,7 @@ import numpy as np
 
 from trottertracks.algorithm_codesign.a1_connections import SamplerConnection
 from trottertracks.algorithm_codesign.a1_control_variates import CategoricalLaw, OccurrenceLaw
-from trottertracks.algorithm_codesign.a1_law_validation import state_free_bias, fraction_record
+from trottertracks.algorithm_codesign.a1_law_validation import state_free_bias, fraction_record, preparation_payload
 
 
 def connection(qn=(F(4,5), F(1,5)), ql=(F(1,4), F(3,4))):
@@ -19,6 +20,35 @@ def connection(qn=(F(4,5), F(1,5)), ql=(F(1,4), F(3,4))):
 
 
 class A1LawBounds(TestCase):
+    def test_preparation_payload_retains_diagnostics_and_exact_float_metadata(self):
+        @dataclass
+        class Fragment:
+            original_index: int
+            lam: float
+            weight: float
+        @dataclass
+        class Partition:
+            deterministic_fragments: tuple
+            randomized_fragments: tuple
+        @dataclass
+        class Component:
+            component_id: str
+            basis_hash: str
+            coefficient_abs: float
+            probability: float
+            basis_change_operations: tuple = ()
+        p=Partition((Fragment(0, .1, .2),),(Fragment(1,.3,.4),))
+        prep=NS(hamiltonian_hash='mock-H',partition_hash='mock-partition',preparation_hash='mock-prep',
+            rte_preparation=NS(symbolic_tail=NS(tail_hash='mock-tail',components=(
+                Component('a','basis',.25,.5),Component('b','basis',.25,.5)))),
+            deterministic_blocks=(),exact_rte_lambda_r=.5,extracted_identity_coefficient=.1)
+        result=preparation_payload(NS(g_matrices=(np.eye(2,dtype=complex),)),p,prep,lambda b:b)
+        self.assertEqual(result['partition_hash'],'mock-partition')
+        self.assertEqual(result['fragment_hex'][0]['weight_hex'],(.2).hex())
+        self.assertEqual(result['components'][0]['probability_hex'],(.5).hex())
+        self.assertEqual(len(result['basis_operations']),1)
+        self.assertNotIn('basis_change_operations',result['components'][0])
+
     def test_bound_contains_invented_noncommuting_operator_difference(self):
         # This is a tiny artificial algebra check, never a molecular state.
         c = connection(); tau = .2
