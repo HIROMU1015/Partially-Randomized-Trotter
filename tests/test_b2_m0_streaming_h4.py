@@ -1,6 +1,7 @@
 """Artificial identity/comparison tests; no saved molecular input or solver."""
 from copy import deepcopy
 from dataclasses import replace
+import json
 import sys
 from pathlib import Path
 
@@ -67,6 +68,30 @@ def test_all_six_metrics_and_circuit_context_match():
     record=m.compare_axis(deepcopy(saved),saved)
     assert record['status']=='EXACT_MATCH'
     assert all(v==0 for v in record['signed_difference'].values())
+
+
+def test_actual_event_tuple_fields_match_persisted_json_without_value_changes():
+    _,r=artificial_round(0,3)
+    events=tuple(event_pattern(r,'mixed'))
+    raw=[e.to_dict() for e in events]
+    stored=json.loads(json.dumps(raw))
+    assert raw!=stored  # asdict tuples versus persisted JSON arrays
+    assert m.digest(raw)==m.digest(stored)
+    assert m.saved_event_payload(events,stored,m.digest(raw))==stored
+
+
+@pytest.mark.parametrize('defect',['probability','sign','order','identity'])
+def test_json_representation_fix_does_not_accept_changed_event_values(defect):
+    _,r=artificial_round(0,3)
+    events=tuple(event_pattern(r,'mixed'))
+    stored=json.loads(json.dumps([e.to_dict() for e in events]))
+    identity=m.digest(stored)
+    if defect=='probability': stored[0]['event_probability']+=.001
+    elif defect=='sign': stored[0]['application_sequence'][0]['coefficient_sign']*=-1
+    elif defect=='order': stored[0],stored[1]=stored[1],stored[0]
+    else: identity='different_trajectory'
+    with pytest.raises(ValueError,match='FULL_SAVED_EVENT_VALUES'):
+        m.saved_event_payload(events,stored,identity)
 
 
 @pytest.mark.parametrize('defect',['metric','compiled_identity','input_identity','scope','prep'])

@@ -46,6 +46,18 @@ def json_value(value):
     return json.loads(json.dumps(value,allow_nan=False))
 
 
+def saved_event_payload(events,stored,expected_identity):
+    """Compare JSON representations without changing numeric/event values.
+
+    RTEEvent.to_dict uses dataclasses.asdict and retains tuples; persisted JSON
+    stores those sequences as arrays. The canonical digest already serializes
+    both the same way. All fields and the original identity remain required.
+    """
+    payload=json_value([e.to_dict() for e in events])
+    require(payload==stored and digest(payload)==expected_identity,'FULL_SAVED_EVENT_VALUES')
+    return payload
+
+
 def instruction_rows(circuit):
     return [dict(name=x.operation.name,qubits=[circuit.find_bit(q).index for q in x.qubits],
         clbits=[circuit.find_bit(c).index for c in x.clbits],
@@ -178,7 +190,7 @@ def run(private_dir,output):
         round_=previous.connection.B2RPERound(context,preparation,previous.RPERoundSpecification(0,.02),
                                             3,4,2,.02,1,config,distribution)
         events,selection=previous.fixed_events(round_,correctness)
-        event_dicts=[e.to_dict() for e in events]
+        event_dicts=saved_event_payload(events,stored['canonical_events'],TRAJECTORY)
         require(event_dicts==stored['canonical_events']==old['price']['trajectory'] and
                 digest(event_dicts)==old['price']['trajectory_identity']==TRAJECTORY and
                 list(selection['representative_indices'])==[0,4,4,0] and

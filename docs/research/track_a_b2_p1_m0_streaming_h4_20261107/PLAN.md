@@ -27,3 +27,9 @@ streaming X/Y各1回compile（最大2 call）を明示承認している。追�
 出力は`artifacts/track_a_b2_p1_m0_streaming_h4/2026-11-07/run01/`。
 private state/HDF5/積分/provenance原本は公開しない。旧結果・bundle対応・他worktreeを変更しない。
 Q2以降build/compile、追加trajectory/MC、強PF、信号/shot/branch、総費用、詳細科学レビューは禁止。
+
+技術修正：run01はnative build前・compile0回で停止し、その記録を保全する。
+`RTEEvent.to_dict()`のtupleと保存JSON配列を直接比較した表現比較の不具合を修正する。
+数値・符号・確率・順序・canonical digestの条件は緩和しない。修正SOURCEを固定した後、
+同じ承認済みm0 trajectoryで未実施の各native buildと最大2 compileをrun02へ保存する。
+入力やcompiler条件の変更、追加trajectory、compile失敗後のやり直しではない。
