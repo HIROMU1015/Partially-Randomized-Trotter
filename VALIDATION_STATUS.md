@@ -659,3 +659,12 @@ SOURCE `2121a455d8d84557a26fef969aac4d92d6da8b0f`で完全preparation payloadを
 [実行仕様](docs/research/o2_a1_new_target_n1_20261106/EXECUTION.md)に従い、ユーザーが新targetを保存DF H4/1.00 Å/STO-3G/legacy DF12/L_D3/m0/q1/δ.02/r1/K2/threshold0のA1診断対象として採択し、N1のみを許可した。
 最小serializer/runner、人工40件とSOURCE/環境lockを準備した。この段階では科学入力は未投入。旧hash guard/旧結果は変更せず、新identityの自己整合を検査する。
 N2/state、N3/RNG・測定・full build/compile・variance/N/費用は未許可。旧STOP・C1凍結は維持し、N1結果公開後STOPする。
+
+
+## 2026-11-06 A1新target：N1取得成功・mandatory STOP
+
+[結果報告](docs/research/o2_a1_new_target_n1_20261106/REPORT.md)：保存linear H4/1.00 Å/STO-3G/legacy DF12/8qubit/L_D3、m0/q1/δ.02/r1/K2/coefficient_atol0のN1を、公開SOURCE `b6dbec9f80da35a88fba28795ad02ca74c9adfa0` で一回取得した。
+新partition/preparation/tailの完全hash入力・basis/catalog、actual CDF/Q・ν/joints・2層/5層・selected policyを保存。324 symbolic labels中232がpositive grid support、92はgrid質量0のまま保持した。
+固定3-controlは全てpositiveで、selected basisは324 keyを被覆した。人工40件と保存payload correctness16項目PASS。g3のν≈1.8921e-9は学習可能性・CV改善を保証しない。
+state solve/RNG/測定/full interrogation build/compile/variance/N/費用は0、retryなし。N2/N3は未許可、未実行。N2には同じ全DF H/4電子sector/orderのstateとengine精度・phase接続の限定検証scopeと明示許可が必要。
+旧SOURCE・結果・STOP、元mainのdirty/untracked、C1凍結を保全し、N1公開・remote照合後mandatory STOPする。旧opt2の再現や最終CV/総cost優位は認定しない。
