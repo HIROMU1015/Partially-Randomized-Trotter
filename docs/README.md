@@ -134,3 +134,6 @@ A1の[一回の総engine誤差認証・全gate証明・STOP](research/o2_a1_engi
 
 
 A1 N3の[技術接続・科学条件草案](../docs/research/o2_a1_n3_connection_20261106/REPORT.md)：`a1_n3_connection.py`、人工専用runner/test、保存証拠への入口。人工46件PASS、実科学0・未採択・公開後STOP。
+
+
+[A1 N3の事前判定方針・期待compiled RZ費用保証計画](research/o2_a1_n3_decision_expected_rz_20261106/REPORT.md)（2026-11-06）：正式契約03928ce5と整合、結果未閲覧の設計・人工検査。実現/期待費用、未完了/劣位を区別。実科学実行・条件採択なし。

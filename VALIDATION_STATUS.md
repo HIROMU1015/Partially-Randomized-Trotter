@@ -719,3 +719,8 @@ N2のb_state≤7.81e-7を再利用し、実gateのδ*/列長/Eと総b_engineはU
 新規22＋既存24の人工/mock46件PASS。実入力はbyte/identity照合のみで、実state作用/Born・RNG/測定・full build/compile・variance/N/費用等の新科学callは0。
 1024無条件trainでg2/g3を十分学習できるとは置かず、3-control維持・5層×64 conditional train/axisを推奨案とした。ε_axis=1/8、同時α=1/20、cal512/cell/axis、prod≤8192/method/axis、D_CV≤4を含む全新条件は未採択。
 N3には条件の採択と有限測定/real-state/Born/必要compileへの別明示許可が必要。CV改善・期待費用改善は未評価。旧SOURCE/結果/STOP・元main・C1凍結を保全し、今回の公開照合後mandatory STOPする。
+
+
+## 2026-11-06 A1 N3：判定方針・期待RZ保証の設計（科学validationではない）
+
+[設計報告](docs/research/o2_a1_n3_decision_expected_rz_20261106/REPORT.md)。base a167effd、正式契約03928ce5。N3結果未閲覧の判定規則と、全support価格上界/独立price-cal/cal依存N/全段階/STOP/engine移送を扱う期待費用保証案を保存。人工10件PASSはtoy数式・既存会計/helperの検査だけで、実分子validation・CI・独立外部再現ではない。実行中N3のstatus/条件/出力は未変更・未検査。実科学・保存値再解析・実compile0、新条件未採択。公開照合後mandatory STOP。
