@@ -137,3 +137,5 @@ A1 N3の[技術接続・科学条件草案](../docs/research/o2_a1_n3_connection
 
 
 A1 N3の[採択済み一campaign・SOURCE/実行仕様](../docs/research/o2_a1_n3_science_20261106/EXECUTION.md)：追加driver/test、固定exact engine・実call境界・保存とmandatory STOP。
+
+A1 N3の[一campaign中断結果](research/o2_a1_n3_science_20261106/REPORT.md)：取得済397 bit/価格、未完了77 trial、精度/CV比較未判定、journal保全とmandatory STOP。
