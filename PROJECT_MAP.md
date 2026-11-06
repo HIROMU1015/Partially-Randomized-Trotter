@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+Track Dの限定人工検証は[固定scopeとSOURCE](docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)を参照する。分子・全RPE検証とは別で、明示runnerだけが実行入口である。
+
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
 複数ブランチの総括・後続結果・SOURCE・raw・検証状態を固定commitで辿れる。
 以下の研究記述は、このcheckoutに保存された時点の履歴として読む。

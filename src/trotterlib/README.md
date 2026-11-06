@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[track_d_minimal_reference.py](track_d_minimal_reference.py) は[Track D固定人工検証](../../docs/research/track_d_minimal_reference_validation_20261106/PLAN.md)専用adapter。既存DF primitive/event/native controlとphase保持compileを再利用し、分子・sampling・全RPEの実行入口を持たない。
+
 このディレクトリが実装本体である。`scripts/` は主にここにある関数を呼び出す実行入口、
 `tests/` は回帰検査である。研究全体の入口は[`../../PROJECT_MAP.md`](../../PROJECT_MAP.md)を参照する。
 

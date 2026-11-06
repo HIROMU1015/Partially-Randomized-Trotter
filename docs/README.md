@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D人工Reference検証](research/track_d_minimal_reference_validation_20261106/PLAN.md)：固定1 wordのcorrectness、3方式×X/Yの6 wrapper比較、SOURCE・STOP範囲。
+
 研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
 このcheckoutにない後続資料も、固定commitから参照できる。
 
