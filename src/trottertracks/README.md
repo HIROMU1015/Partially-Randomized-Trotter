@@ -1,5 +1,8 @@
 # 研究別SOURCE
 
+[A1-0接続](algorithm_codesign/a1_connections.py)：既存sampler入力→CDF/law/control、selected-only full価格の薄い接続。
+[人工test](../../tests/tracks/algorithm_codesign/test_a1_connections.py)と[接続状況・未承認の科学scope](../../docs/research/o2_a1_0_connections_20261106/REPORT.md)を参照する。実科学入力・build/compileの実行は別許可、科学runnerなし。
+
 [O2-S2 pair adapter](algorithm_codesign/s2_multi_event.py) は保存ordered-pair価格を既存Parent IS/統計へ接続する。
 [v2六cell結果・SOURCE・runner・test](../../docs/research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)：
 許可された転送修正再実行で完了。T主指標でqB/Bは元lawを改善せず。元研究と評価後のSTOPは維持する。

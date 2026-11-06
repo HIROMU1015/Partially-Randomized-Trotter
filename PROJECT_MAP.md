@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+A1-0の[技術接続状況・後日の限定実行scope](docs/research/o2_a1_0_connections_20261106/REPORT.md)（2026-11-06）：
+実CDF/固定controlとselected-only full価格への薄い接続を人工入力で検査する。科学runner・実入力評価・新しい科学結果・実行許可ではない。
+
 O2-S2固定pair-table限定評価（2026-11-06）：[v2六cell結果・SOURCE・raw](docs/research/o2_s2_multi_event_validation_v2_20261106/REPORT.md)。
 許可された転送修正再実行で六cell完了。T主指標は元law P0/Bが最小で、qB/Bによる追加改善なし。v1途中停止結果は保全。
 実装は `src/trottertracks/algorithm_codesign/s2_multi_event.py`、runnerは
