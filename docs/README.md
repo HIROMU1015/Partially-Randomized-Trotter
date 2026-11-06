@@ -114,3 +114,7 @@
 ## Track C 保証検証A・C-N価格B（2026-11-06）
 
 [総合報告](research/track_c_guarantee_cn_price_20261106/REPORT.md)、[保証](research/track_c_guarantee_cn_price_20261106/A_REPORT.md)、[価格](research/track_c_guarantee_cn_price_20261106/B_REPORT.md)。固定行列モデルでの18round条件、元H表現の未資格、有限cohortの価格差0、長q総G未判定を区別する。
+
+## Track C2-B
+
+[固定Full Y4/LD12/h=.02の18round。共役block合成配分は登録非一様policy比で総T 0.5470%減。強baseline下界には勝てず優位性未資格、STOP。](research/track_c2_b_pilot_20261106/REPORT.md)

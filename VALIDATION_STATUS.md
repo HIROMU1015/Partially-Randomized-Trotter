@@ -622,3 +622,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-06 Track C 保証検証A・C-N価格B
 
 [結果・SOURCE・raw](docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3/Full Y4 LD12、h=.02。Aは固定保存行列・理想gate・独立bitsモデルで全18roundの十分条件成立（shot8598/6914）。元H表現の無条件包含は未資格。Bは参照Aで39セル2307標本を完了し、S2の全2304paired標本でfull/強baselineのRZ/CX/depth/sizeが一致。q8最大点誤差6.09%、長q総G・勝者はUNDETERMINED。旧run保全、T合成0、mandatory STOP。
+
+## Track C2-B（2026-11-06）
+
+[固定Full Y4/LD12/h=.02の18round。共役block合成配分は登録非一様policy比で総T 0.5470%減。強baseline下界には勝てず優位性未資格、STOP。](docs/research/track_c2_b_pilot_20261106/REPORT.md)。固定保存行列モデルの範囲を維持し、無条件な元H保証へ拡張しない。

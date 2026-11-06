@@ -176,3 +176,5 @@ Track C H4の後続：[参照compiler Aの実装・限定correctness](track_c_co
 Track C H4の後続：[compiler Aの18round局所区間上界・全support誤差会計](track_c_compiler_a_18round_qualification_20261106/REPORT.md)（基準f45e9b07）。全36条件で条件付き予算は残る。SOURCE→mean等の保証は未完、全RPEはUNQUALIFIED、追加価格なしでSTOP。
 
 Track C H4の後続：[保証検証AとC-N価格比較B](track_c_guarantee_cn_price_20261106/REPORT.md)（基準3258a89f）。Aは固定保存行列モデルの条件を閉じ、Bは参照A39セル・2307標本を取得。S2のfull/強baseline価格差0、長q総G・勝者UNDETERMINED、mandatory STOP。
+
+Track C2-B：[限定pilot・SOURCE・raw・STOP](track_c2_b_pilot_20261106/REPORT.md)。固定Full Y4/LD12/h=.02の18round。共役block合成配分は登録非一様policy比で総T 0.5470%減。強baseline下界には勝てず優位性未資格、STOP。
