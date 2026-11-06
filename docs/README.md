@@ -1,5 +1,7 @@
 # 文書索引
 
+[B1/C1結果](research/track_d_b1_c1_validation_20261106/RESULT.md)：元H向け13-round条件付きoperator十分条件成立、固定q2 raw correctness PASS。compile・新sampling・N評価0、B2/C2未実施、mandatory STOP。
+
 [Track D B1/C1固定検証](research/track_d_b1_c1_validation_20261106/PLAN.md)：保存13-roundの元H向けoperator誤差接続と、sample00→01・q2のwhole-path raw correctnessだけ。B2/C2・compile・新samplingは対象外。
 
 [Track D Stage B・Cの技術準備](research/track_d_bc_static_preparation_20261106/REPORT.md)：B（元H向け信号・統計）、C（whole-round構成・価格）、共通の最小検証順序とSTOP。新規科学計算・実装を伴わない静的調査。

@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-06 Track D B1/C1 operator transport and saved q2 correctness
+
+[結果](docs/research/track_d_b1_c1_validation_20261106/RESULT.md)／[PLAN](docs/research/track_d_b1_c1_validation_20261106/PLAN.md)／[保存result](artifacts/track_d_b1_c1_validation/2026-11-06/run01/result.json)。SOURCE `8c6eeb02e89f6cf14870789719493e75482f62f8`。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1。B1は保存DF norm＋guardとPF/RTE operator誤差を元Hへ接続し、13-roundすべてで条件付き十分条件成立（旧phase配分の最小slack .140877844576 rad）。own-DF signal/Nを使わずstate-vector不要。C1は保存sample00→01のq2・step境界cut・一回gadgetで22 check＋paired X/Y PASS、最大成分差2.04281e−14。元H厳密ground仮定・準備費除外。ideal law/numerical-pilot条件、全law・実装成功保証・N・価格は未資格。compile/sampling/ground solve/DF refit/retry/resume0、B2/C2未実施、mandatory STOP。
+
 ## 2026-11-06 Track D saved32 paired Reference (Stage A)
 
 [結果](docs/research/track_d_h4_paired32_reference_20261106/RESULT.md)／[固定PLAN](docs/research/track_d_h4_paired32_reference_20261106/PLAN.md)／[evidence](artifacts/track_d_h4_paired32_reference/2026-11-06/run01/result.json)／[raw・compiled archive index](artifacts/track_d_h4_paired32_reference/2026-11-06/run01/payload_archives.json)。SOURCE `2dd012dc77dcc877d5918c7d212819eb79b97557`、同一H4/CDF8/LD2/S2/s1/r32/K0/h=δ=.1・保存32 path・event16後cut。全32 precompileと128 wrapper postcheckはPASS。各軸32本の平均はsymmetric→ReferenceでRZ 5531.09375→5814.15625、CX 2089→2042.9375、depth 3071.71875→1649.53125、qubits 9→17。CX/depthは全32本で減、RZは全32本で増。X/Yは同値で64独立pathではない。元H厳密ground仮定・準備費除外、local binary64 evidence。全law母平均・RPE shot数・全round費用・immutable CIは未評価。sampling/ground solve/DF fit/retry/resume0、mandatory STOP、B/Cと詳細科学レビューへ進まない。
