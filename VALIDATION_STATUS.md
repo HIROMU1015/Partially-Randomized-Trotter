@@ -694,3 +694,10 @@ N1 selected gateとN2保存stateを復元して既存q1/selected/Hadamard builde
 新規17＋既存55の人工72件PASS。実bundleはbytes/identityのみ照合し、実component/stateでの新上界・preparation/CDF・solve/eigh・実path/測定/compile/variance/N/費用は未実行。
 N2のb_state≤7.81e-7を再利用し、実gateのδ*/列長/Eと総b_engineはUNKNOWN。1/32は未採択。次は固定bundleの局所gate qualification・一様合成一回の別承認が必要で、N3は含めない。
 元main・旧SOURCE/結果/STOP・state/witness・rare control/pilot・C1凍結を維持し、今回の技術成果は公開照合後mandatory STOPする。
+
+
+## 2026-11-06 A1 engine：一回の数値認証を許可・SOURCE準備
+
+[実行仕様](docs/research/o2_a1_engine_qualification_20261106/EXECUTION.md)：固定24d6bdfのqualify_fixed_bundle一回を、保存H4/1.00 Å/STO-3G/legacy DF12/8qubit/全4電子sector/L_D3、m0/q1/δ.02/r1/K2/coefficient_atol0、X/Yでユーザーが許可した。
+旧kernelとPROFILE_LOCKは変更せず、同じEとN2保存結果の厳密な有理数state上界を合成する最小runnerを準備した。人工3件PASS、旧人工72件を再利用する。
+ここまでqualificationは0回。N1/N2再計算・実state作用/Born・path列挙・RNG/測定・compile/費用は範囲外。1/32とN3は未採択・未許可、公開照合後STOPする。

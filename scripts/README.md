@@ -180,3 +180,6 @@ A1の[N2結果・state/engine保証範囲・STOP](../docs/research/o2_a1_new_tar
 
 
 A1の[保存engine接続・一様誤差評価plan・人工correctness](../docs/research/o2_a1_engine_connection_20261106/REPORT.md)：最小adapter/test、接続/誤差計画/次回の限定科学scope。実上界未取得、N1/N2再計算・N3なし、公開後STOP。
+
+
+A1の[一回のengine数値認証・runner仕様](../docs/research/o2_a1_engine_qualification_20261106/EXECUTION.md)：固定kernel、厳密state上界による最終会計、旧SOURCE保全とSTOP。
