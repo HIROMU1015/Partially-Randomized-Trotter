@@ -104,3 +104,6 @@
 ## ローカルの未コミット資料からの追加収録（2026-11-03）
 
 [原稿・レビュー・研究ノートと保存版の対応](research/main_local_results_collection_20261103.md)。原文の科学的採用や新規実行の認定ではない。
+
+
+A1 v2の[payload保存修正・限定診断とSTOP](research/o2_a1_q1_q2l_20261106/REPORT_V2.md)（2026-11-06）：旧target同値は未閉鎖、CDF以降は未実行。元runnerの`--diagnose`、完全payload、人工29件と原v1保全を記録する。

@@ -20,3 +20,10 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=src <existing-opt2-python> -B \
 その対応が確認できた後だけ、新出力v2でQ1/Q2-Lを限定再実行する。対応が閉じなければ詳細payloadを残してSTOP。
 Q2-T、physical-sector state solve、RNG、Hadamard測定、full interrogation build/compile、variance/N/cost、Q3–Q5は範囲外。
 共有core/元WP11/共有環境を変更せず、再利用する元SOURCEと必要な接続差分を別に記録する。
+
+
+## 実行後の追記
+
+元runの保存thread環境だけをプロセス内で復元した第二診断も行い、PREPARATIONは第一診断と完全一致した。期待identityは再現せず。
+元SOURCE cohortのbyte比較・旧純粋hash関数比較を保存し、同じtargetとの対応を閉じられなかったためCDF以降は実行していない。
+結果とSTOPは[REPORT_V2](REPORT_V2.md)を参照。旧v1記録は変更しない。

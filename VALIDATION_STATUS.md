@@ -630,3 +630,11 @@ v1途中SOURCE/raw/STOPは保全し、v2公開後mandatory STOP。追加条件�
 [報告](docs/research/o2_a1_q1_q2l_20261106/REPORT.md)、[SOURCE](artifacts/o2_a1_q1_q2l/2026-11-06/v1/SOURCE.json)、[identity比較](artifacts/o2_a1_q1_q2l/2026-11-06/v1/IDENTITY_MISMATCH.json)、[STOP](artifacts/o2_a1_q1_q2l/2026-11-06/v1/STOP.json)。
 保存linear H4/1.00 Å/STO-3G/legacy DF12/4電子/8qubit/L_D3、m0/q1/δ.02/r1/K2、threshold0。SOURCEは8e002a3815fb4fba709cf090e9c975052f8dd892、人工28件PASS後の一回preparation取得でH hashは一致、partition/preparation/tail hashは不一致だった。実CDF/support/ν/joint/bias値は未取得、測定・RNG・state solve・full compile・科学retryなし。
 元WP11と現df_partial_s2.pyの版差を静的確認したが、数値原因は未特定。旧SOURCE/結果/STOPを変更せず、measurement-ready・独立再現/CI・CV改善を認定しない。
+
+
+## 2026-11-06 A1 v2：許可されたpayload修正・限定診断後もSTOP
+
+[A1 v2報告](docs/research/o2_a1_q1_q2l_20261106/REPORT_V2.md)：保存linear H4/1.00 Å/STO-3G/legacy DF12/4電子/8qubit/L_D3、m0/q1/δ.02/r1/K2/threshold0。
+SOURCE `2121a455d8d84557a26fef969aac4d92d6da8b0f`で完全preparation payloadを保存する修正を実行し、通常環境と元の記録thread設定で各一回再構成した。両payloadは完全一致したが旧partition/preparation/tail hashは再現せず。
+旧/現hash関数は同じpayloadで一致し、四storage caseも旧hashを再現しなかった。数値原因・旧target同値は未確定。人工29件PASS。
+実CDF/support/ν/moment/biasの取得、RNG、測定、state solve、full compileは0件。v1記録を保全し、v2公開後mandatory STOP。measurement-ready・CV改善・独立再現/CIは未認定。
