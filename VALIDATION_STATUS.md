@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-11-07 Track D C6b independent q8 paired price
+
+[Track D C6b](docs/research/track_d_c6b_q8_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1/q8/cut4、独立domainの32 path。元H厳密ground仮定・準備費除外。SOURCE44a58b9fへ承認済み限定引継ぎ、raw32・postcheck128・pairedχ32 PASS。一次frozen条件付き12量は探索的幅内、別population-line診断4量は幅外。統計未資格、全law/長q/N/全RPE未評価、raw非公開、mandatory STOP。
+
+[result](artifacts/track_d_c6b_q8/2026-11-07/run01_accelerated_completion/result.json)／[STOP](artifacts/track_d_c6b_q8/2026-11-07/run01_accelerated_completion/STOP.json)／[payload availability](artifacts/track_d_c6b_q8/2026-11-07/run01_accelerated_completion/payload_publication.json)。旧SOURCE23725からraw16・post48を再利用、新SOURCE44a58でraw16・compile/post80、sampling追加0、旧新合算compile128。旧KeyboardInterrupt STOPを保持する。immutable_CI=false。
+
 ## 2026-11-07 Track D C6a paired price pilot
 
 [Track D C6a](docs/research/track_d_c6a_paired_price_20261106/RESULT.md)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、fresh q2/q4各16・half-step cut。SOURCE `6b6667026ec8b670f610e41141d195883a9eb513`。人工23件、raw32/32・P0 postcheck128/128・最終paired/χ PASS、完全pilotのddof1統計/共分散と探索的affine係数を取得。n16/qは母平均保証でなく、q8 holdout・長q資格・N/全RPE費用なし。rawはローカル保全、公開は科学要約/価格/統計/hash索引。C6bは提案のみ、mandatory STOP。 [result](artifacts/track_d_c6a_paired_price/2026-11-06/run01/result.json)／[payload availability](artifacts/track_d_c6a_paired_price/2026-11-06/run01/payload_publication.json)。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C6b](research/track_d_c6b_q8_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1/q8/cut4、独立domainの32 path。元H厳密ground仮定・準備費除外。SOURCE44a58b9fへ承認済み限定引継ぎ、raw32・postcheck128・pairedχ32 PASS。一次frozen条件付き12量は探索的幅内、別population-line診断4量は幅外。統計未資格、全law/長q/N/全RPE未評価、raw非公開、mandatory STOP。
+
 [C6b高速化による残task限定引継ぎ](research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)：旧科学条件・eventを保持し、完了済みraw/compile/postcheckを再実行しない。追加sampling0、全32本/旧新合算128 compile、公開後mandatory STOP。
 
 [Track D C6b独立q8](research/track_d_c6b_q8_20261107/PLAN.md)：32 fresh whole-path、凍結C6aモデル、paired12量の探索的価格診断。確認的PASS・長q・全RPE費用は対象外、rawローカル保全、公開後mandatory STOP。
