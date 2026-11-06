@@ -184,3 +184,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-06 Track C 保証検証A・C-N価格B
 
 [結果・SOURCE・raw](docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)。Linear H4 1Å/STO-3G/DF12、S2 LD3/Full Y4 LD12、h=.02。Aは固定保存行列・理想gate・独立bitsモデルで全18roundの十分条件成立（shot8598/6914）。元H表現の無条件包含は未資格。Bは参照Aで39セル2307標本を完了し、S2の全2304paired標本でfull/強baselineのRZ/CX/depth/sizeが一致。q8最大点誤差6.09%、長q総G・勝者はUNDETERMINED。旧run保全、T合成0、mandatory STOP。
+
+## Track C2-A限定pilot（2026-11-06）
+
+[84信号/60短価格セル。3round診断はS2、PF交差未観測。長q期待価格と新構成保証は未資格、全18roundへ進めずSTOP。](docs/research/track_c2_a_pilot_20261106/REPORT.md)。SOURCE、検査、raw、STOPは報告から辿る。旧STOPは維持。

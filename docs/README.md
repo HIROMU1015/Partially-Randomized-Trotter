@@ -114,3 +114,7 @@
 ## Track C 保証検証A・C-N価格B（2026-11-06）
 
 [総合報告](research/track_c_guarantee_cn_price_20261106/REPORT.md)、[保証](research/track_c_guarantee_cn_price_20261106/A_REPORT.md)、[価格](research/track_c_guarantee_cn_price_20261106/B_REPORT.md)。固定行列モデルでの18round条件、元H表現の未資格、有限cohortの価格差0、長q総G未判定を区別する。
+
+## Track C2-A
+
+[84信号/60短価格セル。3round診断はS2、PF交差未観測。長q期待価格と新構成保証は未資格、全18roundへ進めずSTOP。](research/track_c2_a_pilot_20261106/REPORT.md)

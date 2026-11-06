@@ -165,3 +165,7 @@ artifacts/<validation_name>/
 ## Track C 保証検証・限定C-N価格
 
 `run_track_c_guarantee_cn_price.py A|B --common-cache ... --out <fresh-output>`と新しい技術検査`check_track_c_guarantee_cn_price.py`の[報告](../docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)。保証と価格は別process/出力で評価。39セルでSTOPし、旧run・全gridを再開しない。
+
+## Track C2-A
+
+`run_track_c2_a_pilot.py`は固定scopeの入口、`check_track_c2_a_pilot.py`は保存artifactの読取専用検査。[結果と境界](../docs/research/track_c2_a_pilot_20261106/REPORT.md)。STOP済みrunは再開しない。

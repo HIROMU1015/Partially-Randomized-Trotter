@@ -135,3 +135,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C SOURCE保証とA価格
 
 `../trottertracks/track_c_source_guarantee.py`、`track_c_cn_a_price.py`、runner `scripts/run_track_c_guarantee_cn_price.py`、技術検査`check_track_c_guarantee_cn_price.py`、[報告とraw](../../docs/research/track_c_guarantee_cn_price_20261106/REPORT.md)を参照。Aは固定行列モデル条件成立、Bはcohort内full/強対照差0・長q未判定。
+
+## Track C2-A adapter
+
+`../trottertracks/track_c2_a_pilot.py`と[限定pilot報告](../../docs/research/track_c2_a_pilot_20261106/REPORT.md)。既存core/過去の結果は変更せず、専用SOURCE・出力でSTOP。
