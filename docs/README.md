@@ -100,3 +100,4 @@
 [原稿・レビュー・研究ノートと保存版の対応](research/main_local_results_collection_20261103.md)。原文の科学的採用や新規実行の認定ではない。
 
 - [B2総RPE接続の実装・人工検証（2026-11-06）](research/track_a_b2_rpe_implementation_20261106/REPORT.md)：実H4未適用、公開後STOP。
+- [B2 P1実H4 m0/m17限定信号検証（2026-11-07）](research/track_a_b2_p1_two_round_20261107/REPORT.md)：5信号・半径・代表controlledの条件付きPASS。全RPE保証・shot・価格は未評価、mandatory STOP。

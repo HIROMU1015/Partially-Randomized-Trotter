@@ -153,3 +153,7 @@ artifacts/<validation_name>/
 ## B2 RPE接続の人工検証（2026-11-06）
 
 [REPORTとpytest入口](../docs/research/track_a_b2_rpe_implementation_20261106/REPORT.md)を参照。新しい科学runnerは追加していない。固定M1版から取り込んだ`run_o1_m1_h4_operator_correctness.py`は既存人工テストの参照helperとしてのみ使用し、実H4 mainは実行していない。
+
+## B2 P1の限定信号検証（2026-11-07）
+
+`run_b2_p1_signal_validation.py`は明示private入力でm0/m17だけを実行する。[SOURCE・結果・STOP](../docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。他round・shot・価格へ進まない。

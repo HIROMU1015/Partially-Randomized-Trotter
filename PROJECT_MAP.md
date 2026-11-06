@@ -172,3 +172,9 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## B2から総RPE費用への接続実装（2026-11-06）
 
 [人工検証・入力契約・STOP](docs/research/track_a_b2_rpe_implementation_20261106/REPORT.md)。`b2_rpe_connection.py`と`tests/test_b2_rpe_connection.py`。実H4未適用。
+
+## B2 P1の実H4・m0/m17限定信号検証（2026-11-07）
+
+[固定SOURCE・結果・限定PASS・STOP](docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。
+元H state/DF12入力照合、5信号・実半径、代表controlled correctnessを条件付き検証。
+他round・shot・価格・全RPE成功保証は未評価。

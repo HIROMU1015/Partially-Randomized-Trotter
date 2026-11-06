@@ -123,3 +123,7 @@ DF部分ランダム化研究と混同しない。
 ## B2 RPE接続（人工検証のみ、2026-11-06）
 
 `b2_rpe_connection.py`はgeneration-prefix B2のround/native回路・信号・M1会計・強PFを接続する。M1会計の`o1_m1_resource_bridge.py`等は固定版から再利用。[REPORT](../../docs/research/track_a_b2_rpe_implementation_20261106/REPORT.md)と`tests/test_b2_rpe_connection.py`を参照。
+
+## B2 P1の実H4 m0/m17（2026-11-07）
+
+`b2_p1_signal_validation.py`は既存平均kernelと`radius_phase_diagnostics`を使うsignal-only入口。[人工検査・条件付き結果・STOP](../../docs/research/track_a_b2_p1_two_round_20261107/REPORT.md)。実行は明示承認scopeのみ。
