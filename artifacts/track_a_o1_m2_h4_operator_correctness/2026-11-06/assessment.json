@@ -1,0 +1,89 @@
+{
+  "adapter_changed": false,
+  "cause": "Existing OpenFermion get_fermion_operator uses SymbolicOperator.__iadd__ with EQ_TOLERANCE=1e-8; all 1056 nonzero residual monomials are below it. Pauli residual has 0 nonidentity terms and identity 0.",
+  "complete_residual_Pauli_bridge": "FAIL_ALL_RESIDUAL_FERMION_TERMS_REMOVED",
+  "electronic_identity_corrected_labels": {
+    "core": {
+      "CAR_electronic_identity": -2.62457906078306,
+      "CAR_total_identity": -0.33147781346306027,
+      "Pauli_electronic_identity": -2.6245790607830584,
+      "Pauli_total_identity": -0.33147781346305843,
+      "nuclear_constant": 2.29310124732
+    },
+    "physical": {
+      "CAR_electronic_identity": -2.624579060736811,
+      "CAR_total_identity": -0.3314778134168109,
+      "Pauli_electronic_identity": -2.6245790607368105,
+      "Pauli_total_identity": -0.33147781341681026,
+      "nuclear_constant": 2.29310124732
+    },
+    "residual": {
+      "CAR_electronic_identity": 4.6249802598818945e-11,
+      "CAR_total_identity": 4.6249802598818945e-11,
+      "Pauli_electronic_identity": 0.0,
+      "Pauli_total_identity": 0.0,
+      "nuclear_constant": 0.0
+    }
+  },
+  "entry_rule_limitation": "Global operand-scale tolerance exceeds the residual itself; it cannot certify complete residual preservation and even exceeds the wrong-sign negative-control difference. No scientific preservation PASS is inferred from this engineering entry-rule PASS.",
+  "entry_rule_status": "PASS",
+  "entry_tolerance": 8.011293947336095e-09,
+  "further_science_started": false,
+  "integral_CAR_full_core_plus_R": "PASS_NUMERICAL_IDENTITY",
+  "key_max_entries": {
+    "Pauli_core_plus_R_vs_physical_CAR": 1.1337143446255027e-09,
+    "core_Pauli_vs_CAR": 2.2651976998076384e-09,
+    "density_core_plus_R_full256": 1.0658141036401503e-14,
+    "density_core_plus_R_sector36": 2.1094237467877974e-15,
+    "residual_Pauli_vs_CAR": 2.2651962304775996e-09,
+    "wrong_residual_sign_negative_control": 4.5303924371146826e-09
+  },
+  "next_minimal_scope": "A separately fixed cutoff-preserving mapper, artificial tests, then H4 operator-only rerun after user decision; no PF/state/dynamics/circuit/cost.",
+  "overall_correctness_qualification": "NOT_QUALIFIED",
+  "raw_result_sha256": "7de721b3c6ee69e027933cd1093f0195f515b040c39eef780ddb26fd096dca35",
+  "scope": "Interpretation of preserved fixed-adapter operator-only run; no new operator computation",
+  "small_term_audit": {
+    "core": {
+      "eq_tolerance": 1e-08,
+      "interpretation": "Residual after actual fermion loss includes JW cutoff and binary64 rounding; not isolated as exact arithmetic.",
+      "lost_coefficient_l1": 4.4102191974080635e-08,
+      "lost_fermion_operator_max_entry": 2.2651976998076384e-09,
+      "lost_fermion_terms": 528,
+      "mapper_minus_full_CAR_max_entry": 2.2651976998076384e-09,
+      "mapper_minus_retained_CAR_max_entry": 5.329070518200751e-15,
+      "raw_nonzero_fermion_terms": 1057,
+      "retained_fermion_terms": 529,
+      "tiny_coefficient_l1": 4.4102191974080635e-08,
+      "tiny_nonzero_terms": 528
+    },
+    "physical": {
+      "eq_tolerance": 1e-08,
+      "interpretation": "Residual after actual fermion loss includes JW cutoff and binary64 rounding; not isolated as exact arithmetic.",
+      "lost_coefficient_l1": 6.610392591521696e-14,
+      "lost_fermion_operator_max_entry": 1.7294761782189885e-15,
+      "lost_fermion_terms": 528,
+      "mapper_minus_full_CAR_max_entry": 6.217248937900877e-15,
+      "mapper_minus_retained_CAR_max_entry": 6.217248937900877e-15,
+      "raw_nonzero_fermion_terms": 1057,
+      "retained_fermion_terms": 529,
+      "tiny_coefficient_l1": 6.610392591521696e-14,
+      "tiny_nonzero_terms": 528
+    },
+    "residual": {
+      "eq_tolerance": 1e-08,
+      "interpretation": "Residual after actual fermion loss includes JW cutoff and binary64 rounding; not isolated as exact arithmetic.",
+      "lost_coefficient_l1": 6.930386640756261e-08,
+      "lost_fermion_operator_max_entry": 2.2651962304775996e-09,
+      "lost_fermion_terms": 1056,
+      "mapper_minus_full_CAR_max_entry": 2.2651962304775996e-09,
+      "mapper_minus_retained_CAR_max_entry": 4.1359030627651384e-25,
+      "raw_nonzero_fermion_terms": 1056,
+      "retained_fermion_terms": 0,
+      "tiny_coefficient_l1": 6.930386640756261e-08,
+      "tiny_nonzero_terms": 1056
+    }
+  },
+  "source_note": "Raw result key bookkeeping.electronic_identity stores total Pauli identity for physical/core (including the separately known nuclear constant); residual nuclear constant is zero. Corrected labels above separate the two.",
+  "status": "PARTIAL_NOT_QUALIFIED",
+  "tolerance_not_changed": true
+}
