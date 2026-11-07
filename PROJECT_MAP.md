@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+2026-11-08資料調査：[Track B既存成果・公開差分](docs/research/track_b_existing_results_survey_20261108/REPORT.md)。SERVER 1での読取照合とK2/P3への接続条件。新規科学計算・研究再開・既存status変更なし。
+
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
 複数ブランチの総括・後続結果・SOURCE・raw・検証状態を固定commitで辿れる。
 以下の研究記述は、このcheckoutに保存された時点の履歴として読む。

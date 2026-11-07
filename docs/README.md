@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track B既存成果・公開差分調査（2026-11-08）](research/track_b_existing_results_survey_20261108/REPORT.md)：G6/G9/C1のSOURCE・raw公開範囲、normalization／shot／費用の証拠、Track C K2/P3への接続条件。新規科学計算なし。
+
 研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
 このcheckoutにない後続資料も、固定commitから参照できる。
 
