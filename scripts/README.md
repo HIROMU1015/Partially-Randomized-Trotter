@@ -230,3 +230,11 @@ Artificial-only SCV implementation; real 224-shot execution remains unadopted. [
 
 
 O2-SCV224 adopted activation: [module](../src/trottertracks/algorithm_codesign/scv224_activation.py) [runner](../scripts/tracks/algorithm_codesign/run_scv224_science.py) [test](../tests/tracks/algorithm_codesign/test_scv224_activation.py) [report](../docs/research/o2_scv224_science_20261107/REPORT.md) [artifact directory](../artifacts/o2_scv224/2026-11-07/). One campaign, max224 physical shots, retry0, exact engine unchanged.
+
+
+2026-11-07：[Signed support実H4 metadata-only限定検証](../docs/research/scv_signed_support_h4_metadata_science_20261107/REPORT.md)。
+既存signed kernelを再利用する薄い入口、対応人工テスト、固定設定・成果物への案内。
+新SOURCEは `src/trottertracks/algorithm_codesign/scv_signed_h4_metadata.py`、
+CLIは `scripts/tracks/algorithm_codesign/run_scv_signed_h4_metadata.py`、
+testは `tests/tracks/algorithm_codesign/test_scv_signed_h4_metadata.py`。
+metadata上の構造的適格性のみを対象とし、公開後mandatory STOP。

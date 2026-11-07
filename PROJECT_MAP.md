@@ -264,3 +264,11 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 
 
 2026-11-07：[O2-SCV224完了結果](docs/research/o2_scv224_science_20261107/REPORT.md)。保存H4/1 Å/STO-3G/DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y。群S={df-fragment-3}、224 bit/価格完備、rank2/range合格。X分散点指標は実質不変、Yは約0.02471%低下。学習込み実現RZ1,079,241（train306,990、評価772,251）で、学習費回収の明確な兆候なし。精度/期待費用保証・正式GO/NO-GOなし。約24.26分、全process正常終了、旧SOURCE/結果/STOPとC1凍結を保全しmandatory STOP。
+
+
+2026-11-07：[Signed support実H4 metadata-only限定検証](docs/research/scv_signed_support_h4_metadata_science_20261107/REPORT.md)。
+既存signed kernelを再利用する薄い入口、対応人工テスト、固定設定・成果物への案内。
+新SOURCEは `src/trottertracks/algorithm_codesign/scv_signed_h4_metadata.py`、
+CLIは `scripts/tracks/algorithm_codesign/run_scv_signed_h4_metadata.py`、
+testは `tests/tracks/algorithm_codesign/test_scv_signed_h4_metadata.py`。
+metadata上の構造的適格性のみを対象とし、公開後mandatory STOP。
