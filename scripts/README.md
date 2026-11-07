@@ -191,3 +191,5 @@ artifacts/<validation_name>/
 [C7-3高速化completion](run_track_d_c7_3_accelerated.py)：旧raw8再利用、未着手P0/postを別taskで実行。旧SOURCE/STOPは不変、[承認済み切替PLAN](../docs/research/track_d_c7_3_q32_20261107/ACCELERATED_COMPLETION_PLAN.md)と引継ぎhashを固定して明示起動する。
 
 [C7-3停止済み結果の収録](collect_track_d_c7_3_q32.py)／[scalar報告書](summarize_track_d_c7_3.py)：SOURCE94e94のSTOP後だけ、旧sampling/raw35bfdと新compile/post94e94の来歴・160 payload member hashを整理。保存check・統計の読取りのみ、回路/統計の再計算なし。
+
+[C7-4保存再解析runner](run_track_d_c7_4.py)／[結果projection](summarize_track_d_c7_4.py)：保存88 pathのみの探索fit/CV/bootstrapと固定人工6系列/短P0 2本。新H4 sampling/build/compileなし。既存runのmain/guardを変更しない。

@@ -157,3 +157,5 @@ DF部分ランダム化研究と混同しない。
 [C7-3 q32 adapter](../trottertracks/track_d_c7_3_q32.py)：新Q32Request/seed、旧q16 helperのisolated domain束縛、C7-2 max-plus feature再利用。[固定PLAN](../../docs/research/track_d_c7_3_q32_20261107/PLAN.md)専用で旧guardを変更しない。
 
 [C7-3検証高速化adapter](../trottertracks/track_d_c7_3_acceleration.py)：exact標準gate cache、公式Aer double/unitaryは9qubit以下だけ、Reference17qubitは既存全column statevector。P0/cost QPY/precisionを変更せず、新SOURCE worker内でだけ選択。
+
+C7-4の[保存モデル再解析](../trottertracks/track_d_c7_4_models.py)と[人工native比較](../trottertracks/track_d_c7_4_stability.py)は明示runnerだけから利用する。q≥64分子計算を含まず、[技術報告](../../docs/research/track_d_c7_4_model_stability_20261107/REPORT.md)を参照する。

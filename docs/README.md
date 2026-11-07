@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C7-4](research/track_d_c7_4_model_stability_20261107/REPORT.md)：同H4/CDF8/LD2/S2/s1/r32/K0/h=.1の保存q2〜32・88 path再解析。SOURCEdd31e1e2、4探索fit family/5fold/共有bootstrap、最大残差の保存1 path再照合PASS、人工6長系列/短P0 2本・distinct回帰18 PASS。CX整数残差0、paired depthのbasis-runモデル改善は探索的、native版の精度改善は未確認。q≥64分子処理/N/全RPE費用0、未採択の次段階案、公開照合後mandatory STOP。
+
 [Track D C7-3結果](research/track_d_c7_3_q32_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、独立q32/cut16/8 path。sampling/raw SOURCE35bfd、承認済み高速化compile/post SOURCE94e94。旧raw8再利用・新raw/sampling0、全32 P0/post・pairedχ8 PASS。CX差は全8本で−6960、RZ/size/各depthも有限全8本で減、qubits9→17。一次12量は探索的幅内、別population-line6量幅外。統計/全law/q≥64/N/全RPE未資格、旧STOP/raw非公開を維持、公開照合後mandatory STOP。
 
 [C7-3高速化・切替PLAN](research/track_d_c7_3_q32_20261107/ACCELERATED_COMPLETION_PLAN.md)：利用者承認のSOURCE変更。旧raw8 PASSと旧STOPを保全し、未着手compile/postへ切替。case/model/精度/P0は維持、追加sampling/raw再実行0、人工/回帰61 PASS。
