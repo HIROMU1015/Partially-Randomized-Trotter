@@ -224,3 +224,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A CT-0：key・位相・precision資格
 
 [REPORT](docs/research/pr_reference_ct0_20261107/REPORT.md)、[coverage](docs/research/pr_reference_ct0_20261107/KEY_COVERAGE.md)、[phase/precision](docs/research/pr_reference_ct0_20261107/PHASE_PRECISION_FEASIBILITY.md)。保存numeric positive keyはB′400中153、reference384中154にrecordあり。全support位相/誤差域は有限表現、word価格は未資格。正のRPE追加誤差予算あり、実word込みはCONDITIONALLY_FEASIBLE。新規合成/compile/T価格/precision最適化/総T0、mandatory STOP。SOURCE `src/trottertracks/pr_reference_ct0.py`、入力・人工9検査・結果は[成果物](artifacts/pr_reference_ct0/2026-11-07/README.md)。
+
+## 2026-11-07 新A CT-1：有限strict合成correctness
+
+[REPORT](docs/research/pr_reference_ct1_20261107/REPORT.md)、[SCOPE](docs/research/pr_reference_ct1_20261107/SCOPE.md)、[SOURCE/入力/raw](artifacts/pr_reference_ct1/2026-11-07/README.md)。固定q1/r1・保存2 trajectory・X/Y、epsilon1e-9。97 word再利用＋171新合成、268 word/21 local/8 whole検査PASS。q1保存192/axisの予算条件成立、全support CT law/位相価格・18round総Tは未資格／未取得。旧SOURCE/結果/STOP保全、mandatory STOP。

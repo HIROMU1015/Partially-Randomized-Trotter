@@ -201,3 +201,7 @@ artifacts/<validation_name>/
 ## 新A CT-0：保存key・phase・precision（2026-11-07）
 
 `run_pr_reference_ct0.py` → `trottertracks.pr_reference_ct0.run`。保存Git blobの読取と限定区間再解析だけ。[SOURCE・結果・人工検査](../artifacts/pr_reference_ct0/2026-11-07/README.md)。合成/acquire/compile/optimizerを呼ばない。保存runはmandatory STOP済みで、現在は再実行しない。
+
+## 新A CT-1（2026-11-07）
+
+`trottertracks.pr_reference_ct1.stage_a/stage_b/stage_c` の明示入口で有限対象固定・strict合成・correctnessを実施。[実行順・入力・raw・検査](../artifacts/pr_reference_ct1/2026-11-07/README.md)。旧runner/STOPは不変更。保存runはmandatory STOP済みで再実行しない。

@@ -23,3 +23,7 @@
 ## 新A CT-0（2026-11-07）
 
 [pr_reference_ct0.py](pr_reference_ct0.py)は固定Git blobのstrict record/key照合、位相域、RPE headroomだけを扱う。旧runner・合成・compileを実行しない。[REPORT](../../docs/research/pr_reference_ct0_20261107/REPORT.md)、[入力・結果・人工検査](../../artifacts/pr_reference_ct0/2026-11-07/README.md)。mandatory STOP済み。
+
+## 新A CT-1（2026-11-07）
+
+[pr_reference_ct1.py](pr_reference_ct1.py)：保存q1/r1のfinite strict synthesis/correctness。旧engine/emitter/builder/区間会計を再利用し、初回対象268 keyだけを扱う。[REPORT](../../docs/research/pr_reference_ct1_20261107/REPORT.md)、[入力・検査・STOP](../../artifacts/pr_reference_ct1/2026-11-07/README.md)。mandatory STOP済み。

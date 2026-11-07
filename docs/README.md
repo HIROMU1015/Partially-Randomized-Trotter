@@ -154,3 +154,7 @@
 ## 新A CT-0（2026-11-07）
 
 [REPORT](research/pr_reference_ct0_20261107/REPORT.md)、[KEY_COVERAGE](research/pr_reference_ct0_20261107/KEY_COVERAGE.md)、[PHASE_PRECISION_FEASIBILITY](research/pr_reference_ct0_20261107/PHASE_PRECISION_FEASIBILITY.md)。保存key再利用域と追加RPE誤差余地を限定検証。全support word価格未資格、precision未採択、総T未取得、mandatory STOP。
+
+## 新A CT-1（2026-11-07）
+
+[REPORT](research/pr_reference_ct1_20261107/REPORT.md)、[SCOPE](research/pr_reference_ct1_20261107/SCOPE.md)。保存q1/r1の有限correctness pilot。既存97/新規171 word、local21/whole8 PASS、保存Nの予算条件PASS。全support CT保証や総T優越を意味しない。mandatory STOP。
