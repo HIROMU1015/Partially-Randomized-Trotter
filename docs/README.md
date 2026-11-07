@@ -241,3 +241,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2案M・固定n=0 slotのmetadata-only結果](research/o2_m_n0_metadata_result_20261108/REPORT.md)。一回正常完了、NO_NONTRIVIAL_GROUP_IN_SELECTED_SLOT。literal十分条件の局所結果で一般NO-GOではない。
 
 2026-11-08：[O2新機構の候補・技術選別・次の有限技術案](research/o2_new_mechanism_exploration_20261108/REPORT.md)。coherent label消去後の早期終了を1候補に絞り、既知法への優位/新規性は未認定。設計のみ。
+
+2026-11-08：[案Eの実装・人工correctness・強いbaseline比較](research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。人工16件PASS、同じearly LCUとの差0、実科学/実compileなし。

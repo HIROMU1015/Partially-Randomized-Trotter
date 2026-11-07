@@ -131,3 +131,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 2026-11-08：[案M n=0 metadata-only実行結果](o2_m_n0_metadata_result_20261108/REPORT.md)。正232 labelが全て単独群、非自明群0、direct適用はliteral比較でUNKNOWN。一回/retry0でSTOP、測定や別slotへ進めない。
 
 2026-11-08：[O2新機構・案Eの設計](o2_new_mechanism_exploration_20261108/NEW_MECHANISM_CANDIDATES.md)、[技術選別](o2_new_mechanism_exploration_20261108/CANDIDATE_TECHNICAL_ASSESSMENT.md)、[次の技術判別案](o2_new_mechanism_exploration_20261108/NEXT_RESEARCH_PROPOSAL.md)。失敗flagからsuffixを省く全attempt推定。M/Dの救済や新科学実行ではない。
+
+2026-11-08：[O2案Eの限定技術検証](o2_e_early_abort_technical_validation_20261108/REPORT.md)。TECHNICALLY_VALID_KNOWN_LCU_APPLICATION。全attempt平均/M2/flag zeroを人工確認、独自の資源利益は未認定。

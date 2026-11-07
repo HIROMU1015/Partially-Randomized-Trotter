@@ -240,3 +240,5 @@ O2案Mの新track adapterは [m_label_average.py](../trottertracks/algorithm_cod
 案Mの保存N1接続は隣接trackの [m_n0_header_binding.py](../trottertracks/algorithm_codesign/m_n0_header_binding.py)。既存basis hash・対角primitive descriptorを再利用し、metadata-only Literalから既存群判定へ接続する。回路/state/Bornは呼ばず、実N1への適用は未実行。[module/runner/test/証拠](../../docs/research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。
 
 案M header binderの[固定N1 n=0一回結果](../../docs/research/o2_m_n0_metadata_result_20261108/REPORT.md)：全正labelはliteral署名で単独群。matrix/state/Born/compileなし、科学SOURCEのcodeは無変更。
+
+O2案Eの限定track adapterは [e_label_erasure.py](../trottertracks/algorithm_codesign/e_label_erasure.py)。既存A2 gate検査・Hadamard bit規約を再利用し、2-label PREP/SELECT/flag早期終了と三値decoderを接続。人工1/2-system qubitだけで旧engine認証は継承しない。[module/runner/test/証拠](../../docs/research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。

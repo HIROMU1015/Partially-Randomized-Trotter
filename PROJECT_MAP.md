@@ -326,3 +326,5 @@ C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_
 2026-11-08：[案MのN1 n=0 metadata-only一回結果](docs/research/o2_m_n0_metadata_result_20261108/REPORT.md)。固定SOURCE39d8390でbinding/partition各1回、非自明群なし。正232 labelは232単独群、zero92を保全。Born/shot/compile等0、retry0、旧STOP/C1保全。
 
 2026-11-08：[O2新機構の再探索](docs/research/o2_new_mechanism_exploration_20261108/REPORT.md)。案E：正確率poolのcoherent label消去flagで寄与0のsuffixを省く設計。既知LCUの応用・全attempt会計・strong baseline・factor2のvariance限界を明示。M/D保留、実装/新科学計算/旧raw再集計0。
+
+2026-11-08：[O2案Eの2-label instrument・人工16件・既知LCU対照](docs/research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。module e_label_erasure.py、人工runner/test、artifacts/o2_e_label_erasure/2026-11-08/artificial_run01/を接続。TECHNICALLY_VALID_KNOWN_LCU_APPLICATION、同じearly LCUへの増分利益0、実H4/compile0。
