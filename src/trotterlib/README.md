@@ -201,3 +201,9 @@ O2-SCV224 adopted activation: [module](../../src/trottertracks/algorithm_codesig
 CLIは `scripts/tracks/algorithm_codesign/run_scv_signed_h4_metadata.py`、
 testは `tests/tracks/algorithm_codesign/test_scv_signed_h4_metadata.py`。
 metadata上の構造的適格性のみを対象とし、公開後mandatory STOP。
+
+
+## 2026-11-07 Signed Support 448-shot SOURCE preparation
+
+2026-11-07：Signed Support 448-shotの実装仕様を採択し、保存control復元・薄いactivation・人工correctness・SOURCE固定を準備した。実H4科学計算は未許可・未実行、公開照合後mandatory STOP。既存科学SOURCE/結果/STOPは変更しない。
+[report](../../docs/research/scv_signed_support_448_preparation_20261107/REPORT.md)、[activation](../../src/trottertracks/algorithm_codesign/scv_signed_activation.py)、[saved restore](../../src/trottertracks/algorithm_codesign/scv_signed_restore.py)、[orchestrator](../../src/trottertracks/algorithm_codesign/scv_signed_pilot.py)、[runtime adapter](../../src/trottertracks/algorithm_codesign/scv_signed_runtime.py)、[deferred runner](../../scripts/tracks/algorithm_codesign/run_scv_signed_pilot.py)、[artificial tests](../../tests/tracks/algorithm_codesign/test_scv_signed_pilot.py)、[technical evidence](../../docs/research/scv_signed_support_448_preparation_20261107/TEST_RESULTS.json)。将来の科学outputは `artifacts/scv_signed_support_fresh_pilot/2026-11-07/campaign_run01/`（今回は未作成）。

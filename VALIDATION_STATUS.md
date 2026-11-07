@@ -786,3 +786,8 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 
 
 2026-11-07：[O2-SCV224完了結果](docs/research/o2_scv224_science_20261107/REPORT.md)。保存H4/1 Å/STO-3G/DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y。群S={df-fragment-3}、224 bit/価格完備、rank2/range合格。X分散点指標は実質不変、Yは約0.02471%低下。学習込み実現RZ1,079,241（train306,990、評価772,251）で、学習費回収の明確な兆候なし。精度/期待費用保証・正式GO/NO-GOなし。約24.26分、全process正常終了、旧SOURCE/結果/STOPとC1凍結を保全しmandatory STOP。
+
+
+## 2026-11-07 Signed Support 448-shot technical preparation
+
+[Technical report](docs/research/scv_signed_support_448_preparation_20261107/REPORT.md)：201 artificial unit/mock tests PASS, including 42 new adapter tests. Byte/native profile binding checked; no real H4 restore/decode/RNG/Born/shot/fit/paired/compile, no scientific CV improvement evidence. Source candidate only; science execution requires separate explicit permission. Existing scientific evidence/STOPs unchanged.
