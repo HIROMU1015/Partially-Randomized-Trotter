@@ -213,3 +213,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## C-S V0技術準備（2026-11-08）
 
 [保存slot・coarse/finite/strict政策・人工18件・次回有限草案](research/cs_v0_technical_preparation_20261108/REPORT.md)。実H4の数値取得・合成・価格は未実施。
+
+## C-S V0採択・activation（2026-11-08）
+
+[採択契約・起動/保存/STOP・人工結果](research/cs_v0_activation_20261108/REPORT.md)。実科学未開始。旧技術binding/policy文書は複製せず606c40dを参照する。

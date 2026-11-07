@@ -298,3 +298,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## 2026-11-08 C-S V0技術接続
 
 [docs/research/cs_v0_technical_preparation_20261108/REPORT.md](docs/research/cs_v0_technical_preparation_20261108/REPORT.md)：保存H4のslot binding・strict exact-angle provider・追加人工18件とstatic preflight。実H4 science0、政策未採択、公開後mandatory STOP。cs_v0.py/cs_v0_native.py、static-only cs_v0_preflight.py、test_cs_v0.pyを一組として読む。
+
+## 2026-11-08 C-S V0採択・科学activation
+
+[実行契約と報告](docs/research/cs_v0_activation_20261108/REPORT.md)：606c40dの条件を採択し、薄い一campaign activationを追加。既存18/9testを再実行せず、新経路10件と対応1件の人工確認。実H4 call0、科学実行は別途明示許可待ち、公開後STOP。

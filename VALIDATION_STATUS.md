@@ -805,3 +805,7 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 ## 2026-11-08：C-S V0技術SOURCE
 
 SOURCE_READY_WITH_SCIENCE_PREFLIGHT。新規人工18件/静的bytes-runtime preflight PASS、旧C-S9件不変再利用。実H4新science/strict合成/価格0、科学条件はDRAFT_NOT_ADOPTED。local correctnessのみ、CI/独立分子再現/資源優位性ではない。[報告](docs/research/cs_v0_technical_preparation_20261108/REPORT.md)。既存研究status/STOPとC1凍結は無変更。
+
+## 2026-11-08：C-S V0科学activation固定
+
+TECHNICALLY_READY／conditions ADOPTED／SCIENCE_NOT_AUTHORIZED。新しい起動・保存・STOP経路の人工10件＋対応1件追試PASS、旧18/9件を再実行せず再利用。保存H4の実science0、V0局所資格・資源改善は未取得。[実行契約・報告](docs/research/cs_v0_activation_20261108/REPORT.md)。旧result/status/STOPとC1凍結は維持。

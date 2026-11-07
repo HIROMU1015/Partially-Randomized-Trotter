@@ -259,3 +259,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## C-S V0 static-only preflight（2026-11-08）
 
 `tracks/algorithm_codesign/cs_v0_preflight.py` はSOURCE/保存bytes/runtimeだけを照合し、科学activation optionを持たない。[実行条件・境界](../docs/research/cs_v0_technical_preparation_20261108/V0_SCIENCE_EXECUTION_DRAFT.md)。本番V0未許可、終了後STOP。
+
+## C-S V0 one-campaign activation
+
+`tracks/algorithm_codesign/run_cs_v0.py` は既定ではscienceを起動しない。固定SOURCEと`--execute-one-campaign`で明示実行する経路は[契約](../docs/research/cs_v0_activation_20261108/V0_EXECUTION_CONTRACT.md)の別途科学実行許可後だけ使用。旧cs_v0_preflightを再利用し、output/cacheは一回限り。

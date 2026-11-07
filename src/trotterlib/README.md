@@ -222,3 +222,7 @@ The additive module [same_position_residual.py](../trottertracks/algorithm_codes
 ## C-S V0限定adapter（2026-11-08）
 
 `src/trottertracks/algorithm_codesign/cs_v0.py` と `cs_v0_native.py` は既存same_position_residual/Angle/CanonicalGenerator/Parent/strict intervalを再利用する遅延接口。[仕様・新規人工18件](../../docs/research/cs_v0_technical_preparation_20261108/REPORT.md)。元trotterlib計算SOURCEは無変更。
+
+## C-S V0実行接続（2026-11-08）
+
+`src/trottertracks/algorithm_codesign/cs_v0_execution.py` は既存C-S/Parent/strict provider/局所会計をStage A–Dへ結ぶ薄いadapter。[契約と人工10件](../../docs/research/cs_v0_activation_20261108/REPORT.md)。新law/operator kernel/価格器/managerはなく、実H4科学実行0。
