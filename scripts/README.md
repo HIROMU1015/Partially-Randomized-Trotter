@@ -187,3 +187,5 @@ artifacts/<validation_name>/
 [C7-2人工runner](run_track_d_c7_2_toy.py)／[結果projection](summarize_track_d_c7_2_toy.py)：[固定54case](../docs/research/track_d_c7_2_cx_structure_20261107/PLAN.md)だけを実行。実H4 input/イベントは読み込まず、旧研究runnerのmainを呼ばない。post/source/phase照合後STOP、q32実行なし。
 
 [C7-3 q32明示runner](run_track_d_c7_3_q32.py)：[PLAN](../docs/research/track_d_c7_3_q32_20261107/PLAN.md)の8 fresh whole-path/cut16、raw PASS後最大32 P0。旧scheduler/compile/state-action再利用、構造feature/凍結モデル診断、通常testから分子実行しない。
+
+[C7-3高速化completion](run_track_d_c7_3_accelerated.py)：旧raw8再利用、未着手P0/postを別taskで実行。旧SOURCE/STOPは不変、[承認済み切替PLAN](../docs/research/track_d_c7_3_q32_20261107/ACCELERATED_COMPLETION_PLAN.md)と引継ぎhashを固定して明示起動する。

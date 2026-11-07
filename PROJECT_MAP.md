@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C7-3承認済み高速化引継ぎ](docs/research/track_d_c7_3_q32_20261107/ACCELERATED_COMPLETION_PLAN.md)：旧SOURCE35bfdのraw8 PASSを再利用し、旧controller STOP/集約未完を保全。未着手32 P0/各postだけを分離並列化し、exact局所cache・公式Aer double小演算子検証を選択。sampling0、旧新合算32compile上限、公開後mandatory STOP。
+
 [Track D C7-3実行前PLAN](docs/research/track_d_c7_3_q32_20261107/PLAN.md)：同H4/CDF8/LD2/S2/s1/r32/K0/h=.1、独立q32/cut16/n8。凍結C6aモデル・新seedをsampling前固定し、raw PASS後最大32 P0 wrapper。構造/DAG特徴とpaired価格の探索的検証、旧SOURCE/STOP保全、公開照合後mandatory STOP。
 
 [Track D C7-2](docs/research/track_d_c7_2_cx_structure_20261107/REPORT.md)／[q32未採択案](docs/research/track_d_c7_2_cx_structure_20261107/C7_3_EXECUTION_DRAFT.md)：実H4の新計算/価格再解析0、固定54人工P0・raw98項目/post54/observable等36項目・回帰12件PASS。局所非加法/単純lane式へ反例、208−224qの全path bridgeは未取得。旧SOURCE/STOP保全、q32未実行、公開照合後mandatory STOP。

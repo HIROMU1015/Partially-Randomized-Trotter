@@ -1,5 +1,7 @@
 # 文書索引
 
+[C7-3高速化・切替PLAN](research/track_d_c7_3_q32_20261107/ACCELERATED_COMPLETION_PLAN.md)：利用者承認のSOURCE変更。旧raw8 PASSと旧STOPを保全し、未着手compile/postへ切替。case/model/精度/P0は維持、追加sampling/raw再実行0、人工/回帰61 PASS。
+
 [Track D C7-3 PLAN](research/track_d_c7_3_q32_20261107/PLAN.md)：独立q32/cut16/8 path、凍結予測と新domainを事前固定。raw gate後最大32 full P0、C7-2構造feature、探索的価格のみ。q≥64/新fit/N/全RPE対象外、公開後mandatory STOP。
 
 [Track D C7-2](research/track_d_c7_2_cx_structure_20261107/REPORT.md)／[q32案](research/track_d_c7_2_cx_structure_20261107/C7_3_EXECUTION_DRAFT.md)：固定54人工P0と局所CX/phase/DAG検証、全54 postcheck・回帰12 PASS。非加法/単純lane式へ反例。実H4の新計算・再解析0、全path/長q未資格、mandatory STOP。
