@@ -255,3 +255,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## C-S same-position residual preparation (2026-11-08)
 
 [Technical report](../docs/research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md). New library-only placement/splice API and targeted artificial tests; no scientific runner or activation entry was added. Do not restart old M1/F2/Parent/SP runners for this preparation.
+
+## C-S V0 static-only preflight（2026-11-08）
+
+`tracks/algorithm_codesign/cs_v0_preflight.py` はSOURCE/保存bytes/runtimeだけを照合し、科学activation optionを持たない。[実行条件・境界](../docs/research/cs_v0_technical_preparation_20261108/V0_SCIENCE_EXECUTION_DRAFT.md)。本番V0未許可、終了後STOP。

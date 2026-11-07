@@ -218,3 +218,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## PR algorithm delta / C-S adapter (2026-11-08)
 
 The additive module [same_position_residual.py](../trottertracks/algorithm_codesign/same_position_residual.py) uses existing exact Angle and externally supplied coherent residual words. [Tests](../../tests/tracks/algorithm_codesign/test_same_position_residual.py) and [technical report](../../docs/research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md). Artificial preparation only; no H4 law/synthesis/cost validation.
+
+## C-S V0限定adapter（2026-11-08）
+
+`src/trottertracks/algorithm_codesign/cs_v0.py` と `cs_v0_native.py` は既存same_position_residual/Angle/CanonicalGenerator/Parent/strict intervalを再利用する遅延接口。[仕様・新規人工18件](../../docs/research/cs_v0_technical_preparation_20261108/REPORT.md)。元trotterlib計算SOURCEは無変更。

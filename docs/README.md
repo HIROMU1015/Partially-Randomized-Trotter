@@ -209,3 +209,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## PR改善の重複排除・C-S接口（2026-11-08）
 
 [報告](research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md)：O1-M1の重複確認とC-S同位置residualの最小接口。既存F1/F2とmatched H4結果を再利用し、新規人工9件PASS、新科学計算0。M1全般のNO-GOや資源優位の認定ではない。
+
+## C-S V0技術準備（2026-11-08）
+
+[保存slot・coarse/finite/strict政策・人工18件・次回有限草案](research/cs_v0_technical_preparation_20261108/REPORT.md)。実H4の数値取得・合成・価格は未実施。

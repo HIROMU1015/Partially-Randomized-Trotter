@@ -801,3 +801,7 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 ## 2026-11-08 C-S placement/splice technical preparation
 
 [Report](docs/research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md): M1 duplicate work avoided; one additive same-position coarse/coherent-residual interface, 9 targeted artificial tests PASS. Existing scientific evidence and qualification STOPs are unchanged. No real H4/operator/Born/sampling/compile/N/G evaluation; technical source only, mandatory STOP before separately approved science.
+
+## 2026-11-08：C-S V0技術SOURCE
+
+SOURCE_READY_WITH_SCIENCE_PREFLIGHT。新規人工18件/静的bytes-runtime preflight PASS、旧C-S9件不変再利用。実H4新science/strict合成/価格0、科学条件はDRAFT_NOT_ADOPTED。local correctnessのみ、CI/独立分子再現/資源優位性ではない。[報告](docs/research/cs_v0_technical_preparation_20261108/REPORT.md)。既存研究status/STOPとC1凍結は無変更。
