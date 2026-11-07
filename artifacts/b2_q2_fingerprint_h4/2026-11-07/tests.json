@@ -1,0 +1,74 @@
+{
+  "status": "PASS_ARTIFICIAL_ONLY",
+  "tests": 12,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 54.035,
+  "command": "python -m pytest -q tests/test_b2_q2_fingerprint_h4.py tests/test_b2_fingerprint_pipeline.py",
+  "scope": "artificial saved-reference adapter, 1-build/2-compile count and STOP tests; inherited controlled oracle and pair compiler checks",
+  "published_execution_source": "90425140694cfb3fbe53ea949fa59fbde651ff83",
+  "execution_context": "local functional tests before commit; no real H4 I/O, no old runner main, no CI/independent review",
+  "cases": [
+    {
+      "class": "tests.test_b2_q2_fingerprint_h4",
+      "name": "test_one_build_two_compiles_reproduce_saved_reference",
+      "seconds": 14.06
+    },
+    {
+      "class": "tests.test_b2_q2_fingerprint_h4",
+      "name": "test_saved_identity_mismatch_stops_before_compile[native]",
+      "seconds": 1.362
+    },
+    {
+      "class": "tests.test_b2_q2_fingerprint_h4",
+      "name": "test_saved_identity_mismatch_stops_before_compile[sine_wrapper]",
+      "seconds": 5.713
+    },
+    {
+      "class": "tests.test_b2_q2_fingerprint_h4",
+      "name": "test_price_mismatch_stops_after_first_compile",
+      "seconds": 8.531
+    },
+    {
+      "class": "tests.test_b2_q2_fingerprint_h4",
+      "name": "test_compiler_failure_is_not_retried",
+      "seconds": 6.908
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_opt_in_native_and_xy_keep_identity_and_controlled_meaning[0]",
+      "seconds": 1.138
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_opt_in_native_and_xy_keep_identity_and_controlled_meaning[1]",
+      "seconds": 2.205
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_opt_in_native_and_xy_keep_identity_and_controlled_meaning[3]",
+      "seconds": 8.522
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_wrapper_mutation_check_remains_enforced[canonical_qiskit_circuit_fingerprint]",
+      "seconds": 0.395
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_wrapper_mutation_check_remains_enforced[streamed_canonical_qiskit_circuit_fingerprint]",
+      "seconds": 0.165
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_opt_in_hasher_error_is_propagated_without_fallback",
+      "seconds": 0.119
+    },
+    {
+      "class": "tests.test_b2_fingerprint_pipeline",
+      "name": "test_existing_pair_compiler_uses_selected_hash_and_keeps_both_compiled_axes",
+      "seconds": 1.592
+    }
+  ]
+}

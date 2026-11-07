@@ -225,3 +225,8 @@ outer-step境界を含む固定1 trajectoryでnative/wrapper/compiled identity�
 [REPORT・段階別時間/メモリ・X/Y全6指標](docs/research/b2_fingerprint_pipeline_20261107/REPORT.md)。
 native最終hash・wrapper改変チェック・既存pair compilerにopt-in関数を接続。人工Q1/Q2/Q8でidentityと価格が一致。
 flat回路・copy・wrapper・DAGを分離計測。既定動作と過去の結果を保持し、実H4の追加実行なし。
+
+## B2実H4 Q2へのopt-in fingerprint適用（2026-11-07）
+
+[REPORT・保存Q2 referenceとの照合・時間/メモリ・STOP](docs/research/b2_q2_fingerprint_h4_20261107/REPORT.md)。
+固定8 event、stream native1回、X/Y各1回compile。旧referenceの再build/compileなし。完了後mandatory STOP。

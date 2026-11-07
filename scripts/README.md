@@ -193,3 +193,8 @@ artifacts/<validation_name>/
 
 `benchmark_b2_fingerprint_pipeline.py`は既存人工B2・stream builder・wrapper・pair compilerを再利用する。
 [固定SOURCE・Q1/Q2/Q8比較・段階別memory](../docs/research/b2_fingerprint_pipeline_20261107/REPORT.md)。実H4やMCは実行しない。
+
+## 実H4 Q2のopt-in hash限定照合（2026-11-07）
+
+`run_b2_q2_fingerprint_h4.py`は旧Q2の保存入力・event・価格と既存のopt-in pipelineを再利用する。
+[SOURCE・実行条件・結果・STOP](../docs/research/b2_q2_fingerprint_h4_20261107/REPORT.md)。native1回・compile2回に限定。再実行や他roundの許可ではない。

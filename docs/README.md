@@ -134,3 +134,8 @@ payload/JSON/SHAの分離計測とメモリ上の限界。科学pipelineの既�
 
 [REPORT](research/b2_fingerprint_pipeline_20261107/REPORT.md)：人工Q1/Q2/Q8のnative・wrapper・compiled identity/全6価格を比較。
 native生成/hash、copy、wrapper validation/compose、whole compile、前後DAGを段階計測。実H4追加実行なし。
+
+## B2実H4 Q2のopt-in fingerprint限定確認（2026-11-07）
+
+[REPORT](research/b2_q2_fingerprint_h4_20261107/REPORT.md)：保存Q2をreferenceにnative/wrapper/compiled identityと全6価格を照合。
+候補native1回・X/Y各1compile。段階計測と同一完成回路の旧/新hash技術比較を保存し、mandatory STOP。

@@ -166,3 +166,8 @@ DF部分ランダム化研究と混同しない。
 `stream_native`、native wrapper、`o1_m1_resource_bridge._compile_pair`の`fingerprint_function`へ同一policyの関数を渡せる。
 未指定時は旧関数を使用し、wrapper改変検出とcompiler/metric検査を保つ。
 [人工接続・20 test・分離計測](../../docs/research/b2_fingerprint_pipeline_20261107/REPORT.md)。
+
+## Opt-in fingerprintの実H4 Q2限定適用（2026-11-07）
+
+同じhasher/native/wrapper/pair compilerを不変更で使用し、保存Q2のidentity・6価格へ照合する。
+[実行SOURCE・性能観測・証拠範囲・STOP](../../docs/research/b2_q2_fingerprint_h4_20261107/REPORT.md)。
