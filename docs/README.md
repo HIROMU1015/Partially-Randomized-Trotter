@@ -225,3 +225,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 [C-S V0 schema修復と同条件再実行](research/cs_v0_repair_20261108/REPORT.md)：旧run01を保全、新人工5件、科学条件は変更なし。
 
 [C-S V0修復後の結果](research/cs_v0_repair_results_20261108/REPORT.md)：同じ条件で2spec/7keysを完了、全cap PASS。局所T削減なし、全体優位性未評価。
+
+2026-11-08 O2：[MultilevelからSampling・Return結合への技術調査](research/o2_a2_j1_mechanism_20261108/O2_NEXT_ALGORITHM_REPORT.md)。A2はアクセス未完成、J1は新しい安価な取得構造未特定。科学結果とは区別する。
