@@ -1,5 +1,7 @@
 # scripts 索引
 
+[B/C固定scalar runner](run_track_d_bc_total.py)：[PLAN](../docs/research/track_d_bc_total_20261108/PLAN.md)の保存N/直接平均/固定A・F・Sによる一campaign。`--preflight`はmetadata照合、`--execute`は全13-round条件付き会計。新回路/fit/Nなし、失敗後retry/resume禁止、公開照合後mandatory STOP。
+
 [B6b明示runner](run_track_d_b6b.py)：[固定PLAN](../docs/research/track_d_b6b_bc_integration_20261108/PLAN.md)の固定Git metadata/coverageと4人工case・最大16 P0 wrapperだけ。実H4のsampling/build/compile・価格再解析・N算定・全RPE集計を実行しない。人工検証後は結果公開とmandatory STOP。
 
 `run_track_d_c6b_accelerated.py` は[利用者承認済みSOURCE引継ぎ](../docs/research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)の残task専用入口。固定済みeventを読み、完了済みraw/compile/postcheckを再実行しない。新sampling0、旧新128 compile上限。
