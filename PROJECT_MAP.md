@@ -204,3 +204,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track C共同isometry（2026-11-08）
 
 [構成・Fock/native/X/Y・全18round・独立holdout](docs/research/track_c_joint_isometry_20261108/REPORT.md)。実装`track_c_joint_*.py`、人工test`test_track_c_joint_isometry.py`、保存値集計`summarize_track_c_joint_isometry.py`、読取検査`check_track_c_joint_isometry.py`。paired総RZ3.355%・CX1.789%減、serial depth上界0.696%増。強Fullがなお低コスト、mandatory STOP。
+
+## Track C対角gate融合（2026-11-08）
+
+[既知control・run融合・共通Full比較](docs/research/track_c_diagonal_fusion_20261108/REPORT.md)。実装`track_c_diagonal_*.py`、人工test`test_track_c_diagonal_fusion.py`、保存値集計`summarize_track_c_diagonal_fusion.py`、読取checker`check_track_c_diagonal_fusion.py`。RTE-run固有の追加効果は既知term基準で全PRのRZ約0.135%・CX約1.67%。同じ合成でFullも改善し差は縮まらず、mandatory STOP。

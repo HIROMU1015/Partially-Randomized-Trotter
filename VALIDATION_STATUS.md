@@ -642,3 +642,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## Track C共同isometry（2026-11-08）
 
 [REPORT](docs/research/track_c_joint_isometry_20261108/REPORT.md)。固定H4/1Å/STO-3G/DF12・LD3、18round/.02。625列集合のfull-Fock検証、128 context/5380 native lowering区間、11 joint operator・22 X/Y・8短wrapper検査、3人工test、独立価格384標本を保存。paired総RZ3.355%・CX1.789%減だがserial depth上界0.696%増、強Fullより高価。保存H/ideal native/fresh bitsモデルの条件付き保証。読取checker`python3 scripts/check_track_c_joint_isometry.py`。外部再現・詳細GPTレビューなし、mandatory STOP。
+
+## Track C対角gate融合（2026-11-08）
+
+[REPORT](docs/research/track_c_diagonal_fusion_20261108/REPORT.md)。固定保存H4/ideal native/fresh bitsモデルで、33run joint・9 D joint・8短X/Y・人工3件を検証。独立価格384標本と全18round会計を保存。RTE-run固有のRZ削減は既知term比約0.135%と小さい。既知control/DF parity合成を同等に与えたFullはなお低コスト。旧native/isometry全128 contextを再利用し新丸めdiskを追加、source条件・RTE law/aggregation・旧STOPは保全。読取checker`python3 scripts/check_track_c_diagonal_fusion.py`。外部再現・詳細GPTレビューなし、mandatory STOP。

@@ -155,3 +155,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C共同isometry接続
 
 [2026-11-08の共同列構成](../../docs/research/track_c_joint_isometry_20261108/REPORT.md)は既存stable partial QR・RTE central builder・compiler Aを再利用する。adapterは`src/trottertracks/track_c_joint_*.py`、人工testは`tests/test_track_c_joint_isometry.py`。各列のFock projector、controlled相対位相、sampling law/aggregationを保持し、短い共有runの資源を削減した。全指標改善・強Full優越は主張せずmandatory STOP。
+
+## Track C対角融合の接続
+
+[2026-11-08検証](../../docs/research/track_c_diagonal_fusion_20261108/REPORT.md)は既存DF primitive、central-control `_rotation`、Qiskit GraySynth topologyを再利用。研究adapterは`src/trottertracks/track_c_diagonal_*.py`、人工testは`tests/test_track_c_diagonal_fusion.py`。既存loweringと新しいrun融合の利益を分け、RTE law/aggregation・D係数/stepを保持した。Fullにも同等合成を適用しmandatory STOP。

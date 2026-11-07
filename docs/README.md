@@ -134,3 +134,7 @@
 ## Track C共同isometry（2026-11-08）
 
 [構成・correctness・全18round資源・負結果](research/track_c_joint_isometry_20261108/REPORT.md)。singleton方式からpaired RZ/CX改善、serial depth上界悪化、強Full未逆転。SOURCE・全raw・STOP・読取checkerは同REPORTから辿る。
+
+## Track C対角gate融合（2026-11-08）
+
+[同一basisのPauli集約・parity共有・Full比較](research/track_c_diagonal_fusion_20261108/REPORT.md)。RTE run固有のRZ改善は限定的。既知controlを含む大きな削減を新規PR改善へ混同せず、全raw・条件付きRPE・STOPを保存した。
