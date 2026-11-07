@@ -1,0 +1,106 @@
+{
+  "status": "COMPLETE_MANDATORY_STOP",
+  "conclusion": "D-only ground-BCH joint cancellation improves PR at fixed H4; strong full PF still cheaper.",
+  "primary": {
+    "comparator": "Registered partial-S2 h=.02 and original r_m; exact same r_m for tuned D h=.16",
+    "baseline_shots": 8598,
+    "improved_shots": 8498,
+    "baseline_G": [
+      4779195204114.146,
+      1093237891134.831,
+      2354827665173.8447,
+      7242255464259.144
+    ],
+    "improved_G": [
+      3527294076932.6304,
+      757755916384.4664,
+      1645374170844.7188,
+      5312841398515.534
+    ],
+    "improved_G_MC_SE": [
+      65269320631.042366,
+      7099651849.401379,
+      17250071845.98006,
+      93778999228.96057
+    ],
+    "paired_delta_MC_SE": [
+      122977155291.3203,
+      13405730502.027296,
+      32581654557.278214,
+      176674517926.67767
+    ],
+    "RZ_reduction": 0.2619481050081033,
+    "CX_reduction": 0.30687005771645814,
+    "shot_reduction": 0.0116306117701791,
+    "m17_shots": [
+      626,
+      592
+    ]
+  },
+  "metrics": [
+    "RZ",
+    "CX",
+    "serial_depth_upper",
+    "size"
+  ],
+  "T_synthesis": "NOT_EVALUATED",
+  "state_preparation_excluded": true,
+  "scope": {
+    "molecule": "linear H4",
+    "distance_A": 1.0,
+    "basis": "STO-3G",
+    "DF_rank": 12,
+    "LD": 3,
+    "delta0": 0.02,
+    "rounds": 18,
+    "epsilon_Ha": 0.00015936,
+    "alpha": 0.05,
+    "beta": 0.4
+  },
+  "guarantee": "Conditional >=.95 for saved Hermitian matrix, exact ground input, ideal native gates and fresh bits; continuum-H inclusion unqualified.",
+  "model_input_sha256": "68269aa0415f048a0220beb4054daa1bba715c6eb29fbbe9d5ba779baf0346f2",
+  "new_SCF": 0,
+  "new_DF_fit": 0,
+  "new_physical_ground_solve": 0,
+  "scientific_sources": {
+    "order_BCH": "ed3902a118b00e5da33e323b05b3e129c181d78a",
+    "redistribution": "dfc4d475f711e3885f1dbbef6b05ec5d48fa00a4",
+    "signals": "f935da60aa89729d6bf84b0100e7b4a27285507b",
+    "prices_strong_control": "cb445a402749920d31d4bf76142c6f59a927bf9a",
+    "first_interval": "91f2ebeeec521259535ded3d73d61028f39df2f4",
+    "nonresonant_semantics": "30aca97b237e49e6e47a45a90393c779a22d967a",
+    "registered_comparison": "7287bdc86f52309c5c48fca7f9bca857ee7960b4"
+  },
+  "inherited_guarantee_source": "720416c5b88b227cf76ff7aa729d91a0a98ed58b",
+  "RTE_price_samples": 1056,
+  "deterministic_price_cells": 410,
+  "unique_qualified_points": 219,
+  "old_sources_results_grants_ledgers_markers_STOPs_preserved": true,
+  "detailed_GPT_review_started": false,
+  "external_reproduction": false,
+  "limits": [
+    "State-specific coefficient needs supplied ground expectations; no scalable tuning algorithm claim.",
+    "No global optimality or price-selection bias correction.",
+    "Serial depth bound is not actual full-DAG depth.",
+    "No PR resource advantage over strong full PF."
+  ],
+  "next": {
+    "owner": "ユーザー",
+    "task": "Decide adoption of the conditional D-only improvement and next hypothesis, such as practical coefficient estimation or RTE bottleneck. Codex stopped."
+  },
+  "archive": {
+    "path": "RAW_DATA.tar.gz",
+    "files": 2044,
+    "bytes": 8000066,
+    "sha256": "1556e5fcf1d3423e9e108a6fa2c8f0135519b3a5be7b0e1f8e9a08367e71840e",
+    "index": "RAW_INDEX.json"
+  },
+  "public_inputs": {
+    "DF_commit": "4591b8d75a2a6a55c74a51225f0c61648023c8ee",
+    "DF_path": "artifacts/rte_connected_cluster_cost_validation/h4_sto3g_d100_rank12_ld3_dt0p1_ref4_k2_connected_pilot30_max1500_hold1500_rare375_v1.hamiltonian.npz",
+    "DF_sha256": "13e4b10d2347ed900fe4aa4b2238128ebe735a48988e321b9e4fabac4d092a3b",
+    "ground_commit": "7db4792d4cd0ed9a7abc255565f207dd31a437bd",
+    "ground_path": "artifacts/track_c_h4_input_check/2026-11-06/run02/ground_reference.npz",
+    "ground_sha256": "6a350e7dd107f242bb00eae6a8d552ab4f4d1fc8df850c39ba8f838174994ae3"
+  }
+}

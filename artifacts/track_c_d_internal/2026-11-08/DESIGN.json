@@ -1,0 +1,391 @@
+{
+  "cases": [
+    {
+      "kind": "ordered",
+      "name": "original",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "ordered",
+      "name": "order_0321",
+      "order": [
+        0,
+        3,
+        2,
+        1
+      ]
+    },
+    {
+      "kind": "half_control",
+      "name": "half_control",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "D2",
+      "name": "D2",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "D4",
+      "name": "D4",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "partial_Y4",
+      "name": "partial_Y4",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "kind": "full_S2",
+      "name": "full_S2",
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "kind": "full_Y4",
+      "name": "full_Y4",
+      "order": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "a": 0.25181840612658435,
+      "fragment": 0,
+      "kind": "redistributed",
+      "name": "vertex_j0",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "a": 0.17716647722788695,
+      "fragment": 1,
+      "kind": "redistributed",
+      "name": "vertex_j1",
+      "order": [
+        0,
+        1,
+        3,
+        2
+      ]
+    },
+    {
+      "a": 0.15156430812264032,
+      "fragment": 2,
+      "kind": "redistributed",
+      "name": "vertex_j2",
+      "order": [
+        0,
+        2,
+        3,
+        1
+      ]
+    },
+    {
+      "a": 0.1233855222383813,
+      "fragment": 3,
+      "kind": "redistributed",
+      "name": "vertex_j3",
+      "order": [
+        0,
+        2,
+        1,
+        3
+      ]
+    },
+    {
+      "kind": "Dtuned",
+      "name": "tuned_0123",
+      "order": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "v": 1.4768778287800015
+    },
+    {
+      "kind": "Dtuned",
+      "name": "tuned_0321",
+      "order": [
+        0,
+        3,
+        2,
+        1
+      ],
+      "v": 1.490624664134615
+    }
+  ],
+  "holdout": "h grid and all long-time/finite-RTE signals are not used to select coefficients.",
+  "identity": "H2_total=H2_outer+(2v^3+(1-2v)^3) H2_D/4 for D_symmetric triple composition in each half. Ground cancellation only.",
+  "source_commit": "f935da60aa89729d6bf84b0100e7b4a27285507b",
+  "tuned": [
+    {
+      "D_exponentials": 38,
+      "D_internal_ground": -0.003032366990335862,
+      "H2_ground": -2.043458176108348e-14,
+      "H2_norm": 0.031458896424435494,
+      "R_occurrences": 1,
+      "additional_mixed_internal_ground": 1.9647593945371465e-14,
+      "aggregate_outer_reference_ground": 0.0030323669902957793,
+      "case": {
+        "kind": "Dtuned",
+        "name": "tuned_0123",
+        "order": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "v": 1.4768778287800015
+      },
+      "eta_target": -1.0151625527143378,
+      "local": [
+        {
+          "h": 0.02,
+          "operator_coefficient": 0.03145802418697508,
+          "phase_coefficient": -3.8609133251600167e-07
+        },
+        {
+          "h": 0.01,
+          "operator_coefficient": 0.03145867833894008,
+          "phase_coefficient": -9.664144484666795e-08
+        }
+      ],
+      "mixed_total_ground": 0.0030323669903154276,
+      "negative_D_time": 6.338144801460011,
+      "v": 1.4768778287800015
+    },
+    {
+      "D_exponentials": 38,
+      "D_internal_ground": -0.003032366990287561,
+      "H2_ground": -1.6985653335244155e-15,
+      "H2_norm": 0.03177410615015039,
+      "R_occurrences": 1,
+      "additional_mixed_internal_ground": -9.917634000480481e-15,
+      "aggregate_outer_reference_ground": 0.0030323669902957793,
+      "case": {
+        "kind": "Dtuned",
+        "name": "tuned_0321",
+        "order": [
+          0,
+          3,
+          2,
+          1
+        ],
+        "v": 1.490624664134615
+      },
+      "eta_target": -1.1528724828732642,
+      "local": [
+        {
+          "h": 0.02,
+          "operator_coefficient": 0.031773243867952806,
+          "phase_coefficient": -3.3541051880359676e-07
+        },
+        {
+          "h": 0.01,
+          "operator_coefficient": 0.03177389057686776,
+          "phase_coefficient": -8.391551342690164e-08
+        }
+      ],
+      "mixed_total_ground": 0.003032366990285862,
+      "negative_D_time": 6.434372648942305,
+      "v": 1.490624664134615
+    }
+  ],
+  "vertices": [
+    {
+      "D_exponentials": 10,
+      "D_internal_ground": 0.0032902086845138373,
+      "H2_ground": 0.006117982413391813,
+      "H2_norm": 0.030618273224630673,
+      "R_occurrences": 1,
+      "additional_mixed_internal_ground": -0.00020459326141780262,
+      "aggregate_outer_reference_ground": 0.0030323669902957793,
+      "case": {
+        "a": 0.25181840612658435,
+        "fragment": 0,
+        "kind": "redistributed",
+        "name": "vertex_j0",
+        "order": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "local": [
+        {
+          "h": 0.02,
+          "operator_coefficient": 0.03061757687270475,
+          "phase_coefficient": 0.006118199926720544
+        },
+        {
+          "h": 0.01,
+          "operator_coefficient": 0.030618099112808668,
+          "phase_coefficient": 0.006118036723068454
+        }
+      ],
+      "mixed_total_ground": 0.002827773728877977,
+      "negative_D_time": 0
+    },
+    {
+      "D_exponentials": 10,
+      "D_internal_ground": 0.006673986331969615,
+      "H2_ground": 0.00828385145049596,
+      "H2_norm": 0.03819226252045515,
+      "R_occurrences": 1,
+      "additional_mixed_internal_ground": -0.0014225018717694362,
+      "aggregate_outer_reference_ground": 0.0030323669902957793,
+      "case": {
+        "a": 0.17716647722788695,
+        "fragment": 1,
+        "kind": "redistributed",
+        "name": "vertex_j1",
+        "order": [
+          0,
+          1,
+          3,
+          2
+        ]
+      },
+      "local": [
+        {
+          "h": 0.02,
+          "operator_coefficient": 0.03819140364213706,
+          "phase_coefficient": 0.008284166657345167
+        },
+        {
+          "h": 0.01,
+          "operator_coefficient": 0.038192047798626005,
+          "phase_coefficient": 0.008283930218871985
+        }
+      ],
+      "mixed_total_ground": 0.0016098651185263442,
+      "negative_D_time": 0
+    },
+    {
+      "D_exponentials": 10,
+      "D_internal_ground": 0.010776467596030742,
+      "H2_ground": 0.012510078340302794,
+      "H2_norm": 0.06091903674880977,
+      "R_occurrences": 1,
+      "additional_mixed_internal_ground": -0.0012987562460237303,
+      "aggregate_outer_reference_ground": 0.0030323669902957793,
+      "case": {
+        "a": 0.15156430812264032,
+        "fragment": 2,
+        "kind": "redistributed",
+        "name": "vertex_j2",
+        "order": [
+          0,
+          2,
+          3,
+          1
+        ]
+      },
+      "local": [
+        {
+          "h": 0.02,
+          "operator_coefficient": 0.060918007987254066,
+          "phase_coefficient": 0.012510630625212626
+        },
+        {
+          "h": 0.01,
+          "operator_coefficient": 0.060918779542013496,
+          "phase_coefficient": 0.012510216383654332
+        }
+      ],
+      "mixed_total_ground": 0.00173361074427205,
+      "negative_D_time": 0
+    },
+    {
+      "D_exponentials": 10,
+      "D_internal_ground": 0.009646885937863616,
+      "H2_ground": 0.011913403006307487,
+      "H2_norm": 0.04157864919902123,
+      "R_occurrences": 1,
+      "additional_mixed_internal_ground": -0.0007658499218519067,
+      "aggregate_outer_reference_ground": 0.0030323669902957793,
+      "case": {
+        "a": 0.1233855222383813,
+        "fragment": 3,
+        "kind": "redistributed",
+        "name": "vertex_j3",
+        "order": [
+          0,
+          2,
+          1,
+          3
+        ]
+      },
+      "local": [
+        {
+          "h": 0.02,
+          "operator_coefficient": 0.04157814194694405,
+          "phase_coefficient": 0.011913813339516443
+        },
+        {
+          "h": 0.01,
+          "operator_coefficient": 0.04157852236999079,
+          "phase_coefficient": 0.011913505557070726
+        }
+      ],
+      "mixed_total_ground": 0.002266517068443873,
+      "negative_D_time": 0
+    }
+  ]
+}

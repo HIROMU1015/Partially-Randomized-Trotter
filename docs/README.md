@@ -122,3 +122,7 @@
 ## Track C混合公式（2026-11-08）
 
 [固定H4のBCH・全18round信号・paired価格検証](research/track_c_mixed_formula_20261108/REPORT.md)。半刻み対照に対する資源改善は未観測、native全18round保証・絶対Gは未資格、mandatory STOP。新SOURCEは`track_c_mixed_*.py`、初期入口は`run_track_c_mixed_formula.py`、保存結果の読取検査は`check_track_c_mixed_formula.py`。
+
+## Track C D内部PF（2026-11-08）
+
+[固定H4のBCH設計・有限RTE・18round native資源](research/track_c_d_internal_20261108/REPORT.md)。実験SOURCEは`src/trottertracks/track_c_d_*.py`、人工testは`test_track_c_d_internal.py`、保存結果検査は`check_track_c_d_internal.py`。PR内改善あり・強Fullより高価、mandatory STOP。
