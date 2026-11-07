@@ -265,3 +265,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 `tracks/algorithm_codesign/run_cs_v0.py` は既定ではscienceを起動しない。固定SOURCEと`--execute-one-campaign`で明示実行する経路は[契約](../docs/research/cs_v0_activation_20261108/V0_EXECUTION_CONTRACT.md)の別途科学実行許可後だけ使用。旧cs_v0_preflightを再利用し、output/cacheは一回限り。
 
 C-S V0の固定run_cs_v0.pyをSOURCE0bd18bbから一回実行した[結果](../docs/research/cs_v0_science_20261108/REPORT.md)：保存basis文字列parameterのbinding TypeErrorでSTOP。実行prefixを再利用して再試行しない。
+
+C-S V0 run_cs_v0.pyの[修復SOURCE](../docs/research/cs_v0_repair_20261108/REPORT.md)は新lockとcampaign_run02を使い、旧outputを再使用しない。

@@ -221,3 +221,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## C-S V0 science STOP（2026-11-08）
 
 [一campaignの結果・原本・schema不適合](research/cs_v0_science_20261108/REPORT.md)。Stage B binding TypeError、local spec0/strict0、価格/誤差は未評価。科学SOURCEと旧STOPは無変更、retry0。
+
+[C-S V0 schema修復と同条件再実行](research/cs_v0_repair_20261108/REPORT.md)：旧run01を保全、新人工5件、科学条件は変更なし。

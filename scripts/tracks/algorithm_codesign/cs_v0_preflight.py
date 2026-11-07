@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT/'src'))
 
 
-def inspect(root=ROOT):
+def inspect(root=ROOT, *, source_sha256=None):
     from trottertracks.algorithm_codesign.parent_allocation_native import bound_json
     from trottertracks.algorithm_codesign.synthesis_placement.wrapper_launch import verify_runtime
     directory = Path(root)/'docs/research/cs_v0_technical_preparation_20261108'
@@ -17,7 +17,10 @@ def inspect(root=ROOT):
     for row in lock['fixed_inputs']:
         bound_json((Path(root)/row['path']).read_bytes(), expected_bytes=row['bytes'],
                    expected_sha256=row['sha256'])
-    for name, expected in lock['execution_source_sha256'].items():
+    expected_source = lock['execution_source_sha256'] if source_sha256 is None else source_sha256
+    if set(expected_source) != set(lock['execution_source_sha256']):
+        raise ValueError('complete explicit execution SOURCE lock required')
+    for name, expected in expected_source.items():
         if hashlib.sha256((Path(root)/name).read_bytes()).hexdigest() != expected:
             raise ValueError('execution SOURCE mismatch: '+name)
     profile = json.loads((directory/'NATIVE_PROFILE.json').read_text())

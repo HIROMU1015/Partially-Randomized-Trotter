@@ -71,7 +71,10 @@ def bind_slots(prep, law, uniform, r_angle, *, n=8, policy):
         for row, src in zip(gates[:k], reversed(basis)):
             if src['name'] not in ('rz', 'xx_plus_yy'):
                 raise ValueError('unsupported inverse basis metadata')
-            params = list(src['parameters']); params[0] = -params[0]
+            # describe_basis_change_operations saves str(parameter). Restore
+            # the same binary64 values as the existing basis restore codec
+            # before negating theta; beta of XXPlusYY is left unchanged.
+            params = [float(x) for x in src['parameters']]; params[0] = -params[0]
             if row['key'] != [src['name'], [float(x).hex() for x in params]] or row['qubits'] != src['qubits']:
                 raise ValueError('inverse basis record mismatch')
         central = gates[k:len(gates)-k if k else len(gates)]

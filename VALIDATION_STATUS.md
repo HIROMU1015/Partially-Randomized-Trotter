@@ -813,3 +813,5 @@ TECHNICALLY_READY／conditions ADOPTED／SCIENCE_NOT_AUTHORIZED。新しい起�
 ## 2026-11-08：C-S V0実入力binding STOP
 
 LOCAL_V0_INCOMPLETE／Stage B／schema adapter TypeError。固定0bd18bb、Stage A PASS、binding開始1/返却0、local operator/finite/strict/price0、retry0。旧人工10/18/9 PASSは人工条件内のまま、実保存str型との互換性は未成立。科学的C-S改善/NO-GOは未判定。[正本・原本prefix](docs/research/cs_v0_science_20261108/REPORT.md)。科学SOURCE・旧result/STOPとC1凍結は維持。
+
+C-S V0 schema修復（2026-11-08）：新人工5件PASS、ユーザーは技術的中断の修正再実行を許可。同じ条件の新SOURCE/新outputを使う。旧run01のINCOMPLETE/UNKNOWNと旧STOPは保全。[記録](docs/research/cs_v0_repair_20261108/REPORT.md)。

@@ -23,10 +23,10 @@ from .df_correction_comparison.intervals import record, from_record
 from .rte_development.evidence import atomic_json, dumps, digest
 from .same_position_residual import plan_sequence
 
-DOC = Path('docs/research/cs_v0_activation_20261108')
+DOC = Path('docs/research/cs_v0_repair_20261108')
 OLD = Path('docs/research/cs_v0_technical_preparation_20261108')
-OUTPUT = Path('artifacts/cs_v0_science/2026-11-08/campaign_run01')
-BRANCH = 'codex/cs-v0-activation-20261108'
+OUTPUT = Path('artifacts/cs_v0_science/2026-11-08/campaign_run02')
+BRANCH = 'codex/cs-v0-repair-20261108'
 P1 = Path('artifacts/o2_a1_new_target/2026-11-06/n1')
 PU = Path('artifacts/o2_a1_new_target/2026-11-06/engine_qualification_run01')
 EPS = F(1, 10**6)
@@ -92,7 +92,7 @@ def preflight(root, source):
     spec = importlib.util.spec_from_file_location('cs_v0_saved_preflight',
         root/'scripts/tracks/algorithm_codesign/cs_v0_preflight.py')
     old = importlib.util.module_from_spec(spec); spec.loader.exec_module(old)
-    checked = old.inspect(root)
+    checked = old.inspect(root, source_sha256=lock['effective_base_source_sha256'])
     observed = resources()
     if int(observed['memory']['MemAvailable'].split()[0]) <= 0:
         raise RuntimeError('no available memory; no resource changes permitted')
@@ -217,6 +217,8 @@ def run(root, source):
     try:
         signal.signal(signal.SIGTERM, termination)
         write(out/'SOURCE.json', dict(frozen_source=source, campaign_output=str(OUTPUT),
+            previous_output='artifacts/cs_v0_science/2026-11-08/campaign_run01',
+            technical_reexecution_after_schema_fix=True,
             technical_base='606c40d7809a5941a76c54d0bc2dd8e1a5bc1818',
             contract=str(DOC/'V0_EXECUTION_CONTRACT.md'), input_manifest=str(OLD/'SOURCE_AND_CHECKS.json'),
             native_profile=str(OLD/'NATIVE_PROFILE.json'), scope='D1/R1 joint factor0 only',

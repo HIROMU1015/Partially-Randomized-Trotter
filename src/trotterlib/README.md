@@ -228,3 +228,5 @@ The additive module [same_position_residual.py](../trottertracks/algorithm_codes
 `src/trottertracks/algorithm_codesign/cs_v0_execution.py` は既存C-S/Parent/strict provider/局所会計をStage A–Dへ結ぶ薄いadapter。[契約と人工10件](../../docs/research/cs_v0_activation_20261108/REPORT.md)。新law/operator kernel/価格器/managerはなく、実H4科学実行0。
 
 C-S V0の実保存schemaへの[初回適用結果](../../docs/research/cs_v0_science_20261108/REPORT.md)はbinding STOP。既存人工fixtureの数値型と保存文字列型の差であり、local native/finite資格は未取得。ライブラリSOURCEの修正・科学retryは未実施。
+
+[C-S V0保存文字列parameterの修復](../../docs/research/cs_v0_repair_20261108/REPORT.md)：既存codecとの整合、XXPlusYY beta保持。新人工5件、元モデル/価格kernelは不変。
