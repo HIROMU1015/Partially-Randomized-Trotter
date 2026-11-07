@@ -152,6 +152,7 @@ class ParallelMatchedNoPrepCostProvider:
                 with ProcessPoolExecutor(max_workers=workers,mp_context=multiprocessing.get_context('spawn'),
                                          initializer=_worker_init) as executor:
                     pending=deque([executor.submit(function,first_task)])
+                    del first_task
                     for task in islice(tasks,workers-1):
                         pending.append(executor.submit(function,task))
                     peak_pending=len(pending)

@@ -30,10 +30,11 @@ from trottertracks.resource_applicability.ax2a_native_df import NativeEvolution,
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def pipeline_worker(unit, blocks, efficient, traced, connection):
-    meter = old.StageMeter(connection, trace_python=traced)
+def pipeline_worker(unit, blocks, efficient, traced, connection, *, collect_before_stage=True):
+    meter = old.StageMeter(connection, trace_python=traced, collect_before_stage=collect_before_stage)
     result = dict(kind='flat_pipeline', mode='efficient' if efficient else 'reference',
-        blocks=blocks, traced=traced, whole_compiles=0, axes={})
+        blocks=blocks, traced=traced, observer_collects_before_stage=collect_before_stage,
+        whole_compiles=0, axes={})
     original_transpile = old.compiler_module.transpile
     try:
         body = meter.measure('flat_generation', lambda: old.flat_body(unit, blocks, not efficient))
@@ -113,7 +114,11 @@ def request_worker(index, materialized, connection):
         connection.send(dict(event='result', result=result)); connection.close()
 
 
-def run(output):
+def production_worker(unit, blocks, efficient, traced, connection):
+    return pipeline_worker(unit, blocks, efficient, traced, connection, collect_before_stage=False)
+
+
+def run(output, *, production_companion=False):
     output.mkdir(parents=True, exist_ok=False)
     source = subprocess.check_output(['git','rev-parse','HEAD'], cwd=ROOT).decode().strip()
     paths = ['scripts/benchmark_b2_memory_pipeline.py','scripts/benchmark_large_artificial_memory.py',
@@ -130,7 +135,7 @@ def run(output):
     result = dict(status='RUNNING', source_commit=source, source_sha256=hashes, template=template,
         compiler_hash=template['compiler_hash'], setup_template_compiles=1, rows=[], cases=[], comparisons=[],
         real_H4_calls=0, price_MC=None, strong_PF_price=None, total_RPE_cost=None,
-        m17_real_H4_feasibility=None, mandatory_stop=True,
+        m17_real_H4_feasibility=None, mandatory_stop=True, production_companion=production_companion,
         runtime=dict(host=platform.node(), python=sys.version, cpus=len(os.sched_getaffinity(0)),
             initial_available_memory_bytes=old.available_memory()[0], load_average=os.getloadavg()),
         protocol='Corrected external observer; stage Python tracing on/off separately; sequential workers for timing isolation; one observation per condition.')
@@ -157,6 +162,17 @@ def run(output):
         if case['status']!='PASS_ARTIFICIAL_ONLY':raise RuntimeError(str(case))
         return case
     try:
+        if production_companion:
+            case=execute(production_worker,(unit,math.ceil(262144/len(unit.data)),True,False),
+                'flat_262144_production_no_stage_gc_trace0')
+            prior=json.loads((ROOT/'artifacts/b2_memory_pipeline/2026-11-07/run01/result.json').read_text())
+            reference=next(c for c in prior['cases'] if c.get('instructions')==case['instructions'] and c.get('mode')=='efficient' and not c['traced'])
+            checks=dict(native=case['fingerprint']==reference['fingerprint'],axes=case['axes']==reference['axes'],
+                no_observer_gc=not case['observer_collects_before_stage'],no_retained_compiled=case['retained_compiled_circuits']==0)
+            result['comparisons'].append(dict(reference_source=prior['source_commit'],checks=checks))
+            assert all(checks.values()),checks
+            for path,expected in hashes.items():assert hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==expected,path
+            result['status']='PASS_ARTIFICIAL_PIPELINE_ONLY';save();return result
         for traced in (False, True):
             for target in (4096, 65536, 262144):
                 blocks=math.ceil(target/len(unit.data))
@@ -187,5 +203,6 @@ def run(output):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True)
-    result=run(p.parse_args().output);print(result['status'],flush=True)
+    p.add_argument('--production-companion',action='store_true')
+    args=p.parse_args();result=run(args.output,production_companion=args.production_companion);print(result['status'],flush=True)
     sys.exit(0 if result['status']=='PASS_ARTIFICIAL_PIPELINE_ONLY' else 1)

@@ -134,12 +134,13 @@ def available_memory():
 
 
 class StageMeter:
-    def __init__(self,connection,trace_python=True):
+    def __init__(self,connection,trace_python=True,collect_before_stage=True):
         self.connection=connection
         self.trace_python=trace_python
+        self.collect_before_stage=collect_before_stage
 
     def measure(self,name,function):
-        gc.collect()
+        if self.collect_before_stage:gc.collect()
         self.connection.send({'event':'begin','stage':name,'memory':process_memory(os.getpid())})
         if self.connection.recv()!='start':raise RuntimeError('Observer handshake')
         if self.trace_python:tracemalloc.start()

@@ -36,10 +36,13 @@ def price_explicit_trajectory(round_, provider, events):
     request = round_.explicit_request(events)
     bound = request_instruction_bound(request)
     evolution = round_.native(request, max_instructions=bound)
-    pair = provider.compile_pair(evolution,
-        wrapper_builder=lambda value, axis: build_native_hadamard_wrapper(
+    wrapper_builder = lambda value, axis: build_native_hadamard_wrapper(
             value, axis=axis, include_measurement=True, max_instructions=bound+4,
-            fingerprint_function=provider.fingerprint_function))
+            fingerprint_function=getattr(provider, 'fingerprint_function', None))
+    pair = (provider.compile_pair(evolution, wrapper_builder=wrapper_builder)
+        if hasattr(provider, 'compile_pair') else _compile_pair(evolution, provider.compiler,
+            compile_function=provider.compile_function, backend=provider.backend,
+            wrapper_builder=wrapper_builder))
     trajectory = [e.to_dict() for e in events]
     return dict(evaluation_method='specified_trajectory_full_no_prep_compiled_cost',
         circuit_cost_scope=RPE_HADAMARD_INTERROGATION_SCOPE,

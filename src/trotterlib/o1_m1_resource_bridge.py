@@ -6,6 +6,7 @@ representative circuit checks are never treated as an expectation or MC sample.
 """
 from dataclasses import dataclass, replace
 from fractions import Fraction
+import gc
 import math
 from types import SimpleNamespace
 
@@ -188,6 +189,10 @@ def _compile_pair(circuit, compiler, *, compile_function, backend, wrapper_build
         # may survive while the next measured axis is built/compiled.
         if not retain_transpiled_circuits:
             del cost, wrapper
+            # Qiskit/pass-manager graphs can contain cycles. Refcount deletion
+            # alone need not reclaim X before Y; production must not depend on
+            # a profiler's gc.collect or on the next automatic GC threshold.
+            gc.collect()
     return costs
 
 
@@ -308,13 +313,16 @@ class MatchedNoPrepCostProvider:
         stream = iter_sample_rte_events(preparation.tail.components, distribution,
                                        sample_count=sample_count*length, seed=seed)
         accumulators = {axis:CompiledMetricAccumulator(weighted=False) for axis in ("cosine","sine")}
+        sentinel = object()
         for _ in range(sample_count):
             events = islice(stream, length)
             if not stream_events:
                 events = tuple(events)
-            pair = self.compile_pair(build_trajectory(events), wrapper_builder=wrapper_builder)
-            if stream_events and next(events, None) is not None:
+            built = build_trajectory(events)
+            if stream_events and next(events, sentinel) is not sentinel:
                 raise ValueError('Streaming builder did not consume the complete trajectory')
+            pair = self.compile_pair(built, wrapper_builder=wrapper_builder)
+            del built
             for axis, cost in pair.items():
                 accumulators[axis].update(cost)
         result = self._result(accumulators, context_hash=preparation.context_hash,

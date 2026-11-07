@@ -177,7 +177,7 @@ class B2RPERound:
 
     def price(self, provider, *, sample_count, seed, max_instructions):
         _check_provider(self.context, provider)
-        if provider.memory_efficient:
+        if getattr(provider, 'memory_efficient', False):
             from .b2_streamed_native_cost import stream_native, structural_instruction_bound
             from .streamed_circuit_fingerprint import streamed_canonical_qiskit_circuit_fingerprint as streamed_hash
             if structural_instruction_bound(self) > max_instructions:
