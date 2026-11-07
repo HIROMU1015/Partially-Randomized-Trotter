@@ -1,5 +1,7 @@
 # 文書索引
 
+[C8-1保存4wrapperの数値修正PLAN](research/track_d_c8_1_q64_20261108/NOFUSION_REPAIR_PLAN.md)。残7 pathは対象外。
+
 [C8-1数値修正PLAN](research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_PLAN.md)：保存回路だけの承認済み再検証。
 
 [Track D C8-1最終結果](research/track_d_c8_1_q64_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。全8 event/512 occurrence/16384 eventsを固定し、sample00 raw1 PASS・旧P0 compile4完了をSOURCE8a6bbdacへ承認済み引継ぎ。両方式X/Y全4 postcheckがCAR-observable Frobenius2e−10でFAILしSTOP。残7/追加28 compile未開始、価格統計/モデル診断未評価。精度緩和/再実行/fit/N/全RPE更新0、旧SOURCE/STOP・非公開原本保持。

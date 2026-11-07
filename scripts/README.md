@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_c8_1_nofusion.py`：旧診断完了後、保存q64の4 postcheckだけをsimulation fusion無効で再検証しSTOP。
+
 `run_track_d_c8_1_diagnostics.py`：承認済み保存q64 postcheckの失敗診断、数値条件不変。
 
 [C8-1停止済み結果](../docs/research/track_d_c8_1_q64_20261108/REPORT.md)：旧SOURCE6b1d613d sampling/raw/P0と新SOURCE8a6bbdac postの来歴を保全。sample00 post全4が固定observable許容値で不成立、残7未開始。両runnerは再実行・resumeしない。次の数値診断はユーザー/GPTの新しい明示許可後のみ。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C8-1保存4wrapperの数値修正版](docs/research/track_d_c8_1_q64_20261108/NOFUSION_REPAIR_PLAN.md)：既存公式Aerのsimulation fusionだけを無効化し同じ4 P0を再検証。閾値/P0/入力不変、9人工/回帰PASS。旧診断完了を待ち、残7 pathへ自動進行しない。
+
 [C8-1保存q64の数値診断](docs/research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_PLAN.md)：利用者承認による数値修正・再検証。旧SOURCE/失敗/STOPを保持し、保存sample00の4 P0回路を既存checker/同閾値で再postcheck、例外前のscalar/observableを保全する。sampling/回路生成/compile0、残7は未解放。
 
 [Track D C8-1数値preflight不成立](docs/research/track_d_c8_1_q64_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。全8 event/512 occurrence/16384 eventsを固定し、sample00 raw1 PASS・旧P0 compile4完了をSOURCE8a6bbdacへ承認済み引継ぎ。両方式X/Y全4 postcheckがCAR-observable Frobenius2e−10でFAILしSTOP。残7/追加28 compile未開始、価格統計/モデル診断未評価。精度緩和/再実行/fit/N/全RPE更新0、旧SOURCE/STOP・非公開原本保持。

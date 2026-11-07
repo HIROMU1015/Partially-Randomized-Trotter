@@ -7,6 +7,7 @@ import json
 import multiprocessing
 import os
 from pathlib import Path
+from importlib.metadata import version
 import subprocess
 import time
 import resource
@@ -18,6 +19,7 @@ OUTPUT = "artifacts/track_d_c8_1_q64/2026-11-08/run02_diagnostics"
 FIXED = "artifacts/track_d_c8_1_q64/2026-11-08/repair_technical/fixed_inputs.json"
 FILES = ("src/trottertracks/track_d_c8_1_diagnostics.py", "scripts/run_track_d_c8_1_diagnostics.py",
          "tests/check_track_d_c8_1_diagnostics.py", "docs/research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_PLAN.md", FIXED)
+BACKEND = dict(backend_changed=False)
 
 
 def sha(path):
@@ -43,6 +45,23 @@ def fixed_inputs(prior):
         members.append(dict(path=str(p.relative_to(prior)), sha256=sha(p), bytes=p.stat().st_size))
     return dict(prior_publication="1e88074f1fd64e6efe5e458c0b189069801b727b",
                 prior_execution="8a6bbdac6977df9a6bc430bdd48aad2659a7e191", members=members)
+
+
+def verify_runtime(prior, origin):
+    """Reuse the previous scientific SOURCE tables; no environment mutation."""
+    source = json.loads((Path(prior)/"SOURCE.json").read_text())
+    for package, expected in source["packages"].items():
+        if version(package) != expected:
+            raise ValueError("RUNTIME_CHANGED:"+package)
+    for table in ("original_source_files","original_saved_inputs"):
+        for relative, expected in source[table].items():
+            if sha(Path(origin)/relative) != expected:
+                raise ValueError("ORIGINAL_SOURCE_INPUT_CHANGED:"+relative)
+    for table in ("new_and_reused","C8_source","accelerated_source"):
+        for relative, expected in source[table].items():
+            if sha(ROOT/relative) != expected:
+                raise ValueError("REUSED_SOURCE_CHANGED:"+relative)
+    return source["packages"]
 
 
 def worker(prior, origin, arm, axis, threads, output):
@@ -83,6 +102,7 @@ def main():
     packet = json.loads((ROOT/FIXED).read_text())
     if packet != fixed_inputs(args.prior):
         raise ValueError("FIXED_INPUT_CHANGED")
+    packages = verify_runtime(args.prior,args.origin)
     output = ROOT/OUTPUT
     output.mkdir(parents=True, exist_ok=False)
     local = output/"local"; local.mkdir(); (local/".gitignore").write_text("*\n")
@@ -92,8 +112,8 @@ def main():
     identity = dict(execution_source=source, fixed_inputs=packet,
         files={p:sha(ROOT/p) for p in FILES}, q=64, cut=32, sample_id="q64_sample00",
         compiler_changed=False, component_atol=1e-10, signal_atol=2e-10,
-        backend_changed=False, global_phase_fit=False, renormalized=False,
-        sampling_calls=0, raw_build_calls=0, compile_calls=0)
+        **BACKEND, global_phase_fit=False, renormalized=False,
+        sampling_calls=0, raw_build_calls=0, compile_calls=0, packages=packages)
     boot.write(output/"SOURCE.json", identity)
     cpu = len(os.sched_getaffinity(0))
     tasks = [(m,a) for m in ("symmetric_directional","reference") for a in ("X","Y")]
@@ -112,7 +132,7 @@ def main():
                 print(name,report["status"],report.get("observable_residuals"),flush=True)
     except Exception as error:
         boot.write(output/"failure.json", dict(error_type=type(error).__name__,error=str(error)))
-    preserved = packet == fixed_inputs(args.prior)
+    preserved = packet == fixed_inputs(args.prior) and packages == verify_runtime(args.prior,args.origin)
     payload = [dict(path=str(p.relative_to(output)),bytes=p.stat().st_size,sha256=sha(p))
                for p in sorted(local.rglob("*.npz"))]
     boot.write(output/"payload_index.json", dict(members=payload))
