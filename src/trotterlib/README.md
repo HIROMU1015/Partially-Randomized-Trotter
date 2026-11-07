@@ -149,3 +149,8 @@ DF部分ランダム化研究と混同しない。
 
 既存`b2_streamed_native_cost.py`を不変更で使用し、同じgate列・保存compiled identity/全6指標を再現。
 [実行SOURCE・結果・適用限界](../../docs/research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)。
+
+## B2 streamingのm1/Q2実H4限定確認（2026-11-07）
+
+同じcore/streaming/価格moduleを不変更で再利用し、outer-step境界を含む固定1 trajectoryのidentityと全6価格を照合。
+[結果・計4回compile・長roundの残条件・STOP](../../docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)。

@@ -119,3 +119,8 @@ fusion/分割価格差、意味・性能・メモリ・cache/parallel検査、�
 
 [REPORT](research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)：同一trajectoryのgate列と保存価格を再現。
 初回表現比較STOPを保全、native/reference各1回build・stream X/Y各1回compile後mandatory STOP。
+
+## B2 m1/Q2実H4 streaming確認（2026-11-07）
+
+[REPORT](research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)：固定8 eventの2 stepでgate列・前後fingerprint・全6価格一致。
+reference/stream X/Yを各1回、計4回compile。長roundの実行可能性は未確定、公開照合後mandatory STOP。

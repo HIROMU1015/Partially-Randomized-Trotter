@@ -1,0 +1,648 @@
+{
+  "schema_version": "b2_q2_streaming_h4_summary_v1",
+  "status": "PASS_Q2_STREAMING_IDENTICAL",
+  "mandatory_stop": true,
+  "execution_source": {
+    "commit": "e09fd13c5a2357dd001d9cfbe86d4e99c3a5620d",
+    "sha256": {
+      "src/trotterlib/b2_rpe_connection.py": "d41f336d333c6a66c7c5b73db241f2c415a4d501a208e7808c4bbcbaf5631c08",
+      "src/trotterlib/o1_m1_resource_bridge.py": "4cd367f7f0ab363866f9238bb4dfac869af76d5a345e9f786790093336b7fbc9",
+      "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+      "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+      "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+      "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "src/trotterlib/rpe_hadamard_interrogation.py": "8d00036f8e7d7ee0d3cfe738d32805885edb52e3d3e185e9f6bc8e9677b91ba7",
+      "src/trottertracks/resource_applicability/ax2a_native_df.py": "b67cc43993fa23b671407f75cc0a2d8e3cceedfe9fc7e3c97ee3e5b39a735e2d",
+      "src/trotterlib/b2_streamed_native_cost.py": "1bc9650ae67534374ae7592c03e35590bbb3afafc193faa95a2bebbceb50bcba",
+      "scripts/run_b2_p1_compiled_cost.py": "f67a5744c2dc74933d6df9f9d1e882dabb3bc05aa54a2a5d4e8d819817ad23b8",
+      "scripts/run_b2_m0_streaming_h4.py": "7572dc0f2a9739676e5d218d8b7ddf89bcd900112aa1a1087fce3c294fe638b1",
+      "scripts/run_b2_q2_streaming_h4.py": "044e70608afe68e1caa7d166d787e38bc91d11df8349a2ca221e76694271d3af"
+    }
+  },
+  "source_tree": "e62796099ec9096d78dc4f66f354904addba0cce",
+  "base_commit": "f6eea2f28be1f15b6ff5e2954b9c8fb48f3c5a0f",
+  "fixed_conditions": {
+    "model": "Linear H4;1.00 Angstrom;STO-3G",
+    "target": "H_phys",
+    "DF_rank": 12,
+    "L_D": 3,
+    "r": 4,
+    "K": 2,
+    "delta": 0.02,
+    "m": 1,
+    "Q": 2,
+    "T": 0.04,
+    "state_role": "original_H_ground_state",
+    "state_preparation_included": false,
+    "controlled": "ordinary"
+  },
+  "input": {
+    "df_commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+    "df_path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "df_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "private_file_sha256": {
+      "state.npz": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+      "provenance.json": "468b3a4bc3150c055b4fcdf37a72acaa01e2ae171eccfc39d62419e3998c4e3b",
+      "H4_sto-3g_singlet_df_d100.hdf5": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958"
+    },
+    "scientific_identity": {
+      "original_hamiltonian": "H_phys:S0_array_hash:bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+      "original_state": "S0_array_hash:1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+      "df_hamiltonian": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+      "sector": "Nalpha=2,Nbeta=2;OF_basis_S0_hash:665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+      "spin_orbital_order": "2p=alpha,2p+1=beta;Qiskit full index=sum(n_q*2**q)",
+      "state_role": "original_H_ground_state"
+    },
+    "state_vectors_used": false,
+    "physical_H_rebuilt": false
+  },
+  "compiler": {
+    "settings": {
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "backend_name": null,
+      "coupling_map": null,
+      "optimization_level": 1,
+      "layout_method": null,
+      "routing_method": null,
+      "transpiler_seed": 7,
+      "qiskit_version": "1.3.0"
+    },
+    "settings_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+    "backend_fingerprint": "no_backend",
+    "target": null,
+    "connectivity": "all_to_all_logical",
+    "signal_seed_17_adopted": false
+  },
+  "trajectory": {
+    "identity": "0ecf28e7a5d2d367c6c609a8d8a4da544c2d03b955aef86b0656f0bf107b7ae8",
+    "representative_indices": [
+      0,
+      4,
+      4,
+      0,
+      4,
+      0,
+      0,
+      4
+    ],
+    "step_orders": [
+      [
+        0,
+        2,
+        2,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        2
+      ]
+    ],
+    "complete_payload_path": "trajectory.json",
+    "canonical_validation": "PASS",
+    "new_sampling": false
+  },
+  "step_indices": [
+    [
+      0,
+      4,
+      4,
+      0
+    ],
+    [
+      4,
+      0,
+      0,
+      4
+    ]
+  ],
+  "native_comparison": {
+    "status": "EXACT_MATCH",
+    "checks": {
+      "system_qubits_equal": true,
+      "qubits_equal": true,
+      "classical_bits_equal": true,
+      "ordinary_control": true,
+      "instruction_rows_equal": true,
+      "global_phase_equal": true,
+      "fingerprint_equal": true
+    },
+    "reference_fingerprint": "eca7ca67f91f3b422e014a0b7399d23fdc8a9af71a8776d3f4a3b180c4b43e48",
+    "candidate_fingerprint": "eca7ca67f91f3b422e014a0b7399d23fdc8a9af71a8776d3f4a3b180c4b43e48",
+    "instruction_count": 1623,
+    "instruction_rows_digest": "2a4bc5aea5492e021a8778f91048e51cb175dca6760b0032ff786e3956450630",
+    "phase_fitting": false,
+    "reference_origin": "newly built Q2 native; not m0 extrapolation"
+  },
+  "wrappers": {
+    "reference": {
+      "cosine": {
+        "fingerprint": "dda45b81af904e7fed1be73adf71e15f0dc9ae30bfe2a12aa44f2d9cc7b45edb",
+        "instructions": 1626,
+        "qubits": 9,
+        "clbits": 1,
+        "measurements": 1
+      },
+      "sine": {
+        "fingerprint": "983f69abbe34e43b8c2ba5499f2c7a5cf42af6cf56895467803395e967324277",
+        "instructions": 1627,
+        "qubits": 9,
+        "clbits": 1,
+        "measurements": 1
+      }
+    },
+    "stream": {
+      "cosine": {
+        "fingerprint": "dda45b81af904e7fed1be73adf71e15f0dc9ae30bfe2a12aa44f2d9cc7b45edb",
+        "instructions": 1626,
+        "qubits": 9,
+        "clbits": 1,
+        "measurements": 1
+      },
+      "sine": {
+        "fingerprint": "983f69abbe34e43b8c2ba5499f2c7a5cf42af6cf56895467803395e967324277",
+        "instructions": 1627,
+        "qubits": 9,
+        "clbits": 1,
+        "measurements": 1
+      }
+    }
+  },
+  "compiled_axes": {
+    "reference": {
+      "cosine": {
+        "path": "reference",
+        "axis": "cosine",
+        "SOURCE": "e09fd13c5a2357dd001d9cfbe86d4e99c3a5620d",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "state_preparation_included": false,
+        "qubits": 9,
+        "actual_circuit_fingerprint": "dda45b81af904e7fed1be73adf71e15f0dc9ae30bfe2a12aa44f2d9cc7b45edb",
+        "compiled_circuit_fingerprint": "cbfd2b0f05723fd97608d4a6f745b2e025ba7fb425d62adc6df622b6be1e1bdd",
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "backend_fingerprint": "no_backend",
+        "metrics": {
+          "rz_count": 11761,
+          "cx_count": 6444,
+          "rz_depth": 4999,
+          "cx_depth": 5295,
+          "total_depth": 10904,
+          "circuit_size": 22458
+        },
+        "measurements": 1,
+        "pretranspile_gate_counts": {
+          "crz": 136,
+          "crzz": 336,
+          "cz": 12,
+          "h": 2,
+          "measure": 1,
+          "p": 19,
+          "rz": 288,
+          "xx_plus_yy": 832
+        },
+        "posttranspile_gate_counts": {
+          "cx": 6444,
+          "measure": 1,
+          "rz": 11761,
+          "sx": 4236,
+          "x": 16
+        },
+        "compiled_global_phase": 3.14822220985382,
+        "performance": {
+          "elapsed_seconds": 0.7551869980525225,
+          "RSS_before": {
+            "current_RSS_KiB": 850444,
+            "process_peak_RSS_KiB": 955024
+          },
+          "RSS_after": {
+            "current_RSS_KiB": 851468,
+            "process_peak_RSS_KiB": 955024
+          },
+          "Python_traced_peak_bytes": null,
+          "compile_incremental_peak_RSS_KiB": null
+        },
+        "compiled_DAG_operations": 22458
+      },
+      "sine": {
+        "path": "reference",
+        "axis": "sine",
+        "SOURCE": "e09fd13c5a2357dd001d9cfbe86d4e99c3a5620d",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "state_preparation_included": false,
+        "qubits": 9,
+        "actual_circuit_fingerprint": "983f69abbe34e43b8c2ba5499f2c7a5cf42af6cf56895467803395e967324277",
+        "compiled_circuit_fingerprint": "524effa0e62f5a6e2572cf7e41a9d64689c67c21c007d0646fed6ad6beabe02c",
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "backend_fingerprint": "no_backend",
+        "metrics": {
+          "rz_count": 11761,
+          "cx_count": 6444,
+          "rz_depth": 4999,
+          "cx_depth": 5295,
+          "total_depth": 10904,
+          "circuit_size": 22458
+        },
+        "measurements": 1,
+        "pretranspile_gate_counts": {
+          "crz": 136,
+          "crzz": 336,
+          "cz": 12,
+          "h": 2,
+          "measure": 1,
+          "p": 19,
+          "rz": 288,
+          "sdg": 1,
+          "xx_plus_yy": 832
+        },
+        "posttranspile_gate_counts": {
+          "cx": 6444,
+          "measure": 1,
+          "rz": 11761,
+          "sx": 4236,
+          "x": 16
+        },
+        "compiled_global_phase": 2.362824046456346,
+        "performance": {
+          "elapsed_seconds": 0.7356976440642029,
+          "RSS_before": {
+            "current_RSS_KiB": 851616,
+            "process_peak_RSS_KiB": 955024
+          },
+          "RSS_after": {
+            "current_RSS_KiB": 851616,
+            "process_peak_RSS_KiB": 955024
+          },
+          "Python_traced_peak_bytes": null,
+          "compile_incremental_peak_RSS_KiB": null
+        },
+        "compiled_DAG_operations": 22458
+      }
+    },
+    "stream": {
+      "cosine": {
+        "path": "stream",
+        "axis": "cosine",
+        "SOURCE": "e09fd13c5a2357dd001d9cfbe86d4e99c3a5620d",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "state_preparation_included": false,
+        "qubits": 9,
+        "actual_circuit_fingerprint": "dda45b81af904e7fed1be73adf71e15f0dc9ae30bfe2a12aa44f2d9cc7b45edb",
+        "compiled_circuit_fingerprint": "cbfd2b0f05723fd97608d4a6f745b2e025ba7fb425d62adc6df622b6be1e1bdd",
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "backend_fingerprint": "no_backend",
+        "metrics": {
+          "rz_count": 11761,
+          "cx_count": 6444,
+          "rz_depth": 4999,
+          "cx_depth": 5295,
+          "total_depth": 10904,
+          "circuit_size": 22458
+        },
+        "measurements": 1,
+        "pretranspile_gate_counts": {
+          "crz": 136,
+          "crzz": 336,
+          "cz": 12,
+          "h": 2,
+          "measure": 1,
+          "p": 19,
+          "rz": 288,
+          "xx_plus_yy": 832
+        },
+        "posttranspile_gate_counts": {
+          "cx": 6444,
+          "measure": 1,
+          "rz": 11761,
+          "sx": 4236,
+          "x": 16
+        },
+        "compiled_global_phase": 3.14822220985382,
+        "performance": {
+          "elapsed_seconds": 0.7252522399649024,
+          "RSS_before": {
+            "current_RSS_KiB": 851832,
+            "process_peak_RSS_KiB": 955024
+          },
+          "RSS_after": {
+            "current_RSS_KiB": 851832,
+            "process_peak_RSS_KiB": 955024
+          },
+          "Python_traced_peak_bytes": null,
+          "compile_incremental_peak_RSS_KiB": null
+        },
+        "compiled_DAG_operations": 22458,
+        "comparison": {
+          "status": "EXACT_MATCH",
+          "circuit_identity_checks": {
+            "actual_circuit_fingerprint": true,
+            "compiled_circuit_fingerprint": true,
+            "compiler_hash": true,
+            "backend_fingerprint": true,
+            "scope": true,
+            "state_preparation_included": true,
+            "qubits": true
+          },
+          "reference_metrics": {
+            "rz_count": 11761,
+            "cx_count": 6444,
+            "rz_depth": 4999,
+            "cx_depth": 5295,
+            "total_depth": 10904,
+            "circuit_size": 22458
+          },
+          "candidate_metrics": {
+            "rz_count": 11761,
+            "cx_count": 6444,
+            "rz_depth": 4999,
+            "cx_depth": 5295,
+            "total_depth": 10904,
+            "circuit_size": 22458
+          },
+          "signed_difference": {
+            "rz_count": 0,
+            "cx_count": 0,
+            "rz_depth": 0,
+            "cx_depth": 0,
+            "total_depth": 0,
+            "circuit_size": 0
+          },
+          "absolute_difference": {
+            "rz_count": 0,
+            "cx_count": 0,
+            "rz_depth": 0,
+            "cx_depth": 0,
+            "total_depth": 0,
+            "circuit_size": 0
+          }
+        }
+      },
+      "sine": {
+        "path": "stream",
+        "axis": "sine",
+        "SOURCE": "e09fd13c5a2357dd001d9cfbe86d4e99c3a5620d",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "state_preparation_included": false,
+        "qubits": 9,
+        "actual_circuit_fingerprint": "983f69abbe34e43b8c2ba5499f2c7a5cf42af6cf56895467803395e967324277",
+        "compiled_circuit_fingerprint": "524effa0e62f5a6e2572cf7e41a9d64689c67c21c007d0646fed6ad6beabe02c",
+        "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+        "backend_fingerprint": "no_backend",
+        "metrics": {
+          "rz_count": 11761,
+          "cx_count": 6444,
+          "rz_depth": 4999,
+          "cx_depth": 5295,
+          "total_depth": 10904,
+          "circuit_size": 22458
+        },
+        "measurements": 1,
+        "pretranspile_gate_counts": {
+          "crz": 136,
+          "crzz": 336,
+          "cz": 12,
+          "h": 2,
+          "measure": 1,
+          "p": 19,
+          "rz": 288,
+          "sdg": 1,
+          "xx_plus_yy": 832
+        },
+        "posttranspile_gate_counts": {
+          "cx": 6444,
+          "measure": 1,
+          "rz": 11761,
+          "sx": 4236,
+          "x": 16
+        },
+        "compiled_global_phase": 2.362824046456346,
+        "performance": {
+          "elapsed_seconds": 0.7306909060571343,
+          "RSS_before": {
+            "current_RSS_KiB": 849896,
+            "process_peak_RSS_KiB": 955024
+          },
+          "RSS_after": {
+            "current_RSS_KiB": 849896,
+            "process_peak_RSS_KiB": 955024
+          },
+          "Python_traced_peak_bytes": null,
+          "compile_incremental_peak_RSS_KiB": null
+        },
+        "compiled_DAG_operations": 22458,
+        "comparison": {
+          "status": "EXACT_MATCH",
+          "circuit_identity_checks": {
+            "actual_circuit_fingerprint": true,
+            "compiled_circuit_fingerprint": true,
+            "compiler_hash": true,
+            "backend_fingerprint": true,
+            "scope": true,
+            "state_preparation_included": true,
+            "qubits": true
+          },
+          "reference_metrics": {
+            "rz_count": 11761,
+            "cx_count": 6444,
+            "rz_depth": 4999,
+            "cx_depth": 5295,
+            "total_depth": 10904,
+            "circuit_size": 22458
+          },
+          "candidate_metrics": {
+            "rz_count": 11761,
+            "cx_count": 6444,
+            "rz_depth": 4999,
+            "cx_depth": 5295,
+            "total_depth": 10904,
+            "circuit_size": 22458
+          },
+          "signed_difference": {
+            "rz_count": 0,
+            "cx_count": 0,
+            "rz_depth": 0,
+            "cx_depth": 0,
+            "total_depth": 0,
+            "circuit_size": 0
+          },
+          "absolute_difference": {
+            "rz_count": 0,
+            "cx_count": 0,
+            "rz_depth": 0,
+            "cx_depth": 0,
+            "total_depth": 0,
+            "circuit_size": 0
+          }
+        }
+      }
+    }
+  },
+  "reference_origin": "new Q2 native build and X/Y whole compile; not 2*m0",
+  "execution_counts": {
+    "native_builds": {
+      "reference": 1,
+      "stream": 1
+    },
+    "real_H4_compile_calls_started": 4,
+    "real_H4_compile_calls_per_path": {
+      "reference": 2,
+      "stream": 2
+    },
+    "maximum_real_H4_compile_calls": 4,
+    "real_H4_m0_recomputed": false,
+    "additional_trajectories": 0,
+    "new_sampling": false
+  },
+  "controlled_correctness": {
+    "reused_checks": 16,
+    "status": "PASS",
+    "scope": "uncompiled selected primitives and Q=1 complete outer steps; not all support, trajectories, or compiler",
+    "new_H4_signal_or_statevector_simulation": false
+  },
+  "artificial_tests": {
+    "passed": 34,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "elapsed_seconds": 16.42,
+    "test_files": [
+      "tests/test_b2_q2_streaming_h4.py",
+      "tests/test_b2_m0_streaming_h4.py",
+      "tests/test_b2_streamed_native_cost.py"
+    ],
+    "scope": "synthetic only; Q2 CAR/control/phase/order/X=Re/Y=Im; four-call compile pipeline; no H4 signal simulation"
+  },
+  "build_performance": {
+    "reference": {
+      "elapsed_seconds": 18.06211547879502,
+      "RSS_before": {
+        "current_RSS_KiB": 291392,
+        "process_peak_RSS_KiB": 539308
+      },
+      "RSS_after": {
+        "current_RSS_KiB": 790952,
+        "process_peak_RSS_KiB": 913048
+      },
+      "Python_traced_peak_bytes": 295471190,
+      "compile_incremental_peak_RSS_KiB": null
+    },
+    "stream": {
+      "elapsed_seconds": 17.320019301958382,
+      "RSS_before": {
+        "current_RSS_KiB": 758184,
+        "process_peak_RSS_KiB": 913048
+      },
+      "RSS_after": {
+        "current_RSS_KiB": 841016,
+        "process_peak_RSS_KiB": 955024
+      },
+      "Python_traced_peak_bytes": 290923059,
+      "compile_incremental_peak_RSS_KiB": null
+    },
+    "protocol": "same process; reference then stream; each once; tracemalloc includes requests/native fingerprint; reference retained"
+  },
+  "runtime": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "host": "GPUA100-gleap02",
+    "available_cpus": 64,
+    "load_average": [
+      10.86376953125,
+      18.427734375,
+      25.80029296875
+    ],
+    "packages": {
+      "qiskit": "1.3.0",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "openfermion": "1.6.1",
+      "qiskit-nature": "0.7.2"
+    }
+  },
+  "elapsed_seconds": 125.68587494688109,
+  "memory_interpretation": {
+    "reference_requests_retained": 2,
+    "reference_controlled_tails_retained": 2,
+    "stream_request_tail_retention": "one outer step at a time (independent of Q)",
+    "explicit_input_events_retained": 8,
+    "flat_circuit_retained": true,
+    "wrapper_copy_retained": true,
+    "build_trace_includes_native_fingerprint": true,
+    "order_and_cache_controlled_repetitions": false,
+    "compile_peak_is_cumulative_process_high_water": true,
+    "compile_incremental_peak_RSS_KiB": null,
+    "fingerprint_isolated_peak_bytes": null,
+    "general_speedup_or_memory_reduction_claim": false
+  },
+  "m17": {
+    "Q": 131072,
+    "RTE_events_per_trajectory": 524288,
+    "deterministic_block_appends_per_trajectory": 1048576,
+    "real_build_or_compile_executed": false,
+    "price_extrapolation_from_Q2": false,
+    "build_seconds": null,
+    "compile_seconds": null,
+    "peak_memory_bytes": null,
+    "prices": null,
+    "technical_feasibility": null
+  },
+  "expected_prices": null,
+  "price_MC": null,
+  "price_confidence_intervals": null,
+  "total_RPE_cost": null,
+  "next_priority_proposal": {
+    "owner": "User decides; Codex executes only after instruction",
+    "task": "isolate canonical fingerprint time/memory and test identical-policy/SHA lower-memory implementation on artificial circuits",
+    "reason": "Q2 build+fingerprint traced peak is about 291-295 MB; full recursive payload/JSON remains; fingerprint contribution is not yet isolated",
+    "new_real_H4_approval_scope": [
+      "SOURCE",
+      "input",
+      "round",
+      "fixed trajectory",
+      "compiler",
+      "compile count",
+      "STOP"
+    ],
+    "MC_additional_conditions": [
+      "sample count",
+      "seed",
+      "round scope",
+      "paired X/Y and six metrics",
+      "SE/CI",
+      "precision and stopping rule",
+      "rare-event handling"
+    ]
+  },
+  "evidence": {
+    "result": "run01/result.json",
+    "trajectory": "run01/trajectory.json",
+    "native_and_wrappers": "run01/native_and_wrappers.json",
+    "report": "../../../docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md"
+  },
+  "publication_exclusions": [
+    "private state payload",
+    "HDF5",
+    "MO integrals",
+    "private provenance original"
+  ],
+  "prohibited_followons_not_executed": [
+    "m0 recomputation",
+    "m2+ real H4 build/compile",
+    "new trajectories or RNG",
+    "price MC",
+    "strong PF price",
+    "full 18-round price",
+    "total RPE cost",
+    "SCF/DF/state solve",
+    "signal/branch/shot recomputation",
+    "detailed scientific review"
+  ]
+}

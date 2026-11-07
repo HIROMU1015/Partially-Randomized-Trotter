@@ -178,3 +178,8 @@ artifacts/<validation_name>/
 
 `run_b2_m0_streaming_h4.py`は同じ保存trajectoryのnative2経路を照合後、stream X/Y各1回だけcompile。
 [保存結果・SOURCE・STOP](../docs/research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)。Q2以降や再実行の許可ではない。
+
+## B2 m1/Q2実H4 streaming限定照合（2026-11-07）
+
+`run_b2_q2_streaming_h4.py`は既存m0 helperとnative/stream/compilerを再利用し、固定8 eventの境界を比較する。
+[SOURCE・全6価格・STOP](../docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)。両方式X/Y計4回を実行済み。再実行・m2以降・MCの許可ではない。

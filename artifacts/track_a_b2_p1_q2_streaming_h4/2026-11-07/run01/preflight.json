@@ -1,0 +1,172 @@
+{
+  "schema_version": "b2_q2_streaming_h4_v1",
+  "status": "PREFLIGHT",
+  "mandatory_stop": true,
+  "started_UTC": "2026-11-07T08:41:52.889241+00:00",
+  "compile_calls_started": 0,
+  "axes": {
+    "reference": {},
+    "stream": {}
+  },
+  "expected_prices": null,
+  "price_MC": null,
+  "total_RPE_cost": null,
+  "fixed_conditions": {
+    "model": "Linear H4;1.00 Angstrom;STO-3G",
+    "target": "H_phys",
+    "DF_rank": 12,
+    "L_D": 3,
+    "r": 4,
+    "K": 2,
+    "delta": 0.02,
+    "m": 1,
+    "Q": 2,
+    "T": 0.04,
+    "state_role": "original_H_ground_state",
+    "state_preparation_included": false,
+    "controlled": "ordinary"
+  },
+  "source": {
+    "commit": "e09fd13c5a2357dd001d9cfbe86d4e99c3a5620d",
+    "sha256": {
+      "src/trotterlib/b2_rpe_connection.py": "d41f336d333c6a66c7c5b73db241f2c415a4d501a208e7808c4bbcbaf5631c08",
+      "src/trotterlib/o1_m1_resource_bridge.py": "4cd367f7f0ab363866f9238bb4dfac869af76d5a345e9f786790093336b7fbc9",
+      "src/trotterlib/rte.py": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+      "src/trotterlib/df_partial_s2.py": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "src/trotterlib/df_partial_s2_repeated.py": "65b5ebd842a972735c7aa1e7ba4d11d8265ab586119f29bf5acc8631700c7d6d",
+      "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "src/trotterlib/df_rte_circuit.py": "8e2fec0c3577f5fb264b574bd1984b41abdc4ce5bb2536481bafd11a5e5c1c76",
+      "src/trotterlib/df_rte_qiskit.py": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+      "src/trotterlib/df_trotter/ops.py": "3801eafca014b0df6533172582887e3b345f65833505409cdd375dcd11925689",
+      "src/trotterlib/rpe_hadamard_interrogation.py": "8d00036f8e7d7ee0d3cfe738d32805885edb52e3d3e185e9f6bc8e9677b91ba7",
+      "src/trottertracks/resource_applicability/ax2a_native_df.py": "b67cc43993fa23b671407f75cc0a2d8e3cceedfe9fc7e3c97ee3e5b39a735e2d",
+      "src/trotterlib/b2_streamed_native_cost.py": "1bc9650ae67534374ae7592c03e35590bbb3afafc193faa95a2bebbceb50bcba",
+      "scripts/run_b2_p1_compiled_cost.py": "f67a5744c2dc74933d6df9f9d1e882dabb3bc05aa54a2a5d4e8d819817ad23b8",
+      "scripts/run_b2_m0_streaming_h4.py": "7572dc0f2a9739676e5d218d8b7ddf89bcd900112aa1a1087fce3c294fe638b1",
+      "scripts/run_b2_q2_streaming_h4.py": "044e70608afe68e1caa7d166d787e38bc91d11df8349a2ca221e76694271d3af"
+    }
+  },
+  "input": {
+    "df_commit": "bf5d3b2405b2bec4f88dd0589b75dd737b13e052",
+    "df_path": "artifacts/pr2_s0_s1_validation/2026-09-28/h4_1p00_rank12_development_v1.npz",
+    "df_sha256": "3bc92e92c595a50eadf97c80ed8641adbb214b14e6e94b7a28ac08e8c2e0f80a",
+    "private_file_sha256": {
+      "state.npz": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+      "provenance.json": "468b3a4bc3150c055b4fcdf37a72acaa01e2ae171eccfc39d62419e3998c4e3b",
+      "H4_sto-3g_singlet_df_d100.hdf5": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958"
+    },
+    "scientific_identity": {
+      "original_hamiltonian": "H_phys:S0_array_hash:bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+      "original_state": "S0_array_hash:1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+      "df_hamiltonian": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+      "sector": "Nalpha=2,Nbeta=2;OF_basis_S0_hash:665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+      "spin_orbital_order": "2p=alpha,2p+1=beta;Qiskit full index=sum(n_q*2**q)",
+      "state_role": "original_H_ground_state"
+    },
+    "state_vectors_used": false,
+    "physical_H_rebuilt": false
+  },
+  "compiler": {
+    "settings": {
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "backend_name": null,
+      "coupling_map": null,
+      "optimization_level": 1,
+      "layout_method": null,
+      "routing_method": null,
+      "transpiler_seed": 7,
+      "qiskit_version": "1.3.0"
+    },
+    "settings_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+    "backend_fingerprint": "no_backend",
+    "target": null,
+    "connectivity": "all_to_all_logical",
+    "signal_seed_17_adopted": false
+  },
+  "reused_evidence": {
+    "m0_metadata_only": {
+      "commit": "f6eea2f28be1f15b6ff5e2954b9c8fb48f3c5a0f",
+      "path": "artifacts/track_a_b2_p1_m0_streaming_h4/2026-11-07/run02/result.json",
+      "blob": "a972dfd2a6a2f564a0fbd89c9e975262247801aa",
+      "sha256": "dd8c17c718626cb7b1a46eb5a1b8ee0a629c6f04ccf4ce1f42bf59bc10d31432"
+    },
+    "base_event_metadata": {
+      "commit": "2d21c23879aaae063a796fa95c1433fb3d0b5738",
+      "path": "artifacts/track_a_b2_p1_compiled_cost/2026-11-07/run01/trajectory.json",
+      "blob": "b88cae438d203f423bb3ad9403758f737bda11b4",
+      "sha256": "defd444edb686b8125b8c4962cfb718c3465a7e1821d38116b5365d844baf388"
+    },
+    "controlled": {
+      "commit": "ea2c0915ba2f7e11a6dac58dc01cf1af3c0d0ff5",
+      "path": "artifacts/track_a_b2_p1_two_round/2026-11-07/run01/result.json",
+      "blob": "79a85f454714d3d1b8bb9a53cf595fb1553a0b36",
+      "sha256": "a72a199f8aa72460a465c7d677db566ff1686b8e27e6a6675f56e69c75a22a7f"
+    },
+    "input_spec": {
+      "commit": "89165cf70958e7e4676d0580e3acb7faf588772c",
+      "path": "artifacts/b2_hphys_ground_state/2026-11-06/run01/agent_b_input_spec.json",
+      "blob": "b8be687248487f61a214fad9c95a8bb7814729d4",
+      "sha256": "0244e3160ef489a5be5e11153c1495f79a3e1250a0fbdf010f65a3674809ee15"
+    }
+  },
+  "controlled_evidence": {
+    "reused_checks": 16,
+    "status": "PASS",
+    "scope": "uncompiled selected primitives and Q=1 complete outer steps; not all support, trajectories, or compiler",
+    "new_H4_signal_or_statevector_simulation": false
+  },
+  "runtime": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "host": "GPUA100-gleap02",
+    "available_cpus": 64,
+    "load_average": [
+      10.86376953125,
+      18.427734375,
+      25.80029296875
+    ],
+    "packages": {
+      "qiskit": "1.3.0",
+      "numpy": "1.26.4",
+      "scipy": "1.14.1",
+      "openfermion": "1.6.1",
+      "qiskit-nature": "0.7.2"
+    }
+  },
+  "trajectory": {
+    "identity": "0ecf28e7a5d2d367c6c609a8d8a4da544c2d03b955aef86b0656f0bf107b7ae8",
+    "representative_indices": [
+      0,
+      4,
+      4,
+      0,
+      4,
+      0,
+      0,
+      4
+    ],
+    "step_orders": [
+      [
+        0,
+        2,
+        2,
+        0
+      ],
+      [
+        2,
+        0,
+        0,
+        2
+      ]
+    ],
+    "complete_payload_path": "trajectory.json",
+    "canonical_validation": "PASS",
+    "new_sampling": false
+  },
+  "preflight_status": "PASS"
+}

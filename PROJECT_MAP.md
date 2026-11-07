@@ -208,3 +208,8 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [REPORT・固定SOURCE・軸別価格・STOP](docs/research/track_a_b2_p1_m0_streaming_h4_20261107/REPORT.md)。
 同じ保存trajectoryでnative/wrapper/compiled fingerprintと全6価格が一致。新規compileはX/Y各1回のみ。
+
+## B2 P1 m1/Q2実H4 streaming照合（2026-11-07）
+
+[REPORT・固定8 event・全6指標・STOP](docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)。
+outer-step境界を含む固定1 trajectoryでnative/wrapper/compiled identityと価格が一致。両方式X/Y計4回compile、m17は未確定。
