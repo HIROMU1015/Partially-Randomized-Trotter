@@ -244,3 +244,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A CT-4B：q128の有限strict T比較
 
 [REPORT](docs/research/pr_reference_ct4b_20261107/REPORT.md)、[SCOPE](docs/research/pr_reference_ct4b_20261107/SCOPE.md)、[SOURCE/入力/raw/STOP](artifacts/pr_reference_ct4/2026-11-07/README.md)。固定H4/STO-3G/DF12・Partial S2/LD3/h=.02/K2・保存q128/r1・rare/nonrare各j0・X/Y・一様epsilon1e-11で、Referenceの1shot実TはB′比1.865933%/1.881674%減。全support期待T/18round総Tは未資格/未取得。8 native再compile、299 word（111再利用/188新規）、25 local/保存199shot条件PASS。SOURCE `src/trottertracks/pr_reference_ct4.py`、入口 `scripts/run_pr_reference_ct4.py`。旧SOURCE/結果/STOP保全、mandatory STOP。次担当GPT／ユーザー。
+
+## 2026-11-07 新A CT-5B：全supportの構造条件と必要価格境界
+
+[REPORT](docs/research/pr_reference_ct5b_20261107/REPORT.md)、[構造保証](docs/research/pr_reference_ct5b_20261107/STRUCTURAL_CERTIFICATES.md)、[有限key](docs/research/pr_reference_ct5b_20261107/FINITE_KEY_AND_UNKNOWN_PRICE.md)、[条件式](docs/research/pr_reference_ct5b_20261107/CONDITIONAL_T_ADVANTAGE.md)、[次判断](docs/research/pr_reference_ct5b_20261107/NEXT_SCOPE.md)。q128/r1・epsilon1e-11の静的調査。D SOURCE固定とframe pair共通性を導出し、native価格への移送は固定compiler/context条件付き。中央4 keyは保存価格、共通frame/event b2とvacuumの取得資格が残る。差に不要な数値価格と実行に必要なwordを分離し、pointwise/期待条件を未評価式で記載。新科学計算/合成/価格/compile0、旧証拠不変更、[mandatory STOP](artifacts/pr_reference_ct5b/2026-11-07/STOP.json)。次担当GPT／ユーザー。

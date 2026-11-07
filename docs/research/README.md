@@ -95,3 +95,7 @@
 ## 2026-11-07 新A CT-4B：q128の有限strict T比較
 
 [REPORT](pr_reference_ct4b_20261107/REPORT.md)、[SCOPE](pr_reference_ct4b_20261107/SCOPE.md)、[SOURCE/入力/raw/STOP](../../artifacts/pr_reference_ct4/2026-11-07/README.md)。H4/STO-3G/DF12・Partial S2/LD3/h=.02/K2・保存q128/r1の2 trajectory・X/Y・epsilon1e-11でReferenceの実TはB′比1.865933%/1.881674%減。299 word/25 local/保存199shot条件PASS。有限結果であり全support/18round総T/最小T/T-depthへ一般化しない。旧結果/STOP保全、mandatory STOP。次担当GPT／ユーザー。
+
+## 2026-11-07 新A CT-5B：構造条件と必要価格境界の静的調査
+
+[REPORT](pr_reference_ct5b_20261107/REPORT.md)、[構造保証](pr_reference_ct5b_20261107/STRUCTURAL_CERTIFICATES.md)、[有限key](pr_reference_ct5b_20261107/FINITE_KEY_AND_UNKNOWN_PRICE.md)、[条件式](pr_reference_ct5b_20261107/CONDITIONAL_T_ADVANTAGE.md)、[次判断](pr_reference_ct5b_20261107/NEXT_SCOPE.md)。D/frameのSOURCE構造とcompiler contextを分離し、共通frame価格の記号的取消し、中央4 key、product/event/vacuumの境界を整理。native価格移送は条件付き、全support policy/T優越は未資格。新数値再解析/合成/compile/価格0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。
