@@ -147,3 +147,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C D内部PF（2026-11-08）
 
 [固定H4のBCH設計・有限RTE・18round native資源](../../docs/research/track_c_d_internal_20261108/REPORT.md)。実験SOURCEは`src/trottertracks/track_c_d_*.py`、人工testは`test_track_c_d_internal.py`、保存結果検査は`check_track_c_d_internal.py`。PR内改善あり・強Fullより高価、mandatory STOP。
+
+## Track C資源ボトルネック接続
+
+[2026-11-08検証](../../docs/research/track_c_bottleneck_20261108/REPORT.md)では既存RTE event/builder、stable Gaussian、compiler Aを再利用。追加研究adapterは`src/trottertracks/track_c_bottleneck*.py`、人工testは`tests/test_track_c_bottleneck.py`。sampling law/return aggregationは変更せず、singleton partial-column QRと有限menu資源配分を検証した。条件付き結果でmandatory STOP。

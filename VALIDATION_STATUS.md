@@ -634,3 +634,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## Track C D内部PF（2026-11-08）
 
 [固定H4のBCH設計・有限RTE・18round native資源](docs/research/track_c_d_internal_20261108/REPORT.md)。実験SOURCEは`src/trottertracks/track_c_d_*.py`、人工testは`test_track_c_d_internal.py`、保存結果検査は`check_track_c_d_internal.py`。PR内改善あり・強Fullより高価、mandatory STOP。
+
+## Track C資源ボトルネック（2026-11-08）
+
+[REPORT](docs/research/track_c_bottleneck_20261108/REPORT.md)。固定Linear H4/1Å/STO-3G/DF12・LD3、18round/.02。改良PR比RZ46.52%・CX49.44%減を独立価格holdout384標本で確認したが、同じα最適化後の強Fullが低コスト。218 component置換・128 native context・追加8 source条件・全18round予算・12短X/Y比較を保存。固定保存H/ideal native/fresh bitsモデルの条件付き結果であり、元H包含・global優越・実機性能を主張しない。読取検査`python3 scripts/check_track_c_bottleneck.py`、人工4件PASS。外部再現・詳細GPTレビューなし、mandatory STOP。

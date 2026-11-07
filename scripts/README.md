@@ -177,3 +177,7 @@ artifacts/<validation_name>/
 ## Track C D内部PF（2026-11-08）
 
 [固定H4のBCH設計・有限RTE・18round native資源](../docs/research/track_c_d_internal_20261108/REPORT.md)。実験SOURCEは`src/trottertracks/track_c_d_*.py`、人工testは`test_track_c_d_internal.py`、保存結果検査は`check_track_c_d_internal.py`。PR内改善あり・強Fullより高価、mandatory STOP。
+
+## Track C資源ボトルネック（2026-11-08）
+
+[REPORT](../docs/research/track_c_bottleneck_20261108/REPORT.md)。保存値分析の段階入口は`PYTHONPATH=src python -m trottertracks.track_c_bottleneck`。追加段階は同じmodule名に`_basis`、`_runwise`、`_certificate`、`_joint`、`_select`、`_validation`、`_profiles`を付けて個別に実行する。元のH4 cacheと前回RAWを`.venv/prior`へ展開した固定入力が必要。既存出力を上書きせず、今回STOP後の新科学実行を自動開始しない。保存結果のみの読取検査は`python3 scripts/check_track_c_bottleneck.py`（Qiskit/cache不要）。

@@ -126,3 +126,7 @@
 ## Track C D内部PF（2026-11-08）
 
 [固定H4のBCH設計・有限RTE・18round native資源](research/track_c_d_internal_20261108/REPORT.md)。実験SOURCEは`src/trottertracks/track_c_d_*.py`、人工testは`test_track_c_d_internal.py`、保存結果検査は`check_track_c_d_internal.py`。PR内改善あり・強Fullより高価、mandatory STOP。
+
+## Track C資源ボトルネック（2026-11-08）
+
+[成分・round分解、追加改善、独立価格holdout](research/track_c_bottleneck_20261108/REPORT.md)。改良PRを削減したが強Fullがなお安い。全raw・SOURCE・STOPと読取checkerは同REPORTから辿る。

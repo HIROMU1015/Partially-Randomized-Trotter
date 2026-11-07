@@ -196,3 +196,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track C D内部PF（2026-11-08）
 
 [固定H4のBCH設計・有限RTE・18round native資源](docs/research/track_c_d_internal_20261108/REPORT.md)。実験SOURCEは`src/trottertracks/track_c_d_*.py`、人工testは`test_track_c_d_internal.py`、保存結果検査は`check_track_c_d_internal.py`。PR内改善あり・強Fullより高価、mandatory STOP。
+
+## Track C資源ボトルネック（2026-11-08）
+
+[全18round分解・追加改善・独立holdout](docs/research/track_c_bottleneck_20261108/REPORT.md)。singleton部分QR・step/resolution/α配分を検証し、改良PR出発点比RZ46.52%減。ただし同じα最適化後の強FullよりRZ1.96倍・CX1.27倍。実装`track_c_bottleneck*.py`、人工test`test_track_c_bottleneck.py`、読取検査`check_track_c_bottleneck.py`。固定保存H4モデルの条件付き結果、mandatory STOP。

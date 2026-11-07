@@ -186,3 +186,7 @@ Track C2-A：[限定pilot・SOURCE・raw・STOP](track_c2_a_pilot_20261106/REPOR
 ## 2026-11-08 Track C D内部PF
 
 [固定H4のD内部ground-BCH相殺・native資源評価](track_c_d_internal_20261108/REPORT.md)。Dだけの対称合成の係数調整で、同じ登録r_mの元PR比shots8598→8498、推定総RZ約26.2%減・CX約30.7%減。保存行列/ideal native/fresh bits条件の18round保証を追加評価。強Full PFよりは高価。元H包含・T合成・一般化は未検証、mandatory STOP。
+
+## 2026-11-08 Track C資源ボトルネック
+
+[費用分解・singleton部分QR・共同配分・独立holdout](track_c_bottleneck_20261108/REPORT.md)。改良PR出発点比RZ46.52%減、同条件配分後の強Fullはなお低コスト。全18round・raw1622ファイル・負結果・native条件を保存しmandatory STOP。
