@@ -158,3 +158,7 @@
 ## 新A CT-1（2026-11-07）
 
 [REPORT](research/pr_reference_ct1_20261107/REPORT.md)、[SCOPE](research/pr_reference_ct1_20261107/SCOPE.md)。保存q1/r1の有限correctness pilot。既存97/新規171 word、local21/whole8 PASS、保存Nの予算条件PASS。全support CT保証や総T優越を意味しない。mandatory STOP。
+
+## 新A CT-2：全support T上界（2026-11-07）
+
+[REPORT](research/pr_reference_ct2_20261107/REPORT.md)、[STRICT_SYNTHESIS_BOUNDS](research/pr_reference_ct2_20261107/STRICT_SYNTHESIS_BOUNDS.md)、[FULL_SUPPORT_PRICE_APPLICABILITY](research/pr_reference_ct2_20261107/FULL_SUPPORT_PRICE_APPLICABILITY.md)。既知理論・strict phase・固定backendの取得保証を分けた静的調査。全support価格は未資格、新合成/数値評価なし、mandatory STOP。

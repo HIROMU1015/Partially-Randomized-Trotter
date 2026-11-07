@@ -228,3 +228,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A CT-1：有限strict合成correctness
 
 [REPORT](docs/research/pr_reference_ct1_20261107/REPORT.md)、[SCOPE](docs/research/pr_reference_ct1_20261107/SCOPE.md)、[SOURCE/入力/raw](artifacts/pr_reference_ct1/2026-11-07/README.md)。固定q1/r1・保存2 trajectory・X/Y、epsilon1e-9。97 word再利用＋171新合成、268 word/21 local/8 whole検査PASS。q1保存192/axisの予算条件成立、全support CT law/位相価格・18round総Tは未資格／未取得。旧SOURCE/結果/STOP保全、mandatory STOP。
+
+## 2026-11-07 新A CT-2：全support strict合成価格の静的調査
+
+[REPORT](docs/research/pr_reference_ct2_20261107/REPORT.md)、[理論/実装境界](docs/research/pr_reference_ct2_20261107/STRICT_SYNTHESIS_BOUNDS.md)、[全support適用条件](docs/research/pr_reference_ct2_20261107/FULL_SUPPORT_PRICE_APPLICABILITY.md)。理論式は前提付きTHEORETICAL_ONLY、固定pygridsynth2.0.0の全入力取得/価格はUNQUALIFIED。受理後word長制限を全域価格にしない。新科学計算/合成/価格評価0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。
