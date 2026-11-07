@@ -129,3 +129,8 @@ reference/stream X/Yを各1回、計4回compile。長roundの実行可能性は�
 
 [REPORT](research/streamed_circuit_fingerprint_20261107/REPORT.md)：旧policyのJSON bytes/SHAを保つ逐次hash実装、
 payload/JSON/SHAの分離計測とメモリ上の限界。科学pipelineの既定実装や実H4結果は変更しない。
+
+## B2人工pipelineのfingerprint接続（2026-11-07）
+
+[REPORT](research/b2_fingerprint_pipeline_20261107/REPORT.md)：人工Q1/Q2/Q8のnative・wrapper・compiled identity/全6価格を比較。
+native生成/hash、copy、wrapper validation/compose、whole compile、前後DAGを段階計測。実H4追加実行なし。

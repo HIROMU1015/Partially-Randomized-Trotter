@@ -160,3 +160,9 @@ DF部分ランダム化研究と混同しない。
 `streamed_circuit_fingerprint.py`は`rte_compiled_cost.py`のoperation/numeric serializerを再利用し、
 旧v2 JSON bytes/SHAを保ってtop-level instructionごとにhashする。既定経路の置換はしていない。
 [人工互換性・分離計測・大きな個別definitionの限界](../../docs/research/streamed_circuit_fingerprint_20261107/REPORT.md)。
+
+## B2 pipelineへのopt-in fingerprint（2026-11-07）
+
+`stream_native`、native wrapper、`o1_m1_resource_bridge._compile_pair`の`fingerprint_function`へ同一policyの関数を渡せる。
+未指定時は旧関数を使用し、wrapper改変検出とcompiler/metric検査を保つ。
+[人工接続・20 test・分離計測](../../docs/research/b2_fingerprint_pipeline_20261107/REPORT.md)。

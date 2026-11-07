@@ -188,3 +188,8 @@ artifacts/<validation_name>/
 
 `benchmark_streamed_circuit_fingerprint.py`は人工回路のみで旧実装と逐次hashの同一SHA・時間・メモリを測定。
 [SOURCE・測定protocol・限界](../docs/research/streamed_circuit_fingerprint_20261107/REPORT.md)。分子入力・compiler・solverは呼ばない。
+
+## B2人工pipelineの段階計測（2026-11-07）
+
+`benchmark_b2_fingerprint_pipeline.py`は既存人工B2・stream builder・wrapper・pair compilerを再利用する。
+[固定SOURCE・Q1/Q2/Q8比較・段階別memory](../docs/research/b2_fingerprint_pipeline_20261107/REPORT.md)。実H4やMCは実行しない。

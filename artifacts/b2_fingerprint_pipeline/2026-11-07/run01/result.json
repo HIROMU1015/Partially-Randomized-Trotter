@@ -1,0 +1,2566 @@
+{
+  "status": "PASS_ARTIFICIAL_PIPELINE_IDENTICAL",
+  "source_commit": "fcfe3b6732ba795fbfa06ef677c2a141bd36ccff",
+  "source_sha256": {
+    "scripts/benchmark_b2_fingerprint_pipeline.py": "235f162434063ddd2e126bb7a97571d925c611272d93af5fd2c8ba65581d2c53",
+    "scripts/benchmark_streamed_circuit_fingerprint.py": "e0b582e4aab440277ced5138bc09e82794609c35ed667851806a8d0316ab79c9",
+    "src/trotterlib/streamed_circuit_fingerprint.py": "6e363dc2aab9422871756a2e4e9178f6e178f7c4c131f14bd6878bcc4520c673",
+    "src/trotterlib/b2_streamed_native_cost.py": "76457a67c2946500c7d9d1e8d6a5ae0503f4dfc420b6eca1e2269383d9bc6cde",
+    "src/trottertracks/resource_applicability/ax2a_native_df.py": "f3399f8ecdfd82368340612064a69fed4404a12e314bb5a5eb39661b7f315c48",
+    "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+    "src/trotterlib/o1_m1_resource_bridge.py": "b297f2b87894b32990d984c4579e3820c43e324d09b1c0de8a9f9cc588ea92fe",
+    "tests/b2_cost_method_cases.py": "10a2f9fa5ed9a3fb6881460f7e11374a0c7eb89e2bb343f17ce6a7243e0e8471",
+    "tests/test_b2_fingerprint_pipeline.py": "809780bb7cda51bb420969d262941e6a33f1691560255f20403ff1a0c7a17edd"
+  },
+  "rows": [
+    {
+      "m": 0,
+      "Q": 1,
+      "mode": "legacy",
+      "stages": {
+        "artificial_preparation": {
+          "seconds_with_tracemalloc": 0.3536771850194782,
+          "Python_traced_peak_bytes": 4772723,
+          "Python_traced_retained_bytes": 4761776,
+          "RSS_before": {
+            "current_KiB": 216860,
+            "process_peak_KiB": 216860
+          },
+          "RSS_after": {
+            "current_KiB": 226588,
+            "process_peak_KiB": 226588
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "flat_native_emission": {
+          "seconds_with_tracemalloc": 0.03151460806839168,
+          "Python_traced_peak_bytes": 324422,
+          "Python_traced_retained_bytes": 314474,
+          "RSS_before": {
+            "current_KiB": 227100,
+            "process_peak_KiB": 227100
+          },
+          "RSS_after": {
+            "current_KiB": 228636,
+            "process_peak_KiB": 228636
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_fingerprint": {
+          "seconds_with_tracemalloc": 0.37252363399602473,
+          "Python_traced_peak_bytes": 7437423,
+          "Python_traced_retained_bytes": 1827932,
+          "RSS_before": {
+            "current_KiB": 228636,
+            "process_peak_KiB": 228636
+          },
+          "RSS_after": {
+            "current_KiB": 239284,
+            "process_peak_KiB": 240924
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_copy_diagnostic": {
+          "seconds_with_tracemalloc": 0.003479478880763054,
+          "Python_traced_peak_bytes": 41376,
+          "Python_traced_retained_bytes": 37632,
+          "RSS_before": {
+            "current_KiB": 239284,
+            "process_peak_KiB": 240924
+          },
+          "RSS_after": {
+            "current_KiB": 239284,
+            "process_peak_KiB": 240924
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_precheck": {
+          "seconds_with_tracemalloc": 0.0006062451284378767,
+          "Python_traced_peak_bytes": 2248,
+          "Python_traced_retained_bytes": 1208,
+          "RSS_before": {
+            "current_KiB": 239284,
+            "process_peak_KiB": 240924
+          },
+          "RSS_after": {
+            "current_KiB": 239284,
+            "process_peak_KiB": 240924
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.3082772991620004,
+          "Python_traced_peak_bytes": 6251656,
+          "Python_traced_retained_bytes": 642397,
+          "RSS_before": {
+            "current_KiB": 239284,
+            "process_peak_KiB": 240924
+          },
+          "RSS_after": {
+            "current_KiB": 240308,
+            "process_peak_KiB": 240924
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.00828446913510561,
+          "Python_traced_peak_bytes": 111356,
+          "Python_traced_retained_bytes": 110468,
+          "RSS_before": {
+            "current_KiB": 240308,
+            "process_peak_KiB": 240924
+          },
+          "RSS_after": {
+            "current_KiB": 240308,
+            "process_peak_KiB": 240924
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.37819916591979563,
+          "Python_traced_peak_bytes": 7465301,
+          "Python_traced_retained_bytes": 1838211,
+          "RSS_before": {
+            "current_KiB": 240308,
+            "process_peak_KiB": 240924
+          },
+          "RSS_after": {
+            "current_KiB": 238588,
+            "process_peak_KiB": 243892
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_DAG": {
+          "seconds_with_tracemalloc": 0.0037047378718852997,
+          "Python_traced_peak_bytes": 41500,
+          "Python_traced_retained_bytes": 38841,
+          "RSS_before": {
+            "current_KiB": 238588,
+            "process_peak_KiB": 243892
+          },
+          "RSS_after": {
+            "current_KiB": 238588,
+            "process_peak_KiB": 243892
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.15057735098525882,
+          "Python_traced_peak_bytes": 1013249,
+          "Python_traced_retained_bytes": 890776,
+          "RSS_before": {
+            "current_KiB": 238588,
+            "process_peak_KiB": 243892
+          },
+          "RSS_after": {
+            "current_KiB": 242172,
+            "process_peak_KiB": 243892
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.3836563511285931,
+          "Python_traced_peak_bytes": 6994100,
+          "Python_traced_retained_bytes": 975857,
+          "RSS_before": {
+            "current_KiB": 242172,
+            "process_peak_KiB": 243892
+          },
+          "RSS_after": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0003192469011992216,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "RSS_after": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_precheck": {
+          "seconds_with_tracemalloc": 0.000579324783757329,
+          "Python_traced_peak_bytes": 1792,
+          "Python_traced_retained_bytes": 752,
+          "RSS_before": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "RSS_after": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.31468527601100504,
+          "Python_traced_peak_bytes": 6250666,
+          "Python_traced_retained_bytes": 641407,
+          "RSS_before": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "RSS_after": {
+            "current_KiB": 246056,
+            "process_peak_KiB": 247292
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.007527614943683147,
+          "Python_traced_peak_bytes": 65438,
+          "Python_traced_retained_bytes": 59570,
+          "RSS_before": {
+            "current_KiB": 246056,
+            "process_peak_KiB": 247292
+          },
+          "RSS_after": {
+            "current_KiB": 246056,
+            "process_peak_KiB": 247292
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.3764279340393841,
+          "Python_traced_peak_bytes": 7472275,
+          "Python_traced_retained_bytes": 1835939,
+          "RSS_before": {
+            "current_KiB": 246056,
+            "process_peak_KiB": 247292
+          },
+          "RSS_after": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_DAG": {
+          "seconds_with_tracemalloc": 0.0036914378870278597,
+          "Python_traced_peak_bytes": 41497,
+          "Python_traced_retained_bytes": 38585,
+          "RSS_before": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "RSS_after": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.07203998905606568,
+          "Python_traced_peak_bytes": 214606,
+          "Python_traced_retained_bytes": 96108,
+          "RSS_before": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "RSS_after": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.38390491087920964,
+          "Python_traced_peak_bytes": 6994112,
+          "Python_traced_retained_bytes": 975857,
+          "RSS_before": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "RSS_after": {
+            "current_KiB": 243348,
+            "process_peak_KiB": 247992
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.00030427821911871433,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 243348,
+            "process_peak_KiB": 247992
+          },
+          "RSS_after": {
+            "current_KiB": 243348,
+            "process_peak_KiB": 247992
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "axes": {
+        "cosine": {
+          "input_fingerprint": "765f0e2151569734e25eaeec6608ef81419a4adcbf6041f12cde3b3e83b28272",
+          "compiled_fingerprint": "34f1ac01d3d687fb37b0f37203bfeeccdad685b524996979521982ffec905138",
+          "instructions": 89,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 89,
+          "compiled_DAG_operations": 490,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 238588,
+            "process_peak_KiB": 243892
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 242984,
+            "process_peak_KiB": 247292
+          },
+          "compiled_global_phase": 2.3518439501922934,
+          "metrics": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        },
+        "sine": {
+          "input_fingerprint": "9a0d85d739e31e7b242e63dc58fb949f2b5290427fd0d39650747b5cf33df1c2",
+          "compiled_fingerprint": "721f8d9dced9f7cef23be088de2f80b69fa853479b48311e27033b694b72d0c8",
+          "instructions": 90,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 90,
+          "compiled_DAG_operations": 490,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 243384,
+            "process_peak_KiB": 247592
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 243348,
+            "process_peak_KiB": 247992
+          },
+          "compiled_global_phase": 1.5664457867948425,
+          "metrics": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        }
+      },
+      "compile_calls_started": 2,
+      "input": {
+        "model": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+        "L_D": 2,
+        "delta": 0.02,
+        "r": 4,
+        "K": 2,
+        "event_count": 4,
+        "event_identity": "3b51a66eb68a09d21a5743851018d73d6346f18ab8b8e8d108d580fb1d70e78a",
+        "preparation_hash": "89e989ceb8cd17e4772f8b8ed54a9d9fba5dfe72d9cb51bd721d46d45a702c41",
+        "pattern": "mixed",
+        "new_sampling": false
+      },
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "load_average": [
+        8.26953125,
+        7.04345703125,
+        4.33837890625
+      ],
+      "native": {
+        "instructions": 86,
+        "fingerprint": "411686b2334ff7a95ebf0d92911db7aa31fc062bce4d5893401a12d91c4d3c4e",
+        "qubits": 3,
+        "global_phase": 0.0
+      },
+      "copy_instructions": 86,
+      "RSS_after_copy_release": {
+        "current_KiB": 239284,
+        "process_peak_KiB": 240924
+      },
+      "retained_at_end": {
+        "native": true,
+        "wrappers": [
+          "cosine",
+          "sine"
+        ],
+        "compiled_results": [
+          "cosine",
+          "sine"
+        ],
+        "diagnostic_DAGs": false,
+        "extra_native_copy": false,
+        "explicit_events": 4,
+        "RSS": {
+          "current_KiB": 243348,
+          "process_peak_KiB": 247992
+        }
+      },
+      "status": "PASS",
+      "wall_seconds_with_instrumentation": 5.864892473910004
+    },
+    {
+      "m": 0,
+      "Q": 1,
+      "mode": "stream",
+      "stages": {
+        "artificial_preparation": {
+          "seconds_with_tracemalloc": 0.3402224690653384,
+          "Python_traced_peak_bytes": 4772801,
+          "Python_traced_retained_bytes": 4761780,
+          "RSS_before": {
+            "current_KiB": 216864,
+            "process_peak_KiB": 216864
+          },
+          "RSS_after": {
+            "current_KiB": 226592,
+            "process_peak_KiB": 226592
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "flat_native_emission": {
+          "seconds_with_tracemalloc": 0.03159377793781459,
+          "Python_traced_peak_bytes": 323428,
+          "Python_traced_retained_bytes": 313754,
+          "RSS_before": {
+            "current_KiB": 227104,
+            "process_peak_KiB": 227104
+          },
+          "RSS_after": {
+            "current_KiB": 228640,
+            "process_peak_KiB": 228640
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_fingerprint": {
+          "seconds_with_tracemalloc": 0.36083223298192024,
+          "Python_traced_peak_bytes": 1957764,
+          "Python_traced_retained_bytes": 1816564,
+          "RSS_before": {
+            "current_KiB": 228640,
+            "process_peak_KiB": 228640
+          },
+          "RSS_after": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_copy_diagnostic": {
+          "seconds_with_tracemalloc": 0.003367610974237323,
+          "Python_traced_peak_bytes": 41376,
+          "Python_traced_retained_bytes": 37632,
+          "RSS_before": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "RSS_after": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_precheck": {
+          "seconds_with_tracemalloc": 0.0005989549681544304,
+          "Python_traced_peak_bytes": 2248,
+          "Python_traced_retained_bytes": 1208,
+          "RSS_before": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "RSS_after": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.30646376102231443,
+          "Python_traced_peak_bytes": 992498,
+          "Python_traced_retained_bytes": 689107,
+          "RSS_before": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "RSS_after": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.008275388972833753,
+          "Python_traced_peak_bytes": 111191,
+          "Python_traced_retained_bytes": 110248,
+          "RSS_before": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "RSS_after": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.37384258210659027,
+          "Python_traced_peak_bytes": 1843591,
+          "Python_traced_retained_bytes": 1702215,
+          "RSS_before": {
+            "current_KiB": 230176,
+            "process_peak_KiB": 230176
+          },
+          "RSS_after": {
+            "current_KiB": 231200,
+            "process_peak_KiB": 231200
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_DAG": {
+          "seconds_with_tracemalloc": 0.0036082789301872253,
+          "Python_traced_peak_bytes": 41555,
+          "Python_traced_retained_bytes": 38896,
+          "RSS_before": {
+            "current_KiB": 231200,
+            "process_peak_KiB": 231200
+          },
+          "RSS_after": {
+            "current_KiB": 231200,
+            "process_peak_KiB": 231200
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.1135371730197221,
+          "Python_traced_peak_bytes": 1014249,
+          "Python_traced_retained_bytes": 892269,
+          "RSS_before": {
+            "current_KiB": 231200,
+            "process_peak_KiB": 231200
+          },
+          "RSS_after": {
+            "current_KiB": 235296,
+            "process_peak_KiB": 235296
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.38465540995821357,
+          "Python_traced_peak_bytes": 1180981,
+          "Python_traced_retained_bytes": 1170683,
+          "RSS_before": {
+            "current_KiB": 235296,
+            "process_peak_KiB": 235296
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0002665079664438963,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_precheck": {
+          "seconds_with_tracemalloc": 0.0005680450703948736,
+          "Python_traced_peak_bytes": 1792,
+          "Python_traced_retained_bytes": 752,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.30840920796617866,
+          "Python_traced_peak_bytes": 993308,
+          "Python_traced_retained_bytes": 689422,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.007487745955586433,
+          "Python_traced_peak_bytes": 65438,
+          "Python_traced_retained_bytes": 59570,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.37044165399856865,
+          "Python_traced_peak_bytes": 1843591,
+          "Python_traced_retained_bytes": 1702559,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_DAG": {
+          "seconds_with_tracemalloc": 0.0035602091811597347,
+          "Python_traced_peak_bytes": 41497,
+          "Python_traced_retained_bytes": 38585,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.07212644000537694,
+          "Python_traced_peak_bytes": 214639,
+          "Python_traced_retained_bytes": 97078,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.38327728607691824,
+          "Python_traced_peak_bytes": 1181237,
+          "Python_traced_retained_bytes": 1170683,
+          "RSS_before": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "RSS_after": {
+            "current_KiB": 236320,
+            "process_peak_KiB": 236320
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0002687780652195215,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 236320,
+            "process_peak_KiB": 236320
+          },
+          "RSS_after": {
+            "current_KiB": 236320,
+            "process_peak_KiB": 236320
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "axes": {
+        "cosine": {
+          "input_fingerprint": "765f0e2151569734e25eaeec6608ef81419a4adcbf6041f12cde3b3e83b28272",
+          "compiled_fingerprint": "34f1ac01d3d687fb37b0f37203bfeeccdad685b524996979521982ffec905138",
+          "instructions": 89,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 89,
+          "compiled_DAG_operations": 490,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 231200,
+            "process_peak_KiB": 231200
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "compiled_global_phase": 2.3518439501922934,
+          "metrics": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        },
+        "sine": {
+          "input_fingerprint": "9a0d85d739e31e7b242e63dc58fb949f2b5290427fd0d39650747b5cf33df1c2",
+          "compiled_fingerprint": "721f8d9dced9f7cef23be088de2f80b69fa853479b48311e27033b694b72d0c8",
+          "instructions": 90,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 90,
+          "compiled_DAG_operations": 490,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 235808,
+            "process_peak_KiB": 235808
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 236320,
+            "process_peak_KiB": 236320
+          },
+          "compiled_global_phase": 1.5664457867948425,
+          "metrics": {
+            "rz_count": 243,
+            "cx_count": 140,
+            "rz_depth": 153,
+            "cx_depth": 140,
+            "total_depth": 340,
+            "circuit_size": 490
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        }
+      },
+      "compile_calls_started": 2,
+      "input": {
+        "model": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+        "L_D": 2,
+        "delta": 0.02,
+        "r": 4,
+        "K": 2,
+        "event_count": 4,
+        "event_identity": "3b51a66eb68a09d21a5743851018d73d6346f18ab8b8e8d108d580fb1d70e78a",
+        "preparation_hash": "89e989ceb8cd17e4772f8b8ed54a9d9fba5dfe72d9cb51bd721d46d45a702c41",
+        "pattern": "mixed",
+        "new_sampling": false
+      },
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "load_average": [
+        8.38232421875,
+        7.1083984375,
+        4.388671875
+      ],
+      "native": {
+        "instructions": 86,
+        "fingerprint": "411686b2334ff7a95ebf0d92911db7aa31fc062bce4d5893401a12d91c4d3c4e",
+        "qubits": 3,
+        "global_phase": 0.0
+      },
+      "copy_instructions": 86,
+      "RSS_after_copy_release": {
+        "current_KiB": 230176,
+        "process_peak_KiB": 230176
+      },
+      "retained_at_end": {
+        "native": true,
+        "wrappers": [
+          "cosine",
+          "sine"
+        ],
+        "compiled_results": [
+          "cosine",
+          "sine"
+        ],
+        "diagnostic_DAGs": false,
+        "extra_native_copy": false,
+        "explicit_events": 4,
+        "RSS": {
+          "current_KiB": 236320,
+          "process_peak_KiB": 236320
+        }
+      },
+      "status": "PASS",
+      "wall_seconds_with_instrumentation": 5.747955047991127
+    },
+    {
+      "m": 1,
+      "Q": 2,
+      "mode": "stream",
+      "stages": {
+        "artificial_preparation": {
+          "seconds_with_tracemalloc": 0.3427921950351447,
+          "Python_traced_peak_bytes": 4772309,
+          "Python_traced_retained_bytes": 4761303,
+          "RSS_before": {
+            "current_KiB": 216884,
+            "process_peak_KiB": 216884
+          },
+          "RSS_after": {
+            "current_KiB": 226612,
+            "process_peak_KiB": 226612
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "flat_native_emission": {
+          "seconds_with_tracemalloc": 0.061305972980335355,
+          "Python_traced_peak_bytes": 427848,
+          "Python_traced_retained_bytes": 410739,
+          "RSS_before": {
+            "current_KiB": 227124,
+            "process_peak_KiB": 227124
+          },
+          "RSS_after": {
+            "current_KiB": 228660,
+            "process_peak_KiB": 228660
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_fingerprint": {
+          "seconds_with_tracemalloc": 0.7033324581570923,
+          "Python_traced_peak_bytes": 3405910,
+          "Python_traced_retained_bytes": 3264620,
+          "RSS_before": {
+            "current_KiB": 228660,
+            "process_peak_KiB": 228660
+          },
+          "RSS_after": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_copy_diagnostic": {
+          "seconds_with_tracemalloc": 0.006457824958488345,
+          "Python_traced_peak_bytes": 75648,
+          "Python_traced_retained_bytes": 71904,
+          "RSS_before": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "RSS_after": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_precheck": {
+          "seconds_with_tracemalloc": 0.0009097629226744175,
+          "Python_traced_peak_bytes": 2248,
+          "Python_traced_retained_bytes": 1208,
+          "RSS_before": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "RSS_after": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.6194136519916356,
+          "Python_traced_peak_bytes": 1627213,
+          "Python_traced_retained_bytes": 1264322,
+          "RSS_before": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "RSS_after": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.014657824067398906,
+          "Python_traced_peak_bytes": 188541,
+          "Python_traced_retained_bytes": 187653,
+          "RSS_before": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "RSS_after": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.7377197879832238,
+          "Python_traced_peak_bytes": 3513339,
+          "Python_traced_retained_bytes": 3372219,
+          "RSS_before": {
+            "current_KiB": 233268,
+            "process_peak_KiB": 233268
+          },
+          "RSS_after": {
+            "current_KiB": 236852,
+            "process_peak_KiB": 236852
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_DAG": {
+          "seconds_with_tracemalloc": 0.006703253136947751,
+          "Python_traced_peak_bytes": 75775,
+          "Python_traced_retained_bytes": 73116,
+          "RSS_before": {
+            "current_KiB": 236852,
+            "process_peak_KiB": 236852
+          },
+          "RSS_after": {
+            "current_KiB": 236852,
+            "process_peak_KiB": 236852
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.16579894698224962,
+          "Python_traced_peak_bytes": 1103998,
+          "Python_traced_retained_bytes": 932947,
+          "RSS_before": {
+            "current_KiB": 236852,
+            "process_peak_KiB": 236852
+          },
+          "RSS_after": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.7371209769044071,
+          "Python_traced_peak_bytes": 1840087,
+          "Python_traced_retained_bytes": 1829765,
+          "RSS_before": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "RSS_after": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0003629468847066164,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "RSS_after": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_precheck": {
+          "seconds_with_tracemalloc": 0.0008752129506319761,
+          "Python_traced_peak_bytes": 1792,
+          "Python_traced_retained_bytes": 752,
+          "RSS_before": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "RSS_after": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.6142634430434555,
+          "Python_traced_peak_bytes": 1628203,
+          "Python_traced_retained_bytes": 1264862,
+          "RSS_before": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "RSS_after": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.013810602016746998,
+          "Python_traced_peak_bytes": 140976,
+          "Python_traced_retained_bytes": 136698,
+          "RSS_before": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "RSS_after": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.7419799310155213,
+          "Python_traced_peak_bytes": 3513339,
+          "Python_traced_retained_bytes": 3372563,
+          "RSS_before": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "RSS_after": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_DAG": {
+          "seconds_with_tracemalloc": 0.006800421979278326,
+          "Python_traced_peak_bytes": 75777,
+          "Python_traced_retained_bytes": 72865,
+          "RSS_before": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "RSS_after": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.12446329393424094,
+          "Python_traced_peak_bytes": 304647,
+          "Python_traced_retained_bytes": 140245,
+          "RSS_before": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "RSS_after": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.7312985060270876,
+          "Python_traced_peak_bytes": 1840087,
+          "Python_traced_retained_bytes": 1829765,
+          "RSS_before": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "RSS_after": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0003543160855770111,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "RSS_after": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "axes": {
+        "cosine": {
+          "input_fingerprint": "1dc0b6ba85389c1c5d3c5449d130ff8eada84e6a2f0d61e9b9eaf11a0bdb9802",
+          "compiled_fingerprint": "2aace8e407970d9ab93aa959b6e65e269422b820c9f12cb635e224cd9cfc7c42",
+          "instructions": 174,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 174,
+          "compiled_DAG_operations": 940,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 236852,
+            "process_peak_KiB": 236852
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 240948,
+            "process_peak_KiB": 240948
+          },
+          "compiled_global_phase": 6.2744842271794745,
+          "metrics": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        },
+        "sine": {
+          "input_fingerprint": "42add695f6392abda4f6ad72805e4a1c315fb0a5759a1802b0bd365b9f3c61ef",
+          "compiled_fingerprint": "a21df4c8f159ce144f64bde42d878d649563e4049f111715f9bf3f89670779de",
+          "instructions": 175,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 175,
+          "compiled_DAG_operations": 940,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 242484,
+            "process_peak_KiB": 242484
+          },
+          "compiled_global_phase": 5.489086063782027,
+          "metrics": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        }
+      },
+      "compile_calls_started": 2,
+      "input": {
+        "model": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+        "L_D": 2,
+        "delta": 0.02,
+        "r": 4,
+        "K": 2,
+        "event_count": 8,
+        "event_identity": "0061fb1284925bfcb1babf6fd5ba0328732abe9abdee4d2f5b4c3876bdc0a10b",
+        "preparation_hash": "89e989ceb8cd17e4772f8b8ed54a9d9fba5dfe72d9cb51bd721d46d45a702c41",
+        "pattern": "mixed",
+        "new_sampling": false
+      },
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "load_average": [
+        8.43212890625,
+        7.14013671875,
+        4.41357421875
+      ],
+      "native": {
+        "instructions": 171,
+        "fingerprint": "7edfbfc22ef5d1f23d0c0cc10927a2f44fb1c4127a2f05f108daab7138bce1ee",
+        "qubits": 3,
+        "global_phase": 0.0
+      },
+      "copy_instructions": 171,
+      "RSS_after_copy_release": {
+        "current_KiB": 233268,
+        "process_peak_KiB": 233268
+      },
+      "retained_at_end": {
+        "native": true,
+        "wrappers": [
+          "cosine",
+          "sine"
+        ],
+        "compiled_results": [
+          "cosine",
+          "sine"
+        ],
+        "diagnostic_DAGs": false,
+        "extra_native_copy": false,
+        "explicit_events": 8,
+        "RSS": {
+          "current_KiB": 242484,
+          "process_peak_KiB": 242484
+        }
+      },
+      "status": "PASS",
+      "wall_seconds_with_instrumentation": 8.403778075007722
+    },
+    {
+      "m": 1,
+      "Q": 2,
+      "mode": "legacy",
+      "stages": {
+        "artificial_preparation": {
+          "seconds_with_tracemalloc": 0.3403486958704889,
+          "Python_traced_peak_bytes": 4772819,
+          "Python_traced_retained_bytes": 4761981,
+          "RSS_before": {
+            "current_KiB": 216916,
+            "process_peak_KiB": 216916
+          },
+          "RSS_after": {
+            "current_KiB": 226644,
+            "process_peak_KiB": 226644
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "flat_native_emission": {
+          "seconds_with_tracemalloc": 0.05612245900556445,
+          "Python_traced_peak_bytes": 426845,
+          "Python_traced_retained_bytes": 410021,
+          "RSS_before": {
+            "current_KiB": 227156,
+            "process_peak_KiB": 227156
+          },
+          "RSS_after": {
+            "current_KiB": 228692,
+            "process_peak_KiB": 228692
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_fingerprint": {
+          "seconds_with_tracemalloc": 0.7427511520218104,
+          "Python_traced_peak_bytes": 14540378,
+          "Python_traced_retained_bytes": 3304791,
+          "RSS_before": {
+            "current_KiB": 228692,
+            "process_peak_KiB": 228692
+          },
+          "RSS_after": {
+            "current_KiB": 253536,
+            "process_peak_KiB": 257492
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_copy_diagnostic": {
+          "seconds_with_tracemalloc": 0.00659153307788074,
+          "Python_traced_peak_bytes": 75648,
+          "Python_traced_retained_bytes": 71904,
+          "RSS_before": {
+            "current_KiB": 253536,
+            "process_peak_KiB": 257492
+          },
+          "RSS_after": {
+            "current_KiB": 253536,
+            "process_peak_KiB": 257492
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_precheck": {
+          "seconds_with_tracemalloc": 0.0008825629483908415,
+          "Python_traced_peak_bytes": 2248,
+          "Python_traced_retained_bytes": 1208,
+          "RSS_before": {
+            "current_KiB": 253536,
+            "process_peak_KiB": 257492
+          },
+          "RSS_after": {
+            "current_KiB": 253536,
+            "process_peak_KiB": 257492
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.635610441910103,
+          "Python_traced_peak_bytes": 12504814,
+          "Python_traced_retained_bytes": 1273067,
+          "RSS_before": {
+            "current_KiB": 253536,
+            "process_peak_KiB": 257492
+          },
+          "RSS_after": {
+            "current_KiB": 255072,
+            "process_peak_KiB": 257492
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.01447257585823536,
+          "Python_traced_peak_bytes": 188651,
+          "Python_traced_retained_bytes": 187763,
+          "RSS_before": {
+            "current_KiB": 255072,
+            "process_peak_KiB": 257492
+          },
+          "RSS_after": {
+            "current_KiB": 255072,
+            "process_peak_KiB": 257492
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.7649153778329492,
+          "Python_traced_peak_bytes": 14808629,
+          "Python_traced_retained_bytes": 3558827,
+          "RSS_before": {
+            "current_KiB": 255072,
+            "process_peak_KiB": 257492
+          },
+          "RSS_after": {
+            "current_KiB": 252276,
+            "process_peak_KiB": 261728
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_DAG": {
+          "seconds_with_tracemalloc": 0.006852441933006048,
+          "Python_traced_peak_bytes": 75835,
+          "Python_traced_retained_bytes": 73176,
+          "RSS_before": {
+            "current_KiB": 252276,
+            "process_peak_KiB": 261728
+          },
+          "RSS_after": {
+            "current_KiB": 252276,
+            "process_peak_KiB": 261728
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.1664691469632089,
+          "Python_traced_peak_bytes": 1104951,
+          "Python_traced_retained_bytes": 933229,
+          "RSS_before": {
+            "current_KiB": 252276,
+            "process_peak_KiB": 261728
+          },
+          "RSS_after": {
+            "current_KiB": 255860,
+            "process_peak_KiB": 261728
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.7467846369836479,
+          "Python_traced_peak_bytes": 13275747,
+          "Python_traced_retained_bytes": 1818495,
+          "RSS_before": {
+            "current_KiB": 255860,
+            "process_peak_KiB": 261728
+          },
+          "RSS_after": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.00040413602255284786,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "RSS_after": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_precheck": {
+          "seconds_with_tracemalloc": 0.0009426621254533529,
+          "Python_traced_peak_bytes": 1792,
+          "Python_traced_retained_bytes": 752,
+          "RSS_before": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "RSS_after": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 0.6281954029109329,
+          "Python_traced_peak_bytes": 12505354,
+          "Python_traced_retained_bytes": 1273607,
+          "RSS_before": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "RSS_after": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.013770672027021646,
+          "Python_traced_peak_bytes": 140976,
+          "Python_traced_retained_bytes": 136698,
+          "RSS_before": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "RSS_after": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_fingerprint": {
+          "seconds_with_tracemalloc": 0.7749459410551935,
+          "Python_traced_peak_bytes": 14817035,
+          "Python_traced_retained_bytes": 3558875,
+          "RSS_before": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "RSS_after": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_DAG": {
+          "seconds_with_tracemalloc": 0.006767702056095004,
+          "Python_traced_peak_bytes": 75777,
+          "Python_traced_retained_bytes": 72865,
+          "RSS_before": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "RSS_after": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.12457811692729592,
+          "Python_traced_peak_bytes": 304075,
+          "Python_traced_retained_bytes": 139625,
+          "RSS_before": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "RSS_after": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 0.7399501840118319,
+          "Python_traced_peak_bytes": 13275759,
+          "Python_traced_retained_bytes": 1818495,
+          "RSS_before": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "RSS_after": {
+            "current_KiB": 263832,
+            "process_peak_KiB": 265588
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0003983268979936838,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 263832,
+            "process_peak_KiB": 265588
+          },
+          "RSS_after": {
+            "current_KiB": 263832,
+            "process_peak_KiB": 265588
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "axes": {
+        "cosine": {
+          "input_fingerprint": "1dc0b6ba85389c1c5d3c5449d130ff8eada84e6a2f0d61e9b9eaf11a0bdb9802",
+          "compiled_fingerprint": "2aace8e407970d9ab93aa959b6e65e269422b820c9f12cb635e224cd9cfc7c42",
+          "instructions": 174,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 174,
+          "compiled_DAG_operations": 940,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 252276,
+            "process_peak_KiB": 261728
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 262516,
+            "process_peak_KiB": 262516
+          },
+          "compiled_global_phase": 6.2744842271794745,
+          "metrics": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        },
+        "sine": {
+          "input_fingerprint": "42add695f6392abda4f6ad72805e4a1c315fb0a5759a1802b0bd365b9f3c61ef",
+          "compiled_fingerprint": "a21df4c8f159ce144f64bde42d878d649563e4049f111715f9bf3f89670779de",
+          "instructions": 175,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 175,
+          "compiled_DAG_operations": 940,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 257176,
+            "process_peak_KiB": 265588
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 263832,
+            "process_peak_KiB": 265588
+          },
+          "compiled_global_phase": 5.489086063782027,
+          "metrics": {
+            "rz_count": 465,
+            "cx_count": 276,
+            "rz_depth": 296,
+            "cx_depth": 276,
+            "total_depth": 659,
+            "circuit_size": 940
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        }
+      },
+      "compile_calls_started": 2,
+      "input": {
+        "model": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+        "L_D": 2,
+        "delta": 0.02,
+        "r": 4,
+        "K": 2,
+        "event_count": 8,
+        "event_identity": "0061fb1284925bfcb1babf6fd5ba0328732abe9abdee4d2f5b4c3876bdc0a10b",
+        "preparation_hash": "89e989ceb8cd17e4772f8b8ed54a9d9fba5dfe72d9cb51bd721d46d45a702c41",
+        "pattern": "mixed",
+        "new_sampling": false
+      },
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "load_average": [
+        8.47802734375,
+        7.17138671875,
+        4.4384765625
+      ],
+      "native": {
+        "instructions": 171,
+        "fingerprint": "7edfbfc22ef5d1f23d0c0cc10927a2f44fb1c4127a2f05f108daab7138bce1ee",
+        "qubits": 3,
+        "global_phase": 0.0
+      },
+      "copy_instructions": 171,
+      "RSS_after_copy_release": {
+        "current_KiB": 253536,
+        "process_peak_KiB": 257492
+      },
+      "retained_at_end": {
+        "native": true,
+        "wrappers": [
+          "cosine",
+          "sine"
+        ],
+        "compiled_results": [
+          "cosine",
+          "sine"
+        ],
+        "diagnostic_DAGs": false,
+        "extra_native_copy": false,
+        "explicit_events": 8,
+        "RSS": {
+          "current_KiB": 263832,
+          "process_peak_KiB": 265588
+        }
+      },
+      "status": "PASS",
+      "wall_seconds_with_instrumentation": 8.459341036854312
+    },
+    {
+      "m": 3,
+      "Q": 8,
+      "mode": "legacy",
+      "stages": {
+        "artificial_preparation": {
+          "seconds_with_tracemalloc": 0.3389193289913237,
+          "Python_traced_peak_bytes": 4773259,
+          "Python_traced_retained_bytes": 4762501,
+          "RSS_before": {
+            "current_KiB": 216940,
+            "process_peak_KiB": 216940
+          },
+          "RSS_after": {
+            "current_KiB": 226668,
+            "process_peak_KiB": 226668
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "flat_native_emission": {
+          "seconds_with_tracemalloc": 0.19783242186531425,
+          "Python_traced_peak_bytes": 869217,
+          "Python_traced_retained_bytes": 866951,
+          "RSS_before": {
+            "current_KiB": 227180,
+            "process_peak_KiB": 227180
+          },
+          "RSS_after": {
+            "current_KiB": 229228,
+            "process_peak_KiB": 229228
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_fingerprint": {
+          "seconds_with_tracemalloc": 3.160564807942137,
+          "Python_traced_peak_bytes": 53542916,
+          "Python_traced_retained_bytes": 10000605,
+          "RSS_before": {
+            "current_KiB": 229228,
+            "process_peak_KiB": 229228
+          },
+          "RSS_after": {
+            "current_KiB": 331936,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_copy_diagnostic": {
+          "seconds_with_tracemalloc": 0.025929728988558054,
+          "Python_traced_peak_bytes": 282848,
+          "Python_traced_retained_bytes": 279104,
+          "RSS_before": {
+            "current_KiB": 331936,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 331936,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_precheck": {
+          "seconds_with_tracemalloc": 0.00274007604457438,
+          "Python_traced_peak_bytes": 2280,
+          "Python_traced_retained_bytes": 1240,
+          "RSS_before": {
+            "current_KiB": 331936,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 331936,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 2.6329353470355272,
+          "Python_traced_peak_bytes": 47152956,
+          "Python_traced_retained_bytes": 3610877,
+          "RSS_before": {
+            "current_KiB": 331936,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 335520,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.052085916977375746,
+          "Python_traced_peak_bytes": 580788,
+          "Python_traced_retained_bytes": 579813,
+          "RSS_before": {
+            "current_KiB": 335520,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 335520,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_fingerprint": {
+          "seconds_with_tracemalloc": 3.3926365398801863,
+          "Python_traced_peak_bytes": 51523809,
+          "Python_traced_retained_bytes": 7963235,
+          "RSS_before": {
+            "current_KiB": 335520,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 339616,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_DAG": {
+          "seconds_with_tracemalloc": 0.027012251084670424,
+          "Python_traced_peak_bytes": 281515,
+          "Python_traced_retained_bytes": 278856,
+          "RSS_before": {
+            "current_KiB": 339616,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 339616,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.4751797749195248,
+          "Python_traced_peak_bytes": 1703584,
+          "Python_traced_retained_bytes": 1173819,
+          "RSS_before": {
+            "current_KiB": 339616,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 343200,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 3.0057500840630382,
+          "Python_traced_peak_bytes": 47105059,
+          "Python_traced_retained_bytes": 4318101,
+          "RSS_before": {
+            "current_KiB": 343200,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0013961279764771461,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_precheck": {
+          "seconds_with_tracemalloc": 0.002668847097083926,
+          "Python_traced_peak_bytes": 1824,
+          "Python_traced_retained_bytes": 784,
+          "RSS_before": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 2.6427239540498704,
+          "Python_traced_peak_bytes": 47136911,
+          "Python_traced_retained_bytes": 3594832,
+          "RSS_before": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.051733002066612244,
+          "Python_traced_peak_bytes": 533168,
+          "Python_traced_retained_bytes": 528858,
+          "RSS_before": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_fingerprint": {
+          "seconds_with_tracemalloc": 3.3955737228970975,
+          "Python_traced_peak_bytes": 51532215,
+          "Python_traced_retained_bytes": 7963283,
+          "RSS_before": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_DAG": {
+          "seconds_with_tracemalloc": 0.027473808033391833,
+          "Python_traced_peak_bytes": 281457,
+          "Python_traced_retained_bytes": 278545,
+          "RSS_before": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.42932978994213045,
+          "Python_traced_peak_bytes": 909657,
+          "Python_traced_retained_bytes": 388492,
+          "RSS_before": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 3.0118050440214574,
+          "Python_traced_peak_bytes": 46964917,
+          "Python_traced_retained_bytes": 4177947,
+          "RSS_before": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 342544,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.001288228901103139,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 342544,
+            "process_peak_KiB": 347960
+          },
+          "RSS_after": {
+            "current_KiB": 342544,
+            "process_peak_KiB": 347960
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "axes": {
+        "cosine": {
+          "input_fingerprint": "1dbe4b553e2f58eba4169444e284adc0e455b8bd70b8a7bec55203bcc6e2c4b5",
+          "compiled_fingerprint": "df12d3dae752df44c39adb239290cbf8cb51cb21aa4bedae4bf0389476fa1bc2",
+          "instructions": 660,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 660,
+          "compiled_DAG_operations": 3556,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 339616,
+            "process_peak_KiB": 347960
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 341632,
+            "process_peak_KiB": 347960
+          },
+          "compiled_global_phase": 4.677584660384223,
+          "metrics": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        },
+        "sine": {
+          "input_fingerprint": "3e81822a50d3d23b671238a0b4a2a4a30c8360cb2ac4cfca61db42c4fb21c48b",
+          "compiled_fingerprint": "422f38356a75d81250e405d7a8c55ed23afb886dc8327c87d84eebe5ef42cea4",
+          "instructions": 661,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 661,
+          "compiled_DAG_operations": 3556,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 344192,
+            "process_peak_KiB": 347960
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 342544,
+            "process_peak_KiB": 347960
+          },
+          "compiled_global_phase": 3.8921864969867794,
+          "metrics": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        }
+      },
+      "compile_calls_started": 2,
+      "input": {
+        "model": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+        "L_D": 2,
+        "delta": 0.02,
+        "r": 4,
+        "K": 2,
+        "event_count": 32,
+        "event_identity": "4186d2c819613af938ce761fc46e775a98e8751065255db71c43482955c54fb4",
+        "preparation_hash": "89e989ceb8cd17e4772f8b8ed54a9d9fba5dfe72d9cb51bd721d46d45a702c41",
+        "pattern": "mixed",
+        "new_sampling": false
+      },
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "load_average": [
+        8.55859375,
+        7.232421875,
+        4.48779296875
+      ],
+      "native": {
+        "instructions": 657,
+        "fingerprint": "3ce7c7085c89dd93dc4d279871ffdfc5d88144f688cb11afa48a2a10d66f88d4",
+        "qubits": 3,
+        "global_phase": 0.0
+      },
+      "copy_instructions": 657,
+      "RSS_after_copy_release": {
+        "current_KiB": 331936,
+        "process_peak_KiB": 347960
+      },
+      "retained_at_end": {
+        "native": true,
+        "wrappers": [
+          "cosine",
+          "sine"
+        ],
+        "compiled_results": [
+          "cosine",
+          "sine"
+        ],
+        "diagnostic_DAGs": false,
+        "extra_native_copy": false,
+        "explicit_events": 32,
+        "RSS": {
+          "current_KiB": 342544,
+          "process_peak_KiB": 347960
+        }
+      },
+      "status": "PASS",
+      "wall_seconds_with_instrumentation": 26.05832016491331
+    },
+    {
+      "m": 3,
+      "Q": 8,
+      "mode": "stream",
+      "stages": {
+        "artificial_preparation": {
+          "seconds_with_tracemalloc": 0.3391572970431298,
+          "Python_traced_peak_bytes": 4772941,
+          "Python_traced_retained_bytes": 4761922,
+          "RSS_before": {
+            "current_KiB": 216984,
+            "process_peak_KiB": 216984
+          },
+          "RSS_after": {
+            "current_KiB": 226712,
+            "process_peak_KiB": 226712
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "flat_native_emission": {
+          "seconds_with_tracemalloc": 0.19767900207079947,
+          "Python_traced_peak_bytes": 868377,
+          "Python_traced_retained_bytes": 866226,
+          "RSS_before": {
+            "current_KiB": 227224,
+            "process_peak_KiB": 227224
+          },
+          "RSS_after": {
+            "current_KiB": 229272,
+            "process_peak_KiB": 229272
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_fingerprint": {
+          "seconds_with_tracemalloc": 2.8496496949810535,
+          "Python_traced_peak_bytes": 10464337,
+          "Python_traced_retained_bytes": 10323109,
+          "RSS_before": {
+            "current_KiB": 229272,
+            "process_peak_KiB": 229272
+          },
+          "RSS_after": {
+            "current_KiB": 249748,
+            "process_peak_KiB": 253652
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "native_copy_diagnostic": {
+          "seconds_with_tracemalloc": 0.02579815313220024,
+          "Python_traced_peak_bytes": 282848,
+          "Python_traced_retained_bytes": 279104,
+          "RSS_before": {
+            "current_KiB": 249748,
+            "process_peak_KiB": 253652
+          },
+          "RSS_after": {
+            "current_KiB": 249748,
+            "process_peak_KiB": 253652
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_precheck": {
+          "seconds_with_tracemalloc": 0.0027736369520425797,
+          "Python_traced_peak_bytes": 2280,
+          "Python_traced_retained_bytes": 1240,
+          "RSS_before": {
+            "current_KiB": 249748,
+            "process_peak_KiB": 253652
+          },
+          "RSS_after": {
+            "current_KiB": 249748,
+            "process_peak_KiB": 253652
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 2.3621717111673206,
+          "Python_traced_peak_bytes": 4759796,
+          "Python_traced_retained_bytes": 4456467,
+          "RSS_before": {
+            "current_KiB": 249748,
+            "process_peak_KiB": 253652
+          },
+          "RSS_after": {
+            "current_KiB": 252820,
+            "process_peak_KiB": 253652
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_cosine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.05202830210328102,
+          "Python_traced_peak_bytes": 580733,
+          "Python_traced_retained_bytes": 579813,
+          "RSS_before": {
+            "current_KiB": 252820,
+            "process_peak_KiB": 253652
+          },
+          "RSS_after": {
+            "current_KiB": 252820,
+            "process_peak_KiB": 253652
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_fingerprint": {
+          "seconds_with_tracemalloc": 3.1003459049388766,
+          "Python_traced_peak_bytes": 10776366,
+          "Python_traced_retained_bytes": 8978811,
+          "RSS_before": {
+            "current_KiB": 252820,
+            "process_peak_KiB": 253652
+          },
+          "RSS_after": {
+            "current_KiB": 266644,
+            "process_peak_KiB": 266644
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_input_DAG": {
+          "seconds_with_tracemalloc": 0.026200728956609964,
+          "Python_traced_peak_bytes": 281515,
+          "Python_traced_retained_bytes": 278856,
+          "RSS_before": {
+            "current_KiB": 266644,
+            "process_peak_KiB": 266644
+          },
+          "RSS_after": {
+            "current_KiB": 266644,
+            "process_peak_KiB": 266644
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.4724532680120319,
+          "Python_traced_peak_bytes": 1703343,
+          "Python_traced_retained_bytes": 1174758,
+          "RSS_before": {
+            "current_KiB": 266644,
+            "process_peak_KiB": 266644
+          },
+          "RSS_after": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 2.7639100109227,
+          "Python_traced_peak_bytes": 6264278,
+          "Python_traced_retained_bytes": 6181941,
+          "RSS_before": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "RSS_after": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "cosine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0011004211846739054,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "RSS_after": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_precheck": {
+          "seconds_with_tracemalloc": 0.002769166138023138,
+          "Python_traced_peak_bytes": 1824,
+          "Python_traced_retained_bytes": 784,
+          "RSS_before": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "RSS_after": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_validation_fingerprint": {
+          "seconds_with_tracemalloc": 2.3689302729908377,
+          "Python_traced_peak_bytes": 4758581,
+          "Python_traced_retained_bytes": 4455657,
+          "RSS_before": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "RSS_after": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "wrapper_sine_compose_and_measure": {
+          "seconds_with_tracemalloc": 0.05154617805965245,
+          "Python_traced_peak_bytes": 533168,
+          "Python_traced_retained_bytes": 528858,
+          "RSS_before": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "RSS_after": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_fingerprint": {
+          "seconds_with_tracemalloc": 3.054466110887006,
+          "Python_traced_peak_bytes": 11349620,
+          "Python_traced_retained_bytes": 8790525,
+          "RSS_before": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "RSS_after": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_input_DAG": {
+          "seconds_with_tracemalloc": 0.026279439916834235,
+          "Python_traced_peak_bytes": 281457,
+          "Python_traced_retained_bytes": 278545,
+          "RSS_before": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "RSS_after": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_whole_compile_and_metrics": {
+          "seconds_with_tracemalloc": 0.42982036084868014,
+          "Python_traced_peak_bytes": 913379,
+          "Python_traced_retained_bytes": 390007,
+          "RSS_before": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "RSS_after": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_fingerprint": {
+          "seconds_with_tracemalloc": 2.7601226929109544,
+          "Python_traced_peak_bytes": 6264022,
+          "Python_traced_retained_bytes": 6181941,
+          "RSS_before": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "RSS_after": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "sine_compiled_DAG": {
+          "seconds_with_tracemalloc": 0.0011009711306542158,
+          "Python_traced_peak_bytes": 3228,
+          "Python_traced_retained_bytes": 3193,
+          "RSS_before": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "RSS_after": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "axes": {
+        "cosine": {
+          "input_fingerprint": "1dbe4b553e2f58eba4169444e284adc0e455b8bd70b8a7bec55203bcc6e2c4b5",
+          "compiled_fingerprint": "df12d3dae752df44c39adb239290cbf8cb51cb21aa4bedae4bf0389476fa1bc2",
+          "instructions": 660,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 660,
+          "compiled_DAG_operations": 3556,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 266644,
+            "process_peak_KiB": 266644
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 269716,
+            "process_peak_KiB": 269716
+          },
+          "compiled_global_phase": 4.677584660384223,
+          "metrics": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        },
+        "sine": {
+          "input_fingerprint": "3e81822a50d3d23b671238a0b4a2a4a30c8360cb2ac4cfca61db42c4fb21c48b",
+          "compiled_fingerprint": "422f38356a75d81250e405d7a8c55ed23afb886dc8327c87d84eebe5ef42cea4",
+          "instructions": 661,
+          "measurements": 1,
+          "qubits": 3,
+          "input_DAG_operations": 661,
+          "compiled_DAG_operations": 3556,
+          "input_DAG_RSS_after_release": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "compiled_DAG_RSS_after_release": {
+            "current_KiB": 274836,
+            "process_peak_KiB": 274836
+          },
+          "compiled_global_phase": 3.8921864969867794,
+          "metrics": {
+            "rz_count": 1761,
+            "cx_count": 1076,
+            "rz_depth": 1134,
+            "cx_depth": 1076,
+            "total_depth": 2521,
+            "circuit_size": 3556
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "state_preparation_included": false
+        }
+      },
+      "compile_calls_started": 2,
+      "input": {
+        "model": "ARTIFICIAL_TWO_MODE_B2_RANK4",
+        "L_D": 2,
+        "delta": 0.02,
+        "r": 4,
+        "K": 2,
+        "event_count": 32,
+        "event_identity": "4186d2c819613af938ce761fc46e775a98e8751065255db71c43482955c54fb4",
+        "preparation_hash": "89e989ceb8cd17e4772f8b8ed54a9d9fba5dfe72d9cb51bd721d46d45a702c41",
+        "pattern": "mixed",
+        "new_sampling": false
+      },
+      "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+      "backend_fingerprint": "no_backend",
+      "load_average": [
+        8.8251953125,
+        7.40673828125,
+        4.619140625
+      ],
+      "native": {
+        "instructions": 657,
+        "fingerprint": "3ce7c7085c89dd93dc4d279871ffdfc5d88144f688cb11afa48a2a10d66f88d4",
+        "qubits": 3,
+        "global_phase": 0.0
+      },
+      "copy_instructions": 657,
+      "RSS_after_copy_release": {
+        "current_KiB": 249748,
+        "process_peak_KiB": 253652
+      },
+      "retained_at_end": {
+        "native": true,
+        "wrappers": [
+          "cosine",
+          "sine"
+        ],
+        "compiled_results": [
+          "cosine",
+          "sine"
+        ],
+        "diagnostic_DAGs": false,
+        "extra_native_copy": false,
+        "explicit_events": 32,
+        "RSS": {
+          "current_KiB": 274836,
+          "process_peak_KiB": 274836
+        }
+      },
+      "status": "PASS",
+      "wall_seconds_with_instrumentation": 24.14888306101784
+    }
+  ],
+  "comparisons": [
+    {
+      "Q": 1,
+      "status": "EXACT_MATCH",
+      "checks": {
+        "m": true,
+        "Q": true,
+        "input": true,
+        "compiler_hash": true,
+        "backend_fingerprint": true,
+        "native": true,
+        "cosine_input_fingerprint": true,
+        "cosine_compiled_fingerprint": true,
+        "cosine_instructions": true,
+        "cosine_measurements": true,
+        "cosine_qubits": true,
+        "cosine_input_DAG_operations": true,
+        "cosine_compiled_DAG_operations": true,
+        "cosine_compiled_global_phase": true,
+        "cosine_scope": true,
+        "cosine_state_preparation_included": true,
+        "cosine_six_metrics": true,
+        "sine_input_fingerprint": true,
+        "sine_compiled_fingerprint": true,
+        "sine_instructions": true,
+        "sine_measurements": true,
+        "sine_qubits": true,
+        "sine_input_DAG_operations": true,
+        "sine_compiled_DAG_operations": true,
+        "sine_compiled_global_phase": true,
+        "sine_scope": true,
+        "sine_state_preparation_included": true,
+        "sine_six_metrics": true
+      },
+      "signed_metric_differences": {
+        "cosine": {
+          "rz_count": 0,
+          "cx_count": 0,
+          "rz_depth": 0,
+          "cx_depth": 0,
+          "total_depth": 0,
+          "circuit_size": 0
+        },
+        "sine": {
+          "rz_count": 0,
+          "cx_count": 0,
+          "rz_depth": 0,
+          "cx_depth": 0,
+          "total_depth": 0,
+          "circuit_size": 0
+        }
+      }
+    },
+    {
+      "Q": 2,
+      "status": "EXACT_MATCH",
+      "checks": {
+        "m": true,
+        "Q": true,
+        "input": true,
+        "compiler_hash": true,
+        "backend_fingerprint": true,
+        "native": true,
+        "cosine_input_fingerprint": true,
+        "cosine_compiled_fingerprint": true,
+        "cosine_instructions": true,
+        "cosine_measurements": true,
+        "cosine_qubits": true,
+        "cosine_input_DAG_operations": true,
+        "cosine_compiled_DAG_operations": true,
+        "cosine_compiled_global_phase": true,
+        "cosine_scope": true,
+        "cosine_state_preparation_included": true,
+        "cosine_six_metrics": true,
+        "sine_input_fingerprint": true,
+        "sine_compiled_fingerprint": true,
+        "sine_instructions": true,
+        "sine_measurements": true,
+        "sine_qubits": true,
+        "sine_input_DAG_operations": true,
+        "sine_compiled_DAG_operations": true,
+        "sine_compiled_global_phase": true,
+        "sine_scope": true,
+        "sine_state_preparation_included": true,
+        "sine_six_metrics": true
+      },
+      "signed_metric_differences": {
+        "cosine": {
+          "rz_count": 0,
+          "cx_count": 0,
+          "rz_depth": 0,
+          "cx_depth": 0,
+          "total_depth": 0,
+          "circuit_size": 0
+        },
+        "sine": {
+          "rz_count": 0,
+          "cx_count": 0,
+          "rz_depth": 0,
+          "cx_depth": 0,
+          "total_depth": 0,
+          "circuit_size": 0
+        }
+      }
+    },
+    {
+      "Q": 8,
+      "status": "EXACT_MATCH",
+      "checks": {
+        "m": true,
+        "Q": true,
+        "input": true,
+        "compiler_hash": true,
+        "backend_fingerprint": true,
+        "native": true,
+        "cosine_input_fingerprint": true,
+        "cosine_compiled_fingerprint": true,
+        "cosine_instructions": true,
+        "cosine_measurements": true,
+        "cosine_qubits": true,
+        "cosine_input_DAG_operations": true,
+        "cosine_compiled_DAG_operations": true,
+        "cosine_compiled_global_phase": true,
+        "cosine_scope": true,
+        "cosine_state_preparation_included": true,
+        "cosine_six_metrics": true,
+        "sine_input_fingerprint": true,
+        "sine_compiled_fingerprint": true,
+        "sine_instructions": true,
+        "sine_measurements": true,
+        "sine_qubits": true,
+        "sine_input_DAG_operations": true,
+        "sine_compiled_DAG_operations": true,
+        "sine_compiled_global_phase": true,
+        "sine_scope": true,
+        "sine_state_preparation_included": true,
+        "sine_six_metrics": true
+      },
+      "signed_metric_differences": {
+        "cosine": {
+          "rz_count": 0,
+          "cx_count": 0,
+          "rz_depth": 0,
+          "cx_depth": 0,
+          "total_depth": 0,
+          "circuit_size": 0
+        },
+        "sine": {
+          "rz_count": 0,
+          "cx_count": 0,
+          "rz_depth": 0,
+          "cx_depth": 0,
+          "total_depth": 0,
+          "circuit_size": 0
+        }
+      }
+    }
+  ],
+  "runtime": {
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "qiskit": "1.3.0",
+    "host": "GPUA100-gleap02",
+    "available_cpus": 64,
+    "MemAvailable": "MemAvailable:   509342704 kB"
+  },
+  "protocol": "one observation per mode/Q; fresh fork per observation; sequential; alternate method order; stage-incremental tracing",
+  "RSS_scope": "current before/after plus child cumulative high-water; individual stage RSS peak unmeasured",
+  "real_H4_calls": 0,
+  "real_H4_compiles": 0,
+  "expected_prices": null,
+  "price_MC": null,
+  "m17_feasibility": null,
+  "total_RPE_cost": null
+}
