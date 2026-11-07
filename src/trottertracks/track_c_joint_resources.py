@@ -109,7 +109,9 @@ def initial_state():
 
 
 def representative(task):
-    path,start,stop=task;r=json.loads(path.read_text());_,flat,groups=runs(r['t'],r['n'],r['choices'])
+    path,start,stop=task;target=OUT/'rep_checks'/(hashlib.sha256(f'{path.name}:{start}:{stop}'.encode()).hexdigest()+'.json')
+    if target.exists():return json.loads(target.read_text())
+    r=json.loads(path.read_text());_,flat,groups=runs(r['t'],r['n'],r['choices'])
     _,_,basis,union=next(g for g in groups if g[:2]==(start,stop));entry=catalogue()[basis+'|'+','.join(map(str,union))]
     old=QuantumCircuit(9);new=QuantumCircuit(9);oldops=common()['preps'][3].rte_preparation.basis_registry.definition(basis).runtime_operations
     p=append_run(old,flat[start:stop],oldops);pnew=append_run(new,flat[start:stop],decode(entry['operations']),dict(zip(entry['support'],entry['targets'])))
@@ -117,8 +119,11 @@ def representative(task):
     # Include a nontrivial ancilla-relative minus sign as an explicit stress.
     old.p(p+math.pi,8);new.p(p+math.pi,8);native=compile_reference(new)
     a,b,c=[Operator(q).data for q in (old,new,native)]
-    errors=[float(np.linalg.norm(a-b,'fro')),float(np.linalg.norm(b-c,'fro'))];assert max(errors)<1e-9
-    inactive=float(np.linalg.norm(c[:256,:256]-np.eye(256),'fro'));assert inactive<1e-9
+    phase=np.vdot(b,c);phase/=abs(phase);aligned=c/phase
+    errors=[float(np.linalg.norm(a-b,'fro')),float(np.linalg.norm(b-aligned,'fro'))]
+    if max(errors)>=1e-9:
+        save_json(OUT/'REP_FAILURE.json',dict(file=path.name,start=start,stop=stop,errors=errors));raise AssertionError(errors)
+    inactive=float(np.linalg.norm(aligned[:256,:256]-np.eye(256),'fro'));assert inactive<1e-9
     means=[]
     for axis in ('X','Y'):
         values=[]
@@ -126,8 +131,11 @@ def representative(task):
             state=Statevector(initial_state()).evolve(wrapper([q],axis).remove_final_measurements(inplace=False)).data
             values.append(float(np.vdot(state[:256],state[:256]).real-np.vdot(state[256:],state[256:]).real))
         assert max(abs(x-values[0]) for x in values)<1e-9;means.append(dict(axis=axis,values=values))
-    return dict(file=path.name,start=start,stop=stop,key=entry['key'],support=entry['support'],targets=entry['targets'],
-                joint_operator_Fro_errors=errors,inactive_identity_Fro=inactive,means=means)
+    value=dict(file=path.name,start=start,stop=stop,key=entry['key'],support=entry['support'],targets=entry['targets'],
+                joint_operator_Fro_errors=errors,inactive_identity_Fro=inactive,means=means,
+                native_absolute_Fro_difference=float(np.linalg.norm(b-c,'fro')),joint_common_phase=float(np.angle(phase)),
+                phase_scope='One common phase for entire already-controlled 512x512 joint operator, as specified by compiler A. Both branches share this same alignment.')
+    save_json(target,value);return value
 
 
 def short_check(task):
@@ -171,7 +179,9 @@ def representatives():
 
 def run():
     if (OUT/'RESOURCES.json').exists():raise RuntimeError('Do not overwrite resources')
-    configuration();catalogue();freeze();(OUT/'holdout_prices').mkdir(exist_ok=False);(OUT/'short_checks').mkdir(exist_ok=False)
+    configuration();catalogue()
+    if not (OUT/'POLICY.json').exists():freeze()
+    for d in ('holdout_prices','short_checks','rep_checks'):(OUT/d).mkdir(exist_ok=True)
     frozen=json.loads((OUT/'POLICY.json').read_text());cells=sorted({(r['time'],r['r']) for p in frozen['policies'] for s in p['selected'] for r in s['signal']['recipe']})
     reps=representatives();checks=[];rep_results=[]
     signals=[frozen['policies'][0]['selected'][0]['signal'],frozen['policies'][0]['selected'][-1]['signal']]
