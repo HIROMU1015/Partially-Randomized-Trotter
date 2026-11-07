@@ -61,6 +61,7 @@ def mapped_worker(connection):
         return area
     area=meter.measure('C_memory_probe',mapped)
     area.close()
+    meter.measure('short_boundary',lambda:time.sleep(.002))
     connection.send({'event':'result','result':{'status':'PASS_ARTIFICIAL_ONLY'}})
     connection.close()
 
@@ -74,3 +75,6 @@ def test_external_observer_sees_non_tracemalloc_memory():
     assert stage['observed_stage_peak_RSS_KiB']-stage['RSS_before_KiB']>8*1024
     assert stage['Python_traced_peak_bytes']<1024*1024
     assert stage['samples']>=2 and stage['maximum_sample_gap_seconds']>0
+    for row in rows:
+        assert row['observed_stage_wall_seconds']>=row['elapsed_seconds']
+        assert row['maximum_sample_gap_seconds']*(row['samples']-1)+1e-6>=row['observed_stage_wall_seconds']

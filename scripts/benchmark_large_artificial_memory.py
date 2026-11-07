@@ -134,21 +134,25 @@ def available_memory():
 
 
 class StageMeter:
-    def __init__(self,connection):
+    def __init__(self,connection,trace_python=True):
         self.connection=connection
+        self.trace_python=trace_python
 
     def measure(self,name,function):
         gc.collect()
         self.connection.send({'event':'begin','stage':name,'memory':process_memory(os.getpid())})
         if self.connection.recv()!='start':raise RuntimeError('Observer handshake')
-        tracemalloc.start();start=time.perf_counter();error=None
+        if self.trace_python:tracemalloc.start()
+        start=time.perf_counter();error=None
         try:
             value=function()
         except BaseException as exc:
             error=exc
         elapsed=time.perf_counter()-start
-        current,peak=tracemalloc.get_traced_memory();tracemalloc.stop()
-        self.connection.send({'event':'end','stage':name,'seconds_with_tracemalloc':elapsed,
+        current,peak=tracemalloc.get_traced_memory() if self.trace_python else (None,None)
+        if self.trace_python:tracemalloc.stop()
+        self.connection.send({'event':'end','stage':name,'elapsed_seconds':elapsed,
+            'seconds_with_tracemalloc':elapsed if self.trace_python else None,'tracemalloc_enabled':self.trace_python,
             'Python_traced_peak_bytes':peak,'Python_traced_retained_bytes':current,
             'memory':process_memory(os.getpid()),'ru_maxrss_KiB':resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
             'error':None if error is None else repr(error)})
@@ -157,8 +161,8 @@ class StageMeter:
         return value
 
 
-def worker(unit,blocks,mode,settings,connection):
-    meter=StageMeter(connection)
+def worker(unit,blocks,mode,settings,connection,trace_python=True):
+    meter=StageMeter(connection,trace_python)
     result=dict(blocks=blocks,mode=mode,template_compiles=0,whole_compiles=0)
     try:
         body=meter.measure('flat_generation',lambda:flat_body(unit,blocks,mode=='materialized'))
@@ -198,18 +202,18 @@ def worker(unit,blocks,mode,settings,connection):
 
 def observe(process,connection,progress=None):
     """Observe only the worker spawned by this parent; no shared settings writes."""
-    rows=[];active=None;result=None;last_sample=time.perf_counter();heartbeat=last_sample;last_progress=last_sample
+    rows=[];active=None;result=None;heartbeat=time.perf_counter();last_progress=heartbeat
     available,limits=available_memory();minimum_available=available
     while process.is_alive() or connection.poll():
-        now=time.perf_counter()
         try:memory=process_memory(process.pid)
         except (FileNotFoundError,ProcessLookupError):memory=None
         if memory is not None and 'VmRSS' not in memory:memory=None
-        gap=now-last_sample;last_sample=now
+        now=time.perf_counter()
         if active is not None and memory is not None:
             active['samples']+=1
             active['sampled_peak_RSS_KiB']=max(active['sampled_peak_RSS_KiB'],memory['VmRSS'])
-            active['maximum_sample_gap_seconds']=max(active['maximum_sample_gap_seconds'],gap)
+            active['maximum_sample_gap_seconds']=max(active['maximum_sample_gap_seconds'],now-active['_last_sample_at'])
+            active['_last_sample_at']=now
         if now-heartbeat>=.1:
             available,limits=available_memory();minimum_available=min(minimum_available,available)
             # No fixed RAM cap: stop only if actual remaining headroom cannot
@@ -230,15 +234,22 @@ def observe(process,connection,progress=None):
             except EOFError:break
             if event['event']=='begin':
                 if active is not None:raise RuntimeError('Overlapping stages')
-                m=event['memory']
+                m=process_memory(process.pid)
+                sampled_at=time.perf_counter()
                 active=dict(stage=event['stage'],RSS_before_KiB=m['VmRSS'],HWM_before_KiB=m['VmHWM'],
                     sampled_peak_RSS_KiB=m['VmRSS'],samples=1,maximum_sample_gap_seconds=0.,
-                    requested_interval_seconds=INTERVAL)
-                last_sample=time.perf_counter();connection.send('start')
+                    requested_interval_seconds=INTERVAL,_first_sample_at=sampled_at,_last_sample_at=sampled_at)
+                connection.send('start')
                 if progress:progress('begin '+event['stage'])
             elif event['event']=='end':
                 if active is None or event['stage']!=active['stage']:raise RuntimeError('Stage mismatch')
-                m=event.pop('memory');event.pop('event');event.pop('stage')
+                worker_memory=event.pop('memory');event.pop('event');event.pop('stage')
+                m=process_memory(process.pid);sampled_at=time.perf_counter()
+                active['samples']+=1
+                active['maximum_sample_gap_seconds']=max(active['maximum_sample_gap_seconds'],sampled_at-active['_last_sample_at'])
+                active['observed_stage_wall_seconds']=sampled_at-active.pop('_first_sample_at')
+                active.pop('_last_sample_at')
+                m['VmHWM']=max(m['VmHWM'],worker_memory['VmHWM'])
                 active.update(event,RSS_after_KiB=m['VmRSS'],HWM_after_KiB=m['VmHWM'])
                 active['sampled_peak_RSS_KiB']=max(active['sampled_peak_RSS_KiB'],m['VmRSS'])
                 active['kernel_HWM_increased']=m['VmHWM']>active['HWM_before_KiB']
@@ -254,7 +265,7 @@ def observe(process,connection,progress=None):
     return rows,result,minimum_available
 
 
-def run(output,targets):
+def run(output,targets,*,rss_only=False):
     if not targets or targets!=sorted(set(targets)) or min(targets)<1:
         raise ValueError('Positive increasing workload sizes required')
     output.mkdir(parents=True,exist_ok=False)
@@ -271,10 +282,11 @@ def run(output,targets):
     result=dict(status='RUNNING',source_commit=source,source_sha256=hashes,compiler=asdict(settings),
         compiler_hash=compiler_module.compiler_settings_hash(settings),template=unit_record,setup_template_compiles=1,
         target_instructions=targets,rows=[],cases=[],comparisons=[],real_H4_calls=0,price_MC=None,total_RPE_cost=None,
+        python_tracing=not rss_only,rss_only=rss_only,
         m17=dict(Q=131072,real_H4_measured=False,feasibility=None),mandatory_stop=True,
         runtime=dict(host=platform.node(),python=sys.version,qiskit=qiskit.__version__,available_cpus=len(os.sched_getaffinity(0)),
             initial_available_memory_bytes=available_memory()[0],finite_cgroup_headrooms=available_memory()[1],load_average=os.getloadavg()),
-        protocol='spawned independent workers; parent /proc RSS observer; 5ms sampling; stage handshakes; Python tracing; one observation per condition')
+        protocol='spawned independent workers; parent /proc RSS observer; nominal 5ms sampling; stage handshakes; tracing flag recorded; one observation per condition')
     def save():
         (output/'result.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
         if result['rows']:
@@ -284,7 +296,7 @@ def run(output,targets):
     try:
         for target in targets:
             blocks=math.ceil(target/len(unit.data));pair={}
-            for mode in ('materialized','stream'):
+            for mode in (('stream',) if rss_only else ('materialized','stream')):
                 available,_=available_memory()
                 if result['cases']:
                     previous=result['cases'][-1]
@@ -292,7 +304,7 @@ def run(output,targets):
                     forecast=max(r['observed_stage_peak_RSS_KiB'] for r in previous_rows)*1024*(blocks*len(unit.data)/previous['instructions'])
                     if forecast>available:
                         raise MemoryError('Next workload forecast exceeds actual available memory')
-                parent,child=ctx.Pipe();process=ctx.Process(target=worker,args=(unit,blocks,mode,settings,child))
+                parent,child=ctx.Pipe();process=ctx.Process(target=worker,args=(unit,blocks,mode,settings,child,not rss_only))
                 process.start();child.close()
                 rows,case,min_available=observe(process,parent,
                     lambda msg:print(str(target)+' '+mode+' '+msg,flush=True))
@@ -304,10 +316,11 @@ def run(output,targets):
                 save()
                 if case['status']!='PASS_ARTIFICIAL_ONLY':raise RuntimeError(str(case))
                 pair[mode]=case
-            checks={name:pair['materialized'][name]==pair['stream'][name]
-                    for name in ('instructions','qubits','global_phase','gate_counts','instruction_digest')}
-            result['comparisons'].append(dict(target_instructions=target,checks=checks))
-            if not all(checks.values()):raise ValueError('Generated flat circuits differ')
+            if 'materialized' in pair:
+                checks={name:pair['materialized'][name]==pair['stream'][name]
+                        for name in ('instructions','qubits','global_phase','gate_counts','instruction_digest')}
+                result['comparisons'].append(dict(target_instructions=target,checks=checks))
+                if not all(checks.values()):raise ValueError('Generated flat circuits differ')
             save()
         for path,sha in hashes.items():
             if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=sha:raise ValueError('SOURCE changed')
@@ -320,6 +333,7 @@ def run(output,targets):
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--target-instructions',type=int,nargs='+',default=[4096,65536,262144])
-    args=parser.parse_args();result=run(args.output,args.target_instructions)
+    parser.add_argument('--rss-only',action='store_true',help='stream-only companion without Python tracing')
+    args=parser.parse_args();result=run(args.output,args.target_instructions,rss_only=args.rss_only)
     print(result['status'],flush=True)
     sys.exit(0 if result['status']=='PASS_ARTIFICIAL_MEMORY_STAGES' else 1)

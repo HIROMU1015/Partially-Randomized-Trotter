@@ -22,3 +22,11 @@
   実際の残余メモリがそのstageの増加量を下回る場合などは自workerだけを安全停止する。PSI/CPU競合だけでは止めない。
 - 完了・安全STOP後はJSON/CSV/REPORTを公開、remote SHA/tree/全変更ファイルを照合してmandatory STOP。
   実H4追加build/compile、価格MC、強PF価格、総RPE費用、新科学条件へ進まない。m17実H4の確定値へ外挿しない。
+
+## 主測定後の観測境界修正・補足
+
+主測定SOURCE `67c0eb21510bea767745b0c4b974ac7ec77d819d`のrawは保持する。
+その最大gap fieldはloop開始間隔を集計し、終了handshake側を含んでいなかったため、RSS最大値の厳密な観測間隔上限には使わない。
+正常測定を中断せず完了後にsourceを修正し、終了時の外部RSS読取・実時刻を含める。
+さらに同じ最大人工条件だけを`--rss-only`で測定し、Python traceを無効化してその計測負担を分ける。
+入力・compiler profileは維持し、Python peakは未測定/nullとする。旧/新hashやwhole compileを省略・偽装しない。
