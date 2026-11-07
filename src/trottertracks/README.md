@@ -19,3 +19,7 @@
 
 [収録ファイル・保存版と確認範囲](../../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## 新A CT-0（2026-11-07）
+
+[pr_reference_ct0.py](pr_reference_ct0.py)は固定Git blobのstrict record/key照合、位相域、RPE headroomだけを扱う。旧runner・合成・compileを実行しない。[REPORT](../../docs/research/pr_reference_ct0_20261107/REPORT.md)、[入力・結果・人工検査](../../artifacts/pr_reference_ct0/2026-11-07/README.md)。mandatory STOP済み。

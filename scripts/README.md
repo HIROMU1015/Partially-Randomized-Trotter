@@ -197,3 +197,7 @@ artifacts/<validation_name>/
 ## 新A V5保証の限定補強（2026-11-07）
 
 [実行順・SOURCE・検査](../artifacts/pr_reference_depth_v5_reinforcement/2026-11-07/README.md)、[REPORT](../docs/research/pr_reference_depth_v5_reinforcement_20261107/REPORT.md)。`trottertracks.pr_reference_depth_v5_reinforcement` の明示関数で局所inverse・保存非X鎖・人工3検査・旧会計への対応照合を実施。旧runnerや全18round計算は再実行せず、新自動再開入口は作らない。保存runはmandatory STOP済み。
+
+## 新A CT-0：保存key・phase・precision（2026-11-07）
+
+`run_pr_reference_ct0.py` → `trottertracks.pr_reference_ct0.run`。保存Git blobの読取と限定区間再解析だけ。[SOURCE・結果・人工検査](../artifacts/pr_reference_ct0/2026-11-07/README.md)。合成/acquire/compile/optimizerを呼ばない。保存runはmandatory STOP済みで、現在は再実行しない。

@@ -150,3 +150,7 @@
 ## 新A：Clifford+T資源評価の技術準備（2026-11-07）
 
 [REPORT](research/pr_reference_clifford_t_survey_20261107/REPORT.md)、[再利用対応表](research/pr_reference_clifford_t_survey_20261107/REUSE_APPLICABILITY.md)。既存strict合成・key・精度配分・RPE接続の静的調査。新Aの全support phase/T価格、precision採択、T-depthは未資格。新規科学計算を行わずmandatory STOP。
+
+## 新A CT-0（2026-11-07）
+
+[REPORT](research/pr_reference_ct0_20261107/REPORT.md)、[KEY_COVERAGE](research/pr_reference_ct0_20261107/KEY_COVERAGE.md)、[PHASE_PRECISION_FEASIBILITY](research/pr_reference_ct0_20261107/PHASE_PRECISION_FEASIBILITY.md)。保存key再利用域と追加RPE誤差余地を限定検証。全support word価格未資格、precision未採択、総T未取得、mandatory STOP。

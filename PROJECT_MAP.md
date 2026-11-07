@@ -220,3 +220,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A：Clifford+T評価の静的再利用調査
 
 [REPORT](docs/research/pr_reference_clifford_t_survey_20261107/REPORT.md)、[REUSE_APPLICABILITY](docs/research/pr_reference_clifford_t_survey_20261107/REUSE_APPLICABILITY.md)。strict RZ engine・actual adjoint・raw disk会計の再利用条件を整理。全support位相key、precision、期待価格、T-depthは追加資格が必要で、総T/T-depthは未取得のまま。有理期待Tへ整数ceil/gcd下界を直接移さない。新規合成・価格再集計・回路/数値検証0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。
+
+## 2026-11-07 新A CT-0：key・位相・precision資格
+
+[REPORT](docs/research/pr_reference_ct0_20261107/REPORT.md)、[coverage](docs/research/pr_reference_ct0_20261107/KEY_COVERAGE.md)、[phase/precision](docs/research/pr_reference_ct0_20261107/PHASE_PRECISION_FEASIBILITY.md)。保存numeric positive keyはB′400中153、reference384中154にrecordあり。全support位相/誤差域は有限表現、word価格は未資格。正のRPE追加誤差予算あり、実word込みはCONDITIONALLY_FEASIBLE。新規合成/compile/T価格/precision最適化/総T0、mandatory STOP。SOURCE `src/trottertracks/pr_reference_ct0.py`、入力・人工9検査・結果は[成果物](artifacts/pr_reference_ct0/2026-11-07/README.md)。
