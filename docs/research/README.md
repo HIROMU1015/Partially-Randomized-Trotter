@@ -87,3 +87,7 @@
 ## 2026-11-07 新A CT-3A：全support strict fallbackの静的調査
 
 [REPORT](pr_reference_ct3a_20261107/REPORT.md)、[候補比較](pr_reference_ct3a_20261107/FALLBACK_POLICY_CANDIDATES.md)、[停止性・実出力T上界](pr_reference_ct3a_20261107/POLICY_TERMINATION_AND_BOUNDS.md)、[次判断の不足条件](pr_reference_ct3a_20261107/CT3B_MINIMAL_SCOPE.md)。strict SU(2)生成集合とideal SK十分定数を記号的整理したが、初期net coverage・有限精度保証が不足しTHEORETICAL_ONLY。READY候補なし、全support実価格未資格。新実装・net/word生成・科学計算・価格評価0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。
+
+## 2026-11-07 新A CT-4A：大きいqの有限T比較preflight
+
+[PREFLIGHT](pr_reference_ct4a_20261107/PREFLIGHT.md)、[SCOPE_PROPOSAL](pr_reference_ct4a_20261107/SCOPE_PROPOSAL.md)。保存q128/r1・rare/nonrare各j0・B′/Reference×X/Yの8構成、一様epsilon1e-11を提案。q128 whole QPY/完全literal key表は未保存で、承認後のnative準備compile→実key固定→missing合成が必要。今回は静的確認のみ、新合成/compile/科学数値再解析/T価格集計0、旧SOURCE/結果/STOP不変更。CT-4A完了でSTOP、CT-4B未承認・未開始。次担当ユーザー。
