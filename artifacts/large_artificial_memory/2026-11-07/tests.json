@@ -1,0 +1,79 @@
+{
+  "status": "PASS_ARTIFICIAL_ONLY",
+  "unique_test_functions_passed": 4,
+  "cohorts": [
+    {
+      "status": "PASS_ARTIFICIAL_ONLY",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 7.806,
+      "command": "python -m pytest -q tests/test_large_artificial_memory.py",
+      "execution_source": "67c0eb21510bea767745b0c4b974ac7ec77d819d",
+      "execution_context": "local functional tests before commit, not CI or independent review",
+      "cases": [
+        {
+          "class": "tests.test_large_artificial_memory",
+          "name": "test_compiled_template_is_flat_and_control_zero_identity",
+          "seconds": 0.337
+        },
+        {
+          "class": "tests.test_large_artificial_memory",
+          "name": "test_materialized_and_streamed_rows_and_canonical_identity_agree",
+          "seconds": 0.175
+        },
+        {
+          "class": "tests.test_large_artificial_memory",
+          "name": "test_compile_probe_matches_existing_compiler_and_wrappers",
+          "seconds": 0.21
+        },
+        {
+          "class": "tests.test_large_artificial_memory",
+          "name": "test_external_observer_sees_non_tracemalloc_memory",
+          "seconds": 3.692
+        }
+      ],
+      "RSS_observer_probe": "16 MiB touched mmap; RSS increment over 8 MiB; tracemalloc peak below 1 MiB",
+      "real_H4_calls": 0,
+      "cohort": "initial_observer",
+      "source_correspondence": "Functional tests ran before the corresponding SOURCE publication; SOURCE names the matching code, not the test process HEAD."
+    },
+    {
+      "cohort": "corrected_observer",
+      "execution_source": "a02f528f808df2391fd6aa2f95d3eb4c055ee318",
+      "source_correspondence": "Functional tests ran before the corresponding SOURCE publication; SOURCE names the matching code, not the test process HEAD.",
+      "command": "python -m pytest -q tests/test_large_artificial_memory.py",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 6.318,
+      "cases": [
+        {
+          "classname": "tests.test_large_artificial_memory",
+          "name": "test_compiled_template_is_flat_and_control_zero_identity",
+          "seconds": 0.246
+        },
+        {
+          "classname": "tests.test_large_artificial_memory",
+          "name": "test_materialized_and_streamed_rows_and_canonical_identity_agree",
+          "seconds": 0.149
+        },
+        {
+          "classname": "tests.test_large_artificial_memory",
+          "name": "test_compile_probe_matches_existing_compiler_and_wrappers",
+          "seconds": 0.174
+        },
+        {
+          "classname": "tests.test_large_artificial_memory",
+          "name": "test_external_observer_sees_non_tracemalloc_memory",
+          "seconds": 3.308
+        }
+      ],
+      "RSS_observer_probe": "16 MiB touched mmap and 2 ms boundary stage; full begin/end gap coverage inequalities",
+      "real_H4_calls": 0
+    }
+  ],
+  "context": "Primary-agent local functional checks; not CI, independent review, or scientific performance evidence."
+}

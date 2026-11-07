@@ -171,3 +171,8 @@ DF部分ランダム化研究と混同しない。
 
 同じhasher/native/wrapper/pair compilerを不変更で使用し、保存Q2のidentity・6価格へ照合する。
 [実行SOURCE・性能観測・証拠範囲・STOP](../../docs/research/b2_q2_fingerprint_h4_20261107/REPORT.md)。
+
+## 長い人工flat回路での既存API測定（2026-11-07）
+
+既存のwrapper、canonical/streamed hash、Qiskit compiler engine、metric helperを不変更で使用。
+[外部RSS観測・Rust/C側割当・m17の未確定事項](../../docs/research/large_artificial_memory_20261107/REPORT.md)。

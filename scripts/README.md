@@ -198,3 +198,8 @@ artifacts/<validation_name>/
 
 `run_b2_q2_fingerprint_h4.py`は旧Q2の保存入力・event・価格と既存のopt-in pipelineを再利用する。
 [SOURCE・実行条件・結果・STOP](../docs/research/b2_q2_fingerprint_h4_20261107/REPORT.md)。native1回・compile2回に限定。再実行や他roundの許可ではない。
+
+## 大きい人工flat回路のstage RSS（2026-11-07）
+
+`benchmark_large_artificial_memory.py`は既存人工unit・wrapper・compiler/hashを再利用し、
+parentが自workerのRSSを5ms間隔で観測する。[JSON/CSV・条件・測定限界・STOP](../docs/research/large_artificial_memory_20261107/REPORT.md)。

@@ -139,3 +139,8 @@ native生成/hash、copy、wrapper validation/compose、whole compile、前後DA
 
 [REPORT](research/b2_q2_fingerprint_h4_20261107/REPORT.md)：保存Q2をreferenceにnative/wrapper/compiled identityと全6価格を照合。
 候補native1回・X/Y各1compile。段階計測と同一完成回路の旧/新hash技術比較を保存し、mandatory STOP。
+
+## 長い人工flat回路のメモリ（2026-11-07）
+
+[REPORT](research/large_artificial_memory_20261107/REPORT.md)：9 qubit人工回路の規模を増やし、生成方式・hash・wrapper・DAG・whole compileを計測。
+別processからstage RSSを観測しRust/C側割当も含める。実H4・MC・強PF価格・総費用は実行しない。

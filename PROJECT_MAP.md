@@ -230,3 +230,9 @@ flat回路・copy・wrapper・DAGを分離計測。既定動作と過去の結�
 
 [REPORT・保存Q2 referenceとの照合・時間/メモリ・STOP](docs/research/b2_q2_fingerprint_h4_20261107/REPORT.md)。
 固定8 event、stream native1回、X/Y各1回compile。旧referenceの再build/compileなし。完了後mandatory STOP。
+
+## 長round向け人工flat回路のメモリ検証（2026-11-07）
+
+[REPORT・JSON/CSV・外部RSS観測](docs/research/large_artificial_memory_20261107/REPORT.md)。
+9 qubit人工flat回路を約4千/6.5万/26万instructionsへ増やし、生成・wrapper/copy・hash・DAG・whole compileを分離。
+実H4追加実行なし。m17実H4の確定値へ外挿せず、公開照合後mandatory STOP。
