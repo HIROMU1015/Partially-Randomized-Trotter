@@ -1,5 +1,7 @@
 # scripts 索引
 
+[C8-1停止済み結果](../docs/research/track_d_c8_1_q64_20261108/REPORT.md)：旧SOURCE6b1d613d sampling/raw/P0と新SOURCE8a6bbdac postの来歴を保全。sample00 post全4が固定observable許容値で不成立、残7未開始。両runnerは再実行・resumeしない。次の数値診断はユーザー/GPTの新しい明示許可後のみ。
+
 [C8-1高速化引継ぎrunner](run_track_d_c8_1_accelerated.py)：[承認済みPLAN](../docs/research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)。旧controllerのactive task drain/STOPを待って未着手taskだけ継続する。compile予約1、raw/post native並列、sampling0/完了済み再実行0。旧SOURCE/STOPを保持、sample00 gate・固定精度・総32 compile上限は不変。
 
 [B/C固定scalar runner](run_track_d_bc_total.py)：[PLAN](../docs/research/track_d_bc_total_20261108/PLAN.md)の保存N/直接平均/固定A・F・Sによる一campaign。`--preflight`はmetadata照合、`--execute`は全13-round条件付き会計。新回路/fit/Nなし、失敗後retry/resume禁止、公開照合後mandatory STOP。

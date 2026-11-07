@@ -1,6 +1,20 @@
-# 長q価格の検証戦略（C8-1実行中の技術案）
+# 長q価格の検証戦略（C8-1数値preflight不成立後）
 
-2026-11-08 JST。q64の結果は検証中で、本書は次の科学実行を採択・開始するものではない。q≥128の新sampling/回路/compile、fit、全RPE総費用更新は行わない。既存[B/C固定結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8828b298975c88a2c0d1fd57ff6ed905233840f5/docs/research/track_d_bc_total_20261108/REPORT.md)とC7-2/C7-4の構造・数値証拠に基づく技術計画であり、詳細科学レビューではない。
+2026-11-08 JST。q64 sample00はraw PASS・4 P0 compile完了後、両方式X/Yの全4 postcheckがCAR-observable Frobenius許容値2e−10で不成立となった。残7 pathは未開始、n8価格/モデル診断は未取得。[最終報告](REPORT.md)。8a6bbdacに保存した実行中draftを履歴として保持し、本版ではこの観測を追記する。次の科学実行を採択・開始するものではない。q≥128の新sampling/回路/compile、fit、全RPE総費用更新は行わない。既存[B/C固定結果](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/8828b298975c88a2c0d1fd57ff6ed905233840f5/docs/research/track_d_bc_total_20261108/REPORT.md)とC7-2/C7-4の構造・数値証拠に基づく技術計画であり、詳細科学レビューではない。
+
+## 今回の結果から先に必要となる最小診断
+
+今は下記の長q H4実行案へ進む前に、失敗したFrobenius値と誤差の位置を取得できる数値診断が必要である。4 postcheckとも同じ例外だが、途中check listとcompiled observableは例外時に保存されておらず、超過量や個別誤差の配賦は分からない。既存原本の高精度再計算・再postcheckを今回追加していない。
+
+|次の候補|新H4 sampling/compile|追加科学評価の範囲案|得られるもの・限界|
+|---|---:|---|---|
+|失敗診断の保存処理を新revisionへ追加し人工テスト|0/0|H4評価0。既存checkerの数値・ラベル・閾値・失敗値/途中records保存を人工fail例で検証|失敗値欠落を防ぐ。H4精度改善を示すものではない|
+|保存sample00の限定診断を別途承認|0/0|同じraw reference/compiled QPY hashの4 wrapperを各一回、全256入力・同閾値で再評価し、例外前にobservable/残差を保存|新SOURCE・新namespaceの診断実行として最大4 post評価。旧FAILを置換せず、成功を求めて再試行しない|
+|原因候補ごとの人工安定性比較|0/0|局所gate/declared phase/actual inverse/CAR積/observable集約の既存部品を用い、同じ参照と許容値で比較|独立な数値参照と誤差の意味が必要。C7-4のnative/generic同値だけを改善済みとしない|
+
+上記のコード・評価は未実装・未実行で、ユーザー/GPTが新しい目的・SOURCE・call範囲を採択する。旧科学runのretry/resumeとして自動実行しない。計算precision/実装を変更する場合は別revisionと科学条件の変更範囲を明示し、phase fit/renormalization/列削減/閾値緩和でPASSを作らない。
+
+数値gateが資格付けできるまで、q128以上のfull-wrapper compileを次の直接実行候補として採択しない。一方、科学call0のCX構造条件やdepthの事前feature/compiled-DAG bridgeの静的整理は、数値verifierの改善と独立に進める選択肢がある。下記A/B/Cはその後の判断材料であり、C8-1不成立によって採択済みになったものではない。
 
 ## 判断対象と検証地点
 

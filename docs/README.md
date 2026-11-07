@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C8-1最終結果](research/track_d_c8_1_q64_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。全8 event/512 occurrence/16384 eventsを固定し、sample00 raw1 PASS・旧P0 compile4完了をSOURCE8a6bbdacへ承認済み引継ぎ。両方式X/Y全4 postcheckがCAR-observable Frobenius2e−10でFAILしSTOP。残7/追加28 compile未開始、価格統計/モデル診断未評価。精度緩和/再実行/fit/N/全RPE更新0、旧SOURCE/STOP・非公開原本保持。
+
 [C8-1高速化SOURCE引継ぎ](research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)：compileの過大CPU予約を修正し、旧task完了待ち後の未着手処理を継続。19人工/回帰PASS、sampling追加0、old raw1/compile4再利用。固定q64/cut32・精度・モデル・全32 compile上限維持。最終C8-1結果公開照合後mandatory STOP。
 
 [Track D B/C全13-round条件付き評価](research/track_d_bc_total_20261108/REPORT.md)：同Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、元H厳密ground・準備費除外。保存十分N14738と固定A/F/Sで全13-round条件付き資源会計を一回実施。主AはReferenceでCX11.17%・total depth54.65%・RZ1.12%減、幅9→17。約99.5%が長q proxy、全体不確かさ/actual未資格。新sampling/compile/fit/N0、SOURCEb09b7e7a、公開照合後mandatory STOP。
