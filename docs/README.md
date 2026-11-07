@@ -9,6 +9,7 @@
 
 ## 研究方針と現在地
 
+- [Track C（O3）PRアルゴリズム改善の統合報告](research/track_c_o3_research_summary_20261108/TRACK_C_O3_RESEARCH_SUMMARY.md)：固定H4のD内部BCH、回路改善、強Full比較と限界（2026-11-08、保存資料の統合）
 - [`research/研究概要・現状.md`](research/研究概要・現状.md)：最新の短い全体要約
 - [`research/README.md`](research/README.md)：研究文書内の索引
 - [`research/研究目的・研究課題.md`](research/研究目的・研究課題.md)：目的と研究課題

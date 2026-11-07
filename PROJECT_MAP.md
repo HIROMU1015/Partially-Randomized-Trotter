@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+**Track C（O3）全研究の総括（2026-11-08）：[D内部BCH・共同isometry・対角融合と強Full比較](docs/research/track_c_o3_research_summary_20261108/TRACK_C_O3_RESEARCH_SUMMARY.md)。** 新規科学計算を伴わない保存成果の統合。旧研究CのHamiltonian表現系列と区別する。
+
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
 複数ブランチの総括・後続結果・SOURCE・raw・検証状態を固定commitで辿れる。
 以下の研究記述は、このcheckoutに保存された時点の履歴として読む。

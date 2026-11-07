@@ -1,5 +1,9 @@
 # 研究結果への統一索引
 
+## Track C（O3）PRアルゴリズム改善の総括（2026-11-08）
+
+[全研究の統合報告](track_c_o3_research_summary_20261108/TRACK_C_O3_RESEARCH_SUMMARY.md)。C-N/C-S/C-P、C2-A/B、混合公式、D内部BCH、singleton、共同isometry、対角融合、compiler A・18round保証を、主張・根拠・条件・限界で整理。D内部相殺はPR内の改善、最終の強Fullはなお低コスト。固定SOURCE・保存結果・別branchのC2-Bへリンクし、新しい計算・レビューは実施していない。
+
 [過去のブランチURLに対応する固定commit・保存原版の案内](branch_reference_navigation_20261103.md)。
 
 [保留7枝の再現用ファイル・保存別版の追加収録（11月4日）](priority7_collection_20261104.md)。
