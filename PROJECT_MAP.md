@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D C7-2](docs/research/track_d_c7_2_cx_structure_20261107/REPORT.md)／[q32未採択案](docs/research/track_d_c7_2_cx_structure_20261107/C7_3_EXECUTION_DRAFT.md)：実H4の新計算/価格再解析0、固定54人工P0・raw98項目/post54/observable等36項目・回帰12件PASS。局所非加法/単純lane式へ反例、208−224qの全path bridgeは未取得。旧SOURCE/STOP保全、q32未実行、公開照合後mandatory STOP。
+
 [Track D C7-1](docs/research/track_d_c7_1_q16_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、独立q16/cut8/16 path。SOURCE462f6bff、raw16・post64・pairedχ16 PASS。CX差は全観測pathで−3376、RZ/size/各depthも有限全16本で減、幅9→17。一次12量は探索的幅内、別population-line4量幅外。統計/全law/q≥32/N/全RPE未資格、raw非公開、mandatory STOP。
 
 [Track D C7-1固定PLAN](docs/research/track_d_c7_1_q16_20261107/PLAN.md)：同H4/CDF8/LD2/S2/s1/r32/K0/h=.1・独立q16/cut8/16 path。凍結C6a予測・新seedをsampling前公開、raw PASS後だけ最大64 P0 wrapper。探索的paired価格/CX整数残差、raw非公開、完了公開後mandatory STOP。

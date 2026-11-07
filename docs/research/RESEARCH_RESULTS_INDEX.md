@@ -1,5 +1,7 @@
 # 研究結果への統一索引
 
+[Track D C7-2構造検証](track_d_c7_2_cx_structure_20261107/REPORT.md)／[q32未採択案](track_d_c7_2_cx_structure_20261107/C7_3_EXECUTION_DRAFT.md)：SOURCE34929f8a、54人工P0と位相/observable検査PASS、既存回帰12 PASS。加法性と単純lane depth式の反例、実H4全path bridge未取得。分子再計算/価格再解析0、mandatory STOP。
+
 [過去のブランチURLに対応する固定commit・保存原版の案内](branch_reference_navigation_20261103.md)。
 
 [保留7枝の再現用ファイル・保存別版の追加収録（11月4日）](priority7_collection_20261104.md)。

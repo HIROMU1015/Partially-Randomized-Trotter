@@ -151,3 +151,5 @@ DF部分ランダム化研究と混同しない。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
 
 [Track D C7-1](../trottertracks/track_d_c7_1_q16.py)：[PLAN](../../docs/research/track_d_c7_1_q16_20261107/PLAN.md)のq16/cut8/n16専用request・価格統計/凍結モデル診断。旧q2/4・q8 guardを保全し、C3/C5/C6a/C6bの科学部品を再利用。明示runnerのみ、全law/長q未資格、mandatory STOP。
+
+[C7-2人工adapter](../trottertracks/track_d_c7_2_toy.py)：実StrongBuilder/C3 emittersの2mode人工束縛、小規模独立exterior reference、max-plus/DAG feature。旧分子guardを変更せず、[固定PLAN](../../docs/research/track_d_c7_2_cx_structure_20261107/PLAN.md)の54人工回路のみ。
