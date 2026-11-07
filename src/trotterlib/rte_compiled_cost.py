@@ -474,6 +474,8 @@ class TranspiledCircuitCostCache:
         maximum_entries: int = 256,
         retain_transpiled_circuits: bool = False,
         persistent_path: str | Path | None = None,
+        fingerprint_function: Callable | None = None,
+        metric_function: Callable | None = None,
     ) -> None:
         self.maximum_entries = require_integer_count(
             maximum_entries,
@@ -482,6 +484,8 @@ class TranspiledCircuitCostCache:
         )
         self._costs: OrderedDict[str, TranspiledCircuitCost] = OrderedDict()
         self.retain_transpiled_circuits = bool(retain_transpiled_circuits)
+        self.fingerprint_function = fingerprint_function
+        self.metric_function = metric_function
         self.persistent_path = (
             None if persistent_path is None else Path(persistent_path)
         )
@@ -622,15 +626,17 @@ class TranspiledCircuitCostCache:
         circuit: QuantumCircuit,
         compiler: CompilerSettings,
         *,
-        circuit_fingerprint: str,
+        circuit_fingerprint: str | None = None,
         backend: Any | None = None,
     ) -> tuple[TranspiledCircuitCost, str, bool]:
         _validate_transpile_context(compiler, backend)
         settings_hash = compiler_settings_hash(compiler)
         try:
-            actual_fingerprint = canonical_qiskit_circuit_fingerprint(circuit)
+            hasher = self.fingerprint_function or canonical_qiskit_circuit_fingerprint
+            actual_fingerprint = hasher(circuit)
         except (TypeError, ValueError):
             actual_fingerprint = None
+        circuit_fingerprint = circuit_fingerprint or actual_fingerprint or "uncacheable-circuit"
         backend_fingerprint = _canonical_backend_fingerprint_or_none(backend)
         cacheable = actual_fingerprint is not None and (
             backend is None or backend_fingerprint is not None
@@ -679,6 +685,7 @@ class TranspiledCircuitCostCache:
             backend=backend,
             actual_circuit_fingerprint=actual_fingerprint,
             backend_fingerprint=backend_fingerprint,
+            **({"metric_function": self.metric_function} if self.metric_function is not None else {}),
         )
         self.miss_count += 1
         if cacheable:
@@ -840,6 +847,41 @@ def _filtered_depth(circuit: QuantumCircuit, gate_name: str) -> int:
     return int(depth or 0)
 
 
+def measure_compiled_metrics(circuit: QuantumCircuit) -> dict[str, int]:
+    """One pass for flat basis circuits, preserving Qiskit 1.3 depth semantics.
+
+    Even an instruction excluded from a filtered depth synchronizes its wires.
+    Classical conditions, variables and other operations use the existing path.
+    No DAG or instruction list is copied for the common rz/sx/x/cx case.
+    """
+    def reference():
+        counts = dict(_gate_counts(circuit))
+        return dict(rz_count=counts.get('rz', 0), cx_count=counts.get('cx', 0),
+            rz_depth=_filtered_depth(circuit, 'rz'), cx_depth=_filtered_depth(circuit, 'cx'),
+            total_depth=int(circuit.depth() or 0), circuit_size=int(circuit.size()))
+    if getattr(circuit, 'num_vars', 0):
+        return reference()
+    wires = {bit: i for i, bit in enumerate((*circuit.qubits, *circuit.clbits))}
+    depths = [[0]*len(wires) for _ in range(3)]
+    rz_count = cx_count = size = 0
+    for item in circuit.data:
+        op = item.operation
+        if (op.name not in {'rz', 'sx', 'x', 'cx', 'measure', 'barrier'}
+                or getattr(op, '_condition', None) is not None):
+            return reference()
+        positions = tuple(wires[bit] for bit in (*item.qubits, *item.clbits))
+        rz_count += op.name == 'rz'
+        cx_count += op.name == 'cx'
+        counted = not getattr(op, '_directive', False)
+        size += counted
+        for levels, increment in zip(depths, (op.name == 'rz', op.name == 'cx', counted)):
+            level = max((levels[i] for i in positions), default=0) + increment
+            for i in positions:
+                levels[i] = level
+    return dict(rz_count=rz_count, cx_count=cx_count, rz_depth=max(depths[0], default=0),
+        cx_depth=max(depths[1], default=0), total_depth=max(depths[2], default=0), circuit_size=size)
+
+
 def transpile_and_measure_cost(
     circuit: QuantumCircuit,
     compiler: CompilerSettings,
@@ -848,6 +890,7 @@ def transpile_and_measure_cost(
     backend: Any | None = None,
     actual_circuit_fingerprint: str | None = None,
     backend_fingerprint: str | None = None,
+    metric_function: Callable | None = None,
 ) -> TranspiledCircuitCost:
     """Transpile one circuit under fully recorded settings and measure counts."""
     _validate_transpile_context(compiler, backend)
@@ -873,16 +916,17 @@ def transpile_and_measure_cost(
         kwargs["backend"] = backend
     transpiled_circuit = transpile(circuit, **kwargs)
     post_counts = dict(_gate_counts(transpiled_circuit))
+    metrics = None if metric_function is None else metric_function(transpiled_circuit)
     fingerprint = circuit_fingerprint or actual_circuit_fingerprint or "uncacheable-circuit"
     return TranspiledCircuitCost(
         pretranspile_gate_counts=_gate_counts(circuit),
         posttranspile_gate_counts=tuple(sorted(post_counts.items())),
         rz_count=post_counts.get("rz", 0),
-        rz_depth=_filtered_depth(transpiled_circuit, "rz"),
+        rz_depth=_filtered_depth(transpiled_circuit, "rz") if metrics is None else metrics['rz_depth'],
         cx_count=post_counts.get("cx", 0),
-        cx_depth=_filtered_depth(transpiled_circuit, "cx"),
-        total_depth=int(transpiled_circuit.depth() or 0),
-        circuit_size=int(transpiled_circuit.size()),
+        cx_depth=_filtered_depth(transpiled_circuit, "cx") if metrics is None else metrics['cx_depth'],
+        total_depth=int(transpiled_circuit.depth() or 0) if metrics is None else metrics['total_depth'],
+        circuit_size=int(transpiled_circuit.size()) if metrics is None else metrics['circuit_size'],
         qubit_count=transpiled_circuit.num_qubits,
         global_phase=float(transpiled_circuit.global_phase),
         compiler=compiler,

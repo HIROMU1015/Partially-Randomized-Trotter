@@ -177,6 +177,17 @@ class B2RPERound:
 
     def price(self, provider, *, sample_count, seed, max_instructions):
         _check_provider(self.context, provider)
+        if provider.memory_efficient:
+            from .b2_streamed_native_cost import stream_native, structural_instruction_bound
+            from .streamed_circuit_fingerprint import streamed_canonical_qiskit_circuit_fingerprint as streamed_hash
+            if structural_instruction_bound(self) > max_instructions:
+                raise RuntimeError('PRE_BUILD_INSTRUCTION_BUDGET')
+            return provider.monte_carlo_with_builder(self, self.config, self.distribution,
+                q=self.q, sample_count=sample_count, seed=seed, stream_events=True,
+                build_trajectory=lambda events: stream_native(self, events, fingerprint_function=streamed_hash),
+                wrapper_builder=lambda evolution, axis: build_native_hadamard_wrapper(evolution,
+                    axis=axis, include_measurement=True, max_instructions=max_instructions,
+                    fingerprint_function=streamed_hash))
         return provider.monte_carlo_with_builder(self, self.config, self.distribution,
             q=self.q, sample_count=sample_count, seed=seed,
             build_trajectory=lambda events: self.native(self.explicit_request(events),

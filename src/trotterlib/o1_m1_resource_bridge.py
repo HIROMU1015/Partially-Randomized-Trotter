@@ -169,7 +169,8 @@ def build_strong_df_baseline(split, *, delta_time, q, substeps, basis_policy):
 
 
 def _compile_pair(circuit, compiler, *, compile_function, backend, wrapper_builder=None,
-                  fingerprint_function=None):
+                  fingerprint_function=None, retain_transpiled_circuits=True,
+                  hash_before_compile=True):
     """Compile both measured axes, optionally with an equivalent canonical hasher."""
     costs = {}
     hasher = canonical_qiskit_circuit_fingerprint if fingerprint_function is None else fingerprint_function
@@ -177,11 +178,16 @@ def _compile_pair(circuit, compiler, *, compile_function, backend, wrapper_build
         wrapper = (wrap_controlled_no_prep(circuit, ancilla_qubit=circuit.num_qubits-1,
                                           axis=axis, include_measurement=True)
                    if wrapper_builder is None else wrapper_builder(circuit, axis))
-        fp = hasher(wrapper)
+        fp = hasher(wrapper) if hash_before_compile else None
         cost = compile_function(wrapper, compiler, backend=backend, actual_circuit_fingerprint=fp)
         if cost.compiler != compiler or any(not math.isfinite(float(getattr(cost,k))) or getattr(cost,k)<0 for k in RPE_COST_METRICS):
             raise ValueError("Compile context or metric differs")
-        costs[axis] = cost
+        costs[axis] = (replace(cost, transpiled_circuit=None)
+            if not retain_transpiled_circuits and hasattr(cost, 'transpiled_circuit') else cost)
+        # In metrics-only mode neither the previous wrapper nor the miss result
+        # may survive while the next measured axis is built/compiled.
+        if not retain_transpiled_circuits:
+            del cost, wrapper
     return costs
 
 
@@ -192,11 +198,32 @@ class MatchedNoPrepCostProvider:
     canonical finite-law events and complete probability mass are checked before
     any build. MC reuses the existing sampler; no molecular defaults or proxy.
     """
-    def __init__(self, compiler, *, compile_function=transpile_and_measure_cost, backend=None):
+    def __init__(self, compiler, *, compile_function=transpile_and_measure_cost, backend=None,
+                 memory_efficient=False):
         self.compiler, self.compile_function, self.backend = compiler, compile_function, backend
+        self.memory_efficient = memory_efficient
+        self.fingerprint_function = None
+        self.cost_cache = None
+        if memory_efficient:
+            from .streamed_circuit_fingerprint import streamed_canonical_qiskit_circuit_fingerprint
+            self.fingerprint_function = streamed_canonical_qiskit_circuit_fingerprint
+            if compile_function is transpile_and_measure_cost:
+                from .b2_streamed_native_cost import cached_compiler
+                from .rte_compiled_cost import TranspiledCircuitCostCache, measure_compiled_metrics
+                self.cost_cache = TranspiledCircuitCostCache(
+                    fingerprint_function=self.fingerprint_function, metric_function=measure_compiled_metrics)
+                self.compile_function = cached_compiler(self.cost_cache)
         self.backend_hash = canonical_backend_fingerprint_or_none(backend)
         if self.backend_hash is None:
             raise ValueError("Exact pricing requires a canonical backend context")
+
+    def compile_pair(self, circuit, *, wrapper_builder=None):
+        """Same complete measured axes; optionally retain only their metrics."""
+        return _compile_pair(circuit, self.compiler, compile_function=self.compile_function,
+            backend=self.backend, wrapper_builder=wrapper_builder,
+            fingerprint_function=self.fingerprint_function,
+            retain_transpiled_circuits=not self.memory_efficient,
+            hash_before_compile=self.cost_cache is None)
 
     def _result(self, accumulators, *, context_hash, arm_hash, q, delta_time, law_hash, method):
         expected = {axis:circuit_cost_from_metric_statistics(acc.finalize(),compiler=self.compiler,
@@ -231,8 +258,7 @@ class MatchedNoPrepCostProvider:
             raise ValueError("Incomplete, duplicate or non-normalized exact trajectory set")
         accumulators = {axis:CompiledMetricAccumulator(weighted=True) for axis in ("cosine","sine")}
         for events,weight in zip(trajectories,weights,strict=True):
-            pair = _compile_pair(build_controlled_trajectory(preparation,config,distribution,q=q,events=events),
-                self.compiler,compile_function=self.compile_function,backend=self.backend)
+            pair = self.compile_pair(build_controlled_trajectory(preparation,config,distribution,q=q,events=events))
             for axis,cost in pair.items(): accumulators[axis].update(cost,weight=weight)
         return self._result(accumulators, context_hash=preparation.context_hash,
             arm_hash=preparation.preparation_hash,q=q,delta_time=config.evolution_time,law_hash=_law_hash(config),
@@ -243,7 +269,7 @@ class MatchedNoPrepCostProvider:
         q=require_integer_count(q,name="q",minimum=1)
         if not context_hash or not arm_hash or not math.isfinite(delta_time) or delta_time<=0:
             raise ValueError("Explicit deterministic context and positive time required")
-        pair = _compile_pair(circuit,self.compiler,compile_function=self.compile_function,backend=self.backend)
+        pair = self.compile_pair(circuit)
         accumulators = {axis:CompiledMetricAccumulator(weighted=True) for axis in pair}
         for axis,cost in pair.items(): accumulators[axis].update(cost,weight=1.)
         return self._result(accumulators,context_hash=context_hash,arm_hash=arm_hash,q=q,
@@ -264,6 +290,7 @@ class MatchedNoPrepCostProvider:
 
     def monte_carlo_with_builder(self, preparation, config, distribution, *, q,
                                 sample_count, seed, build_trajectory, wrapper_builder=None,
+                                stream_events=False,
                                 method="fresh_iid_full_no_prep_monte_carlo"):
         """Shared law/paired-statistics path; preparation needs tail/context/arm only.
 
@@ -282,10 +309,12 @@ class MatchedNoPrepCostProvider:
                                        sample_count=sample_count*length, seed=seed)
         accumulators = {axis:CompiledMetricAccumulator(weighted=False) for axis in ("cosine","sine")}
         for _ in range(sample_count):
-            events = tuple(islice(stream, length))
-            pair = _compile_pair(build_trajectory(events), self.compiler,
-                compile_function=self.compile_function, backend=self.backend,
-                wrapper_builder=wrapper_builder)
+            events = islice(stream, length)
+            if not stream_events:
+                events = tuple(events)
+            pair = self.compile_pair(build_trajectory(events), wrapper_builder=wrapper_builder)
+            if stream_events and next(events, None) is not None:
+                raise ValueError('Streaming builder did not consume the complete trajectory')
             for axis, cost in pair.items():
                 accumulators[axis].update(cost)
         result = self._result(accumulators, context_hash=preparation.context_hash,

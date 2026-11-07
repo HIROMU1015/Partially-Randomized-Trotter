@@ -4,6 +4,7 @@ MC draws/reduction retain the serial ordering. This module never interrupts,
 resumes or edits a scientific job. Molecular use needs its execution scope.
 """
 from concurrent.futures import ProcessPoolExecutor
+from collections import deque
 from dataclasses import replace
 from functools import lru_cache
 from itertools import islice
@@ -118,26 +119,59 @@ class ParallelMatchedNoPrepCostProvider:
         self.compiler,self.max_workers,self.compile_function=compiler,max_workers,compile_function
         self.last_execution=None
 
-    def _map(self,function,tasks,*,memory_probe=False):
+    def _iter_map(self,function,tasks,*,memory_probe=False,task_count=None):
+        """Lazy ordered dispatch with at most one pending future per worker.
+
+        Reuses the existing spawn initializer and measured-memory admission.
+        Task generation and result reduction never require a batch-sized list.
+        """
         available=len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else (os.cpu_count() or 1)
         limit=min(available,self.max_workers or available)
-        results=[];probe=None
+        tasks=iter(tasks);probe=None;completed=0;pids=set();workers=0;peak_pending=0
+        sentinel=object()
+        first_task=next(tasks,sentinel)
+        if first_task is sentinel:
+            self.last_execution=dict(start_method='spawn',configured_workers=0,task_count=0,
+                worker_pids=[],reduction='submission order',numerical_threads_per_worker=1,
+                memory_probe=None,peak_pending_futures=0)
+            return
         if memory_probe:
             with ProcessPoolExecutor(max_workers=1,mp_context=multiprocessing.get_context('spawn'),
                                      initializer=_worker_init) as executor:
-                first=executor.submit(function,tasks[0]).result()
-            results.append(first);tasks=tasks[1:]
+                first=executor.submit(function,first_task).result()
+            completed+=1;pids.add(first[0])
             free=_available_memory_kb()
-            limit=memory_worker_limit(len(tasks),limit,first[2],free)
             probe=dict(pilot_peak_rss_kb=first[2],available_memory_kb=free,memory_peak_multiplier=2)
-        workers=min(len(tasks),limit)
-        with ProcessPoolExecutor(max_workers=workers,mp_context=multiprocessing.get_context('spawn'),
-                                 initializer=_worker_init) as executor:
-            results.extend(executor.map(function,tasks,chunksize=1))
-        self.last_execution=dict(start_method='spawn',configured_workers=workers,task_count=len(results),
-            worker_pids=sorted({pid for pid,_,_ in results}),reduction='submission order',
-            numerical_threads_per_worker=1,memory_probe=probe)
-        return [value for _,value,_ in results]
+            yield first[1]
+            first_task=next(tasks,sentinel)
+            if first_task is not sentinel:
+                limit=memory_worker_limit(limit if task_count is None else task_count-1,limit,first[2],free)
+        try:
+            if first_task is not sentinel:
+                workers=min(limit,limit if task_count is None else task_count-completed)
+                with ProcessPoolExecutor(max_workers=workers,mp_context=multiprocessing.get_context('spawn'),
+                                         initializer=_worker_init) as executor:
+                    pending=deque([executor.submit(function,first_task)])
+                    for task in islice(tasks,workers-1):
+                        pending.append(executor.submit(function,task))
+                    peak_pending=len(pending)
+                    while pending:
+                        pid,value,_=pending.popleft().result()
+                        completed+=1;pids.add(pid)
+                        yield value
+                        task=next(tasks,sentinel)
+                        if task is not sentinel:
+                            pending.append(executor.submit(function,task))
+                        peak_pending=max(peak_pending,len(pending))
+        finally:
+            self.last_execution=dict(start_method='spawn',configured_workers=workers,task_count=completed,
+                worker_pids=sorted(pids),reduction='submission order',numerical_threads_per_worker=1,
+                memory_probe=probe,peak_pending_futures=peak_pending)
+
+    def _map(self,function,tasks,*,memory_probe=False):
+        """Compatibility collection API; streaming callers use _iter_map."""
+        return list(self._iter_map(function,tasks,memory_probe=memory_probe,
+            task_count=len(tasks) if hasattr(tasks,'__len__') else None))
 
     def _metric(self,values):
         return SimpleNamespace(**dict(zip(_bridge().RPE_COST_METRICS,values,strict=True)))
@@ -155,14 +189,15 @@ class ParallelMatchedNoPrepCostProvider:
         payload=pickle.dumps(preparation,protocol=pickle.HIGHEST_PROTOCOL)
         available=len(os.sched_getaffinity(0)) if hasattr(os,'sched_getaffinity') else (os.cpu_count() or 1)
         split_axes=(self.max_workers or available)>sample_count
-        tasks=[]
-        for _ in range(sample_count):
-            events=tuple(islice(stream,length))
-            for axis in (('cosine','sine') if split_axes else (None,)):
-                tasks.append((payload,config,distribution,q,events,self.compiler,self.compile_function,axis))
+        def tasks():
+            for _ in range(sample_count):
+                events=tuple(islice(stream,length))
+                for axis in (('cosine','sine') if split_axes else (None,)):
+                    yield (payload,config,distribution,q,events,self.compiler,self.compile_function,axis)
         accumulators={axis:bridge.CompiledMetricAccumulator(weighted=False) for axis in ('cosine','sine')}
         # map returns submission order, regardless of worker completion order.
-        for pair in self._map(_mc_task,tasks,memory_probe=True):
+        for pair in self._iter_map(_mc_task,tasks(),memory_probe=True,
+                task_count=sample_count*(2 if split_axes else 1)):
             for axis,values in pair.items(): accumulators[axis].update(self._metric(values))
         self.last_execution['granularity']='axis' if split_axes else 'paired_trajectory'
         result=self.provider._result(accumulators,context_hash=preparation.context_hash,

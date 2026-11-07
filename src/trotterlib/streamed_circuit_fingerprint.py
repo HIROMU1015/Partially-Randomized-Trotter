@@ -12,6 +12,7 @@ import json
 from collections.abc import Iterator
 
 from qiskit import QuantumCircuit
+from qiskit.circuit.library import CXGate, HGate, SXGate, SdgGate, XGate
 
 from .rte_compiled_cost import _numeric_parameter_payload, _operation_payload
 
@@ -40,16 +41,25 @@ def iter_canonical_qiskit_circuit_bytes(circuit: QuantumCircuit) -> Iterator[byt
     yield _encoded(_numeric_parameter_payload(circuit.global_phase))
     yield b',"instructions":['
     active_definitions: set[int] = set()
+    # Only these five shared singleton objects have bounded small definitions.
+    # Recompute on EVERY hash call: even a singleton's definition circuit may
+    # have been edited between calls. Mutable/custom operations are never memoized.
+    singletons = (CXGate(), HGate(), SXGate(), SdgGate(), XGate())
+    singleton_ids = {id(op) for op in singletons}
+    encoded_operations = {}
     for index, item in enumerate(circuit.data):
         if index:
             yield b","
-        yield _encoded({
-            "operation": _operation_payload(
-                item.operation, circuit, active_definitions=active_definitions,
-            ),
-            "qubits": [circuit.find_bit(bit).index for bit in item.qubits],
-            "clbits": [circuit.find_bit(bit).index for bit in item.clbits],
-        })
+        op = item.operation
+        identifier = id(op)
+        encoded_op = encoded_operations.get(identifier)
+        if encoded_op is None:
+            encoded_op = _encoded(_operation_payload(op, circuit, active_definitions=active_definitions))
+            if identifier in singleton_ids:
+                encoded_operations[identifier] = encoded_op
+        yield (b'{"clbits":' + _encoded([circuit.find_bit(bit).index for bit in item.clbits])
+            + b',"operation":' + encoded_op
+            + b',"qubits":' + _encoded([circuit.find_bit(bit).index for bit in item.qubits]) + b'}')
     yield b'],"num_clbits":' + _encoded(int(circuit.num_clbits))
     yield b',"num_qubits":' + _encoded(int(circuit.num_qubits)) + b"}"
 

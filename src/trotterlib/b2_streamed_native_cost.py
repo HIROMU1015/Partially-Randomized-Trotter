@@ -78,9 +78,8 @@ def cached_compiler(cache):
     """
     def compile_function(circuit, compiler, *, backend=None,
                          actual_circuit_fingerprint=None):
-        fingerprint = actual_circuit_fingerprint or canonical_qiskit_circuit_fingerprint(circuit)
         cost, _, _ = cache.get_or_transpile(circuit, compiler,
-            circuit_fingerprint=fingerprint, backend=backend)
+            circuit_fingerprint=actual_circuit_fingerprint, backend=backend)
         return cost
     return compile_function
 
