@@ -791,3 +791,8 @@ A1 N3案Bの[新しい一campaignの実行仕様](docs/research/o2_a1_n3_B_scien
 ## 2026-11-07 Signed Support 448-shot technical preparation
 
 [Technical report](docs/research/scv_signed_support_448_preparation_20261107/REPORT.md)：201 artificial unit/mock tests PASS, including 42 new adapter tests. Byte/native profile binding checked; no real H4 restore/decode/RNG/Born/shot/fit/paired/compile, no scientific CV improvement evidence. Source candidate only; science execution requires separate explicit permission. Existing scientific evidence/STOPs unchanged.
+
+
+## 2026-11-07 Signed Support 448-shot completed pilot
+
+[Report](docs/research/scv_signed_support_448_science_20261107/REPORT.md): SOURCE f70e555, one saved H4/1 Å/STO-3G/legacy DF12/L_D3/m0/q1/delta.02/r1/K2/atol0, actual Q/selected full/certified ground/exact engine, X/Y. 448/448 fresh bits and prices, 2,156,805 realized RZ. Rank/guard pass, no positive additional variance point improvement in either axis; training-inclusive point scores worse than B1-OL references. Exploratory only, no precision/expected-cost/general superiority claim; full raw preserved, retry0, mandatory STOP.

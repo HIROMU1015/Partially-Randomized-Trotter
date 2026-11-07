@@ -278,3 +278,9 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 
 2026-11-07：Signed Support 448-shotの実装仕様を採択し、保存control復元・薄いactivation・人工correctness・SOURCE固定を準備した。実H4科学計算は未許可・未実行、公開照合後mandatory STOP。既存科学SOURCE/結果/STOPは変更しない。
 [report](docs/research/scv_signed_support_448_preparation_20261107/REPORT.md)、[activation](src/trottertracks/algorithm_codesign/scv_signed_activation.py)、[saved restore](src/trottertracks/algorithm_codesign/scv_signed_restore.py)、[orchestrator](src/trottertracks/algorithm_codesign/scv_signed_pilot.py)、[runtime adapter](src/trottertracks/algorithm_codesign/scv_signed_runtime.py)、[deferred runner](scripts/tracks/algorithm_codesign/run_scv_signed_pilot.py)、[artificial tests](tests/tracks/algorithm_codesign/test_scv_signed_pilot.py)、[technical evidence](docs/research/scv_signed_support_448_preparation_20261107/TEST_RESULTS.json)。将来の科学outputは `artifacts/scv_signed_support_fresh_pilot/2026-11-07/campaign_run01/`（今回は未作成）。
+
+
+## 2026-11-07 Signed Support 448-shot complete result
+
+2026-11-07：Signed Support 448-shot一campaignをSOURCE f70e555で完了。保存linear H4/1.00 Å/STO-3G/legacy DF12/8qubit/全4電子sector/L_D3/m0/q1/δ=.02/r1/K2/atol0、N1 actual Q/selected full・N2保証ground・認証済みexact Fraction engine、X/Y。train128＋共通eval320、448 bit/価格、2,156,805 RZを保全。rank/guard合格だが両軸の追加分散point改善・学習費回収の兆候なし。精度/期待費用保証・正式GO/NO-GOなし、科学retry0、公開照合後mandatory STOP。
+[report](docs/research/scv_signed_support_448_science_20261107/REPORT.md)、[saved-record integrity](docs/research/scv_signed_support_448_science_20261107/SAVED_RECORD_INTEGRITY.json)、[complete raw/manifest](artifacts/scv_signed_support_448_results/2026-11-07/run01/README.md)。実SOURCE f70e555のcode/既存STOPは変更しない。
