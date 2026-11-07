@@ -139,3 +139,5 @@
 ## Track C対角gate融合（2026-11-08）
 
 [同一basisのPauli集約・parity共有・Full比較](research/track_c_diagonal_fusion_20261108/REPORT.md)。RTE run固有のRZ改善は限定的。既知controlを含む大きな削減を新規PR改善へ混同せず、全raw・条件付きRPE・STOPを保存した。
+
+- [Track B Closed P3 × Track C固定H4：weighted会計と全18round比較](research/track_c_closed_p3_20261108/REPORT.md)

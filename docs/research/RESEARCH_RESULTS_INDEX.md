@@ -202,3 +202,7 @@ Track C2-A：[限定pilot・SOURCE・raw・STOP](track_c2_a_pilot_20261106/REPOR
 ## 2026-11-08 Track C対角gate融合
 
 [既知loweringとPR固有融合の切り分け・独立価格・全RPE](track_c_diagonal_fusion_20261108/REPORT.md)。既知term基準でRTE runの追加RZ効果約0.135%、CX約1.67%。Fullへ同等機会を与えるとPR差は縮まらない。全raw810ファイル・source・負結果・STOP保全、mandatory STOP。
+
+## Track C Closed P3統合（2026-11-08）
+
+[固定H4・同じP3・weighted/native資格と全18round比較](track_c_closed_p3_20261108/REPORT.md)。D/h/resolutionを保持し、独立paired holdoutでRZ約1.965%減。強Full PFはなお安い。旧研究STOPを保全し、公開照合後mandatory STOP。

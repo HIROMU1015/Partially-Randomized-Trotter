@@ -189,3 +189,5 @@ artifacts/<validation_name>/
 ## Track C対角gate融合（2026-11-08）
 
 [REPORT](../docs/research/track_c_diagonal_fusion_20261108/REPORT.md)。段階入口は`PYTHONPATH=src python -m trottertracks.track_c_diagonal_fusion`と`track_c_diagonal_resources`。固定cacheと過去3 archiveの読取コピーを使い、既存出力を上書きしない。保存値集計は`scripts/summarize_track_c_diagonal_fusion.py`、Qiskit/cache不要の読取検査は`python3 scripts/check_track_c_diagonal_fusion.py`。今回STOP後の科学実行は自動再開しない。
+
+- `prepare_track_c_closed_p3_inputs.py` / `run_track_c_closed_p3.py`：固定科学inputのreplayと新P3接続検証。[条件・結果・STOP](../docs/research/track_c_closed_p3_20261108/REPORT.md)。
