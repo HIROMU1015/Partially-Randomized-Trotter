@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D C7-3結果](research/track_d_c7_3_q32_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、独立q32/cut16/8 path。sampling/raw SOURCE35bfd、承認済み高速化compile/post SOURCE94e94。旧raw8再利用・新raw/sampling0、全32 P0/post・pairedχ8 PASS。CX差は全8本で−6960、RZ/size/各depthも有限全8本で減、qubits9→17。一次12量は探索的幅内、別population-line6量幅外。統計/全law/q≥64/N/全RPE未資格、旧STOP/raw非公開を維持、公開照合後mandatory STOP。
+
 [C7-3高速化・切替PLAN](research/track_d_c7_3_q32_20261107/ACCELERATED_COMPLETION_PLAN.md)：利用者承認のSOURCE変更。旧raw8 PASSと旧STOPを保全し、未着手compile/postへ切替。case/model/精度/P0は維持、追加sampling/raw再実行0、人工/回帰61 PASS。
 
 [Track D C7-3 PLAN](research/track_d_c7_3_q32_20261107/PLAN.md)：独立q32/cut16/8 path、凍結予測と新domainを事前固定。raw gate後最大32 full P0、C7-2構造feature、探索的価格のみ。q≥64/新fit/N/全RPE対象外、公開後mandatory STOP。

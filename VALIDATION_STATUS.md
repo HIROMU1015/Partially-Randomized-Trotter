@@ -1,5 +1,7 @@
 # Validation status
 
+[Track D C7-3](docs/research/track_d_c7_3_q32_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、独立q32/cut16/8 path。sampling/raw SOURCE35bfd、承認済み高速化compile/post SOURCE94e94。旧raw8再利用・新raw/sampling0、全32 P0/post・pairedχ8 PASS。CX差は全8本で−6960、RZ/size/各depthも有限全8本で減、qubits9→17。一次12量は探索的幅内、別population-line6量幅外。統計/全law/q≥64/N/全RPE未資格、旧STOP/raw非公開を維持、公開照合後mandatory STOP。
+
 [Track D C7-2](docs/research/track_d_c7_2_cx_structure_20261107/REPORT.md)：SOURCE34929f8a、固定人工54 compile/postcheck・raw98/observable等36項目、C5/C3回帰12 PASS。局所加法性/lane式の反例を保存、実H4任意pathのP0 bridgeは未取得。実H4新科学処理/再解析0、確認的価格保証/全RPE未資格、mandatory STOP。
 
 ## 2026-11-07 Track D C7-1 independent q16 paired price
