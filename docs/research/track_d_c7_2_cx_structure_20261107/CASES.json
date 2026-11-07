@@ -1,0 +1,260 @@
+{
+  "version": "C7-2-artificial-cases-v1",
+  "compile_budget": 54,
+  "modes": 2,
+  "frame_angles": [
+    0.23,
+    -0.37,
+    0.41
+  ],
+  "scalar": 0.17,
+  "identity": 0.04,
+  "tau": 0.2,
+  "atoms": [
+    [
+      "plus",
+      "2/5",
+      "ZI",
+      1
+    ],
+    [
+      "minus",
+      "-7/10",
+      "ZI",
+      2
+    ],
+    [
+      "zz",
+      "3/10",
+      "ZZ",
+      1
+    ]
+  ],
+  "diagonals": [
+    {
+      "id": "positive",
+      "phase": 0.0,
+      "rz": [
+        [
+          0,
+          0.23
+        ]
+      ],
+      "rzz": []
+    },
+    {
+      "id": "explicit_zero",
+      "phase": 0.0,
+      "rz": [
+        [
+          0,
+          0.0
+        ]
+      ],
+      "rzz": [
+        [
+          0,
+          1,
+          0.0
+        ]
+      ]
+    },
+    {
+      "id": "mixed_signed_phase",
+      "phase": 0.13,
+      "rz": [
+        [
+          0,
+          0.23
+        ],
+        [
+          1,
+          -0.17
+        ]
+      ],
+      "rzz": [
+        [
+          0,
+          1,
+          0.31
+        ]
+      ]
+    }
+  ],
+  "centers": [
+    {
+      "id": "repeat_plus",
+      "sequence": [
+        [
+          [
+            0
+          ],
+          0.23
+        ],
+        [
+          [
+            0
+          ],
+          0.23
+        ]
+      ]
+    },
+    {
+      "id": "opposite_signed",
+      "sequence": [
+        [
+          [
+            0
+          ],
+          0.23
+        ],
+        [
+          [
+            0
+          ],
+          -0.23
+        ]
+      ]
+    },
+    {
+      "id": "repeat_zz",
+      "sequence": [
+        [
+          [
+            0,
+            1
+          ],
+          0.23
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          0.23
+        ]
+      ]
+    },
+    {
+      "id": "changed_support",
+      "sequence": [
+        [
+          [
+            0
+          ],
+          0.23
+        ],
+        [
+          [
+            1
+          ],
+          -0.17
+        ]
+      ]
+    }
+  ],
+  "cx_boundaries": [
+    {
+      "id": "adjacent",
+      "rz_wire": null
+    },
+    {
+      "id": "commuting_control_rz",
+      "rz_wire": 0
+    },
+    {
+      "id": "noncommuting_target_rz",
+      "rz_wire": 1
+    }
+  ],
+  "whole_paths": [
+    {
+      "id": "q2_same",
+      "cut": 1,
+      "steps": [
+        [
+          "plus",
+          "plus"
+        ],
+        [
+          "plus",
+          "plus"
+        ]
+      ]
+    },
+    {
+      "id": "q2_mixed",
+      "cut": 1,
+      "steps": [
+        [
+          "plus",
+          "zz"
+        ],
+        [
+          "minus",
+          "plus"
+        ]
+      ]
+    },
+    {
+      "id": "q4_same",
+      "cut": 2,
+      "steps": [
+        [
+          "plus",
+          "plus"
+        ],
+        [
+          "plus",
+          "plus"
+        ],
+        [
+          "plus",
+          "plus"
+        ],
+        [
+          "plus",
+          "plus"
+        ]
+      ]
+    },
+    {
+      "id": "q4_mixed",
+      "cut": 2,
+      "steps": [
+        [
+          "plus",
+          "zz"
+        ],
+        [
+          "minus",
+          "plus"
+        ],
+        [
+          "plus",
+          "zz"
+        ],
+        [
+          "minus",
+          "plus"
+        ]
+      ]
+    }
+  ],
+  "checks": {
+    "component_abs": 1e-10,
+    "observable_frobenius": 2e-10,
+    "rtol": 0,
+    "phase_fit": false
+  },
+  "candidate_tests": [
+    "generic nonzero central control premium 2CX per primitive, subject to P0 boundary residual",
+    "unconditional local-CX additivity fails if P0 cancels across an interface",
+    "shell depth plus maximum standalone lane depth is diagnostic, not an identity"
+  ],
+  "domain_caveats": [
+    "explicit zero entries exceed the exact-zero-pruned normal H4 constructor domain",
+    "opposite signed identical support is an interface probe, not certified as a legal H4 same-atom word",
+    "all whole paths are artificial; no molecular packet, events or law loaded"
+  ]
+}
