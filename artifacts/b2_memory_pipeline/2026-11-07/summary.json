@@ -1,0 +1,339 @@
+{
+  "status": "PASS_ARTIFICIAL_PIPELINE_ONLY",
+  "source_cohorts": {
+    "initial_instrumented": "0c5ef07a7e23fad88fe151ebf50c9a3c58cdb013",
+    "production_GC": "3763b4b9966dbd039ed492791a183a371c00822b"
+  },
+  "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+  "compiler_settings": {
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "backend_name": null,
+    "coupling_map": null,
+    "optimization_level": 1,
+    "layout_method": null,
+    "routing_method": null,
+    "transpiler_seed": 7,
+    "qiskit_version": "1.3.0"
+  },
+  "template": {
+    "native_instructions": 4,
+    "flat_instructions": 147,
+    "compiler_hash": "a0301472e2fb95ba82d3ce80dace0d6de9637ccc74b1887d8271ca1c3e5c04d8",
+    "compiled_fingerprint": "8d7fd55c37f2842249673f4b0dbd92f9ca0ae7e051493ff2a7fbe4fc1dd30481",
+    "global_phase": 5.605895251890223,
+    "gate_counts": {
+      "rz": 72,
+      "cx": 52,
+      "sx": 23
+    }
+  },
+  "workers": 13,
+  "stage_records": 121,
+  "whole_compiles": 18,
+  "setup_template_compiles": 2,
+  "tests_unique": 80,
+  "passing_case_executions": 112,
+  "resolved_failure": {
+    "test": "test_pair_releases_axis_objects_without_observer_gc",
+    "pre_fix_failures": 1,
+    "cause": "Qiskit reference cycles survived refcount deletion; the earlier observer collected before stages.",
+    "resolution": "Production metrics-only pair deletes wrapper/miss cost then explicitly gc.collect() after each axis.",
+    "validation": "Final no-observer-GC weakref test PASS; largest untraced production companion uses no observer stage GC. Native ownership tests also PASS after return-boundary cleanup.",
+    "owned_native_failures_resolved": 2,
+    "owned_native_resolution": "Delete owned native/request/cost temporaries and collect at price return; memory-efficient MC builder also collects after deleting its owned trajectory. The pair benchmark retains its native input and does not measure return cleanup.",
+    "scientific_output_effect": "No change to gate identity, compiler profile or six metrics; timing/RSS protocol differs."
+  },
+  "comparisons_to_saved_reference": [
+    {
+      "label": "flat_4096_efficient_trace0",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    },
+    {
+      "label": "flat_65536_efficient_trace0",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    },
+    {
+      "label": "flat_262144_efficient_trace0",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    },
+    {
+      "label": "flat_4096_efficient_trace1",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    },
+    {
+      "label": "flat_65536_efficient_trace1",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    },
+    {
+      "label": "flat_262144_efficient_trace1",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    },
+    {
+      "label": "flat_262144_production_no_stage_gc_trace0",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_all_six": true,
+        "sine_all_six": true,
+        "other_protocol_input_output_identity": true
+      }
+    }
+  ],
+  "within_run_checks": [
+    {
+      "label": "flat_4096_efficient_trace0",
+      "reference": "contemporaneous_small_pair",
+      "checks": {
+        "native": true,
+        "axes": true
+      }
+    },
+    {
+      "label": "flat_262144_efficient_trace0",
+      "reference_source": "a02f528f808df2391fd6aa2f95d3eb4c055ee318",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_metrics": true,
+        "sine_metrics": true
+      }
+    },
+    {
+      "label": "flat_4096_efficient_trace1",
+      "reference_source": "67c0eb21510bea767745b0c4b974ac7ec77d819d",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_metrics": true,
+        "sine_metrics": true
+      }
+    },
+    {
+      "label": "flat_4096_efficient_trace1",
+      "reference": "contemporaneous_small_pair",
+      "checks": {
+        "native": true,
+        "axes": true
+      }
+    },
+    {
+      "label": "flat_65536_efficient_trace1",
+      "reference_source": "67c0eb21510bea767745b0c4b974ac7ec77d819d",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_metrics": true,
+        "sine_metrics": true
+      }
+    },
+    {
+      "label": "flat_262144_efficient_trace1",
+      "reference_source": "67c0eb21510bea767745b0c4b974ac7ec77d819d",
+      "checks": {
+        "native_fingerprint": true,
+        "cosine_metrics": true,
+        "sine_metrics": true
+      }
+    },
+    {
+      "reference_source": "0c5ef07a7e23fad88fe151ebf50c9a3c58cdb013",
+      "checks": {
+        "native": true,
+        "axes": true,
+        "no_observer_gc": true,
+        "no_retained_compiled": true
+      }
+    }
+  ],
+  "production_companion": {
+    "kind": "flat_pipeline",
+    "mode": "efficient",
+    "blocks": 1784,
+    "traced": false,
+    "observer_collects_before_stage": false,
+    "whole_compiles": 2,
+    "axes": {
+      "cosine": {
+        "input_fingerprint": "9d9a2b22d2c6c91d9a3701f6f18e408516280b95808ed9ce8c7b3ba80dcb2fcc",
+        "metrics": {
+          "rz_count": 128451,
+          "cx_count": 92768,
+          "rz_depth": 90987,
+          "cx_depth": 92768,
+          "total_depth": 205166,
+          "circuit_size": 262254
+        },
+        "compiled_gate_digest": "ba592a26991c78e65665b48b69031f06bf53898263d0de27af527a2c4fc3a94c",
+        "compiled_global_phase": 5.9401019762305936
+      },
+      "sine": {
+        "input_fingerprint": "d6d877cbcc4858afd0e716de083fbb933211079c38fa735250231f707625b7db",
+        "metrics": {
+          "rz_count": 128451,
+          "cx_count": 92768,
+          "rz_depth": 90987,
+          "cx_depth": 92768,
+          "total_depth": 205166,
+          "circuit_size": 262254
+        },
+        "compiled_gate_digest": "8333500bbd5660a86d99c49c616e4930b9033fa61c14c09c2291deae764776be",
+        "compiled_global_phase": 5.154703812833144
+      }
+    },
+    "instructions": 262248,
+    "fingerprint": "ec8241be492858ac02f52ccf3f0225f8bfa16a9ad9267089137663c1b7f82337",
+    "native_gate_digest": "d56a87d57908fb3ce216928ed7f6f4ada3047a7701f2a899857c371ef425236d",
+    "pair_observed_wall_seconds": 161.92987004015595,
+    "pair_end_memory": {
+      "VmHWM": 491068,
+      "VmRSS": 424548,
+      "VmSwap": 0
+    },
+    "retained_compiled_circuits": 0,
+    "cache_misses": 2,
+    "status": "PASS_ARTIFICIAL_ONLY",
+    "label": "flat_262144_production_no_stage_gc_trace0",
+    "minimum_available_memory_bytes": 510724362240
+  },
+  "request_only_cases": [
+    {
+      "kind": "requests_only",
+      "Q": 1024,
+      "mode": "materialized",
+      "circuit_builds": 0,
+      "whole_compiles": 0,
+      "step_requests": 1024,
+      "status": "PASS_ARTIFICIAL_ONLY",
+      "r": 4,
+      "event_count": 4096,
+      "label": "Q1024_requests_materialized",
+      "minimum_available_memory_bytes": 511446536192
+    },
+    {
+      "kind": "requests_only",
+      "Q": 1024,
+      "mode": "stream",
+      "circuit_builds": 0,
+      "whole_compiles": 0,
+      "step_requests": 1024,
+      "status": "PASS_ARTIFICIAL_ONLY",
+      "r": 4,
+      "event_count": 4096,
+      "label": "Q1024_requests_stream",
+      "minimum_available_memory_bytes": 511367782400
+    },
+    {
+      "kind": "requests_only",
+      "Q": 131072,
+      "mode": "materialized",
+      "circuit_builds": 0,
+      "whole_compiles": 0,
+      "step_requests": 131072,
+      "status": "PASS_ARTIFICIAL_ONLY",
+      "r": 4,
+      "event_count": 524288,
+      "label": "Q131072_requests_materialized",
+      "minimum_available_memory_bytes": 511220654080
+    },
+    {
+      "kind": "requests_only",
+      "Q": 131072,
+      "mode": "stream",
+      "circuit_builds": 0,
+      "whole_compiles": 0,
+      "step_requests": 131072,
+      "status": "PASS_ARTIFICIAL_ONLY",
+      "r": 4,
+      "event_count": 524288,
+      "label": "Q131072_requests_stream",
+      "minimum_available_memory_bytes": 511087554560
+    }
+  ],
+  "runtime_cohorts": [
+    {
+      "host": "GPUA100-gleap02",
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "cpus": 64,
+      "initial_available_memory_bytes": 511840043008,
+      "load_average": [
+        34.42626953125,
+        35.5166015625,
+        36.20361328125
+      ]
+    },
+    {
+      "host": "GPUA100-gleap02",
+      "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+      "cpus": 64,
+      "initial_available_memory_bytes": 511306559488,
+      "load_average": [
+        32.28759765625,
+        33.39599609375,
+        34.443359375
+      ]
+    }
+  ],
+  "minimum_available_memory_bytes": 508480905216,
+  "maximum_sample_gap_ms": 18.42362293973565,
+  "reused_raw_sources": {
+    "run01": "67c0eb21510bea767745b0c4b974ac7ec77d819d",
+    "run02": "a02f528f808df2391fd6aa2f95d3eb4c055ee318"
+  },
+  "reused_raw_sha256": {
+    "artifacts/large_artificial_memory/2026-11-07/run01/result.json": "da28c877d3d1b0775839e23392b9832470a727155b235983070dc24102487c57",
+    "artifacts/large_artificial_memory/2026-11-07/run02/result.json": "9dfb8b849724f3ffcef237842628817a94bb1fd0de9ef055e4c163ccb0ffc32b"
+  },
+  "raw_sha256": {
+    "artifacts/b2_memory_pipeline/2026-11-07/run01/result.json": "78053987a673b44e675f5329cfdba6bee2ac12760d52ea784ec521b72de2fa9b",
+    "artifacts/b2_memory_pipeline/2026-11-07/run01/stages.csv": "96d61df7cf59447b041fcef8859da6f650084ad3e5b3eafc303462b351cdcc3c",
+    "artifacts/b2_memory_pipeline/2026-11-07/run02/result.json": "01ab4194d3c6ce2271795d231835d056b8f84d16eaee36bf691ad801a499ef99",
+    "artifacts/b2_memory_pipeline/2026-11-07/run02/stages.csv": "ad05bdcaeb03e4e704e0acab9757bfeaa8c88d8172d3196ce05ff2e187d0edfb"
+  },
+  "measurement_limits": [
+    "One observation per condition; no statistical performance or RAM upper-bound guarantee.",
+    "run01 observer explicitly collected before every stage; it cannot prove production object reclamation by itself. Its raw is preserved.",
+    "run02 uses explicit production GC at axis boundaries, with observer stage GC and Python tracing disabled. Python peaks are unmeasured/null.",
+    "Large before/after component data have different allocator, diagnostic DAG, GC and retention history. Full legacy pair rerun only at 4116 instructions.",
+    "Complete worker RSS includes Rust/C and allocator retention; observer/other processes excluded. Python trace changes both time and RSS.",
+    "Observed peak may miss short peaks below prior kernel HWM; RSS minus traced Python peak is not exact native bytes.",
+    "Pair wall includes instrumentation and compiled gate-digest diagnostics, and excludes prior native generation/hash. GC occurs between stages and is included in pair wall.",
+    "Five canonical scans remain. Artificial Q131072 request-only replay is not a real-H4 m17 build/compile or price."
+  ],
+  "real_H4_calls": 0,
+  "price_MC": null,
+  "strong_PF_price": null,
+  "total_RPE_cost": null,
+  "m17_real_H4_feasibility": null,
+  "mandatory_stop": true
+}

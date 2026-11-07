@@ -323,6 +323,8 @@ class MatchedNoPrepCostProvider:
                 raise ValueError('Streaming builder did not consume the complete trajectory')
             pair = self.compile_pair(built, wrapper_builder=wrapper_builder)
             del built
+            if self.memory_efficient:
+                gc.collect()
             for axis, cost in pair.items():
                 accumulators[axis].update(cost)
         result = self._result(accumulators, context_hash=preparation.context_hash,

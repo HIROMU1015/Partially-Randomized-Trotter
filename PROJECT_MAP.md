@@ -236,3 +236,9 @@ flat回路・copy・wrapper・DAGを分離計測。既定動作と過去の結�
 [REPORT・JSON/CSV・外部RSS観測](docs/research/large_artificial_memory_20261107/REPORT.md)。
 9 qubit人工flat回路を約4千/6.5万/26万instructionsへ増やし、生成・wrapper/copy・hash・DAG・whole compileを分離。
 実H4追加実行なし。m17実H4の確定値へ外挿せず、公開照合後mandatory STOP。
+
+## B2長round価格pipelineの省メモリ経路（2026-11-07）
+
+[実装・人工回帰・stage別計測・未検証範囲・STOP](docs/research/b2_memory_pipeline_20261107/REPORT.md)。
+X/Yの順次処理、metric-only cache、同一canonical hash、event/task streamingを接続。
+実H4・価格MCの追加実行なし。

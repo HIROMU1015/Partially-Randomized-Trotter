@@ -144,3 +144,9 @@ native生成/hash、copy、wrapper validation/compose、whole compile、前後DA
 
 [REPORT](research/large_artificial_memory_20261107/REPORT.md)：9 qubit人工回路の規模を増やし、生成方式・hash・wrapper・DAG・whole compileを計測。
 別processからstage RSSを観測しRust/C側割当も含める。実H4・MC・強PF価格・総費用は実行しない。
+
+## B2長round価格pipelineの省メモリ経路（2026-11-07）
+
+[実装・人工回帰・stage別計測・未検証範囲・STOP](research/b2_memory_pipeline_20261107/REPORT.md)。
+X/Yの順次処理、metric-only cache、同一canonical hash、event/task streamingを接続。
+実H4・価格MCの追加実行なし。

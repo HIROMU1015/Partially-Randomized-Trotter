@@ -17,6 +17,7 @@ from trottertracks.o1_m1_parallel_price import ParallelMatchedNoPrepCostProvider
 from trotterlib.rte_compiled_cost import measure_compiled_metrics
 from trotterlib.rte_compiled_cost import transpile_and_measure_cost
 from trotterlib.b2_p1_compiled_cost import price_explicit_trajectory
+from trotterlib.b2_p1_compiled_cost import price_streamed_trajectory
 from trotterlib.rpe_hadamard_interrogation import wrap_controlled_no_prep
 
 
@@ -119,3 +120,30 @@ def test_pair_releases_axis_objects_without_observer_gc():
     pair = provider.compile_pair(body, wrapper_builder=wrapper)
     assert all(ref() is None for ref in references)
     assert all(c.transpiled_circuit is None for c in pair.values())
+
+
+@pytest.mark.parametrize('streamed', [False, True])
+def test_owned_native_is_not_kept_after_trajectory_price(monkeypatch, streamed):
+    import trotterlib.b2_streamed_native_cost as module
+    _, round_ = artificial_round(0, 2)
+    references = []
+    if streamed:
+        original = module.stream_native
+        def capture(*a, **k):
+            evolution = original(*a, **k)
+            references.append(weakref.ref(evolution.circuit))
+            return evolution
+        monkeypatch.setattr(module, 'stream_native', capture)
+        price = price_streamed_trajectory
+    else:
+        original = type(round_).native
+        def capture(*a, **k):
+            evolution = original(*a, **k)
+            references.append(weakref.ref(evolution.circuit))
+            return evolution
+        monkeypatch.setattr(type(round_), 'native', capture)
+        price = price_explicit_trajectory
+    provider = MatchedNoPrepCostProvider(round_.context.compiler, memory_efficient=True)
+    result = price(round_, provider, event_pattern(round_, 'mixed'))
+    assert set(result['axes']) == {'cosine', 'sine'}
+    assert references and all(ref() is None for ref in references)

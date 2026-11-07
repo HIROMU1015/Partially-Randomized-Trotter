@@ -203,3 +203,9 @@ artifacts/<validation_name>/
 
 `benchmark_large_artificial_memory.py`は既存人工unit・wrapper・compiler/hashを再利用し、
 parentが自workerのRSSを5ms間隔で観測する。[JSON/CSV・条件・測定限界・STOP](../docs/research/large_artificial_memory_20261107/REPORT.md)。
+
+## B2長round価格pipelineの省メモリ経路（2026-11-07）
+
+[実装・人工回帰・stage別計測・未検証範囲・STOP](../docs/research/b2_memory_pipeline_20261107/REPORT.md)。
+X/Yの順次処理、metric-only cache、同一canonical hash、event/task streamingを接続。
+実H4・価格MCの追加実行なし。

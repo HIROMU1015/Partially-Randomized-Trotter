@@ -3,6 +3,7 @@
 No sampling, input loading, signal evaluation, or execution on import. A fixed
 trajectory price is deliberately not an RPERoundCompiledCost expectation.
 """
+import gc
 from .b2_rpe_connection import _check_provider
 from .df_rte_qiskit import estimate_df_rte_untranspiled_size_upper_bound
 from .o1_m1_resource_bridge import _compile_pair
@@ -44,7 +45,7 @@ def price_explicit_trajectory(round_, provider, events):
             compile_function=provider.compile_function, backend=provider.backend,
             wrapper_builder=wrapper_builder))
     trajectory = [e.to_dict() for e in events]
-    return dict(evaluation_method='specified_trajectory_full_no_prep_compiled_cost',
+    result = dict(evaluation_method='specified_trajectory_full_no_prep_compiled_cost',
         circuit_cost_scope=RPE_HADAMARD_INTERROGATION_SCOPE,
         state_preparation_included=False, round_index=round_.specification.round_index,
         q=round_.q, delta=round_.delta, round_binding=round_.binding,
@@ -60,6 +61,10 @@ def price_explicit_trajectory(round_, provider, events):
               for axis, cost in pair.items()},
         expected_trajectory_cost=None, classical_sample_count=None,
         standard_error=None, confidence_interval=None, total_rpe_cost=None)
+    if getattr(provider, 'memory_efficient', False):
+        del pair, evolution, request
+        gc.collect()
+    return result
 
 
 def price_streamed_trajectory(round_, provider, events, *, retain_trajectory=False):
@@ -96,7 +101,7 @@ def price_streamed_trajectory(round_, provider, events, *, retain_trajectory=Fal
     pair = provider.compile_pair(evolution, wrapper_builder=lambda value, axis:
         build_native_hadamard_wrapper(value, axis=axis, include_measurement=True,
             max_instructions=bound+4, fingerprint_function=streamed_hash))
-    return dict(evaluation_method='specified_trajectory_full_no_prep_compiled_cost',
+    result = dict(evaluation_method='specified_trajectory_full_no_prep_compiled_cost',
         circuit_cost_scope=RPE_HADAMARD_INTERROGATION_SCOPE, state_preparation_included=False,
         round_index=round_.specification.round_index, q=round_.q, delta=round_.delta,
         round_binding=round_.binding, context_hash=round_.context_hash,
@@ -109,6 +114,9 @@ def price_streamed_trajectory(round_, provider, events, *, retain_trajectory=Fal
         axes={axis: {name: getattr(cost, name) for name in RPE_COST_METRICS} for axis, cost in pair.items()},
         expected_trajectory_cost=None, classical_sample_count=None, standard_error=None,
         confidence_interval=None, total_rpe_cost=None)
+    del pair, evolution
+    gc.collect()
+    return result
 
 
 def iter_price_streamed_trajectories(round_, provider, trajectories):
