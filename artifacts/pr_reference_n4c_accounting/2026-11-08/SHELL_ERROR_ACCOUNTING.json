@@ -1,0 +1,82 @@
+{
+  "RZ_emitter_terms_in_shell": false,
+  "SOURCE_basis": "prefix reference resets (Bprime none), contiguous unitary body, one final measurement; no body barriers",
+  "SOURCE_functions": [
+    {
+      "function": "reference_core",
+      "function_sha256": "b904e58da25de6a879ed59efd3f8ef8595c79e5978b8218574ea3d1a41efff89",
+      "path": "src/trottertracks/pr_reference_interference_pilot.py",
+      "reset_measure_barrier_calls": []
+    },
+    {
+      "function": "wrapper",
+      "function_sha256": "4ab77b7752ab01b2803da4fe6e2723de3c3eddaf7c701addc36b3f3ac3985f15",
+      "path": "src/trottertracks/pr_reference_interference_pilot.py",
+      "reset_measure_barrier_calls": [
+        "measure"
+      ]
+    },
+    {
+      "function": "symmetric_fused",
+      "function_sha256": "0c7a1e78918256070cfd713453503d06640e698d216686ae833715e23fdab671",
+      "path": "src/trottertracks/pr_reference_interference_pilot.py",
+      "reset_measure_barrier_calls": []
+    },
+    {
+      "function": "rewrite_rte",
+      "function_sha256": "cac8ea39b631913fa6b6211f418ab868709ac794445af37f47c92b65c672f065",
+      "path": "src/trottertracks/pr_reference_bprime.py",
+      "reset_measure_barrier_calls": []
+    },
+    {
+      "function": "build_saved",
+      "function_sha256": "3d13e5e4995c0d933f50d0b3194deaca7e65b5818fd311f53c7b14f05e505bc3",
+      "path": "src/trottertracks/pr_reference_bprime.py",
+      "reset_measure_barrier_calls": []
+    },
+    {
+      "function": "assemble",
+      "function_sha256": "a92ef171d335ad26d7cd253bb39ddca6626ff3864b2ec00b56abef04053c1898",
+      "path": "src/trottertracks/pr_reference_transfer_qualification.py",
+      "reset_measure_barrier_calls": []
+    },
+    {
+      "function": "prepare_one",
+      "function_sha256": "a17ca5bfd1c8b62b03578d884297feea96946c616f5a5edfa8f16e116eb2357e",
+      "path": "src/trottertracks/pr_reference_ct4.py",
+      "reset_measure_barrier_calls": [
+        "reset"
+      ]
+    },
+    {
+      "function": "compile_reference",
+      "function_sha256": "1e4ce186a374fb2e39b8b0c59c2382af67d8c87a4dc788662f65c6fb83faba70",
+      "path": "src/trottertracks/track_c_compiler_a.py",
+      "reset_measure_barrier_calls": []
+    },
+    {
+      "function": "consume_native",
+      "function_sha256": "47cfcbeb61b4fa34ba618fa52e3ac2da67768f07d36bc4cd739e04e3146f7ef0",
+      "path": "src/trottertracks/pr_reference_common_word_consumer.py",
+      "reset_measure_barrier_calls": []
+    }
+  ],
+  "S_upper": 1,
+  "additional_QPY_copy_to_instruction": 0,
+  "compiler_dependency": "fixed C: unitary gate templates, no new fence-generating pass/routing",
+  "epsilon_shell_spectral_upper": "5/562949953421312",
+  "finite_observations_are_not_proof": true,
+  "nonempty_required_for_bound": false,
+  "norm_transfer": "local 1q scalar Frobenius bound used conservatively as spectral; NOT joint Frobenius",
+  "outer_initial_phase_settings": 1,
+  "per_initial_setting_units_u": 16,
+  "per_segment_join_units_u": 64,
+  "raw_shell_disk_contribution": {
+    "lower_fraction": "5548226504112209267923969489623162392528276308699302761055/220855883097298041197912187592864814478435487109452369765200775161577472",
+    "lower_outward_binary64": 2.5121479338940396e-14,
+    "upper_fraction": "5548226504112209267923969489623162392528276308699302761057/220855883097298041197912187592864814478435487109452369765200775161577472",
+    "upper_outward_binary64": 2.5121479338940402e-14
+  },
+  "status": "CONSUMER_SHELL_BOUND_INCLUDED",
+  "u": "1/9007199254740992"
+}
