@@ -1,5 +1,11 @@
 # Validation status
 
+## 2026-11-07 Track D C7-1 independent q16 paired price
+
+[Track D C7-1](docs/research/track_d_c7_1_q16_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、独立q16/cut8/16 path。SOURCE462f6bff、raw16・post64・pairedχ16 PASS。CX差は全観測pathで−3376、RZ/size/各depthも有限全16本で減、幅9→17。一次12量は探索的幅内、別population-line4量幅外。統計/全law/q≥32/N/全RPE未資格、raw非公開、mandatory STOP。
+
+[result](artifacts/track_d_c7_1_q16/2026-11-07/run01/result.json)／[CX residuals](artifacts/track_d_c7_1_q16/2026-11-07/run01/cx_candidate_residuals.json)／[STOP](artifacts/track_d_c7_1_q16/2026-11-07/run01/STOP.json)。SOURCE/input前後一致、256 occurrence/8192 events、compile64各一回、retry/resume0。有限binary64の技術証拠であり、全support定理・確認的coverage・actual成功保証ではない。
+
 ## 2026-11-07 Track D C6b independent q8 paired price
 
 [Track D C6b](docs/research/track_d_c6b_q8_20261107/RESULT.md)：同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/元順LD2/S2/s1/r32/K0/h=.1/q8/cut4、独立domainの32 path。元H厳密ground仮定・準備費除外。SOURCE44a58b9fへ承認済み限定引継ぎ、raw32・postcheck128・pairedχ32 PASS。一次frozen条件付き12量は探索的幅内、別population-line診断4量は幅外。統計未資格、全law/長q/N/全RPE未評価、raw非公開、mandatory STOP。
