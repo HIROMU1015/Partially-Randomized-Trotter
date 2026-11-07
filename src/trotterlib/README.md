@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[C8-1 handoff helper](../trottertracks/track_d_c8_1_handoff.py)：完了済みprior hash、drain後の継承・不整合拒否、stage別CPU予約を扱う薄い補助。[PLAN](../../docs/research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)／[人工tests](../../tests/check_track_d_c8_1_handoff.py)。sampler/builder/compiler/verifierは既存を再利用し、科学条件・閾値を変えない。
+
 [B/C全13-round scalar adapter](../trottertracks/track_d_bc_total.py)：既存B6b guard/aggregate_totalsを再利用し、事前固定A/F/Sの52価格展開と保存共分散の線形伝播だけ。[結果](../../docs/research/track_d_bc_total_20261108/REPORT.md)／[人工テスト](../../tests/check_track_d_bc_total.py)。sampling/circuit/fit/shot solverなし。通常libraryの既定動作を変更しない。
 
 [B6b B/C adapter](../trottertracks/track_d_b6b_bc.py)／[人工検証](../trottertracks/track_d_b6b_toy.py)：B4-2固定handoff/13-round coverageとideal共通N条件、既存aggregate_totalsへのguard付き接続。[報告](../../docs/research/track_d_b6b_bc_integration_20261108/REPORT.md)。会計検証は人工値だけ、H4 totalなし。既存gadget/phase compilerと[tests/check_track_d_b6b.py](../../tests/check_track_d_b6b.py)を使用。通常libraryの既定動作を変えない。

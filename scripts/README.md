@@ -1,5 +1,7 @@
 # scripts 索引
 
+[C8-1高速化引継ぎrunner](run_track_d_c8_1_accelerated.py)：[承認済みPLAN](../docs/research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)。旧controllerのactive task drain/STOPを待って未着手taskだけ継続する。compile予約1、raw/post native並列、sampling0/完了済み再実行0。旧SOURCE/STOPを保持、sample00 gate・固定精度・総32 compile上限は不変。
+
 [B/C固定scalar runner](run_track_d_bc_total.py)：[PLAN](../docs/research/track_d_bc_total_20261108/PLAN.md)の保存N/直接平均/固定A・F・Sによる一campaign。`--preflight`はmetadata照合、`--execute`は全13-round条件付き会計。新回路/fit/Nなし、失敗後retry/resume禁止、公開照合後mandatory STOP。
 
 [B6b明示runner](run_track_d_b6b.py)：[固定PLAN](../docs/research/track_d_b6b_bc_integration_20261108/PLAN.md)の固定Git metadata/coverageと4人工case・最大16 P0 wrapperだけ。実H4のsampling/build/compile・価格再解析・N算定・全RPE集計を実行しない。人工検証後は結果公開とmandatory STOP。

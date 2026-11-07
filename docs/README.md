@@ -1,5 +1,7 @@
 # 文書索引
 
+[C8-1高速化SOURCE引継ぎ](research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)：compileの過大CPU予約を修正し、旧task完了待ち後の未着手処理を継続。19人工/回帰PASS、sampling追加0、old raw1/compile4再利用。固定q64/cut32・精度・モデル・全32 compile上限維持。最終C8-1結果公開照合後mandatory STOP。
+
 [Track D B/C全13-round条件付き評価](research/track_d_bc_total_20261108/REPORT.md)：同Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、元H厳密ground・準備費除外。保存十分N14738と固定A/F/Sで全13-round条件付き資源会計を一回実施。主AはReferenceでCX11.17%・total depth54.65%・RZ1.12%減、幅9→17。約99.5%が長q proxy、全体不確かさ/actual未資格。新sampling/compile/fit/N0、SOURCEb09b7e7a、公開照合後mandatory STOP。
 
 [Track D B6b＋B/C統合準備](research/track_d_b6b_bc_integration_20261108/REPORT.md)：Referenceのideal coherenceを任意入力へ導出し、whole-V-ray条件とDF半path/最終真空条件を区別。SOURCE13114b2b、人工/回帰24件と人工P0 16 wrapper postcheck PASS。B4-2保存Nの条件付き共通利用・13-round価格coverage・薄い会計adapterを整理。actual N/長q期待価格は未資格、実H4の新計算/価格再解析/N算定/全RPE数値会計0。公開照合後mandatory STOP。
