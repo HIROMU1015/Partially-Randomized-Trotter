@@ -83,3 +83,7 @@
 
 [索引の統合・SOURCEの版差・保存原版](main_collection_versions_20261103.md)から、同名ファイルの各公開版とmainの配置を確認できる。
 過去のSOURCE・test・結果は元snapshotの条件で読む。科学実行と元の研究testの再実行は行っていない。
+
+## 2026-11-07 新A CT-3A：全support strict fallbackの静的調査
+
+[REPORT](pr_reference_ct3a_20261107/REPORT.md)、[候補比較](pr_reference_ct3a_20261107/FALLBACK_POLICY_CANDIDATES.md)、[停止性・実出力T上界](pr_reference_ct3a_20261107/POLICY_TERMINATION_AND_BOUNDS.md)、[次判断の不足条件](pr_reference_ct3a_20261107/CT3B_MINIMAL_SCOPE.md)。strict SU(2)生成集合とideal SK十分定数を記号的整理したが、初期net coverage・有限精度保証が不足しTHEORETICAL_ONLY。READY候補なし、全support実価格未資格。新実装・net/word生成・科学計算・価格評価0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。

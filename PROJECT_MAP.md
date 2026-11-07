@@ -232,3 +232,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A CT-2：全support strict合成価格の静的調査
 
 [REPORT](docs/research/pr_reference_ct2_20261107/REPORT.md)、[理論/実装境界](docs/research/pr_reference_ct2_20261107/STRICT_SYNTHESIS_BOUNDS.md)、[全support適用条件](docs/research/pr_reference_ct2_20261107/FULL_SUPPORT_PRICE_APPLICABILITY.md)。理論式は前提付きTHEORETICAL_ONLY、固定pygridsynth2.0.0の全入力取得/価格はUNQUALIFIED。受理後word長制限を全域価格にしない。新科学計算/合成/価格評価0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。
+
+## 2026-11-07 新A CT-3A：全support strict fallbackの静的調査
+
+[REPORT](docs/research/pr_reference_ct3a_20261107/REPORT.md)、[候補比較](docs/research/pr_reference_ct3a_20261107/FALLBACK_POLICY_CANDIDATES.md)、[停止性・実出力T上界](docs/research/pr_reference_ct3a_20261107/POLICY_TERMINATION_AND_BOUNDS.md)、[次判断の不足条件](docs/research/pr_reference_ct3a_20261107/CT3B_MINIMAL_SCOPE.md)。strict SU(2)生成集合とideal SK十分定数を記号的整理したが、初期net coverage・有限精度保証が不足しTHEORETICAL_ONLY。READY候補なし、全support実価格未資格。新実装・net/word生成・科学計算・価格評価0、旧SOURCE/結果/STOP不変更、mandatory STOP。次担当GPT／ユーザー。
