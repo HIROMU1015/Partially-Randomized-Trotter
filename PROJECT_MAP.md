@@ -289,3 +289,8 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## 2026-11-07 O2-SCVの2pilot統合資料（静的・提案未採択）
 
 [結果統合・要因・研究方向](docs/research/o2_scv_two_pilot_synthesis_20261107/REPORT.md)は、固定224/448結果を引用する資料。新科学結果・再解析・control実装・正式方針変更なし。旧結果とSTOPを維持する。
+
+
+## 2026-11-08 PR改善の差分準備
+
+[技術報告](docs/research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md)：O1-M1の重複確認とC-S同位置residualの最小接口。既存F1/F2とmatched H4結果を再利用し、新規人工9件PASS、新科学計算0。M1全般のNO-GOや資源優位の認定ではない。

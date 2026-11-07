@@ -250,3 +250,8 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 
 2026-11-07：Signed Support 448-shot一campaignをSOURCE f70e555で完了。保存linear H4/1.00 Å/STO-3G/legacy DF12/8qubit/全4電子sector/L_D3/m0/q1/δ=.02/r1/K2/atol0、N1 actual Q/selected full・N2保証ground・認証済みexact Fraction engine、X/Y。train128＋共通eval320、448 bit/価格、2,156,805 RZを保全。rank/guard合格だが両軸の追加分散point改善・学習費回収の兆候なし。精度/期待費用保証・正式GO/NO-GOなし、科学retry0、公開照合後mandatory STOP。
 [report](../docs/research/scv_signed_support_448_science_20261107/REPORT.md)、[saved-record integrity](../docs/research/scv_signed_support_448_science_20261107/SAVED_RECORD_INTEGRITY.json)、[complete raw/manifest](../artifacts/scv_signed_support_448_results/2026-11-07/run01/README.md)。実SOURCE f70e555のcode/既存STOPは変更しない。
+
+
+## C-S same-position residual preparation (2026-11-08)
+
+[Technical report](../docs/research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md). New library-only placement/splice API and targeted artificial tests; no scientific runner or activation entry was added. Do not restart old M1/F2/Parent/SP runners for this preparation.

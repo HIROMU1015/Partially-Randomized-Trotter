@@ -204,3 +204,8 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## O2-SCV 224/448の統合・次方向（2026-11-07、静的整理）
 
 [統合報告](research/o2_scv_two_pilot_synthesis_20261107/REPORT.md)から証拠比較、要因仮説、候補/方向比較、最小検証草案へ辿る。提案は未採択、新科学計算・新control実装なし。
+
+
+## PR改善の重複排除・C-S接口（2026-11-08）
+
+[報告](research/pr_o1_m1_delta_cs_preparation_20261108/REPORT.md)：O1-M1の重複確認とC-S同位置residualの最小接口。既存F1/F2とmatched H4結果を再利用し、新規人工9件PASS、新科学計算0。M1全般のNO-GOや資源優位の認定ではない。
