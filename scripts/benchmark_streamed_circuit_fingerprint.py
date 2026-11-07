@@ -50,6 +50,9 @@ def synthetic_circuit(kind, repeats):
         # A counterexample to a whole-circuit constant-memory claim: only one
         # top-level instruction, but its expanded definition is still materialized.
         d = q.remove_final_measurements(inplace=False)
+        # Qiskit's default circuit name includes PID in fork children. A gate's
+        # name is part of the canonical input, so bind it explicitly.
+        d.name = 'synthetic_fingerprint_body'
         outer = QuantumCircuit(3, 1)
         outer.append(d.to_gate(), range(3)); outer.measure(2, 0)
         return outer
@@ -107,7 +110,7 @@ def worker(kind, repeats, mode, connection):
         connection.close()
 
 
-def run(output):
+def run(output, *, limitation_only=False):
     output.mkdir(parents=True, exist_ok=False)
     source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT).decode().strip()
     paths = ['src/trotterlib/rte_compiled_cost.py', 'src/trotterlib/streamed_circuit_fingerprint.py',
@@ -129,10 +132,13 @@ def run(output):
                'Full cold fingerprint includes Qiskit lazy definition allocation',
                'RSS is cumulative child high-water; stage RSS peaks unmeasured',
                'Warm untraced durations are separate observations, not cold timings'],
-        rows=rows, summary=[], real_H4_calls=0, real_H4_compiles=0, m17_feasibility=None)
+        rows=rows, summary=[], real_H4_calls=0, real_H4_compiles=0, m17_feasibility=None,
+        limitation_only=limitation_only)
     ctx = mp.get_context('fork')
     cases = [(k, n) for k in ('flat', 'controlled') for n in (64, 256, 1024)]
-    cases.append(('one_large_definition', 1024))
+    if limitation_only:
+        cases = []
+    cases.append(('one_large_definition', 256))
     for kind, n in cases:
         case_rows = []
         for repetition in range(3):
@@ -177,5 +183,6 @@ def run(output):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(); parser.add_argument('--output', type=Path, required=True)
-    args = parser.parse_args(); result = run(args.output)
+    parser.add_argument('--limitation-only', action='store_true')
+    args = parser.parse_args(); result = run(args.output, limitation_only=args.limitation_only)
     print(result['status'], flush=True)

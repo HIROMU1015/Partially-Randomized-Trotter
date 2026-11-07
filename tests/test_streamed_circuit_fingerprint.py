@@ -116,3 +116,12 @@ def test_separate_calls_observe_mutation_without_stale_cache():
     q.rz(.2, 0)
     assert streamed(q) != before
     same_bytes(q)
+
+
+def test_independent_synthetic_custom_gates_have_fixed_canonical_name():
+    from benchmark_streamed_circuit_fingerprint import synthetic_circuit
+    a = synthetic_circuit('one_large_definition', 2)
+    b = synthetic_circuit('one_large_definition', 2)
+    assert a.data[0].operation.name == b.data[0].operation.name == 'synthetic_fingerprint_body'
+    same_bytes(a); same_bytes(b)
+    assert streamed(a) == streamed(b)
