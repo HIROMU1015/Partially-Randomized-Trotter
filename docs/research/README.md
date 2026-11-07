@@ -110,3 +110,8 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 
 
 2026-11-07：[O2-SCV224完了結果](o2_scv224_science_20261107/REPORT.md)。保存H4/1 Å/STO-3G/DF12/L_D3/m0/q1/δ.02/r1/K2/atol0、X/Y。群S={df-fragment-3}、224 bit/価格完備、rank2/range合格。X分散点指標は実質不変、Yは約0.02471%低下。学習込み実現RZ1,079,241（train306,990、評価772,251）で、学習費回収の明確な兆候なし。精度/期待費用保証・正式GO/NO-GOなし。約24.26分、全process正常終了、旧SOURCE/結果/STOPとC1凍結を保全しmandatory STOP。
+
+
+## O2-SCV 2pilotの統合資料（2026-11-07）
+
+[固定224/448結果の統合・要因整理・次方向提案](o2_scv_two_pilot_synthesis_20261107/REPORT.md)。既報値引用とSOURCE静的調査のみ。研究方針の採択や科学的status更新ではない。
