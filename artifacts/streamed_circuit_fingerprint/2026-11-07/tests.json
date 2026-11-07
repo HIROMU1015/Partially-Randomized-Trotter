@@ -1,0 +1,365 @@
+{
+  "status": "PASS_ARTIFICIAL_ONLY",
+  "unique_tests_passed": 42,
+  "total_passed_test_executions": 66,
+  "initial_run": {
+    "scope": "artificial compatibility and synthetic compiled-cost/cache regression only",
+    "source_commit": "1401bca826bd9fa3fcd4ec27a0f5b6243f8ed2da",
+    "source_tree_identical_to_tested_local_commit": "79f68414c3c3ac77cfb48ced865f56e06a4a6e87",
+    "tests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 28.102,
+    "command": "python -m pytest -q tests/test_streamed_circuit_fingerprint.py tests/test_rte_compiled_cost.py",
+    "cases": [
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[empty]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[primitive]",
+        "seconds": 0.004
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[controlled]",
+        "seconds": 0.088
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[custom]",
+        "seconds": 0.016
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[array]",
+        "seconds": 0.002
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[condition]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_artificial_b2_native_and_xy_wrappers[0]",
+        "seconds": 1.847
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_artificial_b2_native_and_xy_wrappers[1]",
+        "seconds": 3.629
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_artificial_b2_native_and_xy_wrappers[3]",
+        "seconds": 14.077
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[symbolic]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[layout]",
+        "seconds": 0.0
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[calibrations]",
+        "seconds": 0.0
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[nan]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[object_array]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[recursive_definition]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[control_flow]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[phase]",
+        "seconds": 0.044
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[parameter]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[order]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[qubits]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[measurement]",
+        "seconds": 0.227
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[definition]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[ctrl_state]",
+        "seconds": 0.049
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_separate_calls_observe_mutation_without_stale_cache",
+        "seconds": 0.003
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_transpiled_cost_uses_actual_integer_counts_and_filtered_depths",
+        "seconds": 0.021
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_zero_weight_record_does_not_affect_weighted_minimum_or_maximum",
+        "seconds": 0.0
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_recursive_circuit_hash_includes_custom_gate_definition",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_cost_cache_is_bounded_and_drops_transpiled_circuit_bodies",
+        "seconds": 0.004
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_persistent_cost_cache_reuses_only_exact_numeric_compiler_context",
+        "seconds": 0.013
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_cache_validates_backend_context_before_lookup",
+        "seconds": 0.01
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_symbolic_circuit_and_uncanonical_backend_bypass_cache",
+        "seconds": 0.009
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_same_backend_name_with_different_targets_has_distinct_cache_keys",
+        "seconds": 0.014
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_transpile_preserves_controlled_identity_relative_phase",
+        "seconds": 0.006
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_exact_compiled_expectation_is_weighted_once_and_cached",
+        "seconds": 0.025
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_event_total_work_limit_rejects_before_builder_and_cache",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_exact_compiled_expectation_normalizes_roundoff_and_keeps_raw_sum",
+        "seconds": 0.021
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_monte_carlo_statistics_are_unweighted_reproducible_and_convergent",
+        "seconds": 4.933
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_short_occurrence_reports_nonadditive_compiled_cost_and_limits",
+        "seconds": 0.075
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_occurrence_request_validates_config_and_distribution_identity",
+        "seconds": 0.002
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_compiler_hash_separates_settings_and_version_mismatch_is_rejected",
+        "seconds": 0.0
+      },
+      {
+        "class": "tests.test_rte_compiled_cost",
+        "name": "test_cache_separates_compiler_control_and_reuse_conditions",
+        "seconds": 0.033
+      }
+    ],
+    "legacy_control_flow_support": "not supported; same TypeError preserved",
+    "new_real_H4_builds_or_compiles": 0
+  },
+  "repair_run": {
+    "source_commit": "c3cdb08ef223e30b77e7f01d54ead62c1a3a85ce",
+    "tested_local_commit": "27e6d12b4a4c6956a7f12c9a48cca3b4e7fefb70",
+    "tests": 25,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "seconds": 23.11,
+    "command": "python -m pytest -q tests/test_streamed_circuit_fingerprint.py",
+    "cases": [
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[empty]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[primitive]",
+        "seconds": 0.004
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[controlled]",
+        "seconds": 0.088
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[custom]",
+        "seconds": 0.016
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[array]",
+        "seconds": 0.002
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_exact_legacy_json_bytes[condition]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_artificial_b2_native_and_xy_wrappers[0]",
+        "seconds": 1.842
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_artificial_b2_native_and_xy_wrappers[1]",
+        "seconds": 3.603
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_artificial_b2_native_and_xy_wrappers[3]",
+        "seconds": 14.075
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[symbolic]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[layout]",
+        "seconds": 0.0
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[calibrations]",
+        "seconds": 0.0
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[nan]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[object_array]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[recursive_definition]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_legacy_rejections_are_preserved[control_flow]",
+        "seconds": 0.001
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[phase]",
+        "seconds": 0.044
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[parameter]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[order]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[qubits]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[measurement]",
+        "seconds": 0.044
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[definition]",
+        "seconds": 0.043
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_semantic_differences_cannot_alias[ctrl_state]",
+        "seconds": 0.049
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_separate_calls_observe_mutation_without_stale_cache",
+        "seconds": 0.003
+      },
+      {
+        "class": "tests.test_streamed_circuit_fingerprint",
+        "name": "test_independent_synthetic_custom_gates_have_fixed_canonical_name",
+        "seconds": 0.608
+      }
+    ]
+  },
+  "previous_compiled_cost_regressions_reused": 17,
+  "fingerprint_implementation_changed_by_repair": false,
+  "new_real_H4_calls": 0
+}

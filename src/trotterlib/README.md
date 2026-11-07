@@ -154,3 +154,9 @@ DF部分ランダム化研究と混同しない。
 
 同じcore/streaming/価格moduleを不変更で再利用し、outer-step境界を含む固定1 trajectoryのidentityと全6価格を照合。
 [結果・計4回compile・長roundの残条件・STOP](../../docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)。
+
+## Opt-in streamed fingerprint（人工検証、2026-11-07）
+
+`streamed_circuit_fingerprint.py`は`rte_compiled_cost.py`のoperation/numeric serializerを再利用し、
+旧v2 JSON bytes/SHAを保ってtop-level instructionごとにhashする。既定経路の置換はしていない。
+[人工互換性・分離計測・大きな個別definitionの限界](../../docs/research/streamed_circuit_fingerprint_20261107/REPORT.md)。

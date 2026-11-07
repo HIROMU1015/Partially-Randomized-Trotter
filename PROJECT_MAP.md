@@ -213,3 +213,9 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [REPORT・固定8 event・全6指標・STOP](docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)。
 outer-step境界を含む固定1 trajectoryでnative/wrapper/compiled identityと価格が一致。両方式X/Y計4回compile、m17は未確定。
+
+## Circuit fingerprintの省メモリ化（人工検証、2026-11-07）
+
+[REPORT・JSON bytes/SHA互換性・分離計測](docs/research/streamed_circuit_fingerprint_20261107/REPORT.md)。
+`streamed_circuit_fingerprint.py`は旧operation serializerを再利用し、top-level instructionを逐次hashするopt-in実装。
+既定の科学pipelineは不変更。実H4再実行・長round価格・MCは対象外。

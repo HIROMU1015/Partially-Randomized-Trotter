@@ -124,3 +124,8 @@ fusion/分割価格差、意味・性能・メモリ・cache/parallel検査、�
 
 [REPORT](research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)：固定8 eventの2 stepでgate列・前後fingerprint・全6価格一致。
 reference/stream X/Yを各1回、計4回compile。長roundの実行可能性は未確定、公開照合後mandatory STOP。
+
+## Circuit fingerprintの人工省メモリ検証（2026-11-07）
+
+[REPORT](research/streamed_circuit_fingerprint_20261107/REPORT.md)：旧policyのJSON bytes/SHAを保つ逐次hash実装、
+payload/JSON/SHAの分離計測とメモリ上の限界。科学pipelineの既定実装や実H4結果は変更しない。

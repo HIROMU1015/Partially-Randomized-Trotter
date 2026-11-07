@@ -183,3 +183,8 @@ artifacts/<validation_name>/
 
 `run_b2_q2_streaming_h4.py`は既存m0 helperとnative/stream/compilerを再利用し、固定8 eventの境界を比較する。
 [SOURCE・全6価格・STOP](../docs/research/track_a_b2_p1_q2_streaming_h4_20261107/REPORT.md)。両方式X/Y計4回を実行済み。再実行・m2以降・MCの許可ではない。
+
+## Fingerprintの人工benchmark（2026-11-07）
+
+`benchmark_streamed_circuit_fingerprint.py`は人工回路のみで旧実装と逐次hashの同一SHA・時間・メモリを測定。
+[SOURCE・測定protocol・限界](../docs/research/streamed_circuit_fingerprint_20261107/REPORT.md)。分子入力・compiler・solverは呼ばない。

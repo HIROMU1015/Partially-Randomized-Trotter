@@ -1,0 +1,424 @@
+{
+  "schema_version": "streamed_fingerprint_artificial_v1",
+  "status": "PASS_IDENTICAL_SHA_ARTIFICIAL_ONLY",
+  "scope": "artificial circuits only; no H4 build/compile or scientific reanalysis",
+  "source_commit": "c3cdb08ef223e30b77e7f01d54ead62c1a3a85ce",
+  "source_sha256": {
+    "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+    "src/trotterlib/streamed_circuit_fingerprint.py": "6e363dc2aab9422871756a2e4e9178f6e178f7c4c131f14bd6878bcc4520c673",
+    "scripts/benchmark_streamed_circuit_fingerprint.py": "e0b582e4aab440277ced5138bc09e82794609c35ed667851806a8d0316ab79c9",
+    "tests/test_streamed_circuit_fingerprint.py": "6dccc88415a837eb0ed2d467687ec0ddb4db00ae5f9fe5ed6b4131ec3954907f"
+  },
+  "runtime": {
+    "host": "GPUA100-gleap02",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "qiskit": "1.3.0",
+    "available_cpus": 64,
+    "MemAvailable": "MemAvailable:   516057244 kB"
+  },
+  "protocol": "fresh fork child after imports; independent build; sequential observations; alternating method order; three repetitions",
+  "notes": [
+    "No reuse of H4 inputs or circuits",
+    "Per-phase traces exclude preexisting live objects",
+    "Full cold fingerprint includes Qiskit lazy definition allocation",
+    "RSS is cumulative child high-water; stage RSS peaks unmeasured",
+    "Warm untraced durations are separate observations, not cold timings"
+  ],
+  "rows": [
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.321085221832618,
+        "Python_traced_peak_bytes": 15473741,
+        "Python_traced_retained_bytes": 15472790,
+        "RSS_before": {
+          "current_KiB": 212924,
+          "process_peak_KiB": 212924
+        },
+        "RSS_after": {
+          "current_KiB": 247456,
+          "process_peak_KiB": 251516
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.48193359375,
+        0.94775390625,
+        1.8837890625
+      ],
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "full": {
+        "seconds_with_tracemalloc": 25.01440029987134,
+        "Python_traced_peak_bytes": 332888075,
+        "Python_traced_retained_bytes": 12619673,
+        "RSS_before": {
+          "current_KiB": 247456,
+          "process_peak_KiB": 251516
+        },
+        "RSS_after": {
+          "current_KiB": 715904,
+          "process_peak_KiB": 884836
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 7.1267138661351055,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.34670198103413,
+        "Python_traced_peak_bytes": 15473214,
+        "Python_traced_retained_bytes": 15472318,
+        "RSS_before": {
+          "current_KiB": 213436,
+          "process_peak_KiB": 213436
+        },
+        "RSS_after": {
+          "current_KiB": 247984,
+          "process_peak_KiB": 252036
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.71240234375,
+        0.95458984375,
+        1.849609375
+      ],
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "full": {
+        "seconds_with_tracemalloc": 25.12881492008455,
+        "Python_traced_peak_bytes": 332887303,
+        "Python_traced_retained_bytes": 12619625,
+        "RSS_before": {
+          "current_KiB": 247984,
+          "process_peak_KiB": 252036
+        },
+        "RSS_after": {
+          "current_KiB": 716204,
+          "process_peak_KiB": 876648
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 7.074628085130826,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "phases",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.295815035933629,
+        "Python_traced_peak_bytes": 15474366,
+        "Python_traced_retained_bytes": 15473470,
+        "RSS_before": {
+          "current_KiB": 213436,
+          "process_peak_KiB": 213436
+        },
+        "RSS_after": {
+          "current_KiB": 247984,
+          "process_peak_KiB": 252028
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.89892578125,
+        0.9755859375,
+        1.81640625
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 17.246890658978373,
+          "Python_traced_peak_bytes": 232836018,
+          "Python_traced_retained_bytes": 232834429,
+          "RSS_before": {
+            "current_KiB": 247984,
+            "process_peak_KiB": 252028
+          },
+          "RSS_after": {
+            "current_KiB": 697928,
+            "process_peak_KiB": 762968
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 7.222357449121773,
+          "Python_traced_peak_bytes": 100054086,
+          "Python_traced_retained_bytes": 50031151,
+          "RSS_before": {
+            "current_KiB": 697928,
+            "process_peak_KiB": 762968
+          },
+          "RSS_after": {
+            "current_KiB": 765732,
+            "process_peak_KiB": 814152
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.03093815897591412,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 765732,
+            "process_peak_KiB": 814152
+          },
+          "RSS_after": {
+            "current_KiB": 766244,
+            "process_peak_KiB": 814152
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "encoded_bytes": 50022894,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.326668472960591,
+        "Python_traced_peak_bytes": 15472770,
+        "Python_traced_retained_bytes": 15471814,
+        "RSS_before": {
+          "current_KiB": 213436,
+          "process_peak_KiB": 213436
+        },
+        "RSS_after": {
+          "current_KiB": 247984,
+          "process_peak_KiB": 252044
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.939453125,
+        0.978515625,
+        1.7900390625
+      ],
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "full": {
+        "seconds_with_tracemalloc": 26.43206728901714,
+        "Python_traced_peak_bytes": 332887303,
+        "Python_traced_retained_bytes": 12619625,
+        "RSS_before": {
+          "current_KiB": 247984,
+          "process_peak_KiB": 252044
+        },
+        "RSS_after": {
+          "current_KiB": 714500,
+          "process_peak_KiB": 876252
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 7.31348853209056,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.375908205052838,
+        "Python_traced_peak_bytes": 15472856,
+        "Python_traced_retained_bytes": 15471960,
+        "RSS_before": {
+          "current_KiB": 213436,
+          "process_peak_KiB": 213436
+        },
+        "RSS_after": {
+          "current_KiB": 246652,
+          "process_peak_KiB": 250708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.03125,
+        0.9990234375,
+        1.7607421875
+      ],
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "full": {
+        "seconds_with_tracemalloc": 24.837597800884396,
+        "Python_traced_peak_bytes": 332888075,
+        "Python_traced_retained_bytes": 12619673,
+        "RSS_before": {
+          "current_KiB": 246652,
+          "process_peak_KiB": 250708
+        },
+        "RSS_after": {
+          "current_KiB": 714600,
+          "process_peak_KiB": 875332
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 7.0259416261687875,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.330780699849129,
+        "Python_traced_peak_bytes": 15472108,
+        "Python_traced_retained_bytes": 15471157,
+        "RSS_before": {
+          "current_KiB": 213436,
+          "process_peak_KiB": 213436
+        },
+        "RSS_after": {
+          "current_KiB": 247992,
+          "process_peak_KiB": 252048
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.06494140625,
+        1.01318359375,
+        1.73583984375
+      ],
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "full": {
+        "seconds_with_tracemalloc": 24.995748268207535,
+        "Python_traced_peak_bytes": 332888075,
+        "Python_traced_retained_bytes": 12619673,
+        "RSS_before": {
+          "current_KiB": 247992,
+          "process_peak_KiB": 252048
+        },
+        "RSS_after": {
+          "current_KiB": 714416,
+          "process_peak_KiB": 875660
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 7.102177309105173,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 4.341520161833614,
+        "Python_traced_peak_bytes": 15471613,
+        "Python_traced_retained_bytes": 15470662,
+        "RSS_before": {
+          "current_KiB": 213436,
+          "process_peak_KiB": 213436
+        },
+        "RSS_after": {
+          "current_KiB": 247996,
+          "process_peak_KiB": 252052
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.087890625,
+        1.02685546875,
+        1.71240234375
+      ],
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "full": {
+        "seconds_with_tracemalloc": 25.177019777940586,
+        "Python_traced_peak_bytes": 332887303,
+        "Python_traced_retained_bytes": 12619625,
+        "RSS_before": {
+          "current_KiB": 247996,
+          "process_peak_KiB": 252052
+        },
+        "RSS_after": {
+          "current_KiB": 714940,
+          "process_peak_KiB": 876696
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 7.043675411958247,
+      "repetition": 2
+    }
+  ],
+  "summary": [
+    {
+      "kind": "one_large_definition",
+      "repeats": 256,
+      "instructions": 2,
+      "fingerprint": "91694c8929228e5a1413ae813c6cb9ba63e2f40e5c39e1631ef334328b4faece",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 332888075,
+          "min": 332888075,
+          "max": 332888075
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 24.995748268207535,
+          "min": 24.837597800884396,
+          "max": 25.01440029987134
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 7.102177309105173,
+          "min": 7.0259416261687875,
+          "max": 7.1267138661351055
+        },
+        "process_peak_RSS_KiB": {
+          "median": 875660,
+          "min": 875332,
+          "max": 884836
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 332887303,
+          "min": 332887303,
+          "max": 332887303
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 25.177019777940586,
+          "min": 25.12881492008455,
+          "max": 26.43206728901714
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 7.074628085130826,
+          "min": 7.043675411958247,
+          "max": 7.31348853209056
+        },
+        "process_peak_RSS_KiB": {
+          "median": 876648,
+          "min": 876252,
+          "max": 876696
+        }
+      }
+    }
+  ],
+  "real_H4_calls": 0,
+  "real_H4_compiles": 0,
+  "m17_feasibility": null,
+  "limitation_only": true
+}

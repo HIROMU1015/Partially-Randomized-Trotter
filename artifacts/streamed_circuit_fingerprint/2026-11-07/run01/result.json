@@ -1,0 +1,2530 @@
+{
+  "schema_version": "streamed_fingerprint_artificial_v1",
+  "status": "RUNNING",
+  "scope": "artificial circuits only; no H4 build/compile or scientific reanalysis",
+  "source_commit": "1401bca826bd9fa3fcd4ec27a0f5b6243f8ed2da",
+  "source_sha256": {
+    "src/trotterlib/rte_compiled_cost.py": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+    "src/trotterlib/streamed_circuit_fingerprint.py": "6e363dc2aab9422871756a2e4e9178f6e178f7c4c131f14bd6878bcc4520c673",
+    "scripts/benchmark_streamed_circuit_fingerprint.py": "5e4c261f3bea1a6ce867918c02becad98d983e60162c1d3b140faebdb1abd2d0",
+    "tests/test_streamed_circuit_fingerprint.py": "258d41324f0b3b510751be0b1dbeaf1922be5ea700d03da8a0fa9b7403163bb3"
+  },
+  "runtime": {
+    "host": "GPUA100-gleap02",
+    "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+    "qiskit": "1.3.0",
+    "available_cpus": 64,
+    "MemAvailable": "MemAvailable:   516186008 kB"
+  },
+  "protocol": "fresh fork child after imports; independent build; sequential observations; alternating method order; three repetitions",
+  "notes": [
+    "No reuse of H4 inputs or circuits",
+    "Per-phase traces exclude preexisting live objects",
+    "Full cold fingerprint includes Qiskit lazy definition allocation",
+    "RSS is cumulative child high-water; stage RSS peaks unmeasured",
+    "Warm untraced durations are separate observations, not cold timings"
+  ],
+  "rows": [
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "legacy",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.008279913105070591,
+        "Python_traced_peak_bytes": 95913,
+        "Python_traced_retained_bytes": 95025,
+        "RSS_before": {
+          "current_KiB": 212636,
+          "process_peak_KiB": 212636
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "full": {
+        "seconds_with_tracemalloc": 0.18767244182527065,
+        "Python_traced_peak_bytes": 3521610,
+        "Python_traced_retained_bytes": 350473,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215196,
+          "process_peak_KiB": 215196
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.03661696589551866,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "stream",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.007826204877346754,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "full": {
+        "seconds_with_tracemalloc": 0.1820915569551289,
+        "Python_traced_peak_bytes": 443050,
+        "Python_traced_retained_bytes": 428076,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.03922725492157042,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "phases",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.007924755103886127,
+        "Python_traced_peak_bytes": 95638,
+        "Python_traced_retained_bytes": 94750,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 0.10971817001700401,
+          "Python_traced_peak_bytes": 2528248,
+          "Python_traced_retained_bytes": 2526415,
+          "RSS_before": {
+            "current_KiB": 214172,
+            "process_peak_KiB": 214172
+          },
+          "RSS_after": {
+            "current_KiB": 214684,
+            "process_peak_KiB": 214684
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 0.07094952301122248,
+          "Python_traced_peak_bytes": 995178,
+          "Python_traced_retained_bytes": 500157,
+          "RSS_before": {
+            "current_KiB": 214684,
+            "process_peak_KiB": 214684
+          },
+          "RSS_after": {
+            "current_KiB": 215196,
+            "process_peak_KiB": 215196
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.00041956803761422634,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 215196,
+            "process_peak_KiB": 215196
+          },
+          "RSS_after": {
+            "current_KiB": 215708,
+            "process_peak_KiB": 215708
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "encoded_bytes": 494980,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "stream",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.007812805939465761,
+        "Python_traced_peak_bytes": 95638,
+        "Python_traced_retained_bytes": 94750,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "full": {
+        "seconds_with_tracemalloc": 0.18184688803739846,
+        "Python_traced_peak_bytes": 443003,
+        "Python_traced_retained_bytes": 428029,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.039262095000594854,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "legacy",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.007829154841601849,
+        "Python_traced_peak_bytes": 95638,
+        "Python_traced_retained_bytes": 94750,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "full": {
+        "seconds_with_tracemalloc": 0.18559546093456447,
+        "Python_traced_peak_bytes": 3521656,
+        "Python_traced_retained_bytes": 350519,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.03620348800905049,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "legacy",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.007819774793460965,
+        "Python_traced_peak_bytes": 95638,
+        "Python_traced_retained_bytes": 94750,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "full": {
+        "seconds_with_tracemalloc": 0.18613195791840553,
+        "Python_traced_peak_bytes": 3521656,
+        "Python_traced_retained_bytes": 350519,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.03639649786055088,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 64,
+      "mode": "stream",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.007833935087546706,
+        "Python_traced_peak_bytes": 95638,
+        "Python_traced_retained_bytes": 94750,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "full": {
+        "seconds_with_tracemalloc": 0.18099054205231369,
+        "Python_traced_peak_bytes": 443050,
+        "Python_traced_retained_bytes": 428076,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.03916430496610701,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.02250712993554771,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.35986328125,
+        0.47998046875,
+        5.87158203125
+      ],
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "full": {
+        "seconds_with_tracemalloc": 0.7202562731690705,
+        "Python_traced_peak_bytes": 13737419,
+        "Python_traced_retained_bytes": 1028857,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 227584,
+          "process_peak_KiB": 231068
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.2395564999897033,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.022687969030812383,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.4111328125,
+        0.48876953125,
+        5.84521484375
+      ],
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "full": {
+        "seconds_with_tracemalloc": 0.7104855768848211,
+        "Python_traced_peak_bytes": 1173341,
+        "Python_traced_retained_bytes": 948843,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.15671043004840612,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "phases",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.022699937922880054,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.4111328125,
+        0.48876953125,
+        5.84521484375
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 0.41419945983216166,
+          "Python_traced_peak_bytes": 9783700,
+          "Python_traced_retained_bytes": 9782123,
+          "RSS_before": {
+            "current_KiB": 214172,
+            "process_peak_KiB": 214172
+          },
+          "RSS_after": {
+            "current_KiB": 224584,
+            "process_peak_KiB": 226460
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 0.28090897505171597,
+          "Python_traced_peak_bytes": 3955232,
+          "Python_traced_retained_bytes": 1980184,
+          "RSS_before": {
+            "current_KiB": 224584,
+            "process_peak_KiB": 226460
+          },
+          "RSS_after": {
+            "current_KiB": 228680,
+            "process_peak_KiB": 228680
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.0013316741678863764,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 228680,
+            "process_peak_KiB": 228680
+          },
+          "RSS_after": {
+            "current_KiB": 229192,
+            "process_peak_KiB": 229192
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "encoded_bytes": 1975007,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.022693739039823413,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.4111328125,
+        0.48876953125,
+        5.84521484375
+      ],
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "full": {
+        "seconds_with_tracemalloc": 0.7112939720973372,
+        "Python_traced_peak_bytes": 1173341,
+        "Python_traced_retained_bytes": 948843,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.15719609800726175,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.02272790903225541,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.4111328125,
+        0.48876953125,
+        5.84521484375
+      ],
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "full": {
+        "seconds_with_tracemalloc": 0.7178753938060254,
+        "Python_traced_peak_bytes": 13737419,
+        "Python_traced_retained_bytes": 1028857,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 227596,
+          "process_peak_KiB": 231068
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.23936351109296083,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.022681178990751505,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.45849609375,
+        0.49755859375,
+        5.81884765625
+      ],
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "full": {
+        "seconds_with_tracemalloc": 0.7222088850103319,
+        "Python_traced_peak_bytes": 13737419,
+        "Python_traced_retained_bytes": 1028857,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 227600,
+          "process_peak_KiB": 231068
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.23946102103218436,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.022687257966026664,
+        "Python_traced_peak_bytes": 95748,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.45849609375,
+        0.49755859375,
+        5.81884765625
+      ],
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "full": {
+        "seconds_with_tracemalloc": 0.7127246358431876,
+        "Python_traced_peak_bytes": 1173341,
+        "Python_traced_retained_bytes": 948843,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 215708,
+          "process_peak_KiB": 215708
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.15702950884588063,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.08238782198168337,
+        "Python_traced_peak_bytes": 95780,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.45849609375,
+        0.49755859375,
+        5.81884765625
+      ],
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "full": {
+        "seconds_with_tracemalloc": 3.178952480200678,
+        "Python_traced_peak_bytes": 52191938,
+        "Python_traced_retained_bytes": 1336201,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 287044,
+          "process_peak_KiB": 309700
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.8321964130736887,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.08197169401682913,
+        "Python_traced_peak_bytes": 95780,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.501953125,
+        0.50634765625,
+        5.79248046875
+      ],
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "full": {
+        "seconds_with_tracemalloc": 2.880180045031011,
+        "Python_traced_peak_bytes": 3627497,
+        "Python_traced_retained_bytes": 3574243,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 216220,
+          "process_peak_KiB": 216220
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.6159303591120988,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "phases",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.08226209203712642,
+        "Python_traced_peak_bytes": 95780,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.5419921875,
+        0.5146484375,
+        5.7666015625
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 1.9162536209914833,
+          "Python_traced_peak_bytes": 36398065,
+          "Python_traced_retained_bytes": 36396488,
+          "RSS_before": {
+            "current_KiB": 214172,
+            "process_peak_KiB": 214172
+          },
+          "RSS_after": {
+            "current_KiB": 279624,
+            "process_peak_KiB": 287684
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 1.1305325210560113,
+          "Python_traced_peak_bytes": 15795386,
+          "Python_traced_retained_bytes": 7900261,
+          "RSS_before": {
+            "current_KiB": 279624,
+            "process_peak_KiB": 287684
+          },
+          "RSS_after": {
+            "current_KiB": 294984,
+            "process_peak_KiB": 294984
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.004966297186911106,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 294984,
+            "process_peak_KiB": 294984
+          },
+          "RSS_after": {
+            "current_KiB": 295496,
+            "process_peak_KiB": 295496
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "encoded_bytes": 7895084,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.0822692927904427,
+        "Python_traced_peak_bytes": 95780,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.5419921875,
+        0.5146484375,
+        5.7666015625
+      ],
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "full": {
+        "seconds_with_tracemalloc": 2.839000019012019,
+        "Python_traced_peak_bytes": 3627753,
+        "Python_traced_retained_bytes": 3574243,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 216220,
+          "process_peak_KiB": 216220
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.6195702319964767,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.08343964698724449,
+        "Python_traced_peak_bytes": 95780,
+        "Python_traced_retained_bytes": 94860,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.5791015625,
+        0.52294921875,
+        5.74072265625
+      ],
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "full": {
+        "seconds_with_tracemalloc": 3.1611523190513253,
+        "Python_traced_peak_bytes": 52191938,
+        "Python_traced_retained_bytes": 1336201,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 287024,
+          "process_peak_KiB": 308692
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.8333134078420699,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.08203733409754932,
+        "Python_traced_peak_bytes": 95560,
+        "Python_traced_retained_bytes": 94640,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.61328125,
+        0.53125,
+        5.71484375
+      ],
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "full": {
+        "seconds_with_tracemalloc": 3.16626327810809,
+        "Python_traced_peak_bytes": 52191938,
+        "Python_traced_retained_bytes": 1336201,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 287056,
+          "process_peak_KiB": 309716
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.8305899300612509,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "flat",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.08163426513783634,
+        "Python_traced_peak_bytes": 95560,
+        "Python_traced_retained_bytes": 94640,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.64453125,
+        0.5390625,
+        5.689453125
+      ],
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "full": {
+        "seconds_with_tracemalloc": 2.8330722448881716,
+        "Python_traced_peak_bytes": 3627497,
+        "Python_traced_retained_bytes": 3574243,
+        "RSS_before": {
+          "current_KiB": 214172,
+          "process_peak_KiB": 214172
+        },
+        "RSS_after": {
+          "current_KiB": 216220,
+          "process_peak_KiB": 216220
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 0.6176472811494023,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "legacy",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6655190670862794,
+        "Python_traced_peak_bytes": 1640488,
+        "Python_traced_retained_bytes": 1625512,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.75341796875,
+        0.5634765625,
+        5.66943359375
+      ],
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "full": {
+        "seconds_with_tracemalloc": 5.906968654831871,
+        "Python_traced_peak_bytes": 86769244,
+        "Python_traced_retained_bytes": 6709067,
+        "RSS_before": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "RSS_after": {
+          "current_KiB": 350404,
+          "process_peak_KiB": 386536
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 1.7891794580500573,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "stream",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6646809810772538,
+        "Python_traced_peak_bytes": 1639947,
+        "Python_traced_retained_bytes": 1624764,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.8720703125,
+        0.5947265625,
+        5.6240234375
+      ],
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "full": {
+        "seconds_with_tracemalloc": 5.420594068011269,
+        "Python_traced_peak_bytes": 8420817,
+        "Python_traced_retained_bytes": 4712947,
+        "RSS_before": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "RSS_after": {
+          "current_KiB": 229012,
+          "process_peak_KiB": 230556
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 1.353844233090058,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "phases",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6627993190195411,
+        "Python_traced_peak_bytes": 1637877,
+        "Python_traced_retained_bytes": 1623985,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        0.96240234375,
+        0.6181640625,
+        5.6044921875
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 3.9207292161881924,
+          "Python_traced_peak_bytes": 61750835,
+          "Python_traced_retained_bytes": 61749002,
+          "RSS_before": {
+            "current_KiB": 217244,
+            "process_peak_KiB": 217244
+          },
+          "RSS_after": {
+            "current_KiB": 337612,
+            "process_peak_KiB": 353636
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 1.7917640761006624,
+          "Python_traced_peak_bytes": 25020626,
+          "Python_traced_retained_bytes": 12513917,
+          "RSS_before": {
+            "current_KiB": 337612,
+            "process_peak_KiB": 353636
+          },
+          "RSS_after": {
+            "current_KiB": 361676,
+            "process_peak_KiB": 361676
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.007888484979048371,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 361676,
+            "process_peak_KiB": 361676
+          },
+          "RSS_after": {
+            "current_KiB": 362188,
+            "process_peak_KiB": 362188
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "encoded_bytes": 12506668,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "stream",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6672671500127763,
+        "Python_traced_peak_bytes": 1639764,
+        "Python_traced_retained_bytes": 1624823,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.529296875,
+        0.7470703125,
+        5.5927734375
+      ],
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "full": {
+        "seconds_with_tracemalloc": 5.423141886014491,
+        "Python_traced_peak_bytes": 8420817,
+        "Python_traced_retained_bytes": 4712947,
+        "RSS_before": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "RSS_after": {
+          "current_KiB": 228872,
+          "process_peak_KiB": 230556
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 1.375167447142303,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "legacy",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6632718069013208,
+        "Python_traced_peak_bytes": 1638224,
+        "Python_traced_retained_bytes": 1623652,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.5673828125,
+        0.76806640625,
+        5.5732421875
+      ],
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "full": {
+        "seconds_with_tracemalloc": 5.884697872912511,
+        "Python_traced_peak_bytes": 86769244,
+        "Python_traced_retained_bytes": 6709067,
+        "RSS_before": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "RSS_after": {
+          "current_KiB": 350792,
+          "process_peak_KiB": 386928
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 1.786433019908145,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "legacy",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6637834249995649,
+        "Python_traced_peak_bytes": 1639142,
+        "Python_traced_retained_bytes": 1624162,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.5537109375,
+        0.79248046875,
+        5.52880859375
+      ],
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "full": {
+        "seconds_with_tracemalloc": 5.9882013408932835,
+        "Python_traced_peak_bytes": 86769244,
+        "Python_traced_retained_bytes": 6709067,
+        "RSS_before": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "RSS_after": {
+          "current_KiB": 350048,
+          "process_peak_KiB": 386536
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 1.803801072994247,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 64,
+      "mode": "stream",
+      "instructions": 258,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 0.6662107240408659,
+        "Python_traced_peak_bytes": 1639890,
+        "Python_traced_retained_bytes": 1625758,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.46826171875,
+        0.7998046875,
+        5.47998046875
+      ],
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "full": {
+        "seconds_with_tracemalloc": 5.4097171851899475,
+        "Python_traced_peak_bytes": 8420817,
+        "Python_traced_retained_bytes": 4712947,
+        "RSS_before": {
+          "current_KiB": 217244,
+          "process_peak_KiB": 217244
+        },
+        "RSS_after": {
+          "current_KiB": 228920,
+          "process_peak_KiB": 230556
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 1.3569149090908468,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.619143250863999,
+        "Python_traced_peak_bytes": 5334139,
+        "Python_traced_retained_bytes": 5306391,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220544,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.39599609375,
+        0.806640625,
+        5.43115234375
+      ],
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "full": {
+        "seconds_with_tracemalloc": 24.25475093605928,
+        "Python_traced_peak_bytes": 334955403,
+        "Python_traced_retained_bytes": 14689075,
+        "RSS_before": {
+          "current_KiB": 220544,
+          "process_peak_KiB": 222364
+        },
+        "RSS_after": {
+          "current_KiB": 720424,
+          "process_peak_KiB": 877624
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 6.674452195875347,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.6327429700177163,
+        "Python_traced_peak_bytes": 5334280,
+        "Python_traced_retained_bytes": 5306467,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220548,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.2392578125,
+        0.82666015625,
+        5.2890625
+      ],
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "full": {
+        "seconds_with_tracemalloc": 21.9974534669891,
+        "Python_traced_peak_bytes": 12329355,
+        "Python_traced_retained_bytes": 11011471,
+        "RSS_before": {
+          "current_KiB": 220548,
+          "process_peak_KiB": 222364
+        },
+        "RSS_after": {
+          "current_KiB": 243360,
+          "process_peak_KiB": 247172
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 5.424031280912459,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "phases",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.615784685825929,
+        "Python_traced_peak_bytes": 5333254,
+        "Python_traced_retained_bytes": 5305501,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220540,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.2060546875,
+        0.85986328125,
+        5.15673828125
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 16.110633743926883,
+          "Python_traced_peak_bytes": 234904956,
+          "Python_traced_retained_bytes": 234903379,
+          "RSS_before": {
+            "current_KiB": 220540,
+            "process_peak_KiB": 222364
+          },
+          "RSS_after": {
+            "current_KiB": 701324,
+            "process_peak_KiB": 766420
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 7.22218778799288,
+          "Python_traced_peak_bytes": 100052408,
+          "Python_traced_retained_bytes": 50029808,
+          "RSS_before": {
+            "current_KiB": 701324,
+            "process_peak_KiB": 766420
+          },
+          "RSS_after": {
+            "current_KiB": 771140,
+            "process_peak_KiB": 819596
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.030840082094073296,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 771140,
+            "process_peak_KiB": 819596
+          },
+          "RSS_after": {
+            "current_KiB": 771652,
+            "process_peak_KiB": 819596
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "encoded_bytes": 50022559,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.625517931068316,
+        "Python_traced_peak_bytes": 5335272,
+        "Python_traced_retained_bytes": 5307635,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220552,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.23876953125,
+        0.90576171875,
+        5.03369140625
+      ],
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "full": {
+        "seconds_with_tracemalloc": 22.489500007824972,
+        "Python_traced_peak_bytes": 12329611,
+        "Python_traced_retained_bytes": 11011471,
+        "RSS_before": {
+          "current_KiB": 220552,
+          "process_peak_KiB": 222364
+        },
+        "RSS_after": {
+          "current_KiB": 242584,
+          "process_peak_KiB": 246664
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 5.871271761832759,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.6295153140090406,
+        "Python_traced_peak_bytes": 5335090,
+        "Python_traced_retained_bytes": 5307393,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220316,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.27685546875,
+        0.9482421875,
+        4.91455078125
+      ],
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "full": {
+        "seconds_with_tracemalloc": 24.49815394403413,
+        "Python_traced_peak_bytes": 334955403,
+        "Python_traced_retained_bytes": 14689121,
+        "RSS_before": {
+          "current_KiB": 220316,
+          "process_peak_KiB": 222364
+        },
+        "RSS_after": {
+          "current_KiB": 719164,
+          "process_peak_KiB": 877388
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 6.7162077580578625,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "legacy",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.631939462851733,
+        "Python_traced_peak_bytes": 5334283,
+        "Python_traced_retained_bytes": 5306591,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220564,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.5615234375,
+        1.0517578125,
+        4.7998046875
+      ],
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "full": {
+        "seconds_with_tracemalloc": 25.120293943909928,
+        "Python_traced_peak_bytes": 334955403,
+        "Python_traced_retained_bytes": 14689121,
+        "RSS_before": {
+          "current_KiB": 220564,
+          "process_peak_KiB": 222364
+        },
+        "RSS_after": {
+          "current_KiB": 719308,
+          "process_peak_KiB": 881344
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 6.756086429813877,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 256,
+      "mode": "stream",
+      "instructions": 1026,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 2.6358722660224885,
+        "Python_traced_peak_bytes": 5334166,
+        "Python_traced_retained_bytes": 5306491,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 220580,
+          "process_peak_KiB": 222364
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.62109375,
+        1.12451171875,
+        4.68408203125
+      ],
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "full": {
+        "seconds_with_tracemalloc": 21.97717386391014,
+        "Python_traced_peak_bytes": 12329355,
+        "Python_traced_retained_bytes": 11011471,
+        "RSS_before": {
+          "current_KiB": 220580,
+          "process_peak_KiB": 222364
+        },
+        "RSS_after": {
+          "current_KiB": 243460,
+          "process_peak_KiB": 247204
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 5.410194952040911,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.731887368950993,
+        "Python_traced_peak_bytes": 17581210,
+        "Python_traced_retained_bytes": 17491324,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 253180,
+          "process_peak_KiB": 257040
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.3701171875,
+        1.1220703125,
+        4.53173828125
+      ],
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "full": {
+        "seconds_with_tracemalloc": 97.41210278403014,
+        "Python_traced_peak_bytes": 1348613604,
+        "Python_traced_retained_bytes": 67527827,
+        "RSS_before": {
+          "current_KiB": 253180,
+          "process_peak_KiB": 257040
+        },
+        "RSS_after": {
+          "current_KiB": 2173948,
+          "process_peak_KiB": 2865828
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 31.48912503803149,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.752984422026202,
+        "Python_traced_peak_bytes": 17580684,
+        "Python_traced_retained_bytes": 17492291,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 252856,
+          "process_peak_KiB": 256532
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.35693359375,
+        1.16064453125,
+        4.0625
+      ],
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "full": {
+        "seconds_with_tracemalloc": 91.73728341399692,
+        "Python_traced_peak_bytes": 25626253,
+        "Python_traced_retained_bytes": 18020179,
+        "RSS_before": {
+          "current_KiB": 252856,
+          "process_peak_KiB": 256532
+        },
+        "RSS_after": {
+          "current_KiB": 292516,
+          "process_peak_KiB": 300472
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 22.159270104952157,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "phases",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.739072883035988,
+        "Python_traced_peak_bytes": 17581007,
+        "Python_traced_retained_bytes": 17492346,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 252932,
+          "process_peak_KiB": 256792
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.34765625,
+        1.26708984375,
+        3.73486328125
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 65.97055040299892,
+          "Python_traced_peak_bytes": 948439011,
+          "Python_traced_retained_bytes": 948437178,
+          "RSS_before": {
+            "current_KiB": 252932,
+            "process_peak_KiB": 256792
+          },
+          "RSS_after": {
+            "current_KiB": 2199300,
+            "process_peak_KiB": 2461188
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 29.16537892795168,
+          "Python_traced_peak_bytes": 400177874,
+          "Python_traced_retained_bytes": 200092541,
+          "RSS_before": {
+            "current_KiB": 2199300,
+            "process_peak_KiB": 2461188
+          },
+          "RSS_after": {
+            "current_KiB": 2415688,
+            "process_peak_KiB": 2610948
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.12353932997211814,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 2415688,
+            "process_peak_KiB": 2610948
+          },
+          "RSS_after": {
+            "current_KiB": 2416200,
+            "process_peak_KiB": 2610948
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "encoded_bytes": 200085292,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.735318430000916,
+        "Python_traced_peak_bytes": 17581949,
+        "Python_traced_retained_bytes": 17491696,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 252932,
+          "process_peak_KiB": 256984
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.11279296875,
+        1.205078125,
+        3.4208984375
+      ],
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "full": {
+        "seconds_with_tracemalloc": 93.8213877058588,
+        "Python_traced_peak_bytes": 25626253,
+        "Python_traced_retained_bytes": 18020225,
+        "RSS_before": {
+          "current_KiB": 252932,
+          "process_peak_KiB": 256984
+        },
+        "RSS_after": {
+          "current_KiB": 292436,
+          "process_peak_KiB": 300548
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 22.31852627499029,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.765085421968251,
+        "Python_traced_peak_bytes": 17582290,
+        "Python_traced_retained_bytes": 17491578,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 253216,
+          "process_peak_KiB": 257072
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        4.3349609375,
+        2.173828125,
+        3.46240234375
+      ],
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "full": {
+        "seconds_with_tracemalloc": 97.72243350907229,
+        "Python_traced_peak_bytes": 1348613604,
+        "Python_traced_retained_bytes": 67527827,
+        "RSS_before": {
+          "current_KiB": 253216,
+          "process_peak_KiB": 257072
+        },
+        "RSS_after": {
+          "current_KiB": 2174108,
+          "process_peak_KiB": 2866428
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 31.459526184014976,
+      "repetition": 1
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.75418288493529,
+        "Python_traced_peak_bytes": 17580500,
+        "Python_traced_retained_bytes": 17491941,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 253216,
+          "process_peak_KiB": 257076
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.751953125,
+        1.94140625,
+        3.1923828125
+      ],
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "full": {
+        "seconds_with_tracemalloc": 97.96677808696404,
+        "Python_traced_peak_bytes": 1348613604,
+        "Python_traced_retained_bytes": 67527827,
+        "RSS_before": {
+          "current_KiB": 253216,
+          "process_peak_KiB": 257076
+        },
+        "RSS_after": {
+          "current_KiB": 2181660,
+          "process_peak_KiB": 2873604
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 31.516101289074868,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "controlled",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 4098,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 10.78232772089541,
+        "Python_traced_peak_bytes": 17581946,
+        "Python_traced_retained_bytes": 17491917,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 253220,
+          "process_peak_KiB": 257080
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.365234375,
+        1.69384765625,
+        2.92041015625
+      ],
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "full": {
+        "seconds_with_tracemalloc": 93.702718334971,
+        "Python_traced_peak_bytes": 25626253,
+        "Python_traced_retained_bytes": 18020225,
+        "RSS_before": {
+          "current_KiB": 253220,
+          "process_peak_KiB": 257080
+        },
+        "RSS_after": {
+          "current_KiB": 292540,
+          "process_peak_KiB": 300324
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 22.292278429027647,
+      "repetition": 2
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 1024,
+      "mode": "legacy",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 17.615418499102816,
+        "Python_traced_peak_bytes": 58345061,
+        "Python_traced_retained_bytes": 58344133,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 361468,
+          "process_peak_KiB": 377396
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.11376953125,
+        1.46435546875,
+        2.66455078125
+      ],
+      "fingerprint": "309349cbe5278572e19536a4f4b06fc47042d025cbc48641b628681088828b00",
+      "full": {
+        "seconds_with_tracemalloc": 101.5158607379999,
+        "Python_traced_peak_bytes": 1325303144,
+        "Python_traced_retained_bytes": 44215261,
+        "RSS_before": {
+          "current_KiB": 361468,
+          "process_peak_KiB": 377396
+        },
+        "RSS_after": {
+          "current_KiB": 2122112,
+          "process_peak_KiB": 2827308
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 29.506426288047805,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 1024,
+      "mode": "stream",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 17.83747387281619,
+        "Python_traced_peak_bytes": 58346083,
+        "Python_traced_retained_bytes": 58345045,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 360608,
+          "process_peak_KiB": 376536
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.375,
+        1.39306640625,
+        2.44970703125
+      ],
+      "fingerprint": "68ddfbcf018ede50c053de91f4c2016084b669d7f7c0c02c858b428794fd5dce",
+      "full": {
+        "seconds_with_tracemalloc": 103.09981046314351,
+        "Python_traced_peak_bytes": 1325302372,
+        "Python_traced_retained_bytes": 44215213,
+        "RSS_before": {
+          "current_KiB": 360608,
+          "process_peak_KiB": 376536
+        },
+        "RSS_after": {
+          "current_KiB": 2117876,
+          "process_peak_KiB": 2822864
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "warm_seconds_without_tracemalloc": 29.902510819025338,
+      "repetition": 0
+    },
+    {
+      "status": "PASS",
+      "kind": "one_large_definition",
+      "repeats": 1024,
+      "mode": "phases",
+      "instructions": 2,
+      "qubits": 3,
+      "build": {
+        "seconds_with_tracemalloc": 17.57828040095046,
+        "Python_traced_peak_bytes": 58344293,
+        "Python_traced_retained_bytes": 58343305,
+        "RSS_before": {
+          "current_KiB": 213148,
+          "process_peak_KiB": 213148
+        },
+        "RSS_after": {
+          "current_KiB": 361444,
+          "process_peak_KiB": 377404
+        },
+        "stage_peak_RSS_KiB": null
+      },
+      "load_average": [
+        1.29345703125,
+        1.42529296875,
+        2.306640625
+      ],
+      "phases": {
+        "recursive_payload": {
+          "seconds_with_tracemalloc": 69.13853395287879,
+          "Python_traced_peak_bytes": 925125691,
+          "Python_traced_retained_bytes": 925124102,
+          "RSS_before": {
+            "current_KiB": 361444,
+            "process_peak_KiB": 377404
+          },
+          "RSS_after": {
+            "current_KiB": 2151072,
+            "process_peak_KiB": 2413092
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "JSON_UTF8": {
+          "seconds_with_tracemalloc": 29.071526746964082,
+          "Python_traced_peak_bytes": 400179538,
+          "Python_traced_retained_bytes": 200093877,
+          "RSS_before": {
+            "current_KiB": 2151072,
+            "process_peak_KiB": 2413092
+          },
+          "RSS_after": {
+            "current_KiB": 2365428,
+            "process_peak_KiB": 2560672
+          },
+          "stage_peak_RSS_KiB": null
+        },
+        "SHA256": {
+          "seconds_with_tracemalloc": 0.12379363505169749,
+          "Python_traced_peak_bytes": 137,
+          "Python_traced_retained_bytes": 105,
+          "RSS_before": {
+            "current_KiB": 2365428,
+            "process_peak_KiB": 2560672
+          },
+          "RSS_after": {
+            "current_KiB": 2365940,
+            "process_peak_KiB": 2560672
+          },
+          "stage_peak_RSS_KiB": null
+        }
+      },
+      "fingerprint": "a4d2236b22c52d1c3bf6693b90109243d55612aca445ea68cf95387e23df8edf",
+      "encoded_bytes": 200085620,
+      "repetition": 0
+    }
+  ],
+  "summary": [
+    {
+      "kind": "flat",
+      "repeats": 64,
+      "instructions": 258,
+      "fingerprint": "887ede1d70e7d03c65fd8d5b7f50b890d82baa1820fbc7d38143cfaf62397d07",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 3521656,
+          "min": 3521610,
+          "max": 3521656
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 0.18613195791840553,
+          "min": 0.18559546093456447,
+          "max": 0.18767244182527065
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 0.03639649786055088,
+          "min": 0.03620348800905049,
+          "max": 0.03661696589551866
+        },
+        "process_peak_RSS_KiB": {
+          "median": 215708,
+          "min": 215196,
+          "max": 215708
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 443050,
+          "min": 443003,
+          "max": 443050
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 0.18184688803739846,
+          "min": 0.18099054205231369,
+          "max": 0.1820915569551289
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 0.03922725492157042,
+          "min": 0.03916430496610701,
+          "max": 0.039262095000594854
+        },
+        "process_peak_RSS_KiB": {
+          "median": 215708,
+          "min": 215708,
+          "max": 215708
+        }
+      }
+    },
+    {
+      "kind": "flat",
+      "repeats": 256,
+      "instructions": 1026,
+      "fingerprint": "11d1318bddf3b6204a019cefdc78a21e3c3cd258f44522fc8e1873862417dd1c",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 13737419,
+          "min": 13737419,
+          "max": 13737419
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 0.7202562731690705,
+          "min": 0.7178753938060254,
+          "max": 0.7222088850103319
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 0.23946102103218436,
+          "min": 0.23936351109296083,
+          "max": 0.2395564999897033
+        },
+        "process_peak_RSS_KiB": {
+          "median": 231068,
+          "min": 231068,
+          "max": 231068
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 1173341,
+          "min": 1173341,
+          "max": 1173341
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 0.7112939720973372,
+          "min": 0.7104855768848211,
+          "max": 0.7127246358431876
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 0.15702950884588063,
+          "min": 0.15671043004840612,
+          "max": 0.15719609800726175
+        },
+        "process_peak_RSS_KiB": {
+          "median": 215708,
+          "min": 215708,
+          "max": 215708
+        }
+      }
+    },
+    {
+      "kind": "flat",
+      "repeats": 1024,
+      "instructions": 4098,
+      "fingerprint": "aa9081a988b561af93f3722a06e6d027ef834efd56c04a5bf35401f50ae820c9",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 52191938,
+          "min": 52191938,
+          "max": 52191938
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 3.16626327810809,
+          "min": 3.1611523190513253,
+          "max": 3.178952480200678
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 0.8321964130736887,
+          "min": 0.8305899300612509,
+          "max": 0.8333134078420699
+        },
+        "process_peak_RSS_KiB": {
+          "median": 309700,
+          "min": 308692,
+          "max": 309716
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 3627497,
+          "min": 3627497,
+          "max": 3627753
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 2.839000019012019,
+          "min": 2.8330722448881716,
+          "max": 2.880180045031011
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 0.6176472811494023,
+          "min": 0.6159303591120988,
+          "max": 0.6195702319964767
+        },
+        "process_peak_RSS_KiB": {
+          "median": 216220,
+          "min": 216220,
+          "max": 216220
+        }
+      }
+    },
+    {
+      "kind": "controlled",
+      "repeats": 64,
+      "instructions": 258,
+      "fingerprint": "fb65c96c4c65ecaa1873c1357f25ec46dd5503ddaddca141fda752bfb5cf6360",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 86769244,
+          "min": 86769244,
+          "max": 86769244
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 5.906968654831871,
+          "min": 5.884697872912511,
+          "max": 5.9882013408932835
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 1.7891794580500573,
+          "min": 1.786433019908145,
+          "max": 1.803801072994247
+        },
+        "process_peak_RSS_KiB": {
+          "median": 386536,
+          "min": 386536,
+          "max": 386928
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 8420817,
+          "min": 8420817,
+          "max": 8420817
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 5.420594068011269,
+          "min": 5.4097171851899475,
+          "max": 5.423141886014491
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 1.3569149090908468,
+          "min": 1.353844233090058,
+          "max": 1.375167447142303
+        },
+        "process_peak_RSS_KiB": {
+          "median": 230556,
+          "min": 230556,
+          "max": 230556
+        }
+      }
+    },
+    {
+      "kind": "controlled",
+      "repeats": 256,
+      "instructions": 1026,
+      "fingerprint": "a5696eb9ca45cd26d8d81af2925a61346694c3bc89d45e7a2f0af9554c8d6954",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 334955403,
+          "min": 334955403,
+          "max": 334955403
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 24.49815394403413,
+          "min": 24.25475093605928,
+          "max": 25.120293943909928
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 6.7162077580578625,
+          "min": 6.674452195875347,
+          "max": 6.756086429813877
+        },
+        "process_peak_RSS_KiB": {
+          "median": 877624,
+          "min": 877388,
+          "max": 881344
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 12329355,
+          "min": 12329355,
+          "max": 12329611
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 21.9974534669891,
+          "min": 21.97717386391014,
+          "max": 22.489500007824972
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 5.424031280912459,
+          "min": 5.410194952040911,
+          "max": 5.871271761832759
+        },
+        "process_peak_RSS_KiB": {
+          "median": 247172,
+          "min": 246664,
+          "max": 247204
+        }
+      }
+    },
+    {
+      "kind": "controlled",
+      "repeats": 1024,
+      "instructions": 4098,
+      "fingerprint": "168becc656c6c66db068ee802b39f1e98732a6b95ca4be855fff6cf857c19df0",
+      "all_hashes_equal": true,
+      "legacy": {
+        "Python_traced_peak_bytes": {
+          "median": 1348613604,
+          "min": 1348613604,
+          "max": 1348613604
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 97.72243350907229,
+          "min": 97.41210278403014,
+          "max": 97.96677808696404
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 31.48912503803149,
+          "min": 31.459526184014976,
+          "max": 31.516101289074868
+        },
+        "process_peak_RSS_KiB": {
+          "median": 2866428,
+          "min": 2865828,
+          "max": 2873604
+        }
+      },
+      "stream": {
+        "Python_traced_peak_bytes": {
+          "median": 25626253,
+          "min": 25626253,
+          "max": 25626253
+        },
+        "cold_seconds_with_tracemalloc": {
+          "median": 93.702718334971,
+          "min": 91.73728341399692,
+          "max": 93.8213877058588
+        },
+        "warm_seconds_without_tracemalloc": {
+          "median": 22.292278429027647,
+          "min": 22.159270104952157,
+          "max": 22.31852627499029
+        },
+        "process_peak_RSS_KiB": {
+          "median": 300472,
+          "min": 300324,
+          "max": 300548
+        }
+      }
+    }
+  ],
+  "real_H4_calls": 0,
+  "real_H4_compiles": 0,
+  "m17_feasibility": null
+}
