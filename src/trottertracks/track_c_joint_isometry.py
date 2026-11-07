@@ -80,7 +80,7 @@ def catalogue():
 def append_run(q,flat,ops,mapping=None):
     q.compose(circuit(ops,9,True),inplace=True);phase=0.
     for e,a in flat:
-        used=a if mapping is None else replace(a,diagonal_pauli_support=tuple(mapping[i] for i in a.diagonal_pauli_support))
+        used=a if mapping is None else replace(a,diagonal_pauli_support=tuple(sorted(mapping[i] for i in a.diagonal_pauli_support)))
         phase+=Builder._append_central_application(q,e,used,controlled=True,ancilla_qubit=8)
     q.compose(circuit(ops,9),inplace=True);return phase
 

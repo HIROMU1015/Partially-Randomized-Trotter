@@ -45,6 +45,8 @@ def full_probe(index):
 
 
 def price(path):
+    target=OUT/'training_final'/path.name
+    if target.exists():return json.loads(target.read_text())
     r=json.loads(path.read_text());q,used=build_joint(r['t'],r['n'],r['choices']);proposal=metrics(compile_reference(q))
     result={**r,'baseline':r['selected'],'joint_proposal':proposal,'selected':proposal if proposal[0]<r['selected'][0] else r['selected'],
             'choice':'joint' if proposal[0]<r['selected'][0] else 'baseline','used_runs':used}
@@ -65,4 +67,20 @@ def run():
     print('LAYOUTS_COMPLETE',sum(r['adopt'] for r in entries),'Full_improved',sum(r['improves'] for r in full),flush=True)
 
 
-if __name__=='__main__':run()
+def resume():
+    if (OUT/'LAYOUTS_RESUMED.json').exists():raise RuntimeError('Do not overwrite resumed layouts')
+    entries=json.loads((OUT/'CATALOGUE_FINAL.json').read_text())['entries'];full=[];checks=[]
+    before=sorted(p.name for p in (OUT/'training_final').glob('*.json'));configuration()
+    with ProcessPoolExecutor(max_workers=len(os.sched_getaffinity(0))) as pool:
+        for f in as_completed(pool.submit(full_probe,j) for j in range(13)):full.append(f.result())
+        for f in as_completed(pool.submit(fock_check,r) for r in entries.values() if r['adopt']):checks.append(f.result())
+        prices=list(pool.map(price,sorted((PRIOR/'holdout_prices').glob('*.json'))))
+    save_json(OUT/'LAYOUTS_RESUMED.json',dict(source_commit=source(),catalogue_source=json.loads((OUT/'CATALOGUE_FINAL.json').read_text())['source_commit'],
+        preserved_training_files=before,full=full,Fock_checks=checks,entries=len(entries),adopted=sum(r['adopt'] for r in entries.values()),samples=len(prices),
+        technical_fix='Sort remapped ZZ support to meet existing dataclass contract; ZZ is symmetric. First attempt stopped with 201 completed files, preserved byte-for-byte. No catalogue extension or physical change.'))
+    print('LAYOUTS_RESUMED_COMPLETE','Full_improved',sum(r['improves'] for r in full),flush=True)
+
+
+if __name__=='__main__':
+    import sys
+    resume() if len(sys.argv)>1 and sys.argv[1]=='resume' else run()

@@ -18,3 +18,17 @@ def test_joint_columns_preserve_each_Fock_operator_and_products():
             old_ops.append(old);new_ops.append(new)
         assert np.linalg.norm(old_ops[0]@old_ops[-1]-new_ops[0]@new_ops[-1])<8e-14
         assert np.linalg.norm(part.conj().T@part-np.eye(32))<4e-14
+
+
+def test_reversed_labels_preserve_controlled_ZZ_product_and_rotation():
+    from types import SimpleNamespace
+    from qiskit import QuantumCircuit
+    from trotterlib.rte import RTEEventApplication
+    from trottertracks.track_c_joint_isometry import append_run
+    states=np.arange(512);z=(1-2*((states>>6)&1))*(1-2*((states>>7)&1))
+    for role in ('product','rotation'):
+        a=RTEEventApplication(0,role,'synthetic',1.,-1,False,None,'synthetic',(0,1),())
+        q=QuantumCircuit(9);phase=append_run(q,[(SimpleNamespace(unsigned_rotation_angle=.17),a)],(),{0:7,1:6})
+        if phase:q.p(phase,8)
+        expected=np.where(states<256,1.,-z if role=='product' else np.exp(-.17j*z))
+        assert np.linalg.norm(Operator(q).data-np.diag(expected))<2e-13
