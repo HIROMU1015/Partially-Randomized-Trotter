@@ -1,0 +1,23 @@
+Traceback (most recent call last):
+  File "/tmp/cs-v0-science-20261108/scripts/tracks/algorithm_codesign/run_cs_v0.py", line 27, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/tmp/cs-v0-science-20261108/scripts/tracks/algorithm_codesign/run_cs_v0.py", line 22, in main
+    print(run(ROOT, args.source))
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/cs-v0-science-20261108/src/trottertracks/algorithm_codesign/cs_v0_execution.py", line 229, in run
+    bound = calls.invoke('binding', 'D1-R1', lambda: bind_fixed(root))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/cs-v0-science-20261108/src/trottertracks/algorithm_codesign/cs_v0.py", line 212, in invoke
+    out = fn()
+          ^^^^
+  File "/tmp/cs-v0-science-20261108/src/trottertracks/algorithm_codesign/cs_v0_execution.py", line 229, in <lambda>
+    bound = calls.invoke('binding', 'D1-R1', lambda: bind_fixed(root))
+                                                     ^^^^^^^^^^^^^^^^
+  File "/tmp/cs-v0-science-20261108/src/trottertracks/algorithm_codesign/cs_v0_execution.py", line 110, in bind_fixed
+    return core.bind_slots(load(P1/'PREPARATION.json'), load(P1/'LAW.json'),
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/cs-v0-science-20261108/src/trottertracks/algorithm_codesign/cs_v0.py", line 74, in bind_slots
+    params = list(src['parameters']); params[0] = -params[0]
+                                                  ^^^^^^^^^^
+TypeError: bad operand type for unary -: 'str'

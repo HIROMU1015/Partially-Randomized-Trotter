@@ -217,3 +217,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## C-S V0採択・activation（2026-11-08）
 
 [採択契約・起動/保存/STOP・人工結果](research/cs_v0_activation_20261108/REPORT.md)。実科学未開始。旧技術binding/policy文書は複製せず606c40dを参照する。
+
+## C-S V0 science STOP（2026-11-08）
+
+[一campaignの結果・原本・schema不適合](research/cs_v0_science_20261108/REPORT.md)。Stage B binding TypeError、local spec0/strict0、価格/誤差は未評価。科学SOURCEと旧STOPは無変更、retry0。

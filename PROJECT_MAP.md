@@ -302,3 +302,7 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 ## 2026-11-08 C-S V0採択・科学activation
 
 [実行契約と報告](docs/research/cs_v0_activation_20261108/REPORT.md)：606c40dの条件を採択し、薄い一campaign activationを追加。既存18/9testを再実行せず、新経路10件と対応1件の人工確認。実H4 call0、科学実行は別途明示許可待ち、公開後STOP。
+
+## 2026-11-08 C-S V0一campaignの結果
+
+[実行結果](docs/research/cs_v0_science_20261108/REPORT.md)：固定0bd18bbで一回開始、preflight PASS後、保存basis parameterのstrに対する数値符号反転でbinding STOP。局所operator/mean/synthesis/price0、retry0、未知価格/誤差はUNKNOWN。原本prefixを保全し公開後mandatory STOP。

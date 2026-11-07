@@ -809,3 +809,7 @@ SOURCE_READY_WITH_SCIENCE_PREFLIGHT。新規人工18件/静的bytes-runtime pref
 ## 2026-11-08：C-S V0科学activation固定
 
 TECHNICALLY_READY／conditions ADOPTED／SCIENCE_NOT_AUTHORIZED。新しい起動・保存・STOP経路の人工10件＋対応1件追試PASS、旧18/9件を再実行せず再利用。保存H4の実science0、V0局所資格・資源改善は未取得。[実行契約・報告](docs/research/cs_v0_activation_20261108/REPORT.md)。旧result/status/STOPとC1凍結は維持。
+
+## 2026-11-08：C-S V0実入力binding STOP
+
+LOCAL_V0_INCOMPLETE／Stage B／schema adapter TypeError。固定0bd18bb、Stage A PASS、binding開始1/返却0、local operator/finite/strict/price0、retry0。旧人工10/18/9 PASSは人工条件内のまま、実保存str型との互換性は未成立。科学的C-S改善/NO-GOは未判定。[正本・原本prefix](docs/research/cs_v0_science_20261108/REPORT.md)。科学SOURCE・旧result/STOPとC1凍結は維持。
