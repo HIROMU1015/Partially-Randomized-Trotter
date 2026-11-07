@@ -25,3 +25,10 @@ def test_network_retains_negative_phase_without_numeric_modulo():
     states=np.arange(512);z0=1-2*(states&1);z1=1-2*((states>>1)&1)
     expected=np.where(states<256,1.,np.exp(-.5j*(-1e-9*z0-.4*z0*z1)))
     assert np.linalg.norm(Operator(q).data-np.diag(expected),'fro')<5e-13
+
+
+def test_controlled_two_pi_rotation_retains_relative_minus_sign():
+    for mode in ('term_parity','merge','network'):
+        q=QuantumCircuit(9);emit(q,[((0,),2*np.pi)],mode=mode)
+        target=np.diag(np.r_[np.ones(256),-np.ones(256)])
+        assert np.linalg.norm(Operator(q).data-target,'fro')<5e-13
