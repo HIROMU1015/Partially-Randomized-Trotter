@@ -19,3 +19,7 @@
 
 [収録ファイル・保存版と確認範囲](../../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## Track C混合公式（2026-11-08）
+
+[固定H4のBCH・全18round信号・paired価格検証](../../docs/research/track_c_mixed_formula_20261108/REPORT.md)。半刻み対照に対する資源改善は未観測、native全18round保証・絶対Gは未資格、mandatory STOP。新SOURCEは`track_c_mixed_*.py`、初期入口は`run_track_c_mixed_formula.py`、保存結果の読取検査は`check_track_c_mixed_formula.py`。

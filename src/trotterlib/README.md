@@ -139,3 +139,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C2-A adapter
 
 `../trottertracks/track_c2_a_pilot.py`と[限定pilot報告](../../docs/research/track_c2_a_pilot_20261106/REPORT.md)。既存core/過去の結果は変更せず、専用SOURCE・出力でSTOP。
+
+## Track C混合公式（2026-11-08）
+
+[固定H4のBCH・全18round信号・paired価格検証](../../docs/research/track_c_mixed_formula_20261108/REPORT.md)。半刻み対照に対する資源改善は未観測、native全18round保証・絶対Gは未資格、mandatory STOP。新SOURCEは`track_c_mixed_*.py`、初期入口は`run_track_c_mixed_formula.py`、保存結果の読取検査は`check_track_c_mixed_formula.py`。

@@ -169,3 +169,7 @@ artifacts/<validation_name>/
 ## Track C2-A
 
 `run_track_c2_a_pilot.py`は固定scopeの入口、`check_track_c2_a_pilot.py`は保存artifactの読取専用検査。[結果と境界](../docs/research/track_c2_a_pilot_20261106/REPORT.md)。STOP済みrunは再開しない。
+
+## Track C混合公式（2026-11-08）
+
+[固定H4のBCH・全18round信号・paired価格検証](../docs/research/track_c_mixed_formula_20261108/REPORT.md)。半刻み対照に対する資源改善は未観測、native全18round保証・絶対Gは未資格、mandatory STOP。新SOURCEは`track_c_mixed_*.py`、初期入口は`run_track_c_mixed_formula.py`、保存結果の読取検査は`check_track_c_mixed_formula.py`。

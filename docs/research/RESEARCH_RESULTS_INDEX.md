@@ -178,3 +178,7 @@ Track C H4の後続：[compiler Aの18round局所区間上界・全support誤差
 Track C H4の後続：[保証検証AとC-N価格比較B](track_c_guarantee_cn_price_20261106/REPORT.md)（基準3258a89f）。Aは固定保存行列モデルの条件を閉じ、Bは参照A39セル・2307標本を取得。S2のfull/強baseline価格差0、長q総G・勝者UNDETERMINED、mandatory STOP。
 
 Track C2-A：[限定pilot・SOURCE・raw・STOP](track_c2_a_pilot_20261106/REPORT.md)。84信号/60短価格セル。3round診断はS2、PF交差未観測。長q期待価格と新構成保証は未資格、全18roundへ進めずSTOP。
+
+## 2026-11-08 Track C混合公式
+
+[固定H4のBCH・有限RTE・全18round・paired回路検証](track_c_mixed_formula_20261108/REPORT.md)。既知5段族は作用素係数を減らしたが、同コスト半刻みS2よりground bias・shot数は改善せず。96 paired標本でRZ/CX/depth/size同一。新角度のnative全18round保証・絶対総Gは未資格。負結果を保存してmandatory STOP。

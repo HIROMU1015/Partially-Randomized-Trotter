@@ -14,6 +14,14 @@ def test_endpoint_and_refinement_are_exact_source_sequences():
     from trottertracks.track_c_mixed_formula import compact
     assert sequence('refinement_control')==compact(sequence('registered_S2',.5)+sequence('registered_S2',.5))
 
+def test_boundary_fusion_preserves_half_step_count_identity():
+    from trottertracks.track_c_mixed_formula import compact
+    for count in (1,2,8):
+        a=compact(sequence('refinement_control')*count)
+        b=compact(sequence('registered_S2',.5)*(2*count))
+        assert a==b
+        assert sum(x[0]=='D' for x in a)==14*count+1
+
 def test_cubic_log_includes_multiblock_internal_error():
     rng=np.random.default_rng(7);matrices=[]
     for _ in range(5):
