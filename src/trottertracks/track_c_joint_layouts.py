@@ -40,7 +40,7 @@ def full_probe(index):
     b=common()['preps'][12].deterministic_blocks[index];v=Operator(circuit(b.runtime_basis_operations)).data;idx=[1<<i for i in range(8)];u=v[np.ix_(idx,idx)]/v[0,0]
     old=sum((np.array(metrics(compile_reference(circuit(b.runtime_basis_operations,9,inverse)))) for inverse in (True,False)),np.zeros(4))
     rows=alternatives(u,tuple(range(8)));best=min(rows,key=lambda r:tuple(r['joint_basis_pair']))
-    return dict(block=index,full_basis_pair=old.tolist(),best_QR_pair=best['joint_basis_pair'],improves=best['joint_basis_pair'][0]<old[0],
+    return dict(block=index,full_basis_pair=old.tolist(),best_QR_pair=best['joint_basis_pair'],improves=bool(best['joint_basis_pair'][0]<old[0]),
                 layouts=[dict(reverse=r['reverse'],reflected=r['reflected'],metrics=r['joint_basis_pair']) for r in rows])
 
 
