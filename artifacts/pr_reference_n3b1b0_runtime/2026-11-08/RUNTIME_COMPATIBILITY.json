@@ -1,0 +1,107 @@
+{
+  "status": "RUNTIME_EMITTER_COMPATIBLE",
+  "qualification": "Fixed observed runtime and adopted in-memory paths, under ordinary IEEE f64 semantics and named ideal logical gates; no real 43-word or whole CT RPE qualification.",
+  "C_phi": {
+    "C1": {
+      "status": "PASS",
+      "evidence": "f64 format, read-only fegetround=FE_TONEAREST, ties-to-even probes, Python flags and pinned f64 SOURCE; binary formal proof not claimed",
+      "source_basis": [
+        "N3-B1a PHASE_ERROR_BOUND.md sections 2-4",
+        "CPython 3.12.3 mathmodule.c/pymath.h; pinned Rust f64 SOURCE"
+      ],
+      "runtime_result": {
+        "fegetround": 0,
+        "ties_to_even": true,
+        "unsafe_Python_flags": [],
+        "Rust_build_flags_available": false,
+        "binary_formal_proof": false
+      }
+    },
+    "C2": {
+      "status": "PASS",
+      "evidence": "pi/P hex and direct compiled CircuitData tau/neighbor probes agree with the pinned Rust setter SOURCE",
+      "source_basis": [
+        "Qiskit 896d1c8b72888a52a46081a6d1f4de8c56db8aea: crates/circuit/src/circuit_data.rs set_global_phase",
+        "N3-B1a SOURCE_REFERENCES.json"
+      ],
+      "runtime_result": {
+        "pi_hex": "0x1.921fb54442d18p+1",
+        "P_hex": "0x1.921fb54442d18p-1",
+        "compiled_setter_tau_and_neighbors_passed": true
+      }
+    },
+    "C3": {
+      "status": "PASS",
+      "evidence": "Named gate order/inverses checked against unchanged lower_native and exact written words",
+      "source_basis": [
+        "track_c2_b_verify.lower_native",
+        "track_c_h4_synthesis.exact_word_matrix",
+        "pr_reference_ct1.word_matrices adjoint map",
+        "Pinned Qiskit h/s/t/x.py"
+      ],
+      "runtime_result": {
+        "word_sign_fixtures": 16,
+        "composite_sign_fixtures": 2,
+        "all_named_order_and_adjoint_checks_passed": true
+      }
+    },
+    "C4": {
+      "status": "PASS",
+      "evidence": "Fixed W residues, wrap and multiple-wrap fixtures match; general closure relies on N3-B1a algebra plus these runtime checks",
+      "source_basis": [
+        "N3-B1a PHASE_ERROR_BOUND.md section 3",
+        "track_c2_b_verify.lower_native W branch"
+      ],
+      "runtime_result": {
+        "W_fixtures": 24,
+        "all_passed": true,
+        "finite_tests_are_not_the_general_closure_proof": true
+      }
+    },
+    "C5": {
+      "status": "PASS",
+      "evidence": "Only numeric carrier phases in [0,tau], whole-product inverse and fixed compose path; no symbolic/control-flow/post-control",
+      "source_basis": [
+        "Pinned Qiskit quantumcircuit.py compose/inverse/global_phase",
+        "Pinned circuit_data.rs numeric Float branch"
+      ],
+      "runtime_result": {
+        "carrier_fixtures": 64,
+        "all_passed": true,
+        "symbolic_or_post_control_paths_tested": false
+      }
+    },
+    "C6": {
+      "status": "PASS",
+      "evidence": "Fixed in-memory path; 43 nontrivial chunk joins + one final join, at most one whole inverse, one nonzero phase initialization, zero QPY loads",
+      "source_basis": [
+        "TEST_INPUTS.json adopted_paths",
+        "verify_pr_reference_n3b1b0_runtime.py composite_tests",
+        "N3-B1a PHASE_ERROR_BOUND.md section 5",
+        "Pinned QuantumCircuit.copy/copy_empty_like and CircuitData.copy/new"
+      ],
+      "runtime_result": {
+        "positive_chunk_carriers": 43,
+        "zero_phase_local_joins": 43,
+        "nontrivial_chunk_joins": 43,
+        "final_join": 1,
+        "whole_inverse_at_most": 1,
+        "additional_nonzero_phase_settings": 1,
+        "QPY_reloads": 0
+      }
+    }
+  },
+  "declared_symbolic_Frobenius_upper": "45/140737488355328",
+  "coarse_bound": "1/2199023255552",
+  "saved_residual_lower": "584610679685680278574326123259095118223625605117136488901731578927/1053122916685571866979180276836704323188950954005491112543109775360000000000000",
+  "strict_rational_comparisons_passed": true,
+  "actual_43_basic_words": "NOT_ACQUIRED",
+  "production_provider": "NOT_IMPLEMENTED",
+  "qpy": {
+    "status": "NOT_REQUIRED_IN_ADOPTED_PATH",
+    "reason": "The selected local emitter/composite path stays in memory; records/results are JSON. No circuit QPY consumer is needed, so no QPY round trip is added. QPY-based paths remain unqualified."
+  },
+  "new_guard_or_synthesis_calls": 0,
+  "new_scientific_price_calls": 0,
+  "forbidden_physics_or_estimator_runs": 0
+}

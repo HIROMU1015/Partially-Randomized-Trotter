@@ -1,0 +1,85 @@
+{
+  "base_commit": "4abf269d40b14636ffe0f7e2607aa293d4948b0a",
+  "scope": "N3-B1b-0: local runtime/emitter technical fixtures only; no new synthesis or strict guard.",
+  "word_archive": "artifacts/pr_reference_ct4/2026-11-07/strict_records.tar.xz",
+  "saved_members": [
+    "reused/043be61a3a7eb27437005f0b69fad112bc80527b6ff06c06e87596720afa1796.json",
+    "reused/060511075ec158bda5fd471c3d03acc31bc0e599e8a584c827c7af548c7f59bb.json"
+  ],
+  "w_counts": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    31,
+    32,
+    33,
+    63,
+    64,
+    65
+  ],
+  "artificial_words": [
+    "",
+    "W",
+    "WWWWWWWW",
+    "WWWWWWWWWWWWWWWWW",
+    "HSTtX",
+    "WHTSWXt"
+  ],
+  "artificial_chunk_pattern": [
+    "WHT",
+    "SXtWH",
+    "WWWHTSXt"
+  ],
+  "max_chunks": 43,
+  "phase_fixtures": [
+    "zero",
+    "P",
+    "7P",
+    "one_tenth",
+    "prev_tau",
+    "tau_via_negative_subnormal",
+    "small_positive",
+    "prev_P"
+  ],
+  "signs": [
+    1,
+    -1
+  ],
+  "numerical_operator_diagnostic_tolerance": 1e-10,
+  "qpy": {
+    "status": "NOT_REQUIRED_IN_ADOPTED_PATH",
+    "reason": "The selected local emitter/composite path stays in memory; records/results are JSON. No circuit QPY consumer is needed, so no QPY round trip is added. QPY-based paths remain unqualified."
+  },
+  "adopted_paths": {
+    "whole_word": "Concatenate fixed artificial written chunks once; call unchanged lower_native once; one final 2-qubit fixture join with inplace=True.",
+    "chunk_carriers": "Emit 43 positive artificial carriers from zero, compose them in reverse chunk order with inplace=True, optionally inverse the whole once, then join a 2-qubit fixture once with inplace=True.",
+    "extra_nonzero_phase_reinitializations": 1,
+    "qpy_reloads": 0,
+    "copy_boundary_diagnostic": "Separately check phase=tau -> copy -> phase=0. Do not include copying compose in the certified path without charging its extra normalization."
+  },
+  "prohibited": [
+    "43 basic-key synthesis",
+    "new strict guard",
+    "production composite provider",
+    "new scientific T price or extrema",
+    "PF build/compile",
+    "sampling/simulation",
+    "precision or b reselection",
+    "18round cost"
+  ]
+}
