@@ -38,8 +38,8 @@ def compile_one(name):
 def main():
     p=argparse.ArgumentParser();p.add_argument("--origin",required=True);a=p.parse_args()
     source=git("rev-parse","HEAD").decode().strip()
-    if subprocess.check_output(["git","-C",a.origin,"rev-parse","HEAD"]).decode().strip()!="ba0e2bf2d1d6f0dc78616d3392f3ff5b6ba7d5b7":
-        raise ValueError("FIXED_ORIGIN")
+    # The pre-existing frozen origin is an export, not a Git worktree.
+    # Identify its scientific bytes against the named commit in ROOT's repo.
     for path in EXEC:
         if (ROOT/path).read_bytes()!=git("show",source+":"+path):raise ValueError("UNCOMMITTED_SOURCE:"+path)
     boot=load("c7_2_boot",ROOT/"scripts/run_track_d_h4_reference.py");boot.bootstrap(a.origin)
@@ -60,7 +60,7 @@ def main():
     for path in dependencies:
         if (ROOT/path).read_bytes()!=git("show",source+":"+path):raise ValueError("UNCOMMITTED_DEPENDENCY:"+path)
     for path in origin_files:
-        if (Path(a.origin)/path).read_bytes()!=subprocess.check_output(["git","-C",a.origin,"show","HEAD:"+path]):
+        if (Path(a.origin)/path).read_bytes()!=git("show","ba0e2bf2d1d6f0dc78616d3392f3ff5b6ba7d5b7:"+path):
             raise ValueError("ORIGIN_SOURCE_BYTES:"+path)
     write(out/"SOURCE.json",dict(source_commit=source,origin_commit="ba0e2bf2d1d6f0dc78616d3392f3ff5b6ba7d5b7",
         files=hashes,origin_files=origin_hashes,compiler=asdict(CompilerProfile()),topology="free",

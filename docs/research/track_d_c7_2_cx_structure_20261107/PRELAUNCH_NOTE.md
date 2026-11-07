@@ -1,0 +1,7 @@
+# C7-2：科学処理前のexport互換修正
+
+初回固定SOURCE `72afe45f3201c59a3d3a0acf98f1d8c8a750d956` のrunnerは、既存の元SOURCE保存先にGit metadataがあると誤認した。最初の`git rev-parse`で停止し、出力namespace作成・module bootstrap・人工回路生成・correctness・compileのいずれにも到達しなかった。科学処理件数0。科学的SOURCEのbytes不一致や数値不一致が検出されたものではない。
+
+既存保存先は先行stageでも使った固定exportである。C7-2 runnerの起動前同定だけを、repository内の指定元commit `ba0e2bf2d1d6f0dc78616d3392f3ff5b6ba7d5b7` とexportのSOURCE bytesの直接照合へ修正する。元export、旧SOURCE、旧結果・STOPは変更しない。初回commitは履歴に保持する。
+
+CASES.json、54本の対象、数値、cut、compiler、精度・判定は変更しない。実行中のSOURCE変更や完了済み科学処理の再実行ではない。修正SOURCEも科学処理前にcommitで固定し、実際の実行SHAをSOURCE.jsonへ記録する。数値失敗後のretryや閾値緩和は行わない。
