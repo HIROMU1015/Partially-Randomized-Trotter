@@ -12,6 +12,14 @@ from trottertracks import track_d_c7_4_models as m
 
 
 class Models(unittest.TestCase):
+    def test_original_pilot_completion_schema_is_distinct(self):
+        r=dict(status='PILOT_COMPLETE_MANDATORY_STOP',planned_ids=['x'],completed_ids=['x'],missing_or_failed_ids=[])
+        s=dict(status=r['status'],mandatory_stop=True)
+        self.assertTrue(m.completed_result(r,s,calibration=True))
+        self.assertFalse(m.completed_result(r,s))
+        r['missing_or_failed_ids']=['y']
+        self.assertFalse(m.completed_result(r,s,calibration=True))
+
     def test_equal_q_fit_and_rank(self):
         q=np.array([2]*16+[4]*16+[8]*32+[16]*16+[32]*8)
         x=np.column_stack((np.ones(len(q)),q));y=np.column_stack((3+4*q,9-7*q))

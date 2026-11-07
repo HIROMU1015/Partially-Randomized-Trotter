@@ -12,7 +12,7 @@ import sys
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'scripts'))
-OUTPUT='artifacts/track_d_c7_4_models/2026-11-07/run01'
+OUTPUT='artifacts/track_d_c7_4_models/2026-11-07/run02'
 EXEC=('scripts/run_track_d_c7_4.py','src/trottertracks/track_d_c7_4_models.py',
       'src/trottertracks/track_d_c7_4_stability.py','tests/check_track_d_c7_4.py',
       'docs/research/track_d_c7_4_model_stability_20261107/PLAN.md')

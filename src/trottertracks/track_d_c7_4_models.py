@@ -46,6 +46,12 @@ def write(path,value):
         stream.write(json.dumps(value,ensure_ascii=False,indent=2,allow_nan=False)+'\n')
 
 
+def completed_result(result,stop,*,calibration=False):
+    expected='PILOT_COMPLETE_MANDATORY_STOP' if calibration else 'TECHNICAL_PASS_MANDATORY_STOP'
+    return (result['status']==expected and stop['status']==expected and stop['mandatory_stop']
+        and not result['missing_or_failed_ids'] and result['completed_ids']==result['planned_ids'])
+
+
 def event_features(record):
     """Aggregate saved application descriptors, never emit gates or events."""
     q=record['q'];runs=[];work=[];signs=Counter();supports=Counter();zeros=0
@@ -72,7 +78,7 @@ def ingest(root,evidence_root):
     for directory,task,commit,groups in RUNS:
         folder=root/'artifacts'/directory;local=evidence_root/task/'artifacts'/directory/'local'
         source=read(folder/'SOURCE.json');result=read(folder/'result.json')
-        if result['status']!='TECHNICAL_PASS_MANDATORY_STOP' or not read(folder/'STOP.json')['mandatory_stop']:
+        if not completed_result(result,read(folder/'STOP.json'),calibration=groups[0][0]==2):
             raise ValueError('SAVED_RUN_NOT_COMPLETE:'+directory)
         leaves=['prices.json','SOURCE.json','STOP.json','result.json','event_bindings.json','seed_plan.json','paired_statistics.json']
         if groups[0][0]==2:leaves+=['exploratory_affine.json','C6b_planning_proposal.json']
