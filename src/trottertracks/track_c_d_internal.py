@@ -29,7 +29,9 @@ def schedule(case,h=1.):
     order=tuple(case.get('order',range(4)));kind=case['kind']
     if kind=='ordered':return s2(order,h)
     if kind=='D2':d=d_symmetric(order,h/2)
-    elif kind=='D4':d=compact([x for w in weights('Y4') for x in d_symmetric(order,w*h/2)])
+    elif kind in ('D4','Dtuned'):
+        ws=weights('Y4') if kind=='D4' else [case['v'],1-2*case['v'],case['v']]
+        d=compact([x for w in ws for x in d_symmetric(order,w*h/2)])
     elif kind=='redistributed':
         j=case['fragment'];a=case['a'];rest=[i for i in order if i!=j]
         left=[('D',j,a*h)]+[('D',i,h/2) for i in rest]+[('D',j,(.5-a)*h)]
