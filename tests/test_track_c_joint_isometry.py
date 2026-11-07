@@ -32,3 +32,15 @@ def test_reversed_labels_preserve_controlled_ZZ_product_and_rotation():
         if phase:q.p(phase,8)
         expected=np.where(states<256,1.,-z if role=='product' else np.exp(-.17j*z))
         assert np.linalg.norm(Operator(q).data-np.diag(expected))<2e-13
+
+
+def test_reflected_adjacent_Givens_preserve_Fock_orbital_projectors():
+    rng=np.random.default_rng(91);u,_=np.linalg.qr(rng.normal(size=(8,8))+1j*rng.normal(size=(8,8)))
+    support=(7,1,5);ops=partial_ops(u[::-1],support)
+    reflected=tuple((g,tuple(7-i for i in wires)) for g,wires in ops)
+    v=Operator(circuit(reflected)).data;b=Operator(circuit(partial_ops(u,tuple(range(8))))).data
+    states=np.arange(256)
+    for j,i in enumerate(support):
+        old=(b*(1-2*((states>>i)&1)))@b.conj().T
+        new=(v*(1-2*((states>>(7-j))&1)))@v.conj().T
+        assert np.linalg.norm(old-new,'fro')<2e-13
