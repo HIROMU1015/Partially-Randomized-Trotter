@@ -638,3 +638,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## Track C資源ボトルネック（2026-11-08）
 
 [REPORT](docs/research/track_c_bottleneck_20261108/REPORT.md)。固定Linear H4/1Å/STO-3G/DF12・LD3、18round/.02。改良PR比RZ46.52%・CX49.44%減を独立価格holdout384標本で確認したが、同じα最適化後の強Fullが低コスト。218 component置換・128 native context・追加8 source条件・全18round予算・12短X/Y比較を保存。固定保存H/ideal native/fresh bitsモデルの条件付き結果であり、元H包含・global優越・実機性能を主張しない。読取検査`python3 scripts/check_track_c_bottleneck.py`、人工4件PASS。外部再現・詳細GPTレビューなし、mandatory STOP。
+
+## Track C共同isometry（2026-11-08）
+
+[REPORT](docs/research/track_c_joint_isometry_20261108/REPORT.md)。固定H4/1Å/STO-3G/DF12・LD3、18round/.02。625列集合のfull-Fock検証、128 context/5380 native lowering区間、11 joint operator・22 X/Y・8短wrapper検査、3人工test、独立価格384標本を保存。paired総RZ3.355%・CX1.789%減だがserial depth上界0.696%増、強Fullより高価。保存H/ideal native/fresh bitsモデルの条件付き保証。読取checker`python3 scripts/check_track_c_joint_isometry.py`。外部再現・詳細GPTレビューなし、mandatory STOP。

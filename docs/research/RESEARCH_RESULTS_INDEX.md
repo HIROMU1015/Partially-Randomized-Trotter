@@ -190,3 +190,7 @@ Track C2-A：[限定pilot・SOURCE・raw・STOP](track_c2_a_pilot_20261106/REPOR
 ## 2026-11-08 Track C資源ボトルネック
 
 [費用分解・singleton部分QR・共同配分・独立holdout](track_c_bottleneck_20261108/REPORT.md)。改良PR出発点比RZ46.52%減、同条件配分後の強Fullはなお低コスト。全18round・raw1622ファイル・負結果・native条件を保存しmandatory STOP。
+
+## 2026-11-08 Track C共同isometry
+
+[共有runの列集合QR・全RPE・独立paired資源評価](track_c_joint_isometry_20261108/REPORT.md)。singleton方式比RZ3.355%・CX1.789%減、depth上界0.696%増、強Fullはなお低コスト。全raw・SOURCE・技術修正・負結果を保全しmandatory STOP。

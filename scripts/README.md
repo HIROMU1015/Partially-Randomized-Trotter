@@ -181,3 +181,7 @@ artifacts/<validation_name>/
 ## Track C資源ボトルネック（2026-11-08）
 
 [REPORT](../docs/research/track_c_bottleneck_20261108/REPORT.md)。保存値分析の段階入口は`PYTHONPATH=src python -m trottertracks.track_c_bottleneck`。追加段階は同じmodule名に`_basis`、`_runwise`、`_certificate`、`_joint`、`_select`、`_validation`、`_profiles`を付けて個別に実行する。元のH4 cacheと前回RAWを`.venv/prior`へ展開した固定入力が必要。既存出力を上書きせず、今回STOP後の新科学実行を自動開始しない。保存結果のみの読取検査は`python3 scripts/check_track_c_bottleneck.py`（Qiskit/cache不要）。
+
+## Track C共同isometry（2026-11-08）
+
+[REPORT](../docs/research/track_c_joint_isometry_20261108/REPORT.md)。科学段階は`PYTHONPATH=src python -m trottertracks.track_c_joint_isometry`、続いて`track_c_joint_layouts`、`track_c_joint_certificate`、`track_c_joint_resources`、`track_c_joint_ablation`の各module。固定cacheと前回2 archiveの読取コピーが必要であり、出力を上書きせず今回STOP後の自動再開は行わない。保存値のみの集計は`scripts/summarize_track_c_joint_isometry.py`、Qiskit/cache不要の読取検査は`python3 scripts/check_track_c_joint_isometry.py`。
