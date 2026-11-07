@@ -72,7 +72,9 @@ def candidate(task):
 
 
 @lru_cache(None)
-def catalogue():return json.loads((OUT/'CATALOGUE.json').read_text())['entries']
+def catalogue():
+    path=OUT/'CATALOGUE_FINAL.json'
+    return json.loads((path if path.exists() else OUT/'CATALOGUE.json').read_text())['entries']
 
 
 def append_run(q,flat,ops,mapping=None):
@@ -88,7 +90,8 @@ def build_joint(t,n,choices):
     for start,stop,basis,union in groups:
         entry=catalogue().get(key(basis,union)); partial=entry is not None and entry['adopt']
         ops=decode(entry['operations']) if partial else common()['preps'][3].rte_preparation.basis_registry.definition(basis).runtime_operations
-        phase+=append_run(q,flat[start:stop],ops,{i:j for j,i in enumerate(union)} if partial else None)
+        mapping=dict(zip(entry['support'],entry.get('targets',range(len(union))))) if partial else None
+        phase+=append_run(q,flat[start:stop],ops,mapping)
         used.append(dict(start=start,stop=stop,key=key(basis,union),joint=bool(partial)))
     if phase:q.p(phase,8)
     return q,used
@@ -106,7 +109,7 @@ def scan(path):
 def fock_check(entry):
     basis=entry['basis'];support=entry['support'];b=configuration()[3][basis];v=Operator(circuit(decode(entry['operations']))).data
     states=np.arange(256);errors=[]
-    for j,i in enumerate(support):
+    for j,i in zip(entry.get('targets',range(len(support))),support):
         old=(b*(1-2*((states>>i)&1)))@b.conj().T
         new=(v*(1-2*((states>>j)&1)))@v.conj().T
         errors.append(float(np.linalg.norm(old-new,'fro')))
