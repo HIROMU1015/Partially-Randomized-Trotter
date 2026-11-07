@@ -267,3 +267,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 C-S V0の固定run_cs_v0.pyをSOURCE0bd18bbから一回実行した[結果](../docs/research/cs_v0_science_20261108/REPORT.md)：保存basis文字列parameterのbinding TypeErrorでSTOP。実行prefixを再利用して再試行しない。
 
 C-S V0 run_cs_v0.pyの[修復SOURCE](../docs/research/cs_v0_repair_20261108/REPORT.md)は新lockとcampaign_run02を使い、旧outputを再使用しない。
+
+C-S V0の修復SOURCE e69d1dfによるrun02は[正常完了](../docs/research/cs_v0_repair_results_20261108/REPORT.md)。旧run01とsourceを保全し、追加実行へ進めない。

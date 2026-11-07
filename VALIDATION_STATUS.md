@@ -815,3 +815,5 @@ TECHNICALLY_READY／conditions ADOPTED／SCIENCE_NOT_AUTHORIZED。新しい起�
 LOCAL_V0_INCOMPLETE／Stage B／schema adapter TypeError。固定0bd18bb、Stage A PASS、binding開始1/返却0、local operator/finite/strict/price0、retry0。旧人工10/18/9 PASSは人工条件内のまま、実保存str型との互換性は未成立。科学的C-S改善/NO-GOは未判定。[正本・原本prefix](docs/research/cs_v0_science_20261108/REPORT.md)。科学SOURCE・旧result/STOPとC1凍結は維持。
 
 C-S V0 schema修復（2026-11-08）：新人工5件PASS、ユーザーは技術的中断の修正再実行を許可。同じ条件の新SOURCE/新outputを使う。旧run01のINCOMPLETE/UNKNOWNと旧STOPは保全。[記録](docs/research/cs_v0_repair_20261108/REPORT.md)。
+
+C-S V0修復後（2026-11-08）：LOCAL_V0_COMPLETE、D/R finite/native/local cap PASS、7positive keys。現政策の局所T削減なし、full価格/N/G未評価。科学SOURCE e69d1df、旧run01/STOPを保全。技術修復の5人工PASSと今回科学結果を区別し、追加実行はしない。[正本](docs/research/cs_v0_repair_results_20261108/REPORT.md)。

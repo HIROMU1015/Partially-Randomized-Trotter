@@ -308,3 +308,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 [実行結果](docs/research/cs_v0_science_20261108/REPORT.md)：固定0bd18bbで一回開始、preflight PASS後、保存basis parameterのstrに対する数値符号反転でbinding STOP。局所operator/mean/synthesis/price0、retry0、未知価格/誤差はUNKNOWN。原本prefixを保全し公開後mandatory STOP。
 
 C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_v0_repair_20261108/REPORT.md)（2026-11-08）：新人工5件PASS、旧run01/STOP保全。今回の明示許可で公開SOURCEから技術再実行し、科学条件/capは維持する。
+
+[C-S V0 schema修復後の完了結果](docs/research/cs_v0_repair_results_20261108/REPORT.md)（2026-11-08）：D/R局所specの全cap PASS、7positive keys。局所literal TはS0の各70からS1 D≈142/R≈140へ増加。full費用/N/G未評価、旧STOP保全、公開後STOP。
