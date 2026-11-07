@@ -318,3 +318,5 @@ C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_
 2026-11-08 O2最新統合：[O2研究成果統合](docs/research/o2_research_results_integration_20261108/O2_RESEARCH_SUMMARY.md)と[固定証拠索引](docs/research/o2_research_results_integration_20261108/O2_EVIDENCE_INDEX.md)。Sampling/Return/CV/LCUを機構別に整理。既存結果の引用のみ、科学的status変更・新計算なし。
 
 2026-11-08：[O2新アルゴリズム候補の設計・技術的選別](docs/research/o2_new_algorithm_candidate_exploration_20261108/REPORT.md)。共通basisのlabel平均を測定へ移す案と局所差分の別測定案を整理。既知手法との重複、full費用/誤差/target一致の未解決条件を明示。設計のみ、実装・新科学計算0。
+
+2026-11-08：[O2案Mの適格性・Product/Rotation instrument・人工12件](docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。新module `m_label_average.py`、runner `run_m_label_average_artificial.py`、対応test、`artifacts/o2_m_instrument/2026-11-08/artificial_run03/`へ同報告から辿れる。人工平均/M2照合のみ、実H4と費用優位は未検証。

@@ -233,3 +233,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2全成果統合](research/o2_research_results_integration_20261108/O2_RESEARCH_SUMMARY.md)。初期再配分/G6–G10/Parent/C1からS2・752/SCV・A2 LCUまでの到達層・負結果・今後の探索領域。[証拠索引](research/o2_research_results_integration_20261108/O2_EVIDENCE_INDEX.md)。
 
 2026-11-08：[O2新候補の操作・比較・次技術scope](research/o2_new_algorithm_candidate_exploration_20261108/REPORT.md)。label平均observableの測定と局所差分の別測定を設計。性能/新規性の採択・実装・新科学計算は行わない。
+
+2026-11-08：[O2案Mの最小instrumentと人工correctness](research/o2_m_instrument_technical_validation_20261108/REPORT.md)。12件PASS、強いancilla-free/grouping baselineとの差と実H4 metadata-only次案。新科学計算0。

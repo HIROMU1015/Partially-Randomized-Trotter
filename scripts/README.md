@@ -271,3 +271,5 @@ C-S V0 run_cs_v0.pyの[修復SOURCE](../docs/research/cs_v0_repair_20261108/REPO
 C-S V0の修復SOURCE e69d1dfによるrun02は[正常完了](../docs/research/cs_v0_repair_results_20261108/REPORT.md)。旧run01とsourceを保全し、追加実行へ進めない。
 
 O2-A2の人工検査は `PYTHONPATH=src python -m unittest discover -s tests/tracks/algorithm_codesign -p test_a2_lcu_access.py -v`。新しいscience runnerは設けず、実入力の読込/RNG/compileは起動しない。[仕様・結果](../docs/research/o2_a2_executable_access_20261108/REPORT.md)。
+
+O2案Mの人工入口は `scripts/tracks/algorithm_codesign/run_m_label_average_artificial.py --output <fresh-directory>`。新しい `test_m_label_average.py` だけを実行し、SOURCE/結果/log/STOPを保存する。実bundle/RNG/compile入口なし。[技術報告](../docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。

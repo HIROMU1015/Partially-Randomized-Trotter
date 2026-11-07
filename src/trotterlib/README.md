@@ -234,3 +234,5 @@ C-S V0の実保存schemaへの[初回適用結果](../../docs/research/cs_v0_sci
 [C-S V0実保存schema接続の完了](../../docs/research/cs_v0_repair_results_20261108/REPORT.md)：2spec/7strict keys、finite/native/local cap PASS。現政策の局所literal Tは増加、full資源優位性は未評価。
 
 O2-A2の限定adapterは隣接trackの [a2_lcu_access.py](../trottertracks/algorithm_codesign/a2_lcu_access.py)。既存Hadamard bit規約を再利用し、明示system gate列からLCU/flag/readoutを接続。人工検査のみ、旧engineの認証を継承しない。[報告](../../docs/research/o2_a2_executable_access_20261108/REPORT.md)。
+
+O2案Mの新track adapterは [m_label_average.py](../trottertracks/algorithm_codesign/m_label_average.py)。既存gate検査・law・Hadamard規約を使い、群適格性とsystem readout/動的軸を接続。人工1/2-qubit検査のみで科学engine資格はUNKNOWN。[module/runner/test/証拠](../../docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。
