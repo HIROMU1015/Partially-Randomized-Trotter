@@ -208,3 +208,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track C対角gate融合（2026-11-08）
 
 [既知control・run融合・共通Full比較](docs/research/track_c_diagonal_fusion_20261108/REPORT.md)。実装`track_c_diagonal_*.py`、人工test`test_track_c_diagonal_fusion.py`、保存値集計`summarize_track_c_diagonal_fusion.py`、読取checker`check_track_c_diagonal_fusion.py`。RTE-run固有の追加効果は既知term基準で全PRのRZ約0.135%・CX約1.67%。同じ合成でFullも改善し差は縮まらず、mandatory STOP。
+
+## Track CとTrack Bの接続調査（2026-11-08）
+
+[有限平均・sampling/測定・回路interface・18round会計の互換性とSERVER 2既存成果](docs/research/track_c_b_connection_20261108/REPORT.md)。指定C版94b6499を主対象に既存SOURCE/raw/STOPを読取確認。closed P3は条件付き接続候補、資源改善は未検証。SERVER 1の今回調査は未取得。新科学計算・sampling・compile・アルゴリズム実装なし、公開照合後mandatory STOP。
