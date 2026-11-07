@@ -135,11 +135,11 @@ class NativeEvolution:
     circuit_fingerprint: str
 
 
-def _finish(circuit, n, T, q, formula, policy, bound, cap):
+def _finish(circuit, n, T, q, formula, policy, bound, cap, *, fingerprint_function=None):
     if len(circuit.data) > bound or len(circuit.data) > cap:
         raise RuntimeError("POST_BUILD_INSTRUCTION_BOUND")
-    return NativeEvolution(circuit, n, T, q, formula, policy, bound,
-                           canonical_qiskit_circuit_fingerprint(circuit))
+    hasher = canonical_qiskit_circuit_fingerprint if fingerprint_function is None else fingerprint_function
+    return NativeEvolution(circuit, n, T, q, formula, policy, bound, hasher(circuit))
 
 
 def build_deterministic_native(blocks: Sequence[DFDeterministicBlockSpec], *,
@@ -257,15 +257,17 @@ def make_native_block_action(block, *, max_instructions):
 
 
 def build_native_hadamard_wrapper(evolution: NativeEvolution, *, axis,
-                                  include_measurement=True, max_instructions):
-    """Identical legacy H/U/(Sdg)/H/measure scope; no repeated-record spoofing."""
+                                  include_measurement=True, max_instructions,
+                                  fingerprint_function=None):
+    """Legacy measured scope; an opt-in hasher must preserve canonical identity."""
     if not isinstance(evolution,NativeEvolution) or axis not in ("cosine","sine"):
         raise ValueError("Native evolution and cosine/sine axis required.")
     if type(include_measurement) is not bool:
         raise ValueError("include_measurement must be boolean.")
     n = evolution.num_system_qubits
     _gate_only(evolution.circuit,n+1)
-    if canonical_qiskit_circuit_fingerprint(evolution.circuit)!=evolution.circuit_fingerprint:
+    hasher = canonical_qiskit_circuit_fingerprint if fingerprint_function is None else fingerprint_function
+    if hasher(evolution.circuit)!=evolution.circuit_fingerprint:
         raise ValueError("Evolution circuit mutated after fingerprinting.")
     cap = _limit(max_instructions)
     bound = len(evolution.circuit.data)+2+(axis=="sine")+include_measurement

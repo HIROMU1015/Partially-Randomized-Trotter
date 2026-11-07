@@ -168,13 +168,16 @@ def build_strong_df_baseline(split, *, delta_time, q, substeps, basis_policy):
         model, schedule, optimized=True, scalar_time=q*Fraction(dt))
 
 
-def _compile_pair(circuit, compiler, *, compile_function, backend, wrapper_builder=None):
+def _compile_pair(circuit, compiler, *, compile_function, backend, wrapper_builder=None,
+                  fingerprint_function=None):
+    """Compile both measured axes, optionally with an equivalent canonical hasher."""
     costs = {}
+    hasher = canonical_qiskit_circuit_fingerprint if fingerprint_function is None else fingerprint_function
     for axis in ("cosine", "sine"):
         wrapper = (wrap_controlled_no_prep(circuit, ancilla_qubit=circuit.num_qubits-1,
                                           axis=axis, include_measurement=True)
                    if wrapper_builder is None else wrapper_builder(circuit, axis))
-        fp = canonical_qiskit_circuit_fingerprint(wrapper)
+        fp = hasher(wrapper)
         cost = compile_function(wrapper, compiler, backend=backend, actual_circuit_fingerprint=fp)
         if cost.compiler != compiler or any(not math.isfinite(float(getattr(cost,k))) or getattr(cost,k)<0 for k in RPE_COST_METRICS):
             raise ValueError("Compile context or metric differs")

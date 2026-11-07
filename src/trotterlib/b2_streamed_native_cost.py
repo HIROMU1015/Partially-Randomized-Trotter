@@ -37,12 +37,14 @@ def structural_instruction_bound(round_):
             event_count=round_.r, controlled=True))
 
 
-def stream_native(round_, events):
+def stream_native(round_, events, *, fingerprint_function=None):
     """Emit the same ordinary-controlled instruction sequence as B2.native.
 
     Preserve the reference's T=delta*Q then dt=T/Q floating-point arithmetic,
     forward/tail/reverse ordering, and one final aggregate scalar phase. No
-    fusion, normalization, threshold, basis-policy or compiler changes.
+    fusion, normalization, threshold, basis-policy or compiler changes. An
+    optional numeric circuit hasher is forwarded to the existing finalizer; it
+    must implement the same canonical circuit identity policy.
     """
     p = round_.preparation
     n = native.validate_blocks(p.deterministic_blocks, p.num_system_qubits)
@@ -64,7 +66,8 @@ def stream_native(round_, events):
     if scalar * total_time != 0:
         circuit.p(-scalar * total_time, n)
     return native._finish(circuit, n, total_time, round_.q, 'partial_2nd',
-                          'ordinary', bound, bound)
+                          'ordinary', bound, bound,
+                          fingerprint_function=fingerprint_function)
 
 
 def cached_compiler(cache):
