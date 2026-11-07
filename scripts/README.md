@@ -185,3 +185,5 @@ artifacts/<validation_name>/
 [Track D C7-1 q16](run_track_d_c7_1_q16.py)：[固定PLAN](../docs/research/track_d_c7_1_q16_20261107/PLAN.md)の16 fresh whole-path・raw PASS後最大64 P0 wrapperだけ。凍結C6aモデル/CX残差、既存高速化再利用、公開後mandatory STOP。通常testから分子実行しない。
 
 [C7-2人工runner](run_track_d_c7_2_toy.py)／[結果projection](summarize_track_d_c7_2_toy.py)：[固定54case](../docs/research/track_d_c7_2_cx_structure_20261107/PLAN.md)だけを実行。実H4 input/イベントは読み込まず、旧研究runnerのmainを呼ばない。post/source/phase照合後STOP、q32実行なし。
+
+[C7-3 q32明示runner](run_track_d_c7_3_q32.py)：[PLAN](../docs/research/track_d_c7_3_q32_20261107/PLAN.md)の8 fresh whole-path/cut16、raw PASS後最大32 P0。旧scheduler/compile/state-action再利用、構造feature/凍結モデル診断、通常testから分子実行しない。
