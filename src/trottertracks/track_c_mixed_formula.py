@@ -188,9 +188,9 @@ def local_analysis():
     save_json(OUT/'THEORY_AND_LOCAL.json',report);return report
 
 
-def signal_task(task):
+def signal_task(task, rounds=SCREEN_ROUNDS, output_subdir="screen", fair_counts=False):
     name,proposed_h=task;c=common();rows=[];ld=12 if name.startswith('full_') else 3
-    for m in SCREEN_ROUNDS:
+    for m in rounds:
         time_=.02*(1<<m);steps=max(1,math.ceil(time_/proposed_h));h=time_/steps
         for rate in ((0,) if ld==12 else RATES):
             u,f,lb,le,recipe=matrix_kernel(name,h,rate)
@@ -208,7 +208,9 @@ def signal_task(task):
             beta=None if other is None or other>=abs(z) else .4-pf-math.asin(other/abs(z))
             feasible=bool(beta is not None and beta>0 and rho>1e-100)
             shots=math.ceil(4*math.log(1440)/(rho*rho*math.sin(beta)**2)) if feasible else None
-            calls_D=steps*sum(kind=='D' for kind,_,_ in seq);events=steps*sum(x['r'] for x in recipe)
+            calls_D=steps*sum(kind=='D' for kind,_,_ in seq)
+            if fair_counts and seq[0][:2]==seq[-1][:2] and seq[0][0]=='D':calls_D-=steps-1
+            events=steps*sum(x['r'] for x in recipe)
             rows.append(dict(name=name,requested_h=proposed_h,h=h,m=m,t=time_,steps=steps,rate=rate,
                 PF_phase=pf,finite_phase=finite_phase,ideal_radius=abs(z),corrected_finite_radius=abs(zf),
                 raw_signal=dict(real=zf.real*atten,imag=zf.imag*atten),log_normalizer=logb,rho_lower=rho,beta_stat=beta,
@@ -216,7 +218,7 @@ def signal_task(task):
                 deterministic_exponentials=calls_D,RTE_events=events,RTE_occurrences=steps*len(recipe),
                 primitive_shot_surrogate=None if shots is None else 2*shots*(calls_D+events),
                 qualification='conditional float64 signal screen; primitive surrogate is not compiled price; compiler disk pending'))
-    save_json(OUT/'screen'/f'{name}_{proposed_h}.json',dict(task=task,rows=rows));return rows
+    save_json(OUT/output_subdir/f'{name}_{proposed_h}.json',dict(task=task,rows=rows));return rows
 
 
 def run():
