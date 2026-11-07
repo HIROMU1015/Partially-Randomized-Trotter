@@ -229,3 +229,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08 O2：[MultilevelからSampling・Return結合への技術調査](research/o2_a2_j1_mechanism_20261108/O2_NEXT_ALGORITHM_REPORT.md)。A2はアクセス未完成、J1は新しい安価な取得構造未特定。科学結果とは区別する。
 
 2026-11-08：[O2-A2のLCUアクセス・測定/費用会計・人工correctness](research/o2_a2_executable_access_20261108/REPORT.md)。新規9件PASS、実H4/compile/shot0。技術資格と科学的改善を区別。
+
+2026-11-08：[O2全成果統合](research/o2_research_results_integration_20261108/O2_RESEARCH_SUMMARY.md)。初期再配分/G6–G10/Parent/C1からS2・752/SCV・A2 LCUまでの到達層・負結果・今後の探索領域。[証拠索引](research/o2_research_results_integration_20261108/O2_EVIDENCE_INDEX.md)。

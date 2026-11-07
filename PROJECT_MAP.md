@@ -314,3 +314,5 @@ C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_
 2026-11-08 O2：[A2の測定アクセス・J1の取得構造の静的調査](docs/research/o2_a2_j1_mechanism_20261108/O2_NEXT_ALGORITHM_REPORT.md)。実行可能候補未特定、実装・新科学計算なし。旧科学的status/STOPを維持。
 
 2026-11-08 O2-A2：[具体的LCU測定アクセスと人工9件](docs/research/o2_a2_executable_access_20261108/REPORT.md)。module `a2_lcu_access.py` と対応testを接続。物理アクセスを明示したが、当該LCUのnoise/費用改善は不支持、実科学0。
+
+2026-11-08 O2最新統合：[O2研究成果統合](docs/research/o2_research_results_integration_20261108/O2_RESEARCH_SUMMARY.md)と[固定証拠索引](docs/research/o2_research_results_integration_20261108/O2_EVIDENCE_INDEX.md)。Sampling/Return/CV/LCUを機構別に整理。既存結果の引用のみ、科学的status変更・新計算なし。
