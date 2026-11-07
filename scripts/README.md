@@ -275,3 +275,5 @@ O2-A2の人工検査は `PYTHONPATH=src python -m unittest discover -s tests/tra
 O2案Mの人工入口は `scripts/tracks/algorithm_codesign/run_m_label_average_artificial.py --output <fresh-directory>`。新しい `test_m_label_average.py` だけを実行し、SOURCE/結果/log/STOPを保存する。実bundle/RNG/compile入口なし。[技術報告](../docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。
 
 O2案Mの保存header人工入口は `scripts/tracks/algorithm_codesign/run_m_n0_header_artificial.py --output <fresh-directory>`。科学入口 `run_m_n0_metadata.py --source-commit <fixed-SHA> --output <fresh-directory>` は別途許可後だけ使用する。実N1 passは今回0。[仕様・証拠・STOP](../docs/research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。
+
+O2案Mの `run_m_n0_metadata.py` は固定SOURCE39d8390で[metadata_run01を一回完了](../docs/research/o2_m_n0_metadata_result_20261108/REPORT.md)。非自明群なし、STOPを保全し、追加実行しない。

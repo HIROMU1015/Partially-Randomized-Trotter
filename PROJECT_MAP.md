@@ -322,3 +322,5 @@ C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_
 2026-11-08：[O2案Mの適格性・Product/Rotation instrument・人工12件](docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。新module `m_label_average.py`、runner `run_m_label_average_artificial.py`、対応test、`artifacts/o2_m_instrument/2026-11-08/artificial_run03/`へ同報告から辿れる。人工平均/M2照合のみ、実H4と費用優位は未検証。
 
 2026-11-08：[案Mの保存N1 header binding準備](docs/research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。module `m_n0_header_binding.py`／`m_n0_metadata_execution.py`、科学入口 `run_m_n0_metadata.py`、人工入口 `run_m_n0_header_artificial.py`、対応testと `artifacts/o2_m_n0_header/2026-11-08/`を接続。新人工10＋関連3件PASS、実N1 metadata passは未実行。
+
+2026-11-08：[案MのN1 n=0 metadata-only一回結果](docs/research/o2_m_n0_metadata_result_20261108/REPORT.md)。固定SOURCE39d8390でbinding/partition各1回、非自明群なし。正232 labelは232単独群、zero92を保全。Born/shot/compile等0、retry0、旧STOP/C1保全。

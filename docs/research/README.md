@@ -127,3 +127,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 2026-11-08：[O2案Mの適格性・測定instrument・人工証拠](o2_m_instrument_technical_validation_20261108/REPORT.md)。Product/Rotation双方の人工平均保存、M2式、既知groupingとの関係を確認。科学的GO/実H4資格は未取得。
 
 2026-11-08：[O2案Mの保存header接続と次の一回metadata pass草案](o2_m_n0_header_binding_preparation_20261108/REPORT.md)。既存Mの群判定を再利用し、回路buildなしの8-wire literalに対応。技術準備のみ、実N1の科学集計は未実行。
+
+2026-11-08：[案M n=0 metadata-only実行結果](o2_m_n0_metadata_result_20261108/REPORT.md)。正232 labelが全て単独群、非自明群0、direct適用はliteral比較でUNKNOWN。一回/retry0でSTOP、測定や別slotへ進めない。

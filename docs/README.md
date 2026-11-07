@@ -237,3 +237,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2案Mの最小instrumentと人工correctness](research/o2_m_instrument_technical_validation_20261108/REPORT.md)。12件PASS、強いancilla-free/grouping baselineとの差と実H4 metadata-only次案。新科学計算0。
 
 2026-11-08：[O2案M・n=0 header binderと一回metadata-only科学SOURCE準備](research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。literal adapter/元SOURCE対応、人工10＋関連3、未採択の有限実行契約。実H4の群適格性/群和は未取得。
+
+2026-11-08：[O2案M・固定n=0 slotのmetadata-only結果](research/o2_m_n0_metadata_result_20261108/REPORT.md)。一回正常完了、NO_NONTRIVIAL_GROUP_IN_SELECTED_SLOT。literal十分条件の局所結果で一般NO-GOではない。
