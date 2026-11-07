@@ -240,3 +240,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## 2026-11-07 新A CT-4A：大きいqの有限T比較preflight
 
 [PREFLIGHT](docs/research/pr_reference_ct4a_20261107/PREFLIGHT.md)、[SCOPE_PROPOSAL](docs/research/pr_reference_ct4a_20261107/SCOPE_PROPOSAL.md)。保存q128/r1・rare/nonrare各j0・B′/Reference×X/Yの8構成、一様epsilon1e-11を提案。q128 whole QPY/完全literal key表は未保存で、承認後のnative準備compile→実key固定→missing合成が必要。今回は静的確認のみ、新合成/compile/科学数値再解析/T価格集計0、旧SOURCE/結果/STOP不変更。CT-4A完了でSTOP、CT-4B未承認・未開始。次担当ユーザー。
+
+## 2026-11-07 新A CT-4B：q128の有限strict T比較
+
+[REPORT](docs/research/pr_reference_ct4b_20261107/REPORT.md)、[SCOPE](docs/research/pr_reference_ct4b_20261107/SCOPE.md)、[SOURCE/入力/raw/STOP](artifacts/pr_reference_ct4/2026-11-07/README.md)。固定H4/STO-3G/DF12・Partial S2/LD3/h=.02/K2・保存q128/r1・rare/nonrare各j0・X/Y・一様epsilon1e-11で、Referenceの1shot実TはB′比1.865933%/1.881674%減。全support期待T/18round総Tは未資格/未取得。8 native再compile、299 word（111再利用/188新規）、25 local/保存199shot条件PASS。SOURCE `src/trottertracks/pr_reference_ct4.py`、入口 `scripts/run_pr_reference_ct4.py`。旧SOURCE/結果/STOP保全、mandatory STOP。次担当GPT／ユーザー。

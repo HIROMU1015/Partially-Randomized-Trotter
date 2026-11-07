@@ -91,3 +91,7 @@
 ## 2026-11-07 新A CT-4A：大きいqの有限T比較preflight
 
 [PREFLIGHT](pr_reference_ct4a_20261107/PREFLIGHT.md)、[SCOPE_PROPOSAL](pr_reference_ct4a_20261107/SCOPE_PROPOSAL.md)。保存q128/r1・rare/nonrare各j0・B′/Reference×X/Yの8構成、一様epsilon1e-11を提案。q128 whole QPY/完全literal key表は未保存で、承認後のnative準備compile→実key固定→missing合成が必要。今回は静的確認のみ、新合成/compile/科学数値再解析/T価格集計0、旧SOURCE/結果/STOP不変更。CT-4A完了でSTOP、CT-4B未承認・未開始。次担当ユーザー。
+
+## 2026-11-07 新A CT-4B：q128の有限strict T比較
+
+[REPORT](pr_reference_ct4b_20261107/REPORT.md)、[SCOPE](pr_reference_ct4b_20261107/SCOPE.md)、[SOURCE/入力/raw/STOP](../../artifacts/pr_reference_ct4/2026-11-07/README.md)。H4/STO-3G/DF12・Partial S2/LD3/h=.02/K2・保存q128/r1の2 trajectory・X/Y・epsilon1e-11でReferenceの実TはB′比1.865933%/1.881674%減。299 word/25 local/保存199shot条件PASS。有限結果であり全support/18round総T/最小T/T-depthへ一般化しない。旧結果/STOP保全、mandatory STOP。次担当GPT／ユーザー。

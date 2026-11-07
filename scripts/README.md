@@ -205,3 +205,7 @@ artifacts/<validation_name>/
 ## 新A CT-1（2026-11-07）
 
 `trottertracks.pr_reference_ct1.stage_a/stage_b/stage_c` の明示入口で有限対象固定・strict合成・correctnessを実施。[実行順・入力・raw・検査](../artifacts/pr_reference_ct1/2026-11-07/README.md)。旧runner/STOPは不変更。保存runはmandatory STOP済みで再実行しない。
+
+## 2026-11-07 CT-4Bの固定入口
+
+`run_pr_reference_ct4.py` → `trottertracks.pr_reference_ct4`。保存q128/r1・2 trajectory・B′/Reference×X/Y・strict e=-11の限定実行。prepare/synthesis/validate/finish各段階とSOURCE/raw/STOPは[REPORT](../docs/research/pr_reference_ct4b_20261107/REPORT.md)を参照。承認scope完了・mandatory STOP済みであり、この索引は再実行や追加探索の許可ではない。
