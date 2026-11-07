@@ -227,3 +227,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 [C-S V0修復後の結果](research/cs_v0_repair_results_20261108/REPORT.md)：同じ条件で2spec/7keysを完了、全cap PASS。局所T削減なし、全体優位性未評価。
 
 2026-11-08 O2：[MultilevelからSampling・Return結合への技術調査](research/o2_a2_j1_mechanism_20261108/O2_NEXT_ALGORITHM_REPORT.md)。A2はアクセス未完成、J1は新しい安価な取得構造未特定。科学結果とは区別する。
+
+2026-11-08：[O2-A2のLCUアクセス・測定/費用会計・人工correctness](research/o2_a2_executable_access_20261108/REPORT.md)。新規9件PASS、実H4/compile/shot0。技術資格と科学的改善を区別。

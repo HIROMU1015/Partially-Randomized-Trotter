@@ -232,3 +232,5 @@ C-S V0の実保存schemaへの[初回適用結果](../../docs/research/cs_v0_sci
 [C-S V0保存文字列parameterの修復](../../docs/research/cs_v0_repair_20261108/REPORT.md)：既存codecとの整合、XXPlusYY beta保持。新人工5件、元モデル/価格kernelは不変。
 
 [C-S V0実保存schema接続の完了](../../docs/research/cs_v0_repair_results_20261108/REPORT.md)：2spec/7strict keys、finite/native/local cap PASS。現政策の局所literal Tは増加、full資源優位性は未評価。
+
+O2-A2の限定adapterは隣接trackの [a2_lcu_access.py](../trottertracks/algorithm_codesign/a2_lcu_access.py)。既存Hadamard bit規約を再利用し、明示system gate列からLCU/flag/readoutを接続。人工検査のみ、旧engineの認証を継承しない。[報告](../../docs/research/o2_a2_executable_access_20261108/REPORT.md)。

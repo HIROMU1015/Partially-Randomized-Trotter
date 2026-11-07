@@ -117,3 +117,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 [固定224/448結果の統合・要因整理・次方向提案](o2_scv_two_pilot_synthesis_20261107/REPORT.md)。既報値引用とSOURCE静的調査のみ。研究方針の採択や科学的status更新ではない。
 
 2026-11-08：[O2 A2/J1の限定技術調査](o2_a2_j1_mechanism_20261108/O2_NEXT_ALGORITHM_REPORT.md)。PR target liftと成功flag会計、return価格接口を整理。実装・科学計算0、旧R1判定を維持。
+
+2026-11-08：[A2の物理的LCU測定アクセス](o2_a2_executable_access_20261108/REPORT.md)。PREP/SELECT、success/failure、全attempt decoderとnoise床を明示。旧STOPとJ1/R1を維持。

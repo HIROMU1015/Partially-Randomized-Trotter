@@ -269,3 +269,5 @@ C-S V0の固定run_cs_v0.pyをSOURCE0bd18bbから一回実行した[結果](../d
 C-S V0 run_cs_v0.pyの[修復SOURCE](../docs/research/cs_v0_repair_20261108/REPORT.md)は新lockとcampaign_run02を使い、旧outputを再使用しない。
 
 C-S V0の修復SOURCE e69d1dfによるrun02は[正常完了](../docs/research/cs_v0_repair_results_20261108/REPORT.md)。旧run01とsourceを保全し、追加実行へ進めない。
+
+O2-A2の人工検査は `PYTHONPATH=src python -m unittest discover -s tests/tracks/algorithm_codesign -p test_a2_lcu_access.py -v`。新しいscience runnerは設けず、実入力の読込/RNG/compileは起動しない。[仕様・結果](../docs/research/o2_a2_executable_access_20261108/REPORT.md)。
