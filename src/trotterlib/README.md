@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[B6b B/C adapter](../trottertracks/track_d_b6b_bc.py)／[人工検証](../trottertracks/track_d_b6b_toy.py)：B4-2固定handoff/13-round coverageとideal共通N条件、既存aggregate_totalsへのguard付き接続。[報告](../../docs/research/track_d_b6b_bc_integration_20261108/REPORT.md)。会計検証は人工値だけ、H4 totalなし。既存gadget/phase compilerと[tests/check_track_d_b6b.py](../../tests/check_track_d_b6b.py)を使用。通常libraryの既定動作を変えない。
+
 `trottertracks/track_d_state_action_acceleration.py` は既存Aer/CAR検査用のopt-in高速化。cost回路・P0・precisionを変更しない。[C6b限定引継ぎPLAN](../../docs/research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)の新workerだけで選択する。
 
 The opt-in `../trottertracks/track_d_c6b_holdout.py`, `../../scripts/run_track_d_c6b.py` and `../../tests/check_track_d_c6b.py` share the existing canonical/CAR/whole-path/P0 primitives. The [C6b PLAN](../../docs/research/track_d_c6b_q8_20261107/PLAN.md) limits new execution to q8/n32 exploratory paired pricing; import does not execute a scientific run.

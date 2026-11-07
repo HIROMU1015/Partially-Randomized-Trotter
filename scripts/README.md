@@ -1,5 +1,7 @@
 # scripts 索引
 
+[B6b明示runner](run_track_d_b6b.py)：[固定PLAN](../docs/research/track_d_b6b_bc_integration_20261108/PLAN.md)の固定Git metadata/coverageと4人工case・最大16 P0 wrapperだけ。実H4のsampling/build/compile・価格再解析・N算定・全RPE集計を実行しない。人工検証後は結果公開とmandatory STOP。
+
 `run_track_d_c6b_accelerated.py` は[利用者承認済みSOURCE引継ぎ](../docs/research/track_d_c6b_q8_20261107/ACCELERATED_COMPLETION_PLAN.md)の残task専用入口。固定済みeventを読み、完了済みraw/compile/postcheckを再実行しない。新sampling0、旧新128 compile上限。
 
 `run_track_d_c6b.py` is the explicit q8/n32 exploratory runner, separate from the frozen C6a q2/q4 entry. See [fixed scope](../docs/research/track_d_c6b_q8_20261107/PLAN.md). Canonical sampling, C3/C5 builders and the existing P0/checker are reused. Raw PASS gates each path's maximum four compiles; no automatic additional stage after STOP.

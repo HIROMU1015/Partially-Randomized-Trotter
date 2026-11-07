@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "label": "P0_global_phase_full_matrix",
+      "max_entry": 3.182345370419118e-15,
+      "frobenius": 7.433110699317605e-15,
+      "tolerance": 1e-10,
+      "criterion": "max_entry",
+      "rtol": 0,
+      "phase_fit": false,
+      "status": "PASS"
+    },
+    {
+      "label": "P0_XY_observable",
+      "max_entry": 1.3322676295501878e-15,
+      "frobenius": 1.9824358235520185e-15,
+      "tolerance": 2e-10,
+      "criterion": "frobenius",
+      "rtol": 0,
+      "phase_fit": false,
+      "status": "PASS"
+    },
+    {
+      "label": "P0_complex_coherence",
+      "max_entry": 1.894521362404938e-15,
+      "frobenius": 3.479812852723808e-15,
+      "tolerance": 1e-10,
+      "criterion": "max_entry",
+      "rtol": 0,
+      "phase_fit": false,
+      "status": "PASS"
+    }
+  ],
+  "reference_nonvacuum_Frobenius": null,
+  "final_vacuum_required": true,
+  "all_system_inputs": 4,
+  "full_wrapper_operator": true,
+  "case": "q2_step_cut",
+  "method": "direct_controlled",
+  "axis": "X",
+  "full_wrapper_compile_calls": 1,
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "artificial_only": true,
+  "H4_cost_comparison": false
+}
