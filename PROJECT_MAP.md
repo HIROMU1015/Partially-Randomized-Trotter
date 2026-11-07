@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C8-1保存q64の数値診断](docs/research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_PLAN.md)：利用者承認による数値修正・再検証。旧SOURCE/失敗/STOPを保持し、保存sample00の4 P0回路を既存checker/同閾値で再postcheck、例外前のscalar/observableを保全する。sampling/回路生成/compile0、残7は未解放。
+
 [Track D C8-1数値preflight不成立](docs/research/track_d_c8_1_q64_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。全8 event/512 occurrence/16384 eventsを固定し、sample00 raw1 PASS・旧P0 compile4完了をSOURCE8a6bbdacへ承認済み引継ぎ。両方式X/Y全4 postcheckがCAR-observable Frobenius2e−10でFAILしSTOP。残7/追加28 compile未開始、価格統計/モデル診断未評価。精度緩和/再実行/fit/N/全RPE更新0、旧SOURCE/STOP・非公開原本保持。
 
 [C8-1 CPU予約修正・残task引継ぎ](docs/research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)：利用者承認のSOURCE切替。旧6b1d613dの完了済みraw1・compile4を保全し、compile予約1 CPUとraw/postへの残CPU配分へ修正。sampling追加0、残7raw/最大28新P0、sample00全post gate維持、固定精度/モデル/32総上限は不変。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.track_d_c8_1_diagnostics`：旧checkerの例外前診断保存。
+
 [C8-1の科学結果](../../docs/research/track_d_c8_1_q64_20261108/REPORT.md)：CPU予約修正と19人工/回帰PASSは維持したが、q64 sample00のcompiled CAR-observable検査は両方式X/YでFAIL。失敗値保存の不足も記録し、verifier/閾値の変更・H4再診断は未実施。既存判定・SOURCE・STOPを保持する。
 
 [C8-1 handoff helper](../trottertracks/track_d_c8_1_handoff.py)：完了済みprior hash、drain後の継承・不整合拒否、stage別CPU予約を扱う薄い補助。[PLAN](../../docs/research/track_d_c8_1_q64_20261108/ACCELERATED_COMPLETION_PLAN.md)／[人工tests](../../tests/check_track_d_c8_1_handoff.py)。sampler/builder/compiler/verifierは既存を再利用し、科学条件・閾値を変えない。
