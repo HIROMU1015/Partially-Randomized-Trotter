@@ -236,3 +236,5 @@ C-S V0の実保存schemaへの[初回適用結果](../../docs/research/cs_v0_sci
 O2-A2の限定adapterは隣接trackの [a2_lcu_access.py](../trottertracks/algorithm_codesign/a2_lcu_access.py)。既存Hadamard bit規約を再利用し、明示system gate列からLCU/flag/readoutを接続。人工検査のみ、旧engineの認証を継承しない。[報告](../../docs/research/o2_a2_executable_access_20261108/REPORT.md)。
 
 O2案Mの新track adapterは [m_label_average.py](../trottertracks/algorithm_codesign/m_label_average.py)。既存gate検査・law・Hadamard規約を使い、群適格性とsystem readout/動的軸を接続。人工1/2-qubit検査のみで科学engine資格はUNKNOWN。[module/runner/test/証拠](../../docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。
+
+案Mの保存N1接続は隣接trackの [m_n0_header_binding.py](../trottertracks/algorithm_codesign/m_n0_header_binding.py)。既存basis hash・対角primitive descriptorを再利用し、metadata-only Literalから既存群判定へ接続する。回路/state/Bornは呼ばず、実N1への適用は未実行。[module/runner/test/証拠](../../docs/research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。

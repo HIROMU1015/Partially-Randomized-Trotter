@@ -125,3 +125,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 2026-11-08：[O2新規候補の設計・選別](o2_new_algorithm_candidate_exploration_20261108/O2_NEW_ALGORITHM_CANDIDATES.md)、[比較](o2_new_algorithm_candidate_exploration_20261108/O2_CANDIDATE_COMPARISON.md)、[次の有限技術確認案](o2_new_algorithm_candidate_exploration_20261108/O2_NEXT_RESEARCH_PROPOSAL.md)。共通basisのlabel平均を測定へ移す案を先に提案。科学実行/新規性の採択は保留。
 
 2026-11-08：[O2案Mの適格性・測定instrument・人工証拠](o2_m_instrument_technical_validation_20261108/REPORT.md)。Product/Rotation双方の人工平均保存、M2式、既知groupingとの関係を確認。科学的GO/実H4資格は未取得。
+
+2026-11-08：[O2案Mの保存header接続と次の一回metadata pass草案](o2_m_n0_header_binding_preparation_20261108/REPORT.md)。既存Mの群判定を再利用し、回路buildなしの8-wire literalに対応。技術準備のみ、実N1の科学集計は未実行。

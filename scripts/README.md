@@ -273,3 +273,5 @@ C-S V0の修復SOURCE e69d1dfによるrun02は[正常完了](../docs/research/cs
 O2-A2の人工検査は `PYTHONPATH=src python -m unittest discover -s tests/tracks/algorithm_codesign -p test_a2_lcu_access.py -v`。新しいscience runnerは設けず、実入力の読込/RNG/compileは起動しない。[仕様・結果](../docs/research/o2_a2_executable_access_20261108/REPORT.md)。
 
 O2案Mの人工入口は `scripts/tracks/algorithm_codesign/run_m_label_average_artificial.py --output <fresh-directory>`。新しい `test_m_label_average.py` だけを実行し、SOURCE/結果/log/STOPを保存する。実bundle/RNG/compile入口なし。[技術報告](../docs/research/o2_m_instrument_technical_validation_20261108/REPORT.md)。
+
+O2案Mの保存header人工入口は `scripts/tracks/algorithm_codesign/run_m_n0_header_artificial.py --output <fresh-directory>`。科学入口 `run_m_n0_metadata.py --source-commit <fixed-SHA> --output <fresh-directory>` は別途許可後だけ使用する。実N1 passは今回0。[仕様・証拠・STOP](../docs/research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。

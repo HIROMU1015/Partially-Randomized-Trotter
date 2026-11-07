@@ -10,6 +10,7 @@ import math
 
 from qiskit import ClassicalRegister, QuantumCircuit
 from qiskit.circuit import ControlledGate
+from qiskit.circuit.library import RZGate, RZZGate, XXPlusYYGate
 
 from .a1_control_variates import CategoricalLaw
 from .a2_lcu_access import _check_system_circuit
@@ -66,8 +67,60 @@ def _gate_key(op):
             tuple(float(x).hex() for x in op.params))
 
 
+@dataclass(frozen=True)
+class LiteralCircuit:
+    """Read-only system operation metadata; never a quantum-circuit builder.
+
+    Operations use application order and binary64 hex parameters. Ordered scalar
+    phase terms are retained without rounding their sum or fitting a phase.
+    """
+    num_qubits: int
+    operations: tuple
+    global_phase_terms: tuple = ()
+
+    def __post_init__(self):
+        if type(self.num_qubits) is not int or self.num_qubits < 1:
+            _stop('LITERAL_WIDTH', self.num_qubits)
+        if type(self.operations) is not tuple or type(self.global_phase_terms) is not tuple:
+            _stop('LITERAL_IMMUTABILITY', 'tuple descriptions required')
+        for name, params, wires in self.operations:
+            arity = {'rz': (1,1), 'rzz': (1,2), 'xx_plus_yy': (2,2)}.get(name)
+            if (arity is None or type(params) is not tuple or type(wires) is not tuple
+                    or (len(params),len(wires)) != arity or len(set(wires)) != len(wires)
+                    or any(type(q) is not int or not 0 <= q < self.num_qubits for q in wires)):
+                _stop('LITERAL_OPERATION', name)
+            for p in params:
+                self._hex(p)
+        for p in self.global_phase_terms:
+            self._hex(p)
+
+    @staticmethod
+    def _hex(p):
+        if not isinstance(p, str) or not math.isfinite(float.fromhex(p)) or float.fromhex(p).hex() != p:
+            _stop('LITERAL_PARAMETER', p)
+
+    @property
+    def key(self):
+        classes = {'rz': RZGate, 'rzz': RZZGate, 'xx_plus_yy': XXPlusYYGate}
+        phase = ('ordered_scalar_terms_v1', self.global_phase_terms)
+        return self.num_qubits, phase, tuple(
+            ((classes[name].__module__, classes[name].__qualname__, params), wires)
+            for name, params, wires in self.operations)
+
+    def copy(self):
+        return self
+
+    def adjoint(self):
+        operations = tuple((name, ((-float.fromhex(params[0])).hex(), *params[1:]), wires)
+                           for name, params, wires in reversed(self.operations))
+        phases = tuple((-float.fromhex(p)).hex() for p in reversed(self.global_phase_terms))
+        return LiteralCircuit(self.num_qubits, operations, phases)
+
+
 def circuit_key(circuit):
     """Literal ordered standard-gate description, including coherent phase."""
+    if isinstance(circuit, LiteralCircuit):
+        return circuit.key
     _check_system_circuit(circuit)
     return (circuit.num_qubits, float(circuit.global_phase).hex(), tuple(
         (_gate_key(item.operation), tuple(circuit.find_bit(q).index for q in item.qubits))
@@ -279,6 +332,8 @@ def build_instrument(group, axis, *, feed_forward=False,
     prototypes; no H4 instrument is activated by this function.
     """
     group.check()
+    if any(isinstance(c, LiteralCircuit) for c in (group.rows[0].A, group.rows[0].B, group.rows[0].V)):
+        _stop('METADATA_ONLY_NO_QUANTUM_BUILD', group.rows[0].slot_id)
     if (measurement_mode != 'qiskit_dynamic_reference' or type(feed_forward) is not bool
             or (group.rows[0].kind == 'rotation' and not feed_forward)):
         _stop('UNSUPPORTED_MEASUREMENT_FEED_FORWARD', measurement_mode)

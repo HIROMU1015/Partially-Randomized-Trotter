@@ -235,3 +235,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2新候補の操作・比較・次技術scope](research/o2_new_algorithm_candidate_exploration_20261108/REPORT.md)。label平均observableの測定と局所差分の別測定を設計。性能/新規性の採択・実装・新科学計算は行わない。
 
 2026-11-08：[O2案Mの最小instrumentと人工correctness](research/o2_m_instrument_technical_validation_20261108/REPORT.md)。12件PASS、強いancilla-free/grouping baselineとの差と実H4 metadata-only次案。新科学計算0。
+
+2026-11-08：[O2案M・n=0 header binderと一回metadata-only科学SOURCE準備](research/o2_m_n0_header_binding_preparation_20261108/REPORT.md)。literal adapter/元SOURCE対応、人工10＋関連3、未採択の有限実行契約。実H4の群適格性/群和は未取得。
