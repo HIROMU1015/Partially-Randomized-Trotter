@@ -243,3 +243,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2新機構の候補・技術選別・次の有限技術案](research/o2_new_mechanism_exploration_20261108/REPORT.md)。coherent label消去後の早期終了を1候補に絞り、既知法への優位/新規性は未認定。設計のみ。
 
 2026-11-08：[案Eの実装・人工correctness・強いbaseline比較](research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。人工16件PASS、同じearly LCUとの差0、実科学/実compileなし。
+
+2026-11-08：[O2の非同値性を先に確認した候補選別](research/o2_distinct_mechanism_screening_20261108/REPORT.md)。還元された操作と未解決の情報アクセスを分け、実装へ進む候補は残さなかった。文書設計のみ。

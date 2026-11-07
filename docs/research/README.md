@@ -133,3 +133,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 2026-11-08：[O2新機構・案Eの設計](o2_new_mechanism_exploration_20261108/NEW_MECHANISM_CANDIDATES.md)、[技術選別](o2_new_mechanism_exploration_20261108/CANDIDATE_TECHNICAL_ASSESSMENT.md)、[次の技術判別案](o2_new_mechanism_exploration_20261108/NEXT_RESEARCH_PROPOSAL.md)。失敗flagからsuffixを省く全attempt推定。M/Dの救済や新科学実行ではない。
 
 2026-11-08：[O2案Eの限定技術検証](o2_e_early_abort_technical_validation_20261108/REPORT.md)。TECHNICALLY_VALID_KNOWN_LCU_APPLICATION。全attempt平均/M2/flag zeroを人工確認、独自の資源利益は未認定。
+
+2026-11-08：[O2実装前の同値性・strong baseline選別](o2_distinct_mechanism_screening_20261108/REPORT.md)。3方向の操作/式・既知法への還元・summary取得のUNKNOWNを整理。新実装/計算/科学的採択なし。
