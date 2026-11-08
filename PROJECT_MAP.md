@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+## 2026-11-08：CDF0対ENTRYの独立追加価格検証（準備CASE C）
+
+[128/armの未承認proposal・不足E2 ground・人工105 PASS](docs/research/research_c_cdf0_entry_independent_price_precision_readiness_20261108.md)。保存H4/r64対r16を新cohortで検証する最小adapter。新科学実行・旧価格再解析0、旧判定/SOURCE/STOP不変。実行前でmandatory STOP。
+
+module: `src/trottertracks/c_cdf0_entry_independent_price.py`、runner: `scripts/run_research_c_cdf0_entry_independent_price.py`（既定metadata/bytesのみ）、test: `tests/management/test_research_c_cdf0_entry_independent_price.py`、artifact: `artifacts/research_c_independent_price_precision/2026-11-08/technical/`。
+
 研究C・現P0の終了性/Rust誤差：[集中検証CASE D](docs/research/research_c_entry_e2_r16_p0_termination_rust_uniform_20261108.md)。実P0の人工CX guard反例、条件付き8K+7 iteration上限、weighted phasor/全branch誤差式を取得。E2のguard内成功・実libm一様契約は未成立。補助 `src/trottertracks/c_entry_e2_p0_focused.py`、人工test `tests/management/test_research_c_entry_e2_p0_focused.py`、技術記録 `artifacts/research_c_entry_e2_p0_focused/2026-11-08/technical/technical.json`。科学runnerなし、実分子新科学0、STOP。
 
 

@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-08：CDF0対ENTRY・独立追加価格検証の準備CASE C
+
+[設計・SOURCE・不足入力・実行proposal](docs/research/research_c_cdf0_entry_independent_price_precision_readiness_20261108.md)。H4直鎖1Å/STO-3G・number CDF8/元順LD2・線形Z再配置・partial S2/s1/δ=.1/K0/m0..12/own-ground/状態準備除外/P0を固定し、CDF0/r64とENTRY E2/r16の双方fresh128件を未承認の主案として用意した。公開分散/Wによる計画proxyであり5%達成保証・新CIではない。人工43＋既存62＝105 PASS。新SOURCE114/入力52件中51件照合、E2の保存ground NPZ1件はhashだけあり原本不足。fallback solveを拒否するpreflight/adapterを追加。新H4科学・保存価格再解析・追加標本・PF/RTE/RPE/全word研究0、旧`UNRESOLVED_PRECISION_TARGET`とSOURCE/STOP保全。原本取得と別途科学実行許可が必要でmandatory STOP。
+
 ## 2026-11-07：研究C・保存CDF8/XDF8へ共通LD2再配置後もE2の点値利益
 
 固定H4直鎖1.00 Å/STO-3G、Nα=Nβ=2/sector36、保存CDF8/XDF8の元順F2〜F7だけの線形Zをheadへ移し、全frame ordered S2/s1/h=.1/m0..12、own-DF ground oracle・状態準備除外、P0/fenced serial/shell込みで一回実行した。Ideal lane総RZはCDF108,561,283,488、XDF101,780,388,260で、保存ENTRY E2＋PR/r16の75,621,395,471より高く、登録判定は`E2_POINT_BENEFIT_REMAINS`。Dの数値合成laneも全13round適格で同じ整数shots/総費用だった。

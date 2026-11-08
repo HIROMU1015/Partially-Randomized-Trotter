@@ -1,0 +1,198 @@
+{
+  "schema": "independent_price_technical_v1",
+  "date_JST": "2026-11-08",
+  "case": "C",
+  "status": "TECHNICAL_ADAPTER_TESTED_MISSING_EXACT_ENTRY_GROUND",
+  "branch": "codex/research-c-cdf0-entry-independent-price-precision-readiness-20261108",
+  "base_commit": "ef6b8e8df53120667257ecd38c8f4813fdf9f852",
+  "report": "docs/research/research_c_cdf0_entry_independent_price_precision_readiness_20261108.md",
+  "proposal": "docs/research/research_c_cdf0_entry_independent_price_proposal_20261108.json",
+  "proposal_sha256": "f30d4b65e5dcdbee4f675a4faa204a0f8fb9b8ed0d1bdc94d92c3b72fc0d1c6b",
+  "SOURCE": "artifacts/research_c_independent_price_precision/2026-11-08/technical/SOURCE.json",
+  "SOURCE_sha256": "934bfff3923609b5add4b9ec33ea2a9f2f3ac9004f41d7768f77251e62fb6f89",
+  "SOURCE_files": 114,
+  "fixed_GitHub_sources": [
+    {
+      "commit": "cbc517e75ad47054e4246748351f56269dac3a0c",
+      "path": "docs/research/research_c_cdf0_z_relocation_rerun02_results_20261108.md",
+      "git_blob": "4cc0f55cb7310e364cbc06f1574fa6da6b30e61e",
+      "remote_body_blob_matches_local_object": true
+    },
+    {
+      "commit": "3015d4fb342d4d98b58e41d57553e75539a07655",
+      "path": "docs/research/research_c_h4_relocated_downstream_results_20261106.md",
+      "git_blob": "ef6af240b00951a15ba02a7c31ebf7fbedf71caa",
+      "remote_body_blob_matches_local_object": true
+    },
+    {
+      "commit": "709813805d41e470676e311cd63a740af23bf33c",
+      "path": "docs/research/research_c_three_method_z_relocated_comparison_20261108/REPORT.md",
+      "git_blob": "df815b88b60ce7a9ece44f00891d889dae72f329",
+      "remote_body_blob_matches_local_object": true
+    },
+    {
+      "commit": "cbc517e75ad47054e4246748351f56269dac3a0c",
+      "path": "artifacts/research_c_cdf0_relocated/2026-11-08/technical/SOURCE.json",
+      "git_blob": "d6ff2bdf15db6846afa8da3033be491225bbc64c",
+      "remote_body_blob_matches_local_object": true
+    },
+    {
+      "commit": "3015d4fb342d4d98b58e41d57553e75539a07655",
+      "path": "artifacts/research_c_h4_handoff/2026-11-06/technical/SOURCE.json",
+      "git_blob": "d7921c30194bb9f1cbb24d1e05a57d28c591ebd5",
+      "remote_body_blob_matches_local_object": true
+    }
+  ],
+  "operating_instructions": {
+    "path": "/home/AbeHiromu/projects/partially-randomized-trotter/research_project_instructions_unified_2026-10-25.md",
+    "sha256": "e1e3e2625e2b728977402bded6583658e7fb762160f5e787fd45572af0095720",
+    "sections_read": [
+      "8.1",
+      "8.2",
+      "8.4",
+      "10",
+      "10.3"
+    ]
+  },
+  "preflight": {
+    "status": "PASSIVE_CHECKS_INPUT_GAP",
+    "missing_inputs": [
+      {
+        "path": "artifacts/research_c_independent_price_precision/2026-11-08/inputs/E2_ground_candidate.npz",
+        "expected_sha256": "6843e56b955a131583950c585287a41f61c08321b48618c1525b83d2361471b4"
+      }
+    ],
+    "new_sample_keys": 256,
+    "old_seed_keys_checked": 1024,
+    "execution_ready": false,
+    "execution_permission": false,
+    "scientific_calls": 0,
+    "arrays_decoded": 0,
+    "actual_CA_achieved": null,
+    "mandatory_stop": true
+  },
+  "planned_native_samples_per_arm": 128,
+  "planning": {
+    "rows": [
+      {
+        "CDF0_n": 64,
+        "ENTRY_n": 64,
+        "planning_factor": 2.0,
+        "planning_halfwidth_fraction": 0.061254744308771446,
+        "inference_performed": false,
+        "precision_achievement_guaranteed": false
+      },
+      {
+        "CDF0_n": 96,
+        "ENTRY_n": 96,
+        "planning_factor": 2.0,
+        "planning_halfwidth_fraction": 0.050014289293713966,
+        "inference_performed": false,
+        "precision_achievement_guaranteed": false
+      },
+      {
+        "CDF0_n": 128,
+        "ENTRY_n": 128,
+        "planning_factor": 2.0,
+        "planning_halfwidth_fraction": 0.04331364508058037,
+        "inference_performed": false,
+        "precision_achievement_guaranteed": false
+      },
+      {
+        "CDF0_n": 128,
+        "ENTRY_n": 64,
+        "planning_factor": 2.0,
+        "planning_halfwidth_fraction": 0.04536859291954028,
+        "inference_performed": false,
+        "precision_achievement_guaranteed": false
+      }
+    ],
+    "allocation_equal_cost_proxy": 3.048714530359059,
+    "unequal_cost_allocation": "sqrt(v_CDF0*cost_ENTRY/(v_ENTRY*cost_CDF0));runtime costs not measured here",
+    "actual_interval": null,
+    "actual_test": null,
+    "old_verdict_changed": false
+  },
+  "planned_scientific_callbacks": 2405,
+  "execution_permission": false,
+  "tests": {
+    "new_artificial_mock": 43,
+    "existing_regression": 62,
+    "total_unique_passed": 105,
+    "failed": 0,
+    "excluded": 2,
+    "executions": [
+      {
+        "suites": [
+          "test_research_c_cdf0_entry_independent_price.py (initial41)",
+          "test_research_c_r32_price_statistics.py",
+          "test_research_c_cdf0_relocated.py"
+        ],
+        "passed": 76,
+        "seconds": 5.57
+      },
+      {
+        "suites": [
+          "test_research_c_cdf0_entry_independent_price.py (final43, includes2 added preparation cases)"
+        ],
+        "passed": 43,
+        "seconds": 27.05
+      },
+      {
+        "suites": [
+          "test_research_c_native_process.py",
+          "test_research_c_h4_relocated_downstream.py"
+        ],
+        "filter": "not artificial_reference_RPE and not same_relocated_D_full_pipeline",
+        "passed": 27,
+        "deselected": 2,
+        "seconds": 194.22
+      }
+    ],
+    "runtime": "shared venv Python3.12 with prior isolated CPU qiskit-aer0.15.1/threadpoolctl3.6.0 /tmp overlays; no shared environment mutation",
+    "qualification": "local artificial regression; no real-H4 new evaluation, no saved price-row statistics, no immutable CI evidence",
+    "warnings": "5 pre-existing SyntaxWarning invalid escape sequences in Almost_optimal_grouping.py per invocation; no test failure"
+  },
+  "science_performed": {
+    "real_H4_build": 0,
+    "real_H4_compile": 0,
+    "native_price_samples": 0,
+    "saved_price_statistical_reanalysis": 0,
+    "new_scientific_intervals": 0,
+    "new_scientific_tests": 0,
+    "DF_fit": 0,
+    "PF_RTE_assessment": 0,
+    "RPE_shot_recomputation": 0,
+    "old_run_retry": 0,
+    "old_run_resume": 0,
+    "whole_P0_research": 0,
+    "important_GPT_scientific_review": 0
+  },
+  "preservation": {
+    "present_input_files_verified": 51,
+    "missing_input_files": 1,
+    "old_scientific_source_files_unchanged": 112,
+    "old_STOPs": {
+      "artifacts/research_c_cdf0_relocated/2026-11-08/science/run02/STOP.json": "c5cbfc2b5d8887a1405aaae693299f0dec3cbcf98186b973859adc39c906f8eb",
+      "artifacts/research_c_h4_handoff/2026-11-06/science/run01/STOP.json": "d58530aa8f09090ade3f1ad234a2da1d32a18235319dcf3e0ca9bd052e92d6c2"
+    },
+    "old_CDF0_verdict": "UNRESOLVED_PRECISION_TARGET",
+    "old_ENTRY_PRaware_verdict_changed": false,
+    "user_archive_member_metadata_only": {
+      "members": 20,
+      "ground_members": 0,
+      "extraction": false
+    },
+    "original_dirty_worktree_modified": false
+  },
+  "next_required": [
+    "retrieve exact saved E2 ground bytes and verify expected hash",
+    "pass passive preflight with every fixed input",
+    "explicit adoption and new science execution permission for this fixed128/arm proposal"
+  ],
+  "actual_CA_achieved": null,
+  "new_comparison": null,
+  "retry": 0,
+  "resume": 0,
+  "mandatory_stop": true
+}
