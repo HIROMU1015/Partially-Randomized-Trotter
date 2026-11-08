@@ -139,3 +139,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 2026-11-08：[共通basis label周辺化の限定技術調査](o2_common_basis_static_validation_20261108/REPORT.md)。理想column保存と保存finite-targetの保証を分離。同じframe/readoutは既知groupingも利用可能。新規性/科学的GOを採択しない。
 
 2026-11-08：[O2 真空参照CSWAPの技術検証](o2_vacuum_reference_cswap_20261108/REPORT.md)。既知SE応用・非可換pathの単回分布保存、coherent QPE反例、追加qubit/CSWAP/routing/reset込み人工比較と次の有限scope草案。科学実行未採択。
+
+2026-11-08：[真空参照H4のadapter・数値保証・有限実行準備](o2_vacuum_reference_h4_preparation_20261108/REPORT.md)。保存stateなしでselected回路へ接続。任意入力の測定POVM差を評価し、level2の読出し最適化と相対phase誤りを区別。新18人工PASS/24行、実H4の上界・価格は未取得。

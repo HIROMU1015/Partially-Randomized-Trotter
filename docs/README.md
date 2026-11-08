@@ -249,3 +249,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2共通basisの演算子接続・誤差・full費用条件](research/o2_common_basis_static_validation_20261108/REPORT.md)。SOURCE静的確認と紙上比較のみ。旧M singleton結果は維持し、群再生成・test・科学計算を行わない。
 
 2026-11-08：[O2真空参照CSWAP：理論・既知SE対応・人工費用](research/o2_vacuum_reference_cswap_20261108/REPORT.md)。単回X/Y信号とcoherent QPEの追加条件を分離。14 PASS/128人工比較、H4新評価0。実装src/trottertracks/algorithm_codesign/vacuum_reference_cswap.py、runner scripts/tracks/algorithm_codesign/run_vacuum_cswap_artificial.py、test tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py、証拠artifacts/o2_vacuum_reference_cswap/2026-11-08/。
+
+2026-11-08：[O2 真空参照CSWAPの実H4技術準備](research/o2_vacuum_reference_h4_preparation_20261108/REPORT.md)。新18人工testsとlevel2 24結果行、全入力POVMの丸め込み誤差方式、次回2path契約草案。実装src/trottertracks/algorithm_codesign/vacuum_h4_adapter.py、runner scripts/tracks/algorithm_codesign/run_vacuum_h4_preparation_artificial.py、tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py、artifact artifacts/o2_vacuum_h4_preparation/2026-11-08/。実H4 science未許可/未実行。

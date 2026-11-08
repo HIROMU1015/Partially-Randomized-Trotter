@@ -1,0 +1,137 @@
+{
+  "status": "PASS",
+  "tests": 18,
+  "failures": 0,
+  "errors": 0,
+  "elapsed_seconds": 0.5131692513823509,
+  "evidence": [
+    {
+      "case": "invented_8_system_descriptor",
+      "qubits": 17,
+      "statevector_columns_evaluated": 0,
+      "ledger": {
+        "L_scalar_free_vacuum": "5404319552844595/36028797018963968",
+        "R_scalar_free_vacuum": "-3602879701896397/36028797018963968",
+        "original_scalar": "-3602879701896397/36028797018963968",
+        "correction_exact": "-1801439850948199/36028797018963968",
+        "correction_hex": "-0x1.999999999999cp-5",
+        "correction_rounding_upper": "0",
+        "ledger_arithmetic": "exact Fraction",
+        "lane_global_phase": "0; original scalar terms transferred only to signal correction",
+        "reference_initialization": "ideal vacuum reset",
+        "postselection": false
+      }
+    },
+    {
+      "case": "cost_blind_rule",
+      "paths": [
+        {
+          "order": 0,
+          "labels": [
+            "df-fragment-1:Z0"
+          ],
+          "identity": "0c9e88e36c75657d8e51cf522e10dab3bd21de603a7891373c01cc013e103d7a",
+          "mass_exact": "3/16"
+        },
+        {
+          "order": 2,
+          "labels": [
+            "df-fragment-1:Z0",
+            "df-fragment-1:Z0Z1",
+            "df-fragment-1:Z1"
+          ],
+          "identity": "7bd03132799e3796d7ddce97cfac2599c5c927543c272f78e5f5181f57bfbd92",
+          "mass_exact": "1/128"
+        }
+      ],
+      "old_measurements_used": false
+    },
+    {
+      "case": "explicit_IEEE_vs_exact_Fraction",
+      "max_component": "18472471597752181/324518553658426726783156020576256",
+      "proof": {
+        "frobenius_simulation_error_upper": "24791252703894246703356860267334164267114175208870885340888932969/115792089237316195423570985008687907853269984665640564039457584007913129639936",
+        "columns": 4,
+        "rows": 4,
+        "steps": 3,
+        "effective_local_error_upper": "4652078184970987121528734342564945588459875628237605578796354802535369168292439/260740604970813640081914861535423286759662910949700573731502649314540609081787058825826664448",
+        "input_norm_upper": 4,
+        "model": "IEEE binary64 round-to-nearest, gradual underflow; explicit real multiply/add",
+        "gate_rounding_included": true,
+        "global_phase_included": true,
+        "BLAS_dot_used": false
+      }
+    },
+    {
+      "case": "saved_schema_split",
+      "path": {
+        "order": 0,
+        "labels": [
+          "df-fragment-1:Z0"
+        ],
+        "identity": "0c9e88e36c75657d8e51cf522e10dab3bd21de603a7891373c01cc013e103d7a",
+        "mass_exact": "3/16"
+      },
+      "split": {
+        "rule": "semantic_unit_midpoint_earlier_tie",
+        "unit_ends": [
+          10,
+          20,
+          27,
+          37,
+          46
+        ],
+        "unit_count": 5,
+        "right_units": 2,
+        "controlled_gate_cut": 20,
+        "scalar_rule": "retain exact ancilla P terms; correction includes their total"
+      },
+      "scalar_terms": [
+        "-0x1.999999999999ap-11",
+        "-0x1.47ae147ae147dp-10",
+        "-0x1.0a3d70a3d70a6p-9",
+        "-0x1.0a3d70a3d70a6p-9",
+        "-0x1.47ae147ae147dp-10"
+      ]
+    },
+    {
+      "case": "saved_schema_split",
+      "path": {
+        "order": 2,
+        "labels": [
+          "df-fragment-1:Z0",
+          "df-fragment-1:Z0Z1",
+          "df-fragment-1:Z1"
+        ],
+        "identity": "7bd03132799e3796d7ddce97cfac2599c5c927543c272f78e5f5181f57bfbd92",
+        "mass_exact": "1/128"
+      },
+      "split": {
+        "rule": "semantic_unit_midpoint_earlier_tie",
+        "unit_ends": [
+          10,
+          20,
+          24,
+          26,
+          31,
+          41,
+          50
+        ],
+        "unit_count": 7,
+        "right_units": 3,
+        "controlled_gate_cut": 24,
+        "scalar_rule": "retain exact ancilla P terms; correction includes their total"
+      },
+      "scalar_terms": [
+        "-0x1.999999999999ap-11",
+        "-0x1.47ae147ae147dp-10",
+        "-0x1.0a3d70a3d70a6p-9",
+        "0x1.921fb54442d18p+1",
+        "-0x1.0a3d70a3d70a6p-9",
+        "-0x1.47ae147ae147dp-10"
+      ]
+    }
+  ],
+  "prior_suite_rerun": false,
+  "uniform_error_method": "explicit IEEE operator contraction + interval local matrices"
+}

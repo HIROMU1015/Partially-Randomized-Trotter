@@ -821,3 +821,7 @@ C-S V0修復後（2026-11-08）：LOCAL_V0_COMPLETE、D/R finite/native/local ca
 ## 2026-11-08：O2 真空参照CSWAPの人工検証
 
 [技術報告](docs/research/o2_vacuum_reference_cswap_20261108/REPORT.md)。人工1–3 system qubits、14 correctness/関連PASS、128 compile比較行。phase-fitなし・既知SEと同一IR。長いchanging-basis例の資源低下と、短い/強融合例での不利を両方記録。local人工証拠のみで、全support数値認証/実H4/CI独立再現/全RPE費用優位ではない。科学SOURCE・旧結果/STOP/C1凍結は維持。
+
+## 2026-11-08：真空参照CSWAPのH4接続技術準備
+
+[報告](docs/research/o2_vacuum_reference_h4_preparation_20261108/REPORT.md)。新18人工tests PASS/level2比較24行、保存schema adapterと全入力測定POVM誤差方式を確認。実H4新入力/compile/Born/shot0、実上界/資源優位未取得、新科学allowance未採択。旧engine/結果/STOPとC1凍結を維持。

@@ -1,0 +1,80 @@
+test_XY_probability_phase_reference_and_permuted_wires (test_vacuum_h4_preparation.PreparationTests.test_XY_probability_phase_reference_and_permuted_wires) ... ERROR
+test_adapter_has_no_state_RNG_or_science_loader (test_vacuum_h4_preparation.PreparationTests.test_adapter_has_no_state_RNG_or_science_loader) ... ok
+test_correction_rounding_is_exactly_accounted_without_modulo (test_vacuum_h4_preparation.PreparationTests.test_correction_rounding_is_exactly_accounted_without_modulo) ... ok
+test_eight_system_descriptor_mapping_without_state_enumeration (test_vacuum_h4_preparation.PreparationTests.test_eight_system_descriptor_mapping_without_state_enumeration) ... ok
+test_existing_STOP_output_collision_prevents_loading (test_vacuum_h4_preparation.PreparationTests.test_existing_STOP_output_collision_prevents_loading) ... ok
+test_identity_source_policy_and_saved_matrix_tampering_stop (test_vacuum_h4_preparation.PreparationTests.test_identity_source_policy_and_saved_matrix_tampering_stop) ... ERROR
+test_new_primitive_exact_matrices_and_old_interval_reuse (test_vacuum_h4_preparation.PreparationTests.test_new_primitive_exact_matrices_and_old_interval_reuse) ... ok
+test_path_rule_is_positive_cost_blind_and_order_fixed (test_vacuum_h4_preparation.PreparationTests.test_path_rule_is_positive_cost_blind_and_order_fixed) ... ok
+test_phase_error_cannot_be_hidden_by_fitting (test_vacuum_h4_preparation.PreparationTests.test_phase_error_cannot_be_hidden_by_fitting) ... ok
+test_profile_is_level2_and_old_profile_unchanged (test_vacuum_h4_preparation.PreparationTests.test_profile_is_level2_and_old_profile_unchanged) ... ok
+test_reset_readout_dynamic_and_layout_guards (test_vacuum_h4_preparation.PreparationTests.test_reset_readout_dynamic_and_layout_guards) ... ok
+test_roundoff_encloses_exact_fraction_operator_contraction (test_vacuum_h4_preparation.PreparationTests.test_roundoff_encloses_exact_fraction_operator_contraction) ... ok
+test_state_free_restore_reuses_fixed_selected_builder (test_vacuum_h4_preparation.PreparationTests.test_state_free_restore_reuses_fixed_selected_builder) ... ERROR
+test_traced_natural_split_and_raw_scalar_order (test_vacuum_h4_preparation.PreparationTests.test_traced_natural_split_and_raw_scalar_order) ... ERROR
+test_unsupported_gate_control_and_invalid_mapping_fail_closed (test_vacuum_h4_preparation.PreparationTests.test_unsupported_gate_control_and_invalid_mapping_fail_closed) ... ok
+
+======================================================================
+ERROR: test_XY_probability_phase_reference_and_permuted_wires (test_vacuum_h4_preparation.PreparationTests.test_XY_probability_phase_reference_and_permuted_wires)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 113, in test_XY_probability_phase_reference_and_permuted_wires
+    r=fixture();c=context(r);psi=np.array([1,2j,3,-4j])/np.sqrt(30)
+                  ^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 41, in context
+    def context(records):return a.SavedPR(records,expected_hashes=a.record_hashes(records))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/src/trottertracks/algorithm_codesign/vacuum_h4_adapter.py", line 71, in __init__
+    and scope['delta']==self.step_time and scope['coefficient_atol']==prep['coefficient_atol']==0.
+                                                                      ~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'coefficient_atol'
+
+======================================================================
+ERROR: test_identity_source_policy_and_saved_matrix_tampering_stop (test_vacuum_h4_preparation.PreparationTests.test_identity_source_policy_and_saved_matrix_tampering_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 89, in test_identity_source_policy_and_saved_matrix_tampering_stop
+    with self.assertRaisesRegex(ValueError,'policy'):context(r)
+                                                     ^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 41, in context
+    def context(records):return a.SavedPR(records,expected_hashes=a.record_hashes(records))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/src/trottertracks/algorithm_codesign/vacuum_h4_adapter.py", line 71, in __init__
+    and scope['delta']==self.step_time and scope['coefficient_atol']==prep['coefficient_atol']==0.
+                                                                      ~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'coefficient_atol'
+
+======================================================================
+ERROR: test_state_free_restore_reuses_fixed_selected_builder (test_vacuum_h4_preparation.PreparationTests.test_state_free_restore_reuses_fixed_selected_builder)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 62, in test_state_free_restore_reuses_fixed_selected_builder
+    r=fixture();c=context(r)
+                  ^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 41, in context
+    def context(records):return a.SavedPR(records,expected_hashes=a.record_hashes(records))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/src/trottertracks/algorithm_codesign/vacuum_h4_adapter.py", line 71, in __init__
+    and scope['delta']==self.step_time and scope['coefficient_atol']==prep['coefficient_atol']==0.
+                                                                      ~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'coefficient_atol'
+
+======================================================================
+ERROR: test_traced_natural_split_and_raw_scalar_order (test_vacuum_h4_preparation.PreparationTests.test_traced_natural_split_and_raw_scalar_order)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 95, in test_traced_natural_split_and_raw_scalar_order
+    r=fixture();c=context(r)
+                  ^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/tests/tracks/algorithm_codesign/test_vacuum_h4_preparation.py", line 41, in context
+    def context(records):return a.SavedPR(records,expected_hashes=a.record_hashes(records))
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-h4-preparation-20261108/src/trottertracks/algorithm_codesign/vacuum_h4_adapter.py", line 71, in __init__
+    and scope['delta']==self.step_time and scope['coefficient_atol']==prep['coefficient_atol']==0.
+                                                                      ~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'coefficient_atol'
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.358s
+
+FAILED (errors=4)
