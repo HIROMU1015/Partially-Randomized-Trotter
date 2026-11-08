@@ -1,5 +1,8 @@
 # 文書索引
 
+研究C・ENTRY E2/r16：[Whole-P0/trajectory target成立性CASE C](research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。固定Qiskit Python/Rustを確認し、解析的部分と未成立の正常終了・f64 imageを区別。人工/回帰187 PASS、新科学処理0。
+
+
 研究C・ENTRY E2/r16の全law保証：[CASE B・旧保証成果の再利用とP0一様性のblocker](research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。metadata専用adapter・人工回帰・未取得13round packet。新科学計算0、mandatory STOP。
 
 

@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+研究C・ENTRY E2/r16のP0一様保証：[成立性検証・CASE C](docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。同じgate-list/literal/reference targetの誤差連鎖、nonunitary norm-growth、exact Euler lemmaを具体化。実Rust全域誤差とguard内正常終了は未成立。補助 `src/trottertracks/c_entry_e2_p0_feasibility.py`、人工test `tests/management/test_research_c_entry_e2_p0_feasibility.py`、技術記録 `artifacts/research_c_entry_e2_p0_feasibility/2026-11-08/technical/technical.json`。科学runnerなし、新科学計算0・STOP。
+
+
 研究C・ENTRY E2＋Z再配置＋PR/r16の全law保証：[統合技術準備・CASE B](docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。全到達domainのP0誤差・成功条件とtrajectory target対応が未成立。旧38-call/Arb384/固定word成果を照合し、metadata専用adapter `src/trottertracks/c_entry_e2_all_law_readiness.py`、passive checker `scripts/check_research_c_entry_e2_all_law.py`、人工test `tests/management/test_research_c_entry_e2_all_law.py`、証拠 `artifacts/research_c_entry_e2_all_law/2026-11-08/technical/`を追加。新科学計算0、mandatory STOP。
 
 研究C・保存強Dの共通LD2再配置：[2候補とも適格、E2の条件付き総RZ点値利益を維持](docs/research/research_c_h4_strong_d_relocation_results_20261107.md)。286/286 COMPLETE、全512/実逆/2 lane、SOURCE/入力保全、登録STOP。

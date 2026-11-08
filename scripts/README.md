@@ -1,5 +1,8 @@
 # scripts 索引
 
+ENTRY E2/r16の[Whole-P0一様保証成立性CASE C](../docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)は方法未成立のため科学runnerを追加しない。`c_entry_e2_p0_feasibility.py`は既存composerと解析的scalar lemmaの技術previewのみ。前段のpassive checkerは継続利用できる。
+
+
 `check_research_c_entry_e2_all_law.py`：ENTRY E2・再配置後r16の候補/SOURCE/保存bytesだけを照合する。科学起動optionなし。[全law保証のCASE B・未取得bound・次の方法判断](../docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。
 
 `run_research_c_h4_strong_d_relocation.py`：保存CDF8/XDF8強Dの固定LD2再配置。既定はbyte-only preflight、`--execute`は別途科学実行許可後だけ使用する。[人工検証・未承認契約・規模](../docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。今回の実H4評価は0。

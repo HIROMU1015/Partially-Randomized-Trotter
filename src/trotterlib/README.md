@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+研究C・P0成立性の補助は`trottertracks/c_entry_e2_p0_feasibility.py`。既存monotone budget/uniform composerを再利用し、same-target誤差脚・literal norm-growth・exact Euler部分を扱う。[CASE C・証明前提と人工検証](../../docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。科学loader/runnerなし。
+
+
 研究C・ENTRY E2/r16のmetadata専用接続は`trottertracks/c_entry_e2_all_law_readiness.py`。既存read/shaとcoverage拒否規則を利用し、科学起動経路なし。[全law保証の技術準備CASE B](../../docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。
 
 

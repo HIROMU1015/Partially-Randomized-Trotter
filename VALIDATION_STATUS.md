@@ -1153,3 +1153,8 @@ UWC note が保存している実行記録は `.venv/bin/python -m pytest -q` �
 ## 2026-11-08：ENTRY E2/r16全law保証の統合技術準備（CASE B）
 
 [報告・固定identity・再利用・次期scope](docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。旧IID38-call/Arb384二項27-call/固定word成果を照合し、旧PR候補・再配置前r32の数値を現E2へ流用しない。Whole-P0全到達領域の誤差・位相・成功条件と同一trajectory target対応は未成立、PCG64 joint streamも未資格。metadata-only接続・人工テストとbyte preflightを追加。全13round boundとactual CAはnull。新科学計算・保存値の数値再解析・追加価格標本0。科学方法・call上限未確定でmandatory STOP、旧結果/STOPとCDF0の精度未達判定は不変。
+
+
+## 2026-11-08：ENTRY E2/r16 Whole-P0成立性（CASE C）
+
+[技術報告・証明とblocker](docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。Same-target compiler/literal/reference連鎖、literal Gram/norm-growth、exact Euler再構成の解析的部分を具体化した。実Rust f64全domain誤差・1000回guard内正常終了は未成立、CA/bound/nullと科学非実行を維持。新46＋既存141=187人工/回帰PASS。科学計算・保存値数値再解析・新Arb/H4 compile/RPE/価格0、旧SOURCE/結果/STOP不変、mandatory STOP。数学的全compiler保証や独立科学レビューではない。
