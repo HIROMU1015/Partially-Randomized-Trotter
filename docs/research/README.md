@@ -137,3 +137,5 @@ A1の[新finite-target科学契約設計案](o2_a1_new_finite_target_20261106/RE
 2026-11-08：[O2実装前の同値性・strong baseline選別](o2_distinct_mechanism_screening_20261108/REPORT.md)。3方向の操作/式・既知法への還元・summary取得のUNKNOWNを整理。新実装/計算/科学的採択なし。
 
 2026-11-08：[共通basis label周辺化の限定技術調査](o2_common_basis_static_validation_20261108/REPORT.md)。理想column保存と保存finite-targetの保証を分離。同じframe/readoutは既知groupingも利用可能。新規性/科学的GOを採択しない。
+
+2026-11-08：[O2 真空参照CSWAPの技術検証](o2_vacuum_reference_cswap_20261108/REPORT.md)。既知SE応用・非可換pathの単回分布保存、coherent QPE反例、追加qubit/CSWAP/routing/reset込み人工比較と次の有限scope草案。科学実行未採択。

@@ -279,3 +279,5 @@ O2案Mの保存header人工入口は `scripts/tracks/algorithm_codesign/run_m_n0
 O2案Mの `run_m_n0_metadata.py` は固定SOURCE39d8390で[metadata_run01を一回完了](../docs/research/o2_m_n0_metadata_result_20261108/REPORT.md)。非自明群なし、STOPを保全し、追加実行しない。
 
 O2案Eの人工入口は tracks/algorithm_codesign/run_e_label_erasure_artificial.py --output <fresh-directory>。新規14＋関連A2回帰2件だけを全分岐検証しSOURCE/results/log/STOPを保存する。実H4/RNG/shot/compile経路なし。[報告](../docs/research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。
+
+2026-11-08：tracks/algorithm_codesign/run_vacuum_cswap_artificial.py は人工1–3 qubitのcorrectness後に有限compile比較を行う。run_vacuum_cswap_fusion_check.py は同じSOURCEのcorrectnessを再実行せず、明示shared-basis融合の強い追加baselineだけを比較する。科学入力/shot/RNGなし。[技術報告](../docs/research/o2_vacuum_reference_cswap_20261108/REPORT.md)、testはtests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py、正本artifacts/o2_vacuum_reference_cswap/2026-11-08/。実行例：PYTHONDONTWRITEBYTECODE=1 <Qiskit1.3.0環境のpython> scripts/tracks/algorithm_codesign/run_vacuum_cswap_artificial.py --output <fresh-directory>。fusion runnerは固定済みartificial_run05のSOURCE hashを確認する。

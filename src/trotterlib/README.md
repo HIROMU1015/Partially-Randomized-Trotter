@@ -242,3 +242,5 @@ O2案Mの新track adapterは [m_label_average.py](../trottertracks/algorithm_cod
 案M header binderの[固定N1 n=0一回結果](../../docs/research/o2_m_n0_metadata_result_20261108/REPORT.md)：全正labelはliteral署名で単独群。matrix/state/Born/compileなし、科学SOURCEのcodeは無変更。
 
 O2案Eの限定track adapterは [e_label_erasure.py](../trottertracks/algorithm_codesign/e_label_erasure.py)。既存A2 gate検査・Hadamard bit規約を再利用し、2-label PREP/SELECT/flag早期終了と三値decoderを接続。人工1/2-system qubitだけで旧engine認証は継承しない。[module/runner/test/証拠](../../docs/research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。
+
+2026-11-08：O2 vacuum-reference人工adapterはsrc/trottertracks/algorithm_codesign/vacuum_reference_cswap.py。rpe_hadamard_interrogationのbit規約、既存A2 gate検査、research_direction_structure_pilotのdiagonal_only/shared-basis builder、pr_dictionary_validationのcompile/matrix helperを再利用。科学engine無変更・実H4 bindingなし。[報告](../../docs/research/o2_vacuum_reference_cswap_20261108/REPORT.md)。runner scripts/tracks/algorithm_codesign/run_vacuum_cswap_artificial.py、人工test tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py、artifact artifacts/o2_vacuum_reference_cswap/2026-11-08/。

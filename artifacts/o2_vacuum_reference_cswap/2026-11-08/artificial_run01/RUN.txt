@@ -1,0 +1,111 @@
+test_actual_phase_ledger_against_independent_vacuum_columns (test_vacuum_reference_cswap.VacuumTests.test_actual_phase_ledger_against_independent_vacuum_columns) ... ERROR
+test_adapter_no_state_Born_RNG_loader_compile_or_inverse_preparation (test_vacuum_reference_cswap.VacuumTests.test_adapter_no_state_Born_RNG_loader_compile_or_inverse_preparation) ... ok
+test_finite_actual_law_multiple_paths_preserves_complex_average (test_vacuum_reference_cswap.VacuumTests.test_finite_actual_law_multiple_paths_preserves_complex_average) ... ERROR
+test_full_input_isometry_phase_reference_and_wire_permutations (test_vacuum_reference_cswap.VacuumTests.test_full_input_isometry_phase_reference_and_wire_permutations) ... ERROR
+test_identity_zero_phase_and_measurement_mapping (test_vacuum_reference_cswap.VacuumTests.test_identity_zero_phase_and_measurement_mapping) ... ok
+test_known_SE_is_identical_not_a_PR_specific_gadget (test_vacuum_reference_cswap.VacuumTests.test_known_SE_is_identical_not_a_PR_specific_gadget) ... ERROR
+test_missing_phase_correction_is_detected (test_vacuum_reference_cswap.VacuumTests.test_missing_phase_correction_is_detected) ... ERROR
+test_multiblock_noncommuting_split_counterexample_even_for_U_powers (test_vacuum_reference_cswap.VacuumTests.test_multiblock_noncommuting_split_counterexample_even_for_U_powers) ... ERROR
+test_multiblock_shared_eigenbasis_arbitrary_superposition (test_vacuum_reference_cswap.VacuumTests.test_multiblock_shared_eigenbasis_arbitrary_superposition) ... ok
+test_noncommuting_LR_arbitrary_state_and_binary_distributions (test_vacuum_reference_cswap.VacuumTests.test_noncommuting_LR_arbitrary_state_and_binary_distributions) ... ERROR
+test_nonvacuum_gate_unknown_oracle_and_science_width_rejected (test_vacuum_reference_cswap.VacuumTests.test_nonvacuum_gate_unknown_oracle_and_science_width_rejected) ... ERROR
+test_nonphysical_or_unspecified_inputs_stop (test_a2_lcu_access.LCUAccessTests.test_nonphysical_or_unspecified_inputs_stop) ... ok
+test_scalar_phase_is_coherent_and_Y_sign_is_preserved (test_a2_lcu_access.LCUAccessTests.test_scalar_phase_is_coherent_and_Y_sign_is_preserved) ... ok
+
+======================================================================
+ERROR: test_actual_phase_ledger_against_independent_vacuum_columns (test_vacuum_reference_cswap.VacuumTests.test_actual_phase_ledger_against_independent_vacuum_columns)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 109, in test_actual_phase_ledger_against_independent_vacuum_columns
+    L,R,_=fixture(n,extra)
+          ^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_finite_actual_law_multiple_paths_preserves_complex_average (test_vacuum_reference_cswap.VacuumTests.test_finite_actual_law_multiple_paths_preserves_complex_average)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 120, in test_finite_actual_law_multiple_paths_preserves_complex_average
+    L,R,psi=fixture(2,phase);z=np.vdot(psi,Operator(L).data@Operator(R).data@psi)
+            ^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_full_input_isometry_phase_reference_and_wire_permutations (test_vacuum_reference_cswap.VacuumTests.test_full_input_isometry_phase_reference_and_wire_permutations)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 68, in test_full_input_isometry_phase_reference_and_wire_permutations
+    L,R,_=fixture(n);lm,rm=Operator(L).data,Operator(R).data
+          ^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_known_SE_is_identical_not_a_PR_specific_gadget (test_vacuum_reference_cswap.VacuumTests.test_known_SE_is_identical_not_a_PR_specific_gadget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 145, in test_known_SE_is_identical_not_a_PR_specific_gadget
+    L,R,_=fixture(n)
+          ^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_missing_phase_correction_is_detected (test_vacuum_reference_cswap.VacuumTests.test_missing_phase_correction_is_detected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 133, in test_missing_phase_correction_is_detected
+    L,R,psi=fixture(2,.43);plan=v.build_instrument(L,R)
+            ^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_multiblock_noncommuting_split_counterexample_even_for_U_powers (test_vacuum_reference_cswap.VacuumTests.test_multiblock_noncommuting_split_counterexample_even_for_U_powers)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 188, in test_multiblock_noncommuting_split_counterexample_even_for_U_powers
+    L1=QuantumCircuit(n);L1.xx_plus_yy(math.pi/2,0.,0,1)
+                         ^^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_noncommuting_LR_arbitrary_state_and_binary_distributions (test_vacuum_reference_cswap.VacuumTests.test_noncommuting_LR_arbitrary_state_and_binary_distributions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 88, in test_noncommuting_LR_arbitrary_state_and_binary_distributions
+    L,R,psi=fixture(n)
+            ^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+======================================================================
+ERROR: test_nonvacuum_gate_unknown_oracle_and_science_width_rejected (test_vacuum_reference_cswap.VacuumTests.test_nonvacuum_gate_unknown_oracle_and_science_width_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 173, in test_nonvacuum_gate_unknown_oracle_and_science_width_rejected
+    L,R,_=fixture(2)
+          ^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py", line 26, in fixture
+    L.xx_plus_yy(.61,.17,0,1);L.rzz(-.29,0,1)
+    ^^^^^^^^^^^^
+AttributeError: 'QuantumCircuit' object has no attribute 'xx_plus_yy'
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.060s
+
+FAILED (errors=8)

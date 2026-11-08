@@ -332,3 +332,5 @@ C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_
 2026-11-08：[O2の実装前非同値性選別](docs/research/o2_distinct_mechanism_screening_20261108/REPORT.md)。normalizer二段取得・有限状態summary・座標測定を既知法と照合。DISTINCT_MECHANISM_SUPPORTED=0、実装/新科学計算なし。O2継続・旧STOP/C1凍結維持。
 
 2026-11-08：[共通basis label周辺化の静的接続調査](docs/research/o2_common_basis_static_validation_20261108/REPORT.md)。support列保存の理想共役同値、SOURCEの逆/順・phase、保存gate差と強いgroupingを分離。総合C（数値保証未成立）、理想baselineは既知groupingへ還元。新群/実装/計算なし。
+
+2026-11-08：[O2真空参照CSWAPの数理・人工資源比較](docs/research/o2_vacuum_reference_cswap_20261108/REPORT.md)。新adapter vacuum_reference_cswap.py、人工runner 2本、tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py、artifacts/o2_vacuum_reference_cswap/2026-11-08/を接続。14人工/関連PASS、128比較行。単回非可換path信号を保存、既知SE同一、長いchanging-basis人工条件で資源低下、共通basis融合では不利。H4/shot/RNG0、全RPE優位/新規機構未認定、公開後STOP。

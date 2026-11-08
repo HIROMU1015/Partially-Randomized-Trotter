@@ -817,3 +817,7 @@ LOCAL_V0_INCOMPLETE／Stage B／schema adapter TypeError。固定0bd18bb、Stage
 C-S V0 schema修復（2026-11-08）：新人工5件PASS、ユーザーは技術的中断の修正再実行を許可。同じ条件の新SOURCE/新outputを使う。旧run01のINCOMPLETE/UNKNOWNと旧STOPは保全。[記録](docs/research/cs_v0_repair_20261108/REPORT.md)。
 
 C-S V0修復後（2026-11-08）：LOCAL_V0_COMPLETE、D/R finite/native/local cap PASS、7positive keys。現政策の局所T削減なし、full価格/N/G未評価。科学SOURCE e69d1df、旧run01/STOPを保全。技術修復の5人工PASSと今回科学結果を区別し、追加実行はしない。[正本](docs/research/cs_v0_repair_results_20261108/REPORT.md)。
+
+## 2026-11-08：O2 真空参照CSWAPの人工検証
+
+[技術報告](docs/research/o2_vacuum_reference_cswap_20261108/REPORT.md)。人工1–3 system qubits、14 correctness/関連PASS、128 compile比較行。phase-fitなし・既知SEと同一IR。長いchanging-basis例の資源低下と、短い/強融合例での不利を両方記録。local人工証拠のみで、全support数値認証/実H4/CI独立再現/全RPE費用優位ではない。科学SOURCE・旧結果/STOP/C1凍結は維持。

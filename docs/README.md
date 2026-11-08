@@ -247,3 +247,5 @@ metadata上の構造的適格性のみを対象とし、公開後mandatory STOP�
 2026-11-08：[O2の非同値性を先に確認した候補選別](research/o2_distinct_mechanism_screening_20261108/REPORT.md)。還元された操作と未解決の情報アクセスを分け、実装へ進む候補は残さなかった。文書設計のみ。
 
 2026-11-08：[O2共通basisの演算子接続・誤差・full費用条件](research/o2_common_basis_static_validation_20261108/REPORT.md)。SOURCE静的確認と紙上比較のみ。旧M singleton結果は維持し、群再生成・test・科学計算を行わない。
+
+2026-11-08：[O2真空参照CSWAP：理論・既知SE対応・人工費用](research/o2_vacuum_reference_cswap_20261108/REPORT.md)。単回X/Y信号とcoherent QPEの追加条件を分離。14 PASS/128人工比較、H4新評価0。実装src/trottertracks/algorithm_codesign/vacuum_reference_cswap.py、runner scripts/tracks/algorithm_codesign/run_vacuum_cswap_artificial.py、test tests/tracks/algorithm_codesign/test_vacuum_reference_cswap.py、証拠artifacts/o2_vacuum_reference_cswap/2026-11-08/。

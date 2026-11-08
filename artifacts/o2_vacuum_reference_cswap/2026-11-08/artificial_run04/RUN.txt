@@ -1,0 +1,32 @@
+test_actual_phase_ledger_against_independent_vacuum_columns (test_vacuum_reference_cswap.VacuumTests.test_actual_phase_ledger_against_independent_vacuum_columns) ... ok
+test_adapter_no_state_Born_RNG_loader_compile_or_inverse_preparation (test_vacuum_reference_cswap.VacuumTests.test_adapter_no_state_Born_RNG_loader_compile_or_inverse_preparation) ... ok
+test_finite_actual_law_multiple_paths_preserves_complex_average (test_vacuum_reference_cswap.VacuumTests.test_finite_actual_law_multiple_paths_preserves_complex_average) ... ok
+test_full_input_isometry_phase_reference_and_wire_permutations (test_vacuum_reference_cswap.VacuumTests.test_full_input_isometry_phase_reference_and_wire_permutations) ... ok
+test_identity_zero_phase_and_measurement_mapping (test_vacuum_reference_cswap.VacuumTests.test_identity_zero_phase_and_measurement_mapping) ... ok
+test_known_SE_is_identical_not_a_PR_specific_gadget (test_vacuum_reference_cswap.VacuumTests.test_known_SE_is_identical_not_a_PR_specific_gadget) ... ok
+test_missing_phase_correction_is_detected (test_vacuum_reference_cswap.VacuumTests.test_missing_phase_correction_is_detected) ... ok
+test_multiblock_noncommuting_split_counterexample_even_for_U_powers (test_vacuum_reference_cswap.VacuumTests.test_multiblock_noncommuting_split_counterexample_even_for_U_powers) ... ok
+test_multiblock_shared_eigenbasis_arbitrary_superposition (test_vacuum_reference_cswap.VacuumTests.test_multiblock_shared_eigenbasis_arbitrary_superposition) ... ok
+test_noncommuting_LR_arbitrary_state_and_binary_distributions (test_vacuum_reference_cswap.VacuumTests.test_noncommuting_LR_arbitrary_state_and_binary_distributions) ... ok
+test_nonvacuum_gate_unknown_oracle_and_science_width_rejected (test_vacuum_reference_cswap.VacuumTests.test_nonvacuum_gate_unknown_oracle_and_science_width_rejected) ... ok
+test_nonphysical_or_unspecified_inputs_stop (test_a2_lcu_access.LCUAccessTests.test_nonphysical_or_unspecified_inputs_stop) ... ok
+test_scalar_phase_is_coherent_and_Y_sign_is_preserved (test_a2_lcu_access.LCUAccessTests.test_scalar_phase_is_coherent_and_Y_sign_is_preserved) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.213s
+
+OK
+Traceback (most recent call last):
+  File "/tmp/o2-vacuum-cswap-20261108/scripts/tracks/algorithm_codesign/run_vacuum_cswap_artificial.py", line 66, in main
+    benchmark=run(args.output);status='PASS'
+              ^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/vacuum_cswap_artificial_benchmark.py", line 173, in run
+    audit=compile_audit(raw,compiled,n)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/tests/tracks/algorithm_codesign/vacuum_cswap_artificial_benchmark.py", line 101, in compile_audit
+    error=matrix_gate(actual,ref,COMPILE_TOL,label='COMPILED_ALLOWED_INPUT_ISOMETRY')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/o2-vacuum-cswap-20261108/src/trottertracks/pr_dictionary_validation/gates.py", line 16, in matrix_gate
+    if report['max_entry']>tolerance: raise ValueError(str(report))
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: {'label': 'COMPILED_ALLOWED_INPUT_ISOMETRY', 'max_entry': 0.02999653138106107, 'frobenius': 0.02999887501265516, 'spectral': 0.02999887501265516, 'tolerance': 2e-10, 'rtol': 0}

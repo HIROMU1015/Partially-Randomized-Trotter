@@ -1,0 +1,69 @@
+{
+  "status": "TECHNICAL_TASK_COMPLETE",
+  "attempts": [
+    {
+      "output": "artificial_run01",
+      "status": "CORRECTNESS_FAILED",
+      "reason": "fixture used nonexistent QuantumCircuit.xx_plus_yy instead of standard XXPlusYYGate",
+      "compile_calls": 0
+    },
+    {
+      "output": "artificial_run02",
+      "status": "CORRECTNESS_FAILED",
+      "reason": "shell python command missing; first correction did not run, repeated unchanged artificial tests",
+      "compile_calls": 0,
+      "failed_source": "same hashes as run01"
+    },
+    {
+      "output": "artificial_run03",
+      "status": "CORRECTNESS_FAILED",
+      "reason": "QPE counterexample had reduced density difference but symmetric phases cancelled in final Fourier probabilities; changed known scalar phase, not tolerance",
+      "compile_calls": 0
+    },
+    {
+      "output": "artificial_run04",
+      "status": "BENCHMARK_FAILED",
+      "tests": "13 PASS",
+      "reason": "Statevector.evolve mutated shared initial numpy array by global phase in audit; fixed independent input copies; no library/compiler modification",
+      "native_compile_calls": 2,
+      "routing_compile_calls": 1
+    },
+    {
+      "output": "artificial_run05",
+      "status": "PASS",
+      "tests": "12 new + 2 related = 14 PASS",
+      "cells": 112,
+      "compile_calls": {
+        "native_compile": 41,
+        "routing_compile": 40,
+        "native_cache_hits": 16,
+        "routing_cache_hits": 16
+      }
+    },
+    {
+      "output": "artificial_fusion01",
+      "status": "PASS",
+      "purpose": "additional explicit shared-basis fusion and commuting-angle merge baseline",
+      "cells": 16,
+      "compile_calls": {
+        "native_compile": 6,
+        "native_cache_hits": 2,
+        "routing_compile": 6,
+        "routing_cache_hits": 2
+      }
+    }
+  ],
+  "diagnostic_calls": {
+    "native_compiled_wrapper_calls": 3,
+    "description": "three standalone invented n1 scalar-phase diagnostics, one demonstrated shared-array mutation; no science inputs"
+  },
+  "total_actual_transpile_calls": 99,
+  "total_successful_benchmark_transpile_calls": 93,
+  "total_successful_benchmark_rows": 128,
+  "scientific_input_files": [],
+  "H4_calls": 0,
+  "RNG_sampling_calls": 0,
+  "shot_calls": 0,
+  "tolerance_relaxation": false,
+  "original_library_and_engine_changed": false
+}
