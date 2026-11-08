@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.track_d_c8_1_completion`：旧raw/P0/修正版postの継承bindingと、既存unfused Aerの完了batch観測。
+
 `trottertracks.track_d_c8_1_nofusion`：公式Aer doubleを再利用しsimulation fusionを無効化。P0/精度/全列を維持。
 
 `trottertracks.track_d_c8_1_diagnostics`：旧checkerの例外前診断保存。

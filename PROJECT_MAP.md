@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C8-1 q64残作業の限定実行PLAN](docs/research/track_d_c8_1_q64_20261108/COMPLETION_PLAN.md)：利用者承認により旧raw1/P04/post4を継承し、最終pairedχ/sample00 GO後のみ残7raw/最大28P0・post。追加sampling0、固定q64/cut32/精度/P0/モデル不変、22人工回帰PASS。新SOURCE固定後に明示実行、公開照合後mandatory STOP。
+
 [C8-1保存4回路の数値修正結果](docs/research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_RESULT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。同じsample00/4 P0に対し、SOURCE46ce57e1で旧FAILの値を保存し、SOURCEf1e89590のsimulation fusion無効化で4 postcheck全PASS。固定精度不変、旧原本46項目/STOP保持、新sampling/raw/compile0。最終独立paired/χ総合gate・残7・n8価格統計・長q/全RPEは未実施、公開照合後mandatory STOP。
 
 [C8-1保存4wrapperの数値修正版](docs/research/track_d_c8_1_q64_20261108/NOFUSION_REPAIR_PLAN.md)：既存公式Aerのsimulation fusionだけを無効化し同じ4 P0を再検証。閾値/P0/入力不変、9人工/回帰PASS。旧診断完了を待ち、残7 pathへ自動進行しない。

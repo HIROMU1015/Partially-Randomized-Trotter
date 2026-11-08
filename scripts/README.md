@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_c8_1_completion.py`：保存sample00の最終pairedχを入口とし、PASS後だけ保存残7raw/最大28P0・post、全8適格時だけ価格統計。
+
 `run_track_d_c8_1_nofusion.py`：旧診断完了後、保存q64の4 postcheckだけをsimulation fusion無効で再検証しSTOP。
 
 `run_track_d_c8_1_diagnostics.py`：承認済み保存q64 postcheckの失敗診断、数値条件不変。

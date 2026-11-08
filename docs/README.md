@@ -1,5 +1,7 @@
 # 文書索引
 
+[C8-1 q64限定再開PLAN](research/track_d_c8_1_q64_20261108/COMPLETION_PLAN.md)：追加sampling0、保存sample00最終gate→残7、旧STOP保持。
+
 [C8-1保存4回路の数値修正結果](research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_RESULT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。同じsample00/4 P0に対し、SOURCE46ce57e1で旧FAILの値を保存し、SOURCEf1e89590のsimulation fusion無効化で4 postcheck全PASS。固定精度不変、旧原本46項目/STOP保持、新sampling/raw/compile0。最終独立paired/χ総合gate・残7・n8価格統計・長q/全RPEは未実施、公開照合後mandatory STOP。
 
 [C8-1保存4wrapperの数値修正PLAN](research/track_d_c8_1_q64_20261108/NOFUSION_REPAIR_PLAN.md)。残7 pathは対象外。
