@@ -1,0 +1,40 @@
+{
+  "fixed_files": {
+    "artifacts/pr_reference_n3b1b1_dictionary/2026-11-08/BASIC_WORDS_MANIFEST.json": {
+      "bytes": 42596,
+      "sha256": "3bb00b162ff3da95871651dc34de274132d3f6851dbe1fd5696588868808bb31"
+    },
+    "artifacts/pr_reference_n3b1b1_dictionary/2026-11-08/INPUTS.json": {
+      "bytes": 14953,
+      "sha256": "3c4f2031365a1e90f9a755ccea05e639af570f439953ba01e6f743c54a635aed"
+    },
+    "artifacts/pr_reference_n3b1b1_dictionary/2026-11-08/basic_records.tar.xz": {
+      "bytes": 18844,
+      "sha256": "6894f7031c73c451a2a7e6e3cced18c652e8edea2c5b38ff1f10dc15c5801d5e"
+    },
+    "artifacts/pr_reference_n5b2_static/2026-11-08/NEXT_NUMERIC_INPUTS.json": {
+      "bytes": 5147,
+      "sha256": "d3e15f8ae648d3bfa8feaf3d84b97dddc1b383086de992812ae56601dec5ecde"
+    },
+    "src/trottertracks/pr_reference_dyadic_dictionary.py": {
+      "bytes": 7104,
+      "sha256": "07bd545d68034f154fbe414612df6973890bb394058b97499cb4b5462f4b3dae"
+    }
+  },
+  "helper": "scripts/evaluate_pr_reference_n5b2_central.py",
+  "helper_sha256": "44fd980d31f7df4762d9e3bd26276a0a4a7e0744f408c954a3de5d7c70b80d83",
+  "production_provider_or_scientific_module_imported": false,
+  "reuse": {
+    "path": "src/trottertracks/pr_reference_dyadic_dictionary.py",
+    "round_index_source": "def round_index(theta: float) -> int:\n    \"\"\"Exact nearest dyadic index, with ties to even and sign symmetry.\"\"\"\n    if not isinstance(theta, float):\n        raise TypeError(\"The target must be an actual binary64 float\")\n    if not math.isfinite(theta):\n        raise ValueError(\"Nonfinite target\")\n    n, d = abs(theta).as_integer_ratio()\n    q, r = divmod(n << B, d)\n    q += 2 * r > d or (2 * r == d and q % 2 == 1)\n    return -q if theta < 0 else q",
+    "skipped": "provide domain/cache/construction/T/W aggregation/WordCertificate/emit; entire module not imported",
+    "unchanged_component_assignments": [
+      "indices = tuple(j for j in EXPONENTS if abs(n) & (1 << (j + B)))",
+      "selected = [self.basic[j] for j in indices]",
+      "delta = abs(F.from_float(theta) - F(n, 2**B))",
+      "q_upper = self.sqrt2_upper * delta / 2",
+      "g_upper = sum((r[\"guard\"] for r in selected), F(0))"
+    ]
+  },
+  "scope_commit": "50013be49f03cb609fc6e43ed4dfcf43251f7823"
+}
