@@ -718,3 +718,8 @@ DF部分ランダム化研究と混同しない。
 [CASE B・候補/証拠/科学実行範囲](../../docs/research/research_c_cdf0_z_relocation_comparison_readiness_20261108.md)。Stage Aの保存γ=0 CDF8終端を独立CDF0としてbindし、既存再配置/finite-RTE/native/統計を再利用する薄いadapterと受動preflightを追加。人工/mock33 PASS、旧SOURCE68ファイル不変。実H4の新規評価・compile・shots・再集計・fitは0。科学開始前でMANDATORY STOP。
 
 SOURCE: `src/trottertracks/c_cdf0_relocated.py`、runner: `scripts/check_research_c_cdf0_relocated.py`、test: `tests/management/test_research_c_cdf0_relocated.py`、artifact: `artifacts/research_c_cdf0_relocated/2026-11-08/technical/`。
+
+
+## 2026-11-08：CDF0再配置PRの一回実行は環境例外STOP（CASE C）
+
+[失敗原本・監査・実行報告](../../docs/research/research_c_cdf0_z_relocation_execution_20261108.md)。固定SOURCE bde646c2…/640052df…を無変更で一回起動したが、最初のshell検査でQiskit AerのCUDA共有ライブラリのシンボル解決が失敗。保存input load後、再配置/PF/RTE/RPE/native価格/final/主比較は未実行。総RZ・selected r・差・統計判定はnull。SOURCE112/input32/旧SOURCE68保全、STOP.failed=true、retry/resume0。科学的な候補不適格やENTRY勝利とは扱わず、公開後MANDATORY STOP。
