@@ -1,5 +1,8 @@
 # trotterlib モジュール索引
 
+研究Cの集中検証補助 `trottertracks/c_entry_e2_p0_focused.py` は前段exact-F/composerへ接続するscalar preview。新compiler/Arb/RPE engineはない。[終了性・Rust数値誤差CASE D](../../docs/research/research_c_entry_e2_r16_p0_termination_rust_uniform_20261108.md)。
+
+
 研究C・P0成立性の補助は`trottertracks/c_entry_e2_p0_feasibility.py`。既存monotone budget/uniform composerを再利用し、same-target誤差脚・literal norm-growth・exact Euler部分を扱う。[CASE C・証明前提と人工検証](../../docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。科学loader/runnerなし。
 
 

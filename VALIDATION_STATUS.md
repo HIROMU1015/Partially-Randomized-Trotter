@@ -1158,3 +1158,8 @@ UWC note が保存している実行記録は `.venv/bin/python -m pytest -q` �
 ## 2026-11-08：ENTRY E2/r16 Whole-P0成立性（CASE C）
 
 [技術報告・証明とblocker](docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。Same-target compiler/literal/reference連鎖、literal Gram/norm-growth、exact Euler再構成の解析的部分を具体化した。実Rust f64全domain誤差・1000回guard内正常終了は未成立、CA/bound/nullと科学非実行を維持。新46＋既存141=187人工/回帰PASS。科学計算・保存値数値再解析・新Arb/H4 compile/RPE/価格0、旧SOURCE/結果/STOP不変、mandatory STOP。数学的全compiler保証や独立科学レビューではない。
+
+
+## 2026-11-08：現P0の正常終了/Rust一様誤差集中検証（CASE D）
+
+[新技術証拠と残る三義務](docs/research/research_c_entry_e2_r16_p0_termination_rust_uniform_20261108.md)。実P0の人工CX palindromeで、粗いnative countでは1000回正常終了を保証できないことを確認。条件付きI≤8K+7とweighted phasor/全branch ωを具体化したが、E2固有取消深さ・実libm全域仕様・phase会計は未成立。新29/旧187=216人工回帰PASS、分子科学/保存値数値再解析/RPE/価格0、実H4保証へ昇格せずSOURCE/結果/STOPを保全。科学runner/call上限なし、mandatory STOP。

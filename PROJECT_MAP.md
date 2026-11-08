@@ -1,5 +1,8 @@
 # プロジェクト案内
 
+研究C・現P0の終了性/Rust誤差：[集中検証CASE D](docs/research/research_c_entry_e2_r16_p0_termination_rust_uniform_20261108.md)。実P0の人工CX guard反例、条件付き8K+7 iteration上限、weighted phasor/全branch誤差式を取得。E2のguard内成功・実libm一様契約は未成立。補助 `src/trottertracks/c_entry_e2_p0_focused.py`、人工test `tests/management/test_research_c_entry_e2_p0_focused.py`、技術記録 `artifacts/research_c_entry_e2_p0_focused/2026-11-08/technical/technical.json`。科学runnerなし、実分子新科学0、STOP。
+
+
 研究C・ENTRY E2/r16のP0一様保証：[成立性検証・CASE C](docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)。同じgate-list/literal/reference targetの誤差連鎖、nonunitary norm-growth、exact Euler lemmaを具体化。実Rust全域誤差とguard内正常終了は未成立。補助 `src/trottertracks/c_entry_e2_p0_feasibility.py`、人工test `tests/management/test_research_c_entry_e2_p0_feasibility.py`、技術記録 `artifacts/research_c_entry_e2_p0_feasibility/2026-11-08/technical/technical.json`。科学runnerなし、新科学計算0・STOP。
 
 

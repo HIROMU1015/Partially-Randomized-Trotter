@@ -1,5 +1,8 @@
 # scripts 索引
 
+[研究C P0集中検証CASE D](../docs/research/research_c_entry_e2_r16_p0_termination_rust_uniform_20261108.md)は科学runnerなし。`c_entry_e2_p0_focused.py`はiteration lemma/条件付きω/split会計だけを扱い、前段のpassive bindingを再利用する。
+
+
 ENTRY E2/r16の[Whole-P0一様保証成立性CASE C](../docs/research/research_c_entry_e2_r16_p0_uniform_feasibility_20261108.md)は方法未成立のため科学runnerを追加しない。`c_entry_e2_p0_feasibility.py`は既存composerと解析的scalar lemmaの技術previewのみ。前段のpassive checkerは継続利用できる。
 
 
