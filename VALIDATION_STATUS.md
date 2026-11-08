@@ -664,3 +664,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-08：Track D O5 静的改善設計
 
 [報告](docs/research/track_d_o5_algorithm_design_20261108/REPORT.md)。新しい科学的検証結果ではない。既存理想/有限標本/条件付きproxyと未保証事項を整理し、A/B/C候補を設計。新実装/test/compile/価格再解析/N再算定0。q64進捗/完了は今回照会せず、既存実行状態・結果/STOPを変更しない。
+
+## 2026-11-08 Track D O5 cut：有限人工P0 evidence
+
+[REPORT](docs/research/track_d_cut_artificial_20261108/REPORT.md)。2-mode/3 native block・q6/16 event毎step・h=.1/τ=.2の固定2人工例（分子geometry/basis/DF rank/L_D非該当）。C3/Strong/gadget不変、8 tests・110数値比較・10 P0 unique compile PASS。偏り例のみ中央cut3→2でfull total depth934→646、均衡例は中央維持0。SOURCE/hash/version、全QPY・構造archiveと全7価格・負結果・STOPを公開保全。local binary64検証でありimmutable CI/外部再現・全H4/law保証ではない。新実H4/保存価格再解析/fit/N/13round0、q64非介入。

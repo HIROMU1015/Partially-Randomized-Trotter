@@ -85,3 +85,7 @@
 過去のSOURCE・test・結果は元snapshotの条件で読む。科学実行と元の研究testの再実行は行っていない。
 
 2026-11-08：[O5：Controlled/Reference選択と改善候補](track_d_o5_algorithm_design_20261108/REPORT.md)。既知mixedとの重複、descriptor-onlyとoracleの区別、cut/接口融合の条件、O2/Track Dのdomain差を整理。Aの安価な技術選別を優先提案、正式採択/新科学計算なし。
+
+## Track D O5：L/R cut候補Bの人工検証
+
+[実装と結果](track_d_cut_artificial_20261108/REPORT.md)／[全7資源比較](track_d_cut_artificial_20261108/ARTIFICIAL_RESOURCE_COMPARISON.md)／[未採択H4案](track_d_cut_artificial_20261108/NEXT_H4_VALIDATION_DRAFT.md)。既存builderとP0を再利用、人工不均衡例だけ追加depth減・均衡例0、実H4未実行。

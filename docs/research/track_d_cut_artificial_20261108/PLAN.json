@@ -1,0 +1,36 @@
+{
+  "scope": "two invented two-mode complete-step paths; no H4 inputs",
+  "parent": "2131917656446bd22f294946d7c1064a47332e4c",
+  "reuse_toy_spec": "docs/research/track_d_c7_2_cx_structure_20261107/CASES.json",
+  "feature_source_commit": "64072ba81bb70db1df1b34e94adb08e78926f24b",
+  "feature_source_path": "src/trottertracks/track_d_c7_4_models.py",
+  "selection_rule": "neighbor_basis_support_load_v1",
+  "load": "1 + C7-4 per-step basis_runs + support_work",
+  "candidate_cuts": "center=floor(q/2), center-1 and center+1, internal only",
+  "score": "max(prefix load,suffix load)+1; proxy only",
+  "tie": "closest to center, then lower index",
+  "q": 6,
+  "events_per_step": 16,
+  "cases": [
+    {
+      "id": "run_imbalance",
+      "words": ["alternating_plus_minus", "alternating_plus_minus", "alternating_plus_minus", "plus_only", "plus_only", "plus_only"]
+    },
+    {
+      "id": "balanced_runs",
+      "words": ["alternating_plus_minus", "alternating_minus_plus", "alternating_plus_minus", "alternating_minus_plus", "alternating_plus_minus", "alternating_minus_plus"]
+    }
+  ],
+  "methods": ["strong", "reference_center", "reference_selected"],
+  "axes": ["X", "Y"],
+  "result_rows": 12,
+  "compile_cap": 12,
+  "old_atol": 1e-10,
+  "old_observable_frobenius": 2e-10,
+  "rtol": 0,
+  "phase_fitting": false,
+  "compiler": "existing Track D P0 opt1/seed17/rz,sx,x,cx/approx1/initially_zero=false/topology-free/MPFR160 declared phase",
+  "fixtures_and_rule_may_change_after_results": false,
+  "standalone_lane_or_shell_compile": false,
+  "molecular_calls": 0
+}

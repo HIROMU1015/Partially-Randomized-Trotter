@@ -246,3 +246,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 [原稿・受領レビュー・研究ノート・SOURCEと保存別版の対応](docs/research/main_local_results_collection_20261103.md)から辿る。元の科学SOURCE・status・STOPは維持する。
 
 2026-11-08：[Track D O5 改善候補の静的調査](docs/research/track_d_o5_algorithm_design_20261108/REPORT.md)。strong/Reference/既知SE/O2の構造を対応付け、A:compile前方式選択、B:近傍cut、C1:target保持head-tail接口を比較。結論案B（追加効果/新規性未確定）、新実装/価格再解析/科学計算0。q64別担当とO2未採択H4契約へ介入せず、公開後STOP。
+
+## Track D O5：近傍L/R cutの人工検証（2026-11-08）
+
+[実装・結果](docs/research/track_d_cut_artificial_20261108/REPORT.md)。C3 cut入口とC7-4 descriptorを再利用したcompile前selector。固定2-mode/q6/16-event人工2例、8 unit tests・110比較・10 P0 unique compile PASS。偏り例は中央cut3→2でfull depth934→646、count/size/幅は同じ。均衡例は中央維持・追加効果0。実H4/価格再解析/fit/N/13round0、q64非介入、次は未採択の最小H4移送案のみ。

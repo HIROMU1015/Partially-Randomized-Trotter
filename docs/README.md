@@ -170,3 +170,7 @@
 [原稿・レビュー・研究ノートと保存版の対応](research/main_local_results_collection_20261103.md)。原文の科学的採用や新規実行の認定ではない。
 
 2026-11-08：[Track D（O5）アルゴリズム改善設計](research/track_d_o5_algorithm_design_20261108/REPORT.md)。構造map・固定証拠・A/B/C候補・先行法境界・次の最小作業を6文書へ整理。資料読解/設計のみで、新builder/test/科学計算/価格再解析なし。
+
+## Track D O5 cut人工検証
+
+[REPORT](research/track_d_cut_artificial_20261108/REPORT.md)：実装・全入力correctness・全7資源・均衡負結果・未採択H4移送案。2-mode/q6/16eventの有限人工結果で、分子優位・全law価格・全RPE保証ではない。

@@ -171,3 +171,7 @@ DF部分ランダム化研究と混同しない。
 [C7-3 q32 adapter](../trottertracks/track_d_c7_3_q32.py)：新Q32Request/seed、旧q16 helperのisolated domain束縛、C7-2 max-plus feature再利用。[固定PLAN](../../docs/research/track_d_c7_3_q32_20261107/PLAN.md)専用で旧guardを変更しない。
 
 [C7-3検証高速化adapter](../trottertracks/track_d_c7_3_acceleration.py)：exact標準gate cache、公式Aer double/unitaryは9qubit以下だけ、Reference17qubitは既存全column statevector。P0/cost QPY/precisionを変更せず、新SOURCE worker内でだけ選択。
+
+## Track D O5 cut接続
+
+`trottertracks.track_d_cut_selection` はC7-4 descriptorで中央±1を選び、C3 `prepare_steps` を呼ぶ人工cohort専用adapter。`track_d_cut_artificial` はC7-2の2-mode fixture/checkerと固定2ケースを接続する。新gadget/solver/compilerはない。[結果と制約](../../docs/research/track_d_cut_artificial_20261108/REPORT.md)。
