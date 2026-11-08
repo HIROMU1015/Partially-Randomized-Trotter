@@ -1,6 +1,6 @@
 # 研究C：CDF0対ENTRY・独立追加価格検証の実行準備（2026-11-08）
 
-**CASE C：設計とadapterの人工検証を準備したが、ENTRY E2の保存ground原本が不足する。** 新科学実行は未承認・未実行。主案は、固定CDF0/r64と固定ENTRY E2/r16を、それぞれ新しい128標本で一度だけ評価する案である。旧CDF0比較の`UNRESOLVED_PRECISION_TARGET`も、旧ENTRY対PR-awareの判定も変更しない。公開照合後mandatory STOPする。
+**CASE A：ENTRY E2の保存ground原本を取得し、全固定入力の受動検査がPASSした。** 新科学実行は未承認・未実行。主案は、固定CDF0/r64と固定ENTRY E2/r16を、それぞれ新しい128標本で一度だけ評価する案である。旧CDF0比較の`UNRESOLVED_PRECISION_TARGET`も、旧ENTRY対PR-awareの判定も変更しない。公開照合後mandatory STOPする。
 
 統合運用指示`research_project_instructions_unified_2026-10-25.md`の現作業checkout側原文を読み、§8.1/8.2/8.4/10/10.3を適用した。承認証明用ファイル・新grantは追加しない。
 
@@ -92,23 +92,25 @@ Linear H4、隣接1.00 Å、STO-3G、Nα=Nβ=2（sector36/system256/controlled51
 
 新master=2026110803、axis=`INDEPENDENT_PRICE_FINAL_ONLY`、cohort=`cdf0_entry_independent_price_v1:<CDF0|ENTRY>:r<64|16>:final:batch<00..03>`。SOURCEは今回の新manifest digest、role baseline、候補identityは保存JU SHA＋再配置version＋LD2。sample0..31のseed hashを既存関数で導出する。256個の重複と旧登録1024個とのintersectionをチェックした。旧CDF0について未実行rの予約namespaceも含む保守的検査であり、旧1024個すべてを実行したという意味ではない。preflightでPRNG drawは0。
 
-[proposal](research_c_cdf0_entry_independent_price_proposal_20261108.json)は未承認。新SOURCEは旧112ファイル＋新adapter/runner2ファイル。旧契約2本のdigestをanchorにcompiler/target/packages/物理条件/κ/shell/旧seed domainを照合する。入力52本のうち存在する51本をbyte hashで検査し、E2 ground1本だけの不足を報告する。NPZ/QPYのdecode、旧価格の統計再計算はしない。旧SOURCE、STOP、CSVは保全のhash対象であり新推論の標本poolにはしない。
+[proposal](research_c_cdf0_entry_independent_price_proposal_20261108.json)は未承認。新SOURCEは旧112ファイル＋新adapter/runner2ファイル。旧契約2本のdigestをanchorにcompiler/target/packages/物理条件/κ/shell/旧seed domainを照合する。入力52本すべてをbyte hashで検査した。ユーザー提供のE2 ground原本も旧raw索引の期待hashと一致する。NPZ/QPYのdecode、旧価格の統計再計算はしない。旧SOURCE、STOP、CSVは保全のhash対象であり新推論の標本poolにはしない。
 
 ```bash
 python3 scripts/run_research_c_cdf0_entry_independent_price.py
 ```
 
-既定の受動検査は`PASSIVE_CHECKS_INPUT_GAP`、execution_ready=false、execution_permission=false、science calls0。`execute_science=False`は数値import前に拒否する。将来の`--execute`も現在は保存ground不足で科学call前に拒否する。実行許可の証明書・grant発行は追加しない。
+既定の受動検査は`PASSIVE_CHECKS_PASS`、execution_ready=true、execution_permission=false、science calls0。`execute_science=False`は数値import前に拒否する。入力が再び欠けた場合にも科学call前に拒否する回帰テストを保持した。`--execute`はこの具体的proposalへの別途科学実行許可を受けるまで使用しない。実行許可の証明書・grant発行は追加しない。
 
-## 8. 不足入力と取得方法
+## 8. 保存groundの取得・同一性確認（追記）
 
-必要な原本は旧handoff rawの`E2/A/ground_candidate.npz`。公開`publication/result_files.json.gz`には次のhashがあるが、NPZ本体は本checkoutにない。既存のground NPZ群にも同hashはなく、E2_referenceにはgroundが入っていない。
+初回準備commit `2dba3fb09800e373ccb94027a2a9da1d2c540716`の時点では、旧handoff rawの`E2/A/ground_candidate.npz`は公開raw索引のhashだけがあり、原本不足でCASE Cだった。この履歴と初回preflightはgit履歴およびtechnical.jsonのprevious_stateに保持する。
 
-- 期待SHA256：`6843e56b955a131583950c585287a41f61c08321b48618c1525b83d2361471b4`
-- 配置予定：`artifacts/research_c_independent_price_precision/2026-11-08/inputs/E2_ground_candidate.npz`
-- 元raw候補：旧実行worktreeの`artifacts/research_c_h4_handoff/2026-11-06/science/run01/E2/A/ground_candidate.npz`。転送元runにも同候補groundがある可能性があり、所在はproposalの元worktree metadataを参照する。いずれも現在この環境では取得できない。
+ユーザーが`/home/AbeHiromu/projects/partially-randomized-trotter/ground_candidate.npz`へ追加した1106 byteの原本を受け取り、旧`publication/result_files.json.gz`に記載された期待SHA256と一致することを確認した。
 
-raw保存者または保存archiveから**同じbyte列**を取得し、hash一致後に上記新inputパスへ置く。別候補のground・新規solve・丸め直しを代用しない。取得は新しい科学解析を要しないが、実行直前の受動preflightを再実施する必要がある。原本を取得できない場合は、現行proposalの科学実行を開始できない。
+- SHA256：`6843e56b955a131583950c585287a41f61c08321b48618c1525b83d2361471b4`
+- 保存先：`artifacts/research_c_independent_price_precision/2026-11-08/inputs/E2_ground_candidate.npz`
+- 処理：原本を変更せず同じbyte列をコピー。NPZ配列のdecode、新ground solve、丸め直し、数値的な再解析は0。
+
+入力52本すべて・新SOURCE114ファイル・旧STOPの受動照合がPASSし、不足入力は0となった。科学adapter/runner/SOURCE digest・固定128/arm・r64/r16・2405-call scopeを変更していない。groundの数値gateは将来の許可済み科学実行時に既存処理が行う。今回のbyte照合を新しいground科学検証とは扱わない。
 
 ## 9. 実行scope・callback予算・保存
 
@@ -131,8 +133,10 @@ fresh outputは`artifacts/research_c_independent_price_precision/2026-11-08/scie
 
 **新43＋既存62＝105件PASS**（失敗0、RPE/Dの不要な回帰2件は選択除外）。テスト結果・実行環境・受動preflightはtechnical.jsonを正とする。新テストは人工128行とmock nativeで候補/r/version/SOURCE/旧selection・pool/seed・ID衝突/N変更を拒否し、W/rの二重乗算なし・shell1回・旧固定N helper・failure時の部分保存/STOP/再開拒否を検査した。人工rank8の保存ground接続ではfallback solveを禁止し、両armの実setup APIからcallback内訳を照合した。保存H4は数値decodeしない。
 
+追記の入力復旧後は、存在する原本の受動検査と、欠落を模擬した場合の科学開始前拒否を検査した。関連26件PASS、他18件は今回の変更に無関係なため選択除外した。前回の全人工・回帰105件PASSはその時点の証拠として保持し、今回は全件を再実行したとは扱わない。
+
 既存のCDF0 schema/接続、固定N価格統計、再配置full512/phase/actual inverse/XY、process backendの人工回帰を再利用した。これらのローカルPASSは実H4新結果やimmutable CIとは扱わない。CPU専用Aer0.15.1とthreadpoolctlは以前の専用/tmp overlayを使い、共有venvを変更しない。
 
 今回、新実H4 build/compile/native標本、保存価格の新しい統計再解析・CI・検定、新DF fit/PF/RTE/RPE/shots、旧run retry/resume、P0政策変更、全word保証研究、重要GPT科学レビューは実施していない。公開要約による計画proxy以外の新科学値はない。旧SOURCE/input/raw/結果/grant/ledger/marker/STOPを保全した。
 
-**次に必要なのは保存E2 ground原本の取得と、その後の具体的な128/arm設計・SOURCE・2405-call scopeに対する新科学実行の明示許可である。** 本ターンでは承認を求めて開始せず、成果物を公開・照合してmandatory STOPする。
+**残るのは、具体的な128/arm設計・SOURCE・2405-call scopeに対する科学政策の採択と、新科学実行の明示許可である。** 本ターンでは承認を求めて開始せず、成果物を公開・照合してmandatory STOPする。

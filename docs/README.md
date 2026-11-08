@@ -1,8 +1,8 @@
 # 文書索引
 
-## 2026-11-08：CDF0対ENTRYの独立追加価格検証（準備CASE C）
+## 2026-11-08：CDF0対ENTRYの独立追加価格検証（準備CASE A）
 
-[128/armの未承認proposal・不足E2 ground・人工105 PASS](research/research_c_cdf0_entry_independent_price_precision_readiness_20261108.md)。保存H4/r64対r16を新cohortで検証する最小adapter。新科学実行・旧価格再解析0、旧判定/SOURCE/STOP不変。実行前でmandatory STOP。
+[128/armの未承認proposal・全入力照合・前回人工105/今回受動26 PASS](research/research_c_cdf0_entry_independent_price_precision_readiness_20261108.md)。保存H4/r64対r16を新cohortで検証する最小adapter。E2 ground原本は旧raw hashと一致し、全52入力の不足を解消した。新科学実行・旧価格再解析0、旧判定/SOURCE/STOP不変。実行前でmandatory STOP。
 
 module: `src/trottertracks/c_cdf0_entry_independent_price.py`、runner: `scripts/run_research_c_cdf0_entry_independent_price.py`（既定metadata/bytesのみ）、test: `tests/management/test_research_c_cdf0_entry_independent_price.py`、artifact: `artifacts/research_c_independent_price_precision/2026-11-08/technical/`。
 

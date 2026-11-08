@@ -39,9 +39,19 @@ assert not any(k in sys.modules for k in ('numpy','scipy','qiskit','ffsim'))
 def test_real_metadata_preflight_no_arrays_or_science():
     c,status=m.preflight(ROOT)
     assert status['scientific_calls']==status['arrays_decoded']==0
+    assert status['missing_inputs']==[]
+    assert status['execution_ready'] and not status['execution_permission']
+    assert m.io.sha(ROOT/c['native_inputs']['ENTRY']['ground'])==m.ENTRY_GROUND_SHA
+    assert status['new_sample_keys']==256 and status['old_seed_keys_checked']==1024
+
+
+def test_missing_saved_ground_still_blocks_before_science(monkeypatch):
+    c=m.io.read(ROOT/m.PROPOSAL);exists=Path.exists
+    missing=ROOT/c['native_inputs']['ENTRY']['ground']
+    monkeypatch.setattr(Path,'exists',lambda p:False if p==missing else exists(p))
+    _,status=m.preflight(ROOT)
     assert status['missing_inputs']==[dict(path=c['native_inputs']['ENTRY']['ground'],expected_sha256=m.ENTRY_GROUND_SHA)]
     assert not status['execution_ready'] and not status['execution_permission']
-    assert status['new_sample_keys']==256 and status['old_seed_keys_checked']==1024
     with pytest.raises(FileNotFoundError,match='MISSING_SAVED_INPUTS'):m.execute(ROOT,execute_science=True)
 
 
