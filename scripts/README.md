@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_o5_q4_metadata.py`：保存C6a q4全16本のevent-only読取、固定selector/featureへの薄い接続と集計。
+
 `run_track_d_c8_1_completion.py`：保存sample00の最終pairedχを入口とし、PASS後だけ保存残7raw/最大28P0・post、全8適格時だけ価格統計。
 
 `run_track_d_c8_1_nofusion.py`：旧診断完了後、保存q64の4 postcheckだけをsimulation fusion無効で再検証しSTOP。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+O5 metadata cohort入口は`scripts/run_track_d_o5_q4_metadata.py`。固定`track_d_cut_selection`/`track_d_cut_h4_saved`とC7-4 `event_features`を再利用し、回路や価格を評価しない。
+
 `trottertracks.track_d_c8_1_completion`：旧raw/P0/修正版postの継承bindingと、既存unfused Aerの完了batch観測。
 
 `trottertracks.track_d_c8_1_nofusion`：公式Aer doubleを再利用しsimulation fusionを無効化。P0/精度/全列を維持。
