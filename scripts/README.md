@@ -1,5 +1,7 @@
 # scripts 索引
 
+[O5 C1実H4/q4固定PLAN](../docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/PLAN.md)：保存C6a q4_sample00/cut2のみ、S0/R0旧4適格再利用・S1/R1最大4新P0、8-mode guard/全256入力、原本非公開・公開照合後STOP。
+
 `run_track_d_head_tail_artificial.py`：固定q2_mixedの一回限定C1比較。局所/全入力PASS後だけP0、旧C7-2 baseline適格再利用、公開後STOP。
 
 `run_track_d_o5_q4_metadata.py`：保存C6a q4全16本のevent-only読取、固定selector/featureへの薄い接続と集計。

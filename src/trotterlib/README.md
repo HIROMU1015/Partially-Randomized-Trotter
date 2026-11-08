@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[O5 C1実H4/q4固定PLAN](../../docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/PLAN.md)：保存C6a q4_sample00/cut2のみ、S0/R0旧4適格再利用・S1/R1最大4新P0、8-mode guard/全256入力、原本非公開・公開照合後STOP。
+
 `trottertracks.track_d_head_tail_artificial`：既存C3/StrongBuilderを用いるopt-inの人工head→tail橋。local_checks/raw_checksは既存checkerを再利用し、分子入力を扱わない。
 
 O5 metadata cohort入口は`scripts/run_track_d_o5_q4_metadata.py`。固定`track_d_cut_selection`/`track_d_cut_h4_saved`とC7-4 `event_features`を再利用し、回路や価格を評価しない。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[O5 C1実H4/q4固定PLAN](docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/PLAN.md)：保存C6a q4_sample00/cut2のみ、S0/R0旧4適格再利用・S1/R1最大4新P0、8-mode guard/全256入力、原本非公開・公開照合後STOP。
+
 [O5 C1人工結果](docs/research/track_d_o5_c1_head_tail_artificial_20261108/REPORT.md)：固定2-mode/3-block q2_mixed/cut1/h=.1/τ=.2/K0、scalar .17/identity .04（分子geometry/basis/rank/LD非該当）。head→tailの既存relative橋でlocal7 positive/7 negative・raw41比較・post8 PASS。Strong/Reference双方でRZ−5/CX−2/depth−7/size−11、幅不変、相対R−S差は不変。新P0 4・旧4適格再利用。保存型エラーの旧STOPを保全し、SOURCEaf6fc07fで同scope未完了処理を継続。H4/fit/N/13round/q64操作0、公開照合後mandatory STOP。
 
 [O5 C1固定人工PLAN](docs/research/track_d_o5_c1_head_tail_artificial_20261108/PLAN.md)：q2_mixed/cut1だけ、既存relative橋をhead→tailへ接続。局所/全入力PASS後最大8 P0、Strong/Reference公平比較、q64非介入・公開後STOP。
