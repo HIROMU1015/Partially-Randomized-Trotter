@@ -1,5 +1,7 @@
 # scripts 索引
 
+`check_research_c_entry_e2_all_law.py`：ENTRY E2・再配置後r16の候補/SOURCE/保存bytesだけを照合する。科学起動optionなし。[全law保証のCASE B・未取得bound・次の方法判断](../docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。
+
 `run_research_c_h4_strong_d_relocation.py`：保存CDF8/XDF8強Dの固定LD2再配置。既定はbyte-only preflight、`--execute`は別途科学実行許可後だけ使用する。[人工検証・未承認契約・規模](../docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。今回の実H4評価は0。
 
 native高速化の人工benchmark：`benchmark_research_c_native_process.py --output <fresh-dir> --samples 8 --r 32`。保存分子入力を使わず旧threadとspawnを比較する。`check_research_c_h4_relocated_downstream.py --contract docs/research/research_c_h4_native_process_contract_unapproved_20261106.json` は新SOURCEのpassive preflight。[技術報告](../docs/research/research_c_h4_native_process_preparation_20261106.md)。

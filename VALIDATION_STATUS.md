@@ -1148,3 +1148,8 @@ UWC note が保存している実行記録は `.venv/bin/python -m pytest -q` �
 ## 2026-11-08：CDF0再配置PRの許可済みrun02完了・精度未達
 
 [結果・修復・監査・STOP](docs/research/research_c_cdf0_z_relocation_rerun02_results_20261108.md)。専用CPU Aer0.15.1で旧科学SOURCEを保ち、fresh outputだけrun02へ変更。H4直鎖1Å/STO-3G・number CDF8/元順LD2・partial S2/s1/δ=.1/K0/m0..12/own-ground/状態準備除外/P0の限定条件で、selection32からr64を固定、独立final64を取得。条件付き総RZはCDF0 231,951,425,282.5、保存ENTRY E2/r16 75,621,395,471。点値ENTRY67.3977%低値・名目95%差区間は正だが、半幅/ENTRY6.09945%が登録5%を超え`UNRESOLVED_PRECISION_TARGET`。full512/実逆/X-Y128標本PASS、1710成功callback、SOURCE112/input32/旧SOURCE68/旧失敗run01保全。追加標本なし、正常STOP・run内retry/resume0。過去の失敗・準備記録はその時点の履歴として保持する。
+
+
+## 2026-11-08：ENTRY E2/r16全law保証の統合技術準備（CASE B）
+
+[報告・固定identity・再利用・次期scope](docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。旧IID38-call/Arb384二項27-call/固定word成果を照合し、旧PR候補・再配置前r32の数値を現E2へ流用しない。Whole-P0全到達領域の誤差・位相・成功条件と同一trajectory target対応は未成立、PCG64 joint streamも未資格。metadata-only接続・人工テストとbyte preflightを追加。全13round boundとactual CAはnull。新科学計算・保存値の数値再解析・追加価格標本0。科学方法・call上限未確定でmandatory STOP、旧結果/STOPとCDF0の精度未達判定は不変。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+研究C・ENTRY E2＋Z再配置＋PR/r16の全law保証：[統合技術準備・CASE B](docs/research/research_c_entry_e2_r16_all_law_readiness_20261108.md)。全到達domainのP0誤差・成功条件とtrajectory target対応が未成立。旧38-call/Arb384/固定word成果を照合し、metadata専用adapter `src/trottertracks/c_entry_e2_all_law_readiness.py`、passive checker `scripts/check_research_c_entry_e2_all_law.py`、人工test `tests/management/test_research_c_entry_e2_all_law.py`、証拠 `artifacts/research_c_entry_e2_all_law/2026-11-08/technical/`を追加。新科学計算0、mandatory STOP。
+
 研究C・保存強Dの共通LD2再配置：[2候補とも適格、E2の条件付き総RZ点値利益を維持](docs/research/research_c_h4_strong_d_relocation_results_20261107.md)。286/286 COMPLETE、全512/実逆/2 lane、SOURCE/入力保全、登録STOP。
 
 研究C・保存CDF8/XDF8強DへのLD2線形Z再配置：[技術準備・人工full512・未承認2候補契約](docs/research/research_c_h4_strong_d_relocation_preparation_20261107.md)。adapterは`src/trottertracks/c_h4_strong_d_relocation.py`、runnerは`c_h4_strong_d_relocation_execution.py`、人工testは`tests/management/test_research_c_h4_strong_d_relocation.py`、証拠は`artifacts/research_c_h4_strong_d_relocation/2026-11-07/technical/`。実H4の新規PF/RPE/native評価は未実行。
