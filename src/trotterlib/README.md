@@ -161,3 +161,7 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 [2026-11-08検証](../../docs/research/track_c_diagonal_fusion_20261108/REPORT.md)は既存DF primitive、central-control `_rotation`、Qiskit GraySynth topologyを再利用。研究adapterは`src/trottertracks/track_c_diagonal_*.py`、人工testは`tests/test_track_c_diagonal_fusion.py`。既存loweringと新しいrun融合の利益を分け、RTE law/aggregation・D係数/stepを保持した。Fullにも同等合成を適用しmandatory STOP。
 
 - Track C Closed P3実験adapterは `src/trottertracks/track_c_closed_p3*.py`。[既存libraryの再利用・全18round結果](../../docs/research/track_c_closed_p3_20261108/REPORT.md)。旧libraryの実行契約を変更しない。
+
+## Track C Closed P3：後続の共同選択adapter
+
+`src/trottertracks/track_c_closed_p3_joint_opt*.py`は既存G7・compiler A・RPE/α/価格pipelineを接続する。`track_c_closed_p3_joint_extend.py`は限定した既存h/rateの追加資格と独立評価。公開libraryへの一般化ではない。[研究報告](../../docs/research/track_c_closed_p3_joint_opt_20261108/REPORT.md)。

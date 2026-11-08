@@ -191,3 +191,7 @@ artifacts/<validation_name>/
 [REPORT](../docs/research/track_c_diagonal_fusion_20261108/REPORT.md)。段階入口は`PYTHONPATH=src python -m trottertracks.track_c_diagonal_fusion`と`track_c_diagonal_resources`。固定cacheと過去3 archiveの読取コピーを使い、既存出力を上書きしない。保存値集計は`scripts/summarize_track_c_diagonal_fusion.py`、Qiskit/cache不要の読取検査は`python3 scripts/check_track_c_diagonal_fusion.py`。今回STOP後の科学実行は自動再開しない。
 
 - `prepare_track_c_closed_p3_inputs.py` / `run_track_c_closed_p3.py`：固定科学inputのreplayと新P3接続検証。[条件・結果・STOP](../docs/research/track_c_closed_p3_20261108/REPORT.md)。
+
+## Track C Closed P3 h/resolution/α共同選択
+
+`run_track_c_closed_p3_joint_opt.py`は独立coarse namespace、`run_track_c_closed_p3_joint_opt_extended.py`は一回限定の局所拡張と別seed holdout。固定H4/P3の明示的実行許可とREPORTの範囲で使用する。保存rawや旧STOPを上書きしない。[REPORT](../docs/research/track_c_closed_p3_joint_opt_20261108/REPORT.md)。

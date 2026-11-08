@@ -214,3 +214,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track C Closed P3統合（2026-11-08）
 
 [同じ有限P3・weighted/native資格・全18round独立比較](docs/research/track_c_closed_p3_20261108/REPORT.md)。総RZ約1.965%減、強Full PFはなお低コスト。新SOURCEは`track_c_closed_p3*.py`、旧SOURCE/STOPは保全。
+
+## Track C Closed P3：h/resolution/α共同選択（2026-11-08）
+
+[既存menu・限定局所拡張・weighted保証・独立全18round比較](docs/research/track_c_closed_p3_joint_opt_20261108/REPORT.md)。Sourceは`track_c_closed_p3_joint_opt*.py`と`track_c_closed_p3_joint_extend.py`。最終値は`artifacts/track_c_closed_p3_joint_opt/2026-11-08/extended/FINAL.json`。旧SOURCE・raw・STOPを保全。

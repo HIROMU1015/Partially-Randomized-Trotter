@@ -206,3 +206,7 @@ Track C2-A：[限定pilot・SOURCE・raw・STOP](track_c2_a_pilot_20261106/REPOR
 ## Track C Closed P3統合（2026-11-08）
 
 [固定H4・同じP3・weighted/native資格と全18round比較](track_c_closed_p3_20261108/REPORT.md)。D/h/resolutionを保持し、独立paired holdoutでRZ約1.965%減。強Full PFはなお安い。旧研究STOPを保全し、公開照合後mandatory STOP。
+
+## 2026-11-08 Track C Closed P3：h/resolution/α共同選択
+
+[固定H4/P3・有限menu局所拡張・独立全18round評価](track_c_closed_p3_joint_opt_20261108/REPORT.md)。保存DF12/generation order・LD3/218、元H exact ground、ideal native/fresh bits、状態準備除外。旧固定Closed policyを同じ最終holdoutで再評価した比較でRZ6.0327%・CX5.2350%減。公平に再最適化したCanonical比ではClosedのRZ2.1150%減。両者の選択h/rateは一致し、強Fullはなお低コスト。SOURCE・raw・旧STOPを保全し、公開照合後mandatory STOP。
