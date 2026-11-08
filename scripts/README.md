@@ -211,3 +211,7 @@ artifacts/<validation_name>/
 `run_track_d_cut_artificial.py --output <新directory>`：事前固定2ケースのdescriptor選択→既存builder/checker→P0 full wrapper→STOP。旧H4 loaderやsamplingは呼ばない。実行済み結果は[報告](../docs/research/track_d_cut_artificial_20261108/REPORT.md)。
 
 [O5 q4移送preflight STOP](../docs/research/track_d_cut_h4_q4_20261108/REPORT.md)：C6a保存event/QPY原本が未取得のため、既存runner再実行・新runner追加は行っていない。原本回収が先。
+
+## O5 q4保存原本の限定接続
+
+`run_track_d_cut_h4_select.py`：hash一致したq4_sample00だけから不変ruleで一回decisionを価格参照前に保存。`run_track_d_cut_h4_reuse.py`：中央cut選択時だけ、旧QPY/PASS/全7価格を照合して新compileなしでSTOP。[完了済み結果](../docs/research/track_d_cut_h4_q4_completion_20261108/REPORT.md)。再実行しない。

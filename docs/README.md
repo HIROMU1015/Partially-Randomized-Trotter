@@ -176,3 +176,5 @@
 [REPORT](research/track_d_cut_artificial_20261108/REPORT.md)：実装・全入力correctness・全7資源・均衡負結果・未採択H4移送案。2-mode/q6/16eventの有限人工結果で、分子優位・全law価格・全RPE保証ではない。
 
 [O5保存H4 q4入力STOP](research/track_d_cut_h4_q4_20261108/REPORT.md)：q4_sample00の非公開event/QPY未取得。SOURCE互換確認のみ、新科学call0・資源差UNKNOWN。
+
+[O5実H4 q4最終結果](research/track_d_cut_h4_q4_completion_20261108/REPORT.md)：原本回収後に中央cut2を選択し追加差0。旧4 P0適格再利用、重複compile0。
