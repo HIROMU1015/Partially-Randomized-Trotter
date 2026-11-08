@@ -660,3 +660,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 [収録ファイル・保存版と確認範囲](docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## 2026-11-08：Track D O5 静的改善設計
+
+[報告](docs/research/track_d_o5_algorithm_design_20261108/REPORT.md)。新しい科学的検証結果ではない。既存理想/有限標本/条件付きproxyと未保証事項を整理し、A/B/C候補を設計。新実装/test/compile/価格再解析/N再算定0。q64進捗/完了は今回照会せず、既存実行状態・結果/STOPを変更しない。

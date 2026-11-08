@@ -83,3 +83,5 @@
 
 [索引の統合・SOURCEの版差・保存原版](main_collection_versions_20261103.md)から、同名ファイルの各公開版とmainの配置を確認できる。
 過去のSOURCE・test・結果は元snapshotの条件で読む。科学実行と元の研究testの再実行は行っていない。
+
+2026-11-08：[O5：Controlled/Reference選択と改善候補](track_d_o5_algorithm_design_20261108/REPORT.md)。既知mixedとの重複、descriptor-onlyとoracleの区別、cut/接口融合の条件、O2/Track Dのdomain差を整理。Aの安価な技術選別を優先提案、正式採択/新科学計算なし。
