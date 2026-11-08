@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+**Track C DFの相殺・安定性調査（2026-11-08）：[保存証拠と次の検証案](docs/research/track_c_df_cancellation_evidence_20261108/REPORT.md)。** 固定da8b2c3の読取・引用のみ。複数順序の資格は支持、近傍h・状態摂動・相殺なし総Gは未確定。旧保証/STOPを維持し、公開後mandatory STOP。
+
 **Track C DFの3分子比較（2026-11-08）：[Full PF・Truncated PF・改良PR](docs/research/track_c_df_truncation_20261108/REPORT.md)。** 固定元H/oracle ground/18round/compiler Aの有限探索でH2はPR、H4/H6はTruncatedが低RZ。新しい科学計算は完了、mandatory STOP。旧記録は保存。
 
 **Track C（O3）全研究の総括（2026-11-08）：[D内部BCH・共同isometry・対角融合と強Full比較](docs/research/track_c_o3_research_summary_20261108/TRACK_C_O3_RESEARCH_SUMMARY.md)。** 新規科学計算を伴わない保存成果の統合。旧研究CのHamiltonian表現系列と区別する。

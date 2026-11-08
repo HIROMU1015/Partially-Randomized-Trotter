@@ -1,5 +1,9 @@
 # 研究結果への統一索引
 
+## Track C DF相殺・安定性の既存証拠（2026-11-08）
+
+[調査REPORT](track_c_df_cancellation_evidence_20261108/REPORT.md)。da8b2c3のsigned値、directed資格、近傍hのproxy、全18round・状態仮定、価格/Nの寄与を区別。SUPPORTED/CONDITIONALLY_SUPPORTED/UNDETERMINED/NOT_SUPPORTEDで分類。新しい科学数値・ランキングは取得せず、追加検証P1〜P4は提案のみ。既存保証とSTOPを維持。
+
 ## Track C DFのFull PF・Truncated PF・改良PR（2026-11-08）
 
 [3分子の結果・条件・限界](track_c_df_truncation_20261108/REPORT.md)、[既存SOURCEの適合調査](track_c_df_truncation_20261108/DISCOVERY.md)、[再現とraw復元](track_c_df_truncation_20261108/REPRODUCE.md)。H2 XDF3、H4 DF12、H6 full XDF18の元Hを同精度18roundで比較。有限menuの総RZ最小はH2 PR、H4/H6 Truncated。条件付きnative資格・十分N・独立価格holdoutあり、mandatory STOP。
