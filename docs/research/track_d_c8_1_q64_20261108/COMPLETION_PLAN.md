@@ -28,6 +28,8 @@ C8-1 raw worker/whole-path builder/CAR・head・atom cache、修正済みhandoff
 
 小BLASとcompileのnested並列だけを抑える。共有OS/scheduler/venv/package/cache、他ユーザー・他job・旧workerへ変更/signal/killを行わない。別worktreeの通常更新や一時的競合だけで正常workerを停止しない。
 
+postのRAM見積もりも方式別の完了peakを使い、strongの小さい9qubit検証にReference17の大きい予約を流用しない。CPU配分と科学的なworker処理は既存のまま、dispatch時のtask estimateだけを選ぶ。
+
 ## 統計・モデル・STOP
 
 全8が揃う場合だけ方式/axis別RZ/CX count/depth・total depth・size・peak qubits、n8平均/SD/min/max/paired差・共分散を既存実装で取得する。X/Yをn16にしない。凍結A/F/S・校正共分散は元packetを保全し新fit0。各pathのΔCX+14128を保存するが、全path公式を認定しない。探索的/有限観測と母平均・長q・actual保証を区別する。

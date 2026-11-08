@@ -96,6 +96,15 @@ class CompletionTests(unittest.TestCase):
             self.assertEqual(row['raw_memory_estimate'],200*1024)
             self.assertEqual(row['post_memory_estimate'],1000*1024)
 
+    def test_post_memory_uses_its_arm_and_preserves_compile_reservation(self):
+        pending=[dict(stage='post',method='reference',memory_bytes=999),
+                 dict(stage='post',method='symmetric_directional',memory_bytes=999),
+                 dict(stage='compile',method='reference',memory_bytes=7)]
+        def existing(allocator,cpu,memory,tasks,workers,active):return tasks
+        result=adapter.allocation(existing,None,64,10000,pending,64,0,
+            dict(reference_post_memory_estimate=100,direct_post_memory_estimate=10))
+        self.assertEqual([p['memory_bytes'] for p in result],[100,10,7])
+
     def mock_pipeline(self,fail_gate=False):
         reused=runner.reused;calls=[];pairs=[];stop=Event()
         class Pool:

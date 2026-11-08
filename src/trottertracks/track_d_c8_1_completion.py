@@ -114,3 +114,12 @@ def install(threads, progress, *, existing_install):
     engine=repair.install(threads,existing_install=existing_install)
     primitive.StateActions=ReportingStateActions
     return engine
+
+
+def allocation(existing, allocator, cpu, memory, pending, workers, active, estimates):
+    """Keep the old CPU allocator; select the completed-peak RAM estimate by arm."""
+    for task in pending:
+        if task["stage"]=="post":
+            key="reference_post_memory_estimate" if task["method"]=="reference" else "direct_post_memory_estimate"
+            task["memory_bytes"]=estimates[key]
+    return existing(allocator,cpu,memory,pending,workers,active)

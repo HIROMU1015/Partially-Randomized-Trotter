@@ -147,6 +147,8 @@ def resources(original,repair):
     available=reused.frozen.old.frozen.memory_available()
     return dict(numerical_threads=cpu,memory=dict(MemAvailable=available),
         raw_memory_estimate=2*raw,post_memory_estimate=2*max(posts.values()),
+        reference_post_memory_estimate=2*max(v for k,v in posts.items() if k.startswith("reference")),
+        direct_post_memory_estimate=2*max(v for k,v in posts.items() if k.startswith("symmetric_directional")),
         compile_memory_estimate=2*max(isolated_compile or [raw]),
         policy="completed same-q peak estimates and actual available RAM admission; compile1CPU, native stages share remainder; no small worker cap")
 
@@ -183,6 +185,9 @@ def main():
         allocation=resources(args.original_output,args.repair_output);write(local/"resources.json",allocation)
         write(out/"progress.json",dict(status="SAMPLE00_FINAL_PAIRED_CHI",raw_reused=1,compile_reused=4,postchecks_reused=4))
         reused.frozen.raw_worker=raw_worker;reused.frozen.old.stage_worker=stage_worker
+        prior_allocation=reused.handoff.allocation
+        reused.handoff.allocation=lambda allocator,cpu,memory,pending,workers,active:adapter.allocation(
+            prior_allocation,allocator,cpu,memory,pending,workers,active,allocation)
         with multiprocessing.Manager() as manager:
             stop=manager.Event()
             reused.pipeline(events,args.origin,local,allocation,stop,out,raw,compiled,
