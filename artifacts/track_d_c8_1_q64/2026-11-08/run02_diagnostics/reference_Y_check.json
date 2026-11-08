@@ -1,0 +1,72 @@
+{
+  "status": "FAIL",
+  "error_type": "ValueError",
+  "error": "compiled_vs_CAR_observable:observable_signal_allowance",
+  "arm": "reference",
+  "axis": "Y",
+  "checks": [
+    {
+      "label": "compiled_reference_vs_raw_isometry:branch0",
+      "status": "PASS",
+      "max_entry": 5.5301385911847773e-11,
+      "frobenius": 5.564769582887325e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_reference_vs_raw_isometry:branch1",
+      "status": "PASS",
+      "max_entry": 6.03969267785756e-11,
+      "frobenius": 5.502778662967197e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_reference_input_isometry",
+      "status": "PASS",
+      "max_entry": 2.045763558555791e-11,
+      "frobenius": 3.1907610629994413e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_vs_CAR_observable",
+      "status": "PASS",
+      "max_entry": 1.9957813179871664e-11,
+      "frobenius": 2.336298580407411e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    }
+  ],
+  "observable_residuals": [
+    {
+      "label": "CAR",
+      "status": "PASS",
+      "max_entry": 1.9957813179871664e-11,
+      "frobenius": 2.336298580407411e-10,
+      "tolerance": 1e-10,
+      "rtol": 0,
+      "signal_tolerance": 2e-10,
+      "signal_status": "FAIL"
+    },
+    {
+      "label": "raw",
+      "status": "PASS",
+      "max_entry": 1.9837798070909685e-11,
+      "frobenius": 2.328544465324434e-10,
+      "tolerance": 1e-10,
+      "rtol": 0,
+      "signal_tolerance": 2e-10,
+      "signal_status": "FAIL"
+    }
+  ],
+  "component_atol": 1e-10,
+  "signal_atol": 2e-10,
+  "rtol": 0,
+  "global_phase_fit": false,
+  "renormalized": false,
+  "input_basis_columns": 256,
+  "acceptance_changed": false,
+  "sampling_calls": 0,
+  "compile_calls": 0
+}

@@ -1,0 +1,64 @@
+{
+  "status": "FAIL",
+  "error_type": "ValueError",
+  "error": "compiled_vs_CAR_observable:observable_signal_allowance",
+  "arm": "symmetric_directional",
+  "axis": "X",
+  "checks": [
+    {
+      "label": "compiled_vs_raw_full_wrapper_global_phase",
+      "status": "PASS",
+      "max_entry": 5.6215601478806946e-11,
+      "frobenius": 8.600495780577472e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_full_wrapper_unitarity",
+      "status": "PASS",
+      "max_entry": 1.9777623982975e-11,
+      "frobenius": 4.281299583192956e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_vs_CAR_observable",
+      "status": "PASS",
+      "max_entry": 1.889755019135492e-11,
+      "frobenius": 2.1474799974401975e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    }
+  ],
+  "observable_residuals": [
+    {
+      "label": "CAR",
+      "status": "PASS",
+      "max_entry": 1.889755019135492e-11,
+      "frobenius": 2.1474799974401975e-10,
+      "tolerance": 1e-10,
+      "rtol": 0,
+      "signal_tolerance": 2e-10,
+      "signal_status": "FAIL"
+    },
+    {
+      "label": "raw",
+      "status": "PASS",
+      "max_entry": 1.888023071217083e-11,
+      "frobenius": 2.162518257565924e-10,
+      "tolerance": 1e-10,
+      "rtol": 0,
+      "signal_tolerance": 2e-10,
+      "signal_status": "FAIL"
+    }
+  ],
+  "component_atol": 1e-10,
+  "signal_atol": 2e-10,
+  "rtol": 0,
+  "global_phase_fit": false,
+  "renormalized": false,
+  "input_basis_columns": 256,
+  "acceptance_changed": false,
+  "sampling_calls": 0,
+  "compile_calls": 0
+}
