@@ -1,5 +1,9 @@
 # 研究結果への統一索引
 
+## Track C DFのFull PF・Truncated PF・改良PR（2026-11-08）
+
+[3分子の結果・条件・限界](track_c_df_truncation_20261108/REPORT.md)、[既存SOURCEの適合調査](track_c_df_truncation_20261108/DISCOVERY.md)、[再現とraw復元](track_c_df_truncation_20261108/REPRODUCE.md)。H2 XDF3、H4 DF12、H6 full XDF18の元Hを同精度18roundで比較。有限menuの総RZ最小はH2 PR、H4/H6 Truncated。条件付きnative資格・十分N・独立価格holdoutあり、mandatory STOP。
+
 ## Track C（O3）PRアルゴリズム改善の総括（2026-11-08）
 
 [全研究の統合報告](track_c_o3_research_summary_20261108/TRACK_C_O3_RESEARCH_SUMMARY.md)。C-N/C-S/C-P、C2-A/B、混合公式、D内部BCH、singleton、共同isometry、対角融合、compiler A・18round保証を、主張・根拠・条件・限界で整理。D内部相殺はPR内の改善、最終の強Fullはなお低コスト。固定SOURCE・保存結果・別branchのC2-Bへリンクし、新しい計算・レビューは実施していない。

@@ -1,5 +1,9 @@
 # scripts 索引
 
+## Track C DF切り捨て比較（2026-11-08）
+
+`run_track_c_df_truncation.py`は分子別入力replay・pilot・資格・凍結・独立評価を接続する。PRは同じmoduleの`pr-*` stage、有限順序auditは`python -m trottertracks.track_c_df_order_audit`。[REPORT](../docs/research/track_c_df_truncation_20261108/REPORT.md)と[再現情報](../docs/research/track_c_df_truncation_20261108/REPRODUCE.md)を先に読む。保存namespaceはmandatory STOP済みで、runnerは再開を拒否する。
+
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として
 `src/trotterlib/` にあり、runnerは条件の読込み、呼出し、成果物保存を担当する。
 

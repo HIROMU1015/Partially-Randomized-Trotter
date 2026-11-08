@@ -1,5 +1,9 @@
 # Validation status
 
+## 2026-11-08 Track C DF truncation comparison
+
+[REPORT](docs/research/track_c_df_truncation_20261108/REPORT.md)。H2/H4/H6、元H、18round、energy 1.5936e-4 Ha、failure .05、compiler Aを共通化。全9方式で固定保存H/oracle ground/理想native/独立draws下のSOURCE/native成功条件とmean decoderを確認。新policy144独立実装経路check、人工8 tests PASS、最終価格holdout3712本。H4 Full/PRは資格を照合してc5a3から再利用。有限menuでH2 PR、H4/H6 Truncatedが低RZ。物理noise・state prep・一般scaling・大域最適性は未資格。根拠は`artifacts/track_c_df_truncation/2026-11-08/{SOURCE.json,FINAL_CHECK.json,ordering/VALIDATION.json,RAW_INDEX.json}`。科学計算完了、mandatory STOP。以下の旧記録は保存する。
+
 ## 2026-09-20 delta-schedule central-RTE compiled-cost note
 
 H4 chain、1.0 Å、STO-3G、8 qubit、DF rank 12、固定Hamiltonian snapshot、$L_D=3$、

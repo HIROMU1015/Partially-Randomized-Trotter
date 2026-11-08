@@ -1,5 +1,9 @@
 # 研究別SOURCE
 
+## Track C DF切り捨て比較（2026-11-08）
+
+`track_c_df_truncation.py`、`track_c_df_truncation_pr.py`、`track_c_df_order_audit.py`は既存DF/PF/G7/compiler A/shot/decoderの分子別adapter。`track_c_df_truncation_report.py`は保存結果の読取集計。[H2/H4/H6のREPORT](../../docs/research/track_c_df_truncation_20261108/REPORT.md)とSOURCE/rawに条件を記載。旧SOURCEを変更せず、mandatory STOP。
+
 共通 `trotterlib` APIと区別した実験別SOURCEの名前空間。
 [mainへの収録範囲・原SOURCE・元の制約](../../docs/research/main_collection_20261103.md)を参照する。
 

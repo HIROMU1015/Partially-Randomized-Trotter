@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+**Track C DFの3分子比較（2026-11-08）：[Full PF・Truncated PF・改良PR](docs/research/track_c_df_truncation_20261108/REPORT.md)。** 固定元H/oracle ground/18round/compiler Aの有限探索でH2はPR、H4/H6はTruncatedが低RZ。新しい科学計算は完了、mandatory STOP。旧記録は保存。
+
 **Track C（O3）全研究の総括（2026-11-08）：[D内部BCH・共同isometry・対角融合と強Full比較](docs/research/track_c_o3_research_summary_20261108/TRACK_C_O3_RESEARCH_SUMMARY.md)。** 新規科学計算を伴わない保存成果の統合。旧研究CのHamiltonian表現系列と区別する。
 
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
