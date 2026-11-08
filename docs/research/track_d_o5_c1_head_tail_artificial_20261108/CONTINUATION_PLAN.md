@@ -1,0 +1,9 @@
+# 同じ人工scopeの保存処理修正・未完了処理の継続
+
+2026-11-08。旧実行SOURCE da975efa9c11fcc41602d6acb56e8fd85f2ff514。run01は局所positive7/negative7 PASS後、人工eventがSimpleNamespaceであるのにto_dictを呼んだ保存処理でAttributeErrorとなった。whole-path raw checks0、compile0、post0。旧SOURCE/LOCAL_CHECKS/INTERFACES/FAILURE/STOP/CALL_COUNTS/PRESERVATION/PAYLOAD_INDEXを無変更で保全する。
+
+ユーザーの技術的バグ修正・同scope未完了処理継続の一括許可に基づく。保存表現だけを実際の人工namespaceのfieldからJSONへ変換する。科学的なbridge/splice、V、fixture、cut、control、phase、precision、P0は変えない。局所PASSは旧SOURCE/input/失敗型/処理数を照合して再利用し、N1..N5・phase witnessを繰り返さない。
+
+最初のrunではraw回路を保存する前に例外が起きてprocessの回路objectが失われたため、同じ4構成×X/Yを再構成する必要がある。context factoryに付属するbasis確認はこの再構成に伴うが、別caseや結果を変えるためのretryではない。新しい独立標本を追加したとは扱わず、二回の構成履歴と再利用を報告する。
+
+run02_metadata_completionをfresh outputとし、旧run01へ追記しない。旧PLANの数学条件と最大8 compileを維持する。raw correctnessから先の未完了処理のみ進み、baseline適格再利用・全postcheck・公開照合後mandatory STOP。q64非介入、H4/新sampling/別case/精度緩和/全RPE更新0。

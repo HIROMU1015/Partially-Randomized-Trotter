@@ -78,7 +78,7 @@ def splice_join(core, tail_start, context, tail_index, *, mode, head_index=2):
         matrix_order="G_tail.adjoint @ G_head", centers_and_other_interfaces_unchanged=True)
 
 
-def fixture(spec, lift):
+def fixture(spec, lift, *, completed_local=None):
     """Narrow subset entry: old make_cases would also build 53 other cases."""
     context, lifts, head, reverse, basis_checks = toy.context(spec, lift)
     item = next(x for x in spec["whole_paths"] if x["id"] == "q2_mixed")
@@ -98,7 +98,7 @@ def fixture(spec, lift):
         steps.append(dict(sample=i, events=events, reference=target, raw=QuantumCircuit(3)))
     tails = [c3.base.build_event_sequence(s["events"], context.arm.plan.atoms,
         context.provider, optimized=True) for s in steps]
-    local = local_checks(context, tails, lift)
+    local = local_checks(context, tails, lift) if completed_local is None else completed_local
     tail_calls = []
     def capture(*args, **kwargs):
         i = len(tail_calls)

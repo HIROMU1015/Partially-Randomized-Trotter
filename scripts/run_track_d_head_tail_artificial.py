@@ -15,7 +15,8 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 DOC = Path("docs/research/track_d_o5_c1_head_tail_artificial_20261108")
-OUT = Path("artifacts/track_d_head_tail_artificial/2026-11-08/run01")
+OUT = Path("artifacts/track_d_head_tail_artificial/2026-11-08/run02_metadata_completion")
+PRIOR = Path("artifacts/track_d_head_tail_artificial/2026-11-08/run01")
 OLD = Path("artifacts/track_d_c7_2_toy/2026-11-07/run01")
 
 
@@ -72,15 +73,33 @@ def main():
             scope="fixed artificial q2_mixed/cut1 only", molecular_input_loaded=False))
         write(private/"resources.json", dict(affinity=len(os.sched_getaffinity(0)),
             load=os.getloadavg(), meminfo=Path("/proc/meminfo").read_text()))
+        prior_source=json.loads((ROOT/PRIOR/"SOURCE.json").read_text())
+        prior_calls=json.loads((ROOT/PRIOR/"CALL_COUNTS.json").read_text())
+        prior_failure=json.loads((ROOT/PRIOR/"FAILURE.json").read_text())
+        completed_local=json.loads((ROOT/PRIOR/"LOCAL_CHECKS.json").read_text())
+        if (prior_source["execution_source"] != "da975efa9c11fcc41602d6acb56e8fd85f2ff514"
+            or prior_source["fixture_sha256"] != plan["fixture_sha256"]
+            or prior_calls["new_compile"] != 0 or prior_calls["raw_checks"] != 0
+            or prior_failure["type"] != "AttributeError" or "to_dict" not in prior_failure["error"]
+            or completed_local["status"] != "PASS"):
+            raise ValueError("TECHNICAL_CONTINUATION_BINDING")
+        write(out/"CONTINUATION.json",dict(prior_execution=prior_source["execution_source"],
+            prior_output=str(PRIOR),preserved_prior_STOP=True,local_checks_reused=1,
+            prior_local_sha256=sha((ROOT/PRIOR/"LOCAL_CHECKS.json").read_bytes()),
+            reason="SimpleNamespace event metadata serialization; no prior raw checks or P0",
+            raw_reconstruction_required=True,fixture_precision_scope_changed=False))
         calls["fixed_whole_paths"] = 1
-        context, steps, baseline, fused, joins, basis, local = m.fixture(spec, boot.exterior_fock_lift)
-        calls.update(tail_emissions=2, local_checks=1)
+        context, steps, baseline, fused, joins, basis, local = m.fixture(spec, boot.exterior_fock_lift,completed_local=completed_local)
+        calls.update(tail_emissions=2, local_checks=0, local_checks_reused=1)
         write(out/"LOCAL_CHECKS.json", local)
         write(out/"INTERFACES.json", joins)
         write(out/"FIXTURE_IDENTITY.json", dict(id="q2_mixed", cut=1, q=2, modes=2,
             frame_angles=spec["frame_angles"], scalar=spec["scalar"], extracted_identity=spec["identity"],
             h="1/10", tau=spec["tau"], K=0,
-            ordered_events=[[e.to_dict() for e in s["events"]] for s in steps],
+            ordered_events=[[dict(rotation_component_id=e.rotation_component_id,
+                rotation_angle=e.rotation_angle,signed_rotation_angle=e.unsigned_rotation_angle,
+                event_normalization=e.event_normalization,phase=dict(real=e.phase.real,imag=e.phase.imag),
+                applications=[dict(vars(app)) for app in e.application_sequence]) for e in s["events"]] for s in steps],
             phase_witness_in_whole_path=False, phase_chi=baseline.phase))
         raw_checks = m.raw_checks(baseline, fused, steps); calls["raw_checks"] = 2
         write(out/"RAW_CHECKS.json", dict(basis=basis, **raw_checks))
