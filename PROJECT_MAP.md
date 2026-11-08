@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-11-08：三者比較資料へ独立128標本比較を統合
+
+[更新した三者比較REPORT](docs/research/research_c_three_method_z_relocated_comparison_20261108/REPORT.md)。旧三者の保存点値・図を維持し、CDF0/r64対ENTRY E2/r16の双方fresh128・名目95% Welch・登録5%精度PASS・`NOMINAL_MODEL_ENTRY_LOWER`を別の正式結果として追記した。旧final64比較の`UNRESOLVED_PRECISION_TARGET`とP対ENTRYの旧主比較Bは不変。三者同時統計比較は主張せず、既存結果の転記・等値照合だけで新科学計算/統計再解析0。PNG/SVG/描画scriptは初版70981380のbyte原本を保持。
+
 ## 2026-11-08：CDF0対ENTRY・独立128/arm検証完了
 
 [新結果・名目95%差区間・raw・正常STOP](docs/research/research_c_cdf0_entry_independent_price_results_20261108.md)。H4直鎖1Å/STO-3G・number CDF8/元順LD2・線形Z再配置・partial S2/s1/δ=.1/K0/m0..12/own-ground/状態準備除外/P0の固定条件で、新CDF0/r64は230417040484、新ENTRY E2/r16は75945497963の条件付き総RZ。各fresh128件、名目95%差区間は正、半幅/新ENTRY3.9045023%で登録5%と診断をPASSし`NOMINAL_MODEL_ENTRY_LOWER`。2405 COMPLETE/FAIL0、SOURCE114/入力52/旧結果保全。旧64比較の`UNRESOLVED_PRECISION_TARGET`は変更しない。全raw2882件を可逆包装して公開し、retry/resume0でSTOP。
