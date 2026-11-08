@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[O5候補C1：head-tail静的調査](docs/research/track_d_o5_c1_head_tail_static_20261108/REPORT.md)：閉じたhead出口→tail入口の異frame Gaussianを既存relative変換へ接続する候補を同定。head/tail内部共有・step融合は実装済み、P0局所重複と全接口UNKNOWNを区別。C1継続案は一種類の最小人工判別までで未採択。新コード/人工fixture/correctness/P0/保存価格再解析/fit/N/13round0、q64非照会・非介入、公開照合後mandatory STOP。
+
 [O5保存q4・16 path cut構造調査PLAN](docs/research/track_d_o5_q4_cohort_metadata_20261108/PLAN.md)：C6a保存16本metadataだけを固定descriptor選択器で一回評価。sample00 decision再利用・新選択15、H4回路/compile/simulation/価格再解析0。公開照合後mandatory STOP、B後続/C実装へ自動進行しない。
 
 [O5構造調査結果](docs/research/track_d_o5_q4_cohort_metadata_20261108/REPORT.md)：全16本中央cut2、非中央0。有限calibration metadata結果、追加H4 compile保留・C接口融合は次候補案、実装未開始。
