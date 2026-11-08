@@ -741,3 +741,10 @@ byte/JSON/fresh-output確認のみ。`--execute`なし、科学call0。
 [統合報告](../docs/research/research_c_integrated_preparation_20261105.md)に候補集合・API・call積算・STOPを記載。
 
 `run_research_c_integrated_execution.py`は固定統合scopeの実行接続。`--execute`なしはpassive。[実行経路とT7配置](../docs/research/research_c_integrated_execution_20261105.md)。
+
+
+## 2026-11-08：通常CDF＋線形Z再配置＋PRの比較準備（科学未実行）
+
+[CASE B・候補/証拠/科学実行範囲](../docs/research/research_c_cdf0_z_relocation_comparison_readiness_20261108.md)。Stage Aの保存γ=0 CDF8終端を独立CDF0としてbindし、既存再配置/finite-RTE/native/統計を再利用する薄いadapterと受動preflightを追加。人工/mock33 PASS、旧SOURCE68ファイル不変。実H4の新規評価・compile・shots・再集計・fitは0。科学開始前でMANDATORY STOP。
+
+SOURCE: `src/trottertracks/c_cdf0_relocated.py`、runner: `scripts/check_research_c_cdf0_relocated.py`、test: `tests/management/test_research_c_cdf0_relocated.py`、artifact: `artifacts/research_c_cdf0_relocated/2026-11-08/technical/`。

@@ -1133,3 +1133,8 @@ UWC note が保存している実行記録は `.venv/bin/python -m pytest -q` �
 6. **clean checkout で検証する。** 固定した依存環境と文書化した command で、小規模な end-to-end 再生成および全 test suite を CI から実行する。結果 artifact を作った commit に対する成功 check を GitHub 上に残し、比較 tolerance と期待値を test または検証 script に固定する。
 
 上記が完了するまでは、旧来の高次 Trotter artifact、DF screening、UWC 表を互いに独立した進捗資料として扱い、現在の partial-randomized DF/UWC の完成済み検証結果として一括して引用しないでください。
+
+
+## 2026-11-08：通常CDF＋線形Z再配置＋PRの比較準備（科学未実行）
+
+[CASE B・候補/証拠/科学実行範囲](docs/research/research_c_cdf0_z_relocation_comparison_readiness_20261108.md)。Stage Aの保存γ=0 CDF8終端を独立CDF0としてbindし、既存再配置/finite-RTE/native/統計を再利用する薄いadapterと受動preflightを追加。人工/mock33 PASS、旧SOURCE68ファイル不変。実H4の新規評価・compile・shots・再集計・fitは0。科学開始前でMANDATORY STOP。

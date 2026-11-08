@@ -56,3 +56,5 @@
 | [2026-08-18](2026-08-18.md) | finite-RTEとPF・摂動・QPE分枝誤差の検証 | `8fdc6b3` | H4全$L_D$の単一位相条件、H2--H5のdense比較、H6のstate-action係数までlocal確認 | GPU経路をH8/H10で確認し、H12の候補$L_D$ごとに$C$を決定 |
 
 [2026-10-26追記：保存H4 XDF prefixのDF予算first-passingはrank8](2026-10-26.md)。356 calls完了、PF／native／RPE／費用の新baseline比較は未実施。
+
+- [2026-11-08：CDF0再配置PRの技術準備・科学前STOP](2026-11-08.md)
