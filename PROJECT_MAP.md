@@ -330,3 +330,5 @@ C-S V0の[保存parameter型修復・同条件再実行SOURCE](docs/research/cs_
 2026-11-08：[O2案Eの2-label instrument・人工16件・既知LCU対照](docs/research/o2_e_early_abort_technical_validation_20261108/REPORT.md)。module e_label_erasure.py、人工runner/test、artifacts/o2_e_label_erasure/2026-11-08/artificial_run01/を接続。TECHNICALLY_VALID_KNOWN_LCU_APPLICATION、同じearly LCUへの増分利益0、実H4/compile0。
 
 2026-11-08：[O2の実装前非同値性選別](docs/research/o2_distinct_mechanism_screening_20261108/REPORT.md)。normalizer二段取得・有限状態summary・座標測定を既知法と照合。DISTINCT_MECHANISM_SUPPORTED=0、実装/新科学計算なし。O2継続・旧STOP/C1凍結維持。
+
+2026-11-08：[共通basis label周辺化の静的接続調査](docs/research/o2_common_basis_static_validation_20261108/REPORT.md)。support列保存の理想共役同値、SOURCEの逆/順・phase、保存gate差と強いgroupingを分離。総合C（数値保証未成立）、理想baselineは既知groupingへ還元。新群/実装/計算なし。
