@@ -60,3 +60,5 @@
 - [2026-11-08：CDF0再配置PRの技術準備・科学前STOP](2026-11-08.md)
 
 - [2026-11-08：CDF0限定科学実行・Aer環境例外STOP](../research_c_cdf0_z_relocation_execution_20261108.md)
+
+- [2026-11-08：CDF0 run02正常完了・登録精度未達](../research_c_cdf0_z_relocation_rerun02_results_20261108.md)

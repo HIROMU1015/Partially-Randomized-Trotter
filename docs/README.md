@@ -829,3 +829,8 @@ SOURCE: `src/trottertracks/c_cdf0_relocated.py`、runner: `scripts/check_researc
 ## 2026-11-08：CDF0再配置PRの一回実行は環境例外STOP（CASE C）
 
 [失敗原本・監査・実行報告](research/research_c_cdf0_z_relocation_execution_20261108.md)。固定SOURCE bde646c2…/640052df…を無変更で一回起動したが、最初のshell検査でQiskit AerのCUDA共有ライブラリのシンボル解決が失敗。保存input load後、再配置/PF/RTE/RPE/native価格/final/主比較は未実行。総RZ・selected r・差・統計判定はnull。SOURCE112/input32/旧SOURCE68保全、STOP.failed=true、retry/resume0。科学的な候補不適格やENTRY勝利とは扱わず、公開後MANDATORY STOP。
+
+
+## 2026-11-08：CDF0再配置PRの許可済みrun02完了・精度未達
+
+[結果・修復・監査・STOP](research/research_c_cdf0_z_relocation_rerun02_results_20261108.md)。専用CPU Aer0.15.1で旧科学SOURCEを保ち、fresh outputだけrun02へ変更。H4直鎖1Å/STO-3G・number CDF8/元順LD2・partial S2/s1/δ=.1/K0/m0..12/own-ground/状態準備除外/P0の限定条件で、selection32からr64を固定、独立final64を取得。条件付き総RZはCDF0 231,951,425,282.5、保存ENTRY E2/r16 75,621,395,471。点値ENTRY67.3977%低値・名目95%差区間は正だが、半幅/ENTRY6.09945%が登録5%を超え`UNRESOLVED_PRECISION_TARGET`。full512/実逆/X-Y128標本PASS、1710成功callback、SOURCE112/input32/旧SOURCE68/旧失敗run01保全。追加標本なし、正常STOP・run内retry/resume0。過去の失敗・準備記録はその時点の履歴として保持する。
