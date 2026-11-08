@@ -1,6 +1,6 @@
 # 文書索引
 
-[O5 q4 cohort metadata PLAN](research/track_d_o5_q4_cohort_metadata_20261108/PLAN.md)：保存16 path・固定cut規則の構造調査。
+[O5 q4 cohort metadata PLAN](research/track_d_o5_q4_cohort_metadata_20261108/PLAN.md)／[結果](research/track_d_o5_q4_cohort_metadata_20261108/REPORT.md)：保存16本すべて中央cut2。新選択15・旧decision再利用1、価格再解析/回路/compileなし、B追加H4保留・Cは提案のみ。
 
 [C8-1 q64限定再開PLAN](research/track_d_c8_1_q64_20261108/COMPLETION_PLAN.md)：追加sampling0、保存sample00最終gate→残7、旧STOP保持。
 
