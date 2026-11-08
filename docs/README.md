@@ -1,5 +1,7 @@
 # 文書索引
 
+- [Track C（O3）最新版・最終統合報告](research/track_c_o3_integrated_20261108/TRACK_C_O3_INTEGRATED_REPORT.md)：初期PR改善、Closed P3、H2/H4/H6 DF比較、相殺P1/P2、負結果・条件・未解決事項（2026-11-08、既存成果の統合のみ）
+
 - [Track C DF相殺安定性P1・保守的総資源P2](research/track_c_df_cancellation_validation_20261108/REPORT.md)：H6指定5点、H4/H6個別directed誤差・18round・公開raw、mandatory STOP（2026-11-08）
 
 - [Track C DF切り捨て・Full・改良PRのH2/H4/H6比較](research/track_c_df_truncation_20261108/REPORT.md)：18roundの条件付き資格、総資源、SOURCE/raw、mandatory STOP（2026-11-08）

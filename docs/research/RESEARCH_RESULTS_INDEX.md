@@ -1,5 +1,9 @@
 # 研究結果への統一索引
 
+## Track C（O3）全研究の最新版統合（2026-11-08）
+
+[単一Markdownの最終統合報告](track_c_o3_integrated_20261108/TRACK_C_O3_INTEGRATED_REPORT.md)。初期の負結果、compiler A、D内部BCH、singleton/共同isometry/対角融合、Closed P3と共同最適化、H2/H4/H6のFull/Truncated/PR、相殺の静的調査とP1/P2を一つの経緯として整理。旧統合版は対角融合までの総括として保全。保存値・条件・holdout・policy・SOURCEの版を区別し、今回は文書統合のみ。新科学計算/再解析/詳細科学レビューなし、公開後mandatory STOP。
+
 ## Track C DF相殺安定性・相殺依存度P1→P2（2026-11-08）
 
 [REPORT](track_c_df_cancellation_validation_20261108/REPORT.md)、[再現・raw復元](track_c_df_cancellation_validation_20261108/REPRODUCE.md)。P1はH6 m17・固定総時間の指定5点で条件付き資格を維持。P2は個別directed位相上界を加算し、H4はFull/Closed PRより低RZ、H6はFullより低RZだがPRより高い。有限cohortの結果で元combined保証は維持、mandatory STOP。 P1新4点・P2固定157点の個別資格、全18round・同一B回路のA/B対照・SOURCE履歴とrawを保存。
