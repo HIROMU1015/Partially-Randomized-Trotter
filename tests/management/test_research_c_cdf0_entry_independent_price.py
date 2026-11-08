@@ -15,6 +15,16 @@ from trottertracks import c_cdf0_entry_independent_price as m
 METRICS=('rz_count','rz_depth','cx_count','cx_depth','total_depth','circuit_size')
 
 
+@pytest.fixture(autouse=True)
+def unused_output_for_metadata_tests(monkeypatch):
+    """Model an unused destination without touching a completed science run.
+
+    The freshness rejection case below explicitly models an existing directory.
+    """
+    fresh=ROOT/m.io.read(ROOT/m.PROPOSAL)['fresh_output'];exists=Path.exists
+    monkeypatch.setattr(Path,'exists',lambda p:False if p==fresh else exists(p))
+
+
 def rows(arm='CDF0',digest='artificial-source'):
     return [dict(arm=arm,batch=b,sample=i,correctness='PASS',
         metrics={k:20+i%8 for k in METRICS},event_metadata=dict(sample=i,SOURCE=digest,
@@ -30,7 +40,8 @@ from trottertracks import c_cdf0_entry_independent_price as m
 try:m.execute('.')
 except PermissionError:pass
 else:raise AssertionError('science ran')
-m.preflight('.')
+try:m.preflight('.')
+except FileExistsError:pass  # Committed STOP makes the real destination used.
 assert not any(k in sys.modules for k in ('numpy','scipy','qiskit','ffsim'))
 """
     subprocess.run([sys.executable,'-B','-c',code],cwd=ROOT,check=True)

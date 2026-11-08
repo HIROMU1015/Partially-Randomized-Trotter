@@ -64,6 +64,8 @@ CDF0/ENTRY点比=3.033978927839241。ENTRYの点値削減率は約67.039982%で�
 
 全event数はCDF0=8192、ENTRY=2048。全バッチでreused0/computed32、価格0への故障置換・不適格標本除去は0。新SOURCE114/全入力52/旧STOP/旧科学結果は実行後もhash一致。旧grant/ledger/markerは変更しない。CODE/contractを科学実行中に修正せず、retry/resume0で`REGISTERED_TASKS_COMPLETE`の正常STOPを保存した。
 
+実行後の受動・権限・freshness関連26テストもPASS（18件は対象外）。完了済みrawを保全したまま、テスト側だけで未使用出力を模擬するfixtureへ調整し、既存ディレクトリの再使用拒否を保持した。科学SOURCE/runnerの変更や科学再実行は0。
+
 ## 6. 公開rawと再現
 
 [publication案内](../../artifacts/research_c_independent_price_precision/2026-11-08/publication/README.md)から、summary、native256件CSV、全raw2882ファイルのSHA256索引、全テキスト原本1588件のgzip capsule、全binary原本1294件のtar.gz分割12本へ接続できる。binaryはQPY/reference NPZだけでなく保存ground、worker mmap/cache/pickleもbyte原本のまま含む。約1.289 GBのrawを、全binary約49.918 MBとテキストcapsule約1.284 MBへ可逆包装した。
