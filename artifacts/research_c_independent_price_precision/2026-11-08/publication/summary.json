@@ -1,0 +1,357 @@
+{
+  "source_commit": "4f73bec3184523207777ce7f09c75c7cdfd3cb31",
+  "SOURCE_sha256": "934bfff3923609b5add4b9ec33ea2a9f2f3ac9004f41d7768f77251e62fb6f89",
+  "contract_sha256": "e41aaec18752e6a5f72d8ee7122d08b20b818162db367d7677aaa84a90d5af48",
+  "scope": {
+    "molecule": "linear H4",
+    "adjacent_distance_angstrom": 1.0,
+    "basis": "STO-3G",
+    "rank": 8,
+    "Nalpha": 2,
+    "Nbeta": 2,
+    "ld": 2,
+    "frame_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "spin_order": "interleaved 2i+sigma; U columns",
+    "sector_dimension": 36,
+    "system_dimension": 256,
+    "controlled_dimension": 512
+  },
+  "PR_policy": {
+    "kind": "partial ordered symmetric S2",
+    "s": 1,
+    "h": "1/10",
+    "delta": "1/10",
+    "K": 0,
+    "rounds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12
+    ],
+    "state": "own_DF_ground_state_oracle",
+    "state_preparation": "EXCLUDED"
+  },
+  "arms": {
+    "CDF0": {
+      "id": "CDF0_STAGE_A_X0_V2_GAMMA0_FINAL_R8",
+      "sha256": "f3a3141059e29f79f39c3f6d3721562abfa7221ad97ce06a118331f6583e1a02",
+      "r": 64
+    },
+    "ENTRY": {
+      "id": "H4_100_C0_ENTRY_g003_budget64",
+      "sha256": "0e1119dfb6be9b75fb5e592b7a65c76cda61e348fd7cad65d7f104bf997929f5",
+      "r": 16
+    }
+  },
+  "compiler": {
+    "qiskit": "1.3.0",
+    "optimization_level": 1,
+    "seed_transpiler": 17,
+    "basis_gates": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "approximation_degree": 1.0,
+    "qubits_initially_zero": false
+  },
+  "target": {
+    "energy_ha": 0.00159,
+    "df_reserve_fraction": 0.125,
+    "base_time": 0.1,
+    "beta_total": 0.5235987755982988,
+    "beta_stat": 0.2617993877991494,
+    "alpha_axis": 0.0003846153846153846,
+    "alpha_total": 0.01
+  },
+  "statistics": {
+    "samples": 128,
+    "confidence": 0.95,
+    "primary_metric": "rz_count",
+    "primary_lane": "ideal_exact_native",
+    "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+    "precision_halfwidth_fraction_of_ENTRY": 0.05,
+    "skewness_abs_threshold": 2.0,
+    "maximum_delete_one_shift_fraction_of_halfwidth": 0.25,
+    "family": "one prespecified new-CDF0-minus-new-ENTRY difference",
+    "old_samples_pooled": false,
+    "adaptive": false,
+    "interim_inference": false,
+    "secondary_inference": false
+  },
+  "affine": {
+    "CDF0": {
+      "W": 20535472,
+      "shell": {
+        "rz_count": 60375.0,
+        "rz_depth": 60375.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "total_depth": 112125.0,
+        "circuit_size": 112125.0
+      },
+      "shots": 17250
+    },
+    "ENTRY": {
+      "W": 13718624,
+      "shell": {
+        "rz_count": 52913.0,
+        "rz_depth": 52913.0,
+        "cx_count": 0.0,
+        "cx_depth": 0.0,
+        "total_depth": 98267.0,
+        "circuit_size": 98267.0
+      },
+      "shots": 15118
+    }
+  },
+  "result": {
+    "comparison": {
+      "samples_per_arm": 128,
+      "total_points": {
+        "PR": 230417040484.0,
+        "ENTRY": 75945497963.0
+      },
+      "point_ratio_PR_ENTRY": 3.033978927839241,
+      "difference_point": 154471542521.0,
+      "difference_interval": [
+        151506248801.9802,
+        157436836240.0198
+      ],
+      "ratio_interval": null,
+      "confidence": 0.95,
+      "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+      "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+      "actual_CA_achieved": null,
+      "guaranteed_resource_superiority": null,
+      "ideal_law_price_transfer_qualified": false,
+      "simultaneous_secondary_superiority": null,
+      "observed_extrema_are_support": false,
+      "Welch_df": 160.7522926316494,
+      "diagnostics": {
+        "PR": {
+          "moment_skewness": -0.1214775430388732,
+          "maximum_delete_one_mean_shift": 14.256397637795276,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.10498541388996156,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        },
+        "ENTRY": {
+          "moment_skewness": -0.0737253651264494,
+          "maximum_delete_one_mean_shift": 9.38533464566929,
+          "delete_one_shift_exceeds_halfwidth": false,
+          "delete_one_shift_fraction_of_halfwidth": 0.12551623547890864,
+          "influence_fraction_threshold": 0.25,
+          "influence_warning": false,
+          "skewness_warning": false,
+          "observations_removed": 0,
+          "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+        }
+      },
+      "halfwidth": 2965293719.019806,
+      "precision_met": true,
+      "decision": "NOMINAL_MODEL_ENTRY_LOWER"
+    },
+    "comparison_label": "new_CDF0_minus_new_ENTRY;legacy_PR_key_means_CDF0",
+    "old_results_changed": false,
+    "quantum_shots_drawn": 0,
+    "actual_CA_achieved": null,
+    "mandatory_stop": true
+  },
+  "arm_statistics": {
+    "CDF0": {
+      "calibration": {
+        "status": "FINITE_BIT_POINT_ESTIMATE_ONLY",
+        "samples": 128,
+        "sample_mean": {
+          "rz_count": 11220.4375,
+          "rz_depth": 3485.0,
+          "cx_count": 4595.375,
+          "cx_depth": 2888.46875,
+          "total_depth": 7674.96875,
+          "circuit_size": 22277.046875
+        },
+        "sample_mean_standard_error": {
+          "rz_count": 68.62378155158004,
+          "rz_depth": 17.926094312020805,
+          "cx_count": 21.099697142096353,
+          "cx_depth": 9.487078976554475,
+          "total_depth": 39.11209086407106,
+          "circuit_size": 138.46023418019388
+        },
+        "ideal_law_expectation": null,
+        "cost_support": null,
+        "lower": null,
+        "upper": null,
+        "simultaneous_interval_qualified": false,
+        "guaranteed_resource_superiority": null,
+        "sample_variance": {
+          "rz_count": 602780.594488189,
+          "rz_depth": 41132.14173228347,
+          "cx_count": 56985.24409448819,
+          "cx_depth": 11520.597440944883,
+          "total_depth": 195808.72342519686,
+          "circuit_size": 2453918.2655019686
+        },
+        "observed_min": {
+          "rz_count": 9431,
+          "rz_depth": 2985,
+          "cx_count": 4036,
+          "cx_depth": 2634,
+          "total_depth": 6594,
+          "circuit_size": 18663
+        },
+        "observed_max": {
+          "rz_count": 13031,
+          "rz_depth": 3986,
+          "cx_count": 5154,
+          "cx_depth": 3152,
+          "total_depth": 8755,
+          "circuit_size": 25955
+        },
+        "uncertainty": "descriptive SE only; rare trajectories can be missed; observed extrema are not support bounds",
+        "finite_bit_law_error": null,
+        "CA_achieved": null,
+        "shots": null,
+        "total_resources": null
+      },
+      "lanes": {
+        "ideal_exact_native": {
+          "qualification": "CONDITIONAL_FINITE_BIT_PRICE_PROXY",
+          "samples": 128,
+          "totals": {
+            "rz_count": 230417040484.0,
+            "rz_depth": 71566180295.0,
+            "cx_count": 94368194642.0,
+            "cx_depth": 59316069138.5,
+            "total_depth": 157609217991.5,
+            "circuit_size": 457469784469.25
+          },
+          "SE": {
+            "rz_count": 1409221744.5865884,
+            "rz_depth": 368120807.8138625,
+            "cx_count": 433292239.8699997,
+            "cx_depth": 194821644.68482307,
+            "total_depth": 803185246.8005869,
+            "circuit_size": 2843346262.1208143
+          },
+          "same_JU_D": null,
+          "point_ratios": null,
+          "RZ_PR_D_nominal": null
+        }
+      },
+      "actual_CA_achieved": null,
+      "ideal_law_price_transfer_qualified": false
+    },
+    "ENTRY": {
+      "calibration": {
+        "status": "FINITE_BIT_POINT_ESTIMATE_ONLY",
+        "samples": 128,
+        "sample_mean": {
+          "rz_count": 5535.9375,
+          "rz_depth": 2079.6484375,
+          "cx_count": 2714.8125,
+          "cx_depth": 2035.15625,
+          "total_depth": 4545.7734375,
+          "circuit_size": 10789.875
+        },
+        "sample_mean_standard_error": {
+          "rz_count": 37.78710916236415,
+          "rz_depth": 9.601013097096516,
+          "cx_count": 11.667967066400147,
+          "cx_depth": 5.063018680292242,
+          "total_depth": 20.858128923289822,
+          "circuit_size": 76.27650484866972
+        },
+        "ideal_law_expectation": null,
+        "cost_support": null,
+        "lower": null,
+        "upper": null,
+        "simultaneous_interval_qualified": false,
+        "guaranteed_resource_superiority": null,
+        "sample_variance": {
+          "rz_count": 182766.79921259842,
+          "rz_depth": 11798.969918799212,
+          "cx_count": 17426.1062992126,
+          "cx_depth": 3281.172244094488,
+          "total_depth": 55687.87739911417,
+          "circuit_size": 744717.4645669291
+        },
+        "observed_min": {
+          "rz_count": 4344,
+          "rz_depth": 1779,
+          "cx_count": 2344,
+          "cx_depth": 1876,
+          "total_depth": 3895,
+          "circuit_size": 8378
+        },
+        "observed_max": {
+          "rz_count": 6474,
+          "rz_depth": 2319,
+          "cx_count": 2992,
+          "cx_depth": 2152,
+          "total_depth": 5058,
+          "circuit_size": 12656
+        },
+        "uncertainty": "descriptive SE only; rare trajectories can be missed; observed extrema are not support bounds",
+        "finite_bit_law_error": null,
+        "CA_achieved": null,
+        "shots": null,
+        "total_resources": null
+      },
+      "lanes": {
+        "ideal_exact_native": {
+          "qualification": "CONDITIONAL_FINITE_BIT_PRICE_PROXY",
+          "samples": 128,
+          "totals": {
+            "rz_count": 75945497963.0,
+            "rz_depth": 28529967879.25,
+            "cx_count": 37243491918.0,
+            "cx_depth": 27919543375.0,
+            "total_depth": 62361854845.25,
+            "circuit_size": 148022336399.0
+          },
+          "SE": {
+            "rz_count": 518387142.6454288,
+            "rz_depth": 131712688.69814259,
+            "cx_count": 160068453.02832666,
+            "cx_depth": 69457649.57990548,
+            "total_depth": 286144828.0421379,
+            "circuit_size": 1046408690.0530767
+          },
+          "same_JU_D": null,
+          "point_ratios": null,
+          "RZ_PR_D_nominal": null
+        }
+      },
+      "actual_CA_achieved": null,
+      "ideal_law_price_transfer_qualified": false
+    }
+  },
+  "precision_halfwidth_over_new_ENTRY": 0.03904502305672512,
+  "old_comparison_unchanged": true,
+  "actual_CA_achieved": null
+}

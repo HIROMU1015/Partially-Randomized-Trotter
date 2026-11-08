@@ -1713,6 +1713,14 @@
         ],
         "sha256": "6843e56b955a131583950c585287a41f61c08321b48618c1525b83d2361471b4",
         "reason": "User-supplied original1106 bytes exactly match published old E2 ground raw index; passive byte verification only"
+      },
+      {
+        "path": "artifacts/research_c_independent_price_precision/2026-11-08/publication",
+        "kind": "directory",
+        "supports": [
+          "research_c_cdf0_entry_independent_price_results_20261108"
+        ],
+        "reason": "New256 price rows, primary nominal95% Welch result and reversible all2882 raw originals: text capsule +12 binary archive parts +SHA256 inventory; source/input/STOP audit"
       }
     ],
     "quarantined": [
@@ -14393,6 +14401,97 @@
       "input_recovery_followup_tests": 26,
       "fixed_input_files_verified": 52,
       "recovered_ground_sha256": "6843e56b955a131583950c585287a41f61c08321b48618c1525b83d2361471b4"
+    },
+    {
+      "id": "research_c_cdf0_entry_independent_price_results_20261108",
+      "status": "REGISTERED_COMPLETE_NOMINAL_MODEL_ENTRY_LOWER_MANDATORY_STOP",
+      "report": "docs/research/research_c_cdf0_entry_independent_price_results_20261108.md",
+      "artifacts": "artifacts/research_c_independent_price_precision/2026-11-08",
+      "scientific_SOURCE_commit": "4f73bec3184523207777ce7f09c75c7cdfd3cb31",
+      "SOURCE": "artifacts/research_c_independent_price_precision/2026-11-08/technical/SOURCE.json",
+      "SOURCE_sha256": "934bfff3923609b5add4b9ec33ea2a9f2f3ac9004f41d7768f77251e62fb6f89",
+      "contract": "docs/research/research_c_cdf0_entry_independent_price_proposal_20261108.json",
+      "contract_sha256": "e41aaec18752e6a5f72d8ee7122d08b20b818162db367d7677aaa84a90d5af48",
+      "scope": "linearH4/1A/STO3G;numberCDF8/originalLD2;tail-linear-Z relocation;partialS2/s1/delta.1/K0/m0..12;candidate-own-ground oracle;state preparation excluded;P0/fenced serial",
+      "result": "artifacts/research_c_independent_price_precision/2026-11-08/science/run01/independent_comparison.json",
+      "STOP": "artifacts/research_c_independent_price_precision/2026-11-08/science/run01/STOP.json",
+      "audit": "artifacts/research_c_independent_price_precision/2026-11-08/execution/result_audit.json",
+      "publication": "artifacts/research_c_independent_price_precision/2026-11-08/publication",
+      "samples_per_arm": 128,
+      "samples": 256,
+      "old_samples_pooled": false,
+      "r": {
+        "CDF0": 64,
+        "ENTRY": 16
+      },
+      "total_RZ": {
+        "CDF0": 230417040484,
+        "ENTRY": 75945497963
+      },
+      "primary": {
+        "samples_per_arm": 128,
+        "total_points": {
+          "PR": 230417040484.0,
+          "ENTRY": 75945497963.0
+        },
+        "point_ratio_PR_ENTRY": 3.033978927839241,
+        "difference_point": 154471542521.0,
+        "difference_interval": [
+          151506248801.9802,
+          157436836240.0198
+        ],
+        "ratio_interval": null,
+        "confidence": 0.95,
+        "method": "scipy_Welch_fixed_N_independent_cohorts_affine_total_difference",
+        "interval_kind": "APPROXIMATE_FIXED_N_IID_MODEL_NOT_VALIDATED",
+        "actual_CA_achieved": null,
+        "guaranteed_resource_superiority": null,
+        "ideal_law_price_transfer_qualified": false,
+        "simultaneous_secondary_superiority": null,
+        "observed_extrema_are_support": false,
+        "Welch_df": 160.7522926316494,
+        "diagnostics": {
+          "PR": {
+            "moment_skewness": -0.1214775430388732,
+            "maximum_delete_one_mean_shift": 14.256397637795276,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.10498541388996156,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": false,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          },
+          "ENTRY": {
+            "moment_skewness": -0.0737253651264494,
+            "maximum_delete_one_mean_shift": 9.38533464566929,
+            "delete_one_shift_exceeds_halfwidth": false,
+            "delete_one_shift_fraction_of_halfwidth": 0.12551623547890864,
+            "influence_fraction_threshold": 0.25,
+            "influence_warning": false,
+            "skewness_warning": false,
+            "observations_removed": 0,
+            "interpretation": "diagnostics cannot verify independence, unseen tails or interval coverage"
+          }
+        },
+        "halfwidth": 2965293719.019806,
+        "precision_met": true,
+        "decision": "NOMINAL_MODEL_ENTRY_LOWER"
+      },
+      "logical_calls": 2405,
+      "COMPLETE": 2405,
+      "FAIL": 0,
+      "source_files_unchanged": 114,
+      "inputs_unchanged": 52,
+      "raw_files": 2882,
+      "raw_binary_bundle_parts": 12,
+      "public_raw_binary_reproduction_complete": true,
+      "external_rerun_complete": false,
+      "old_CDF0_verdict": "UNRESOLVED_PRECISION_TARGET",
+      "actual_CA_achieved": null,
+      "retry": 0,
+      "resume": 0,
+      "mandatory_stop": true
     }
   ],
   "repository_completion_criteria": [

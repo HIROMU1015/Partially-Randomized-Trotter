@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+## 2026-11-08：CDF0対ENTRY・独立128/arm検証完了
+
+[新結果・名目95%差区間・raw・正常STOP](../../docs/research/research_c_cdf0_entry_independent_price_results_20261108.md)。H4直鎖1Å/STO-3G・number CDF8/元順LD2・線形Z再配置・partial S2/s1/δ=.1/K0/m0..12/own-ground/状態準備除外/P0の固定条件で、新CDF0/r64は230417040484、新ENTRY E2/r16は75945497963の条件付き総RZ。各fresh128件、名目95%差区間は正、半幅/新ENTRY3.9045023%で登録5%と診断をPASSし`NOMINAL_MODEL_ENTRY_LOWER`。2405 COMPLETE/FAIL0、SOURCE114/入力52/旧結果保全。旧64比較の`UNRESOLVED_PRECISION_TARGET`は変更しない。全raw2882件を可逆包装して公開し、retry/resume0でSTOP。
+
 ## 2026-11-08：CDF0対ENTRYの独立追加価格検証（準備CASE A）
 
 [128/armの未承認proposal・全入力照合・前回人工105/今回受動26 PASS](../../docs/research/research_c_cdf0_entry_independent_price_precision_readiness_20261108.md)。保存H4/r64対r16を新cohortで検証する最小adapter。E2 ground原本は旧raw hashと一致し、全52入力の不足を解消した。新科学実行・旧価格再解析0、旧判定/SOURCE/STOP不変。実行前でmandatory STOP。
