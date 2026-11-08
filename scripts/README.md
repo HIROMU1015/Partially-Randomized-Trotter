@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_head_tail_artificial.py`：固定q2_mixedの一回限定C1比較。局所/全入力PASS後だけP0、旧C7-2 baseline適格再利用、公開後STOP。
+
 `run_track_d_o5_q4_metadata.py`：保存C6a q4全16本のevent-only読取、固定selector/featureへの薄い接続と集計。
 
 `run_track_d_c8_1_completion.py`：保存sample00の最終pairedχを入口とし、PASS後だけ保存残7raw/最大28P0・post、全8適格時だけ価格統計。

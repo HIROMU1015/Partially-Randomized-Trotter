@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[O5 C1固定人工PLAN](docs/research/track_d_o5_c1_head_tail_artificial_20261108/PLAN.md)：q2_mixed/cut1だけ、既存relative橋をhead→tailへ接続。局所/全入力PASS後最大8 P0、Strong/Reference公平比較、q64非介入・公開後STOP。
+
 [O5候補C1：head-tail静的調査](docs/research/track_d_o5_c1_head_tail_static_20261108/REPORT.md)：閉じたhead出口→tail入口の異frame Gaussianを既存relative変換へ接続する候補を同定。head/tail内部共有・step融合は実装済み、P0局所重複と全接口UNKNOWNを区別。C1継続案は一種類の最小人工判別までで未採択。新コード/人工fixture/correctness/P0/保存価格再解析/fit/N/13round0、q64非照会・非介入、公開照合後mandatory STOP。
 
 [O5保存q4・16 path cut構造調査PLAN](docs/research/track_d_o5_q4_cohort_metadata_20261108/PLAN.md)：C6a保存16本metadataだけを固定descriptor選択器で一回評価。sample00 decision再利用・新選択15、H4回路/compile/simulation/価格再解析0。公開照合後mandatory STOP、B後続/C実装へ自動進行しない。
