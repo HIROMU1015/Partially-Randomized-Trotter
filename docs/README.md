@@ -1,5 +1,7 @@
 # 文書索引
 
+[O5 C1人工結果](research/track_d_o5_c1_head_tail_artificial_20261108/REPORT.md)：固定2-mode/3-block q2_mixed/cut1/h=.1/τ=.2/K0、scalar .17/identity .04（分子geometry/basis/rank/LD非該当）。head→tailの既存relative橋でlocal7 positive/7 negative・raw41比較・post8 PASS。Strong/Reference双方でRZ−5/CX−2/depth−7/size−11、幅不変、相対R−S差は不変。新P0 4・旧4適格再利用。保存型エラーの旧STOPを保全し、SOURCEaf6fc07fで同scope未完了処理を継続。H4/fit/N/13round/q64操作0、公開照合後mandatory STOP。
+
 [O5 C1人工PLAN](research/track_d_o5_c1_head_tail_artificial_20261108/PLAN.md)：固定q2_mixed、局所negative/全入力correctness、最大8 wrapper。
 
 [O5候補C1：head-tail静的調査](research/track_d_o5_c1_head_tail_static_20261108/REPORT.md)：閉じたhead出口→tail入口の異frame Gaussianを既存relative変換へ接続する候補を同定。head/tail内部共有・step融合は実装済み、P0局所重複と全接口UNKNOWNを区別。C1継続案は一種類の最小人工判別までで未採択。新コード/人工fixture/correctness/P0/保存価格再解析/fit/N/13round0、q64非照会・非介入、公開照合後mandatory STOP。
