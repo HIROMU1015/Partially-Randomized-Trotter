@@ -89,3 +89,5 @@
 ## Track D O5：L/R cut候補Bの人工検証
 
 [実装と結果](track_d_cut_artificial_20261108/REPORT.md)／[全7資源比較](track_d_cut_artificial_20261108/ARTIFICIAL_RESOURCE_COMPARISON.md)／[未採択H4案](track_d_cut_artificial_20261108/NEXT_H4_VALIDATION_DRAFT.md)。既存builderとP0を再利用、人工不均衡例だけ追加depth減・均衡例0、実H4未実行。
+
+[O5 cut実H4移送preflight](track_d_cut_h4_q4_20261108/REPORT.md)／[入力・再利用状況](track_d_cut_h4_q4_20261108/INPUT_AND_REUSE.md)：C6a q4_sample00原本未取得でcut前STOP。selector変更/実科学実行なし。

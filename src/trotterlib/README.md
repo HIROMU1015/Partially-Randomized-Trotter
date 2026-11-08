@@ -175,3 +175,5 @@ DF部分ランダム化研究と混同しない。
 ## Track D O5 cut接続
 
 `trottertracks.track_d_cut_selection` はC7-4 descriptorで中央±1を選び、C3 `prepare_steps` を呼ぶ人工cohort専用adapter。`track_d_cut_artificial` はC7-2の2-mode fixture/checkerと固定2ケースを接続する。新gadget/solver/compilerはない。[結果と制約](../../docs/research/track_d_cut_artificial_20261108/REPORT.md)。
+
+[O5 q4移送の入力状態](../../docs/research/track_d_cut_h4_q4_20261108/INPUT_AND_REUSE.md)：既存cut選択器/C3/Strong/gadget/compilerのSOURCEを保全。原本不足で科学接続未実行、新adapter/gadget/テスト重複実装0。

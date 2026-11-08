@@ -250,3 +250,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## Track D O5：近傍L/R cutの人工検証（2026-11-08）
 
 [実装・結果](docs/research/track_d_cut_artificial_20261108/REPORT.md)。C3 cut入口とC7-4 descriptorを再利用したcompile前selector。固定2-mode/q6/16-event人工2例、8 unit tests・110比較・10 P0 unique compile PASS。偏り例は中央cut3→2でfull depth934→646、count/size/幅は同じ。均衡例は中央維持・追加効果0。実H4/価格再解析/fit/N/13round0、q64非介入、次は未採択の最小H4移送案のみ。
+
+## O5実H4 q4単一path：入力preflight STOP（2026-11-08）
+
+[結果・不足原本](docs/research/track_d_cut_h4_q4_20261108/REPORT.md)。指定C6a q4_sample00の公開binding/SOURCE互換を確認したが、非公開event/QPY原本がSERVER1確認範囲で取得できず、cut選択前にSTOP。新科学call0、改善/価格差UNKNOWN、別path/再samplingなし。

@@ -209,3 +209,5 @@ artifacts/<validation_name>/
 ## Track D O5 cut：人工専用入口
 
 `run_track_d_cut_artificial.py --output <新directory>`：事前固定2ケースのdescriptor選択→既存builder/checker→P0 full wrapper→STOP。旧H4 loaderやsamplingは呼ばない。実行済み結果は[報告](../docs/research/track_d_cut_artificial_20261108/REPORT.md)。
+
+[O5 q4移送preflight STOP](../docs/research/track_d_cut_h4_q4_20261108/REPORT.md)：C6a保存event/QPY原本が未取得のため、既存runner再実行・新runner追加は行っていない。原本回収が先。

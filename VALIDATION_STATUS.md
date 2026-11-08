@@ -668,3 +668,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-08 Track D O5 cut：有限人工P0 evidence
 
 [REPORT](docs/research/track_d_cut_artificial_20261108/REPORT.md)。2-mode/3 native block・q6/16 event毎step・h=.1/τ=.2の固定2人工例（分子geometry/basis/DF rank/L_D非該当）。C3/Strong/gadget不変、8 tests・110数値比較・10 P0 unique compile PASS。偏り例のみ中央cut3→2でfull total depth934→646、均衡例は中央維持0。SOURCE/hash/version、全QPY・構造archiveと全7価格・負結果・STOPを公開保全。local binary64検証でありimmutable CI/外部再現・全H4/law保証ではない。新実H4/保存価格再解析/fit/N/13round0、q64非介入。
+
+## O5実H4 q4移送：入力可用性STOP（2026-11-08）
+
+[REPORT](docs/research/track_d_cut_h4_q4_20261108/REPORT.md)。Linear H4/1Å/STO-3G/Nα=Nβ=2/元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1/q4、C6a q4_sample00一path。元H厳密ground仮定・準備費除外。公開event hash/IDと既存SOURCE互換は確認済み、非公開event/QPY原本未取得でcut選択前STOP。cut/build/raw/compile/post0、全7資源差と改善はUNKNOWNで0改善とはしない。人工結果のH4移送資格は未取得、旧結果・q64非介入を維持。

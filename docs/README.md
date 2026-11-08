@@ -174,3 +174,5 @@
 ## Track D O5 cut人工検証
 
 [REPORT](research/track_d_cut_artificial_20261108/REPORT.md)：実装・全入力correctness・全7資源・均衡負結果・未採択H4移送案。2-mode/q6/16eventの有限人工結果で、分子優位・全law価格・全RPE保証ではない。
+
+[O5保存H4 q4入力STOP](research/track_d_cut_h4_q4_20261108/REPORT.md)：q4_sample00の非公開event/QPY未取得。SOURCE互換確認のみ、新科学call0・資源差UNKNOWN。
