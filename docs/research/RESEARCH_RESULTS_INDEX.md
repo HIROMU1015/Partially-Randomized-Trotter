@@ -1,5 +1,9 @@
 # 研究結果への統一索引
 
+## Track C DF相殺安定性・相殺依存度P1→P2（2026-11-08）
+
+[REPORT](track_c_df_cancellation_validation_20261108/REPORT.md)、[再現・raw復元](track_c_df_cancellation_validation_20261108/REPRODUCE.md)。P1はH6 m17・固定総時間の指定5点で条件付き資格を維持。P2は個別directed位相上界を加算し、H4はFull/Closed PRより低RZ、H6はFullより低RZだがPRより高い。有限cohortの結果で元combined保証は維持、mandatory STOP。 P1新4点・P2固定157点の個別資格、全18round・同一B回路のA/B対照・SOURCE履歴とrawを保存。
+
 ## Track C DF相殺・安定性の既存証拠（2026-11-08）
 
 [調査REPORT](track_c_df_cancellation_evidence_20261108/REPORT.md)。da8b2c3のsigned値、directed資格、近傍hのproxy、全18round・状態仮定、価格/Nの寄与を区別。SUPPORTED/CONDITIONALLY_SUPPORTED/UNDETERMINED/NOT_SUPPORTEDで分類。新しい科学数値・ランキングは取得せず、追加検証P1〜P4は提案のみ。既存保証とSTOPを維持。

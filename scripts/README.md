@@ -1,5 +1,9 @@
 # scripts 索引
 
+## Track C DF相殺検証P1→P2（2026-11-08）
+
+追加runner wrapperは設けず、`python -m trottertracks.track_c_df_cancellation_validation`（P1）、`...track_c_df_cancellation_conservative`（P2）、`...track_c_df_cancellation_results`（export）を使用。[stage・SOURCE・raw・STOP](../docs/research/track_c_df_cancellation_validation_20261108/REPRODUCE.md)参照。保存namespaceはSTOP済み。
+
 ## Track C DF切り捨て比較（2026-11-08）
 
 `run_track_c_df_truncation.py`は分子別入力replay・pilot・資格・凍結・独立評価を接続する。PRは同じmoduleの`pr-*` stage、有限順序auditは`python -m trottertracks.track_c_df_order_audit`。[REPORT](../docs/research/track_c_df_truncation_20261108/REPORT.md)と[再現情報](../docs/research/track_c_df_truncation_20261108/REPRODUCE.md)を先に読む。保存namespaceはmandatory STOP済みで、runnerは再開を拒否する。

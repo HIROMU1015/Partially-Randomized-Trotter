@@ -165,3 +165,8 @@ DF/RTE/decoderを再利用する `../trottertracks/track_c_h4*.py` と `track_c_
 ## Track C Closed P3：後続の共同選択adapter
 
 `src/trottertracks/track_c_closed_p3_joint_opt*.py`は既存G7・compiler A・RPE/α/価格pipelineを接続する。`track_c_closed_p3_joint_extend.py`は限定した既存h/rateの追加資格と独立評価。公開libraryへの一般化ではない。[研究報告](../../docs/research/track_c_closed_p3_joint_opt_20261108/REPORT.md)。
+
+
+## Track C DF相殺P1→P2の再利用adapter（2026-11-08）
+
+`src/trottertracks/track_c_df_cancellation_{validation,conservative,results}.py`は既存DF replay・native builder・directed qualification・shot/decoderを再利用する。非dyadic時刻transfer、個別複素disk、固定回路対照を追加。[REPORT](../../docs/research/track_c_df_cancellation_validation_20261108/REPORT.md)、人工test `tests/test_track_c_df_cancellation_validation.py`。旧library/SOURCEは変更せず、科学計算はmandatory STOP。
