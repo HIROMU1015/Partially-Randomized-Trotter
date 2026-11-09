@@ -1,0 +1,958 @@
+{
+  "status": "PREDICTIONS_FROZEN_BEFORE_ORACLE",
+  "execution_source": "7ff28615a3a7491a5a027e961d1e26fab583aebf",
+  "workers": 4,
+  "wall_seconds": 24.95709256408736,
+  "records": [
+    {
+      "method": "reference",
+      "axis": "X",
+      "status": "PREDICTED_P0_UNQUALIFIED",
+      "raw_qpy_sha256": "b414f90dac3a98fca278821d5e9e73036e379920c7a82b4cfbb0f3a7192d680d",
+      "raw_operations": 7422,
+      "native_instructions": 203178,
+      "native_metrics": {
+        "rz_count": 124649,
+        "cx_count": 10298,
+        "rz_depth": 12553,
+        "cx_depth": 1794,
+        "total_depth": 21116,
+        "circuit_size": 203178,
+        "qubit_count": 17
+      },
+      "predicted_metrics": {
+        "rz_count": 21239,
+        "cx_count": 7336,
+        "rz_depth": 2571,
+        "cx_depth": 1590,
+        "total_depth": 5686,
+        "circuit_size": 42562,
+        "qubit_count": 17
+      },
+      "raw_operation_counts": {
+        "h": 2,
+        "cswap": 16,
+        "xx_plus_yy": 4512,
+        "rz": 1936,
+        "rzz": 448,
+        "cx": 250,
+        "x": 256,
+        "p": 1,
+        "measure": 1
+      },
+      "native_counts": {
+        "rz": 124649,
+        "sx": 67974,
+        "cx": 10298,
+        "x": 256,
+        "measure": 1
+      },
+      "optimized_counts": {
+        "cx": 7336,
+        "rz": 21239,
+        "sx": 13986,
+        "measure": 1
+      },
+      "phases": {
+        "saved_raw": 0.0,
+        "native": -124770.37114572858,
+        "optimized": -94677.05511699195
+      },
+      "rounds": [
+        {
+          "input_size": 203178,
+          "output_size": 60243,
+          "oneq_runs_replaced": 18626,
+          "cx_pairs_removed": 374
+        },
+        {
+          "input_size": 60243,
+          "output_size": 55112,
+          "oneq_runs_replaced": 729,
+          "cx_pairs_removed": 424
+        },
+        {
+          "input_size": 55112,
+          "output_size": 50284,
+          "oneq_runs_replaced": 729,
+          "cx_pairs_removed": 265
+        },
+        {
+          "input_size": 50284,
+          "output_size": 46858,
+          "oneq_runs_replaced": 516,
+          "cx_pairs_removed": 209
+        },
+        {
+          "input_size": 46858,
+          "output_size": 44814,
+          "oneq_runs_replaced": 309,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 44814,
+          "output_size": 43452,
+          "oneq_runs_replaced": 190,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 43452,
+          "output_size": 42782,
+          "oneq_runs_replaced": 106,
+          "cx_pairs_removed": 11
+        },
+        {
+          "input_size": 42782,
+          "output_size": 42616,
+          "oneq_runs_replaced": 21,
+          "cx_pairs_removed": 8
+        },
+        {
+          "input_size": 42616,
+          "output_size": 42562,
+          "oneq_runs_replaced": 11,
+          "cx_pairs_removed": 0
+        },
+        {
+          "input_size": 42562,
+          "output_size": 42562,
+          "oneq_runs_replaced": 0,
+          "cx_pairs_removed": 0
+        }
+      ],
+      "observer": {
+        "oneq_seconds_by_round": [
+          1.618120530853048,
+          0.3143211118876934,
+          0.30517713516019285,
+          0.2631182731129229,
+          0.24034388503059745,
+          0.22897266619838774,
+          0.2225559181533754,
+          0.21936490293592215,
+          0.21634581801481545,
+          0.2172512800898403
+        ],
+        "cx_rounds": [
+          {
+            "seconds": 0.59328757901676,
+            "peak_live_nodes": 60243,
+            "retained_node_slots": 60617,
+            "peak_frontier_references": 69794,
+            "peak_single_wire_stack": 5611
+          },
+          {
+            "seconds": 0.5465316930785775,
+            "peak_live_nodes": 55112,
+            "retained_node_slots": 55536,
+            "peak_frontier_references": 63815,
+            "peak_single_wire_stack": 5069
+          },
+          {
+            "seconds": 0.4938785049598664,
+            "peak_live_nodes": 50284,
+            "retained_node_slots": 50549,
+            "peak_frontier_references": 58457,
+            "peak_single_wire_stack": 4825
+          },
+          {
+            "seconds": 0.45971784787252545,
+            "peak_live_nodes": 46858,
+            "retained_node_slots": 47067,
+            "peak_frontier_references": 54613,
+            "peak_single_wire_stack": 4705
+          },
+          {
+            "seconds": 0.43600493809208274,
+            "peak_live_nodes": 44814,
+            "retained_node_slots": 44909,
+            "peak_frontier_references": 52379,
+            "peak_single_wire_stack": 4623
+          },
+          {
+            "seconds": 0.42299100290983915,
+            "peak_live_nodes": 43452,
+            "retained_node_slots": 43547,
+            "peak_frontier_references": 50827,
+            "peak_single_wire_stack": 4573
+          },
+          {
+            "seconds": 0.4125247159972787,
+            "peak_live_nodes": 42782,
+            "retained_node_slots": 42793,
+            "peak_frontier_references": 50135,
+            "peak_single_wire_stack": 4533
+          },
+          {
+            "seconds": 0.41238749702461064,
+            "peak_live_nodes": 42616,
+            "retained_node_slots": 42624,
+            "peak_frontier_references": 49953,
+            "peak_single_wire_stack": 4483
+          },
+          {
+            "seconds": 0.4111013470683247,
+            "peak_live_nodes": 42562,
+            "retained_node_slots": 42562,
+            "peak_frontier_references": 49899,
+            "peak_single_wire_stack": 4453
+          },
+          {
+            "seconds": 0.41228450811468065,
+            "peak_live_nodes": 42562,
+            "retained_node_slots": 42562,
+            "peak_frontier_references": 49899,
+            "peak_single_wire_stack": 4453
+          }
+        ],
+        "peak_live_nodes": 60243,
+        "peak_retained_node_slots": 60617,
+        "peak_frontier_references": 69794,
+        "peak_single_wire_stack": 5611
+      },
+      "performance": {
+        "saved_read_and_QPY_load_seconds": 0.11203417298384011,
+        "lowering_seconds": 10.366028264164925,
+        "bridge_seconds": 9.977500512031838,
+        "count_and_transfer_seconds": 1.1431249449960887,
+        "private_payload_write_seconds": 1.1331335238646716,
+        "worker_total_seconds": 23.190224595135078,
+        "peak_RSS_MiB": 280.8046875,
+        "peak_RSS_MiB_by_stage": {
+          "worker_start": 32.0,
+          "imports": 90.0,
+          "raw_loaded": 93.0,
+          "lowered": 263.0,
+          "bridge": 280.8046875,
+          "counted": 280.8046875
+        },
+        "maximum_native_word_container": 203178,
+        "bridge_includes_its_input_and_output_counting": true,
+        "instrumentation_overhead_included": true
+      },
+      "private_payload_sha256": {
+        "native": "9884ec2a7294a4319ad5041d75693b689d6545bce9df00ff866f1ab948f2558c",
+        "bridge": "cf00aaa631680e7f3123078a4ce9c121c85de897564cc932356336567ca7b82d"
+      },
+      "unsupported_domains_encountered": [],
+      "price_or_compiled_used_for_prediction": false,
+      "general_P0_qualified": false,
+      "new_transpile": 0,
+      "new_circuit_build": 0,
+      "new_simulation": 0
+    },
+    {
+      "method": "reference",
+      "axis": "Y",
+      "status": "PREDICTED_P0_UNQUALIFIED",
+      "raw_qpy_sha256": "ef7a4536000eafea9c5994f9f66f805e2f2675cf1d16c123c91d9da8d9754456",
+      "raw_operations": 7423,
+      "native_instructions": 203183,
+      "native_metrics": {
+        "rz_count": 124652,
+        "cx_count": 10298,
+        "rz_depth": 12556,
+        "cx_depth": 1794,
+        "total_depth": 21121,
+        "circuit_size": 203183,
+        "qubit_count": 17
+      },
+      "predicted_metrics": {
+        "rz_count": 21239,
+        "cx_count": 7336,
+        "rz_depth": 2571,
+        "cx_depth": 1590,
+        "total_depth": 5686,
+        "circuit_size": 42562,
+        "qubit_count": 17
+      },
+      "raw_operation_counts": {
+        "h": 2,
+        "cswap": 16,
+        "xx_plus_yy": 4512,
+        "rz": 1936,
+        "rzz": 448,
+        "cx": 250,
+        "x": 256,
+        "p": 1,
+        "sdg": 1,
+        "measure": 1
+      },
+      "native_counts": {
+        "rz": 124652,
+        "sx": 67976,
+        "cx": 10298,
+        "x": 256,
+        "measure": 1
+      },
+      "optimized_counts": {
+        "cx": 7336,
+        "rz": 21239,
+        "sx": 13986,
+        "measure": 1
+      },
+      "phases": {
+        "saved_raw": 0.0,
+        "native": -124775.86893287237,
+        "optimized": -94677.84051515535
+      },
+      "rounds": [
+        {
+          "input_size": 203183,
+          "output_size": 60243,
+          "oneq_runs_replaced": 18626,
+          "cx_pairs_removed": 374
+        },
+        {
+          "input_size": 60243,
+          "output_size": 55112,
+          "oneq_runs_replaced": 729,
+          "cx_pairs_removed": 424
+        },
+        {
+          "input_size": 55112,
+          "output_size": 50284,
+          "oneq_runs_replaced": 729,
+          "cx_pairs_removed": 265
+        },
+        {
+          "input_size": 50284,
+          "output_size": 46858,
+          "oneq_runs_replaced": 516,
+          "cx_pairs_removed": 209
+        },
+        {
+          "input_size": 46858,
+          "output_size": 44814,
+          "oneq_runs_replaced": 309,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 44814,
+          "output_size": 43452,
+          "oneq_runs_replaced": 190,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 43452,
+          "output_size": 42782,
+          "oneq_runs_replaced": 106,
+          "cx_pairs_removed": 11
+        },
+        {
+          "input_size": 42782,
+          "output_size": 42616,
+          "oneq_runs_replaced": 21,
+          "cx_pairs_removed": 8
+        },
+        {
+          "input_size": 42616,
+          "output_size": 42562,
+          "oneq_runs_replaced": 11,
+          "cx_pairs_removed": 0
+        },
+        {
+          "input_size": 42562,
+          "output_size": 42562,
+          "oneq_runs_replaced": 0,
+          "cx_pairs_removed": 0
+        }
+      ],
+      "observer": {
+        "oneq_seconds_by_round": [
+          1.6319646299816668,
+          0.31692477222532034,
+          0.2956716320477426,
+          0.2628923039883375,
+          0.24116376810707152,
+          0.2296383900102228,
+          0.22267500590533018,
+          0.21942374296486378,
+          0.21710743103176355,
+          0.21617651893757284
+        ],
+        "cx_rounds": [
+          {
+            "seconds": 0.5975574939511716,
+            "peak_live_nodes": 60243,
+            "retained_node_slots": 60617,
+            "peak_frontier_references": 69794,
+            "peak_single_wire_stack": 5611
+          },
+          {
+            "seconds": 0.5421723879408091,
+            "peak_live_nodes": 55112,
+            "retained_node_slots": 55536,
+            "peak_frontier_references": 63815,
+            "peak_single_wire_stack": 5069
+          },
+          {
+            "seconds": 0.46917687193490565,
+            "peak_live_nodes": 50284,
+            "retained_node_slots": 50549,
+            "peak_frontier_references": 58457,
+            "peak_single_wire_stack": 4825
+          },
+          {
+            "seconds": 0.457019658992067,
+            "peak_live_nodes": 46858,
+            "retained_node_slots": 47067,
+            "peak_frontier_references": 54613,
+            "peak_single_wire_stack": 4705
+          },
+          {
+            "seconds": 0.43343417905271053,
+            "peak_live_nodes": 44814,
+            "retained_node_slots": 44909,
+            "peak_frontier_references": 52379,
+            "peak_single_wire_stack": 4623
+          },
+          {
+            "seconds": 0.41856548795476556,
+            "peak_live_nodes": 43452,
+            "retained_node_slots": 43547,
+            "peak_frontier_references": 50827,
+            "peak_single_wire_stack": 4573
+          },
+          {
+            "seconds": 0.41412843321450055,
+            "peak_live_nodes": 42782,
+            "retained_node_slots": 42793,
+            "peak_frontier_references": 50135,
+            "peak_single_wire_stack": 4533
+          },
+          {
+            "seconds": 0.41838694899342954,
+            "peak_live_nodes": 42616,
+            "retained_node_slots": 42624,
+            "peak_frontier_references": 49953,
+            "peak_single_wire_stack": 4483
+          },
+          {
+            "seconds": 0.41006757598370314,
+            "peak_live_nodes": 42562,
+            "retained_node_slots": 42562,
+            "peak_frontier_references": 49899,
+            "peak_single_wire_stack": 4453
+          },
+          {
+            "seconds": 0.410609760787338,
+            "peak_live_nodes": 42562,
+            "retained_node_slots": 42562,
+            "peak_frontier_references": 49899,
+            "peak_single_wire_stack": 4453
+          }
+        ],
+        "peak_live_nodes": 60243,
+        "peak_retained_node_slots": 60617,
+        "peak_frontier_references": 69794,
+        "peak_single_wire_stack": 5611
+      },
+      "performance": {
+        "saved_read_and_QPY_load_seconds": 0.11306559504009783,
+        "lowering_seconds": 10.364555845037103,
+        "bridge_seconds": 9.934393286006525,
+        "count_and_transfer_seconds": 1.136281088925898,
+        "private_payload_write_seconds": 1.137968695955351,
+        "worker_total_seconds": 23.135435543954372,
+        "peak_RSS_MiB": 279.98046875,
+        "peak_RSS_MiB_by_stage": {
+          "worker_start": 32.0,
+          "imports": 89.5,
+          "raw_loaded": 92.48046875,
+          "lowered": 262.48046875,
+          "bridge": 279.98046875,
+          "counted": 279.98046875
+        },
+        "maximum_native_word_container": 203183,
+        "bridge_includes_its_input_and_output_counting": true,
+        "instrumentation_overhead_included": true
+      },
+      "private_payload_sha256": {
+        "native": "a675036bc32e01977ddbda31e4c9e8cad9c1638522112de69bce29fd009a685d",
+        "bridge": "a778d7455a487175447e90df62abcb999a6e3ad0e01ccf34397c2fba11eb2ad1"
+      },
+      "unsupported_domains_encountered": [],
+      "price_or_compiled_used_for_prediction": false,
+      "general_P0_qualified": false,
+      "new_transpile": 0,
+      "new_circuit_build": 0,
+      "new_simulation": 0
+    },
+    {
+      "method": "symmetric_directional",
+      "axis": "X",
+      "status": "PREDICTED_P0_UNQUALIFIED",
+      "raw_qpy_sha256": "a0ce77fc4069fc27fb6bc22fac443b3d574634b28f30461b4122cb2be681b1f2",
+      "raw_operations": 8386,
+      "native_instructions": 200882,
+      "native_metrics": {
+        "rz_count": 122939,
+        "cx_count": 10970,
+        "rz_depth": 23348,
+        "cx_depth": 4240,
+        "total_depth": 39778,
+        "circuit_size": 200882,
+        "qubit_count": 9
+      },
+      "predicted_metrics": {
+        "rz_count": 21020,
+        "cx_count": 8024,
+        "rz_depth": 5013,
+        "cx_depth": 3874,
+        "total_depth": 11671,
+        "circuit_size": 42839,
+        "qubit_count": 9
+      },
+      "raw_operation_counts": {
+        "h": 2,
+        "xx_plus_yy": 4464,
+        "rz": 2121,
+        "rzz": 224,
+        "cx": 1546,
+        "crz": 24,
+        "p": 4,
+        "measure": 1
+      },
+      "native_counts": {
+        "rz": 122939,
+        "sx": 66972,
+        "cx": 10970,
+        "measure": 1
+      },
+      "optimized_counts": {
+        "rz": 21020,
+        "sx": 13794,
+        "cx": 8024,
+        "measure": 1
+      },
+      "phases": {
+        "saved_raw": 5.720707777281092,
+        "native": -122735.67549487887,
+        "optimized": -93309.94790503007
+      },
+      "rounds": [
+        {
+          "input_size": 200882,
+          "output_size": 60482,
+          "oneq_runs_replaced": 18232,
+          "cx_pairs_removed": 366
+        },
+        {
+          "input_size": 60482,
+          "output_size": 55389,
+          "oneq_runs_replaced": 712,
+          "cx_pairs_removed": 424
+        },
+        {
+          "input_size": 55389,
+          "output_size": 50561,
+          "oneq_runs_replaced": 729,
+          "cx_pairs_removed": 265
+        },
+        {
+          "input_size": 50561,
+          "output_size": 47135,
+          "oneq_runs_replaced": 516,
+          "cx_pairs_removed": 209
+        },
+        {
+          "input_size": 47135,
+          "output_size": 45091,
+          "oneq_runs_replaced": 309,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 45091,
+          "output_size": 43729,
+          "oneq_runs_replaced": 190,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 43729,
+          "output_size": 43059,
+          "oneq_runs_replaced": 106,
+          "cx_pairs_removed": 11
+        },
+        {
+          "input_size": 43059,
+          "output_size": 42893,
+          "oneq_runs_replaced": 21,
+          "cx_pairs_removed": 8
+        },
+        {
+          "input_size": 42893,
+          "output_size": 42839,
+          "oneq_runs_replaced": 11,
+          "cx_pairs_removed": 0
+        },
+        {
+          "input_size": 42839,
+          "output_size": 42839,
+          "oneq_runs_replaced": 0,
+          "cx_pairs_removed": 0
+        }
+      ],
+      "observer": {
+        "oneq_seconds_by_round": [
+          1.6443765100557357,
+          0.31133412616327405,
+          0.29354053898714483,
+          0.2620805308688432,
+          0.23872898798435926,
+          0.2284681301098317,
+          0.22065057302825153,
+          0.21721102995797992,
+          0.2199210380204022,
+          0.21502471715211868
+        ],
+        "cx_rounds": [
+          {
+            "seconds": 0.5768345000687987,
+            "peak_live_nodes": 60482,
+            "retained_node_slots": 60848,
+            "peak_frontier_references": 70721,
+            "peak_single_wire_stack": 10651
+          },
+          {
+            "seconds": 0.5257737590000033,
+            "peak_live_nodes": 55389,
+            "retained_node_slots": 55813,
+            "peak_frontier_references": 64780,
+            "peak_single_wire_stack": 9579
+          },
+          {
+            "seconds": 0.4757402599789202,
+            "peak_live_nodes": 50561,
+            "retained_node_slots": 50826,
+            "peak_frontier_references": 59422,
+            "peak_single_wire_stack": 9127
+          },
+          {
+            "seconds": 0.4412205459084362,
+            "peak_live_nodes": 47135,
+            "retained_node_slots": 47344,
+            "peak_frontier_references": 55578,
+            "peak_single_wire_stack": 8897
+          },
+          {
+            "seconds": 0.42224757792428136,
+            "peak_live_nodes": 45091,
+            "retained_node_slots": 45186,
+            "peak_frontier_references": 53344,
+            "peak_single_wire_stack": 8743
+          },
+          {
+            "seconds": 0.41084557003341615,
+            "peak_live_nodes": 43729,
+            "retained_node_slots": 43824,
+            "peak_frontier_references": 51792,
+            "peak_single_wire_stack": 8663
+          },
+          {
+            "seconds": 0.40546265291050076,
+            "peak_live_nodes": 43059,
+            "retained_node_slots": 43070,
+            "peak_frontier_references": 51100,
+            "peak_single_wire_stack": 8599
+          },
+          {
+            "seconds": 0.4044566499069333,
+            "peak_live_nodes": 42893,
+            "retained_node_slots": 42901,
+            "peak_frontier_references": 50918,
+            "peak_single_wire_stack": 8519
+          },
+          {
+            "seconds": 0.39850330795161426,
+            "peak_live_nodes": 42839,
+            "retained_node_slots": 42839,
+            "peak_frontier_references": 50864,
+            "peak_single_wire_stack": 8471
+          },
+          {
+            "seconds": 0.39756442606449127,
+            "peak_live_nodes": 42839,
+            "retained_node_slots": 42839,
+            "peak_frontier_references": 50864,
+            "peak_single_wire_stack": 8471
+          }
+        ],
+        "peak_live_nodes": 60482,
+        "peak_retained_node_slots": 60848,
+        "peak_frontier_references": 70721,
+        "peak_single_wire_stack": 10651
+      },
+      "performance": {
+        "saved_read_and_QPY_load_seconds": 0.12806278397329152,
+        "lowering_seconds": 10.234598566079512,
+        "bridge_seconds": 9.816135893110186,
+        "count_and_transfer_seconds": 0.8116208198480308,
+        "private_payload_write_seconds": 1.1305780350230634,
+        "worker_total_seconds": 22.507977979024872,
+        "peak_RSS_MiB": 278.5546875,
+        "peak_RSS_MiB_by_stage": {
+          "worker_start": 32.0,
+          "imports": 90.0,
+          "raw_loaded": 93.47265625,
+          "lowered": 260.47265625,
+          "bridge": 278.5546875,
+          "counted": 278.5546875
+        },
+        "maximum_native_word_container": 200882,
+        "bridge_includes_its_input_and_output_counting": true,
+        "instrumentation_overhead_included": true
+      },
+      "private_payload_sha256": {
+        "native": "9bc24658bbf42c386deaab3949114d7c158deddcc6bcae470f2bb8bf608acda4",
+        "bridge": "6f8827886646fd810247af434584c15faae2df7f7760cd19457425bcb908223e"
+      },
+      "unsupported_domains_encountered": [],
+      "price_or_compiled_used_for_prediction": false,
+      "general_P0_qualified": false,
+      "new_transpile": 0,
+      "new_circuit_build": 0,
+      "new_simulation": 0
+    },
+    {
+      "method": "symmetric_directional",
+      "axis": "Y",
+      "status": "PREDICTED_P0_UNQUALIFIED",
+      "raw_qpy_sha256": "303a93a75baf34df31c44ab8a8d172cbb0c89f7da58e47ec58af66c79b0f4ade",
+      "raw_operations": 8387,
+      "native_instructions": 200887,
+      "native_metrics": {
+        "rz_count": 122942,
+        "cx_count": 10970,
+        "rz_depth": 23348,
+        "cx_depth": 4240,
+        "total_depth": 39778,
+        "circuit_size": 200887,
+        "qubit_count": 9
+      },
+      "predicted_metrics": {
+        "rz_count": 21020,
+        "cx_count": 8024,
+        "rz_depth": 5013,
+        "cx_depth": 3874,
+        "total_depth": 11671,
+        "circuit_size": 42839,
+        "qubit_count": 9
+      },
+      "raw_operation_counts": {
+        "h": 2,
+        "xx_plus_yy": 4464,
+        "rz": 2121,
+        "rzz": 224,
+        "cx": 1546,
+        "crz": 24,
+        "p": 4,
+        "sdg": 1,
+        "measure": 1
+      },
+      "native_counts": {
+        "rz": 122942,
+        "sx": 66974,
+        "cx": 10970,
+        "measure": 1
+      },
+      "optimized_counts": {
+        "rz": 21020,
+        "sx": 13794,
+        "cx": 8024,
+        "measure": 1
+      },
+      "phases": {
+        "saved_raw": 5.720707777281092,
+        "native": -122741.17328202266,
+        "optimized": -93310.73330319348
+      },
+      "rounds": [
+        {
+          "input_size": 200887,
+          "output_size": 60482,
+          "oneq_runs_replaced": 18232,
+          "cx_pairs_removed": 366
+        },
+        {
+          "input_size": 60482,
+          "output_size": 55389,
+          "oneq_runs_replaced": 712,
+          "cx_pairs_removed": 424
+        },
+        {
+          "input_size": 55389,
+          "output_size": 50561,
+          "oneq_runs_replaced": 729,
+          "cx_pairs_removed": 265
+        },
+        {
+          "input_size": 50561,
+          "output_size": 47135,
+          "oneq_runs_replaced": 516,
+          "cx_pairs_removed": 209
+        },
+        {
+          "input_size": 47135,
+          "output_size": 45091,
+          "oneq_runs_replaced": 309,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 45091,
+          "output_size": 43729,
+          "oneq_runs_replaced": 190,
+          "cx_pairs_removed": 95
+        },
+        {
+          "input_size": 43729,
+          "output_size": 43059,
+          "oneq_runs_replaced": 106,
+          "cx_pairs_removed": 11
+        },
+        {
+          "input_size": 43059,
+          "output_size": 42893,
+          "oneq_runs_replaced": 21,
+          "cx_pairs_removed": 8
+        },
+        {
+          "input_size": 42893,
+          "output_size": 42839,
+          "oneq_runs_replaced": 11,
+          "cx_pairs_removed": 0
+        },
+        {
+          "input_size": 42839,
+          "output_size": 42839,
+          "oneq_runs_replaced": 0,
+          "cx_pairs_removed": 0
+        }
+      ],
+      "observer": {
+        "oneq_seconds_by_round": [
+          1.7069566801656038,
+          0.32484126812778413,
+          0.30261145695112646,
+          0.2707149521447718,
+          0.2474332288838923,
+          0.23605712899006903,
+          0.22921845386736095,
+          0.22446817182935774,
+          0.22005494800396264,
+          0.22023333609104156
+        ],
+        "cx_rounds": [
+          {
+            "seconds": 0.5703632519580424,
+            "peak_live_nodes": 60482,
+            "retained_node_slots": 60848,
+            "peak_frontier_references": 70721,
+            "peak_single_wire_stack": 10651
+          },
+          {
+            "seconds": 0.5120883090421557,
+            "peak_live_nodes": 55389,
+            "retained_node_slots": 55813,
+            "peak_frontier_references": 64780,
+            "peak_single_wire_stack": 9579
+          },
+          {
+            "seconds": 0.47076854994520545,
+            "peak_live_nodes": 50561,
+            "retained_node_slots": 50826,
+            "peak_frontier_references": 59422,
+            "peak_single_wire_stack": 9127
+          },
+          {
+            "seconds": 0.44303115201182663,
+            "peak_live_nodes": 47135,
+            "retained_node_slots": 47344,
+            "peak_frontier_references": 55578,
+            "peak_single_wire_stack": 8897
+          },
+          {
+            "seconds": 0.41658496391028166,
+            "peak_live_nodes": 45091,
+            "retained_node_slots": 45186,
+            "peak_frontier_references": 53344,
+            "peak_single_wire_stack": 8743
+          },
+          {
+            "seconds": 0.40617219684645534,
+            "peak_live_nodes": 43729,
+            "retained_node_slots": 43824,
+            "peak_frontier_references": 51792,
+            "peak_single_wire_stack": 8663
+          },
+          {
+            "seconds": 0.3991386629641056,
+            "peak_live_nodes": 43059,
+            "retained_node_slots": 43070,
+            "peak_frontier_references": 51100,
+            "peak_single_wire_stack": 8599
+          },
+          {
+            "seconds": 0.3924508560448885,
+            "peak_live_nodes": 42893,
+            "retained_node_slots": 42901,
+            "peak_frontier_references": 50918,
+            "peak_single_wire_stack": 8519
+          },
+          {
+            "seconds": 0.38245535688474774,
+            "peak_live_nodes": 42839,
+            "retained_node_slots": 42839,
+            "peak_frontier_references": 50864,
+            "peak_single_wire_stack": 8471
+          },
+          {
+            "seconds": 0.38687425083480775,
+            "peak_live_nodes": 42839,
+            "retained_node_slots": 42839,
+            "peak_frontier_references": 50864,
+            "peak_single_wire_stack": 8471
+          }
+        ],
+        "peak_live_nodes": 60482,
+        "peak_retained_node_slots": 60848,
+        "peak_frontier_references": 70721,
+        "peak_single_wire_stack": 10651
+      },
+      "performance": {
+        "saved_read_and_QPY_load_seconds": 0.1303290871437639,
+        "lowering_seconds": 10.628123275004327,
+        "bridge_seconds": 9.887924128910527,
+        "count_and_transfer_seconds": 0.792069936869666,
+        "private_payload_write_seconds": 1.145333657041192,
+        "worker_total_seconds": 22.985737193142995,
+        "peak_RSS_MiB": 276.13671875,
+        "peak_RSS_MiB_by_stage": {
+          "worker_start": 32.0,
+          "imports": 90.0,
+          "raw_loaded": 93.5,
+          "lowered": 258.0,
+          "bridge": 276.13671875,
+          "counted": 276.13671875
+        },
+        "maximum_native_word_container": 200887,
+        "bridge_includes_its_input_and_output_counting": true,
+        "instrumentation_overhead_included": true
+      },
+      "private_payload_sha256": {
+        "native": "32fdda97236b50a5fd874e993aaaddd82d24eef4e52d3fbaefd173ab7d75409f",
+        "bridge": "e7e51dea43646eedc07b341243b85d856b6971ef17fe3682c5d1708e832e2462"
+      },
+      "unsupported_domains_encountered": [],
+      "price_or_compiled_used_for_prediction": false,
+      "general_P0_qualified": false,
+      "new_transpile": 0,
+      "new_circuit_build": 0,
+      "new_simulation": 0
+    }
+  ],
+  "new_P0": 0,
+  "new_H4_build": 0,
+  "new_simulation": 0,
+  "oracle_used": false
+}
