@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-11-09 PR＋RPE総費用の横断調査
+
+[REPORT](docs/research/pr_rpe_cross_track_20261109/REPORT.md)から、[既存成果・重複](docs/research/pr_rpe_cross_track_20261109/EXISTING_RESULTS_AND_OVERLAP.md)、[改善候補](docs/research/pr_rpe_cross_track_20261109/IMPROVEMENT_CANDIDATES.md)、[最小検証案](docs/research/pr_rpe_cross_track_20261109/MINIMUM_VALIDATION_PLANS.md)へ辿る。同目的の既存横断調査branchを継続し、Closed P3共同選択と後続C/D/O2成果を静的確認。D C1・q64の完了を反映し、新計算・再解析・実装0、固定成果/STOP不変更。公開照合後mandatory STOP、次判断はユーザー／GPT。
+
 **研究結果への入口（2026-11-02）：[統一索引](docs/research/RESEARCH_RESULTS_INDEX.md)。**
 複数ブランチの総括・後続結果・SOURCE・raw・検証状態を固定commitで辿れる。
 以下の研究記述は、このcheckoutに保存された時点の履歴として読む。
