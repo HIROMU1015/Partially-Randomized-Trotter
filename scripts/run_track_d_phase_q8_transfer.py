@@ -2,6 +2,7 @@
 """Saved q4 phase accounting and one ID-ordered saved q8 price prediction."""
 import argparse
 from concurrent.futures import ProcessPoolExecutor,as_completed
+from fractions import Fraction
 import gzip
 import io
 import json
@@ -49,8 +50,10 @@ def selected_member(root,selection,name):
 
 
 def select(root):
-    out=ROOT/OUT;out.mkdir(parents=True,exist_ok=False)
-    (out/'local').mkdir(mode=0o700);(out/'local/.gitignore').write_text('*\n')
+    out=ROOT/OUT
+    if (out/'SELECTION.json').exists() or (out/'SOURCE.json').exists():raise ValueError('selection already fixed')
+    out.mkdir(parents=True,exist_ok=True)
+    (out/'local').mkdir(mode=0o700,exist_ok=True);(out/'local/.gitignore').write_text('*\n')
     binding_data=fixed(Q8+'/event_bindings.json');bindings=json.loads(binding_data)
     selected=min(bindings,key=lambda r:r['sample_id']);sid=selected['sample_id']
     if sid!='q8_sample00' or selected['q']!=8 or selected['cut_after_complete_step']!=4:raise ValueError('fixed first q8 ID')
@@ -76,7 +79,7 @@ def select(root):
         if record['status']!='PASS' or record['compiler']!=PROFILE:raise ValueError('P0 profile')
         selection['input_hashes'][rel]=sha(data)
     conditions=read(Path(root)/'run01_accelerated_completion/local'/sid/'conditions.json')
-    if (conditions['q']!=8 or conditions['h']!=.1 or conditions['cut_after_complete_step']!=4
+    if (conditions['q']!=8 or Fraction(str(conditions['h']))!=Fraction(1,10) or conditions['cut_after_complete_step']!=4
             or conditions['reference_gadgets']!=1 or conditions['short_gadget_repetition']
             or conditions['optimization_policy']!='strong_whole_path_half_sweep_relative_basis_scalar_aggregation_v1'):
         raise ValueError('whole-path/C1 OFF conditions')
