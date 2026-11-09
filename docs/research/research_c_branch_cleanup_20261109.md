@@ -226,3 +226,73 @@ GIT_TERMINAL_PROMPT=0 git -C /home/AbeHiromu/projects/partially-randomized-trott
 正式共通運用指示`research_project_instructions_unified_2026-10-25.md`とプロジェクトAGENTS.mdを適用。主エージェント自身によるGit技術照合であり、別レビュアーによる独立科学レビューではない。
 
 **MANDATORY STOP。Codexは追加の科学計算・再解析・重要レビュー・認証設定変更へ進まない。残作業は認証可能な環境でのremote58本削除のみ。**
+
+
+## 追記：認証可能な環境でのremote削除・事後監査（2026-11-09 17:18 JST）
+
+本節より上は整理commit `8d174496761ac3ae91892c11ad83bf236d1b050a` の過去時点の記録をそのまま保持する。本節は、その時点で認証失敗となった58本だけを対象にした後続実行の記録である。新たな削除候補は追加していない。
+
+**56本のremote削除を完了。残る2本は現在の環境で実在worktreeに使用されているため、追加HOLDとした。** 科学計算・数値再解析・DF fit・統計解析・回路build/compile・重要GPT科学レビューはすべて0件。正式共通運用指示 `research_project_instructions_unified_2026-10-25.md` と実際のAGENTS.mdを確認・適用した。
+
+| 項目 | 今回の結果 |
+|---|---:|
+| 当初削除対象／削除直前にremoteに実在 | 58本／58本 |
+| 今回削除成功 | 56本 |
+| ALREADY_ABSENT | 0本 |
+| remote HEAD変更によるHOLD | 0本 |
+| local HEAD変更によるHOLD | 0本 |
+| 保護・ruleset・open PRによるHOLD | 0本 |
+| worktreeによる追加HOLD | 2本 |
+| その他失敗 | 0本 |
+| 今回の対象でremoteに残存 | 2本 |
+| 研究C remote | 81本 → 25本 |
+| 全remote branch | 410本 → 354本 |
+| remote tag | 103本 → 103本（全SHA不変） |
+
+各対象の元full SHA、削除直前・直後のremote SHA、local SHA、worktree観測、最終結果は [今回の58本の結果CSV](research_c_branch_cleanup_20261109/remote_deletion_results_20261109.csv) に記録した。前回の `branches.csv`・`preserved_commits.csv`・`protected_artifacts.csv` は変更していない。
+
+### 最新状態と追加HOLD
+
+既存のSSH認証をそのまま利用し、対象remoteが `git@github.com:HIROMU1015/Partially-Randomized-Trotter.git` であることを確認した。全58本のremote HEADは前回記録SHAと一致し、現環境のlocal HEADにも相違はなかった。GitHub APIのprotected branch一覧、親由来を含むruleset一覧、open PR一覧はいずれも空だった。認証情報・SSH鍵・credential helper・共有Git設定は変更していない。
+
+| 追加HOLD branch | 元HEAD・今回のremote HEAD | 現在のworktree |
+|---|---|---|
+| `codex/research-c-integrated-execution-20261105` | `a7face80e10fd74e1a49dc530409db5b7f677aaa` | `/home/abe/Project/Partially Randomized Trotter/.worktrees/research-c-integrated-preparation-20261105` |
+| `codex/research-c-related-work-paper-readiness-20261105` | `1a588f5491bce394ecf039ee4d2de57581e2e0b1` | `/home/abe/Project/Partially Randomized Trotter/.worktrees/research-c-related-work-paper-readiness-20261105` |
+
+対象58本のうち47本には現環境のworktree登録があった。上記2本はpathと`.git`が実在する。残る45本はGit自身が `prunable: gitdir file points to non-existent location` と報告し、path・`.git`とも存在せず、lockもない過去の登録であり、現在のworktree使用とは扱わなかった。これらの登録・local branch・reflogを消す操作は行っていない。
+
+前回HOLD 24本は今回も対象外。**そのうちremoteに存在するのは当初から21本**で、全21本の名前・SHAは削除前後で同一だった。残る次の3本は前回CSVの `remote_before=False`、`ABSENT_BEFORE` に対応し、今回もremoteに存在しない。新たにbranchを作成・復元する操作は行っていない。
+
+- `codex/research-c-h4-relocated-downstream-execution-20261106`
+- `codex/research-c-integrated-cgfix-20261106`
+- `codex/research-c-integrated-server-20261106`
+
+以前の実行環境のworktreeを新たに検査したとは主張しない。その環境への操作は0件。現環境では、全worktree登録と共有repositoryの全local branch refが作業前後で同一であることを確認した。checkout変更・worktree削除・移動・prune・GC・共有設定変更は行っていない。
+
+### 削除実行とGitHub実refの事後照合
+
+前回報告の58本分のlease引数をCSVと突き合わせ、追加HOLD 2本を除く56本だけを抽出した。2026-11-09 **08:18:35 UTC（17:18:35 JST）** に、各refへ記録済みexpected SHAの `--force-with-lease=refs/heads/<branch>:<SHA>` を指定した `git push --atomic` で削除した。終了コードは0。履歴上書き用の `git push --force` は使用していない。
+
+[pushの各ref応答](research_c_branch_cleanup_20261109/remote_deletion_push_20261109.txt)、[削除直前の実remote ref](research_c_branch_cleanup_20261109/remote_refs_before_deletion_20261109.tsv)、[削除直後の実remote ref](research_c_branch_cleanup_20261109/remote_refs_after_deletion_20261109.tsv) を保存した。snapshotは `git ls-remote --heads --tags origin` がGitHubから返した実refであり、local remote-tracking refの状態を削除成功の根拠にしていない。
+
+削除成功56本の不存在、KEEP 2本の存在、追加HOLD 2本の元SHAでの残存、既存remote HOLD 21本のSHA不変を確認した。削除した56本を除いたremote ref辞書は前後で完全一致した。したがって、削除操作による `main`、他研究、archive branch/tag、その他対象外branchの変更は0件。既存tagはannotated tagのpeeled refを含めて一致した。研究Cの25本はKEEP 2本＋以前からのremote HOLD 21本＋追加HOLD 2本である。
+
+### 387 commit・1,171 blobとSOURCE・結果・STOPの保全
+
+削除前と削除後の両方で、**今回の候補58本すべてを保持ref集合から除外**し、実remote refで観測した40本の保持ref（KEEP、従来HOLD、既存archive tag、既存の対象外保持ref）を根にGitグラフを照合した。削除したbranch自身や追加HOLD 2本のref、手元のreflogだけへの依存はない。
+
+- `preserved_commits.csv` の387 commit：各記録の保持refの現remote tipから祖先として到達可能、**387/387 PASS**。
+- `protected_artifacts.csv` の1,171 blob：記録されたcommitが現remote保持refの祖先であり、`commit:path`のGit object IDと種別が元のblobと一致し、保持tipからのobject到達可能性も確認、**1,171/1,171 PASS**。
+- 元83本の全HEAD：削除候補を除外した保持refから到達可能、**83/83 PASS**。
+- 履歴保存commit `054fa91493713fbf8d233828e9070dc07b8c2a1c` と最新REPORT保全commit `776e0a16ac98762631fe9307672725fdfee3b73d`：KEEP整理refから到達可能、**PASS**。9系統の独立履歴を含む祖先は変更していない。
+
+対象blobの内訳はSOURCE 202、STOP 212、固定metadata/result/contract 604、入力・候補NPZまたは可逆公開raw package 153。主要なPR/ENTRY、Z再配置後、通常CDF0、独立128、三者比較REPORT、P0 CASE Dの固定commit・SOURCE・結果・STOP、および公開raw packageを含む。元のcommit/path/blobによる技術照合であり、配列decode・数値再解析・科学的内容の再評価は行っていない。既存の未公開raw保管場所を新たに検査したとは主張しない。
+
+[実行・保全監査JSON](research_c_branch_cleanup_20261109/remote_execution_audit_20261109.json) に、実行時刻、集計、API観測、保持refとremote tip、削除前後の照合結果、元CSVのblob ID、前回HOLD全24本の今回のremote状態を記録した。既存コードの全体削除runnerは実行せず、前回の固定leaseコマンド・CSVとGit標準の到達可能性・path/object照合を再利用した。管理記録だけを分離した一時Git repositoryで作成し、既存worktree・dirty/untracked・科学SOURCE・入力・結果・rawは変更していない。
+
+### 公開と停止点
+
+本追記と5つの補助記録だけを、既存 `codex/research-c-branch-cleanup-20261109` の直系子commitとして公開する。before/after snapshotの整理ref SHAは本追記公開前の `8d174496761ac3ae91892c11ad83bf236d1b050a` であり、その後の公開操作は同整理refだけをfast-forwardする。公開後にGitHubの実branch SHA・commit tree・報告本文・補助記録を照合し、最終チャットで固定公開SHAを報告する。
+
+**今回の58本は削除56本・使用中HOLD 2本として全件確定。MANDATORY STOP。** Codexは追加の削除・科学計算・再解析・重要レビューを開始しない。次の対応が必要な場合は、ユーザーがHOLD 2本のworktree利用を継続するか判断する。将来の解放・削除は本作業では実施せず、別途明示指示の対象とする。
