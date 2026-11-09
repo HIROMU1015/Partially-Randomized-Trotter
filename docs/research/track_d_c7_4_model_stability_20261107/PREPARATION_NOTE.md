@@ -1,0 +1,7 @@
+# C7-4：取り込み前のschema修正
+
+初回SOURCE `deb92995d693361e3c56de816e8c0efc4c618b65` はC6aの完了statusを後段と同じTECHNICAL_PASSと誤認した。実際のC6aはPILOT_COMPLETE_MANDATORY_STOPで、全planned/completed ID一致・missing0・STOPの一致を確認した。保存科学結果に不一致はなく、実装のschema正規化不足である。
+
+run01は取り込み冒頭でSTOP_FAILURE。新しい価格再解析・fit・numerical recheck・人工compileは0、completed=[]。SOURCE/result/failure/STOPを保全し、書換えない。
+
+利用者がC7-4内の軽微な実装不具合の自律修正を明示許可しているため、calibrationと後段の各正式statusを別々に検査する最小修正を加えた。全planned/completed一致・missing0の検査も維持する。科学条件/精度/旧SOURCE/旧結果/旧STOPは変更しない。修正版SOURCEを固定し、新namespace run02で初めて保存データ再解析と固定人工比較へ進む。旧科学run retry/resumeではない。
