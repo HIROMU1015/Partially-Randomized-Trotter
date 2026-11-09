@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.track_d_native_emitter`／`track_d_p0_1q_bridge`：[接続と技術結果](../../docs/research/track_d_native_emitter_development_20261109/REPORT.md)。既存emitterのconstructor局所binding、bounded chunk、標準definition lowering、公式ZSXXのstrict-shorter 1Q＋旧CX bridge。47人工回帰・保存54case全指標一致、一般P0_UNQUALIFIED。
+
 `trottertracks.track_d_p0_cx_bridge`：[T1〜H0](../../docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)。既存T0を再利用し、両wireで隣接する同方向CXだけを相殺する。可変frontierを保持、1Q再合成や全P0互換は未実装／未資格。新8＋既存29回帰PASS、保存H4は指定2pathの資源照合だけ。
 
 `trottertracks.track_d_native_resources`：[T0実装](../../docs/research/track_d_t0_native_resources_20261109/REPORT.md)。stdlibのnative stream counter、三指標max-plus、template連結／embedding。既存科学builder/counterは無変更、`NATIVE_EXACT`／`P0_UNQUALIFIED`を区別する。人工回帰29件PASS、新科学実行0。

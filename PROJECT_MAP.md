@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D native emitter・1Q bridge](docs/research/track_d_native_emitter_development_20261109/REPORT.md)：既存head／tail chunk／Referenceをnative streamへ接続。新10＋旧37＝47人工回帰PASS、保存54人工case全てで位相付き作用と保存P0全7資源が一致。一般P0／H4／長qは未資格。新P0・H4実行／再解析・fit/N/13round更新0、旧SOURCE・結果・STOPを保全、公開照合後mandatory STOP。
+
 [Track D T1〜H0](docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)：両wire隣接CX bridge、54人工case中70 native列の計数一致、固定3人工P0、保存H4 q4/q64_sample00の8絶対価格照合を完了。1Q/Gaussian/CSWAPの全P0 bridgeは未資格。新H4 build/P0/simulation・sampling・fit/N/13round更新0、公開照合後STOP。
 
 [Track D T0 native資源計数](docs/research/track_d_t0_native_resources_20261109/REPORT.md)：`trottertracks.track_d_native_resources`は確定rz/sx/x/cx/measure streamのcount・三depth・size・幅、max-plus transfer／embeddingを実装。人工回帰29件PASS、P0対応未資格。旧SOURCE・結果・STOPは不変、新H4/P0/再解析/fit/N/13round更新0。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D native emitter・1Q界面結果](research/track_d_native_emitter_development_20261109/REPORT.md)：47人工回帰、保存54人工caseの作用／全7資源一致。全wrapper QCを省くsinkと公式2×2合成の部分bridgeを追加。一般P0・H4長qへの資格なし、新P0／H4／保存H4再解析0、公開照合後STOP。
+
 [Track D T1〜H0結果](research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)：固定54人工case・70適格native列、37人工回帰、指定3人工P0、C1 OFFの保存H4 q4/q64_sample00・8資源照合を完了。CX隣接bridgeの有限対応は取得、全H4 pre-P0価格はnull。主A/F/Sと旧証拠を維持し、公開照合後mandatory STOP。
 
 [Track D T0実装](research/track_d_t0_native_resources_20261109/REPORT.md)：確定native streamのcount・RZ/CX/total depth・size・幅、wire transfer／連結／embeddingを実装。人工回帰29件PASS、全word保持・新P0・simulation不要。P0 bridgeは未資格、A/F/S・旧SOURCE/結果/STOPを保全、新H4/再解析/fit/N/13round更新0。T1は提案のみ、公開照合後mandatory STOP。

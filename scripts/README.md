@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_native_emitter_development.py`：[技術結果](../docs/research/track_d_native_emitter_development_20261109/REPORT.md)。固定54保存人工raw QPYをhash照合し、最大5qubitのnative lowering／部分bridge／位相付き作用／保存価格を確認した完了済みrunner。新P0・H4・sampling・fit/N0。run01／STOPを保全し、追加実行へ自動進行しない。
+
 `run_track_d_t1_h0.py`：[固定PLAN](../docs/research/track_d_t1_h0_p0_bridge_20261109/PLAN.md)の保存54人工case、指定3人工P0、保存H4 q4_sample00/q64_sample00だけを扱う完了済み一括runner。新sampling/H4 compile/H4 simulationは行わず、原本はread-only。run01/STOPを保持し、再開・追加実行しない。[結果](../docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)。
 
 [Track D T0](../docs/research/track_d_t0_native_resources_20261109/REPORT.md)：新しい科学runnerは追加せず、`python3 -B tests/check_track_d_native_resources.py NativeTests`と既存環境の`python -B tests/check_track_d_native_resources.py QiskitNativeTests`で人工計数／readerを検査する。新P0・H4・simulationなし。既存設計mockも回帰実行し合計29件PASS。
