@@ -1,6 +1,6 @@
 # 後日再確認用の手動削除コマンド案
 
-**未実施。38件とも現在はHOLD。** 通常Git認証が使える本人の環境で、[削除報告](DELETION_REPORT.md)と候補JSONの全確認条件を満たしてから対象を選ぶ。既存worktreeを消す手順ではない。q64 5本、O2保持先、q32未追跡元枝、main、対象外の研究枝を含まない。
+**更新：38件とも削除完了。以下は初回HOLD時点の履歴用コマンドであり、再実行不要。** [完了記録](deletion_completion_20261109/EXECUTION.json)を参照。初回の案内： 通常Git認証が使える本人の環境で、[削除報告](DELETION_REPORT.md)と候補JSONの全確認条件を満たしてから対象を選ぶ。既存worktreeを消す手順ではない。q64 5本、O2保持先、q32未追跡元枝、main、対象外の研究枝を含まない。
 
 事前に統合refとO2保持refを取得し、各旧HEADが当該refの祖先であること、現在の使用/保護/他研究依存がないことを確認する。remote SHAが変わった候補は実行しない。以下は個別branch名と期待SHAを固定したlease付き削除で、wildcardやforce overwriteを使用しない。
 

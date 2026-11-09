@@ -1,6 +1,6 @@
 # 固定履歴・成果の保存対応
 
-2026-11-09 JST。Track D 43 tipは通常merge後の統合commit `a7557032854e8e7473284c02ee610616e7e912d8` の祖先。O2 2 tipは保持O2 H4 tipの祖先。archive tagは新設不要・実作成0。元remote branchも削除0で全て残る。
+2026-11-09 JST。Track D 43 tipは通常merge後の統合commit `a7557032854e8e7473284c02ee610616e7e912d8` の祖先。O2 2 tipは保持O2 H4 tipの祖先。archive tagは新設不要・実作成0。初回は全remote branchを保持したが、認証復旧後の38本は個別lease付きで削除済み。元45 tipの履歴は保持refから引き続き到達可能。[削除完了照合](deletion_completion_20261109/PRESERVATION.json)を参照。
 
 全pathの旧blobと現在blobの区別は [BRANCH_INVENTORY.json](BRANCH_INVENTORY.json) の `noncurrent_versions` に記録。`FIXED_HISTORY_VERSION` は現treeと異なる版であり、現ファイルに統合済みとは扱わない。該当commitから元bytesを読める。
 

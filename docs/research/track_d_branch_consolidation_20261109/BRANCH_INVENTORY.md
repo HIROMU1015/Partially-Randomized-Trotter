@@ -1,5 +1,7 @@
 # Track D branch inventory
 
+更新：固定38本は削除完了、元対象7本＋統合branch1本を保持。[最終分類](deletion_completion_20261109/INVENTORY_FINAL.json)を参照。以下の表は初回HOLD時点のsnapshotとして保全する。
+
 2026-11-09 JST。観測時刻 `2026-11-09T16:45:09.470993+09:00`。対象は開始時の45本（Track D 43＋O2移管2）。新しい統合branchは対象削除リストへ追加しない。
 
 全remote開始405本。元45 HEADは再照会でも一致。現行branch protectionフラグは45本ともfalse、defaultはmain。Open PRは取得時0件。所有者は利用者のrepository。

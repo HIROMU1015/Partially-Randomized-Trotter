@@ -686,3 +686,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 ## 2026-11-09 Track D branch consolidation（技術整理）
 
 [最終報告](docs/research/track_d_branch_consolidation_20261109/FINAL_REPORT.md)。固定科学結果のstatusは変更せず、43 Track D履歴とO2別contextの出典を整理した。人工/技術64 PASS、科学実行0。remote削除0、元45本保持、認証/API不足でHOLDを記録。q64/原本/STOP非介入、公開照合後mandatory STOP。
+
+## 2026-11-09 Track D branch削除完了（認証復旧後）
+
+[完了追補](docs/research/track_d_branch_consolidation_20261109/deletion_completion_20261109/REPORT.md)。固定38本を実削除し全件の不在/履歴保全を確認、元対象7＋統合1を保持。全remoteは今回354→316。元45 tipの履歴と元31 worktreeのHEADは保全、初回STOPは変更なし。新科学計算0、回帰64 PASSの再実行0、公開照合後mandatory STOP。
