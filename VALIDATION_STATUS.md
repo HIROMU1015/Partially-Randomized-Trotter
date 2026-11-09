@@ -660,3 +660,7 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 [収録ファイル・保存版と確認範囲](docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## 2026-11-09 Track D C8-1 q64限定完了
+
+[完了結果](docs/research/track_d_c8_1_q64_20261108/COMPLETION_RESULT.md)。SOURCEb1e7cc5b、保存独立domain8 path、raw8/P0 post32/pairedχ8完了。有限平均でCX10.962%/total depth54.588%/RZ0.987%減、幅9→17。主A/F/S凍結、母平均/長q/実装law/actual保証未資格。旧sample00 raw1/P04/修正post4を継承、新sampling0・新P0/post28・追加raw7。既存失敗/STOP保持、immutable CI=false、公開照合後mandatory STOP。

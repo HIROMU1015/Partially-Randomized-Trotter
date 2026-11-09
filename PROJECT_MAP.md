@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C8-1 q64限定完了・価格集計](docs/research/track_d_c8_1_q64_20261108/COMPLETION_RESULT.md)：同H4/CDF8/LD2/S2/s1/r32/K0/h=.1、q64/cut32、全8 raw・32 post・8 pairedχ完了。SOURCEb1e7cc5b、旧4 P0/post継承・新28のみ。有限n8平均でReference CX10.962%/depth54.588%/RZ0.987%減、幅9→17、ΔCX全8本−14128。A/F/S再fit0、全law/母平均/長q/actual保証・N/全RPE更新なし。原本非公開、旧FAIL/STOP保全、公開照合後mandatory STOP。
+
 [C8-1 q64残作業の限定実行PLAN](docs/research/track_d_c8_1_q64_20261108/COMPLETION_PLAN.md)：利用者承認により旧raw1/P04/post4を継承し、最終pairedχ/sample00 GO後のみ残7raw/最大28P0・post。追加sampling0、固定q64/cut32/精度/P0/モデル不変、23人工回帰PASS。新SOURCE固定後に明示実行、公開照合後mandatory STOP。
 
 [C8-1保存4回路の数値修正結果](docs/research/track_d_c8_1_q64_20261108/NUMERICAL_REPAIR_RESULT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。同じsample00/4 P0に対し、SOURCE46ce57e1で旧FAILの値を保存し、SOURCEf1e89590のsimulation fusion無効化で4 postcheck全PASS。固定精度不変、旧原本46項目/STOP保持、新sampling/raw/compile0。最終独立paired/χ総合gate・残7・n8価格統計・長q/全RPEは未実施、公開照合後mandatory STOP。
