@@ -1,3 +1,7 @@
+## 2026-11-09 DF全Hamiltonian純RTE：T=2.0最適化・境界拡張
+
+[T=2.0 REPORT](artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/REPORT.md) / [候補・価格・比較](artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/)。保存linear H4/H6・1Å・STO-3G・DF10/19、P=0。前回のfull-H preparationを維持し、S2 q/R/K探索、K0下限とR境界・局所中間点を評価する。取得域の点最良と未価格化域を区別し、S1 Main Claimと旧SOURCE・結果・STOPは変更しない。
+
 ## 2026-11-09 DF全Hamiltonian純RTE：限定追加検証
 
 [専用REPORT](artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/REPORT.md) / [RESULTS.csv](artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/RESULTS.csv)。保存H4 DF10/H6 DF19、linear1Å/STO-3G、T=.8、P=0。一体項までsamplingへ含める専用adapter。保存B3 S2代表候補を事前固定し各n=9・5精度で比較する限定検証。既存B3のL_D=0とは区別する。S1 Main Claimと旧結果・STOPは変更しない。

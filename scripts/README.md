@@ -1,3 +1,11 @@
+## 2026-11-09 DF全Hamiltonian純RTE：T=2.0のq/R/K探索
+
+`h46_full_h_t20_opt.py`は前回のfull-H preparationとsignal/native/shot/priceを呼ぶ探索adapter。`run_h46_full_h_t20_opt.py`は修正済みの作用照合adapterで実行する。価格compilerは従来のQiskit1.3.0/opt1/seed17、作用照合はAer0.15.1 CPU double。`prefetch_h46_full_h_t20.py`は既存B3の固定seed・fingerprint排他cache準備を再利用し、統計標本を追加しない。
+
+`report_h46_full_h_t20_opt.py`は保存値会計・最良点・境界・比較を出力する。新しい科学runとして既存の完了済みtrial directoryを再実行しない。人工検証は`test_h46_full_h_t20_opt.py`のqR縮約と`test_h46_full_h_t20_aer.py`のcustom gate・global phase・thread前提。旧verifierの技術的失敗とSOURCEは専用成果物へ保持する。
+
+[REPORT](../artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/REPORT.md) / [SOURCE・入力・cohort参照](../artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json)。
+
 ## 2026-11-09 DF全Hamiltonian純RTE：固定代表条件
 
 `h46_full_h_pure_rte.py`は一体項の非scalar Z成分を既存DF RTEへ追加し、決定論blockを空にする最小adapter。保存B3 S2候補を事前固定し、H4 q16/R16/K4・H6 q32/R32/K6、T=.8、各n=9、5精度に同一signal/価格を再利用する。`report_h46_full_h_pure_rte.py`は保存値比較・会計のみ。人工テストは`tests/test_h46_full_h_pure_rte.py`。

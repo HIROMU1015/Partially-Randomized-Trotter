@@ -1,0 +1,32 @@
+{
+  "initial_execution_SOURCE": "8ca723320",
+  "initial_action_failure": "Native crzz instruction unsupported by prototype Aer action verifier",
+  "initial_plan": "price_initial.json",
+  "initial_STOP": "price_initial_STOP.json",
+  "initial_accepted_price_trials": 0,
+  "initial_compiler_axes": 0,
+  "artificial_diagnostics": [
+    "Exact expansion required for native crzz and Gaussian gates",
+    "Aer set_statevector requires explicit post-evolution global phase; reference inputs must be copied",
+    "Aer 0.15.1 retains a global executor thread, conflicting with the existing fingerprint precondition"
+  ],
+  "interim_SOURCE": "93b4f13e0",
+  "interim_result": "H4 small full-wrapper PASS retained; H6 stopped before native build at HASH_REUSE_SINGLE_THREAD_REQUIRED",
+  "corrected_action_SOURCE": "abd0715a2",
+  "corrected_action_policy": "Exact gate-definition expansion; explicit global phase; synchronous existing Aer CPU double execution; no retained executor thread",
+  "focused_tests": "qR contraction check plus corrected Aer phase=0,+.17,-.19; input/circuit unchanged; no residual Python thread",
+  "molecular_action_validation": "action_adapter_validation.json; two small full wrappers; excluded from all price cohorts",
+  "exploration_plan": "price_exploration_v2.json",
+  "exploration_cohort": "FULL_H_T20_EXPLORATION_V2",
+  "old_SOURCE_STOP_results_modified": false,
+  "sampling_or_compiler_changed": false,
+  "scientific_numerical_mismatch_observed": false,
+  "unlimited_retry": false,
+  "additional_action_diagnostic": {
+    "reference": "fused_action_validation.json",
+    "method": "Exact gate fusion on already acquired H6 control wrapper/compiled artifacts",
+    "result": "PASS",
+    "adopted_by_live_controller": false,
+    "statistical_samples": 0
+  }
+}
