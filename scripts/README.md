@@ -1,3 +1,9 @@
+## H8 Full-H pure RTEの限定検証
+
+`h8_full_h_pure_rte.py`はH8保存loaderへFull-H準備を接続し、全DF28・一体項・scalarとevent作用を検証する。`h8_full_h_signal.py`は少数候補の有限mean/shotとsparse全step照合、`h8_full_h_price.py`は固定代表からn9の価格取得、`report_h8_full_h_pure_rte.py`は保存値会計。旧H8 Stage Cのphase helper、sampler、native builder、compiler、paired Gを再利用する。高速版は`h8_full_h_price_parallel.py`と`h8_full_h_parallel_aer.py`、検証は`check_h8_full_h_parallel.py`。同一候補・seed・event列を保ち、価格用回路は変更せず、作用検証を並列化する。
+
+[引継ぎ](../artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/HANDOFF.md)。終了したtrial directoryへ再実行しない。科学実行範囲は当該依頼に限定し、旧STOPは解除しない。
+
 # scripts 索引
 
 `scripts/` はコマンドラインから実行する入口を置く。研究ロジックの本体は原則として

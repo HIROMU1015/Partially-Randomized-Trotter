@@ -1,0 +1,78 @@
+{
+  "artificial": true,
+  "new_scientific_samples": 0,
+  "qubits": 17,
+  "instructions": 18081,
+  "definition_expansion_seconds": 0.3060804349370301,
+  "affinity": 64,
+  "results": [
+    {
+      "threads": 1,
+      "seconds": 1.7970782818738371,
+      "vector_error": 0.0,
+      "parallel_state_update": 1,
+      "parallel_shots": 1
+    },
+    {
+      "threads": 4,
+      "seconds": 0.911923865089193,
+      "vector_error": 0.0,
+      "parallel_state_update": 4,
+      "parallel_shots": 1
+    },
+    {
+      "threads": 8,
+      "seconds": 0.7621142361313105,
+      "vector_error": 2.2089379890398193e-15,
+      "parallel_state_update": 8,
+      "parallel_shots": 1
+    },
+    {
+      "threads": 16,
+      "seconds": 0.7337879270780832,
+      "vector_error": 2.915926916768469e-15,
+      "parallel_state_update": 16,
+      "parallel_shots": 1
+    },
+    {
+      "threads": 32,
+      "seconds": 0.7074271659366786,
+      "vector_error": 3.786673683820303e-15,
+      "parallel_state_update": 32,
+      "parallel_shots": 1
+    },
+    {
+      "threads": 64,
+      "seconds": 9.162107618991286,
+      "vector_error": 3.920152956444142e-15,
+      "parallel_state_update": 64,
+      "parallel_shots": 1
+    }
+  ],
+  "purpose": "Artificial thread timing only; not molecular cost estimation",
+  "observed_at_UTC": "2026-11-09T21:08:40.523305+00:00",
+  "benchmark_code_sha256": "1b369e2eab09455e578023f59ce309d90e3b40616444606d5f66cf4a7862cea6",
+  "main_scientific_SOURCE": "cfbe8ce2c7b98524cc855e24b88e54e16bdaa7ac",
+  "main_worker_unchanged": true,
+  "main_worker_restarted": false,
+  "applied_to_main_worker": false,
+  "limitation": "Short artificial circuit; no guarantee of full-trajectory speedup or of optimal thread count",
+  "remaining_price_parallelism": "After representative PASS, up to eight remaining trajectories subject to measured RAM and idle CPU",
+  "existing_acceleration": [
+    "vectorized event algebra",
+    "cached local matrices",
+    "sparse sector signal",
+    "exact gate fusion",
+    "canonical fingerprint cache",
+    "compiler cache",
+    "parallel small-gate phase checks"
+  ],
+  "speedups_vs_one": {
+    "1": 1.0,
+    "4": 1.970645084168369,
+    "8": 2.358016943754092,
+    "16": 2.449043130253911,
+    "32": 2.5403014874250567,
+    "64": 0.19614245505573846
+  }
+}
