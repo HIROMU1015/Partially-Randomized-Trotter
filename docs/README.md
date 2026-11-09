@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D Phase精度と保存q8移送](research/track_d_phase_q8_transfer_20261110/REPORT.md)：MPFR160 ledgerによる全体phase会計、q4新旧word同一、保存q8_sample00の全28資源一致。53人工回帰PASS、20反復と履歴増加を計測。一般P0／長qへの保証なし、新P0／sampling／simulation0、公開照合後STOP。
+
 [Track D 保存H4 raw→P0価格移送](research/track_d_h4_native_bridge_20261110/REPORT.md)：固定q4_sample00／cut2／C1 OFFのStrong/Reference X/Y、予測commit固定後の全28資源一致。4並列約25秒、49人工回帰、宣言phase差と長qの限界を記録、新P0／H4 build／simulation0、公開照合後STOP。
 
 [Track D native emitter・1Q界面結果](research/track_d_native_emitter_development_20261109/REPORT.md)：47人工回帰、保存54人工caseの作用／全7資源一致。全wrapper QCを省くsinkと公式2×2合成の部分bridgeを追加。一般P0・H4長qへの資格なし、新P0／H4／保存H4再解析0、公開照合後STOP。

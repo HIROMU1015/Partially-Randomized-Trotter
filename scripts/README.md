@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_phase_q8_transfer.py`：[Phase＋q8結果](../docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)。selectで価格非依存にq8先頭IDを固定、executeでq4 phase4＋q8 raw予測4、予測commit後のみcompare。旧q4観測／counterを再利用し、新P0は呼ばない。run01の初回preflight失敗／修正／結果／STOPを保持し、追加pathやq16以上へ自動進行しない。
+
 `run_track_d_h4_native_bridge.py`：[保存H4 q4結果](../docs/research/track_d_h4_native_bridge_20261110/REPORT.md)。predictはraw4のみ、比較前にcommitで固定し、compareが既存compiled4と照合。`check_track_d_h4_native_phase.py`は固定予測word／compiledのread-only順序・角・phase診断だけ。run01／旧STOPを保全し、再開／追加pathへ自動進行しない。
 
 `run_track_d_native_emitter_development.py`：[技術結果](../docs/research/track_d_native_emitter_development_20261109/REPORT.md)。固定54保存人工raw QPYをhash照合し、最大5qubitのnative lowering／部分bridge／位相付き作用／保存価格を確認した完了済みrunner。新P0・H4・sampling・fit/N0。run01／STOPを保全し、追加実行へ自動進行しない。

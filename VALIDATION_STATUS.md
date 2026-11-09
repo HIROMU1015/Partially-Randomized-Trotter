@@ -1,5 +1,7 @@
 # Validation status
 
+[Track D Phase＋q8](docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)（2026-11-10）：q8_sample00／中央cut4／C1 OFFの固定raw4予測が保存P0全28値に一致。新phase ledger、q4 word／価格不変、53人工回帰PASS。h保存形式のpreflightエラーを保全して修正、数値retry0。新全入力correctnessなし、一般P0／長q未資格、新P0／build／sampling／fit／N／13round更新0、公開照合後mandatory STOP。
+
 [Track D H4 native価格移送](docs/research/track_d_h4_native_bridge_20261110/REPORT.md)（2026-11-10）：固定H4 q4_sample00／cut2／C1 OFFのraw4から予測固定後、保存P0全28資源一致。49人工回帰PASS、旧54人工結果は不変再利用。phaseメタデータ差あり・新全入力correctness未実施。一般P0／長q未資格、新sampling／build／P0／simulation／fit／N／13round更新0、公開照合後mandatory STOP。
 
 [O5 C1実H4/q4結果](docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/Number-CDF8/元順LD2/S2/s1/r32/K0/δ=.1、保存q4_sample00/cut2・元H ground仮定/準備費除外。全256 raw/新4 post PASS、両方式CX−30、depthはStrong−178/Reference−81、相対depth差縮小97・CX差不変。旧4適格再利用、新P0合計4。χ要約の配列形状エラーSTOPを保全し保存結果集約のみ完了、科学retry0。全law/全RPE未資格、原本非公開・公開照合後STOP。

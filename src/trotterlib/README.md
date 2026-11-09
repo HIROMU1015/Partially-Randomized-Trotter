@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.track_d_native_phase160`：[Phase＋q8結果](../../docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)。旧emitter出力のbinary64 phase項をexact比からMPFR160へ集約するside ledger。局所合成／1Q／CX ruleは無変更、旧binary64値も保存。q4命令列不変・q8全28価格一致、一般P0／長qは未資格。
+
 [Track D H4 native価格移送](../../docs/research/track_d_h4_native_bridge_20261110/REPORT.md)：既存 `track_d_native_emitter`／T0／1Q／CX bridgeをbyte不変で再利用。固定raw4の全28資源が保存P0と一致。新最適化ruleなし、一般P0／長qは未資格。新runnerはI/O・観測・比較、原本非公開・公開照合後STOP。
 
 `trottertracks.track_d_native_emitter`／`track_d_p0_1q_bridge`：[接続と技術結果](../../docs/research/track_d_native_emitter_development_20261109/REPORT.md)。既存emitterのconstructor局所binding、bounded chunk、標準definition lowering、公式ZSXXのstrict-shorter 1Q＋旧CX bridge。47人工回帰・保存54case全指標一致、一般P0_UNQUALIFIED。
