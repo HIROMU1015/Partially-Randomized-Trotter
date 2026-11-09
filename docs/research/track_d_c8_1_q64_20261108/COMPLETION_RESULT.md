@@ -35,7 +35,7 @@ AB=V、actual A†、半pathの真空ray、whole-path χ、scalar/identity、sig
 | reference_leakage_max_component | 8.32414398e-13 |
 | reference_leakage_max_L2 | 9.39911568e-13 |
 
-固定component abs1e−10、observable Frobenius/signal2e−10、rtol0。phase fitting・再正規化・入力列削減・閾値緩和なし。表のobservable最大値はCAR/raw observableラベルに限定し、component基準のisometry Frobeniusや負のχ対照を混ぜていない。数値PASSは有限binary64の実装証拠で、rigorous enclosureではない。
+固定component abs1e−10、observable Frobenius/signal2e−10、rtol0。phase fitting・再正規化・入力列削減・閾値緩和なし。表のobservable最大値はCAR/raw observableラベルに限定し、component基準のisometry Frobeniusや負のχ対照を混ぜていない。数値PASSは有限binary64の実装証拠で、rigorous enclosureではない。 継承sample00の4 postcheckにはfusionフラグの項目がないため固定f1e89590 SOURCEのfalseを照合し、新28 recordは各自のfalseを直接確認した。精度・phase fit・再正規化の不変更は全32 recordで直接確認した。
 
 ## Full-wrapper資源
 
