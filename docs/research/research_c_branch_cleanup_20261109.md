@@ -300,4 +300,4 @@ GIT_TERMINAL_PROMPT=0 git -C /home/AbeHiromu/projects/partially-randomized-trott
 
 ## 別依頼の追補：全remote残存枝の棚卸し（2026-11-09）
 
-[全remoteの最新分類・未確認事項・次の承認範囲](research_c_branch_cleanup_20261109/remaining_remote_audit_20261109/REPORT.md)。開始317本、Track C/O3の別作業による21本削除を反映して296本。KEEP130・HOLD166・確定追加統合候補0・削除候補0。本監査による統合・削除・科学実行0。研究Cの従来削除56本とHOLD23本は変更せず、公開照合後mandatory STOP。
+[全remoteの最新分類・未確認事項・次の承認範囲](research_c_branch_cleanup_20261109/remaining_remote_audit_20261109/REPORT.md)。開始317本、別作業によるTrack C/O3の21本削除と使用中DF枝1本の公開を反映して297本。KEEP131・HOLD166・確定追加統合候補0・削除候補0。本監査による統合・削除・科学実行0。研究Cの従来削除56本とHOLD23本は変更せず、公開照合後mandatory STOP。

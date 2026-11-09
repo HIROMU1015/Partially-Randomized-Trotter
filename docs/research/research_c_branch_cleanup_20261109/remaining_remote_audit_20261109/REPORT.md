@@ -1,30 +1,30 @@
 # 残存remote branch棚卸し・候補分類（2026-11-09）
 
-**開始時317本、最新棚卸し296本。KEEP 130本、HOLD 166本、追加統合候補0本、削除候補0本。今回、新たに削除可能と確定できたbranchは0本。**
+**開始時317本、最新棚卸し297本。KEEP 131本、HOLD 166本、追加統合候補0本、削除候補0本。今回、新たに削除可能と確定できたbranchは0本。**
 
 これはユーザー指定のGit技術監査であり、詳細科学レビューではない。科学計算・保存数値の再解析・回路build/compile・branch統合・削除・force push・prune・gcは実施していない。新しい管理branchも作成しない。既存管理branch `codex/research-c-branch-cleanup-20261109` に本追補だけを公開する。
 
 ## 全件表と判定の意味
 
-- [最新296本の分類表](branches.csv)：full remote SHA、分類・理由、保全refとSHA、祖先到達性、未統合commit数、worktree状態、過去台帳・依存関係。
+- [最新297本の分類表](branches.csv)：full remote SHA、分類・理由、保全refとSHA、祖先到達性、未統合commit数、worktree状態、過去台帳・依存関係。
 - [branchごとの根拠JSON](branch_evidence.json)：公開済み文書・SOURCE/STOP等のpath例、branch名参照の固定snapshotと行、履歴包含先一覧。
 - [過去削除209件の照合](completed_deletions.csv)、[開始後のremote変化](remote_changes.csv)、[技術検査と制約](checks.json)。
 
 | 最終分類 | 本数 | 意味 |
 |---|---:|---|
-| KEEP | 130 | main、明示保持・保全先、使用終了が確認されていない実在checkoutの枝 |
+| KEEP | 131 | main、明示保持・保全先、使用終了が確認されていない実在checkoutの枝 |
 | HOLD | 166 | 過去HOLD、環境・用途・依存不明、未公開差分や独立履歴の保全未確定 |
 | 追加統合候補 | 0 | 統合対象として確定できた枝なし。後述の系列案は調査提案 |
 | 削除候補 | 0 | 削除条件をすべて満たした枝なし |
-| 合計 | 296 | GitHub実remoteの最新観測 |
+| 合計 | 297 | GitHub実remoteの最新観測 |
 
 名称・日付だけで決めていない。KEEPも「今後永久に必須」という科学的判断ではなく、現在確認できる保持根拠を示す。HOLDでは不明点を残し、保全済みという理由だけで削除候補へ変更しない。
 
-## 316→317→296と過去台帳の照合
+## 316→317→296→297と過去台帳の照合
 
 前回の研究C削除後snapshotからTrack Dの38本を差し引いた316本に対し、開始時には `codex/pr-reference-v6q-prep-20261109` が追加されていた。整理記録の追記によるSHA更新もある。開始時の実測317本を採用した。
 
-監査中、別作業がTrack C/O3の21本を削除し、統合保全先を `a8b4c6f02a3cd7dc58c300af11c8b20f9011d11a` から `b3c81c2677988c7b9491eeee31fbcc0f9b29b078` へ更新した。この21本の不在と全元tipの祖先到達性を確認し、最新296本へ反映した。**この21本は本監査の削除実績ではない。** [当該完了記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b3c81c2677988c7b9491eeee31fbcc0f9b29b078/docs/research/track_c_branch_cleanup_20261109/DELETION_RESULT.md)を参照。
+監査中、別作業がTrack C/O3の21本を削除し、統合保全先を `a8b4c6f02a3cd7dc58c300af11c8b20f9011d11a` から `b3c81c2677988c7b9491eeee31fbcc0f9b29b078` へ更新した。この21本の不在と全元tipの祖先到達性を確認し、その時点の296本へ反映した。**この21本は本監査の削除実績ではない。** [当該完了記録](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/b3c81c2677988c7b9491eeee31fbcc0f9b29b078/docs/research/track_c_branch_cleanup_20261109/DELETION_RESULT.md)を参照。
 
 | 既存整理 | 記録上の削除 | 今回の扱い |
 |---|---:|---|
@@ -32,6 +32,10 @@
 | Track D/O2、2026-11-09 | 38 | 全38本不在・統合先/O2独立保持先へ祖先到達。再候補化なし |
 | Track C/O3、監査中の別作業 | 21 | 全21本不在・統合先へ祖先到達。再候補化なし |
 | 全体整理、2026-11-02 | 94 | 93本不在、1本再出現。記録された元SHAは全94件保全 |
+
+その後の公開照合で `codex/df-full-h-pure-rte-light-20261109` が別作業により `9b83b96b83f62142c9d87858dc24a94db7ac5d61` で公開され、297本となった。実在checkoutと観測済みjobに結び付くためKEEPへ追加した。今回の監査がこの研究枝を作成・実行・公開したものではない。
+
+分類表は本追補の公開直前snapshotである。整理branchの表内SHAは `0ea56f39b09503889d741d179528f2b5e8d67f38` であり、本追補の文書公開により当該整理branchだけが直系子commitへ進む。公開後の先端SHAは最終報告と公開commitのURLで示す。
 
 旧94件のうち `track-b-g6-w2c-b3-v2-independent-acceptance-server-20261019` が現在 `77126767c00585d0967558c0756907df2d69d1ff` で存在する。**HOLDとし、過去の削除許可・候補指定を現在の再削除へ流用しない。**
 
@@ -49,9 +53,9 @@ Track Dはq64関連5本、統合保全先、O2独立contextをKEEP、q32をHOLD�
 
 ## 確認した環境と限界
 
-直接照合したホストは `GPUA100-gleap02`。主repositoryの登録200件と、既知worktreesディレクトリ直下の別repository6件、合計206 checkoutのHEAD・branch・通常statusを読み取り確認した。23 checkoutに変更があり、22 checkoutに未追跡statusがあった。最新remote296本のうち149本は実在checkoutに結び付いている。未追跡statusのdirectory集約数をファイル数とは扱わない。
+直接照合したホストは `GPUA100-gleap02`。主repositoryの登録200件と、既知worktreesディレクトリ直下の別repository6件、合計206 checkoutのHEAD・branch・通常statusを読み取り確認した。22 checkoutに変更があり、21 checkoutに未追跡statusがあった。最新remote297本のうち150本は実在checkoutに結び付いている。未追跡statusのdirectory集約数をファイル数とは扱わない。
 
-可視の本人UID processから、local-onlyの `codex/df-full-h-pure-rte-light-20261109` を使うcontroller1・worker8のPython processを観測した。H8 cwdを持つtmux process2件も確認したが、tmuxの存在を科学job実行の証明にはしていない。process、実行SOURCE、出力、worktreeを変更・停止していない。remoteにない実行枝を新規作成・削除候補化しない。
+可視の本人UID processから、当初local-onlyだった `codex/df-full-h-pure-rte-light-20261109` を使うcontroller1・worker8のPython processを観測した。H8 cwdを持つtmux process2件も確認したが、tmuxの存在を科学job実行の証明にはしていない。process、実行SOURCE、出力、worktreeを変更・停止していない。その後のremote公開とHEAD更新は別作業の進行として記録し、使用中の同枝をKEEPとした。
 
 Windows LOCAL、以前の `/home/abe/Project/Partially Randomized Trotter` 環境、その他SERVER1/SERVER2への現在の接続情報はなく、使用状況は未確認。ホスト名や枝名だけでSERVER1/2への対応を推測していない。本人processの一部にも読取制限があり、scheduler・他UID・別ホスト全体を確認済みとはしない。現在のbranch protectionフラグ、ruleset一覧、open PRは観測上0件だが、mainの保持は継続する。
 
@@ -59,7 +63,7 @@ ignored/private payloadの再帰走査、rawの全hash、配列decodeは行っ�
 
 ## 履歴保全と未統合変更
 
-最新296本のうち254本のtipは他の現remote branchの祖先、10本は現archive tagから到達可能（重複あり）。他の現remote branch/tagに含まれないcommitを持つtipは37本。枝ごとに保全refの現SHAと `merge-base --is-ancestor` を記録した。保全先が自身の枝の場合は、枝を消す前の保全が未完了である。
+最新297本のうち255本のtipは他の現remote branchの祖先、10本は現archive tagから到達可能（重複あり）。他の現remote branch/tagに含まれないcommitを持つtipは38本。枝ごとに保全refの現SHAと `merge-base --is-ancestor` を記録した。保全先が自身の枝の場合は、枝を消す前の保全が未完了である。
 
 `unmerged_commits_vs_preserving_ref=0` は、その保全先に履歴上含まれる意味であり、保全先の最新treeが元treeと同一という意味ではない。元の科学SOURCE・結果・STOPは元full SHAと元pathで取り出す。`tip_tree_identical_to_keeper` も別欄に記録した。科学SOURCEを保全commitや最新mainへ付け替えない。
 
