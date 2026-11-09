@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D 長q構造価格設計](research/track_d_longq_structural_resource_design_20261109/REPORT.md)：固定native列のcount/max-plusは厳密、未compile入力からのP0価格bridgeは未完成。208−224qの条件付き傾き説明と208/界面残差の未解決を整理し、既存emitter/counter/特徴のstream再利用を提案。整数mock7件PASS、新科学計算・P0・保存価格再解析・fit/N/13round更新0。A/F/Sと既存STOPを維持し、公開照合後mandatory STOP。
+
 [O5 C1実H4/q4結果](../docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/Number-CDF8/元順LD2/S2/s1/r32/K0/δ=.1、保存q4_sample00/cut2・元H ground仮定/準備費除外。全256 raw/新4 post PASS、両方式CX−30、depthはStrong−178/Reference−81、相対depth差縮小97・CX差不変。旧4適格再利用、新P0合計4。χ要約の配列形状エラーSTOPを保全し保存結果集約のみ完了、科学retry0。全law/全RPE未資格、原本非公開・公開照合後STOP。
 
 [O5 C1人工結果](research/track_d_o5_c1_head_tail_artificial_20261108/REPORT.md)：固定2-mode/3-block q2_mixed/cut1/h=.1/τ=.2/K0、scalar .17/identity .04（分子geometry/basis/rank/LD非該当）。head→tailの既存relative橋でlocal7 positive/7 negative・raw41比較・post8 PASS。Strong/Reference双方でRZ−5/CX−2/depth−7/size−11、幅不変、相対R−S差は不変。新P0 4・旧4適格再利用。保存型エラーの旧STOPを保全し、SOURCEaf6fc07fで同scope未完了処理を継続。H4/fit/N/13round/q64操作0、公開照合後mandatory STOP。
