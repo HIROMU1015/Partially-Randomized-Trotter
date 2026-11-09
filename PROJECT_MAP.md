@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D T0 native資源計数](docs/research/track_d_t0_native_resources_20261109/REPORT.md)：`trottertracks.track_d_native_resources`は確定rz/sx/x/cx/measure streamのcount・三depth・size・幅、max-plus transfer／embeddingを実装。人工回帰29件PASS、P0対応未資格。旧SOURCE・結果・STOPは不変、新H4/P0/再解析/fit/N/13round更新0。
+
 [Track D branch整理](docs/research/track_d_branch_consolidation_20261109/FINAL_REPORT.md)：43 Track D履歴を統合、O2は独立context保持、既存64人工技術回帰PASS。認証復旧後に固定38 remote枝を削除・全履歴保全、元対象7＋統合1を保持（q64関連5保護、q32未追跡1 HOLD）。新科学計算0、公開照合後mandatory STOP。
 
 [O5 C1実H4/q4結果](docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/Number-CDF8/元順LD2/S2/s1/r32/K0/δ=.1、保存q4_sample00/cut2・元H ground仮定/準備費除外。全256 raw/新4 post PASS、両方式CX−30、depthはStrong−178/Reference−81、相対depth差縮小97・CX差不変。旧4適格再利用、新P0合計4。χ要約の配列形状エラーSTOPを保全し保存結果集約のみ完了、科学retry0。全law/全RPE未資格、原本非公開・公開照合後STOP。

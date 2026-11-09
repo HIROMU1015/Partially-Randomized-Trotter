@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.track_d_native_resources`：[T0実装](../../docs/research/track_d_t0_native_resources_20261109/REPORT.md)。stdlibのnative stream counter、三指標max-plus、template連結／embedding。既存科学builder/counterは無変更、`NATIVE_EXACT`／`P0_UNQUALIFIED`を区別する。人工回帰29件PASS、新科学実行0。
+
 [O5 C1実H4/q4結果](../../docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/Number-CDF8/元順LD2/S2/s1/r32/K0/δ=.1、保存q4_sample00/cut2・元H ground仮定/準備費除外。全256 raw/新4 post PASS、両方式CX−30、depthはStrong−178/Reference−81、相対depth差縮小97・CX差不変。旧4適格再利用、新P0合計4。χ要約の配列形状エラーSTOPを保全し保存結果集約のみ完了、科学retry0。全law/全RPE未資格、原本非公開・公開照合後STOP。
 
 `trottertracks.track_d_head_tail_artificial`：既存C3/StrongBuilderを用いるopt-inの人工head→tail橋。local_checks/raw_checksは既存checkerを再利用し、分子入力を扱わない。

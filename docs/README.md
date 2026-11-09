@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D T0実装](research/track_d_t0_native_resources_20261109/REPORT.md)：確定native streamのcount・RZ/CX/total depth・size・幅、wire transfer／連結／embeddingを実装。人工回帰29件PASS、全word保持・新P0・simulation不要。P0 bridgeは未資格、A/F/S・旧SOURCE/結果/STOPを保全、新H4/再解析/fit/N/13round更新0。T1は提案のみ、公開照合後mandatory STOP。
+
 [Track D 長q構造価格設計](research/track_d_longq_structural_resource_design_20261109/REPORT.md)：固定native列のcount/max-plusは厳密、未compile入力からのP0価格bridgeは未完成。208−224qの条件付き傾き説明と208/界面残差の未解決を整理し、既存emitter/counter/特徴のstream再利用を提案。整数mock7件PASS、新科学計算・P0・保存価格再解析・fit/N/13round更新0。A/F/Sと既存STOPを維持し、公開照合後mandatory STOP。
 
 [O5 C1実H4/q4結果](../docs/research/track_d_o5_c1_head_tail_h4_q4_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/Number-CDF8/元順LD2/S2/s1/r32/K0/δ=.1、保存q4_sample00/cut2・元H ground仮定/準備費除外。全256 raw/新4 post PASS、両方式CX−30、depthはStrong−178/Reference−81、相対depth差縮小97・CX差不変。旧4適格再利用、新P0合計4。χ要約の配列形状エラーSTOPを保全し保存結果集約のみ完了、科学retry0。全law/全RPE未資格、原本非公開・公開照合後STOP。
