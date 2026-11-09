@@ -78,7 +78,7 @@ CXの絶対平均に対する残差はStrong/Reference共通でA +455.122、F +5
 
 ## 原本・公開・未解決事項
 
-run04のSOURCE・result・STOP・既存scalar JSON202件と固定SOURCE pin32項目は本集計の前後でbytes不変。event/QPY/NPZ/conditions/fusion/内部進捗はlocalのみ、公開はscalar/check/統計/SOURCE/hash索引と本報告に限定する。元packet/CDF/law等はrun終了時の既存preflight照合とsource_input_preserved=trueを継承し、本集計では固定実装・technical入力32 pinと8 event recordをhash再確認した。大きいprivate QPY/NPZのhash索引は実行時の保存値を再利用し、不要な全件rehashや再アーカイブは行わない。
+run04のSOURCE・result・STOP・既存scalar JSON202件と固定SOURCE pin32項目は本集計の前後でbytes不変。sample00の別記 `paths/q64_sample00/*_price_metadata.json` 4件も元bytesで公開し、継承check hash一致・保存価格metrics一致・postcheck再実行falseを確認した。event/QPY/NPZ/conditions/fusion/内部進捗はlocalのみ、公開はscalar/check/統計/SOURCE/hash索引と本報告に限定する。元packet/CDF/law等はrun終了時の既存preflight照合とsource_input_preserved=trueを継承し、本集計では固定実装・technical入力32 pinと8 event recordをhash再確認した。大きいprivate QPY/NPZのhash索引は実行時の保存値を再利用し、不要な全件rehashや再アーカイブは行わない。
 
 未解決は、母平均・全support/tail・実装law距離、長q外挿bias、q≥128での同精度検証、routing/T/noise、actual RPE成功保証。q64を用いた再fit、N再算定、全13-round総費用更新、詳細科学レビューは行っていない。
 

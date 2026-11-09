@@ -1,0 +1,98 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "label": "compiled_reference_vs_raw_isometry:branch0",
+      "status": "PASS",
+      "max_entry": 2.5272159733896753e-11,
+      "frobenius": 2.0718470300066336e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_reference_vs_raw_isometry:branch1",
+      "status": "PASS",
+      "max_entry": 2.809377961776467e-11,
+      "frobenius": 2.1742316475679933e-10,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_reference_input_isometry",
+      "status": "PASS",
+      "max_entry": 1.4255263678900736e-13,
+      "frobenius": 1.6093178462291405e-12,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_vs_CAR_observable",
+      "status": "PASS",
+      "max_entry": 4.282177988457015e-12,
+      "frobenius": 3.2286933170038684e-11,
+      "tolerance": 1e-10,
+      "rtol": 0
+    },
+    {
+      "label": "compiled_vs_raw_observable",
+      "status": "PASS",
+      "max_entry": 4.282177988457015e-12,
+      "frobenius": 3.221093319248538e-11,
+      "tolerance": 1e-10,
+      "rtol": 0
+    }
+  ],
+  "reference_leakage": {
+    "max_reference_leakage_component": 8.298263640539766e-13,
+    "max_reference_leakage_L2": 9.399115681456667e-13
+  },
+  "input_state": "all 256 system basis columns; reference/ancilla initially zero",
+  "rigorous_enclosure": null,
+  "global_phase_fit": false,
+  "arm": "reference",
+  "axis": "X",
+  "observable_residuals": [
+    {
+      "label": "CAR",
+      "status": "PASS",
+      "max_entry": 4.282177988457015e-12,
+      "frobenius": 3.2286933170038684e-11,
+      "tolerance": 1e-10,
+      "rtol": 0,
+      "signal_tolerance": 2e-10,
+      "signal_status": "PASS"
+    },
+    {
+      "label": "raw",
+      "status": "PASS",
+      "max_entry": 4.282177988457015e-12,
+      "frobenius": 3.221093319248538e-11,
+      "tolerance": 1e-10,
+      "rtol": 0,
+      "signal_tolerance": 2e-10,
+      "signal_status": "PASS"
+    }
+  ],
+  "component_atol": 1e-10,
+  "signal_atol": 2e-10,
+  "rtol": 0,
+  "renormalized": false,
+  "input_basis_columns": 256,
+  "acceptance_changed": false,
+  "sampling_calls": 0,
+  "compile_calls": 0,
+  "metrics": {
+    "rz_count": 328327,
+    "cx_count": 113104,
+    "rz_depth": 38316,
+    "cx_depth": 23536,
+    "total_depth": 84948,
+    "circuit_size": 660488,
+    "qubit_count": 17,
+    "measurement_count": 1,
+    "global_phase": 2.1002834953407614
+  },
+  "inherited_postcheck_source": "f1e89590c7daea12319352b85b959928ad166213",
+  "inherited_postcheck_sha256": "2cf09629672f04ee6401de01d2144a4b4d2c11204f8659b74f4940ac55d2d5f6",
+  "postcheck_reexecuted": false
+}
