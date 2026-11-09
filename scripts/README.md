@@ -35,6 +35,9 @@ C6a専用入口：`run_track_d_c6a.py`。[固定PLAN](../docs/research/track_d_c
 [C3 q4/q8補完結果](../docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。 補完入口は[`complete_track_d_c3_run02.py`](complete_track_d_c3_run02.py)、保全回帰testは`tests/check_track_d_c3_completion.py`。
 
 Track D C3は[`run_track_d_c3_q4_q8.py`](run_track_d_c3_q4_q8.py)。[固定PLAN](../docs/research/track_d_c3_q4_q8_20261106/PLAN.md)でq4/q8だけを扱い、既存compile/postcheckを再利用する。通常testから科学実行しない。
+[run_track_d_b4_2.py](run_track_d_b4_2.py)は[B4-2固定PLAN](../docs/research/track_d_b4_2_rpe_shots_20261106/PLAN.md)の保存B1→元H ideal統計専用。明示`--execute`、fresh run01、retry/resume0、mandatory STOP。一般testや旧runnerから自動実行しない。
+
+[Track D B4-1](../docs/research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)は科学runnerを追加しない。人工検証入口は `PYTHONPATH=src python -B -m pytest -p no:cacheprovider -q tests/check_track_d_original_h_accuracy.py`。実H4評価は別許可。
 
 [C2固定q2結果](../docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 

@@ -70,6 +70,13 @@
 [Track D C3結果](docs/research/track_d_c3_q4_q8_20261106/RESULT.md)：contract参照先の実装誤りでq4/q8ともraw構築前STOP。科学的correctness・価格未評価、compile/retry/resume0。SOURCE・失敗・STOPを保全し、修正／再実行は新たな判断へ戻す。
 
 [Track D C3固定q4/q8](docs/research/track_d_c3_q4_q8_20261106/PLAN.md)：ascending保存fixture・complete半path cutを固定し、合法なstep境界融合を含むstrong対照でraw correctness、PASS時だけ最大8 P0 wrapper。公開後mandatory STOP。
+[Track D B5：ideal→actual保証接続の静的調査](docs/research/track_d_b5_actual_rpe_static_survey_20261106/REPORT.md)：finite-bit law／shot joint-law／Reference・compile誤差の不足、共通Nの条件、最小追加検証案。科学実行・実装変更なし、公開後mandatory STOP。
+
+[Track D B4-2結果](docs/research/track_d_b4_2_rpe_shots_20261106/RESULT.md)：元H向けideal IID/exact nativeの13-round十分NはX/Y合計14738、energy幅.0012783173232380342 Ha・failure和.01。条件付き数値pilot、actual・費用未資格、mandatory STOP。
+
+[Track D B4-1：元H統計adapter](docs/research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)：own-DF guardを保持した共通化、元H用N／energy／decoder接続。人工52件＋既存21件PASS、実H4評価なし、mandatory STOP。
+
+[Track D B3：元H向けRPE統計の接続準備](docs/research/track_d_b3_rpe_statistics_preparation_20261106/REPORT.md)：B1保存誤差から統計・decoder・全RPE会計へ接続する既存部品と不足、次の最小実装・実行許可範囲。静的調査のみ、N算定・科学実装なし、公開後mandatory STOP。
 
 [C2固定q2結果](docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 

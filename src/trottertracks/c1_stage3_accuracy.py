@@ -102,6 +102,19 @@ def assess_round(target, evidence):
     eps_syn = _finite(evidence.synthesis_signal_error, 'synthesis signal error')
     eps_law = _finite(evidence.finite_law_signal_error, 'finite-law signal error')
     delta = math.fsum((A*eps_pf, A*eps_rte, eps_syn, eps_law))
+    return _assess_raw_signal(target, evidence, attenuation=A, raw_error=delta)
+
+
+def _assess_raw_signal(target, evidence, *, attenuation, raw_error):
+    """Shared geometry/shot calculation; state, law and alias checked by caller.
+
+    raw_error bounds distance from A exp(-it E_target), in raw signal units.
+    This helper establishes no state model or error-evidence qualification.
+    """
+    A = _finite(attenuation, 'attenuation')
+    delta = _finite(raw_error, 'raw complex-signal error')
+    if A > 1:
+        raise ValueError('Raw measured attenuation cannot exceed one')
     rho = A-delta
     if rho <= 0:
         return dict(status='INFEASIBLE_RADIUS', m=evidence.m, shots=None)
@@ -130,6 +143,18 @@ def assess_energy(target, df_error_bound_ha, round_plans, *, state_model,
     df = _finite(df_error_bound_ha, 'DF energy bound')
     if state_model != 'own_DF_ground_state_oracle' or not alias_branch_verified:
         raise ValueError('Ground-state/alias assumptions must be justified')
+    return _assess_energy_interval(target, round_plans, energy_shift_ha=df,
+                                   reserve_cap_ha=target.df_cap)
+
+
+def _assess_energy_interval(target, round_plans, *, energy_shift_ha,
+                            reserve_cap_ha=None):
+    """Shared full-horizon/failure/energy arithmetic after state/alias checks.
+
+    Own-DF supplies the Weyl energy shift and reserve cap. Original-H transport
+    already includes DF in the signal error and supplies no further shift.
+    """
+    df = _finite(energy_shift_ha, 'energy shift')
     plans = tuple(round_plans)
     horizon = target.horizon()
     expected = list(range(horizon['maximum_round_index_M']+1))
@@ -139,7 +164,7 @@ def assess_energy(target, df_error_bound_ha, round_plans, *, state_model,
         return dict(status='UNQUALIFIED_ROUNDS', same_accuracy=False)
     if len({row['target_id'] for row in plans}) != 1:
         raise ValueError('All rounds must target the same arm and candidate')
-    if df > target.df_cap:
+    if reserve_cap_ha is not None and df > reserve_cap_ha:
         return dict(status='DF_RESERVE_EXCEEDED', same_accuracy=False)
     alpha = math.fsum(2*row['alpha_axis'] for row in plans)
     if alpha > target.alpha_total:

@@ -33,6 +33,9 @@ Track D C6a：`trottertracks/track_d_c6a_pilot.py` はfresh canonical event接�
 [C3 q4/q8補完結果](../../docs/research/track_d_c3_q4_q8_20261106/COMPLETION_RESULT.md)：raw両q・全8 postcheck・最終paired/χ照合PASS。強いstep境界融合を維持して両fixtureでCX/depth減、qubits+8。中断後は保存回路の最後の検証のみ、新compile0。固定fixture限定・mandatory STOP。
 
 Track D C3のmode混在head境界の最小拡張は[`track_d_c3_whole_path.py`](../trottertracks/track_d_c3_whole_path.py)。StrongBuilder・既存emitterを再利用し、[PLAN](../../docs/research/track_d_c3_q4_q8_20261106/PLAN.md)のq4/q8限定fixtureを検証する。人工testは`tests/check_track_d_c3.py`。
+[Track D B4-2結果](../../docs/research/track_d_b4_2_rpe_shots_20261106/RESULT.md)：既存元Hadapter・Hoeffding・horizonを変更せず再利用し、保存13-roundの条件付き十分N=14738。library追加変更なし、actual／価格未資格、mandatory STOP。
+
+[元H用RPE統計adapter](../trottertracks/track_d_original_h_accuracy.py)は[Track D B4-1](../../docs/research/track_d_b4_1_rpe_statistics_implementation_20261106/REPORT.md)用。既存accuracyの共通幾何・energy本体とHoeffding／horizon／decoderを再利用。実H4のN算定は未実施。
 
 [C2固定q2結果](../../docs/research/track_d_c2_q2_compile_20261106/RESULT.md)：4 wrapper compile/postcheck PASS。ReferenceはCX4100→3860・depth6096→3014、RZ/qubits増。固定fixture限定、mandatory STOP。
 

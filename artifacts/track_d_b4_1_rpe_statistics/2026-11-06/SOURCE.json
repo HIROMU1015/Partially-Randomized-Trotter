@@ -1,0 +1,100 @@
+{
+  "scope": "TRACK_D_B4_1_IMPLEMENTATION_ARTIFICIAL_ONLY",
+  "base_commit": "89a13fe6841c1017f0feba724ed71dfc79f9e81b",
+  "source_record_timing": "after artificial tests; before publication; not a pre-science source seal",
+  "implementation_files": {
+    "src/trottertracks/c1_stage3_accuracy.py": {
+      "bytes": 14805,
+      "sha256": "0db5d30a687ac1c86258a43c279dc8a35aa1f7c61901bc3b33ab2af4a5ffd9d3",
+      "git_blob": "334397942e324857116677cfdb05fa3461a38f05"
+    },
+    "src/trottertracks/track_d_original_h_accuracy.py": {
+      "bytes": 13595,
+      "sha256": "60250bf964cc98b4e6b238bc070fb202f51c58e2f989510ca125ef70eee4a319",
+      "git_blob": "a0bf5dae8d0a86de11dc9020a8c63b579faa6231"
+    },
+    "tests/check_track_d_original_h_accuracy.py": {
+      "bytes": 12705,
+      "sha256": "abb9073b3f33f0c3c85f9b45889b9b5362d9ee0797cbb6acfa5ffe002ea178d2",
+      "git_blob": "8417161fb5cfd3e91967fef1ac767b73a80b9489"
+    }
+  },
+  "base_and_dependency_blobs": {
+    "src/trottertracks/c1_stage3_accuracy.py": {
+      "base_blob": "729138c10b92e092e4a1b4591b858104d92f5a30",
+      "current_blob": "334397942e324857116677cfdb05fa3461a38f05"
+    },
+    "src/trottertracks/track_d_b1_c1.py": {
+      "base_blob": "8d7f8b3d3c41e9b95673f5f107466bc42f52a137",
+      "current_blob": "8d7f8b3d3c41e9b95673f5f107466bc42f52a137"
+    },
+    "src/trottertracks/c1_stage1.py": {
+      "base_blob": "9e892df14d1eb0bff12e7cae17742e5ec05ab840",
+      "current_blob": "9e892df14d1eb0bff12e7cae17742e5ec05ab840"
+    },
+    "src/trotterlib/rpe_resource_accounting.py": {
+      "base_blob": "95fd914943d4ee91779e03ba13e83b6f33bdaa87",
+      "current_blob": "95fd914943d4ee91779e03ba13e83b6f33bdaa87"
+    },
+    "src/trotterlib/rpe_target_round_horizon_validation.py": {
+      "base_blob": "b344348784cdbcadd60bff7fb1324998b787581a",
+      "current_blob": "b344348784cdbcadd60bff7fb1324998b787581a"
+    },
+    "src/trotterlib/rpe_four_round_phase_validation.py": {
+      "base_blob": "928e662fe9734ab267674ee9d6f4ff62931ec2b1",
+      "current_blob": "928e662fe9734ab267674ee9d6f4ff62931ec2b1"
+    },
+    "tests/management/test_research_c_c1_stage3.py": {
+      "base_blob": "6060ebe246f060bb5b6bf8df216b24c3e2a0ba5b",
+      "current_blob": "6060ebe246f060bb5b6bf8df216b24c3e2a0ba5b"
+    },
+    "tests/test_rpe_four_round_phase_validation.py": {
+      "base_blob": "e5292c371e1c1dc55556c7e42929d17e30758d6b",
+      "current_blob": "e5292c371e1c1dc55556c7e42929d17e30758d6b"
+    },
+    "tests/check_track_d_b1_c1.py": {
+      "base_blob": "d7b1818a69b0d276b8e42dba2a30f3c714a5444e",
+      "current_blob": "d7b1818a69b0d276b8e42dba2a30f3c714a5444e"
+    }
+  },
+  "closure_reaudit": false,
+  "python": "3.11.0rc1",
+  "packages": {
+    "pytest": "8.3.5",
+    "numpy": "1.26.4",
+    "scipy": "1.14.1",
+    "openfermion": "1.6.1",
+    "openfermionpyscf": "0.5",
+    "qiskit": "1.3.0"
+  },
+  "synthetic_nodes": [
+    "tests/check_track_d_original_h_accuracy.py"
+  ],
+  "regression_nodes": [
+    "tests/management/test_research_c_c1_stage3.py::test_error_units_attenuation_geometry_and_existing_shot_helper",
+    "tests/management/test_research_c_c1_stage3.py::test_unknown_errors_are_not_zero_filled",
+    "tests/management/test_research_c_c1_stage3.py::test_survival_signal_does_not_imply_ground_energy",
+    "tests/management/test_research_c_c1_stage3.py::test_ideal_law_is_an_explicit_conditional_model_not_actual_sampler_certificate",
+    "tests/management/test_research_c_c1_stage3.py::test_radius_and_phase_fail_before_shot_evaluation",
+    "tests/management/test_research_c_c1_stage3.py::test_energy_uses_weyl_once_after_phase_to_energy_conversion",
+    "tests/management/test_research_c_c1_stage3.py::test_full_horizon_df_cap_and_failure_budget_are_required",
+    "tests/management/test_research_c_c1_stage3.py::test_total_cost_counts_shots_and_axes_but_not_classical_calibration_samples",
+    "tests/management/test_research_c_c1_stage3.py::test_missing_scope_coverage_or_intervals_never_produces_false_advantage",
+    "tests/management/test_research_c_c1_stage3.py::test_serial_native_kernel_depth_and_reused_interval_scale_linearly",
+    "tests/management/test_research_c_c1_stage3.py::test_evidence_packet_full_artificial_pipeline",
+    "tests/management/test_research_c_c1_stage3.py::test_cost_interval_comparison_requires_disjoint_intervals",
+    "tests/management/test_research_c_c1_stage3.py::test_cost_bounds_need_declared_support_not_observed_range",
+    "tests/check_track_d_b1_c1.py::B1C1Tests::test_state_free_transport_counts_df_once_and_keeps_unknown_N",
+    "tests/check_track_d_b1_c1.py::B1C1Tests::test_insufficient_bound_and_unknown_premise_are_not_relaxed",
+    "tests/test_rpe_four_round_phase_validation.py"
+  ],
+  "test_options": [
+    "-B",
+    "-p",
+    "no:cacheprovider",
+    "-q"
+  ],
+  "environment_policy": "existing project venv read only; PYTHONPATH=src; bytecode disabled; task-local NUMBA_CACHE_DIR",
+  "scientific_inputs_read_for_numerical_evaluation": [],
+  "AI_subagents": 0
+}

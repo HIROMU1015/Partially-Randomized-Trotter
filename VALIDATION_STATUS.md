@@ -40,6 +40,9 @@
 ## 2026-11-06 Track D C3 q4/q8 stopped before raw construction
 
 [結果](docs/research/track_d_c3_q4_q8_20261106/RESULT.md)／[STOP](artifacts/track_d_c3_q4_q8/2026-11-06/run01/STOP.json)。同H4/1Å/STO-3G/Nα=Nβ=2・number-CDF8/LD2/S2/s1/r32/K0/h=δ=.1、固定q4=保存00..03/cut2、q8=00..07/cut4。SOURCE `f18adc46dffcb69a6b1028d5c38793f9b4c0b948`。新workerのcontract参照先誤りで両qともraw構築前に停止し、correctness・価格は未評価。compile/retry/resume0、人工3test PASSはH4の科学的証拠ではない。停止後の静的SOURCE/input照合は一致。元H厳密ground仮定・準備費除外。旧証拠・今回SOURCE/result/STOPは保全し、修正・再実行は新たな承認待ち。mandatory STOP、B2・追加q・N・全RPE費用・詳細科学レビューには進まない。
+## 2026-11-06 Track D B4-2 original-H ideal 13-round shots
+
+[結果](docs/research/track_d_b4_2_rpe_shots_20261106/RESULT.md)／[保存値](artifacts/track_d_b4_2_rpe_shots/2026-11-06/run01/result.json)。SOURCE local `8e472b5001278e51b9919a8302d0a4bd3fcf9209`、B4-1公開版を無変更再利用。同H4/1Å/STO-3G/Nα=Nβ=2・CDF8/元順LD2/S2/s1/r32/K0/h=δ=.1、元H厳密ground・準備費除外。ideal finite-RTE IID/exact native・B1保存binary64 norm＋guardを前提に13/13 PASS、X/Y合計14738、energy幅.0012783173232380342 Ha≤.00159、failure和.01。DF再加算なし。aliasは元Hへbindingした保存数値groundによる条件付き資格。actual law／compiled／Reference実装誤差・実測成功率・総費用は未資格。人工7件PASS、科学1回・retry/resume0、B2/sampling/ground solve/fit/compile/C4操作0。mandatory STOP。
 
 ## 2026-11-06 Track D C2 fixed q2 P0 wrapper compile
 
