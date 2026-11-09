@@ -18,6 +18,7 @@
 | HOLD | 39 |
 | 新archive tag | 0 |
 | 公開前再照会時remote総数 | 407 |
+| 16:52 JST公開後の再照会時remote総数 | **408** |
 
 405＋当作業の統合branch1＋別チャットの対象外 `codex/research-c-branch-cleanup-20261109` 新設1＝407。対象外branchの作成・削除・更新はしていない。総数は同時作業で変わり得るため、最終チャットの実照会値と区別する。元45本のHEADは再照会時すべて開始時と一致。
 
@@ -79,3 +80,7 @@
 | `track-d-b5-actual-rpe-static-survey-20261106` | HOLD | 保全後の候補だが削除認証/APIなし。削除直前の使用状況等は後日再確認が必要。 |
 
 安全確認を完了できない枝をDELETE_CANDIDATEと確定せずHOLDにした。[後日再確認用の38候補](DELETION_CANDIDATES.json) と [条件付き手動コマンド](DELETION_COMMANDS.md) を残したが、今回の実削除実績には含めない。
+
+## 公開後の照合
+
+16:52 JST時点：remote SHA `b2d78e14c7ccdf1e316a7156a3da1ff46247c24f`、tree `de71a6e1cae3c66ffa1aa78aad3f5f69c5c38871`、収録83ファイル/4,687,807 bytes一致。元45 HEAD・履歴到達は全て保持。総数408は開始405＋当統合1＋対象外の並行作業による新branch2であり、当作業の削除は0。元405本の消失・更新もこの時点では0。詳細は [公開照合記録](PUBLICATION_CHECK.json)。

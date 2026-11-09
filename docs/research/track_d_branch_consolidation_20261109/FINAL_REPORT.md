@@ -22,7 +22,7 @@
 
 通常merge2回で不足5branchの内容を追加し、計43 Track D履歴を収録した。既存人工・技術回帰64件PASS、人工fit1件は除外。固定SOURCE/result/STOPのbytesと別コード版の履歴を区別して照合した。新しい科学計算・実H4 build/simulation・P0・sampling・価格再解析・モデルfit・N/RPE再計算・詳細科学レビューは0。
 
-分類はKEEP_ACTIVE5、KEEP_INDEPENDENT1、HOLD39。38本は認証経路が整った後の削除候補、q32元実行枝1本は未追跡原本/収集scriptの使用意図確認も必要。元45 SHAは再照会で一致した。開始405本、公開前再照会407本（当統合1＋対象外並行整理枝1の増加）。削除0、元対象残存45。詳細は[削除実績と接続障害](DELETION_REPORT.md)。
+分類はKEEP_ACTIVE5、KEEP_INDEPENDENT1、HOLD39。38本は認証経路が整った後の削除候補、q32元実行枝1本は未追跡原本/収集scriptの使用意図確認も必要。元45 SHAは再照会で一致した。開始405本、公開前再照会407本（当統合1＋対象外並行整理枝1の増加）。削除0、元対象残存45。16:52 JSTの公開後再照会では全remote408本（当統合1＋対象外の新設2）、元対象45本は全て同じHEADで残存。[83ファイルの公開照合記録](PUBLICATION_CHECK.json)と[削除実績・接続障害](DELETION_REPORT.md)を参照。
 
 研究資産を読む入口と共同最適化の技術的出典は整理できた。O1/O2/O3の契約やsampling lawは統一しておらず、joint optimizerの互換・科学保証を得たとは扱わない。新しい科学実行SOURCEをこの整理commitへ置き換えない。
 
