@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_track_d_h4_native_bridge.py`：[保存H4 q4結果](../docs/research/track_d_h4_native_bridge_20261110/REPORT.md)。predictはraw4のみ、比較前にcommitで固定し、compareが既存compiled4と照合。`check_track_d_h4_native_phase.py`は固定予測word／compiledのread-only順序・角・phase診断だけ。run01／旧STOPを保全し、再開／追加pathへ自動進行しない。
+
 `run_track_d_native_emitter_development.py`：[技術結果](../docs/research/track_d_native_emitter_development_20261109/REPORT.md)。固定54保存人工raw QPYをhash照合し、最大5qubitのnative lowering／部分bridge／位相付き作用／保存価格を確認した完了済みrunner。新P0・H4・sampling・fit/N0。run01／STOPを保全し、追加実行へ自動進行しない。
 
 `run_track_d_t1_h0.py`：[固定PLAN](../docs/research/track_d_t1_h0_p0_bridge_20261109/PLAN.md)の保存54人工case、指定3人工P0、保存H4 q4_sample00/q64_sample00だけを扱う完了済み一括runner。新sampling/H4 compile/H4 simulationは行わず、原本はread-only。run01/STOPを保持し、再開・追加実行しない。[結果](../docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)。

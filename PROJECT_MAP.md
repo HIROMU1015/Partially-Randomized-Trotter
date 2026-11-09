@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D 保存H4 native価格移送](docs/research/track_d_h4_native_bridge_20261110/REPORT.md)：元H／Linear H4・1Å・STO-3G・Nα=Nβ2、number-CDF8／LD2／S2/s1/r32/K0／h=.1、q4_sample00／cut2／C1 OFF・元H ground仮定／準備費除外。raw4予測を先にcommit固定し、保存P0全28資源と一致。4並列24.96秒・peak276〜281 MiB/worker、49人工回帰PASS。宣言phase差を記録し新作用保証なし、一般P0／長q未資格、新P0/build/simulation/fit/N0、公開照合後STOP。
+
 [Track D native emitter・1Q bridge](docs/research/track_d_native_emitter_development_20261109/REPORT.md)：既存head／tail chunk／Referenceをnative streamへ接続。新10＋旧37＝47人工回帰PASS、保存54人工case全てで位相付き作用と保存P0全7資源が一致。一般P0／H4／長qは未資格。新P0・H4実行／再解析・fit/N/13round更新0、旧SOURCE・結果・STOPを保全、公開照合後mandatory STOP。
 
 [Track D T1〜H0](docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)：両wire隣接CX bridge、54人工case中70 native列の計数一致、固定3人工P0、保存H4 q4/q64_sample00の8絶対価格照合を完了。1Q/Gaussian/CSWAPの全P0 bridgeは未資格。新H4 build/P0/simulation・sampling・fit/N/13round更新0、公開照合後STOP。

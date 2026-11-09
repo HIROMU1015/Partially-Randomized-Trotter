@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D 保存H4 raw→P0価格移送](research/track_d_h4_native_bridge_20261110/REPORT.md)：固定q4_sample00／cut2／C1 OFFのStrong/Reference X/Y、予測commit固定後の全28資源一致。4並列約25秒、49人工回帰、宣言phase差と長qの限界を記録、新P0／H4 build／simulation0、公開照合後STOP。
+
 [Track D native emitter・1Q界面結果](research/track_d_native_emitter_development_20261109/REPORT.md)：47人工回帰、保存54人工caseの作用／全7資源一致。全wrapper QCを省くsinkと公式2×2合成の部分bridgeを追加。一般P0・H4長qへの資格なし、新P0／H4／保存H4再解析0、公開照合後STOP。
 
 [Track D T1〜H0結果](research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)：固定54人工case・70適格native列、37人工回帰、指定3人工P0、C1 OFFの保存H4 q4/q64_sample00・8資源照合を完了。CX隣接bridgeの有限対応は取得、全H4 pre-P0価格はnull。主A/F/Sと旧証拠を維持し、公開照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[Track D H4 native価格移送](../../docs/research/track_d_h4_native_bridge_20261110/REPORT.md)：既存 `track_d_native_emitter`／T0／1Q／CX bridgeをbyte不変で再利用。固定raw4の全28資源が保存P0と一致。新最適化ruleなし、一般P0／長qは未資格。新runnerはI/O・観測・比較、原本非公開・公開照合後STOP。
+
 `trottertracks.track_d_native_emitter`／`track_d_p0_1q_bridge`：[接続と技術結果](../../docs/research/track_d_native_emitter_development_20261109/REPORT.md)。既存emitterのconstructor局所binding、bounded chunk、標準definition lowering、公式ZSXXのstrict-shorter 1Q＋旧CX bridge。47人工回帰・保存54case全指標一致、一般P0_UNQUALIFIED。
 
 `trottertracks.track_d_p0_cx_bridge`：[T1〜H0](../../docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)。既存T0を再利用し、両wireで隣接する同方向CXだけを相殺する。可変frontierを保持、1Q再合成や全P0互換は未実装／未資格。新8＋既存29回帰PASS、保存H4は指定2pathの資源照合だけ。
