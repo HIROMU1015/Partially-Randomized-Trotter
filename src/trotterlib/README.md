@@ -15,6 +15,9 @@
 
 ### partial-$S_2$・finite RTE
 
+- 実験的な[DFしきい値反射](../trottertracks/df_threshold_reflection.py)は既存order law／event形式を使う別SOURCE。
+  [技術報告](../../docs/research/track_a_threshold_reflection_technical_20261110/REPORT.md)を参照。
+  この共通APIとI/Z/ZZ builderは変更せず、人工検査を科学的RTE資格と扱わない。
 - `df_partial_s2.py`：決定論half sweepとRTE中央部を持つpartial-$S_2$
 - `df_partial_s2_repeated.py`：partial-$S_2$の反復
 - `df_rte_tail.py`：ランダム側HamiltonianのI/Z/ZZ表現

@@ -1,5 +1,8 @@
 # 文書索引
 
+元Track A・仮説Iの[技術実装と構造比較](research/track_a_threshold_reflection_technical_20261110/REPORT.md)
+（2026-11-10）：整数／mock検査のみ。科学実行・native価格・総費用優位は未評価。
+
 研究別の成果・SOURCE・raw・検証状態への入口は[研究結果への統一索引](research/RESEARCH_RESULTS_INDEX.md)。
 このcheckoutにない後続資料も、固定commitから参照できる。
 

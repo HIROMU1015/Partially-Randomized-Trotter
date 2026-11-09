@@ -1,5 +1,12 @@
 # プロジェクト案内
 
+## 2026-11-10 元Track A・しきい値反射の技術実装
+
+[REPORT](docs/research/track_a_threshold_reflection_technical_20261110/REPORT.md)：
+exact grid・可逆算術・controlled位相・暗黙辞書／RTE event bridgeの限定実装。
+SOURCEは`src/trottertracks/df_threshold_reflection.py`、人工検査は`tests/test_df_threshold_reflection.py`。
+科学計算・native build/compile・価格評価なし。人工PASSと科学性能を分け、報告後mandatory STOP。
+
 ## 2026-11-09 PR＋RPE総費用の横断調査
 
 [REPORT](docs/research/pr_rpe_cross_track_20261109/REPORT.md)から、[既存成果・重複](docs/research/pr_rpe_cross_track_20261109/EXISTING_RESULTS_AND_OVERLAP.md)、[改善候補](docs/research/pr_rpe_cross_track_20261109/IMPROVEMENT_CANDIDATES.md)、[最小検証案](docs/research/pr_rpe_cross_track_20261109/MINIMUM_VALIDATION_PLANS.md)へ辿る。同目的の既存横断調査branchを継続し、Closed P3共同選択と後続C/D/O2成果を静的確認。D C1・q64の完了を反映し、新計算・再解析・実装0、固定成果/STOP不変更。公開照合後mandatory STOP、次判断はユーザー／GPT。

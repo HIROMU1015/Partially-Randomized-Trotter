@@ -1,5 +1,9 @@
 # tests の役割
 
+- [test_df_threshold_reflection.py](test_df_threshold_reflection.py)：exact整数・位相truth table・mock RTE接続。
+  [技術報告](../docs/research/track_a_threshold_reflection_technical_20261110/REPORT.md)の専用コマンドで実行する。
+  分子・statevector・signal・native compile・価格samplingは含まない。
+
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、
 `tests/test_<name>.py`、`docs/<name>.md`、`artifacts/<name>/`を一組として読む。

@@ -1,5 +1,9 @@
 # 研究別SOURCE
 
+- [df_threshold_reflection.py](df_threshold_reflection.py)：元Track A仮説Iのexact grid、可逆gate計画、
+  暗黙辞書と既存RTE event bridge。[技術報告](../../docs/research/track_a_threshold_reflection_technical_20261110/REPORT.md)。
+  人工整数／mock検査のみで、native builder・科学性能は未資格。既存科学SOURCEは不変更。
+
 共通 `trotterlib` APIと区別した実験別SOURCEの名前空間。
 [mainへの収録範囲・原SOURCE・元の制約](../../docs/research/main_collection_20261103.md)を参照する。
 
