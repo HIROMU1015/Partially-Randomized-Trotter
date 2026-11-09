@@ -114,3 +114,6 @@ branch名参照検索は公開main、研究C整理、Track D統合、Track C統�
 ## 追補：3日以上前の枝の追加整理（2026-11-09）
 
 [3日条件の削除結果と残存一覧](three_day_cleanup_20261109/REPORT.md)：対象137本のうち73本追加削除・64本保持。結果/報告の同一blobと7保全先への元tip祖先到達を確認し、全remoteは296→223本。残存はKEEP131・HOLD92。上記の旧分類表・STOPは過去snapshotとして保持し、科学実行・元SOURCE/原本変更0、公開後照合でmandatory STOP。
+
+
+公開後の別作業でV6-Q2枝が1本新設されたため、[最新224本の一覧と照合追補](three_day_cleanup_20261109/REPORT.md)へ反映した。今回の実削除73本は変わらず、最新分類はKEEP132・HOLD92。
