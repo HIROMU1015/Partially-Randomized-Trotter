@@ -146,6 +146,7 @@ def context(phase):
         native_config=str(CONFIG),binding=b,preparation_identities={})
     folder=PRIVATE/'contexts'/phase;folder.mkdir(parents=True,exist_ok=False)
     ctx=runtime.Context(config,folder,[0],signal=False)
+    ctx.qindices=np.asarray(ctx.qindices,dtype=int)
     import h46_full_h_pure_rte as full
     ctx.base=ctx.preps[0]
     ctx.preps[0]=full.prepare_full_h(ctx.ham,base=ctx.base)
@@ -189,8 +190,8 @@ def grouped_action(ctx,vector,*,one_only=False):
     return out
 
 
-def validate():
-    ctx=context('validation');prep=ctx.preps[0]
+def validate(phase='validation'):
+    ctx=context(phase);prep=ctx.preps[0]
     errors=[];one_errors=[]
     one_scalar=math.fsum(ctx.base.deterministic_blocks[0].diagonal_eigenvalues)/2
     for state in [ctx.state,np.eye(1,len(ctx.state),0,dtype=complex)[0],np.eye(1,len(ctx.state),len(ctx.state)-1,dtype=complex)[0]]:
@@ -237,8 +238,9 @@ def validate():
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('command',choices=['validate']);args=p.parse_args()
-    try:print(json.dumps(validate()))
+    p=argparse.ArgumentParser();p.add_argument('command',choices=['validate']);p.add_argument('--run-tag',default='validation');args=p.parse_args()
+    require(Path(args.run_tag).name==args.run_tag,'LOCAL_RUN_TAG')
+    try:print(json.dumps(validate(args.run_tag)))
     except BaseException as exc:
-        save(PUBLIC/(args.command+'_STOP.json'),dict(reason=str(exc),type=type(exc).__name__))
+        save(PUBLIC/(args.command+'_'+args.run_tag+'_STOP.json'),dict(reason=str(exc),type=type(exc).__name__))
         raise
