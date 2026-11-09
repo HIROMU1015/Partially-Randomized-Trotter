@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D T1〜H0結果](research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)：固定54人工case・70適格native列、37人工回帰、指定3人工P0、C1 OFFの保存H4 q4/q64_sample00・8資源照合を完了。CX隣接bridgeの有限対応は取得、全H4 pre-P0価格はnull。主A/F/Sと旧証拠を維持し、公開照合後mandatory STOP。
+
 [Track D T0実装](research/track_d_t0_native_resources_20261109/REPORT.md)：確定native streamのcount・RZ/CX/total depth・size・幅、wire transfer／連結／embeddingを実装。人工回帰29件PASS、全word保持・新P0・simulation不要。P0 bridgeは未資格、A/F/S・旧SOURCE/結果/STOPを保全、新H4/再解析/fit/N/13round更新0。T1は提案のみ、公開照合後mandatory STOP。
 
 [Track D 長q構造価格設計](research/track_d_longq_structural_resource_design_20261109/REPORT.md)：固定native列のcount/max-plusは厳密、未compile入力からのP0価格bridgeは未完成。208−224qの条件付き傾き説明と208/界面残差の未解決を整理し、既存emitter/counter/特徴のstream再利用を提案。整数mock7件PASS、新科学計算・P0・保存価格再解析・fit/N/13round更新0。A/F/Sと既存STOPを維持し、公開照合後mandatory STOP。

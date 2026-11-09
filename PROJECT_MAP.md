@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D T1〜H0](docs/research/track_d_t1_h0_p0_bridge_20261109/REPORT.md)：両wire隣接CX bridge、54人工case中70 native列の計数一致、固定3人工P0、保存H4 q4/q64_sample00の8絶対価格照合を完了。1Q/Gaussian/CSWAPの全P0 bridgeは未資格。新H4 build/P0/simulation・sampling・fit/N/13round更新0、公開照合後STOP。
+
 [Track D T0 native資源計数](docs/research/track_d_t0_native_resources_20261109/REPORT.md)：`trottertracks.track_d_native_resources`は確定rz/sx/x/cx/measure streamのcount・三depth・size・幅、max-plus transfer／embeddingを実装。人工回帰29件PASS、P0対応未資格。旧SOURCE・結果・STOPは不変、新H4/P0/再解析/fit/N/13round更新0。
 
 [Track D branch整理](docs/research/track_d_branch_consolidation_20261109/FINAL_REPORT.md)：43 Track D履歴を統合、O2は独立context保持、既存64人工技術回帰PASS。認証復旧後に固定38 remote枝を削除・全履歴保全、元対象7＋統合1を保持（q64関連5保護、q32未追跡1 HOLD）。新科学計算0、公開照合後mandatory STOP。
