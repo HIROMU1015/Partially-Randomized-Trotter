@@ -1,3 +1,5 @@
+今後の数値検証の実装入口：[並列化・高速化の再利用ガイド](docs/parallel_acceleration_reuse.md)。
+
 ## H8 DF全Hamiltonian純RTE：T=1.6限定検証（2026-11-10）
 
 リソース評価系列のH8 Full-H RTE pilot。[進行中の引継ぎ](artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/HANDOFF.md)。H8 Stage C固定commit eb07156a3を基点とし、H4/H6の一体項RTE追加をH8保存DF28へ接続する。旧B2/PF・H4/H6 SOURCEとSTOPは保持する。S2・T1.6・ε=.0005、少数signal候補から価格候補を事前固定する範囲であり、広域最適化やS1 Main Claim変更は含まない。

@@ -1,3 +1,5 @@
+共通の高速化部品と適用条件は[並列化・高速化の再利用ガイド](../docs/parallel_acceleration_reuse.md)を参照。
+
 ## H8 Full-H pure RTEの限定検証
 
 `h8_full_h_pure_rte.py`はH8保存loaderへFull-H準備を接続し、全DF28・一体項・scalarとevent作用を検証する。`h8_full_h_signal.py`は少数候補の有限mean/shotとsparse全step照合、`h8_full_h_price.py`は固定代表からn9の価格取得、`report_h8_full_h_pure_rte.py`は保存値会計。旧H8 Stage Cのphase helper、sampler、native builder、compiler、paired Gを再利用する。高速版は`h8_full_h_price_parallel.py`と`h8_full_h_parallel_aer.py`、検証は`check_h8_full_h_parallel.py`。同一候補・seed・event列を保ち、価格用回路は変更せず、作用検証を並列化する。

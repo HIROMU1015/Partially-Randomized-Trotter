@@ -59,6 +59,7 @@
 
 ## 実行・運用
 
+- [`parallel_acceleration_reuse.md`](parallel_acceleration_reuse.md)：今後の数値検証で使う並列Aer・局所gate cache・fingerprint/compile cache・spawn・資源測定の再利用ガイド
 - [`server_parallel_validation_execution.md`](server_parallel_validation_execution.md)：共有CPU/GPUサーバー向けのbounded実行、checkpoint、resume、dry-run
 - [`examples/parallel_validation_h4_q1_manifest.json`](examples/parallel_validation_h4_q1_manifest.json)：H4 q=1のdry-run用manifest例
 

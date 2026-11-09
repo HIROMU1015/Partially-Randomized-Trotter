@@ -14,6 +14,8 @@
 - Cohort `H8_FULL_H_PURE_RTE_LIGHT_EXPLORATION_20261110`、同じcandidate/seed namespace/index0..8のn9。新しい独立確認cohort・candidate再選抜・rare samplingなし。
 - 一体項sampling/D0、再構成、有限signalとsparse全22528 step照合は親directoryの保存PASSを保持する。新SCF/DF/state/target reference生成なし。
 
+共通部品の使い方は[並列化・高速化の再利用ガイド](../../../../docs/parallel_acceleration_reuse.md)に整理した。
+
 ## 今回の高速化
 
 旧逐次SOURCE `cfbe8ce2c7b98524cc855e24b88e54e16bdaa7ac` と11 file hashは [execution_sources.json](execution_sources.json)。これらを編集せず、追加runner `scripts/h8_full_h_price_parallel.py` と作用検証 `scripts/h8_full_h_parallel_aer.py` を使う。
