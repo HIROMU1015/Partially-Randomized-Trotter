@@ -296,3 +296,8 @@ GIT_TERMINAL_PROMPT=0 git -C /home/AbeHiromu/projects/partially-randomized-trott
 本追記と5つの補助記録だけを、既存 `codex/research-c-branch-cleanup-20261109` の直系子commitとして公開する。before/after snapshotの整理ref SHAは本追記公開前の `8d174496761ac3ae91892c11ad83bf236d1b050a` であり、その後の公開操作は同整理refだけをfast-forwardする。公開後にGitHubの実branch SHA・commit tree・報告本文・補助記録を照合し、最終チャットで固定公開SHAを報告する。
 
 **今回の58本は削除56本・使用中HOLD 2本として全件確定。MANDATORY STOP。** Codexは追加の削除・科学計算・再解析・重要レビューを開始しない。次の対応が必要な場合は、ユーザーがHOLD 2本のworktree利用を継続するか判断する。将来の解放・削除は本作業では実施せず、別途明示指示の対象とする。
+
+
+## 別依頼の追補：全remote残存枝の棚卸し（2026-11-09）
+
+[全remoteの最新分類・未確認事項・次の承認範囲](research_c_branch_cleanup_20261109/remaining_remote_audit_20261109/REPORT.md)。開始317本、Track C/O3の別作業による21本削除を反映して296本。KEEP130・HOLD166・確定追加統合候補0・削除候補0。本監査による統合・削除・科学実行0。研究Cの従来削除56本とHOLD23本は変更せず、公開照合後mandatory STOP。
