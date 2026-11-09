@@ -1,3 +1,7 @@
+## 2026-11-09 DF全Hamiltonian純RTE：限定追加検証
+
+[専用REPORT](artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/REPORT.md) / [RESULTS.csv](artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/RESULTS.csv)。保存H4 DF10/H6 DF19、linear1Å/STO-3G、T=.8、P=0。一体項までsamplingへ含める専用adapter。保存B3 S2代表候補を事前固定し各n=9・5精度で比較する限定検証。既存B3のL_D=0とは区別する。S1 Main Claimと旧結果・STOPは変更しない。
+
 ## 2026-10-26 H4/H6 長時間DF-native B3追加
 
 [B3 REPORT](artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/REPORT.md) / [結果・図表](artifacts/resource_applicability/track_a_h46_long_time_b3/2026-10-26/)。linear1Å/STO-3G/tol-only DF10/19、保存H6 completion、L_D=0（one-body保持）、T=.8〜2、P=0。signal 3432構成、価格192候補、探索1728・独立確認1553標本。取得集合でB3の探索点費用がB2より低い条件0/40、PF envelopeより低い条件0/40、四方式最良0/40。有限標本・経験的精度会計であり、全域最適性・母平均優位・厳密bias保証ではない。旧33/40は旧集合内の結果として保持。旧SOURCE/raw/grant/STOP・他worktree不変。今回の取得・公開後mandatory STOP。

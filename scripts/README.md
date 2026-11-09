@@ -1,3 +1,9 @@
+## 2026-11-09 DF全Hamiltonian純RTE：固定代表条件
+
+`h46_full_h_pure_rte.py`は一体項の非scalar Z成分を既存DF RTEへ追加し、決定論blockを空にする最小adapter。保存B3 S2候補を事前固定し、H4 q16/R16/K4・H6 q32/R32/K6、T=.8、各n=9、5精度に同一signal/価格を再利用する。`report_h46_full_h_pure_rte.py`は保存値比較・会計のみ。人工テストは`tests/test_h46_full_h_pure_rte.py`。
+
+[REPORT](../artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/REPORT.md) / [SOURCE・保存入力・結果参照](../artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/SOURCE_INDEX.json)。終了済みrunの再実行入口として使用しない。詳細科学レビュー・広域探索・S1 Main Claim変更は範囲外。
+
 ## 2026-10-26 H4/H6 長時間DF-native B3追加
 
 B3実装：`h46_b3.py`（既存signal/native APIの設定と最小拡張）、`h46_b3_probe.py`（条件付き正しさ）、`h46_b3_report.py`（会計・固定確認n）、`h46_b3_finish.py`（図表/REPORT）、`h46_b3_archive.py`（完成eventの可逆保存）。`h46_b3_continue.py`は同一number-operator cacheのfork共有、`h46_b3_recover.py`は元pool異常終了後の未完了trialだけを個別processで復旧する。人工テストは`tests/test_h46_b3.py`と`tests/test_h46_b3_recover.py`。完成済み科学取得を再実行せず保存結果を参照する。
