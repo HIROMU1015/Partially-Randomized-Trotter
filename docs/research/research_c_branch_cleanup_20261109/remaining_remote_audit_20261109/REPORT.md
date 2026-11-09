@@ -104,3 +104,8 @@ branch名参照検索は公開main、研究C整理、Track D統合、Track C統�
 公開先は研究C整理branchの直系子commitとし、既存科学treeと過去台帳を上書きせず、本directoryと親REPORTへの案内だけを追加する。公開後、実branch SHA・commit親/tree差分・公開byteと最新refを照合する。
 
 **MANDATORY STOP：棚卸し・候補分類・文書公開と照合まで。追加統合・削除は開始しない。**
+
+
+## 追補：1週間以上前の枝の実整理（2026-11-09 18:34 JST）
+
+[年齢条件に基づく削除結果](aged_cleanup_20261109/REPORT.md)：古いtip10本を確認し1本削除・9本HOLD。結果のmain同一blob収録と既存archive履歴保全を確認し、全remoteは297→296本。上の分類表は削除前snapshotとして保持する。科学実行・元SOURCE/原本変更0、公開後照合でmandatory STOP。
