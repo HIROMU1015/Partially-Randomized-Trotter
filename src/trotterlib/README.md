@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.track_d_stream_bridge_fast`／`track_d_stream_resources`：[同一rule高速化](../../docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)。旧1Q関数／CX feedを再利用し、exact bit keyの二pass cacheとstream直結、late phase ledgerの接続を追加。旧counter／compiler／phase実装は不変。63人工回帰・保存54case・固定H4 q4/q8 exact差分PASS、一般P0／長qは未資格。
+
 `trottertracks.track_d_native_phase160`：[Phase＋q8結果](../../docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)。旧emitter出力のbinary64 phase項をexact比からMPFR160へ集約するside ledger。局所合成／1Q／CX ruleは無変更、旧binary64値も保存。q4命令列不変・q8全28価格一致、一般P0／長qは未資格。
 
 [Track D H4 native価格移送](../../docs/research/track_d_h4_native_bridge_20261110/REPORT.md)：既存 `track_d_native_emitter`／T0／1Q／CX bridgeをbyte不変で再利用。固定raw4の全28資源が保存P0と一致。新最適化ruleなし、一般P0／長qは未資格。新runnerはI/O・観測・比較、原本非公開・公開照合後STOP。

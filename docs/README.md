@@ -1,5 +1,7 @@
 # 文書索引
 
+[Track D 同一rule高速化](research/track_d_stream_bridge_fast_20261110/REPORT.md)：1Q→CX直結・exact run cache・冗長再計数削減。q4/q8の最終word／phase／round／全資源を保持し、q8 native-stage約2.1倍高速・RSS約53%減。raw loweringとend-to-endは別評価、一般P0／長q保証なし、公開照合後mandatory STOP。
+
 [Track D Phase精度と保存q8移送](research/track_d_phase_q8_transfer_20261110/REPORT.md)：MPFR160 ledgerによる全体phase会計、q4新旧word同一、保存q8_sample00の全28資源一致。53人工回帰PASS、20反復と履歴増加を計測。一般P0／長qへの保証なし、新P0／sampling／simulation0、公開照合後STOP。
 
 [Track D 保存H4 raw→P0価格移送](research/track_d_h4_native_bridge_20261110/REPORT.md)：固定q4_sample00／cut2／C1 OFFのStrong/Reference X/Y、予測commit固定後の全28資源一致。4並列約25秒、49人工回帰、宣言phase差と長qの限界を記録、新P0／H4 build／simulation0、公開照合後STOP。

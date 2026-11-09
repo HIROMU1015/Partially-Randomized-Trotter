@@ -1,0 +1,29 @@
+[Task absolute path replaced with <task>; original log retained privately.]
+test_phase_is_finalized_after_producer_finishes (__main__.IntegrationTests.test_phase_is_finalized_after_producer_finishes) ... FAIL
+test_raw_adapter_preserves_old_native_and_scalar_results (__main__.IntegrationTests.test_raw_adapter_preserves_old_native_and_scalar_results) ... ok
+
+======================================================================
+FAIL: test_phase_is_finalized_after_producer_finishes (__main__.IntegrationTests.test_phase_is_finalized_after_producer_finishes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<task>/tests/check_track_d_stream_resources.py", line 23, in test_phase_is_finalized_after_producer_finishes
+    self.assertEqual(actual['precise_phase'],ledger.result())
+AssertionError: {'bit[13 chars]ms': 6, 'legacy_running': -992.5200000000001, [229 chars]uts'} != {'bit[13 chars]ms': 4, 'legacy_running': -992.5200000000001, [229 chars]uts'}
+  {'binary64_full_fsum': -992.52,
+   'bits': 160,
+   'legacy_running': -992.5200000000001,
+   'local_terms_precision': 'unchanged binary64 gate/1Q outputs',
+   'mpfr_total': '-992.51999999999999999000799277837359113618731499',
+   'normalized': 0.22327853437466336,
+   'period': '2*pi evaluated at MPFR160',
+-  'terms': 6}
+?           ^
+
++  'terms': 4}
+?           ^
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.298s
+
+FAILED (failures=1)

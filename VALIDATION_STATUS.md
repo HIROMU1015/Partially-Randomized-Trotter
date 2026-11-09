@@ -1,5 +1,7 @@
 # Validation status
 
+[Track D stream bridge高速化](docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)（2026-11-10）：固定q4/q8・8wrapperの旧新がword／phase／各round／全56資源と保存P0に一致。63技術回帰・54保存人工case PASS。計測keyword不備の失敗と修正・別wave結果を保全し、主性能比較は同時run02。一般P0／長q未資格、新P0／sampling／whole-path／simulation／q16以上／fit／N／13round更新0、公開照合後STOP。
+
 [Track D Phase＋q8](docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)（2026-11-10）：q8_sample00／中央cut4／C1 OFFの固定raw4予測が保存P0全28値に一致。新phase ledger、q4 word／価格不変、53人工回帰PASS。h保存形式のpreflightエラーを保全して修正、数値retry0。新全入力correctnessなし、一般P0／長q未資格、新P0／build／sampling／fit／N／13round更新0、公開照合後mandatory STOP。
 
 [Track D H4 native価格移送](docs/research/track_d_h4_native_bridge_20261110/REPORT.md)（2026-11-10）：固定H4 q4_sample00／cut2／C1 OFFのraw4から予測固定後、保存P0全28資源一致。49人工回帰PASS、旧54人工結果は不変再利用。phaseメタデータ差あり・新全入力correctness未実施。一般P0／長q未資格、新sampling／build／P0／simulation／fit／N／13round更新0、公開照合後mandatory STOP。

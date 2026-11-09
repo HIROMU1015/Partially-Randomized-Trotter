@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D 同一rule stream bridge高速化](docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。旧新8wrapperのword／phase／round／56資源一致。同時16-process比較でq8約2.09〜2.16倍高速・RSS約53〜54%減（native列以降）。63人工回帰＋保存54case PASS、O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。
+
 [Track D Phase精度＋保存q8移送](docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／LD2／S2/s1/r32/K0／h=.1、q8_sample00／cut4／C1 OFF、元H ground仮定・準備費除外。raw4予測固定後、保存P0全28資源一致。53人工回帰PASS、q4 native列不変でphase集約差を約1e−11へ縮小。q8は20反復・約491〜494 MiB/worker、一般P0／長q未資格、新P0／sampling／fit／N／全RPE更新0、公開照合後STOP。
 
 [Track D 保存H4 native価格移送](docs/research/track_d_h4_native_bridge_20261110/REPORT.md)：元H／Linear H4・1Å・STO-3G・Nα=Nβ2、number-CDF8／LD2／S2/s1/r32/K0／h=.1、q4_sample00／cut2／C1 OFF・元H ground仮定／準備費除外。raw4予測を先にcommit固定し、保存P0全28資源と一致。4並列24.96秒・peak276〜281 MiB/worker、49人工回帰PASS。宣言phase差を記録し新作用保証なし、一般P0／長q未資格、新P0/build/simulation/fit/N0、公開照合後STOP。

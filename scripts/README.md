@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Track D stream bridge性能結果](../docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)：`run_track_d_stream_bridge_fast.py`の固定入力準備・人工54比較、旧keyword不備を保全した`complete_track_d_stream_bridge_benchmark.py`、同時主比較`measure_track_d_stream_bridge_paired.py`。最初のfrozen runnerのbenchmark keyword不備は履歴として保持し、完成済みCLIを再開しない。新しい実行ではmodule APIと互換adapterをscopeに合わせて再利用する。原本／run01／run02／STOP保持、新P0=0。
+
 `run_track_d_phase_q8_transfer.py`：[Phase＋q8結果](../docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)。selectで価格非依存にq8先頭IDを固定、executeでq4 phase4＋q8 raw予測4、予測commit後のみcompare。旧q4観測／counterを再利用し、新P0は呼ばない。run01の初回preflight失敗／修正／結果／STOPを保持し、追加pathやq16以上へ自動進行しない。
 
 `run_track_d_h4_native_bridge.py`：[保存H4 q4結果](../docs/research/track_d_h4_native_bridge_20261110/REPORT.md)。predictはraw4のみ、比較前にcommitで固定し、compareが既存compiled4と照合。`check_track_d_h4_native_phase.py`は固定予測word／compiledのread-only順序・角・phase診断だけ。run01／旧STOPを保全し、再開／追加pathへ自動進行しない。
