@@ -1,5 +1,7 @@
 # 文書索引
 
+[m6既存成果再利用・価格設計への接続](research/h6_df19_rpe_m6_results_20261110/REUSE_AND_PRICE_CONNECTION.md)：再送指示と完了済み7903e3633の条件・候補が一致。指定価格設計4c965ff6のmetadataと接続を確認し、新科学計算・test・価格処理は0。既存各軸NはPF705/PR772、公開照合後STOP。
+
 [H6 DF19 RPE m6結果](research/h6_df19_rpe_m6_results_20261110/REPORT.md)：reference/finite mean/phase/radius/十分Nの限定2候補。[正本](research/h6_df19_rpe_m6_results_20261110/run01/result.json)／[7round対応・価格担当handoff](research/h6_df19_rpe_m6_results_20261110/COVERAGE.json)。各軸PF705/PR772、actual/全G未資格、公開照合後STOP。
 
 [H6 DF19 RPE m6実行準備](research/h6_df19_rpe_m6_preparation_20261110/REPORT.md)：固定2候補・call範囲・D2 backend再利用・人工差分3件。[PLAN](research/h6_df19_rpe_m6_preparation_20261110/PLAN.json)／[人工結果](research/h6_df19_rpe_m6_preparation_20261110/synthetic_tests.txt)。実m6のreference/signal/Nは別途許可待ち。
