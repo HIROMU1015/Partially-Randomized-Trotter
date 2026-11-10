@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+R可変PRの[詳細N実行計画](../../docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)：既存finite action/normalizerは不変。metadata生成器と人工/保存fixtureテストを追加、分子数値計算は未実行。
+
 [固定24 Phase0結果](../../docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：既存K2 finite normalizer/allocation不変でlogB/attenuation/係数を記録。丸め感度を併記し、N/C/GやRの科学的採否は未評価。
 
 [固定24 Phase0準備](../../docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：`trottertracks.pr_r_normalization_phase0`は保存値/入力/SOURCE照合と既存screenの出力保存だけを追加。normalizer/allocation不変、新10人工/mock PASS、実logB計算0。

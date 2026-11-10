@@ -1,5 +1,7 @@
 # scripts 索引
 
+`plan_pr_r_detailed_n.py --output <fresh-json>`：A0保存値の無変更copy、canonical B request・SOURCE loop整数計数だけ。科学execute機能なし。詳細は[REPORT](../docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)。
+
 `run_pr_r_normalization_phase0.py`の[完了結果](../docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：固定24候補をSOURCE6a75ebf96で一回記録、閾値なし。新signal/phase/radius/N/C/Gへ進まず、再実行しない。
 
 `run_pr_r_normalization_phase0.py`：[固定24候補のnormalization-only入口](../docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)。既定preflightのみ、明示許可後の`--execute`は閾値なしPhase0だけ。新signal/phase/radius/N/C/G・候補追加へ進まない。
