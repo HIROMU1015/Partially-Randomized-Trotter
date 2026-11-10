@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.h6_df19_rpe_d2`：固定[H6 D2](../../docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)へのaction adapter。既存occupation/m5 schedule/finite Taylor/normalizerとD1算術を再利用し、matrix exponential backend・数値allowance・H6入力接続だけを追加。人工7件PASS、import時に保存入力を読まない。回路・sampler・価格・独立RPE solverなし。
+
 `trottertracks.h6_df19_rpe_d1`：[H6係数prior・D1準備](../../docs/research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)。`h4_df10_rpe_d1.coefficient_prior/analyze_bound_point`を再利用し、H6 schema・二つのh候補・固定4点・部分価格表を接続。人工12件、実H6は別許可待ち。
 
 `trottertracks.h6_df19_rpe_connection`：[H6 D1](../../docs/research/h6_df19_rpe_d1_20261110/REPORT.md)。固定binding・外部prior・uniform α・保存cohortの薄い接続。`h4_df10_rpe_connection`の算術、既存geometry/Hoeffding/horizonを再利用。人工25件PASS、実H6数値評価は別許可待ち。
