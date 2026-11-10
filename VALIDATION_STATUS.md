@@ -1,5 +1,7 @@
 # Validation status
 
+[H6 DF19 RPE D2結果](docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)（2026-11-10）：SOURCE e0503b769、人工7件PASS後、固定8候補を約38.8秒で一回評価。全8候補ideal条件付きround PASS、Nの独立式・disk/normalization/α/β・SOURCE/input/D1/計画保全を照合。m0..5の条件付きNのみ、C未取得・actual/厳密ground/全13round/全G未資格。新eigensolve/build/compile/G0、独立科学レビューなし、公開照合後STOP。
+
 [H6 DF19 RPE D2準備](docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)（2026-11-10）：有限menu8 ID、D1政策の不変転記、T=.4 referenceの元H/state/DF binding、保存tail contextと3原入力hashを静的照合。新H6科学call0、作用adapter未実装、人工数値試験・新科学検証のPASSではない。別途科学実行許可待ち、公開照合後STOP。
 
 [H6 DF19 RPE D1結果](docs/research/h6_df19_rpe_d1_results_20261110/REPORT.md)（2026-11-10）：SOURCE4c928b90、係数prior/horizon各1回・保存4pointを評価。h=.1、M12、α=.05/26、各軸NはPF705/705・PR765/721、ideal条件付きround PASS。保存m3/4のみの3 cohort別部分費用、actual/厳密ground/全RPE成功/全Gは未資格。SOURCE/input・旧結果保全、新signal/build/compile0、公開照合後mandatory STOP。

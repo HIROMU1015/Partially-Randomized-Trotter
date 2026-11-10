@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_h6_df19_rpe_d2.py`の[完了結果](../docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)：SOURCE e0503b769、固定8候補を一回評価し全てideal条件付きPASS。run01と旧D1/計画を保全、m6以降・価格・全Gへ自動進行しない。
+
 `run_h6_df19_rpe_d2.py`：[固定D2計画](../docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)の4round・8候補だけを実行する入口。保存H/stateとtail定数、T=.4 reference、D1政策を再利用し、対角化なしの行列指数/Taylor作用と既存D1 geometryでNを評価する。科学実行は利用者の明示許可範囲に限り、fresh outputを指定する。sampling/build/compile/fit/Gなし。人工7件の記録は[こちら](../docs/research/h6_df19_rpe_d2_results_20261110/synthetic_tests.txt)。
 
 `run_h6_df19_rpe_d1.py`：[係数prior・D1一括計画](../docs/research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)。保存係数prior→h=.8/.1→固定4点N→条件付き部分費用の明示入口。今回実行したのは`--help`と人工testのみ。実H6入力を渡す実行は別途科学許可が必要。
