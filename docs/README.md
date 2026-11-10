@@ -1,5 +1,7 @@
 # 文書索引
 
+[C1実価格の取込み](research/rpe_c1_price_results_intake_20261111/REPORT.md)／[利用HANDOFF](research/rpe_c1_price_results_intake_20261111/HANDOFF.md)／[INTAKE](research/rpe_c1_price_results_intake_20261111/INTAKE.json)／[COVERAGE](research/rpe_c1_price_results_intake_20261111/COVERAGE.json)：32 record受入、model未採用、G未評価。
+
 [R可変C価格のB受入](research/rpe_r_price_intake_20261111/REPORT.md)／[取込み手順HANDOFF](research/rpe_r_price_intake_20261111/HANDOFF.md)／[READINESS](research/rpe_r_price_intake_20261111/READINESS.json)／[COVERAGE](research/rpe_r_price_intake_20261111/COVERAGE.json)：C1 8セルの受入準備、実C1未取込み、130技術test。
 
 [A0実結果24件の受入](research/rpe_normalization_results_intake_20261111/REPORT.md)／[HANDOFF](research/rpe_normalization_results_intake_20261111/HANDOFF.md)／[coverage](research/rpe_normalization_results_intake_20261111/COVERAGE.json)：公開診断24件・C1共有2件、N/C/G未評価、既存47技術test PASS。

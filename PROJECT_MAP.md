@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[C1実compiled価格32 recordの取込み](docs/research/rpe_c1_price_results_intake_20261111/REPORT.md)（2026-11-11）：C公開2e6a0cdf5を既存adapter 724d313bで受入。凍結7eeabf0→検証の順序・SOURCE・8セルidentity・law・compiler・値を照合し、保存校正/新校正/独立検証/model予測を別scenarioで保持。Aの全R menu＋C1でcoverage更新（新R4セルはN欠測、長q・大Rは価格未取得、G未評価）。130技術test、新科学計算0、公開後STOP。
+
 [R可変C価格のB受入interface](docs/research/rpe_r_price_intake_20261111/REPORT.md)（2026-11-11）：Cの`describe_request`をbyte一致で取込み、固定C1 PLAN 8セルを最新Bのidentity/law/recordへ照合。校正/独立検証/model/rare/欠測を分けて公開commitから受入れ、固定R価格の新R移植を停止。130技術test（129 PASS＋任意skip1）、実C1未取込み・科学計算0、公開後STOP。
 
 [A0実結果24件の受入/C1接続](docs/research/rpe_normalization_results_intake_20261111/REPORT.md)（2026-11-11）：公開4745bb676を既存adapterで無変更取込み。SOURCE9/入力hash7一致、診断24有効・欠測/STOP/数値未資格0、C1共有2/他6未補完、全A86候補を保持。既存47技術test＋保存fixture PASS、新数値計算0、公開後STOP。

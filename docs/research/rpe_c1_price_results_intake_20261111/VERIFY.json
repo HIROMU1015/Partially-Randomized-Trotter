@@ -1,0 +1,192 @@
+{
+  "status": "PASS",
+  "checks": {
+    "freeze_before_validation": {
+      "frozen_commit": "7eeabf0ae482ee610d667e28470692d209f2bb21",
+      "publication": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+      "frozen_is_ancestor": true,
+      "validation_absent_at_freeze": true,
+      "frozen_plan_calibration_bytes_unchanged": true,
+      "refit": false
+    },
+    "source": {
+      "plan_bytes_equal_fixed_plan": true,
+      "execution_source": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+      "science_files_equal_execution_source": [
+        "src/trottertracks/r_price_phase1.py",
+        "src/trottertracks/r_price_phase1_runner.py",
+        "src/trottertracks/r_price_phase1_science.py",
+        "scripts/run_r_price_phase1.py"
+      ]
+    },
+    "records": {
+      "count": 32,
+      "price_kinds": {
+        "SAVED_CALIBRATION_DIRECT": 8,
+        "MODEL_PREDICTION_AT_CALIBRATION_POINT": 12,
+        "NEW_CALIBRATION_DIRECT": 4,
+        "INDEPENDENT_VALIDATION_DIRECT": 4,
+        "MODEL_PREDICTION_AT_VALIDATION_POINT": 4
+      },
+      "finite_cohort_only": 32,
+      "model_qualified": 0,
+      "copy_fidelity": "all C fields equal except B law_binding and C1: cohort label",
+      "time_fields": [
+        [
+          "H4_q16_R4",
+          1.6,
+          16,
+          0.1,
+          0.8
+        ],
+        [
+          "H4_q16_R8",
+          1.6,
+          16,
+          0.1,
+          0.8
+        ],
+        [
+          "H4_q8_R4",
+          0.8,
+          8,
+          0.1,
+          0.8
+        ],
+        [
+          "H4_q8_R8",
+          0.8,
+          8,
+          0.1,
+          0.8
+        ],
+        [
+          "H6_q1_R16",
+          1.6,
+          1,
+          1.6,
+          0.8
+        ],
+        [
+          "H6_q1_R32",
+          1.6,
+          1,
+          1.6,
+          0.8
+        ],
+        [
+          "H6_q2_R16",
+          3.2,
+          2,
+          1.6,
+          0.8
+        ],
+        [
+          "H6_q2_R32",
+          3.2,
+          2,
+          1.6,
+          0.8
+        ]
+      ],
+      "H6_allocations": {
+        "H6_q1_R16": [
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1
+        ],
+        "H6_q1_R32": [
+          3,
+          3,
+          3,
+          3,
+          2,
+          5,
+          2,
+          3,
+          2,
+          3,
+          3
+        ],
+        "H6_q2_R16": [
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1,
+          2,
+          1
+        ],
+        "H6_q2_R32": [
+          3,
+          3,
+          3,
+          3,
+          2,
+          5,
+          2,
+          3,
+          2,
+          3,
+          3
+        ]
+      },
+      "stored_validation_relative_RMSE_transcribed": {
+        "H4_q16_R8": [
+          0.01039841107204328
+        ],
+        "H6_q2_R32": [
+          0.002299590195904343
+        ]
+      }
+    },
+    "rerun_with_numerical_entries_disabled": "IDENTICAL_INTAKE",
+    "published_fixture_mismatch_rejected": {
+      "law_definition": "C1_INTAKE_REJECTED: C law binding or sampler differs: H4_q8_R4",
+      "compiler": "C1_INTAKE_REJECTED: price identity outside the fixed C1 cells",
+      "candidate_R": "C1_INTAKE_REJECTED: price identity outside the fixed C1 cells",
+      "cohort": "C1_INTAKE_REJECTED: cohort/path count/expectation/normalization: H4_q16_R8",
+      "n_paths": "C1_INTAKE_REJECTED: cohort/path count/expectation/normalization: H4_q16_R8",
+      "value": "C1_INTAKE_REJECTED: price value differs from its saved evaluation: H4_q16_R8",
+      "validation_in_calibration": "C1_INTAKE_REJECTED: price record from the other calibration/validation role: H4_q16_R8",
+      "model_qualified": "C1_INTAKE_REJECTED: C has no adoption threshold; model qualification must stay false",
+      "execution_source": "C1_INTAKE_REJECTED: execution SOURCE/result path/frozen commit: H4_q16_R8",
+      "frozen_commit": "C1_INTAKE_REJECTED: execution SOURCE/result path/frozen commit: H4_q16_R8"
+    },
+    "coverage": {
+      "rows": 118,
+      "C1_rows_with_4_scenarios": 8,
+      "C1_new_R_rows_missing_N": 4,
+      "long_q_large_R_rows_without_price": 3,
+      "A0_rows": 24,
+      "saved_N_records": {
+        "H4": 26,
+        "H6": 26
+      },
+      "R_upper_bound": {
+        "H4": null,
+        "H6": null
+      },
+      "range_complete": {
+        "H4": false,
+        "H6": false
+      },
+      "H4_m10_PR_N_X_unchanged": "1070910265913026585642",
+      "G": "NOT_EVALUATED",
+      "costs": null
+    }
+  },
+  "new_scientific_computation": 0
+}
