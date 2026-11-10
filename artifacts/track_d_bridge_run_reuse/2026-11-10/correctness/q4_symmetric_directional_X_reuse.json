@@ -1,0 +1,388 @@
+{
+  "case": "q4_symmetric_directional_X",
+  "variant": "reuse",
+  "status": "PASS",
+  "checks": {
+    "output_word": true,
+    "all_7_metrics": true,
+    "rounds": true,
+    "legacy_phase": true,
+    "precise_phase": true,
+    "input_count": true,
+    "round_phase_bits": true
+  },
+  "metrics": {
+    "rz_count": 21020,
+    "cx_count": 8024,
+    "rz_depth": 5013,
+    "cx_depth": 3874,
+    "total_depth": 11671,
+    "circuit_size": 42839,
+    "qubit_count": 9
+  },
+  "output_word_sha256": "4708895d18c456de69726713d1235bfaaece7e4d8dabbfb97b7ae5de7ea4c3a8",
+  "global_phase": -93309.94790503007,
+  "precise_phase": {
+    "bits": 160,
+    "terms": 8397,
+    "legacy_running": -93309.94790503007,
+    "binary64_full_fsum": -93309.94790503457,
+    "mpfr_total": "-93309.947905034569667570565343339694663882255554",
+    "normalized": 1.6370918894691013,
+    "period": "2*pi evaluated at MPFR160",
+    "local_terms_precision": "unchanged binary64 gate/1Q outputs"
+  },
+  "phase_additions": [
+    24350.484657974488,
+    1124.6901699851458,
+    1742.0131264155402,
+    925.1990364821944,
+    631.4601233715484,
+    336.15041393410786,
+    213.62830044410595,
+    64.40264939859075,
+    37.69911184307752,
+    0.0
+  ],
+  "rounds": [
+    {
+      "input_size": 200882,
+      "output_size": 60482,
+      "oneq_runs_replaced": 18232,
+      "cx_pairs_removed": 366
+    },
+    {
+      "input_size": 60482,
+      "output_size": 55389,
+      "oneq_runs_replaced": 712,
+      "cx_pairs_removed": 424
+    },
+    {
+      "input_size": 55389,
+      "output_size": 50561,
+      "oneq_runs_replaced": 729,
+      "cx_pairs_removed": 265
+    },
+    {
+      "input_size": 50561,
+      "output_size": 47135,
+      "oneq_runs_replaced": 516,
+      "cx_pairs_removed": 209
+    },
+    {
+      "input_size": 47135,
+      "output_size": 45091,
+      "oneq_runs_replaced": 309,
+      "cx_pairs_removed": 95
+    },
+    {
+      "input_size": 45091,
+      "output_size": 43729,
+      "oneq_runs_replaced": 190,
+      "cx_pairs_removed": 95
+    },
+    {
+      "input_size": 43729,
+      "output_size": 43059,
+      "oneq_runs_replaced": 106,
+      "cx_pairs_removed": 11
+    },
+    {
+      "input_size": 43059,
+      "output_size": 42893,
+      "oneq_runs_replaced": 21,
+      "cx_pairs_removed": 8
+    },
+    {
+      "input_size": 42893,
+      "output_size": 42839,
+      "oneq_runs_replaced": 11,
+      "cx_pairs_removed": 0
+    },
+    {
+      "input_size": 42839,
+      "output_size": 42839,
+      "oneq_runs_replaced": 0,
+      "cx_pairs_removed": 0
+    }
+  ],
+  "performance": {
+    "total_seconds": 7.303471757099032,
+    "input_decode_seconds": 1.6474211423192173,
+    "compute_minus_decode_seconds": 5.656050614779815,
+    "peak_RSS_MiB": 100.0,
+    "decoded": 200882,
+    "internals": {
+      "rounds": [
+        {
+          "seconds": 3.9221666411031038,
+          "cx": {
+            "processed": 27214,
+            "peak_live_nodes": 26482,
+            "retained_node_slots": 26848,
+            "node_list_bytes": 219048,
+            "peak_frontier_references": 36721,
+            "peak_single_wire_stack": 5245,
+            "peak_frontier_lists_bytes": 310960
+          },
+          "unit_visits": 200882,
+          "native_classifications": 200882,
+          "run_internal_visits": 189911,
+          "memo_hits": 0,
+          "memo_native_skipped": 0,
+          "merged_runs": 18235,
+          "cache_hits": 18323,
+          "synthesis_calls": 717,
+          "synthesis_seconds": 0.08728864137083292,
+          "cache_slots": 717,
+          "peak_pending_units": 131,
+          "unit_count": 26482,
+          "run_instruction_slots": 50243
+        },
+        {
+          "seconds": 0.3264265200123191,
+          "cx": {
+            "processed": 25061,
+            "peak_live_nodes": 24213,
+            "retained_node_slots": 24637,
+            "node_list_bytes": 219048,
+            "peak_frontier_references": 33604,
+            "peak_single_wire_stack": 4801,
+            "peak_frontier_lists_bytes": 288464
+          },
+          "unit_visits": 26482,
+          "native_classifications": 10239,
+          "run_internal_visits": 49429,
+          "memo_hits": 808,
+          "memo_native_skipped": 814,
+          "merged_runs": 712,
+          "cache_hits": 14225,
+          "synthesis_calls": 498,
+          "synthesis_seconds": 0.03737918194383383,
+          "cache_slots": 1218,
+          "peak_pending_units": 8,
+          "unit_count": 24213,
+          "run_instruction_slots": 45998
+        },
+        {
+          "seconds": 0.14102115598507226,
+          "cx": {
+            "processed": 22847,
+            "peak_live_nodes": 22317,
+            "retained_node_slots": 22582,
+            "node_list_bytes": 194664,
+            "peak_frontier_references": 31178,
+            "peak_single_wire_stack": 4491,
+            "peak_frontier_lists_bytes": 263568
+          },
+          "unit_visits": 24213,
+          "native_classifications": 9391,
+          "run_internal_visits": 4669,
+          "memo_hits": 13361,
+          "memo_native_skipped": 41329,
+          "merged_runs": 729,
+          "cache_hits": 685,
+          "synthesis_calls": 47,
+          "synthesis_seconds": 0.005565958330407739,
+          "cache_slots": 549,
+          "peak_pending_units": 9,
+          "unit_count": 22317,
+          "run_instruction_slots": 41700
+        },
+        {
+          "seconds": 0.13183028995990753,
+          "cx": {
+            "processed": 21349,
+            "peak_live_nodes": 20931,
+            "retained_node_slots": 21140,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 29374,
+            "peak_single_wire_stack": 4399,
+            "peak_frontier_lists_bytes": 246928
+          },
+          "unit_visits": 22317,
+          "native_classifications": 8861,
+          "run_internal_visits": 3632,
+          "memo_hits": 12332,
+          "memo_native_skipped": 38068,
+          "merged_runs": 516,
+          "cache_hits": 537,
+          "synthesis_calls": 71,
+          "synthesis_seconds": 0.007333094486966729,
+          "cache_slots": 119,
+          "peak_pending_units": 8,
+          "unit_count": 20931,
+          "run_instruction_slots": 38692
+        },
+        {
+          "seconds": 0.11715567717328668,
+          "cx": {
+            "processed": 20313,
+            "peak_live_nodes": 20123,
+            "retained_node_slots": 20218,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 28376,
+            "peak_single_wire_stack": 4337,
+            "peak_frontier_lists_bytes": 243216
+          },
+          "unit_visits": 20931,
+          "native_classifications": 8443,
+          "run_internal_visits": 2110,
+          "memo_hits": 11806,
+          "memo_native_skipped": 36582,
+          "merged_runs": 309,
+          "cache_hits": 336,
+          "synthesis_calls": 37,
+          "synthesis_seconds": 0.0033159111626446247,
+          "cache_slots": 108,
+          "peak_pending_units": 6,
+          "unit_count": 20123,
+          "run_instruction_slots": 36838
+        },
+        {
+          "seconds": 0.10932114394381642,
+          "cx": {
+            "processed": 19743,
+            "peak_live_nodes": 19553,
+            "retained_node_slots": 19648,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 27616,
+            "peak_single_wire_stack": 4305,
+            "peak_frontier_lists_bytes": 236208
+          },
+          "unit_visits": 20123,
+          "native_classifications": 8253,
+          "run_internal_visits": 1172,
+          "memo_hits": 11490,
+          "memo_native_skipped": 35666,
+          "merged_runs": 190,
+          "cache_hits": 175,
+          "synthesis_calls": 15,
+          "synthesis_seconds": 0.0015106848441064358,
+          "cache_slots": 52,
+          "peak_pending_units": 4,
+          "unit_count": 19553,
+          "run_instruction_slots": 35666
+        },
+        {
+          "seconds": 0.10559297516010702,
+          "cx": {
+            "processed": 19341,
+            "peak_live_nodes": 19319,
+            "retained_node_slots": 19330,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 27360,
+            "peak_single_wire_stack": 4273,
+            "peak_frontier_lists_bytes": 232912
+          },
+          "unit_visits": 19553,
+          "native_classifications": 8063,
+          "run_internal_visits": 648,
+          "memo_hits": 11278,
+          "memo_native_skipped": 35018,
+          "merged_runs": 106,
+          "cache_hits": 97,
+          "synthesis_calls": 9,
+          "synthesis_seconds": 0.0009023842867463827,
+          "cache_slots": 24,
+          "peak_pending_units": 5,
+          "unit_count": 19319,
+          "run_instruction_slots": 35018
+        },
+        {
+          "seconds": 0.10357684711925685,
+          "cx": {
+            "processed": 19277,
+            "peak_live_nodes": 19261,
+            "retained_node_slots": 19269,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 27286,
+            "peak_single_wire_stack": 4241,
+            "peak_frontier_lists_bytes": 232912
+          },
+          "unit_visits": 19319,
+          "native_classifications": 8041,
+          "run_internal_visits": 150,
+          "memo_hits": 11236,
+          "memo_native_skipped": 34868,
+          "merged_runs": 21,
+          "cache_hits": 8,
+          "synthesis_calls": 13,
+          "synthesis_seconds": 0.0012761617545038462,
+          "cache_slots": 22,
+          "peak_pending_units": 4,
+          "unit_count": 19261,
+          "run_instruction_slots": 34868
+        },
+        {
+          "seconds": 0.10038766707293689,
+          "cx": {
+            "processed": 19239,
+            "peak_live_nodes": 19239,
+            "retained_node_slots": 19239,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 27264,
+            "peak_single_wire_stack": 4225,
+            "peak_frontier_lists_bytes": 232912
+          },
+          "unit_visits": 19261,
+          "native_classifications": 8025,
+          "run_internal_visits": 54,
+          "memo_hits": 11214,
+          "memo_native_skipped": 34814,
+          "merged_runs": 11,
+          "cache_hits": 8,
+          "synthesis_calls": 3,
+          "synthesis_seconds": 0.0002979789860546589,
+          "cache_slots": 16,
+          "peak_pending_units": 4,
+          "unit_count": 19239,
+          "run_instruction_slots": 34814
+        },
+        {
+          "seconds": 0.10033411695621908,
+          "cx": {
+            "processed": 19239,
+            "peak_live_nodes": 19239,
+            "retained_node_slots": 19239,
+            "node_list_bytes": 173000,
+            "peak_frontier_references": 27264,
+            "peak_single_wire_stack": 4225,
+            "peak_frontier_lists_bytes": 232912
+          },
+          "unit_visits": 19239,
+          "native_classifications": 8025,
+          "run_internal_visits": 0,
+          "memo_hits": 11214,
+          "memo_native_skipped": 34814,
+          "merged_runs": 0,
+          "cache_hits": 0,
+          "synthesis_calls": 0,
+          "synthesis_seconds": 0.0,
+          "cache_slots": 3,
+          "peak_pending_units": 3,
+          "unit_count": 19239,
+          "run_instruction_slots": 34814
+        }
+      ],
+      "peak_unit_length": 26482,
+      "peak_unit_list_bytes": 219048,
+      "peak_run_instruction_slots": 50243,
+      "full_native_rescan_after_first": false,
+      "all_unit_epochs_still_scanned": true
+    }
+  },
+  "general_P0_qualified": false,
+  "round_word_sha256": [
+    "542bc37cc79867ac5d2666ce4fcd0e96669f84d29627782e8bd8b41115a64a13",
+    "16f4838d65dd01721f87ed89e260c91737ead14899e45616c4d97045e9135dea",
+    "559cfd8e67e120de2f2e66a92c552a375a1b2e825f3057e7ce1039fcc0534427",
+    "a98525c13486dcd0b82b3e222f88bd57a43266209fc2ca7ba6d724655723fe40",
+    "a365d027f34ccb8e9fd8ed73f07497a43181d207c09dec8581380a7ba4fdb995",
+    "cd50101893e3660e0d194bc79774775e2af4e7770393c39e407e0c2e874b529b",
+    "f9ba11a7b379e096996192e911004c9ac6dec071ca3976f0a6472c772f7a55e3",
+    "f2afed76438d9ab56346fd1e7ebda4414c531eceebf256652aee5a1451ef55e5",
+    "4708895d18c456de69726713d1235bfaaece7e4d8dabbfb97b7ae5de7ea4c3a8",
+    "4708895d18c456de69726713d1235bfaaece7e4d8dabbfb97b7ae5de7ea4c3a8"
+  ]
+}

@@ -1,5 +1,7 @@
 # Validation status
 
+[Track D run内部再走査削減](docs/research/track_d_bridge_run_reuse_20261110/REPORT.md)（2026-11-10）：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／元順LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。run内部再走査削減で旧新の各反復word／位相／全56資源一致、70人工回帰＋保存54case PASS。前回高速版に比べnative段階q4 1.15〜1.18倍・q8 1.32〜1.33倍、q8 RSSは4〜8%増。全unit epochとCX frontier再構築／最悪O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。
+
 [Track D stream bridge高速化](docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)（2026-11-10）：固定q4/q8・8wrapperの旧新がword／phase／各round／全56資源と保存P0に一致。63技術回帰・54保存人工case PASS。計測keyword不備の失敗と修正・別wave結果を保全し、主性能比較は同時run02。一般P0／長q未資格、新P0／sampling／whole-path／simulation／q16以上／fit／N／13round更新0、公開照合後STOP。
 
 [Track D Phase＋q8](docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)（2026-11-10）：q8_sample00／中央cut4／C1 OFFの固定raw4予測が保存P0全28値に一致。新phase ledger、q4 word／価格不変、53人工回帰PASS。h保存形式のpreflightエラーを保全して修正、数値retry0。新全入力correctnessなし、一般P0／長q未資格、新P0／build／sampling／fit／N／13round更新0、公開照合後mandatory STOP。

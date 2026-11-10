@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Track D run内部再走査削減](docs/research/track_d_bridge_run_reuse_20261110/REPORT.md)（2026-11-10）：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／元順LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。run内部再走査削減で旧新の各反復word／位相／全56資源一致、70人工回帰＋保存54case PASS。前回高速版に比べnative段階q4 1.15〜1.18倍・q8 1.32〜1.33倍、q8 RSSは4〜8%増。全unit epochとCX frontier再構築／最悪O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。
+
 [Track D 同一rule stream bridge高速化](docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。旧新8wrapperのword／phase／round／56資源一致。同時16-process比較でq8約2.09〜2.16倍高速・RSS約53〜54%減（native列以降）。63人工回帰＋保存54case PASS、O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。
 
 [Track D Phase精度＋保存q8移送](docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／LD2／S2/s1/r32/K0／h=.1、q8_sample00／cut4／C1 OFF、元H ground仮定・準備費除外。raw4予測固定後、保存P0全28資源一致。53人工回帰PASS、q4 native列不変でphase集約差を約1e−11へ縮小。q8は20反復・約491〜494 MiB/worker、一般P0／長q未資格、新P0／sampling／fit／N／全RPE更新0、公開照合後STOP。

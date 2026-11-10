@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[Track D run内部再走査削減](../../docs/research/track_d_bridge_run_reuse_20261110/REPORT.md)（2026-11-10）：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／元順LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。run内部再走査削減で旧新の各反復word／位相／全56資源一致、70人工回帰＋保存54case PASS。前回高速版に比べnative段階q4 1.15〜1.18倍・q8 1.32〜1.33倍、q8 RSSは4〜8%増。全unit epochとCX frontier再構築／最悪O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。 実装：`src/trottertracks/track_d_bridge_run_reuse.py`、`scripts/run_track_d_bridge_run_reuse.py`、`tests/check_track_d_bridge_run_reuse.py`。
+
 `trottertracks.track_d_stream_bridge_fast`／`track_d_stream_resources`：[同一rule高速化](../../docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)。旧1Q関数／CX feedを再利用し、exact bit keyの二pass cacheとstream直結、late phase ledgerの接続を追加。旧counter／compiler／phase実装は不変。63人工回帰・保存54case・固定H4 q4/q8 exact差分PASS、一般P0／長qは未資格。
 
 `trottertracks.track_d_native_phase160`：[Phase＋q8結果](../../docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)。旧emitter出力のbinary64 phase項をexact比からMPFR160へ集約するside ledger。局所合成／1Q／CX ruleは無変更、旧binary64値も保存。q4命令列不変・q8全28価格一致、一般P0／長qは未資格。

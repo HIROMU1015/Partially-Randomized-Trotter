@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Track D run内部再走査削減](../docs/research/track_d_bridge_run_reuse_20261110/REPORT.md)（2026-11-10）：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／元順LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。run内部再走査削減で旧新の各反復word／位相／全56資源一致、70人工回帰＋保存54case PASS。前回高速版に比べnative段階q4 1.15〜1.18倍・q8 1.32〜1.33倍、q8 RSSは4〜8%増。全unit epochとCX frontier再構築／最悪O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。 実装：`src/trottertracks/track_d_bridge_run_reuse.py`、`scripts/run_track_d_bridge_run_reuse.py`、`tests/check_track_d_bridge_run_reuse.py`。
+
 [Track D stream bridge性能結果](../docs/research/track_d_stream_bridge_fast_20261110/REPORT.md)：`run_track_d_stream_bridge_fast.py`の固定入力準備・人工54比較、旧keyword不備を保全した`complete_track_d_stream_bridge_benchmark.py`、同時主比較`measure_track_d_stream_bridge_paired.py`。最初のfrozen runnerのbenchmark keyword不備は履歴として保持し、完成済みCLIを再開しない。新しい実行ではmodule APIと互換adapterをscopeに合わせて再利用する。原本／run01／run02／STOP保持、新P0=0。
 
 `run_track_d_phase_q8_transfer.py`：[Phase＋q8結果](../docs/research/track_d_phase_q8_transfer_20261110/REPORT.md)。selectで価格非依存にq8先頭IDを固定、executeでq4 phase4＋q8 raw予測4、予測commit後のみcompare。旧q4観測／counterを再利用し、新P0は呼ばない。run01の初回preflight失敗／修正／結果／STOPを保持し、追加pathやq16以上へ自動進行しない。
