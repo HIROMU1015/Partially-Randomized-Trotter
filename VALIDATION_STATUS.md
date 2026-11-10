@@ -1,5 +1,7 @@
 # Validation status
 
+[Phase0実normalization結果](docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：24候補/144piece slots・ID/law/配分・SOURCE9/入力7・JSON/CSV整合を確認。全normalization記録済み、IEEE表示のoverflow/underflow0。N/phase/radius/C/G・科学的R採択は未評価、公開照合後STOP。
+
 [Phase0 normalization準備の検証](docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：新10テストPASS。静的preflight、候補/law/source照合、人工24/144piece slots、exp表示・精度未資格/入力消失/上書き拒否を確認。実24候補logB/attenuation/shot係数は未評価、N/C/G0、公開照合後STOP。
 
 [R候補screenの技術確認](docs/research/pr_r_screening_20261111/REPORT.md)：人工K2 finite式・signed配分・q seed・B metadata/A identity/law・無閾値/予算/丸め保留を12テストで確認。実系のnormalizationも未評価、N/C/G・R最適化0、全menu/range未資格、公開照合後STOP。

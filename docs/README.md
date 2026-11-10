@@ -1,5 +1,7 @@
 # 文書索引
 
+[代表24候補normalization結果](research/pr_r_normalization_phase0_results_20261111/REPORT.md)：[原結果](research/pr_r_normalization_phase0_results_20261111/run01/result.json)／[B/C受渡し](research/pr_r_normalization_phase0_results_20261111/run01/HANDOFF.json)／[全候補CSV](research/pr_r_normalization_phase0_results_20261111/run01/NORMALIZATION.csv)。N/C/G・R選択なし。
+
 [代表24候補normalization評価準備](research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：[固定PLAN](research/pr_r_normalization_phase0_preparation_20261111/PLAN.json)／[B/C HANDOFF](research/pr_r_normalization_phase0_preparation_20261111/HANDOFF.md)／[preflight](research/pr_r_normalization_phase0_preparation_20261111/PREFLIGHT_LOG.txt)／[新10テスト](research/pr_r_normalization_phase0_preparation_20261111/TEST_LOG.txt)。実科学実行待ち。
 
 [RPEラウンド別R候補screen](research/pr_r_screening_20261111/REPORT.md)：[B/C HANDOFF](research/pr_r_screening_20261111/HANDOFF.md)／[有限案](research/pr_r_screening_20261111/EXECUTION_PLAN.json)／[人工12件](research/pr_r_screening_20261111/TEST_LOG.txt)。実normalization/N/C/G未評価。

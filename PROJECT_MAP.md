@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[代表24候補normalization Phase0結果](docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：SOURCE6a75ebf96で固定24を一回記録、精度未解決/overflow/underflow0。H4 m12のAはR4で4.57e−37、R8192で.960だがevent数33554432。N/C/G・R採択なし、SOURCE9/入力7保全、公開照合後STOP。
+
 [代表24候補normalization Phase0準備](docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：固定ID/R/law、保存tail/H/stateと7入力hash、9 SOURCEのpreflight完了。新10人工/mock PASS、実logB等0。承認後だけ24候補を閾値なしで記録する専用入口・出力/HANDOFFを固定、公開照合後STOP。
 
 [RPE round別Rの事前screen](docs/research/pr_r_screening_20261111/REPORT.md)：固定δでR∝qPFの候補band＋baselineをB menuへ接続。無閾値score/明示減衰予算・丸め境界保留、人工/mock12件PASS。構造候補H4 51/H6 35、実logB/N/C/G・保存再解析0。B/C HANDOFFと代表24 cheap screen案、公開照合後STOP。
