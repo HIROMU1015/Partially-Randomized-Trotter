@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_h6_df19_rpe_m8_12.py`：[残5roundのN専用一括準備](../docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)。既存`run_missing/H6ActionBatch`を1回呼び、保存m0..7を再計算せず13round coverageへ接続する。追加人工7件PASS。実行は明示許可後だけ、C/G・retry/resumeなし。
+
 `plan_pf_pr_rpe_cost.py`：[統合REPORT](../docs/research/pf_pr_rpe_cost_integration_20261110/REPORT.md)。固定Git JSONからH4/H6 schedule・candidate・保存N/C・不足batchを静的に出力する。実signal/N/価格予測/G実行modeなし。数値入口は`pf_pr_rpe_pipeline.run_fixed_evaluation`で、実データ使用には別途科学scopeが必要。
 
 `run_h6_df19_rpe_m7.py`の[完了結果](../docs/research/h6_df19_rpe_m7_results_20261110/REPORT.md)：SOURCE dcd6a7c87の固定2候補を一回評価、ideal条件付きNは各軸PF705/PR846。旧roundは再計算せず保存値へ接続。m8以降・価格へ自動進行しない。

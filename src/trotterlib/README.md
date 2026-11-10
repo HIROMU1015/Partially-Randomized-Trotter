@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H6残5roundの[専用batch入口](../../docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：`pf_pr_rpe_pipeline`・`h6_rpe_batch_provider`・旧D2数値kernelは不変。新runner/PLANだけで10候補を固定し、保存/FAIL coverageを接続。人工差分7件、実科学計算0。
+
 PF/PR全RPEの[総費用接続](../../docs/research/pf_pr_rpe_cost_integration_20261110/REPORT.md)：`trottertracks.pf_pr_rpe_pipeline`が既存supplied-axis会計・比較を再利用する。`h6_rpe_batch_provider`は旧action kernelへ固定batchを接続。全体12人工/mock確認、実N/C予測/G0。
 
 [H6 m7結果](../../docs/research/h6_df19_rpe_m7_results_20261110/REPORT.md)：既存D2 action/geometryを不変で再利用し、SOURCE dcd6a7c87でT12.8・qPF8のFull19対PR7/R16/K2を一回評価。ideal条件付きN各軸PF705/PR846、actual/全G未資格。
