@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[A0 normalization受入準備/C1接続](docs/research/rpe_normalization_intake_20261111/REPORT.md)（2026-11-11）：固定24件の診断専用adapter、欠測/STOP/数値未資格の保全、同一SOURCE/requestでH6重複2点だけ共有。新8＋既存39＝47技術test PASS、実A0未消費・科学計算0、公開後STOP。
+
 [A R候補×C Phase1の計画整合](docs/research/r_screening_price_alignment_20261111/REPORT.md)（2026-11-11）：C8セルのうち6はA自動menu内、H4新R8/q8・q16の2点は明示校正/検証laneを保全。A24 scalarとC64+16=80 wrapperを別scopeとして整理。m12 N例とC小qは重複0、長qへの価格移送を資格しない。7 metadata技術test PASS、新科学計算0、公開後STOP。
 
 [A R依存N・C H6価格のB統合](docs/research/rpe_provider_integration_20261111/REPORT.md)（2026-11-11）：固定A RBatch/partition・C provider/coverageを再利用し、複数R adapter、既存loader、保存入力→batch→exact費用/R選択を接続。83技術test PASS。固定52行/R候補54行の静的coverage、補正整数N保持・新R欠測・baseline allowance比較資格を分離。実N/C/再解析/fit/compile/G/R最適化0、公開照合後STOP。

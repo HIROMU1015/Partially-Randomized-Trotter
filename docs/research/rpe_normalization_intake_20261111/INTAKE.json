@@ -1,0 +1,4309 @@
+{
+  "status": "A0_INTAKE_READY_NO_RESULTS_CONSUMED",
+  "A0_plan": {
+    "commit": "6a75ebf967aaae2698ce6d295bf6fbec9d5e9929",
+    "path": "docs/research/pr_r_normalization_phase0_preparation_20261111/PLAN.json"
+  },
+  "alignment": {
+    "commit": "328cb26fa893e49197d15e0e075e3d9b43213980",
+    "path": "docs/research/r_screening_price_alignment_20261111/ALIGNMENT.json"
+  },
+  "candidate_count": 24,
+  "candidates": [
+    {
+      "candidate_id": "53e00d8b07d1547d19a7",
+      "request": {
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 2,
+            "T": 0.1,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "53e00d8b07d1547d19a7",
+            "method": "PR",
+            "prefix": 1,
+            "q": 1,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "53e00d8b07d1547d19a7",
+          "R_outer": 2,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "53e00d8b07d1547d19a7",
+        "R_outer": 2,
+        "K": 2,
+        "q_PF": 1
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "03a51c8d13a91a403742",
+      "request": {
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.1,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "03a51c8d13a91a403742",
+            "method": "PR",
+            "prefix": 1,
+            "q": 1,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 4,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "03a51c8d13a91a403742",
+          "R_outer": 4,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "03a51c8d13a91a403742",
+        "R_outer": 4,
+        "K": 2,
+        "q_PF": 1
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "656998c3354fb8b614e9",
+      "request": {
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8,
+            "T": 0.1,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "656998c3354fb8b614e9",
+            "method": "PR",
+            "prefix": 1,
+            "q": 1,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 8,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "656998c3354fb8b614e9",
+          "R_outer": 8,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "656998c3354fb8b614e9",
+        "R_outer": 8,
+        "K": 2,
+        "q_PF": 1
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "65c51c5cb3e39a2266e3",
+      "request": {
+        "identity": {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 6.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "65c51c5cb3e39a2266e3",
+            "method": "PR",
+            "prefix": 1,
+            "q": 64,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 256,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "65c51c5cb3e39a2266e3",
+          "R_outer": 4,
+          "K": 2,
+          "q_PF": 64
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "65c51c5cb3e39a2266e3",
+        "R_outer": 4,
+        "K": 2,
+        "q_PF": 64
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "2a8c6718220eec59d419",
+      "request": {
+        "identity": {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "K": 2,
+            "R_outer": 128,
+            "T": 6.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "2a8c6718220eec59d419",
+            "method": "PR",
+            "prefix": 1,
+            "q": 64,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              128
+            ],
+            "event_count": 8192,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "2a8c6718220eec59d419",
+          "R_outer": 128,
+          "K": 2,
+          "q_PF": 64
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "2a8c6718220eec59d419",
+        "R_outer": 128,
+        "K": 2,
+        "q_PF": 64
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "ae0187ce74cd82207748",
+      "request": {
+        "identity": {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "K": 2,
+            "R_outer": 256,
+            "T": 6.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "ae0187ce74cd82207748",
+            "method": "PR",
+            "prefix": 1,
+            "q": 64,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              256
+            ],
+            "event_count": 16384,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "ae0187ce74cd82207748",
+          "R_outer": 256,
+          "K": 2,
+          "q_PF": 64
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "ae0187ce74cd82207748",
+        "R_outer": 256,
+        "K": 2,
+        "q_PF": 64
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "e92a9536e29ce262b00a",
+      "request": {
+        "identity": {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "K": 2,
+            "R_outer": 512,
+            "T": 6.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "e92a9536e29ce262b00a",
+            "method": "PR",
+            "prefix": 1,
+            "q": 64,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              512
+            ],
+            "event_count": 32768,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "e92a9536e29ce262b00a",
+          "R_outer": 512,
+          "K": 2,
+          "q_PF": 64
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "e92a9536e29ce262b00a",
+        "R_outer": 512,
+        "K": 2,
+        "q_PF": 64
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "42564e5c9ba649be78a9",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "42564e5c9ba649be78a9",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 16384,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "42564e5c9ba649be78a9",
+          "R_outer": 4,
+          "K": 2,
+          "q_PF": 4096
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "42564e5c9ba649be78a9",
+        "R_outer": 4,
+        "K": 2,
+        "q_PF": 4096
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "9cacda8156e3b52f8fe0",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "9cacda8156e3b52f8fe0",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 32768,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "9cacda8156e3b52f8fe0",
+          "R_outer": 8,
+          "K": 2,
+          "q_PF": 4096
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "9cacda8156e3b52f8fe0",
+        "R_outer": 8,
+        "K": 2,
+        "q_PF": 4096
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "fe96b35a6af9ee22f255",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8192,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "fe96b35a6af9ee22f255",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8192
+            ],
+            "event_count": 33554432,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "fe96b35a6af9ee22f255",
+          "R_outer": 8192,
+          "K": 2,
+          "q_PF": 4096
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "fe96b35a6af9ee22f255",
+        "R_outer": 8192,
+        "K": 2,
+        "q_PF": 4096
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "b4ae846ac8213f1c7d45",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": 2,
+            "R_outer": 16384,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "b4ae846ac8213f1c7d45",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              16384
+            ],
+            "event_count": 67108864,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "b4ae846ac8213f1c7d45",
+          "R_outer": 16384,
+          "K": 2,
+          "q_PF": 4096
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "b4ae846ac8213f1c7d45",
+        "R_outer": 16384,
+        "K": 2,
+        "q_PF": 4096
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "97d07a2b4d26588f02d4",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": 2,
+            "R_outer": 32768,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "97d07a2b4d26588f02d4",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              32768
+            ],
+            "event_count": 134217728,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "97d07a2b4d26588f02d4",
+          "R_outer": 32768,
+          "K": 2,
+          "q_PF": 4096
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "97d07a2b4d26588f02d4",
+        "R_outer": 32768,
+        "K": 2,
+        "q_PF": 4096
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "5e2581e9c4f25bdf8529",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 11,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "5e2581e9c4f25bdf8529",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            "event_count": 11,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "5e2581e9c4f25bdf8529",
+          "R_outer": 11,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "5e2581e9c4f25bdf8529",
+        "R_outer": 11,
+        "K": 2,
+        "q_PF": 1
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "2d2af6ca830dff14a695",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 16,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "2d2af6ca830dff14a695",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "2d2af6ca830dff14a695",
+          "R_outer": 16,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "2d2af6ca830dff14a695",
+        "R_outer": 16,
+        "K": 2,
+        "q_PF": 1
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "4269eafc8c0ef8922c23",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 32,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "4269eafc8c0ef8922c23",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "4269eafc8c0ef8922c23",
+          "R_outer": 32,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "4269eafc8c0ef8922c23",
+        "R_outer": 32,
+        "K": 2,
+        "q_PF": 1
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "53797d9e5a2eeec31a13",
+      "request": {
+        "identity": {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 16,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "53797d9e5a2eeec31a13"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 256,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "53797d9e5a2eeec31a13",
+          "R_outer": 16,
+          "K": 2,
+          "q_PF": 16
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "53797d9e5a2eeec31a13",
+        "R_outer": 16,
+        "K": 2,
+        "q_PF": 16
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "55a8eb0ae50ec3f7c713",
+      "request": {
+        "identity": {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 16,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": 128,
+            "K": 2,
+            "id": "55a8eb0ae50ec3f7c713"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              10,
+              11,
+              10,
+              12,
+              10,
+              22,
+              10,
+              12,
+              10,
+              11,
+              10
+            ],
+            "event_count": 2048,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "55a8eb0ae50ec3f7c713",
+          "R_outer": 128,
+          "K": 2,
+          "q_PF": 16
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "55a8eb0ae50ec3f7c713",
+        "R_outer": 128,
+        "K": 2,
+        "q_PF": 16
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "00ab807ee1f600b30440",
+      "request": {
+        "identity": {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 16,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": 256,
+            "K": 2,
+            "id": "00ab807ee1f600b30440"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              21,
+              23,
+              20,
+              23,
+              19,
+              44,
+              19,
+              23,
+              20,
+              23,
+              21
+            ],
+            "event_count": 4096,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "00ab807ee1f600b30440",
+          "R_outer": 256,
+          "K": 2,
+          "q_PF": 16
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "00ab807ee1f600b30440",
+        "R_outer": 256,
+        "K": 2,
+        "q_PF": 16
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "aacb6642aa911baf4b5a",
+      "request": {
+        "identity": {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 16,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": 512,
+            "K": 2,
+            "id": "aacb6642aa911baf4b5a"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              42,
+              45,
+              40,
+              47,
+              37,
+              90,
+              37,
+              47,
+              40,
+              45,
+              42
+            ],
+            "event_count": 8192,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "aacb6642aa911baf4b5a",
+          "R_outer": 512,
+          "K": 2,
+          "q_PF": 16
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "aacb6642aa911baf4b5a",
+        "R_outer": 512,
+        "K": 2,
+        "q_PF": 16
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "c9309f4a8219815577f5",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "c9309f4a8219815577f5"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 4096,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "c9309f4a8219815577f5",
+          "R_outer": 16,
+          "K": 2,
+          "q_PF": 256
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "c9309f4a8219815577f5",
+        "R_outer": 16,
+        "K": 2,
+        "q_PF": 256
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "612cbc2d48b895ced262",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": 32,
+            "K": 2,
+            "id": "612cbc2d48b895ced262"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 8192,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "612cbc2d48b895ced262",
+          "R_outer": 32,
+          "K": 2,
+          "q_PF": 256
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "612cbc2d48b895ced262",
+        "R_outer": 32,
+        "K": 2,
+        "q_PF": 256
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "f72bb5f513c40ad04c9d",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": 2048,
+            "K": 2,
+            "id": "f72bb5f513c40ad04c9d"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              165,
+              182,
+              160,
+              187,
+              148,
+              364,
+              148,
+              187,
+              160,
+              182,
+              165
+            ],
+            "event_count": 524288,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "f72bb5f513c40ad04c9d",
+          "R_outer": 2048,
+          "K": 2,
+          "q_PF": 256
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "f72bb5f513c40ad04c9d",
+        "R_outer": 2048,
+        "K": 2,
+        "q_PF": 256
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "63caf1945611097fdfd0",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": 4096,
+            "K": 2,
+            "id": "63caf1945611097fdfd0"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              331,
+              363,
+              320,
+              374,
+              296,
+              729,
+              296,
+              374,
+              319,
+              363,
+              331
+            ],
+            "event_count": 1048576,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "63caf1945611097fdfd0",
+          "R_outer": 4096,
+          "K": 2,
+          "q_PF": 256
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "63caf1945611097fdfd0",
+        "R_outer": 4096,
+        "K": 2,
+        "q_PF": 256
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    },
+    {
+      "candidate_id": "d333efa12ab60915ac4f",
+      "request": {
+        "identity": {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": 8192,
+            "K": 2,
+            "id": "d333efa12ab60915ac4f"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              661,
+              726,
+              639,
+              748,
+              592,
+              1460,
+              592,
+              748,
+              639,
+              726,
+              661
+            ],
+            "event_count": 2097152,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "existing_independent_finite_RTE_event_definition",
+            "source": {
+              "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "d333efa12ab60915ac4f",
+          "R_outer": 8192,
+          "K": 2,
+          "q_PF": 256
+        }
+      },
+      "B_provider_law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "sampling": "IDEAL_FINITE_RTE_MEAN",
+          "source": {
+            "commit": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+            "path": "src/trottertracks/pr_r_dependent_n.py"
+          }
+        },
+        "candidate_id": "d333efa12ab60915ac4f",
+        "R_outer": 8192,
+        "K": 2,
+        "q_PF": 256
+      },
+      "raw_law_alias_applied": false,
+      "normalization": null,
+      "intake_status": "NOT_RECEIVED"
+    }
+  ],
+  "C1_cells": [
+    {
+      "candidate_id": "14bd81a375400c9b0305",
+      "role": "SAVED_CALIBRATION",
+      "intake_lane": "A_AUTO_MENU",
+      "in_A0": false
+    },
+    {
+      "candidate_id": "64e4f7e9ec7fba28815e",
+      "role": "SAVED_CALIBRATION",
+      "intake_lane": "A_AUTO_MENU",
+      "in_A0": false
+    },
+    {
+      "candidate_id": "6e1efff1ba1f7ac95a3b",
+      "role": "NEW_CALIBRATION",
+      "intake_lane": "EXPLICIT_C_CALIBRATION_VALIDATION_ONLY",
+      "in_A0": false
+    },
+    {
+      "candidate_id": "201d498a3fa5eaa3b5c5",
+      "role": "INDEPENDENT_VALIDATION",
+      "intake_lane": "EXPLICIT_C_CALIBRATION_VALIDATION_ONLY",
+      "in_A0": false
+    },
+    {
+      "candidate_id": "2d2af6ca830dff14a695",
+      "role": "SAVED_CALIBRATION",
+      "intake_lane": "A_AUTO_MENU",
+      "in_A0": true
+    },
+    {
+      "candidate_id": "72255c43facdfb8b4bee",
+      "role": "SAVED_CALIBRATION",
+      "intake_lane": "A_AUTO_MENU",
+      "in_A0": false
+    },
+    {
+      "candidate_id": "4269eafc8c0ef8922c23",
+      "role": "NEW_CALIBRATION",
+      "intake_lane": "A_AUTO_MENU",
+      "in_A0": true
+    },
+    {
+      "candidate_id": "24fec6bdd44d6a728f1e",
+      "role": "INDEPENDENT_VALIDATION",
+      "intake_lane": "A_AUTO_MENU",
+      "in_A0": false
+    }
+  ],
+  "C1_overlap": [
+    "2d2af6ca830dff14a695",
+    "4269eafc8c0ef8922c23"
+  ],
+  "N_C_G": null,
+  "recommended_R": null,
+  "scientific_R_adopted": false,
+  "full_RPE_qualified": false,
+  "mandatory_stop": true
+}

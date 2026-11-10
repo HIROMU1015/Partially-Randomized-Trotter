@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[A0診断受入adapter](../../docs/research/rpe_normalization_intake_20261111/HANDOFF.md)：trottertracks.rpe_normalization_intakeは既存Bのbuild_menu/request_context/SavedArtifactsを再利用し、24件の診断とC1重複2点を受動接続する。N/C/G moduleは変更しない。
+
 [R候補/N/C実験計画整合](../../docs/research/r_screening_price_alignment_20261111/REPORT.md)：既存B metadataと固定C describe_requestを再利用する技術計画。数値core・producerは変更せず、7 metadata test PASS。
 
 [R provider統合](../../docs/research/rpe_provider_integration_20261111/REPORT.md)：trottertracks.rpe_provider_integrationが既存A RBatch/partitionとH4/H6 loader・C固定価格・coverage・B exact会計を接続。83人工/保存fixture技術test PASS、新実科学計算0。

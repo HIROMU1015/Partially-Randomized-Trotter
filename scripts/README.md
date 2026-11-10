@@ -1,5 +1,7 @@
 # scripts 索引
 
+[A0受入CLI](../docs/research/rpe_normalization_intake_20261111/HANDOFF.md)：prepare_rpe_normalization_intake.pyは固定PLANから受入準備を出力し、明示した公開SHA/pathのHANDOFF/resultだけを読む。科学実行optionなし。
+
 [R screening×価格Phase1 metadata照合](../docs/research/r_screening_price_alignment_20261111/REPORT.md)：plan_r_screening_price_alignment.pyは固定A/C/B資料と既存metadata関数のみを読む。normalization/N/C/fit/compile/Gなし。
 
 [R可変provider接続](../docs/research/rpe_provider_integration_20261111/HANDOFF.md)：Aのplan_pr_r_dependent_n.pyとCのreport_rpe_nc_coverage.pyを固定版取込み。両CLIはmetadataのみ。将来の数値一括入口はrpe_provider_integration.run_evaluationで、今回はmock検証のみ。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[A0 normalization受入準備](research/rpe_normalization_intake_20261111/REPORT.md)／[受入APIと公開後手順](research/rpe_normalization_intake_20261111/HANDOFF.md)／[固定metadata](research/rpe_normalization_intake_20261111/INTAKE.json)：実A0未消費・47技術test PASS、N/C/Gは別資格。
+
 [R候補とN/C価格実験の整合](research/r_screening_price_alignment_20261111/REPORT.md)／[HANDOFF](research/r_screening_price_alignment_20261111/HANDOFF.md)／[依存関係plan](research/r_screening_price_alignment_20261111/INTEGRATED_PLAN.json)：A24とC80を分離、明示C校正候補を保全した未実行案。
 
 [R可変provider統合](research/rpe_provider_integration_20261111/REPORT.md)／[A/C HANDOFF](research/rpe_provider_integration_20261111/HANDOFF.md)：固定52行・R候補54行のmetadata inventory、83技術test、実科学計算0。
