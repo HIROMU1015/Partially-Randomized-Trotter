@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR＋RPE共同最適化への統合調査](research/pr_rpe_joint_integration_20261110/REPORT.md)（2026-11-10）：利用者指示により評価器追加開発から総資源共同最適化の接続へ重点移行。元PR/RPE API・D-CDF8の既存13-round接続・Closed P3共同選択・新A Q3後続・強PF再資格を静的照合。推奨初手は固定CDF8のα配分×control方式の限定scalar検証案。新N／価格再解析／fit／回路／全round再集計0、実行計画のみ。公開確認後STOP。
+
 [Track D run内部再走査削減](research/track_d_bridge_run_reuse_20261110/REPORT.md)（2026-11-10）：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／元順LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。run内部再走査削減で旧新の各反復word／位相／全56資源一致、70人工回帰＋保存54case PASS。前回高速版に比べnative段階q4 1.15〜1.18倍・q8 1.32〜1.33倍、q8 RSSは4〜8%増。全unit epochとCX frontier再構築／最悪O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。
 
 [Track D 同一rule高速化](research/track_d_stream_bridge_fast_20261110/REPORT.md)：1Q→CX直結・exact run cache・冗長再計数削減。q4/q8の最終word／phase／round／全資源を保持し、q8 native-stage約2.1倍高速・RSS約53%減。raw loweringとend-to-endは別評価、一般P0／長q保証なし、公開照合後mandatory STOP。
