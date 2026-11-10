@@ -1,5 +1,7 @@
 # Validation status
 
+[R可変provider統合](docs/research/rpe_provider_integration_20261111/REPORT.md)：新8＋A12＋C価格10/coverage7＋R12＋B12＋会計15＋H4結合7＝83技術test PASS。保存N52の正本copy、複数R A batch/FAIL/未実行/reference共有、固定R価格domain/null、巨大整数exact mock会計を確認。baseline共通allowance policy不足を保持、実科学計算0、公開照合後STOP。
+
 [R可変費用pipeline技術検証](docs/research/rpe_r_selection_20261111/REPORT.md)：人工R選択12＋元会計15＋元pipeline12＝39件PASS。2**1200+3を含む整数Nと1単位の費用差・非整数binary64単価をexactに保持。law/domain/paired axes/欠測/精度不成立/全RPE成功資格/供給同時区間を確認。実科学計算・価格予測・実G/R最適化0、科学的R採択なし、公開照合後STOP。
 
 [H4 DF10 N一括結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：全13roundのideal条件付きN。reference差max9.28e−12、norm/closure gate PASS、旧m3/H6/SOURCE保全。巨大PR Nの48軸整数検証でm10/11の各軸を微小上方向補正し原本保持、補助人工4件PASS。actual/rigorous/全RPE/G未資格、公開照合後STOP。

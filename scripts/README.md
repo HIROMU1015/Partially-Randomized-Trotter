@@ -1,5 +1,7 @@
 # scripts 索引
 
+[R可変provider接続](../docs/research/rpe_provider_integration_20261111/HANDOFF.md)：Aのplan_pr_r_dependent_n.pyとCのreport_rpe_nc_coverage.pyを固定版取込み。両CLIはmetadataのみ。将来の数値一括入口はrpe_provider_integration.run_evaluationで、今回はmock検証のみ。
+
 [有限R menu API](../docs/research/rpe_r_selection_20261111/INTERFACE.md)：新科学runnerは追加しない。rpe_r_selectionのbuild_menu/coverageはmetadata、evaluate_menuは供給済み数値の明示入口。今回人工/mockのみ、実実行案は別許可待ち。
 
 `run_h4_df10_rpe_batch.py`の[全13round N完了](../docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：固定24候補を一回評価し旧m3を保持。`verify_h4_df10_rpe_shot_integers.py`は同じ保存ε/αの巨大N整数化を検証し、上方向だけ補正した受渡しrecordを別保存。signal再計算・C/G0、再実行しない。

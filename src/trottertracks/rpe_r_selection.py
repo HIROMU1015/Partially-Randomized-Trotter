@@ -79,6 +79,9 @@ def _candidate(menu, row, n, prices, cohort_selection, policy):
           any(type(n['plan'].get('N_'+axis)) is not int or n['plan']['N_'+axis]<=0 for axis in p.AXES)):
         reasons.append('N_PRECISION_OR_RADIUS_GATE_FAILED')
     if n is not None and 'law_binding' not in n:reasons.append('MISSING_N_LAW_BINDING')
+    if (n is not None and p.arm(row['candidate'])=='PR' and row['m'] in menu['variable_R_rounds'] and menu.get('N_comparison_policy')
+            and n.get('N_comparison_policy')!=menu['N_comparison_policy']):
+        reasons.append('MISSING_MATCHED_N_ALLOWANCE_POLICY')
     for axis in p.AXES:
         cohort=cohort_selection.get((cid,axis))
         found=[v for v in prices if p.key(v['identity'])==p.key(row) and v['axis']==axis and v['cohort']==cohort]
@@ -110,6 +113,8 @@ def coverage(menu, shots, prices, *, cohort_selection, price_policy='qualified_e
         rows.append(dict(m=row['m'],candidate_id=row['candidate']['id'],candidate=deepcopy(row['candidate']),
             arm=p.arm(row['candidate']),eligible=not reasons,reasons=reasons,
             N_status=next(v['N_status'] for v in inventory['rows'] if v['candidate_id']==row['candidate']['id']),
+            N_comparison_policy=None if nmap.get(p.key(row)) is None else nmap[p.key(row)].get('N_comparison_policy'),
+            required_N_comparison_policy=menu.get('N_comparison_policy') if row['m'] in menu['variable_R_rounds'] and p.arm(row['candidate'])=='PR' else None,
             price_contexts=deepcopy(next(v['price_contexts'] for v in inventory['rows'] if v['candidate_id']==row['candidate']['id'])),
             price_uncertainty=[deepcopy(v.get('uncertainty')) for v in chosen],
             full_RPE_qualified=False))

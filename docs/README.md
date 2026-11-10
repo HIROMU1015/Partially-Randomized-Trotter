@@ -1,5 +1,7 @@
 # 文書索引
 
+[R可変provider統合](research/rpe_provider_integration_20261111/REPORT.md)／[A/C HANDOFF](research/rpe_provider_integration_20261111/HANDOFF.md)：固定52行・R候補54行のmetadata inventory、83技術test、実科学計算0。
+
 [R可変総費用pipeline](research/rpe_r_selection_20261111/REPORT.md)／[A/C interface](research/rpe_r_selection_20261111/INTERFACE.md)／[有限実行案](research/rpe_r_selection_20261111/EXECUTION_PLAN.json)：技術実装・人工39件、実R比較/実G0。
 
 [H4 DF10全13round N結果](research/h4_df10_rpe_batch_results_20261110/REPORT.md)：[受渡しN](research/h4_df10_rpe_batch_results_20261110/N_HANDOFF.json)／[原結果](research/h4_df10_rpe_batch_results_20261110/run01/result.json)／[全round CSV](research/h4_df10_rpe_batch_results_20261110/ROUND_SUMMARY.csv)。巨大N整数丸めと原本を区別、actual/C/G未資格。
