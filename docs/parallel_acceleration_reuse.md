@@ -62,7 +62,7 @@ global phaseを明示的に保持し、statevectorからphaseをfitしない。�
 
 [thread単独の記録](../artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/performance_check.json)では1→16～32 threadsで約2.5倍、64 threadsは遅かった。32という値はこの測定に対応し、将来の全qubit数・回路への推奨値や上限ではない。短い人工測定による僅差をthread数の普遍的最適性と扱わない。
 
-保存H8の条件付き小event・両軸compiled作用は[検証記録](../artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/parallel_validation/parallel_validation.json)でPASS。full22528-event trajectoryとn9の最終資源費用は計算中であり、人工速度倍率を全runへ掛けた終了時刻や費用保証は出さない。
+保存H8の条件付き小event・両軸compiled作用は[検証記録](../artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/parallel_validation/parallel_validation.json)でPASS。full22528-event代表の作用検証とn9価格取得も[最終報告](../artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/parallel_v1/REPORT.md)で完了した。代表初回は約4時間29分、後続8標本は各約2時間4～9分、実測RAMに基づき4件ずつ並列実行した。旧逐次版のfull runは完了させていないため、全runの実測速度倍率は未確認。人工速度倍率を全runへ掛けた終了時刻や費用保証は出さない。
 
 ## checkpointと科学標本
 

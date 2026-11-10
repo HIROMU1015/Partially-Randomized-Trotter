@@ -1,3 +1,7 @@
+> **2026-11-10 完了更新**：全9価格標本PASS・全worker終了。保存値会計とSOURCE/input・paired G/SE照合もPASS。[最終REPORT](parallel_v1/REPORT.md) / [RESULTS.csv](parallel_v1/RESULTS.csv) / [validation_summary](parallel_v1/validation_summary.json)。固定代表G=7.577983059679597e15 RZ、保存B2の112.541倍・PFの84.8682倍。公開照合後mandatory STOP。次の研究範囲はユーザーが判断する。
+>
+> 以下は計算中に作成した引継ぎ履歴。現在の実行状態はACTIVE_RUN.jsonと最終REPORTを優先し、runnerや会計を重複起動しない。
+
 # H8 Full-H pure RTE：高速化後の引継ぎ
 
 この研究は計算中であり、最終G・比較結果は未確定。高速化の実装・技術検証と引継ぎを行った段階。現在のjob/PID・固定SOURCEは [ACTIVE_RUN.json](ACTIVE_RUN.json)、進行は `parallel_v1/price_stage.json` を読む。終わったtrialを再起動しない。

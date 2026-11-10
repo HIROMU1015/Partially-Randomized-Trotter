@@ -1,0 +1,276 @@
+{
+  "T": 1.6,
+  "base_H8_commit": "eb07156a37b1938ed3aed95c13abbb545466c573",
+  "baseline": {
+    "path": "artifacts/resource_applicability/track_a_h8_long_time/2026-11-05/confirmation.json",
+    "sha256": "0198e2ef5c1118ab3f78f4344352d67e5c683b78afe5f54115eafd8060536f42"
+  },
+  "baseline_design": {
+    "path": "configs/h8_long_time/stage_c_proposal_20261104.json",
+    "sha256": "2018816b6633b1ae6c6ee8e21a008bb98f41ba8aa2486c7f297a67ca23aad8e1"
+  },
+  "baseline_runtime": {
+    "packages": {
+      "numba": "0.60.0",
+      "numpy": "1.26.4",
+      "qiskit": "1.3.0",
+      "scipy": "1.14.1"
+    },
+    "python": "3.11.0rc1"
+  },
+  "candidate_selection": "selection.json",
+  "changes": [
+    "measured Aer threading",
+    "cached exact <=3q action matrices",
+    "per-action vector checkpoints",
+    "isolated CZ diagnostic coverage using the existing Operator check",
+    "spawned phase/remaining workers to avoid fork after multithreaded Aer"
+  ],
+  "cohort": "H8_FULL_H_PURE_RTE_LIGHT_EXPLORATION_20261110",
+  "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+  "compiler_phase_source": "18ce41942051065fa097644a8a937bd11adba708",
+  "conditional_product_compile": {
+    "code": "scripts/check_h8_full_h_product_compile.py",
+    "result": "conditional_product_compile_validation.json",
+    "sha256": "3b9eec214ecfe1970101cbcf2542fcee703c660a630348ecd00a8982b3894e39",
+    "source": "8f5d99375",
+    "statistical_samples": 0
+  },
+  "construction_SOURCE": "3a6354cab",
+  "epsilon": 0.0005,
+  "n": 9,
+  "new_target_reference": 0,
+  "old_SOURCE_raw_results_grant_ledger_marker_STOP_modified": false,
+  "parallel_validation": {
+    "path": "artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/parallel_validation/parallel_validation.json",
+    "sha256": "9e08c5fda677187eecac40703e60ffe4412e5dc9ace11001677db5e9598afe05"
+  },
+  "previous_partial_trials_in_statistical_samples": false,
+  "previous_price_SOURCE": "cfbe8ce2c7b98524cc855e24b88e54e16bdaa7ac",
+  "price_SOURCE": "070a0c082aa9a04a9151a2dcda035ca728fc4053",
+  "private_assets": "artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/PRIVATE/parallel_v1",
+  "private_compiler_cache": "artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/PRIVATE/parallel_v1/compiled_cache",
+  "private_trial_root": "artifacts/resource_applicability/df_h8_full_h_pure_rte_light/2026-11-10/PRIVATE/parallel_v1/cost/H8_FULL_H_PURE_RTE_LIGHT_EXPLORATION_20261110/H8FH_eeefac7accfbd90c9e86",
+  "provider_SOURCE": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+  "provider_files": [
+    {
+      "historical_expected": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618",
+      "match": true,
+      "path": "src/trotterlib/rte.py",
+      "sha256": "620a70077eb691281c01706ed726a91e625a98261c6e581c2d96502bc541e618"
+    },
+    {
+      "historical_expected": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+      "match": true,
+      "path": "src/trotterlib/df_rte_tail.py",
+      "sha256": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45"
+    },
+    {
+      "historical_expected": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436",
+      "match": true,
+      "path": "src/trotterlib/df_rte_qiskit.py",
+      "sha256": "c710de23b7bfef525199ab28b897c21b2a78723a01b29da6067ff64354dcd436"
+    },
+    {
+      "historical_expected": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e",
+      "match": true,
+      "path": "src/trotterlib/df_partial_s2.py",
+      "sha256": "6821823749b903ccd1dcb57803f27459f2b4fe265ca53175373fe55d00423d9e"
+    },
+    {
+      "historical_expected": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d",
+      "match": true,
+      "path": "src/trotterlib/rte_compiled_cost.py",
+      "sha256": "567e3477d47e0b65442d48b8c55567e8cc231de05cfbeb74eb91f587bc1dfa3d"
+    },
+    {
+      "historical_expected": "49d682d94b2e205ab5e97a9a787fbc1bfe0679019323528db1b3ec3e81d193b1",
+      "match": true,
+      "path": "src/trottertracks/resource_applicability/h8_sparse_reference_v1.py",
+      "sha256": "49d682d94b2e205ab5e97a9a787fbc1bfe0679019323528db1b3ec3e81d193b1"
+    },
+    {
+      "historical_expected": "0fe422f6ce510f444d67b4c5004ad5f2f4f8281798f4967014006748f86f0d4a",
+      "match": true,
+      "path": "src/trottertracks/resource_applicability/h8_signal_preflight_port_v1.py",
+      "sha256": "0fe422f6ce510f444d67b4c5004ad5f2f4f8281798f4967014006748f86f0d4a"
+    },
+    {
+      "historical_expected": "c9afd00f0fdb5014f34163d04d03e45406da9ff949cf62742c69d7bddbfa1ac1",
+      "match": true,
+      "path": "src/trottertracks/resource_applicability/h6_matched_port_v1.py",
+      "sha256": "c9afd00f0fdb5014f34163d04d03e45406da9ff949cf62742c69d7bddbfa1ac1"
+    },
+    {
+      "historical_expected": "72f19faeb5209e27b7edb70743b123a72a78c83aa8dbf47cc219d2d9ff631c6d",
+      "match": true,
+      "path": "src/trottertracks/resource_applicability/ax2b_molecular_ports_v3.py",
+      "sha256": "72f19faeb5209e27b7edb70743b123a72a78c83aa8dbf47cc219d2d9ff631c6d"
+    },
+    {
+      "historical_expected": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd",
+      "match": true,
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "sha256": "7b8b13483066bb39cc4aad1c36f6e5da6fbc679ecb8bae9c08a0b326648a36fd"
+    },
+    {
+      "historical_expected": "0a6f7137a4ef27c0ecb1fdc6170cfcd502cbf856149749e72fad325ab755a1d8",
+      "match": true,
+      "path": "src/trottertracks/resource_applicability/h6_hash_reuse_v1.py",
+      "sha256": "0a6f7137a4ef27c0ecb1fdc6170cfcd502cbf856149749e72fad325ab755a1d8"
+    }
+  ],
+  "public_trial_records": "price_trials.json.gz",
+  "reference": {
+    "T": 1.6,
+    "path": "artifacts/resource_applicability/track_a_h8_long_time/2026-11-03/stage_A_combined.json.gz",
+    "sha256": "9d5dcc17fd42b2f8e3f07da37784ea4d88e1dc6bb7f7f599d9794f10edc316ae"
+  },
+  "report_source_file": "scripts/report_h8_full_h_pure_rte.py",
+  "report_source_sha256": "543d937f0cc5e5b6223085349a724a04cb675276ccf0af7458ef4a99db49c90e",
+  "reuse_guide": "docs/parallel_acceleration_reuse.md",
+  "reused_Aer_commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+  "reused_full_H_commit": "9b83b96b83f62142c9d87858dc24a94db7ac5d61",
+  "runtime": {
+    "packages": {
+      "numpy": "1.26.4",
+      "qiskit": "1.3.0",
+      "qiskit-aer-gpu": "0.15.1",
+      "scipy": "1.14.1"
+    },
+    "python": "3.12.3",
+    "simulation_device": "CPU"
+  },
+  "saved_input_binding": {
+    "basis": "STO-3G",
+    "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+    "df": "4911d1f5faab5fe81bfb70c6c2ef01265e3085107a513d4c990e1f39b44a7e0f",
+    "df_policy": "tol-only1e-8",
+    "fragment_order": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27
+    ],
+    "geometry": "linear_1Angstrom",
+    "hamiltonian": "1a5ebefa18fc1c9f01ad644b81d13f49c7bf944bccfe3837d459c35d3325dbe2",
+    "rank": 28,
+    "sector_dimension": 4900,
+    "snapshot": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955",
+    "state": "50a8fcb4cd29d60349db8e8fe728cb609eaaa903d9531833ef63e2711fa363fb"
+  },
+  "saved_input_loader_config": "/home/AbeHiromu/projects/h8-ab-validation/20261018/private/config_A_SEALED_PRIVATE.json",
+  "saved_input_regeneration": 0,
+  "saved_inputs": [
+    {
+      "bytes": 1299688,
+      "role": "h8_input_snapshot.npz",
+      "sha256": "d4c4346127e97c241439ae1c4ae010962b0456b19f461cfd3d9b06e7d4a50955"
+    },
+    {
+      "bytes": 5542,
+      "role": "snapshot_receipt.json",
+      "sha256": "d660f949a28256ba7a69b5bd21b2d6eb70d9f8543873616767200087baf03958"
+    },
+    {
+      "bytes": 31248,
+      "role": "df_receipt.json",
+      "sha256": "4911d1f5faab5fe81bfb70c6c2ef01265e3085107a513d4c990e1f39b44a7e0f"
+    },
+    {
+      "bytes": 5520922,
+      "role": "h8_preparation_export",
+      "sha256": "771137828552b858361b6e2b25d2b675fb83f908aad6209f757e46464b817420"
+    }
+  ],
+  "seed_policy": {
+    "finite_PRNG_independence_proved": false,
+    "keys": [
+      "cohort",
+      "candidate_id",
+      "index",
+      "outer",
+      "piece"
+    ],
+    "namespace": "H8_FULL_H_LIGHT_20261110"
+  },
+  "selected_candidates": [
+    {
+      "K": 2,
+      "L_D": 0,
+      "R_outer": 704,
+      "T": 1.6,
+      "deterministic_block_count": 0,
+      "epsilon": 0.0005,
+      "family": "FULL_H_PURE_RTE",
+      "formula": "2nd",
+      "id": "H8FH_eeefac7accfbd90c9e86",
+      "method": "PR",
+      "prefix": 0,
+      "q": 32,
+      "s": 22528,
+      "system": "H8"
+    }
+  ],
+  "selection_sha256": "7efbe970fabe3febe92bb79142b5a23937d1bc516f3d549885f0188acceb4563",
+  "signal_SOURCE": "6fddeb888",
+  "source_files": {
+    "scripts/h46_b3_fast_fingerprint.py": "75d6341b693d610f15c35cb6d8ec61a4af732f6e4026ed73e0c15001e1d689b0",
+    "scripts/h46_full_h_pure_rte.py": "8b5569b2ca61598105ef405fcd411a02f4d42bc604f2c4d185a1e17e428440ea",
+    "scripts/h46_full_h_t20_aer.py": "781c03f2cdbcc0b595e0195a3bc467b54e0da3a04db001ebf2a8a00048a3a04a",
+    "scripts/h46_long_time_native.py": "c228b330c3fd4a775a912d5c09280addc3e7f669dd2e7ee0b8955877b97538fb",
+    "scripts/h8_compiler_phase_bookkeeping.py": "ada13cf35bb2dba0a9a44f92a697c95eeac3a44bff6196968a2c53be3fb94dec",
+    "scripts/h8_full_h_parallel_aer.py": "785490244d9ef4417ccf5368395906933bf17653c61c98c442325b1ced8f068f",
+    "scripts/h8_full_h_price.py": "0f1ba7a5b593e184b8222ccf4a37a7f9cafd8d6a11f4bae8402e2756760a0dea",
+    "scripts/h8_full_h_price_parallel.py": "3621afcaebb0164497acd6fbc17c9aafc30d8159dae7872c5bee568904c8cca8",
+    "scripts/h8_full_h_pure_rte.py": "b359bdd90c12390f77fa0913a8eac1fc20451ca5035bed1017d81f01a9fb3bb1",
+    "scripts/h8_full_h_signal.py": "6895c9bcfefba78534aa0886ef86acdd47c9301674f7c7e4fcd3899502fd7dbc",
+    "scripts/h8_long_time_adapter.py": "10d8caf5869a4830c5cc175e2a8b64ec28ae98ff393e37273279feeed6bc5da9",
+    "scripts/h8_long_time_runtime.py": "52f8e26c8ee1711bc67e816ae905dc6ce1463bcb2ee3037f9fd1676516f05265",
+    "scripts/run_pf_common_run.py": "b06275647ed6ad5e3a35bf573f8f113a1a51d2e5b02e152eaa32b68893f67a11"
+  },
+  "source_fixed_before_price": true,
+  "technical_run": "parallel_v1",
+  "thread_benchmark_sha256": "30283446146803c91b43f9db19ed05cda6d45f60dcc1cbf5fe861602f33e4db1",
+  "unchanged": [
+    "Hamiltonian",
+    "state",
+    "reference",
+    "scalar",
+    "components",
+    "sampling law",
+    "seed namespace",
+    "candidate",
+    "cohort",
+    "n9",
+    "normalization",
+    "shot policy",
+    "priced native circuit",
+    "compiler",
+    "tolerances"
+  ]
+}
