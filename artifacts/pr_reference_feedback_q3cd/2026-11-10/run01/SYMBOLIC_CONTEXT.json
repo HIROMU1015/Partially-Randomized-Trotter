@@ -1,0 +1,114 @@
+{
+  "status": "ARTIFICIAL_SYMBOLIC_TEMPLATE_PASS",
+  "rows": [
+    {
+      "arm": "Bprime",
+      "product": false,
+      "all_parameters_unbound": true,
+      "post_unroll": [
+        "crz",
+        "cx",
+        "h",
+        "p",
+        "rz",
+        "rzz",
+        "xx_plus_yy"
+      ],
+      "before_last_ops": {
+        "rz": 25,
+        "sx": 7,
+        "barrier": 7,
+        "cx": 7
+      }
+    },
+    {
+      "arm": "Bprime",
+      "product": true,
+      "all_parameters_unbound": true,
+      "post_unroll": [
+        "crz",
+        "cx",
+        "cz",
+        "h",
+        "p",
+        "rz",
+        "rzz",
+        "xx_plus_yy"
+      ],
+      "before_last_ops": {
+        "rz": 29,
+        "sx": 9,
+        "barrier": 8,
+        "cx": 8
+      }
+    },
+    {
+      "arm": "Reference_B1",
+      "product": false,
+      "all_parameters_unbound": true,
+      "post_unroll": [
+        "cswap",
+        "h",
+        "p",
+        "rz",
+        "rzz",
+        "xx_plus_yy"
+      ],
+      "before_last_ops": {
+        "rz": 34,
+        "sx": 9,
+        "barrier": 6,
+        "cx": 12
+      }
+    },
+    {
+      "arm": "Reference_B1",
+      "product": true,
+      "all_parameters_unbound": true,
+      "post_unroll": [
+        "cswap",
+        "h",
+        "p",
+        "rz",
+        "rzz",
+        "xx_plus_yy",
+        "z"
+      ],
+      "before_last_ops": {
+        "rz": 35,
+        "sx": 9,
+        "barrier": 7,
+        "cx": 12
+      }
+    }
+  ],
+  "profile": {
+    "name": "Track C reference A",
+    "qiskit": "1.3.0",
+    "basis": [
+      "rz",
+      "sx",
+      "x",
+      "cx"
+    ],
+    "passes": [
+      "reject opaque unitary",
+      "fixed inverse cancellation",
+      "UnrollCustomDefinitions",
+      "reject opaque unitary",
+      "BasisTranslator",
+      "fixed X/CX inverse cancellation"
+    ],
+    "numeric_optimization": false,
+    "approximate_commutation": false,
+    "angle_cutoff": null,
+    "topology": null,
+    "seed": 17,
+    "seed_scope": "no stochastic pass is used",
+    "equivalence": "already-controlled full joint circuit, up to one common global phase",
+    "control_after_compilation": "not qualified; preserve control before lowering"
+  },
+  "artificial_compiles": 4,
+  "scientific_compiles": 0,
+  "proof_scope": "global family maps contain no X before cancellation; numeric binding does not change gate names"
+}
