@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 DF10価格V2 S1](docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)（2026-11-10）：開発限定3 fit・既知データ照合をSOURCE cc6b42f12で完了。Mqの既知PF q16誤差−62、PR確認33本RMSE252.244 RZ/軸、MqBは276.936。独立V2 holdoutではなく探索的改善、PR q方向・law期待値・長q/全RPE/CIは未資格。人工4 method PASS、新sampling/build/compile/N/G0、V1判定不変、公開照合後STOP。
+
 [H4 DF10価格V1](docs/research/h4_df10_price_v1_20261110/REPORT.md)（2026-11-10）：指定保存データの評価は完了したが、モデル価格一致は未達。開発0/20、留保0/68の整数一致。PF q16残差+9646、PR確認+736…+1960/軸。8種類の人工検査PASSを科学的価格一致へ格上げしない。新fit/sampling/build/compile/N/G0、全law/長q/全RPE/CIは未資格、公開照合後STOP。
 
 [H4 DF10 RPE費用接続](docs/research/h4_df10_rpe_cost_connection_20261110/REPORT.md)（2026-11-10）：D1の保存N/Cを3cohortケースへ準備、部分m3と全13roundを区別する最小adapter・人工/既存会計回帰14件PASS。同S2 PF B0/p7とPR p1/R4/K2の48候補metadata coverageを照合。実H4のN×C/新N/残差/fit/signal/sampling/build/compile/全G/H6数値は0、Main Claim不変。次案は保存m3のRZ小計3ケースのみ、別途実行許可が必要。公開照合後mandatory STOP。

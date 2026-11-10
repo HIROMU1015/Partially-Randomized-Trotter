@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4 DF10価格V2 S1](../docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)：`run_h4_df10_price_v2.py`は固定V1 JSONだけで開発限定3 fitと既知データ照合を完了済み。既存出力への再実行・上書きを拒否する。新sampling/build/compile/N/G0、独立holdout/長q未資格、公開照合後STOP。
+
 [H4 DF10価格V1](../docs/research/h4_df10_price_v1_20261110/REPORT.md)：`run_h4_df10_price_v1.py develop`と`complete_h4_df10_price_v1.py`で指定保存cohortを評価済み。元runnerのholdoutは完了順metadataの不備で停止し、同じmodel bytesを使う最小adapterで継続した。整数価格一致は未達。完了結果を再生成せず、旧SOURCE/停止を保全。fit/sampling/build/compile/N/G0、公開照合後STOP。
 
 [H4 DF10 RPE費用接続](../docs/research/h4_df10_rpe_cost_connection_20261110/REPORT.md)（2026-11-10）：D1の保存N/Cを3cohortケースへ準備、部分m3と全13roundを区別する最小adapter・人工/既存会計回帰14件PASS。同S2 PF B0/p7とPR p1/R4/K2の48候補metadata coverageを照合。実H4のN×C/新N/残差/fit/signal/sampling/build/compile/全G/H6数値は0、Main Claim不変。次案は保存m3のRZ小計3ケースのみ、別途実行許可が必要。公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_cost_connection`、準備のみの`prepare_h4_df10_rpe_cost_connection.py`、人工test `check_h4_df10_rpe_cost_connection.py`。PREPARED_INPUTS/COVERAGEは報告と同directory。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 DF10価格V2 S1結果](research/h4_df10_price_v2_s1_20261110/REPORT.md)：保存構造価格＋少数補正の3 fit、RESULT/CSV/実行前PLAN。Mqが既知データで改善し、basis追加MqBの利益は支持されない。独立汎化・長q/全RPEは未資格。
+
 [H4 DF10価格V1結果](research/h4_df10_price_v1_20261110/REPORT.md)：固定構造モデルの開発/留保88軸行とpath別CSV、PLAN、初回のmetadata順序停止・継続記録。留保価格の整数一致は0/68。全RPE価格の資格・Main Claimは変更せず、公開照合後mandatory STOP。
 
 [H4 DF10 RPE費用接続](research/h4_df10_rpe_cost_connection_20261110/REPORT.md)（2026-11-10）：D1の保存N/Cを3cohortケースへ準備、部分m3と全13roundを区別する最小adapter・人工/既存会計回帰14件PASS。同S2 PF B0/p7とPR p1/R4/K2の48候補metadata coverageを照合。実H4のN×C/新N/残差/fit/signal/sampling/build/compile/全G/H6数値は0、Main Claim不変。次案は保存m3のRZ小計3ケースのみ、別途実行許可が必要。公開照合後mandatory STOP。
