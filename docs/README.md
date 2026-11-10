@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19 RPE D1結果](research/h6_df19_rpe_d1_results_20261110/REPORT.md)：係数prior・h=.1・13round条件、保存4候補の条件付き十分N、cohort別2round部分費用。actual/全Gは未資格、公開照合後STOP。
+
 [H6係数prior・D1実行準備](research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)：H4 prior/scalarを再利用し、人工12件PASS。実H6科学評価は添付指示§9の別許可待ち。公開照合後mandatory STOP。
 
 [H6 RPE D1実装・人工検証](research/h6_df19_rpe_d1_20261110/REPORT.md)：H4算術を保持したH6入力層、人工25件PASS、固定4点の科学評価は別許可待ち。[実行計画](research/h6_df19_rpe_d1_20261110/D1_PLAN.md)。公開照合後mandatory STOP。
