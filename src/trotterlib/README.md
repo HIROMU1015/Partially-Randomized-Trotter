@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.h6_df19_rpe_d1`：[H6係数prior・D1準備](../../docs/research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)。`h4_df10_rpe_d1.coefficient_prior/analyze_bound_point`を再利用し、H6 schema・二つのh候補・固定4点・部分価格表を接続。人工12件、実H6は別許可待ち。
+
 `trottertracks.h6_df19_rpe_connection`：[H6 D1](../../docs/research/h6_df19_rpe_d1_20261110/REPORT.md)。固定binding・外部prior・uniform α・保存cohortの薄い接続。`h4_df10_rpe_connection`の算術、既存geometry/Hoeffding/horizonを再利用。人工25件PASS、実H6数値評価は別許可待ち。
 
 [Track D×元PR/RPE共通interface](../../docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。 実装：`trottertracks.track_d_resource_interface`、読取CLI：`scripts/inspect_track_d_resource_interface.py`、test：`tests/check_track_d_resource_interface.py`。

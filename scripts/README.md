@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_h6_df19_rpe_d1.py`：[係数prior・D1一括計画](../docs/research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)。保存係数prior→h=.8/.1→固定4点N→条件付き部分費用の明示入口。今回実行したのは`--help`と人工testのみ。実H6入力を渡す実行は別途科学許可が必要。
+
 [H6 RPE D1](../docs/research/h6_df19_rpe_d1_20261110/REPORT.md)：今回追加したのはAPIと人工test。`python -B tests/check_h4_df10_rpe_connection.py -v`／`python -B tests/check_h6_df19_rpe_connection.py -v`で人工25件。実H6の数値driverは起動していない。[別許可後の計画](../docs/research/h6_df19_rpe_d1_20261110/D1_PLAN.md)。
 
 [Track D×元PR/RPE共通interface](../docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。 実装：`trottertracks.track_d_resource_interface`、読取CLI：`scripts/inspect_track_d_resource_interface.py`、test：`tests/check_track_d_resource_interface.py`。

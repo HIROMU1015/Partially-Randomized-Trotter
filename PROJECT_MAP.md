@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6係数prior・D1実行準備](docs/research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)：H4完了prior/scalar helperを再利用、H6 loader・h二候補STOP・固定4点と3 cohort別部分費用CLIを用意。人工7＋5＝12件PASS。添付指示§9により実H6 prior/phase/radius/N/部分Gは別途明示許可待ち、公開照合後STOP。
+
 [H6 RPE D1実装・人工検証](docs/research/h6_df19_rpe_d1_20261110/REPORT.md)（2026-11-10）：固定H4 adapterの入力層だけをH6 bindingへ拡張、既存15＋H6差分10の人工25件PASS。実H6は保存4点のread-only inspectionのみ。prior不足を保持し、新phase/radius/N/部分G・実target horizonは未承認・未実行。実行計画と公開照合後mandatory STOP。
 
 [H6 DF19のRPE接続準備](docs/research/h6_df19_rpe_preparation_20261110/REPORT.md)（2026-11-10）：保存DF-H ground／1 kcal/mol／αtotal=.05／P=0／compiled RZを今回条件として、H6入力・signal・直接価格4点を読取専用で接続整理。H4 adapterの共通化差分、h/prior/β候補、未評価roundと最小scalar計画を報告。新signal/N/G・sampling/build/compile・詳細レビュー0、公開照合後mandatory STOP。

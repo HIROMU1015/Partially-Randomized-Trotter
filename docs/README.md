@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6係数prior・D1実行準備](research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)：H4 prior/scalarを再利用し、人工12件PASS。実H6科学評価は添付指示§9の別許可待ち。公開照合後mandatory STOP。
+
 [H6 RPE D1実装・人工検証](research/h6_df19_rpe_d1_20261110/REPORT.md)：H4算術を保持したH6入力層、人工25件PASS、固定4点の科学評価は別許可待ち。[実行計画](research/h6_df19_rpe_d1_20261110/D1_PLAN.md)。公開照合後mandatory STOP。
 
 [Track D×元PR/RPE共通interface](research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。
