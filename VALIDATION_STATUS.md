@@ -1,5 +1,7 @@
 # Validation status
 
+[R可変費用pipeline技術検証](docs/research/rpe_r_selection_20261111/REPORT.md)：人工R選択12＋元会計15＋元pipeline12＝39件PASS。2**1200+3を含む整数Nと1単位の費用差・非整数binary64単価をexactに保持。law/domain/paired axes/欠測/精度不成立/全RPE成功資格/供給同時区間を確認。実科学計算・価格予測・実G/R最適化0、科学的R採択なし、公開照合後STOP。
+
 [H4 DF10 N一括結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：全13roundのideal条件付きN。reference差max9.28e−12、norm/closure gate PASS、旧m3/H6/SOURCE保全。巨大PR Nの48軸整数検証でm10/11の各軸を微小上方向補正し原本保持、補助人工4件PASS。actual/rigorous/全RPE/G未資格、公開照合後STOP。
 
 [H4 DF10 N batch技術準備](docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：人工行列/mock/静的保存fixture13件PASS。B0/p7・S2/R4/K2 law、m3コピー、m4入力、missing/FAIL/SOURCEと共通C形式を確認。実H4新N/保存signal再解析/C/G0、全13-round科学資格は未取得、公開照合後STOP。

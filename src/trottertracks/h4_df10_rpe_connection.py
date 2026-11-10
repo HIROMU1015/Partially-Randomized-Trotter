@@ -6,6 +6,7 @@ Saved-point inspection and time/identity matching do not solve N or sum G.
 """
 from copy import deepcopy
 import math
+from fractions import Fraction
 from types import SimpleNamespace
 
 from . import c1_stage3_accuracy as existing
@@ -14,6 +15,21 @@ AXES = ('X', 'Y')
 SCOPE = 'single_hadamard_interrogation_without_state_preparation'
 PRICE_KINDS = ('DIRECT_COMPILED_DETERMINISTIC', 'DIRECT_COMPILED_FINITE_SAMPLE',
                'MODEL_PREDICTION')
+
+
+def exact_scalar(value):
+    """Exact supplied integer/binary64 price; never round a quantum shot count."""
+    if type(value) is int:return Fraction(value)
+    if type(value) is float and math.isfinite(value):return Fraction.from_float(value)
+    if isinstance(value,dict) and set(value)=={'numerator','denominator'}:
+        if type(value['numerator']) is int and type(value['denominator']) is int and value['denominator']>0:
+            return Fraction(value['numerator'],value['denominator'])
+    raise ValueError('Finite integer/binary64 or exact rational required')
+
+
+def exact_value(value):
+    value=exact_scalar(value) if not isinstance(value,Fraction) else value
+    return dict(numerator=value.numerator,denominator=value.denominator)
 
 
 def _finite(value, name, *, positive=False):
@@ -142,7 +158,7 @@ def failure_budget(plans, *, alpha_total):
 
 
 def aggregate_supplied_axes(plans, prices, *, expected_rounds, alpha_total,
-                            compiler, metrics=existing.METRICS, partial_rounds=False):
+                            compiler, metrics=existing.METRICS, partial_rounds=False, exact=False):
     """Small axis-N extension: old aggregate_totals requires equal X/Y shots.
 
     This function is arithmetic only, with no energy/horizon qualification or
@@ -204,12 +220,18 @@ def aggregate_supplied_axes(plans, prices, *, expected_rounds, alpha_total,
         if any(price.get('mean', {}).get(g) is None for g in metrics):
             return unavailable('MISSING_PRICE_METRIC')
         for g in metrics:
-            terms[g].append(nshots*_finite(price['mean'][g], 'one-shot price'))
+            value=price['mean'][g]
+            if exact:
+                value=exact_scalar(value)
+                if value<0:raise ValueError('Nonnegative one-shot price required')
+            else:value=_finite(value, 'one-shot price')
+            terms[g].append(nshots*value)
         widths.append(price.get('peak_qubits'))
         origins.append(dict(m=price['m'], axis=price['axis'], classification=kind,
                             source=price.get('source'), model=price.get('model')))
     return dict(status='SUPPLIED_AXIS_COST_SUM',
-        totals={g: math.fsum(values) for g, values in terms.items()},
+        totals={g: exact_value(sum(values)) if exact else math.fsum(values) for g, values in terms.items()},
+        numeric_encoding='exact_rational' if exact else 'legacy_scalar',
         peak_qubits=max(widths) if all(v is not None for v in widths) else None,
         price_origins=origins, total_covariance=None, total_confidence_interval=None,
         classical_cost_samples_are_shot_multipliers=False,

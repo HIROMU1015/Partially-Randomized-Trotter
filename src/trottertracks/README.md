@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[R可変PF/PR費用](../../docs/research/rpe_r_selection_20261111/REPORT.md)：rpe_r_selection.pyとcheck_rpe_r_selection.py。R-only menuとA/C law/domain形式、exact積和・条件付き選択、39技術test PASS。実科学計算/実R最適化0。
+
 [H4 price providerのB接続](../../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：h4_df10_price_providerと固定V1/Mq依存を取込み。B factory/run_missing/coverageへ接続し、34技術test PASS、実N/C/G0。
 
 共通 `trotterlib` APIと区別した実験別SOURCEの名前空間。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[R可変費用選択](../../docs/research/rpe_r_selection_20261111/REPORT.md)：trottertracks.rpe_r_selectionが既存B条件照合・m5 allocation・supplied-axis会計を再利用。exact=Trueで巨大整数Nを保持。新R実計算0。
+
 [H4 DF10 N側の完了結果](../../docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：旧scalar/action不変で全13roundの条件付きNへ接続。巨大PRの整数精度を別補助処理で照合しN_HANDOFFへ保存、元helper/原結果は保全。actual/全RPE/G未資格。
 
 [H4 N batch adapter](../../docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：`trottertracks.h4_df10_rpe_batch_provider`が既存H4 scalar・汎用行列作用・保存H4 loaderを再利用。B0/p7のscalarとPR/p1/R4/K2を保持、共通N/C APIは不変、人工13件・実科学0。

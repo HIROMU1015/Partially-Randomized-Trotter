@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[有限R候補の総費用選択pipeline](docs/research/rpe_r_selection_20261111/REPORT.md)（2026-11-11）：R-only menu・N/C full recipe/law/domain照合・exact有理数積和・round別点選択を追加。固定Rモデルの流用、欠測を除いた全menu最適化の表示、round PASSから全RPE成功への昇格を防ぐ。人工12＋既存27＝39件PASS、実N/C/再解析/compile/実G/実R最適化0。A/C共通仕様と未承認の有限実行案を公開しSTOP。
+
 [H4 DF10全13round N結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：SOURCE90dcc3ed2で保存m4 scalar2＋新11時点22候補を一回評価、全ideal条件付きPASS。PF各軸705〜764、PR m12約3.78e75。原本保全・長時間PRの整数丸めだけ上方向検証したN_HANDOFFをCへ渡す。actual/全RPE/C/G未資格、公開照合後STOP。
 
 [H4 DF10 N batch整備](docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：保存m3 N保持、m4保存signal scalarとfresh11時点22候補を共通N callbackへ接続。人工/mock/静的fixture13件PASS、実H4再解析・新N/C/G0、C interface/H6不変、科学許可待ち・公開照合後STOP。
