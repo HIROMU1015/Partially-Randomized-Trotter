@@ -1,0 +1,14 @@
+# Implementation checks and qualifications
+
+The primary Codex agent performed these checks; this is not an independent scientific review.
+
+- `tests/check_h6_df19_price_v2.py`: four artificial checks PASS (paired multiresponse fit/rank deficiency, constant offset at q1/2/4, PF covariance null, axis/family descriptor binding). No molecular inputs or circuits in these tests.
+- Artificial X/Y fork regression PASS: canonical measured-wrapper fingerprints and all six price metrics match sequential execution for both axes. Four artificial compiler calls; no H6 input or event sampling. Each production whole-path is sampled/built once, then the immutable evolution is inherited by two axis children.
+- Artificial Affine checks PASS: two-response q1/q2 fit gives the prescribed q4 linear continuation, deterministic covariance stays null, residual sign is observed minus predicted.
+- Phase B reused frozen V1 scalar predictions. V1 was not recounted. The H4 correction coefficients were not transferred.
+- Pilot preparation matched the saved Full19 and prefix7 preparation hashes and the loaded provider modules against c31ef424175c02379eafebe8fc6c7548c1d9aabe. Snapshot/receipt bytes were checked; no Hamiltonian/state generation or physical reference solve was performed.
+- Before sampling, a scalar check initially compared the extracted tail identity 0.0194666612606853 to the total scalar. This was corrected before any draw/build/compile. The original rule is retained: PR total scalar is saved Hamiltonian constant plus extracted identity, once per complete evolution. The initial failed preparation created only an empty new output directory.
+- Phase C used four local 2/3-qubit fragments from the first saved one-body Gaussian pair. Six local compiler invocations occurred: the first diagnostic stopped at a raw matrix discrepancy, a single-pair debug invocation identified a global phase, then all four fragments were recorded. These are not full-wrapper acquisitions. Analytic expansion errors are about 1e-15. Raw compiler matrix discrepancies are retained in LOCAL_DIAGNOSTICS.json; a phase-only residual is reported separately, not promoted to a raw-vector PASS. No compiler output or scientific circuit was phase-corrected.
+- The full-wrapper pilot reuses the original native builder, finite K2 sampler, signed schedule, fingerprint and compiler. It records full measured wrappers and exact cache correspondence. It does not compute new physical signals or perform a new full-wrapper statevector equivalence check; existing builder validation is reused. Price-acquisition PASS does not claim a new unitary or RPE-success guarantee.
+
+Old SOURCE, V1 outputs, grants, ledgers, markers and mandatory STOPs remain unchanged. Completed scientific outputs must not be overwritten or silently rerun. New q4 data must not enter the frozen fit.
