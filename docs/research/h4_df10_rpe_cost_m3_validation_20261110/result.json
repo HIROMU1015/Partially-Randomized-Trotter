@@ -1,0 +1,400 @@
+{
+  "status": "THREE_SAVED_M3_RZ_SUBTOTALS_COMPLETED",
+  "scientific_source": "67fe43b9e4c61ca53ae5d2de57877b29e0b00af1",
+  "accounting_source": "305439c01b6e9d8ec264045585ad77b36630275c",
+  "D1_scientific_source": "311255aaac39dc1c3321108c296bde7dc93dd543",
+  "configuration": {
+    "base_time": 0.1,
+    "energy_precision_ha": 0.0015936001019904,
+    "beta_total": 0.4,
+    "beta_stat": 0.2,
+    "alpha_total_per_method": 0.05,
+    "alpha_axis": 0.0019230769230769232,
+    "alpha_sum_all_rounds": 0.05,
+    "horizon": {
+      "target_energy_precision_ha": 0.0015936001019904,
+      "required_q_continuous": 2510.0400000000104,
+      "maximum_round_index_M": 12,
+      "round_count_M_plus_one": 13,
+      "q_max": 4096,
+      "achieved_energy_resolution_ha": 0.0009765625,
+      "previous_q_energy_resolution_ha": 0.001953125,
+      "target_met": true,
+      "previous_power_fails": true,
+      "minimal_power_of_two_horizon": true
+    },
+    "D1_m": 3,
+    "D1_q_RPE": 8,
+    "prior_attempts": [
+      {
+        "base_time": 0.8,
+        "principal_alias_margin": -1.2538070459441983,
+        "qualified": false
+      },
+      {
+        "base_time": 0.1,
+        "principal_alias_margin": 2.2421676911480444,
+        "qualified": true
+      }
+    ],
+    "energy_prior_ha": [
+      -4.994249624417489,
+      -2.0985459369977186
+    ],
+    "energy_shift": 0,
+    "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+  },
+  "input_sha256": {
+    "docs/research/h4_df10_rpe_cost_connection_20261110/PREPARED_INPUTS.json": "70de8803ddc53476e6465470a88a143ed9f3e4e7e10124677eeb5e0e97bec41c",
+    "docs/research/h4_df10_rpe_d1_20261110/result.json": "c3191f206016971965e89354ef70cf4e00528ea12f297a4341bdb32823810e13",
+    "docs/research/h4_df10_rpe_preparation_20261110/SAVED_POINTS.json": "2c537d46ba3fc2bef771dfcf80f52e8b2a9ee70ac92d09f2dafcb1be458bf1a1"
+  },
+  "source_sha256": {
+    "src/trottertracks/h4_df10_rpe_cost_connection.py": "c6ddb7e3081fde307eda8f4e33039e136130b30a8e7fa6b19e95592e207d4423",
+    "src/trottertracks/h4_df10_rpe_connection.py": "d812ee6dfddcb940ecd21fc15414b2a0c60dfa275b42fd7fe3032b84b36f4859",
+    "src/trottertracks/c1_stage3_accuracy.py": "0db5d30a687ac1c86258a43c279dc8a35aa1f7c61901bc3b33ab2af4a5ffd9d3",
+    "scripts/run_h4_df10_rpe_cost_m3.py": "ef8fe261b25d77251c04ddee1c7c87e0044fe8935b2558bc4a90b221266fc214"
+  },
+  "rows": [
+    {
+      "candidate_id": "49709717a6c3d405c60d",
+      "cohort": "DETERMINISTIC",
+      "inputs": [
+        {
+          "axis": "X",
+          "measurement_axis": "cosine",
+          "N": 705,
+          "C_RZ": 44411,
+          "classical_n": 1,
+          "classification": "DIRECT_COMPILED_DETERMINISTIC",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/saved_secondary_metrics.json",
+            "selector": "/49709717a6c3d405c60d/mean_metrics"
+          }
+        },
+        {
+          "axis": "Y",
+          "measurement_axis": "sine",
+          "N": 705,
+          "C_RZ": 44411,
+          "classical_n": 1,
+          "classification": "DIRECT_COMPILED_DETERMINISTIC",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/saved_secondary_metrics.json",
+            "selector": "/49709717a6c3d405c60d/mean_metrics"
+          }
+        }
+      ],
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "law_context": {
+        "ideal_shot_law": "deterministic",
+        "circuit_law": "deterministic",
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "49709717a6c3d405c60d",
+          "method": "B0",
+          "prefix": 7,
+          "q": 8,
+          "system": "H4"
+        },
+        "price_sampling": "deterministic",
+        "actual_law_distance_qualified": false
+      },
+      "price_assumptions": [
+        "Saved finite-cohort means used as conditional point prices; no population guarantee",
+        "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+      ],
+      "accounting": {
+        "status": "CONDITIONAL_SELECTED_ROUND_SUBTOTAL",
+        "covered_rounds": [
+          3
+        ],
+        "missing_rounds": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "subset_resources": {
+          "rz_count": 62619510.0
+        },
+        "full_rpe_resources": null,
+        "peak_qubits": null,
+        "units": {
+          "rz_count": "gate_count"
+        },
+        "total_covariance": null,
+        "total_confidence_interval": null,
+        "classical_n_and_normalization_are_price_multipliers": false,
+        "full_rpe_energy_success": false,
+        "actual_success_qualified": false,
+        "population_expected_price_qualified": false
+      },
+      "axis_sum_check": "PASS_EXACT_RATIONAL_SUPPLIED_INPUTS_WITHIN_ONE_ULP",
+      "actual_N": null,
+      "overall_qualification": "CONDITIONAL_SAVED_N_FINITE_COHORT_PRICE_PROXY"
+    },
+    {
+      "candidate_id": "14bd81a375400c9b0305",
+      "cohort": "EXPLORATION",
+      "inputs": [
+        {
+          "axis": "X",
+          "measurement_axis": "cosine",
+          "N": 977,
+          "C_RZ": 16857.11111111111,
+          "classical_n": 9,
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          }
+        },
+        {
+          "axis": "Y",
+          "measurement_axis": "sine",
+          "N": 977,
+          "C_RZ": 16857.11111111111,
+          "classical_n": 9,
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          }
+        }
+      ],
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "law_context": {
+        "ideal_shot_law": "ideal_finite_RTE_law",
+        "circuit_law": "paired_unweighted_finite_RTE",
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "14bd81a375400c9b0305",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+        "actual_law_distance_qualified": false
+      },
+      "price_assumptions": [
+        "Saved finite-cohort means used as conditional point prices; no population guarantee",
+        "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+      ],
+      "accounting": {
+        "status": "CONDITIONAL_SELECTED_ROUND_SUBTOTAL",
+        "covered_rounds": [
+          3
+        ],
+        "missing_rounds": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "subset_resources": {
+          "rz_count": 32938795.11111111
+        },
+        "full_rpe_resources": null,
+        "peak_qubits": null,
+        "units": {
+          "rz_count": "gate_count"
+        },
+        "total_covariance": null,
+        "total_confidence_interval": null,
+        "classical_n_and_normalization_are_price_multipliers": false,
+        "full_rpe_energy_success": false,
+        "actual_success_qualified": false,
+        "population_expected_price_qualified": false
+      },
+      "axis_sum_check": "PASS_EXACT_RATIONAL_SUPPLIED_INPUTS_WITHIN_ONE_ULP",
+      "actual_N": null,
+      "overall_qualification": "CONDITIONAL_SAVED_N_FINITE_COHORT_PRICE_PROXY"
+    },
+    {
+      "candidate_id": "14bd81a375400c9b0305",
+      "cohort": "CONFIRMATION",
+      "inputs": [
+        {
+          "axis": "X",
+          "measurement_axis": "cosine",
+          "N": 977,
+          "C_RZ": 16947.78787878788,
+          "classical_n": 33,
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/confirmation_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          }
+        },
+        {
+          "axis": "Y",
+          "measurement_axis": "sine",
+          "N": 977,
+          "C_RZ": 16947.78787878788,
+          "classical_n": 33,
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/confirmation_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          }
+        }
+      ],
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "law_context": {
+        "ideal_shot_law": "ideal_finite_RTE_law",
+        "circuit_law": "paired_unweighted_finite_RTE",
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "14bd81a375400c9b0305",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+        "actual_law_distance_qualified": false
+      },
+      "price_assumptions": [
+        "Saved finite-cohort means used as conditional point prices; no population guarantee",
+        "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+      ],
+      "accounting": {
+        "status": "CONDITIONAL_SELECTED_ROUND_SUBTOTAL",
+        "covered_rounds": [
+          3
+        ],
+        "missing_rounds": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "subset_resources": {
+          "rz_count": 33115977.515151516
+        },
+        "full_rpe_resources": null,
+        "peak_qubits": null,
+        "units": {
+          "rz_count": "gate_count"
+        },
+        "total_covariance": null,
+        "total_confidence_interval": null,
+        "classical_n_and_normalization_are_price_multipliers": false,
+        "full_rpe_energy_success": false,
+        "actual_success_qualified": false,
+        "population_expected_price_qualified": false
+      },
+      "axis_sum_check": "PASS_EXACT_RATIONAL_SUPPLIED_INPUTS_WITHIN_ONE_ULP",
+      "actual_N": null,
+      "overall_qualification": "CONDITIONAL_SAVED_N_FINITE_COHORT_PRICE_PROXY"
+    }
+  ],
+  "scope": {
+    "account_subset_calls": 3,
+    "exact_axis_sum_checks": 3,
+    "new_N_or_C_estimates": 0,
+    "new_prior_or_horizon": 0,
+    "new_signals": 0,
+    "trajectories": 0,
+    "builds_compiles": 0,
+    "model_fits_bootstraps": 0,
+    "other_round_evaluations": 0,
+    "ratios_rankings_sensitivity_residuals": 0,
+    "full_RPE_or_H6_evaluations": 0
+  },
+  "full_rpe_resources": null,
+  "actual_success_qualified": false,
+  "mandatory_stop": true
+}
