@@ -28,7 +28,7 @@ def artificial(method):
                 expectation_basis='qualified_expectation',attenuation_price_multiplier=False,
                 mean={k:v*(i+1) for i,k in enumerate(api.bc.METRICS)},
                 peak_qubits=5 if method=='reference' else 3))
-    prices = api.MethodPrices(inputs,profile,method,tuple(rows))
+    prices = api.MethodPrices(inputs,profile,method,tuple(rows),'qualified_horizon')
     accuracy = dict(same_accuracy=True,binding=inputs.binding,target=inputs.target)
     plans = [dict(m=0,shots=2,target_id='ARTIFICIAL'),dict(m=1,shots=3,target_id='ARTIFICIAL')]
     return inputs,accuracy,plans,prices
@@ -56,6 +56,8 @@ class Synthetic(unittest.TestCase):
             with self.assertRaises(ValueError):api.aggregate_supplied(inputs,a,p,replace(c,rows=rows))
         bad = deepcopy(c);bad.rows[0]['scope']='compiled_time_evolution_subcircuit'
         with self.assertRaises(ValueError):api.aggregate_supplied(inputs,a,p,bad)
+        with self.assertRaises(ValueError):
+            api.aggregate_supplied(inputs,a,p,replace(c,horizon_qualification='UNQUALIFIED'))
 
     def test_scientific_identity_and_unqualified_accuracy(self):
         inputs,a,p,c = artificial('reference')

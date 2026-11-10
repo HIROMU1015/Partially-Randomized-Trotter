@@ -44,6 +44,7 @@ class MethodPrices:
     profile: ControlProfile
     method: str
     rows: tuple
+    horizon_qualification: str = 'UNQUALIFIED'
 
 
 def _same(a, b):
@@ -58,6 +59,8 @@ def _method(method):
 
 def _validate_prices(table):
     _method(table.method)
+    if table.horizon_qualification not in ('qualified_horizon', 'explicit_conditional_horizon'):
+        raise ValueError('Explicit full-horizon price qualification required')
     expected = {(m, axis) for m, q in table.scientific_inputs.rounds for axis in ('X', 'Y')}
     keys = [(r['m'], r['axis']) for r in table.rows]
     if len(keys) != len(set(keys)) or set(keys) != expected:
@@ -72,6 +75,8 @@ def _validate_prices(table):
         if (not row.get('source') or row.get('estimate_unit') != 'whole_path_one_interrogation'
                 or row.get('attenuation_price_multiplier') is not False):
             raise ValueError('Explicit whole-wrapper provenance and normalization required')
+        if row.get('long_round_coverage', True) is not True:
+            raise ValueError('Row contradicts declared horizon qualification')
         basis = row.get('expectation_basis')
         if basis not in ('qualified_expectation', 'explicit_conditional_model'):
             raise ValueError('Finite sample alone is not an expected-price qualification')
@@ -109,7 +114,7 @@ def aggregate_supplied(inputs, accuracy, plans, prices):
     target_id = next(iter(target_ids))
     if any(r.get('target_id', target_id) != target_id for r in prices.rows):
         raise ValueError('Price target differs from shot target')
-    costs = [dict(r, target_id=target_id) for r in prices.rows]
+    costs = [dict(r, target_id=target_id, long_round_coverage=True) for r in prices.rows]
     # No second implementation of N_X*C_X + N_Y*C_Y or interval accounting.
     result = accounting.aggregate_totals(accuracy, plans, costs,
         cost_scope=SCOPE, expected_scope=SCOPE)
@@ -156,7 +161,8 @@ class SavedCDF8Study:
                 raise ValueError('Fixed saved resource definitions differ')
             for method in METHODS:
                 rows = tuple(r for r in self._prices[scenario] if r['method'] == method)
-                _validate_prices(MethodPrices(self._inputs, self._profile, method, rows))
+                _validate_prices(MethodPrices(self._inputs, self._profile, method, rows,
+                                               'explicit_conditional_horizon'))
                 for r in rows:
                     q = r['q']
                     cut = (dict(kind='complete_event_within_step', after=16) if q == 1
@@ -205,7 +211,8 @@ class SavedCDF8Study:
         # These are saved scalar selections, not sums over real H4 records.
         totals = {g: self._totals[scenario]['totals'][g][column] for g in bc.METRICS}
         return dict(status='SAVED_CONDITIONAL_EVALUATION_REFERENCED', method=method, scenario=scenario,
-            shot_evidence=shots, prices=MethodPrices(deepcopy(inputs), deepcopy(profile), method, rows),
+            shot_evidence=shots, prices=MethodPrices(deepcopy(inputs), deepcopy(profile), method, rows,
+                                                    'explicit_conditional_horizon'),
             total_resources=deepcopy(totals), peak_qubits=self._result['peak_qubits'][method],
             uncertainty=deepcopy(self._totals[scenario]['uncertainty']),
             source=dict(commit=TOTAL, path=DIRECTORY+scenario+'/result.json',
