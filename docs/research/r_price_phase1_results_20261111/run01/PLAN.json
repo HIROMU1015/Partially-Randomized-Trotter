@@ -1,0 +1,4591 @@
+{
+  "schema_version": 1,
+  "source": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+  "B_source": "7bca8f9642d1c42ca3fede4d31b2cdd8dcef46ae",
+  "A_source": "5ca2dce3234f3e4a971f4a8c852da676f050e315",
+  "menus": {
+    "H4": {
+      "schema_version": 1,
+      "task_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+      "configuration": {
+        "base_time": 0.1,
+        "energy_precision_ha": 0.0015936001019904,
+        "beta_total": 0.4,
+        "beta_stat": 0.2,
+        "alpha_total_per_method": 0.05,
+        "alpha_axis": 0.0019230769230769232,
+        "alpha_sum_all_rounds": 0.05,
+        "horizon": {
+          "target_energy_precision_ha": 0.0015936001019904,
+          "required_q_continuous": 2510.0400000000104,
+          "maximum_round_index_M": 12,
+          "round_count_M_plus_one": 13,
+          "q_max": 4096,
+          "achieved_energy_resolution_ha": 0.0009765625,
+          "previous_q_energy_resolution_ha": 0.001953125,
+          "target_met": true,
+          "previous_power_fails": true,
+          "minimal_power_of_two_horizon": true
+        },
+        "D1_m": 3,
+        "D1_q_RPE": 8,
+        "prior_attempts": [
+          {
+            "base_time": 0.8,
+            "principal_alias_margin": -1.2538070459441983,
+            "qualified": false
+          },
+          {
+            "base_time": 0.1,
+            "principal_alias_margin": 2.2421676911480444,
+            "qualified": true
+          }
+        ],
+        "energy_prior_ha": [
+          -4.994249624417489,
+          -2.0985459369977186
+        ],
+        "energy_shift": 0,
+        "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+      },
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "contract": {
+        "completion": "saved_weighted_Hermitian_completion",
+        "fragment_order": "saved_snapshot_order",
+        "preparation_binding": {
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+          "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+        },
+        "state_preparation_cost": 0,
+        "input_source": {
+          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+        }
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "candidates": [
+        {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.1,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "b8e5419ce1a4708e6d06",
+            "method": "B0",
+            "prefix": 7,
+            "q": 1,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.1,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "03a51c8d13a91a403742",
+            "method": "PR",
+            "prefix": 1,
+            "q": 1,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 4,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 2,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.2,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "448030a98641e859df32",
+            "method": "B0",
+            "prefix": 7,
+            "q": 2,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 2,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.2,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "c00e00dc1e9c414fb7d9",
+            "method": "PR",
+            "prefix": 1,
+            "q": 2,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 8,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 2,
+          "q_RPE": 4,
+          "q_PF": 4,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "3897a891328d5db5b987",
+            "method": "B0",
+            "prefix": 7,
+            "q": 4,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 2,
+          "q_RPE": 4,
+          "q_PF": 4,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "18b698ccd4826050ce6a",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "49709717a6c3d405c60d",
+            "method": "B0",
+            "prefix": 7,
+            "q": 8,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "6e1efff1ba1f7ac95a3b",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 16,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 1.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "8e50c5560bb8f47f026f",
+            "method": "B0",
+            "prefix": 7,
+            "q": 16,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 16,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 1.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "64e4f7e9ec7fba28815e",
+            "method": "PR",
+            "prefix": 1,
+            "q": 16,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 16,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8,
+            "T": 1.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "201d498a3fa5eaa3b5c5",
+            "method": "PR",
+            "prefix": 1,
+            "q": 16,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 32,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 3.2,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "f01949581a5fab7c0ae1",
+            "method": "B0",
+            "prefix": 7,
+            "q": 32,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 32,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 3.2,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "f63ab0f7b1c0533a4ccc",
+            "method": "PR",
+            "prefix": 1,
+            "q": 32,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 6.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "05db8dbf4a3ea9b6d945",
+            "method": "B0",
+            "prefix": 7,
+            "q": 64,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 64,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 6.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "65c51c5cb3e39a2266e3",
+            "method": "PR",
+            "prefix": 1,
+            "q": 64,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 256,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 7,
+          "q_RPE": 128,
+          "q_PF": 128,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 12.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "500f03592f0b2424137b",
+            "method": "B0",
+            "prefix": 7,
+            "q": 128,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 7,
+          "q_RPE": 128,
+          "q_PF": 128,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 12.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "a5ea5a2e5794e1528e91",
+            "method": "PR",
+            "prefix": 1,
+            "q": 128,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 512,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 256,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 25.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "c11c26531232ffe3c054",
+            "method": "B0",
+            "prefix": 7,
+            "q": 256,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 256,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 25.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "1792921593bf9203455f",
+            "method": "PR",
+            "prefix": 1,
+            "q": 256,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 1024,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 9,
+          "q_RPE": 512,
+          "q_PF": 512,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 51.2,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "780cf2bef708e2c25c8b",
+            "method": "B0",
+            "prefix": 7,
+            "q": 512,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 9,
+          "q_RPE": 512,
+          "q_PF": 512,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 51.2,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "55cf531951fd95f115a2",
+            "method": "PR",
+            "prefix": 1,
+            "q": 512,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 2048,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 10,
+          "q_RPE": 1024,
+          "q_PF": 1024,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 102.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "2a9548dfd80355816f4c",
+            "method": "B0",
+            "prefix": 7,
+            "q": 1024,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 10,
+          "q_RPE": 1024,
+          "q_PF": 1024,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 102.4,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "f197f6053d08703db871",
+            "method": "PR",
+            "prefix": 1,
+            "q": 1024,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 4096,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 11,
+          "q_RPE": 2048,
+          "q_PF": 2048,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 204.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "1e464b80298cc4a73c63",
+            "method": "B0",
+            "prefix": 7,
+            "q": 2048,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 11,
+          "q_RPE": 2048,
+          "q_PF": 2048,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 204.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "2c66d80afc0d49cd047f",
+            "method": "PR",
+            "prefix": 1,
+            "q": 2048,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 8192,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "ccad37928a00b005f3f7",
+            "method": "B0",
+            "prefix": 7,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 409.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "42564e5c9ba649be78a9",
+            "method": "PR",
+            "prefix": 1,
+            "q": 4096,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 16384,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        }
+      ],
+      "source": {
+        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      },
+      "energy_target": "saved_DF_H_sector_ground",
+      "state_assumption": "saved_numerical_state_conditional_ground",
+      "full_RPE_qualified": false,
+      "saved_signal_sources": {
+        "49709717a6c3d405c60d": {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+          "selector": "/49709717a6c3d405c60d"
+        },
+        "14bd81a375400c9b0305": {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+          "selector": "/14bd81a375400c9b0305"
+        },
+        "8e50c5560bb8f47f026f": {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+          "selector": "/8e50c5560bb8f47f026f"
+        },
+        "64e4f7e9ec7fba28815e": {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+          "selector": "/64e4f7e9ec7fba28815e"
+        }
+      },
+      "sampling_law": {
+        "model": "ideal_finite_RTE_law",
+        "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+        "source": {
+          "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+          "path": "src/trotterlib/rte.py"
+        }
+      },
+      "variable_R_rounds": [
+        3,
+        4
+      ],
+      "R_menu_values": {
+        "3": [
+          4,
+          8
+        ],
+        "4": [
+          4,
+          8
+        ]
+      }
+    },
+    "H6": {
+      "schema_version": 1,
+      "task_id": "H6_DF19_GROUND_CA_CONDITIONAL_D1",
+      "configuration": {
+        "status": "CONDITIONAL_D1_CONFIGURATION",
+        "base_time": 0.1,
+        "energy_precision_ha": 0.0015936001019904,
+        "beta_total": 0.4,
+        "beta_stat": 0.2,
+        "alpha_total_per_method": 0.05,
+        "alpha_axis": 0.0019230769230769232,
+        "alpha_sum_all_rounds": 0.05,
+        "horizon": {
+          "target_energy_precision_ha": 0.0015936001019904,
+          "required_q_continuous": 2510.0400000000104,
+          "maximum_round_index_M": 12,
+          "round_count_M_plus_one": 13,
+          "q_max": 4096,
+          "achieved_energy_resolution_ha": 0.0009765625,
+          "previous_q_energy_resolution_ha": 0.001953125,
+          "target_met": true,
+          "previous_power_fails": true,
+          "minimal_power_of_two_horizon": true
+        },
+        "conditions": {
+          "base_time": 0.1,
+          "energy_ha": 0.0015936001019904,
+          "alpha_total": 0.05,
+          "beta_total": 0.4,
+          "beta_stat": 0.2,
+          "horizon": {
+            "target_energy_precision_ha": 0.0015936001019904,
+            "required_q_continuous": 2510.0400000000104,
+            "maximum_round_index_M": 12,
+            "round_count_M_plus_one": 13,
+            "q_max": 4096,
+            "achieved_energy_resolution_ha": 0.0009765625,
+            "previous_q_energy_resolution_ha": 0.001953125,
+            "target_met": true,
+            "previous_power_fails": true,
+            "minimal_power_of_two_horizon": true
+          },
+          "alpha_axis": 0.0019230769230769232,
+          "full_rpe_energy_success": false,
+          "status": "CONDITIONAL_RPE_POLICY",
+          "energy_prior": [
+            -9.695399206821989,
+            -3.1355322139814668
+          ],
+          "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+          "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+        },
+        "prior_attempts": [
+          {
+            "base_time": 0.8,
+            "status": "ALIAS_WINDOW_EXCEEDED"
+          },
+          {
+            "base_time": 0.1,
+            "status": "CONDITIONAL_RPE_POLICY"
+          }
+        ],
+        "energy_prior_ha": [
+          -9.695399206821989,
+          -3.1355322139814668
+        ],
+        "energy_shift": 0,
+        "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+      },
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 19,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H6_TOL_ONLY_DF19",
+        "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+        "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+        "system": "H6"
+      },
+      "contract": {
+        "completion": "saved_weighted_Hermitian_completion",
+        "fragment_order": "saved_snapshot_order",
+        "preparation_binding": {
+          "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+          "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+          "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+        },
+        "state_preparation_cost": 0,
+        "input_source": {
+          "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+          "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+        }
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "candidates": [
+        {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "dec32b474f3fc33ddfab"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 5,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": 32,
+            "K": 2,
+            "id": "f2b156ebaeb00c2c033b"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 1,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": null,
+            "K": null,
+            "id": "7791db0dc2fab94ce734"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 1,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 5,
+            "T": 0.2,
+            "q": 1,
+            "delta": 0.2,
+            "R_outer": 32,
+            "K": 2,
+            "id": "9fe878b5ed57560be583"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 2,
+          "q_RPE": 4,
+          "q_PF": 1,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 0.4,
+            "q": 1,
+            "delta": 0.4,
+            "R_outer": null,
+            "K": null,
+            "id": "e7200ae9e16ba879a78d"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 2,
+          "q_RPE": 4,
+          "q_PF": 1,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 5,
+            "T": 0.4,
+            "q": 1,
+            "delta": 0.4,
+            "R_outer": 32,
+            "K": 2,
+            "id": "307350517bc4a1b4f9ff"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 1,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.8,
+            "delta": 0.8,
+            "formula": "4th(m5_best)",
+            "id": "76601611270ed9f0677d",
+            "method": "FULL",
+            "prefix": 19,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 32,
+            "T": 0.8,
+            "delta": 0.8,
+            "formula": "4th(m5_best)",
+            "id": "2606efdab20e3b8522e5",
+            "method": "PR",
+            "prefix": 5,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "a4f5ffc0f320644dadfa",
+            "method": "FULL",
+            "prefix": 19,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 16,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "2d2af6ca830dff14a695",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 32,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "4269eafc8c0ef8922c23",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 2,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 3.2,
+            "q": 2,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "3f813a46e17461bfe484"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 2,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 3.2,
+            "q": 2,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "72255c43facdfb8b4bee"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 2,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 3.2,
+            "q": 2,
+            "delta": 1.6,
+            "R_outer": 32,
+            "K": 2,
+            "id": "24fec6bdd44d6a728f1e"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "R_MENU_PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 4,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 6.4,
+            "q": 4,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "201a8e365ab6f4af6ebc"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 6,
+          "q_RPE": 64,
+          "q_PF": 4,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 6.4,
+            "q": 4,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "ef41b65942d56977d6cd"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 7,
+          "q_RPE": 128,
+          "q_PF": 8,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 12.8,
+            "q": 8,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "5cc99f967c6a176c43fb"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 7,
+          "q_RPE": 128,
+          "q_PF": 8,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 12.8,
+            "q": 8,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "47402cdbdb4fecab7a46"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "SAVED_EVALUATED_CANDIDATE"
+        },
+        {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 16,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "26608f8bf53993c7095d"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 8,
+          "q_RPE": 256,
+          "q_PF": 16,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 25.6,
+            "q": 16,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "53797d9e5a2eeec31a13"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 256,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 9,
+          "q_RPE": 512,
+          "q_PF": 32,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 51.2,
+            "q": 32,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "408142c6d1cd1b104b72"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 9,
+          "q_RPE": 512,
+          "q_PF": 32,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 51.2,
+            "q": 32,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "4d34a6f3f136df9ad512"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 512,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 10,
+          "q_RPE": 1024,
+          "q_PF": 64,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 102.4,
+            "q": 64,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "20a160dafc0fa7d6bce5"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 10,
+          "q_RPE": 1024,
+          "q_PF": 64,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 102.4,
+            "q": 64,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "e25c35e31bb6c840e252"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 1024,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 11,
+          "q_RPE": 2048,
+          "q_PF": 128,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 204.8,
+            "q": 128,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "2d56c445820c4accd676"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 11,
+          "q_RPE": 2048,
+          "q_PF": 128,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 204.8,
+            "q": 128,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "86665f416fa64ed7a1a1"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 2048,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "FULL",
+            "formula": "4th(m5_best)",
+            "prefix": 19,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": null,
+            "K": null,
+            "id": "fb0cb7b53bbfc8080224"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        },
+        {
+          "m": 12,
+          "q_RPE": 4096,
+          "q_PF": 256,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 409.6,
+            "q": 256,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "c9309f4a8219815577f5"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 4096,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+        }
+      ],
+      "source": {
+        "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+        "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+      },
+      "energy_target": "saved_DF_H_sector_ground",
+      "state_assumption": "saved_numerical_state_conditional_ground",
+      "full_RPE_qualified": false,
+      "saved_signal_sources": {},
+      "sampling_law": {
+        "model": "ideal_finite_RTE_law",
+        "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+        "source": {
+          "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+          "path": "src/trotterlib/rte.py"
+        }
+      },
+      "variable_R_rounds": [
+        4,
+        5
+      ],
+      "R_menu_values": {
+        "4": [
+          16,
+          32
+        ],
+        "5": [
+          16,
+          32
+        ]
+      }
+    }
+  },
+  "cells": [
+    {
+      "id": "H4_q8_R4",
+      "system": "H4",
+      "m": 3,
+      "candidate_id": "14bd81a375400c9b0305",
+      "role": "CALIBRATION",
+      "saved": true,
+      "n": 9,
+      "cohort": "EXPLORATION",
+      "request": {
+        "identity": {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "14bd81a375400c9b0305",
+          "R_outer": 4,
+          "K": 2,
+          "q_PF": 8
+        }
+      }
+    },
+    {
+      "id": "H4_q8_R8",
+      "system": "H4",
+      "m": 3,
+      "candidate_id": "6e1efff1ba1f7ac95a3b",
+      "role": "CALIBRATION",
+      "saved": false,
+      "n": 8,
+      "cohort": "R_PRICE_P1_20261111_H4_R8_CALIBRATION",
+      "request": {
+        "identity": {
+          "m": 3,
+          "q_RPE": 8,
+          "q_PF": 8,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "6e1efff1ba1f7ac95a3b",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "6e1efff1ba1f7ac95a3b",
+          "R_outer": 8,
+          "K": 2,
+          "q_PF": 8
+        }
+      },
+      "seeds": [
+        [
+          9189969797267270796,
+          17806074031159354719,
+          764782429146138683,
+          3442333891997026670,
+          15008471330244777437,
+          7877526170104061500,
+          2637858874771293427,
+          15667503951136247904
+        ],
+        [
+          1551482165800504769,
+          8757648799165849335,
+          3821666840526413487,
+          3545156493413117272,
+          4231631761321272402,
+          3088464651293552273,
+          18130990457548241719,
+          10864990852923921451
+        ],
+        [
+          10692589232292406899,
+          18045215401924528648,
+          4745916093486852678,
+          286004476965606926,
+          915954315429867174,
+          7920527012583886621,
+          6925478518084929746,
+          10650417914104508351
+        ],
+        [
+          16954889171279392132,
+          4460764942776563095,
+          10696126172810075455,
+          12238545400876154643,
+          8861606813539014852,
+          1298807631186315585,
+          9210800844969542674,
+          796699117713268842
+        ],
+        [
+          12251156261192313726,
+          6690920757728768882,
+          12216778715163635372,
+          9894857278579351435,
+          17262832143226988892,
+          8490830805979826522,
+          3401780524822982990,
+          6047533853674419300
+        ],
+        [
+          1612206605691612160,
+          9149291000239186367,
+          5494830564829297721,
+          16985273556723092410,
+          12282130845475783039,
+          7448059636880737430,
+          9094266906868560277,
+          4822936420187460196
+        ],
+        [
+          10582770304850373647,
+          14193065415690451546,
+          14846519552249712490,
+          13953677004510113672,
+          18404378164499832032,
+          9456483212504423544,
+          5371570210842977522,
+          16803762420424999474
+        ],
+        [
+          11706731050101499833,
+          7616851460757338076,
+          7693726879356170744,
+          11920416976843982856,
+          9244041956603261320,
+          17772423020821574955,
+          10800446303673107834,
+          2774372077339216166
+        ]
+      ]
+    },
+    {
+      "id": "H4_q16_R4",
+      "system": "H4",
+      "m": 4,
+      "candidate_id": "64e4f7e9ec7fba28815e",
+      "role": "CALIBRATION",
+      "saved": true,
+      "n": 33,
+      "cohort": "H4_DF10_V2_INDEPENDENT_Q_20261110",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 16,
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 1.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "64e4f7e9ec7fba28815e",
+            "method": "PR",
+            "prefix": 1,
+            "q": 16,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "64e4f7e9ec7fba28815e",
+          "R_outer": 4,
+          "K": 2,
+          "q_PF": 16
+        }
+      }
+    },
+    {
+      "id": "H4_q16_R8",
+      "system": "H4",
+      "m": 4,
+      "candidate_id": "201d498a3fa5eaa3b5c5",
+      "role": "VALIDATION",
+      "saved": false,
+      "n": 8,
+      "cohort": "R_PRICE_P1_20261111_H4_R8_VALIDATION",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 16,
+          "candidate": {
+            "K": 2,
+            "R_outer": 8,
+            "T": 1.6,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "201d498a3fa5eaa3b5c5",
+            "method": "PR",
+            "prefix": 1,
+            "q": 16,
+            "system": "H4"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+              "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "D1_m": 3,
+            "D1_q_RPE": 8,
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "principal_alias_margin": -1.2538070459441983,
+                "qualified": false
+              },
+              {
+                "base_time": 0.1,
+                "principal_alias_margin": 2.2421676911480444,
+                "qualified": true
+              }
+            ],
+            "energy_prior_ha": [
+              -4.994249624417489,
+              -2.0985459369977186
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "201d498a3fa5eaa3b5c5",
+          "R_outer": 8,
+          "K": 2,
+          "q_PF": 16
+        }
+      },
+      "seeds": [
+        [
+          3992355045329817028,
+          16681763226389370399,
+          7502935270242778361,
+          4688582416583459653,
+          17540348071473292918,
+          1926085608318998890,
+          17383845456292627802,
+          8548965176707598054,
+          4363581280481983382,
+          1882212520020683726,
+          8967612252388162434,
+          8778734579042190265,
+          18007415647770253273,
+          16331074698432089527,
+          17548160252434859922,
+          9056911804262983255
+        ],
+        [
+          11903452336817735601,
+          9415881861326929664,
+          18168521561513083456,
+          3508913338170163545,
+          2705031061372095256,
+          6810520346094056531,
+          244958760935304945,
+          13631424124898702357,
+          3992002354905774542,
+          2238182769370402734,
+          2463767228004624900,
+          17389477877524217677,
+          14565998658012596729,
+          5370472417717116078,
+          12092956899817319650,
+          18150493170110054149
+        ],
+        [
+          3596904039317210796,
+          15442683326528853001,
+          5938709205621336854,
+          6376005245040339259,
+          547983259715707257,
+          14297911476577909972,
+          3250505053105508443,
+          13186140540530923603,
+          8154332664073539863,
+          3326714268334163380,
+          9777554552000564231,
+          13773303214497902424,
+          4242701458116686880,
+          11990082771979030973,
+          2776674950383492894,
+          2058553867910662262
+        ],
+        [
+          16325452758333818806,
+          16011607980947314582,
+          6778906875582289191,
+          15065558388186677868,
+          13304638129526966767,
+          11745575028045557298,
+          236083482336053843,
+          11520491865472118072,
+          8554946798501501366,
+          8543384162516288703,
+          14647610669278608925,
+          16045072640845100052,
+          18183338073817170240,
+          5601928633858205713,
+          2413460947036286811,
+          10160555995106572001
+        ],
+        [
+          11936763574860680714,
+          3100652854775972244,
+          2100694104051568303,
+          11836061355764175027,
+          76409426149998902,
+          11453504489029398965,
+          12550511967496389256,
+          4453438430289210299,
+          6480622068620380794,
+          10390171279042439933,
+          2738834493087802136,
+          6937781299595430134,
+          2956376173707119809,
+          11607655343188146519,
+          5210905241785019904,
+          2168602853643180517
+        ],
+        [
+          3067020654206451788,
+          13387688215112643895,
+          7713708219913788721,
+          15145281810002243271,
+          13173980555638643395,
+          11237022767529123380,
+          12413270487401945775,
+          11172859446022914466,
+          15493388132996683231,
+          13752844982149097592,
+          6984413733552341285,
+          16034919879287175292,
+          4046970938302149779,
+          620648477548031573,
+          7895822528501511446,
+          4350256591064451869
+        ],
+        [
+          15299105805118747253,
+          6560746039991215854,
+          14141068395994439172,
+          3621980955208112750,
+          6001931599852853130,
+          15627937936497647274,
+          2285518690445063514,
+          6711570070636724912,
+          15953528729412109210,
+          14206010914166696034,
+          3055744437344853250,
+          8154028768701147846,
+          4289954612136860617,
+          346516914328583029,
+          12961173774060009145,
+          11517922512551180010
+        ],
+        [
+          12002467513380056110,
+          15211834354048540816,
+          10036816558444362395,
+          13631718269445969357,
+          2894232229189300029,
+          2890567834871601309,
+          12654865515682004863,
+          6297834135282270195,
+          6936152356970679500,
+          10322431679392936452,
+          6544814281903830967,
+          18291328505524473196,
+          13720930042216295062,
+          12306482690269147832,
+          11687586683873885737,
+          13694413683446072648
+        ]
+      ]
+    },
+    {
+      "id": "H6_q1_R16",
+      "system": "H6",
+      "m": 4,
+      "candidate_id": "2d2af6ca830dff14a695",
+      "role": "CALIBRATION",
+      "saved": true,
+      "n": 9,
+      "cohort": "EXPLORATION",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 16,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "2d2af6ca830dff14a695",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 16,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "2d2af6ca830dff14a695",
+          "R_outer": 16,
+          "K": 2,
+          "q_PF": 1
+        }
+      }
+    },
+    {
+      "id": "H6_q1_R32",
+      "system": "H6",
+      "m": 4,
+      "candidate_id": "4269eafc8c0ef8922c23",
+      "role": "CALIBRATION",
+      "saved": false,
+      "n": 8,
+      "cohort": "R_PRICE_P1_20261111_H6_R32_CALIBRATION",
+      "request": {
+        "identity": {
+          "m": 4,
+          "q_RPE": 16,
+          "q_PF": 1,
+          "candidate": {
+            "K": 2,
+            "R_outer": 32,
+            "T": 1.6,
+            "delta": 1.6,
+            "formula": "4th(m5_best)",
+            "id": "4269eafc8c0ef8922c23",
+            "method": "PR",
+            "prefix": 7,
+            "q": 1,
+            "system": "H6"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "4269eafc8c0ef8922c23",
+          "R_outer": 32,
+          "K": 2,
+          "q_PF": 1
+        }
+      },
+      "seeds": [
+        [
+          4212158987656831740,
+          18355514609656002610,
+          12863675693232299108,
+          10905926668650857919,
+          4219641139121366778,
+          16396765209570033925,
+          2562951189802417568,
+          12100704623430336036,
+          6185269651687921657,
+          9696100777951968022,
+          8146511157074090589
+        ],
+        [
+          3319313546554742579,
+          13152189472355475486,
+          3438311403517917424,
+          12345828252318296715,
+          13779488485597710950,
+          4705591527827625805,
+          16612033576579599303,
+          5526054560331092180,
+          7795519166745026649,
+          6948427088561786748,
+          1585570013317111565
+        ],
+        [
+          6122108831130484416,
+          9381044568704571373,
+          13428451826670366742,
+          3796188352764501892,
+          16025425337097479345,
+          12047414408865689593,
+          6572900949285176584,
+          6500664674994785201,
+          7397429200858771229,
+          12430657542274174641,
+          16286922632632621393
+        ],
+        [
+          11982287776397074457,
+          11031490251569444890,
+          2954278945399199105,
+          2715011807174959946,
+          12858296858443171383,
+          7378226753691771805,
+          13085733608638415259,
+          16076004140549633280,
+          11143990004805984797,
+          854369891972370232,
+          4710834354577307892
+        ],
+        [
+          15631595062274517069,
+          1012806021332824188,
+          14657989148242739849,
+          9404756338914029934,
+          7870854468189847311,
+          17810899398648038036,
+          16743435660983227387,
+          16872790060789678724,
+          11236200292885690156,
+          16500258866268608030,
+          4430971048665950035
+        ],
+        [
+          5082487454432681606,
+          6629501135017968435,
+          11485071372451674318,
+          3915966989181859838,
+          9696036847205081048,
+          11280632863801241985,
+          5056769164433974486,
+          388012360753315501,
+          4029059402229714983,
+          3848068309097339735,
+          42476961657151372
+        ],
+        [
+          3968026236986224269,
+          13948139361607969272,
+          8035845992565040231,
+          13698210719502794639,
+          2116578995885693943,
+          14066461352229352474,
+          16089227185825120140,
+          9637590764266577727,
+          1019772138324705971,
+          8504857082319450120,
+          3308406028819800746
+        ],
+        [
+          8054314520781431523,
+          13718682129175162415,
+          11553380094608895138,
+          159238671214502471,
+          11899691306891238528,
+          16193915659052603599,
+          7657432089723348922,
+          236247450172029600,
+          8692601293927801303,
+          13224931966973875973,
+          106797239342461450
+        ]
+      ]
+    },
+    {
+      "id": "H6_q2_R16",
+      "system": "H6",
+      "m": 5,
+      "candidate_id": "72255c43facdfb8b4bee",
+      "role": "CALIBRATION",
+      "saved": true,
+      "n": 8,
+      "cohort": "H6_PRICE_V2_20261110_Q2_CALIBRATION",
+      "request": {
+        "identity": {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 2,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 3.2,
+            "q": 2,
+            "delta": 1.6,
+            "R_outer": 16,
+            "K": 2,
+            "id": "72255c43facdfb8b4bee"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1,
+              2,
+              1
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "72255c43facdfb8b4bee",
+          "R_outer": 16,
+          "K": 2,
+          "q_PF": 2
+        }
+      }
+    },
+    {
+      "id": "H6_q2_R32",
+      "system": "H6",
+      "m": 5,
+      "candidate_id": "24fec6bdd44d6a728f1e",
+      "role": "VALIDATION",
+      "saved": false,
+      "n": 8,
+      "cohort": "R_PRICE_P1_20261111_H6_R32_VALIDATION",
+      "request": {
+        "identity": {
+          "m": 5,
+          "q_RPE": 32,
+          "q_PF": 2,
+          "candidate": {
+            "system": "H6",
+            "method": "PR",
+            "formula": "4th(m5_best)",
+            "prefix": 7,
+            "T": 3.2,
+            "q": 2,
+            "delta": 1.6,
+            "R_outer": 32,
+            "K": 2,
+            "id": "24fec6bdd44d6a728f1e"
+          },
+          "structure": {
+            "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+            "signed_weights": [
+              0.12547397927357543,
+              0.13781643533753404,
+              0.1211920365713068,
+              0.14181961643121604,
+              0.11225428783206336,
+              -0.27711271089139133,
+              0.11225428783206336,
+              0.14181961643121604,
+              0.1211920365713068,
+              0.13781643533753404,
+              0.12547397927357543
+            ],
+            "allocation": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              5,
+              2,
+              3,
+              2,
+              3,
+              3
+            ],
+            "event_count": 64,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 19,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H6_TOL_ONLY_DF19",
+            "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+            "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+            "system": "H6"
+          },
+          "contract": {
+            "completion": "saved_weighted_Hermitian_completion",
+            "fragment_order": "saved_snapshot_order",
+            "preparation_binding": {
+              "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+              "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+            },
+            "state_preparation_cost": 0,
+            "input_source": {
+              "commit": "14c4f871fb9e8d4a23a6cc3244f5435ebc65a7ce",
+              "path": "docs/research/h6_df19_rpe_m7_results_20261110/COVERAGE.json"
+            }
+          },
+          "profile": {
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "status": "CONDITIONAL_D1_CONFIGURATION",
+            "base_time": 0.1,
+            "energy_precision_ha": 0.0015936001019904,
+            "beta_total": 0.4,
+            "beta_stat": 0.2,
+            "alpha_total_per_method": 0.05,
+            "alpha_axis": 0.0019230769230769232,
+            "alpha_sum_all_rounds": 0.05,
+            "horizon": {
+              "target_energy_precision_ha": 0.0015936001019904,
+              "required_q_continuous": 2510.0400000000104,
+              "maximum_round_index_M": 12,
+              "round_count_M_plus_one": 13,
+              "q_max": 4096,
+              "achieved_energy_resolution_ha": 0.0009765625,
+              "previous_q_energy_resolution_ha": 0.001953125,
+              "target_met": true,
+              "previous_power_fails": true,
+              "minimal_power_of_two_horizon": true
+            },
+            "conditions": {
+              "base_time": 0.1,
+              "energy_ha": 0.0015936001019904,
+              "alpha_total": 0.05,
+              "beta_total": 0.4,
+              "beta_stat": 0.2,
+              "horizon": {
+                "target_energy_precision_ha": 0.0015936001019904,
+                "required_q_continuous": 2510.0400000000104,
+                "maximum_round_index_M": 12,
+                "round_count_M_plus_one": 13,
+                "q_max": 4096,
+                "achieved_energy_resolution_ha": 0.0009765625,
+                "previous_q_energy_resolution_ha": 0.001953125,
+                "target_met": true,
+                "previous_power_fails": true,
+                "minimal_power_of_two_horizon": true
+              },
+              "alpha_axis": 0.0019230769230769232,
+              "full_rpe_energy_success": false,
+              "status": "CONDITIONAL_RPE_POLICY",
+              "energy_prior": [
+                -9.695399206821989,
+                -3.1355322139814668
+              ],
+              "prior_provenance": "Saved DF coefficients: exact-rational Gershgorin/signed-square and fixed-sector determinant",
+              "qualification": "CONDITIONAL_ON_SUPPLIED_EXTERNAL_PRIOR"
+            },
+            "prior_attempts": [
+              {
+                "base_time": 0.8,
+                "status": "ALIAS_WINDOW_EXCEEDED"
+              },
+              {
+                "base_time": 0.1,
+                "status": "CONDITIONAL_RPE_POLICY"
+              }
+            ],
+            "energy_prior_ha": [
+              -9.695399206821989,
+              -3.1355322139814668
+            ],
+            "energy_shift": 0,
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "sampling": "PCG64_numpy_float64_CDF_saved_cohort",
+            "source": {
+              "commit": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "candidate_id": "24fec6bdd44d6a728f1e",
+          "R_outer": 32,
+          "K": 2,
+          "q_PF": 2
+        }
+      },
+      "seeds": [
+        [
+          5591785993527872402,
+          12003811833385480573,
+          9744107484281549231,
+          7720492885253132345,
+          1152736211592175589,
+          3205242729213454002,
+          13260431153494479110,
+          14853429545481663451,
+          7900775698624658010,
+          12271328023693202315,
+          1762537201638541392,
+          12359428224821276870,
+          849705274454149194,
+          3314082641488496922,
+          327588258095638876,
+          1637409632955945294,
+          16614015428125701368,
+          3956588109066881776,
+          14461392978598885043,
+          14680403346801991350,
+          17432569031385487153,
+          4590403243907504399
+        ],
+        [
+          15650482500255929616,
+          14763351698212080616,
+          8872905084310719358,
+          4571607832149307372,
+          3024014283837469219,
+          18122528314231661901,
+          16130332117871654259,
+          8936177348246304000,
+          4999972738143213878,
+          2480461897289269004,
+          7576149870330076345,
+          14641312684593272843,
+          2605223642365669,
+          2425840049325307036,
+          8599141349986180054,
+          811424287729537494,
+          13777584061014881619,
+          4951841408323641034,
+          3883084704755297116,
+          1024177424987365667,
+          13162672912410899613,
+          3203279769091088685
+        ],
+        [
+          6222619562837771463,
+          4744643692166504643,
+          15997216204599914377,
+          6953229658516858861,
+          263508235195017123,
+          17120702174002917898,
+          8850575789649755981,
+          12727972953034216491,
+          12160901393753505344,
+          3667326827034867878,
+          9880054646627206332,
+          4834516015294391371,
+          17591442601006579614,
+          18316692754030131062,
+          150537370665484777,
+          16380795759516512972,
+          10971372302831717382,
+          13090969303763760063,
+          14095395682943147359,
+          8933087543191441938,
+          15716657482066855991,
+          5918345288057830620
+        ],
+        [
+          16339289897671158945,
+          6123640791834449565,
+          4357317510002378030,
+          14830140725663911370,
+          7172181711614174087,
+          10070463098696026081,
+          9153853464234519330,
+          13989796783116815086,
+          9381780842910933503,
+          10551125344902982456,
+          3500885371444187707,
+          10508591921523991219,
+          14663491833092226390,
+          2352597114443450712,
+          8592925691702935848,
+          9830790821253425937,
+          4950680703024177117,
+          16725495966712456817,
+          988304990570227771,
+          9348077521337172978,
+          9301377687529994734,
+          4761420366043407492
+        ],
+        [
+          18013864561852973771,
+          566565223687876157,
+          10900885045463651663,
+          6085679999410658281,
+          1746451301543568564,
+          17563529572305396371,
+          7242631088627463503,
+          14090633992239782003,
+          2990411776293914746,
+          481476753830885937,
+          18250848123615951800,
+          13536545504643329422,
+          8821046503354430418,
+          6121745504328913799,
+          2304620569624804553,
+          12263136367750276317,
+          17918642397872553596,
+          427218271991451549,
+          5796778345644364155,
+          780188915864807376,
+          10636977883536506287,
+          11131675610941386340
+        ],
+        [
+          4120602716769361052,
+          11918001953786408695,
+          3275877657384900051,
+          13910921232573064968,
+          11275365293579842391,
+          12311931367656488695,
+          1458621568964906395,
+          6580343237858546102,
+          6185141380520437856,
+          9317622172542482559,
+          16555575079963090242,
+          17056235798448499306,
+          17789511744214517949,
+          2595850779476725582,
+          8736537354477484734,
+          6843884598182553503,
+          4250780015328740953,
+          5429592145213621414,
+          12369844921461790915,
+          15508884462252801047,
+          12845177341138120872,
+          130487732126216178
+        ],
+        [
+          11658324026348097960,
+          14390664328595519837,
+          5923597984083390971,
+          5610388004680948701,
+          11392401845984217176,
+          12806263424675686975,
+          12921502858383096149,
+          5454462399495553571,
+          11742364507898621708,
+          10064872075800503802,
+          126088715613365249,
+          11098889804529714088,
+          7053651001946141994,
+          12058366572725810951,
+          5020485306048101545,
+          16381967147192552780,
+          629575186019598660,
+          3834892110389193253,
+          11695494329997224496,
+          15985372492193794337,
+          12916016068041269481,
+          17228993990251716251
+        ],
+        [
+          11281599771226774126,
+          183871535064484769,
+          16983788169890036217,
+          12980361504561013438,
+          3635886373961889297,
+          4771259704333297472,
+          3531634315955843891,
+          10962076404119871904,
+          14428380542312294491,
+          10898186120320007533,
+          3147313316837323651,
+          40736383590000063,
+          8898635688896096050,
+          4138066432111722283,
+          2667144849991769243,
+          6366659593761873509,
+          13726362671857817841,
+          12377047720916183876,
+          1687988340251391397,
+          2171064445777720692,
+          5543674071919533170,
+          5358769664107573829
+        ]
+      ]
+    }
+  ],
+  "axes": [
+    "cosine",
+    "sine"
+  ],
+  "features": [
+    "intercept",
+    "q_PF",
+    "q_PF_times_R_outer"
+  ],
+  "metrics": [
+    "bias",
+    "MAE",
+    "RMSE",
+    "relative_bias",
+    "relative_RMSE",
+    "max_relative_error",
+    "paired_path_and_mean_covariance"
+  ],
+  "model": "STRUCTURAL_PLUS_THREE_COMPILED_RESIDUAL_TERMS",
+  "acceptance_threshold": null,
+  "scientific_status": "PREPARED_NOT_EXECUTED_NOT_APPROVED",
+  "new_normal_wrapper_budget": 64,
+  "new_rare_wrapper_budget": 16,
+  "rare": {
+    "pairs_per_system": 2,
+    "path_versions": [
+      "order0",
+      "order2"
+    ],
+    "unit": "FORCED_LEGAL_PAIR_NOT_UNCONDITIONAL_COHORT",
+    "H4": [
+      "head_tail_first_event",
+      "internal_different_basis"
+    ],
+    "H6": [
+      "positive_piece_first_event",
+      "negative_piece_first_event"
+    ]
+  },
+  "runtime": {
+    "provider_root": "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider",
+    "input_config": "/home/AbeHiromu/projects/h46-pr-exploration-execution/20261021/private/authorization_run01/H4_PR_EXPLORATION/config_APPROVED_PRIVATE.json",
+    "old_cache": "/home/AbeHiromu/projects/h46-long-time-pf-pr/20261025/compiled_cache"
+  },
+  "source_files": [
+    "src/trottertracks/r_price_phase1.py",
+    "src/trottertracks/r_price_phase1_runner.py",
+    "src/trottertracks/r_price_phase1_science.py",
+    "scripts/run_r_price_phase1.py"
+  ],
+  "mandatory_stop": true,
+  "full_RPE_qualified": false,
+  "rare_groups": [
+    {
+      "system": "H4",
+      "pair": 0,
+      "cohort": "R_PRICE_P1_20261111_H4_FORCED_DIAGNOSTIC",
+      "candidate_id": "6e1efff1ba1f7ac95a3b",
+      "seeds": [
+        15595489179611713476,
+        16023039670001592581,
+        267229119360495451,
+        12895805861988000169,
+        14909763380733830624,
+        13801574715896675517,
+        16038093442306548412,
+        9978123222494935828
+      ]
+    },
+    {
+      "system": "H4",
+      "pair": 1,
+      "cohort": "R_PRICE_P1_20261111_H4_FORCED_DIAGNOSTIC",
+      "candidate_id": "6e1efff1ba1f7ac95a3b",
+      "seeds": [
+        10736339956567354264,
+        11365168544345255390,
+        8781561349363854437,
+        6818915006481116078,
+        5221748033066849921,
+        13204281614638898663,
+        4807437806796777280,
+        7125520067333725526
+      ]
+    },
+    {
+      "system": "H6",
+      "pair": 0,
+      "cohort": "R_PRICE_P1_20261111_H6_FORCED_DIAGNOSTIC",
+      "candidate_id": "4269eafc8c0ef8922c23",
+      "seeds": [
+        15807031038455704550,
+        12687137330775536394,
+        16074201790622004434,
+        15999098728093860825,
+        12377200375019789390,
+        15496707962309579832,
+        6960091011966319813,
+        7017796623740226110,
+        14523489098556782090,
+        14516969235118285022,
+        14715188093918724790
+      ]
+    },
+    {
+      "system": "H6",
+      "pair": 1,
+      "cohort": "R_PRICE_P1_20261111_H6_FORCED_DIAGNOSTIC",
+      "candidate_id": "4269eafc8c0ef8922c23",
+      "seeds": [
+        14267513834410169658,
+        3128242849307385979,
+        15649301345376903059,
+        9561746262365225421,
+        3433184501147271327,
+        301126062100826955,
+        4554806884910176393,
+        14874838411045516292,
+        12321069543297078929,
+        4814629252243939787,
+        4916070911525890818
+      ]
+    }
+  ],
+  "seed_coverage": {
+    "new_normal_streams": 456,
+    "new_diagnostic_streams": 38,
+    "distinct_new_streams": 494,
+    "new_collisions": 0,
+    "complete_historical_coverage": false
+  }
+}
