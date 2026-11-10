@@ -1,5 +1,7 @@
 # scripts 索引
 
+`plan_pr_r_screening.py`：[R候補metadata入口](../docs/research/pr_r_screening_20261111/REPORT.md)。明示倍率とreference Rからround別候補を生成するだけで、normalization/N/C/Gを評価しない。実系cheap screenも別途承認後。
+
 `plan_pr_r_dependent_n.py`：[R依存Nのmetadata専用入口](../docs/research/pr_r_dependent_n_model_20261111/REPORT.md)。system/round-R mapから既存taskを生成し、科学計算を起動しない。承認後のB接続は`pr_r_dependent_n.RBatch`を使う。
 
 `run_h4_df10_rpe_batch.py`の[全13round N完了](../docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：固定24候補を一回評価し旧m3を保持。`verify_h4_df10_rpe_shot_integers.py`は同じ保存ε/αの巨大N整数化を検証し、上方向だけ補正した受渡しrecordを別保存。signal再計算・C/G0、再実行しない。

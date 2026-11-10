@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPEラウンド別R候補screen](research/pr_r_screening_20261111/REPORT.md)：[B/C HANDOFF](research/pr_r_screening_20261111/HANDOFF.md)／[有限案](research/pr_r_screening_20261111/EXECUTION_PLAN.json)／[人工12件](research/pr_r_screening_20261111/TEST_LOG.txt)。実normalization/N/C/G未評価。
+
 [PR R依存Nモデル](research/pr_r_dependent_n_model_20261111/REPORT.md)：[B HANDOFF](research/pr_r_dependent_n_model_20261111/HANDOFF.md)／[人工12件](research/pr_r_dependent_n_model_20261111/TEST_LOG.txt)／[未実行の最小案](research/pr_r_dependent_n_model_20261111/EXECUTION_PLAN.json)。metadata plannerとPR N batch、実新R計算0。
 
 [H4 DF10全13round N結果](research/h4_df10_rpe_batch_results_20261110/REPORT.md)：[受渡しN](research/h4_df10_rpe_batch_results_20261110/N_HANDOFF.json)／[原結果](research/h4_df10_rpe_batch_results_20261110/run01/result.json)／[全round CSV](research/h4_df10_rpe_batch_results_20261110/ROUND_SUMMARY.csv)。巨大N整数丸めと原本を区別、actual/C/G未資格。

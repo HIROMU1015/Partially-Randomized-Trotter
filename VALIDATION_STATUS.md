@@ -1,5 +1,7 @@
 # Validation status
 
+[R候補screenの技術確認](docs/research/pr_r_screening_20261111/REPORT.md)：人工K2 finite式・signed配分・q seed・B metadata/A identity/law・無閾値/予算/丸め保留を12テストで確認。実系のnormalizationも未評価、N/C/G・R最適化0、全menu/range未資格、公開照合後STOP。
+
 [PR R依存N入口の技術検証](docs/research/pr_r_dependent_n_model_20261111/REPORT.md)：人工非可換2-levelのS2/m5 R変更、signed allocation、H4/H6 scalar、exact cache、保存reference再利用、precision/FAILと共通batchを12テストで確認。実H4/H6新Rの数値資格は未取得、保存再解析0、公開照合後STOP。
 
 [H4 DF10 N一括結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：全13roundのideal条件付きN。reference差max9.28e−12、norm/closure gate PASS、旧m3/H6/SOURCE保全。巨大PR Nの48軸整数検証でm10/11の各軸を微小上方向補正し原本保持、補助人工4件PASS。actual/rigorous/全RPE/G未資格、公開照合後STOP。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[R候補screen](../../docs/research/pr_r_screening_20261111/REPORT.md)：`trottertracks.pr_r_screening`が旧A、固定B metadata、K2 finite normalizerと整数allocationを再利用する。新solver/価格/最適化なし、人工12件。
+
 [PR R依存N provider](../../docs/research/pr_r_dependent_n_model_20261111/REPORT.md)：`trottertracks.pr_r_dependent_n`が既存finite_rte_distribution/finite_taylor_operator・m5 allocation・scalar geometryを再利用。旧moduleは不変、人工/mock12件、実新R/保存再解析0。
 
 [H4 DF10 N側の完了結果](../../docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：旧scalar/action不変で全13roundの条件付きNへ接続。巨大PRの整数精度を別補助処理で照合しN_HANDOFFへ保存、元helper/原結果は保全。actual/全RPE/G未資格。

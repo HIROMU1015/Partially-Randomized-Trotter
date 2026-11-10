@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[RPE round別Rの事前screen](docs/research/pr_r_screening_20261111/REPORT.md)：固定δでR∝qPFの候補band＋baselineをB menuへ接続。無閾値score/明示減衰予算・丸め境界保留、人工/mock12件PASS。構造候補H4 51/H6 35、実logB/N/C/G・保存再解析0。B/C HANDOFFと代表24 cheap screen案、公開照合後STOP。
+
 [PRのR依存Nモデル](docs/research/pr_r_dependent_n_model_20261111/REPORT.md)：H4 S2/δ.1/p1/K2、H6 m5/δ1.6/p7/K2のround別Rを共通N providerへ接続。H6はm≥4、旧R cache除外・R-aware経験的allowance・巨大N整数検証、人工/mock12件PASS。実新R/保存再解析/最適化/C/G0、独立A branch・公開照合後STOP。
 
 [H4 DF10全13round N結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：SOURCE90dcc3ed2で保存m4 scalar2＋新11時点22候補を一回評価、全ideal条件付きPASS。PF各軸705〜764、PR m12約3.78e75。原本保全・長時間PRの整数丸めだけ上方向検証したN_HANDOFFをCへ渡す。actual/全RPE/C/G未資格、公開照合後STOP。
