@@ -94,6 +94,7 @@ def make_plan(root, source):
         cell['seeds']=[[helpers(str(root))['trial_seed'](c,cell['cohort'],i,o,j) for o in range(c['q']) for j in range(J)] for i in range(cell['n'])]
         seeds += [v for vs in cell['seeds'] for v in vs]
     if len(seeds)!=len(set(seeds)): raise ValueError('NEW_SEED_COLLISION')
+    normal_stream_count=len(seeds)
     plan['rare_groups']=[]
     for system in ('H4','H6'):
         cell=next(c for c in cells if c['system']==system and not c['saved'] and c['role']=='CALIBRATION')
@@ -104,7 +105,8 @@ def make_plan(root, source):
             plan['rare_groups'].append(dict(system=system,pair=pair,cohort=cohort,candidate_id=c['id'],seeds=values))
             seeds+=values
     if len(seeds)!=len(set(seeds)):raise ValueError('DIAGNOSTIC_SEED_COLLISION')
-    plan['seed_coverage'] = dict(new_normal_streams=len(seeds), new_collisions=0, complete_historical_coverage=False)
+    plan['seed_coverage'] = dict(new_normal_streams=normal_stream_count,new_diagnostic_streams=len(seeds)-normal_stream_count,
+        distinct_new_streams=len(seeds),new_collisions=0,complete_historical_coverage=False)
     validate_plan(plan)
     return plan
 

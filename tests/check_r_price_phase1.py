@@ -62,6 +62,9 @@ class Tests(unittest.TestCase):
         self.assertEqual(len(self.plan['rare_groups'])*2*2,16)
         seeds=[v for c in self.plan['cells'] if not c['saved'] for vs in c['seeds'] for v in vs]+[v for g in self.plan['rare_groups'] for v in g['seeds']]
         self.assertEqual(len(seeds),len(set(seeds)))
+        self.assertEqual(self.plan['seed_coverage']['new_normal_streams'],456)
+        self.assertEqual(self.plan['seed_coverage']['new_diagnostic_streams'],38)
+        self.assertEqual(self.plan['seed_coverage']['distinct_new_streams'],494)
         for c in self.plan['cells']:
             row=m.row_for(self.plan,c)
             self.assertEqual(row['structure']['event_count'],row['q_PF']*row['candidate']['R_outer'])
