@@ -191,7 +191,9 @@ def main():
     s1 = read(OUTPUT/'S1_result.json')
     if not s1['S2_allowed'] or s1['status'] != 'S1_CONDITIONAL_IDEAL_PASS' or (OUTPUT/'STOP.json').exists():
         raise ValueError('S1_ALL13_PASS_WITHOUT_STOP_REQUIRED')
-    output = OUTPUT/'local'/'q4'
+    # The first technical preflight created local/q4 but did not sample,
+    # construct or compile anything. Preserve that directory and its SOURCE.
+    output = OUTPUT/'local'/'S2_attempt02'/'q4'
     output.mkdir(parents=True, exist_ok=False)
     os.environ['MPLCONFIGDIR'] = str(output/'matplotlib-cache'/'parent')
     os.environ['QISKIT_PARALLEL']='false'
@@ -205,7 +207,8 @@ def main():
         ('S1_result.json','SOURCE_S1.json','input_identity.json','r16_law.json','seed_plan.json')}
     save(OUTPUT/'SOURCE_S2.json',dict(execution_source=source,files=hashes,inherited_S1=inherited,
         S1_execution_source=s1['binding']['source'], packages={n:importlib.metadata.version(n)
-            for n in ('qiskit','qiskit-aer','numpy','scipy','gmpy2')}))
+            for n in ('qiskit','qiskit-aer','numpy','scipy','symengine')},
+        technical_attempt='02; attempt01 ended before scientific execution'))
     from threadpoolctl import threadpool_limits
     install_state_actions()
     from run_track_d_b1_c1 import cpu_observation
