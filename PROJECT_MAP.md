@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[A0実結果24件の受入/C1接続](docs/research/rpe_normalization_results_intake_20261111/REPORT.md)（2026-11-11）：公開4745bb676を既存adapterで無変更取込み。SOURCE9/入力hash7一致、診断24有効・欠測/STOP/数値未資格0、C1共有2/他6未補完、全A86候補を保持。既存47技術test＋保存fixture PASS、新数値計算0、公開後STOP。
+
 [A0 normalization受入準備/C1接続](docs/research/rpe_normalization_intake_20261111/REPORT.md)（2026-11-11）：固定24件の診断専用adapter、欠測/STOP/数値未資格の保全、同一SOURCE/requestでH6重複2点だけ共有。新8＋既存39＝47技術test PASS、実A0未消費・科学計算0、公開後STOP。
 
 [A R候補×C Phase1の計画整合](docs/research/r_screening_price_alignment_20261111/REPORT.md)（2026-11-11）：C8セルのうち6はA自動menu内、H4新R8/q8・q16の2点は明示校正/検証laneを保全。A24 scalarとC64+16=80 wrapperを別scopeとして整理。m12 N例とC小qは重複0、長qへの価格移送を資格しない。7 metadata技術test PASS、新科学計算0、公開後STOP。

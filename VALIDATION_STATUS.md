@@ -1,5 +1,7 @@
 # Validation status
 
+[A0実結果受動取込み](docs/research/rpe_normalization_results_intake_20261111/REPORT.md)：固定公開24件とSOURCE/input/candidate/law/statusを既存adapterで照合、診断無変更・C1厳密2点・86候補維持を保存fixtureで確認。既存47件再PASS、N/C/G・R採択/全RPE未資格を維持。kernel/pipeline変更0、科学再計算0、公開後STOP。
+
 [A0受入adapter/C1結合](docs/research/rpe_normalization_intake_20261111/REPORT.md)：人工24件・部分STOP・overflow/underflow/null/精度・candidate/SOURCE/law不一致・数値backend非起動を新8件で確認。既存回帰39件もPASS。保存PLAN metadataだけを読み、N/C/Gの資格を作らない。実科学実行0、公開後STOP。
 
 [R候補/N/C実験計画の整合](docs/research/r_screening_price_alignment_20261111/REPORT.md)：A86候補/C8セルの条件・ID・allocation/profile・法則SOURCE照合、明示C点の保全、24/80別unit、保存cohort、menu不変と不一致拒否を7技術testで確認。A/C法則実装は同一blobだがraw law tagの差を残す。新normalization/N/C/再解析/fit/compile/G0、科学的採択なし・公開後STOP。

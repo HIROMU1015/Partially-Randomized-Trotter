@@ -1,5 +1,7 @@
 # scripts 索引
 
+[A0実結果取込み記録](../docs/research/rpe_normalization_results_intake_20261111/HANDOFF.md)：既存prepare_rpe_normalization_intake.pyを変更せず公開4745bb676の24件へ適用。結果資料内VERIFY_INTAKE.pyは保存metadata/C1接続の再照合専用。新科学runnerは追加しない。
+
 [A0受入CLI](../docs/research/rpe_normalization_intake_20261111/HANDOFF.md)：prepare_rpe_normalization_intake.pyは固定PLANから受入準備を出力し、明示した公開SHA/pathのHANDOFF/resultだけを読む。科学実行optionなし。
 
 [R screening×価格Phase1 metadata照合](../docs/research/r_screening_price_alignment_20261111/REPORT.md)：plan_r_screening_price_alignment.pyは固定A/C/B資料と既存metadata関数のみを読む。normalization/N/C/fit/compile/Gなし。

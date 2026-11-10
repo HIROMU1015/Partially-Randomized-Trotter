@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[A0実結果受入完了](../../docs/research/rpe_normalization_results_intake_20261111/REPORT.md)：既存trottertracks.rpe_normalization_intake APIを無変更で利用。公開24件を診断として保持しC1の2点へ接続。科学kernel・N/C provider・R選択実装は不変。
+
 [A0診断受入adapter](../../docs/research/rpe_normalization_intake_20261111/HANDOFF.md)：trottertracks.rpe_normalization_intakeは既存Bのbuild_menu/request_context/SavedArtifactsを再利用し、24件の診断とC1重複2点を受動接続する。N/C/G moduleは変更しない。
 
 [R候補/N/C実験計画整合](../../docs/research/r_screening_price_alignment_20261111/REPORT.md)：既存B metadataと固定C describe_requestを再利用する技術計画。数値core・producerは変更せず、7 metadata test PASS。
