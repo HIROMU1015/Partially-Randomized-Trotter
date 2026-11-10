@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PRのR依存Nモデル](docs/research/pr_r_dependent_n_model_20261111/REPORT.md)：H4 S2/δ.1/p1/K2、H6 m5/δ1.6/p7/K2のround別Rを共通N providerへ接続。H6はm≥4、旧R cache除外・R-aware経験的allowance・巨大N整数検証、人工/mock12件PASS。実新R/保存再解析/最適化/C/G0、独立A branch・公開照合後STOP。
+
 [H4 DF10全13round N結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：SOURCE90dcc3ed2で保存m4 scalar2＋新11時点22候補を一回評価、全ideal条件付きPASS。PF各軸705〜764、PR m12約3.78e75。原本保全・長時間PRの整数丸めだけ上方向検証したN_HANDOFFをCへ渡す。actual/全RPE/C/G未資格、公開照合後STOP。
 
 [H4 DF10 N batch整備](docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：保存m3 N保持、m4保存signal scalarとfresh11時点22候補を共通N callbackへ接続。人工/mock/静的fixture13件PASS、実H4再解析・新N/C/G0、C interface/H6不変、科学許可待ち・公開照合後STOP。

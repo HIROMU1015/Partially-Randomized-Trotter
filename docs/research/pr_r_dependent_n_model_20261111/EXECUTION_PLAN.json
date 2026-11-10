@@ -1,0 +1,53 @@
+{
+  "status": "PROPOSAL_ONLY_NOT_ADOPTED_NOT_EXECUTED",
+  "purpose": "Validate N(T,R), not optimize N or G",
+  "proposed_new_PR": [
+    {
+      "system": "H4",
+      "m": 12,
+      "T": 409.6,
+      "q_RPE": 4096,
+      "q_PF": 4096,
+      "formula": "2nd",
+      "delta": 0.1,
+      "prefix": 1,
+      "K": 2,
+      "baseline_R": 4,
+      "proposed_R": 8
+    },
+    {
+      "system": "H6",
+      "m": 12,
+      "T": 409.6,
+      "q_RPE": 4096,
+      "q_PF": 256,
+      "formula": "4th(m5_best)",
+      "delta": 1.6,
+      "prefix": 7,
+      "K": 2,
+      "baseline_R": 16,
+      "proposed_R": 32
+    }
+  ],
+  "proposed_scope": {
+    "new_finite_mean_candidates": 2,
+    "PR_exact_tail_controls": 2,
+    "new_R_scalar_candidates": 2,
+    "saved_baseline_scalar_candidates": 2,
+    "XY_axis_evaluations": 8,
+    "new_reference_actions_if_bound_saved_pairs_available": 0
+  },
+  "reference_missing_policy": "STOP; separately specify up to4 new actions if needed; no automatic fallback",
+  "numerical_allowance_policy": "R_AWARE_EMPIRICAL_ACTION_COUNT_V1, empirical not rigorous, apply identically to both R baselines and variants",
+  "preserve": "Saved H/state/completion/sector/scalar/signed order, old N/raw/SOURCE/STOP remain unchanged",
+  "new_R_optimization": false,
+  "PF_re_evaluation": false,
+  "sampling": 0,
+  "build": 0,
+  "compile": 0,
+  "prices": 0,
+  "G": 0,
+  "actual_N_qualified": false,
+  "full_RPE_qualified": false,
+  "mandatory_stop": true
+}

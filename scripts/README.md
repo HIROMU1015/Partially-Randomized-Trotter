@@ -1,5 +1,7 @@
 # scripts 索引
 
+`plan_pr_r_dependent_n.py`：[R依存Nのmetadata専用入口](../docs/research/pr_r_dependent_n_model_20261111/REPORT.md)。system/round-R mapから既存taskを生成し、科学計算を起動しない。承認後のB接続は`pr_r_dependent_n.RBatch`を使う。
+
 `run_h4_df10_rpe_batch.py`の[全13round N完了](../docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：固定24候補を一回評価し旧m3を保持。`verify_h4_df10_rpe_shot_integers.py`は同じ保存ε/αの巨大N整数化を検証し、上方向だけ補正した受渡しrecordを別保存。signal再計算・C/G0、再実行しない。
 
 `run_h4_df10_rpe_batch.py`：[H4 N一括入口](../docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)。既定はmetadata計画、別途許可後の`--execute`で不足24候補をN専用評価する。保存m3を再計算せず、C/Gを呼ばない。
