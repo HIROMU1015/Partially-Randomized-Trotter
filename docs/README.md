@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19 RPE m7結果](research/h6_df19_rpe_m7_results_20261110/REPORT.md)：固定2候補のreference/signal/phase/radius/十分N。[正本](research/h6_df19_rpe_m7_results_20261110/run01/result.json)／[8round coverage・価格handoff](research/h6_df19_rpe_m7_results_20261110/COVERAGE.json)。各軸PF705/PR846、残りm8..12、actual/全G未資格、公開照合後STOP。
+
 [H6 DF19 RPE m7実行準備](research/h6_df19_rpe_m7_preparation_20261110/REPORT.md)：固定2候補・旧kernel再利用・人工3件PASS。[PLAN](research/h6_df19_rpe_m7_preparation_20261110/PLAN.json)／[人工結果](research/h6_df19_rpe_m7_preparation_20261110/synthetic_tests.txt)。実m7のreference/signal/Nは別途明示承認待ち。
 
 [H6 DF19 m6 run02結果](research/h6_df19_rpe_m6_results_20261110/run02/REPORT.md)：明示実行指示後の同条件再実行。[正本](research/h6_df19_rpe_m6_results_20261110/run02/result.json)／[照合](research/h6_df19_rpe_m6_results_20261110/run02/CHECKS.txt)。各軸PF705/PR772、run01は保全、N・標本数を合算しない。公開照合後STOP。

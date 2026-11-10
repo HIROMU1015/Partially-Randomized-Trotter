@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H6 m7結果](../../docs/research/h6_df19_rpe_m7_results_20261110/REPORT.md)：既存D2 action/geometryを不変で再利用し、SOURCE dcd6a7c87でT12.8・qPF8のFull19対PR7/R16/K2を一回評価。ideal条件付きN各軸PF705/PR846、actual/全G未資格。
+
 H6 RPE m7の[専用接続](../../docs/research/h6_df19_rpe_m7_preparation_20261110/REPORT.md)：library・数値kernel変更なし。`run_h6_df19_rpe_m7.py`が既存`h6_df19_rpe_d2`のaction/geometryを再利用する。人工差分3件PASS、実H6は別途明示承認待ち。
 
 [H6 m6結果](../../docs/research/h6_df19_rpe_m6_results_20261110/REPORT.md)：既存D2 action/geometryを不変で再利用し、SOURCE c9aa89548でT6.4のFull19/PR7・qPF4を一回評価。ideal条件付きN各軸PF705/PR772、actual/全Gは未資格。
