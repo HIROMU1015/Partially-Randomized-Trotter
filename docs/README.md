@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19 m6 run02結果](research/h6_df19_rpe_m6_results_20261110/run02/REPORT.md)：明示実行指示後の同条件再実行。[正本](research/h6_df19_rpe_m6_results_20261110/run02/result.json)／[照合](research/h6_df19_rpe_m6_results_20261110/run02/CHECKS.txt)。各軸PF705/PR772、run01は保全、N・標本数を合算しない。公開照合後STOP。
+
 [m6既存成果再利用・価格設計への接続](research/h6_df19_rpe_m6_results_20261110/REUSE_AND_PRICE_CONNECTION.md)：再送指示と完了済み7903e3633の条件・候補が一致。指定価格設計4c965ff6のmetadataと接続を確認し、新科学計算・test・価格処理は0。既存各軸NはPF705/PR772、公開照合後STOP。
 
 [H6 DF19 RPE m6結果](research/h6_df19_rpe_m6_results_20261110/REPORT.md)：reference/finite mean/phase/radius/十分Nの限定2候補。[正本](research/h6_df19_rpe_m6_results_20261110/run01/result.json)／[7round対応・価格担当handoff](research/h6_df19_rpe_m6_results_20261110/COVERAGE.json)。各軸PF705/PR772、actual/全G未資格、公開照合後STOP。

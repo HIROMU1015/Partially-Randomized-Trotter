@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6 m6 run02](docs/research/h6_df19_rpe_m6_results_20261110/run02/REPORT.md)：利用者の再度の実行指示を受け、SOURCE49523b11d・数値SOURCE不変で同条件2候補を別runとして評価。両方ideal条件付きPASS、各軸PF705/PR772、全candidate数値欄はrun01と一致。run01/coverage保持、7個の異なるroundのまま、価格0、公開照合後STOP。
+
 [H6 RPE m6結果](docs/research/h6_df19_rpe_m6_results_20261110/REPORT.md)：SOURCE c9aa89548、T6.4/qPF4/δ1.6のFull19対PR7/R16/K2を一回評価。両方ideal条件付きPASS、各軸NはPF705/PR772。保存値と合わせm0..6、残りm7..12。価格作業・G0、actual/全RPE未資格、公開照合後STOP。
 
 [H6 RPE m6準備](docs/research/h6_df19_rpe_m6_preparation_20261110/REPORT.md)：T6.4/qPF4/δ1.6のFull19対PR7/R16/K2だけの専用入口。旧D2数値kernel・8 ID guardは不変、人工差分3件PASS。実H6 signal/phase/Nは未実行、価格照会・予測なし。別途科学実行許可待ち、公開照合後STOP。
