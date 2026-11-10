@@ -1,5 +1,7 @@
 # scripts 索引
 
+[R screening×価格Phase1 metadata照合](../docs/research/r_screening_price_alignment_20261111/REPORT.md)：plan_r_screening_price_alignment.pyは固定A/C/B資料と既存metadata関数のみを読む。normalization/N/C/fit/compile/Gなし。
+
 [R可変provider接続](../docs/research/rpe_provider_integration_20261111/HANDOFF.md)：Aのplan_pr_r_dependent_n.pyとCのreport_rpe_nc_coverage.pyを固定版取込み。両CLIはmetadataのみ。将来の数値一括入口はrpe_provider_integration.run_evaluationで、今回はmock検証のみ。
 
 [有限R menu API](../docs/research/rpe_r_selection_20261111/INTERFACE.md)：新科学runnerは追加しない。rpe_r_selectionのbuild_menu/coverageはmetadata、evaluate_menuは供給済み数値の明示入口。今回人工/mockのみ、実実行案は別許可待ち。

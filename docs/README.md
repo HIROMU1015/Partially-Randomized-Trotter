@@ -1,5 +1,7 @@
 # 文書索引
 
+[R候補とN/C価格実験の整合](research/r_screening_price_alignment_20261111/REPORT.md)／[HANDOFF](research/r_screening_price_alignment_20261111/HANDOFF.md)／[依存関係plan](research/r_screening_price_alignment_20261111/INTEGRATED_PLAN.json)：A24とC80を分離、明示C校正候補を保全した未実行案。
+
 [R可変provider統合](research/rpe_provider_integration_20261111/REPORT.md)／[A/C HANDOFF](research/rpe_provider_integration_20261111/HANDOFF.md)：固定52行・R候補54行のmetadata inventory、83技術test、実科学計算0。
 
 [R可変総費用pipeline](research/rpe_r_selection_20261111/REPORT.md)／[A/C interface](research/rpe_r_selection_20261111/INTERFACE.md)／[有限実行案](research/rpe_r_selection_20261111/EXECUTION_PLAN.json)：技術実装・人工39件、実R比較/実G0。

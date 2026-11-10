@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[A R候補×C Phase1の計画整合](docs/research/r_screening_price_alignment_20261111/REPORT.md)（2026-11-11）：C8セルのうち6はA自動menu内、H4新R8/q8・q16の2点は明示校正/検証laneを保全。A24 scalarとC64+16=80 wrapperを別scopeとして整理。m12 N例とC小qは重複0、長qへの価格移送を資格しない。7 metadata技術test PASS、新科学計算0、公開後STOP。
+
 [A R依存N・C H6価格のB統合](docs/research/rpe_provider_integration_20261111/REPORT.md)（2026-11-11）：固定A RBatch/partition・C provider/coverageを再利用し、複数R adapter、既存loader、保存入力→batch→exact費用/R選択を接続。83技術test PASS。固定52行/R候補54行の静的coverage、補正整数N保持・新R欠測・baseline allowance比較資格を分離。実N/C/再解析/fit/compile/G/R最適化0、公開照合後STOP。
 
 [有限R候補の総費用選択pipeline](docs/research/rpe_r_selection_20261111/REPORT.md)（2026-11-11）：R-only menu・N/C full recipe/law/domain照合・exact有理数積和・round別点選択を追加。固定Rモデルの流用、欠測を除いた全menu最適化の表示、round PASSから全RPE成功への昇格を防ぐ。人工12＋既存27＝39件PASS、実N/C/再解析/compile/実G/実R最適化0。A/C共通仕様と未承認の有限実行案を公開しSTOP。

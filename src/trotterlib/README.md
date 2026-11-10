@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[R候補/N/C実験計画整合](../../docs/research/r_screening_price_alignment_20261111/REPORT.md)：既存B metadataと固定C describe_requestを再利用する技術計画。数値core・producerは変更せず、7 metadata test PASS。
+
 [R provider統合](../../docs/research/rpe_provider_integration_20261111/REPORT.md)：trottertracks.rpe_provider_integrationが既存A RBatch/partitionとH4/H6 loader・C固定価格・coverage・B exact会計を接続。83人工/保存fixture技術test PASS、新実科学計算0。
 
 [R可変費用選択](../../docs/research/rpe_r_selection_20261111/REPORT.md)：trottertracks.rpe_r_selectionが既存B条件照合・m5 allocation・supplied-axis会計を再利用。exact=Trueで巨大整数Nを保持。新R実計算0。
