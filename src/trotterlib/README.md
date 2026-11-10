@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4 N batch adapter](../../docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：`trottertracks.h4_df10_rpe_batch_provider`が既存H4 scalar・汎用行列作用・保存H4 loaderを再利用。B0/p7のscalarとPR/p1/R4/K2を保持、共通N/C APIは不変、人工13件・実科学0。
+
 [H4価格provider×B統合](../../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：trottertracks.pf_pr_rpe_pipeline.h4_saved_price_providerを追加。A固定部品と元会計を再利用、B環境34技術test PASS、新実科学計算0。
 
 [H6残5roundの一括N結果](../../docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：既存kernel不変で固定10候補全ideal条件付きPASS。保存値と合わせ全13roundのNを共通pipelineへ静的接続。actual/全RPE/価格Gは未資格、人工試験は既存7件の記録を再利用。

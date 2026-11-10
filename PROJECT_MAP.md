@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10 N batch整備](docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：保存m3 N保持、m4保存signal scalarとfresh11時点22候補を共通N callbackへ接続。人工/mock/静的fixture13件PASS、実H4再解析・新N/C/G0、C interface/H6不変、科学許可待ち・公開照合後STOP。
+
 [H4価格providerのB接続完了](docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：Aの凍結Mq・固定依存をB統合branchへ取込み。B factory→run_missing、null取得扱いの修正、paired cohort/資格不足の再呼出し抑止を接続。A8/B12/結合7/H6 N専用7の計34技術test PASS、新実科学計算・価格予測・実G0。全law/長q/CI/全RPE採用は未資格、公開照合後STOP。
 
 [H6残5round一括結果](docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：SOURCE fca50d36fの固定10候補を一回評価し全てideal条件付きPASS。各軸Nはm8..12 PF705/706/707/709/714、PR1015/1462/3033/13064/242418。保存m0..7を再計算せず全13roundのNへ接続、actual/全RPE/G未資格、C0、公開照合後STOP。

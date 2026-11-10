@@ -26,3 +26,8 @@ H6残5時点・10候補を一括N範囲として提案し、H4は保存m4 scalar
 [REPORT](../h4_price_pipeline_integration_20261110/REPORT.md)。利用者がA成果2a521b156のB統合を明示指示した。既存branchのHEAD f4c0bdabdを再利用し、後続H6結果を保持したままA provider/テスト/固定依存3 moduleを取込み。B自身のfactoryとrun_missingへ保存lookupを接続し、null非取得・有限cohort/外挿等の資格不足・paired scenarioと再呼出し要求を分離した。partial軸補完では同一recordを重複登録せず、取得済みの矛盾値を自動上書きしない。
 
 B専用環境でA8/B12/新結合7/H6 N専用7の34技術test PASS、元68軸136保存値照合を再利用。固定Mq係数・科学条件・保存不確かさを保持し、新実signal/N/C予測/数値再解析/fit/sampling/build/compile/実G0。全law/長q/共有systematicとCI・H4不足N/leaf・実全Gは未完了のまま、科学的採用やMain Claimを変更しない。公開SHA/主要file照合後mandatory STOP。次はユーザーが必要な科学範囲を決め、Codex B/価格担当は別途許可された範囲で対応する。
+
+
+## H4 N側batch adapterの接続（同日、科学実行未承認）
+
+[REPORT](../h4_df10_rpe_batch_preparation_20261110/REPORT.md)。利用者の技術準備指示に従い、H4 D1 scalarと汎用actionを接続した。B0/p7はconstantのみ、PR/p1R4K2は保存tail scalarを一度会計し、H6固有analyze/DF19/m5は移植しない。m3 ideal/actual laneをそのまま保持、m4保存raw/allowance/reference bindingを静的確認。m4 scalar2と新11時点22 finite meanの不足24候補をrun_missingへ一度で渡す入口を用意した。人工/mock/静的fixture13件PASS。共通C interface/旧SOURCE/H6全13round結果は不変。今回の実H4新signal/N・保存数値再解析・価格予測・実Gは0。ユーザーが固定範囲を承認後にBが実行、公開照合後mandatory STOP。

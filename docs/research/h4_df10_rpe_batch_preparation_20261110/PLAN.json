@@ -1,0 +1,1287 @@
+{
+  "status": "TECHNICAL_PREPARATION_ONLY_NO_NEW_SCIENCE",
+  "task": {
+    "schema_version": 1,
+    "task_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+    "configuration": {
+      "base_time": 0.1,
+      "energy_precision_ha": 0.0015936001019904,
+      "beta_total": 0.4,
+      "beta_stat": 0.2,
+      "alpha_total_per_method": 0.05,
+      "alpha_axis": 0.0019230769230769232,
+      "alpha_sum_all_rounds": 0.05,
+      "horizon": {
+        "target_energy_precision_ha": 0.0015936001019904,
+        "required_q_continuous": 2510.0400000000104,
+        "maximum_round_index_M": 12,
+        "round_count_M_plus_one": 13,
+        "q_max": 4096,
+        "achieved_energy_resolution_ha": 0.0009765625,
+        "previous_q_energy_resolution_ha": 0.001953125,
+        "target_met": true,
+        "previous_power_fails": true,
+        "minimal_power_of_two_horizon": true
+      },
+      "D1_m": 3,
+      "D1_q_RPE": 8,
+      "prior_attempts": [
+        {
+          "base_time": 0.8,
+          "principal_alias_margin": -1.2538070459441983,
+          "qualified": false
+        },
+        {
+          "base_time": 0.1,
+          "principal_alias_margin": 2.2421676911480444,
+          "qualified": true
+        }
+      ],
+      "energy_prior_ha": [
+        -4.994249624417489,
+        -2.0985459369977186
+      ],
+      "energy_shift": 0,
+      "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+    },
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4"
+    },
+    "contract": {
+      "completion": "saved_weighted_Hermitian_completion",
+      "fragment_order": "saved_snapshot_order",
+      "preparation_binding": {
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+        "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+      },
+      "state_preparation_cost": 0,
+      "input_source": {
+        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      }
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "candidates": [
+      {
+        "m": 0,
+        "q_RPE": 1,
+        "q_PF": 1,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 0.1,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "b8e5419ce1a4708e6d06",
+          "method": "B0",
+          "prefix": 7,
+          "q": 1,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 0,
+        "q_RPE": 1,
+        "q_PF": 1,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.1,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "03a51c8d13a91a403742",
+          "method": "PR",
+          "prefix": 1,
+          "q": 1,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 4,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 1,
+        "q_RPE": 2,
+        "q_PF": 2,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 0.2,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "448030a98641e859df32",
+          "method": "B0",
+          "prefix": 7,
+          "q": 2,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 1,
+        "q_RPE": 2,
+        "q_PF": 2,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.2,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "c00e00dc1e9c414fb7d9",
+          "method": "PR",
+          "prefix": 1,
+          "q": 2,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 8,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 2,
+        "q_RPE": 4,
+        "q_PF": 4,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 0.4,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "3897a891328d5db5b987",
+          "method": "B0",
+          "prefix": 7,
+          "q": 4,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 2,
+        "q_RPE": 4,
+        "q_PF": 4,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.4,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "18b698ccd4826050ce6a",
+          "method": "PR",
+          "prefix": 1,
+          "q": 4,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 16,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 3,
+        "q_RPE": 8,
+        "q_PF": 8,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "49709717a6c3d405c60d",
+          "method": "B0",
+          "prefix": 7,
+          "q": 8,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "SAVED_EVALUATED_CANDIDATE"
+      },
+      {
+        "m": 3,
+        "q_RPE": 8,
+        "q_PF": 8,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "14bd81a375400c9b0305",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 32,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "SAVED_EVALUATED_CANDIDATE"
+      },
+      {
+        "m": 4,
+        "q_RPE": 16,
+        "q_PF": 16,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 1.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "8e50c5560bb8f47f026f",
+          "method": "B0",
+          "prefix": 7,
+          "q": 16,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 4,
+        "q_RPE": 16,
+        "q_PF": 16,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 1.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "64e4f7e9ec7fba28815e",
+          "method": "PR",
+          "prefix": 1,
+          "q": 16,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 64,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 5,
+        "q_RPE": 32,
+        "q_PF": 32,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 3.2,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "f01949581a5fab7c0ae1",
+          "method": "B0",
+          "prefix": 7,
+          "q": 32,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 5,
+        "q_RPE": 32,
+        "q_PF": 32,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 3.2,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "f63ab0f7b1c0533a4ccc",
+          "method": "PR",
+          "prefix": 1,
+          "q": 32,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 128,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 6,
+        "q_RPE": 64,
+        "q_PF": 64,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 6.4,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "05db8dbf4a3ea9b6d945",
+          "method": "B0",
+          "prefix": 7,
+          "q": 64,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 6,
+        "q_RPE": 64,
+        "q_PF": 64,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 6.4,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "65c51c5cb3e39a2266e3",
+          "method": "PR",
+          "prefix": 1,
+          "q": 64,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 256,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 7,
+        "q_RPE": 128,
+        "q_PF": 128,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 12.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "500f03592f0b2424137b",
+          "method": "B0",
+          "prefix": 7,
+          "q": 128,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 7,
+        "q_RPE": 128,
+        "q_PF": 128,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 12.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "a5ea5a2e5794e1528e91",
+          "method": "PR",
+          "prefix": 1,
+          "q": 128,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 512,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 8,
+        "q_RPE": 256,
+        "q_PF": 256,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 25.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "c11c26531232ffe3c054",
+          "method": "B0",
+          "prefix": 7,
+          "q": 256,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 8,
+        "q_RPE": 256,
+        "q_PF": 256,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 25.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "1792921593bf9203455f",
+          "method": "PR",
+          "prefix": 1,
+          "q": 256,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 1024,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 9,
+        "q_RPE": 512,
+        "q_PF": 512,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 51.2,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "780cf2bef708e2c25c8b",
+          "method": "B0",
+          "prefix": 7,
+          "q": 512,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 9,
+        "q_RPE": 512,
+        "q_PF": 512,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 51.2,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "55cf531951fd95f115a2",
+          "method": "PR",
+          "prefix": 1,
+          "q": 512,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 2048,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 10,
+        "q_RPE": 1024,
+        "q_PF": 1024,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 102.4,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "2a9548dfd80355816f4c",
+          "method": "B0",
+          "prefix": 7,
+          "q": 1024,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 10,
+        "q_RPE": 1024,
+        "q_PF": 1024,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 102.4,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "f197f6053d08703db871",
+          "method": "PR",
+          "prefix": 1,
+          "q": 1024,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 4096,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 11,
+        "q_RPE": 2048,
+        "q_PF": 2048,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 204.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "1e464b80298cc4a73c63",
+          "method": "B0",
+          "prefix": 7,
+          "q": 2048,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 11,
+        "q_RPE": 2048,
+        "q_PF": 2048,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 204.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "2c66d80afc0d49cd047f",
+          "method": "PR",
+          "prefix": 1,
+          "q": 2048,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 8192,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 12,
+        "q_RPE": 4096,
+        "q_PF": 4096,
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 409.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "ccad37928a00b005f3f7",
+          "method": "B0",
+          "prefix": 7,
+          "q": 4096,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      },
+      {
+        "m": 12,
+        "q_RPE": 4096,
+        "q_PF": 4096,
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 409.6,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "42564e5c9ba649be78a9",
+          "method": "PR",
+          "prefix": 1,
+          "q": 4096,
+          "system": "H4"
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            4
+          ],
+          "event_count": 16384,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "adoption": "PROPOSAL_NOT_SCIENTIFICALLY_ADOPTED"
+      }
+    ],
+    "source": {
+      "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+      "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+    },
+    "energy_target": "saved_DF_H_sector_ground",
+    "state_assumption": "saved_numerical_state_conditional_ground",
+    "full_RPE_qualified": false,
+    "saved_signal_sources": {
+      "49709717a6c3d405c60d": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "/49709717a6c3d405c60d"
+      },
+      "14bd81a375400c9b0305": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "/14bd81a375400c9b0305"
+      },
+      "8e50c5560bb8f47f026f": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "/8e50c5560bb8f47f026f"
+      },
+      "64e4f7e9ec7fba28815e": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "/64e4f7e9ec7fba28815e"
+      }
+    }
+  },
+  "rows": [
+    {
+      "m": 0,
+      "candidate_id": "b8e5419ce1a4708e6d06",
+      "q_RPE": 1,
+      "q_PF": 1,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 0,
+      "candidate_id": "03a51c8d13a91a403742",
+      "q_RPE": 1,
+      "q_PF": 1,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 1,
+      "candidate_id": "448030a98641e859df32",
+      "q_RPE": 2,
+      "q_PF": 2,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 1,
+      "candidate_id": "c00e00dc1e9c414fb7d9",
+      "q_RPE": 2,
+      "q_PF": 2,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 2,
+      "candidate_id": "3897a891328d5db5b987",
+      "q_RPE": 4,
+      "q_PF": 4,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 2,
+      "candidate_id": "18b698ccd4826050ce6a",
+      "q_RPE": 4,
+      "q_PF": 4,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 3,
+      "candidate_id": "49709717a6c3d405c60d",
+      "q_RPE": 8,
+      "q_PF": 8,
+      "N_status": "CONDITIONAL_ROUND_PASS",
+      "N_X": 705,
+      "N_Y": 705,
+      "input_route": "COPY_SAVED_N",
+      "signal_source": null
+    },
+    {
+      "m": 3,
+      "candidate_id": "14bd81a375400c9b0305",
+      "q_RPE": 8,
+      "q_PF": 8,
+      "N_status": "CONDITIONAL_ROUND_PASS",
+      "N_X": 977,
+      "N_Y": 977,
+      "input_route": "COPY_SAVED_N",
+      "signal_source": null
+    },
+    {
+      "m": 4,
+      "candidate_id": "8e50c5560bb8f47f026f",
+      "q_RPE": 16,
+      "q_PF": 16,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "SAVED_SIGNAL_SCALAR",
+      "signal_source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "8e50c5560bb8f47f026f",
+        "allowance_path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_endpoints.json.gz",
+        "allowance_epsilon": 0.0005,
+        "finite_time_status": "ELIGIBLE",
+        "reference_provenance": "Saved full-H spectrum path; independent expm_multiply check at T2, not a new T1.6 pair"
+      }
+    },
+    {
+      "m": 4,
+      "candidate_id": "64e4f7e9ec7fba28815e",
+      "q_RPE": 16,
+      "q_PF": 16,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "SAVED_SIGNAL_SCALAR",
+      "signal_source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "64e4f7e9ec7fba28815e",
+        "allowance_path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_endpoints.json.gz",
+        "allowance_epsilon": 0.0005,
+        "finite_time_status": "ELIGIBLE",
+        "reference_provenance": "Saved full-H spectrum path; independent expm_multiply check at T2, not a new T1.6 pair"
+      }
+    },
+    {
+      "m": 5,
+      "candidate_id": "f01949581a5fab7c0ae1",
+      "q_RPE": 32,
+      "q_PF": 32,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 5,
+      "candidate_id": "f63ab0f7b1c0533a4ccc",
+      "q_RPE": 32,
+      "q_PF": 32,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 6,
+      "candidate_id": "05db8dbf4a3ea9b6d945",
+      "q_RPE": 64,
+      "q_PF": 64,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 6,
+      "candidate_id": "65c51c5cb3e39a2266e3",
+      "q_RPE": 64,
+      "q_PF": 64,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 7,
+      "candidate_id": "500f03592f0b2424137b",
+      "q_RPE": 128,
+      "q_PF": 128,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 7,
+      "candidate_id": "a5ea5a2e5794e1528e91",
+      "q_RPE": 128,
+      "q_PF": 128,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 8,
+      "candidate_id": "c11c26531232ffe3c054",
+      "q_RPE": 256,
+      "q_PF": 256,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 8,
+      "candidate_id": "1792921593bf9203455f",
+      "q_RPE": 256,
+      "q_PF": 256,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 9,
+      "candidate_id": "780cf2bef708e2c25c8b",
+      "q_RPE": 512,
+      "q_PF": 512,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 9,
+      "candidate_id": "55cf531951fd95f115a2",
+      "q_RPE": 512,
+      "q_PF": 512,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 10,
+      "candidate_id": "2a9548dfd80355816f4c",
+      "q_RPE": 1024,
+      "q_PF": 1024,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 10,
+      "candidate_id": "f197f6053d08703db871",
+      "q_RPE": 1024,
+      "q_PF": 1024,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 11,
+      "candidate_id": "1e464b80298cc4a73c63",
+      "q_RPE": 2048,
+      "q_PF": 2048,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 11,
+      "candidate_id": "2c66d80afc0d49cd047f",
+      "q_RPE": 2048,
+      "q_PF": 2048,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 12,
+      "candidate_id": "ccad37928a00b005f3f7",
+      "q_RPE": 4096,
+      "q_PF": 4096,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    },
+    {
+      "m": 12,
+      "candidate_id": "42564e5c9ba649be78a9",
+      "q_RPE": 4096,
+      "q_PF": 4096,
+      "N_status": "MISSING",
+      "N_X": null,
+      "N_Y": null,
+      "input_route": "NEW_REFERENCE_AND_FINITE_MEAN",
+      "signal_source": null
+    }
+  ],
+  "static_sources": {
+    "3b742fff26381514e12c07b51701276b7d1b26ec:docs/research/pf_pr_rpe_cost_integration_20261110/static_plan/H4_PLAN.json": "6627d60b9061ffb690d5a773bd9ef36142738d8d9d9736cd0ced52feccc4c0c6",
+    "cefc01622a3cd75dd16d30de7b9fb68274f3eddd:docs/research/h4_df10_rpe_d1_20261110/result.json": "c3191f206016971965e89354ef70cf4e00528ea12f297a4341bdb32823810e13",
+    "7a8bc7f132e166390c943e6b32c92cc6abe1baf4:artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json": "1263cca2b155bb06f217fa4921dc59b17f57fefb4b9157f44361e72102dc79f8",
+    "155529e20a8fac39e00786c40b57830b71203c4f:artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz": "46dfc0334e8cd01659a0a60f6e3f2994025ca1155662c6679c69d04cc981a9d8",
+    "155529e20a8fac39e00786c40b57830b71203c4f:artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_endpoints.json.gz": "470f1750ac3f9c08b4ca8139b0794bcbaad4d41bbc9e102854ed70009f27dae2"
+  },
+  "input_bindings": {
+    "H4_tol_receipt.json": "7a161c1a3830dbf281d8ef4d05c013a3852955d4869cc41d26e033b7968feb1e",
+    "H4_tol_snapshot.npz": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96"
+  },
+  "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+  "frozen_loader": {
+    "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+    "path": "scripts/h46_m5_tol_saved_input.py",
+    "sha256": "b6544ed94657bc8c25c9cca972952c27c2533913bcc43b131d135902b65963ac"
+  },
+  "proposed_scientific_scope": {
+    "saved_m3_N_copied": 2,
+    "saved_m3_re_evaluations": 0,
+    "saved_m4_scalar_candidates": 2,
+    "new_reference_times": [
+      0.1,
+      0.2,
+      0.4,
+      3.2,
+      6.4,
+      12.8,
+      25.6,
+      51.2,
+      102.4,
+      204.8,
+      409.6
+    ],
+    "reference_state_actions": 22,
+    "new_finite_mean_candidates": 22,
+    "PR_exact_tail_controls": 11,
+    "new_scalar_candidates": 24,
+    "XY_axis_plans": 48,
+    "prices": 0,
+    "G": 0,
+    "eigensolves": 0,
+    "sampling": 0,
+    "build": 0,
+    "compile": 0
+  },
+  "actual_errors_qualified": false,
+  "full_RPE_qualified": false,
+  "total_resources": null,
+  "automatic_retry": false,
+  "mandatory_stop": true
+}
