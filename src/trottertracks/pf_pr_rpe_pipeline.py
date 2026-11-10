@@ -14,6 +14,7 @@ import json
 import math
 import re
 import subprocess
+import sys
 
 from . import h4_df10_rpe_connection as accounting
 
@@ -206,10 +207,15 @@ def _match(task, row, record):
         raise ValueError('Scientific/recipe/compiler/wrapper/SOURCE mismatch')
 
 
-def _expected_price(p, row):
+def _price_available(p):
     value=p.get('mean',{}).get('rz_count')
-    if isinstance(value,bool) or not isinstance(value,(int,float)) or not math.isfinite(value) or value<0:return False
-    if p['classification'] not in accounting.PRICE_KINDS or p['expectation'] not in ('DETERMINISTIC','QUALIFIED_EXPECTATION','EXPLICIT_CONDITIONAL_MODEL'):
+    return not isinstance(value,bool) and isinstance(value,(int,float)) and math.isfinite(value) and value>=0
+
+
+def _eligible_price(p, row, price_policy):
+    allowed={'DETERMINISTIC','QUALIFIED_EXPECTATION','EXPLICIT_CONDITIONAL_MODEL'}
+    if price_policy=='finite_cohort_scenario':allowed.add('FINITE_COHORT_ONLY')
+    if not _price_available(p) or p['classification'] not in accounting.PRICE_KINDS or p['expectation'] not in allowed:
         return False
     if p['classification']!='MODEL_PREDICTION':return True
     model=p.get('model') or {}
@@ -218,8 +224,20 @@ def _expected_price(p, row):
         and bool(model.get('coverage')) and bool(model.get('source')))
 
 
-def plan(task, shots, prices):
+def _expected_price(p, row):
+    return _eligible_price(p,row,'qualified_expectation')
+
+
+def h4_saved_price_provider(read_json, *, selections=None):
+    """B entry for A's frozen H4 catalog. No fresh prediction/compile fallback."""
+    from .h4_df10_price_provider import H4PriceProvider
+    return H4PriceProvider(read_json,pipeline=sys.modules[__name__],selections=selections)
+
+
+def plan(task, shots, prices, *, price_policy='qualified_expectation'):
     """Static coverage only: no prices predicted, N solved, or N*C evaluated."""
+    if price_policy not in ('qualified_expectation','finite_cohort_scenario'):
+        raise ValueError('Explicit price qualification policy required')
     validate_task(task);lookup={key(r):r for r in task['candidates']}
     nmap={};pmap={}
     for n in shots:
@@ -255,12 +273,21 @@ def plan(task, shots, prices):
         qualified=(n is not None and n['plan']['status']=='CONDITIONAL_ROUND_PASS'
             and all(type(n['plan'].get('N_'+a)) is int and n['plan']['N_'+a]>0 for a in AXES))
         available=[p for pk,p in pmap.items() if pk[:2]==k]
+        expected_cohorts=sorted({p['cohort'] for p in available if all(
+            any(v['cohort']==p['cohort'] and v['axis']==a and _expected_price(v,row) for v in available) for a in AXES)})
+        eligible_cohorts=sorted({p['cohort'] for p in available if all(
+            any(v['cohort']==p['cohort'] and v['axis']==a and _eligible_price(v,row,price_policy) for v in available) for a in AXES)})
         items.append(dict(m=row['m'],candidate_id=k[1],arm=arm(row['candidate']),
             N_status='SAVED_CONDITIONAL' if qualified else ('MISSING' if n is None else 'UNQUALIFIED'),
-            C_axes=sorted({p['axis'] for p in available}),
-            price_contexts=[dict(axis=p['axis'],cohort=p['cohort'],classification=p['classification'],expectation=p['expectation']) for p in available],
+            C_axes=sorted({p['axis'] for p in available if _price_available(p)}),
+            C_record_axes=sorted({p['axis'] for p in available}),
+            price_contexts=[dict(axis=p['axis'],cohort=p['cohort'],classification=p['classification'],expectation=p['expectation'],
+                value_available=_price_available(p),price_unit=p.get('provider_quote',{}).get('price_unit'),
+                validation=p.get('provider_quote',{}).get('validation'),reason=p.get('provider_quote',{}).get('reason'),
+                model_qualified=(p.get('model') or {}).get('qualified_for_candidate'),source=deepcopy(p['source'])) for p in available],
             adoption=row['adoption'],
-            expected_C_axes=sorted({p['axis'] for p in available if _expected_price(p,row)})))
+            expected_C_axes=sorted({p['axis'] for p in available if _expected_price(p,row)}),
+            expected_C_cohorts=expected_cohorts,eligible_C_cohorts=eligible_cohorts))
     M=task['configuration']['horizon']['maximum_round_index_M']
     missing=[dict(m=m,arm=a) for m in range(M+1) for a in ARMS
              if not any(i['m']==m and i['arm']==a for i in items)]
@@ -268,7 +295,11 @@ def plan(task, shots, prices):
         missing_N=[i['candidate_id'] for i in items if i['N_status']=='MISSING'],
         unqualified_N=[i['candidate_id'] for i in items if i['N_status']=='UNQUALIFIED'],
         missing_C=[i['candidate_id'] for i in items if i['C_axes']!=list(AXES)],
-        unqualified_expected_C=[i['candidate_id'] for i in items if i['expected_C_axes']!=list(AXES)],
+        unqualified_expected_C=[i['candidate_id'] for i in items if not i['expected_C_cohorts']],
+        unqualified_policy_C=[i['candidate_id'] for i in items if not i['eligible_C_cohorts']],
+        C_provider_requests=[i['candidate_id'] for i in items if i['C_record_axes']!=list(AXES) and not i['eligible_C_cohorts']],
+        blocked_C=[i['candidate_id'] for i in items if i['C_record_axes']==list(AXES) and not i['eligible_C_cohorts']],
+        price_policy=price_policy,
         totals=None,science_calls=0,full_RPE_qualified=False,mandatory_stop=True)
 
 
@@ -278,7 +309,7 @@ def evaluate(task, shots, prices, *, cohort_selection, price_policy='qualified_e
     cohort_selection[(candidate_id, axis)] chooses exactly one price scenario.
     No missing covariance, model systematic error or finite tail is set to zero.
     """
-    inventory=plan(task,shots,prices)
+    inventory=plan(task,shots,prices,price_policy=price_policy)
     if inventory['missing_candidate_slots'] or inventory['missing_N'] or inventory['unqualified_N']:
         return dict(status='INCOMPLETE_OR_UNQUALIFIED_N',totals=None,inventory=inventory)
     M=task['configuration']['horizon']['maximum_round_index_M']
@@ -292,6 +323,7 @@ def evaluate(task, shots, prices, *, cohort_selection, price_policy='qualified_e
             matches=[p for p in prices if key(p['identity'])==key(row) and p['axis']==a and p['cohort']==cohort]
             if len(matches)!=1:return dict(status='MISSING_SELECTED_C',totals=None)
             p=matches[0]
+            if not _price_available(p):return dict(status='MISSING_SELECTED_C_VALUE',totals=None)
             if p['classification'] not in accounting.PRICE_KINDS:
                 return dict(status='UNVALIDATED_PRICE_EXTRAPOLATION',totals=None)
             if price_policy not in ('qualified_expectation','finite_cohort_scenario'):
@@ -388,11 +420,13 @@ def run_missing(task, shots, prices, *, n_provider=None, c_provider=None,price_p
     """Future permitted batch: one N provider call and one C provider call.
 
     Reuse existing N even on FAIL; never retry unqualified candidates. Provider
-    results are validated before proceeding. No aggregation or optimization.
+    results are validated before proceeding. C response records (including
+    unavailable) suppress automatic retries when both axes were observed.
+    Keep returned prices for the next call. No aggregation or optimization.
     """
     if price_policy not in ('qualified_expectation','finite_cohort_scenario'):
         raise ValueError('Explicit price qualification policy required')
-    initial=plan(task,shots,prices)
+    initial=plan(task,shots,prices,price_policy=price_policy)
     if initial['unqualified_N']:
         return dict(status='STOP_UNQUALIFIED_N',shots=shots,prices=prices,plan=initial)
     missing=set(initial['missing_N']);newshots=list(shots);newprices=list(prices)
@@ -403,29 +437,30 @@ def run_missing(task, shots, prices, *, n_provider=None, c_provider=None,price_p
         if {key(n['identity']) for n in batch}!={key(r) for r in requested} or len(batch)!=len(requested):
             raise ValueError('N batch returned different scope')
         newshots.extend(batch)
-    middle=plan(task,newshots,newprices)
+    middle=plan(task,newshots,newprices,price_policy=price_policy)
     if middle['unqualified_N']:
         return dict(status='STOP_UNQUALIFIED_N',shots=newshots,prices=newprices,plan=middle)
-    missing=set(middle['missing_C'])|set(middle['unqualified_expected_C'])
-    if price_policy=='finite_cohort_scenario':
-        for row in task['candidates']:
-            eligible=set()
-            for p in newprices:
-                if key(p['identity'])!=key(row):continue
-                value=p.get('mean',{}).get('rz_count')
-                finite=(p['classification']=='DIRECT_COMPILED_FINITE_SAMPLE' and p['expectation']=='FINITE_COHORT_ONLY'
-                    and not isinstance(value,bool) and isinstance(value,(int,float)) and math.isfinite(value) and value>=0)
-                if _expected_price(p,row) or finite:eligible.add(p['axis'])
-            if eligible==set(AXES):missing.discard(row['candidate']['id'])
+    # A response with null value is still a recorded lookup outcome. Finite
+    # cohorts, domain failures and extrapolations need a scientific decision,
+    # not another implicit provider/compile call on each invocation.
+    missing=set(middle['C_provider_requests'])
     if missing and c_provider is not None:
         requested=[r for r in task['candidates'] if r['candidate']['id'] in missing]
         batch=list(c_provider(task,requested))
         expected={(key(r),a) for r in requested for a in AXES}
         if {(key(p['identity']),p['axis']) for p in batch}!=expected or len(batch)!=len(expected):
             raise ValueError('C batch returned different scope')
-        newprices.extend(batch)
+        # Validate even an unavailable overlap before deciding to retain cache.
+        plan(task,newshots,batch,price_policy=price_policy)
+        for price in batch:
+            pk=key(price['identity'])+(price['axis'],price['cohort'])
+            old=next((i for i,v in enumerate(newprices) if key(v['identity'])+(v['axis'],v['cohort'])==pk),None)
+            if old is None:newprices.append(price)
+            elif same(newprices[old],price):continue
+            elif not _price_available(newprices[old]):newprices[old]=price
+            elif _price_available(price):raise ValueError('Conflicting saved price; no automatic replacement')
     return dict(status='BATCH_PREPARED_NO_TOTALS',shots=newshots,prices=newprices,
-        plan=plan(task,newshots,newprices),totals=None,automatic_retry=False,mandatory_stop=True)
+        plan=plan(task,newshots,newprices,price_policy=price_policy),totals=None,automatic_retry=False,mandatory_stop=True)
 
 
 def saved_model_prices(task, document, source, *, format):

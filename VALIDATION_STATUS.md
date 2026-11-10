@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 price provider×B結合](docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：B環境の実API/依存で34技術test PASS（A8＋B12＋結合7＋H6 N専用7）。保存direct/Mq136値照合を再利用し、null非取得・資格不足時の再呼出し抑止・partial軸重複・shared uncertaintyを確認。新実N/C予測/再解析/compile/fit/G0、科学的な全RPE採用なし・公開照合後STOP。
+
 [H6 m8..12一括N結果](docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：SOURCE fca50d36fで10候補を一回実行、全ideal条件付きPASS。独立reference経路差max約5.08e−12、signal/bias/B/allowance/disk/phase/radius・独立Hoeffding整数・20 SOURCE/input/旧結果保全を照合。26候補/13roundの条件付きNが完備し共通plannerが静的受入れ。actual/rigorous/全RPE/G未資格、価格0、独立科学レビューなし・公開照合後STOP。
 
 [H6 m8..12一括準備](docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：固定menu/政策・N専用保存・13round coverageの資格区別・FAIL/reference例外/fresh output・q16/q256人工非可換2-level回帰・旧m7 guardの7件PASS。既存18科学file不変、新実H6 N/C/G0。実行は別途明示許可待ち、公開照合後mandatory STOP。

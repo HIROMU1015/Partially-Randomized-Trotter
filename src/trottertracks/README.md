@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[H4 price providerのB接続](../../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：h4_df10_price_providerと固定V1/Mq依存を取込み。B factory/run_missing/coverageへ接続し、34技術test PASS、実N/C/G0。
+
 共通 `trotterlib` APIと区別した実験別SOURCEの名前空間。
 [mainへの収録範囲・原SOURCE・元の制約](../../docs/research/main_collection_20261103.md)を参照する。
 

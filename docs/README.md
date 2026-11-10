@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4価格providerのB統合完了](research/h4_price_pipeline_integration_20261110/REPORT.md)：B API接続、保存direct/Mq・有限cohort・null/外挿資格の保持。34人工・保存fixture回帰、新実科学計算/G0。
+
 [H6 DF19全13roundのN coverage](research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：残5時点10候補は全ideal条件付きPASS。[正本](research/h6_df19_rpe_m8_12_results_20261110/run01/result.json)／[coverage・handoff](research/h6_df19_rpe_m8_12_results_20261110/run01/COVERAGE.json)／[全新signal・N CSV](research/h6_df19_rpe_m8_12_results_20261110/ROUND_SUMMARY.csv)。actual/C/G未資格、公開照合後STOP。
 
 [H6 DF19残5round一括実行準備](research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：[固定PLAN](research/h6_df19_rpe_m8_12_preparation_20261110/PLAN.json)／[SOURCE](research/h6_df19_rpe_m8_12_preparation_20261110/SOURCE_INDEX.json)／[人工7件](research/h6_df19_rpe_m8_12_preparation_20261110/TESTS.txt)。実H6未実行、明示許可待ち。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4価格providerのB接続](../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：科学runnerは追加せず、Bのh4_saved_price_providerをrun_missingのC callbackへ渡す。lookupのみ、null/資格不足の自動再呼出しなし。
+
 `run_h6_df19_rpe_m8_12.py`の[完了結果](../docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：SOURCE fca50d36fの一括10候補全ideal条件付きPASS。保存m0..7を再計算せず26候補/13roundのNを取得。価格/G/最適化へ自動進行せず、再実行しない。
 
 `run_h6_df19_rpe_m8_12.py`：[残5roundのN専用一括準備](../docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)。既存`run_missing/H6ActionBatch`を1回呼び、保存m0..7を再計算せず13round coverageへ接続する。追加人工7件PASS。実行は明示許可後だけ、C/G・retry/resumeなし。

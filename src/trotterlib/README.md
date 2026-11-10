@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4価格provider×B統合](../../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：trottertracks.pf_pr_rpe_pipeline.h4_saved_price_providerを追加。A固定部品と元会計を再利用、B環境34技術test PASS、新実科学計算0。
+
 [H6残5roundの一括N結果](../../docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：既存kernel不変で固定10候補全ideal条件付きPASS。保存値と合わせ全13roundのNを共通pipelineへ静的接続。actual/全RPE/価格Gは未資格、人工試験は既存7件の記録を再利用。
 
 H6残5roundの[専用batch入口](../../docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：`pf_pr_rpe_pipeline`・`h6_rpe_batch_provider`・旧D2数値kernelは不変。新runner/PLANだけで10候補を固定し、保存/FAIL coverageを接続。人工差分7件、実科学計算0。
