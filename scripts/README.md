@@ -1,5 +1,7 @@
 # scripts 索引
 
+[C1価格受入CLI](../docs/research/rpe_r_price_intake_20261111/HANDOFF.md)：plan_rpe_r_price_intake.pyは固定C1 PLANのreadinessと静的coverageを出力し、明示した公開commit/run-dirのC1結果だけをcopyして受入れる。科学実行optionなし。
+
 [A0実結果取込み記録](../docs/research/rpe_normalization_results_intake_20261111/HANDOFF.md)：既存prepare_rpe_normalization_intake.pyを変更せず公開4745bb676の24件へ適用。結果資料内VERIFY_INTAKE.pyは保存metadata/C1接続の再照合専用。新科学runnerは追加しない。
 
 [A0受入CLI](../docs/research/rpe_normalization_intake_20261111/HANDOFF.md)：prepare_rpe_normalization_intake.pyは固定PLANから受入準備を出力し、明示した公開SHA/pathのHANDOFF/resultだけを読む。科学実行optionなし。

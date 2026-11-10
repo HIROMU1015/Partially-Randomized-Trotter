@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[R可変C価格受入](../../docs/research/rpe_r_price_intake_20261111/REPORT.md)：rpe_r_price_intake（C1PriceIntake/RScopedFixedPrices/records_for/coverage）を追加、Cのr_variable_compiled_priceをbyte一致で取込み。既存B moduleは不変。
+
 [R screeningと価格Phase1整合](../../docs/research/r_screening_price_alignment_20261111/REPORT.md)：元p/r/b provider実装を変更せず、metadata CLIで候補/SOURCE/law差と実験依存関係を照合。実科学計算0。
 
 [R可変N/C provider統合](../../docs/research/rpe_provider_integration_20261111/REPORT.md)：pr_r_dependent_n/h6_df19_price_provider/rpe_nc_coverageとrpe_provider_integrationを追加。既存p/r APIを再利用し、新R欠測・N比較policy・価格資格を保持。83技術test、新実N/C/G0。

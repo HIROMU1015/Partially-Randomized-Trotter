@@ -1,5 +1,7 @@
 # Validation status
 
+[C1価格受入adapter](docs/research/rpe_r_price_intake_20261111/REPORT.md)：新15＋C取込み9＋既存回帰106＝130 test（129 PASS、既存の環境変数skip1）。人工C1 publicationはCのpinned price_recordsで生成、実価格・fit・compile・N・G・R最適化0。主要guardはmutationで検出を確認。公開後STOP。
+
 [A0実結果受動取込み](docs/research/rpe_normalization_results_intake_20261111/REPORT.md)：固定公開24件とSOURCE/input/candidate/law/statusを既存adapterで照合、診断無変更・C1厳密2点・86候補維持を保存fixtureで確認。既存47件再PASS、N/C/G・R採択/全RPE未資格を維持。kernel/pipeline変更0、科学再計算0、公開後STOP。
 
 [A0受入adapter/C1結合](docs/research/rpe_normalization_intake_20261111/REPORT.md)：人工24件・部分STOP・overflow/underflow/null/精度・candidate/SOURCE/law不一致・数値backend非起動を新8件で確認。既存回帰39件もPASS。保存PLAN metadataだけを読み、N/C/Gの資格を作らない。実科学実行0、公開後STOP。
