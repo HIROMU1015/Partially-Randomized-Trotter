@@ -1,0 +1,906 @@
+{
+  "schema": "calpha_h4_step1_applicability_v1",
+  "base_SOURCE": "0d5ca357ccfd8fcc850bef800c5bcadfde2a153e",
+  "status": "TECHNICAL_STOP_PRIMITIVE_SPIN_SECTOR_NOT_PRESERVED",
+  "SOURCE_SHA256": {
+    "scripts/run_calpha_h4_step1_applicability.py": "eb6de01b20dbb11f06a29eb7a1c36b01503d8fb656dc772f57371093ea1fb015",
+    "src/trotterlib/b2_p1_signal_validation.py": "955807222954e16c388484113e7f5e8ee7f8af61684012742c2303d40af77e67",
+    "src/trotterlib/df_trotter/decompose.py": "e31e116075ba9bd65e3072369c0c69c6f99c91315572e70d8c487bb024b71e51",
+    "src/trotterlib/df_rte_tail.py": "47d9514630196ff2d74c89c013ca36a2e0b7ba1d709e61cb41180393152dcf45",
+    "scripts/run_o1_m1_h4_operator_correctness.py": "552c874240ea88f4608d7680db452906ecce5ee214b1db85c8cf505d499aa0db"
+  },
+  "conditions": {
+    "target": "H_phys",
+    "geometry": "linear H4 1.00 Angstrom",
+    "basis": "STO-3G",
+    "DF_rank": 12,
+    "L_D": 3,
+    "partition": "generation_prefix",
+    "sector": "Nalpha=Nbeta=2;dimension36",
+    "K": 0,
+    "r": 4,
+    "delta": 0.02,
+    "rounds": [
+      0,
+      17
+    ],
+    "beta_systematic_max": 0.14
+  },
+  "signal_calls": 0,
+  "ground_solve_calls": 0,
+  "circuit_build_calls": 0,
+  "compile_calls": 0,
+  "sampling_calls": 0,
+  "shot_calls": 0,
+  "guarantee_status": "not_certified",
+  "input_identity": {
+    "status": "PASS",
+    "file_SHA256": {
+      "state.npz": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+      "provenance.json": "468b3a4bc3150c055b4fcdf37a72acaa01e2ae171eccfc39d62419e3998c4e3b",
+      "H4_sto-3g_singlet_df_d100.hdf5": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958"
+    },
+    "original_hamiltonian": "H_phys:S0_array_hash:bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+    "original_state": "S0_array_hash:1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+    "df_hamiltonian": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "reconstructed_DF_matrix_hash": "525cdfbe81b5b4990fbf9477cf97b1cea79cc5439b4615d31a5800969996ef2b",
+    "state_role": "original_H_ground_state",
+    "sector": "Nalpha=2,Nbeta=2;OF_basis_S0_hash:665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+    "spin_orbital_order": "2p=alpha,2p+1=beta;Qiskit full index=sum(n_q*2**q)",
+    "state_generation_SOURCE": "b168cbf93d7c319045057e8b67ea7ff014c8d7dc",
+    "raw_Hphys_state_residual_Ha": 2.5572810765019255e-15,
+    "raw_Hphys_Hermiticity_spectral": 1.083786357911396e-15,
+    "state_preparation_included": false,
+    "DF_state_used": false,
+    "input_modes": {
+      "state.npz": "0o600",
+      "provenance.json": "0o664",
+      "H4_sto-3g_singlet_df_d100.hdf5": "0o664"
+    }
+  },
+  "operator_sector_leakage_maxentry": {
+    "raw_H_phys": 0.0,
+    "H_solve": 0.0,
+    "DF": 0.0,
+    "one_body": 0.0,
+    "fragment_0": 0.0,
+    "fragment_1": 0.0,
+    "fragment_2": 0.0,
+    "fragment_3": 0.0,
+    "fragment_4": 0.0,
+    "fragment_5": 0.0,
+    "fragment_6": 0.0,
+    "fragment_7": 0.0,
+    "fragment_8": 0.0,
+    "fragment_9": 0.0,
+    "fragment_10": 0.0,
+    "fragment_11": 0.0
+  },
+  "Hermitian_reference": {
+    "definition": "H_solve=(raw_H_phys+raw_H_phys.H)/2; target retained",
+    "solve_minus_raw_spectral_diagnostic": 5.418931789556987e-16,
+    "gap_source": "89165cf70958e7e4676d0580e3acb7faf588772c; saved numerical gap only",
+    "gap_certified_lower_bound": null
+  },
+  "tail_dictionary_diagnostic": {
+    "frames": [
+      {
+        "fragment": 3,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": 1.0505712786935265e-17,
+            "alpha_weight": 6.698960545819909e-34,
+            "beta_weight": 1.0000000000000004,
+            "spin_cross_projector_maxentry": 1.5976316606915294e-17
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": -1.050571278693526e-17,
+            "alpha_weight": 0.00014452733343994496,
+            "beta_weight": 0.9998554726665599,
+            "spin_cross_projector_maxentry": 0.004590945778550787
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": -1.0505712786935255e-17,
+            "alpha_weight": 0.9998554726665603,
+            "beta_weight": 0.00014452733343994735,
+            "spin_cross_projector_maxentry": 0.004590945778550845
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": 1.0505712786935251e-17,
+            "alpha_weight": 1.0,
+            "beta_weight": 2.0926266873507644e-34,
+            "spin_cross_projector_maxentry": 8.56843281699358e-18
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": -5.987576254643991e-18,
+            "alpha_weight": 7.708019862774118e-06,
+            "beta_weight": 0.9999922919801367,
+            "spin_cross_projector_maxentry": 0.001060298857262863
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": -5.98757625464399e-18,
+            "alpha_weight": 0.999992291980137,
+            "beta_weight": 7.7080198627737e-06,
+            "spin_cross_projector_maxentry": 0.0010602988572628537
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": 5.98757625464399e-18,
+            "alpha_weight": 1.0,
+            "beta_weight": 4.727190100658771e-34,
+            "spin_cross_projector_maxentry": 1.2926224045084489e-17
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": 5.987576254643987e-18,
+            "alpha_weight": 3.5986174206094668e-34,
+            "beta_weight": 0.9999999999999997,
+            "spin_cross_projector_maxentry": 8.576291228382085e-18
+          }
+        ],
+        "unitary_defect_maxentry": 4.440892098500626e-16,
+        "reconstruction_maxentry": 4.91797111659643e-16
+      },
+      {
+        "fragment": 4,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": -6.806253847062455e-05,
+            "alpha_weight": 0.9951447337838961,
+            "beta_weight": 0.00485526621610393,
+            "spin_cross_projector_maxentry": 0.05286322458056518
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": -6.806253847062452e-05,
+            "alpha_weight": 0.0048552662161039355,
+            "beta_weight": 0.9951447337838958,
+            "spin_cross_projector_maxentry": 0.052863224580565187
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": 6.486941162532511e-05,
+            "alpha_weight": 0.0005817652512321178,
+            "beta_weight": 0.9994182347487688,
+            "spin_cross_projector_maxentry": 0.01706406700204212
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": 6.486941162532502e-05,
+            "alpha_weight": 0.9994182347487668,
+            "beta_weight": 0.0005817652512321167,
+            "spin_cross_projector_maxentry": 0.017064067002041942
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": 1.7602524768671336e-05,
+            "alpha_weight": 0.008697283392834107,
+            "beta_weight": 0.9913027166071662,
+            "spin_cross_projector_maxentry": 0.07061532488406326
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": 1.7602524768671312e-05,
+            "alpha_weight": 0.991302716607166,
+            "beta_weight": 0.008697283392834099,
+            "spin_cross_projector_maxentry": 0.07061532488406319
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": -1.5110838319630744e-05,
+            "alpha_weight": 0.19114376276196623,
+            "beta_weight": 0.8088562372380341,
+            "spin_cross_projector_maxentry": 0.27825998631341003
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": -1.5110838319630732e-05,
+            "alpha_weight": 0.8088562372380339,
+            "beta_weight": 0.1911437627619661,
+            "spin_cross_projector_maxentry": 0.2782599863134099
+          }
+        ],
+        "unitary_defect_maxentry": 1.1102230246251565e-15,
+        "reconstruction_maxentry": 9.43689570931383e-16
+      },
+      {
+        "fragment": 5,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": 5.059069364127175e-18,
+            "alpha_weight": 0.029595485790654245,
+            "beta_weight": 0.9704045142093446,
+            "spin_cross_projector_maxentry": 0.059456250941485905
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": 5.059069364127174e-18,
+            "alpha_weight": 0.9704045142093456,
+            "beta_weight": 0.029595485790654276,
+            "spin_cross_projector_maxentry": 0.05945625094148603
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": -5.059069364127144e-18,
+            "alpha_weight": 0.9963806122911875,
+            "beta_weight": 0.0036193877088121352,
+            "spin_cross_projector_maxentry": 0.021068740215927757
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": -5.0590693641271375e-18,
+            "alpha_weight": 0.0036193877088121426,
+            "beta_weight": 0.9963806122911877,
+            "spin_cross_projector_maxentry": 0.021068740215927844
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": -3.77504056430458e-18,
+            "alpha_weight": 1.0725786409887383e-09,
+            "beta_weight": 0.9999999989274203,
+            "spin_cross_projector_maxentry": 1.1490077349421385e-05
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": -3.775040564304577e-18,
+            "alpha_weight": 0.9999999989274209,
+            "beta_weight": 1.072578641005695e-09,
+            "spin_cross_projector_maxentry": 1.1490077349467885e-05
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": 3.7750405643045365e-18,
+            "alpha_weight": 0.9694274106046685,
+            "beta_weight": 0.030572589395331345,
+            "spin_cross_projector_maxentry": 0.060399332600591236
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": 3.775040564304535e-18,
+            "alpha_weight": 0.030572589395331348,
+            "beta_weight": 0.9694274106046687,
+            "spin_cross_projector_maxentry": 0.060399332600591236
+          }
+        ],
+        "unitary_defect_maxentry": 1.1102230246251565e-15,
+        "reconstruction_maxentry": 4.883246584874712e-16
+      },
+      {
+        "fragment": 6,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": 0.00032551790705147255,
+            "alpha_weight": 0.9999999999999999,
+            "beta_weight": 3.255145952092871e-36,
+            "spin_cross_projector_maxentry": 1.3926470976822993e-18
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": 0.00032551790705147255,
+            "alpha_weight": 5.935651782846743e-56,
+            "beta_weight": 1.0,
+            "spin_cross_projector_maxentry": 2.4321619398142643e-28
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": -0.0002653214160649514,
+            "alpha_weight": 0.9999999999999999,
+            "beta_weight": 7.435122326124943e-25,
+            "spin_cross_projector_maxentry": 8.440165858865979e-13
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": -0.000265321416064951,
+            "alpha_weight": 7.434898877471447e-25,
+            "beta_weight": 0.9999999999999997,
+            "spin_cross_projector_maxentry": 8.440045050093304e-13
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": -0.0001251314020451279,
+            "alpha_weight": 1.854200189941792e-52,
+            "beta_weight": 1.0,
+            "spin_cross_projector_maxentry": 1.0355394934675385e-26
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": -0.0001251314020451279,
+            "alpha_weight": 0.9999999999999997,
+            "beta_weight": 3.4135376230471036e-36,
+            "spin_cross_projector_maxentry": 1.75524588383006e-18
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": 4.13937973772452e-05,
+            "alpha_weight": 3.0018517112790396e-23,
+            "beta_weight": 1.0000000000000002,
+            "spin_cross_projector_maxentry": 5.362921368768897e-12
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": 4.139379737724511e-05,
+            "alpha_weight": 0.9999999999999997,
+            "beta_weight": 3.0018465023947456e-23,
+            "spin_cross_projector_maxentry": 5.362908603812713e-12
+          }
+        ],
+        "unitary_defect_maxentry": 3.3306690738754696e-16,
+        "reconstruction_maxentry": 8.881784197001252e-16
+      },
+      {
+        "fragment": 7,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": 2.7251532421655995e-07,
+            "alpha_weight": 2.475443809009763e-35,
+            "beta_weight": 0.9999999999999999,
+            "spin_cross_projector_maxentry": 4.655963359580841e-18
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": 2.7251532421655984e-07,
+            "alpha_weight": 0.9999999999999997,
+            "beta_weight": 6.447395457947436e-50,
+            "spin_cross_projector_maxentry": 2.531655027156781e-25
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": -2.6656509894025775e-07,
+            "alpha_weight": 0.9999999999999997,
+            "beta_weight": 9.343978814121947e-50,
+            "spin_cross_projector_maxentry": 3.047742665823385e-25
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": -2.6656509894025765e-07,
+            "alpha_weight": 7.946144933519082e-37,
+            "beta_weight": 0.9999999999999997,
+            "spin_cross_projector_maxentry": 8.537358908823967e-19
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": -2.1711056937867007e-07,
+            "alpha_weight": 0.9999999999999999,
+            "beta_weight": 4.1572496230079844e-16,
+            "spin_cross_projector_maxentry": 1.8038288423833904e-08
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": -2.1711056937866993e-07,
+            "alpha_weight": 4.157249623902349e-16,
+            "beta_weight": 0.9999999999999997,
+            "spin_cross_projector_maxentry": 1.8038288416476583e-08
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": 2.0759907148108165e-07,
+            "alpha_weight": 1.0,
+            "beta_weight": 3.8952829852481595e-18,
+            "spin_cross_projector_maxentry": 1.7460705342519454e-09
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": 2.0759907148108144e-07,
+            "alpha_weight": 3.8952827026020104e-18,
+            "beta_weight": 1.0,
+            "spin_cross_projector_maxentry": 1.746070466094806e-09
+          }
+        ],
+        "unitary_defect_maxentry": 3.3306690738754696e-16,
+        "reconstruction_maxentry": 3.469446951953614e-16
+      },
+      {
+        "fragment": 8,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": -7.679836405774819e-21,
+            "alpha_weight": 4.170743816869568e-32,
+            "beta_weight": 0.9999999999999992,
+            "spin_cross_projector_maxentry": 1.0517397206723235e-16
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": -7.679836405774816e-21,
+            "alpha_weight": 1.0000000000000002,
+            "beta_weight": 1.5515522792859692e-32,
+            "spin_cross_projector_maxentry": 7.011598137815497e-17
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": 7.679836405774107e-21,
+            "alpha_weight": 2.191795795029967e-08,
+            "beta_weight": 0.9999999780820429,
+            "spin_cross_projector_maxentry": 5.904914509663499e-05
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": 7.679836405774105e-21,
+            "alpha_weight": 0.9999999780820421,
+            "beta_weight": 2.1917957950276524e-08,
+            "spin_cross_projector_maxentry": 5.904914509649471e-05
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": 5.68943817372043e-21,
+            "alpha_weight": 0.00048129223323342826,
+            "beta_weight": 0.9995187077667663,
+            "spin_cross_projector_maxentry": 0.008748094477306918
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": 5.689438173720426e-21,
+            "alpha_weight": 0.9995187077667664,
+            "beta_weight": 0.0004812922332334298,
+            "spin_cross_projector_maxentry": 0.008748094477306977
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": -5.6894381737197264e-21,
+            "alpha_weight": 4.0698853722635434e-33,
+            "beta_weight": 0.9999999999999999,
+            "spin_cross_projector_maxentry": 3.607564613153201e-17
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": -5.6894381737197264e-21,
+            "alpha_weight": 1.0000000000000004,
+            "beta_weight": 4.4192073795098044e-33,
+            "spin_cross_projector_maxentry": 4.126109222424805e-17
+          }
+        ],
+        "unitary_defect_maxentry": 8.881784197001252e-16,
+        "reconstruction_maxentry": 3.400058012914542e-16
+      },
+      {
+        "fragment": 9,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": 4.805893994982914e-12,
+            "alpha_weight": 2.113834999203207e-34,
+            "beta_weight": 0.9999999999999998,
+            "spin_cross_projector_maxentry": 9.946929938633271e-18
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": 4.805893994982912e-12,
+            "alpha_weight": 1.0,
+            "beta_weight": 5.985565486386766e-54,
+            "spin_cross_projector_maxentry": 1.8440316570941058e-27
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": -4.8013922125092566e-12,
+            "alpha_weight": 1.0842611195367061e-17,
+            "beta_weight": 1.0000000000000004,
+            "spin_cross_projector_maxentry": 2.7162515290177193e-09
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": -4.8013922125092525e-12,
+            "alpha_weight": 0.9999999999999993,
+            "beta_weight": 1.0842611195896205e-17,
+            "spin_cross_projector_maxentry": 2.716251512029595e-09
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": -5.21702586334885e-15,
+            "alpha_weight": 1.4169764732733346e-30,
+            "beta_weight": 0.9999999999999999,
+            "spin_cross_projector_maxentry": 8.151455680081198e-16
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": -5.217025863348387e-15,
+            "alpha_weight": 1.0,
+            "beta_weight": 1.400032975797466e-47,
+            "spin_cross_projector_maxentry": 2.8202324908180326e-24
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": 2.709251561293395e-16,
+            "alpha_weight": 2.2136265517457503e-12,
+            "beta_weight": 0.9999999999977862,
+            "spin_cross_projector_maxentry": 1.227312666561547e-06
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": 2.709251561286698e-16,
+            "alpha_weight": 0.9999999999977865,
+            "beta_weight": 2.2136265517067375e-12,
+            "spin_cross_projector_maxentry": 1.2273126665469875e-06
+          }
+        ],
+        "unitary_defect_maxentry": 6.661338147750939e-16,
+        "reconstruction_maxentry": 7.771561172376096e-16
+      },
+      {
+        "fragment": 10,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": -2.14199769662029e-41,
+            "alpha_weight": 2.7928111884307656e-32,
+            "beta_weight": 1.0000000000000007,
+            "spin_cross_projector_maxentry": 9.408191493922167e-17
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": -2.1419976966202876e-41,
+            "alpha_weight": 0.9999999999999998,
+            "beta_weight": 2.062016032718651e-32,
+            "spin_cross_projector_maxentry": 8.363290621041763e-17
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": 2.1399389095341233e-41,
+            "alpha_weight": 0.999999158340028,
+            "beta_weight": 8.416599733615728e-07,
+            "spin_cross_projector_maxentry": 0.0007571060984018218
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": 2.1399389095341215e-41,
+            "alpha_weight": 8.416599733615726e-07,
+            "beta_weight": 0.9999991583400271,
+            "spin_cross_projector_maxentry": 0.0007571060984018354
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": 2.335821084411111e-44,
+            "alpha_weight": 0.6154800567460922,
+            "beta_weight": 0.38451994325390765,
+            "spin_cross_projector_maxentry": 0.2760522074627468
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": 2.3358210844109593e-44,
+            "alpha_weight": 0.3845199432539077,
+            "beta_weight": 0.6154800567460926,
+            "spin_cross_projector_maxentry": 0.27605220746274695
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": -1.0087431377978289e-45,
+            "alpha_weight": 0.9817059673348042,
+            "beta_weight": 0.018294032665196417,
+            "spin_cross_projector_maxentry": 0.11059224544372454
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": -1.008743137791184e-45,
+            "alpha_weight": 0.018294032665196427,
+            "beta_weight": 0.9817059673348036,
+            "spin_cross_projector_maxentry": 0.11059224544372459
+          }
+        ],
+        "unitary_defect_maxentry": 1.3322676295501878e-15,
+        "reconstruction_maxentry": 7.754818242684634e-26
+      },
+      {
+        "fragment": 11,
+        "nonzero_single_Z_atoms": [
+          {
+            "diagonal_mode": 0,
+            "coefficient": -9.36154760475685e-41,
+            "alpha_weight": 0.8151989523734378,
+            "beta_weight": 0.18480104762656238,
+            "spin_cross_projector_maxentry": 0.22146379011558287
+          },
+          {
+            "diagonal_mode": 1,
+            "coefficient": -9.361547604756844e-41,
+            "alpha_weight": 0.18480104762656252,
+            "beta_weight": 0.8151989523734371,
+            "spin_cross_projector_maxentry": 0.22146379011558281
+          },
+          {
+            "diagonal_mode": 2,
+            "coefficient": 9.353024710680745e-41,
+            "alpha_weight": 0.9999999867347747,
+            "beta_weight": 1.3265225265446893e-08,
+            "spin_cross_projector_maxentry": 9.483433867483681e-05
+          },
+          {
+            "diagonal_mode": 3,
+            "coefficient": 9.35302471068074e-41,
+            "alpha_weight": 1.3265225265446964e-08,
+            "beta_weight": 0.999999986734774,
+            "spin_cross_projector_maxentry": 9.483433867476077e-05
+          },
+          {
+            "diagonal_mode": 4,
+            "coefficient": 9.465016014461015e-44,
+            "alpha_weight": 0.7935244938432275,
+            "beta_weight": 0.20647550615677254,
+            "spin_cross_projector_maxentry": 0.23095745343607754
+          },
+          {
+            "diagonal_mode": 5,
+            "coefficient": 9.46501601445816e-44,
+            "alpha_weight": 0.2064755061567727,
+            "beta_weight": 0.7935244938432271,
+            "spin_cross_projector_maxentry": 0.23095745343607763
+          },
+          {
+            "diagonal_mode": 6,
+            "coefficient": 2.2054622164753458e-45,
+            "alpha_weight": 0.020771368788584328,
+            "beta_weight": 0.9792286312114156,
+            "spin_cross_projector_maxentry": 0.11743088062409557
+          },
+          {
+            "diagonal_mode": 7,
+            "coefficient": 2.2054622164532227e-45,
+            "alpha_weight": 0.9792286312114155,
+            "beta_weight": 0.020771368788584387,
+            "spin_cross_projector_maxentry": 0.11743088062409579
+          }
+        ],
+        "unitary_defect_maxentry": 7.771561172376096e-16,
+        "reconstruction_maxentry": 1.1632227364026952e-25
+      }
+    ],
+    "lambda_R": 0.5832704246339983,
+    "extracted_identity": 0.09261516589219072,
+    "single_Z_spin_violations": [
+      {
+        "fragment": 3,
+        "mode": 1,
+        "spin_cross_projector_maxentry": 0.004590945778550787
+      },
+      {
+        "fragment": 3,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 0.004590945778550845
+      },
+      {
+        "fragment": 3,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 0.001060298857262863
+      },
+      {
+        "fragment": 3,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 0.0010602988572628537
+      },
+      {
+        "fragment": 4,
+        "mode": 0,
+        "spin_cross_projector_maxentry": 0.05286322458056518
+      },
+      {
+        "fragment": 4,
+        "mode": 1,
+        "spin_cross_projector_maxentry": 0.052863224580565187
+      },
+      {
+        "fragment": 4,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 0.01706406700204212
+      },
+      {
+        "fragment": 4,
+        "mode": 3,
+        "spin_cross_projector_maxentry": 0.017064067002041942
+      },
+      {
+        "fragment": 4,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 0.07061532488406326
+      },
+      {
+        "fragment": 4,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 0.07061532488406319
+      },
+      {
+        "fragment": 4,
+        "mode": 6,
+        "spin_cross_projector_maxentry": 0.27825998631341003
+      },
+      {
+        "fragment": 4,
+        "mode": 7,
+        "spin_cross_projector_maxentry": 0.2782599863134099
+      },
+      {
+        "fragment": 5,
+        "mode": 0,
+        "spin_cross_projector_maxentry": 0.059456250941485905
+      },
+      {
+        "fragment": 5,
+        "mode": 1,
+        "spin_cross_projector_maxentry": 0.05945625094148603
+      },
+      {
+        "fragment": 5,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 0.021068740215927757
+      },
+      {
+        "fragment": 5,
+        "mode": 3,
+        "spin_cross_projector_maxentry": 0.021068740215927844
+      },
+      {
+        "fragment": 5,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 1.1490077349421385e-05
+      },
+      {
+        "fragment": 5,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 1.1490077349467885e-05
+      },
+      {
+        "fragment": 5,
+        "mode": 6,
+        "spin_cross_projector_maxentry": 0.060399332600591236
+      },
+      {
+        "fragment": 5,
+        "mode": 7,
+        "spin_cross_projector_maxentry": 0.060399332600591236
+      },
+      {
+        "fragment": 7,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 1.8038288423833904e-08
+      },
+      {
+        "fragment": 7,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 1.8038288416476583e-08
+      },
+      {
+        "fragment": 7,
+        "mode": 6,
+        "spin_cross_projector_maxentry": 1.7460705342519454e-09
+      },
+      {
+        "fragment": 7,
+        "mode": 7,
+        "spin_cross_projector_maxentry": 1.746070466094806e-09
+      },
+      {
+        "fragment": 8,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 5.904914509663499e-05
+      },
+      {
+        "fragment": 8,
+        "mode": 3,
+        "spin_cross_projector_maxentry": 5.904914509649471e-05
+      },
+      {
+        "fragment": 8,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 0.008748094477306918
+      },
+      {
+        "fragment": 8,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 0.008748094477306977
+      },
+      {
+        "fragment": 9,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 2.7162515290177193e-09
+      },
+      {
+        "fragment": 9,
+        "mode": 3,
+        "spin_cross_projector_maxentry": 2.716251512029595e-09
+      },
+      {
+        "fragment": 9,
+        "mode": 6,
+        "spin_cross_projector_maxentry": 1.227312666561547e-06
+      },
+      {
+        "fragment": 9,
+        "mode": 7,
+        "spin_cross_projector_maxentry": 1.2273126665469875e-06
+      },
+      {
+        "fragment": 10,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 0.0007571060984018218
+      },
+      {
+        "fragment": 10,
+        "mode": 3,
+        "spin_cross_projector_maxentry": 0.0007571060984018354
+      },
+      {
+        "fragment": 10,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 0.2760522074627468
+      },
+      {
+        "fragment": 10,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 0.27605220746274695
+      },
+      {
+        "fragment": 10,
+        "mode": 6,
+        "spin_cross_projector_maxentry": 0.11059224544372454
+      },
+      {
+        "fragment": 10,
+        "mode": 7,
+        "spin_cross_projector_maxentry": 0.11059224544372459
+      },
+      {
+        "fragment": 11,
+        "mode": 0,
+        "spin_cross_projector_maxentry": 0.22146379011558287
+      },
+      {
+        "fragment": 11,
+        "mode": 1,
+        "spin_cross_projector_maxentry": 0.22146379011558281
+      },
+      {
+        "fragment": 11,
+        "mode": 2,
+        "spin_cross_projector_maxentry": 9.483433867483681e-05
+      },
+      {
+        "fragment": 11,
+        "mode": 3,
+        "spin_cross_projector_maxentry": 9.483433867476077e-05
+      },
+      {
+        "fragment": 11,
+        "mode": 4,
+        "spin_cross_projector_maxentry": 0.23095745343607754
+      },
+      {
+        "fragment": 11,
+        "mode": 5,
+        "spin_cross_projector_maxentry": 0.23095745343607763
+      },
+      {
+        "fragment": 11,
+        "mode": 6,
+        "spin_cross_projector_maxentry": 0.11743088062409557
+      },
+      {
+        "fragment": 11,
+        "mode": 7,
+        "spin_cross_projector_maxentry": 0.11743088062409579
+      }
+    ],
+    "match_tolerance": 1e-09,
+    "criterion": "necessary spin commutation of each nonzero sampled single-Z atom",
+    "convention": "rank-one orbital projector; independent of column relabeling/global phase"
+  },
+  "stop_reason": "Existing generic DF eigenframes mix alpha and beta in nonzero sampled Z atoms; theory-review sector condition fails. No signal/moment evaluated.",
+  "mandatory_stop": true,
+  "elapsed_seconds": 0.2884352969704196,
+  "environment": {
+    "python": "3.11.0rc1",
+    "cpu_affinity": 32,
+    "thread_env": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1"
+    },
+    "gpu_used": false,
+    "policy": "small 8/36/256 matrices use single-thread BLAS; no trajectory or q-fold loop"
+  }
+}

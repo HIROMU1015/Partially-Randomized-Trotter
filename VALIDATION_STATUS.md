@@ -602,3 +602,15 @@ mainへの収録によってnative性能、独立新規性、現在の科学的�
 
 [収録ファイル・保存版と確認範囲](docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+## C-α／α0-P H4 Step 1：訂正後の二点診断（2026-11-10）
+
+[run02結果・SOURCE・資格](docs/research/track_a_calpha_h4_step1_20261110/RUN02_RESULT.md)。Linear H4/1.00 Å/STO-3G、元H_phys・保存state、DF12、generic frame、generation LD3、sector36、正時間partial-S2、K0/r4/δ=.02、m0/m17限定の許可済み評価を完了した。旧run01の個別primitive条件によるSTOPは不変更。
+
+m17のraw半径0.1265744404、元energyに対する観測位相差0.0138195608 rad。一方、head内部誤差の累積上界10.74909696が支配し、現在の十分条件では正の半径下界・0.14 rad位相保証を得られない。分類は「保証改善が必要」。local未commitの数値診断であり、厳密包含上界・包括実装保証は未取得（UNKNOWN）。全18round・shot・価格・総費用へ進まずmandatory STOP。
+
+## C-α macrostep／gap保証改善の後続（2026-11-10）
+
+[新scopeの結果](docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。同じLinear H4/1.00 Å/STO-3G、元H/state、DF12、generic frame、generation LD3、sector36、K0/r4/δ=.02のm0/m17を対象とした。C_multi／η_macroは数値診断、明示的なdyadic H_refのgap下界は正確な有理数慣性で資格化。指定norm上界は依然m17の位相条件不成立。
+
+収縮を残した状態defect評価と基本区間演算により、literalなbinary64 basis／diagonal再構成モデルでは二点の正半径・0.14 rad条件が成立する候補を得た。固定sampling law／nativeの意味との対応は未資格であり、包括保証・全18round・shot・総費用の認定ではない。旧run01/02は不変更、mandatory STOP。

@@ -193,3 +193,23 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 
 [条件付き十分shot数・SOURCE・STOP](docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。
 保存実半径/diskからX/Y各3,902,892、計7,805,784 shots。実機95%・厳密実装保証・価格・総費用は未評価。
+
+
+## C-α／α0-P H4 Step 1（2026-11-10）
+
+[実行結果・適用条件でのSTOP](docs/research/track_a_calpha_h4_step1_20261110/REPORT.md)。
+固定P1 H4/DF12/LD3/sector36の入力照合後、既存generic DF frameの非zero単一Z atom46件でspin混合を診断。
+個別primitive保存条件により技術的STOP。m0/m17信号・Γ moment・shot・価格は未計算。旧結果・STOPは不変更。
+
+
+## C-α sector条件訂正後の準備（2026-11-10）
+
+[訂正・mean-only runner・8件mock確認](docs/research/track_a_calpha_h4_step1_20261110/SECTOR_CORRECTION_PREPARATION.md)。旧run01のSTOPを保全し、平均／完成block境界の条件へ接続した。訂正後の科学実行は未実施・許可待ち。
+
+## C-α sector条件訂正後の二点結果（2026-11-10、上記準備の後続）
+
+[run02結果](docs/research/track_a_calpha_h4_step1_20261110/RUN02_RESULT.md)。新たな実行許可後、同じgeneric辞書・H4/1.00 Å/STO-3G/元H/DF12/generation LD3/sector36、K0/r4/δ=.02のm0/m17を完了。m17のraw半径0.12657444、観測位相差0.01381956 radだが、head誤差上界が支配して十分条件は不成立。分類は「保証改善が必要」。local未commitの数値診断で、包括実装保証はUNKNOWN。旧STOPを保持しmandatory STOP。全18round・shot・価格・総費用は未評価。
+
+## C-α macrostep／gap保証改善（2026-11-10、後続scope）
+
+[結果・資格の境界](docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。同じH4/DF12/LD3/sector36/K0/r4/δ=.02でC_multiとmacrostep defectを評価し、明示的なH_refのgap下界を正確な有理数慣性で取得。指定norm上界はm17の0.14 rad条件に届かない。収縮を残す状態defectの精密化と区間演算により、literal再構成モデルでは二点条件が成立する候補を得た。固定sampling law／nativeの意味への資格は未確定であり、全18round・shot・費用gateは閉じたまま。旧run01/02は不変更、mandatory STOP。

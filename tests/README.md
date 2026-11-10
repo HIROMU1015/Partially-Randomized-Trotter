@@ -38,3 +38,12 @@ Hadamard 1 shot全体や最終総コストの検証ではない。
 
 [収録ファイル・保存版と確認範囲](../docs/research/main_server_results_collection_20261103.md)から、過去の公開成果と元SOURCEを辿る。
 既存mainの科学ファイルは上書きせず、研究test関連の原版は実行contextと分けて保存する。新科学計算は行っていない。
+
+
+## C-α sector訂正後の非科学的接続確認（2026-11-10）
+
+`python tests/test_calpha_h4_step1_mean_contract.py -v` はstdlib/mockによる8件。科学moduleのimport、配列、人工行列simulationを使わず、二点scope・出力保全・例外保存・定義域を確認する。実H4の数値性能を検証するtestではない。
+
+## C-α macrostep・区間処理の人工確認（2026-11-10）
+
+`test_calpha_macrostep_bounds.py`の8件と`test_calpha_interval_bounds.py`の5件は、非可換stage order・局所次数・正確な慣性count・指数／log級数の包含・複素共役・scalar geometric sumを確認する。分子入力や旧信号の再simulationはなく、研究保証の正式採択・実機性能・総費用のPASSとは区別する。

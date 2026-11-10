@@ -1,0 +1,32 @@
+tail log intervals
+head interval exponential 3
+head interval exponential 2
+head interval exponential 1
+head interval exponential 0
+reference interval exponential
+Traceback (most recent call last):
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-calpha-h4-step1-20261110/scripts/run_calpha_interval_state_bound.py", line 131, in <module>
+    result.update(evaluate(args.operands));result['status']='REFERENCE_CORE_ENCLOSURE_COMPLETE'
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.worktrees/track-a-calpha-h4-step1-20261110/scripts/run_calpha_interval_state_bound.py", line 59, in evaluate
+    normpsi=c.sqrt((psi.H*psi)[0,0].real)
+                    ^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/mpmath/matrices/matrices.py", line 730, in transpose_conj
+    return self.conjugate().transpose()
+           ^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/mpmath/matrices/matrices.py", line 727, in conjugate
+    return self.apply(self.ctx.conj)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/mpmath/matrices/matrices.py", line 341, in apply
+    new[i,j] = f(self[i,j])
+               ^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/mpmath/functions/functions.py", line 292, in conj
+    return x.conjugate()
+           ^^^^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/mpmath/ctx_iv.py", line 205, in conjugate
+    return s.ctx.make_mpc((a, mpf_neg(b)))
+                              ^^^^^^^^^^
+  File "/home/abe/Project/Partially Randomized Trotter/.venv311/lib/python3.11/site-packages/mpmath/libmp/libmpf.py", line 667, in mpf_neg
+    sign, man, exp, bc = s
+    ^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 4, got 2)

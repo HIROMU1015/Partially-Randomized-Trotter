@@ -104,3 +104,11 @@
 - [B2 P1残り16roundと全18点の条件付き信号検証（2026-11-07）](research/track_a_b2_p1_remaining_rounds_20261107/REPORT.md)：m0/17は再利用。branch・shot・価格・全RPE成功保証は未評価、mandatory STOP。
 - [B2 P1保存raw平均の全18round branch/energy復元（2026-11-07）](research/track_a_b2_p1_branch_20261107/REPORT.md)：条件付きPASS。実測95%保証・shot・価格は未評価、mandatory STOP。
 - [B2 P1全18roundのshot会計（2026-11-07）](research/track_a_b2_p1_shots_20261107/REPORT.md)：条件付き十分shot数7,805,784。実機95%・価格・総費用は未認証/未評価、mandatory STOP。
+
+- [C-α／α0-P H4 Step 1：個別primitiveのsector条件で技術的STOP（2026-11-10）](research/track_a_calpha_h4_step1_20261110/REPORT.md)：入力照合とatom診断のみ。二点信号・Γ moment・費用は未計算。
+
+- [C-α sector条件訂正とStep 1残作業の実行準備（2026-11-10）](research/track_a_calpha_h4_step1_20261110/SECTOR_CORRECTION_PREPARATION.md)：旧STOPを保全、mean-only runnerと8件mock確認。訂正後の科学計算は未実施。
+
+- [C-α sector条件訂正後の二点結果（2026-11-10、上記準備の後続）](research/track_a_calpha_h4_step1_20261110/RUN02_RESULT.md)：許可後にm0/m17を完了。m17の観測位相差0.01381956 rad、raw半径0.12657444。head誤差上界が支配し「保証改善が必要」。local未認証、包括実装保証UNKNOWN、mandatory STOP。
+
+- [C-α macrostep・gap保証改善（2026-11-10、後続scope）](research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)：正確な行列gap下界と、literal再構成モデルの包含付き二点保証候補。固定sampling lawへの資格は未確定、全18round・shot・総費用は未実施、mandatory STOP。

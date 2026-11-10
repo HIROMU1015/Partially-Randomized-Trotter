@@ -1353,6 +1353,62 @@
           "historical_published_path_collection_20261103"
         ],
         "reason": "Scope/provenance index for byte-identical collection of existing published files; not a new scientific result or validation."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run01/applicability.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_h4_step1_20261110"
+        ],
+        "reason": "Input identity and primitive spin-sector diagnostic; no signal/phase/radius results."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run02_sector_corrected/result.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_sector_corrected_two_points_20261110"
+        ],
+        "reason": "Corrected-sector fixed K0 two-point signals, moments, full-column connection diagnostics and conditional-bound numerical evaluations; not an implementation-inclusive or interval certificate."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run03_macrostep_gap/result.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_macrostep_gap_20261110"
+        ],
+        "reason": "C-alpha bound-input/qualification record, including the preserved technical exception; scope and certification are per-record, not fixed-law or native success."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run04_state_defect/result.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_macrostep_gap_20261110"
+        ],
+        "reason": "C-alpha bound-input/qualification record, including the preserved technical exception; scope and certification are per-record, not fixed-law or native success."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run05_reference_interval/result.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_macrostep_gap_20261110"
+        ],
+        "reason": "C-alpha bound-input/qualification record, including the preserved technical exception; scope and certification are per-record, not fixed-law or native success."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run06_reference_interval/result.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_macrostep_gap_20261110"
+        ],
+        "reason": "C-alpha bound-input/qualification record, including the preserved technical exception; scope and certification are per-record, not fixed-law or native success."
+      },
+      {
+        "path": "artifacts/calpha_h4_step1/2026-11-10/run07_reconstruction_bridge/result.json",
+        "kind": "file",
+        "supports": [
+          "track_a_calpha_macrostep_gap_20261110"
+        ],
+        "reason": "C-alpha bound-input/qualification record, including the preserved technical exception; scope and certification are per-record, not fixed-law or native success."
       }
     ],
     "quarantined": [
@@ -2258,6 +2314,85 @@
         "Keep canonical file placement separate from archived alternatives and original scientific execution context.",
         "Resolve unavailable source objects and private/uncommitted originals before claiming complete environment coverage."
       ]
+    },
+    {
+      "id": "track_a_calpha_h4_step1_20261110",
+      "status": "technical_stop",
+      "summary": "Approved H4/DF12/generation-LD3/sector36 applicability gate found 46 nonzero single-Z atoms with alpha/beta mixing in existing generic DF frames. No Gamma moments or m0/m17 signals computed; no performance or total-cost conclusion.",
+      "report": "docs/research/track_a_calpha_h4_step1_20261110/REPORT.md",
+      "artifact": "artifacts/calpha_h4_step1/2026-11-10/run01/applicability.json",
+      "runner": "scripts/run_calpha_h4_step1_applicability.py",
+      "base_SOURCE": "0d5ca357ccfd8fcc850bef800c5bcadfde2a153e",
+      "evidence_status": "local_uncommitted_not_certified",
+      "mandatory_stop": true
+    },
+    {
+      "id": "track_a_calpha_sector_corrected_preparation_20261110",
+      "status": "implementation_only",
+      "summary": "Prepared fixed generic-dictionary mean-only continuation under the supplied sector correction; eight stdlib/mock checks passed. Old run01/SOURCE/log/report preserved. No new operators, moments or signals evaluated.",
+      "report": "docs/research/track_a_calpha_h4_step1_20261110/SECTOR_CORRECTION_PREPARATION.md",
+      "runner": "scripts/run_calpha_h4_step1_mean.py",
+      "tests": "tests/test_calpha_h4_step1_mean_contract.py",
+      "evidence_status": "local_uncommitted_technical_preparation",
+      "scientific_execution": "not_started"
+    },
+    {
+      "id": "track_a_calpha_sector_corrected_two_points_20261110",
+      "status": "guarantee_improvement_needed",
+      "summary": "Authorized corrected-sector Step 1 completed m0/m17 for original H4/1.00A/STO-3G/DF12/generation-LD3/generic-frame/sector36, K0/r4/delta=.02. Observed m17 radius .1265744404 and phase distance .0138195608 rad, but conservative head accumulation prevents a useful positive radius or phase bound. Old run01 STOP preserved; no shots, prices or total cost.",
+      "report": "docs/research/track_a_calpha_h4_step1_20261110/RUN02_RESULT.md",
+      "artifact": "artifacts/calpha_h4_step1/2026-11-10/run02_sector_corrected/result.json",
+      "artifact_SHA256": "8ff3e10d6fb663714b68aa0e9b2affa0816bc04d92c509eede7dca8791fbfffb",
+      "log": "artifacts/calpha_h4_step1/2026-11-10/run02_sector_corrected.log",
+      "runner": "scripts/run_calpha_h4_step1_mean.py",
+      "runner_SHA256": "05974d2ac2372e360aab0933ffbf4a8b3b562608d31f4f6c52bd726046610436",
+      "base_SOURCE": "0d5ca357ccfd8fcc850bef800c5bcadfde2a153e",
+      "evidence_status": "local_uncommitted_ideal_law_numerical_diagnostic_not_certified",
+      "scientific_execution": "two_points_complete",
+      "guarantee_status": "not_certified",
+      "implementation_inclusive_guarantee": "UNKNOWN",
+      "mandatory_stop": true
+    },
+    {
+      "id": "track_a_calpha_macrostep_gap_20261110",
+      "status": "fixed_law_unqualified_reconstruction_bound_candidate",
+      "report": "docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md",
+      "artifacts": [
+        {
+          "path": "artifacts/calpha_h4_step1/2026-11-10/run03_macrostep_gap/result.json",
+          "sha256": "7ae690d940d63a5ea0aae627742be217e84d5bb104c65f8f51d074b3dc8240c8"
+        },
+        {
+          "path": "artifacts/calpha_h4_step1/2026-11-10/run04_state_defect/result.json",
+          "sha256": "017e7f11f59119817cad058a489d4d48a53a45ab732a5e3e2d31bf9caa188c50"
+        },
+        {
+          "path": "artifacts/calpha_h4_step1/2026-11-10/run05_reference_interval/result.json",
+          "sha256": "d855714bf3a2118b71f20c4a08933a88fe92e80bcc667d26022366527a3f8abb"
+        },
+        {
+          "path": "artifacts/calpha_h4_step1/2026-11-10/run06_reference_interval/result.json",
+          "sha256": "e41653db6251b8c9cd0a7ad547ca3e9741f0083c1ce452ba3e1b4fea41ee69b8"
+        },
+        {
+          "path": "artifacts/calpha_h4_step1/2026-11-10/run07_reconstruction_bridge/result.json",
+          "sha256": "b5191501d7011d03f3214974349526ff6990255d4adc9d55e9e76109632c1cd4"
+        }
+      ],
+      "base_SOURCE": "0d5ca357ccfd8fcc850bef800c5bcadfde2a153e",
+      "summary": "Approved same-H4/DF12/generation-LD3/generic-frame/sector36/K0/r4/delta=.02 bound investigation reused m0/m17 signals. Supplied norm bounds still fail. Exact rational inertia certifies the explicit H_ref gap. Contraction-weighted state bounds plus interval reconstruction bridge satisfy .14 rad for literal binary64 operands; correspondence to the fixed primitive law remains unqualified. No downstream RPE/shots/prices.",
+      "adopted_review_bounds": "B_diagnostic_favorable_guarantee_not_closed",
+      "candidate_fixed_law_status": "D_primitive_basis_semantics_unqualified",
+      "qualified_scope": "explicit_dyadic_reference_gap_and_literal_reconstruction_model_only",
+      "implementation_inclusive_guarantee": "UNKNOWN",
+      "RPE_cost_gate": false,
+      "old_run01_run02_preserved": true,
+      "new_raw_signal_evaluations": 0,
+      "new_damped_signal_evaluations": 0,
+      "new_ground_state_solves": 0,
+      "new_shot_or_price_evaluations": 0,
+      "mandatory_stop": true,
+      "formal_scientific_adoption": false
     }
   ],
   "repository_completion_criteria": [

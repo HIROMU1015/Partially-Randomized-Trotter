@@ -133,3 +133,7 @@ DF部分ランダム化研究と混同しない。
 `b2_p1_branch_validation.py`はraw平均だけの既存decoder接続と復元後のenergy correctness。[結果・来歴・未保証事項](../../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。decoderとbranch閾値は不変更。
 
 `b2_p1_shot_accounting.py`は既存`B2SignalRecord.bounds`/`account_radius_round`を使う保存JSON adapterと整数集計。[条件付きshot数・未保証範囲](../../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。新signal/branch/price計算なし。
+
+## C-αの保証入力（2026-11-10）
+
+`calpha_macrostep_bounds.py`は対称macrostepの数値診断と正確な有理数LDL慣性、`calpha_interval_bounds.py`は明示的な級数残差を含む区間評価。[結果・model限定の資格](../../docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。固定sampling law／nativeへの包括保証や、総費用を認定するAPIではない。

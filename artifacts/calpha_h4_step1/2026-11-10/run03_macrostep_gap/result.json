@@ -1,0 +1,268 @@
+{
+  "schema": "calpha_macrostep_gap_diagnostic_v1",
+  "started_UTC": "2026-11-10T12:03:31.890787+00:00",
+  "base_SOURCE": "0d5ca357ccfd8fcc850bef800c5bcadfde2a153e",
+  "SOURCE_SHA256": {
+    "scripts/run_calpha_macrostep_gap.py": "68a35c2b77e1172ea8ea901029098aa65697e3a70e5d878433f9906174998e21",
+    "src/trotterlib/calpha_macrostep_bounds.py": "20f4aae7590e7409d05d5178fd1537a4390b20837a0d66dbace6a58ba9d33031",
+    "src/trotterlib/b2_p1_signal_validation.py": "955807222954e16c388484113e7f5e8ee7f8af61684012742c2303d40af77e67"
+  },
+  "review_SHA256": "175cf13d23e4d6290fe0ba6a10b76f05598b48f698434fcf923e0ee4abf0bf29",
+  "prior_result": {
+    "path": "artifacts/calpha_h4_step1/2026-11-10/run02_sector_corrected/result.json",
+    "sha256": "8ff3e10d6fb663714b68aa0e9b2affa0816bc04d92c509eede7dca8791fbfffb"
+  },
+  "status": "BOUND_DIAGNOSTICS_AND_GAP_CHECK_COMPLETE",
+  "fixed_conditions": {
+    "K": 0,
+    "r": 4,
+    "L_D": 3,
+    "delta": 0.02,
+    "rounds": [
+      0,
+      17
+    ],
+    "systematic_budget": 0.14,
+    "sector": "Nalpha=Nbeta=2;dimension36",
+    "frame": "unchanged_generic",
+    "sampling": "fresh_independent_full_space_trajectory; mean-only evaluation"
+  },
+  "environment": {
+    "affinity": 32,
+    "BLAS": {
+      "OPENBLAS_NUM_THREADS": "1",
+      "OMP_NUM_THREADS": "1"
+    }
+  },
+  "input_identity": {
+    "status": "PASS",
+    "file_SHA256": {
+      "state.npz": "deb561367e216fd4c62d013c10a4adbbef5da8c3e8139c39170d71f80530a80c",
+      "provenance.json": "468b3a4bc3150c055b4fcdf37a72acaa01e2ae171eccfc39d62419e3998c4e3b",
+      "H4_sto-3g_singlet_df_d100.hdf5": "a3c88f6afa8965a994acb4f6ede4b8fcea1d074755f282b292c790e4c573a958"
+    },
+    "original_hamiltonian": "H_phys:S0_array_hash:bab58c17220230196aff8a7c7d1e1264c36e101f0fe6bf367eacba4538ae10b2",
+    "original_state": "S0_array_hash:1a2df11b16743e68fb27a3f4b39e78e145897cb49a8cc931b080e44e7400c1db",
+    "df_hamiltonian": "de7a549238e3a21f15a84018bef28440c345b31030282c01cf874f3d1d212424",
+    "reconstructed_DF_matrix_hash": "525cdfbe81b5b4990fbf9477cf97b1cea79cc5439b4615d31a5800969996ef2b",
+    "state_role": "original_H_ground_state",
+    "sector": "Nalpha=2,Nbeta=2;OF_basis_S0_hash:665f72f65a4300043a32f3aabc76b7deafbd2563ad3947228dd937bc6d521dd7",
+    "spin_orbital_order": "2p=alpha,2p+1=beta;Qiskit full index=sum(n_q*2**q)",
+    "state_generation_SOURCE": "b168cbf93d7c319045057e8b67ea7ff014c8d7dc",
+    "raw_Hphys_state_residual_Ha": 2.5572810765019255e-15,
+    "raw_Hphys_Hermiticity_spectral": 1.083786357911396e-15,
+    "state_preparation_included": false,
+    "DF_state_used": false,
+    "input_modes": {
+      "state.npz": "0o600",
+      "provenance.json": "0o664",
+      "H4_sto-3g_singlet_df_d100.hdf5": "0o664"
+    }
+  },
+  "macrostep": {
+    "C_multi": 0.09495117730737149,
+    "eta_macro": 4.992045884504641e-07,
+    "local_commutator_bound": 7.596094184589721e-07,
+    "stage_terms_central_to_outer": [
+      {
+        "outer_to_inner_index": 3,
+        "double_A_norm": 0.019551862058092406,
+        "double_G_norm": 0.010914960663041795,
+        "contribution": 0.0017242409743406665
+      },
+      {
+        "outer_to_inner_index": 2,
+        "double_A_norm": 0.022853420794673045,
+        "double_G_norm": 0.009764844532544763,
+        "contribution": 0.0017659629108234406
+      },
+      {
+        "outer_to_inner_index": 1,
+        "double_A_norm": 0.04865312799225807,
+        "double_G_norm": 0.05341195745698685,
+        "contribution": 0.00647821012109299
+      },
+      {
+        "outer_to_inner_index": 0,
+        "double_A_norm": 0.7832194733864585,
+        "double_G_norm": 0.6281834229201434,
+        "contribution": 0.08498276330111439
+      }
+    ],
+    "gamma_min_eigenvalue": 0.00019538994061549264,
+    "qualification": "binary64_diagnostic_NOT_CERTIFIED",
+    "head_append_order": [
+      "one_body",
+      "fragment0",
+      "fragment1",
+      "fragment2"
+    ],
+    "central_to_outer": [
+      "fragment2",
+      "fragment1",
+      "fragment0",
+      "one_body"
+    ]
+  },
+  "gap_certificate": {
+    "method": "exact_rational_LDL_inertia",
+    "matrix_semantics": "exact dyadic entries of supplied real symmetric matrix",
+    "ground_interval": [
+      "-2439135426619291/1125899906842624",
+      "-2439135426586523/1125899906842624"
+    ],
+    "first_excited_interval": [
+      "-8708868356346773/4503599627370496",
+      "-8708868356215701/4503599627370496"
+    ],
+    "gap_lower_exact": "1047673349999319/4503599627370496",
+    "counts": [
+      {
+        "negative": 0,
+        "positive": 36,
+        "zero": 0
+      },
+      {
+        "negative": 1,
+        "positive": 35,
+        "zero": 0
+      },
+      {
+        "negative": 1,
+        "positive": 35,
+        "zero": 0
+      },
+      {
+        "negative": 2,
+        "positive": 34,
+        "zero": 0
+      }
+    ],
+    "certified_for_supplied_matrix": true,
+    "gap_lower_float_downward": 0.2326302150910828
+  },
+  "resolvent": {
+    "b": 0.00016041210390979241,
+    "w_norm": 0.0001129645904518347,
+    "smallest_singular_value": 0.2326302182325181,
+    "solve_residual": 3.552619634878449e-20,
+    "complement_unitarity_defect": 4.701238387824844e-16,
+    "invertibility_certified": false,
+    "qualification": "state_dependent_binary64_diagnostic_NOT_CERTIFIED"
+  },
+  "rounds": [
+    {
+      "m": 0,
+      "q": 1,
+      "T_Ha_inverse": 0.02,
+      "saved_raw_signal": {
+        "real": 0.9990457500292025,
+        "imag": 0.04331340572204446,
+        "radius": 0.9999842307589926,
+        "phase_rad": 0.04332764386726585
+      },
+      "saved_observed_phase_error_rad": 1.0510542936857992e-07,
+      "PF_commutator": 7.596094184589721e-07,
+      "PF_macro_defect": 4.992045884504641e-07,
+      "PF_selected_diagnostic": 4.992045884504641e-07,
+      "unchanged_ledger_terms_from_run02": {
+        "arctan": 2.2357224023953885e-08,
+        "model": 2.0484445595423253e-16,
+        "full_dictionary_connection": 7.783101676796593e-15,
+        "raw_reference_representation": 1.0842364564572816e-17
+      },
+      "epsilon_dyn_excluding_unknown_implementation": 5.215618204732065e-07,
+      "finite_bit_native_implementation_error": null,
+      "variants": {
+        "gap_independent": {
+          "variance_term": 5.146408616153204e-12,
+          "d": 5.215669668818226e-07,
+          "reference_radius": 0.9999842307116638,
+          "radius_lower_expression": 0.9999837091446969,
+          "phase_bound_rad": 5.21575191751434e-07,
+          "satisfies_014": true,
+          "qualification": "numerical_evaluation_of_conditional_formula_NOT_CERTIFIED"
+        },
+        "certified_matrix_gap_conditional": {
+          "variance_term": 5.146408616153204e-12,
+          "d": 5.215669668818226e-07,
+          "reference_radius": 0.9999842307116638,
+          "radius_lower_expression": 0.9999837091446969,
+          "phase_bound_rad": 5.21575191751434e-07,
+          "satisfies_014": true,
+          "qualification": "numerical_evaluation_of_conditional_formula_NOT_CERTIFIED"
+        },
+        "resolvent_diagnostic": {
+          "variance_term": 5.146408616153204e-12,
+          "d": 5.215669668818226e-07,
+          "reference_radius": 0.9999842307116638,
+          "radius_lower_expression": 0.9999837091446969,
+          "phase_bound_rad": 5.21575191751434e-07,
+          "satisfies_014": true,
+          "qualification": "numerical_evaluation_of_conditional_formula_NOT_CERTIFIED"
+        }
+      }
+    },
+    {
+      "m": 17,
+      "q": 131072,
+      "T_Ha_inverse": 2621.44,
+      "saved_raw_signal": {
+        "real": 0.07273558835863993,
+        "imag": -0.10358872117300799,
+        "radius": 0.1265744404219774,
+        "phase_rad": -0.958623902039034
+      },
+      "saved_observed_phase_error_rad": 0.01381956080011894,
+      "PF_commutator": 0.09956352569625439,
+      "PF_macro_defect": 0.06543174381737923,
+      "PF_selected_diagnostic": 0.06543174381737923,
+      "unchanged_ledger_terms_from_run02": {
+        "arctan": 0.0029304060672676836,
+        "model": 2.6849372530833166e-11,
+        "full_dictionary_connection": 1.020146702981083e-09,
+        "raw_reference_representation": 1.421130408208698e-12
+      },
+      "epsilon_dyn_excluding_unknown_implementation": 0.06836215093306412,
+      "finite_bit_native_implementation_error": null,
+      "variants": {
+        "gap_independent": {
+          "variance_term": 0.08841462679292252,
+          "d": 0.15677677772598664,
+          "reference_radius": 0.12657396250520817,
+          "radius_lower_expression": -0.030202815220778473,
+          "phase_bound_rad": null,
+          "satisfies_014": false,
+          "qualification": "numerical_evaluation_of_conditional_formula_NOT_CERTIFIED"
+        },
+        "certified_matrix_gap_conditional": {
+          "variance_term": 0.0005799333245445549,
+          "d": 0.06894208425760867,
+          "reference_radius": 0.12657396250520817,
+          "radius_lower_expression": 0.057631878247599494,
+          "phase_bound_rad": 0.5760054111021522,
+          "satisfies_014": false,
+          "qualification": "numerical_evaluation_of_conditional_formula_NOT_CERTIFIED"
+        },
+        "resolvent_diagnostic": {
+          "variance_term": 6.757617989162774e-05,
+          "d": 0.06842972711295575,
+          "reference_radius": 0.12657396250520817,
+          "radius_lower_expression": 0.058144235392252414,
+          "phase_bound_rad": 0.5711862353886868,
+          "satisfies_014": false,
+          "qualification": "numerical_evaluation_of_conditional_formula_NOT_CERTIFIED"
+        }
+      }
+    }
+  ],
+  "new_raw_signal_evaluations": 0,
+  "new_damped_signal_evaluations": 0,
+  "ground_state_solves": 0,
+  "circuit_builds": 0,
+  "shots_or_prices": 0,
+  "implementation_inclusive_guarantee": "UNKNOWN",
+  "qualification": "diagnostics_and_exact_gap_for_explicit_matrix; NOT_comprehensive_guarantee",
+  "elapsed_seconds": 1.522150798002258,
+  "SOURCE_unchanged": true
+}

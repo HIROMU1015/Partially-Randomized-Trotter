@@ -163,3 +163,20 @@ artifacts/<validation_name>/
 `run_b2_p1_branch_validation.py`は固定保存raw平均を既存nearest-branch decoderへ渡す。[branch/energy結果とSTOP](../docs/research/track_a_b2_p1_branch_20261107/REPORT.md)。新信号・private読込・shot・価格なし。
 
 `run_b2_p1_shot_accounting.py`は固定保存18roundのboundsを既存Hoeffding会計へ接続する。[shot結果とSTOP](../docs/research/track_a_b2_p1_shots_20261107/REPORT.md)。価格・費用は算出しない。
+
+
+## C-α H4 Step 1の適用確認（2026-11-10）
+
+`run_calpha_h4_step1_applicability.py`は固定P1入力とgeneric tail frameのsector条件を確認する。
+[結果とmandatory STOP](../docs/research/track_a_calpha_h4_step1_20261110/REPORT.md)。今回の承認runは完了・STOPであり、無条件の再実行入口ではない。
+
+
+## C-α sector訂正後のmean-only runner（2026-11-10）
+
+`run_calpha_h4_step1_mean.py`は固定generic辞書の平均・完成head・参照生成子を接続し、許可後にm0/m17だけを評価する。[科学未実行の準備報告](../docs/research/track_a_calpha_h4_step1_20261110/SECTOR_CORRECTION_PREPARATION.md)。旧run01と旧runnerは不変更。
+
+後続の許可済みrun02は完了：[二点結果と誤差内訳](../docs/research/track_a_calpha_h4_step1_20261110/RUN02_RESULT.md)。分類は「保証改善が必要」、mandatory STOP。実行SOURCEとrawを保持し、追加round・探索・再実行の許可は含まない。
+
+## C-α macrostep／gap保証改善（2026-11-10）
+
+`run_calpha_macrostep_gap.py`、`run_calpha_state_defect.py`、`run_calpha_interval_state_bound.py`、`run_calpha_reconstruction_bridge.py`は、後続の明示許可に基づく限定保証入力の取得経路。[実行履歴・資格・STOP](../docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。旧raw信号は再simulationせず、全18round・shot・価格へ進んでいない。各旧出力の上書き・再実行入口ではない。
