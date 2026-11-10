@@ -1,0 +1,10 @@
+{
+  "stage": "pre-scientific synthetic regression",
+  "passed": 57,
+  "failed": 1,
+  "failure": "check_track_d_original_h_accuracy.py::test_passive_import_and_no_molecular_constructor_sampler_or_compiler",
+  "cause": "child interpreter could not import trottertracks because PYTHONPATH=src was omitted from test invocation",
+  "source_change_required": false,
+  "scientific_execution_started": false,
+  "correction": "supply PYTHONPATH=src to pytest and its subprocesses; preserve the original test unchanged"
+}
