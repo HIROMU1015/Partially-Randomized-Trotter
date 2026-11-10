@@ -1,5 +1,7 @@
 # Validation status
 
+[Track D r16有限価格校正](docs/research/track_d_r16_price_calibration_20261110/REPORT.md)（2026-11-10）：Linear H4／1.00Å／STO-3G／Nα=Nβ2・元H ground仮定/準備費除外、number-CDF8／元順LD2／S2/s1/r16/K0／h=.1。q2/4/8各4 path（保存q4の1本を再利用）、新11 raw＋44 P0/post/pairedχ PASS。CX差平均−176/−560/−1328、RZ差+372.5/+288.25/+121.75、size差+388.5/−79.75/−1014.25、幅9→17。平均/SD/方式・資源・軸共分散を保存、n4・低rankの探索的pilot。S1/N/A-F-Sは不変、長q/全RPE費用・母平均保証未資格。公開照合後STOP。
+
 [Track D r16限定科学検証](docs/research/track_d_r16_limited_validation_20261110/REPORT.md)（2026-11-10）：Linear H4／1.00Å／STO-3G／Nα=Nβ2・元H ground仮定/準備費除外、number-CDF8／元順LD2／S2/s1/r16/K0／h=.1。S1は全13roundで条件付き十分条件PASS（q4096 N=1359/軸、保存r32=910）。固定q4/cut2/C1 OFFの新1path・64event、raw/4P0/post/pairedχ PASS。Strong→ReferenceはCX5434→4874、depth7495→3568、RZ13042→13333、幅9→17。law母平均・全RPE総費用/actual成功保証は未評価。既存SOURCE/原本/STOP保全、公開照合後mandatory STOP。
 
 [Track D×元PR/RPE共通interface](docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。
