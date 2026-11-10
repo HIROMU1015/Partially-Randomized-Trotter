@@ -1,6 +1,6 @@
 # trotterlib モジュール索引
 
-`trottertracks.h4_df10_price_v2_independent`：[独立q部分結果](../../docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)。V1会計本体を保ちq scopeのみ拡張、S1係数を凍結。PF q32で改善、PR build前STOP。人工4 methodと継続準備2回帰、元SOURCE・STOP保全。
+`trottertracks.h4_df10_price_v2_independent`：[独立q完了結果](../../docs/research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)。V1会計とS1係数を凍結し、PF q32/PR q16の全68軸でM0/Mqを比較。初回STOP後の承認済み保存event継続を区別し、人工4＋2回帰、元SOURCE・STOP保全。長q/全RPE未資格。
 
 `trottertracks.h4_df10_price_v2`：[V2 S1結果](../../docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)。固定V1 scalar/特徴を二軸対応付けし、既存generic fitでMq/MqBを校正する薄いS1 adapter。人工4 method PASS、既知データでの探索的改善、独立汎化・長q未資格。回路・sampling・N/Gなし。
 

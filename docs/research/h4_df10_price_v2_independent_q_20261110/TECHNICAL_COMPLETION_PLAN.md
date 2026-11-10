@@ -1,5 +1,7 @@
 # PR停止の技術修正と残66 wrapperの継続案（未実行）
 
+実行追補（2026-11-10）：この継続範囲へのユーザーの明示許可を受け、SOURCE f8bb11fe6で[完了](completion01/REPORT.md)。以下は許可前に公開した計画であり、元STOPと条件は保持する。
+
 run01のPFは完了、PRは元`cost_trial`が呼ぶ`sample_requests(row, prep, cohort, index)`に対し、新adapterの`sampled(row, cohort, index)`でprep引数を落としたため、代表path0がbuild前にTypeErrorで停止した。モデル不適合や量子回路correctnessの失敗ではない。元SOURCE・停止・生成済み33本・全68軸の固定予測・PF価格を保持する。
 
 今回指示§11は「**新しい科学campaignで停止条件に達した場合、無断で再試行しない。**」と指定している。本案は自動実行しない。元run01を再起動せず、別途明示された継続許可がある場合だけ以下を行う。

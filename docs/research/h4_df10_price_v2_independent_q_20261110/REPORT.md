@@ -1,5 +1,7 @@
 # H4 DF10 Mq：独立q検証のPF結果とPR技術STOP
 
+追補（2026-11-10）：ユーザーの残PR66軸の継続許可後、保存33本・固定予測・PF価格を再利用して[全指定範囲の検証を完了](completion01/REPORT.md)。以下は初回の部分結果・技術STOP時点の記録として保持する。
+
 2026-11-10 JST。**未使用PF q32ではMqがM0より正確だった。PR q16はadapterの引数不一致でbuild前に停止し、移送精度は未判定。長時間RPEへの使用には、未取得PR価格、さらに長q・law期待値・係数/系統不確かさの検証が残る。** 本campaignは部分完了であり、全指定範囲の成功とはしない。
 
 [RESULT.json](RESULT.json)／[PF残差CSV](PATH_RESIDUALS.csv)／[取得前予測68軸](PREDICTIONS.json)／[PROVENANCE](PROVENANCE.json)／[事前PLAN](PLAN.md)。PR未取得価格・残差はnullで保持した。[継続修正案](TECHNICAL_COMPLETION_PLAN.md)は準備済み・未実行。

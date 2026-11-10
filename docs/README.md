@@ -1,6 +1,8 @@
 # 文書索引
 
-[H4 DF10 Mq独立q部分結果](research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：PF q32でMq改善、PR q16はbuild前の引数エラーSTOP。PREDICTIONS/PROVENANCE/部分RESULT/CSVと、保存33本を使う未実行継続案。PR移送・長qは未判定。
+[H4 DF10 Mq独立q 完了結果](research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)：初回STOP後の承認済み保存event継続によりPF q32/PR q16新33本の全68軸を完了。凍結MqがM0より改善、機械可読RESULT/CSVと34 trialのhash binding。有限qの移送支持、長q/全law/全RPEは未資格。
+
+[H4 DF10 Mq独立q初回部分結果](research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：PF q32成功・PR callback STOP、PREDICTIONS/PROVENANCE/部分RESULT/CSVと、許可前に公開した継続計画を保全。
 
 [H4 DF10価格V2 S1結果](research/h4_df10_price_v2_s1_20261110/REPORT.md)：保存構造価格＋少数補正の3 fit、RESULT/CSV/実行前PLAN。Mqが既知データで改善し、basis追加MqBの利益は支持されない。独立汎化・長q/全RPEは未資格。
 

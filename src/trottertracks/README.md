@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[H4 DF10 Mq独立q 完了](../../docs/research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)：SOURCE55eccab88の固定予測/PFと、SOURCE f8bb11fe6の保存PR event再生を分離して結合。SOURCE・初回STOPを保持し、全68軸の凍結Mq/M0比較を完了、長q未資格。
+
 [H4 DF10 Mq独立q](../../docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：`h4_df10_price_v2_independent.py`、`run_h4_df10_price_v2_independent.py`と人工`check_h4_df10_price_v2_independent.py`。PF完了/PR STOP、未実行継続adapterと人工`check_h4_df10_price_v2_completion.py`を分離する。
 
 [H4 DF10価格V2 S1](../../docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)：`h4_df10_price_v2.py`、`scripts/run_h4_df10_price_v2.py`、人工検査`tests/check_h4_df10_price_v2.py`。保存値の3 fitだけで、既知データでの探索的補正評価。独立holdout・長q・全RPE価格は未資格。
