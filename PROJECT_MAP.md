@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6 DF19価格再利用・モデル設計](docs/research/h6_df19_price_design_20261110/REPORT.md)（2026-11-10）：固定D2のm0…5 Nとm3/4直接価格、m5の11 signed piece・prefix/R変更、限定cache coverageを静的照合。推奨初手は保存PFとPR2族の探索9/確認33によるsource構造ruleのV1。新予測/残差/fit/compile/signal/N/G0、V1未許可・未実行、並行m6/H4 V1と独立、公開照合後STOP。
+
 [H6 DF19 RPE D2結果](docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)（2026-11-10）：固定m0/1/2/5の8候補をSOURCE e0503b769で一回評価しideal条件付きPASS。新各軸NはPF全705、PR705/708/719/737。保存D1と合わせm0..5、残りm6..12。3新reference・保存T=.4再利用、人工7件、対角化/compile/G0、actual/全RPE未資格、公開照合後STOP。
 
 [H6 DF19 RPE D2準備](docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)（2026-11-10）：m0/1/2/5のPF/PR計8候補を提案、m5はq_PF2/δ1.6。T=.4の保存referenceとp5/7 tail定数を確認し、新referenceは3時点だけの計画。固有値問題を避けるaction接続仕様、C未取得を明示。新signal/N/G0、別途科学実行許可待ち、公開照合後STOP。
