@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10価格V1結果](docs/research/h4_df10_price_v1_20261110/REPORT.md)（2026-11-10）：保存PF q8/q16・PR探索9/確認33を同じ構造モデルで評価し、開発20軸・留保68軸で整数一致0。PF q16残差+9646、PR確認+736…+1960/軸。fit/sampling/build/compile/N/G0、全RPE価格未資格。元完了順の読み込み修正と初回停止を保全、公開照合後mandatory STOP。
+
 [H4 DF10長時間価格モデル設計](docs/research/h4_df10_longtime_price_design_20261110/REPORT.md)（2026-11-10）：実builder/provider・cache・固定価格を静的照合。構造会計＋必要時のDF10固有補正を候補とし、保存PR探索9/確認33とPF q8/16での新fit/compileなし検証案を具体化。全13round価格の信頼区間は未資格。新予測/残差/fit/sampling/build/compile/N/G/詳細科学レビュー0、並行m3会計から分離、公開照合後mandatory STOP。
 
 [H4 DF10 RPE費用接続](docs/research/h4_df10_rpe_cost_connection_20261110/REPORT.md)（2026-11-10）：D1の保存N/Cを3cohortケースへ準備、部分m3と全13roundを区別する最小adapter・人工/既存会計回帰14件PASS。同S2 PF B0/p7とPR p1/R4/K2の48候補metadata coverageを照合。実H4のN×C/新N/残差/fit/signal/sampling/build/compile/全G/H6数値は0、Main Claim不変。次案は保存m3のRZ小計3ケースのみ、別途実行許可が必要。公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_cost_connection`、準備のみの`prepare_h4_df10_rpe_cost_connection.py`、人工test `check_h4_df10_rpe_cost_connection.py`。PREPARED_INPUTS/COVERAGEは報告と同directory。

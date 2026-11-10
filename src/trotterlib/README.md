@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.h4_df10_price_v1`：[H4 DF10価格V1](../../docs/research/h4_df10_price_v1_20261110/REPORT.md)。既存NativeCounter・固定SOURCEのGaussian/対角primitiveを再利用した構造RZ候補。保存開発20軸・留保68軸でcompiled価格との整数一致0、P0/長qは未資格。人工は計数6＋metadata順序2種類PASS、fit/実回路build/compile/N/G0。
+
 [H4 DF10 RPE費用接続](../../docs/research/h4_df10_rpe_cost_connection_20261110/REPORT.md)（2026-11-10）：D1の保存N/Cを3cohortケースへ準備、部分m3と全13roundを区別する最小adapter・人工/既存会計回帰14件PASS。同S2 PF B0/p7とPR p1/R4/K2の48候補metadata coverageを照合。実H4のN×C/新N/残差/fit/signal/sampling/build/compile/全G/H6数値は0、Main Claim不変。次案は保存m3のRZ小計3ケースのみ、別途実行許可が必要。公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_cost_connection`、準備のみの`prepare_h4_df10_rpe_cost_connection.py`、人工test `check_h4_df10_rpe_cost_connection.py`。PREPARED_INPUTS/COVERAGEは報告と同directory。
 
 [H4 DF10 D1](../../docs/research/h4_df10_rpe_d1_20261110/REPORT.md)（2026-11-10）：H4/1Å/STO-3G・保存tol-only DF10/Nα=Nβ2、target保存DF-H、数値ground条件付き/P=0。S2、PF B0/p7/qPF8対PR p1/qPF8/R4/K2、T=.8/δ=.1。係数priorでh=.1を採用、βtotal=.4/stat=.2、全13roundのαaxis=.05/26。m3のみ条件付き十分NはPF705/軸・PR977/軸。actual/厳密ground/全RPE/Gは未資格・未評価。7人工test PASS、新signal/trajectory/compile/fit/G/H6数値0。SOURCE311255aa、旧結果/STOP保全、公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_d1`、`scripts/run_h4_df10_rpe_d1.py`、`tests/check_h4_df10_rpe_d1.py`。数値正本：`docs/research/h4_df10_rpe_d1_20261110/result.json`。完了済みrunnerを自動再実行しない。
