@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H6 DF19価格V1結果](../docs/research/h6_df19_price_v1_20261110/REPORT.md)（2026-11-10）：Full19/m5とPR p5/R32/K2・p7/R16/K2の保存探索/独立確認＋PF補助q2、174軸をSOURCE960e8f911で一括評価。完全一致0/174、全て過小。留保の平均絶対相対誤差はPF17.29%、PR A16.98%/B15.94%、補助14.78%。近似基線としての構造内訳は得たが、全13round providerは未資格。人工8件、新compile/fit/sampling/signal/N/G0。公開照合後mandatory STOP。 実装：`trottertracks.h6_df19_price_v1`、runner `run_h6_df19_price_v1.py`、分析 `analyze_h6_df19_price_v1.py`、人工test `check_h6_df19_price_v1.py`。完了済み出力は再実行/上書きしない。
+
 `run_h6_df19_rpe_d2.py`の[完了結果](../docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)：SOURCE e0503b769、固定8候補を一回評価し全てideal条件付きPASS。run01と旧D1/計画を保全、m6以降・価格・全Gへ自動進行しない。
 
 `run_h6_df19_rpe_d2.py`：[固定D2計画](../docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)の4round・8候補だけを実行する入口。保存H/stateとtail定数、T=.4 reference、D1政策を再利用し、対角化なしの行列指数/Taylor作用と既存D1 geometryでNを評価する。科学実行は利用者の明示許可範囲に限り、fresh outputを指定する。sampling/build/compile/fit/Gなし。人工7件の記録は[こちら](../docs/research/h6_df19_rpe_d2_results_20261110/synthetic_tests.txt)。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H6 DF19価格V1結果](../../docs/research/h6_df19_price_v1_20261110/REPORT.md)（2026-11-10）：Full19/m5とPR p5/R32/K2・p7/R16/K2の保存探索/独立確認＋PF補助q2、174軸をSOURCE960e8f911で一括評価。完全一致0/174、全て過小。留保の平均絶対相対誤差はPF17.29%、PR A16.98%/B15.94%、補助14.78%。近似基線としての構造内訳は得たが、全13round providerは未資格。人工8件、新compile/fit/sampling/signal/N/G0。公開照合後mandatory STOP。 実装：`trottertracks.h6_df19_price_v1`、runner `run_h6_df19_price_v1.py`、分析 `analyze_h6_df19_price_v1.py`、人工test `check_h6_df19_price_v1.py`。完了済み出力は再実行/上書きしない。
+
 `trottertracks.h6_df19_rpe_d2`の[H6完了結果](../../docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)：固定8候補の新signal/Nを一回評価しideal条件付きround PASS。D1と合わせm0..5、actual/全Gは未資格。SOURCE・run01・旧STOPを保全する。
 
 `trottertracks.h6_df19_rpe_d2`：固定[H6 D2](../../docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)へのaction adapter。既存occupation/m5 schedule/finite Taylor/normalizerとD1算術を再利用し、matrix exponential backend・数値allowance・H6入力接続だけを追加。人工7件PASS、import時に保存入力を読まない。回路・sampler・価格・独立RPE solverなし。
