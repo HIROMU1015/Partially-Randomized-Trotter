@@ -22,6 +22,18 @@ def occupations(n):
     return itertools.product((0, 1), repeat=n)
 
 
+def load_rte_api():
+    """Load the unchanged schema alone; tests must not depend on class order."""
+    name = "_threshold_test_rte_contract"
+    if name not in sys.modules:
+        path = Path(__file__).resolve().parents[1] / "src/trotterlib/rte.py"
+        spec = importlib.util.spec_from_file_location(name, path)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[name] = module
+        spec.loader.exec_module(module)
+    return sys.modules[name]
+
+
 class BitPhaseSink:
     def __init__(self, bits):
         self.bits = list(bits)
@@ -242,6 +254,43 @@ class ArithmeticTests(unittest.TestCase):
 
 
 class TailTests(unittest.TestCase):
+    def test_explicit_common_shift_leaves_only_the_residual_identity(self):
+        g = th.ThresholdGrid.from_df_square((1, 1), 1)
+        fragment = th.ThresholdFragment("f", g)
+        for shift in (F(-1, 3), F(0), F(3, 2), F(2), F(7, 3)):
+            tail = th.ThresholdTail((fragment,), scalar_shift=shift)
+            self.assertEqual(tail.deterministic_scalar, shift)
+            self.assertEqual(tail.mass, g.reflection_mass + abs(g.center-shift))
+            for bits in occupations(2):
+                reflected = sum((g.spacing * (2*int(g.value_integer(bits) >= j)-1)/2
+                                 for j in range(1, g.extent+1)), F(0))
+                self.assertEqual(g.value(bits)-shift, tail.sampled_scalar+reflected)
+            if tail.sampled_scalar:
+                identity = tail.identity_atom()
+                self.assertEqual(tail.coefficient(identity)*identity.identity_sign, g.center-shift)
+                # First group has mass 2; choose the last accepted integer.
+                unit = th._fraction_gcd((g.reflection_mass, abs(tail.sampled_scalar)))
+                last = int(tail.mass/unit)-1
+                self.assertEqual(tail.draw_atom(lambda _: last), identity)
+        extracted = th.ThresholdTail((fragment,), "extract_identity_phase")
+        centered = th.ThresholdTail((fragment,), scalar_shift=g.center)
+        self.assertEqual((centered.mass, centered.deterministic_scalar),
+                         (extracted.mass, extracted.deterministic_scalar))
+        with self.assertRaises(ValueError):
+            th.ThresholdTail((fragment,), "extract_identity_phase", scalar_shift=0)
+        with self.assertRaises((ValueError, OverflowError)):
+            th.ThresholdTail((fragment,), scalar_shift=float("inf"))
+
+    def test_common_shift_scalar_only_can_leave_a_negative_identity(self):
+        fragment = th.ThresholdFragment("scalar", th.ThresholdGrid.from_df_square((1,), 0, constant=2))
+        tail = th.ThresholdTail((fragment,), scalar_shift=3)
+        self.assertEqual((tail.mass, tail.deterministic_scalar, tail.sampled_scalar), (1, 3, -1))
+        self.assertEqual(tail.draw_atom(lambda _: self.fail("one group")), th.ThresholdAtom(None, identity_sign=-1))
+        zero = th.ThresholdTail((fragment,), scalar_shift=2)
+        self.assertEqual(zero.mass, 0)
+        with self.assertRaises(ValueError):
+            zero.draw_atom(lambda _: self.fail("zero residual"))
+
     def test_rejection_uses_all_bits_and_does_not_modulo_bias(self):
         draws = iter((7, 6, 4))
         calls = []
@@ -311,13 +360,7 @@ class RTEBridgeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Load only the unchanged RTE file, avoiding scientific package __init__.
-        path = Path(__file__).resolve().parents[1] / "src/trotterlib/rte.py"
-        name = "_threshold_test_rte_contract"
-        spec = importlib.util.spec_from_file_location(name, path)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules[name] = module
-        spec.loader.exec_module(module)
-        cls.api = module
+        cls.api = load_rte_api()
 
     def fixture(self):
         f = th.ThresholdFragment("f", th.ThresholdGrid.from_df_square((1,), 2))
@@ -432,6 +475,197 @@ class RTEBridgeTests(unittest.TestCase):
         fragment = th.ThresholdFragment("f", th.ThresholdGrid.from_df_square((1,), F(1, 2**2000)))
         with self.assertRaisesRegex(ValueError, "underflow"):
             th.ThresholdTail((fragment,)).order_parameters(1, 0, rte_api=SimpleNamespace())
+
+
+class CenteringAlgebraTests(unittest.TestCase):
+    @staticmethod
+    def fourier(grid):
+        n = grid.num_modes
+        return {mask: sum((grid.value(bits)*(-1)**sum(a*b for a, b in zip(bits, mask))
+                           for bits in occupations(n)), F(0))/2**n for mask in occupations(n)}
+
+    def test_identical_shift_on_threshold_izz_and_collected_diagonal_paulis(self):
+        # Exact Boolean algebra on tiny artificial inputs, with both DF signs.
+        for eta in ((1,), (1, 1), (1, -1), (2, -1), (1, 1, -1), (0, 0)):
+            for lam in (F(2, 3), F(-2, 3)):
+                grid = th.ThresholdGrid.from_df_square(eta, lam)
+                coefficients = self.fourier(grid)
+                zero = (0,)*len(eta)
+                d, norm = abs(coefficients[zero]), 2*grid.reflection_mass
+                self.assertLessEqual(d, norm/2)
+                fragment = th.ThresholdFragment("f", grid)
+                for shift in (F(0), coefficients[zero], grid.center, F(7, 3)):
+                    shifted = dict(coefficients)
+                    shifted[zero] -= shift
+                    izz_mass = sum(abs(v) for v in shifted.values())
+                    # A single frame is already a collected Pauli dictionary.
+                    collected = {mask: value for mask, value in shifted.items() if value}
+                    self.assertEqual(izz_mass, sum(abs(v) for v in collected.values()))
+                    tail = th.ThresholdTail((fragment,), scalar_shift=shift)
+                    for bits in occupations(len(eta)):
+                        pauli_value = sum((c*(-1)**sum(a*b for a, b in zip(bits, mask))
+                                           for mask, c in collected.items()), F(0))
+                        self.assertEqual(pauli_value, grid.value(bits)-shift)
+                    if shift == grid.center:
+                        self.assertEqual(izz_mass, 3*norm/2-2*d)
+                        self.assertEqual(tail.mass, norm/2)
+                        self.assertEqual(izz_mass > tail.mass, d < norm/2)
+                    if shift == coefficients[zero]:
+                        self.assertEqual(izz_mass, tail.mass)
+
+    def test_collected_pauli_cancellation_can_remove_the_threshold_advantage(self):
+        plus = th.ThresholdGrid.from_df_square((1, 1), 1)
+        minus = th.ThresholdGrid.from_df_square((1, 1), -1)
+        tail = th.ThresholdTail((th.ThresholdFragment("plus", plus), th.ThresholdFragment("minus", minus)),
+                                scalar_shift=0)
+        a, b = self.fourier(plus), self.fourier(minus)
+        collected_mass = sum(abs(a[key]+b[key]) for key in a)
+        self.assertEqual(collected_mass, 0)
+        self.assertGreater(tail.mass, collected_mass)
+
+    def test_paired_finite_numerator_is_dictionary_independent_as_a_formal_word_polynomial(self):
+        # Noncommuting formal involution labels; no matrices, states or signals.
+        def add(out, word, coefficient):
+            out[word] = out.get(word, F(0))+coefficient
+            if not out[word]:
+                del out[word]
+
+        left = ((F(1), ("R",)), (F(2), ("S",)), (F(-1, 2), ()))
+        right = ((F(2), ("R",)), (F(-1), ("R",)), (F(2), ("S",)), (F(-1, 2), ()))
+        self.assertNotEqual(sum(abs(c) for c, _ in left), sum(abs(c) for c, _ in right))
+        for cutoff in (0, 2, 4):
+            numerators = []
+            for dictionary in (left, right):
+                mass = sum(abs(c) for c, _ in dictionary)
+                out = {}
+                for order in range(0, cutoff+1, 2):
+                    for draws in itertools.product(dictionary, repeat=order):
+                        word = sum((w for _, w in draws), ())
+                        # Multiply the conditional probabilities by the paired
+                        # numerator; its sqrt normalizer cancels algebraically.
+                        p = math.prod(abs(c)/mass for c, _ in draws)
+                        sign = math.prod(1 if c > 0 else -1 for c, _ in draws)
+                        even = F((-1)**(order//2), math.factorial(order))*mass**order*p*sign
+                        add(out, word, even)
+                        for c, rotation in dictionary:
+                            # Separate time/-i degree from the formal word.
+                            # Odd coefficients are recorded under an i marker.
+                            add(out, ("i",)+word+rotation, -even*c/F(order+1))
+                numerators.append(out)
+            self.assertEqual(*numerators)
+            expected = {}
+            for degree in range(cutoff+2):
+                for draws in itertools.product(left, repeat=degree):
+                    word = sum((w for _, w in draws), ())
+                    coefficient = F((-1)**((degree+1)//2), math.factorial(degree))*math.prod(c for c, _ in draws)
+                    add(expected, (("i",)+word) if degree % 2 else word, coefficient)
+            self.assertEqual(numerators[0], expected)
+
+
+class IntervalPlanTests(unittest.TestCase):
+    def test_signed_predicate_xors_both_flag_states_and_restores_every_charge(self):
+        for width in range(1, 6):
+            charge, flag = tuple(range(width)), width
+            half = 1 << (width-1)
+            extent = half*half
+            for sign in (-1, 1):
+                for threshold in range(1, extent+1):
+                    operations = th._charge_predicate(charge, flag, extent=extent,
+                                                       threshold=threshold, square_sign=sign)
+                    for raw in range(1 << width):
+                        q = raw if raw < half else raw-2*half
+                        predicate = (q*q if sign == 1 else extent-q*q) >= threshold
+                        for initial_flag in (0, 1):
+                            initial = [(raw >> i) & 1 for i in charge]+[initial_flag]
+                            sink = BitPhaseSink(initial)
+                            execute(operations, sink)
+                            self.assertEqual(sink.bits, initial[:-1]+[initial_flag ^ predicate])
+                            execute(reversed(operations), sink)
+                            self.assertEqual(sink.bits, initial)
+
+    def test_large_exact_square_root_and_out_of_register_boundaries(self):
+        huge = 2**2000
+        for sign in (-1, 1):
+            for threshold in (huge-1, huge, huge+1):
+                operations = th._charge_predicate((0, 1, 2), 3, extent=huge+1,
+                                                   threshold=threshold, square_sign=sign)
+                for raw in range(8):
+                    q = raw if raw < 4 else raw-8
+                    sink = BitPhaseSink([(raw >> i) & 1 for i in range(3)]+[0])
+                    execute(operations, sink)
+                    expected = (q*q if sign == 1 else huge+1-q*q) >= threshold
+                    self.assertEqual(sink.bits[-1], expected)
+        for options in ({"threshold": 0}, {"threshold": 5}, {"square_sign": 0}):
+            kwargs = dict(extent=4, threshold=1, square_sign=1)
+            kwargs.update(options)
+            with self.assertRaises(ValueError):
+                th._charge_predicate((0, 1), 2, **kwargs)
+
+    def test_interval_and_square_plans_agree_with_absolute_phases_and_no_value(self):
+        for weights in ((1,), (-1,), (1, -1), (1, -2, 3), (2, -4)):
+            for lam in (F(2, 3), F(-2, 3)):
+                grid = th.ThresholdGrid.from_df_square(weights, lam)
+                fragment = th.ThresholdFragment("f", grid)
+                for threshold in range(1, grid.extent+1):
+                    atom = th.ThresholdAtom(fragment, threshold)
+                    for angle in (None, F(-3, 7)):
+                        for controlled in (False, True):
+                            old = th.reflection_plan(atom, angle=angle, controlled=controlled)
+                            new = th.reflection_plan(atom, angle=angle, controlled=controlled, rank_one_method="interval")
+                            self.assertEqual(new.value, ())
+                            self.assertEqual(len(new.charge), grid.charge_width)
+                            self.assertEqual(old.num_qubits-new.num_qubits, grid.value_width)
+                            for bits in occupations(len(weights)):
+                                for control in ((0, 1) if controlled else (1,)):
+                                    sinks = []
+                                    for plan in (old, new):
+                                        initial = list(bits)+[0]*(plan.num_qubits-len(bits))
+                                        if controlled:
+                                            initial[plan.control] = control
+                                        sink = BitPhaseSink(initial)
+                                        plan.emit(sink)
+                                        self.assertEqual(sink.bits, initial)
+                                        sinks.append(sink)
+                                    self.assertEqual((sinks[0].pi, sinks[0].radians), (sinks[1].pi, sinks[1].radians))
+
+    def test_default_and_general_polynomial_paths_are_unchanged_and_method_is_checked(self):
+        grid = th.ThresholdGrid.from_polynomial(th.OccupationPolynomial(1, terms=(((0,), F(2)),)))
+        atoms = (th.ThresholdAtom(th.ThresholdFragment("general", grid), 1), th.ThresholdAtom(None))
+        for atom in atoms:
+            default = th.reflection_plan(atom, num_modes=1)
+            self.assertEqual(default, th.reflection_plan(atom, num_modes=1, rank_one_method="square"))
+            self.assertEqual(default, th.reflection_plan(atom, num_modes=1, rank_one_method="interval"))
+            with self.assertRaises(ValueError):
+                th.reflection_plan(atom, num_modes=1, rank_one_method="unknown")
+
+    def test_event_interface_and_fragment_sharing_keep_the_same_operator(self):
+        api = load_rte_api()
+        f = th.ThresholdFragment("f", th.ThresholdGrid.from_df_square((1, -2), -1), "swap", "mock-swap")
+        g = th.ThresholdFragment("g", th.ThresholdGrid.from_df_square((2, -3), 1))
+        tail = th.ThresholdTail((f, g), scalar_shift=F(2, 3))
+        a, b, c = th.ThresholdAtom(f, 1), th.ThresholdAtom(f, 4), th.ThresholdAtom(g, 2)
+        dist = SimpleNamespace(orders=(4,), unnormalized_order_weights=(1.0,),
+                               exact_finite_distribution=1.0, dimensionless_step_time=-0.25)
+        bound = th.bind_rte_event(tail, (a, tail.identity_atom(), c, b, a), dist, 0, rte_api=api)
+        before = bound.event.to_dict()
+        for controlled in (False, True):
+            for bits in occupations(2):
+                for control in ((0, 1) if controlled else (1,)):
+                    sinks = []
+                    for method in ("square", "interval"):
+                        plans = th.rte_event_plans(bound, num_modes=2, controlled=controlled, rank_one_method=method)
+                        self.assertEqual(len(plans), 3)  # identity, g, f/f/rotation
+                        size = max(p.num_qubits for p in plans)
+                        initial = list(bits)+[0]*(size-2)
+                        if controlled:
+                            initial[-1] = control
+                        sink = BitPhaseSink(initial)
+                        self.assertEqual(th.emit_rte_event(bound, sink, num_modes=2, controlled=controlled,
+                                                          rank_one_method=method), size)
+                        self.assertEqual(sink.bits, initial)
+                        sinks.append(sink)
+                    self.assertEqual((sinks[0].pi, sinks[0].radians), (sinks[1].pi, sinks[1].radians))
+        self.assertEqual(bound.event.to_dict(), before)
 
 
 if __name__ == "__main__":

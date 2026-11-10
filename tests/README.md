@@ -3,6 +3,8 @@
 - [test_df_threshold_reflection.py](test_df_threshold_reflection.py)：exact整数・位相truth table・mock RTE接続。
   [技術報告](../docs/research/track_a_threshold_reflection_technical_20261110/REPORT.md)の専用コマンドで実行する。
   分子・statevector・signal・native compile・価格samplingは含まない。
+  [中心化・平方回避の追補](../docs/research/track_a_threshold_centering_square_avoidance_20261110/REPORT.md)では
+  旧28件と追加10件の計38検査PASS。全signed charge、共通scalar、形式的finite numerator、新旧phaseを確認。
 
 `tests/` は、ライブラリAPI、数値恒等式、成果物schema、ガード条件の回帰検査を置く。
 基本的に `src/trotterlib/<name>.py`、`scripts/run_<name>.py`、

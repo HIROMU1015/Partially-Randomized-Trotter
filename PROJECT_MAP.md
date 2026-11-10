@@ -1,5 +1,11 @@
 # プロジェクト案内
 
+## 2026-11-10 元Track A・共通中心化と平方回避の追補
+
+[REPORT](docs/research/track_a_threshold_centering_square_avoidance_20261110/REPORT.md)：
+同じscalar中心化での条件付きmass差、charge区間比較によるvalue register省略、
+旧squareとの静的比較。旧28件を含む人工38検査PASS。科学的総費用は未評価、報告後mandatory STOP。
+
 ## 2026-11-10 元Track A・しきい値反射の技術実装
 
 [REPORT](docs/research/track_a_threshold_reflection_technical_20261110/REPORT.md)：

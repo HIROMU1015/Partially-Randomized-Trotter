@@ -270,8 +270,17 @@ class RTEOrderParameters:
 
 @dataclass(frozen=True)
 class ThresholdTail:
+    """Implicit dictionary for H - deterministic_scalar*I.
+
+    With scalar_shift=None the existing identity policies are unchanged.
+    An explicit common scalar_shift retains any residual identity C-shift,
+    rather than extracting the dictionary's own C. The caller must emit the
+    external scalar phase and qualify the chosen finite approximant.
+    """
+
     fragments: tuple[ThresholdFragment, ...]
     identity_policy: ScalarPolicy = "faithful_identity_in_tail"
+    scalar_shift: F | None = None
 
     def __post_init__(self) -> None:
         fragments = tuple(self.fragments)
@@ -285,6 +294,10 @@ class ThresholdTail:
                 raise ValueError("a basis hash needs a nonempty provider basis ID")
         if self.identity_policy not in ("faithful_identity_in_tail", "extract_identity_phase"):
             raise ValueError("unknown identity policy")
+        if self.scalar_shift is not None:
+            if self.identity_policy != "faithful_identity_in_tail":
+                raise ValueError("choose either an explicit common shift or dictionary identity extraction")
+            object.__setattr__(self, "scalar_shift", exact(self.scalar_shift))
         object.__setattr__(self, "fragments", fragments)
 
     @property
@@ -293,24 +306,29 @@ class ThresholdTail:
 
     @property
     def deterministic_scalar(self) -> F:
+        if self.scalar_shift is not None:
+            return self.scalar_shift
         return self.scalar if self.identity_policy == "extract_identity_phase" else F(0)
 
     @property
+    def sampled_scalar(self) -> F:
+        """Identity left in the residual H - deterministic_scalar*I."""
+        return self.scalar - self.deterministic_scalar
+
+    @property
     def mass(self) -> F:
-        return sum((f.grid.reflection_mass for f in self.fragments), F(0)) + (
-            abs(self.scalar) if self.identity_policy == "faithful_identity_in_tail" else F(0)
-        )
+        return sum((f.grid.reflection_mass for f in self.fragments), F(0)) + abs(self.sampled_scalar)
 
     def identity_atom(self) -> ThresholdAtom:
-        if self.identity_policy != "faithful_identity_in_tail" or not self.scalar:
+        if not self.sampled_scalar:
             raise ValueError("this tail has no sampled identity")
-        return ThresholdAtom(None, identity_sign=1 if self.scalar > 0 else -1)
+        return ThresholdAtom(None, identity_sign=1 if self.sampled_scalar > 0 else -1)
 
     def coefficient(self, atom: ThresholdAtom) -> F:
         if atom.fragment is None:
             if atom != self.identity_atom():
                 raise ValueError("identity sign disagrees with tail")
-            return abs(self.scalar)
+            return abs(self.sampled_scalar)
         if atom.fragment not in self.fragments:
             raise ValueError("atom does not belong to this tail")
         return atom.fragment.grid.spacing / 2
@@ -323,8 +341,8 @@ class ThresholdTail:
         groups: list[tuple[ThresholdFragment | None, F]] = [
             (f, f.grid.reflection_mass) for f in self.fragments if f.grid.extent
         ]
-        if self.identity_policy == "faithful_identity_in_tail" and self.scalar:
-            groups.append((None, abs(self.scalar)))
+        if self.sampled_scalar:
+            groups.append((None, abs(self.sampled_scalar)))
         if not groups:
             raise ValueError("deterministic-only tail has no RTE draws")
         unit = _fraction_gcd(v for _, v in groups)
@@ -542,18 +560,60 @@ def _compare(value: tuple[int, ...], flag: int, threshold: int) -> list[Instruct
             + _add_constant(value, threshold))
 
 
+def _charge_predicate(charge: tuple[int, ...], flag: int, *, extent: int,
+                      threshold: int, square_sign: int) -> list[Instruction]:
+    """XOR the original square-grid predicate using charge alone.
+
+    Positive: q^2 >= J, outside [-ceil(sqrt(J))+1, ceil(sqrt(J))-1].
+    Negative: B-q^2 >= J, inside [-floor(sqrt(B-J)), floor(sqrt(B-J))].
+    Flip the sign bit to obtain monotone unsigned order, then use the existing
+    comparator twice on the same flag. No abs, square or second flag register.
+    Both charge and arbitrary initial flag semantics are preserved.
+    """
+    extent = _integer(extent, "extent", 1)
+    threshold = _integer(threshold, "threshold", 1)
+    if not charge or threshold > extent or square_sign not in (-1, 1):
+        raise ValueError("invalid charge threshold predicate")
+    offset = 1 << (len(charge) - 1)
+
+    def ge(signed_threshold: int) -> list[Instruction]:
+        biased = signed_threshold + offset
+        if biased <= 0:
+            return [Instruction("x", target=flag)]
+        if biased >= 2 * offset:
+            return []
+        return _compare(charge, flag, biased)
+
+    sign_flip = Instruction("x", target=charge[-1])
+    if square_sign == 1:
+        h = 1 + math.isqrt(threshold - 1)
+        comparisons = [Instruction("x", target=flag)] + ge(1 - h) + ge(h)
+    else:
+        r = math.isqrt(extent - threshold)
+        comparisons = ge(-r) + ge(r + 1)
+    return [sign_flip, *comparisons, sign_flip]
+
+
+RankOneMethod = Literal["square", "interval"]
+
+
 def reflection_plan(atom: ThresholdAtom, *, num_modes: int | None = None,
-                    angle: Any = None, controlled: bool = True) -> ReflectionPlan:
+                    angle: Any = None, controlled: bool = True,
+                    rank_one_method: RankOneMethod = "square") -> ReflectionPlan:
     """Plan R (angle=None), or exp(-i angle R), with clean arithmetic workspace.
 
     The product reflection is (-1)*(-1)^predicate. Its pi phase is relative
     when controlled. A rotation is exp(+i angle)*exp(-2i angle*predicate).
     Gaussian inverse is applied first, then the actual forward transformation.
+    The default square path is unchanged. Opt in to interval comparisons for
+    rank-one grids; general quadratic and scalar plans retain their old path.
     """
+    if rank_one_method not in ("square", "interval"):
+        raise ValueError("unknown rank-one evaluation method")
     if atom.fragment is not None:
         if num_modes is not None and atom.fragment.grid.num_modes != _integer(num_modes, "num_modes", 1):
             raise ValueError("system register size disagrees with fragment")
-        return _threshold_run_plan((atom,), (angle,), controlled=controlled)
+        return _threshold_run_plan((atom,), (angle,), controlled=controlled, rank_one_method=rank_one_method)
     n = _integer(num_modes, "num_modes", 1)
     control = n if controlled else None
     phase = Angle(pi=F(atom.identity_sign == -1)) if angle is None else Angle(radians=-exact(angle) * atom.identity_sign)
@@ -561,7 +621,8 @@ def reflection_plan(atom: ThresholdAtom, *, num_modes: int | None = None,
                           (Instruction("phase", () if control is None else (control,), angle=phase),))
 
 
-def _threshold_run_plan(atoms: Sequence[ThresholdAtom], angles: Sequence[Any], *, controlled: bool) -> ReflectionPlan:
+def _threshold_run_plan(atoms: Sequence[ThresholdAtom], angles: Sequence[Any], *, controlled: bool,
+                        rank_one_method: RankOneMethod = "square") -> ReflectionPlan:
     """Share value computation and a full Gaussian frame for one exact fragment.
 
     Only consecutive occurrences of the identical fragment are combined. This
@@ -571,8 +632,9 @@ def _threshold_run_plan(atoms: Sequence[ThresholdAtom], angles: Sequence[Any], *
     if fragment is None or len(atoms) != len(angles) or any(a.fragment != fragment for a in atoms):
         raise ValueError("a shared run must use one identical threshold fragment")
     grid, n = fragment.grid, fragment.grid.num_modes
+    interval = rank_one_method == "interval" and grid.charge_weights is not None
     system = tuple(range(n))
-    value = tuple(range(n, n + grid.value_width))
+    value = () if interval else tuple(range(n, n + grid.value_width))
     charge = tuple(range(n + len(value), n + len(value) + grid.charge_width))
     flag = n + len(value) + len(charge)
     next_qubit = flag + 1
@@ -583,10 +645,16 @@ def _threshold_run_plan(atoms: Sequence[ThresholdAtom], angles: Sequence[Any], *
     if frame is not None:
         operations.append(Instruction("basis", basis_id=frame, basis_hash=fragment.basis_hash,
                                       inverse=True, system=system))
-    compute = _evaluate(grid, system, value, charge)
+    if interval:
+        compute = [op for qubit, weight in zip(system, grid.charge_weights)
+                   for op in _add_constant(charge, weight, (qubit,))]
+    else:
+        compute = _evaluate(grid, system, value, charge)
     operations.extend(compute)
     for atom, angle in zip(atoms, angles):
-        compare = _compare(value, flag, atom.threshold)
+        compare = (_charge_predicate(charge, flag, extent=grid.extent,
+                                     threshold=atom.threshold, square_sign=grid.square_sign)
+                   if interval else _compare(value, flag, atom.threshold))
         operations.extend(compare)
         if angle is None:
             operations.extend((Instruction("phase", on, angle=Angle(pi=F(1))),
@@ -603,9 +671,12 @@ def _threshold_run_plan(atoms: Sequence[ThresholdAtom], angles: Sequence[Any], *
     return ReflectionPlan(next_qubit + int(controlled), system, value, charge, flag, control, tuple(operations))
 
 
-def rte_event_plans(bound: BoundRTEEvent, *, num_modes: int, controlled: bool = True) -> tuple[ReflectionPlan, ...]:
+def rte_event_plans(bound: BoundRTEEvent, *, num_modes: int, controlled: bool = True,
+                    rank_one_method: RankOneMethod = "square") -> tuple[ReflectionPlan, ...]:
     """Return plans in existing event circuit order, sharing exact fragment runs."""
     event = bound.event
+    if rank_one_method not in ("square", "interval"):
+        raise ValueError("unknown rank-one evaluation method")
     atoms = (*bound.rotation_first_atoms[1:], bound.rotation_first_atoms[0])
     if tuple(a.component_id for a in atoms) != event.selected_component_ids:
         raise ValueError("bound atom order disagrees with event")
@@ -617,25 +688,27 @@ def rte_event_plans(bound: BoundRTEEvent, *, num_modes: int, controlled: bool = 
             stop += 1
         angles = tuple(event.rotation_angle if i == event.taylor_order else None for i in range(start, stop))
         if atoms[start].fragment is None:
-            plan = reflection_plan(atoms[start], num_modes=num_modes, angle=angles[0], controlled=controlled)
+            plan = reflection_plan(atoms[start], num_modes=num_modes, angle=angles[0], controlled=controlled,
+                                   rank_one_method=rank_one_method)
         else:
             if atoms[start].fragment.grid.num_modes != _integer(num_modes, "num_modes", 1):
                 raise ValueError("system register size disagrees with fragment")
-            plan = _threshold_run_plan(atoms[start:stop], angles, controlled=controlled)
+            plan = _threshold_run_plan(atoms[start:stop], angles, controlled=controlled,
+                                       rank_one_method=rank_one_method)
         plans.append(plan)
         start = stop
     return tuple(plans)
 
 
 def emit_rte_event(bound: BoundRTEEvent, sink: CircuitSink, *, num_modes: int,
-                   controlled: bool = True) -> int:
+                   controlled: bool = True, rank_one_method: RankOneMethod = "square") -> int:
     """Emit products, rotation and paired-order phase; return register size.
 
     One maximum-sized workspace is reused between runs. The optional RPE
     control has one fixed index even when runs require different bit widths.
     This is an emitter interface, not a native builder/compiler or full wrapper.
     """
-    plans = rte_event_plans(bound, num_modes=num_modes, controlled=controlled)
+    plans = rte_event_plans(bound, num_modes=num_modes, controlled=controlled, rank_one_method=rank_one_method)
     size = max(p.num_qubits for p in plans)
     for plan in plans:
         mapping = list(range(plan.num_qubits))

@@ -1,5 +1,8 @@
 # 文書索引
 
+元Track A・仮説Iの[共通中心化と平方回避](research/track_a_threshold_centering_square_avoidance_20261110/REPORT.md)
+（2026-11-10追補）：共通残差のmass比較とvalue register省略。人工38検査PASS、総費用未評価。
+
 元Track A・仮説Iの[技術実装と構造比較](research/track_a_threshold_reflection_technical_20261110/REPORT.md)
 （2026-11-10）：整数／mock検査のみ。科学実行・native価格・総費用優位は未評価。
 
