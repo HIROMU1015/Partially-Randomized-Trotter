@@ -81,7 +81,25 @@ class ProviderTests(unittest.TestCase):
                 r=request(provider,'PR_B' if record['candidate']['method']=='PR' else 'PF_FULL19',record['candidate']['q'],record['axis'],
                     kind=record['kind'],price_unit=record['price_unit'],cohort=record['cohort'])
                 if record['price_unit']=='path':r.update(path_index=record['path_index'],event_digest=record['event_digest'],digest_kind=record['digest_kind'])
-                out=provider.quote(r);self.assertEqual(out['value'],record['value']);self.assertEqual(out['kind'],record['kind'])
+                # Compare against the pinned raw JSON field, not merely the loader's catalog.
+                source=record['source'];doc=read(source)
+                if source['path'].endswith('Q_VALIDATION.json'):
+                    summary=next(v for v in doc['summaries'] if all(v[k]==source[k] for k in ('family','q_PF','axis','model')))
+                    field='predicted_mean' if record['kind']=='model_prediction' else 'observed_mean'
+                    self.assertEqual(source['model'],'Affine' if record['kind']=='model_prediction' else 'M0')
+                    expected=summary['metrics'][field]
+                elif source['path'].endswith(('Q2_DIRECT.json','Q4_DIRECT.json')):
+                    self.assertEqual(record['kind'],'direct_compiled')
+                    raw=next(v for v in doc['rows'] if v['candidate']['id']==source['candidate_id'] and v['index']==source['index'])
+                    expected=raw['prices'][source['axis']]['rz_count']
+                elif record['price_unit']=='cohort_mean':
+                    self.assertEqual(record['kind'],'direct_compiled')
+                    expected=next(v for v in doc['summaries'] if v['family']=='PR_B' and v['axis']==source['axis'])['mean_compiled']
+                else:
+                    self.assertEqual(record['kind'],'direct_compiled')
+                    raw=next(v for v in doc['rows'] if v['candidate_id']==source['candidate_id'] and v['path_index']==source['path_index'] and v['axis']==source['axis'])
+                    expected=raw['compiled_rz']
+                out=provider.quote(r);self.assertEqual(out['value'],expected);self.assertEqual(out['kind'],record['kind'])
                 self.assertFalse(out['full_RPE_price_adopted']);count+=1
         # 86 q1 path/deterministic axes + 4 q1 means; 36 new direct axes + 4 means + 8 model axes.
         self.assertEqual(count,138)
