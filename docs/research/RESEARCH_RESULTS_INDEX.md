@@ -1,5 +1,7 @@
 # 研究結果への統一索引
 
+[Track D×元PR/RPE共通interface](track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。
+
 [PR＋RPE共同最適化への統合調査](pr_rpe_joint_integration_20261110/REPORT.md)（2026-11-10）：利用者指示により評価器追加開発から総資源共同最適化の接続へ重点移行。元PR/RPE API・D-CDF8の既存13-round接続・Closed P3共同選択・新A Q3後続・強PF再資格を静的照合。推奨初手は固定CDF8のα配分×control方式の限定scalar検証案。新N／価格再解析／fit／回路／全round再集計0、実行計画のみ。公開確認後STOP。
 
 [Track D C8-1最終結果](track_d_c8_1_q64_20261108/REPORT.md)：Linear H4/1Å/STO-3G/Nα=Nβ=2・元H/number-CDF8/元順LD2/S2/s1/r32/K0/h=.1、q64/cut32、元H厳密ground仮定・準備費除外。全8 event/512 occurrence/16384 eventsを固定し、sample00 raw1 PASS・旧P0 compile4完了をSOURCE8a6bbdacへ承認済み引継ぎ。両方式X/Y全4 postcheckがCAR-observable Frobenius2e−10でFAILしSTOP。残7/追加28 compile未開始、価格統計/モデル診断未評価。精度緩和/再実行/fit/N/全RPE更新0、旧SOURCE/STOP・非公開原本保持。
