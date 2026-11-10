@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+R可変PRの[P1結果](../../docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：`trottertracks.pr_r_detailed_n_p1`が既存B grouping/A action/scalarを不変で結線。6人工/mock PASS、固定12実候補の条件付きNを公開。C/G・R採択なし。
+
 R可変PRの[詳細N実行計画](../../docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)：既存finite action/normalizerは不変。metadata生成器と人工/保存fixtureテストを追加、分子数値計算は未実行。
 
 [固定24 Phase0結果](../../docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：既存K2 finite normalizer/allocation不変でlogB/attenuation/係数を記録。丸め感度を併記し、N/C/GやRの科学的採否は未評価。

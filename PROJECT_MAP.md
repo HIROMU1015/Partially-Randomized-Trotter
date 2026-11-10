@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[R可変PRの詳細N P1結果](docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：SOURCEa1a79213aで固定12候補がideal条件付きPASS。H4 m6のN/軸はR4/128/256で9638/766/735、H6 m8はR16/128/256で1015/735/720。新mean/対照9・保存scalar3・新reference2、23 SOURCE/7入力保全、C/G/P2/P3なし・公開後STOP。
+
 [R可変PRの詳細N有限計画](docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)：A0全24を保持し先行12候補、最終時間は別3＋3候補。H6 m4のpair/norm不足を明記、構造計算量とB/C domainを整理。新科学計算0、公開後STOP。
 
 [代表24候補normalization Phase0結果](docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：SOURCE6a75ebf96で固定24を一回記録、精度未解決/overflow/underflow0。H4 m12のAはR4で4.57e−37、R8192で.960だがevent数33554432。N/C/G・R採択なし、SOURCE9/入力7保全、公開照合後STOP。

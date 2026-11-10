@@ -1,5 +1,7 @@
 # 文書索引
 
+[R可変PR P1の12候補N結果](research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：同allowance policyで全12条件付きPASS、B用整数N・全signal CSV。actual/全RPE/C/G未資格。
+
 [R可変PRの詳細N計画](research/pr_r_detailed_n_preparation_20261111/REPORT.md)：候補・計算量・保存referenceのcoverage・未承認P1/P2/P3とB/C HANDOFF。
 
 [代表24候補normalization結果](research/pr_r_normalization_phase0_results_20261111/REPORT.md)：[原結果](research/pr_r_normalization_phase0_results_20261111/run01/result.json)／[B/C受渡し](research/pr_r_normalization_phase0_results_20261111/run01/HANDOFF.json)／[全候補CSV](research/pr_r_normalization_phase0_results_20261111/run01/NORMALIZATION.csv)。N/C/G・R選択なし。

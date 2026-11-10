@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_pr_r_detailed_n_p1.py`：SOURCEa1a79213aの固定P1実行を一回完了。全12条件付きPASS、[結果とSTOP](../docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)。defaultは静的preflight、既完了runへの自動再実行なし。
+
 `plan_pr_r_detailed_n.py --output <fresh-json>`：A0保存値の無変更copy、canonical B request・SOURCE loop整数計数だけ。科学execute機能なし。詳細は[REPORT](../docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)。
 
 `run_pr_r_normalization_phase0.py`の[完了結果](../docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：固定24候補をSOURCE6a75ebf96で一回記録、閾値なし。新signal/phase/radius/N/C/Gへ進まず、再実行しない。
