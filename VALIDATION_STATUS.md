@@ -1,5 +1,7 @@
 # Validation status
 
+[R可変compiled価格の調査・設計](docs/research/r_variable_compiled_price_design_20261111/REPORT.md)（2026-11-11）：H4 S2/δ.1/p1/K2・H6 m5_best/δ1.6/p7/K2の固定Rモデルを保全し、構造価格＋少数compiled残差補正を提案。R binding/保存lookup adapter、人工/mock9件PASS。新R Cはnull、実科学計算・価格取得/予測/fit/G0。最小新q×R/希少event計画は未承認・未実行、公開照合後STOP。
+
 [H6 provider統合・H4/H6全13round N/C coverage](docs/research/h6_provider_integration_nc_coverage_20261111/REPORT.md)（2026-11-11）：固定B cb2 APIへ保存lookup factoryを追加。C provider/テストをbyte一致再利用、24技術test PASS。H4公開89c91c69の整数検証済みNとH6公開f4c0bdaのNを静的転記し52行条件付きPASS。直接CはH4 5候補/H6 8候補、PR全law/長q/共有CI/全RPE採用は未資格。新科学計算・実N×C/G0、B実行領域へ非介入、公開照合後STOP。
 
 [H4 price provider×B結合](docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：B環境の実API/依存で34技術test PASS（A8＋B12＋結合7＋H6 N専用7）。保存direct/Mq136値照合を再利用し、null非取得・資格不足時の再呼出し抑止・partial軸重複・shared uncertaintyを確認。新実N/C予測/再解析/compile/fit/G0、科学的な全RPE採用なし・公開照合後STOP。
