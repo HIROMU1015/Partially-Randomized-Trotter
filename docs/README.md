@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19 RPE m6結果](research/h6_df19_rpe_m6_results_20261110/REPORT.md)：reference/finite mean/phase/radius/十分Nの限定2候補。[正本](research/h6_df19_rpe_m6_results_20261110/run01/result.json)／[7round対応・価格担当handoff](research/h6_df19_rpe_m6_results_20261110/COVERAGE.json)。各軸PF705/PR772、actual/全G未資格、公開照合後STOP。
+
 [H6 DF19 RPE m6実行準備](research/h6_df19_rpe_m6_preparation_20261110/REPORT.md)：固定2候補・call範囲・D2 backend再利用・人工差分3件。[PLAN](research/h6_df19_rpe_m6_preparation_20261110/PLAN.json)／[人工結果](research/h6_df19_rpe_m6_preparation_20261110/synthetic_tests.txt)。実m6のreference/signal/Nは別途許可待ち。
 
 [H6 DF19 RPE D2結果](research/h6_df19_rpe_d2_results_20261110/REPORT.md)：固定8候補のsignal・bias・normalization・phase・radius・十分N。[正本](research/h6_df19_rpe_d2_results_20261110/run01/result.json)／[D1と合わせた6roundの転記](research/h6_df19_rpe_d2_results_20261110/COVERAGE.json)。actual/全Gは未資格、残りm6..12、公開照合後STOP。
