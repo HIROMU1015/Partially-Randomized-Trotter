@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_pr_r_normalization_phase0.py`：[固定24候補のnormalization-only入口](../docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)。既定preflightのみ、明示許可後の`--execute`は閾値なしPhase0だけ。新signal/phase/radius/N/C/G・候補追加へ進まない。
+
 `plan_pr_r_screening.py`：[R候補metadata入口](../docs/research/pr_r_screening_20261111/REPORT.md)。明示倍率とreference Rからround別候補を生成するだけで、normalization/N/C/Gを評価しない。実系cheap screenも別途承認後。
 
 `plan_pr_r_dependent_n.py`：[R依存Nのmetadata専用入口](../docs/research/pr_r_dependent_n_model_20261111/REPORT.md)。system/round-R mapから既存taskを生成し、科学計算を起動しない。承認後のB接続は`pr_r_dependent_n.RBatch`を使う。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[代表24候補normalization Phase0準備](docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：固定ID/R/law、保存tail/H/stateと7入力hash、9 SOURCEのpreflight完了。新10人工/mock PASS、実logB等0。承認後だけ24候補を閾値なしで記録する専用入口・出力/HANDOFFを固定、公開照合後STOP。
+
 [RPE round別Rの事前screen](docs/research/pr_r_screening_20261111/REPORT.md)：固定δでR∝qPFの候補band＋baselineをB menuへ接続。無閾値score/明示減衰予算・丸め境界保留、人工/mock12件PASS。構造候補H4 51/H6 35、実logB/N/C/G・保存再解析0。B/C HANDOFFと代表24 cheap screen案、公開照合後STOP。
 
 [PRのR依存Nモデル](docs/research/pr_r_dependent_n_model_20261111/REPORT.md)：H4 S2/δ.1/p1/K2、H6 m5/δ1.6/p7/K2のround別Rを共通N providerへ接続。H6はm≥4、旧R cache除外・R-aware経験的allowance・巨大N整数検証、人工/mock12件PASS。実新R/保存再解析/最適化/C/G0、独立A branch・公開照合後STOP。

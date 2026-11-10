@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[固定24 Phase0準備](../../docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：`trottertracks.pr_r_normalization_phase0`は保存値/入力/SOURCE照合と既存screenの出力保存だけを追加。normalizer/allocation不変、新10人工/mock PASS、実logB計算0。
+
 [R候補screen](../../docs/research/pr_r_screening_20261111/REPORT.md)：`trottertracks.pr_r_screening`が旧A、固定B metadata、K2 finite normalizerと整数allocationを再利用する。新solver/価格/最適化なし、人工12件。
 
 [PR R依存N provider](../../docs/research/pr_r_dependent_n_model_20261111/REPORT.md)：`trottertracks.pr_r_dependent_n`が既存finite_rte_distribution/finite_taylor_operator・m5 allocation・scalar geometryを再利用。旧moduleは不変、人工/mock12件、実新R/保存再解析0。
