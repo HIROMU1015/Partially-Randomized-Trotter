@@ -1,0 +1,260 @@
+{
+  "status": "PARTIAL_PF_COMPLETE_PR_PREBUILD_STOP",
+  "scientific_source": "55eccab8865684fadefa5bd79875b1154518b410",
+  "frozen_Mq_b": {
+    "PF": 606.75,
+    "PR": 176.88888888888894
+  },
+  "stop_reason": "CAMPAIGN_STOP:[{\"candidate\": {\"system\": \"H4\", \"method\": \"PR\", \"formula\": \"2nd\", \"prefix\": 1, \"q\": 16, \"T\": 1.6, \"delta\": 0.1, \"R_outer\": 4, \"K\": 2, \"id\": \"64e4f7e9ec7fba28815e\"}, \"index\": 0, \"reason\": \"sampled() takes 3 positional arguments but 4 were given\"}]",
+  "completed_PF_circuits": 1,
+  "completed_PF_wrapper_axes": 2,
+  "completed_PR_trajectories": 0,
+  "sampled_PR_trajectories": 33,
+  "frozen_prediction_axes": 68,
+  "remaining_PR_wrapper_axes": 66,
+  "PF_trial": {
+    "cache_hits": 0,
+    "candidate": {
+      "K": null,
+      "R_outer": null,
+      "T": 3.2,
+      "delta": 0.1,
+      "formula": "2nd",
+      "id": "f01949581a5fab7c0ae1",
+      "method": "B0",
+      "prefix": 7,
+      "q": 32,
+      "system": "H4"
+    },
+    "checks": [
+      {
+        "check": "low_control",
+        "error": 5.89027223938505e-14,
+        "phase_alignment": false,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "high_control_leakage",
+        "error": 0.0,
+        "phase_alignment": false,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "independent_occupation_vector",
+        "error": 2.1617029550019777e-13,
+        "phase_alignment": false,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "Hadamard_cosine",
+        "error": 1.3078427230084344e-13,
+        "phase_alignment": false,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "compiled_vector_cosine",
+        "error": 2.0364150311831464e-11,
+        "phase_alignment": false,
+        "tolerance": 1e-07
+      },
+      {
+        "check": "Hadamard_sine",
+        "error": 1.2045919817182948e-13,
+        "phase_alignment": false,
+        "tolerance": 1e-09
+      },
+      {
+        "check": "compiled_vector_sine",
+        "error": 1.8687350675126037e-11,
+        "phase_alignment": false,
+        "tolerance": 1e-07
+      }
+    ],
+    "cohort": "H4_DF10_V2_INDEPENDENT_Q_20261110",
+    "conditional": false,
+    "index": 0,
+    "laws": [],
+    "log_B": 0,
+    "orders": {
+      "0": 0
+    },
+    "peak_RSS_bytes": 932876288,
+    "preparation_hash": "fc83f26f1612a41d1d34caae79e78d3b5ce8e961d0e442ca4a9e92168006cf31",
+    "prices": {
+      "cosine": {
+        "circuit_size": 369484,
+        "cx_count": 85456,
+        "cx_depth": 46884,
+        "rz_count": 176723,
+        "rz_depth": 47979,
+        "total_depth": 119001
+      },
+      "sine": {
+        "circuit_size": 369484,
+        "cx_count": 85456,
+        "cx_depth": 46884,
+        "rz_count": 176723,
+        "rz_depth": 47979,
+        "total_depth": 119001
+      }
+    },
+    "scalar": 2.29310124732,
+    "status": "PASS",
+    "wall_seconds": 322.74743437115103,
+    "wrapper_bindings": [
+      {
+        "axis": "cosine",
+        "cache_hit": false,
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprint": "803bc9b358a7e271a98e2b8cb5210b74a4e1a97f80198fa0a2160818dac8d9d9",
+        "old_cache_hit": false
+      },
+      {
+        "axis": "sine",
+        "cache_hit": false,
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprint": "f778f84ac169719a1977f641604c05f4f5da3976636da42d7d6a785cec94799b",
+        "old_cache_hit": false
+      }
+    ]
+  },
+  "PF_summaries": [
+    {
+      "role": "INDEPENDENT_Q",
+      "method": "PF",
+      "cohort": "H4_DF10_V2_INDEPENDENT_Q_20261110",
+      "model": "M0",
+      "q": 32,
+      "axis": "cosine",
+      "n_paths": 1,
+      "negative_predictions": 0,
+      "nonfinite_predictions": 0,
+      "metrics": {
+        "observed_mean": 176723.0,
+        "prediction_mean": 157493.0,
+        "bias": 19230.0,
+        "mean_absolute_error": 19230.0,
+        "RMSE": 19230.0,
+        "min_error": 19230.0,
+        "max_error": 19230.0,
+        "max_absolute_error": 19230.0,
+        "residual_SD": null,
+        "exact_float_zero_errors": 0,
+        "relative_error_n": 1,
+        "relative_bias": 0.10881435919489824,
+        "relative_RMSE": 0.10881435919489824,
+        "min_relative_error": 0.10881435919489824,
+        "max_relative_error": 0.10881435919489824,
+        "max_absolute_relative_error": 0.10881435919489824,
+        "descriptive_mean_error_SE_under_IID_given_fit": null,
+        "total_prediction_CI": null
+      }
+    },
+    {
+      "role": "INDEPENDENT_Q",
+      "method": "PF",
+      "cohort": "H4_DF10_V2_INDEPENDENT_Q_20261110",
+      "model": "M0",
+      "q": 32,
+      "axis": "sine",
+      "n_paths": 1,
+      "negative_predictions": 0,
+      "nonfinite_predictions": 0,
+      "metrics": {
+        "observed_mean": 176723.0,
+        "prediction_mean": 157493.0,
+        "bias": 19230.0,
+        "mean_absolute_error": 19230.0,
+        "RMSE": 19230.0,
+        "min_error": 19230.0,
+        "max_error": 19230.0,
+        "max_absolute_error": 19230.0,
+        "residual_SD": null,
+        "exact_float_zero_errors": 0,
+        "relative_error_n": 1,
+        "relative_bias": 0.10881435919489824,
+        "relative_RMSE": 0.10881435919489824,
+        "min_relative_error": 0.10881435919489824,
+        "max_relative_error": 0.10881435919489824,
+        "max_absolute_relative_error": 0.10881435919489824,
+        "descriptive_mean_error_SE_under_IID_given_fit": null,
+        "total_prediction_CI": null
+      }
+    },
+    {
+      "role": "INDEPENDENT_Q",
+      "method": "PF",
+      "cohort": "H4_DF10_V2_INDEPENDENT_Q_20261110",
+      "model": "Mq",
+      "q": 32,
+      "axis": "cosine",
+      "n_paths": 1,
+      "negative_predictions": 0,
+      "nonfinite_predictions": 0,
+      "metrics": {
+        "observed_mean": 176723.0,
+        "prediction_mean": 176909.0,
+        "bias": -186.0,
+        "mean_absolute_error": 186.0,
+        "RMSE": 186.0,
+        "min_error": -186.0,
+        "max_error": -186.0,
+        "max_absolute_error": 186.0,
+        "residual_SD": null,
+        "exact_float_zero_errors": 0,
+        "relative_error_n": 1,
+        "relative_bias": -0.0010524945819163324,
+        "relative_RMSE": 0.0010524945819163324,
+        "min_relative_error": -0.0010524945819163324,
+        "max_relative_error": -0.0010524945819163324,
+        "max_absolute_relative_error": 0.0010524945819163324,
+        "descriptive_mean_error_SE_under_IID_given_fit": null,
+        "total_prediction_CI": null
+      }
+    },
+    {
+      "role": "INDEPENDENT_Q",
+      "method": "PF",
+      "cohort": "H4_DF10_V2_INDEPENDENT_Q_20261110",
+      "model": "Mq",
+      "q": 32,
+      "axis": "sine",
+      "n_paths": 1,
+      "negative_predictions": 0,
+      "nonfinite_predictions": 0,
+      "metrics": {
+        "observed_mean": 176723.0,
+        "prediction_mean": 176909.0,
+        "bias": -186.0,
+        "mean_absolute_error": 186.0,
+        "RMSE": 186.0,
+        "min_error": -186.0,
+        "max_error": -186.0,
+        "max_absolute_error": 186.0,
+        "residual_SD": null,
+        "exact_float_zero_errors": 0,
+        "relative_error_n": 1,
+        "relative_bias": -0.0010524945819163324,
+        "relative_RMSE": 0.0010524945819163324,
+        "min_relative_error": -0.0010524945819163324,
+        "max_relative_error": -0.0010524945819163324,
+        "max_absolute_relative_error": 0.0010524945819163324,
+        "descriptive_mean_error_SE_under_IID_given_fit": null,
+        "total_prediction_CI": null
+      }
+    }
+  ],
+  "PR_direct_prices": null,
+  "PR_residuals": null,
+  "PF_result_sha256": "73ce11a3010b312058c9cde84fb72b595b76416aeea03d0d4a26417178b0b467",
+  "new_wrapper_compiles": 2,
+  "fit_calls": 0,
+  "new_N_calls": 0,
+  "N_times_C_calls": 0,
+  "long_q_qualified": false,
+  "all_law_expectation": null,
+  "total_CI": null,
+  "scientific_retry_calls": 0,
+  "original_STOP_preserved": true,
+  "mandatory_STOP": true
+}

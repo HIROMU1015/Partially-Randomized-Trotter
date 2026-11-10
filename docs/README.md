@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 DF10 Mq独立q部分結果](research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：PF q32でMq改善、PR q16はbuild前の引数エラーSTOP。PREDICTIONS/PROVENANCE/部分RESULT/CSVと、保存33本を使う未実行継続案。PR移送・長qは未判定。
+
 [H4 DF10価格V2 S1結果](research/h4_df10_price_v2_s1_20261110/REPORT.md)：保存構造価格＋少数補正の3 fit、RESULT/CSV/実行前PLAN。Mqが既知データで改善し、basis追加MqBの利益は支持されない。独立汎化・長q/全RPEは未資格。
 
 [H4 DF10価格V1結果](research/h4_df10_price_v1_20261110/REPORT.md)：固定構造モデルの開発/留保88軸行とpath別CSV、PLAN、初回のmetadata順序停止・継続記録。留保価格の整数一致は0/68。全RPE価格の資格・Main Claimは変更せず、公開照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4 DF10 Mq独立q](../docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：`run_h4_df10_price_v2_independent.py`はPF q32を完了しPR callbackでSTOP。再起動しない。`complete_h4_df10_price_v2_independent.py`は保存eventを復元する残PR66軸の未実行継続案で、STOP後の別許可が必要。
+
 [H4 DF10価格V2 S1](../docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)：`run_h4_df10_price_v2.py`は固定V1 JSONだけで開発限定3 fitと既知データ照合を完了済み。既存出力への再実行・上書きを拒否する。新sampling/build/compile/N/G0、独立holdout/長q未資格、公開照合後STOP。
 
 [H4 DF10価格V1](../docs/research/h4_df10_price_v1_20261110/REPORT.md)：`run_h4_df10_price_v1.py develop`と`complete_h4_df10_price_v1.py`で指定保存cohortを評価済み。元runnerのholdoutは完了順metadataの不備で停止し、同じmodel bytesを使う最小adapterで継続した。整数価格一致は未達。完了結果を再生成せず、旧SOURCE/停止を保全。fit/sampling/build/compile/N/G0、公開照合後STOP。

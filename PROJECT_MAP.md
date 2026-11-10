@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10 Mq独立q検証：PF完了・PR技術STOP](docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)（2026-11-10）：SOURCE55eccab88で33新trajectory/68軸予測を固定。PF q32のdirect176723に対しMq176909、誤差−186 RZ/軸（0.10525%）、M0+19230から改善。PRはcallback引数不一致でbuild前停止、direct0/66・移送未判定。新compile2、retry0。保存eventのRNGなし継続案と人工2回帰を準備、別許可まで未実行。V1/S1不変、公開照合後STOP。
+
 [H4 DF10価格V2 S1結果](docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)（2026-11-10）：保存開発データだけの3 fitをSOURCE cc6b42f12で実行。Mqで既知PF q16誤差−62 RZ、PR確認33本RMSE252.244 RZ/軸へ改善。basis項MqBは確認RMSE276.936へ悪化。既知データの探索的結果で、PR q方向・独立汎化・長q/全RPEは未資格。人工4 method PASS、実回路build/compile・新sampling・N/G0、V1不変、公開照合後mandatory STOP。
 
 [H4 DF10価格V2技術設計](docs/research/h4_df10_price_v2_design_20261110/REPORT.md)（2026-11-10）：旧DF12のevent境界補正とcontrolled-qをDF10 full-wrapperへ対応付け。V1保存価格＋少数補正を最初の未実行候補とし、追加compileなしの3 fit・既知データ照合案S1を提示。PR q方向・独立汎化・長q/全13roundは未資格。新予測/残差再解析/fit/sampling/build/compile/N/G/詳細科学レビュー0、V1結果不変、公開照合後mandatory STOP。
