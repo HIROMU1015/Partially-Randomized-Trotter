@@ -1,0 +1,967 @@
+{
+  "status": "PREPARED_WITHOUT_REAL_RESOURCE_PRODUCTS",
+  "saved_source": "ffe8a71da98bec330ce1af109a9606f14e1fc598",
+  "original_D1_scientific_source": "311255aaac39dc1c3321108c296bde7dc93dd543",
+  "inputs": {
+    "docs/research/h4_df10_rpe_d1_20261110/result.json": "c3191f206016971965e89354ef70cf4e00528ea12f297a4341bdb32823810e13",
+    "docs/research/h4_df10_rpe_preparation_20261110/SAVED_POINTS.json": "2c537d46ba3fc2bef771dfcf80f52e8b2a9ee70ac92d09f2dafcb1be458bf1a1"
+  },
+  "configuration": {
+    "base_time": 0.1,
+    "energy_precision_ha": 0.0015936001019904,
+    "beta_total": 0.4,
+    "beta_stat": 0.2,
+    "alpha_total_per_method": 0.05,
+    "alpha_axis": 0.0019230769230769232,
+    "alpha_sum_all_rounds": 0.05,
+    "horizon": {
+      "target_energy_precision_ha": 0.0015936001019904,
+      "required_q_continuous": 2510.0400000000104,
+      "maximum_round_index_M": 12,
+      "round_count_M_plus_one": 13,
+      "q_max": 4096,
+      "achieved_energy_resolution_ha": 0.0009765625,
+      "previous_q_energy_resolution_ha": 0.001953125,
+      "target_met": true,
+      "previous_power_fails": true,
+      "minimal_power_of_two_horizon": true
+    },
+    "D1_m": 3,
+    "D1_q_RPE": 8,
+    "prior_attempts": [
+      {
+        "base_time": 0.8,
+        "principal_alias_margin": -1.2538070459441983,
+        "qualified": false
+      },
+      {
+        "base_time": 0.1,
+        "principal_alias_margin": 2.2421676911480444,
+        "qualified": true
+      }
+    ],
+    "energy_prior_ha": [
+      -4.994249624417489,
+      -2.0985459369977186
+    ],
+    "energy_shift": 0,
+    "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+  },
+  "cases": [
+    {
+      "candidate_id": "49709717a6c3d405c60d",
+      "cohort": "DETERMINISTIC",
+      "plan": {
+        "status": "CONDITIONAL_ROUND_PASS",
+        "m": 3,
+        "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+        "candidate_id": "49709717a6c3d405c60d",
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4"
+        },
+        "candidate": {
+          "K": null,
+          "R_outer": null,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "49709717a6c3d405c60d",
+          "method": "B0",
+          "prefix": 7,
+          "q": 8,
+          "system": "H4"
+        },
+        "q_PF": 8,
+        "q_RPE": 8,
+        "base_time": 0.1,
+        "axes": {
+          "X": {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 705,
+            "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+            "raw_signal_error": 7.746178619863852e-05,
+            "radius_lower": 0.9999225382138014,
+            "beta_deterministic": 7.746178627610455e-05,
+            "beta_total": 0.2000774617862761,
+            "epsilon_coordinate": 0.1404695491538685,
+            "alpha_axis": 0.0019230769230769232,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "deterministic",
+            "quantum_shots_drawn": 0
+          },
+          "Y": {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 705,
+            "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+            "raw_signal_error": 7.746178619863852e-05,
+            "radius_lower": 0.9999225382138014,
+            "beta_deterministic": 7.746178627610455e-05,
+            "beta_total": 0.2000774617862761,
+            "epsilon_coordinate": 0.1404695491538685,
+            "alpha_axis": 0.0019230769230769232,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "deterministic",
+            "quantum_shots_drawn": 0
+          }
+        },
+        "N_X": 705,
+        "N_Y": 705,
+        "alpha_X": 0.0019230769230769232,
+        "alpha_Y": 0.0019230769230769232,
+        "normalization_applied_once": true,
+        "df_accounting": "own_DF_target_no_DF_energy_shift",
+        "qualification": "CONDITIONAL_ON_SUPPLIED_STATE_SPECIFIC_SIGNAL_DISK",
+        "evidence_kind": "numerically_qualified_pilot",
+        "reference_provenance": "Saved reference + numerical solver-energy/residual pilot; exact ground identification conditional",
+        "error_provenance": "Saved total signed bias + preserved u + reference offset + T*saved residual",
+        "iid_provenance": "Fresh independent +/-1 outcomes under the reference-defined ideal law",
+        "full_rpe_energy_success": false,
+        "unconditional_success_claim": false,
+        "law_context": {
+          "ideal_shot_law": "deterministic",
+          "circuit_law": "deterministic",
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "49709717a6c3d405c60d",
+            "method": "B0",
+            "prefix": 7,
+            "q": 8,
+            "system": "H4"
+          },
+          "price_sampling": "deterministic",
+          "actual_law_distance_qualified": false
+        }
+      },
+      "prices": [
+        {
+          "m": 3,
+          "axis": "X",
+          "measurement_axis": "cosine",
+          "observable": "Re(z_raw)",
+          "outcome_convention": "P0_minus_P1",
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "49709717a6c3d405c60d",
+            "method": "B0",
+            "prefix": 7,
+            "q": 8,
+            "system": "H4"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "law_context": {
+            "ideal_shot_law": "deterministic",
+            "circuit_law": "deterministic",
+            "candidate": {
+              "K": null,
+              "R_outer": null,
+              "T": 0.8,
+              "delta": 0.1,
+              "formula": "2nd",
+              "id": "49709717a6c3d405c60d",
+              "method": "B0",
+              "prefix": 7,
+              "q": 8,
+              "system": "H4"
+            },
+            "price_sampling": "deterministic",
+            "actual_law_distance_qualified": false
+          },
+          "compiler": {
+            "basis": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "classification": "DIRECT_COMPILED_DETERMINISTIC",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/saved_secondary_metrics.json",
+            "selector": "/49709717a6c3d405c60d/mean_metrics"
+          },
+          "cohort": "DETERMINISTIC",
+          "n": 1,
+          "mean": {
+            "circuit_size": 92788,
+            "cx_count": 21424,
+            "cx_depth": 11748,
+            "rz_count": 44411,
+            "rz_depth": 12051,
+            "total_depth": 29865
+          },
+          "peak_qubits": null,
+          "units": {
+            "rz_count": "gate_count",
+            "rz_depth": "circuit_layers",
+            "cx_count": "gate_count",
+            "cx_depth": "circuit_layers",
+            "total_depth": "circuit_layers",
+            "circuit_size": "instruction_count"
+          },
+          "expectation_basis": "explicit_conditional_price_proxy",
+          "price_assumptions": [
+            "Saved finite-cohort means used as conditional point prices; no population guarantee",
+            "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+          ]
+        },
+        {
+          "m": 3,
+          "axis": "Y",
+          "measurement_axis": "sine",
+          "observable": "Im(z_raw)",
+          "outcome_convention": "P0_minus_P1",
+          "candidate": {
+            "K": null,
+            "R_outer": null,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "49709717a6c3d405c60d",
+            "method": "B0",
+            "prefix": 7,
+            "q": 8,
+            "system": "H4"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "law_context": {
+            "ideal_shot_law": "deterministic",
+            "circuit_law": "deterministic",
+            "candidate": {
+              "K": null,
+              "R_outer": null,
+              "T": 0.8,
+              "delta": 0.1,
+              "formula": "2nd",
+              "id": "49709717a6c3d405c60d",
+              "method": "B0",
+              "prefix": 7,
+              "q": 8,
+              "system": "H4"
+            },
+            "price_sampling": "deterministic",
+            "actual_law_distance_qualified": false
+          },
+          "compiler": {
+            "basis": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "classification": "DIRECT_COMPILED_DETERMINISTIC",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/saved_secondary_metrics.json",
+            "selector": "/49709717a6c3d405c60d/mean_metrics"
+          },
+          "cohort": "DETERMINISTIC",
+          "n": 1,
+          "mean": {
+            "circuit_size": 92788,
+            "cx_count": 21424,
+            "cx_depth": 11748,
+            "rz_count": 44411,
+            "rz_depth": 12051,
+            "total_depth": 29865
+          },
+          "peak_qubits": null,
+          "units": {
+            "rz_count": "gate_count",
+            "rz_depth": "circuit_layers",
+            "cx_count": "gate_count",
+            "cx_depth": "circuit_layers",
+            "total_depth": "circuit_layers",
+            "circuit_size": "instruction_count"
+          },
+          "expectation_basis": "explicit_conditional_price_proxy",
+          "price_assumptions": [
+            "Saved finite-cohort means used as conditional point prices; no population guarantee",
+            "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+          ]
+        }
+      ],
+      "input_status": "INPUTS_READY_FOR_CONDITIONAL_PROXY_ACCOUNTING",
+      "resource_products_evaluated": false,
+      "subset_resources": null,
+      "full_rpe_resources": null
+    },
+    {
+      "candidate_id": "14bd81a375400c9b0305",
+      "cohort": "EXPLORATION",
+      "plan": {
+        "status": "CONDITIONAL_ROUND_PASS",
+        "m": 3,
+        "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+        "candidate_id": "14bd81a375400c9b0305",
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4"
+        },
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "14bd81a375400c9b0305",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "q_PF": 8,
+        "q_RPE": 8,
+        "base_time": 0.1,
+        "axes": {
+          "X": {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 977,
+            "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+            "raw_signal_error": 9.10566948743476e-05,
+            "radius_lower": 0.8491340073434209,
+            "beta_deterministic": 0.00010722327790918652,
+            "beta_total": 0.2001072232779092,
+            "epsilon_coordinate": 0.11928671134447849,
+            "alpha_axis": 0.0019230769230769232,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0
+          },
+          "Y": {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 977,
+            "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+            "raw_signal_error": 9.10566948743476e-05,
+            "radius_lower": 0.8491340073434209,
+            "beta_deterministic": 0.00010722327790918652,
+            "beta_total": 0.2001072232779092,
+            "epsilon_coordinate": 0.11928671134447849,
+            "alpha_axis": 0.0019230769230769232,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0
+          }
+        },
+        "N_X": 977,
+        "N_Y": 977,
+        "alpha_X": 0.0019230769230769232,
+        "alpha_Y": 0.0019230769230769232,
+        "normalization_applied_once": true,
+        "df_accounting": "own_DF_target_no_DF_energy_shift",
+        "qualification": "CONDITIONAL_ON_SUPPLIED_STATE_SPECIFIC_SIGNAL_DISK",
+        "evidence_kind": "numerically_qualified_pilot",
+        "reference_provenance": "Saved reference + numerical solver-energy/residual pilot; exact ground identification conditional",
+        "error_provenance": "Saved total signed bias + preserved u + reference offset + T*saved residual",
+        "iid_provenance": "Fresh independent +/-1 outcomes under the reference-defined ideal law",
+        "full_rpe_energy_success": false,
+        "unconditional_success_claim": false,
+        "law_context": {
+          "ideal_shot_law": "ideal_finite_RTE_law",
+          "circuit_law": "paired_unweighted_finite_RTE",
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+          "actual_law_distance_qualified": false
+        }
+      },
+      "prices": [
+        {
+          "m": 3,
+          "axis": "X",
+          "measurement_axis": "cosine",
+          "observable": "Re(z_raw)",
+          "outcome_convention": "P0_minus_P1",
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "law_context": {
+            "ideal_shot_law": "ideal_finite_RTE_law",
+            "circuit_law": "paired_unweighted_finite_RTE",
+            "candidate": {
+              "K": 2,
+              "R_outer": 4,
+              "T": 0.8,
+              "delta": 0.1,
+              "formula": "2nd",
+              "id": "14bd81a375400c9b0305",
+              "method": "PR",
+              "prefix": 1,
+              "q": 8,
+              "system": "H4"
+            },
+            "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+            "actual_law_distance_qualified": false
+          },
+          "compiler": {
+            "basis": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          },
+          "cohort": "EXPLORATION",
+          "n": 9,
+          "mean": {
+            "circuit_size": 33444.22222222222,
+            "cx_count": 6404.666666666667,
+            "cx_depth": 3391.777777777778,
+            "rz_count": 16857.11111111111,
+            "rz_depth": 4636.777777777777,
+            "total_depth": 10456.444444444445
+          },
+          "peak_qubits": null,
+          "units": {
+            "rz_count": "gate_count",
+            "rz_depth": "circuit_layers",
+            "cx_count": "gate_count",
+            "cx_depth": "circuit_layers",
+            "total_depth": "circuit_layers",
+            "circuit_size": "instruction_count"
+          },
+          "expectation_basis": "explicit_conditional_price_proxy",
+          "price_assumptions": [
+            "Saved finite-cohort means used as conditional point prices; no population guarantee",
+            "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+          ]
+        },
+        {
+          "m": 3,
+          "axis": "Y",
+          "measurement_axis": "sine",
+          "observable": "Im(z_raw)",
+          "outcome_convention": "P0_minus_P1",
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "law_context": {
+            "ideal_shot_law": "ideal_finite_RTE_law",
+            "circuit_law": "paired_unweighted_finite_RTE",
+            "candidate": {
+              "K": 2,
+              "R_outer": 4,
+              "T": 0.8,
+              "delta": 0.1,
+              "formula": "2nd",
+              "id": "14bd81a375400c9b0305",
+              "method": "PR",
+              "prefix": 1,
+              "q": 8,
+              "system": "H4"
+            },
+            "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+            "actual_law_distance_qualified": false
+          },
+          "compiler": {
+            "basis": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/exploration_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          },
+          "cohort": "EXPLORATION",
+          "n": 9,
+          "mean": {
+            "circuit_size": 33444.22222222222,
+            "cx_count": 6404.666666666667,
+            "cx_depth": 3391.777777777778,
+            "rz_count": 16857.11111111111,
+            "rz_depth": 4636.777777777777,
+            "total_depth": 10456.444444444445
+          },
+          "peak_qubits": null,
+          "units": {
+            "rz_count": "gate_count",
+            "rz_depth": "circuit_layers",
+            "cx_count": "gate_count",
+            "cx_depth": "circuit_layers",
+            "total_depth": "circuit_layers",
+            "circuit_size": "instruction_count"
+          },
+          "expectation_basis": "explicit_conditional_price_proxy",
+          "price_assumptions": [
+            "Saved finite-cohort means used as conditional point prices; no population guarantee",
+            "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+          ]
+        }
+      ],
+      "input_status": "INPUTS_READY_FOR_CONDITIONAL_PROXY_ACCOUNTING",
+      "resource_products_evaluated": false,
+      "subset_resources": null,
+      "full_rpe_resources": null
+    },
+    {
+      "candidate_id": "14bd81a375400c9b0305",
+      "cohort": "CONFIRMATION",
+      "plan": {
+        "status": "CONDITIONAL_ROUND_PASS",
+        "m": 3,
+        "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+        "candidate_id": "14bd81a375400c9b0305",
+        "binding": {
+          "T": 0.8,
+          "basis": "STO-3G",
+          "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+          "control": "symmetric_directional",
+          "geometry": "linear_1Angstrom",
+          "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+          "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+          "profile_is_reference_only": true,
+          "rank": 10,
+          "rank_is_saved_observation_not_generation_argument": true,
+          "rank_policy": "tol_only_1e-8",
+          "series": "H4_TOL_ONLY_DF10",
+          "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+          "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+          "system": "H4"
+        },
+        "candidate": {
+          "K": 2,
+          "R_outer": 4,
+          "T": 0.8,
+          "delta": 0.1,
+          "formula": "2nd",
+          "id": "14bd81a375400c9b0305",
+          "method": "PR",
+          "prefix": 1,
+          "q": 8,
+          "system": "H4"
+        },
+        "q_PF": 8,
+        "q_RPE": 8,
+        "base_time": 0.1,
+        "axes": {
+          "X": {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 977,
+            "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+            "raw_signal_error": 9.10566948743476e-05,
+            "radius_lower": 0.8491340073434209,
+            "beta_deterministic": 0.00010722327790918652,
+            "beta_total": 0.2001072232779092,
+            "epsilon_coordinate": 0.11928671134447849,
+            "alpha_axis": 0.0019230769230769232,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0
+          },
+          "Y": {
+            "status": "CONDITIONAL_ROUND_PASS",
+            "m": 3,
+            "shots": 977,
+            "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+            "raw_signal_error": 9.10566948743476e-05,
+            "radius_lower": 0.8491340073434209,
+            "beta_deterministic": 0.00010722327790918652,
+            "beta_total": 0.2001072232779092,
+            "epsilon_coordinate": 0.11928671134447849,
+            "alpha_axis": 0.0019230769230769232,
+            "evidence_kind": "numerically_qualified_pilot",
+            "law_model": "ideal_finite_RTE_law",
+            "quantum_shots_drawn": 0
+          }
+        },
+        "N_X": 977,
+        "N_Y": 977,
+        "alpha_X": 0.0019230769230769232,
+        "alpha_Y": 0.0019230769230769232,
+        "normalization_applied_once": true,
+        "df_accounting": "own_DF_target_no_DF_energy_shift",
+        "qualification": "CONDITIONAL_ON_SUPPLIED_STATE_SPECIFIC_SIGNAL_DISK",
+        "evidence_kind": "numerically_qualified_pilot",
+        "reference_provenance": "Saved reference + numerical solver-energy/residual pilot; exact ground identification conditional",
+        "error_provenance": "Saved total signed bias + preserved u + reference offset + T*saved residual",
+        "iid_provenance": "Fresh independent +/-1 outcomes under the reference-defined ideal law",
+        "full_rpe_energy_success": false,
+        "unconditional_success_claim": false,
+        "law_context": {
+          "ideal_shot_law": "ideal_finite_RTE_law",
+          "circuit_law": "paired_unweighted_finite_RTE",
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+          "actual_law_distance_qualified": false
+        }
+      },
+      "prices": [
+        {
+          "m": 3,
+          "axis": "X",
+          "measurement_axis": "cosine",
+          "observable": "Re(z_raw)",
+          "outcome_convention": "P0_minus_P1",
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "law_context": {
+            "ideal_shot_law": "ideal_finite_RTE_law",
+            "circuit_law": "paired_unweighted_finite_RTE",
+            "candidate": {
+              "K": 2,
+              "R_outer": 4,
+              "T": 0.8,
+              "delta": 0.1,
+              "formula": "2nd",
+              "id": "14bd81a375400c9b0305",
+              "method": "PR",
+              "prefix": 1,
+              "q": 8,
+              "system": "H4"
+            },
+            "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+            "actual_law_distance_qualified": false
+          },
+          "compiler": {
+            "basis": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/confirmation_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          },
+          "cohort": "CONFIRMATION",
+          "n": 33,
+          "mean": {
+            "circuit_size": 33574.0,
+            "cx_count": 6428.939393939394,
+            "cx_depth": 3401.939393939394,
+            "rz_count": 16947.78787878788,
+            "rz_depth": 4664.727272727273,
+            "total_depth": 10510.424242424242
+          },
+          "peak_qubits": null,
+          "units": {
+            "rz_count": "gate_count",
+            "rz_depth": "circuit_layers",
+            "cx_count": "gate_count",
+            "cx_depth": "circuit_layers",
+            "total_depth": "circuit_layers",
+            "circuit_size": "instruction_count"
+          },
+          "expectation_basis": "explicit_conditional_price_proxy",
+          "price_assumptions": [
+            "Saved finite-cohort means used as conditional point prices; no population guarantee",
+            "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+          ]
+        },
+        {
+          "m": 3,
+          "axis": "Y",
+          "measurement_axis": "sine",
+          "observable": "Im(z_raw)",
+          "outcome_convention": "P0_minus_P1",
+          "candidate": {
+            "K": 2,
+            "R_outer": 4,
+            "T": 0.8,
+            "delta": 0.1,
+            "formula": "2nd",
+            "id": "14bd81a375400c9b0305",
+            "method": "PR",
+            "prefix": 1,
+            "q": 8,
+            "system": "H4"
+          },
+          "binding": {
+            "T": 0.8,
+            "basis": "STO-3G",
+            "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "control": "symmetric_directional",
+            "geometry": "linear_1Angstrom",
+            "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+            "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+            "profile_is_reference_only": true,
+            "rank": 10,
+            "rank_is_saved_observation_not_generation_argument": true,
+            "rank_policy": "tol_only_1e-8",
+            "series": "H4_TOL_ONLY_DF10",
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+            "system": "H4"
+          },
+          "law_context": {
+            "ideal_shot_law": "ideal_finite_RTE_law",
+            "circuit_law": "paired_unweighted_finite_RTE",
+            "candidate": {
+              "K": 2,
+              "R_outer": 4,
+              "T": 0.8,
+              "delta": 0.1,
+              "formula": "2nd",
+              "id": "14bd81a375400c9b0305",
+              "method": "PR",
+              "prefix": 1,
+              "q": 8,
+              "system": "H4"
+            },
+            "price_sampling": "saved_PCG64_NumPy_choice_float64_CDF",
+            "actual_law_distance_qualified": false
+          },
+          "compiler": {
+            "basis": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "hash": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "classification": "DIRECT_COMPILED_FINITE_SAMPLE",
+          "source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/confirmation_costs.json.gz",
+            "selector": "/14bd81a375400c9b0305/mean_metrics"
+          },
+          "cohort": "CONFIRMATION",
+          "n": 33,
+          "mean": {
+            "circuit_size": 33574.0,
+            "cx_count": 6428.939393939394,
+            "cx_depth": 3401.939393939394,
+            "rz_count": 16947.78787878788,
+            "rz_depth": 4664.727272727273,
+            "total_depth": 10510.424242424242
+          },
+          "peak_qubits": null,
+          "units": {
+            "rz_count": "gate_count",
+            "rz_depth": "circuit_layers",
+            "cx_count": "gate_count",
+            "cx_depth": "circuit_layers",
+            "total_depth": "circuit_layers",
+            "circuit_size": "instruction_count"
+          },
+          "expectation_basis": "explicit_conditional_price_proxy",
+          "price_assumptions": [
+            "Saved finite-cohort means used as conditional point prices; no population guarantee",
+            "Ideal-shot-law versus implemented sampling/native error gap remains unqualified"
+          ]
+        }
+      ],
+      "input_status": "INPUTS_READY_FOR_CONDITIONAL_PROXY_ACCOUNTING",
+      "resource_products_evaluated": false,
+      "subset_resources": null,
+      "full_rpe_resources": null
+    }
+  ],
+  "N_recomputed": false,
+  "N_times_C_evaluated": false,
+  "signal_or_circuit_calls": 0,
+  "model_fit_or_residual_analysis": false,
+  "full_RPE_qualified": false,
+  "mandatory_stop": true
+}
