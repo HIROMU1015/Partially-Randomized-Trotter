@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 DF10 D1](docs/research/h4_df10_rpe_d1_20261110/REPORT.md)（2026-11-10）：H4/1Å/STO-3G・保存tol-only DF10/Nα=Nβ2、target保存DF-H、数値ground条件付き/P=0。S2、PF B0/p7/qPF8対PR p1/qPF8/R4/K2、T=.8/δ=.1。係数priorでh=.1を採用、βtotal=.4/stat=.2、全13roundのαaxis=.05/26。m3のみ条件付き十分NはPF705/軸・PR977/軸。actual/厳密ground/全RPE/Gは未資格・未評価。7人工test PASS、新signal/trajectory/compile/fit/G/H6数値0。SOURCE311255aa、旧結果/STOP保全、公開照合後mandatory STOP。
+
 [Track D×元PR/RPE共通interface](docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。
 
 [PR＋RPE共同最適化への統合調査](docs/research/pr_rpe_joint_integration_20261110/REPORT.md)（2026-11-10）：利用者指示により評価器追加開発から総資源共同最適化の接続へ重点移行。元PR/RPE API・D-CDF8の既存13-round接続・Closed P3共同選択・新A Q3後続・強PF再資格を静的照合。推奨初手は固定CDF8のα配分×control方式の限定scalar検証案。新N／価格再解析／fit／回路／全round再集計0、実行計画のみ。公開確認後STOP。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10 D1](docs/research/h4_df10_rpe_d1_20261110/REPORT.md)（2026-11-10）：H4/1Å/STO-3G・保存tol-only DF10/Nα=Nβ2、target保存DF-H、数値ground条件付き/P=0。S2、PF B0/p7/qPF8対PR p1/qPF8/R4/K2、T=.8/δ=.1。係数priorでh=.1を採用、βtotal=.4/stat=.2、全13roundのαaxis=.05/26。m3のみ条件付き十分NはPF705/軸・PR977/軸。actual/厳密ground/全RPE/Gは未資格・未評価。7人工test PASS、新signal/trajectory/compile/fit/G/H6数値0。SOURCE311255aa、旧結果/STOP保全、公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_d1`、`scripts/run_h4_df10_rpe_d1.py`、`tests/check_h4_df10_rpe_d1.py`。数値正本：`docs/research/h4_df10_rpe_d1_20261110/result.json`。完了済みrunnerを自動再実行しない。
+
 [H4 DF10のPF/PR→RPE接続準備](docs/research/h4_df10_rpe_preparation_20261110/REPORT.md)（2026-11-10）：保存T=.8/2の4候補のsignal/allowance/直接価格を読取転記し、薄いadapterと人工15件PASS。q_PF/q_RPE・軸別N・B一回・price scope・欠測を分離。実H4のsignal/N/G/build/compile0、未確定条件とD1案を提示、公開照合後mandatory STOP。
 
 [RPE shot・誤差配分の接続準備](docs/research/rpe_shot_error_connection_20261110/REPORT.md)（2026-11-10）：legacy DF12の18round、Track D CDF8の13roundと全費用会計、現H4 DF10/H6 DF19の有限時間signal/shotを静的照合。再利用関数、q_RPEとq_PF、αaxis=.025と全round配分、候補IDとN/Cの対応、未確定条件と最小評価計画を整理。新N/signal/総費用再解析・sampling・build/compile・詳細科学レビュー0、公開照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4 DF10 D1](../../docs/research/h4_df10_rpe_d1_20261110/REPORT.md)（2026-11-10）：H4/1Å/STO-3G・保存tol-only DF10/Nα=Nβ2、target保存DF-H、数値ground条件付き/P=0。S2、PF B0/p7/qPF8対PR p1/qPF8/R4/K2、T=.8/δ=.1。係数priorでh=.1を採用、βtotal=.4/stat=.2、全13roundのαaxis=.05/26。m3のみ条件付き十分NはPF705/軸・PR977/軸。actual/厳密ground/全RPE/Gは未資格・未評価。7人工test PASS、新signal/trajectory/compile/fit/G/H6数値0。SOURCE311255aa、旧結果/STOP保全、公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_d1`、`scripts/run_h4_df10_rpe_d1.py`、`tests/check_h4_df10_rpe_d1.py`。数値正本：`docs/research/h4_df10_rpe_d1_20261110/result.json`。完了済みrunnerを自動再実行しない。
+
 [H4 DF10 RPE接続準備](../../docs/research/h4_df10_rpe_preparation_20261110/REPORT.md)：`trottertracks.h4_df10_rpe_connection`と人工test。実H4用の新科学runnerは追加せず、保存値の照合・phase/shot/価格の接続だけを準備（2026-11-10、公開後STOP）。
 
 
