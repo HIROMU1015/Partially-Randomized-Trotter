@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+H6 RPE m6の[専用接続](../../docs/research/h6_df19_rpe_m6_preparation_20261110/REPORT.md)：library追加・数値kernel変更は行わず、`run_h6_df19_rpe_m6.py`が既存`h6_df19_rpe_d2`のaction/geometryを再利用する。人工差分3件、実H6は別途科学許可待ち。旧D1/D2 SOURCEとguardを保持する。
+
 `trottertracks.h6_df19_rpe_d2`の[H6完了結果](../../docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)：固定8候補の新signal/Nを一回評価しideal条件付きround PASS。D1と合わせm0..5、actual/全Gは未資格。SOURCE・run01・旧STOPを保全する。
 
 `trottertracks.h6_df19_rpe_d2`：固定[H6 D2](../../docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)へのaction adapter。既存occupation/m5 schedule/finite Taylor/normalizerとD1算術を再利用し、matrix exponential backend・数値allowance・H6入力接続だけを追加。人工7件PASS、import時に保存入力を読まない。回路・sampler・価格・独立RPE solverなし。

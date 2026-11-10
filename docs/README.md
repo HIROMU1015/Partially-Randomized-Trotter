@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19 RPE m6実行準備](research/h6_df19_rpe_m6_preparation_20261110/REPORT.md)：固定2候補・call範囲・D2 backend再利用・人工差分3件。[PLAN](research/h6_df19_rpe_m6_preparation_20261110/PLAN.json)／[人工結果](research/h6_df19_rpe_m6_preparation_20261110/synthetic_tests.txt)。実m6のreference/signal/Nは別途許可待ち。
+
 [H6 DF19 RPE D2結果](research/h6_df19_rpe_d2_results_20261110/REPORT.md)：固定8候補のsignal・bias・normalization・phase・radius・十分N。[正本](research/h6_df19_rpe_d2_results_20261110/run01/result.json)／[D1と合わせた6roundの転記](research/h6_df19_rpe_d2_results_20261110/COVERAGE.json)。actual/全Gは未資格、残りm6..12、公開照合後STOP。
 
 [H6 DF19 RPE D2計画](research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)：4round・8候補、保存T=.4 reference再利用、新reference3時点、対角化なしのaction接続仕様とSTOP条件。[有限menu](research/h6_df19_rpe_d2_preparation_20261110/PLAN.json)／[静的確認](research/h6_df19_rpe_d2_preparation_20261110/CHECKS.txt)。科学実行は別途許可待ち。
