@@ -614,3 +614,9 @@ m17のraw半径0.1265744404、元energyに対する観測位相差0.0138195608 r
 [新scopeの結果](docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。同じLinear H4/1.00 Å/STO-3G、元H/state、DF12、generic frame、generation LD3、sector36、K0/r4/δ=.02のm0/m17を対象とした。C_multi／η_macroは数値診断、明示的なdyadic H_refのgap下界は正確な有理数慣性で資格化。指定norm上界は依然m17の位相条件不成立。
 
 収縮を残した状態defect評価と基本区間演算により、literalなbinary64 basis／diagonal再構成モデルでは二点の正半径・0.14 rad条件が成立する候補を得た。固定sampling law／nativeの意味との対応は未資格であり、包括保証・全18round・shot・総費用の認定ではない。旧run01/02は不変更、mandatory STOP。
+
+## C-α固定lawの後続資格・全18round（2026-11-10）
+
+[固定gate・finite CDF・会計の結果](docs/research/track_a_calpha_h4_step1_20261110/SAMPLING_LAW_RPE_RESULT.md)。同じLinear H4/1.00 Å/STO-3G、元H/state、DF12、generic frame、generation LD3、sector36、K0/r4/δ=.02。全324 atomのcontrolled skeletonとexact gate意味論を再構成モデルへ接続した。native scalar集約差込みでも全18roundの半径・systematic .14 rad条件を満たし、fresh IID grid／±1 outcomeと既存branch条件の下で合計113,252 shotsの条件付き会計を得た。compiler／実機込み保証はUNKNOWN。
+
+m0の固定1 trajectoryの両軸compiled価格は取得。期待価格・全round compiled総費用は未取得で、source命令数期待会計と混同しない。長round価格の技術的制約を報告しmandatory STOP。旧run01〜07とそのSTOP・失敗履歴は不変更。

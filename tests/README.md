@@ -47,3 +47,7 @@ Hadamard 1 shot全体や最終総コストの検証ではない。
 ## C-α macrostep・区間処理の人工確認（2026-11-10）
 
 `test_calpha_macrostep_bounds.py`の8件と`test_calpha_interval_bounds.py`の5件は、非可換stage order・局所次数・正確な慣性count・指数／log級数の包含・複素共役・scalar geometric sumを確認する。分子入力や旧信号の再simulationはなく、研究保証の正式採択・実機性能・総費用のPASSとは区別する。
+
+## C-α固定gate lawと会計の人工確認（2026-11-10）
+
+`test_calpha_sampling_law.py` 4件、`test_calpha_rpe_accounting.py` 3件、`test_calpha_price_connection.py` 3件は、gate意味論・CDF・既存branch／Hoeffding・両軸価格接続・basis取消の期待命令数を人工例だけで確認する。分子信号・旧runの再実行を含まない。

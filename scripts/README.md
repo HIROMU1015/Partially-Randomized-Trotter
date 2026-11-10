@@ -180,3 +180,7 @@ artifacts/<validation_name>/
 ## C-α macrostep／gap保証改善（2026-11-10）
 
 `run_calpha_macrostep_gap.py`、`run_calpha_state_defect.py`、`run_calpha_interval_state_bound.py`、`run_calpha_reconstruction_bridge.py`は、後続の明示許可に基づく限定保証入力の取得経路。[実行履歴・資格・STOP](../docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。旧raw信号は再simulationせず、全18round・shot・価格へ進んでいない。各旧出力の上書き・再実行入口ではない。
+
+## C-α固定law・RPE・価格接続（2026-11-10）
+
+`run_calpha_sampling_law.py`→`run_calpha_rpe_accounting.py`→`run_calpha_price_probe.py`は、新scopeで固定gate lawの接続・全round上界／shot・1 trajectory価格へ接続した。`qualify_calpha_native_scalar.py`はnative scalar差、`summarize_calpha_cost_scope.py`はsource命令数の期待会計と長round価格の限界を記録する。[結果・保証資格・mandatory STOP](../docs/research/track_a_calpha_h4_step1_20261110/SAMPLING_LAW_RPE_RESULT.md)。旧出力へのretry／上書き、全compiled費用優位を認定する入口ではない。

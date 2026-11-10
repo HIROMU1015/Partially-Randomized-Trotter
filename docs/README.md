@@ -112,3 +112,5 @@
 - [C-α sector条件訂正後の二点結果（2026-11-10、上記準備の後続）](research/track_a_calpha_h4_step1_20261110/RUN02_RESULT.md)：許可後にm0/m17を完了。m17の観測位相差0.01381956 rad、raw半径0.12657444。head誤差上界が支配し「保証改善が必要」。local未認証、包括実装保証UNKNOWN、mandatory STOP。
 
 - [C-α macrostep・gap保証改善（2026-11-10、後続scope）](research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)：正確な行列gap下界と、literal再構成モデルの包含付き二点保証候補。固定sampling lawへの資格は未確定、全18round・shot・総費用は未実施、mandatory STOP。
+
+- [C-α固定gate law・全18round会計と価格の範囲（2026-11-10、後続scope）](research/track_a_calpha_h4_step1_20261110/SAMPLING_LAW_RPE_RESULT.md)：compile前gate／finite-CDF／IID条件付きで全round保証・113,252 shots。m0の1 trajectory価格のみ取得、長round compiled期待価格・総費用優位は未確定。旧証拠を保全しmandatory STOP。

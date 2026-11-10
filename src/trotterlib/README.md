@@ -137,3 +137,5 @@ DF部分ランダム化研究と混同しない。
 ## C-αの保証入力（2026-11-10）
 
 `calpha_macrostep_bounds.py`は対称macrostepの数値診断と正確な有理数LDL慣性、`calpha_interval_bounds.py`は明示的な級数残差を含む区間評価。[結果・model限定の資格](../../docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。固定sampling law／nativeへの包括保証や、総費用を認定するAPIではない。
+
+後続の`calpha_sampling_law.py`は固定RZ/XXPlusYY意味論とCDF質量、`calpha_rpe_accounting.py`はraw半径を直接受ける保証・shot会計。`b2_p1_compiled_cost.py`は既存branchから原文再利用したfull no-prep指定trajectory価格adapter。[保証対象・全18round・価格の限界](../../docs/research/track_a_calpha_h4_step1_20261110/SAMPLING_LAW_RPE_RESULT.md)。compiler／実機込み保証や全compiled費用とは区別する。

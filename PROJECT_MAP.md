@@ -213,3 +213,7 @@ $\delta=0.02$が全6指標で最小となった。現在は$\delta=0.02$と比�
 ## C-α macrostep／gap保証改善（2026-11-10、後続scope）
 
 [結果・資格の境界](docs/research/track_a_calpha_h4_step1_20261110/MACROSTEP_GAP_RESULT.md)。同じH4/DF12/LD3/sector36/K0/r4/δ=.02でC_multiとmacrostep defectを評価し、明示的なH_refのgap下界を正確な有理数慣性で取得。指定norm上界はm17の0.14 rad条件に届かない。収縮を残す状態defectの精密化と区間演算により、literal再構成モデルでは二点条件が成立する候補を得た。固定sampling law／nativeの意味への資格は未確定であり、全18round・shot・費用gateは閉じたまま。旧run01/02は不変更、mandatory STOP。
+
+## C-α固定gate lawと全18round会計（2026-11-10、後続scope）
+
+[固定lawの資格・RPE・価格の到達範囲](docs/research/track_a_calpha_h4_step1_20261110/SAMPLING_LAW_RPE_RESULT.md)。同じLinear H4/1.00 Å/STO-3G/元H・保存state/DF12/generic frame/generation LD3/sector36、K0/r4/δ=.02で、全324 atomのgate意味論・finite CDFを接続。compile前gateモデルとfresh IID仮定下で全18roundの十分条件と計113,252 shotsを取得。native scalar差込みでも成立。m0の1 trajectory価格は取得したが、全round compiled期待価格と総費用優位は未取得。旧run01〜07は保全し、新scopeもmandatory STOP。
