@@ -1,5 +1,7 @@
 # Validation status
 
+[H6 DF19価格V2結果](docs/research/h6_df19_price_v2_20261110/REPORT.md)（2026-11-10）：H6 DF19/m5の保存q1価格は少数補正で予測改善。固定δ=1.6の新q2校正→係数凍結→q4独立検証では、定数V2はPF/PRに約13%/12%の過小予測、AffineはPF丸め程度・PR8本平均bias約372 RZ。新H6 full-wrapper36、PR16 path、q4再fit/新signal/N/G0。order2未観測・q>4/全RPE provider未資格。公開照合後mandatory STOP。
+
 [H6 DF19価格V1結果](docs/research/h6_df19_price_v1_20261110/REPORT.md)（2026-11-10）：Full19/m5とPR p5/R32/K2・p7/R16/K2の保存探索/独立確認＋PF補助q2、174軸をSOURCE960e8f911で一括評価。完全一致0/174、全て過小。留保の平均絶対相対誤差はPF17.29%、PR A16.98%/B15.94%、補助14.78%。近似基線としての構造内訳は得たが、全13round providerは未資格。人工8件、新compile/fit/sampling/signal/N/G0。公開照合後mandatory STOP。
 
 [H6 DF19 RPE D2結果](docs/research/h6_df19_rpe_d2_results_20261110/REPORT.md)（2026-11-10）：SOURCE e0503b769、人工7件PASS後、固定8候補を約38.8秒で一回評価。全8候補ideal条件付きround PASS、Nの独立式・disk/normalization/α/β・SOURCE/input/D1/計画保全を照合。m0..5の条件付きNのみ、C未取得・actual/厳密ground/全13round/全G未資格。新eigensolve/build/compile/G0、独立科学レビューなし、公開照合後STOP。

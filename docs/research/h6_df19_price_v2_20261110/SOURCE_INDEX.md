@@ -21,3 +21,5 @@ New private raw root: `/home/AbeHiromu/projects/h6-df19-price-v2/20261110`. Seed
 V1's saved PF q2/T0.8 auxiliary point has delta0.4 and is not evidence for the delta1.6 q direction. PR_A p5/R32 and PR_B p7/R16 retain separate coefficients, cohorts and populations. Track D Strong/Reference comparisons are control constructions, not PF/PR comparisons.
 
 q4 uses `scripts/run_h6_df19_price_v2_q4.py`: the same sampled whole-path evolution feeds independent forked X/Y pricing workers. No scientific word, seed or compiler change; its committed execution SOURCE and frozen executor hash are recorded in Q4_DIRECT.json / Q4_FROZEN_MODELS.json.
+
+Actual q4 execution SOURCE: `b85837960c80d619a421c46235baf5ef2523d217`, with the q4 executor/analysis source introduced in `8791d438abc20789b7c4824b26cf4d2f040ff4d3`. The frozen models blob was checked on GitHub before new q4 prices. All 36 new H6 prices were acquired; old exact cache hits 0. COMPLETION.json binds the 18 whole-path result/event pairs and records the untouched V1 scope.

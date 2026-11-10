@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6 DF19価格V2結果](docs/research/h6_df19_price_v2_20261110/REPORT.md)（2026-11-10）：H6 DF19/m5の保存q1価格は少数補正で予測改善。固定δ=1.6の新q2校正→係数凍結→q4独立検証では、定数V2はPF/PRに約13%/12%の過小予測、AffineはPF丸め程度・PR8本平均bias約372 RZ。新H6 full-wrapper36、PR16 path、q4再fit/新signal/N/G0。order2未観測・q>4/全RPE provider未資格。公開照合後mandatory STOP。 実装 `trottertracks.h6_df19_price_v2`、保存fit `run_h6_df19_price_v2_saved.py`、pilot `run_h6_df19_price_v2_pilot.py`（prepare/q2）、q4並列 `run_h6_df19_price_v2_q4.py`、凍結/集計 `analyze_h6_df19_price_v2_pilot.py`。人工test `check_h6_df19_price_v2.py` / `check_h6_df19_price_v2_axes.py`。完了済み出力は再実行・上書きしない。
+
 [H6 DF19価格V1結果](docs/research/h6_df19_price_v1_20261110/REPORT.md)（2026-11-10）：Full19/m5とPR p5/R32/K2・p7/R16/K2の保存探索/独立確認＋PF補助q2、174軸をSOURCE960e8f911で一括評価。完全一致0/174、全て過小。留保の平均絶対相対誤差はPF17.29%、PR A16.98%/B15.94%、補助14.78%。近似基線としての構造内訳は得たが、全13round providerは未資格。人工8件、新compile/fit/sampling/signal/N/G0。公開照合後mandatory STOP。 実装：`trottertracks.h6_df19_price_v1`、runner `run_h6_df19_price_v1.py`、分析 `analyze_h6_df19_price_v1.py`、人工test `check_h6_df19_price_v1.py`。完了済み出力は再実行/上書きしない。
 
 [H6 DF19価格再利用・モデル設計](docs/research/h6_df19_price_design_20261110/REPORT.md)（2026-11-10）：固定D2のm0…5 Nとm3/4直接価格、m5の11 signed piece・prefix/R変更、限定cache coverageを静的照合。推奨初手は保存PFとPR2族の探索9/確認33によるsource構造ruleのV1。新予測/残差/fit/compile/signal/N/G0、V1未許可・未実行、並行m6/H4 V1と独立、公開照合後STOP。
