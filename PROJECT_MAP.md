@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6残5round一括結果](docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：SOURCE fca50d36fの固定10候補を一回評価し全てideal条件付きPASS。各軸Nはm8..12 PF705/706/707/709/714、PR1015/1462/3033/13064/242418。保存m0..7を再計算せず全13roundのNへ接続、actual/全RPE/G未資格、C0、公開照合後STOP。
+
 [H6残5round一括準備](docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：既存統合N providerを不変で再利用し、m8..12/T25.6..409.6・固定10候補のN専用runnerと保存/FAIL coverageを追加。人工7件PASS、実H6科学計算0。SOURCE20 fileを固定し、明示実行許可待ち・公開照合後STOP。
 
 [PF/PR総費用pipeline統合](docs/research/pf_pr_rpe_cost_integration_20261110/REPORT.md)：保存schedule/N/C・候補/科学/回路binding・不足batch・既存RZ会計・共有不確かさ・比較を接続。人工/mock12件PASS、実H4/H6新signal/N/C予測/G0。m8逐次追加を優先せず、H6残5時点10候補の一括案とH4保存signal再利用を準備。価格資格とH4 fresh provider接続は未完了、公開照合後STOP。

@@ -1,5 +1,7 @@
 # Validation status
 
+[H6 m8..12一括N結果](docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：SOURCE fca50d36fで10候補を一回実行、全ideal条件付きPASS。独立reference経路差max約5.08e−12、signal/bias/B/allowance/disk/phase/radius・独立Hoeffding整数・20 SOURCE/input/旧結果保全を照合。26候補/13roundの条件付きNが完備し共通plannerが静的受入れ。actual/rigorous/全RPE/G未資格、価格0、独立科学レビューなし・公開照合後STOP。
+
 [H6 m8..12一括準備](docs/research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：固定menu/政策・N専用保存・13round coverageの資格区別・FAIL/reference例外/fresh output・q16/q256人工非可換2-level回帰・旧m7 guardの7件PASS。既存18科学file不変、新実H6 N/C/G0。実行は別途明示許可待ち、公開照合後mandatory STOP。
 
 [PF/PR全RPE費用統合の技術確認](docs/research/pf_pr_rpe_cost_integration_20261110/REPORT.md)：既存会計委譲、条件/符号/単位/cohort照合、欠測batch・FAIL保持・共有校正/paired covariance・供給済み同時区間、保存corpus静的joinを人工/mock12件で確認。H6 batch leafはmockのみ。実N/C予測/G0、科学資格の追加なし。H4/H6の不足計画と未接続providerを明示、公開照合後mandatory STOP。

@@ -12,3 +12,10 @@ H6残5時点・10候補を一括N範囲として提案し、H4は保存m4 scalar
 [準備REPORT](../h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)。利用者がm8..12/T25.6..409.6・Full19対PR7/R16/K2・m5/δ1.6/qPF16..256の固定10候補を指定した。3b742fff2の統合module・旧数値kernelを変更せず、N専用runnerと固定PLAN、保存/FAIL/未評価coverageを追加。人工差分7件PASS、実H6新reference/signal/phase/Nは0。保存m0..7は再計算せず転記する。
 
 計画scopeは新reference5時点/10 action、finite mean10、PR内部対照5、scalar10/XY20軸。20科学fileを固定し、SOURCE/input保全・fresh output・自動retry禁止と旧STOP/KEEPを保持。今回指示は実行準備までのため、公開照合後mandatory STOP。利用者の明示実行許可後だけ同じ有限menuを一括処理し、価格/G/最適化へ進まない。
+
+
+## H6残5roundの一括N実行完了（同日、明示承認後）
+
+[結果REPORT](../h6_df19_rpe_m8_12_results_20261110/REPORT.md)。利用者の明示実行承認を受け、科学SOURCE fca50d36f332c1e838c0b4977ba2b03238b1fa1aを変更せずm8..12の固定PF/PR各1・計10候補を一回のbatchで実行した。reference5時点/10 action、finite mean10、PR内部対照5、scalar10/XY20軸、wall88.605秒。全10候補ideal条件付きround PASS。各軸NはPF705/706/707/709/714、PR1015/1462/3033/13064/242418。
+
+保存m0..7の16行をそのまま転記し26候補/13roundの条件付きNが完備した。m6run01/run02を二重計上せず、20 SOURCE/input/旧結果を保全。全N recordを共通static plannerが受入れ、欠測/未資格Nなし（実C/G評価0）。actual N・rigorous誤差・厳密ground・全RPE成功・全G未資格は維持する。次は価格担当Cの適用資格/不確かさとの接続をユーザーが別途判断し、本担当は公開照合後mandatory STOP。

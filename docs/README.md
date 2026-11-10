@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19全13roundのN coverage](research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：残5時点10候補は全ideal条件付きPASS。[正本](research/h6_df19_rpe_m8_12_results_20261110/run01/result.json)／[coverage・handoff](research/h6_df19_rpe_m8_12_results_20261110/run01/COVERAGE.json)／[全新signal・N CSV](research/h6_df19_rpe_m8_12_results_20261110/ROUND_SUMMARY.csv)。actual/C/G未資格、公開照合後STOP。
+
 [H6 DF19残5round一括実行準備](research/h6_df19_rpe_m8_12_preparation_20261110/REPORT.md)：[固定PLAN](research/h6_df19_rpe_m8_12_preparation_20261110/PLAN.json)／[SOURCE](research/h6_df19_rpe_m8_12_preparation_20261110/SOURCE_INDEX.json)／[人工7件](research/h6_df19_rpe_m8_12_preparation_20261110/TESTS.txt)。実H6未実行、明示許可待ち。
 
 [PF/PRエネルギー推定・総費用pipeline](research/pf_pr_rpe_cost_integration_20261110/REPORT.md)：[一括科学計画](research/pf_pr_rpe_cost_integration_20261110/EXECUTION_PLAN.json)／[静的H4/H6計画](research/pf_pr_rpe_cost_integration_20261110/static_plan/)／[試験](research/pf_pr_rpe_cost_integration_20261110/TESTS.txt)。共通interfaceと会計を接続、実科学/G0、公開照合後STOP。
