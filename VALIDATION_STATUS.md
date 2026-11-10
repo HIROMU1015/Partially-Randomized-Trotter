@@ -1,5 +1,7 @@
 # Validation status
 
+[H4価格provider技術検証](docs/research/h4_df10_price_provider_20261110/REPORT.md)（2026-11-10）：人工/mock・保存golden fixture・B作業中interfaceの静的接続8 method PASS。保存68軸のdirect/Mq計136値をcopy照合、新H4数値予測/再解析/sampling/compile/fit/N/G0。有限Mq証拠をlaw期待値・長q保証・全RPE採用へ昇格させない。B実装本体未変更、統合本体への取込みは別担当、公開照合後STOP。
+
 [H4 DF10 Mq独立q 完了](docs/research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)（2026-11-10）：SOURCE55eccab88のPF q32と、承認済みSOURCE f8bb11fe6の保存PR33本再生を結合。全68 direct軸/136比較行を完了。MqはPF誤差−186、PR RMSE432.422 RZ/軸（相対1.31743%、最大4.98547%）でM0より改善。元代表correctness PF/PR各7項目PASS、旧STOP保持。再sampling/再予測/PF再compile/fit/N/G0、有限新q証拠のみで長q/全law/全RPE/CI未資格、公開照合後STOP。
 
 [H4 DF10 Mq独立q](docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)（2026-11-10）：部分完了。PF q32両軸direct176723/Mq176909、残差−186、元correctness7項目PASS。PRは3/4引数callback不一致でbuild前STOP、direct0・移送未判定。SOURCE55eccab88、sampling33/固定予測68軸/新compile2/retry0。事前人工4＋未実行継続準備の人工2 method PASS。独立PR結果・長q/全RPE/CIなし、V1/S1不変、公開照合後STOP。

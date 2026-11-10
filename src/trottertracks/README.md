@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[H4 price provider](../../docs/research/h4_df10_price_provider_20261110/REPORT.md)：`h4_df10_price_provider.py`は既存V1/MqのH4 adapter。interfaceとB handoff、人工/保存fixture8 methodの入口を同directoryに用意。B共通frameworkを複製せず、新科学評価0。
+
 [H4 DF10 Mq独立q 完了](../../docs/research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)：SOURCE55eccab88の固定予測/PFと、SOURCE f8bb11fe6の保存PR event再生を分離して結合。SOURCE・初回STOPを保持し、全68軸の凍結Mq/M0比較を完了、長q未資格。
 
 [H4 DF10 Mq独立q](../../docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：`h4_df10_price_v2_independent.py`、`run_h4_df10_price_v2_independent.py`と人工`check_h4_df10_price_v2_independent.py`。PF完了/PR STOP、未実行継続adapterと人工`check_h4_df10_price_v2_completion.py`を分離する。

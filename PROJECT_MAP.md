@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10 price provider接続準備](docs/research/h4_df10_price_provider_20261110/REPORT.md)（2026-11-10）：既存V1/Mqと固定JSONを再利用したH4固有adapter。Bのloader/identity/measurementに接続し、lookupと明示数値entryを分離。direct/model/unavailable、path/cohort/law期待値、有限検証/外挿/不確かさを保持。人工・保存fixture・B作業中APIの静的接続8 method PASS、136保存値照合。新H4価格/再解析/sampling/build/compile/fit/N/G0、handoff済み資料を公開、B tree不変、公開照合後STOP。
+
 [H4 DF10 Mq独立q検証 完了](docs/research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)（2026-11-10）：PF q32と新PR q16/n33の両方式で凍結MqがM0より改善。PF誤差−186 RZ/軸、PR RMSE2792.326→432.422 RZ/軸、相対RMSE1.31743%・最大相対4.98547%。初回callback STOP後、明示許可されたf8bb11fe6で保存eventのみを復元し残66軸を完了。累計新compile68、継続sampling/予測/PFcompile/fit0。長q/全law/全RPE未資格、旧STOP保全、公開照合後mandatory STOP。
 
 [H4 DF10 Mq独立q検証：PF完了・PR技術STOP](docs/research/h4_df10_price_v2_independent_q_20261110/REPORT.md)（2026-11-10）：SOURCE55eccab88で33新trajectory/68軸予測を固定。PF q32のdirect176723に対しMq176909、誤差−186 RZ/軸（0.10525%）、M0+19230から改善。PRはcallback引数不一致でbuild前停止、direct0/66・移送未判定。新compile2、retry0。保存eventのRNGなし継続案と人工2回帰を準備、別許可まで未実行。V1/S1不変、公開照合後STOP。

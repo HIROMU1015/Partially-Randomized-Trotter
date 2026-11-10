@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H4 price provider接続](../docs/research/h4_df10_price_provider_20261110/HANDOFF.md)：専用科学runnerは追加せず、Bの`c_provider(task, rows)`へ`H4PriceProvider`を渡す。保存lookupと明示数値APIを分離。技術検査は`tests/check_h4_df10_price_provider.py`、新科学実行/N/G0。
+
 [H4 DF10 Mq独立q 完了](../docs/research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)：`run_h4_df10_price_v2_independent.py`の初回PF成功/PR callback STOPを保全。明示許可後、SOURCE f8bb11fe6の`complete_h4_df10_price_v2_independent.py`で保存33本をRNGなし復元し残66軸完了。両runnerとも完了済みで再起動しない。新q/再fit/全RPEは未実施。
 
 [H4 DF10価格V2 S1](../docs/research/h4_df10_price_v2_s1_20261110/REPORT.md)：`run_h4_df10_price_v2.py`は固定V1 JSONだけで開発限定3 fitと既知データ照合を完了済み。既存出力への再実行・上書きを拒否する。新sampling/build/compile/N/G0、独立holdout/長q未資格、公開照合後STOP。

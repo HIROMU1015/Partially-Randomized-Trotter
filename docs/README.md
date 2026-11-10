@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 price provider](research/h4_df10_price_provider_20261110/REPORT.md)／[interface](research/h4_df10_price_provider_20261110/INTERFACE.md)／[B handoff](research/h4_df10_price_provider_20261110/HANDOFF.md)：固定Mq・保存C・適用資格・不確かさを渡す技術部品。8 method PASS、科学数値評価0。
+
 [H4 DF10 Mq独立q 完了結果](research/h4_df10_price_v2_independent_q_20261110/completion01/REPORT.md)：初回STOP後の承認済み保存event継続によりPF q32/PR q16新33本の全68軸を完了。凍結MqがM0より改善、機械可読RESULT/CSVと34 trialのhash binding。有限qの移送支持、長q/全law/全RPEは未資格。
 
 [H4 DF10 Mq独立q初回部分結果](research/h4_df10_price_v2_independent_q_20261110/REPORT.md)：PF q32成功・PR callback STOP、PREDICTIONS/PROVENANCE/部分RESULT/CSVと、許可前に公開した継続計画を保全。
