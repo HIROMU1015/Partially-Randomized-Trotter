@@ -234,6 +234,12 @@ def h4_saved_price_provider(read_json, *, selections=None):
     return H4PriceProvider(read_json,pipeline=sys.modules[__name__],selections=selections)
 
 
+def h6_saved_price_provider(read_json, *, selections=None):
+    """H6 fixed-domain saved direct/Affine lookup; no numerical fallback."""
+    from .h6_df19_price_provider import H6AffinePriceProvider
+    return H6AffinePriceProvider(read_json,pipeline=sys.modules[__name__],selections=selections)
+
+
 def plan(task, shots, prices, *, price_policy='qualified_expectation'):
     """Static coverage only: no prices predicted, N solved, or N*C evaluated."""
     if price_policy not in ('qualified_expectation','finite_cohort_scenario'):
