@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10価格V2技術設計](docs/research/h4_df10_price_v2_design_20261110/REPORT.md)（2026-11-10）：旧DF12のevent境界補正とcontrolled-qをDF10 full-wrapperへ対応付け。V1保存価格＋少数補正を最初の未実行候補とし、追加compileなしの3 fit・既知データ照合案S1を提示。PR q方向・独立汎化・長q/全13roundは未資格。新予測/残差再解析/fit/sampling/build/compile/N/G/詳細科学レビュー0、V1結果不変、公開照合後mandatory STOP。
+
 [H4 DF10価格V1結果](docs/research/h4_df10_price_v1_20261110/REPORT.md)（2026-11-10）：保存PF q8/q16・PR探索9/確認33を同じ構造モデルで評価し、開発20軸・留保68軸で整数一致0。PF q16残差+9646、PR確認+736…+1960/軸。fit/sampling/build/compile/N/G0、全RPE価格未資格。元完了順の読み込み修正と初回停止を保全、公開照合後mandatory STOP。
 
 [H4 DF10長時間価格モデル設計](docs/research/h4_df10_longtime_price_design_20261110/REPORT.md)（2026-11-10）：実builder/provider・cache・固定価格を静的照合。構造会計＋必要時のDF10固有補正を候補とし、保存PR探索9/確認33とPF q8/16での新fit/compileなし検証案を具体化。全13round価格の信頼区間は未資格。新予測/残差/fit/sampling/build/compile/N/G/詳細科学レビュー0、並行m3会計から分離、公開照合後mandatory STOP。
