@@ -1,5 +1,7 @@
 # Validation status
 
+[H6 DF19 RPE D2準備](docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)（2026-11-10）：有限menu8 ID、D1政策の不変転記、T=.4 referenceの元H/state/DF binding、保存tail contextと3原入力hashを静的照合。新H6科学call0、作用adapter未実装、人工数値試験・新科学検証のPASSではない。別途科学実行許可待ち、公開照合後STOP。
+
 [H6 DF19 RPE D1結果](docs/research/h6_df19_rpe_d1_results_20261110/REPORT.md)（2026-11-10）：SOURCE4c928b90、係数prior/horizon各1回・保存4pointを評価。h=.1、M12、α=.05/26、各軸NはPF705/705・PR765/721、ideal条件付きround PASS。保存m3/4のみの3 cohort別部分費用、actual/厳密ground/全RPE成功/全Gは未資格。SOURCE/input・旧結果保全、新signal/build/compile0、公開照合後mandatory STOP。
 
 [Track D×元PR/RPE共通interface](docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。

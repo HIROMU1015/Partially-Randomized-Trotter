@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6 DF19 RPE D2準備](docs/research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)（2026-11-10）：m0/1/2/5のPF/PR計8候補を提案、m5はq_PF2/δ1.6。T=.4の保存referenceとp5/7 tail定数を確認し、新referenceは3時点だけの計画。固有値問題を避けるaction接続仕様、C未取得を明示。新signal/N/G0、別途科学実行許可待ち、公開照合後STOP。
+
 [H6 DF19 RPE D1結果](docs/research/h6_df19_rpe_d1_results_20261110/REPORT.md)（2026-11-10）：係数priorからh=.1、M12・13round・α=.05/26を導出。保存m3/4の各軸NはPF705/705、PR765/721でideal条件付きPASS、3 cohort別部分費用を評価。actual/全RPE成功・全Gは未資格、新signal/build/compile0。SOURCE4c928b90、公開照合後mandatory STOP。
 
 [H6係数prior・D1実行準備](docs/research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)：H4完了prior/scalar helperを再利用、H6 loader・h二候補STOP・固定4点と3 cohort別部分費用CLIを用意。人工7＋5＝12件PASS。添付指示§9により実H6 prior/phase/radius/N/部分Gは別途明示許可待ち、公開照合後STOP。

@@ -1,5 +1,7 @@
 # 文書索引
 
+[H6 DF19 RPE D2計画](research/h6_df19_rpe_d2_preparation_20261110/REPORT.md)：4round・8候補、保存T=.4 reference再利用、新reference3時点、対角化なしのaction接続仕様とSTOP条件。[有限menu](research/h6_df19_rpe_d2_preparation_20261110/PLAN.json)／[静的確認](research/h6_df19_rpe_d2_preparation_20261110/CHECKS.txt)。科学実行は別途許可待ち。
+
 [H6 DF19 RPE D1結果](research/h6_df19_rpe_d1_results_20261110/REPORT.md)：係数prior・h=.1・13round条件、保存4候補の条件付き十分N、cohort別2round部分費用。actual/全Gは未資格、公開照合後STOP。
 
 [H6係数prior・D1実行準備](research/h6_df19_rpe_prior_execution_preparation_20261110/REPORT.md)：H4 prior/scalarを再利用し、人工12件PASS。実H6科学評価は添付指示§9の別許可待ち。公開照合後mandatory STOP。
