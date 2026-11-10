@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H4 DF10長時間価格モデル設計](docs/research/h4_df10_longtime_price_design_20261110/REPORT.md)（2026-11-10）：実builder/provider・cache・固定価格を静的照合。構造会計＋必要時のDF10固有補正を候補とし、保存PR探索9/確認33とPF q8/16での新fit/compileなし検証案を具体化。全13round価格の信頼区間は未資格。新予測/残差/fit/sampling/build/compile/N/G/詳細科学レビュー0、並行m3会計から分離、公開照合後mandatory STOP。
+
 [H4 DF10 RPE費用接続](docs/research/h4_df10_rpe_cost_connection_20261110/REPORT.md)（2026-11-10）：D1の保存N/Cを3cohortケースへ準備、部分m3と全13roundを区別する最小adapter・人工/既存会計回帰14件PASS。同S2 PF B0/p7とPR p1/R4/K2の48候補metadata coverageを照合。実H4のN×C/新N/残差/fit/signal/sampling/build/compile/全G/H6数値は0、Main Claim不変。次案は保存m3のRZ小計3ケースのみ、別途実行許可が必要。公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_cost_connection`、準備のみの`prepare_h4_df10_rpe_cost_connection.py`、人工test `check_h4_df10_rpe_cost_connection.py`。PREPARED_INPUTS/COVERAGEは報告と同directory。
 
 [H4 DF10 D1](docs/research/h4_df10_rpe_d1_20261110/REPORT.md)（2026-11-10）：H4/1Å/STO-3G・保存tol-only DF10/Nα=Nβ2、target保存DF-H、数値ground条件付き/P=0。S2、PF B0/p7/qPF8対PR p1/qPF8/R4/K2、T=.8/δ=.1。係数priorでh=.1を採用、βtotal=.4/stat=.2、全13roundのαaxis=.05/26。m3のみ条件付き十分NはPF705/軸・PR977/軸。actual/厳密ground/全RPE/Gは未資格・未評価。7人工test PASS、新signal/trajectory/compile/fit/G/H6数値0。SOURCE311255aa、旧結果/STOP保全、公開照合後mandatory STOP。 実装：`trottertracks.h4_df10_rpe_d1`、`scripts/run_h4_df10_rpe_d1.py`、`tests/check_h4_df10_rpe_d1.py`。数値正本：`docs/research/h4_df10_rpe_d1_20261110/result.json`。完了済みrunnerを自動再実行しない。
