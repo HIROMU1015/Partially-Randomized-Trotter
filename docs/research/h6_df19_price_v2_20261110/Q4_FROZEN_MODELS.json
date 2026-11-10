@@ -1,0 +1,332 @@
+{
+  "analysis_script_sha256": "05aed5e5bec6959359586a340bf5bf08f114c2da1206e6f9f600f5346139028a",
+  "q2_direct_sha256": "5cc844744b87f2263775a5022fc988f4d3df31d3ea0407adecdf60135aa2d09d",
+  "q4_prices_observed": false,
+  "q4_execution_script_sha256": "83760e5ea09eaba1b2563ebc9508f97755e90fce2c70aeb5d10233f6c5a7e016",
+  "selected_V2": {
+    "PF_FULL19": {
+      "model": "Moffset",
+      "calibration": {
+        "status": "FITTED",
+        "model": "Moffset",
+        "coefficients": [
+          [
+            73236.0,
+            73236.0
+          ]
+        ],
+        "rank": 1,
+        "training_paths": 1,
+        "degrees_of_freedom": 0,
+        "features": [
+          "intercept"
+        ],
+        "response_axes": [
+          "cosine",
+          "sine"
+        ],
+        "nominal_OLS_coefficient_covariance": null,
+        "covariance_order": "feature_then_axis",
+        "coefficient_covariance_qualification": "Nominal IID homoskedastic residual diagnostic; not total model or finite-bit-law uncertainty",
+        "q_slope_identified": false,
+        "family": "PF_FULL19"
+      },
+      "selection": "Exploratory minimum maximum-axis known-data RMSE; tie favors fewer parameters; no percentage threshold"
+    },
+    "PR_A": {
+      "model": "Mbasis",
+      "calibration": {
+        "status": "FITTED",
+        "model": "Mbasis",
+        "coefficients": [
+          [
+            24528.78110047846,
+            24528.78110047846
+          ],
+          [
+            -27.90071770334879,
+            -27.90071770334879
+          ]
+        ],
+        "rank": 2,
+        "training_paths": 9,
+        "degrees_of_freedom": 7,
+        "features": [
+          "intercept",
+          "tail_basis_groups"
+        ],
+        "response_axes": [
+          "cosine",
+          "sine"
+        ],
+        "nominal_OLS_coefficient_covariance": [
+          [
+            2139842.5076796687,
+            2139842.5076796687,
+            -103753.4138467774,
+            -103753.4138467774
+          ],
+          [
+            2139842.5076796687,
+            2139842.5076796687,
+            -103753.4138467774,
+            -103753.4138467774
+          ],
+          [
+            -103753.4138467774,
+            -103753.4138467774,
+            5159.0095282928,
+            5159.0095282928
+          ],
+          [
+            -103753.4138467774,
+            -103753.4138467774,
+            5159.0095282928,
+            5159.0095282928
+          ]
+        ],
+        "covariance_order": "feature_then_axis",
+        "coefficient_covariance_qualification": "Nominal IID homoskedastic residual diagnostic; not total model or finite-bit-law uncertainty",
+        "q_slope_identified": false,
+        "family": "PR_A"
+      },
+      "selection": "Exploratory minimum maximum-axis known-data RMSE; tie favors fewer parameters; no percentage threshold"
+    },
+    "PR_B": {
+      "model": "Moffset",
+      "calibration": {
+        "status": "FITTED",
+        "model": "Moffset",
+        "coefficients": [
+          [
+            28795.44444444446,
+            28795.44444444446
+          ]
+        ],
+        "rank": 1,
+        "training_paths": 9,
+        "degrees_of_freedom": 8,
+        "features": [
+          "intercept"
+        ],
+        "response_axes": [
+          "cosine",
+          "sine"
+        ],
+        "nominal_OLS_coefficient_covariance": [
+          [
+            59347.91975308641,
+            59347.91975308641
+          ],
+          [
+            59347.91975308641,
+            59347.91975308641
+          ]
+        ],
+        "covariance_order": "feature_then_axis",
+        "coefficient_covariance_qualification": "Nominal IID homoskedastic residual diagnostic; not total model or finite-bit-law uncertainty",
+        "q_slope_identified": false,
+        "family": "PR_B"
+      },
+      "selection": "Exploratory minimum maximum-axis known-data RMSE; tie favors fewer parameters; no percentage threshold"
+    }
+  },
+  "families": {
+    "PF_FULL19": {
+      "model": "AFFINE_FIXED_DELTA",
+      "formula": "intercept + slope*q",
+      "coefficients": [
+        [
+          870.0000000000317,
+          870.0000000000317
+        ],
+        [
+          428047.99999999994,
+          428047.99999999994
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q"
+      ],
+      "response_axes": [
+        "cosine",
+        "sine"
+      ],
+      "rank": 2,
+      "q1": {
+        "n": 1,
+        "mean": [
+          428918.0,
+          428918.0
+        ],
+        "path_covariance": null,
+        "mean_covariance": null,
+        "population_guarantee": false
+      },
+      "q2": {
+        "n": 1,
+        "mean": [
+          856966.0,
+          856966.0
+        ],
+        "path_covariance": null,
+        "mean_covariance": null,
+        "population_guarantee": false
+      },
+      "q1_cohort": "SAVED_DETERMINISTIC_T1.6",
+      "q2_cohort": "Q2_CALIBRATION",
+      "nominal_coefficient_covariance": null,
+      "covariance_order": "feature_then_axis",
+      "q4_mean_prediction": [
+        1713061.9999999998,
+        1713061.9999999998
+      ],
+      "q4_predicted_mean_covariance_under_independent_IID_cohorts": null,
+      "systematic_error_bound": null,
+      "model_law_identified": false
+    },
+    "PR_B": {
+      "model": "AFFINE_FIXED_DELTA",
+      "formula": "intercept + slope*q",
+      "coefficients": [
+        [
+          923.666666666666,
+          923.666666666666
+        ],
+        [
+          178659.66666666666,
+          178659.66666666666
+        ]
+      ],
+      "features": [
+        "intercept",
+        "q"
+      ],
+      "response_axes": [
+        "cosine",
+        "sine"
+      ],
+      "rank": 2,
+      "q1": {
+        "n": 9,
+        "mean": [
+          179583.33333333334,
+          179583.33333333334
+        ],
+        "path_covariance": [
+          [
+            706280.0,
+            706280.0
+          ],
+          [
+            706280.0,
+            706280.0
+          ]
+        ],
+        "mean_covariance": [
+          [
+            78475.55555555556,
+            78475.55555555556
+          ],
+          [
+            78475.55555555556,
+            78475.55555555556
+          ]
+        ],
+        "population_guarantee": false
+      },
+      "q2": {
+        "n": 8,
+        "mean": [
+          358243.0,
+          358243.0
+        ],
+        "path_covariance": [
+          [
+            3631151.714285714,
+            3631151.714285714
+          ],
+          [
+            3631151.714285714,
+            3631151.714285714
+          ]
+        ],
+        "mean_covariance": [
+          [
+            453893.96428571426,
+            453893.96428571426
+          ],
+          [
+            453893.96428571426,
+            453893.96428571426
+          ]
+        ],
+        "population_guarantee": false
+      },
+      "q1_cohort": "SAVED_EXPLORATION_N9_T1.6",
+      "q2_cohort": "Q2_CALIBRATION",
+      "nominal_coefficient_covariance": [
+        [
+          767796.1865079366,
+          767796.1865079366,
+          -610845.0753968253,
+          -610845.0753968253
+        ],
+        [
+          767796.1865079366,
+          767796.1865079366,
+          -610845.0753968253,
+          -610845.0753968253
+        ],
+        [
+          -610845.0753968253,
+          -610845.0753968253,
+          532369.5198412698,
+          532369.5198412698
+        ],
+        [
+          -610845.0753968253,
+          -610845.0753968253,
+          532369.5198412698,
+          532369.5198412698
+        ]
+      ],
+      "covariance_order": "feature_then_axis",
+      "q4_mean_prediction": [
+        715562.3333333333,
+        715562.3333333333
+      ],
+      "q4_predicted_mean_covariance_under_independent_IID_cohorts": [
+        [
+          4398947.90079365,
+          4398947.90079365
+        ],
+        [
+          4398947.90079365,
+          4398947.90079365
+        ]
+      ],
+      "systematic_error_bound": null,
+      "model_law_identified": false
+    }
+  },
+  "comparison_metrics": [
+    "bias",
+    "MAE",
+    "RMSE",
+    "relative_bias",
+    "relative_RMSE",
+    "maximum_absolute_error",
+    "maximum_absolute_relative_error",
+    "path_residual_SD",
+    "paired_mean_covariance"
+  ],
+  "prediction_unit": {
+    "M0": "individual path",
+    "V2": "individual path, frozen constant offset",
+    "Affine": "cohort mean, individual path variation remains"
+  },
+  "q4_refit": false,
+  "qualification": "Two-point affine interpolation/extrapolation; no lack-of-fit DOF; finite-cohort covariance does not include systematic"
+}
