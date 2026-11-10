@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6 DF19のRPE接続準備](docs/research/h6_df19_rpe_preparation_20261110/REPORT.md)（2026-11-10）：保存DF-H ground／1 kcal/mol／αtotal=.05／P=0／compiled RZを今回条件として、H6入力・signal・直接価格4点を読取専用で接続整理。H4 adapterの共通化差分、h/prior/β候補、未評価roundと最小scalar計画を報告。新signal/N/G・sampling/build/compile・詳細レビュー0、公開照合後mandatory STOP。
+
 [RPE shot・誤差配分の接続準備](docs/research/rpe_shot_error_connection_20261110/REPORT.md)（2026-11-10）：legacy DF12の18round、Track D CDF8の13roundと全費用会計、現H4 DF10/H6 DF19の有限時間signal/shotを静的照合。再利用関数、q_RPEとq_PF、αaxis=.025と全round配分、候補IDとN/Cの対応、未確定条件と最小評価計画を整理。新N/signal/総費用再解析・sampling・build/compile・詳細科学レビュー0、公開照合後mandatory STOP。
 
 [Track D×元PR/RPE共通interface](docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。
