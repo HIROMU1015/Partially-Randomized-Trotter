@@ -1,5 +1,7 @@
 # Validation status
 
+[H6 RPE m7準備](docs/research/h6_df19_rpe_m7_preparation_20261110/REPORT.md)：q8/R16/K2の人工非可換2-level回帰、固定scope/配分・旧m6/D2 guard・未知actual/価格保持の3件PASS。旧14科学SOURCEとm0..6結果を保持。実m7 reference/signal/phase/N0、科学的PASS未判定、指示§11による明示実行許可待ち・公開照合後STOP。
+
 [H6 m6 run02](docs/research/h6_df19_rpe_m6_results_20261110/run02/REPORT.md)：SOURCE49523b11dで固定2候補を同条件再実行。両方ideal条件付きPASS、各軸PF705/PR772、reference/candidate全数値欄・使用14 file hashはrun01と一致。原本保全とN独立式・scope照合PASS。決定論的再実行であり、独立統計標本や独立科学レビューではない。actual/全G未資格、公開照合後STOP。
 
 [H6 RPE m6結果](docs/research/h6_df19_rpe_m6_results_20261110/REPORT.md)：SOURCE c9aa89548、固定2候補の実行を一回完了。両方ideal条件付きround PASS、各軸PF705/PR772。reference経路差約2.28e−15、disk/normalization/phase/α/β/N整数・SOURCE/原入力/旧結果保全を照合。人工3件は既存記録を再利用。actual/全13round/全Gは未資格、価格作業0、独立科学レビューなし、公開照合後STOP。
