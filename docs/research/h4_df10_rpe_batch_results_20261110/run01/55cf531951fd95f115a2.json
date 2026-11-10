@@ -1,0 +1,433 @@
+{
+  "identity": {
+    "m": 9,
+    "q_RPE": 512,
+    "q_PF": 512,
+    "candidate": {
+      "K": 2,
+      "R_outer": 4,
+      "T": 51.2,
+      "delta": 0.1,
+      "formula": "2nd",
+      "id": "55cf531951fd95f115a2",
+      "method": "PR",
+      "prefix": 1,
+      "q": 512,
+      "system": "H4"
+    },
+    "structure": {
+      "formula_id": "S2",
+      "signed_weights": [
+        1.0
+      ],
+      "allocation": [
+        4
+      ],
+      "event_count": 2048,
+      "scalar_policy": "scalar_identity_once_at_total_T",
+      "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+      "law_model": "ideal_finite_RTE_law"
+    },
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4"
+    },
+    "contract": {
+      "completion": "saved_weighted_Hermitian_completion",
+      "fragment_order": "saved_snapshot_order",
+      "preparation_binding": {
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+        "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+      },
+      "state_preparation_cost": 0,
+      "input_source": {
+        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      }
+    },
+    "profile": {
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "wrapper": "full_Hadamard_with_measurement",
+      "scope": "single_hadamard_interrogation_without_state_preparation",
+      "P": 0,
+      "qiskit_version": "1.3.0",
+      "basis_gates": [
+        "rz",
+        "sx",
+        "x",
+        "cx"
+      ],
+      "optimization_level": 1,
+      "seed_transpiler": 17
+    },
+    "configuration": {
+      "base_time": 0.1,
+      "energy_precision_ha": 0.0015936001019904,
+      "beta_total": 0.4,
+      "beta_stat": 0.2,
+      "alpha_total_per_method": 0.05,
+      "alpha_axis": 0.0019230769230769232,
+      "alpha_sum_all_rounds": 0.05,
+      "horizon": {
+        "target_energy_precision_ha": 0.0015936001019904,
+        "required_q_continuous": 2510.0400000000104,
+        "maximum_round_index_M": 12,
+        "round_count_M_plus_one": 13,
+        "q_max": 4096,
+        "achieved_energy_resolution_ha": 0.0009765625,
+        "previous_q_energy_resolution_ha": 0.001953125,
+        "target_met": true,
+        "previous_power_fails": true,
+        "minimal_power_of_two_horizon": true
+      },
+      "D1_m": 3,
+      "D1_q_RPE": 8,
+      "prior_attempts": [
+        {
+          "base_time": 0.8,
+          "principal_alias_margin": -1.2538070459441983,
+          "qualified": false
+        },
+        {
+          "base_time": 0.1,
+          "principal_alias_margin": 2.2421676911480444,
+          "qualified": true
+        }
+      ],
+      "energy_prior_ha": [
+        -4.994249624417489,
+        -2.0985459369977186
+      ],
+      "energy_shift": 0,
+      "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+    }
+  },
+  "plan": {
+    "status": "CONDITIONAL_ROUND_PASS",
+    "m": 9,
+    "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+    "candidate_id": "55cf531951fd95f115a2",
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4"
+    },
+    "candidate": {
+      "K": 2,
+      "R_outer": 4,
+      "T": 51.2,
+      "delta": 0.1,
+      "formula": "2nd",
+      "id": "55cf531951fd95f115a2",
+      "method": "PR",
+      "prefix": 1,
+      "q": 512,
+      "system": "H4"
+    },
+    "q_PF": 512,
+    "q_RPE": 512,
+    "base_time": 0.1,
+    "axes": {
+      "X": {
+        "status": "CONDITIONAL_ROUND_PASS",
+        "m": 9,
+        "shots": 868266239829,
+        "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+        "raw_signal_error": 1.966438118366533e-07,
+        "radius_lower": 2.847545080556502e-05,
+        "beta_deterministic": 0.006858423009897361,
+        "beta_total": 0.20685842300989737,
+        "epsilon_coordinate": 4.000243602625569e-06,
+        "alpha_axis": 0.0019230769230769232,
+        "evidence_kind": "numerically_qualified_pilot",
+        "law_model": "ideal_finite_RTE_law",
+        "quantum_shots_drawn": 0
+      },
+      "Y": {
+        "status": "CONDITIONAL_ROUND_PASS",
+        "m": 9,
+        "shots": 868266239829,
+        "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+        "raw_signal_error": 1.966438118366533e-07,
+        "radius_lower": 2.847545080556502e-05,
+        "beta_deterministic": 0.006858423009897361,
+        "beta_total": 0.20685842300989737,
+        "epsilon_coordinate": 4.000243602625569e-06,
+        "alpha_axis": 0.0019230769230769232,
+        "evidence_kind": "numerically_qualified_pilot",
+        "law_model": "ideal_finite_RTE_law",
+        "quantum_shots_drawn": 0
+      }
+    },
+    "N_X": 868266239829,
+    "N_Y": 868266239829,
+    "alpha_X": 0.0019230769230769232,
+    "alpha_Y": 0.0019230769230769232,
+    "normalization_applied_once": true,
+    "df_accounting": "own_DF_target_no_DF_energy_shift",
+    "qualification": "CONDITIONAL_ON_SUPPLIED_STATE_SPECIFIC_SIGNAL_DISK",
+    "evidence_kind": "numerically_qualified_pilot",
+    "reference_provenance": "Saved reference + numerical solver-energy/residual pilot; exact ground identification conditional",
+    "error_provenance": "Saved total signed bias + preserved u + reference offset + T*saved residual",
+    "iid_provenance": "Fresh independent +/-1 outcomes under the reference-defined ideal law",
+    "full_rpe_energy_success": false,
+    "unconditional_success_claim": false
+  },
+  "actual": {
+    "status": "UNRESOLVED_REFERENCE_OR_ERROR",
+    "N_X": null,
+    "N_Y": null,
+    "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+    "m": 9
+  },
+  "diagnostics": {
+    "candidate_id": "55cf531951fd95f115a2",
+    "candidate": {
+      "K": 2,
+      "R_outer": 4,
+      "T": 51.2,
+      "delta": 0.1,
+      "formula": "2nd",
+      "id": "55cf531951fd95f115a2",
+      "method": "PR",
+      "prefix": 1,
+      "q": 512,
+      "system": "H4"
+    },
+    "m": 9,
+    "q_RPE": 512,
+    "q_PF": 512,
+    "reference_solver_energy_ha": -2.1663874486347634,
+    "state_residual_ha": 1.9513566490707353e-15,
+    "ground_state_certified": false,
+    "reference_diagnostic": {
+      "signed_phase": 4.3682823583018776e-13,
+      "complex_offset": 4.633693855153522e-13,
+      "observed_radius": 0.9999999999998456,
+      "T_times_saved_residual": 9.990946043242165e-14,
+      "used_for_prior_or_branch_choice": false
+    },
+    "normalization": {
+      "log_B": 10.459586221184116,
+      "B": 34877.117048612134,
+      "attenuation": 2.8672094617401675e-05,
+      "log_B_margin": 3.3368070500054973e-10,
+      "raw_corrected_closure": 1.5317503626872228e-18,
+      "raw_margin": 9.63447274029972e-15
+    },
+    "error_disk": {
+      "saved_total_signed_bias": {
+        "real": -0.005617444582867281,
+        "imag": 0.003934656439076756
+      },
+      "preserved_u_X": 1.0004018087322853e-09,
+      "preserved_u_Y": 1.0004018087322853e-09,
+      "coordinate_box_disk": 0.006858368905726305,
+      "reference_offset": 4.633693855153522e-13,
+      "residual_guard": 9.990946043242165e-14,
+      "corrected_signal_disk": 0.006858368906289583,
+      "unconditional_ground_identification_error": null
+    },
+    "observed_signal": {
+      "corrected_radius": 0.999999403157934,
+      "raw_radius": 2.867207750469102e-05,
+      "corrected_phase_to_solver": -0.006858382974361271,
+      "raw_phase_to_solver": -0.00685838297435944
+    },
+    "ideal_numerical_pilot": {
+      "status": "CONDITIONAL_ROUND_PASS",
+      "m": 9,
+      "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+      "candidate_id": "55cf531951fd95f115a2",
+      "binding": {
+        "T": 0.8,
+        "basis": "STO-3G",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "geometry": "linear_1Angstrom",
+        "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+        "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+        "profile_is_reference_only": true,
+        "rank": 10,
+        "rank_is_saved_observation_not_generation_argument": true,
+        "rank_policy": "tol_only_1e-8",
+        "series": "H4_TOL_ONLY_DF10",
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+        "system": "H4"
+      },
+      "candidate": {
+        "K": 2,
+        "R_outer": 4,
+        "T": 51.2,
+        "delta": 0.1,
+        "formula": "2nd",
+        "id": "55cf531951fd95f115a2",
+        "method": "PR",
+        "prefix": 1,
+        "q": 512,
+        "system": "H4"
+      },
+      "q_PF": 512,
+      "q_RPE": 512,
+      "base_time": 0.1,
+      "axes": {
+        "X": {
+          "status": "CONDITIONAL_ROUND_PASS",
+          "m": 9,
+          "shots": 868266239829,
+          "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+          "raw_signal_error": 1.966438118366533e-07,
+          "radius_lower": 2.847545080556502e-05,
+          "beta_deterministic": 0.006858423009897361,
+          "beta_total": 0.20685842300989737,
+          "epsilon_coordinate": 4.000243602625569e-06,
+          "alpha_axis": 0.0019230769230769232,
+          "evidence_kind": "numerically_qualified_pilot",
+          "law_model": "ideal_finite_RTE_law",
+          "quantum_shots_drawn": 0
+        },
+        "Y": {
+          "status": "CONDITIONAL_ROUND_PASS",
+          "m": 9,
+          "shots": 868266239829,
+          "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+          "raw_signal_error": 1.966438118366533e-07,
+          "radius_lower": 2.847545080556502e-05,
+          "beta_deterministic": 0.006858423009897361,
+          "beta_total": 0.20685842300989737,
+          "epsilon_coordinate": 4.000243602625569e-06,
+          "alpha_axis": 0.0019230769230769232,
+          "evidence_kind": "numerically_qualified_pilot",
+          "law_model": "ideal_finite_RTE_law",
+          "quantum_shots_drawn": 0
+        }
+      },
+      "N_X": 868266239829,
+      "N_Y": 868266239829,
+      "alpha_X": 0.0019230769230769232,
+      "alpha_Y": 0.0019230769230769232,
+      "normalization_applied_once": true,
+      "df_accounting": "own_DF_target_no_DF_energy_shift",
+      "qualification": "CONDITIONAL_ON_SUPPLIED_STATE_SPECIFIC_SIGNAL_DISK",
+      "evidence_kind": "numerically_qualified_pilot",
+      "reference_provenance": "Saved reference + numerical solver-energy/residual pilot; exact ground identification conditional",
+      "error_provenance": "Saved total signed bias + preserved u + reference offset + T*saved residual",
+      "iid_provenance": "Fresh independent +/-1 outcomes under the reference-defined ideal law",
+      "full_rpe_energy_success": false,
+      "unconditional_success_claim": false
+    },
+    "actual_implementation": {
+      "status": "UNRESOLVED_REFERENCE_OR_ERROR",
+      "N_X": null,
+      "N_Y": null,
+      "target_id": "H4_DF10_GROUND_CONDITIONAL_D1",
+      "m": 9
+    },
+    "compiled_prices": [],
+    "round_resource_product_computed": false,
+    "full_rpe_energy_success": false,
+    "overall_guarantee": "CONDITIONAL_NUMERICAL_PILOT_ONLY",
+    "stage": "H4_S2_BATCH",
+    "signal": {
+      "reference": {
+        "real": -0.5708180564706263,
+        "imag": -0.8210765776751813
+      },
+      "corrected": {
+        "real": -0.5764355010534936,
+        "imag": -0.8171419212361045
+      },
+      "raw": {
+        "real": -1.6527613227035953e-05,
+        "imag": -2.3429170481528256e-05
+      },
+      "exact_tail": {
+        "real": -0.576435811296875,
+        "imag": -0.8171423672049313
+      },
+      "total_signed_bias": {
+        "real": -0.005617444582867281,
+        "imag": 0.003934656439076756
+      },
+      "outer_PF_or_discard_bias": {
+        "real": -0.005617754826248711,
+        "imag": 0.003934210470249999
+      },
+      "finite_RTE_bias": {
+        "real": 3.1024338142948693e-07,
+        "imag": 4.459688267566264e-07
+      },
+      "log_B": 10.459586221184116,
+      "allowance_evidence": {
+        "maximum_intermediate_norm": 1.00000000000002,
+        "raw_corrected_vector_closure": 1.5341282868068037e-18,
+        "exact_tail_norm_error": 1.9984014443252818e-14
+      }
+    },
+    "compiled_price": null,
+    "G": null,
+    "price_coverage": "NOT_EVALUATED_N_ONLY",
+    "signed_weights": [
+      1.0
+    ],
+    "allocation": [
+      4
+    ],
+    "event_count": 2048,
+    "allowance": {
+      "u": 1.0004018087322853e-09,
+      "log_B": 10.459586221184116,
+      "log_B_margin": 3.3368070500054973e-10,
+      "empirical_not_certified": true,
+      "certified": false
+    },
+    "numerical_reference": {
+      "reference": {
+        "real": -0.5708180564706263,
+        "imag": -0.8210765776751813
+      },
+      "independent_reference": {
+        "real": -0.5708180564710188,
+        "imag": -0.8210765776750951
+      },
+      "signal_difference": 4.018087322853337e-13,
+      "reference_state_actions": 2,
+      "kind": "NEW_D2_TWO_EXPONENTIAL_PATHS",
+      "certified": false
+    },
+    "roundoff": 5.823608262289839e-11
+  },
+  "source": {
+    "commit": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98",
+    "path": "scripts/run_h4_df10_rpe_batch.py"
+  },
+  "origin": "NEW_H4_FINITE_MEAN_N"
+}

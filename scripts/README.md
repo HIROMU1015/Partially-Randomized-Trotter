@@ -1,5 +1,7 @@
 # scripts 索引
 
+`run_h4_df10_rpe_batch.py`の[全13round N完了](../docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：固定24候補を一回評価し旧m3を保持。`verify_h4_df10_rpe_shot_integers.py`は同じ保存ε/αの巨大N整数化を検証し、上方向だけ補正した受渡しrecordを別保存。signal再計算・C/G0、再実行しない。
+
 `run_h4_df10_rpe_batch.py`：[H4 N一括入口](../docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)。既定はmetadata計画、別途許可後の`--execute`で不足24候補をN専用評価する。保存m3を再計算せず、C/Gを呼ばない。
 
 [H4価格providerのB接続](../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：科学runnerは追加せず、Bのh4_saved_price_providerをrun_missingのC callbackへ渡す。lookupのみ、null/資格不足の自動再呼出しなし。

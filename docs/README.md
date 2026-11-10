@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 DF10全13round N結果](research/h4_df10_rpe_batch_results_20261110/REPORT.md)：[受渡しN](research/h4_df10_rpe_batch_results_20261110/N_HANDOFF.json)／[原結果](research/h4_df10_rpe_batch_results_20261110/run01/result.json)／[全round CSV](research/h4_df10_rpe_batch_results_20261110/ROUND_SUMMARY.csv)。巨大N整数丸めと原本を区別、actual/C/G未資格。
+
 [H4 DF10 N側batch adapter](research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：[固定PLAN](research/h4_df10_rpe_batch_preparation_20261110/PLAN.json)／[人工13件](research/h4_df10_rpe_batch_preparation_20261110/TEST_LOG.txt)。m3コピー・m4保存scalar・fresh11時点を準備、実科学計算0、公開照合後STOP。
 
 [H4価格providerのB統合完了](research/h4_price_pipeline_integration_20261110/REPORT.md)：B API接続、保存direct/Mq・有限cohort・null/外挿資格の保持。34人工・保存fixture回帰、新実科学計算/G0。

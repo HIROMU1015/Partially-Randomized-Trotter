@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 DF10 N一括結果](docs/research/h4_df10_rpe_batch_results_20261110/REPORT.md)：全13roundのideal条件付きN。reference差max9.28e−12、norm/closure gate PASS、旧m3/H6/SOURCE保全。巨大PR Nの48軸整数検証でm10/11の各軸を微小上方向補正し原本保持、補助人工4件PASS。actual/rigorous/全RPE/G未資格、公開照合後STOP。
+
 [H4 DF10 N batch技術準備](docs/research/h4_df10_rpe_batch_preparation_20261110/REPORT.md)：人工行列/mock/静的保存fixture13件PASS。B0/p7・S2/R4/K2 law、m3コピー、m4入力、missing/FAIL/SOURCEと共通C形式を確認。実H4新N/保存signal再解析/C/G0、全13-round科学資格は未取得、公開照合後STOP。
 
 [H4 price provider×B結合](docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：B環境の実API/依存で34技術test PASS（A8＋B12＋結合7＋H6 N専用7）。保存direct/Mq136値照合を再利用し、null非取得・資格不足時の再呼出し抑止・partial軸重複・shared uncertaintyを確認。新実N/C予測/再解析/compile/fit/G0、科学的な全RPE採用なし・公開照合後STOP。

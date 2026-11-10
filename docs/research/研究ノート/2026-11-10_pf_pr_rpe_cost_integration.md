@@ -31,3 +31,8 @@ B専用環境でA8/B12/新結合7/H6 N専用7の34技術test PASS、元68軸136�
 ## H4 N側batch adapterの接続（同日、科学実行未承認）
 
 [REPORT](../h4_df10_rpe_batch_preparation_20261110/REPORT.md)。利用者の技術準備指示に従い、H4 D1 scalarと汎用actionを接続した。B0/p7はconstantのみ、PR/p1R4K2は保存tail scalarを一度会計し、H6固有analyze/DF19/m5は移植しない。m3 ideal/actual laneをそのまま保持、m4保存raw/allowance/reference bindingを静的確認。m4 scalar2と新11時点22 finite meanの不足24候補をrun_missingへ一度で渡す入口を用意した。人工/mock/静的fixture13件PASS。共通C interface/旧SOURCE/H6全13round結果は不変。今回の実H4新signal/N・保存数値再解析・価格予測・実Gは0。ユーザーが固定範囲を承認後にBが実行、公開照合後mandatory STOP。
+
+
+## H4固定不足24候補の承認実行と整数丸め（同日）
+
+[REPORT](../h4_df10_rpe_batch_results_20261110/REPORT.md)。ユーザーの明示実行許可後、SOURCE90dcc3ed2で保存m4 scalar2と新11時点22候補を一回評価した。11.203793秒、保存m3再計算0、全13round ideal条件付きPASS。NはPF705〜764/軸、PR m12約3.78e75/軸。検査で旧binary64 ceilがPR m10/11の必要整数を相対約1e−16下回ると判明。原結果・SOURCEを保全し、同一保存ε/αのHoeffding式をDecimal140/180桁で照合する補助SOURCE0dc17b032を固定、Nを上方向にだけ補正したN_HANDOFFを別保存した。48軸検証・人工4件PASS、signal再評価/科学retry/候補変更0。H6結果・旧m3・入力を保持、actual/rigorous/全RPE/C/G未資格。Cへhandoffを渡し、公開照合後mandatory STOP。
