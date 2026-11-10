@@ -153,7 +153,7 @@ def prepare_steps(context, steps, cut, *, ordered_samples, fixture_selection, co
         target = matrix @ target; raw.compose(circuit, inplace=True)
     info = dict(q=q, h="1/10", time=str(q * base.H), ordered_samples=list(ordered_samples),
         cohort=cohort, endpoint=paired.ENDPOINT, event_count=len(events),
-        model="linear H4/1.00A/STO-3G/number-CDF8/Nalpha=Nbeta=2/LD2/S2/s1/r32/K0",
+        model=f"linear H4/1.00A/STO-3G/number-CDF8/Nalpha=Nbeta=2/LD2/S2/s1/r{c.config.rte_steps}/K0",
         cut_after_complete_step=cut, AB_order="A=last half, B=first half; V=U_last ... U_first=A B",
         initial_state="exact original-H ground assumed; all256 input columns checked", state_preparation="EXCLUDED",
         scalar=float(c.arm.model.constant), extracted_identity=c.arm.plan.extracted_identity,

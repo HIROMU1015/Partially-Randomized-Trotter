@@ -84,6 +84,15 @@ def prepare_common(origin, contract):
     if (arm.plan.extracted_identity != law["identity"]
             or not math.isclose(tail.lambda_r, law["lambda_R"], rel_tol=1e-12, abs_tol=1e-14)):
         raise ValueError("SAVED_IDENTITY_OR_LAMBDA")
+    return context_for_arm(arm, tail, config)
+
+
+def context_for_arm(arm, tail, config):
+    """Same head/provider construction for an explicitly configured fixed arm.
+
+    The historical saved-r32 entry above retains all of its binding checks.
+    This constructor neither samples nor chooses a scientific configuration.
+    """
     builder = base.StrongBuilder(relative_fusion=True)
     forward_schedule = tuple((i, base.H / 2) for i in range(3))
     backward_schedule = tuple(reversed(forward_schedule))
