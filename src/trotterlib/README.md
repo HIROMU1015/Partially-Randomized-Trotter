@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H6 Affine価格provider](../../docs/research/h6_df19_affine_price_provider_20261110/REPORT.md)（2026-11-10）：H6 V2の固定Affineと保存価格をBのc_providerへ接続する技術部品。q1/2校正・q4有限独立検証・q>4未検証外挿、PR path/cohort/lawを分離。10技術テスト・保存138 scalar照合PASS。B共通部分は未変更、最新環境への取込みはB担当。未取得H6価格予測・新compile/sampling/fit・実N/G0、公開照合後STOP。 API: `trottertracks.h6_df19_price_provider.h6_saved_price_provider`、test: `tests/check_h6_df19_price_provider.py`。新科学runnerは追加していない。
+
 [H6 DF19価格V2結果](../../docs/research/h6_df19_price_v2_20261110/REPORT.md)（2026-11-10）：H6 DF19/m5の保存q1価格は少数補正で予測改善。固定δ=1.6の新q2校正→係数凍結→q4独立検証では、定数V2はPF/PRに約13%/12%の過小予測、AffineはPF丸め程度・PR8本平均bias約372 RZ。新H6 full-wrapper36、PR16 path、q4再fit/新signal/N/G0。order2未観測・q>4/全RPE provider未資格。公開照合後mandatory STOP。 実装 `trottertracks.h6_df19_price_v2`、保存fit `run_h6_df19_price_v2_saved.py`、pilot `run_h6_df19_price_v2_pilot.py`（prepare/q2）、q4並列 `run_h6_df19_price_v2_q4.py`、凍結/集計 `analyze_h6_df19_price_v2_pilot.py`。人工test `check_h6_df19_price_v2.py` / `check_h6_df19_price_v2_axes.py`。完了済み出力は再実行・上書きしない。
 
 [H6 DF19価格V1結果](../../docs/research/h6_df19_price_v1_20261110/REPORT.md)（2026-11-10）：Full19/m5とPR p5/R32/K2・p7/R16/K2の保存探索/独立確認＋PF補助q2、174軸をSOURCE960e8f911で一括評価。完全一致0/174、全て過小。留保の平均絶対相対誤差はPF17.29%、PR A16.98%/B15.94%、補助14.78%。近似基線としての構造内訳は得たが、全13round providerは未資格。人工8件、新compile/fit/sampling/signal/N/G0。公開照合後mandatory STOP。 実装：`trottertracks.h6_df19_price_v1`、runner `run_h6_df19_price_v1.py`、分析 `analyze_h6_df19_price_v1.py`、人工test `check_h6_df19_price_v1.py`。完了済み出力は再実行/上書きしない。
