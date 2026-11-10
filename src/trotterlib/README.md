@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+`trottertracks.h6_df19_rpe_connection`：[H6 D1](../../docs/research/h6_df19_rpe_d1_20261110/REPORT.md)。固定binding・外部prior・uniform α・保存cohortの薄い接続。`h4_df10_rpe_connection`の算術、既存geometry/Hoeffding/horizonを再利用。人工25件PASS、実H6数値評価は別許可待ち。
+
 [Track D×元PR/RPE共通interface](../../docs/research/track_d_resource_interface_20261110/REPORT.md)（2026-11-10）：Strong／whole-path Referenceの科学inputs・control価格を分離し、既存総集計へ薄く接続。固定H4/CDF8/LD2/S2/s1/r32/K0/h=.1・元H ground/準備費除外・13round/P0/C1 OFFは旧N/価格/総値の読取専用。人工＋read-only 24 test method PASS、実H4の新N・再集計・回路・fit0。他algorithm統合なし。次候補は同条件r16（未実行）、公開確認後STOP。 実装：`trottertracks.track_d_resource_interface`、読取CLI：`scripts/inspect_track_d_resource_interface.py`、test：`tests/check_track_d_resource_interface.py`。
 
 [Track D run内部再走査削減](../../docs/research/track_d_bridge_run_reuse_20261110/REPORT.md)（2026-11-10）：Linear H4／1Å／STO-3G／Nα=Nβ2・元H／number-CDF8／元順LD2／S2/s1/r32/K0／h=.1、保存q4/cut2・q8/cut4各sample00／C1 OFF、元H ground仮定・準備費除外。run内部再走査削減で旧新の各反復word／位相／全56資源一致、70人工回帰＋保存54case PASS。前回高速版に比べnative段階q4 1.15〜1.18倍・q8 1.32〜1.33倍、q8 RSSは4〜8%増。全unit epochとCX frontier再構築／最悪O(RL)/O(L)は残る。A/F/S不変、新P0／sampling／q16以上0、公開照合後STOP。 実装：`src/trottertracks/track_d_bridge_run_reuse.py`、`scripts/run_track_d_bridge_run_reuse.py`、`tests/check_track_d_bridge_run_reuse.py`。

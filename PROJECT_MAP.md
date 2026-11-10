@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[H6 RPE D1実装・人工検証](docs/research/h6_df19_rpe_d1_20261110/REPORT.md)（2026-11-10）：固定H4 adapterの入力層だけをH6 bindingへ拡張、既存15＋H6差分10の人工25件PASS。実H6は保存4点のread-only inspectionのみ。prior不足を保持し、新phase/radius/N/部分G・実target horizonは未承認・未実行。実行計画と公開照合後mandatory STOP。
+
 [H6 DF19のRPE接続準備](docs/research/h6_df19_rpe_preparation_20261110/REPORT.md)（2026-11-10）：保存DF-H ground／1 kcal/mol／αtotal=.05／P=0／compiled RZを今回条件として、H6入力・signal・直接価格4点を読取専用で接続整理。H4 adapterの共通化差分、h/prior/β候補、未評価roundと最小scalar計画を報告。新signal/N/G・sampling/build/compile・詳細レビュー0、公開照合後mandatory STOP。
 
 [RPE shot・誤差配分の接続準備](docs/research/rpe_shot_error_connection_20261110/REPORT.md)（2026-11-10）：legacy DF12の18round、Track D CDF8の13roundと全費用会計、現H4 DF10/H6 DF19の有限時間signal/shotを静的照合。再利用関数、q_RPEとq_PF、αaxis=.025と全round配分、候補IDとN/Cの対応、未確定条件と最小評価計画を整理。新N/signal/総費用再解析・sampling・build/compile・詳細科学レビュー0、公開照合後mandatory STOP。
