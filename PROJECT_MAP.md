@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PF/PR総費用pipeline統合](docs/research/pf_pr_rpe_cost_integration_20261110/REPORT.md)：保存schedule/N/C・候補/科学/回路binding・不足batch・既存RZ会計・共有不確かさ・比較を接続。人工/mock12件PASS、実H4/H6新signal/N/C予測/G0。m8逐次追加を優先せず、H6残5時点10候補の一括案とH4保存signal再利用を準備。価格資格とH4 fresh provider接続は未完了、公開照合後STOP。
+
 [H6 RPE m7結果](docs/research/h6_df19_rpe_m7_results_20261110/REPORT.md)：SOURCE dcd6a7c87、T12.8/qPF8/δ1.6の固定Full19対PR7/R16/K2を一回評価。両方ideal条件付きPASS、X/Y各軸PF705/PR846。旧m0..6不変、8個の異なるroundへ接続。actual/全G未資格、価格0、公開照合後STOP。
 
 [H6 RPE m7準備](docs/research/h6_df19_rpe_m7_preparation_20261110/REPORT.md)：T12.8/qPF8/δ1.6のFull19対PR7/R16/K2を既存actionへ接続。人工3件PASS、実H6新計算0。m0..6と旧SOURCE保持、指示§11の明示実行許可待ち、公開照合後STOP。

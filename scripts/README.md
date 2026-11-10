@@ -1,5 +1,7 @@
 # scripts 索引
 
+`plan_pf_pr_rpe_cost.py`：[統合REPORT](../docs/research/pf_pr_rpe_cost_integration_20261110/REPORT.md)。固定Git JSONからH4/H6 schedule・candidate・保存N/C・不足batchを静的に出力する。実signal/N/価格予測/G実行modeなし。数値入口は`pf_pr_rpe_pipeline.run_fixed_evaluation`で、実データ使用には別途科学scopeが必要。
+
 `run_h6_df19_rpe_m7.py`の[完了結果](../docs/research/h6_df19_rpe_m7_results_20261110/REPORT.md)：SOURCE dcd6a7c87の固定2候補を一回評価、ideal条件付きNは各軸PF705/PR846。旧roundは再計算せず保存値へ接続。m8以降・価格へ自動進行しない。
 
 `run_h6_df19_rpe_m7.py`：[m7準備](../docs/research/h6_df19_rpe_m7_preparation_20261110/REPORT.md)。T12.8/qPF8の固定PF/PR各1候補だけを旧D2 actionへ接続する。`check_h6_df19_rpe_m7.py`の人工3件PASS、旧m6/D2 guard不変。実H6は明示許可後にfresh outputで実行し、m8以降・価格へ進まない。

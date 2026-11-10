@@ -1,5 +1,7 @@
 # 文書索引
 
+[PF/PRエネルギー推定・総費用pipeline](research/pf_pr_rpe_cost_integration_20261110/REPORT.md)：[一括科学計画](research/pf_pr_rpe_cost_integration_20261110/EXECUTION_PLAN.json)／[静的H4/H6計画](research/pf_pr_rpe_cost_integration_20261110/static_plan/)／[試験](research/pf_pr_rpe_cost_integration_20261110/TESTS.txt)。共通interfaceと会計を接続、実科学/G0、公開照合後STOP。
+
 [H6 DF19 RPE m7結果](research/h6_df19_rpe_m7_results_20261110/REPORT.md)：固定2候補のreference/signal/phase/radius/十分N。[正本](research/h6_df19_rpe_m7_results_20261110/run01/result.json)／[8round coverage・価格handoff](research/h6_df19_rpe_m7_results_20261110/COVERAGE.json)。各軸PF705/PR846、残りm8..12、actual/全G未資格、公開照合後STOP。
 
 [H6 DF19 RPE m7実行準備](research/h6_df19_rpe_m7_preparation_20261110/REPORT.md)：固定2候補・旧kernel再利用・人工3件PASS。[PLAN](research/h6_df19_rpe_m7_preparation_20261110/PLAN.json)／[人工結果](research/h6_df19_rpe_m7_preparation_20261110/synthetic_tests.txt)。実m7のreference/signal/Nは別途明示承認待ち。
