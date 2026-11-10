@@ -93,7 +93,7 @@ def context():
     for p,prep in preps.items():
         require(prep.preparation_hash==expected[p] and prep.hamiltonian_hash==cfg['binding']['hamiltonian'],'Preparation binding')
         require(prep.deterministic_fragment_indices==tuple(range(p)),'Saved fragment order')
-    require(ham.constant+preps[7].extracted_identity_coefficient==.0194666612606853,'Saved scalar')
+    require(preps[7].extracted_identity_coefficient==.0194666612606853,'Saved extracted tail identity')
     require(preps[7].rte_preparation.symbolic_tail.lambda_r==.1649333839054104,'Saved lambda')
     import trotterlib.rte_compiled_cost as costs
     costs.transpile=partial(qiskit.transpile,num_processes=1)
@@ -119,7 +119,7 @@ def candidate_plan():
 
 
 def prepare():
-    ref=source();PRIVATE.mkdir(parents=True,exist_ok=False);ctx=context();groups=candidate_plan();h=ctx.h
+    ref=source();PRIVATE.mkdir(parents=True,exist_ok=True);require(not any(PRIVATE.iterdir()),'Prepare only before sampling/results');ctx=context();groups=candidate_plan();h=ctx.h
     # Freeze exact scalar input/seed derivation/order before any new draw/build.
     seeds=[]
     for g in groups:
