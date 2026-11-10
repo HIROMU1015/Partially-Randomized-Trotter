@@ -1,5 +1,9 @@
 # プロジェクト案内
 
+## 2026-11-10 RPE価格成果の再利用調査
+
+[技術調査報告](docs/research/rpe_price_reuse_survey_20261110/REPORT.md)と[固定SOURCE索引](docs/research/rpe_price_reuse_survey_20261110/SOURCE_INDEX.md)。Dのq別直接価格・A/F/S・q64完了、DF10/19有限時間とDF12 V3/R1の条件差、保存N固定の最小評価案を整理。既存branchを継続し、新科学計算・数値再解析0。公開照合後mandatory STOP。
+
 ## 2026-11-09 PR＋RPE総費用の横断調査
 
 [REPORT](docs/research/pr_rpe_cross_track_20261109/REPORT.md)から、[既存成果・重複](docs/research/pr_rpe_cross_track_20261109/EXISTING_RESULTS_AND_OVERLAP.md)、[改善候補](docs/research/pr_rpe_cross_track_20261109/IMPROVEMENT_CANDIDATES.md)、[最小検証案](docs/research/pr_rpe_cross_track_20261109/MINIMUM_VALIDATION_PLANS.md)へ辿る。同目的の既存横断調査branchを継続し、Closed P3共同選択と後続C/D/O2成果を静的確認。D C1・q64の完了を反映し、新計算・再解析・実装0、固定成果/STOP不変更。公開照合後mandatory STOP、次判断はユーザー／GPT。
