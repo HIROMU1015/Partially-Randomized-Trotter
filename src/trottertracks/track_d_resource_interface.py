@@ -135,6 +135,10 @@ class SavedCDF8Study:
         self._preflight = read(TOTAL, DIRECTORY+'preflight.json')
         self._result = read(TOTAL, DIRECTORY+'result.json')
         self._source = read(TOTAL, DIRECTORY+'SOURCE.json')
+        self._stops = {
+            'total': read(TOTAL, DIRECTORY+'STOP.json'),
+            'B4': read(bc.B4, bc.BDIR+'/run01/STOP.json'),
+            'B6b': read(B6B, 'artifacts/track_d_b6b_bc/2026-11-08/run01/STOP.json')}
         self._conditions = read(B6B, 'artifacts/track_d_b6b_bc/2026-11-08/run01/common_N_conditions.json')
         self._prices = {s: read(TOTAL, DIRECTORY+s+'/prices52.json') for s in SCENARIOS}
         self._totals = {s: read(TOTAL, DIRECTORY+s+'/result.json') for s in SCENARIOS}
@@ -148,6 +152,12 @@ class SavedCDF8Study:
                 or self._result['actual_success_guaranteed'] is not False
                 or self._conditions['ideal']['common_N'] is not True):
             raise ValueError('Fixed saved B4/B6b/total metadata mismatch')
+        if (self._handoff['binding']['original_h'] != bc.PACKET
+                or self._handoff['binding']['cdf'] != bc.CDF
+                or self._handoff['energy']['decoder'] != meta['decoder']
+                or self._source['execution_source'] != self._result['source_commit']
+                or any(s.get('mandatory_stop') is not True for s in self._stops.values())):
+            raise ValueError('Fixed identity/SOURCE/decoder/STOP mismatch')
         self._inputs = ScientificInputs(deepcopy(meta['binding']), deepcopy(meta['target']),
             tuple((r['m'], r['q']) for r in meta['rows']),
             'B4_ideal_finite_RTE_IID_exact_native', meta['decoder'])
