@@ -1,5 +1,7 @@
 # scripts 索引
 
+[H6 provider統合・H4/H6全13round N/C coverage](../docs/research/h6_provider_integration_nc_coverage_20261111/REPORT.md)（2026-11-11）：固定B cb2 APIへ保存lookup factoryを追加。C provider/テストをbyte一致再利用、24技術test PASS。H4公開89c91c69の整数検証済みNとH6公開f4c0bdaのNを静的転記し52行条件付きPASS。直接CはH4 5候補/H6 8候補、PR全law/長q/共有CI/全RPE採用は未資格。新科学計算・実N×C/G0、B実行領域へ非介入、公開照合後STOP。
+
 [H4価格providerのB接続](../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：科学runnerは追加せず、Bのh4_saved_price_providerをrun_missingのC callbackへ渡す。lookupのみ、null/資格不足の自動再呼出しなし。
 
 `run_h6_df19_rpe_m8_12.py`の[完了結果](../docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：SOURCE fca50d36fの一括10候補全ideal条件付きPASS。保存m0..7を再計算せず26候補/13roundのNを取得。価格/G/最適化へ自動進行せず、再実行しない。

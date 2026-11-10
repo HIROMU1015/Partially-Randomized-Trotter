@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H6 provider統合・H4/H6全13round N/C coverage](../../docs/research/h6_provider_integration_nc_coverage_20261111/REPORT.md)（2026-11-11）：固定B cb2 APIへ保存lookup factoryを追加。C provider/テストをbyte一致再利用、24技術test PASS。H4公開89c91c69の整数検証済みNとH6公開f4c0bdaのNを静的転記し52行条件付きPASS。直接CはH4 5候補/H6 8候補、PR全law/長q/共有CI/全RPE採用は未資格。新科学計算・実N×C/G0、B実行領域へ非介入、公開照合後STOP。
+
 [H4価格provider×B統合](../../docs/research/h4_price_pipeline_integration_20261110/REPORT.md)：trottertracks.pf_pr_rpe_pipeline.h4_saved_price_providerを追加。A固定部品と元会計を再利用、B環境34技術test PASS、新実科学計算0。
 
 [H6残5roundの一括N結果](../../docs/research/h6_df19_rpe_m8_12_results_20261110/REPORT.md)：既存kernel不変で固定10候補全ideal条件付きPASS。保存値と合わせ全13roundのNを共通pipelineへ静的接続。actual/全RPE/価格Gは未資格、人工試験は既存7件の記録を再利用。
