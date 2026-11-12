@@ -1,5 +1,7 @@
 # 文書索引
 
+[4方式RMSE実行準備](research/pr_rpe_evidence_preparation_20261113/REPORT.md)／[有限menu I/OとA/C HANDOFF](research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)／[Full PF・純RTE物理SOURCE契約](research/pr_rpe_evidence_preparation_20261113/SOURCE_CONTRACTS.md)：全round不足証拠planner、56技術test、科学計算/実G未実行。
+
 [4方式RMSE coverage](research/pr_rpe_method_coverage_20261113/REPORT.md)／[SOURCE再利用表](research/pr_rpe_method_coverage_20261113/SOURCE_MAP.md)／[A/C HANDOFF](research/pr_rpe_method_coverage_20261113/HANDOFF.md)：Full/truncated PF・PR・全H RTEを分離、保存118候補/236軸、99技術test、実G未評価。
 
 [RMSE A/B/C最終統合](research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)／[接続仕様](research/pr_rpe_rmse_abc_integration_20261112/HANDOFF.md)／[人工結果](research/pr_rpe_rmse_abc_integration_20261112/SYNTHETIC_SUMMARY.json)：TECHNICAL_INTEGRATION_PASS、科学資格pending、実資源最適化未実行。135技術test。

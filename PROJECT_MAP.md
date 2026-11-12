@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[4方式RMSE有限menuの不足証拠plan](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)（2026-11-13）：既存V2 assess/coverageを用い各configuration/round/axisのN/C/SOURCE・全体RMSE不足をA/Cへ対応付ける。新13＋回帰43＝56技術test、実menu未確定・G/winner null、科学計算0、公開後STOP。
+
 [PF・truncated PF・PR・Full-H RTEのRMSE coverage](docs/research/pr_rpe_method_coverage_20261113/REPORT.md)（2026-11-13）：既存controllerを拡張しH4 B0/p7とFull PFを分離。供給N/Cの資格と236軸の保存metadataを整理、新14＋回帰85＝99技術test PASS。実N/C/G未実行、公開後STOP。
 
 [PR–RPE RMSE A/B/C最終統合](docs/research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)（2026-11-12）：A510fbacdの固定grid/早期override・nominal/null NとC09489eedの受動lookupをB最終controllerへ接続。新12＋回帰123＝135技術test PASS。実RMSE/価格は未資格、実N/C/G/最適化0、公開後STOP。

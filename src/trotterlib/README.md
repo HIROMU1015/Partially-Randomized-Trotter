@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[有限V2 menuの証拠plan](../../docs/research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)：trottertracks.pr_rpe_rmse_evidence.planは既存assess/coverageとcost=nullのselectを再利用。A/Cの物理計算・価格評価器を重複実装せず、56技術test。
+
 [4方式のRMSE比較](../../docs/research/pr_rpe_method_coverage_20261113/REPORT.md)：trottertracks.pr_rpe_rmse_controller/integrationの最小拡張。PF armを保持してFull/truncatedを分離、元Hへの切捨て誤差・全round RMSE・N/C資格を確認。科学core/providerは追加しない。
 
 [RMSE A/B/C最終adapter](../../docs/research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)：trottertracks.pr_rpe_rmse_integrationが固定A schedule/N metadataと固定C MeanPriceProviderを最新B controllerへ接続。A/C moduleはbyte一致、C閉状態kernelは人工資格のみ。新12＋回帰123件PASS。
