@@ -173,6 +173,70 @@ def combine_mean(structural_mean,*,residual_terms):
                 expectation='SUPPLIED_MODEL_EXPECTATION',total_CI=None)
 
 
+class _ForwardTailBatches:
+    """Adapt the original C1 ascending index access to a one-pass iterator.
+
+    One iterator per legal tail, not one tail call per transport chunk.
+    The original Accounting.tail retains its own active basis and phase.
+    """
+    def __init__(self,batches,allocation,total_batches):
+        self.batches=iter(batches);self.allocation=allocation;self.total_batches=total_batches
+        self.used=0;self.events=0;self.tail_complete=True
+
+    def __getitem__(self,index):
+        if type(index) is not int or index!=self.used or not self.tail_complete:
+            raise ValueError('C1 tail access must be forward and completely consumed')
+        if self.used>=self.total_batches:raise ValueError('Too many C1 tail accesses')
+        try:batch=next(self.batches)
+        except StopIteration as exc:raise ValueError('Missing tail batch') from exc
+        expected=self.allocation[index%len(self.allocation)]
+        self.used+=1;self.tail_complete=False
+        def checked():
+            count=0
+            for event in batch:
+                count+=1
+                if count>expected:raise ValueError('Tail event count exceeds allocation')
+                self.events+=1
+                yield event
+            if count!=expected:raise ValueError('Tail event count below allocation')
+            self.tail_complete=True
+        return checked()
+
+    def finish(self):
+        if self.used!=self.total_batches or not self.tail_complete:
+            raise ValueError('Incomplete C1 tail consumption')
+        sentinel=object()
+        if next(self.batches,sentinel) is not sentinel:raise ValueError('Extra tail batch')
+
+
+def stream_structure(Accounting,blocks,row,scalar,axis,batches,*,allocation):
+    """Original C1 single-path S word, fed by forward-only event iterators.
+
+    No sampler, mean calculation, circuit builder, compiler, or physical closure
+    inference. Real molecular S evaluation still needs scientific permission.
+    The caller must supply the original ordered/signed block and event metadata.
+    Upstream bulk sampling/JSON/QC construction is not changed by this adapter.
+    """
+    blocks=tuple(tuple(bs) for bs in blocks);allocation=tuple(allocation)
+    if (row.get('system') not in ('H4','H6') or type(row.get('q')) is not int or row['q']<1
+            or not math.isfinite(row.get('T',float('nan'))) or row['T']<=0 or not math.isfinite(scalar)
+            or axis not in ('cosine','sine') or not blocks or len(blocks)!=len(allocation)
+            or any(type(r) is not int or r<1 for r in allocation)
+            or type(row.get('R_outer')) is not int or sum(allocation)!=row['R_outer']):
+        raise ValueError('Explicit C1 axis/outer count/whole-outer allocation required')
+    # Reuse the unchanged source word, including exactly one Accounting object
+    # and finish, scalar-once, signed head/tail order and measurement wrapper.
+    from .r_price_phase1_science import structural
+    reader=_ForwardTailBatches(batches,allocation,row['q']*len(blocks))
+    result=structural(Accounting,blocks,row,scalar,axis,reader)
+    reader.finish()
+    return dict(accounting=result,quantity='SINGLE_PATH_STRUCTURAL_PROXY',
+        stream=dict(tail_batches=reader.used,events=reader.events,consumer_materializes_events=False,
+                    producer_memory_not_certified=True),
+        physical_state_closure=None,mean_structural_price=None,mean_compiled_price=None,
+        qualified_for_candidate=False)
+
+
 class MeanPriceProvider:
     """B c_provider(task, requested_rows): copy supplied records or return missing.
 
