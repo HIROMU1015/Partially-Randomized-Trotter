@@ -116,6 +116,16 @@ class Tests(unittest.TestCase):
         self.assertIn('h[\'prepare\']',text);self.assertIn('counter_path_local',text)
         self.assertIn('scalar=ham.constant + prep.extracted_identity_coefficient',text)
 
+    def test_fixed_public_metadata_preparation_does_not_expose_S_or_C(self):
+        with patch('trottertracks.mean_compiled_price.stream_structure',side_effect=AssertionError('No real S')):
+            plan=s.prepare(ROOT,'METADATA_ONLY')
+        self.assertEqual(tuple(r['cell_id'] for r in plan['paths']),s.CELLS)
+        self.assertEqual([r['original_role'] for r in plan['paths']],['CALIBRATION','VALIDATION']*2)
+        for row in plan['paths']:
+            self.assertIsNone(row['S_stream']);self.assertIsNone(row['parity'])
+            self.assertNotIn('S',row);self.assertNotIn('C',row)
+            self.assertEqual(row['profile']['wrapper'],'full_Hadamard_with_measurement')
+
     def test_prepare_and_unapproved_execution_never_import_context_or_count(self):
         with patch.object(s,'selected',return_value=({'runtime':{}},[])),patch.dict(sys.modules,{'trottertracks.s0a_structure_context':None}),patch('trottertracks.mean_compiled_price.stream_structure',side_effect=AssertionError('No S')):
             p=s.prepare(ROOT,'MOCK_SOURCE')

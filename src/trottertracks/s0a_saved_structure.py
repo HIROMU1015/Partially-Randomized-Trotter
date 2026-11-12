@@ -41,7 +41,7 @@ def selected(root):
         if (record['cell_id']!=name or record['candidate_id']!=cell['candidate_id']
             or record['cohort']!=cell['cohort'] or record['conditional'] is not False
             or record['source']['execution_source']!=C1_SOURCE
-            or record['compiler']!=cell['request']['profile']['compiler']):raise ValueError('SAVED_PATH_BINDING')
+            or record['compiler']!=cell['request']['identity']['profile']['compiler']):raise ValueError('SAVED_PATH_BINDING')
         raw=Path(record['source']['private_result']).with_name('events_PRIVATE.json')
         rows.append(dict(cell=cell,record=record,raw=str(raw)))
     return plan,rows
@@ -54,7 +54,7 @@ def prepare(root, source):
         C1_plan_digest=c1.digest(plan),paths=[dict(cell_id=r['cell']['id'],
             candidate_id=r['cell']['candidate_id'],original_role=r['cell']['role'],index=0,
             cohort=r['cell']['cohort'],identity=deepcopy(r['cell']['request']['identity']),
-            law_binding=deepcopy(r['cell']['request']['law_binding']),profile=deepcopy(r['cell']['request']['profile']),
+            law_binding=deepcopy(r['cell']['request']['law_binding']),profile=deepcopy(r['cell']['request']['identity']['profile']),
             raw=r['raw'],event_digest=r['record']['event_digest'],raw_exists=Path(r['raw']).is_file(),
             saved_value_ref=RUN+('CALIBRATION.json' if r['cell']['role']=='CALIBRATION' else 'VALIDATION.json'),
             S_stream=None,parity=None) for r in rows],runtime=deepcopy(plan['runtime']),
