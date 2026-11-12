@@ -47,7 +47,12 @@ class V2MeanPriceLookup:
                 if record.get('mean',{}).get('rz_count') is not None and record.get('quantity')!=QUANTITY:
                     raise ValueError('LOOKUP_CHANGED_COMPILED_MEAN_QUANTITY')
             return records
-        return [dict(**B.p.measurement(row,axis,saved_sampler=self.method in ('PR','FULL_H_RTE')),
+        def measurement(row,axis):
+            value=B.p.measurement(row,axis)
+            if self.method in ('PR','FULL_H_RTE'):
+                value['law_context'].update(price_law=None,ideal_sampler_distance_qualified=None)
+            return value
+        return [dict(**measurement(row,axis),
             identity=deepcopy(row['identity']),law_binding=deepcopy(row['law_binding']),axis=axis,
             source=dict(module='trottertracks.bv2_mean_price',B_commit=B_RELEASE),
             quantity=QUANTITY,cohort='C_V2_UNCONNECTED_METHOD',classification='UNAVAILABLE',

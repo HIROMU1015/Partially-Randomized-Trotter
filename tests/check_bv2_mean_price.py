@@ -132,6 +132,7 @@ class Tests(unittest.TestCase):
         c=B.generate(controller_fixtures.spec('FULL_H_RTE',M=0))
         out=V.V2MeanPriceLookup(c,integration=I)()
         self.assertTrue(all(x['mean']['rz_count'] is None and x['model'] is None for x in out))
+        self.assertTrue(all(x['law_context']['price_law'] is None and x['law_context']['ideal_sampler_distance_qualified'] is None for x in out))
         self.assertIsNone(c['rounds'][0]['q_PF']);self.assertIsNone(c['rounds'][0]['R_outer'])
         bad=controller_fixtures.spec('FULL_H_RTE',M=0);bad['split']['original_PF_method']='B3'
         with self.assertRaises(ValueError):B.generate(bad)
