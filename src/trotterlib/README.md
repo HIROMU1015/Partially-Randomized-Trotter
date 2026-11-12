@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+[H4 RMSE保存二時点S0結果](../../docs/research/pr_rpe_rmse_s0_results_20261113/REPORT.md)：科学SOURCE7c3e1e5dbで提案Aを一回実行、M12/κ≈24.30527458、m0 R2/m6 R128のnominal Nは各軸64/38。元数値gate通過、実RMSE/十分Nは未資格、他roundは未評価。新mean/reference/normalizer/array/C/G0、公開照合後STOP。
+
+既存`pr_rpe_rmse`/`pr_rpe_rmse_pilot`、P1 reference checkerとscalar geometryをSOURCE不変で再利用。旧Hoeffding wrapper・physical actionはS0から呼ばない。
+
 [PR二時点RMSE pilot準備](../../docs/research/pr_rpe_rmse_pilot_preparation_20261113/REPORT.md)：B f09のA固定経路でH4 m0/m6またはH6 m4/m8のPR scope・保存law SOURCE・部分packetを接続。M/κ/予算は未選択、旧Nと保証へ昇格せずnull保持。13新規＋31既存人工回帰PASS、新実科学計算0、公開照合後STOP。
 
 [実RMSE評価のA技術準備](../../docs/research/pr_rpe_rmse_science_preparation_20261112/REPORT.md)：固定B82bcのmetadata検証を再利用し、全round/SOURCE・保存証拠・追加call案を科学計算なしで照合。H4 B0/full-H差とH6初期例外をBLOCKED、N/boundはnull。14新規＋29既存人工回帰PASS、実signal/N/RMSE/C/G0、公開照合後STOP。

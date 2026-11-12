@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 RMSE保存二時点S0結果](research/pr_rpe_rmse_s0_results_20261113/REPORT.md)：科学SOURCE7c3e1e5dbで提案Aを一回実行、M12/κ≈24.30527458、m0 R2/m6 R128のnominal Nは各軸64/38。元数値gate通過、実RMSE/十分Nは未資格、他roundは未評価。新mean/reference/normalizer/array/C/G0、公開照合後STOP。
+
 [二時点RMSE pilotの条件選択案](research/pr_rpe_rmse_pilot_decision_20261113/REPORT.md)：実λを使わない記号条件で保存整合はH4の2組/H6の3組。初回H4・finite_B・保存再解析限定S0、M/κの決定式と予算/合成則を未採択の提案として提示。既存実装/template不変、新科学評価0、公開後STOP。
 
 [PR二時点RMSE pilot準備](research/pr_rpe_rmse_pilot_preparation_20261113/REPORT.md)：B f09のA固定経路でH4 m0/m6またはH6 m4/m8のPR scope・保存law SOURCE・部分packetを接続。M/κ/予算は未選択、旧Nと保証へ昇格せずnull保持。13新規＋31既存人工回帰PASS、新実科学計算0、公開照合後STOP。
