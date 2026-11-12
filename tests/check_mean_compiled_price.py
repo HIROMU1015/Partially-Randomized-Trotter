@@ -209,6 +209,8 @@ class Tests(unittest.TestCase):
             domain=deepcopy(r['identity']['candidate']),binding=deepcopy(task['binding']),compiler=task['profile']['compiler']))
         result=m.MeanPriceProvider(saved)(task,task['candidates'])
         self.assertTrue(all(r['price_status']=='UNQUALIFIED_MODEL' for r in result))
+        for r in saved:r['expectation']='EXPLICIT_CONDITIONAL_MODEL'
+        self.assertTrue(all(r['model']['qualified_for_candidate'] is False for r in m.MeanPriceProvider(saved)(task,task['candidates'])))
         for r in saved:r['model']['qualified_for_candidate']=True
         with self.assertRaises(ValueError):m.MeanPriceProvider(saved)(task,task['candidates'])
         saved=supplied_records(task);saved[0]['expectation']='ALL_LAW_EXPECTATION'

@@ -234,7 +234,7 @@ class MeanPriceProvider:
                             if (not api.same(model.get('domain'),c) or not api.same(model.get('binding'),task['binding'])
                                     or model.get('compiler')!=task['profile']['compiler']):
                                 raise ValueError('Foreign model candidate/binding/compiler domain')
-                            if record.get('expectation') not in ('FINITE_COHORT_ONLY','SUPPLIED_MODEL_EXPECTATION'):
+                            if record.get('expectation') not in ('FINITE_COHORT_ONLY','SUPPLIED_MODEL_EXPECTATION','EXPLICIT_CONDITIONAL_MODEL'):
                                 raise ValueError('Do not upgrade finite/model meaning to an all-law guarantee')
                             record['price_status']='UNQUALIFIED_MODEL'
                         else:raise ValueError('DIRECT finite cohort or explicitly unqualified MODEL required')
