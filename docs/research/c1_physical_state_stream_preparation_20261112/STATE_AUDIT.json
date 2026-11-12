@@ -1,0 +1,134 @@
+{
+  "status": "SOURCE_AUDIT_AND_ARTIFICIAL_TESTS_ONLY",
+  "implementation_source": "c1135fdb9a021e85ffabdbf4ef56098ec3ac97e6",
+  "baseline": "2a882fc9d17ed5e32f5581d0f220514daad0235a",
+  "sources": {
+    "C1_execution": "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7",
+    "C1_publication": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+    "H4_accounting": "8457c443554af5fadaa3ba36f97f6316ca3c5050:src/trottertracks/h4_df10_price_v1.py",
+    "H6_accounting": "ae44283d169b61deace7e1c0d18c4538d4a3fc0c:src/trottertracks/h6_df19_price_v1.py",
+    "word": "src/trottertracks/r_price_phase1_science.py:structural",
+    "sampler": "c31ef424175c02379eafebe8fc6c7548c1d9aabe:src/trotterlib/rte.py",
+    "cluster_provenance_reused": "../mean_compiled_price_preparation_20261112/SOURCE_INDEX.json"
+  },
+  "state": [
+    {
+      "name": "pending_basis",
+      "lifetime": "Accounting",
+      "content": "Full ordered operations, inverse flag, role; exact operation equality for inverse cancellation",
+      "bounded_slots": true,
+      "small_physical_support_proven": false
+    },
+    {
+      "name": "pending_z",
+      "lifetime": "Accounting",
+      "content": "Optional sequential binary64 sum per wire; flush touched wires on non-RZ; literal angle != 0",
+      "bounded_slots": true,
+      "small_physical_support_proven": false
+    },
+    {
+      "name": "active_basis_and_phase",
+      "lifetime": "One legal tail",
+      "content": "Basis/applications retained and phase summed in original order; close at identity and tail end",
+      "transport_chunk_is_tail_boundary": false
+    },
+    {
+      "name": "global_phase",
+      "lifetime": "Accounting",
+      "content": "Reported phase accumulator, not read by later structural-RZ branch",
+      "removed": false
+    },
+    {
+      "name": "counts_roles_depths",
+      "lifetime": "Accounting",
+      "content": "Accumulating counts/roles/wire arrival depths; integers need O(log E) bits; original full reports retained"
+    },
+    {
+      "name": "scalar_axis_wrapper_terminal",
+      "lifetime": "Whole full-wrapper word",
+      "content": "Scalar -cT once; axis Sdg only for sine; H/measure and finish once"
+    }
+  ],
+  "confirmed": [
+    "Original structural loop and Accounting reused without replacement",
+    "Artificial H4/H6 full result dictionary parity on both axes",
+    "Artificial 11-piece H6 order, signed angles, outer continuation",
+    "Forward-only consumer does not materialize event sequences",
+    "Existing PCG64 iterator and tuple APIs match on the pre-existing toy test"
+  ],
+  "unconfirmed": [
+    "Small closed state or price-observable quotient for the frozen physical H4/H6 support",
+    "Physical transitions/rewards and original joint piece/outer law",
+    "Physical mean S without generation of all events",
+    "End-to-end scientific producer/reader streaming and physical memory/time",
+    "Mean compiled price, long-q/R transfer, all-law expectation and uncertainty"
+  ],
+  "invalid_general_transforms": [
+    "Basis or basis plus nonzero-Z flags alone for the generic accepted native grammar",
+    "Replacing literal angle zero test by modulo-2pi unitary equivalence",
+    "Finishing at piece/outer checkpoints",
+    "Making legal tails out of transport chunks and re-associating phase",
+    "Treating path S or central RTE cluster price as full mean compiled price"
+  ],
+  "artificial_witnesses": {
+    "basis_nonzero_quotient": {
+      "prefix_z": [
+        0.25,
+        0.5
+      ],
+      "common_suffix": -0.5,
+      "terminal_S": [
+        1,
+        0
+      ]
+    },
+    "modulo_angle": {
+      "prefix_angles": [
+        "0",
+        "2*pi"
+      ],
+      "terminal_S": [
+        0,
+        1
+      ]
+    },
+    "tail_phase_chunk": {
+      "angles": [
+        "1",
+        "-1",
+        "2**-54"
+      ],
+      "one_legal_tail_S": 1,
+      "rebracketed_two_tails_S": 0
+    },
+    "terminal_checkpoint": {
+      "angles": [
+        0.25,
+        -0.25
+      ],
+      "uninterrupted_S": 0,
+      "finish_between_S": 2
+    },
+    "physical_support_reachability": null,
+    "interpretation": "Artificial primitive/metadata counterexamples, not physical molecular results or a proof against every possible physical quotient"
+  },
+  "memory_test": {
+    "artificial_event_counts": [
+      2048,
+      8192
+    ],
+    "live_new_event_objects_upper_bound": 3,
+    "live_at_end": 0,
+    "len_and_random_access_rejected": true,
+    "producer_memory_certified": false,
+    "peak_RSS": null,
+    "physical_speedup": null
+  },
+  "finite_state_caveat": "Binary64 is a finite bit set; fixed float slots do not prove a tractably small closed state. Reachable distinct values or required histories may grow with q/R.",
+  "structural_mean": null,
+  "compiled_mean": null,
+  "physical_state_closure": null,
+  "qualified_for_candidate": false,
+  "new_molecular_scientific_evaluations": 0,
+  "mandatory_stop": true
+}
