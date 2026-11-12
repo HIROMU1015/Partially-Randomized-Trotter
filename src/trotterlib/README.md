@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[RMSE/common-κ controller](../../docs/research/pr_rpe_rmse_controller_20261112/REPORT.md)：trottertracks.pr_rpe_rmse_controllerが既存structure/identity/measurement/exact scalarを再利用。高確率型会計器へRMSEを偽装せず、生成/資格/供給G/有限menu選択を分離。旧core/provider不変、71技術test。
+
 [A0実結果受入完了](../../docs/research/rpe_normalization_results_intake_20261111/REPORT.md)：既存trottertracks.rpe_normalization_intake APIを無変更で利用。公開24件を診断として保持しC1の2点へ接続。科学kernel・N/C provider・R選択実装は不変。
 
 [A0診断受入adapter](../../docs/research/rpe_normalization_intake_20261111/HANDOFF.md)：trottertracks.rpe_normalization_intakeは既存Bのbuild_menu/request_context/SavedArtifactsを再利用し、24件の診断とC1重複2点を受動接続する。N/C/G moduleは変更しない。

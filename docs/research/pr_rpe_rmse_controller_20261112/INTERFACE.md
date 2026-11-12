@@ -35,7 +35,7 @@ DIRECT / MODEL、決定論単価 / 有限cohort / 全law期待値 / 未検証外
 
 既定は`qualified_expectation`。`finite_cohort_scenario`は明示したcohort条件付き比較だけで、全lawの最適性を示さない。null/未資格の値を0へ補完しない。X/Yはpaired cohort、未知shared calibration/cross-round/cross-κ共分散/systematic/CIはnullのまま。
 
-## Bの公開予定APIと実装の分離
+## Bの実装APIと機能の分離
 
 `trottertracks.pr_rpe_rmse_controller`：
 
@@ -49,3 +49,14 @@ PF/PR/純RTEを同じtarget/policy/価格scopeで比較する。方式別menu/co
 ## A/Cへ共有する範囲
 
 Aはκのkind/mapper、RMSE error contractとN_packetを、Cは上記full identityに対する価格種別/domain/cohort/資格を実装できる。仕様公開を先行し、Bはその後に人工test付きcontrollerを実装する。変更が必要なら新しい明示definition/sourceを渡す。現在の数学的仮定をBが正式採択することはない。新しい実N/C/Gは別のユーザー実行許可が必要。
+
+## 実装後の補足
+
+- scalarは既存会計のint/有限binary64/`{numerator,denominator}`を受け、h/Δ/κ/目標と実時刻・実幅をexact rationalに正規化する。κは現mapperでは正値のみで、κ=0境界は扱わない。
+- ceil整数化によりactual_delta_pfがroundごとに変わる場合がある。同じeffective Hamiltonianの冪であるとは仮定しない。hとΔの整合、control/時間半減規則を含む全scheduleの誤差契約をAが資格するまで科学利用しない。Bは追加の時間半減を行わない。
+- N_packet.statusは`RMSE_SCHEDULE_EVALUATED`、evidence_kindは`SYNTHETIC_ONLY`または`SCIENTIFIC`。後者はpolicy.scientific_status=`EXTERNALLY_QUALIFIED`と明示科学SOURCEが必要。Bはこのstatusを発行・採択しない。
+- rmse_evidence：`source`, `status`, `error_contract`, `rmse_bound_ha`, `covers_state_target_alias_prior_decoder_all_rounds`。ランダム化方式では`finite_K_status`と`signed_piece_kappa_status`も必要。供給されたboundと目標だけを比較し、二乗和・N・normalizationを導出しない。
+- N roundは`m`, `identity`, `law_binding`, `N_X`, `N_Y`。Cのq_variableはPF/PRでは`q_PF`、純RTEでは`event_count`。measurement/単位は既存Bと同じ。`cohorts[(candidate_id,axis)]`が選ぶ1 scenarioだけを使う。
+- selectへ渡すevaluationはcostの出力。assessだけの結果はG未評価としてpending。各方式の有限menu coverageと価格policyを照合するが、PF baseline最適性・科学的優位性・global最適性は資格しない。finite_K、κ定義/mapper、h/formulaは隠れた探索変数にしない。
+
+具体的な人工I/O：[SYNTHETIC_IO_EXAMPLE.json](SYNTHETIC_IO_EXAMPLE.json)。実装・残る科学判断：[REPORT](REPORT.md)／[HANDOFF](HANDOFF.md)。

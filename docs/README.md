@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR–RPE RMSE型controller](research/pr_rpe_rmse_controller_20261112/REPORT.md)／[A/B/C共通仕様](research/pr_rpe_rmse_controller_20261112/INTERFACE.md)／[HANDOFF](research/pr_rpe_rmse_controller_20261112/HANDOFF.md)：共通κ/Mのschedule生成・資格判定・exact人工費用比較。71技術test、科学定義は未採択。
+
 [C1実価格の取込み](research/rpe_c1_price_results_intake_20261111/REPORT.md)／[利用HANDOFF](research/rpe_c1_price_results_intake_20261111/HANDOFF.md)／[INTAKE](research/rpe_c1_price_results_intake_20261111/INTAKE.json)／[COVERAGE](research/rpe_c1_price_results_intake_20261111/COVERAGE.json)：32 record受入、model未採用、G未評価。
 
 [R可変C価格のB受入](research/rpe_r_price_intake_20261111/REPORT.md)／[取込み手順HANDOFF](research/rpe_r_price_intake_20261111/HANDOFF.md)／[READINESS](research/rpe_r_price_intake_20261111/READINESS.json)／[COVERAGE](research/rpe_r_price_intake_20261111/COVERAGE.json)：C1 8セルの受入準備、実C1未取込み、130技術test。
