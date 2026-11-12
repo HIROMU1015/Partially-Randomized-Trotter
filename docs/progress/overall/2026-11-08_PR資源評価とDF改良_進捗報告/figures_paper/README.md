@@ -19,9 +19,9 @@ DFの方式比較では、原報告のB2を「PR（一部因子を保持）」�
 | 本編3 | ncg_cases |
 | 本編4 | high_order_absolute |
 | 本編5 | higher_order_time |
-| 本編16 | z_relocation |
-| 本編17・旧64標本の三者点値 | df_three_method_z_relocated |
-| 本編18 | dictionary_comparison |
+| 本編15 | z_relocation |
+| 本編16・旧64標本の三者点値 | df_three_method_z_relocated |
+| 本編17 | dictionary_comparison |
 | 補足B | df_full_h_t20 |
 | 補足C | strong_d |
 
