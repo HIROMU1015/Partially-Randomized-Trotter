@@ -1,5 +1,7 @@
 # 文書索引
 
+[二時点RMSE pilotの条件選択案](research/pr_rpe_rmse_pilot_decision_20261113/REPORT.md)：実λを使わない記号条件で保存整合はH4の2組/H6の3組。初回H4・finite_B・保存再解析限定S0、M/κの決定式と予算/合成則を未採択の提案として提示。既存実装/template不変、新科学評価0、公開後STOP。
+
 [PR二時点RMSE pilot準備](research/pr_rpe_rmse_pilot_preparation_20261113/REPORT.md)：B f09のA固定経路でH4 m0/m6またはH6 m4/m8のPR scope・保存law SOURCE・部分packetを接続。M/κ/予算は未選択、旧Nと保証へ昇格せずnull保持。13新規＋31既存人工回帰PASS、新実科学計算0、公開照合後STOP。
 
 [実RMSE評価のA技術準備](research/pr_rpe_rmse_science_preparation_20261112/REPORT.md)：固定B82bcのmetadata検証を再利用し、全round/SOURCE・保存証拠・追加call案を科学計算なしで照合。H4 B0/full-H差とH6初期例外をBLOCKED、N/boundはnull。14新規＋29既存人工回帰PASS、実signal/N/RMSE/C/G0、公開照合後STOP。
