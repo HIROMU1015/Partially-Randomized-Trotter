@@ -1,0 +1,24 @@
+{
+  "schema": "PR_RPE_RMSE_V1",
+  "status": "TECHNICAL_PROPOSAL_SCIENTIFIC_DEFINITIONS_NOT_ADOPTED",
+  "methods": ["PF", "PR", "FULL_H_RTE"],
+  "configuration_fields": ["binding", "split", "method", "L_D", "delta_pf", "formula", "h", "M", "kappa", "event_mapping", "finite_K", "law", "rmse_policy", "profile"],
+  "kappa": {
+    "required": ["kind", "value", "definition_source"],
+    "shared_across_all_rounds": true,
+    "draft_mapping": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+    "paper_reference": "https://arxiv.org/pdf/2503.05647v2#page=42",
+    "finite_K_signed_piece_guarantee_inferred": false
+  },
+  "N_packet_fields": ["configuration_id", "policy", "source", "status", "rounds", "rmse_evidence"],
+  "N_integer_unit": "quantum_shots_per_axis",
+  "policy_families": ["PR_PAPER_RMSE", "HIGH_PROBABILITY_RPE"],
+  "candidate_generation_is_qualification": false,
+  "legacy_record_relabeling_allowed": false,
+  "normalization_is_price_multiplier": false,
+  "classical_sample_count_is_shot_multiplier": false,
+  "scientific_kappa_RMSE_contract_adopted": false,
+  "real_scientific_execution_authorized_by_interface": false,
+  "implementation_module": "trottertracks.pr_rpe_rmse_controller",
+  "api": ["generate", "paper_event_mapper", "assess", "cost", "select"]
+}
