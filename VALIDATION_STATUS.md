@@ -1,5 +1,7 @@
 # Validation status
 
+[Full PF保存成果inventory](docs/research/d_full_pf_saved_evidence_coverage_20261113/REPORT.md)：新12（DF10/DF12、Full/truncated、4th/m5、異SOURCE、signal/reference/価格の分離、X/Y、compiler/policy、MODEL/DIRECT、FAIL保持、V2 null結合、非起動・copy、bytes保全）＋D16＋回帰52＝80 PASS。保存値は再計算していない。
+
 [D interface更新](docs/research/d_full_baseline_interface_update_20261113/REPORT.md)：D16（4th/m5分離・係数順序・全rank・B0拒否・κなし・one-body・B3・scalar・q×R・grouping・A/C一致・B整合probe・非起動）＋B回帰80＝96 PASS。B controllerは030f3f548でも不変。
 
 [Full PF・Full-H RTE V2 adapter](docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)：新14（Full/truncated、B0/p7、one-body・B3・scalar・公式/順序・grouping・DF/Pauli・binding・A/C同一候補・κ/K・null・非起動・SOURCE）＋B回帰80＝94 PASS。保存値は転記のみ、公式・κ・layoutは未採択。

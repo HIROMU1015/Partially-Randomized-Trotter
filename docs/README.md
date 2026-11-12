@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full PF保存成果coverage](research/d_full_pf_saved_evidence_coverage_20261113/REPORT.md)／[A向け](research/d_full_pf_saved_evidence_coverage_20261113/HANDOFF_A.md)／[C向け](research/d_full_pf_saved_evidence_coverage_20261113/HANDOFF_C.md)／[COVERAGE.csv](research/d_full_pf_saved_evidence_coverage_20261113/COVERAGE.csv)：136候補のsignal/reference/X/Y価格の再利用可否。
+
 [標準4th・Full-H明示layout request](research/d_full_baseline_interface_update_20261113/REPORT.md)／[A/B/C HANDOFF](research/d_full_baseline_interface_update_20261113/HANDOFF.md)：V2 IDはB interface待ちでnull、96技術test。
 
 [Full PF・DF Full-H RTEのV2接続](research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)／[A/B/C HANDOFF](research/d_full_pf_full_h_rte_v2_paths_20261113/HANDOFF.md)／[SOURCE_CATALOG](research/d_full_pf_full_h_rte_v2_paths_20261113/SOURCE_CATALOG.json)：比較baselineの物理SOURCEとrequest、94技術test。

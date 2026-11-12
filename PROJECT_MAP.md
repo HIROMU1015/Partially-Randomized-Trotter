@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF保存成果のSOURCE照合・価格coverage（Codex D）](docs/research/d_full_pf_saved_evidence_coverage_20261113/REPORT.md)（2026-11-13）：長時間carrier（155529e20、記録SHA一致）とpf_commonを照合。H4 DF10/H6 DF19のFull PF 136候補全てにsignal/referenceあり（EXACT 134）、X/Y価格は73候補（EXACT 56・要確認17）、価格欠測63。grid外roundは全欠測。80技術test PASS、新科学計算・compile 0、公開後STOP。
+
 [標準Yoshida4・Full-H明示layoutの物理request（Codex D）](docs/research/d_full_baseline_interface_update_20261113/REPORT.md)（2026-11-13）：物理schedule層を追加。2nd/m5_bestはB V2へ結合し全round照合、標準4thとκなし明示layoutはV2 ID null（B interface待ち）で物理/A/C requestを完成。96技術test PASS、8次・科学計算0、公開後STOP。
 
 [Full PF・DF Full-H RTEのV2物理request（Codex D）](docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)（2026-11-13）：既存PF公式（2nd/標準4th/m5_best/8次）と`prepare_full_h`のSOURCEを整理し、B V2へFull PF・Full-H RTE configurationとA/C requestを渡す薄いadapterを追加。B3・truncated・tail-only λ・grouping無視を拒否。94技術test PASS、科学計算0、公開後STOP。
