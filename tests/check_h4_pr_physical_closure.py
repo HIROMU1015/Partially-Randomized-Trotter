@@ -1,0 +1,62 @@
+"""Synthetic local words and immutable public metadata; no molecular load."""
+from pathlib import Path
+import sys
+import unittest
+from unittest.mock import patch
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
+from trottertracks import h4_pr_physical_closure as d
+from trottertracks.h4_df10_price_v1 import Accounting
+
+
+class Tests(unittest.TestCase):
+    def test_exact_binary64_suffix_and_reset_not_modulo(self):
+        def rz(x):return dict(name='rz',wires=[0],angle=x)
+        self.assertEqual(d.wire_effect([rz(.5),rz(-.5)],0)['exit_z'],0.)
+        self.assertEqual(d.wire_effect([rz(1.),rz(2**-54),rz(-1.)],0)['exit_z'],0.)
+        e=d.wire_effect([rz(.7),dict(name='sx',wires=[0],angle=None),rz(.25)],0)
+        self.assertTrue(e['reset']);self.assertEqual(e['exit_z'],.25)
+        self.assertEqual(e['leading_z'],[.7]);self.assertTrue(d.wire_effect([rz(6.283185307179586)],0)['z_only'])
+
+    def test_original_native_expansion_and_product_rotation_control_flush(self):
+        T=d.tracer(Accounting)
+        for support in ((0,),(1,6)):
+            for role in ('product','rotation'):
+                word=d.application_word(T,support,role,.17)
+                self.assertTrue(d.wire_effect(word,8)['reset'])
+                self.assertIsNone(d.wire_effect(word,8)['exit_z'])
+        with self.assertRaises(RuntimeError):T().finish()
+
+    def test_reset_exit_matches_original_pending_Z_for_all_tested_inputs(self):
+        word=[dict(name='rz',wires=[0],angle=.125),dict(name='sx',wires=[0],angle=None),
+              dict(name='rz',wires=[0],angle=.25),dict(name='rz',wires=[0],angle=-.125)]
+        effect=d.wire_effect(word,0)
+        for initial in (None,0.,.3,-.125):
+            a=Accounting();a.pending_z[0]=initial
+            for op in word:a._native(op['name'],op['wires'],op['angle'])
+            self.assertEqual(a.pending_z[0],effect['exit_z'])
+
+    def test_basis_delayed_inverse_literal_equality_and_wire_order(self):
+        T=d.tracer(Accounting);ops=[dict(name='p',qubits=[0],parameters=['0.3'])]
+        t=T();t.basis(ops,True,'a');t.basis(ops,False,'b');self.assertEqual(t.word,[])
+        self.assertIsNone(t.pending_basis)
+        x=d.basis_word(T,ops,True);self.assertEqual(x[0]['angle'],-.3)
+        self.assertTrue(d.wire_effect(x,0)['z_only']);self.assertTrue(d.wire_effect(x,1)['untouched'])
+
+    def test_tail_phase_is_not_chunked_or_reassociated(self):
+        # Original tail has one local active/phase accumulator per legal tail.
+        import inspect
+        src=inspect.getsource(Accounting.tail)
+        self.assertIn('phase +=',src);self.assertIn('for event in events:',src)
+        self.assertIn('if phase != 0:',src)
+
+    def test_formal_B_configuration_matches_prior_C_requests(self):
+        plan,match=d.check_publication(ROOT)
+        self.assertEqual(match['configuration_id'],plan['B_V2_configuration_id'])
+        self.assertEqual([r['m'] for r in plan['focus_requests']],[0,6])
+
+    def test_import_metadata_check_do_not_run_science(self):
+        with patch.object(d,'diagnostic',side_effect=AssertionError('No science')):
+            d.check_publication(ROOT)
+
+
+if __name__=='__main__':unittest.main(verbosity=2)
