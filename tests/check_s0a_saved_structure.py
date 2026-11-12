@@ -1,5 +1,7 @@
 """S0a artificial reader/law/path tests. Never load molecular inputs or raw."""
 import ast
+import builtins
+import symtable
 from copy import deepcopy
 import importlib.util
 import math
@@ -107,6 +109,24 @@ class Tests(unittest.TestCase):
         with no_circuits():
             with self.assertRaisesRegex(RuntimeError,'BUILD_FORBIDDEN'):qiskit.QuantumCircuit(1)
             with self.assertRaisesRegex(RuntimeError,'TRANSPILE_FORBIDDEN'):qiskit.transpile(None)
+
+    def test_context_exec_scope_supplies_all_pinned_global_names_without_physics(self):
+        from trottertracks import s0a_structure_context as context
+        table=symtable.symtable(ast.unparse(context.context_body(ROOT)),'PINNED_CONTEXT','exec')
+        needed=set()
+        def visit(t):
+            needed.update(symbol.get_name() for symbol in t.get_symbols()
+                          if symbol.is_global() and symbol.is_referenced())
+            for child in t.get_children():visit(child)
+        for child in table.get_children():visit(child)
+        needed-=set(dir(builtins))
+        def checked_exec(code,scope):
+            self.assertFalse(needed-set(scope),str(needed-set(scope)))
+            self.assertIs(scope['ast'],ast)
+            scope['context']=lambda self,system: 'MOCK_NO_SCIENTIFIC_CONTEXT'
+        with patch.object(context,'exec',side_effect=checked_exec,create=True),patch.dict(sys.modules,{'trotterlib':SimpleNamespace()}):
+            result=context.load_context(ROOT,dict(runtime=dict(provider_root='MOCK')),'H4')
+        self.assertEqual(result,'MOCK_NO_SCIENTIFIC_CONTEXT')
 
     def test_context_excludes_compiler_and_sampler_invocations(self):
         body=context_body(ROOT)

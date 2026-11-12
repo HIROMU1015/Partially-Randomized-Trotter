@@ -50,7 +50,7 @@ def load_context(root,plan,system):
         package.__path__=[str(provider/'src/trotterlib')]
         sys.modules['trotterlib']=package
     method=context_body(root)
-    scope=dict(m=m,Path=Path,SimpleNamespace=SimpleNamespace,read=read,functions=functions,math=math,hashlib=hashlib,json=json,sys=sys)
+    scope=dict(m=m,Path=Path,SimpleNamespace=SimpleNamespace,read=read,functions=functions,math=math,hashlib=hashlib,json=json,sys=sys,ast=ast)
     exec(compile(ast.fix_missing_locations(ast.Module(body=[method],type_ignores=[])),
         C1_SOURCE+':context_S_only','exec'),scope)
     return scope['context'](SimpleNamespace(root=Path(root),plan=plan,contexts={}),system)
