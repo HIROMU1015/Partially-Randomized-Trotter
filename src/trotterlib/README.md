@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4 S0 V2接続](../../docs/research/h4_s0_v2_integration_20261113/REPORT.md)：trottertracks.h4_s0_v2_intakeが既存B generator/identity/plannerとC bv2_mean_priceを再利用。A数値器/C価格modelは不変、元packetと未資格状態を保全し61技術test。
+
 [有限V2 menuの証拠plan](../../docs/research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)：trottertracks.pr_rpe_rmse_evidence.planは既存assess/coverageとcost=nullのselectを再利用。A/Cの物理計算・価格評価器を重複実装せず、56技術test。
 
 [4方式のRMSE比較](../../docs/research/pr_rpe_method_coverage_20261113/REPORT.md)：trottertracks.pr_rpe_rmse_controller/integrationの最小拡張。PF armを保持してFull/truncatedを分離、元Hへの切捨て誤差・全round RMSE・N/C資格を確認。科学core/providerは追加しない。

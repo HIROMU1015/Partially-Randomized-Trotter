@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 S0 V2統合](docs/research/h4_s0_v2_integration_20261113/REPORT.md)：新10＋C12/planner13/4方式14/統合12＝61技術test PASS。13round物理一致、原nominal/null/SOURCE、C1有限cohort/false、26軸不足を保持。科学資格はUNQUALIFIED、実G/科学計算0、公開後mandatory STOP。
+
 [4方式RMSE有限menuの証拠準備](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：新13＋method coverage14/controller17/統合12＝56技術test PASS。V2全identity/SOURCE/誤差契約・局所診断/平均Cの区別・欠測と部分集合を確認。実menu未確定、実science/Gなし、公開後STOP。
 
 [4方式RMSE評価経路・coverage](docs/research/pr_rpe_method_coverage_20261113/REPORT.md)：新14＋関連回帰85＝99人工/metadata技術test PASS。H4 B0/p7はtruncated PF、DF B3はFull-H RTEから除外。保存118候補/236軸を新RMSE N/Cへ昇格せず、科学N/C/G/最適化未実行。公開後mandatory STOP。

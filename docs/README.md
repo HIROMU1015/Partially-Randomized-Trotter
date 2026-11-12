@@ -1,5 +1,7 @@
 # 文書索引
 
+[H4 S0→V2 REPORT](research/h4_s0_v2_integration_20261113/REPORT.md)／[A/C HANDOFF](research/h4_s0_v2_integration_20261113/HANDOFF.md)／[26軸不足証拠](research/h4_s0_v2_integration_20261113/run01/EVIDENCE_PLAN.json)：原V1 packetを無変更保存、全13roundのcanonical V2/価格requestを公開。61技術test、実N/C/G未実行。
+
 [4方式RMSE実行準備](research/pr_rpe_evidence_preparation_20261113/REPORT.md)／[有限menu I/OとA/C HANDOFF](research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)／[Full PF・純RTE物理SOURCE契約](research/pr_rpe_evidence_preparation_20261113/SOURCE_CONTRACTS.md)：全round不足証拠planner、56技術test、科学計算/実G未実行。
 
 [4方式RMSE coverage](research/pr_rpe_method_coverage_20261113/REPORT.md)／[SOURCE再利用表](research/pr_rpe_method_coverage_20261113/SOURCE_MAP.md)／[A/C HANDOFF](research/pr_rpe_method_coverage_20261113/HANDOFF.md)：Full/truncated PF・PR・全H RTEを分離、保存118候補/236軸、99技術test、実G未評価。

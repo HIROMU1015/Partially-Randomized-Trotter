@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[h4_s0_v2_intake](../../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)：固定S0のcanonical metadata・V1/V2照合・診断view・将来A V2 packetの検査。bv2_mean_priceはC1dbからbyte一致取込み。科学leaf/価格predictor・Gは呼ばない。
+
 [pr_rpe_rmse_evidence](../../docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：供給V2 finite menuから全schedule/axisの不足証拠・保存再利用条件・A/C next_workを出す薄いadapter。既存controller/providerは不変、実G/最適化なし。
 
 [PF/PR/Full-H RTEのRMSE coverage](../../docs/research/pr_rpe_method_coverage_20261113/HANDOFF.md)：pr_rpe_rmse_controllerのcomparison_method/assess coverage、明示formula menu、truncated-Hの元H誤差契約。pr_rpe_rmse_integrationのA scopeを明示。新14＋回帰85技術test、実N/C/Gなし。
