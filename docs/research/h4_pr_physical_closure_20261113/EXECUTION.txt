@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/rte.py", line 48, in require_integer_count
+    normalized = operator.index(value)
+                 ^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'NoneType' object cannot be interpreted as an integer
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/scripts/run_h4_pr_physical_closure.py", line 33, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/scripts/run_h4_pr_physical_closure.py", line 20, in main
+    result=execute(ROOT,a.source);write('RESULT.json',result)
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/h4_pr_physical_closure.py", line 186, in execute
+    result=diagnostic(context,plan,B_match)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/h4_pr_physical_closure.py", line 112, in diagnostic
+    config,distribution=context.rte.make_rte_config(tail,evolution_time=time,rte_steps=R,
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/rte.py", line 1505, in make_rte_config
+    seed = require_integer_count(seed, name="seed")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h46-higher-pf-acquire/20261018/private/provider/src/trotterlib/rte.py", line 50, in require_integer_count
+    raise TypeError(f"{name} must be an integer count.") from exc
+TypeError: seed must be an integer count.

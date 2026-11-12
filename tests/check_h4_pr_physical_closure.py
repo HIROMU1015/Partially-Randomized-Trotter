@@ -3,12 +3,23 @@ from pathlib import Path
 import sys
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace as NS
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'src'))
 from trottertracks import h4_pr_physical_closure as d
 from trottertracks.h4_df10_price_v1 import Accounting
 
 
 class Tests(unittest.TestCase):
+    def test_law_descriptor_uses_original_integer_API_without_sampling(self):
+        def make(tail,**kw):
+            self.assertEqual(kw['seed'],0);self.assertIs(type(kw['seed']),int)
+            self.assertEqual(kw['finite_taylor_order'],2)
+            return NS(dimensionless_step_time=tail.lambda_r*(kw['evolution_time']/kw['rte_steps'])),NS(orders=(0,2))
+        context=NS(rte=NS(make_rte_config=make),tolerance=lambda tau,K:1e-12)
+        for R in (2,128):
+            tau,_,_=d.make_law(context,NS(lambda_r=1.25),.1,R)
+            self.assertEqual(tau,1.25*(.1/R))
+
     def test_exact_binary64_suffix_and_reset_not_modulo(self):
         def rz(x):return dict(name='rz',wires=[0],angle=x)
         self.assertEqual(d.wire_effect([rz(.5),rz(-.5)],0)['exit_z'],0.)

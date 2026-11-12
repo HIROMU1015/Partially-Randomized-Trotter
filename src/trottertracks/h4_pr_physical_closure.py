@@ -82,6 +82,16 @@ def application_word(Trace,support,role,unsigned=0.):
     return t.word
 
 
+def make_law(context,tail,time,R):
+    # Original API requires an integer even for a descriptor. This function
+    # constructs no RNG and never calls sample_rte_events.
+    tau=tail.lambda_r*(float(time)/R)
+    config,distribution=context.rte.make_rte_config(tail,evolution_time=time,rte_steps=R,
+        truncation_tolerance=context.tolerance(tau,2),finite_taylor_order=2,seed=0)
+    if config.dimensionless_step_time!=tau or tuple(distribution.orders)!=(0,2):raise ValueError('FIXED_K2_LAW')
+    return tau,config,distribution
+
+
 def diagnostic(context,plan,B_match):
     """Scientific metadata/alphabet analysis; one restored H4 context only."""
     prep=context.ctx.prep;tail=prep.rte_preparation.symbolic_tail
@@ -108,16 +118,14 @@ def diagnostic(context,plan,B_match):
     supports=sorted({tuple(c.diagonal_pauli_support) for c in components})
     for request in plan['focus_requests']:
         c=request['physical_candidate'];R=c['R_outer'];time=c['T']/c['q']
-        tau=tail.lambda_r*(float(time)/R)
-        config,distribution=context.rte.make_rte_config(tail,evolution_time=time,rte_steps=R,
-            truncation_tolerance=context.tolerance(tau,2),finite_taylor_order=2,seed=None)
-        if config.dimensionless_step_time!=tau or tuple(distribution.orders)!=(0,2):raise ValueError('FIXED_K2_LAW')
+        tau,config,distribution=make_law(context,tail,time,R)
         laws.append(dict(m=request['m'],candidate_id=c['id'],q_PF=c['q'],R_outer=R,
             event_count=request['identity']['structure']['event_count'],time_per_outer=time,
             tau=tau,tau_hex=tau.hex(),orders=list(distribution.orders),
             order_weights=list(distribution.unnormalized_order_weights),
             order_probabilities=list(distribution.order_probabilities),
             event_normalization=distribution.exact_finite_distribution,
+            descriptor_seed=0,seed_used_for_sampling=False,
             rotation_angles={str(k):math.atan(tau/(k+1)) for k in distribution.orders},
             event_support_grammar='Choose rotation and k ordered products independently from the same component registry; apply products then rotation',
             event_probability_rule='weight[k]/Z * product(p_i / math.fsum(component_p))',
