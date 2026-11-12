@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[PF/PR/Full-H RTEのRMSE coverage](../../docs/research/pr_rpe_method_coverage_20261113/HANDOFF.md)：pr_rpe_rmse_controllerのcomparison_method/assess coverage、明示formula menu、truncated-Hの元H誤差契約。pr_rpe_rmse_integrationのA scopeを明示。新14＋回帰85技術test、実N/C/Gなし。
+
 [R可変C価格受入](../../docs/research/rpe_r_price_intake_20261111/REPORT.md)：rpe_r_price_intake（C1PriceIntake/RScopedFixedPrices/records_for/coverage）を追加、Cのr_variable_compiled_priceをbyte一致で取込み。既存B moduleは不変。
 
 [R screeningと価格Phase1整合](../../docs/research/r_screening_price_alignment_20261111/REPORT.md)：元p/r/b provider実装を変更せず、metadata CLIで候補/SOURCE/law差と実験依存関係を照合。実科学計算0。

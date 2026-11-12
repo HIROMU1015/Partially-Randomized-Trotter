@@ -155,7 +155,7 @@ class IntegrationTests(unittest.TestCase):
         b0_args = inputs(); b0_args['design']['PF'] = dict(method='B0', prefix=7)
         b0, n0, _, _ = prepare(b0_args, 'PF')
         self.assertEqual(b0['rounds'][0]['candidate']['physical_method'], 'B0')
-        self.assertIn('UNQUALIFIED_A_PF_BASELINE_SCOPE', B.assess(b0, mock_qualified_n(n0), [], cohorts={})['reasons'])
+        self.assertIn('UNQUALIFIED_TRUNCATION_ERROR_AGAINST_ORIGINAL_H', B.assess(b0, mock_qualified_n(n0), [], cohorts={})['reasons'])
         with self.assertRaisesRegex(ValueError, 'FULL_H_RTE is not B3'):
             I.a_spec(inputs(), 'FULL_H_RTE')
 

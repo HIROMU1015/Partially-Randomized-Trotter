@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`inventory_pr_rpe_method_coverage.py`](inventory_pr_rpe_method_coverage.py)：固定保存JSONの候補・N/C存在とRMSE資格を出力するmetadata専用CLI。[4方式REPORT](../docs/research/pr_rpe_method_coverage_20261113/REPORT.md)。新schedule/科学数値/compile/Gを実行しない。
+
 [RMSE A/B/C接続](../docs/research/pr_rpe_rmse_abc_integration_20261112/HANDOFF.md)：Aのdemo_pr_rpe_rmse.pyは人工例のみ。新統合test check_pr_rpe_rmse_integration.pyとAPI adapterを追加し、実科学runnerは起動しない。
 
 [RMSE/common-κ基盤](../docs/research/pr_rpe_rmse_controller_20261112/HANDOFF.md)：新科学runnerは追加せず、pr_rpe_rmse_controller APIとcheck_pr_rpe_rmse_controller.pyの人工17件を提供。結果資料のCHECK_SAVED_COMPATIBILITY.pyは旧A-P1/C1固定metadata照合だけ。

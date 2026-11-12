@@ -42,14 +42,18 @@ def a_spec(inputs, method='PR'):
         contract=deepcopy(d['contract']), source=deepcopy(d['source'])))
     kappa = None if method == 'PF' else dict(kind=A.KAPPA_DEFINITION,
         value=_exact(args['kappa_paper']), definition_source=deepcopy(A.PAPER))
+    split = dict(L_D=d['prefix'] if method == 'PR' else d['PF']['prefix'], source=deepcopy(d['source']),
+        randomized_scope='TAIL_AFTER_PREFIX' if method == 'PR' else 'NONE',
+        deterministic_scope='PREFIX' if method == 'PR' else 'FULL_H' if d['PF']['method'] == 'FULL' else 'TRUNCATED_H',
+        original_PF_method=d['PF']['method'],
+        lambda_R=_exact(args['tail_norm']['lambda_R']) if method == 'PR' else None,
+        lambda_source=deepcopy(args['tail_norm']['source']) if method == 'PR' else None)
+    if method == 'PF':
+        split['retained_hamiltonian'] = dict(target_hamiltonian=binding['hamiltonian'],
+            construction=d['PF']['method'], prefix=d['PF']['prefix'], source=deepcopy(d['source']))
     return dict(schedule_adapter=ADAPTER, A_input=args, A_release=A_RELEASE,
         binding=binding, method=method, L_D=d['prefix'] if method == 'PR' else d['PF']['prefix'],
-        split=dict(L_D=d['prefix'] if method == 'PR' else d['PF']['prefix'], source=deepcopy(d['source']),
-            randomized_scope='TAIL_AFTER_PREFIX' if method == 'PR' else 'NONE',
-            deterministic_scope='FULL_H' if d['PF']['method'] == 'FULL' else 'A_SOURCE_BOUND_PF_BASELINE',
-            original_PF_method=d['PF']['method'],
-            lambda_R=_exact(args['tail_norm']['lambda_R']) if method == 'PR' else None,
-            lambda_source=deepcopy(args['tail_norm']['source']) if method == 'PR' else None),
+        split=split,
         delta_pf=_exact(d['delta']), formula=d['formula'], h=_exact(d['base_time']), M=args['M'], kappa=kappa,
         event_mapping=dict(kind='A_SAVED_EARLY_FIXED_GRID_V1', source=dict(commit=A_RELEASE, path='src/trottertracks/pr_rpe_rmse.py'),
             pf_grid='EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY'),

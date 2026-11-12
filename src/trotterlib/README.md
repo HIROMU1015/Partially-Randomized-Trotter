@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[4方式のRMSE比較](../../docs/research/pr_rpe_method_coverage_20261113/REPORT.md)：trottertracks.pr_rpe_rmse_controller/integrationの最小拡張。PF armを保持してFull/truncatedを分離、元Hへの切捨て誤差・全round RMSE・N/C資格を確認。科学core/providerは追加しない。
+
 [RMSE A/B/C最終adapter](../../docs/research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)：trottertracks.pr_rpe_rmse_integrationが固定A schedule/N metadataと固定C MeanPriceProviderを最新B controllerへ接続。A/C moduleはbyte一致、C閉状態kernelは人工資格のみ。新12＋回帰123件PASS。
 
 [RMSE/common-κ controller](../../docs/research/pr_rpe_rmse_controller_20261112/REPORT.md)：trottertracks.pr_rpe_rmse_controllerが既存structure/identity/measurement/exact scalarを再利用。高確率型会計器へRMSEを偽装せず、生成/資格/供給G/有限menu選択を分離。旧core/provider不変、71技術test。

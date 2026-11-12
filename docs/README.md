@@ -1,5 +1,7 @@
 # 文書索引
 
+[4方式RMSE coverage](research/pr_rpe_method_coverage_20261113/REPORT.md)／[SOURCE再利用表](research/pr_rpe_method_coverage_20261113/SOURCE_MAP.md)／[A/C HANDOFF](research/pr_rpe_method_coverage_20261113/HANDOFF.md)：Full/truncated PF・PR・全H RTEを分離、保存118候補/236軸、99技術test、実G未評価。
+
 [RMSE A/B/C最終統合](research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)／[接続仕様](research/pr_rpe_rmse_abc_integration_20261112/HANDOFF.md)／[人工結果](research/pr_rpe_rmse_abc_integration_20261112/SYNTHETIC_SUMMARY.json)：TECHNICAL_INTEGRATION_PASS、科学資格pending、実資源最適化未実行。135技術test。
 
 [PR–RPE RMSE型controller](research/pr_rpe_rmse_controller_20261112/REPORT.md)／[A/B/C共通仕様](research/pr_rpe_rmse_controller_20261112/INTERFACE.md)／[HANDOFF](research/pr_rpe_rmse_controller_20261112/HANDOFF.md)：共通κ/Mのschedule生成・資格判定・exact人工費用比較。71技術test、科学定義は未採択。

@@ -1,5 +1,7 @@
 # Validation status
 
+[4方式RMSE評価経路・coverage](docs/research/pr_rpe_method_coverage_20261113/REPORT.md)：新14＋関連回帰85＝99人工/metadata技術test PASS。H4 B0/p7はtruncated PF、DF B3はFull-H RTEから除外。保存118候補/236軸を新RMSE N/Cへ昇格せず、科学N/C/G/最適化未実行。公開後mandatory STOP。
+
 [RMSE A/B/C最終統合](docs/research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)：人工12＋A17/C15/B17/R可変N12/provider8/HP会計15/pipeline12/旧R12/C1受入15＝135件全PASS。A/C固定source byte保全、固定δ・H6早期例外・nominal非昇格・受動C lookup・共通κ選択を確認。科学資格pending/実最適化未実行、公開後STOP。
 
 [RMSE/common-κ技術基盤](docs/research/pr_rpe_rmse_controller_20261112/REPORT.md)：人工17＋会計15/pipeline12/R選択12/C受入15＝71件PASS。共通κ・M/全identity・finite-K資格・missing/model false・巨大整数・whole-schedule選択と3方式を確認。A-P1保存12件は旧高確率型として照合。数学的正式採択・実科学計算・実最適化0、公開後STOP。

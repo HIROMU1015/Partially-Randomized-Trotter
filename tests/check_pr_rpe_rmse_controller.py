@@ -33,7 +33,7 @@ def spec(method='PR', M=1, kappa=1, L_D=1, delta=1):
         s['law']['model'] = 'deterministic'
     if method == 'FULL_H_RTE':
         s.update(L_D=0, delta_pf=None, formula=None)
-        s['split'].update(L_D=0, randomized_scope='FULL_H_INCLUDING_ONE_BODY', one_body_policy='RANDOMIZED')
+        s['split'].update(L_D=0, randomized_scope='FULL_H_INCLUDING_ONE_BODY', one_body_policy='RANDOMIZED', deterministic_scope='NONE')
     return s
 
 
@@ -241,7 +241,8 @@ class ControllerTests(unittest.TestCase):
         self.assertEqual(len({v['id'] for v in configs}), 3)
         results = [evaluate(c, data(c, price=price)) for c, price in zip(configs, (4, 2, 3))]
         out = m.select(configs, results)
-        self.assertTrue(out['fair_method_comparison_complete'])
+        self.assertFalse(out['fair_method_comparison_complete'])  # truncated PF is absent
+        self.assertTrue(m.select(configs, results, required_methods=m.METHODS)['fair_method_comparison_complete'])
         self.assertEqual(out['winner']['configuration_id'], configs[1]['id'])
         self.assertFalse(out['cross_method_advantage_qualified'])
         self.assertTrue(evaluate(configs[2], data(configs[2], model=True))['eligible'])

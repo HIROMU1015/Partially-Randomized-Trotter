@@ -11,8 +11,9 @@ import json
 from . import pf_pr_rpe_pipeline as p
 
 a = p.accounting
-SCHEMA = 'PR_RPE_RMSE_V1'
+SCHEMA = 'PR_RPE_RMSE_V2'
 METHODS = ('PF', 'PR', 'FULL_H_RTE')
+COMPARISON_METHODS = ('FULL_PF', 'TRUNCATED_PF', 'PR', 'FULL_H_RTE')
 DRAFT_MAPPER = 'PAPER_TOTAL_UNIFORM_OUTER_DRAFT'
 
 
@@ -29,6 +30,25 @@ def _positive(value):
 
 def _ceil(value):
     return -(-value.numerator // value.denominator)
+
+
+def comparison_method(spec):
+    """PF remains the provider arm; its retained-H scope is a separate identity."""
+    if spec['method'] != 'PF':
+        return spec['method']
+    return 'FULL_PF' if spec['split'].get('deterministic_scope') == 'FULL_H' else 'TRUNCATED_PF'
+
+
+def _coverage(record, has_value, reasons):
+    """Separate record existence, value presence and qualification; no arithmetic."""
+    declared = (record or {}).get('price_status')
+    status = ('OUTSIDE_DOMAIN' if declared == 'OUTSIDE_DOMAIN' else
+              'MISSING' if record is None else
+              'NOT_EVALUATED' if not has_value and record.get('status') == 'NOT_EVALUATED' else
+              'UNQUALIFIED' if reasons else 'AVAILABLE')
+    return dict(availability='MISSING' if record is None else 'AVAILABLE',
+        value_status='AVAILABLE' if has_value else 'MISSING', qualification=status,
+        reasons=list(dict.fromkeys(reasons)), source=deepcopy((record or {}).get('source')))
 
 
 def paper_event_mapper(spec, row):
@@ -75,7 +95,9 @@ def generate(spec, *, event_mapper=None):
     if method == 'FULL_H_RTE':
         if (s['L_D'] != 0 or s['delta_pf'] is not None or s['formula'] is not None
                 or s['split'].get('randomized_scope') != 'FULL_H_INCLUDING_ONE_BODY'
-                or s['split'].get('one_body_policy') != 'RANDOMIZED'):
+                or s['split'].get('one_body_policy') != 'RANDOMIZED'
+                or s['split'].get('deterministic_scope') not in (None, 'NONE')
+                or s['split'].get('original_PF_method') == 'B3'):
             raise ValueError('Full-H pure RTE must randomize one-body; no PF steps/B3 alias')
     else:
         s['delta_pf'] = a.exact_value(_positive(s['delta_pf']))
@@ -84,10 +106,22 @@ def generate(spec, *, event_mapper=None):
     if method == 'PF':
         if (s['kappa'] is not None or s['finite_K'] is not None
                 or s['event_mapping']['kind'] != 'NONE'
-                or s['split'].get('deterministic_scope') != 'FULL_H'
+                or s['split'].get('deterministic_scope') not in ('FULL_H', 'TRUNCATED_H')
                 or s['split'].get('randomized_scope') != 'NONE'
                 or s['law'].get('model') != 'deterministic'):
-            raise ValueError('PF baseline must simulate the full H without randomization')
+            raise ValueError('PF requires explicit full/truncated retained H without kappa/randomization')
+        if s['split']['deterministic_scope'] == 'TRUNCATED_H':
+            retained = s['split'].get('retained_hamiltonian') or {}
+            if (not retained.get('source') or not retained.get('construction')
+                    or retained['construction'] in ('FULL', 'FULL_H')
+                    or retained.get('prefix') != s['L_D']
+                    or not p.same(retained.get('target_hamiltonian'), s['binding']['hamiltonian'])):
+                raise ValueError('Truncated PF requires a sourced retained-H descriptor and original target H')
+        elif s['split'].get('retained_hamiltonian') is not None:
+            retained = s['split']['retained_hamiltonian']
+            if (retained.get('construction') not in ('FULL', 'FULL_H')
+                    or not p.same(retained.get('target_hamiltonian'), s['binding']['hamiltonian'])):
+                raise ValueError('Full PF cannot carry a truncated/different retained Hamiltonian')
     else:
         if method == 'PR' and (s['L_D'] == 0 or s['split'].get('randomized_scope') != 'TAIL_AFTER_PREFIX'):
             raise ValueError('Explicit PR split required; full-H RTE is a different method')
@@ -150,6 +184,11 @@ def _assemble(s, rounds):
         row['candidate'] = dict(id='RMSE:' + _id([cid, row['m']]), method=method, system=s['binding']['system'],
             prefix=s['L_D'], formula=s['formula'], T=row['T'], q=row['q_PF'], delta=row['actual_delta_pf'],
             K=s['finite_K'], R_outer=row['R_outer'], event_count=row['structure']['event_count'])
+        if method == 'PF':
+            row['candidate'].update(comparison_method=comparison_method(s),
+                target_hamiltonian=deepcopy(s['binding']['hamiltonian']),
+                retained_hamiltonian=deepcopy(s['split'].get('retained_hamiltonian') or
+                    dict(construction='FULL_H', target_hamiltonian=s['binding']['hamiltonian'], source=s['split']['source'])))
         if 'physical_candidate' in row:
             physical = row['physical_candidate']
             row['candidate'].update(prefix=physical['prefix'], K=physical['K'],
@@ -180,13 +219,11 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
     _validate(config)
     if price_policy not in ('qualified_expectation', 'finite_cohort_scenario'):
         raise ValueError('Explicit supported price policy required')
-    reasons = []; chosen = []; s = config['spec']; infeasible = False; unstable = False
+    reasons = []; chosen = []; coverage = []; s = config['spec']; infeasible = False; unstable = False
     if any(row['resolution'] != 'GENERATED' for row in config['rounds']):
         reasons.append('UNRESOLVED_KAPPA_MAPPING')
     if s['rmse_policy']['family'] != 'PR_PAPER_RMSE':
         reasons.append('HIGH_PROBABILITY_POLICY_IS_NOT_RMSE')
-    if s['method'] == 'PF' and s['split'].get('deterministic_scope') != 'FULL_H':
-        reasons.append('UNQUALIFIED_A_PF_BASELINE_SCOPE')
     if n_packet is None:
         reasons.append('MISSING_N_PACKET')
     else:
@@ -198,7 +235,17 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
             reasons.append('UNKNOWN_N_EVIDENCE_KIND')
         if n_packet.get('evidence_kind') != 'SYNTHETIC_ONLY' and s['rmse_policy']['scientific_status'] != 'EXTERNALLY_QUALIFIED':
             reasons.append('RMSE_ERROR_CONTRACT_NOT_SCIENTIFICALLY_ADOPTED')
+        if n_packet.get('evidence_kind') == 'SCIENTIFIC' and (
+                any(not s['binding'].get(k) for k in ('geometry', 'basis'))
+                or any(s['rmse_policy']['error_contract'].get(k) is None
+                       for k in ('state_assumption', 'energy_prior_ha', 'decoder'))):
+            reasons.append('MISSING_SCIENTIFIC_COMPARISON_CONTEXT')
         ev = n_packet.get('rmse_evidence') or {}
+        if comparison_method(s) == 'TRUNCATED_PF' and (
+                ev.get('truncation_status') != 'QUALIFIED' or ev.get('covers_truncation_error') is not True
+                or not p.same(ev.get('target_hamiltonian'), s['binding']['hamiltonian'])
+                or not p.same(ev.get('retained_hamiltonian'), s['split'].get('retained_hamiltonian'))):
+            reasons.append('UNQUALIFIED_TRUNCATION_ERROR_AGAINST_ORIGINAL_H')
         unstable = ev.get('status') == 'NUMERICAL_UNSTABLE'
         infeasible = ev.get('status') == 'INFEASIBLE'
         if (not ev.get('source') or ev.get('status') not in ('QUALIFIED', 'INFEASIBLE')
@@ -220,21 +267,36 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
     nr = {} if n_packet is None else {v['m']: v for v in n_packet.get('rounds', [])}
     if n_packet is not None and (len(nr) != len(n_packet.get('rounds', [])) or set(nr) != set(range(s['M'] + 1))):
         reasons.append('MISSING_DUPLICATE_OR_FOREIGN_N_ROUNDS')
+    n_global_reasons = list(reasons)
     for row in config['rounds']:
+        n_start = len(reasons)
         n = nr.get(row['m'])
         if n is None:
             reasons.append('MISSING_N_ROUND')
         elif (not p.same(n.get('identity'), row['identity']) or not p.same(n.get('law_binding'), row['law_binding'])
                 or any(type(n.get('N_' + axis)) is not int or n['N_' + axis] < 1 for axis in p.AXES)):
             reasons.append('N_IDENTITY_LAW_OR_INTEGER_SHOTS_MISMATCH')
+        n_reasons = n_global_reasons + reasons[n_start:]
         pair = []
+        cells = []
         for axis in p.AXES:
+            c_start = len(reasons)
             cohort = cohorts.get((row['candidate']['id'], axis))
             matches = [v for v in prices if v.get('axis') == axis and v.get('cohort') == cohort
                        and v.get('identity', {}).get('candidate', {}).get('id') == row['candidate']['id']]
             if cohort is None or len(matches) != 1:
-                reasons.append('MISSING_OR_AMBIGUOUS_SELECTED_C'); continue
+                reasons.append('MISSING_OR_AMBIGUOUS_SELECTED_C')
+                value = matches[0] if len(matches) == 1 else None
+                cells.append(dict(m=row['m'], axis=axis, identity=deepcopy(row['identity']),
+                    N=_coverage(n, n is not None and type(n.get('N_' + axis)) is int, n_reasons),
+                    C=_coverage(value, False, reasons[c_start:])))
+                continue
             value = matches[0]; pair.append(value)
+            if value.get('price_status') in ('OUTSIDE_DOMAIN', 'FAILED', 'MISSING', 'NOT_EVALUATED',
+                                            'UNQUALIFIED', 'UNQUALIFIED_MODEL', 'INFEASIBLE', 'NUMERICAL_UNSTABLE'):
+                reasons.append('C_' + value['price_status'])
+            if value.get('quantity', 'FULL_WRAPPER_MEAN_COMPILED_PRICE') != 'FULL_WRAPPER_MEAN_COMPILED_PRICE':
+                reasons.append('C_STRUCTURAL_OR_LOCAL_QUANTITY_IS_NOT_MEAN_COMPILED_PRICE')
             if (not p.same(value.get('identity'), row['identity']) or not p.same(value.get('law_binding'), row['law_binding'])
                     or not value.get('source')):
                 reasons.append('C_IDENTITY_LAW_OR_SOURCE_MISMATCH')
@@ -277,22 +339,40 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
                         or not p.same(model.get('domain'), row['candidate']) or not p.same(model.get('binding'), s['binding'])
                         or model.get('compiler') != s['profile']['compiler']):
                     reasons.append('UNQUALIFIED_MODEL_DOMAIN_SOURCE_OR_COVERAGE')
+            cells.append(dict(m=row['m'], axis=axis, identity=deepcopy(row['identity']),
+                N=_coverage(n, n is not None and type(n.get('N_' + axis)) is int, n_reasons),
+                C=dict(_coverage(value, value.get('mean', {}).get('rz_count') is not None, reasons[c_start:]),
+                    classification=classification, expectation=expectation, cohort=value.get('cohort'),
+                    n_paths=value.get('n_paths'), law_context=deepcopy(law),
+                    model_qualified_for_candidate=(value.get('model') or {}).get('qualified_for_candidate'),
+                    uncertainty=deepcopy(value.get('uncertainty')))))
         if len(pair) == 2:
             if (any(pair[0].get(k) != pair[1].get(k) for k in ('cohort', 'n_paths', 'classification', 'expectation'))
                     or pair[0].get('law_context', {}).get('price_law') != pair[1].get('law_context', {}).get('price_law')):
                 reasons.append('UNPAIRED_XY_COHORT')
+                for cell in cells:
+                    cell['C']['qualification'] = 'UNQUALIFIED'
+                    cell['C']['reasons'].append('UNPAIRED_XY_COHORT')
             chosen.extend(pair)
+        coverage.extend(cells)
+        for cell in cells:
+            if cell['N']['source'] is None and n_packet is not None:
+                cell['N']['source'] = deepcopy(n_packet.get('source'))
     reasons = list(dict.fromkeys(reasons))
     constraint_blockers = ('N_', 'MISSING_N', 'MISSING_DUPLICATE_OR_FOREIGN_N_ROUNDS', 'UNQUALIFIED_N', 'UNQUALIFIED_A_', 'UNKNOWN_N', 'UNRESOLVED_', 'HIGH_PROBABILITY_',
-                           'RMSE_ERROR_', 'UNQUALIFIED_GLOBAL_', 'UNQUALIFIED_FINITE_', 'MISSING_OR_UNSTABLE_RMSE_')
+                           'RMSE_ERROR_', 'UNQUALIFIED_GLOBAL_', 'UNQUALIFIED_FINITE_', 'UNQUALIFIED_TRUNCATION_', 'MISSING_SCIENTIFIC_', 'MISSING_OR_UNSTABLE_RMSE_')
     trusted_infeasible = infeasible and not any(v.startswith(constraint_blockers) for v in reasons)
     status = ('NUMERICAL_UNSTABLE' if unstable else 'INFEASIBLE' if trusted_infeasible else
               'ELIGIBLE_SUPPLIED_RECORDS' if not reasons else
               'NOT_EVALUATED' if any(v.startswith(('MISSING_', 'UNRESOLVED_')) for v in reasons) else 'UNQUALIFIED')
+    if trusted_infeasible:
+        for cell in coverage:
+            cell['N']['qualification'] = 'INFEASIBLE'
     return dict(configuration_id=config['id'], status=status, eligible=not reasons and not unstable and not infeasible, reasons=reasons,
         price_policy=price_policy, selected_price_sources=[deepcopy(v['source']) for v in chosen if v.get('source')],
         N_evidence_kind=None if n_packet is None else n_packet.get('evidence_kind'),
         price_uncertainty=[deepcopy(v.get('uncertainty')) for v in chosen],
+        coverage=coverage, comparison_method=comparison_method(s),
         cost=None, scientific_definition_adopted=False, full_RPE_qualified=False,
         normalization_is_price_multiplier=False, classical_samples_are_shot_multipliers=False)
 
@@ -317,7 +397,8 @@ def cost(config, n_packet, prices, *, cohorts, price_policy='qualified_expectati
     return out
 
 
-def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_MENU', required_methods=METHODS):
+def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_MENU', required_methods=COMPARISON_METHODS,
+           formula_menu=None):
     """Whole-configuration minima, including inner M/kappa and outer choices."""
     if not configs or len({v['id'] for v in configs}) != len(configs):
         raise ValueError('Explicit nonempty unique configuration menu required')
@@ -330,14 +411,22 @@ def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ME
     if any(not p.same(common(v), common(configs[0])) for v in configs):
         raise ValueError('Common H/state/h/RMSE/price profile required for fair comparison')
     pf_formulas = {v['spec']['formula'] for v in configs if v['spec']['method'] != 'FULL_H_RTE'}
-    if len(pf_formulas) > 1:
+    if formula_menu is not None:
+        if not formula_menu.get('source'):
+            raise ValueError('Explicit formula menu SOURCE required; this does not adopt a scientific search range')
+        if any(v['spec']['formula'] not in formula_menu.get('by_method', {}).get(comparison_method(v['spec']), [])
+               for v in configs if v['spec']['method'] != 'FULL_H_RTE'):
+            raise ValueError('Formula outside the explicitly supplied method menu')
+    elif len(pf_formulas) > 1:
         raise ValueError('PF formula is fixed, not an implicit search variable')
     randomized = [v['spec'] for v in configs if v['spec']['method'] != 'PF']
     def fixed_randomization(s):
         return dict(finite_K=s['finite_K'], kappa_kind=s['kappa']['kind'],
                     definition=s['kappa']['definition_source'], event_mapping=s['event_mapping'])
-    if randomized and any(not p.same(fixed_randomization(v), fixed_randomization(randomized[0])) for v in randomized):
-        raise ValueError('finite-K/kappa definition/mapper are fixed, not implicit search variables')
+    for method in ('PR', 'FULL_H_RTE'):
+        family = [v for v in randomized if v['method'] == method]
+        if family and any(not p.same(fixed_randomization(v), fixed_randomization(family[0])) for v in family):
+            raise ValueError('finite-K/kappa definition/mapper are fixed within a method, not implicit search variables')
     lookup = {v['configuration_id']: v for v in evaluations}
     if len(lookup) != len(evaluations) or not set(lookup) <= {v['id'] for v in configs}:
         raise ValueError('Duplicate or foreign evaluation')
@@ -354,7 +443,8 @@ def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ME
     groups = {}; usable = []; splits = {}
     for c in configs:
         ev = lookup.get(c['id']); s = c['spec']
-        group = json.dumps([s['method'], s['L_D'], s['delta_pf']], sort_keys=True)
+        group = json.dumps([comparison_method(s), s['formula'], s['L_D'], s['delta_pf'],
+                            s['split'].get('retained_hamiltonian')], sort_keys=True)
         if group in splits and not p.same(splits[group], s['split']):
             raise ValueError('Split/SOURCE must stay fixed inside one M/kappa group')
         splits[group] = s['split']
@@ -369,13 +459,18 @@ def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ME
             return dict(configuration_id=None, cost=None, ties=[])
         best = min(v[0] for v in options); ties = sorted(v[1] for v in options if v[0] == best)
         return dict(configuration_id=ties[0], cost=a.exact_value(best), ties=ties)
-    methods = {method: dict(present=any(c['spec']['method'] == method for c in configs),
-        has_eligible=any(c['spec']['method'] == method and any(cid == c['id'] for _, cid in usable) for c in configs)) for method in required_methods}
+    def matches(c, method):
+        return c['spec']['method'] == method if method in METHODS else comparison_method(c['spec']) == method
+    methods = {method: dict(present=any(matches(c, method) for c in configs),
+        has_eligible=any(matches(c, method) and any(cid == c['id'] for _, cid in usable) for c in configs)) for method in required_methods}
     return dict(status='SUPPLIED_WHOLE_SCHEDULE_POINT_SELECTION', winner=minimum(usable),
         inner_M_kappa_minima={key: minimum(value) for key, value in groups.items()},
         menu_complete=not pending, pending_configuration_ids=pending,
         selection_scope='EXPLICIT_FINITE_MENU' if not pending else 'AVAILABLE_QUALIFIED_SUBSET',
         method_coverage=methods, fair_method_comparison_complete=not pending and all(v['present'] and v['has_eligible'] for v in methods.values()),
+        formula_menu=deepcopy(formula_menu), search_ranges_scientifically_adopted=False,
+        schedule_menu=[dict(configuration_id=c['id'], method=comparison_method(c['spec']), M=c['spec']['M'],
+            times=[deepcopy(r['T']) for r in c['rounds']]) for c in configs],
         unexplored_scope=deepcopy(unexplored_scope), analytic_kappa_is_compiled_optimum=False,
         evidence_kind=next(iter(kinds)) if kinds else None,
         cross_configuration_covariance=None, total_CI=None, strict_cost_dominance_qualified=False,
