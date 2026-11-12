@@ -1,5 +1,7 @@
 # Validation status
 
+[A/C/D V2接続・Yoshida4/明示Full-H layout](docs/research/abc_d_v2_integration_20261114/REPORT.md)：新結合12＋D14＋controller17/4方式14/統合12/C12/planner12＝93技術test PASS。公開A/Cの正式照合、nominal/null、SOURCE/law/profile、全H one-body、κなしgroupingの非同一性を確認。8次新接続・検証と旧S0 workflow再実行なし。実N/C/G・科学的baseline採択なし、公開後STOP。
+
 [H4 S0 V2統合](docs/research/h4_s0_v2_integration_20261113/REPORT.md)：新10＋C12/planner13/4方式14/統合12＝61技術test PASS。13round物理一致、原nominal/null/SOURCE、C1有限cohort/false、26軸不足を保持。科学資格はUNQUALIFIED、実G/科学計算0、公開後mandatory STOP。
 
 [4方式RMSE有限menuの証拠準備](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：新13＋method coverage14/controller17/統合12＝56技術test PASS。V2全identity/SOURCE/誤差契約・局所診断/平均Cの区別・欠測と部分集合を確認。実menu未確定、実science/Gなし、公開後STOP。

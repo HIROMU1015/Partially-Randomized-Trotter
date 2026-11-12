@@ -1,6 +1,6 @@
 # プロジェクト案内
 
-[A/C/D V2拡張の共有interface](docs/research/abc_d_v2_integration_20261114/INTERFACE.md)：標準Yoshida4 PF・κなしFull-H明示layout・D外部physical対応を先行公開。実装/検証は後続、科学的baselineやRMSE資格の採択ではない。
+[A/C/D V2接続・4次PF/明示Full-H RTE](docs/research/abc_d_v2_integration_20261114/REPORT.md)／[D interface](docs/research/abc_d_v2_integration_20261114/INTERFACE.md)／[HANDOFF](docs/research/abc_d_v2_integration_20261114/HANDOFF.md)：A75b5の公開V2 packet/Cd458の価格requestをB保存正本へ正式照合。Yoshida4とm5、κ付き/κなしlayout、D外部physical bridgeを区別し93技術test PASS。nominal/null/C1 falseを保持、科学的baseline採択・実N/C/Gなし、公開後STOP。
 
 [H4 S0固定条件のV2接続](docs/research/h4_s0_v2_integration_20261113/REPORT.md)：A S0のexact inputsからPR1構成/13roundをcanonical生成し、元V1物理metadataと一致。nominal m0=64/m6=38だけを診断保全、十分N/global bound/適格Cは全26軸未取得。新10＋関連51＝61技術test、実science/G0、公開後STOP。
 

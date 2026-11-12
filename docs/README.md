@@ -1,5 +1,7 @@
 # 文書索引
 
+[A/C/D V2接続REPORT](research/abc_d_v2_integration_20261114/REPORT.md)／[D向けHANDOFF](research/abc_d_v2_integration_20261114/HANDOFF.md)／[公開A/C受入](research/abc_d_v2_integration_20261114/PUBLISHED_INTAKE.json)：既存S0 canonicalを再作成せず正式packetを照合。標準Yoshida4 PF・κなし明示Full-H RTEと外部物理対応、93技術test、実N/C/Gなし。
+
 [H4 S0→V2 REPORT](research/h4_s0_v2_integration_20261113/REPORT.md)／[A/C HANDOFF](research/h4_s0_v2_integration_20261113/HANDOFF.md)／[26軸不足証拠](research/h4_s0_v2_integration_20261113/run01/EVIDENCE_PLAN.json)：原V1 packetを無変更保存、全13roundのcanonical V2/価格requestを公開。61技術test、実N/C/G未実行。
 
 [4方式RMSE実行準備](research/pr_rpe_evidence_preparation_20261113/REPORT.md)／[有限menu I/OとA/C HANDOFF](research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)／[Full PF・純RTE物理SOURCE契約](research/pr_rpe_evidence_preparation_20261113/SOURCE_CONTRACTS.md)：全round不足証拠planner、56技術test、科学計算/実G未実行。

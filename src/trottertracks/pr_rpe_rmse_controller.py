@@ -15,6 +15,34 @@ SCHEMA = 'PR_RPE_RMSE_V2'
 METHODS = ('PF', 'PR', 'FULL_H_RTE')
 COMPARISON_METHODS = ('FULL_PF', 'TRUNCATED_PF', 'PR', 'FULL_H_RTE')
 DRAFT_MAPPER = 'PAPER_TOTAL_UNIFORM_OUTER_DRAFT'
+EXPLICIT_LAYOUT = 'FULL_H_EXPLICIT_LAYOUT_NO_KAPPA_V1'
+
+
+def _explicit_preparation(s):
+    # Reuse D's source-bound physical descriptor validator; no preparation runs.
+    from .full_baseline_v2_requests import check_full_h_preparation
+    prep = s['split'].get('preparation') or {}
+    check_full_h_preparation(prep, s['binding'])
+    if (not p.same(s['split']['source'], prep['source'])
+            or not p.same(s['split'].get('lambda_R'), prep['lambda_R'])
+            or not p.same(s['split'].get('lambda_source'), prep['lambda_source'])
+            or not p.same(s['law'].get('preparation_source'), prep['source'])
+            or not s['law'].get('sampling')):
+        raise ValueError('Explicit Full-H preparation/lambda/law SOURCE mismatch')
+
+
+def _explicit_layout(mapping, s):
+    layout = mapping.get('physical_layout') or {}
+    q, outer = layout.get('q'), layout.get('R_outer')
+    if (type(q) is not int or q < 1 or type(outer) is not int or outer < 1
+            or layout.get('formula') != '2nd' or layout.get('pieces_per_outer') != 1
+            or layout.get('allocation') != [outer] or layout.get('allocation_policy') != 'ABS_TIME_PER_OUTER'
+            or layout.get('event_positions') != q * outer or mapping['event_count'] != q * outer
+            or layout.get('taylor_K') != s['finite_K'] or layout.get('signed_times') != 'ALL_POSITIVE_S2'
+            or layout.get('event_tau') != 'lambda_R*(T/q)/R_outer'
+            or layout.get('scalar') != 'ONCE_AT_TOTAL_T' or layout.get('deterministic_blocks') != 0
+            or layout.get('priced_equivalence_claim') is not False or not layout.get('compose_source')):
+        raise ValueError('Explicit Full-H q/R layout, K, scalar or price-equivalence mismatch')
 
 
 def _id(value):
@@ -92,6 +120,9 @@ def generate(spec, *, event_mapper=None):
     s['h'] = a.exact_value(_positive(s['h']))
     policy['target_rmse_ha'] = a.exact_value(_positive(policy['target_rmse_ha']))
     method = s['method']
+    explicit_layout = s['event_mapping']['kind'] == EXPLICIT_LAYOUT
+    if explicit_layout and (method != 'FULL_H_RTE' or s['kappa'] is not None):
+        raise ValueError('Explicit layout mapping requires Full-H RTE with kappa=None')
     if method == 'FULL_H_RTE':
         if (s['L_D'] != 0 or s['delta_pf'] is not None or s['formula'] is not None
                 or s['split'].get('randomized_scope') != 'FULL_H_INCLUDING_ONE_BODY'
@@ -101,7 +132,7 @@ def generate(spec, *, event_mapper=None):
             raise ValueError('Full-H pure RTE must randomize one-body; no PF steps/B3 alias')
     else:
         s['delta_pf'] = a.exact_value(_positive(s['delta_pf']))
-        if s['formula'] not in ('2nd', '4th(m5_best)'):
+        if s['formula'] not in ('2nd', '4th(m5_best)') and not (method == 'PF' and s['formula'] == '4th'):
             raise ValueError('Explicit supported fixed formula required; no formula search')
     if method == 'PF':
         if (s['kappa'] is not None or s['finite_K'] is not None
@@ -127,9 +158,12 @@ def generate(spec, *, event_mapper=None):
             raise ValueError('Explicit PR split required; full-H RTE is a different method')
         if type(s['finite_K']) is not int or s['finite_K'] < 0 or s['finite_K'] % 2:
             raise ValueError('Current finite-K implementation requires an even nonnegative K')
-        if not s['kappa'].get('kind') or not s['kappa'].get('definition_source'):
-            raise ValueError('Named/source-bound common kappa definition required')
-        s['kappa']['value'] = a.exact_value(_positive(s['kappa']['value']))
+        if explicit_layout:
+            _explicit_preparation(s)
+        else:
+            if not s['kappa'] or not s['kappa'].get('kind') or not s['kappa'].get('definition_source'):
+                raise ValueError('Named/source-bound common kappa definition required')
+            s['kappa']['value'] = a.exact_value(_positive(s['kappa']['value']))
         if s['law'].get('model') != 'ideal_finite_RTE_law':
             raise ValueError('Explicit finite-RTE target law required')
         if s['event_mapping']['kind'] == DRAFT_MAPPER:
@@ -157,6 +191,8 @@ def generate(spec, *, event_mapper=None):
                 raise ValueError('Whole-round event count must match uniform outer allocation')
             if method == 'FULL_H_RTE' and outer is not None:
                 raise ValueError('Pure RTE has no PF outer count')
+            if explicit_layout:
+                _explicit_layout(mapping, s)
         outer = None if mapping is None else mapping['R_outer']
         if method == 'FULL_H_RTE':
             structure = dict(formula_id='NO_PF_FULL_H_RTE', signed_weights=[1.], allocation=None if mapping is None else [mapping['event_count']],
@@ -221,7 +257,7 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
         raise ValueError('Explicit supported price policy required')
     reasons = []; chosen = []; coverage = []; s = config['spec']; infeasible = False; unstable = False
     if any(row['resolution'] != 'GENERATED' for row in config['rounds']):
-        reasons.append('UNRESOLVED_KAPPA_MAPPING')
+        reasons.append('UNRESOLVED_PHYSICAL_LAYOUT' if s['event_mapping']['kind'] == EXPLICIT_LAYOUT else 'UNRESOLVED_KAPPA_MAPPING')
     if s['rmse_policy']['family'] != 'PR_PAPER_RMSE':
         reasons.append('HIGH_PROBABILITY_POLICY_IS_NOT_RMSE')
     if n_packet is None:
@@ -421,12 +457,14 @@ def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ME
         raise ValueError('PF formula is fixed, not an implicit search variable')
     randomized = [v['spec'] for v in configs if v['spec']['method'] != 'PF']
     def fixed_randomization(s):
-        return dict(finite_K=s['finite_K'], kappa_kind=s['kappa']['kind'],
-                    definition=s['kappa']['definition_source'], event_mapping=s['event_mapping'])
+        kappa = s['kappa'] or {}
+        return dict(finite_K=s['finite_K'], kappa_kind=kappa.get('kind'),
+                    definition=kappa.get('definition_source'), event_mapping=s['event_mapping'])
     for method in ('PR', 'FULL_H_RTE'):
-        family = [v for v in randomized if v['method'] == method]
-        if family and any(not p.same(fixed_randomization(v), fixed_randomization(family[0])) for v in family):
-            raise ValueError('finite-K/kappa definition/mapper are fixed within a method, not implicit search variables')
+        for explicit in (False, True):
+            family = [v for v in randomized if v['method'] == method and (v['event_mapping']['kind'] == EXPLICIT_LAYOUT) == explicit]
+            if family and any(not p.same(fixed_randomization(v), fixed_randomization(family[0])) for v in family):
+                raise ValueError('finite-K/kappa definition/mapper are fixed within a method, not implicit search variables')
     lookup = {v['configuration_id']: v for v in evaluations}
     if len(lookup) != len(evaluations) or not set(lookup) <= {v['id'] for v in configs}:
         raise ValueError('Duplicate or foreign evaluation')
@@ -443,8 +481,10 @@ def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ME
     groups = {}; usable = []; splits = {}
     for c in configs:
         ev = lookup.get(c['id']); s = c['spec']
-        group = json.dumps([comparison_method(s), s['formula'], s['L_D'], s['delta_pf'],
-                            s['split'].get('retained_hamiltonian')], sort_keys=True)
+        group_parts = [comparison_method(s), s['formula'], s['L_D'], s['delta_pf'], s['split'].get('retained_hamiltonian')]
+        if s['event_mapping']['kind'] == EXPLICIT_LAYOUT:
+            group_parts.append(EXPLICIT_LAYOUT)  # Not an inner common-kappa search.
+        group = json.dumps(group_parts, sort_keys=True)
         if group in splits and not p.same(splits[group], s['split']):
             raise ValueError('Split/SOURCE must stay fixed inside one M/kappa group')
         splits[group] = s['split']
@@ -470,6 +510,8 @@ def select(configs, evaluations, *, unexplored_scope='OUTSIDE_EXPLICIT_FINITE_ME
         method_coverage=methods, fair_method_comparison_complete=not pending and all(v['present'] and v['has_eligible'] for v in methods.values()),
         formula_menu=deepcopy(formula_menu), search_ranges_scientifically_adopted=False,
         schedule_menu=[dict(configuration_id=c['id'], method=comparison_method(c['spec']), M=c['spec']['M'],
+            parameterization='EXPLICIT_LAYOUT' if c['spec']['event_mapping']['kind'] == EXPLICIT_LAYOUT else
+                'DETERMINISTIC_PF' if c['spec']['method'] == 'PF' else 'COMMON_KAPPA',
             times=[deepcopy(r['T']) for r in c['rounds']]) for c in configs],
         unexplored_scope=deepcopy(unexplored_scope), analytic_kappa_is_compiled_optimum=False,
         evidence_kind=next(iter(kinds)) if kinds else None,

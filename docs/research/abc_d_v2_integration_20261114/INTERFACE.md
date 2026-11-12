@@ -1,6 +1,6 @@
 # B → D：標準4次PF・明示Full-H layoutの共有仕様
 
-2026-11-14。本commitは**interface先行公開・実装/検証は後続**。科学的baseline・RMSE保証・κ等価性の採択ではない。B基点030f3f548、D原版eecaa8030280f8957ad85555bcc89e2daa1a29faを継続利用する。
+2026-11-13。`575598983`で**interface先行公開**、本最終版で実装・検証を完了した（[REPORT](REPORT.md)）。科学的baseline・RMSE保証・κ等価性の採択ではない。B基点030f3f548、D原版eecaa8030280f8957ad85555bcc89e2daa1a29faを継続利用する。公開済みpathの継続性を優先し、このdirectory名は維持する。
 
 ## 標準Yoshida4
 
@@ -32,4 +32,4 @@ D既存`requests(config)`の外部対応表を使用する。native controller�
 
 B公開030f3f548の保存V2 configurationをそのまま読み、A75b5c89の公開packetを既存`validate_A_v2_packet`で受入検査する。C d458b5eの保存PRICE_REQUESTSを既存`verify_B_publication`と全26B requestへ照合する。A.connect/C.prepare/H4 S0.prepareを呼ばず、S0を再生成・再解析しない。nominal64/38、他11round未評価、十分N/global bound/C/Gのnull、C1 falseと有限cohortを保全する。
 
-実装・人工/関連回帰の後に最終REPORT/HANDOFFを公開する。新科学実行・compile/fit/実Gは別の明示scopeが必要で、今回の最終公開後mandatory STOP。
+実装・人工/関連回帰93件PASS。[最終REPORT](REPORT.md)／[HANDOFF](HANDOFF.md)を公開する。新科学実行・compile/fit/実Gは別の明示scopeが必要で、今回の最終公開後mandatory STOP。
