@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[実RMSE評価のA技術準備](docs/research/pr_rpe_rmse_science_preparation_20261112/REPORT.md)：固定B82bcのmetadata検証を再利用し、全round/SOURCE・保存証拠・追加call案を科学計算なしで照合。H4 B0/full-H差とH6初期例外をBLOCKED、N/boundはnull。14新規＋29既存人工回帰PASS、実signal/N/RMSE/C/G0、公開照合後STOP。
+
 [PR–RPE RMSE型Nと共通κ](docs/research/pr_rpe_rmse_kappa_20261112/REPORT.md)：論文v2の経験的Nm・paper回転数型κを旧Hoeffdingと別policyで実装。B草案d562bc38dへmapper/全schedule ID/packetを接続、17人工/mock PASS。H6早期例外とsigned/finite-K未資格を保持、実N/保存再解析/compile/C/G0・公開後STOP。
 
 [R可変PRの詳細N P1結果](docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：SOURCEa1a79213aで固定12候補がideal条件付きPASS。H4 m6のN/軸はR4/128/256で9638/766/735、H6 m8はR16/128/256で1015/735/720。新mean/対照9・保存scalar3・新reference2、23 SOURCE/7入力保全、C/G/P2/P3なし・公開後STOP。

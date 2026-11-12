@@ -1,0 +1,23 @@
+2026-11-12 JST — author technical checks; synthetic/mock and saved schema only.
+Interpreter: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python
+
+python -B tests/check_pr_rpe_rmse_preflight.py: 14 tests PASS
+  Missing/null components; complete metadata never qualifies N/RMSE;
+  no numeric leaf; whole-schedule mutation; H/state/SOURCE mismatch;
+  saved FAIL/STOP/numeric unresolved; kappa/lambda/law SOURCE;
+  H4 B0 vs full-H; H6 early/signed allocation; old N excluded;
+  pinned B fixture metadata; inventory without numpy/scipy/qiskit.
+python -B tests/check_pr_rpe_rmse.py: 17 tests PASS
+python -B tests/check_pr_r_dependent_n.py: 12 tests PASS
+Total: 43 PASS. Existing artificial matrix/decoder checks emit existing
+Almost_optimal_grouping.py docstring escape DeprecationWarnings only.
+
+Real new signal/N/RMSE: 0. Saved-value RMSE numerical reanalysis: 0.
+P2/P3, sampling, compile, C/G, kappa/M optimization: 0.
+Saved inventory records field presence and provenance only, no scientific values.
+No independent scientific review performed. Mandatory STOP after publication.
+
+Artificial CLI result equals ARTIFICIAL_IO.json API result: PASS.
+Existing A/P1/common source and tests equal A510: PASS.
+Historical manifest body preserved byte-for-byte after appended top entry: PASS.
+git diff --check: PASS.

@@ -1,5 +1,7 @@
 # 文書索引
 
+[実RMSE評価のA技術準備](research/pr_rpe_rmse_science_preparation_20261112/REPORT.md)：固定B82bcのmetadata検証を再利用し、全round/SOURCE・保存証拠・追加call案を科学計算なしで照合。H4 B0/full-H差とH6初期例外をBLOCKED、N/boundはnull。14新規＋29既存人工回帰PASS、実signal/N/RMSE/C/G0、公開照合後STOP。
+
 [PR–RPE RMSE/κ technical report](research/pr_rpe_rmse_kappa_20261112/REPORT.md)：原論文v2式、共有mapper、B draft packet、17人工/mock検査。経験的nominal Nと厳密十分Nを分離。
 
 [R可変PR P1の12候補N結果](research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：同allowance policyで全12条件付きPASS、B用整数N・全signal CSV。actual/全RPE/C/G未資格。

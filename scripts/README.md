@@ -1,5 +1,9 @@
 # scripts 索引
 
+[実RMSE評価のA技術準備](../docs/research/pr_rpe_rmse_science_preparation_20261112/REPORT.md)：固定B82bcのmetadata検証を再利用し、全round/SOURCE・保存証拠・追加call案を科学計算なしで照合。H4 B0/full-H差とH6初期例外をBLOCKED、N/boundはnull。14新規＋29既存人工回帰PASS、実signal/N/RMSE/C/G0、公開照合後STOP。
+
+`preflight_pr_rpe_rmse.py`：固定B config/A scheduleとmetadata inventoryのdry-run。科学providerなし。
+
 `demo_pr_rpe_rmse.py <fresh-output.json>`：TOYのκ schedule・経験的RMSE nominal N・B用SYNTHETIC_ONLY packetだけを保存。[仕様](../docs/research/pr_rpe_rmse_kappa_20261112/REPORT.md)。実分子実行オプションなし。
 
 `run_pr_r_detailed_n_p1.py`：SOURCEa1a79213aの固定P1実行を一回完了。全12条件付きPASS、[結果とSTOP](../docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)。defaultは静的preflight、既完了runへの自動再実行なし。

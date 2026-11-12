@@ -1,0 +1,2763 @@
+{
+  "evidence_kind": "SYNTHETIC_ONLY",
+  "configuration": {
+    "schema": "PR_RPE_RMSE_V1",
+    "id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+    "spec": {
+      "binding": {
+        "system": "TOY",
+        "hamiltonian": "ARTIFICIAL_H",
+        "state": "ARTIFICIAL_STATE",
+        "snapshot": "ARTIFICIAL_SNAPSHOT",
+        "decomposition": "MOCK_D",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        }
+      },
+      "profile": {
+        "compiler": "MOCK",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "method": "PR",
+      "M": 1,
+      "h": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "L_D": 1,
+      "delta_pf": {
+        "numerator": 3602879701896397,
+        "denominator": 36028797018963968
+      },
+      "formula": "2nd",
+      "split": {
+        "L_D": 1,
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        },
+        "deterministic_scope": "PREFIX",
+        "randomized_scope": "TAIL_AFTER_PREFIX",
+        "lambda_R": 0.5,
+        "lambda_source": {
+          "kind": "ARTIFICIAL_ONLY"
+        }
+      },
+      "kappa": {
+        "kind": "PAPER_TOTAL_ROTATIONS",
+        "value": {
+          "numerator": 2,
+          "denominator": 1
+        },
+        "definition_source": {
+          "kind": "ARTIFICIAL_ONLY"
+        }
+      },
+      "event_mapping": {
+        "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        }
+      },
+      "finite_K": 2,
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "source": {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "src/trotterlib/rte.py"
+        }
+      },
+      "rmse_policy": {
+        "family": "PR_PAPER_RMSE",
+        "id": "MOCK_RMSE",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        },
+        "error_contract": "MOCK_EXPLICIT_CONTRACT",
+        "scientific_status": "PROPOSED_NOT_ADOPTED",
+        "target_rmse_ha": {
+          "numerator": 2,
+          "denominator": 1
+        }
+      }
+    },
+    "rounds": [
+      {
+        "m": 0,
+        "q_RPE": 1,
+        "q_PF": 1,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            1
+          ],
+          "event_count": 1,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "mapping": {
+          "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "R_outer": 1,
+          "event_count": 1,
+          "paper_total_target": 1,
+          "finite_K_signed_guarantee": false
+        },
+        "resolution": "GENERATED",
+        "R_outer": 1,
+        "candidate": {
+          "id": "RMSE:afdeedd56e5ad58e65f8fa268dd682e762e12f175f9e2b0b5a368ebece385c4b",
+          "method": "PR",
+          "system": "TOY",
+          "prefix": 1,
+          "formula": "2nd",
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "q": 1,
+          "delta": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "K": 2,
+          "R_outer": 1,
+          "event_count": 1
+        },
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "id": "RMSE:afdeedd56e5ad58e65f8fa268dd682e762e12f175f9e2b0b5a368ebece385c4b",
+            "method": "PR",
+            "system": "TOY",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "q": 1,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 1
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 1,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "deterministic_scope": "PREFIX",
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": 0.5,
+              "lambda_source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_RMSE",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "error_contract": "MOCK_EXPLICIT_CONTRACT",
+              "scientific_status": "PROPOSED_NOT_ADOPTED",
+              "target_rmse_ha": {
+                "numerator": 2,
+                "denominator": 1
+              }
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "profile": {
+            "compiler": "MOCK",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V1",
+            "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+            "spec": {
+              "binding": {
+                "system": "TOY",
+                "hamiltonian": "ARTIFICIAL_H",
+                "state": "ARTIFICIAL_STATE",
+                "snapshot": "ARTIFICIAL_SNAPSHOT",
+                "decomposition": "MOCK_D",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "profile": {
+                "compiler": "MOCK",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              },
+              "method": "PR",
+              "M": 1,
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "deterministic_scope": "PREFIX",
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": 0.5,
+                "lambda_source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_RMSE",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "error_contract": "MOCK_EXPLICIT_CONTRACT",
+                "scientific_status": "PROPOSED_NOT_ADOPTED",
+                "target_rmse_ha": {
+                  "numerator": 2,
+                  "denominator": 1
+                }
+              }
+            }
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+          "candidate_id": "RMSE:afdeedd56e5ad58e65f8fa268dd682e762e12f175f9e2b0b5a368ebece385c4b",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          }
+        }
+      },
+      {
+        "m": 1,
+        "q_RPE": 2,
+        "q_PF": 2,
+        "T": {
+          "numerator": 3602879701896397,
+          "denominator": 18014398509481984
+        },
+        "actual_delta_pf": {
+          "numerator": 3602879701896397,
+          "denominator": 36028797018963968
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            1
+          ],
+          "event_count": 2,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "mapping": {
+          "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "R_outer": 1,
+          "event_count": 2,
+          "paper_total_target": 1,
+          "finite_K_signed_guarantee": false
+        },
+        "resolution": "GENERATED",
+        "R_outer": 1,
+        "candidate": {
+          "id": "RMSE:4e73c0d0fbfdfb5bc1bbc334783cff594405d7f1f3261e3936e789ffb4b37b3e",
+          "method": "PR",
+          "system": "TOY",
+          "prefix": 1,
+          "formula": "2nd",
+          "T": {
+            "numerator": 3602879701896397,
+            "denominator": 18014398509481984
+          },
+          "q": 2,
+          "delta": {
+            "numerator": 3602879701896397,
+            "denominator": 36028797018963968
+          },
+          "K": 2,
+          "R_outer": 1,
+          "event_count": 2
+        },
+        "identity": {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 2,
+          "candidate": {
+            "id": "RMSE:4e73c0d0fbfdfb5bc1bbc334783cff594405d7f1f3261e3936e789ffb4b37b3e",
+            "method": "PR",
+            "system": "TOY",
+            "prefix": 1,
+            "formula": "2nd",
+            "T": {
+              "numerator": 3602879701896397,
+              "denominator": 18014398509481984
+            },
+            "q": 2,
+            "delta": {
+              "numerator": 3602879701896397,
+              "denominator": 36028797018963968
+            },
+            "K": 2,
+            "R_outer": 1,
+            "event_count": 2
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "contract": {
+            "split": {
+              "L_D": 1,
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "deterministic_scope": "PREFIX",
+              "randomized_scope": "TAIL_AFTER_PREFIX",
+              "lambda_R": 0.5,
+              "lambda_source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "rmse_policy": {
+              "family": "PR_PAPER_RMSE",
+              "id": "MOCK_RMSE",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "error_contract": "MOCK_EXPLICIT_CONTRACT",
+              "scientific_status": "PROPOSED_NOT_ADOPTED",
+              "target_rmse_ha": {
+                "numerator": 2,
+                "denominator": 1
+              }
+            },
+            "law": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            }
+          },
+          "profile": {
+            "compiler": "MOCK",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "schema": "PR_RPE_RMSE_V1",
+            "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+            "spec": {
+              "binding": {
+                "system": "TOY",
+                "hamiltonian": "ARTIFICIAL_H",
+                "state": "ARTIFICIAL_STATE",
+                "snapshot": "ARTIFICIAL_SNAPSHOT",
+                "decomposition": "MOCK_D",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "profile": {
+                "compiler": "MOCK",
+                "control": "symmetric_directional",
+                "wrapper": "full_Hadamard_with_measurement",
+                "scope": "single_hadamard_interrogation_without_state_preparation",
+                "P": 0,
+                "qiskit_version": "1.3.0",
+                "basis_gates": [
+                  "rz",
+                  "sx",
+                  "x",
+                  "cx"
+                ],
+                "optimization_level": 1,
+                "seed_transpiler": 17
+              },
+              "method": "PR",
+              "M": 1,
+              "h": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "L_D": 1,
+              "delta_pf": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "formula": "2nd",
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "deterministic_scope": "PREFIX",
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": 0.5,
+                "lambda_source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "kappa": {
+                "kind": "PAPER_TOTAL_ROTATIONS",
+                "value": {
+                  "numerator": 2,
+                  "denominator": 1
+                },
+                "definition_source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "event_mapping": {
+                "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "finite_K": 2,
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_RMSE",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "error_contract": "MOCK_EXPLICIT_CONTRACT",
+                "scientific_status": "PROPOSED_NOT_ADOPTED",
+                "target_rmse_ha": {
+                  "numerator": 2,
+                  "denominator": 1
+                }
+              }
+            }
+          }
+        },
+        "law_binding": {
+          "definition": {
+            "model": "ideal_finite_RTE_law",
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          },
+          "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+          "candidate_id": "RMSE:4e73c0d0fbfdfb5bc1bbc334783cff594405d7f1f3261e3936e789ffb4b37b3e",
+          "kappa": {
+            "kind": "PAPER_TOTAL_ROTATIONS",
+            "value": {
+              "numerator": 2,
+              "denominator": 1
+            },
+            "definition_source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "event_mapping": {
+            "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          }
+        }
+      }
+    ],
+    "scientific_definition_adopted": false
+  },
+  "A_schedule": {
+    "schema_version": 1,
+    "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+    "configuration_id": "884a4df36f6d3a7fbb2ab9231568f5d6a412ee2974c86281916d34309e3a7dd5",
+    "task": {
+      "binding": {
+        "system": "TOY",
+        "hamiltonian": "ARTIFICIAL_H",
+        "state": "ARTIFICIAL_STATE",
+        "snapshot": "ARTIFICIAL_SNAPSHOT",
+        "decomposition": "MOCK_D",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        }
+      },
+      "profile": {
+        "compiler": "MOCK",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "contract": {
+        "kind": "ARTIFICIAL_ONLY"
+      },
+      "configuration": {
+        "policy": {
+          "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+          "metric": "energy_RMSE",
+          "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+          "family": "PR_PAPER_RMSE",
+          "target_rmse": "2",
+          "qpe_rmse": "1",
+          "evolution_rmse": "1/10",
+          "error_rule": "paper_quadrature",
+          "normalization_rule": "finite_B_diagnostic",
+          "N_terminal": 11,
+          "slope_D": 4,
+          "Cmax": {
+            "PF": 0.08,
+            "PR": 0.1
+          },
+          "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "paper": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          },
+          "high_probability_compatible": false
+        },
+        "base_time": 0.1,
+        "M_max_index": 1,
+        "round_count": 2,
+        "kappa_definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+        "kappa_paper": "2",
+        "tail_norm": {
+          "lambda_R": "1/2",
+          "prefix": 1,
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "energy_prior_ha": [
+          -1.0,
+          1.0
+        ],
+        "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+      }
+    },
+    "rows": [
+      {
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "system": "TOY",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "0d5f89a4814b4e62ed28"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "contract": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "profile": {
+            "compiler": "MOCK",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "policy": {
+              "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "metric": "energy_RMSE",
+              "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+              "family": "PR_PAPER_RMSE",
+              "target_rmse": "2",
+              "qpe_rmse": "1",
+              "evolution_rmse": "1/10",
+              "error_rule": "paper_quadrature",
+              "normalization_rule": "finite_B_diagnostic",
+              "N_terminal": 11,
+              "slope_D": 4,
+              "Cmax": {
+                "PF": 0.08,
+                "PR": 0.1
+              },
+              "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "paper": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              },
+              "high_probability_compatible": false
+            },
+            "base_time": 0.1,
+            "M_max_index": 1,
+            "round_count": 2,
+            "kappa_definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "kappa_paper": "2",
+            "tail_norm": {
+              "lambda_R": "1/2",
+              "prefix": 1,
+              "binding": {
+                "system": "TOY",
+                "hamiltonian": "ARTIFICIAL_H",
+                "state": "ARTIFICIAL_STATE",
+                "snapshot": "ARTIFICIAL_SNAPSHOT",
+                "decomposition": "MOCK_D",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "energy_prior_ha": [
+              -1.0,
+              1.0
+            ],
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          },
+          "configuration_id": "884a4df36f6d3a7fbb2ab9231568f5d6a412ee2974c86281916d34309e3a7dd5"
+        },
+        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+        "mapping": {
+          "definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "mapping": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+          "requested_kappa": "2",
+          "kappa_applied": false,
+          "r_nominal": null,
+          "rotation_event_count": 0,
+          "R_outer": null,
+          "minimum_events": 0,
+          "early_rule": null,
+          "abstract_rotation_count_is_compiled_RZ": false,
+          "involutory_tail_mapping_qualified": false,
+          "negative_signed_pieces": false,
+          "paper_e1_over_kappa_envelope_assumed": false
+        },
+        "law_binding": {
+          "model": "deterministic",
+          "candidate_id": "0d5f89a4814b4e62ed28",
+          "R_outer": null,
+          "K": null,
+          "q_PF": 1,
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trottertracks/h6_df19_rpe_d2.py"
+          }
+        },
+        "provenance": {
+          "design": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "tail": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "paper": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "request_id": "5de4128d0146ba6f0a7aa4a362ea07f605f47436bd5e26555e6d19ff07b39cb3"
+      },
+      {
+        "identity": {
+          "m": 0,
+          "q_RPE": 1,
+          "q_PF": 1,
+          "candidate": {
+            "system": "TOY",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "b2e25f437e1ca76d1929"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 1,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "contract": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "profile": {
+            "compiler": "MOCK",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "policy": {
+              "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "metric": "energy_RMSE",
+              "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+              "family": "PR_PAPER_RMSE",
+              "target_rmse": "2",
+              "qpe_rmse": "1",
+              "evolution_rmse": "1/10",
+              "error_rule": "paper_quadrature",
+              "normalization_rule": "finite_B_diagnostic",
+              "N_terminal": 11,
+              "slope_D": 4,
+              "Cmax": {
+                "PF": 0.08,
+                "PR": 0.1
+              },
+              "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "paper": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              },
+              "high_probability_compatible": false
+            },
+            "base_time": 0.1,
+            "M_max_index": 1,
+            "round_count": 2,
+            "kappa_definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "kappa_paper": "2",
+            "tail_norm": {
+              "lambda_R": "1/2",
+              "prefix": 1,
+              "binding": {
+                "system": "TOY",
+                "hamiltonian": "ARTIFICIAL_H",
+                "state": "ARTIFICIAL_STATE",
+                "snapshot": "ARTIFICIAL_SNAPSHOT",
+                "decomposition": "MOCK_D",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "energy_prior_ha": [
+              -1.0,
+              1.0
+            ],
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          },
+          "configuration_id": "884a4df36f6d3a7fbb2ab9231568f5d6a412ee2974c86281916d34309e3a7dd5"
+        },
+        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+        "mapping": {
+          "definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "mapping": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+          "requested_kappa": "2",
+          "kappa_applied": true,
+          "r_nominal": "12980742146337070512478121581609/2596148429267413814265248164610048",
+          "rotation_event_count": 1,
+          "R_outer": 1,
+          "minimum_events": 1,
+          "early_rule": null,
+          "abstract_rotation_count_is_compiled_RZ": false,
+          "involutory_tail_mapping_qualified": false,
+          "negative_signed_pieces": false,
+          "paper_e1_over_kappa_envelope_assumed": false
+        },
+        "law_binding": {
+          "model": "ideal_finite_RTE_law",
+          "candidate_id": "b2e25f437e1ca76d1929",
+          "R_outer": 1,
+          "K": 2,
+          "q_PF": 1,
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          }
+        },
+        "provenance": {
+          "design": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "tail": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "paper": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "request_id": "bef5acc5d4a6395c3cb716f3c76e09c84a466fd2b0bf2a0a0ebc9d2425365cf3"
+      },
+      {
+        "identity": {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 2,
+          "candidate": {
+            "system": "TOY",
+            "method": "FULL",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.2,
+            "q": 2,
+            "delta": 0.1,
+            "R_outer": null,
+            "K": null,
+            "id": "4ce18f0d956541f654fb"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              0
+            ],
+            "event_count": 0,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "deterministic"
+          },
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "contract": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "profile": {
+            "compiler": "MOCK",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "policy": {
+              "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "metric": "energy_RMSE",
+              "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+              "family": "PR_PAPER_RMSE",
+              "target_rmse": "2",
+              "qpe_rmse": "1",
+              "evolution_rmse": "1/10",
+              "error_rule": "paper_quadrature",
+              "normalization_rule": "finite_B_diagnostic",
+              "N_terminal": 11,
+              "slope_D": 4,
+              "Cmax": {
+                "PF": 0.08,
+                "PR": 0.1
+              },
+              "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "paper": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              },
+              "high_probability_compatible": false
+            },
+            "base_time": 0.1,
+            "M_max_index": 1,
+            "round_count": 2,
+            "kappa_definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "kappa_paper": "2",
+            "tail_norm": {
+              "lambda_R": "1/2",
+              "prefix": 1,
+              "binding": {
+                "system": "TOY",
+                "hamiltonian": "ARTIFICIAL_H",
+                "state": "ARTIFICIAL_STATE",
+                "snapshot": "ARTIFICIAL_SNAPSHOT",
+                "decomposition": "MOCK_D",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "energy_prior_ha": [
+              -1.0,
+              1.0
+            ],
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          },
+          "configuration_id": "884a4df36f6d3a7fbb2ab9231568f5d6a412ee2974c86281916d34309e3a7dd5"
+        },
+        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+        "mapping": {
+          "definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "mapping": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+          "requested_kappa": "2",
+          "kappa_applied": false,
+          "r_nominal": null,
+          "rotation_event_count": 0,
+          "R_outer": null,
+          "minimum_events": 0,
+          "early_rule": null,
+          "abstract_rotation_count_is_compiled_RZ": false,
+          "involutory_tail_mapping_qualified": false,
+          "negative_signed_pieces": false,
+          "paper_e1_over_kappa_envelope_assumed": false
+        },
+        "law_binding": {
+          "model": "deterministic",
+          "candidate_id": "4ce18f0d956541f654fb",
+          "R_outer": null,
+          "K": null,
+          "q_PF": 2,
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trottertracks/h6_df19_rpe_d2.py"
+          }
+        },
+        "provenance": {
+          "design": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "tail": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "paper": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "request_id": "9f05fb19336d9bf46c2fa07b01ab498a5d83da273cf112430a49ddeab6ba6ca2"
+      },
+      {
+        "identity": {
+          "m": 1,
+          "q_RPE": 2,
+          "q_PF": 2,
+          "candidate": {
+            "system": "TOY",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.2,
+            "q": 2,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "a30f73216646f68e2b1c"
+          },
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "binding": {
+            "system": "TOY",
+            "hamiltonian": "ARTIFICIAL_H",
+            "state": "ARTIFICIAL_STATE",
+            "snapshot": "ARTIFICIAL_SNAPSHOT",
+            "decomposition": "MOCK_D",
+            "source": {
+              "kind": "ARTIFICIAL_ONLY"
+            }
+          },
+          "contract": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "profile": {
+            "compiler": "MOCK",
+            "control": "symmetric_directional",
+            "wrapper": "full_Hadamard_with_measurement",
+            "scope": "single_hadamard_interrogation_without_state_preparation",
+            "P": 0,
+            "qiskit_version": "1.3.0",
+            "basis_gates": [
+              "rz",
+              "sx",
+              "x",
+              "cx"
+            ],
+            "optimization_level": 1,
+            "seed_transpiler": 17
+          },
+          "configuration": {
+            "policy": {
+              "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+              "metric": "energy_RMSE",
+              "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+              "family": "PR_PAPER_RMSE",
+              "target_rmse": "2",
+              "qpe_rmse": "1",
+              "evolution_rmse": "1/10",
+              "error_rule": "paper_quadrature",
+              "normalization_rule": "finite_B_diagnostic",
+              "N_terminal": 11,
+              "slope_D": 4,
+              "Cmax": {
+                "PF": 0.08,
+                "PR": 0.1
+              },
+              "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              },
+              "paper": {
+                "url": "https://arxiv.org/pdf/2503.05647v2",
+                "sections": [
+                  "B.2",
+                  "E.1",
+                  "E.3"
+                ],
+                "equations": [
+                  "A38",
+                  "B30",
+                  "E1",
+                  "E2",
+                  "E21",
+                  "E22"
+                ]
+              },
+              "high_probability_compatible": false
+            },
+            "base_time": 0.1,
+            "M_max_index": 1,
+            "round_count": 2,
+            "kappa_definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+            "kappa_paper": "2",
+            "tail_norm": {
+              "lambda_R": "1/2",
+              "prefix": 1,
+              "binding": {
+                "system": "TOY",
+                "hamiltonian": "ARTIFICIAL_H",
+                "state": "ARTIFICIAL_STATE",
+                "snapshot": "ARTIFICIAL_SNAPSHOT",
+                "decomposition": "MOCK_D",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "energy_prior_ha": [
+              -1.0,
+              1.0
+            ],
+            "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1"
+          },
+          "configuration_id": "884a4df36f6d3a7fbb2ab9231568f5d6a412ee2974c86281916d34309e3a7dd5"
+        },
+        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+        "mapping": {
+          "definition": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "mapping": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+          "requested_kappa": "2",
+          "kappa_applied": true,
+          "r_nominal": "12980742146337070512478121581609/649037107316853453566312041152512",
+          "rotation_event_count": 2,
+          "R_outer": 1,
+          "minimum_events": 2,
+          "early_rule": null,
+          "abstract_rotation_count_is_compiled_RZ": false,
+          "involutory_tail_mapping_qualified": false,
+          "negative_signed_pieces": false,
+          "paper_e1_over_kappa_envelope_assumed": false
+        },
+        "law_binding": {
+          "model": "ideal_finite_RTE_law",
+          "candidate_id": "a30f73216646f68e2b1c",
+          "R_outer": 1,
+          "K": 2,
+          "q_PF": 2,
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          }
+        },
+        "provenance": {
+          "design": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "tail": {
+            "kind": "ARTIFICIAL_ONLY"
+          },
+          "paper": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "request_id": "6df62bf94c044680f3f8ab7917615ee622a72d387798f032cea8bb7dd186a42d"
+      }
+    ],
+    "B_interface_source": {
+      "commit": "d562bc38d3b63df51f775aa4eb0998afbf1873e2",
+      "path": "docs/research/pr_rpe_rmse_controller_20261112/INTERFACE.json"
+    },
+    "design": {
+      "system": "TOY",
+      "base_time": 0.1,
+      "delta": 0.1,
+      "formula": "2nd",
+      "prefix": 1,
+      "K": 2,
+      "PF": {
+        "method": "FULL",
+        "prefix": 2
+      },
+      "binding": {
+        "system": "TOY",
+        "hamiltonian": "ARTIFICIAL_H",
+        "state": "ARTIFICIAL_STATE",
+        "snapshot": "ARTIFICIAL_SNAPSHOT",
+        "decomposition": "MOCK_D",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        }
+      },
+      "profile": {
+        "compiler": "MOCK",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "contract": {
+        "kind": "ARTIFICIAL_ONLY"
+      },
+      "energy_prior_ha": [
+        -1.0,
+        1.0
+      ],
+      "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+      "state_assumption": "ARTIFICIAL_EXACT_STATE_MODEL",
+      "source": {
+        "kind": "ARTIFICIAL_ONLY"
+      },
+      "early_rounds": []
+    },
+    "state_assumption": "ARTIFICIAL_EXACT_STATE_MODEL",
+    "scientific_PASS_FAIL": null,
+    "actual_N_qualified": false,
+    "full_RPE_qualified": false
+  },
+  "inventory": {
+    "means": [
+      {
+        "candidate": {
+          "system": "TOY",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 2,
+          "T": 0.1,
+          "q": 1,
+          "delta": 0.1,
+          "R_outer": null,
+          "K": null,
+          "id": "0d5f89a4814b4e62ed28"
+        },
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "profile": {
+          "compiler": "MOCK",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "corrected",
+          "raw",
+          "exact_tail",
+          "total_signed_bias",
+          "log_B"
+        ],
+        "error_fields": [
+          "maximum_intermediate_norm",
+          "raw_corrected_vector_closure",
+          "exact_tail_norm_error"
+        ],
+        "saved_status": "CONDITIONAL_ROUND_PASS"
+      },
+      {
+        "candidate": {
+          "system": "TOY",
+          "method": "PR",
+          "formula": "2nd",
+          "prefix": 1,
+          "T": 0.1,
+          "q": 1,
+          "delta": 0.1,
+          "R_outer": 1,
+          "K": 2,
+          "id": "b2e25f437e1ca76d1929"
+        },
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "profile": {
+          "compiler": "MOCK",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            1
+          ],
+          "event_count": 1,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "corrected",
+          "raw",
+          "exact_tail",
+          "total_signed_bias",
+          "log_B"
+        ],
+        "error_fields": [
+          "maximum_intermediate_norm",
+          "raw_corrected_vector_closure",
+          "exact_tail_norm_error"
+        ],
+        "saved_status": "CONDITIONAL_ROUND_PASS"
+      },
+      {
+        "candidate": {
+          "system": "TOY",
+          "method": "FULL",
+          "formula": "2nd",
+          "prefix": 2,
+          "T": 0.2,
+          "q": 2,
+          "delta": 0.1,
+          "R_outer": null,
+          "K": null,
+          "id": "4ce18f0d956541f654fb"
+        },
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "profile": {
+          "compiler": "MOCK",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            0
+          ],
+          "event_count": 0,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "deterministic"
+        },
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "corrected",
+          "raw",
+          "exact_tail",
+          "total_signed_bias",
+          "log_B"
+        ],
+        "error_fields": [
+          "maximum_intermediate_norm",
+          "raw_corrected_vector_closure",
+          "exact_tail_norm_error"
+        ],
+        "saved_status": "CONDITIONAL_ROUND_PASS"
+      },
+      {
+        "candidate": {
+          "system": "TOY",
+          "method": "PR",
+          "formula": "2nd",
+          "prefix": 1,
+          "T": 0.2,
+          "q": 2,
+          "delta": 0.1,
+          "R_outer": 1,
+          "K": 2,
+          "id": "a30f73216646f68e2b1c"
+        },
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "profile": {
+          "compiler": "MOCK",
+          "control": "symmetric_directional",
+          "wrapper": "full_Hadamard_with_measurement",
+          "scope": "single_hadamard_interrogation_without_state_preparation",
+          "P": 0,
+          "qiskit_version": "1.3.0",
+          "basis_gates": [
+            "rz",
+            "sx",
+            "x",
+            "cx"
+          ],
+          "optimization_level": 1,
+          "seed_transpiler": 17
+        },
+        "structure": {
+          "formula_id": "S2",
+          "signed_weights": [
+            1.0
+          ],
+          "allocation": [
+            1
+          ],
+          "event_count": 2,
+          "scalar_policy": "scalar_identity_once_at_total_T",
+          "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+          "law_model": "ideal_finite_RTE_law"
+        },
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "corrected",
+          "raw",
+          "exact_tail",
+          "total_signed_bias",
+          "log_B"
+        ],
+        "error_fields": [
+          "maximum_intermediate_norm",
+          "raw_corrected_vector_closure",
+          "exact_tail_norm_error"
+        ],
+        "saved_status": "CONDITIONAL_ROUND_PASS"
+      }
+    ],
+    "references": [
+      {
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "T": 0.1,
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "independent_reference",
+          "signal_difference"
+        ]
+      },
+      {
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "T": 0.1,
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "independent_reference",
+          "signal_difference"
+        ]
+      },
+      {
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "T": 0.2,
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "independent_reference",
+          "signal_difference"
+        ]
+      },
+      {
+        "binding": {
+          "system": "TOY",
+          "hamiltonian": "ARTIFICIAL_H",
+          "state": "ARTIFICIAL_STATE",
+          "snapshot": "ARTIFICIAL_SNAPSHOT",
+          "decomposition": "MOCK_D",
+          "source": {
+            "kind": "ARTIFICIAL_ONLY"
+          }
+        },
+        "T": 0.2,
+        "source": {
+          "kind": "MOCK"
+        },
+        "fields": [
+          "reference",
+          "independent_reference",
+          "signal_difference"
+        ]
+      }
+    ]
+  },
+  "preflight": {
+    "schema": "A_RMSE_PREFLIGHT_V1",
+    "source": {
+      "module": "src/trottertracks/pr_rpe_rmse_preflight.py",
+      "A": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+      "B": "82bc774a92b65cac06b88ebcb2c6979c2726253b"
+    },
+    "status": "TECHNICAL_PREFLIGHT_COMPLETE_NOT_SCIENCE",
+    "A_configuration_id": "884a4df36f6d3a7fbb2ab9231568f5d6a412ee2974c86281916d34309e3a7dd5",
+    "B_configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+    "global_issues": [],
+    "rounds": [
+      {
+        "m": 0,
+        "A_request_id": "bef5acc5d4a6395c3cb716f3c76e09c84a466fd2b0bf2a0a0ebc9d2425365cf3",
+        "A_candidate_id": "b2e25f437e1ca76d1929",
+        "B_candidate_id": "RMSE:afdeedd56e5ad58e65f8fa268dd682e762e12f175f9e2b0b5a368ebece385c4b",
+        "status": "TECHNICALLY_PLANNABLE_NOT_QUALIFIED",
+        "issues": [],
+        "saved_mean_candidates": [
+          {
+            "candidate": {
+              "system": "TOY",
+              "method": "PR",
+              "formula": "2nd",
+              "prefix": 1,
+              "T": 0.1,
+              "q": 1,
+              "delta": 0.1,
+              "R_outer": 1,
+              "K": 2,
+              "id": "b2e25f437e1ca76d1929"
+            },
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                1
+              ],
+              "event_count": 1,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "profile": {
+              "compiler": "MOCK",
+              "control": "symmetric_directional",
+              "wrapper": "full_Hadamard_with_measurement",
+              "scope": "single_hadamard_interrogation_without_state_preparation",
+              "P": 0,
+              "qiskit_version": "1.3.0",
+              "basis_gates": [
+                "rz",
+                "sx",
+                "x",
+                "cx"
+              ],
+              "optimization_level": 1,
+              "seed_transpiler": 17
+            },
+            "source": {
+              "kind": "MOCK"
+            },
+            "saved_status": "CONDITIONAL_ROUND_PASS",
+            "fields": [
+              "reference",
+              "corrected",
+              "raw",
+              "exact_tail",
+              "total_signed_bias",
+              "log_B"
+            ],
+            "error_fields": [
+              "maximum_intermediate_norm",
+              "raw_corrected_vector_closure",
+              "exact_tail_norm_error"
+            ]
+          }
+        ],
+        "rejected_saved_evidence": [],
+        "saved_reference_candidates": [
+          {
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "T": 0.1,
+            "source": {
+              "kind": "MOCK"
+            },
+            "fields": [
+              "reference",
+              "independent_reference",
+              "signal_difference"
+            ]
+          },
+          {
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "T": 0.1,
+            "source": {
+              "kind": "MOCK"
+            },
+            "fields": [
+              "reference",
+              "independent_reference",
+              "signal_difference"
+            ]
+          }
+        ],
+        "missing_mean_fields": [],
+        "additional_scientific_calls_if_approved": {
+          "finite_mean_candidates_upper_bound": 0,
+          "exact_tail_internal_controls_upper_bound": 0,
+          "independent_reference_actions": 0,
+          "recover_saved_diagnostics_first": false,
+          "saved_numeric_gate_rechecks": true,
+          "RMSE_policy_reanalysis_required": true
+        },
+        "nominal_N_X": null,
+        "nominal_N_Y": null,
+        "N_X": null,
+        "N_Y": null
+      },
+      {
+        "m": 1,
+        "A_request_id": "6df62bf94c044680f3f8ab7917615ee622a72d387798f032cea8bb7dd186a42d",
+        "A_candidate_id": "a30f73216646f68e2b1c",
+        "B_candidate_id": "RMSE:4e73c0d0fbfdfb5bc1bbc334783cff594405d7f1f3261e3936e789ffb4b37b3e",
+        "status": "TECHNICALLY_PLANNABLE_NOT_QUALIFIED",
+        "issues": [],
+        "saved_mean_candidates": [
+          {
+            "candidate": {
+              "system": "TOY",
+              "method": "PR",
+              "formula": "2nd",
+              "prefix": 1,
+              "T": 0.2,
+              "q": 2,
+              "delta": 0.1,
+              "R_outer": 1,
+              "K": 2,
+              "id": "a30f73216646f68e2b1c"
+            },
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                1
+              ],
+              "event_count": 2,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "profile": {
+              "compiler": "MOCK",
+              "control": "symmetric_directional",
+              "wrapper": "full_Hadamard_with_measurement",
+              "scope": "single_hadamard_interrogation_without_state_preparation",
+              "P": 0,
+              "qiskit_version": "1.3.0",
+              "basis_gates": [
+                "rz",
+                "sx",
+                "x",
+                "cx"
+              ],
+              "optimization_level": 1,
+              "seed_transpiler": 17
+            },
+            "source": {
+              "kind": "MOCK"
+            },
+            "saved_status": "CONDITIONAL_ROUND_PASS",
+            "fields": [
+              "reference",
+              "corrected",
+              "raw",
+              "exact_tail",
+              "total_signed_bias",
+              "log_B"
+            ],
+            "error_fields": [
+              "maximum_intermediate_norm",
+              "raw_corrected_vector_closure",
+              "exact_tail_norm_error"
+            ]
+          }
+        ],
+        "rejected_saved_evidence": [],
+        "saved_reference_candidates": [
+          {
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "T": 0.2,
+            "source": {
+              "kind": "MOCK"
+            },
+            "fields": [
+              "reference",
+              "independent_reference",
+              "signal_difference"
+            ]
+          },
+          {
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "T": 0.2,
+            "source": {
+              "kind": "MOCK"
+            },
+            "fields": [
+              "reference",
+              "independent_reference",
+              "signal_difference"
+            ]
+          }
+        ],
+        "missing_mean_fields": [],
+        "additional_scientific_calls_if_approved": {
+          "finite_mean_candidates_upper_bound": 0,
+          "exact_tail_internal_controls_upper_bound": 0,
+          "independent_reference_actions": 0,
+          "recover_saved_diagnostics_first": false,
+          "saved_numeric_gate_rechecks": true,
+          "RMSE_policy_reanalysis_required": true
+        },
+        "nominal_N_X": null,
+        "nominal_N_Y": null,
+        "N_X": null,
+        "N_Y": null
+      }
+    ],
+    "N_packet": {
+      "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+      "policy": {
+        "family": "PR_PAPER_RMSE",
+        "id": "MOCK_RMSE",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        },
+        "error_contract": "MOCK_EXPLICIT_CONTRACT",
+        "scientific_status": "PROPOSED_NOT_ADOPTED",
+        "target_rmse_ha": {
+          "numerator": 2,
+          "denominator": 1
+        }
+      },
+      "source": {
+        "module": "src/trottertracks/pr_rpe_rmse_preflight.py",
+        "A": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+        "B": "82bc774a92b65cac06b88ebcb2c6979c2726253b"
+      },
+      "evidence_kind": "PREFLIGHT_ONLY",
+      "status": "NOT_EVALUATED",
+      "rounds": [
+        {
+          "m": 0,
+          "identity": {
+            "m": 0,
+            "q_RPE": 1,
+            "q_PF": 1,
+            "candidate": {
+              "id": "RMSE:afdeedd56e5ad58e65f8fa268dd682e762e12f175f9e2b0b5a368ebece385c4b",
+              "method": "PR",
+              "system": "TOY",
+              "prefix": 1,
+              "formula": "2nd",
+              "T": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "q": 1,
+              "delta": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "K": 2,
+              "R_outer": 1,
+              "event_count": 1
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                1
+              ],
+              "event_count": 1,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "contract": {
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "deterministic_scope": "PREFIX",
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": 0.5,
+                "lambda_source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_RMSE",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "error_contract": "MOCK_EXPLICIT_CONTRACT",
+                "scientific_status": "PROPOSED_NOT_ADOPTED",
+                "target_rmse_ha": {
+                  "numerator": 2,
+                  "denominator": 1
+                }
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              }
+            },
+            "profile": {
+              "compiler": "MOCK",
+              "control": "symmetric_directional",
+              "wrapper": "full_Hadamard_with_measurement",
+              "scope": "single_hadamard_interrogation_without_state_preparation",
+              "P": 0,
+              "qiskit_version": "1.3.0",
+              "basis_gates": [
+                "rz",
+                "sx",
+                "x",
+                "cx"
+              ],
+              "optimization_level": 1,
+              "seed_transpiler": 17
+            },
+            "configuration": {
+              "schema": "PR_RPE_RMSE_V1",
+              "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+              "spec": {
+                "binding": {
+                  "system": "TOY",
+                  "hamiltonian": "ARTIFICIAL_H",
+                  "state": "ARTIFICIAL_STATE",
+                  "snapshot": "ARTIFICIAL_SNAPSHOT",
+                  "decomposition": "MOCK_D",
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "profile": {
+                  "compiler": "MOCK",
+                  "control": "symmetric_directional",
+                  "wrapper": "full_Hadamard_with_measurement",
+                  "scope": "single_hadamard_interrogation_without_state_preparation",
+                  "P": 0,
+                  "qiskit_version": "1.3.0",
+                  "basis_gates": [
+                    "rz",
+                    "sx",
+                    "x",
+                    "cx"
+                  ],
+                  "optimization_level": 1,
+                  "seed_transpiler": 17
+                },
+                "method": "PR",
+                "M": 1,
+                "h": {
+                  "numerator": 3602879701896397,
+                  "denominator": 36028797018963968
+                },
+                "L_D": 1,
+                "delta_pf": {
+                  "numerator": 3602879701896397,
+                  "denominator": 36028797018963968
+                },
+                "formula": "2nd",
+                "split": {
+                  "L_D": 1,
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  },
+                  "deterministic_scope": "PREFIX",
+                  "randomized_scope": "TAIL_AFTER_PREFIX",
+                  "lambda_R": 0.5,
+                  "lambda_source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "kappa": {
+                  "kind": "PAPER_TOTAL_ROTATIONS",
+                  "value": {
+                    "numerator": 2,
+                    "denominator": 1
+                  },
+                  "definition_source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "event_mapping": {
+                  "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "finite_K": 2,
+                "law": {
+                  "model": "ideal_finite_RTE_law",
+                  "source": {
+                    "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                    "path": "src/trotterlib/rte.py"
+                  }
+                },
+                "rmse_policy": {
+                  "family": "PR_PAPER_RMSE",
+                  "id": "MOCK_RMSE",
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  },
+                  "error_contract": "MOCK_EXPLICIT_CONTRACT",
+                  "scientific_status": "PROPOSED_NOT_ADOPTED",
+                  "target_rmse_ha": {
+                    "numerator": 2,
+                    "denominator": 1
+                  }
+                }
+              }
+            }
+          },
+          "law_binding": {
+            "definition": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            },
+            "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+            "candidate_id": "RMSE:afdeedd56e5ad58e65f8fa268dd682e762e12f175f9e2b0b5a368ebece385c4b",
+            "kappa": {
+              "kind": "PAPER_TOTAL_ROTATIONS",
+              "value": {
+                "numerator": 2,
+                "denominator": 1
+              },
+              "definition_source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "event_mapping": {
+              "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            }
+          },
+          "N_X": null,
+          "N_Y": null
+        },
+        {
+          "m": 1,
+          "identity": {
+            "m": 1,
+            "q_RPE": 2,
+            "q_PF": 2,
+            "candidate": {
+              "id": "RMSE:4e73c0d0fbfdfb5bc1bbc334783cff594405d7f1f3261e3936e789ffb4b37b3e",
+              "method": "PR",
+              "system": "TOY",
+              "prefix": 1,
+              "formula": "2nd",
+              "T": {
+                "numerator": 3602879701896397,
+                "denominator": 18014398509481984
+              },
+              "q": 2,
+              "delta": {
+                "numerator": 3602879701896397,
+                "denominator": 36028797018963968
+              },
+              "K": 2,
+              "R_outer": 1,
+              "event_count": 2
+            },
+            "structure": {
+              "formula_id": "S2",
+              "signed_weights": [
+                1.0
+              ],
+              "allocation": [
+                1
+              ],
+              "event_count": 2,
+              "scalar_policy": "scalar_identity_once_at_total_T",
+              "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+              "law_model": "ideal_finite_RTE_law"
+            },
+            "binding": {
+              "system": "TOY",
+              "hamiltonian": "ARTIFICIAL_H",
+              "state": "ARTIFICIAL_STATE",
+              "snapshot": "ARTIFICIAL_SNAPSHOT",
+              "decomposition": "MOCK_D",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "contract": {
+              "split": {
+                "L_D": 1,
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "deterministic_scope": "PREFIX",
+                "randomized_scope": "TAIL_AFTER_PREFIX",
+                "lambda_R": 0.5,
+                "lambda_source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                }
+              },
+              "rmse_policy": {
+                "family": "PR_PAPER_RMSE",
+                "id": "MOCK_RMSE",
+                "source": {
+                  "kind": "ARTIFICIAL_ONLY"
+                },
+                "error_contract": "MOCK_EXPLICIT_CONTRACT",
+                "scientific_status": "PROPOSED_NOT_ADOPTED",
+                "target_rmse_ha": {
+                  "numerator": 2,
+                  "denominator": 1
+                }
+              },
+              "law": {
+                "model": "ideal_finite_RTE_law",
+                "source": {
+                  "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                  "path": "src/trotterlib/rte.py"
+                }
+              }
+            },
+            "profile": {
+              "compiler": "MOCK",
+              "control": "symmetric_directional",
+              "wrapper": "full_Hadamard_with_measurement",
+              "scope": "single_hadamard_interrogation_without_state_preparation",
+              "P": 0,
+              "qiskit_version": "1.3.0",
+              "basis_gates": [
+                "rz",
+                "sx",
+                "x",
+                "cx"
+              ],
+              "optimization_level": 1,
+              "seed_transpiler": 17
+            },
+            "configuration": {
+              "schema": "PR_RPE_RMSE_V1",
+              "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+              "spec": {
+                "binding": {
+                  "system": "TOY",
+                  "hamiltonian": "ARTIFICIAL_H",
+                  "state": "ARTIFICIAL_STATE",
+                  "snapshot": "ARTIFICIAL_SNAPSHOT",
+                  "decomposition": "MOCK_D",
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "profile": {
+                  "compiler": "MOCK",
+                  "control": "symmetric_directional",
+                  "wrapper": "full_Hadamard_with_measurement",
+                  "scope": "single_hadamard_interrogation_without_state_preparation",
+                  "P": 0,
+                  "qiskit_version": "1.3.0",
+                  "basis_gates": [
+                    "rz",
+                    "sx",
+                    "x",
+                    "cx"
+                  ],
+                  "optimization_level": 1,
+                  "seed_transpiler": 17
+                },
+                "method": "PR",
+                "M": 1,
+                "h": {
+                  "numerator": 3602879701896397,
+                  "denominator": 36028797018963968
+                },
+                "L_D": 1,
+                "delta_pf": {
+                  "numerator": 3602879701896397,
+                  "denominator": 36028797018963968
+                },
+                "formula": "2nd",
+                "split": {
+                  "L_D": 1,
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  },
+                  "deterministic_scope": "PREFIX",
+                  "randomized_scope": "TAIL_AFTER_PREFIX",
+                  "lambda_R": 0.5,
+                  "lambda_source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "kappa": {
+                  "kind": "PAPER_TOTAL_ROTATIONS",
+                  "value": {
+                    "numerator": 2,
+                    "denominator": 1
+                  },
+                  "definition_source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "event_mapping": {
+                  "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  }
+                },
+                "finite_K": 2,
+                "law": {
+                  "model": "ideal_finite_RTE_law",
+                  "source": {
+                    "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                    "path": "src/trotterlib/rte.py"
+                  }
+                },
+                "rmse_policy": {
+                  "family": "PR_PAPER_RMSE",
+                  "id": "MOCK_RMSE",
+                  "source": {
+                    "kind": "ARTIFICIAL_ONLY"
+                  },
+                  "error_contract": "MOCK_EXPLICIT_CONTRACT",
+                  "scientific_status": "PROPOSED_NOT_ADOPTED",
+                  "target_rmse_ha": {
+                    "numerator": 2,
+                    "denominator": 1
+                  }
+                }
+              }
+            }
+          },
+          "law_binding": {
+            "definition": {
+              "model": "ideal_finite_RTE_law",
+              "source": {
+                "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+                "path": "src/trotterlib/rte.py"
+              }
+            },
+            "configuration_id": "0ee86e09135442df7af7122799347677a0ce492c345d54cc25d0be8bcc658b55",
+            "candidate_id": "RMSE:4e73c0d0fbfdfb5bc1bbc334783cff594405d7f1f3261e3936e789ffb4b37b3e",
+            "kappa": {
+              "kind": "PAPER_TOTAL_ROTATIONS",
+              "value": {
+                "numerator": 2,
+                "denominator": 1
+              },
+              "definition_source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            },
+            "event_mapping": {
+              "kind": "PAPER_TOTAL_UNIFORM_OUTER_DRAFT",
+              "source": {
+                "kind": "ARTIFICIAL_ONLY"
+              }
+            }
+          },
+          "N_X": null,
+          "N_Y": null
+        }
+      ],
+      "rmse_evidence": {
+        "source": {
+          "module": "src/trottertracks/pr_rpe_rmse_preflight.py",
+          "A": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+          "B": "82bc774a92b65cac06b88ebcb2c6979c2726253b"
+        },
+        "status": "NOT_EVALUATED",
+        "error_contract": "MOCK_EXPLICIT_CONTRACT",
+        "rmse_bound_ha": null,
+        "covers_state_target_alias_prior_decoder_all_rounds": false,
+        "finite_K_status": "NOT_EVALUATED",
+        "signed_piece_kappa_status": "NOT_EVALUATED"
+      }
+    },
+    "required_external_evidence": [
+      "state_and_effective_evolution_model",
+      "decoder_alias_branch",
+      "involutory_tail_mapping",
+      "finite_K_RMSE_transfer",
+      "error_composition",
+      "implementation_and_sampling_law",
+      "B_decomposition_SOURCE_join",
+      "RMSE_error_contract_adoption",
+      "normalization_policy_calibration",
+      "all_round_decoder_RMSE_evidence"
+    ],
+    "supplied_outer_conditions": {
+      "M": 1,
+      "h": 0.1,
+      "energy_prior_ha": [
+        -1.0,
+        1.0
+      ],
+      "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+      "state_assumption": "ARTIFICIAL_EXACT_STATE_MODEL",
+      "A_error_policy": {
+        "policy_id": "PR_RPE_PAPER_V2_EMPIRICAL_RMSE_V1",
+        "metric": "energy_RMSE",
+        "status": "EMPIRICAL_RESOURCE_MODEL_NOT_SUFFICIENT_SHOTS",
+        "family": "PR_PAPER_RMSE",
+        "target_rmse": "2",
+        "qpe_rmse": "1",
+        "evolution_rmse": "1/10",
+        "error_rule": "paper_quadrature",
+        "normalization_rule": "finite_B_diagnostic",
+        "N_terminal": 11,
+        "slope_D": 4,
+        "Cmax": {
+          "PF": 0.08,
+          "PR": 0.1
+        },
+        "constant_qualification": "PAPER_EMPIRICAL_CONSTANTS_NOT_RIGOROUS",
+        "source": {
+          "kind": "ARTIFICIAL_ONLY"
+        },
+        "paper": {
+          "url": "https://arxiv.org/pdf/2503.05647v2",
+          "sections": [
+            "B.2",
+            "E.1",
+            "E.3"
+          ],
+          "equations": [
+            "A38",
+            "B30",
+            "E1",
+            "E2",
+            "E21",
+            "E22"
+          ]
+        },
+        "high_probability_compatible": false
+      },
+      "B_error_contract": "MOCK_EXPLICIT_CONTRACT",
+      "prior_decoder_error_contract_join_qualified": false
+    },
+    "science_calls": 0,
+    "new_N_or_RMSE": false,
+    "full_RPE_qualified": false,
+    "mandatory_stop": true
+  }
+}

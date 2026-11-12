@@ -1,5 +1,9 @@
 # trotterlib モジュール索引
 
+[実RMSE評価のA技術準備](../../docs/research/pr_rpe_rmse_science_preparation_20261112/REPORT.md)：固定B82bcのmetadata検証を再利用し、全round/SOURCE・保存証拠・追加call案を科学計算なしで照合。H4 B0/full-H差とH6初期例外をBLOCKED、N/boundはnull。14新規＋29既存人工回帰PASS、実signal/N/RMSE/C/G0、公開照合後STOP。
+
+A専用module：`src/trottertracks/pr_rpe_rmse_preflight.py`。旧RMSE/Hoeffding実装は不変。
+
 [RMSE型Nとκ schedule](../../docs/research/pr_rpe_rmse_kappa_20261112/REPORT.md)：`trottertracks.pr_rpe_rmse`が既存finite action/normalizer/decoder・純metadataを再利用。旧Hoeffding/SOURCE不変、新17人工/mock PASS、実科学0。
 
 R可変PRの[P1結果](../../docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：`trottertracks.pr_r_detailed_n_p1`が既存B grouping/A action/scalarを不変で結線。6人工/mock PASS、固定12実候補の条件付きNを公開。C/G・R採択なし。
