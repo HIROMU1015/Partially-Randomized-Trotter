@@ -1,0 +1,5345 @@
+{
+  "source": {
+    "D": "eecaa8030280f8957ad85555bcc89e2daa1a29fa",
+    "A": "75b5c89bddf8a1ffa4a8ac99b2c06d6e05fa012d"
+  },
+  "formulas": {
+    "2nd": {
+      "family": "S2",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      },
+      "negative_time": false,
+      "h46_signal_path": true,
+      "h46_native_path": true,
+      "v2_generate": true,
+      "signed_weights": [
+        1.0
+      ],
+      "v2_status": "SUPPORTED"
+    },
+    "4th": {
+      "family": "STANDARD_YOSHIDA4",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      },
+      "negative_time": true,
+      "h46_signal_path": true,
+      "h46_native_path": true,
+      "v2_generate": false,
+      "not_alias_of": "4th(m5_best)",
+      "signed_weights": [
+        1.3512071919596578,
+        -1.7024143839193153,
+        1.3512071919596578
+      ],
+      "v2_status": "B_V2_FORMULA_EXTENSION_REQUIRED"
+    },
+    "4th(m5_best)": {
+      "family": "M5_BEST_BINARY64",
+      "coefficient_source": {
+        "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+        "path": "src/trotterlib/h46_m5_plan.py",
+        "functions": [
+          "weights",
+          "schedule",
+          "allocation"
+        ]
+      },
+      "negative_time": true,
+      "h46_signal_path": true,
+      "h46_native_path": true,
+      "v2_generate": true,
+      "formula_id": "PF_M5_BEST_20D64C2_BINARY64_V1",
+      "signed_weights": [
+        0.12547397927357543,
+        0.13781643533753404,
+        0.1211920365713068,
+        0.14181961643121604,
+        0.11225428783206336,
+        -0.27711271089139133,
+        0.11225428783206336,
+        0.14181961643121604,
+        0.1211920365713068,
+        0.13781643533753404,
+        0.12547397927357543
+      ],
+      "v2_status": "SUPPORTED"
+    }
+  },
+  "source_functions": {
+    "pf_weights": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/h46_m5_plan.py",
+      "functions": [
+        "weights",
+        "schedule",
+        "allocation"
+      ]
+    },
+    "pf_signal": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_signal.py",
+      "functions": [
+        "candidates",
+        "cid",
+        "context",
+        "evolve_batch"
+      ]
+    },
+    "pf_native": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/h46_long_time_native.py",
+      "functions": [
+        "compose",
+        "cost_trial"
+      ]
+    },
+    "pf_native_lowering": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trottertracks/resource_applicability/ax2b_native_df_v5.py",
+      "functions": [
+        "build_deterministic_native",
+        "build_partial_native"
+      ]
+    },
+    "pf_common_cost": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "scripts/pf_common_run_native.py",
+      "functions": [
+        "cost_one"
+      ]
+    },
+    "pf_higher_order": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/product_formula.py",
+      "functions": [
+        "_get_w_list"
+      ]
+    },
+    "pf_decomposition": {
+      "commit": "af284d853890155bacd19e61850c196bd1d5c660",
+      "path": "src/trotterlib/pf_decomposition.py",
+      "functions": [
+        "iter_pf_steps"
+      ]
+    }
+  },
+  "saved_grid": {
+    "rank": {
+      "H4": 10,
+      "H6": 19
+    },
+    "q": {
+      "0.8": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "1.2": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        16
+      ],
+      "1.6": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ],
+      "2.0": [
+        1,
+        2,
+        4,
+        8,
+        10,
+        16
+      ]
+    },
+    "formulas": [
+      "2nd",
+      "4th",
+      "4th(m5_best)"
+    ]
+  },
+  "saved_binding": {
+    "H4": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4"
+    },
+    "H6": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "223628b06c794f4a2a7a84db532e19ed60915f7e86898de66347129a5aeaffa9",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 19,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H6_TOL_ONLY_DF19",
+      "snapshot": "99440a59d903dfd6330e786d84a956f1dd8a687a592295a1cd771c839769b005",
+      "state": "664c63350c2510518b0ec561f804641447d39f75e68b960192c31d37540265f3",
+      "system": "H6"
+    }
+  },
+  "saved_carriers": [
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 1.0,
+        "formula": "2nd",
+        "id": "01561a1dd0135b94de79",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "01561a1dd0135b94de79"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.19999999999999998,
+        "formula": "2nd",
+        "id": "0357e24571bc9a4a5bb0",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 6,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "0357e24571bc9a4a5bb0"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "4th",
+        "id": "052dfe427c2b8d83ad9e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "052dfe427c2b8d83ad9e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "4th",
+        "id": "0a9bd05d71cb8b1fe271",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "0a9bd05d71cb8b1fe271"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.2,
+        "formula": "2nd",
+        "id": "0b6936a16e757c0e963e",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 10,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "0b6936a16e757c0e963e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 1.6,
+        "formula": "4th(m5_best)",
+        "id": "0cd1527c80f7b9841a83",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "0cd1527c80f7b9841a83"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "4th(m5_best)",
+        "id": "0dbce36feef282a0868f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "0dbce36feef282a0868f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.3,
+        "formula": "2nd",
+        "id": "1299281ad1119e08ee02",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "1299281ad1119e08ee02"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.19999999999999998,
+        "formula": "4th(m5_best)",
+        "id": "14403181b636ab2f84de",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 6,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "14403181b636ab2f84de"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.05,
+        "formula": "2nd",
+        "id": "15c5bfd76043460a19b6",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "15c5bfd76043460a19b6"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.6,
+        "formula": "2nd",
+        "id": "16671d7e811ca6475e8f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "16671d7e811ca6475e8f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.8,
+        "formula": "4th(m5_best)",
+        "id": "1b3aa083ff69842d8f31",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "1b3aa083ff69842d8f31"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 1.6,
+        "formula": "4th",
+        "id": "1d37ea2057477582337b",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "1d37ea2057477582337b"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.05,
+        "formula": "4th",
+        "id": "1ed07019d3794a757a65",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "1ed07019d3794a757a65"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 1.6,
+        "formula": "4th",
+        "id": "1f1c9797b780c4aef686",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "1f1c9797b780c4aef686"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.1,
+        "formula": "2nd",
+        "id": "1f707cc04a8cb24a0970",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "1f707cc04a8cb24a0970"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.4,
+        "formula": "2nd",
+        "id": "210415e293256f8c1330",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "210415e293256f8c1330"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.3,
+        "formula": "2nd",
+        "id": "22b1b9e4a29be3ad089c",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "22b1b9e4a29be3ad089c"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.4,
+        "formula": "4th",
+        "id": "2594f35f92e76d58874c",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2594f35f92e76d58874c"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "4th(m5_best)",
+        "id": "25a7dc0c3eecba9ef816",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "25a7dc0c3eecba9ef816"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.19999999999999998,
+        "formula": "4th",
+        "id": "28199bd20a544a836f7a",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 6,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "28199bd20a544a836f7a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.15,
+        "formula": "4th(m5_best)",
+        "id": "295aed49e145975fc383",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "295aed49e145975fc383"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.6,
+        "formula": "4th(m5_best)",
+        "id": "2a823f6e148f7005f1b1",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2a823f6e148f7005f1b1"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.5,
+        "formula": "4th",
+        "id": "2b1ae6d8a8da40fab448",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2b1ae6d8a8da40fab448"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 1.6,
+        "formula": "2nd",
+        "id": "2b5d36840cf9757e176e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2b5d36840cf9757e176e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 1.2,
+        "formula": "4th",
+        "id": "2e0131b02779cc0f73cf",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2e0131b02779cc0f73cf"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.125,
+        "formula": "2nd",
+        "id": "2e36245d1c62db74b433",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2e36245d1c62db74b433"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 1.2,
+        "formula": "4th(m5_best)",
+        "id": "2e4805f8e36b93947fd8",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2e4805f8e36b93947fd8"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "4th",
+        "id": "2fd9753a1487f52e697f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "2fd9753a1487f52e697f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.075,
+        "formula": "4th(m5_best)",
+        "id": "309ea2628abbd3fbe224",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "309ea2628abbd3fbe224"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.19999999999999998,
+        "formula": "4th(m5_best)",
+        "id": "34370c01e7a15584744b",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 6,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "34370c01e7a15584744b"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.4,
+        "formula": "4th",
+        "id": "362aa8f8044da32c9d3a",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "362aa8f8044da32c9d3a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "4th(m5_best)",
+        "id": "38e21aec3c46acd00211",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "38e21aec3c46acd00211"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.05,
+        "formula": "2nd",
+        "id": "3bca0c72aad2d5e5c1aa",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "3bca0c72aad2d5e5c1aa"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.05,
+        "formula": "4th",
+        "id": "3d356bfa4b55dac6cefe",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "3d356bfa4b55dac6cefe"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.075,
+        "formula": "4th",
+        "id": "3daf75d2c7aea1409245",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "3daf75d2c7aea1409245"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.6,
+        "formula": "2nd",
+        "id": "44bdf22b10f48ef20071",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "44bdf22b10f48ef20071"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.15,
+        "formula": "2nd",
+        "id": "46d5fdbcb94c53302176",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "46d5fdbcb94c53302176"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.4,
+        "formula": "4th(m5_best)",
+        "id": "4ecf37965885c656e554",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "4ecf37965885c656e554"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.5,
+        "formula": "4th",
+        "id": "4f6ff9a1527905e663af",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "4f6ff9a1527905e663af"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 1.0,
+        "formula": "4th(m5_best)",
+        "id": "5220d879cf4b545e8c25",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5220d879cf4b545e8c25"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.25,
+        "formula": "4th",
+        "id": "52439e3f919225b2f28f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "52439e3f919225b2f28f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.075,
+        "formula": "4th(m5_best)",
+        "id": "533db6075f8cd1be30c2",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "533db6075f8cd1be30c2"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.5,
+        "formula": "4th(m5_best)",
+        "id": "55f849c0203822dec81a",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "55f849c0203822dec81a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 2.0,
+        "formula": "2nd",
+        "id": "59683d72b999eadd859a",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "59683d72b999eadd859a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.2,
+        "formula": "4th",
+        "id": "5afba2c5bb1a9b0f5ec6",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 10,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5afba2c5bb1a9b0f5ec6"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.3,
+        "formula": "4th",
+        "id": "5bedb76cf2d0d92f1cff",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5bedb76cf2d0d92f1cff"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 1.0,
+        "formula": "4th",
+        "id": "5cc6ef3ca6c54933df44",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5cc6ef3ca6c54933df44"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.3,
+        "formula": "4th",
+        "id": "5e7b3d410f0eac9c3890",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5e7b3d410f0eac9c3890"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.25,
+        "formula": "4th",
+        "id": "5ebe7f71083b71c5c0df",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5ebe7f71083b71c5c0df"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "4th(m5_best)",
+        "id": "5fcec46a4ebf359d1a9b",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "5fcec46a4ebf359d1a9b"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.8,
+        "formula": "4th",
+        "id": "6131536dafa6ec8d1dc1",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "6131536dafa6ec8d1dc1"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "4th",
+        "id": "633c64b734cc987f155e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "633c64b734cc987f155e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.19999999999999998,
+        "formula": "4th",
+        "id": "6816d6d79284605121f7",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 6,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "6816d6d79284605121f7"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.4,
+        "formula": "4th(m5_best)",
+        "id": "6a77e41be0664ddfb71e",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "6a77e41be0664ddfb71e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.4,
+        "formula": "4th",
+        "id": "6ed5dbb39fcf930c9d51",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "6ed5dbb39fcf930c9d51"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "2nd",
+        "id": "6f82e94bc1268627411f",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "6f82e94bc1268627411f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.4,
+        "formula": "2nd",
+        "id": "7607469227a0dedd4a79",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7607469227a0dedd4a79"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.8,
+        "formula": "4th(m5_best)",
+        "id": "76601611270ed9f0677d",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "76601611270ed9f0677d"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.25,
+        "formula": "4th(m5_best)",
+        "id": "76cf7b67abdac27d8f5a",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "76cf7b67abdac27d8f5a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.075,
+        "formula": "2nd",
+        "id": "7734619bc0f1634741dd",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7734619bc0f1634741dd"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.1,
+        "formula": "4th(m5_best)",
+        "id": "778a44448e6ca7925e51",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "778a44448e6ca7925e51"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.25,
+        "formula": "2nd",
+        "id": "7926a9ec65115795688a",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7926a9ec65115795688a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.8,
+        "formula": "2nd",
+        "id": "7bb2356c9a2e166568da",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7bb2356c9a2e166568da"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.3,
+        "formula": "4th(m5_best)",
+        "id": "7bd562047b6ee110b781",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7bd562047b6ee110b781"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 2.0,
+        "formula": "2nd",
+        "id": "7cdd731c7c8c414460a0",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7cdd731c7c8c414460a0"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.5,
+        "formula": "2nd",
+        "id": "7e575a506fc3ce5556f2",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7e575a506fc3ce5556f2"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.125,
+        "formula": "4th(m5_best)",
+        "id": "7ed1db251d93eb4bd583",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "7ed1db251d93eb4bd583"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "4th(m5_best)",
+        "id": "810f3a11f494804871dc",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "810f3a11f494804871dc"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.8,
+        "formula": "2nd",
+        "id": "82b6fa3e5bd9f48bf923",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "82b6fa3e5bd9f48bf923"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.1,
+        "formula": "2nd",
+        "id": "83d703b801b8545ce61f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "83d703b801b8545ce61f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.8,
+        "formula": "2nd",
+        "id": "847b59d8a17f904f7f26",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "847b59d8a17f904f7f26"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.8,
+        "formula": "4th",
+        "id": "8b27e6f51fa36eb2b218",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "8b27e6f51fa36eb2b218"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.125,
+        "formula": "2nd",
+        "id": "8bece0bb5e9d4f89d98a",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "8bece0bb5e9d4f89d98a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.8,
+        "formula": "4th(m5_best)",
+        "id": "8cf3ab565283bebfbbba",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "8cf3ab565283bebfbbba"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.6,
+        "formula": "4th",
+        "id": "8e2c4710870c33407e2e",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "8e2c4710870c33407e2e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 1.0,
+        "formula": "2nd",
+        "id": "8e2d34ea24e5a13ca847",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "8e2d34ea24e5a13ca847"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.125,
+        "formula": "4th",
+        "id": "91dbd0a2d09541b98a63",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "91dbd0a2d09541b98a63"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.3,
+        "formula": "4th(m5_best)",
+        "id": "9365db2d13c38e16b502",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "9365db2d13c38e16b502"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 1.6,
+        "formula": "2nd",
+        "id": "93ccd79d6560af0961d1",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "93ccd79d6560af0961d1"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.05,
+        "formula": "4th(m5_best)",
+        "id": "98472f050f15a6a82148",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "98472f050f15a6a82148"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 1.0,
+        "formula": "4th(m5_best)",
+        "id": "988ccc63f5aa4551ff52",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "988ccc63f5aa4551ff52"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.4,
+        "formula": "4th(m5_best)",
+        "id": "98acc1d6b2298552c40f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "98acc1d6b2298552c40f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.2,
+        "formula": "4th",
+        "id": "993f63aaba1605e19352",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 10,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "993f63aaba1605e19352"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.15,
+        "formula": "2nd",
+        "id": "9bd07ada1df84353938d",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "9bd07ada1df84353938d"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.6,
+        "formula": "4th(m5_best)",
+        "id": "9bfb7368cd6b9ac42a06",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "9bfb7368cd6b9ac42a06"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.8,
+        "formula": "4th(m5_best)",
+        "id": "a1402fe1527507da831e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "a1402fe1527507da831e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.25,
+        "formula": "2nd",
+        "id": "a36c2098d1d213f8a13d",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "a36c2098d1d213f8a13d"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.4,
+        "formula": "4th",
+        "id": "a3e91da9c7bcfdb2483c",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "a3e91da9c7bcfdb2483c"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 1.6,
+        "formula": "4th(m5_best)",
+        "id": "a4f5ffc0f320644dadfa",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "a4f5ffc0f320644dadfa"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.075,
+        "formula": "2nd",
+        "id": "a675c93e846fa5b8268f",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "a675c93e846fa5b8268f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.2,
+        "formula": "2nd",
+        "id": "a979a76536473f9ee0fb",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 10,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "a979a76536473f9ee0fb"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.1,
+        "formula": "4th",
+        "id": "aa7f412cfa34f18faa9c",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "aa7f412cfa34f18faa9c"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.5,
+        "formula": "2nd",
+        "id": "ac992af71c375e071b35",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "ac992af71c375e071b35"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 2.0,
+        "formula": "4th",
+        "id": "adca1ea99c9f578192be",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "adca1ea99c9f578192be"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.8,
+        "formula": "4th",
+        "id": "b77dd9e08e3e6c5172cc",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "b77dd9e08e3e6c5172cc"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.15,
+        "formula": "4th",
+        "id": "b7b757a89141e1ca35c5",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "b7b757a89141e1ca35c5"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "4th",
+        "id": "bb1fde418c2ea4413ef1",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "bb1fde418c2ea4413ef1"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.1,
+        "formula": "4th",
+        "id": "bbb80ab1365d184c1604",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "bbb80ab1365d184c1604"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.5,
+        "formula": "4th(m5_best)",
+        "id": "bc941a95ba30e2d59b25",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "bc941a95ba30e2d59b25"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.1,
+        "formula": "4th(m5_best)",
+        "id": "bc9c21796827c69cc0ad",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "bc9c21796827c69cc0ad"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.125,
+        "formula": "4th(m5_best)",
+        "id": "bd26b05e672fcae68dbe",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "bd26b05e672fcae68dbe"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "2nd",
+        "id": "c40daca9e3df16a35f1e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "c40daca9e3df16a35f1e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 2.0,
+        "formula": "4th(m5_best)",
+        "id": "c47cbfb52f2212129c40",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "c47cbfb52f2212129c40"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 1.2,
+        "formula": "2nd",
+        "id": "c728702fdc58de4dbb1b",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "c728702fdc58de4dbb1b"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.4,
+        "formula": "4th(m5_best)",
+        "id": "c801fa631629bc544bc5",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "c801fa631629bc544bc5"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.05,
+        "formula": "4th(m5_best)",
+        "id": "c8454371551d33e7931e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "c8454371551d33e7931e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "4th(m5_best)",
+        "id": "cc3c13cd35c59ad085eb",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 4,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "cc3c13cd35c59ad085eb"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.15,
+        "formula": "4th",
+        "id": "ccda07cf16235d6dc47c",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "ccda07cf16235d6dc47c"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.25,
+        "formula": "4th(m5_best)",
+        "id": "d26f807514bd386030ae",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "d26f807514bd386030ae"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 1.2,
+        "formula": "2nd",
+        "id": "d4843ac4ff3ed35bde05",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "d4843ac4ff3ed35bde05"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.075,
+        "formula": "4th",
+        "id": "d4ba95f8a46785eb769f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "d4ba95f8a46785eb769f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.2,
+        "formula": "4th(m5_best)",
+        "id": "d526f9f4f03889d21147",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 10,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "d526f9f4f03889d21147"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.6,
+        "formula": "4th",
+        "id": "d8c618a27ec1a4beafcf",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "d8c618a27ec1a4beafcf"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.15,
+        "formula": "4th(m5_best)",
+        "id": "dc3efb5ac2868a7d705f",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "dc3efb5ac2868a7d705f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "2nd",
+        "id": "dc96042e5f8605a29c8f",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "dc96042e5f8605a29c8f"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.4,
+        "formula": "2nd",
+        "id": "dec5c16d44197a263387",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 2,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "dec5c16d44197a263387"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 2.0,
+        "formula": "4th(m5_best)",
+        "id": "e0129acfb3d5ef89d9ba",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 1,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "e0129acfb3d5ef89d9ba"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.2,
+        "formula": "2nd",
+        "id": "e2b139ad6211e2c63ae6",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 4,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "e2b139ad6211e2c63ae6"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.4,
+        "formula": "2nd",
+        "id": "e3a3006039da3d6b0ca8",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "e3a3006039da3d6b0ca8"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 1.2,
+        "formula": "4th",
+        "id": "e6213513346cffd1f6f8",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "e6213513346cffd1f6f8"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 2.0,
+        "formula": "4th",
+        "id": "e8b4f1a03e8d190bd256",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "e8b4f1a03e8d190bd256"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.2,
+        "formula": "4th(m5_best)",
+        "id": "ec16246769ecd9d8415a",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 10,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "ec16246769ecd9d8415a"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.125,
+        "formula": "4th",
+        "id": "f0b1f09245474a922cd3",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 16,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "f0b1f09245474a922cd3"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "2nd",
+        "id": "f12385e615d43121d8a1",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 8,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "f12385e615d43121d8a1"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.8,
+        "formula": "4th",
+        "id": "f42b6c30e190bb1c825e",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "f42b6c30e190bb1c825e"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.2,
+        "formula": "2nd",
+        "id": "f447823ed65205748cab",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 8,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "f447823ed65205748cab"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 0.19999999999999998,
+        "formula": "2nd",
+        "id": "f7325ed0f4692fdeab96",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 6,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "f7325ed0f4692fdeab96"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.2,
+        "delta": 1.2,
+        "formula": "4th(m5_best)",
+        "id": "f772e9ccab13f925452c",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "f772e9ccab13f925452c"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 0.8,
+        "delta": 0.8,
+        "formula": "2nd",
+        "id": "fb6ed387b045a4393693",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 1,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "fb6ed387b045a4393693"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": null,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.1,
+        "formula": "4th",
+        "id": "fd4febef386009d5d315",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 16,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "fd4febef386009d5d315"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 1.0,
+        "formula": "4th",
+        "id": "ff88b8344821aedb85b3",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 2,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+        "selector": "ff88b8344821aedb85b3"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.05,
+        "formula": "2nd",
+        "id": "074e4d19702615679385",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 32,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/extension_signal_records.json.gz",
+        "selector": "074e4d19702615679385"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.0625,
+        "formula": "2nd",
+        "id": "8b0e387c607239a89689",
+        "method": "FULL",
+        "prefix": 10,
+        "q": 32,
+        "system": "H4"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/extension_signal_records.json.gz",
+        "selector": "8b0e387c607239a89689"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 2.0,
+        "delta": 0.0625,
+        "formula": "2nd",
+        "id": "e5d39fda0d4b084e9691",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 32,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/extension_signal_records.json.gz",
+        "selector": "e5d39fda0d4b084e9691"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    },
+    {
+      "candidate": {
+        "K": null,
+        "R_outer": null,
+        "T": 1.6,
+        "delta": 0.05,
+        "formula": "2nd",
+        "id": "ffd5bfa03e12e42a7919",
+        "method": "FULL",
+        "prefix": 19,
+        "q": 32,
+        "system": "H6"
+      },
+      "source": {
+        "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+        "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/extension_signal_records.json.gz",
+        "selector": "ffd5bfa03e12e42a7919"
+      },
+      "signal_record_present": true,
+      "signal_fields": [
+        "reference",
+        "corrected",
+        "raw",
+        "exact_tail",
+        "total_signed_bias",
+        "log_B"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "independent_reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H6:1.6",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "phase_alignment": false,
+      "numerical_gate_rechecked": false,
+      "nominal_N_X": null,
+      "nominal_N_Y": null
+    }
+  ],
+  "configuration_adopted": false,
+  "policy_adopted": false,
+  "science_calls": 0,
+  "mandatory_stop": true
+}
