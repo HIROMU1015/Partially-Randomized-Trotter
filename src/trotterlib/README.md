@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[S0a run01の設定エラーと技術修正](../../docs/research/s0a_saved_structure_results_20261113/REPORT.md)（2026-11-13）：SOURCE11cb91a65でrun01を1回起動、context exec scopeのast渡し漏れでS開始前に失敗STOP。新S0/8、保存S照合0、全4path未評価。修正版SOURCE9516351e6と人工14件PASSを公開、run02案はmetadata準備だけで未実行。旧STOP/role/モデル資格を保全、修正版再試行はユーザー判断、公開照合後mandatory STOP。
+
 [S0a保存構造価格の実行準備](../../docs/research/s0a_saved_structure_preparation_20261113/REPORT.md)（2026-11-13）：SOURCE11cb91a65。固定C1の保存4path/XY8計数に向けreader・law/identity検査・S専用runnerを準備。新13＋旧9＝22技術test PASS。raw/inputは所在のみ確認、実S・保存S比較は未実行。元係数/資格/平均provider不変、内容hashと実contextは実行時検査。初回人工importのlowering副作用と修正をREPORTへ記録。明示科学許可待ち、公開照合後STOP。
 
 [C1状態閉包とStreaming計数の技術検証](../../docs/research/c1_physical_state_stream_preparation_20261112/REPORT.md)（2026-11-12）：SOURCE c1135fdb9。C1のpending basis/Z・tail phase・terminalをSOURCEで調査し、元計数wordへforward-only tailを渡す最小consumerを追加。新9＋旧3＋sampler toy1＝13技術test PASS。単純縮約の人工反例は確認、実H4/H6の閉包・event生成なしの平均S/compiled価格は未確認。consumerは全event処理時間が残り、producer全接続は未実装。S0a保存4path/XY8件は未実行案、実科学計算・再解析・compile・fit・N/G0、公開照合後mandatory STOP。

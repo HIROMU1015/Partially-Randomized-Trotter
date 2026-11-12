@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/scripts/run_s0a_saved_structure.py", line 30, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/scripts/run_s0a_saved_structure.py", line 27, in main
+    print(json.dumps(s.execute(ROOT,json.loads(Path(args.plan).read_text()),args.output,execute=True)))
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/s0a_saved_structure.py", line 205, in execute
+    if system not in contexts:contexts[system]=context_factory(cell)
+                                               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/s0a_saved_structure.py", line 201, in <lambda>
+    context_factory=lambda cell:Context(root,old,cell['system'])
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/s0a_structure_context.py", line 70, in __init__
+    with no_circuits():self.ctx=load_context(root,plan,system)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/rpe-h6-provider-coverage-20261110/src/trottertracks/s0a_structure_context.py", line 56, in load_context
+    return scope['context'](SimpleNamespace(root=Path(root),plan=plan,contexts={}),system)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "1a87e5331b52a49732b7db9d49d28f1fe6d9c9a7:context_S_only", line 104, in context
+NameError: name 'ast' is not defined. Did you forget to import 'ast'?
