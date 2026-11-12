@@ -1,5 +1,7 @@
 # scripts 索引
 
+[Full baseline request出力](../docs/research/d_full_pf_full_h_rte_v2_paths_20261113/HANDOFF.md)：report_full_baseline_v2_requests.pyはSOURCE_CATALOGと人工schema例をfresh dirへ出力。科学実行optionなし。
+
 [`plan_pr_rpe_rmse_evidence.py`](plan_pr_rpe_rmse_evidence.py)：ユーザー固定の有限V2 menu JSONから不足N/C/SOURCE・誤差契約を列挙する[metadata CLI](../docs/research/pr_rpe_evidence_preparation_20261113/HANDOFF.md)。候補生成・provider/compile/fit/G起動なし、fresh出力のみ。
 
 [`inventory_pr_rpe_method_coverage.py`](inventory_pr_rpe_method_coverage.py)：固定保存JSONの候補・N/C存在とRMSE資格を出力するmetadata専用CLI。[4方式REPORT](../docs/research/pr_rpe_method_coverage_20261113/REPORT.md)。新schedule/科学数値/compile/Gを実行しない。

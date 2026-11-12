@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[Full PF・Full-H RTE V2 request](../../docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)：full_baseline_v2_requests（full_pf_spec/full_h_rte_spec/layout_mapper/requests/check_full_h_preparation）。B controller・A/C moduleは不変。
+
 [pr_rpe_rmse_evidence](../../docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：供給V2 finite menuから全schedule/axisの不足証拠・保存再利用条件・A/C next_workを出す薄いadapter。既存controller/providerは不変、実G/最適化なし。
 
 [PF/PR/Full-H RTEのRMSE coverage](../../docs/research/pr_rpe_method_coverage_20261113/HANDOFF.md)：pr_rpe_rmse_controllerのcomparison_method/assess coverage、明示formula menu、truncated-Hの元H誤差契約。pr_rpe_rmse_integrationのA scopeを明示。新14＋回帰85技術test、実N/C/Gなし。

@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Full PF・DF Full-H RTEのV2物理request（Codex D）](docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)（2026-11-13）：既存PF公式（2nd/標準4th/m5_best/8次）と`prepare_full_h`のSOURCEを整理し、B V2へFull PF・Full-H RTE configurationとA/C requestを渡す薄いadapterを追加。B3・truncated・tail-only λ・grouping無視を拒否。94技術test PASS、科学計算0、公開後STOP。
+
 [4方式RMSE有限menuの不足証拠plan](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)（2026-11-13）：既存V2 assess/coverageを用い各configuration/round/axisのN/C/SOURCE・全体RMSE不足をA/Cへ対応付ける。新13＋回帰43＝56技術test、実menu未確定・G/winner null、科学計算0、公開後STOP。
 
 [PF・truncated PF・PR・Full-H RTEのRMSE coverage](docs/research/pr_rpe_method_coverage_20261113/REPORT.md)（2026-11-13）：既存controllerを拡張しH4 B0/p7とFull PFを分離。供給N/Cの資格と236軸の保存metadataを整理、新14＋回帰85＝99技術test PASS。実N/C/G未実行、公開後STOP。
