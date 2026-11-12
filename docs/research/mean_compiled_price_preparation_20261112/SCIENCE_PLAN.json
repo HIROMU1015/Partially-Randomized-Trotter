@@ -1,0 +1,173 @@
+{
+  "status": "PROPOSAL_ONLY_NO_SCIENTIFIC_EXECUTION",
+  "execution_authorized": false,
+  "scientific_source": null,
+  "implementation_source": "09489eedbbd61c7396138634a896b8d8ecc75161",
+  "target": "Mean compiled RZ of controlled PR plus full Hadamard wrapper including measurement, P=0",
+  "fixed_recipe": {
+    "H4": "Saved DF10, linear 1A STO-3G, S2/delta.1/p1/K2",
+    "H6": "Saved DF19, linear 1A STO-3G, m5_best/delta1.6/p7/K2, original 11 signed pieces"
+  },
+  "stages": [
+    {
+      "id": "S0_SAVED_DEVELOPMENT",
+      "candidates": [
+        {
+          "system": "H4",
+          "cell_id": "H4_q8_R8",
+          "candidate_id": "6e1efff1ba1f7ac95a3b",
+          "n_paths": 8,
+          "original_C1_role": "CALIBRATION",
+          "new_mean_method_role": "KNOWN_DEVELOPMENT_DIAGNOSTIC_NOT_FRESH_HOLDOUT",
+          "source": {
+            "commit": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+            "path": "docs/research/r_price_phase1_results_20261111/run01/CALIBRATION.json"
+          },
+          "required_inputs": [
+            "Original normal path/law and structural/compiled bindings",
+            "Saved snapshot/preparation metadata for proposed physical model"
+          ],
+          "new_wrapper_compiles": 0,
+          "refit_C1_coefficients": false
+        },
+        {
+          "system": "H4",
+          "cell_id": "H4_q16_R8",
+          "candidate_id": "201d498a3fa5eaa3b5c5",
+          "n_paths": 8,
+          "original_C1_role": "VALIDATION",
+          "new_mean_method_role": "KNOWN_DEVELOPMENT_DIAGNOSTIC_NOT_FRESH_HOLDOUT",
+          "source": {
+            "commit": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+            "path": "docs/research/r_price_phase1_results_20261111/run01/VALIDATION.json"
+          },
+          "required_inputs": [
+            "Original normal path/law and structural/compiled bindings",
+            "Saved snapshot/preparation metadata for proposed physical model"
+          ],
+          "new_wrapper_compiles": 0,
+          "refit_C1_coefficients": false
+        },
+        {
+          "system": "H6",
+          "cell_id": "H6_q1_R32",
+          "candidate_id": "4269eafc8c0ef8922c23",
+          "n_paths": 8,
+          "original_C1_role": "CALIBRATION",
+          "new_mean_method_role": "KNOWN_DEVELOPMENT_DIAGNOSTIC_NOT_FRESH_HOLDOUT",
+          "source": {
+            "commit": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+            "path": "docs/research/r_price_phase1_results_20261111/run01/CALIBRATION.json"
+          },
+          "required_inputs": [
+            "Original normal path/law and structural/compiled bindings",
+            "Saved snapshot/preparation metadata for proposed physical model"
+          ],
+          "new_wrapper_compiles": 0,
+          "refit_C1_coefficients": false
+        },
+        {
+          "system": "H6",
+          "cell_id": "H6_q2_R32",
+          "candidate_id": "24fec6bdd44d6a728f1e",
+          "n_paths": 8,
+          "original_C1_role": "VALIDATION",
+          "new_mean_method_role": "KNOWN_DEVELOPMENT_DIAGNOSTIC_NOT_FRESH_HOLDOUT",
+          "source": {
+            "commit": "2e6a0cdf5a647058cc7afeeb5741bfafa24c974b",
+            "path": "docs/research/r_price_phase1_results_20261111/run01/VALIDATION.json"
+          },
+          "required_inputs": [
+            "Original normal path/law and structural/compiled bindings",
+            "Saved snapshot/preparation metadata for proposed physical model"
+          ],
+          "new_wrapper_compiles": 0,
+          "refit_C1_coefficients": false
+        }
+      ],
+      "total_saved_paths": 32,
+      "new_compile_budget": 0,
+      "proposed_work": [
+        "Build/qualify a physical boundary-state or local structural-mean model under a separately fixed SOURCE",
+        "Evaluate proposed structural mean/law and compare only permitted saved C/S cohorts",
+        "Retain C1 coefficients and original roles; do not fit or label known data a new independent holdout"
+      ],
+      "execution_ready": false,
+      "needs": [
+        "User permission for saved scientific reanalysis/physical S-law calculations",
+        "Exact physical kernel/runner SOURCE and input binding"
+      ],
+      "stop": "Missing raw/closure/phase/law evidence is unknown; no sampler, compile or model fallback"
+    },
+    {
+      "id": "FRESH_FINITE_Q_TRANSFER",
+      "depends_on": "S0 plus published B physical RMSE/M/kappa domain",
+      "systems": [
+        "H4",
+        "H6"
+      ],
+      "candidate_selectors": [
+        "One recipe-matched low-q anchor per system",
+        "One longer-q point per system, preferably same R to isolate q"
+      ],
+      "canonical_candidate_ids": null,
+      "cohorts": 4,
+      "paths_per_cohort": 4,
+      "paired_axes": [
+        "X",
+        "Y"
+      ],
+      "maximum_full_wrapper_price_requests": 32,
+      "role": "Fresh normal cohorts reserved for validation of the frozen mean method",
+      "calibration": false,
+      "refit_C1_coefficients": false,
+      "seeds": null,
+      "execution_ready": false,
+      "reason": "Finite diagnostic budget, not a power calculation or required-accuracy guarantee",
+      "needs": [
+        "Published B M/kappa schedule and physical candidate identity",
+        "Chosen low/high q and R, source/seed/cohort frozen before acquisition",
+        "Separate explicit science execution permission"
+      ],
+      "stop": "Publish finite evidence and STOP; no automatic extra paths/R fit/G"
+    },
+    {
+      "id": "CONDITIONAL_LOCAL_RESIDUAL_CALIBRATION",
+      "execution_ready": false,
+      "execution_authorized": false,
+      "trigger": "Physical state closure unavailable, or observed compiler residual inconsistent with frozen C1 transfer",
+      "candidate_ids": null,
+      "compile_budget": null,
+      "required_design": [
+        "Same controlled/full-boundary definition for paired C and S",
+        "Minimal signed-piece/internal/PF-tail/outer/wrapper boundary classes identified before fixing call budget",
+        "Disjoint calibration and fresh independent holdout cohorts; known-data role changes recorded"
+      ],
+      "automatic_follow_on": false
+    }
+  ],
+  "old_C2_40_and_16_plan": "Preserved historical high-probability-N proposal; neither executed nor assumed optimal for RMSE/M/kappa",
+  "dedicated_forced_rare_experiments_in_this_proposal": 0,
+  "unknown_event_mass_or_price_contribution": null,
+  "price_precision_threshold": null,
+  "precision_policy": "Set after B fixes the RMSE/N/use-context and required price discrimination; no numerical G sensitivity here",
+  "residual_choice": [
+    "Frozen C1 affine comparator, qualification unchanged",
+    "Alternative newly calibrated LOCAL_C_MINUS_S with all boundaries; never stack both"
+  ],
+  "unknown_uncertainty": {
+    "law_distance": null,
+    "physical_state_closure": null,
+    "compiler_systematic": null,
+    "shared_covariance": null,
+    "total_CI": null
+  },
+  "scope_exclusions": [
+    "No real data evaluation now",
+    "No new compile/sampling/fit now",
+    "No N/G or optimal M/R/kappa",
+    "No detailed scientific review"
+  ],
+  "mandatory_stop": true,
+  "automatic_follow_on": false
+}

@@ -1,5 +1,7 @@
 # scripts 索引
 
+[長q・大Rの平均compiled価格の技術準備](../docs/research/mean_compiled_price_preparation_20261112/REPORT.md)（2026-11-12）：SOURCE09489eedb。C1 Accounting/旧局所期待formを再利用し、closed-state期待報酬の二乗合成と受動c_providerを実装。新15＋旧pure3＝18技術test PASS、人工全列挙と一致。固定状態ならqR展開を避けられるが、実C1の累積Z/phase閉包・平均S・compiler残差は未資格で実価格missing。C−S残差のみを扱い二重計上を拒否。κ scheduleはB外部contextのcopy、M/N最適化なし。旧40/16案は非実行、将来S0保存再解析等は別許可。実科学計算/compile/価格fit予測/N/G0、公開照合後STOP。
+
 [A P1対応・長q/大R価格検証の準備](../docs/research/r_price_longq_largeR_preparation_20261111/REPORT.md)（2026-11-11）：公開A71ba49bbの12候補・同policy条件付きNを無変更copy。C1価格との重複はH6 m4/R16,R32の校正2点。第一案はH4 m6/H6 m8のbaseline＋R128、4セル・最大40 wrapper、原因分離R-onlyと短時間各16は別の任意案。metadata SOURCE f0daeb96b、8技術test PASS。構造Sのstream化/局所境界法を比較し、m12やR256を自動compile/外挿しない。新科学計算・価格予測・再解析・N/G0、科学実行未承認、公開照合後STOP。
 
 [R価格Phase 1実行結果](../docs/research/r_price_phase1_results_20261111/REPORT.md)（2026-11-11）：Linear H4/H6・1Å・STO-3G・保存DF10/19、H4 S2/δ.1/p1/K2とH6 m5_best/δ1.6/p7/K2。SOURCE1a87e5331で通常64＋別rare16 compile、保存C/S59 path再利用。係数を7eeabf0aで検証取得前に凍結し再fitなし。独立n8の相対RMSEはH4 q16/R8で1.039841%、H6 q2/R32で0.229959%。有限cohort観測、採用閾値未設定・model未採用、全law/長q-R/総CI/全Gは未資格。新signal/N/G0、公開照合後mandatory STOP。以下の準備記録・過去STOPは履歴として保持。
