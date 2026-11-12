@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[固定H4 S0の平均compiled価格検証計画](../../docs/research/h4_s0_mean_price_plan_20261113/REPORT.md)（2026-11-13）：SOURCE bdd2b9356。固定A S0のexactκ/M12・H4 m0(q1/R2)/m6(q64/R128)を公開B V2へmetadata接続。新7技術test PASS、13round価格null。両候補の一致direct/modelは公開索引に未確認。閉状態診断1prep/2law・compile0を第一案、別案は有限4path/最大8wrapper。新S/価格再解析/sampling/compile/fit/N/G0、C1未資格・S0a履歴を保全し、公開照合後STOP。
+
 [B V2価格接続と長q平均価格の次段階設計](../../docs/research/bv2_mean_price_validation_design_20261113/REPORT.md)（2026-11-13）：SOURCE58382c54c。固定B6a9 V2 MeanPriceLookupを再利用するC受動入口を追加、新12人工/metadata結合test PASS。値ありrecordに平均compiled quantity明示を要求し、S0a/旧ID付替え/資格昇格を拒否。旧118候補/236軸と4方式の資産/欠測を静的整理。実平均S/C・物理閉包は未取得、選択B domainのclosure診断等4候補を未承認計画化。新S/C再解析/sampling/compile/fit/N/G0、旧結果/STOP保全、公開照合後STOP。
 
 [S0a run02：実保存8件の構造S照合](../../docs/research/s0a_saved_structure_results_20261113/run02/REPORT.md)（2026-11-13）：修正版SOURCE9516351e6で保存normal index0の4path×XY8 Sを一回評価し、元C1保存Sと8/8整数完全一致。各X/Y SはH4 q8/R8=21664、q16/R8=46559、H6 q1/R32=158669、q2/R32=321151。input/preparation/law/phase/allocation/digest検査を通過、元roleとrun01失敗STOPを保全。平均S/C・物理閉包・モデル資格は未取得、qualified=false。新sampling/compile/fit/N/G0、公開照合後STOP。
