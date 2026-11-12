@@ -1,11 +1,15 @@
 """Full PF and DF Full-H RTE physical requests for B PR_RPE_RMSE_V2. Metadata only.
 
-The module derives V2 specifications from an existing comparison spec, records the
-pinned physical SOURCE, and writes A (N/RMSE) and C (full-wrapper price) requests
-that point to the same physical candidate. It never loads a Hamiltonian or
-state, evaluates a signal/mean/N/normalization, samples, builds or compiles a
-circuit, prices, fits or chooses M, kappa, PF width, formula or RTE layout.
-Physical SOURCE is read as pinned Git text only.
+A physical schedule is built from the pinned physical SOURCE first. It is bound
+to a B V2 configuration only where the published B interface can generate it
+(Full PF 2nd / 4th(m5_best)). Standard Yoshida4 Full PF and kappa-free explicit
+Full-H RTE layouts are kept as physical requests whose V2 IDs stay null until
+B publishes the matching interface; no V2 ID is invented. A (N/RMSE) and C
+(full-wrapper price) requests always point to the same physical candidate.
+
+Nothing here loads a Hamiltonian or state, evaluates a signal/mean/N or
+normalization, samples, builds or compiles a circuit, prices, fits, or chooses
+M, kappa, PF width, formula or RTE layout. Eighth-order PF is out of scope.
 """
 import ast
 from copy import deepcopy
@@ -18,7 +22,7 @@ from . import pr_rpe_rmse_controller as B
 
 p = B.p
 ROOT = Path(__file__).resolve().parents[2]
-BASE = 'af284d853890155bacd19e61850c196bd1d5c660'          # B V2 + evidence planner
+BASE = 'af284d853890155bacd19e61850c196bd1d5c660'          # B V2 + evidence planner (controller unchanged at 030f3f548)
 FULL_H = '9b83b96b83f62142c9d87858dc24a94db7ac5d61'        # DF full-H prepare_full_h + light study
 FULL_H_T20 = '7a8bc7f132e166390c943e6b32c92cc6abe1baf4'    # later T=2.0 study (s=qR mean sharing)
 LIGHT = 'artifacts/resource_applicability/df_full_h_pure_rte_light/2026-11-09/'
@@ -26,6 +30,8 @@ LAYOUT_KIND = 'D_FULL_H_EXPLICIT_PHYSICAL_LAYOUT_V1'
 MODULE = dict(branch='codex/d-full-pf-full-h-rte-v2-paths-20261113', path='src/trottertracks/full_baseline_v2_requests.py',
               module='trottertracks.full_baseline_v2_requests')
 SAVED_FULL_H_REFERENCE_T = (.8, 2.)  # light study context and later T=2.0 study
+PENDING_FORMULA = 'PENDING_B_FORMULA_INTERFACE'
+PENDING_LAYOUT = 'PENDING_B_KAPPA_FREE_EXPLICIT_LAYOUT_INTERFACE'
 
 
 def ref(commit, path, **extra):
@@ -53,18 +59,20 @@ SOURCES = dict(
     pauli_price=ref(BASE, 'scripts/pauli_h2_h6_study.py', functions=['initial', 'price_job']),
 )
 
-# Static facts read from the pinned SOURCE; v2_generate mirrors B.generate.
+# Static facts from the pinned SOURCE. b_v2_generate mirrors the published B.generate.
 FORMULAS = {
-    '2nd': dict(family='S2', coefficient_source='pf_weights', negative_time=False, h46_signal_path=True,
-                h46_native_path=True, v2_generate=True),
-    '4th': dict(family='STANDARD_YOSHIDA4', coefficient_source='pf_weights', negative_time=True, h46_signal_path=True,
-                h46_native_path=True, v2_generate=False, not_alias_of='4th(m5_best)'),
-    '4th(m5_best)': dict(family='M5_BEST_BINARY64', coefficient_source='pf_weights', negative_time=True,
-                         h46_signal_path=True, h46_native_path=True, v2_generate=True, formula_id='PF_M5_BEST_20D64C2_BINARY64_V1'),
-    '8th(Morales)': dict(family='MORALES8', coefficient_source='pf_higher_order', negative_time=True, h46_signal_path=False,
-                         h46_native_path=False, v2_generate=False),
-    '8th(Yoshida)': dict(family='YOSHIDA8', coefficient_source='pf_higher_order', negative_time=True, h46_signal_path=False,
-                         h46_native_path=False, v2_generate=False),
+    '2nd': dict(family='S2', formula_id='S2', coefficient_source='pf_weights', negative_time=False,
+                h46_signal_path=True, h46_native_path=True, b_v2_generate=True, d_request=True),
+    '4th': dict(family='STANDARD_YOSHIDA4', formula_id='YOSHIDA4_STANDARD_H46_M5_PLAN_BINARY64',
+                coefficient_source='pf_weights', negative_time=True, h46_signal_path=True, h46_native_path=True,
+                b_v2_generate=False, d_request=True, not_alias_of='4th(m5_best)'),
+    '4th(m5_best)': dict(family='M5_BEST_BINARY64', formula_id='PF_M5_BEST_20D64C2_BINARY64_V1',
+                         coefficient_source='pf_weights', negative_time=True, h46_signal_path=True,
+                         h46_native_path=True, b_v2_generate=True, d_request=True),
+    '8th(Morales)': dict(family='MORALES8', coefficient_source='pf_higher_order', negative_time=True,
+                         h46_signal_path=False, h46_native_path=False, b_v2_generate=False, d_request=False),
+    '8th(Yoshida)': dict(family='YOSHIDA8', coefficient_source='pf_higher_order', negative_time=True,
+                         h46_signal_path=False, h46_native_path=False, b_v2_generate=False, d_request=False),
 }
 BINDING_KEYS = ('system', 'hamiltonian', 'state', 'snapshot', 'basis', 'geometry', 'rank_policy', 'series')
 PREPARATION_KEYS = ('representation', 'source', 'one_body_policy', 'one_body_components', 'deterministic_blocks',
@@ -88,15 +96,22 @@ def saved_grid():
     return dict(rank=_constant(BASE, path, 'RANK'), q=_constant(BASE, path, 'Q'), formulas=_constant(BASE, path, 'FORMULAS'))
 
 
+def _status(fact):
+    if fact['b_v2_generate']:
+        return 'B_V2_SUPPORTED'
+    if fact['d_request']:
+        return 'D_PHYSICAL_REQUEST_READY_' + PENDING_FORMULA
+    return 'OUT_OF_SCOPE_NO_DF_CONTROLLED_FULL_WRAPPER_PATH'
+
+
 def catalog():
     """SOURCE catalog with V2 status; weights are the pinned binary64 literals."""
     schedule = p._schedule()
     out = {}
     for label, fact in FORMULAS.items():
         weights = list(schedule.weights(label)) if fact['coefficient_source'] == 'pf_weights' else None
-        out[label] = dict(fact, coefficient_source=deepcopy(SOURCES[fact['coefficient_source']]), signed_weights=weights,
-            v2_status='SUPPORTED' if fact['v2_generate'] else
-                      'B_V2_FORMULA_EXTENSION_REQUIRED' if fact['h46_native_path'] else 'NO_DF_CONTROLLED_FULL_WRAPPER_PATH')
+        out[label] = dict(fact, coefficient_source=deepcopy(SOURCES[fact['coefficient_source']]),
+                          signed_weights=weights, v2_status=_status(fact))
     return dict(formulas=out, sources=deepcopy(SOURCES), grid=saved_grid(), pauli=pauli_reference(),
                 science_calls=0, formula_adopted=False)
 
@@ -172,128 +187,197 @@ def full_pf_spec(base, *, formula, delta_pf, M, rank):
     """Full-H deterministic PF; caller supplies formula, width and M. No kappa/K."""
     if formula not in FORMULAS:
         raise ValueError('Unknown PF formula label')
-    if not FORMULAS[formula]['v2_generate']:
-        raise ValueError('Formula ' + formula + ' requires a B V2 formula extension; not aliased')
+    if not FORMULAS[formula]['d_request']:
+        raise ValueError('Eighth-order PF is out of scope for this adapter')
     if rank != base['binding'].get('rank') or rank != saved_grid()['rank'][base['binding']['system']]:
         raise ValueError('Full PF retains one-body and all saved DF fragments; prefix must equal the full rank')
     source = deepcopy(SOURCES['pf_signal'])
-    s = dict(_common(base), method='PF', L_D=rank, delta_pf=delta_pf, formula=formula, M=M, kappa=None, finite_K=None,
+    return dict(_common(base), method='PF', L_D=rank, delta_pf=delta_pf, formula=formula, M=M, kappa=None, finite_K=None,
         split=dict(L_D=rank, source=source, randomized_scope='NONE', deterministic_scope='FULL_H',
                    original_PF_method='FULL', lambda_R=None, lambda_source=None,
                    retained_hamiltonian=dict(construction='FULL_H', prefix=rank, source=source,
                                              target_hamiltonian=deepcopy(base['binding']['hamiltonian']))),
         law=dict(model='deterministic', source=deepcopy(SOURCES['pf_weights'])),
         event_mapping=dict(kind='NONE', source=deepcopy(SOURCES['pf_weights'])))
-    return s
 
 
-def full_h_rte_spec(base, *, M, finite_K, kappa, preparation):
-    """Full-H pure RTE; kappa is required by B V2 and must be supplied, not invented."""
+def full_h_rte_spec(base, *, M, finite_K, preparation, kappa=None):
+    """Explicit-layout Full-H pure RTE. No kappa: the layout itself is the input."""
     check_full_h_preparation(preparation, base['binding'])
-    if not kappa or not kappa.get('kind') or not kappa.get('definition_source'):
-        raise ValueError('B V2 requires a named source-bound kappa; supply it explicitly')
+    if kappa is not None:
+        raise ValueError('Explicit-layout Full-H RTE has no kappa; kappa-derived layouts belong to the B generator')
+    if type(finite_K) is not int or finite_K < 0 or finite_K % 2:
+        raise ValueError('Even nonnegative finite K required (paired finite Taylor)')
     split = dict(L_D=0, source=deepcopy(preparation['source']), randomized_scope='FULL_H_INCLUDING_ONE_BODY',
         one_body_policy='RANDOMIZED', deterministic_scope='NONE', original_PF_method='NONE_FULL_H_PREPARATION',
         lambda_R=preparation['lambda_R'], lambda_source=deepcopy(preparation['lambda_source']),
         preparation=deepcopy(preparation))
-    return dict(_common(base), method='FULL_H_RTE', L_D=0, delta_pf=None, formula=None, M=M, kappa=deepcopy(kappa),
+    return dict(_common(base), method='FULL_H_RTE', L_D=0, delta_pf=None, formula=None, M=M, kappa=None,
         finite_K=finite_K, split=split,
         law=dict(model='ideal_finite_RTE_law', sampling='PAIRED_FINITE_TAYLOR_COMPONENT_ORDER_LAW',
                  source=deepcopy(SOURCES['rte_law']), preparation_source=deepcopy(preparation['source'])),
-        event_mapping=dict(kind=LAYOUT_KIND, source=deepcopy(MODULE)))
+        event_mapping=dict(kind=LAYOUT_KIND, source=deepcopy(MODULE), kappa_mode='NOT_DEFINED_EXPLICIT_LAYOUT',
+                           paper_kappa_optimality_claim=False))
 
 
-def layout_mapper(layout_by_round):
-    """Explicit S2 grouping per round: q outer steps x R events. Missing round -> None."""
+def _layouts(layout_by_round, M):
     layouts = {}
-    for m, v in layout_by_round.items():
-        if (type(m) is not int or set(v) != {'q', 'R_outer'} or any(type(v[k]) is not int or v[k] < 1 for k in v)):
+    for m, v in (layout_by_round or {}).items():
+        if (type(m) is not int or m not in range(M + 1) or set(v) != {'q', 'R_outer'}
+                or any(type(v[k]) is not int or v[k] < 1 for k in v)):
             raise ValueError('Explicit integer q and R_outer per round required')
         layouts[m] = dict(v)
+    return layouts
 
-    def mapper(s, row):
-        v = layouts.get(row['m'])
-        if v is None:
-            return None
-        q, R = v['q'], v['R_outer']
-        return dict(kind=s['event_mapping']['kind'], source=deepcopy(s['event_mapping']['source']), kappa=deepcopy(s['kappa']),
-            R_outer=None, event_count=q*R, physical_layout=dict(formula='2nd', q=q, R_outer=R, pieces_per_outer=1,
-                allocation=[R], allocation_policy='ABS_TIME_PER_OUTER', event_positions=q*R,
-                event_tau='lambda_R*(T/q)/R_outer', taylor_K=s['finite_K'], signed_times='ALL_POSITIVE_S2',
-                scalar='ONCE_AT_TOTAL_T', deterministic_blocks=0, compose_source=deepcopy(SOURCES['pf_native']),
-                priced_equivalence_claim=False))
-    return mapper
+
+def layout_mapping(spec, layout):
+    """Round mapping in the shape B's event-mapping records use; kappa stays None."""
+    q, R = layout['q'], layout['R_outer']
+    return dict(kind=spec['event_mapping']['kind'], source=deepcopy(spec['event_mapping']['source']), kappa=None,
+        R_outer=None, event_count=q*R, physical_layout=dict(formula='2nd', grouping='S2_OUTER_Q_TIMES_R', q=q,
+            R_outer=R, pieces_per_outer=1, allocation=[R], allocation_policy='ABS_TIME_PER_OUTER', event_positions=q*R,
+            event_tau='lambda_R*(T/q)/R_outer', taylor_K=spec['finite_K'], signed_times='ALL_POSITIVE_S2',
+            scalar='ONCE_AT_TOTAL_T', deterministic_blocks=0, component_law=deepcopy(spec['law']),
+            compose_source=deepcopy(SOURCES['pf_native']), priced_equivalence_claim=False,
+            paper_kappa_optimality_claim=False))
+
+
+def physical_schedule(spec, *, layout_by_round=None):
+    """Per-round physical recipe and original physical candidate ID. No B call."""
+    if spec['method'] not in ('PF', 'FULL_H_RTE') or (spec['method'] == 'PF' and spec['split'].get('deterministic_scope') != 'FULL_H'):
+        raise ValueError('D requests cover Full PF and Full-H RTE only')
+    full_h = spec['method'] == 'FULL_H_RTE'
+    if full_h:
+        layouts = _layouts(layout_by_round, spec['M'])
+    elif layout_by_round is not None:
+        raise ValueError('Full PF has no RTE layout')
+    system = spec['binding']['system']; grid = saved_grid(); rounds = []
+    saved_light = ({v['id'] for v in json.loads(_blob(FULL_H, SOURCES['full_h_saved_selection']['path']))['candidates']}
+                   if full_h else set())
+    for m in range(spec['M'] + 1):
+        T = B._positive(spec['h']) * (1 << m); Tf = float(T)
+        row = dict(m=m, q_RPE=1 << m, T=B.a.exact_value(T), T_float=Tf, scalar='ONCE_AT_TOTAL_T')
+        if not full_h:
+            q = B._ceil(T / B._positive(spec['delta_pf'])); fact = FORMULAS[spec['formula']]
+            weights = list(p._schedule().weights(spec['formula']))
+            c = dict(system=system, method='FULL', formula=spec['formula'], prefix=spec['L_D'], T=Tf, q=q,
+                     delta=Tf/q, R_outer=None, K=None)
+            c['id'] = p.candidate_id(c)
+            row.update(q_PF=q, requested_width=deepcopy(spec['delta_pf']), actual_width=B.a.exact_value(T/q),
+                formula=spec['formula'], formula_id=fact['formula_id'], signed_weights=weights,
+                negative_time=any(w < 0 for w in weights), piece_time='T*w_j/q', outer_steps=q,
+                retained='FULL_H_ONE_BODY_PLUS_ALL_FRAGMENTS', prefix=spec['L_D'], fragment_order='SAVED_SNAPSHOT_ORDER',
+                law_model='deterministic', normalization='NONE_DETERMINISTIC', control='symmetric_directional',
+                physical_candidate=c, physical_candidate_id=c['id'],
+                saved_asset_status=('SAVED_LONG_TIME_GRID_POINT_CHECK_CARRIER' if Tf in grid['q'] and q in grid['q'][Tf]
+                                    and spec['formula'] in grid['formulas'] else 'NO_SAVED_GRID_POINT'),
+                saved_reference_time=Tf in grid['q'])
+        else:
+            layout = layouts.get(m)
+            row.update(q_PF=None, law_model='ideal_finite_RTE_law', normalization='FINITE_K_FULL_H_LAMBDA_NOT_EVALUATED',
+                       control='symmetric_directional', saved_reference_time=Tf in SAVED_FULL_H_REFERENCE_T,
+                       lambda_R=spec['split']['lambda_R'], K=spec['finite_K'],
+                       preparation_hash=spec['split']['preparation']['preparation_hash'])
+            if layout is None:
+                row.update(mapping=None, physical_candidate=None, physical_candidate_id=None, saved_asset_status='LAYOUT_NOT_SUPPLIED')
+            else:
+                mapping = layout_mapping(spec, layout)
+                c = dict(system=system, method='PR', formula='2nd', prefix=0, T=Tf, q=layout['q'], R_outer=layout['R_outer'],
+                         K=spec['finite_K'], delta=Tf/layout['q'], s=mapping['event_count'], family='FULL_H_PURE_RTE', L_D=0)
+                c['id'] = 'FULL_H_' + p.candidate_id(c)
+                row.update(mapping=mapping, outer_step_width=B.a.exact_value(T/layout['q']), event_count=mapping['event_count'],
+                           physical_candidate=c, physical_candidate_id=c['id'],
+                           saved_asset_status=('SAVED_LIGHT_STUDY_CANDIDATE_FINITE_COHORT' if c['id'] in saved_light
+                                               else 'NO_SAVED_EXACT_CANDIDATE'))
+        rounds.append(row)
+    return dict(method=B.comparison_method(spec) if spec['method'] == 'PF' else 'FULL_H_RTE', spec=deepcopy(spec),
+                binding=deepcopy(spec['binding']), profile=deepcopy(spec['profile']), rounds=rounds)
+
+
+def _check_against_b(physical, config):
+    """A published-B configuration must reproduce the physical recipe exactly."""
+    for row, v2 in zip(physical['rounds'], config['rounds']):
+        if (v2['m'] != row['m'] or not p.same(v2['T'], row['T']) or v2['q_PF'] != row['q_PF']
+                or not p.same(v2['actual_delta_pf'], row['actual_width'])
+                or v2['structure']['signed_weights'] != row['signed_weights']
+                or v2['structure']['scalar_policy'] != 'scalar_identity_once_at_total_T'):
+            raise ValueError('B V2 round differs from the physical recipe at m=' + str(row['m']))
+
+
+def bind(spec, *, layout_by_round=None):
+    """Physical schedule + published-B V2 configuration where the interface exists."""
+    physical = physical_schedule(spec, layout_by_round=layout_by_round)
+    config = None
+    if spec['method'] == 'PF' and FORMULAS[spec['formula']]['b_v2_generate']:
+        config = B.generate(spec); _check_against_b(physical, config); status = 'B_V2_GENERATED'
+    elif spec['method'] == 'PF':
+        status = PENDING_FORMULA
+    else:
+        status = PENDING_LAYOUT
+    rows = [dict(m=r['m'], physical_candidate=deepcopy(r['physical_candidate']), V2_configuration_id=None if config is None else config['id'],
+                 V2_candidate_id=None if config is None else config['rounds'][r['m']]['candidate']['id'],
+                 source=deepcopy(SOURCES['full_h_prepare'] if spec['method'] == 'FULL_H_RTE' else SOURCES['pf_signal']))
+            for r in physical['rounds']]
+    return dict(physical=physical, v2_configuration=config, v2_status=status, identity_map=rows,
+                b_interface=dict(controller_commit_checked='030f3f548a35d98a88e62e92a35f132e0243a293',
+                                 formula_hook=False, kappa_free_explicit_layout=False, physical_candidate_hook=False),
+                invented_v2_ids=False)
 
 
 def generate(spec, *, layout_by_round=None):
-    """Existing B.generate; Full-H RTE uses the explicit layout mapper only."""
-    if spec['method'] == 'FULL_H_RTE':
-        if spec['event_mapping']['kind'] != LAYOUT_KIND or layout_by_round is None:
-            raise ValueError('Full-H RTE needs an explicit physical layout; event_count alone is not a grouping')
-        return B.generate(spec, event_mapper=layout_mapper(layout_by_round))
-    if layout_by_round is not None:
-        raise ValueError('Full PF has no RTE layout')
-    return B.generate(spec)
+    """Published B.generate only (Full PF 2nd / m5_best). Pending cases raise."""
+    packet = bind(spec, layout_by_round=layout_by_round)
+    if packet['v2_configuration'] is None:
+        raise ValueError(packet['v2_status'])
+    return packet['v2_configuration']
 
 
-def _physical(config, row):
-    """Physical candidate, saved-asset hint and whether a saved reference exists at T."""
-    s = config['spec']; system = s['binding']['system']; T = float(B.a.exact_scalar(row['T']))
-    if s['method'] == 'PF':
-        c = dict(system=system, method='FULL', formula=s['formula'], prefix=s['L_D'], T=T, q=row['q_PF'],
-                 delta=T/row['q_PF'], R_outer=None, K=None)
-        c['id'] = p.candidate_id(c)
-        grid = saved_grid()
-        hint = ('SAVED_LONG_TIME_GRID_POINT_CHECK_CARRIER' if T in grid['q'] and row['q_PF'] in grid['q'][T]
-                and s['formula'] in grid['formulas'] else 'NO_SAVED_GRID_POINT')
-        return c, hint, T in grid['q']
-    layout = (row['mapping'] or {}).get('physical_layout')
-    if layout is None:
-        return None, 'LAYOUT_NOT_SUPPLIED', T in SAVED_FULL_H_REFERENCE_T
-    c = dict(system=system, method='PR', formula='2nd', prefix=0, T=T, q=layout['q'], R_outer=layout['R_outer'],
-             K=s['finite_K'], delta=T/layout['q'], s=layout['event_positions'], family='FULL_H_PURE_RTE', L_D=0)
-    c['id'] = 'FULL_H_' + p.candidate_id(c)
-    saved = {v['id'] for v in json.loads(_blob(FULL_H, SOURCES['full_h_saved_selection']['path']))['candidates']}
-    return c, ('SAVED_LIGHT_STUDY_CANDIDATE_FINITE_COHORT' if c['id'] in saved else 'NO_SAVED_EXACT_CANDIDATE'), T in SAVED_FULL_H_REFERENCE_T
-
-
-def requests(config):
+def requests(packet):
     """A (N/RMSE) and C (price) requests per round, same physical candidate. No values."""
-    B._validate(config)
-    s = config['spec']
-    if s['method'] not in ('PF', 'FULL_H_RTE') or (s['method'] == 'PF' and B.comparison_method(s) != 'FULL_PF'):
-        raise ValueError('D requests cover Full PF and Full-H RTE only')
-    full_h = s['method'] == 'FULL_H_RTE'
-    out = []
-    for row in config['rounds']:
-        physical, saved, reference = _physical(config, row)
-        common = dict(configuration_id=config['id'], m=row['m'], T=deepcopy(row['T']), q_RPE=row['q_RPE'],
-            q_PF=row['q_PF'], actual_delta_pf=deepcopy(row['actual_delta_pf']), identity=deepcopy(row['identity']),
-            law_binding=deepcopy(row['law_binding']), v2_candidate_id=row['candidate']['id'],
-            physical_candidate=deepcopy(physical), physical_candidate_id=None if physical is None else physical['id'],
-            physical_schedule_mapping=deepcopy(row['mapping']), saved_asset_status=saved,
-            comparison_method=B.comparison_method(s), automatic_execution=False)
+    if packet.get('schema') == B.SCHEMA:   # a published-B configuration
+        B._validate(packet)
+        packet = bind(packet['spec'])
+    physical = packet['physical']; config = packet['v2_configuration']; s = physical['spec']
+    full_h = s['method'] == 'FULL_H_RTE'; out = []
+    for row in physical['rounds']:
+        v2 = None if config is None else config['rounds'][row['m']]
+        common = dict(m=row['m'], T=deepcopy(row['T']), q_RPE=row['q_RPE'], q_PF=row['q_PF'],
+            v2_status=packet['v2_status'], v2_configuration_id=None if config is None else config['id'],
+            v2_candidate_id=None if v2 is None else v2['candidate']['id'],
+            identity=None if v2 is None else deepcopy(v2['identity']), law_binding=None if v2 is None else deepcopy(v2['law_binding']),
+            binding=deepcopy(s['binding']), physical_round=deepcopy(row),
+            physical_candidate=deepcopy(row['physical_candidate']), physical_candidate_id=row['physical_candidate_id'],
+            saved_asset_status=row['saved_asset_status'], comparison_method=physical['method'], automatic_execution=False)
         A = dict(common, owner='Codex A', quantity='SUFFICIENT_N_AND_GLOBAL_RMSE_EVIDENCE',
             physics_source=deepcopy(SOURCES['full_h_prepare'] if full_h else SOURCES['pf_signal']),
             signal_functions=(['h46_full_h_pure_rte.context(prepare_full_h)', 'h46_long_time_signal.evolve_batch(prefix=0)']
                               if full_h else ['h46_long_time_signal.context', 'h46_long_time_signal.evolve_batch(method=FULL)']),
-            preparation=deepcopy(s['split'].get('preparation')), normalization=('FINITE_K_FULL_H_LAMBDA' if full_h else 'NONE_DETERMINISTIC'),
-            saved_reference_time=reference, N_X=None, N_Y=None, rmse_bound_ha=None,
-            missing=(['FULL_H_FINITE_MEAN_AND_NORMALIZATION', 'RMSE_SUFFICIENT_N', 'GLOBAL_RMSE_CONTRACT_FOR_FULL_H_RTE',
+            preparation=deepcopy(s['split'].get('preparation')), normalization=row['normalization'],
+            rmse_policy=deepcopy(s['rmse_policy']), saved_reference_time=row['saved_reference_time'],
+            N_X=None, N_Y=None, rmse_bound_ha=None,
+            missing=(['FULL_H_FINITE_MEAN_AND_NORMALIZATION', 'RMSE_SUFFICIENT_N', 'GLOBAL_RMSE_DECODER_CONTRACT_FOR_FULL_H_RTE',
                       'FINITE_K_AND_SAMPLER_LAW_QUALIFICATION'] if full_h else
-                     ['FULL_PF_MEAN_OR_SAVED_SIGNAL_AT_T', 'RMSE_SUFFICIENT_N', 'GLOBAL_RMSE_CONTRACT_FOR_FULL_PF'])
-            + ([] if reference else ['NEW_REFERENCE_AT_T']))
+                     ['FULL_H_ACTION_MEAN_OR_SAVED_SIGNAL_AT_T', 'RMSE_SUFFICIENT_N', 'GLOBAL_RMSE_CONTRACT_FOR_FULL_PF'])
+            + ([] if row['saved_reference_time'] else ['NEW_REFERENCE_AT_T'])
+            + (['LAYOUT_NOT_SUPPLIED'] if row['physical_candidate_id'] is None else [])
+            + ([] if config is not None else [packet['v2_status']]))
         C = []
         for axis in p.AXES:
-            C.append(dict(common, owner='Codex C', axis=axis, **p.measurement(row, axis, saved_sampler=full_h), profile=deepcopy(s['profile']),
-                quantity='FULL_WRAPPER_MEAN_COMPILED_PRICE', construction=deepcopy(SOURCES['pf_native']),
+            C.append(dict(common, owner='Codex C', axis=axis,
+                **p.measurement(dict(structure=dict(law_model=row['law_model'])), axis, saved_sampler=full_h),
+                profile=deepcopy(s['profile']), quantity='FULL_WRAPPER_MEAN_COMPILED_PRICE',
+                construction=deepcopy(SOURCES['pf_native']),
                 construction_mode=('controlled RTE sequences per S2 outer step from prepare_full_h; no deterministic block; scalar phase once'
                                    if full_h else 'deterministic signed S2 pieces of all one-body+DF blocks; scalar phase once'),
                 price_law=('SAMPLER_COHORT_DISTANCE_TO_IDEAL_UNQUALIFIED' if full_h else 'DETERMINISTIC'),
-                saved_price_source=deepcopy(SOURCES['full_h_saved_prices']) if saved.startswith('SAVED_LIGHT') else None,
+                expectation_needed=('COHORT_OR_ALL_LAW_MEAN_SEPARATED' if full_h else 'DETERMINISTIC'),
+                saved_price_source=deepcopy(SOURCES['full_h_saved_prices']) if row['saved_asset_status'].startswith('SAVED_LIGHT') else None,
+                saved_price_match_requires=(['SAME_LAYOUT_q_R_K', 'SAME_T', 'SAME_PREPARATION_HASH', 'SAME_LAW_OR_COHORT_DECLARATION']
+                                            if full_h else ['SAME_FORMULA', 'SAME_T', 'SAME_q', 'FULL_PREFIX', 'SAME_PROFILE']),
                 mean=dict(rz_count=None), price_status='NOT_EVALUATED', classification=None, expectation=None,
                 model=None, uncertainty=None, event_count_alone_is_price_equivalence=False))
         out.append(dict(m=row['m'], A=A, C=C))
-    return dict(configuration_id=config['id'], method=B.comparison_method(s), rounds=out,
-        binding=deepcopy(s['binding']), profile=deepcopy(s['profile']), rmse_policy=deepcopy(s['rmse_policy']),
+    return dict(method=physical['method'], v2_status=packet['v2_status'],
+        v2_configuration_id=None if config is None else config['id'], identity_map=deepcopy(packet['identity_map']),
+        rounds=out, binding=deepcopy(s['binding']), profile=deepcopy(s['profile']), rmse_policy=deepcopy(s['rmse_policy']),
         N_C_values=None, G=None, scientific_conditions_adopted=False, science_calls=0, mandatory_stop=True)

@@ -1,5 +1,7 @@
 # Validation status
 
+[D interface更新](docs/research/d_full_baseline_interface_update_20261113/REPORT.md)：D16（4th/m5分離・係数順序・全rank・B0拒否・κなし・one-body・B3・scalar・q×R・grouping・A/C一致・B整合probe・非起動）＋B回帰80＝96 PASS。B controllerは030f3f548でも不変。
+
 [Full PF・Full-H RTE V2 adapter](docs/research/d_full_pf_full_h_rte_v2_paths_20261113/REPORT.md)：新14（Full/truncated、B0/p7、one-body・B3・scalar・公式/順序・grouping・DF/Pauli・binding・A/C同一候補・κ/K・null・非起動・SOURCE）＋B回帰80＝94 PASS。保存値は転記のみ、公式・κ・layoutは未採択。
 
 [4方式RMSE有限menuの証拠準備](docs/research/pr_rpe_evidence_preparation_20261113/REPORT.md)：新13＋method coverage14/controller17/統合12＝56技術test PASS。V2全identity/SOURCE/誤差契約・局所診断/平均Cの区別・欠測と部分集合を確認。実menu未確定、実science/Gなし、公開後STOP。

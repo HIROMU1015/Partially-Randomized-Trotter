@@ -23,14 +23,15 @@ def write(path, value):
 
 def artificial_example():
     from check_full_baseline_v2_requests import full_pf, full_h
-    configs = dict(FULL_PF=full_pf(), FULL_H_RTE=full_h())
+    packets = {'FULL_PF_2nd': full_pf('2nd'), 'FULL_PF_4th': full_pf('4th'), 'FULL_H_RTE_explicit_layout': full_h()}
+    def show(packet):
+        out = D.requests(packet)
+        return dict(v2_status=packet['v2_status'], identity_map=packet['identity_map'], b_interface=packet['b_interface'],
+                    spec=packet['physical']['spec'], requests=dict(out, rounds=[r for r in out['rounds'] if r['m'] in (0, 3)]))
     return dict(status='ARTIFICIAL_SCHEMA_EXAMPLE_NOT_A_MENU_OR_ADOPTED_CONDITION',
-        note='Synthetic RMSE policy, kappa, h=0.1, M=3, delta=0.1 and layout q16/R16 at m3 only; '
-             'binding and Full-H preparation are the published H4 metadata.',
-        shown_rounds=[0, 3],
-        configurations={k: dict(configuration_id=v['id'], spec=v['spec']) for k, v in configs.items()},
-        requests={k: dict(D.requests(v), rounds=[r for r in D.requests(v)['rounds'] if r['m'] in (0, 3)])
-                  for k, v in configs.items()})
+        note='Synthetic RMSE policy, h=0.1, M=3, delta=0.1, K=4 and layout q16/R16 at m3 only; no kappa. '
+             'Binding and Full-H preparation are the published H4 metadata.',
+        shown_rounds=[0, 3], packets={k: show(v) for k, v in packets.items()})
 
 
 def main():

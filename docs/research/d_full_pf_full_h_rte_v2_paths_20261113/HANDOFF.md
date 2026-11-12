@@ -1,5 +1,7 @@
 # Full PF・DF Full-H RTE request：A/B/Cへの引渡し
 
+> 後続（2026-11-13）：標準Yoshida4・κなし明示layout・physical対応表を[d_full_baseline_interface_update_20261113](../d_full_baseline_interface_update_20261113/HANDOFF.md)で更新した。Full-H RTEのκ必須という本文の記述は、そちらで置き換えられている。
+
 [REPORT](REPORT.md)。adapterは`src/trottertracks/full_baseline_v2_requests.py`（branch `codex/d-full-pf-full-h-rte-v2-paths-20261113`。基点B `af284d85`）。出力はmetadataだけで、科学実行・N/C/Gは含まない。
 
 ## 1. 使い方（metadata）

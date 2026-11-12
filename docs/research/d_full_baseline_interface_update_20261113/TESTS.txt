@@ -1,0 +1,131 @@
+96 technical test methods PASS: D adapter 16 (updated) + B regression 80 (evidence 13, method coverage 14, controller 17, A/B/C integration 12, pipeline 12, R selection 12).
+B controller/evidence/pipeline/integration are unchanged between af284d85 and B latest 030f3f548.
+Synthetic/metadata only: no Hamiltonian/state load, signal, N, sampling, compile, price or G. 8th-order PF not implemented/tested.
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_full_baseline_v2_requests.py
+test_01_standard_4th_and_m5_best_are_separate_formulas (__main__.FullBaselineTests.test_01_standard_4th_and_m5_best_are_separate_formulas) ... ok
+test_02_standard_4th_signed_weights_order_and_negative_time (__main__.FullBaselineTests.test_02_standard_4th_signed_weights_order_and_negative_time) ... ok
+test_03_full_PF_keeps_one_body_and_all_fragments (__main__.FullBaselineTests.test_03_full_PF_keeps_one_body_and_all_fragments) ... ok
+test_04_H4_B0_prefix7_is_not_full_PF (__main__.FullBaselineTests.test_04_H4_B0_prefix7_is_not_full_PF) ... ok
+test_05_full_PF_has_no_kappa_K_or_layout (__main__.FullBaselineTests.test_05_full_PF_has_no_kappa_K_or_layout) ... ok
+test_06_full_H_RTE_randomizes_every_one_body_component (__main__.FullBaselineTests.test_06_full_H_RTE_randomizes_every_one_body_component) ... ok
+test_07_DF_B3_is_not_full_H_RTE (__main__.FullBaselineTests.test_07_DF_B3_is_not_full_H_RTE) ... ok
+test_08_identity_scalar_is_not_double_counted (__main__.FullBaselineTests.test_08_identity_scalar_is_not_double_counted) ... ok
+test_09_q_by_R_layout_is_kept_whole (__main__.FullBaselineTests.test_09_q_by_R_layout_is_kept_whole) ... ok
+test_10_same_event_count_different_grouping_are_different_candidates (__main__.FullBaselineTests.test_10_same_event_count_different_grouping_are_different_candidates) ... ok
+test_11_A_and_C_requests_point_to_one_physical_candidate (__main__.FullBaselineTests.test_11_A_and_C_requests_point_to_one_physical_candidate) ... ok
+test_12_consistency_with_the_published_B_V2_interface (__main__.FullBaselineTests.test_12_consistency_with_the_published_B_V2_interface) ... ok
+test_13_no_scientific_runner_or_compile_is_started (__main__.FullBaselineTests.test_13_no_scientific_runner_or_compile_is_started) ... ok
+test_14_missing_N_C_stay_null (__main__.FullBaselineTests.test_14_missing_N_C_stay_null) ... ok
+test_15_DF_Pauli_and_bindings_are_not_mixed (__main__.FullBaselineTests.test_15_DF_Pauli_and_bindings_are_not_mixed) ... ok
+test_16_pinned_sources_exist (__main__.FullBaselineTests.test_16_pinned_sources_exist) ... ok
+----------------------------------------------------------------------
+Ran 16 tests in 4.745s
+OK
+EXIT=0
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_pr_rpe_rmse_evidence.py
+test_C1_false_finite_cohort_and_outside_domain_keep_their_meaning (__main__.EvidenceTests.test_C1_false_finite_cohort_and_outside_domain_keep_their_meaning) ... ok
+test_PR_common_kappa_H6_early_override_and_B3 (__main__.EvidenceTests.test_PR_common_kappa_H6_early_override_and_B3) ... ok
+test_cli_requires_explicit_menu_and_writes_new_output_only (__main__.EvidenceTests.test_cli_requires_explicit_menu_and_writes_new_output_only) ... ok
+test_comparison_H_state_sector_RMSE_h_profile_must_match (__main__.EvidenceTests.test_comparison_H_state_sector_RMSE_h_profile_must_match) ... ok
+test_explicit_menu_sources_cohorts_and_empty_inputs (__main__.EvidenceTests.test_explicit_menu_sources_cohorts_and_empty_inputs) ... ok
+test_four_methods_ready_evidence_never_costs_or_selects_a_winner (__main__.EvidenceTests.test_four_methods_ready_evidence_never_costs_or_selects_a_winner) ... ok
+test_full_RTE_total_events_do_not_erase_source_grouping (__main__.EvidenceTests.test_full_RTE_total_events_do_not_erase_source_grouping) ... ok
+test_full_identity_legacy_record_and_required_source_mismatch (__main__.EvidenceTests.test_full_identity_legacy_record_and_required_source_mismatch) ... ok
+test_high_probability_N_and_S0a_are_not_N_C (__main__.EvidenceTests.test_high_probability_N_and_S0a_are_not_N_C) ... ok
+test_infeasible_does_not_request_unnecessary_C_but_source_mismatch_cannot_prune (__main__.EvidenceTests.test_infeasible_does_not_request_unnecessary_C_but_source_mismatch_cannot_prune) ... ok
+test_local_two_time_packet_keeps_other_rounds_and_sufficient_N_null (__main__.EvidenceTests.test_local_two_time_packet_keeps_other_rounds_and_sufficient_N_null) ... ok
+test_metadata_never_calls_science_provider_cost_or_G_selection (__main__.EvidenceTests.test_metadata_never_calls_science_provider_cost_or_G_selection) ... ok
+test_missing_axes_and_unexplored_configs_are_explicit (__main__.EvidenceTests.test_missing_axes_and_unexplored_configs_are_explicit) ... ok
+----------------------------------------------------------------------
+Ran 13 tests in 1.934s
+OK
+EXIT=0
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_pr_rpe_method_coverage.py
+test_A_H4_B0_is_truncated_PF_and_H6_early_recipe_is_preserved (__main__.MethodCoverageTests.test_A_H4_B0_is_truncated_PF_and_H6_early_recipe_is_preserved) ... ok
+test_all_four_methods_use_existing_exact_cost_and_whole_schedule_selection (__main__.MethodCoverageTests.test_all_four_methods_use_existing_exact_cost_and_whole_schedule_selection) ... ok
+test_explicit_formula_menu_allows_different_method_design_freedoms (__main__.MethodCoverageTests.test_explicit_formula_menu_allows_different_method_design_freedoms) ... ok
+test_foreign_candidate_law_compiler_and_high_probability_N_are_rejected (__main__.MethodCoverageTests.test_foreign_candidate_law_compiler_and_high_probability_N_are_rejected) ... ok
+test_full_and_truncated_PF_have_separate_target_retained_identity (__main__.MethodCoverageTests.test_full_and_truncated_PF_have_separate_target_retained_identity) ... ok
+test_missing_null_and_unqualified_MODEL_do_not_select (__main__.MethodCoverageTests.test_missing_null_and_unqualified_MODEL_do_not_select) ... ok
+test_mixed_kappa_rounds_cannot_become_a_configuration (__main__.MethodCoverageTests.test_mixed_kappa_rounds_cannot_become_a_configuration) ... ok
+test_no_provider_compile_fit_signal_or_cost_call_from_metadata (__main__.MethodCoverageTests.test_no_provider_compile_fit_signal_or_cost_call_from_metadata) ... ok
+test_per_axis_coverage_separates_saved_presence_from_qualification (__main__.MethodCoverageTests.test_per_axis_coverage_separates_saved_presence_from_qualification) ... ok
+test_pure_RTE_rejects_B3_and_deterministic_one_body (__main__.MethodCoverageTests.test_pure_RTE_rejects_B3_and_deterministic_one_body) ... ok
+test_saved_coverage_is_metadata_not_new_RMSE_N_C_or_G (__main__.MethodCoverageTests.test_saved_coverage_is_metadata_not_new_RMSE_N_C_or_G) ... ok
+test_scientific_record_requires_explicit_prior_decoder_and_molecular_context (__main__.MethodCoverageTests.test_scientific_record_requires_explicit_prior_decoder_and_molecular_context) ... ok
+test_truncated_requires_original_H_error_not_just_retained_H_PASS (__main__.MethodCoverageTests.test_truncated_requires_original_H_error_not_just_retained_H_PASS) ... ok
+test_two_round_pilot_and_S0a_do_not_become_global_N_or_mean_C (__main__.MethodCoverageTests.test_two_round_pilot_and_S0a_do_not_become_global_N_or_mean_C) ... ok
+----------------------------------------------------------------------
+Ran 14 tests in 1.274s
+OK
+EXIT=0
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_pr_rpe_rmse_controller.py
+test_MODEL_domain_and_C1_false_remain_disqualified (__main__.ControllerTests.test_MODEL_domain_and_C1_false_remain_disqualified) ... ok
+test_M_changes_all_round_identities_and_N_not_reused (__main__.ControllerTests.test_M_changes_all_round_identities_and_N_not_reused) ... ok
+test_M_kappa_outer_groups_missing_infeasible_ties_and_scope (__main__.ControllerTests.test_M_kappa_outer_groups_missing_infeasible_ties_and_scope) ... ok
+test_PF_PR_full_H_RTE_and_B3_are_distinct (__main__.ControllerTests.test_PF_PR_full_H_RTE_and_B3_are_distinct) ... ok
+test_common_kappa_selects_whole_schedule_not_roundwise_hybrid (__main__.ControllerTests.test_common_kappa_selects_whole_schedule_not_roundwise_hybrid) ... ok
+test_finite_cohort_is_explicit_conditional_and_unknown_law_distance_stays_false (__main__.ControllerTests.test_finite_cohort_is_explicit_conditional_and_unknown_law_distance_stays_false) ... ok
+test_fixed_h_formula_K_policy_and_price_scope_not_hidden_search_variables (__main__.ControllerTests.test_fixed_h_formula_K_policy_and_price_scope_not_hidden_search_variables) ... ok
+test_full_identity_law_source_compiler_cohort_measurement_mismatch (__main__.ControllerTests.test_full_identity_law_source_compiler_cohort_measurement_mismatch) ... ok
+test_generation_qualification_and_aggregation_are_separate (__main__.ControllerTests.test_generation_qualification_and_aggregation_are_separate) ... ok
+test_high_probability_N_and_unadopted_scientific_contract_not_reinterpreted (__main__.ControllerTests.test_high_probability_N_and_unadopted_scientific_contract_not_reinterpreted) ... ok
+test_huge_integer_N_and_binary64_price_exactness (__main__.ControllerTests.test_huge_integer_N_and_binary64_price_exactness) ... ok
+test_missing_null_duplicate_price_never_filled_or_multiplied (__main__.ControllerTests.test_missing_null_duplicate_price_never_filled_or_multiplied) ... ok
+test_no_backend_or_scientific_import_in_metadata_and_synthetic_entries (__main__.ControllerTests.test_no_backend_or_scientific_import_in_metadata_and_synthetic_entries) ... ok
+test_shared_kappa_exact_schedule_integer_rounding (__main__.ControllerTests.test_shared_kappa_exact_schedule_integer_rounding) ... ok
+test_signed_schedule_and_existing_allocation_are_reused (__main__.ControllerTests.test_signed_schedule_and_existing_allocation_are_reused) ... ok
+test_supplied_RMSE_bound_and_unstable_infeasible_statuses (__main__.ControllerTests.test_supplied_RMSE_bound_and_unstable_infeasible_statuses) ... ok
+test_unknown_mapper_remains_unresolved_and_custom_mapper_echo_checked (__main__.ControllerTests.test_unknown_mapper_remains_unresolved_and_custom_mapper_echo_checked) ... ok
+----------------------------------------------------------------------
+Ran 17 tests in 0.321s
+OK
+EXIT=0
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_pr_rpe_rmse_integration.py
+test_A_B_C_final_end_to_end_with_separate_mock_N (__main__.IntegrationTests.test_A_B_C_final_end_to_end_with_separate_mock_N) ... ok
+test_A_and_B_common_event_counts_match_on_regular_rounds (__main__.IntegrationTests.test_A_and_B_common_event_counts_match_on_regular_rounds) ... ok
+test_A_fixed_grid_differs_from_B_ceil_and_is_not_relaxed (__main__.IntegrationTests.test_A_fixed_grid_differs_from_B_ceil_and_is_not_relaxed) ... ok
+test_C_foreign_identity_law_compiler_and_old_schedule_not_relabelled (__main__.IntegrationTests.test_C_foreign_identity_law_compiler_and_old_schedule_not_relabelled) ... ok
+test_C_model_false_and_missing_remain_unqualified (__main__.IntegrationTests.test_C_model_false_and_missing_remain_unqualified) ... ok
+test_H6_eleven_pieces_and_m0_3_exceptions_preserved (__main__.IntegrationTests.test_H6_eleven_pieces_and_m0_3_exceptions_preserved) ... ok
+test_M_and_kappa_bind_entire_schedule_PF_has_no_kappa (__main__.IntegrationTests.test_M_and_kappa_bind_entire_schedule_PF_has_no_kappa) ... ok
+test_changed_A_candidate_policy_law_and_nominal_promotion_rejected (__main__.IntegrationTests.test_changed_A_candidate_policy_law_and_nominal_promotion_rejected) ... ok
+test_no_roundwise_hybrid_and_M_kappa_menu_selection (__main__.IntegrationTests.test_no_roundwise_hybrid_and_M_kappa_menu_selection) ... ok
+test_passive_C_provider_no_price_calculation_or_new_signal_N (__main__.IntegrationTests.test_passive_C_provider_no_price_calculation_or_new_signal_N) ... ok
+test_scalar_factors_not_counted_twice_and_huge_mock_N_exact (__main__.IntegrationTests.test_scalar_factors_not_counted_twice_and_huge_mock_N_exact) ... ok
+test_source_A_C_implementations_byte_preserved (__main__.IntegrationTests.test_source_A_C_implementations_byte_preserved) ... ok
+----------------------------------------------------------------------
+Ran 12 tests in 29.214s
+OK
+EXIT=0
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_pf_pr_rpe_pipeline.py
+.......
+----------------------------------------------------------------------
+Ran 12 tests in 8.324s
+OK
+EXIT=0
+
+COMMAND: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B tests/check_rpe_r_selection.py
+test_H6_signed_allocation_reused_and_early_delta_not_repurposed (__main__.RSelectionTests.test_H6_signed_allocation_reused_and_early_delta_not_repurposed) ... ok
+test_R_only_menu_preserves_time_q_delta_and_policy (__main__.RSelectionTests.test_R_only_menu_preserves_time_q_delta_and_policy) ... ok
+test_bounds_are_supplied_simultaneous_and_do_not_invent_CI (__main__.RSelectionTests.test_bounds_are_supplied_simultaneous_and_do_not_invent_CI) ... ok
+test_finite_cohort_path_and_unvalidated_extrapolation_do_not_become_law_prices (__main__.RSelectionTests.test_finite_cohort_path_and_unvalidated_extrapolation_do_not_become_law_prices) ... ok
+test_fixed_R_model_cannot_be_relabeled_for_another_R (__main__.RSelectionTests.test_fixed_R_model_cannot_be_relabeled_for_another_R) ... ok
+test_full_RPE_success_is_separate_and_bound_to_selected_R_schedule (__main__.RSelectionTests.test_full_RPE_success_is_separate_and_bound_to_selected_R_schedule) ... ok
+test_huge_integer_one_unit_order_and_binary64_fraction_are_exact (__main__.RSelectionTests.test_huge_integer_one_unit_order_and_binary64_fraction_are_exact) ... ok
+test_identity_and_sampling_law_mismatches_raise_before_costs (__main__.RSelectionTests.test_identity_and_sampling_law_mismatches_raise_before_costs) ... ok
+test_metadata_only_entry_and_unknown_shared_uncertainty (__main__.RSelectionTests.test_metadata_only_entry_and_unknown_shared_uncertainty) ... ok
+test_missing_unknown_and_failed_candidates_are_distinct (__main__.RSelectionTests.test_missing_unknown_and_failed_candidates_are_distinct) ... ok
+test_paired_price_axes_and_legacy_law_packets_are_not_silently_accepted (__main__.RSelectionTests.test_paired_price_axes_and_legacy_law_packets_are_not_silently_accepted) ... ok
+test_point_tradeoff_selects_different_R_by_round_and_reuses_accounting (__main__.RSelectionTests.test_point_tradeoff_selects_different_R_by_round_and_reuses_accounting) ... ok
+----------------------------------------------------------------------
+Ran 12 tests in 4.003s
+OK
+EXIT=0
+

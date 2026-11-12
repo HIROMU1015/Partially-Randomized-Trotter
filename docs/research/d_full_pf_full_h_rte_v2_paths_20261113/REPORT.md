@@ -1,5 +1,7 @@
 # Full PF・DF Full-H RTEの物理評価経路とB V2接続（Codex D、2026-11-13）
 
+> 後続（2026-11-13）：標準Yoshida4・κなし明示layout・physical対応表を[d_full_baseline_interface_update_20261113](../d_full_baseline_interface_update_20261113/REPORT.md)で更新した。Full-H RTEのκ必須という本文の記述は、そちらで置き換えられている。
+
 既存のFull PF・DF Full-H RTEの物理SOURCEを調査した。そのうえで、B `PR_RPE_RMSE_V2`へ渡す物理request adapterを、必要最小限で追加した。
 
 - adapterは、V2 configurationと、同じ物理候補を指すA向けrequest（N/RMSE）・C向けrequest（full-wrapper価格）を作る。
