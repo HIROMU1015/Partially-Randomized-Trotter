@@ -1,5 +1,7 @@
 # scripts 索引
 
+[RMSE A/B/C接続](../docs/research/pr_rpe_rmse_abc_integration_20261112/HANDOFF.md)：Aのdemo_pr_rpe_rmse.pyは人工例のみ。新統合test check_pr_rpe_rmse_integration.pyとAPI adapterを追加し、実科学runnerは起動しない。
+
 [RMSE/common-κ基盤](../docs/research/pr_rpe_rmse_controller_20261112/HANDOFF.md)：新科学runnerは追加せず、pr_rpe_rmse_controller APIとcheck_pr_rpe_rmse_controller.pyの人工17件を提供。結果資料のCHECK_SAVED_COMPATIBILITY.pyは旧A-P1/C1固定metadata照合だけ。
 
 [C1価格取込み](../docs/research/rpe_c1_price_results_intake_20261111/HANDOFF.md)：plan_rpe_r_price_intake.pyに`--full-menu`（Aの全R menu＋C1セルでcoverage）を追加。公開commit/run-dir指定の受入だけ、科学実行optionなし。

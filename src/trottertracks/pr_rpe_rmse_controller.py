@@ -44,6 +44,11 @@ def paper_event_mapper(spec, row):
 
 def generate(spec, *, event_mapper=None):
     """Generate one WHOLE schedule for (L_D, delta_pf, M, common kappa)."""
+    if spec.get('schedule_adapter') == 'A_FIXED_GRID_510FBACD_V1':
+        if event_mapper is not None:
+            raise ValueError('A fixed-grid schedule uses the pinned A mapper only')
+        from .pr_rpe_rmse_integration import generate_from_a_spec
+        return generate_from_a_spec(spec)
     s = deepcopy(spec)
     json.dumps(s, allow_nan=False)
     if s['method'] not in METHODS:
@@ -131,6 +136,12 @@ def generate(spec, *, event_mapper=None):
         rounds.append(dict(m=m, q_RPE=1 << m, q_PF=q, T=a.exact_value(T),
             actual_delta_pf=None if q is None else a.exact_value(T / q), structure=structure,
             mapping=deepcopy(mapping), resolution='GENERATED' if method == 'PF' or mapping is not None else 'NOT_EVALUATED', R_outer=outer))
+    return _assemble(s, rounds)
+
+
+def _assemble(s, rounds):
+    """Common identity construction for native and source-bound A schedules."""
+    method = s['method']; policy = s['rmse_policy']
     cid = _id(dict(schema=SCHEMA, spec=s, rounds=rounds))
     config = dict(schema=SCHEMA, id=cid, spec=s, rounds=rounds, scientific_definition_adopted=False)
     task = dict(binding=s['binding'], profile=s['profile'], configuration=dict(schema=SCHEMA, configuration_id=cid, spec=s),
@@ -139,13 +150,21 @@ def generate(spec, *, event_mapper=None):
         row['candidate'] = dict(id='RMSE:' + _id([cid, row['m']]), method=method, system=s['binding']['system'],
             prefix=s['L_D'], formula=s['formula'], T=row['T'], q=row['q_PF'], delta=row['actual_delta_pf'],
             K=s['finite_K'], R_outer=row['R_outer'], event_count=row['structure']['event_count'])
+        if 'physical_candidate' in row:
+            physical = row['physical_candidate']
+            row['candidate'].update(prefix=physical['prefix'], K=physical['K'],
+                physical_method=physical['method'], source_candidate_id=physical['id'])
         row['identity'] = p.identity(task, row)
-        row['law_binding'] = dict(definition=deepcopy(s['law']), configuration_id=cid, candidate_id=row['candidate']['id'],
+        row['law_binding'] = dict(definition=deepcopy(row.get('round_law_definition', s['law'])), configuration_id=cid, candidate_id=row['candidate']['id'],
                                   kappa=deepcopy(s['kappa']), event_mapping=deepcopy(s['event_mapping']))
     return config
 
 
 def _validate(config):
+    if config['spec'].get('schedule_adapter') == 'A_FIXED_GRID_510FBACD_V1':
+        if not p.same(config, generate(config['spec'])):
+            raise ValueError('A configuration/schedule/identity mutated after generation')
+        return
     # An explicit external mapper's results are validated by regeneration via
     # the recorded round mappings; no callback/provider is invoked at assessment.
     def supplied(s, row):
@@ -166,6 +185,8 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
         reasons.append('UNRESOLVED_KAPPA_MAPPING')
     if s['rmse_policy']['family'] != 'PR_PAPER_RMSE':
         reasons.append('HIGH_PROBABILITY_POLICY_IS_NOT_RMSE')
+    if s['method'] == 'PF' and s['split'].get('deterministic_scope') != 'FULL_H':
+        reasons.append('UNQUALIFIED_A_PF_BASELINE_SCOPE')
     if n_packet is None:
         reasons.append('MISSING_N_PACKET')
     else:
@@ -262,7 +283,7 @@ def assess(config, n_packet, prices, *, cohorts, price_policy='qualified_expecta
                 reasons.append('UNPAIRED_XY_COHORT')
             chosen.extend(pair)
     reasons = list(dict.fromkeys(reasons))
-    constraint_blockers = ('N_', 'MISSING_N', 'MISSING_DUPLICATE_OR_FOREIGN_N_ROUNDS', 'UNQUALIFIED_N', 'UNKNOWN_N', 'UNRESOLVED_', 'HIGH_PROBABILITY_',
+    constraint_blockers = ('N_', 'MISSING_N', 'MISSING_DUPLICATE_OR_FOREIGN_N_ROUNDS', 'UNQUALIFIED_N', 'UNQUALIFIED_A_', 'UNKNOWN_N', 'UNRESOLVED_', 'HIGH_PROBABILITY_',
                            'RMSE_ERROR_', 'UNQUALIFIED_GLOBAL_', 'UNQUALIFIED_FINITE_', 'MISSING_OR_UNSTABLE_RMSE_')
     trusted_infeasible = infeasible and not any(v.startswith(constraint_blockers) for v in reasons)
     status = ('NUMERICAL_UNSTABLE' if unstable else 'INFEASIBLE' if trusted_infeasible else

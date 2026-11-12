@@ -1,5 +1,7 @@
 # Validation status
 
+[RMSE A/B/C最終統合](docs/research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)：人工12＋A17/C15/B17/R可変N12/provider8/HP会計15/pipeline12/旧R12/C1受入15＝135件全PASS。A/C固定source byte保全、固定δ・H6早期例外・nominal非昇格・受動C lookup・共通κ選択を確認。科学資格pending/実最適化未実行、公開後STOP。
+
 [RMSE/common-κ技術基盤](docs/research/pr_rpe_rmse_controller_20261112/REPORT.md)：人工17＋会計15/pipeline12/R選択12/C受入15＝71件PASS。共通κ・M/全identity・finite-K資格・missing/model false・巨大整数・whole-schedule選択と3方式を確認。A-P1保存12件は旧高確率型として照合。数学的正式採択・実科学計算・実最適化0、公開後STOP。
 
 [C1価格取込み](docs/research/rpe_c1_price_results_intake_20261111/REPORT.md)：実データ照合VERIFY PASS（凍結・SOURCE・32 recordのcopy忠実性・時刻/allocation・数値入口を無効にした再取込み一致・公開fixtureの10種の改変拒否・coverage）。既存130 test（129 PASS＋任意skip1）。model未採用・finite cohortのみ、公開後STOP。

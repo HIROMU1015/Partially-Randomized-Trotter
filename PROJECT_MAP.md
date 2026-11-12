@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR–RPE RMSE A/B/C最終統合](docs/research/pr_rpe_rmse_abc_integration_20261112/REPORT.md)（2026-11-12）：A510fbacdの固定grid/早期override・nominal/null NとC09489eedの受動lookupをB最終controllerへ接続。新12＋回帰123＝135技術test PASS。実RMSE/価格は未資格、実N/C/G/最適化0、公開後STOP。
+
 [PR–RPE RMSE型controller](docs/research/pr_rpe_rmse_controller_20261112/REPORT.md)（2026-11-12）：A/C共通仕様をd562bc38dで先行公開後、L_D/要求PF幅/M/共通κのwhole-schedule生成・資格判定・exact N×C・有限menu選択を実装。新17＋回帰54＝71技術test PASS。RMSE/κ数学定義は未採択、旧高確率N/C1 falseを保持、新実N/C/G0、公開後STOP。
 
 [C1実compiled価格32 recordの取込み](docs/research/rpe_c1_price_results_intake_20261111/REPORT.md)（2026-11-11）：C公開2e6a0cdf5を既存adapter 724d313bで受入。凍結7eeabf0→検証の順序・SOURCE・8セルidentity・law・compiler・値を照合し、保存校正/新校正/独立検証/model予測を別scenarioで保持。Aの全R menu＋C1でcoverage更新（新R4セルはN欠測、長q・大Rは価格未取得、G未評価）。130技術test、新科学計算0、公開後STOP。
