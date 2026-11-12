@@ -60,6 +60,33 @@ class Tests(unittest.TestCase):
         self.assertIn('phase +=',src);self.assertIn('for event in events:',src)
         self.assertIn('if phase != 0:',src)
 
+    def test_correlated_wire_marginals_reuse_MeanKernel_without_independence(self):
+        import itertools
+        from trottertracks.mean_compiled_price import MeanKernel
+        words=[[dict(name='x',wires=[0,1],angle=None),dict(name='rz',wires=[0],angle=.25)],
+               [dict(name='x',wires=[0,1],angle=None),dict(name='rz',wires=[1],angle=.25)]]
+        # The x on two wires is only a transport shorthand for two literal Xs.
+        words=[[dict(name='x',wires=[0],angle=None),dict(name='x',wires=[1],angle=None),w[-1]] for w in words]
+        means=[]
+        for q in (0,1):
+            kernel=MeanKernel.from_events((None,.25),(0,1),(.4,.6),lambda z,i:d.projected_step(z,words[i],q))
+            means.append(kernel.repeat(3).expected([1.,0.],[0.,1.])[0])
+        total=0.
+        for path in itertools.product((0,1),repeat=3):
+            a=Accounting();weight=1.
+            for i in path:
+                weight*= (.4,.6)[i]
+                for op in words[i]:a._native(op['name'],op['wires'],op['angle'])
+            total+=weight*a.finish()['structural_rz']
+        self.assertAlmostEqual(sum(means),total)
+
+    def test_positive_phase_barrier_keeps_literal_two_pi_distinct_from_zero(self):
+        import math
+        word=[dict(name='cx',wires=[8,0],angle=None),dict(name='rz',wires=[8],angle=.3)]
+        for phase in (math.pi,2*math.pi,3*math.pi):
+            self.assertEqual(d.projected_step(phase,word,8),(.3,1))
+        self.assertEqual(d.projected_step(0.,word,8),(.3,0))
+
     def test_formal_B_configuration_matches_prior_C_requests(self):
         plan,match=d.check_publication(ROOT)
         self.assertEqual(match['configuration_id'],plan['B_V2_configuration_id'])

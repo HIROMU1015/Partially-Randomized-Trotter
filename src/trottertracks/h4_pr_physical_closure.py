@@ -194,3 +194,61 @@ def execute(root,source):
         result=diagnostic(context,plan,B_match)
     result['execution_source']=source;result['baseline']=BASE
     return result
+
+
+def projected_step(pending,word,q):
+    """One wire's literal Z-fold reward, for local transitions/toy tests.
+
+    S is the sum of these wire rewards; this says nothing about independence,
+    depths or compiler residual. No modulo or reassociated sum is used.
+    """
+    reward=0
+    for op in word:
+        if q not in op['wires']:continue
+        if op['name']=='rz':pending=op['angle'] if pending is None else pending+op['angle']
+        else:
+            reward+=int(pending is not None and pending!=0.0);pending=None
+    return pending,reward
+
+
+def reduction_evidence(result):
+    """Read only this run's local-state diagnostics; no S or mean evaluation.
+
+    Checks the sufficient premises of STATE_PROOF.md. It does not construct a
+    physical transition matrix or claim an implemented/validated mean kernel.
+    """
+    bases=result['preparation']['basis_registry'];heads=result['head_diagonal_effects'];apps=result['local_application_effects']
+    headF=next(h for h in heads if not h['directional'] and h['block']==1)
+    all_reset=lambda es,qs:all(es[q]['reset'] for q in qs)
+    premises=dict(
+        basis_full_system_reset=all(all_reset(b[d+'_effects'],range(8)) for b in bases for d in ('forward','inverse')),
+        application_reset_or_untouched=all(e['reset'] or e['untouched'] for a in apps for e in a['effects']),
+        final_forward_head_diagonal_resets_system=all_reset(headF['effects'],range(8)),
+        reverse_head_diagonals_reset_all_wires=all(all_reset(h['effects'],range(9)) for h in heads if h['directional']),
+        bases_never_touch_control=all(all(q<8 for op in b['operations'] for q in op['qubits']) for b in bases)
+            and all(all(q<8 for op in h['basis'] for q in op['qubits']) for h in heads),
+        legal_tail_phase_control_barrier=result['phase_control_barrier']['reverse_head_resets_before_control_Z'],
+        nonidentity_support=all(c['support'] and len(c['support']) in (1,2) for c in result['preparation']['components']),
+        only_R2_R128=[l['R_outer'] for l in result['laws']]==[2,128])
+    system=[]
+    for q in range(8):
+        # At application boundaries: basis-inverse suffix, fixed tail entry,
+        # untouched previous value, or a touched application's fixed suffix.
+        values={None,headF['effects'][q]['exit_z_hex']}
+        values.update(b['inverse_effects'][q]['exit_z_hex'] for b in bases)
+        values.update(a['effects'][q]['exit_z_hex'] for a in apps if a['effects'][q]['reset'])
+        system.append(dict(wire=q,pending_Z_hex_values=sorted(v for v in values if v is not None),
+            None_is_distinct=True,value_count=len(values),
+            tail_marginal_state_enclosure_max=2*(len(bases)+1)*len(values)))
+    return dict(status='SOURCE_DERIVED_FINITE_S_OBSERVABLE_REDUCTION_CONDITIONS_CONFIRMED' if all(premises.values()) else 'UNKNOWN',
+        premises=premises,system_wire_state_enclosures=system,
+        target='STRUCTURAL_RZ_COUNT_ONLY_NOT_FULL_ACCOUNTING_REPORT_OR_COMPILED_C',
+        representation='Per-wire exact pending-Z + full active basis identity + order2-seen flag, with deterministic entry/close/head/outer/suffix maps',
+        phase_quotient='Zero iff every event is order0; otherwise positive. Its value is flushed before any control RZ in reverse head, so no modulo is used',
+        mean_factorization='Sum of per-wire expected rewards; shared event/basis/phase is retained in every marginal. No independence between wires is assumed',
+        event_kernel_recipe='p0*rotation(order0) + p2*set_phase_positive then product then product then rotation(order2), with IID component weights only under the declared ideal finite law',
+        all_continuation_argument='STATE_PROOF.md; only legal application/event/tail/outer and fixed terminal continuations',
+        physical_kernel_constructed=False,physical_transition_reward_parity_validated=False,
+        implemented_efficient_mean_method_status='UNKNOWN_PENDING_PHYSICAL_KERNEL_CONSTRUCTION_AND_CHECK',
+        mean_S=None,mean_compiled_C=None,qualified_for_candidate=False,
+        proof_scope_limit='Fixed saved support, two float64 law descriptors and exact original S observable; not compiler/law-distance/roundoff qualification',mandatory_stop=True)
