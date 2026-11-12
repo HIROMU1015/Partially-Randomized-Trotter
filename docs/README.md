@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR–RPE RMSE/κ technical report](research/pr_rpe_rmse_kappa_20261112/REPORT.md)：原論文v2式、共有mapper、B draft packet、17人工/mock検査。経験的nominal Nと厳密十分Nを分離。
+
 [R可変PR P1の12候補N結果](research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：同allowance policyで全12条件付きPASS、B用整数N・全signal CSV。actual/全RPE/C/G未資格。
 
 [R可変PRの詳細N計画](research/pr_r_detailed_n_preparation_20261111/REPORT.md)：候補・計算量・保存referenceのcoverage・未承認P1/P2/P3とB/C HANDOFF。

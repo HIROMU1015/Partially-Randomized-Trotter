@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[PR–RPE RMSE型Nと共通κ](docs/research/pr_rpe_rmse_kappa_20261112/REPORT.md)：論文v2の経験的Nm・paper回転数型κを旧Hoeffdingと別policyで実装。B草案d562bc38dへmapper/全schedule ID/packetを接続、17人工/mock PASS。H6早期例外とsigned/finite-K未資格を保持、実N/保存再解析/compile/C/G0・公開後STOP。
+
 [R可変PRの詳細N P1結果](docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：SOURCEa1a79213aで固定12候補がideal条件付きPASS。H4 m6のN/軸はR4/128/256で9638/766/735、H6 m8はR16/128/256で1015/735/720。新mean/対照9・保存scalar3・新reference2、23 SOURCE/7入力保全、C/G/P2/P3なし・公開後STOP。
 
 [R可変PRの詳細N有限計画](docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)：A0全24を保持し先行12候補、最終時間は別3＋3候補。H6 m4のpair/norm不足を明記、構造計算量とB/C domainを整理。新科学計算0、公開後STOP。

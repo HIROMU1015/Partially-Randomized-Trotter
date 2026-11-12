@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[RMSE型Nとκ schedule](../../docs/research/pr_rpe_rmse_kappa_20261112/REPORT.md)：`trottertracks.pr_rpe_rmse`が既存finite action/normalizer/decoder・純metadataを再利用。旧Hoeffding/SOURCE不変、新17人工/mock PASS、実科学0。
+
 R可変PRの[P1結果](../../docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)：`trottertracks.pr_r_detailed_n_p1`が既存B grouping/A action/scalarを不変で結線。6人工/mock PASS、固定12実候補の条件付きNを公開。C/G・R採択なし。
 
 R可変PRの[詳細N実行計画](../../docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)：既存finite action/normalizerは不変。metadata生成器と人工/保存fixtureテストを追加、分子数値計算は未実行。

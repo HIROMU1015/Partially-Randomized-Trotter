@@ -1,5 +1,7 @@
 # scripts 索引
 
+`demo_pr_rpe_rmse.py <fresh-output.json>`：TOYのκ schedule・経験的RMSE nominal N・B用SYNTHETIC_ONLY packetだけを保存。[仕様](../docs/research/pr_rpe_rmse_kappa_20261112/REPORT.md)。実分子実行オプションなし。
+
 `run_pr_r_detailed_n_p1.py`：SOURCEa1a79213aの固定P1実行を一回完了。全12条件付きPASS、[結果とSTOP](../docs/research/pr_r_detailed_n_p1_results_20261111/REPORT.md)。defaultは静的preflight、既完了runへの自動再実行なし。
 
 `plan_pr_r_detailed_n.py --output <fresh-json>`：A0保存値の無変更copy、canonical B request・SOURCE loop整数計数だけ。科学execute機能なし。詳細は[REPORT](../docs/research/pr_r_detailed_n_preparation_20261111/REPORT.md)。
