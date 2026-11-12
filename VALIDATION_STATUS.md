@@ -1,5 +1,7 @@
 # Validation status
 
+[S0a run02：実保存8件の構造S照合](docs/research/s0a_saved_structure_results_20261113/run02/REPORT.md)（2026-11-13）：修正版SOURCE9516351e6で保存normal index0の4path×XY8 Sを一回評価し、元C1保存Sと8/8整数完全一致。各X/Y SはH4 q8/R8=21664、q16/R8=46559、H6 q1/R32=158669、q2/R32=321151。input/preparation/law/phase/allocation/digest検査を通過、元roleとrun01失敗STOPを保全。平均S/C・物理閉包・モデル資格は未取得、qualified=false。新sampling/compile/fit/N/G0、公開照合後STOP。
+
 [S0a run01の設定エラーと技術修正](docs/research/s0a_saved_structure_results_20261113/REPORT.md)（2026-11-13）：SOURCE11cb91a65でrun01を1回起動、context exec scopeのast渡し漏れでS開始前に失敗STOP。新S0/8、保存S照合0、全4path未評価。修正版SOURCE9516351e6と人工14件PASSを公開、run02案はmetadata準備だけで未実行。旧STOP/role/モデル資格を保全、修正版再試行はユーザー判断、公開照合後mandatory STOP。
 
 [S0a保存構造価格の実行準備](docs/research/s0a_saved_structure_preparation_20261113/REPORT.md)（2026-11-13）：SOURCE11cb91a65。固定C1の保存4path/XY8計数に向けreader・law/identity検査・S専用runnerを準備。新13＋旧9＝22技術test PASS。raw/inputは所在のみ確認、実S・保存S比較は未実行。元係数/資格/平均provider不変、内容hashと実contextは実行時検査。初回人工importのlowering副作用と修正をREPORTへ記録。明示科学許可待ち、公開照合後STOP。
