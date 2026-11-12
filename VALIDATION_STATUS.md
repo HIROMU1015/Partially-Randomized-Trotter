@@ -1,5 +1,7 @@
 # Validation status
 
+[H4 S0のB V2接続・全round検証計画](docs/research/pr_rpe_s0_v2_connection_20261113/REPORT.md)：S0をB af284d853のcanonical V2へ接続し、旧ID/physical SOURCEとm0/m6 nominal64/38を保持。追加一致meanはm1/m3/m4、欠測meanは8候補、m3/m4の独立pairとallowance bridgeが不足。47技術テストPASS、十分N/全RMSE/Gはnull、実数値再解析0、公開照合後STOP。
+
 [Phase0実normalization結果](docs/research/pr_r_normalization_phase0_results_20261111/REPORT.md)：24候補/144piece slots・ID/law/配分・SOURCE9/入力7・JSON/CSV整合を確認。全normalization記録済み、IEEE表示のoverflow/underflow0。N/phase/radius/C/G・科学的R採択は未評価、公開照合後STOP。
 
 [Phase0 normalization準備の検証](docs/research/pr_r_normalization_phase0_preparation_20261111/REPORT.md)：新10テストPASS。静的preflight、候補/law/source照合、人工24/144piece slots、exp表示・精度未資格/入力消失/上書き拒否を確認。実24候補logB/attenuation/shot係数は未評価、N/C/G0、公開照合後STOP。

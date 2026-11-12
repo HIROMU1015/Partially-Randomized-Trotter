@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[H4 S0のB V2接続・全round検証計画](../../docs/research/pr_rpe_s0_v2_connection_20261113/REPORT.md)：S0をB af284d853のcanonical V2へ接続し、旧ID/physical SOURCEとm0/m6 nominal64/38を保持。追加一致meanはm1/m3/m4、欠測meanは8候補、m3/m4の独立pairとallowance bridgeが不足。47技術テストPASS、十分N/全RMSE/Gはnull、実数値再解析0、公開照合後STOP。
+
 [H4 RMSE保存二時点S0結果](../../docs/research/pr_rpe_rmse_s0_results_20261113/REPORT.md)：科学SOURCE7c3e1e5dbで提案Aを一回実行、M12/κ≈24.30527458、m0 R2/m6 R128のnominal Nは各軸64/38。元数値gate通過、実RMSE/十分Nは未資格、他roundは未評価。新mean/reference/normalizer/array/C/G0、公開照合後STOP。
 
 既存`pr_rpe_rmse`/`pr_rpe_rmse_pilot`、P1 reference checkerとscalar geometryをSOURCE不変で再利用。旧Hoeffding wrapper・physical actionはS0から呼ばない。

@@ -1,0 +1,1701 @@
+{
+  "schema": "A_FIXED13_LOCAL_EVIDENCE_FIELDS_ONLY_V1",
+  "source": {
+    "module": "src/trottertracks/pr_rpe_rmse_s0_v2.py",
+    "B": "af284d853890155bacd19e61850c196bd1d5c660",
+    "S0": "7da8a35f68e9fdc2b46c361dd2c68e2a799b1e75",
+    "S0_science": "7c3e1e5db0c55dd8249e9030a4c7e9954496fa7e"
+  },
+  "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+  "rounds": [
+    {
+      "m": 0,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.1,
+        "q": 1,
+        "delta": 0.1,
+        "R_outer": 2,
+        "K": 2,
+        "id": "53e00d8b07d1547d19a7"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          2
+        ],
+        "event_count": 2,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:e9ac70f2efddf2b25d621da1a2ee0f3d43c1248eb15ef8ddabeaae3c840954c8",
+      "source_candidate_id": "53e00d8b07d1547d19a7",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "53e00d8b07d1547d19a7",
+            "R_outer": 2,
+            "K": 2,
+            "q_PF": 1,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:e9ac70f2efddf2b25d621da1a2ee0f3d43c1248eb15ef8ddabeaae3c840954c8",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": true,
+      "mean_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "selector": [
+            "records",
+            0
+          ],
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "saved_statuses": [
+        "CONDITIONAL_ROUND_PASS"
+      ],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H4:0.1",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        },
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "0.1",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [
+        "corrected",
+        "exact_tail",
+        "log_B",
+        "raw",
+        "reference",
+        "total_signed_bias"
+      ],
+      "error_fields": [
+        "exact_tail_norm_error",
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "missing_error_fields": [],
+      "source_gate_evidence": [],
+      "allowance_status": "S0_PRESERVED_RECHECKED",
+      "normalization_status": "SAVED_LOG_B_PRESENT_NOT_REEVALUATED",
+      "local_diagnostics_status": "S0_PUBLISHED_ONLY",
+      "nominal_N_X": 64,
+      "nominal_N_Y": 64,
+      "nominal_status": "S0_PUBLISHED_ONLY",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "src/trotterlib/rte.py"
+        }
+      ]
+    },
+    {
+      "m": 1,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.2,
+        "q": 2,
+        "delta": 0.1,
+        "R_outer": 4,
+        "K": 2,
+        "id": "c00e00dc1e9c414fb7d9"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          4
+        ],
+        "event_count": 8,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:d4d3cc0cdefcd7ffeebfe958d43b6fffa86a2afa212d9412622e98a1c148a165",
+      "source_candidate_id": "c00e00dc1e9c414fb7d9",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "c00e00dc1e9c414fb7d9",
+            "R_outer": 4,
+            "K": 2,
+            "q_PF": 2,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:d4d3cc0cdefcd7ffeebfe958d43b6fffa86a2afa212d9412622e98a1c148a165",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": true,
+      "mean_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "selector": [
+            "records",
+            5
+          ],
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "saved_statuses": [
+        "CONDITIONAL_ROUND_PASS"
+      ],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "0.2",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [
+        "corrected",
+        "exact_tail",
+        "log_B",
+        "raw",
+        "reference",
+        "total_signed_bias"
+      ],
+      "error_fields": [
+        "exact_tail_norm_error",
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "missing_error_fields": [],
+      "source_gate_evidence": [],
+      "allowance_status": "LEGACY_SOURCE_ALLOWANCE_BRIDGE_REQUIRED",
+      "normalization_status": "SAVED_LOG_B_PRESENT_NOT_REEVALUATED",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": [
+        {
+          "commit": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98",
+          "path": "src/trotterlib/rte.py"
+        }
+      ]
+    },
+    {
+      "m": 2,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.4,
+        "q": 4,
+        "delta": 0.1,
+        "R_outer": 8,
+        "K": 2,
+        "id": "f2fcd66b1ef9ae2da5df"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          8
+        ],
+        "event_count": 32,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:63450d74dfa5e01ae02eea22337b9664edf14c6ae51bbb61fc53e7be47324800",
+      "source_candidate_id": "f2fcd66b1ef9ae2da5df",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "f2fcd66b1ef9ae2da5df",
+            "R_outer": 8,
+            "K": 2,
+            "q_PF": 4,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:63450d74dfa5e01ae02eea22337b9664edf14c6ae51bbb61fc53e7be47324800",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "0.4",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 3,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 0.8,
+        "q": 8,
+        "delta": 0.1,
+        "R_outer": 16,
+        "K": 2,
+        "id": "045843b2429bece6f29b"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          16
+        ],
+        "event_count": 128,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+      "source_candidate_id": "045843b2429bece6f29b",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "045843b2429bece6f29b",
+            "R_outer": 16,
+            "K": 2,
+            "q_PF": 8,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:f9b12b7760639ec8ea4f24eab861e169925cd74bb5132b5f53084d5dba932a50",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": true,
+      "mean_sources": [
+        {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+          "selector": "045843b2429bece6f29b",
+          "binding_source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/scientific_provenance.json"
+          }
+        }
+      ],
+      "saved_statuses": [
+        "ARCHIVED_FINITE_MEAN_NOT_RMSE_QUALIFIED"
+      ],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": false,
+      "reference_pair_sources": [],
+      "signal_fields": [
+        "corrected",
+        "exact_tail",
+        "log_B",
+        "raw",
+        "reference",
+        "total_signed_bias"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "missing_error_fields": [
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [
+        {
+          "source": {
+            "commit": "e417ffc9f52b13c18f5493193ce510d858664259",
+            "path": "scripts/h46_long_time_signal.py",
+            "function": "evolve_batch"
+          },
+          "limit": 1e-09,
+          "observed_error": null,
+          "status": "SOURCE_GATE_ONLY_NOT_NEWLY_RECHECKED"
+        }
+      ],
+      "allowance_status": "LEGACY_SOURCE_ALLOWANCE_BRIDGE_REQUIRED",
+      "normalization_status": "SAVED_LOG_B_PRESENT_NOT_REEVALUATED",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": [
+        {
+          "commit": "e417ffc9f52b13c18f5493193ce510d858664259",
+          "path": "src/trotterlib/rte.py"
+        }
+      ]
+    },
+    {
+      "m": 4,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 1.6,
+        "q": 16,
+        "delta": 0.1,
+        "R_outer": 32,
+        "K": 2,
+        "id": "3df0cfd3356c358aeda8"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          32
+        ],
+        "event_count": 512,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+      "source_candidate_id": "3df0cfd3356c358aeda8",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "3df0cfd3356c358aeda8",
+            "R_outer": 32,
+            "K": 2,
+            "q_PF": 16,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:e217a74fb3981b43f6951fcfb24ae4683c5d95b688b38ab798fcd839a35b15dc",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": true,
+      "mean_sources": [
+        {
+          "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+          "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/signal_records.json.gz",
+          "selector": "3df0cfd3356c358aeda8",
+          "binding_source": {
+            "commit": "155529e20a8fac39e00786c40b57830b71203c4f",
+            "path": "artifacts/resource_applicability/track_a_h46_long_time/2026-10-25/scientific_provenance.json"
+          }
+        }
+      ],
+      "saved_statuses": [
+        "ARCHIVED_FINITE_MEAN_NOT_RMSE_QUALIFIED"
+      ],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": false,
+      "reference_pair_sources": [],
+      "signal_fields": [
+        "corrected",
+        "exact_tail",
+        "log_B",
+        "raw",
+        "reference",
+        "total_signed_bias"
+      ],
+      "error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "missing_error_fields": [
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [
+        {
+          "source": {
+            "commit": "e417ffc9f52b13c18f5493193ce510d858664259",
+            "path": "scripts/h46_long_time_signal.py",
+            "function": "evolve_batch"
+          },
+          "limit": 1e-09,
+          "observed_error": null,
+          "status": "SOURCE_GATE_ONLY_NOT_NEWLY_RECHECKED"
+        }
+      ],
+      "allowance_status": "LEGACY_SOURCE_ALLOWANCE_BRIDGE_REQUIRED",
+      "normalization_status": "SAVED_LOG_B_PRESENT_NOT_REEVALUATED",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": [
+        {
+          "commit": "e417ffc9f52b13c18f5493193ce510d858664259",
+          "path": "src/trotterlib/rte.py"
+        }
+      ]
+    },
+    {
+      "m": 5,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 3.2,
+        "q": 32,
+        "delta": 0.1,
+        "R_outer": 64,
+        "K": 2,
+        "id": "57d641a831d76360b570"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          64
+        ],
+        "event_count": 2048,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:ad971e4d72980ca542dd355b90508d890ac3e0cb015f4864a1165d750a783fa9",
+      "source_candidate_id": "57d641a831d76360b570",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "57d641a831d76360b570",
+            "R_outer": 64,
+            "K": 2,
+            "q_PF": 32,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:ad971e4d72980ca542dd355b90508d890ac3e0cb015f4864a1165d750a783fa9",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "3.2",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 6,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 6.4,
+        "q": 64,
+        "delta": 0.1,
+        "R_outer": 128,
+        "K": 2,
+        "id": "2a8c6718220eec59d419"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          128
+        ],
+        "event_count": 8192,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:a4ed2fac90ddbd6bf8e7d5e0077157a66eade4a657d8db01ebf4ad973781def0",
+      "source_candidate_id": "2a8c6718220eec59d419",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "2a8c6718220eec59d419",
+            "R_outer": 128,
+            "K": 2,
+            "q_PF": 64,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:a4ed2fac90ddbd6bf8e7d5e0077157a66eade4a657d8db01ebf4ad973781def0",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": true,
+      "mean_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "selector": [
+            "records",
+            4
+          ],
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        }
+      ],
+      "saved_statuses": [
+        "CONDITIONAL_ROUND_PASS"
+      ],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "docs/research/pr_r_detailed_n_p1_results_20261111/run01/result.json",
+          "reference_key": "H4:6.4",
+          "scientific_source": "a1a79213a9b5331145e20e8778a3be9d9fc4e497"
+        },
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "6.4",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [
+        "corrected",
+        "exact_tail",
+        "log_B",
+        "raw",
+        "reference",
+        "total_signed_bias"
+      ],
+      "error_fields": [
+        "exact_tail_norm_error",
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure"
+      ],
+      "missing_error_fields": [],
+      "source_gate_evidence": [],
+      "allowance_status": "S0_PRESERVED_RECHECKED",
+      "normalization_status": "SAVED_LOG_B_PRESENT_NOT_REEVALUATED",
+      "local_diagnostics_status": "S0_PUBLISHED_ONLY",
+      "nominal_N_X": 38,
+      "nominal_N_Y": 38,
+      "nominal_status": "S0_PUBLISHED_ONLY",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": [
+        {
+          "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+          "path": "src/trotterlib/rte.py"
+        }
+      ]
+    },
+    {
+      "m": 7,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 12.8,
+        "q": 128,
+        "delta": 0.1,
+        "R_outer": 255,
+        "K": 2,
+        "id": "b42287268e5249dfb4d1"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          255
+        ],
+        "event_count": 32640,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:b930b26240f919355695dde78746986abc0532f6ed7f3b2099645e67fde9b019",
+      "source_candidate_id": "b42287268e5249dfb4d1",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "b42287268e5249dfb4d1",
+            "R_outer": 255,
+            "K": 2,
+            "q_PF": 128,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:b930b26240f919355695dde78746986abc0532f6ed7f3b2099645e67fde9b019",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "12.8",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 8,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 25.6,
+        "q": 256,
+        "delta": 0.1,
+        "R_outer": 510,
+        "K": 2,
+        "id": "224aef0a626068b43184"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          510
+        ],
+        "event_count": 130560,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:009fbcb8271c284163ec32892f8647dfc2923b0b23f4affb3bcfdb7401186d84",
+      "source_candidate_id": "224aef0a626068b43184",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "224aef0a626068b43184",
+            "R_outer": 510,
+            "K": 2,
+            "q_PF": 256,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:009fbcb8271c284163ec32892f8647dfc2923b0b23f4affb3bcfdb7401186d84",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "25.6",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 9,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 51.2,
+        "q": 512,
+        "delta": 0.1,
+        "R_outer": 1020,
+        "K": 2,
+        "id": "06a78c7f9856f373336f"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          1020
+        ],
+        "event_count": 522240,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:d5cb90de7197434890d7aa09a4c31c961b3328850cc7c06000d2233d78bf4058",
+      "source_candidate_id": "06a78c7f9856f373336f",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "06a78c7f9856f373336f",
+            "R_outer": 1020,
+            "K": 2,
+            "q_PF": 512,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:d5cb90de7197434890d7aa09a4c31c961b3328850cc7c06000d2233d78bf4058",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "51.2",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 10,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 102.4,
+        "q": 1024,
+        "delta": 0.1,
+        "R_outer": 2040,
+        "K": 2,
+        "id": "b872ad1347a35c8f4315"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          2040
+        ],
+        "event_count": 2088960,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:d73c35596eba956aa72bbb7fb838ea54eeb58f07e2e917bc09ebd67311da03b8",
+      "source_candidate_id": "b872ad1347a35c8f4315",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "b872ad1347a35c8f4315",
+            "R_outer": 2040,
+            "K": 2,
+            "q_PF": 1024,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:d73c35596eba956aa72bbb7fb838ea54eeb58f07e2e917bc09ebd67311da03b8",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "102.4",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 11,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 204.8,
+        "q": 2048,
+        "delta": 0.1,
+        "R_outer": 4080,
+        "K": 2,
+        "id": "d48210cc27c599e268c2"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          4080
+        ],
+        "event_count": 8355840,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:28a56f218e65c55df16725f0a6c781bfb575ef4503ca2122658a6844566724bc",
+      "source_candidate_id": "d48210cc27c599e268c2",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "d48210cc27c599e268c2",
+            "R_outer": 4080,
+            "K": 2,
+            "q_PF": 2048,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:28a56f218e65c55df16725f0a6c781bfb575ef4503ca2122658a6844566724bc",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "204.8",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    },
+    {
+      "m": 12,
+      "physical_candidate": {
+        "system": "H4",
+        "method": "PR",
+        "formula": "2nd",
+        "prefix": 1,
+        "T": 409.6,
+        "q": 4096,
+        "delta": 0.1,
+        "R_outer": 8160,
+        "K": 2,
+        "id": "b55c521fdce6a448dbcb"
+      },
+      "structure": {
+        "formula_id": "S2",
+        "signed_weights": [
+          1.0
+        ],
+        "allocation": [
+          8160
+        ],
+        "event_count": 33423360,
+        "scalar_policy": "scalar_identity_once_at_total_T",
+        "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+        "law_model": "ideal_finite_RTE_law"
+      },
+      "canonical_candidate_id": "RMSE:0a093e570d2ac17559c024aa58fa17d765457d86ff9bcef98b532a5622f56859",
+      "source_candidate_id": "b55c521fdce6a448dbcb",
+      "law_binding": {
+        "definition": {
+          "model": "ideal_finite_RTE_law",
+          "source": {
+            "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+            "path": "src/trotterlib/rte.py"
+          },
+          "A_declaration": {
+            "model": "ideal_finite_RTE_law",
+            "candidate_id": "b55c521fdce6a448dbcb",
+            "R_outer": 8160,
+            "K": 2,
+            "q_PF": 4096,
+            "source": {
+              "commit": "71ba49bb28b295aa28e51101bc3b1bf07d500767",
+              "path": "src/trotterlib/rte.py"
+            }
+          }
+        },
+        "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+        "candidate_id": "RMSE:0a093e570d2ac17559c024aa58fa17d765457d86ff9bcef98b532a5622f56859",
+        "kappa": {
+          "kind": "PAPER_V2_E21_KAPPA_ROTATIONS_OVER_LAMBDA_R_SQUARED_TIME_SQUARED",
+          "value": {
+            "numerator": 13112614441153360648422410673503886836581176429267589536059228160,
+            "denominator": 539496659426909122096437389293855970805348475396548904610992201
+          },
+          "definition_source": {
+            "url": "https://arxiv.org/pdf/2503.05647v2",
+            "sections": [
+              "B.2",
+              "E.1",
+              "E.3"
+            ],
+            "equations": [
+              "A38",
+              "B30",
+              "E1",
+              "E2",
+              "E21",
+              "E22"
+            ]
+          }
+        },
+        "event_mapping": {
+          "kind": "A_SAVED_EARLY_FIXED_GRID_V1",
+          "source": {
+            "commit": "510fbacd01a2d855202de4c045d8ba1972e5ff3d",
+            "path": "src/trottertracks/pr_rpe_rmse.py"
+          },
+          "pf_grid": "EXACT_FIXED_DELTA_WITH_EXPLICIT_SAVED_EARLY"
+        }
+      },
+      "saved_mean_present": false,
+      "mean_sources": [],
+      "saved_statuses": [],
+      "blocking_saved_statuses": [],
+      "rejected_same_id_sources": [],
+      "saved_reference_signal_present": true,
+      "independent_reference_pair_present": true,
+      "reference_pair_sources": [
+        {
+          "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+          "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+          "reference_key": "409.6",
+          "scientific_source": "90dcc3ed20f30dfab6b22a68cc4adb9461485a98"
+        }
+      ],
+      "signal_fields": [],
+      "error_fields": [],
+      "missing_error_fields": [
+        "maximum_intermediate_norm",
+        "raw_corrected_vector_closure",
+        "exact_tail_norm_error"
+      ],
+      "source_gate_evidence": [],
+      "allowance_status": "NOT_EVALUATED",
+      "normalization_status": "MISSING",
+      "local_diagnostics_status": "NOT_EVALUATED",
+      "nominal_N_X": null,
+      "nominal_N_Y": null,
+      "nominal_status": "NOT_EVALUATED",
+      "sufficient_N_X": null,
+      "sufficient_N_Y": null,
+      "RMSE_bound_ha": null,
+      "scientific_gate_rechecked_now": false,
+      "law_implementation_sources": []
+    }
+  ],
+  "nominal_evaluated_rounds": [
+    0,
+    6
+  ],
+  "additional_saved_mean_rounds": [
+    1,
+    3,
+    4
+  ],
+  "missing_mean_rounds": [
+    2,
+    5,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "missing_reference_pair_rounds": [
+    3,
+    4
+  ],
+  "all_round_RMSE_qualified": false,
+  "science_calls": 0,
+  "mandatory_stop": true
+}
