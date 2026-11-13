@@ -1,5 +1,7 @@
 # Validation status
 
+[D Pauli pilot・Full PF価格caller](docs/research/d_pauli_pilot_full_pf_prices_20261114/REPORT.md)：toy JW保存順headとnative prepare(ham,1)＋D2 tailが独立oracleと一致し、bit変換省略・二重変換・head取違え・辞書/s_R不一致・scalar二重を検出。保存P0（LD1/LD2）はreverse_bitsでQiskit labelと1e−15台一致、変換なしは差4.75/3.62。C guard cfc0fae6でPR_PAULI_TAILとFULL_PF＋TRUNCATED_PFのsidecarを受理、route欠落・ZZ・scalar取違えを拒否。新16＋回帰30 PASS、H4 sampling/build/compile/fit/N/G 0。
+
 [D κ2 S-1/P-1・価格接続の準備](docs/research/d_kappa_s1_price_builders_20261114/REPORT.md)：C数値`5cc7c07e`とR448 reference readerをbyte照合して再利用。toy Context・人工normalizerでS-1全13round・post-gate・STOP経路、toy DFで新旧ZZの全制御行列一致・oracle・X/Y、Truncatedの保持block/B0I scalar/負時間piece、Pauli D2＋DF headの全制御行列を確認（30 PASS）。C guardはFull-H/Truncated sidecarを無変更で受理、Pauli routeは未登録で拒否。実κ2 normalizer/mean・H4入力読込・compile0。
 
 [S1価格比較guard](docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：人工14＋回帰37＝51 PASS。実価格資格・B直接consumerの修正は未完了、新科学計算0。
