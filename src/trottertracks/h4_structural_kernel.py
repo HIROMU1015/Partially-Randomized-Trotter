@@ -160,6 +160,12 @@ def signature(word):
 
 
 class Model:
+    @staticmethod
+    def total_time(law):
+        # Explicit schedule input for the new adapter; keep the legacy two-law
+        # fallback for its original saved/artificial callers.
+        return law['T'] if 'T' in law else (.1 if law['R_outer']==2 else 6.4)
+
     def __init__(self,root,context,saved):
         self.A=context.Accounting;self.Trace=c.tracer(self.A);self.blocks=context.blocks[0];self.scalar=context.scalar
         prep=context.ctx.prep;self.components=prep.rte_preparation.symbolic_tail.components
@@ -251,7 +257,7 @@ class Model:
         for law in self.laws:
             for axis in ('cosine','sine'):
                 t=self.Trace();t.pending_basis=(self.blocks[0]['basis'],False,'head_basis')
-                T=.1 if law['R_outer']==2 else 6.4
+                T=self.total_time(law)
                 if self.scalar*T!=0:t.gate('p',(8,),(-self.scalar*T,),'scalar_once')
                 if axis=='sine':t.gate('sdg',(8,),role='wrapper')
                 t.gate('h',(8,),role='wrapper');t.gate('measure',(8,),role='measurement');t.flush_basis()
@@ -437,7 +443,7 @@ def run_K0(root,source,progress):
     return plan,saved,results,summary
 
 
-def run_K1(results,laws):
+def run_K1(results,laws,*,probability_enclosure=None):
     output=[]
     for index,law in enumerate(laws):
         q=law['q_PF'];R=law['R_outer']
@@ -463,13 +469,17 @@ def run_K1(results,laws):
             hi=fraction_bounds(sum((Fraction.from_float(v) for v in highs),Fraction()))[1]
             # Also cover literal source event-probability factorization rounding.
             gamma=Fraction(16,2**53-16);events=q*R
-            lo=fraction_bounds(Fraction.from_float(lo)*(1-gamma)**events)[0]
-            hi=fraction_bounds(Fraction.from_float(hi)*(1+gamma)**events)[1]
+            if probability_enclosure is None:
+                lo=fraction_bounds(Fraction.from_float(lo)*(1-gamma)**events)[0]
+                hi=fraction_bounds(Fraction.from_float(hi)*(1+gamma)**events)[1]
+                relative_bound=fraction_bounds((1+gamma)**events-1)[1]
+            else:
+                lo,hi,relative_bound=probability_enclosure(lo,hi,events)
             if not lo<=value<=hi:raise ValueError('K1_TOTAL_ENCLOSURE')
             output.append(dict(m=law['m'],candidate_id=law['candidate_id'],axis=axis,q_PF=q,R_outer=R,
                 quantity='FULL_WRAPPER_MEAN_STRUCTURAL_RZ_COUNT',expectation='IDEAL_FINITE_K_SOURCE_LAW',
                 mean_S=value,numerical_enclosure=[lo,hi],status='K0_PARITY_PASS_K1_NUMERIC_ENCLOSURE',
-                source_probability_factorization_relative_bound=fraction_bounds((1+gamma)**events-1)[1],
+                source_probability_factorization_relative_bound=relative_bound,
                 mean_compiled_C=None,compiled_price_qualified=False,sampler_ideal_distance=None,
                 compiler_residual=None,joint_covariance=None))
     return output
@@ -477,7 +487,7 @@ def run_K1(results,laws):
 
 def save_kernels(out,results):
     arrays={};states={}
-    for q in range(9):
+    for q in sorted(results):
         for v in results[q]:
             name='wire'+str(q)+'_R'+str(v['metadata']['R']);k=v['kernel']
             states[name]=dict(states=k.central.states,entry_indices=v['entry_indices'],prefix=v['prefix'],suffix=v['suffix'])
