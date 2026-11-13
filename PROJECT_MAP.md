@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[Truncated PF誤差評価と有限最適化計画](docs/research/truncated_pf_optimization_plan_20261114/REPORT.md)／[段階計画](docs/research/truncated_pf_optimization_plan_20261114/SCIENCE_PLAN.md)：切断・保持H上PF・合計シフトの分解、符号相殺とoracle水準L1〜L3、p0..9×3公式×A同格子の99構成/154 cell metadata（既存ID再現）、T1〜T6の件数・SOURCE・STOP、PR公平比較の課題。toy 9/9 PASS、実H4科学計算・保存値再解析・compile0、公開後mandatory STOP。
+
 [最新Full PF価格接続・S1比較guard](docs/research/full_pf_latest_price_guard_20261114/REPORT.md)：A71f04の78軸metadata、SOURCE付きguard、B直接consumerの取込み手順。
 
 [Full PF3候補のcompiled価格証拠接続](docs/research/full_pf_candidate_price_evidence_20261114/REPORT.md)（2026-11-14）：A3ae055faのFull PF S2/.2・Y4/.4・M5/.8を39round/78軸でD e7 receiptへ照合。direct5round/10軸、M5 m4欠測、他33roundはcatalog外。元native/scalar/wrapper/P0のD証拠を再利用し、consumer lowering採用は未実施。追加4セル/最大8wrapperの未承認q検証案、early幅/長q未資格・必要精度UNKNOWN。価格再集計/予測/fit/compile/N/G0、production変更0、公開後mandatory STOP。
