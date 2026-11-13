@@ -1,0 +1,66 @@
+P0 technical tests, 2026-11-13 (Codex D). Python 3.11 venv, numpy 1.26.4, qiskit 1.3.0.
+Artificial/metadata checks; no transpile inside tests (the 8 approved compiles were made only by the runner, see run01).
+Result: 34 PASS (new P0 6 + residual adapter 13 + C mean_compiled_price 15), 0 failures.
+
+===== check_controlled_zz_p0
+test_01_design_is_fixed_from_published_metadata (__main__.P0Tests.test_01_design_is_fixed_from_published_metadata) ... ok
+test_02_circuits_follow_the_provider_and_counter_forms (__main__.P0Tests.test_02_circuits_follow_the_provider_and_counter_forms) ... /home/AbeHiromu/projects/h6-environments/20261011/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:70: DeprecationWarning: The property ``qiskit.dagcircuit.dagcircuit.DAGCircuit.duration`` is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.
+  out_program = dag_to_circuit(passmanager_ir, copy_operations=False)
+/home/AbeHiromu/projects/h6-environments/20261011/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:70: DeprecationWarning: The property ``qiskit.dagcircuit.dagcircuit.DAGCircuit.unit`` is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.
+  out_program = dag_to_circuit(passmanager_ir, copy_operations=False)
+ok
+test_03_operators_equal_including_control_and_global_phase (__main__.P0Tests.test_03_operators_equal_including_control_and_global_phase) ... /home/AbeHiromu/projects/h6-environments/20261011/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:70: DeprecationWarning: The property ``qiskit.dagcircuit.dagcircuit.DAGCircuit.duration`` is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.
+  out_program = dag_to_circuit(passmanager_ir, copy_operations=False)
+/home/AbeHiromu/projects/h6-environments/20261011/venv/lib/python3.11/site-packages/qiskit/transpiler/passmanager.py:70: DeprecationWarning: The property ``qiskit.dagcircuit.dagcircuit.DAGCircuit.unit`` is deprecated as of qiskit 1.3.0. It will be removed in Qiskit 2.0.0.
+  out_program = dag_to_circuit(passmanager_ir, copy_operations=False)
+ok
+test_04_structural_S_counts_the_cheap_form (__main__.P0Tests.test_04_structural_S_counts_the_cheap_form) ... ok
+test_05_compile_budget_is_eight_and_never_exceeded (__main__.P0Tests.test_05_compile_budget_is_eight_and_never_exceeded) ... ok
+test_06_counter_and_provider_bytes_are_the_fixed_ones (__main__.P0Tests.test_06_counter_and_provider_bytes_are_the_fixed_ones) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 4.667s
+
+OK
+
+===== check_compiled_residual
+test_01_S_and_C_must_come_from_the_same_full_wrapper_path (__main__.ResidualTests.test_01_S_and_C_must_come_from_the_same_full_wrapper_path) ... ok
+test_02_X_and_Y_are_separate_records_of_the_same_paths (__main__.ResidualTests.test_02_X_and_Y_are_separate_records_of_the_same_paths) ... ok
+test_03_residual_sign_is_free_and_addition_is_exact (__main__.ResidualTests.test_03_residual_sign_is_free_and_addition_is_exact) ... ok
+test_04_no_double_counting_of_S_or_stacked_residuals (__main__.ResidualTests.test_04_no_double_counting_of_S_or_stacked_residuals) ... ok
+test_05_missing_values_stay_null (__main__.ResidualTests.test_05_missing_values_stay_null) ... ok
+test_06_DIRECT_finite_cohort_and_MODEL_residuals_stay_distinct (__main__.ResidualTests.test_06_DIRECT_finite_cohort_and_MODEL_residuals_stay_distinct) ... ok
+test_07_calibration_holdout_and_forced_strata_are_not_pooled (__main__.ResidualTests.test_07_calibration_holdout_and_forced_strata_are_not_pooled) ... ok
+test_08_saved_coefficients_are_refused_outside_their_domain (__main__.ResidualTests.test_08_saved_coefficients_are_refused_outside_their_domain) ... ok
+test_09_compiler_profile_and_identity_mismatches_are_rejected (__main__.ResidualTests.test_09_compiler_profile_and_identity_mismatches_are_rejected) ... ok
+test_10_B_rejects_an_unqualified_E_C_record_and_structural_S (__main__.ResidualTests.test_10_B_rejects_an_unqualified_E_C_record_and_structural_S) ... ok
+test_11_q_and_R_dependence_needs_an_identifiable_design (__main__.ResidualTests.test_11_q_and_R_dependence_needs_an_identifiable_design) ... ok
+test_12_saved_inventory_is_copied_and_targets_have_no_saved_price (__main__.ResidualTests.test_12_saved_inventory_is_copied_and_targets_have_no_saved_price) ... ok
+test_13_no_science_is_started (__main__.ResidualTests.test_13_no_science_is_started) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 5.341s
+
+OK
+
+===== check_mean_compiled_price
+test_B_run_missing_accepts_one_response_per_axis_without_G_or_retry (__main__.Tests.test_B_run_missing_accepts_one_response_per_axis_without_G_or_retry) ... ok
+test_H6_signed_recipe_metadata_and_outside_prefix_are_kept (__main__.Tests.test_H6_signed_recipe_metadata_and_outside_prefix_are_kept) ... ok
+test_binary_repeat_matches_sequential_for_short_program (__main__.Tests.test_binary_repeat_matches_sequential_for_short_program) ... ok
+test_eleven_signed_pieces_large_q_R_use_fixed_memory_shapes (__main__.Tests.test_eleven_signed_pieces_large_q_R_use_fixed_memory_shapes) ... ok
+test_external_RMSE_kappa_schedule_is_echoed_not_recomputed (__main__.Tests.test_external_RMSE_kappa_schedule_is_echoed_not_recomputed) ... ok
+test_foreign_context_failed_status_and_missing_law_are_safe (__main__.Tests.test_foreign_context_failed_status_and_missing_law_are_safe) ... ok
+test_full_wrapper_signed_pieces_and_outer_boundaries_match_enumeration (__main__.Tests.test_full_wrapper_signed_pieces_and_outer_boundaries_match_enumeration) ... ok
+test_invalid_probability_or_nonclosed_state_fails_without_fallback (__main__.Tests.test_invalid_probability_or_nonclosed_state_fails_without_fallback) ... ok
+test_model_stays_unqualified_and_finite_cohort_is_not_all_law (__main__.Tests.test_model_stays_unqualified_and_finite_cohort_is_not_all_law) ... ok
+test_multiple_cohorts_require_selection_and_are_not_pooled (__main__.Tests.test_multiple_cohorts_require_selection_and_are_not_pooled) ... ok
+test_provider_is_passive_and_keeps_R_and_axis_identity (__main__.Tests.test_provider_is_passive_and_keeps_R_and_axis_identity) ... ok
+test_raw_compiled_clusters_missing_coefficients_and_double_count_rejected (__main__.Tests.test_raw_compiled_clusters_missing_coefficients_and_double_count_rejected) ... ok
+test_reset_at_PF_RTE_boundary_would_change_the_answer (__main__.Tests.test_reset_at_PF_RTE_boundary_would_change_the_answer) ... ok
+test_reused_connected_forms_match_full_artificial_enumeration (__main__.Tests.test_reused_connected_forms_match_full_artificial_enumeration) ... ok
+test_short_C1_structural_basis_and_literal_Z_cancellation (__main__.Tests.test_short_C1_structural_basis_and_literal_Z_cancellation) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 2.027s
+
+OK

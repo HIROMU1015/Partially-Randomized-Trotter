@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[P0 controlled ZZ lowering検証（Codex D）](docs/research/d_controlled_zz_p0_20261113/REPORT.md)（2026-11-13）：承認範囲の小回路8 compile（sampling 0）。汎用`RZZGate.control(1)`（CCX·CRZ·CCX）は`CX·CRZ·CX`とunitary同一（global phase含む）だが、compile後ZZ回転当たりRZ +19/+17（単独/保存basis対）・CX +10、角度非依存。保存basis対内ではcompiler相殺でC−S=−140。案B（S維持＋δ_ZZ·N_ZZ）推奨、P1は未実施・STOP。
+
 [compiled価格残差C−Sの評価方法（Codex D）](docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)（2026-11-13）：保存paired S/C（C1 8cell・S0a）のSOURCE inventory、C−Sの回路範囲・依存構造（SOURCE上、制御ZZ回転がcompiledではCCX·CRZ·CCX、SはCX·CRZ·CXという展開差を発見、未compile検証）、3方式比較、q/R識別可能性（m0/m6の2点では3係数不可）、E[S]+E[D]結合adapterと人工13test、有限計画P0〜P3（未承認）。新sampling/compile/fit/再解析0、公開後STOP。
 
 [A/C/D新証拠の正式V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)：A公開3e035のm1 nominal60を新scopeで受入れ、S0 m0/m6=64/38を保全。C局所kernel診断・構造Sはcompiled Cへ供給せず、D053物理request/92ff保存136候補をsource付き外部mapへ接続。106技術testと公開A fixture PASS、十分N/global bound/C/G未資格、実科学計算0、公開後STOP。

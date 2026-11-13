@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`run_controlled_zz_p0.py`](run_controlled_zz_p0.py)：P0固定PLAN出力（--plan-out）と、承認範囲8小回路compile（--execute、固定SOURCE/provider/counter照合）。[REPORT](../docs/research/d_controlled_zz_p0_20261113/REPORT.md)。
+
 [`report_compiled_residual.py`](report_compiled_residual.py)：C−S残差の保存paired S/C inventory・設計識別可能性・人工B record例を[fresh dirへ出力](../docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)。pinned Git読取のみ、sampling/compile/fit/再解析なし。
 
 [`intake_rpe_new_evidence.py`](intake_rpe_new_evidence.py)：[新証拠metadata受入](../docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)。公開A m1 packet/result、C診断、D physical/request/136保存coverageを扱う。Git commit/path明示、新規出力directoryのみ、科学計算・価格provider・実G起動optionなし。

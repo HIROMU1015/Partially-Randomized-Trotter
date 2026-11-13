@@ -1,5 +1,7 @@
 # Validation status
 
+[P0 controlled ZZ](docs/research/d_controlled_zz_p0_20261113/REPORT.md)：固定PLAN（a287b8e6）でQiskit1.3.0/rz,sx,x,cx/opt1/seed17の小回路8件をcompile。全件compile後≡元回路（≤1.95e−14）、汎用≡解析（差0.0）。技術test 34 PASS。full-wrapper価格・fit・N/G 0。
+
 [C−S残差adapter](docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)：新13＋C再利用23＋B一覧回帰104＝140 PASS（既存C byte固定test 1件はB f0c4bb55のpipeline変更による既存FAIL、本branch非変更）。数値は人工fixture/保存metadata copyのみで、実H4残差modelの科学的成立を示さない。
 
 [新A/C/D証拠V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)：人工/回帰106件＋公開A3e035実packetのmetadata受入PASS。m1新scope/元S0、数値SOURCE/identity/law、SとC、D標準4次係数/κなしlayout/全H、136保存分類の非採択を確認。C K0/K1未受入、十分N/global bound/適格C/Gはnull。新科学計算/8次新接続0、公開後STOP。

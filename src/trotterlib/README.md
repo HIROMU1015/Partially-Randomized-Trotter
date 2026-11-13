@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[P0 controlled ZZ](../../docs/research/d_controlled_zz_p0_20261113/REPORT.md)：trottertracks.controlled_zz_p0（保存support/basis/law由来の8回路、C1 Accounting計数、operator照合、既存transpile_and_measure_costの呼出し）。
+
 [C−S残差](../../docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)：trottertracks.compiled_residual（saved_paired_inventory/paired_residuals/cohort_summary/legacy_domain/identifiability/combine/b_price_record）。C mean_compiled_price.combine_meanとB accept_structural_packet/assessを再利用。
 
 [A/C/D新証拠受入](../../docs/research/rpe_new_evidence_intake_20261113/REPORT.md)：trottertracks.rpe_diagnostic_intakeがm1新scopeとC構造診断を分離、rpe_d_evidence_intakeが固定D metadata module/for_packetとB既存generator/外部physical mapを再利用。core/S0 validator/C providerは無変更、106技術test。

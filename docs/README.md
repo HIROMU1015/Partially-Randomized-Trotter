@@ -1,5 +1,7 @@
 # 文書索引
 
+[P0 REPORT](research/d_controlled_zz_p0_20261113/REPORT.md)／[HANDOFF](research/d_controlled_zz_p0_20261113/HANDOFF.md)／[P0_SUMMARY.csv](research/d_controlled_zz_p0_20261113/P0_SUMMARY.csv)：controlled ZZ lowering差（RZ +17〜19・CX +10/回転）の実回路確認と案A/B比較。
+
 [C−S残差REPORT](research/d_compiled_residual_c_minus_s_20261113/REPORT.md)／[C向け結合条件](research/d_compiled_residual_c_minus_s_20261113/HANDOFF_C.md)／[B向けrecord](research/d_compiled_residual_c_minus_s_20261113/HANDOFF_B.md)／[科学計画（未承認）](research/d_compiled_residual_c_minus_s_20261113/SCIENCE_PLAN.json)：E[C]=E[S]+E[D]の結合条件と保存paired S/C inventory。
 
 [新A/C/D証拠REPORT](research/rpe_new_evidence_intake_20261113/REPORT.md)／[正式受入HANDOFF](research/rpe_new_evidence_intake_20261113/HANDOFF.md)／[最終metadata](research/rpe_new_evidence_intake_20261113/run02/PUBLISHED_EVIDENCE.json)／[4方式不足](research/rpe_new_evidence_intake_20261113/run02/METHOD_GAPS.json)：A m1 nominal60、C構造診断、D物理SOURCE/保存coverageを分離し、実N/C/Gを作らず接続。106技術test。
