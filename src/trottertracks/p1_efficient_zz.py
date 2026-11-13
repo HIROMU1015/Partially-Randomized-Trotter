@@ -115,6 +115,8 @@ def summarize(plan, jobs):
     for cell in plan['cells']:
         rows = sorted((j for j in jobs if j['cell_id'] == cell['id']), key=lambda j: j['index'])
         entry = dict(cell_id=cell['id'], m=cell['m'], n_paths=len(rows), expectation='FINITE_DEVELOPMENT_COHORT_ONLY')
+        if not rows:
+            out.append(dict(entry, status='NO_PASSED_PATHS')); continue
         for a, axis in enumerate(('X', 'Y')):
             D = [r['D'][a] for r in rows]; C = [r['C'][a] for r in rows]; S = [r['S'][a] for r in rows]
             mean = Fraction(sum(D), len(D))
@@ -128,4 +130,28 @@ def summarize(plan, jobs):
             estimated_extra_RZ_if_legacy=[[17 * r['events']['rotation_ZZ'], 19 * r['events']['rotation_ZZ']] for r in rows],
             kind='P0_LOCAL_DELTA_TIMES_N_ZZ_REFERENCE_NOT_A_LEGACY_COMPILE')
         out.append(entry)
+    return out
+
+
+USED_BACKEND_METHODS = ('__init__', 'context', 'price_requests')
+
+
+def backend_plan_keys(root, methods=USED_BACKEND_METHODS):
+    """Keys the pinned C1 Backend methods used by P1 read from self.plan (AST scan of the pinned SOURCE)."""
+    tree = ast.parse(_blob(Path(root), C1_SCIENCE, 'src/trottertracks/r_price_phase1_science.py'))
+    backend = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == 'Backend')
+    keys = set()
+    for n in (x for f in backend.body if isinstance(f, ast.FunctionDef) and f.name in methods for x in ast.walk(f)):
+        if (isinstance(n, ast.Subscript) and isinstance(n.value, ast.Attribute) and n.value.attr == 'plan'
+                and isinstance(n.value.value, ast.Name) and n.value.value.id == 'self' and isinstance(n.slice, ast.Constant)):
+            keys.add(n.slice.value)
+    return keys
+
+
+def execution_plan(plan, source, root):
+    """The fixed plan plus the execution SOURCE, as the C1 Backend expects plan['source']."""
+    out = dict(deepcopy(plan), source=source)
+    missing = backend_plan_keys(root) - set(out)
+    if missing:
+        raise ValueError('Plan lacks keys read by the C1 Backend: ' + ','.join(sorted(missing)))
     return out

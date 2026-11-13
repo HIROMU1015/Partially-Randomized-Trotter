@@ -1,0 +1,22 @@
+{
+  "status": "PROPOSED_NOT_EXECUTED",
+  "reason": "Technical runner fix after run01 STOP; same scientific scope",
+  "plan": {
+    "path": "docs/research/d_p1_efficient_czz_20261113/PLAN.json",
+    "unchanged": true,
+    "sha256": "7580ed3baf1673d0e781329c427b3d941770c6fad9beca77d004de019e1acd3c"
+  },
+  "source": "the commit that publishes this RUN02_PLAN (technical fix: execution_plan adds plan[\"source\"]=execution SOURCE; PHASE_A.json/STOP.json written before summary)",
+  "same": [
+    "m0 q1/R2 and m6 q64/R128, 2 normal paths each, cohort D_P1_EFFICIENT_CZZ_20261113, the PLAN seeds",
+    "efficient controlled ZZ lowering CONTROLLED_ZZ_CX_CRZ_CX_V1",
+    "compiler 1239304c (Qiskit 1.3.0, rz/sx/x/cx, opt1, seed17)",
+    "at most 8 full-wrapper compiles; 4 trajectory paths"
+  ],
+  "new_outputs": {
+    "public": "docs/research/d_p1_efficient_czz_20261113/run02",
+    "private": "/home/AbeHiromu/projects/d-p1-efficient-czz-20261113-private/run02"
+  },
+  "continuity_check": "the regenerated events must equal run01 events_PRIVATE.json (same seeds); compare file SHA-256 listed in run01/STOP.json",
+  "requires": "explicit user instruction to re-execute (run01 STOP is preserved; no automatic retry)"
+}

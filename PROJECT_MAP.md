@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[効率的controlled ZZ・P1（Codex D）](docs/research/d_p1_efficient_czz_20261113/REPORT.md)（2026-11-13）：PR/Full-H RTE tailのcontrolled ZZを`CX·CRZ·CX`で生成する新SOURCE（provider subclass、明示切替、旧SOURCE不変）と44技術test。P1 run01はphase A（4 path parity）通過後、固定C1 Backendが要求するplan["source"]欠落で全path STOP（compile 0、retryなし）。技術修正とrun02案（未実行）を公開。
+
 [P0 controlled ZZ lowering検証（Codex D）](docs/research/d_controlled_zz_p0_20261113/REPORT.md)（2026-11-13）：承認範囲の小回路8 compile（sampling 0）。汎用`RZZGate.control(1)`（CCX·CRZ·CCX）は`CX·CRZ·CX`とunitary同一（global phase含む）だが、compile後ZZ回転当たりRZ +19/+17（単独/保存basis対）・CX +10、角度非依存。保存basis対内ではcompiler相殺でC−S=−140。案B（S維持＋δ_ZZ·N_ZZ）推奨、P1は未実施・STOP。
 
 [compiled価格残差C−Sの評価方法（Codex D）](docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)（2026-11-13）：保存paired S/C（C1 8cell・S0a）のSOURCE inventory、C−Sの回路範囲・依存構造（SOURCE上、制御ZZ回転がcompiledではCCX·CRZ·CCX、SはCX·CRZ·CXという展開差を発見、未compile検証）、3方式比較、q/R識別可能性（m0/m6の2点では3係数不可）、E[S]+E[D]結合adapterと人工13test、有限計画P0〜P3（未承認）。新sampling/compile/fit/再解析0、公開後STOP。

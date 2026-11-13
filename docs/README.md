@@ -1,5 +1,7 @@
 # 文書索引
 
+[効率的controlled ZZ・P1 REPORT](research/d_p1_efficient_czz_20261113/REPORT.md)／[HANDOFF](research/d_p1_efficient_czz_20261113/HANDOFF.md)／[run01 STOP](research/d_p1_efficient_czz_20261113/run01/STOP.json)／[RUN02_PLAN](research/d_p1_efficient_czz_20261113/RUN02_PLAN.json)：新lowering SOURCEと、P1 run01のrunner技術STOP（compile前）。
+
 [P0 REPORT](research/d_controlled_zz_p0_20261113/REPORT.md)／[HANDOFF](research/d_controlled_zz_p0_20261113/HANDOFF.md)／[P0_SUMMARY.csv](research/d_controlled_zz_p0_20261113/P0_SUMMARY.csv)：controlled ZZ lowering差（RZ +17〜19・CX +10/回転）の実回路確認と案A/B比較。
 
 [C−S残差REPORT](research/d_compiled_residual_c_minus_s_20261113/REPORT.md)／[C向け結合条件](research/d_compiled_residual_c_minus_s_20261113/HANDOFF_C.md)／[B向けrecord](research/d_compiled_residual_c_minus_s_20261113/HANDOFF_B.md)／[科学計画（未承認）](research/d_compiled_residual_c_minus_s_20261113/SCIENCE_PLAN.json)：E[C]=E[S]+E[D]の結合条件と保存paired S/C inventory。

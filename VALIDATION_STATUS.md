@@ -1,5 +1,7 @@
 # Validation status
 
+[効率的controlled ZZ](docs/research/d_p1_efficient_czz_20261113/REPORT.md)：unitary（global/制御phase含む）・委譲・切替・tail parity・呼出し時import・旧provider bytes・固定PLANの新10件＋回帰34＝44 PASS。P1科学結果は未取得（run01 STOP）。
+
 [P0 controlled ZZ](docs/research/d_controlled_zz_p0_20261113/REPORT.md)：固定PLAN（a287b8e6）でQiskit1.3.0/rz,sx,x,cx/opt1/seed17の小回路8件をcompile。全件compile後≡元回路（≤1.95e−14）、汎用≡解析（差0.0）。技術test 34 PASS。full-wrapper価格・fit・N/G 0。
 
 [C−S残差adapter](docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)：新13＋C再利用23＋B一覧回帰104＝140 PASS（既存C byte固定test 1件はB f0c4bb55のpipeline変更による既存FAIL、本branch非変更）。数値は人工fixture/保存metadata copyのみで、実H4残差modelの科学的成立を示さない。

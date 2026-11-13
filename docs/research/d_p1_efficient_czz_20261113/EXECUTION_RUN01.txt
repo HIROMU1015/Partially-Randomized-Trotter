@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/scripts/run_p1_efficient_zz.py", line 192, in <module>
+    main()
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/scripts/run_p1_efficient_zz.py", line 184, in main
+    write(args.out/'RESULT.json', dict(base, status=status, rows=rows, summary=P.summarize(plan, [r for r in rows if r['status'] == 'PASS']),
+                                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/partially-randomized-trotter-worktrees/d-compiled-residual-c-minus-s-20261113/src/trottertracks/p1_efficient_zz.py", line 120, in summarize
+    mean = Fraction(sum(D), len(D))
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/AbeHiromu/projects/h6-environments/20261011/python-3.11.0rc1/lib/python3.11/fractions.py", line 157, in __new__
+    raise ZeroDivisionError('Fraction(%s, 0)' % numerator)
+ZeroDivisionError: Fraction(0, 0)
+exit=1

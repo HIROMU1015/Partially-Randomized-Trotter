@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`run_p1_efficient_zz.py`](run_p1_efficient_zz.py)：P1固定PLAN出力と、phase A（seed/parity）→phase B（固定C1 Backendでpaired S/C、効率的ZZ有効化）の実行。[REPORT](../docs/research/d_p1_efficient_czz_20261113/REPORT.md)。
+
 [`run_controlled_zz_p0.py`](run_controlled_zz_p0.py)：P0固定PLAN出力（--plan-out）と、承認範囲8小回路compile（--execute、固定SOURCE/provider/counter照合）。[REPORT](../docs/research/d_controlled_zz_p0_20261113/REPORT.md)。
 
 [`report_compiled_residual.py`](report_compiled_residual.py)：C−S残差の保存paired S/C inventory・設計識別可能性・人工B record例を[fresh dirへ出力](../docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)。pinned Git読取のみ、sampling/compile/fit/再解析なし。

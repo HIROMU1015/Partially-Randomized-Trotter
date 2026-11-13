@@ -1,0 +1,46 @@
+{
+  "status": "STOP_RUNNER_PLAN_KEY_ERROR_BEFORE_ANY_COMPILE",
+  "source": "bb475af82b289e7e4ba1192a266390b3dd357049",
+  "plan": {
+    "path": "docs/research/d_p1_efficient_czz_20261113/PLAN.json",
+    "sha256": "7580ed3baf1673d0e781329c427b3d941770c6fad9beca77d004de019e1acd3c"
+  },
+  "phase_A": {
+    "status": "PASS_FOR_ALL_4_PATHS_BY_CONTROL_FLOW",
+    "evidence": "phase B starts only when every phase-A job returned without sampling/seed error, tail parity failure or m0 operator mismatch; the detailed phase-A counts were not saved because the run01 runner wrote its records only at the end (fixed: PHASE_A.json is now written before any compile)",
+    "detailed_counts_saved": false
+  },
+  "phase_B": {
+    "status": "FAILED_ALL_4_PATHS",
+    "cause": "KeyError plan[\"source\"]: the pinned C1 Backend.price_requests writes STRUCTURAL.json with self.plan[\"source\"] right after counting S; the P1 plan did not carry that key",
+    "compiles": 0,
+    "axis_started_files": 0,
+    "structural_S_saved": false,
+    "compiled_C": null
+  },
+  "runner_crash": "summarize() divided by zero on an empty PASS set, so RESULT/STOP were not written by run01 (fixed)",
+  "private_partial": {
+    "root": "/home/AbeHiromu/projects/d-p1-efficient-czz-20261113-private/run01",
+    "files": {
+      "run01/H4_S0_m0_q1_R2/0/events_PRIVATE.json": {
+        "bytes": 60580,
+        "sha256": "c96def090771ab927df126844d5772148aacbc9db9c8da4fead88272c25ac350"
+      },
+      "run01/H4_S0_m0_q1_R2/1/events_PRIVATE.json": {
+        "bytes": 60488,
+        "sha256": "85a123ddd3528b738ecfb49a0d5411bd8a2f2b78e936760e6d22effa9c79f16c"
+      },
+      "run01/H4_S0_m6_q64_R128/0/events_PRIVATE.json": {
+        "bytes": 246530462,
+        "sha256": "d47000050d57ad67a2a07c91d9996e5e41c0f7a0840c0723c5310d982fed376c"
+      },
+      "run01/H4_S0_m6_q64_R128/1/events_PRIVATE.json": {
+        "bytes": 246529639,
+        "sha256": "34253d835fa5cd5e5c62edd6932247855bf7dc73bd90f4935794766c69dea95c"
+      }
+    },
+    "content": "events_PRIVATE.json (sampled events, seeds, laws) per path; deterministic from the PLAN seeds"
+  },
+  "retry_performed": false,
+  "mandatory_stop": true
+}

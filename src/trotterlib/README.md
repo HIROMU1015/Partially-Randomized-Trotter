@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[効率的controlled ZZ](../../docs/research/d_p1_efficient_czz_20261113/REPORT.md)：trottertracks.efficient_controlled_zz（provider builder subclass・明示切替・tail parity）、p1_efficient_zz（P1 plan、C1 Backend読込、plan key guard）。
+
 [P0 controlled ZZ](../../docs/research/d_controlled_zz_p0_20261113/REPORT.md)：trottertracks.controlled_zz_p0（保存support/basis/law由来の8回路、C1 Accounting計数、operator照合、既存transpile_and_measure_costの呼出し）。
 
 [C−S残差](../../docs/research/d_compiled_residual_c_minus_s_20261113/REPORT.md)：trottertracks.compiled_residual（saved_paired_inventory/paired_residuals/cohort_summary/legacy_domain/identifiability/combine/b_price_record）。C mean_compiled_price.combine_meanとB accept_structural_packet/assessを再利用。

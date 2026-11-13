@@ -149,8 +149,9 @@ def main():
     plan, runtime = preflight(args.source, args.plan)
     args.out.mkdir(parents=True, exist_ok=False); args.private.mkdir(parents=True, exist_ok=False)
     started = time.time()
+    exec_plan = P.execution_plan(plan, args.source, ROOT)     # Backend reads plan['source'] (C1 semantics)
     mods = P.load_c1_backend(ROOT); science = mods['r_price_phase1_science']
-    backend = science.Backend(ROOT, plan); ctx = backend.context('H4')
+    backend = science.Backend(ROOT, exec_plan); ctx = backend.context('H4')
     import trotterlib.df_rte_qiskit as dfq
     STATE.update(plan=plan, backend=backend, ctx=ctx, m=mods['r_price_phase1'], legacy=dfq.QiskitDFRTEEventCircuitBuilder,
                  dfq=dfq, private=str(args.private))
@@ -158,6 +159,7 @@ def main():
     base = dict(source=args.source, plan=dict(path=str(args.plan), sha256=hashlib.sha256(args.plan.read_bytes()).hexdigest()),
                 runtime=runtime, lowering=plan['lowering'], configuration_id=plan['configuration_id'], cohort=P.COHORT)
     a = isolated(phase_a, jobs)
+    write(args.out/'PHASE_A.json', dict(base, phase_a=a))          # saved before any compile
     bad = [x for x in a if not x['ok'] or x['value']['parity']['failures']
            or any(not o['equal'] for o in x['value']['parity']['operator'])]
     if bad:
@@ -181,6 +183,8 @@ def main():
             phase_a_seconds=va['seconds'], private_result=vb['private'], full_wrapper_statevector_validation=r['full_wrapper_statevector_validation']))
     compiles = sum(r.get('new_compiles', 0) for r in rows)
     status = 'P1_COMPLETE' if all(r['status'] == 'PASS' for r in rows) and compiles <= P.COMPILE_BUDGET else 'STOP_PARTIAL'
+    if status != 'P1_COMPLETE':                                   # errors saved first; summary cannot hide them
+        write(args.out/'STOP.json', dict(base, status=status, rows=rows, new_compiles=compiles))
     write(args.out/'RESULT.json', dict(base, status=status, rows=rows, summary=P.summarize(plan, [r for r in rows if r['status'] == 'PASS']),
         new_compiles=compiles, trajectories=len(jobs), wall_seconds=time.time() - started,
         all_law_E_C=None, sufficient_N=None, rmse_bound=None, G=None, mandatory_stop=True))

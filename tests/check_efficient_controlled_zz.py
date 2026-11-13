@@ -130,5 +130,23 @@ class EfficientZZTests(unittest.TestCase):
         self.assertEqual(s['expectation'], 'FINITE_DEVELOPMENT_COHORT_ONLY')
 
 
+class RunnerFixTests(unittest.TestCase):
+    """Technical fix after run01 (STOP): the pinned C1 Backend reads plan['source'] in price_requests."""
+    def test_09_backend_plan_keys_cover_source_and_run01_plan_lacked_it(self):
+        keys = P.backend_plan_keys(ROOT)
+        self.assertEqual(keys, {'menus', 'runtime', 'source'})
+        plan = P.make_plan(ROOT, 'TEST')
+        self.assertNotIn('source', plan)                         # why run01 failed in every path
+        exec_plan = P.execution_plan(plan, 'f' * 40, ROOT)
+        self.assertEqual(exec_plan['source'], 'f' * 40); self.assertNotIn('source', plan)
+        with self.assertRaisesRegex(ValueError, 'menus'):
+            P.execution_plan({k: v for k, v in plan.items() if k != 'menus'}, 'f' * 40, ROOT)
+
+    def test_10_summary_keeps_rounds_without_passed_paths(self):
+        plan = P.make_plan(ROOT, 'TEST')
+        out = P.summarize(plan, [])
+        self.assertEqual([s['status'] for s in out], ['NO_PASSED_PATHS', 'NO_PASSED_PATHS'])
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
