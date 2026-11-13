@@ -1,5 +1,7 @@
 # 研究計画資料
 
+[PR-LD1/LD2全round signal結果](pr_rpe_first_signal_results_20261113/REPORT.md)：同保存H4 DF10・S2/Δ.1/K2・元exactκ/h.1/M12で26候補が全数値gate通過。B canonical全meanとD52軸metadataを供給、新reference/旧mean再解析/retry/N/MC/C/G0。初回二候補の最適性は未認定、公開後STOP。
+
 [初回PR全RPE signal menu（承認待ち）](pr_rpe_first_signal_menu_20261113/REPORT.md)：保存descriptorの隣接prefix1/2、同exactκ/外側条件、B437ba4acdのfixed-A V2で26metadata rowを具体化。保存input/reference再利用、旧meanを新backendへ再ラベルせず、新科学/保存再解析0でSTOP。
 
 [PR全round signal pipeline](pr_rpe_signal_pipeline_20261113/REPORT.md)：uniform PR S2/M5・K2/4/6の数値provider、直接expm・有限RTE・独立raw/corrected・power/cacheを接続。17技術test PASS、実科学0。BのN/G・価格評価は重複実装せず、公開照合後STOP。

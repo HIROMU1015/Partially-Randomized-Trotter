@@ -1,5 +1,7 @@
 # Validation status
 
+[PR-LD1/LD2全round signal結果](docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)：数値SOURCE fefd、caller041ac435、raw carrier16210932e。26/26局所数値gate通過（78complex、normalizer26）、新reference/旧mean再解析/retry0。新caller mock5件PASS、B metadata prepareは両構成のidentity/law/targetを受入れ、N未指定・物理未資格を保持。十分N/global RMSE/G未認定。
+
 [初回PR全RPE signal menu（承認待ち）](docs/research/pr_rpe_first_signal_menu_20261113/REPORT.md)：既存B validator/metadata生成でLD1/2の2configuration・26round・元exactκ/physical bridgeを照合。NumPy/SciPy/Qiskit非load、実科学・保存signal再解析0。providerの既存17人工/metadata PASSを参照し、科学PASSやN/G資格は追加していない。
 
 [PR全round signal pipeline](docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：非可換人工行列・逐次/旧finite kernelとの一致・signed PF・独立raw/corrected・scalar・norm/closure失敗・13round・架空保存loaderを新10件で検証し、旧metadata7件と計17PASS。[数値leaf](src/trottertracks/pr_rpe_signal_provider.py)は実H4未実行。実科学/保存再解析/N/C/G0、十分N/global RMSEは未資格/null。

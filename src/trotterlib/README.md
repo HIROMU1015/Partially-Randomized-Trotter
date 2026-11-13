@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[PR-LD1/LD2実行結果](../../docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)：既存[signal provider](../trottertracks/pr_rpe_signal_provider.py)を無変更で使い、全26候補が数値gate通過。新reference/旧mean再解析/N/C/G0。[caller](../../scripts/run_pr_rpe_first_signal.py)／[5mock test](../../tests/check_pr_rpe_first_signal_caller.py)／[B/D HANDOFF](../../docs/research/pr_rpe_first_signal_results_20261113/HANDOFF.md)。局所結果でglobal RMSEを認定しない。
+
 [pr_rpe_signal_provider](../trottertracks/pr_rpe_signal_provider.py)：B V2の全roundを直接expm/既存paired Taylor・normalizer・powerへ接続。uniform PR S2/M5・K2/4/6、独立raw/corrected、SOURCE付き部分FAIL保存。H4 saved factoryあり、H6初期例外/PR-Y4未対応。[REPORT](../../docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)／[10人工test](../../tests/check_pr_rpe_signal_provider.py)。実H4/N/C/G0。
 
 [pr_rpe_signal_plan](../trottertracks/pr_rpe_signal_plan.py)：Bのvalidator/exact_scalarと既存physical recipeを受け、全M+1roundのsignal job・欠測・SOURCEを整理するmetadata-only helper。candidate生成/管理・normalizer/N/C/G・optimizerなし。[REPORT](../../docs/research/pr_rpe_search_design_20261113/REPORT.md)／[7人工test](../../tests/check_pr_rpe_signal_plan.py)。新numerical PR providerは設計段階。

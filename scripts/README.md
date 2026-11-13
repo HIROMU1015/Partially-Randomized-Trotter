@@ -1,5 +1,7 @@
 # scripts 索引
 
+[run_pr_rpe_first_signal.py](run_pr_rpe_first_signal.py)：明示承認された固定a9abf8deのLD1/LD2全roundを既存fefd providerで順に実行し、失敗時は全menu STOP。26候補完了、retry0。[REPORT](../docs/research/pr_rpe_first_signal_results_20261113/REPORT.md)／[mock5件](../tests/check_pr_rpe_first_signal_caller.py)。fresh output専用で、追加runの自動承認ではない。
+
 [PRの全round signal provider](../docs/research/pr_rpe_signal_pipeline_20261113/REPORT.md)：新CLIを増やさず[SignalBatch](../src/trottertracks/pr_rpe_signal_provider.py)を明示実行入口にした。constructorはmetadataのみ、runは別承認の科学leaf。新10＋既存7人工test PASS、実H4未実行。[呼出し例](../docs/research/pr_rpe_signal_pipeline_20261113/HANDOFF.md)。
 
 [PRの全RPE signal探索設計](../docs/research/pr_rpe_search_design_20261113/REPORT.md)：新しい科学runnerは追加していない。Track A `h46_long_time_signal.evolve_batch`/`h46_long_time_native.compose`と既存direct-PF処理を再利用する設計。[plan helper](../src/trottertracks/pr_rpe_signal_plan.py)はB検証済み全round要求をmetadataで接続し、[人工test](../tests/check_pr_rpe_signal_plan.py)はMOCKのみ。実科学は未実行。

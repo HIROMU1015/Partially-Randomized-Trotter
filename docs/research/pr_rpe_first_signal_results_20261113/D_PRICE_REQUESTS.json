@@ -1,0 +1,1733 @@
+{
+  "status": "METADATA_ONLY_NO_PRICE_CALLS",
+  "plan_source": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+  "raw_carrier": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+  "axes": [
+    "X",
+    "Y"
+  ],
+  "configuration_count": 2,
+  "round_candidate_count": 26,
+  "axis_request_count": 52,
+  "configurations": [
+    {
+      "label": "LD1",
+      "configuration_id": "a4dda8f7e3fc07666ca2aabf634917e8bced14eb62151eb629ef23c0cce21d3d",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "split": {
+        "L_D": 1,
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        },
+        "randomized_scope": "TAIL_AFTER_PREFIX",
+        "deterministic_scope": "PREFIX",
+        "original_PF_method": "B0",
+        "lambda_R": {
+          "numerator": 6446806252051217,
+          "denominator": 2251799813685248
+        },
+        "lambda_source": {
+          "index": {
+            "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+            "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+          },
+          "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+          "selector": [
+            "prefixes",
+            "1"
+          ]
+        }
+      },
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        }
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": 2,
+            "K": 2,
+            "id": "53e00d8b07d1547d19a7"
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "canonical_candidate_id": "RMSE:2f58bda2872e3881f83f4fb0e2b70db9b7e6c516aed30c9419665bfe22e0fb69",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2
+            ],
+            "event_count": 2,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              0,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              0,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m0.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 1,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.2,
+            "q": 2,
+            "delta": 0.1,
+            "R_outer": 4,
+            "K": 2,
+            "id": "c00e00dc1e9c414fb7d9"
+          },
+          "q_RPE": 2,
+          "q_PF": 2,
+          "canonical_candidate_id": "RMSE:36529fea1b1db624a84ed1018bad484d0c33bcc55c12353bf672cc65f52937ea",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4
+            ],
+            "event_count": 8,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              1,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              1,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m1.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 2,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.4,
+            "q": 4,
+            "delta": 0.1,
+            "R_outer": 8,
+            "K": 2,
+            "id": "f2fcd66b1ef9ae2da5df"
+          },
+          "q_RPE": 4,
+          "q_PF": 4,
+          "canonical_candidate_id": "RMSE:62635d1af6b739e3d65444c438a6a89e2aa6f02017193c0b05ca9ef81df0eb3c",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8
+            ],
+            "event_count": 32,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              2,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              2,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m2.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 3,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 0.8,
+            "q": 8,
+            "delta": 0.1,
+            "R_outer": 16,
+            "K": 2,
+            "id": "045843b2429bece6f29b"
+          },
+          "q_RPE": 8,
+          "q_PF": 8,
+          "canonical_candidate_id": "RMSE:ea40d9bbfacd7a72f2c204dee6920cd52c4be4f859c08c7a184ff98f3ba78833",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              16
+            ],
+            "event_count": 128,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              3,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              3,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m3.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 4,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 1.6,
+            "q": 16,
+            "delta": 0.1,
+            "R_outer": 32,
+            "K": 2,
+            "id": "3df0cfd3356c358aeda8"
+          },
+          "q_RPE": 16,
+          "q_PF": 16,
+          "canonical_candidate_id": "RMSE:8bbdb84e72567c9fdcdbd8db9edb956393a663a02da2f8e1b3569ad97254ce24",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              32
+            ],
+            "event_count": 512,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              4,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              4,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m4.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 5,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 3.2,
+            "q": 32,
+            "delta": 0.1,
+            "R_outer": 64,
+            "K": 2,
+            "id": "57d641a831d76360b570"
+          },
+          "q_RPE": 32,
+          "q_PF": 32,
+          "canonical_candidate_id": "RMSE:b2e78d9132c2e525ce692584923d418072a252eea3dc8a85ca36467e35d9e6a2",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              64
+            ],
+            "event_count": 2048,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              5,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              5,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m5.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 6,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 6.4,
+            "q": 64,
+            "delta": 0.1,
+            "R_outer": 128,
+            "K": 2,
+            "id": "2a8c6718220eec59d419"
+          },
+          "q_RPE": 64,
+          "q_PF": 64,
+          "canonical_candidate_id": "RMSE:03ba1ef070b5bdcb468f8ff171f58f1e62c63d293e1cae330f8f4a651988cd54",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              128
+            ],
+            "event_count": 8192,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              6,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              6,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m6.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 7,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 12.8,
+            "q": 128,
+            "delta": 0.1,
+            "R_outer": 255,
+            "K": 2,
+            "id": "b42287268e5249dfb4d1"
+          },
+          "q_RPE": 128,
+          "q_PF": 128,
+          "canonical_candidate_id": "RMSE:0233bb66c825d2ccfedb5b159090c68380814abebd2130afb4f4958e2571eb19",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              255
+            ],
+            "event_count": 32640,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              7,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              7,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m7.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 8,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 25.6,
+            "q": 256,
+            "delta": 0.1,
+            "R_outer": 510,
+            "K": 2,
+            "id": "224aef0a626068b43184"
+          },
+          "q_RPE": 256,
+          "q_PF": 256,
+          "canonical_candidate_id": "RMSE:06dca30b81b4858f7fa9c2357fd3c757d1d5afdac93a7363203c8196af46c203",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              510
+            ],
+            "event_count": 130560,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              8,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              8,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m8.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 9,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 51.2,
+            "q": 512,
+            "delta": 0.1,
+            "R_outer": 1020,
+            "K": 2,
+            "id": "06a78c7f9856f373336f"
+          },
+          "q_RPE": 512,
+          "q_PF": 512,
+          "canonical_candidate_id": "RMSE:a3a40ba1fd60f7e2c7eab247ca27887a41ee7c3dd0c66b6a5bdff7885992dd7f",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1020
+            ],
+            "event_count": 522240,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              9,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              9,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m9.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 10,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 102.4,
+            "q": 1024,
+            "delta": 0.1,
+            "R_outer": 2040,
+            "K": 2,
+            "id": "b872ad1347a35c8f4315"
+          },
+          "q_RPE": 1024,
+          "q_PF": 1024,
+          "canonical_candidate_id": "RMSE:c421a4111771d4640061ba9062f6106e8626cb6addd2bd6519e143f5efedf053",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2040
+            ],
+            "event_count": 2088960,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              10,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              10,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m10.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 11,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 204.8,
+            "q": 2048,
+            "delta": 0.1,
+            "R_outer": 4080,
+            "K": 2,
+            "id": "d48210cc27c599e268c2"
+          },
+          "q_RPE": 2048,
+          "q_PF": 2048,
+          "canonical_candidate_id": "RMSE:b8ffd71db34862c8ea62c84eb08c915a01baa62e6afa30d1017b9cb999a27a33",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              4080
+            ],
+            "event_count": 8355840,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              11,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              11,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m11.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 12,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 1,
+            "T": 409.6,
+            "q": 4096,
+            "delta": 0.1,
+            "R_outer": 8160,
+            "K": 2,
+            "id": "b55c521fdce6a448dbcb"
+          },
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "canonical_candidate_id": "RMSE:015b3d0db4ee69602dae794510be740d7a00f61625cc5211db648120bdf5b0c6",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              8160
+            ],
+            "event_count": 33423360,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              12,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD1.json",
+            "selector": [
+              "rounds",
+              12,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD1/m12.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        }
+      ],
+      "scalar_policy": "scalar_identity_once_at_total_T",
+      "state_preparation_cost": 0,
+      "unit": "compiled_RZ_per_measured_full_Hadamard_shot",
+      "lowering_or_price_domain_qualification": null
+    },
+    {
+      "label": "LD2",
+      "configuration_id": "1fa33556c17303f51ba03c4eae11189d35e59b3f57faad0e69d9fd08bf9245ae",
+      "configuration_source": {
+        "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+        "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json"
+      },
+      "profile": {
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "control": "symmetric_directional",
+        "wrapper": "full_Hadamard_with_measurement",
+        "scope": "single_hadamard_interrogation_without_state_preparation",
+        "P": 0,
+        "qiskit_version": "1.3.0",
+        "basis_gates": [
+          "rz",
+          "sx",
+          "x",
+          "cx"
+        ],
+        "optimization_level": 1,
+        "seed_transpiler": 17
+      },
+      "split": {
+        "L_D": 2,
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        },
+        "randomized_scope": "TAIL_AFTER_PREFIX",
+        "deterministic_scope": "PREFIX",
+        "original_PF_method": "B0",
+        "lambda_R": {
+          "numerator": 902462608995935,
+          "denominator": 562949953421312
+        },
+        "lambda_source": {
+          "index": {
+            "commit": "7a8bc7f132e166390c943e6b32c92cc6abe1baf4",
+            "path": "artifacts/resource_applicability/df_full_h_pure_rte_t20_opt/2026-11-09/SOURCE_INDEX.json"
+          },
+          "context_sha256": "8396605fa0c5ee34f29b436ee16e0f731cfaa6cd94f3304033106a85e9f5d52f",
+          "selector": [
+            "prefixes",
+            "2"
+          ]
+        }
+      },
+      "law": {
+        "model": "ideal_finite_RTE_law",
+        "source": {
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          },
+          "composition_recipe": {
+            "commit": "fefd548ecd56f60d72031b3d385f6f5e6ee95d06",
+            "path": "src/trottertracks/pr_rpe_signal_provider.py",
+            "recipe": "DIRECT_EXPM_HEAD_PAIRED_TAYLOR_MATRIX_POWER_V1"
+          },
+          "status": "PROPOSED_PREFIX_COMPOSITION_NOT_SCIENCE_RESULT"
+        }
+      },
+      "rounds": [
+        {
+          "m": 0,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.1,
+            "q": 1,
+            "delta": 0.1,
+            "R_outer": 1,
+            "K": 2,
+            "id": "ce7ef02e7926c1a6c924"
+          },
+          "q_RPE": 1,
+          "q_PF": 1,
+          "canonical_candidate_id": "RMSE:183545d923ab7d3ae8c4dc68af4e739f26125694930a76b5460319dba6f3c28e",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1
+            ],
+            "event_count": 1,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              0,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              0,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m0.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 1,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.2,
+            "q": 2,
+            "delta": 0.1,
+            "R_outer": 2,
+            "K": 2,
+            "id": "8f889f60c3a813858814"
+          },
+          "q_RPE": 2,
+          "q_PF": 2,
+          "canonical_candidate_id": "RMSE:f0448a7771e5b10e6eebc06bbdfb7413d379cd828efb438bb1b3dcda4452150e",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2
+            ],
+            "event_count": 4,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              1,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              1,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m1.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 2,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.4,
+            "q": 4,
+            "delta": 0.1,
+            "R_outer": 3,
+            "K": 2,
+            "id": "8a5aad480758a7cff292"
+          },
+          "q_RPE": 4,
+          "q_PF": 4,
+          "canonical_candidate_id": "RMSE:d3b81e4a7b2721e1e286a1935f3040fa4b9a470ca2fe86f25d12361394231034",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              3
+            ],
+            "event_count": 12,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              2,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              2,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m2.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 3,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 0.8,
+            "q": 8,
+            "delta": 0.1,
+            "R_outer": 5,
+            "K": 2,
+            "id": "334b1fd35cb2f1ad32b0"
+          },
+          "q_RPE": 8,
+          "q_PF": 8,
+          "canonical_candidate_id": "RMSE:464b6965136fa1a02829017dd0acdd7fb357884535a4aa90a005bc084d150ab0",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              5
+            ],
+            "event_count": 40,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              3,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              3,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m3.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 4,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 1.6,
+            "q": 16,
+            "delta": 0.1,
+            "R_outer": 10,
+            "K": 2,
+            "id": "cef49970538ca248d77e"
+          },
+          "q_RPE": 16,
+          "q_PF": 16,
+          "canonical_candidate_id": "RMSE:b8ba31e6ef5190baac92a88a855416341d62f648249c0e8821a0274927888e4b",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              10
+            ],
+            "event_count": 160,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              4,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              4,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m4.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 5,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 3.2,
+            "q": 32,
+            "delta": 0.1,
+            "R_outer": 20,
+            "K": 2,
+            "id": "5812e05afec3a9cdcbf4"
+          },
+          "q_RPE": 32,
+          "q_PF": 32,
+          "canonical_candidate_id": "RMSE:71138e64a1908424ad6464096224f532f12d4133a2d1dd5ff1a5baba50cc79e5",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              20
+            ],
+            "event_count": 640,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              5,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              5,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m5.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 6,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 6.4,
+            "q": 64,
+            "delta": 0.1,
+            "R_outer": 40,
+            "K": 2,
+            "id": "fe234d98b289ae91869c"
+          },
+          "q_RPE": 64,
+          "q_PF": 64,
+          "canonical_candidate_id": "RMSE:e12232d3696d7e8a1fa8115883065ab0d6f39092278ce67a0d9542cfc0576f3e",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              40
+            ],
+            "event_count": 2560,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              6,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              6,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m6.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 7,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 12.8,
+            "q": 128,
+            "delta": 0.1,
+            "R_outer": 80,
+            "K": 2,
+            "id": "8425b1e4da150d855b29"
+          },
+          "q_RPE": 128,
+          "q_PF": 128,
+          "canonical_candidate_id": "RMSE:ac6c2fd63ce94b4daa50edeee82c0c4cfa5f63c1fe3915cee0dab3e4cb055530",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              80
+            ],
+            "event_count": 10240,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              7,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              7,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m7.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 8,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 25.6,
+            "q": 256,
+            "delta": 0.1,
+            "R_outer": 160,
+            "K": 2,
+            "id": "3f8def82f66ab24905a1"
+          },
+          "q_RPE": 256,
+          "q_PF": 256,
+          "canonical_candidate_id": "RMSE:1e630e0e699d3320f58b2c7e0d16e176861f77066f2bc289e92d150b320f389f",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              160
+            ],
+            "event_count": 40960,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              8,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              8,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m8.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 9,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 51.2,
+            "q": 512,
+            "delta": 0.1,
+            "R_outer": 320,
+            "K": 2,
+            "id": "4e84fb24b5fc0777a44b"
+          },
+          "q_RPE": 512,
+          "q_PF": 512,
+          "canonical_candidate_id": "RMSE:90db25348891a2002ccfc0fa5351104bedb4a98212f25c5bec3750db6c684414",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              320
+            ],
+            "event_count": 163840,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              9,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              9,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m9.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 10,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 102.4,
+            "q": 1024,
+            "delta": 0.1,
+            "R_outer": 640,
+            "K": 2,
+            "id": "44077408e13b64b85978"
+          },
+          "q_RPE": 1024,
+          "q_PF": 1024,
+          "canonical_candidate_id": "RMSE:e5ac56b8a4406f959c12beac3d3b4a8c5c55ab3147436362b1ad68118d30b80a",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              640
+            ],
+            "event_count": 655360,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              10,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              10,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m10.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 11,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 204.8,
+            "q": 2048,
+            "delta": 0.1,
+            "R_outer": 1280,
+            "K": 2,
+            "id": "93a7c992650daf2be173"
+          },
+          "q_RPE": 2048,
+          "q_PF": 2048,
+          "canonical_candidate_id": "RMSE:4e42906c5781bb7ecd7aad7f37aee7761b05df89a9d9cd63b54629dab1382bfb",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              1280
+            ],
+            "event_count": 2621440,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              11,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              11,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m11.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        },
+        {
+          "m": 12,
+          "physical_candidate": {
+            "system": "H4",
+            "method": "PR",
+            "formula": "2nd",
+            "prefix": 2,
+            "T": 409.6,
+            "q": 4096,
+            "delta": 0.1,
+            "R_outer": 2559,
+            "K": 2,
+            "id": "f73c8ae19a25ef249f0a"
+          },
+          "q_RPE": 4096,
+          "q_PF": 4096,
+          "canonical_candidate_id": "RMSE:297b94b4ae8e6fab9079b0c1eee6c9f69e919c90e09bddd9ac640cb564af3c1e",
+          "structure": {
+            "formula_id": "S2",
+            "signed_weights": [
+              1.0
+            ],
+            "allocation": [
+              2559
+            ],
+            "event_count": 10481664,
+            "scalar_policy": "scalar_identity_once_at_total_T",
+            "allocation_policy": "ABS_TIME_PER_OUTER_INTEGER_MIN_ONE_PER_PIECE",
+            "law_model": "ideal_finite_RTE_law"
+          },
+          "identity_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              12,
+              "identity"
+            ]
+          },
+          "law_binding_source": {
+            "commit": "a9abf8de75bf3432fcd714e868e5c14c8884b8f8",
+            "path": "docs/research/pr_rpe_first_signal_menu_20261113/CONFIGURATION_LD2.json",
+            "selector": [
+              "rounds",
+              12,
+              "law_binding"
+            ]
+          },
+          "mean_source": {
+            "commit": "16210932e5dabe7d12d41f35fea0e0a0d7a9b271",
+            "path": "docs/research/pr_rpe_first_signal_results_20261113/run01/LD2/m12.json"
+          },
+          "price_axes": [
+            "X",
+            "Y"
+          ],
+          "price_status": "NOT_EVALUATED",
+          "C_X": null,
+          "C_Y": null
+        }
+      ],
+      "scalar_policy": "scalar_identity_once_at_total_T",
+      "state_preparation_cost": 0,
+      "unit": "compiled_RZ_per_measured_full_Hadamard_shot",
+      "lowering_or_price_domain_qualification": null
+    }
+  ],
+  "price_calls": 0,
+  "compile_calls": 0,
+  "G": null
+}
