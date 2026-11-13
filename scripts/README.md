@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`run_p2_direct_pilot.py`](run_p2_direct_pilot.py)：固定PLAN/SOURCEで保存event replay2 path→全照合一致後fresh8 path、最大20 compileを1回実行。[結果](../docs/research/d_p2_direct_pilot_20261113/REPORT.md)。retry/resume・fit・強制rare・次段階の自動実行は実装しない。
+
 [`benchmark_compiled_price_artificial.py`](benchmark_compiled_price_artificial.py)：pinned C1と高速化版の人工price pipelineを交互・隔離processで比較し、S/C・fingerprint・6指標一致とwall/peak RSS/段階時間を出力。[技術引継ぎ](../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)。分子入力・科学sampling・実H4 compileなし。
 
 [`run_p1_efficient_zz.py`](run_p1_efficient_zz.py)：P1固定PLAN出力と、phase A（seed/parity）→phase B（固定C1 Backendでpaired S/C、効率的ZZ有効化）の実行。[REPORT](../docs/research/d_p1_efficient_czz_20261113/REPORT.md)。

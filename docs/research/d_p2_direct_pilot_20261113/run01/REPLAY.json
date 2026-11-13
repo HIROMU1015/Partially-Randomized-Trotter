@@ -1,0 +1,1068 @@
+{
+  "source": "ea0706ab05313423f336614912758a93e9e8285c",
+  "base": "5a67cea7705e80ff295306606611d774724ae2e2",
+  "plan_sha256": "c49f0fe4fe0f879b8196bdad99974d807bd506f47296dc28775cca66b6908ef5",
+  "compile_budget": 20,
+  "resources_before": {
+    "affinity_cpu_count": 64,
+    "loadavg": [
+      0.1279296875,
+      0.26123046875,
+      0.3447265625
+    ],
+    "meminfo": {
+      "MemTotal": "528127736 kB",
+      "MemAvailable": "513618188 kB"
+    },
+    "host": "GPUA100-gleap02",
+    "parent_peak_rss_bytes": 44314624
+  },
+  "mandatory_stop": true,
+  "runtime": {
+    "numpy": "1.26.4",
+    "qiskit": "1.3.0",
+    "python": "3.11.0rc1"
+  },
+  "records": [
+    {
+      "job": [
+        "replay",
+        "H4_S0_m0_q1_R2",
+        0
+      ],
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m0_q1_R2",
+        "candidate_id": "53e00d8b07d1547d19a7",
+        "index": 0,
+        "cohort": "D_P1_EFFICIENT_CZZ_20261113",
+        "conditional": false,
+        "C": [
+          1906,
+          1906
+        ],
+        "S": [
+          1845,
+          1845
+        ],
+        "source": {
+          "execution_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "private_result": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/replay/H4_S0_m0_q1_R2/0/result.json"
+        },
+        "event_digest": "9349ff16bac885ec0e89f2039398ad1ca61d0bb7d8aefc89429b65b9305d8fad",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "e66bbd935fcb994fed21a2e8579fec4190d73d3e8706e201ec2adb57b5f86c5e",
+          "bf1c77766fccecd6b75d10916882238ef8afa4dce1c1c7e065872f6be9521257"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "phase": "replay",
+        "m": 0,
+        "seeds": [
+          4983337719702699551
+        ],
+        "laws": [
+          {
+            "steps": 2,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9899482570527652,
+              0.010051742947234783
+            ]
+          }
+        ],
+        "events": {
+          "events": 2,
+          "rotation_ZZ": 2,
+          "rotation_Z": 0,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 2
+          }
+        },
+        "D": [
+          61,
+          61
+        ],
+        "compiled": {
+          "cosine": {
+            "rz_count": 1906,
+            "rz_depth": 500,
+            "cx_count": 710,
+            "cx_depth": 365,
+            "total_depth": 1127,
+            "circuit_size": 3717
+          },
+          "sine": {
+            "rz_count": 1906,
+            "rz_depth": 500,
+            "cx_count": 710,
+            "cx_depth": 365,
+            "total_depth": 1127,
+            "circuit_size": 3717
+          }
+        },
+        "fingerprint_scope": "FULL_WRAPPER_PRE_TRANSPILE",
+        "compile_log": [
+          {
+            "started": true,
+            "status": "COMPLETE",
+            "seconds": 0.1527244800236076,
+            "peak_rss_bytes": 269172736
+          },
+          {
+            "started": true,
+            "status": "COMPLETE",
+            "seconds": 0.13455403479747474,
+            "peak_rss_bytes": 275464192
+          }
+        ],
+        "acquisition_seconds": 0.005804226966574788,
+        "price_call_seconds": 2.557780466042459,
+        "path_wall_seconds": 2.5660464339889586,
+        "peak_rss_bytes": 277037056,
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 0.001860646065324545,
+            "event_write": 0.0027686888352036476,
+            "event_digest": 0.000410676933825016,
+            "structural": 0.09928897814825177,
+            "compose": 0.5950406750198454,
+            "cosine_wrapper": 0.2190399041865021,
+            "cosine_fingerprint": 0.3348856680095196,
+            "cosine_compile": 0.1527520390227437,
+            "cosine_mutation_check": 0.21597294695675373,
+            "sine_wrapper": 0.35250304685905576,
+            "sine_fingerprint": 0.21424491005018353,
+            "sine_compile": 0.1345693450421095,
+            "sine_mutation_check": 0.22103858878836036
+          },
+          "total_seconds": 2.5561965571250767,
+          "fingerprint": {
+            "calls": 8,
+            "hits": 22218,
+            "misses": 8338
+          }
+        },
+        "private_directory": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/replay/H4_S0_m0_q1_R2/0",
+        "replay_checks": {
+          "event_digest": true,
+          "seeds": true,
+          "C": true,
+          "S": true,
+          "fingerprints": true,
+          "compiled": true,
+          "compiler": true
+        },
+        "original_event_sha256_after": "c96def090771ab927df126844d5772148aacbc9db9c8da4fead88272c25ac350"
+      }
+    },
+    {
+      "job": [
+        "replay",
+        "H4_S0_m6_q64_R128",
+        0
+      ],
+      "exitcode": 0,
+      "ok": true,
+      "value": {
+        "cell_id": "H4_S0_m6_q64_R128",
+        "candidate_id": "2a8c6718220eec59d419",
+        "index": 0,
+        "cohort": "D_P1_EFFICIENT_CZZ_20261113",
+        "conditional": false,
+        "C": [
+          1826433,
+          1826433
+        ],
+        "S": [
+          1747585,
+          1747585
+        ],
+        "source": {
+          "execution_source": "ea0706ab05313423f336614912758a93e9e8285c",
+          "private_result": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/replay/H4_S0_m6_q64_R128/0/result.json"
+        },
+        "event_digest": "0c6458dbbb1c543e354e25e6c20e6220dc6a1ade40f2d0e76878c83c527a2854",
+        "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+        "fingerprints": [
+          "b883c7b95b74b9db32f4d1362116dad1a6ca584697831675f2dd64b9517f62f7",
+          "5b8561f4bcaa077d81ab19fc617350bc87e947c9edbda07c03c50eb448f3a9fb"
+        ],
+        "cache_hits": 0,
+        "new_compiles": 2,
+        "full_wrapper_statevector_validation": false,
+        "signal_N_G_computed": false,
+        "phase": "replay",
+        "m": 6,
+        "seeds": [
+          2276111612902665896,
+          17627126983757672908,
+          15709484527200506426,
+          16800982707167476955,
+          11488971363191422887,
+          17679943323729433245,
+          10964641369378868175,
+          13108282144208150037,
+          5774112241498906534,
+          10661990904884882545,
+          17705897284422599467,
+          6213794457960932066,
+          11721308974189539917,
+          3709840459546125255,
+          4911239693870174713,
+          1643056158104275476,
+          15315679553585756430,
+          5925188257945117711,
+          4765783313853078081,
+          14852335066788114024,
+          13152457079606995395,
+          10086808351572573666,
+          10110056047587664629,
+          4342491503168120319,
+          3472928979575057151,
+          4764261802942977815,
+          2238876451164718105,
+          16140708245681782803,
+          14571536180154972902,
+          1268540249412902553,
+          13561340814439033700,
+          1197751200164650844,
+          6938625526861393959,
+          9953945268307424997,
+          17551097265599888886,
+          3602804792119820845,
+          10623276186781132643,
+          1129513869438430084,
+          13453188182079756383,
+          12775338521466181470,
+          7254739609241633477,
+          5408875895970161729,
+          13203806640959581413,
+          4741491801244998430,
+          6424107284198853300,
+          12691371575919900397,
+          15768712194541859296,
+          17957693934908151276,
+          4267271854975094826,
+          9011432873923679520,
+          12531586515794229847,
+          10360519069745124423,
+          5849931726691247933,
+          15740387123991467076,
+          2831050985029624663,
+          7789276729252549666,
+          6222592914727557622,
+          4322424033986396697,
+          10404501321404037841,
+          4905745134062974962,
+          7199548292751979498,
+          10661402475855394082,
+          14559346234772901921,
+          15569584547204168630
+        ],
+        "laws": [
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          },
+          {
+            "steps": 128,
+            "orders": [
+              0,
+              2
+            ],
+            "probabilities": [
+              0.9999974986314093,
+              2.5013685907457728e-06
+            ]
+          }
+        ],
+        "events": {
+          "events": 8192,
+          "rotation_ZZ": 7547,
+          "rotation_Z": 645,
+          "identity_applications": 0,
+          "product_applications": 0,
+          "order2_events": 0,
+          "orders": {
+            "0": 8192
+          }
+        },
+        "D": [
+          78848,
+          78848
+        ],
+        "compiled": {
+          "cosine": {
+            "rz_count": 1826433,
+            "rz_depth": 482432,
+            "cx_count": 557546,
+            "cx_depth": 271556,
+            "total_depth": 1081197,
+            "circuit_size": 3653039
+          },
+          "sine": {
+            "rz_count": 1826433,
+            "rz_depth": 482432,
+            "cx_count": 557546,
+            "cx_depth": 271556,
+            "total_depth": 1081197,
+            "circuit_size": 3653039
+          }
+        },
+        "fingerprint_scope": "FULL_WRAPPER_PRE_TRANSPILE",
+        "compile_log": [
+          {
+            "started": true,
+            "status": "COMPLETE",
+            "seconds": 241.75359593797475,
+            "peak_rss_bytes": 2700529664
+          },
+          {
+            "started": true,
+            "status": "COMPLETE",
+            "seconds": 241.5458647350315,
+            "peak_rss_bytes": 2794409984
+          }
+        ],
+        "acquisition_seconds": 14.16899630986154,
+        "price_call_seconds": 856.8964515419211,
+        "path_wall_seconds": 881.4424744618591,
+        "peak_rss_bytes": 2794409984,
+        "timing": {
+          "stages_seconds": {
+            "event_dicts": 8.697243204107508,
+            "event_write": 9.296405151020736,
+            "event_digest": 1.6413315508980304,
+            "structural": 94.83718302892521,
+            "compose": 107.00329325301573,
+            "cosine_wrapper": 27.81960903783329,
+            "cosine_fingerprint": 24.0018130550161,
+            "cosine_compile": 241.75364995701239,
+            "cosine_mutation_check": 23.98381721205078,
+            "sine_wrapper": 27.803590725176036,
+            "sine_fingerprint": 23.983380150049925,
+            "sine_compile": 241.5458868148271,
+            "sine_mutation_check": 24.425663389032707
+          },
+          "total_seconds": 856.8049065300729,
+          "fingerprint": {
+            "calls": 71,
+            "hits": 7996214,
+            "misses": 115426
+          }
+        },
+        "private_directory": "/home/AbeHiromu/projects/d-p2-direct-pilot-20261113-private/run01/replay/H4_S0_m6_q64_R128/0",
+        "replay_checks": {
+          "event_digest": true,
+          "seeds": true,
+          "C": true,
+          "S": true,
+          "fingerprints": true,
+          "compiled": true,
+          "compiler": true
+        },
+        "original_event_sha256_after": "d47000050d57ad67a2a07c91d9996e5e41c0f7a0840c0723c5310d982fed376c"
+      }
+    }
+  ]
+}

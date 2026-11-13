@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[P2直接paired pilot](../../docs/research/d_p2_direct_pilot_20261113/HANDOFF.md)：trottertracks.p2_direct_pilotの固定seed/予算plan、保存eventの無乱数復元、replay照合、既存paired adapterを使うfresh-only exact統計。元sampler/compose/compileは再利用し、結果はfinite pilotに限定。
+
 [compiled価格pipeline高速化](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：trottertracks.compiled_price_fast（RZ-only Accounting、X/Y共通prefix、pinned Backendの明示拡張）。既存compose/wrapper/compiler・新ZZ・canonical bytesを維持し、既存fast writerを再利用。科学実行入口は追加しない。
 
 [効率的controlled ZZ](../../docs/research/d_p1_efficient_czz_20261113/REPORT.md)：trottertracks.efficient_controlled_zz（provider builder subclass・明示切替・tail parity）、p1_efficient_zz（P1 plan、C1 Backend読込、plan key guard）。

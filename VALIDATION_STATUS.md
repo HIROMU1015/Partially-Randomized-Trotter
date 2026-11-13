@@ -1,5 +1,7 @@
 # Validation status
 
+[P2直接paired pilot](docs/research/d_p2_direct_pilot_20261113/REPORT.md)：SOURCE ea0706ab05313423f336614912758a93e9e8285c、replay2 pathのevent/seed/C/S/wrapper fingerprint/6指標全一致後、fresh m0/m6各4 pathを取得。20 compile・cache hit0・retry0、人工16 PASS。m6の履歴対replay全path時間比3.56（単回・計時境界/並列負荷差あり）、fresh D平均187.5/74,388.75。有限cohort統計のみ、全law C/law距離/rare/2%95%/他11round/N/RMSE/Gは未資格、mandatory STOP。
+
 [compiled価格pipelineの技術高速化](docs/research/d_compiled_price_pipeline_20261113/REPORT.md)：人工55 distinct項目PASS（初回の合同process import検査失敗は原記録を保全し、残差adapterを隔離processで13 PASS確認）。同eventのS、X/Y wrapper/compiled fingerprint、全6価格指標とcache/mutation条件が一致。人工wall/RSSのみ実測、実H4倍率・全law E[C]・P2/fit/N/RMSE/G未評価、mandatory STOP。
 
 [効率的controlled ZZ](docs/research/d_p1_efficient_czz_20261113/REPORT.md)：unitary（global/制御phase含む）・委譲・切替・tail parity・呼出し時import・旧provider bytes・固定PLANの新10件＋回帰34＝44 PASS。P1 run02完了（[RESULT](docs/research/d_p1_efficient_czz_20261113/run02/RESULT.json)）：run01 event SHA-256一致（実行前後）、phase A parity全PASS（m0 operator差0）、compile 8/8・cache hit 0、digest連鎖一致。4 pathのfinite development観測のみで、全law E[C]・N/RMSE/Gは未資格。

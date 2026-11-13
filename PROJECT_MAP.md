@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[P2直接paired pilot完了](docs/research/d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](docs/research/d_p2_direct_pilot_20261113/HANDOFF.md)：SOURCE ea0706ab0、replay2 path全一致→fresh m0/m6各4 path、20 compile・retry0。m6履歴対replay全path時間は約3.56倍、fresh D平均187.5/74,388.75。有限pilotのみでlaw/rare/2%95%/全13round平均C/N/RMSE/G未資格。次のn/負荷案を記載、公開後STOP。
+
 [compiled価格pipeline高速化](docs/research/d_compiled_price_pipeline_20261113/REPORT.md)／[技術引継ぎ](docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)／[最小P2提案](docs/research/d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)：元C1 compose/wrapper/compilerと新ZZを維持し、SのRZ投影・共通prefixと既存fast canonical writerを接続。人工55項目PASS、人工性能比較のみ。実H4倍率未測定、P2/fit/平均C認定/N/RMSE/G未実行。
 
 [効率的controlled ZZ・P1（Codex D）](docs/research/d_p1_efficient_czz_20261113/REPORT.md)（2026-11-13）：PR/Full-H RTE tailのcontrolled ZZを`CX·CRZ·CX`で生成する新SOURCE（provider subclass、明示切替、旧SOURCE不変）と44技術test。P1はrun01（compile前のrunner STOP、保全）を経て、明示指示のrun02（SOURCE 20fe1194）で完了：run01 event SHA一致・parity全PASS後に8 compile。D＝C−Sはm0で+61/+145、m6で+78,848/+64,803（C比3.6〜4.3%）、X＝Y。fit・E[C]・N/RMSE/Gは未実施。

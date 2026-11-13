@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[p2_direct_pilot](../../docs/research/d_p2_direct_pilot_20261113/REPORT.md)：基点5a67cea7の高速化本体を維持し、明示承認のreplay2＋fresh8 pathをSOURCE ea0706ab0で実行。20 compile、fresh統計のみ、価格資格・N/Gは供給しない。
+
 [compiled_price_fast](../../docs/research/d_compiled_price_pipeline_20261113/TECHNICAL_HANDOFF.md)：元AccountingのRZ投影とS共通本体、既存fast hashによる明示C1拡張。人工同値性・性能のみ、実H4/P2未実行。
 
 [h4_s0_v2_intake](../../docs/research/h4_s0_v2_integration_20261113/HANDOFF.md)：固定S0のcanonical metadata・V1/V2照合・診断view・将来A V2 packetの検査。bv2_mean_priceはC1dbからbyte一致取込み。科学leaf/価格predictor・Gは呼ばない。

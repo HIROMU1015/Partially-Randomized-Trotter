@@ -37,3 +37,7 @@
 ## 追補：技術高速化と最小P2計画（2026-11-13）
 
 [新REPORT](../d_compiled_price_pipeline_20261113/REPORT.md)と[最小P2提案](../d_compiled_price_pipeline_20261113/P2_MINIMAL_PLAN.md)。P1完了54b64ef7を基点に、元AccountingのRZ-only projection・X/Y共通本体と既存fast canonical writerをC1へ接続。人工55項目PASS・人工wall/RSS比較のみで、実H4倍率は未測定。平均価格への直接paired法を優先し、旧n=8全ladderやm8以上のmodel必須という上記提案を今回の実行前提にしない。実H4科学実行・保存値数値再解析・fit・平均C認定/N/RMSE/Gは0、P2は別途明示許可待ち。旧計画・結果・STOPは保全。
+
+## 追補：P2直接paired pilot完了（2026-11-13）
+
+[REPORT](../d_p2_direct_pilot_20261113/REPORT.md)／[HANDOFF](../d_p2_direct_pilot_20261113/HANDOFF.md)。ユーザーが有限20 compileを明示承認し、SOURCE ea0706ab0で保存replay2 pathの全照合後にfresh8 pathを取得した。m6履歴対replay全path時間比3.56、fresh D平均はm0=187.5/m6=74,388.75。P1/replayはfresh統計に加えず、全8 freshでorder2未観測を寄与0と解釈しない。条件付きn/負荷の候補を報告したが、2%/95%・全law C・他round・N/RMSE/Gは未資格、fit/外挿・追加path・retry0。次の本格平均価格評価へ進まず公開後mandatory STOP。
