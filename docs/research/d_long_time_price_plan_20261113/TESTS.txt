@@ -1,0 +1,23 @@
+2026-11-13 JST: primary author's technical checks, not an independent review.
+Base: 748be6875b5007707d864e16aa7a4fc4250f3714
+C source read-only: 5cc7c07e112ce97205948465c94441cba0042416
+Old D source read-only: 0c6e16342b3c804fa0bd89a4028d6b5bea7b0322
+
+Command:
+PYTHONPATH=src:tests:scripts /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -m pytest -q tests/test_long_time_price_binding_design.py
+
+.....                                                                    [100%]
+5 passed in 0.61s
+
+Invented metadata only. No fixed-menu 52-axis regeneration, real H4 inputs,
+Runtime/Adapter construction, sampling, circuit, compile, numerical-result
+reanalysis, mean/interval estimation, fitting or G computation.
+
+The known C scalar forwarding/anchor/resolved-path gaps are reproduced, not
+fixed in C production code. A local AST keyword-forwarding variant tests API
+compatibility only. No scientific qualification follows from these checks.
+
+Documentation checks PASS: four required files present; local links and code
+fences valid; pre-existing manifest entries unchanged; git diff --check clean.
+Only research/index/status documentation and the new artificial test changed;
+no production source or historical scientific artifacts were modified.

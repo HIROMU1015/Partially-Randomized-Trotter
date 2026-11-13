@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[LD1/LD2長時間compiled価格の資格付け設計](docs/research/d_long_time_price_plan_20261113/REPORT.md)／[方式・資格](docs/research/d_long_time_price_plan_20261113/LONG_TIME_PRICE_EVALUATION_PLAN.md)／[有限科学案](docs/research/d_long_time_price_plan_20261113/FINITE_PRICE_SCIENCE_PLAN.md)／[B/C HANDOFF](docs/research/d_long_time_price_plan_20261113/HANDOFF.md)：直接full参照・構造平均＋paired残差・未証明windowを区別。最大domain技術pilotと正式G用価格点を分離し、n/精度は未採択。C5cc/D748のscalar接続差を人工metadata5件で再現、production変更・52軸再生成・実H4/再解析/fit/E[C]/G0。公開照合後mandatory STOP。
+
 [PR-LD1/LD2価格request接続](docs/research/d_ld12_price_requests_20261113/REPORT.md)／[52軸coverage](docs/research/d_ld12_price_requests_20261113/PRICE_REQUEST_COVERAGE.json)／[HANDOFF](docs/research/d_ld12_price_requests_20261113/HANDOFF.md)：A a9ab固定menuの26 paired requestと52軸の選択索引をmetadata生成。expected scalarの任意照合を追加、実preparation/compile・価格/N/Gは未取得。12＋回帰26＝38 PASS、必要なrequestだけ後日別承認で取得、公開後mandatory STOP。
 
 [PR候補依存価格adapter](docs/research/d_candidate_price_adapter_20261113/REPORT.md)／[A/C/B HANDOFF](docs/research/d_candidate_price_adapter_20261113/HANDOFF.md)／[初回取得計画](docs/research/d_candidate_price_adapter_20261113/FIRST_ACQUISITION_PLAN.md)：候補ごとのprepare/head/tail/signed scheduleを既存fast pipelineへ接続。H4 S2/m5・even K、軸指定、source/context/cache照合、mean未資格保持。人工・回帰49 PASS、実H4/保存値再解析/fit/E[C]/Gなし、公開後mandatory STOP。

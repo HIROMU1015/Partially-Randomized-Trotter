@@ -1,5 +1,7 @@
 # 文書索引
 
+[長時間compiled価格REPORT](research/d_long_time_price_plan_20261113/REPORT.md)／[評価・資格条件](research/d_long_time_price_plan_20261113/LONG_TIME_PRICE_EVALUATION_PLAN.md)／[有限科学案](research/d_long_time_price_plan_20261113/FINITE_PRICE_SCIENCE_PLAN.md)／[HANDOFF](research/d_long_time_price_plan_20261113/HANDOFF.md)：LD1/LD2最大使用域の実行可能性、law/rare/model/同時区間、BのN依存選別を設計。人工metadata5件のみ、新H4・保存値再解析・平均/区間/G計算0、mandatory STOP。
+
 [PR-LD1/LD2 REPORT](research/d_ld12_price_requests_20261113/REPORT.md)／[PRICE_REQUEST_COVERAGE](research/d_ld12_price_requests_20261113/PRICE_REQUEST_COVERAGE.json)／[HANDOFF](research/d_ld12_price_requests_20261113/HANDOFF.md)／[NEXT_SCIENCE_PLAN](research/d_ld12_price_requests_20261113/NEXT_SCIENCE_PLAN.md)：固定menu全52軸のmetadata準備、単独round/axis選択、新科学実行0。
 
 [PR候補価格adapter REPORT](research/d_candidate_price_adapter_20261113/REPORT.md)／[HANDOFF](research/d_candidate_price_adapter_20261113/HANDOFF.md)／[初回有限取得計画](research/d_candidate_price_adapter_20261113/FIRST_ACQUISITION_PLAN.md)／[SOURCE・49技術test](research/d_candidate_price_adapter_20261113/SOURCES.md)：外部A/B候補から元prepare/compose/wrapper/compilerへの最小接続。path S/Cと平均価格資格を区別。

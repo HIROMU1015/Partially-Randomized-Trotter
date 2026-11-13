@@ -1,5 +1,7 @@
 # Validation status
 
+[長時間価格の資格付け計画](docs/research/d_long_time_price_plan_20261113/REPORT.md)：人工metadata5件PASS。C5ccの固定関数でD748 scalar追加時のkey/再構成・anchor/path照合不足を再現した。Cの修正完了・full integration・科学資格を意味しない。production変更・既存52軸再生成・実H4 preparation/sampling/build/compile・保存数値再解析・fit・新mean/区間/G0。m12価格UNKNOWN、科学案未承認、公開照合後mandatory STOP。
+
 [固定LD1/LD2価格request](docs/research/d_ld12_price_requests_20261113/REPORT.md)：新metadata/mock12＋既存回帰26＝38 PASS。52軸のcanonical/physical/law・exactκ配分/binary64時間・prefix scalar/source/key分離を確認。実H4 preparation/sampling/build/compile、保存科学値再解析、E[C]/Gは0。coverageはREQUEST_READY/NOT_BUILT/全未選択、価格資格を付けず公開後mandatory STOP。
 
 [candidate-context/price-request adapter](docs/research/d_candidate_price_adapter_20261113/REPORT.md)：新20＋既存fast10/P2 metadata6＋別process残差13＝49項目PASS。任意8-wire人工行列・明示event・新adapterのmock compilerと既存小人工Qiskit回帰。旧C1 head/S/fingerprint/6指標、別L_D・signed/K・単軸/逆順・cache非流用を確認。実H4価格/mean/CI/N/G未評価、初回科学scope未採択、公開後mandatory STOP。
