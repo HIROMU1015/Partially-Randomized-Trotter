@@ -1,5 +1,7 @@
 # 文書索引
 
+[RPE精度評価契約W0 REPORT](research/rpe_accuracy_contract_w0_20261114/REPORT.md)／[数理メモ](research/rpe_accuracy_contract_w0_20261114/MATH_NOTES.md)／[人工検証](research/rpe_accuracy_contract_w0_20261114/SYNTHETIC_CHECKS.json)：zero/tie・unsafe loss・精度資格の選択肢と最小変更案。契約は未採択、実H4新値なし・STOP。
+
 [PR resource I1/I2/E1技術修正](research/pr_resource_technical_fixes_20261114/README.md)：配線preflight、共有moduleの歴史blob照合と現行API互換、SOURCE別candidate ID parse cache。旧科学SOURCE・結果・契約を保全、人工・技術検証のみ。
 
 [H4 DP有限範囲の準備REPORT](research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[具体案](research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[HANDOFF](research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：K8192、P141,559,036/構成を提案。人工幾何/3benchmark/整数probeのみ、実H4新riskは未計算。科学実行の別明示許可後に各LD1件だけ適用する案。
