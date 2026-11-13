@@ -17,6 +17,7 @@ A_SOURCE = 'fefd548ecd56f60d72031b3d385f6f5e6ee95d06'
 B_SOURCE = 'b9b9ffa6233db9dd2b413dc07b27e7039324c666'
 C_SOURCE = '86f37d25ffd5eee3daf7f25ce001b090b1f2cf33'
 D_SOURCE = '24b0a6eb1d806391a3c6ad454fb0c018148d8545'
+D_ADAPTER_SOURCE = '0c6e16342b3c804fa0bd89a4028d6b5bea7b0322'
 MODULE = 'src/trottertracks/rpe_optimization_pipeline.py'
 
 
@@ -68,6 +69,7 @@ def providers(root):
         return scope[key]
     phase.__getattr__ = phase_attribute
     load('pr_rpe_rmse', B_SOURCE, {'trotterlib.rpe_four_round_phase_validation':'_signal_phase'})
+    load('pr_rpe_rmse_integration',B_SOURCE)
     S = load('rpe_decoder_statistics', B_SOURCE)
     F = load('rpe_decoder_fast', B_SOURCE)
     W = load('rpe_shot_allocation', B_SOURCE)
@@ -84,7 +86,10 @@ def providers(root):
     allowance.__dict__.update(lru_cache=lru_cache, ast=ast, math=math)
     functions(root,A_SOURCE,'src/trottertracks/h4_four_method_screen_mean.py',('allowance_formula',),allowance.__dict__)
     A = load('pr_rpe_signal_provider', A_SOURCE, {'trotterlib.rte':'_signal_rte'})
-    return types.SimpleNamespace(A=A,B=api.B,C=C,D=api.D,S=S,F=F,W=W)
+    for short in ('efficient_controlled_zz','p1_efficient_zz','compiled_price_fast'):
+        load(short,D_ADAPTER_SOURCE)
+    Price=load('candidate_price_adapter',D_ADAPTER_SOURCE)
+    return types.SimpleNamespace(A=A,B=api.B,C=C,D=api.D,S=S,F=F,W=W,Price=Price)
 
 
 def plan(root, config, *, target, signal_source, pr_physical=None, references=()):
@@ -187,12 +192,19 @@ def price_context(request,m):
         structure=deepcopy(structure),split=deepcopy(s['split']),law=deepcopy(s['law']))
 
 
-def price_requests(root,request):
+def price_requests(root,request,*,input_source=None,execution_source=None,axes=('X','Y'),preparation_hashes=None):
     """D's passive full-wrapper requests; no price/profile values are invented."""
     _validate(root,request);api=providers(str(root))
+    if input_source is not None or execution_source is not None:
+        from .rpe_d_price_connection import pending_requests
+        return pending_requests(root,request,input_source=input_source,execution_source=execution_source,
+                                axes=axes,preparation_hashes=preparation_hashes)
+    axes=tuple(axes)
+    if not axes or len(set(axes))!=len(axes) or any(a not in api.B.p.AXES for a in axes):
+        raise ValueError('Unique explicit X/Y price axes required')
     requests=[]
     for row in request['configuration']['rounds']:
-        for axis in api.B.p.AXES:
+        for axis in axes:
             measurement=api.B.p.measurement(row,axis)
             measurement['law_context']['ideal_sampler_distance_qualified']=None
             requests.append(dict(configuration_id=request['configuration']['id'],m=row['m'],axis=axis,

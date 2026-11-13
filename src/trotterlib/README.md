@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[D価格adapterとRPE pipelineの統合](../../docs/research/d_price_pipeline_integration_20261113/REPORT.md)（2026-11-13）：公開D candidate_price_adapterをC price_requestsへ接続。A固定LD1/LD2の13round metadataとD path→pending/外部mean→B会計を照合し、新8＋既存36＝44 PASS。path/S/finite cohortを適格E[C]へ昇格せず、軸・SOURCE/law/preparation/compiler/loweringを保持。実H4/preparation/sampling/compile/保存再解析/実N・G0、D物理資格と平均/N証拠は後続。
+
 [RPE総コストpipelineの人工統合](../../docs/research/rpe_optimization_integration_20261113/REPORT.md)（2026-11-13）：A PR・C baselineの全round signalをB shot配分/cost/selectへ接続。D向け未評価requestとphysical/lowering bindingを整備。人工新10＋B metadata2＋C/M5回帰24＝36 PASS、4方式の人工全13round・shot最小/G最小・点/区間・未資格/欠測を区別。実H4/saved再解析/実N・価格・G0、科学N資格producerとD価格は未取得。
 
 [ベースラインsignal pipelineの技術準備](../../docs/research/baseline_signal_pipeline_preparation_20261113/REPORT.md)（2026-11-13）：ベースライン全round signal経路を既存B/D/数値部品から接続。H4 DF10のFull PF・B0/B0I・Full-H pure RTE、S2/Y4/M5・prefix・明示q/R・有限Kを扱う。人工新12＋既存回帰12＝24 PASS、数値失敗値/欠測/未資格を保持。実H4・保存再解析・残screen・sampling/compile/N/RMSE/G0。
