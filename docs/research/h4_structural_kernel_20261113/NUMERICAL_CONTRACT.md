@@ -1,0 +1,35 @@
+# 固定H4 K0/K1：実行前の数値契約
+
+対象はa637ed1b8の同一H4 preparation・R2/R128・X/Yのみ。物理law/元SOURCE/原本は変更しない。K0の全検査がPASSした場合に限りK1の4値を評価する。未知又は不一致なら結果を保全しK1なしでmandatory STOP、閾値緩和・近似・compile fallbackはしない。
+
+## 構造状態とparity
+
+- 元C1 Accounting（8457c4435）のbasis/gate/diagonal/ブロック順を使う。tailのapplication bodyとclose bodyを同SOURCEのASTからそのまま読み取る。full-path counter、sampling、回路build/compileは呼ばない。
+- pending ZはNone又は正確なbinary64のhex表現。同じwireの加算は元native命令順で行い、再結合・modulo・非ゼロflag化をしない。整数RZ rewardと出口pending Z/queued basisのparityは**完全一致**だけを許す。元C1はe.to_dict()をJSON化する前のtuple/dict（matrix_sha256=Noneを含む）でSを計数する。headのlistと同一視せず、元to_dictの完全表現を使ってliteral basis比較を保つ。前段の幾何学的native metadataは照合資料とし、表現の置換には使わない。
+- 全basis切替（entryを含む10×9）と全324 componentのproduct/rotation/order/law分岐を確認する。局所nativewordをwireへ射影した後、元Accounting._native/_flush_zに同じ入力を与え、全必要な有限Z値で出口とrewardを照合する。sourceのbasis分岐とrole分岐が分離しているため、324³ tupleの全列挙は不要。
+- 有限graphは全component/3 application種とphase-positive遷移の閉包から構成する。状態数の上限は前段のreset証明に由来する(9 basis＋entry)×Z集合×2であり、任意の探索上限ではない。上限/値集合を破る場合はFAILでSTOP。
+- entry/first forward head、steady forward head、close/reverse head、outer出口、scalar一回、X/Y wrapper・terminal flushを別に確認する。outer出口が入力履歴から独立した固定状態になることを全kernel状態で確認する。価格カウンタの途中finish/resetはしない。固定出口を明示して加算rewardを合成する。
+- phaseは前段で確認した合法非identity K2のzero/positive同値類のみを使う。positive時のbasis flush分岐を保持する。reverse headにcontrol resetより前の別control RZがないこと、πの逐次加算0〜384回のcontrol微小wordで同値性を確認する。任意suffixや他lawへ拡張しない。
+- 324 rotation×order0/2×product符号4template×2lawの有限metadataを元_make_eventで確認する。これはtrajectoryでも全高次tuple列挙でもない。angle/phase/application順は元値と完全一致を要求する。
+
+## 確率と浮動小数点誤差
+
+対象は**元descriptorが宣言するideal finite-K law**。実PCG64/CDF lawとの距離は未資格。324 componentの元probabilityをmath.fsumで正規化した元_make_eventと同じbinary64値、および保存order_probabilitiesをcentral MeanKernelへそのまま渡す。観測massに合わせた補正・再正規化はしない。
+
+数学的なunit-mass ideal weight比と浮動小数点評価を区別する。元positive binary64 weightsを有理数として正確に保持し、その和で割った比の各matrix/reward項を、整数numerator集計とFractionからの方向丸めで囲む。centralの元浮動小数点評価値もintervalへ含める。この差はnormalizer/summationの丸め不確かさとして記録し、別sampling lawを採択したとは扱わない。coefficient/probabilityデータは変更しない。
+
+order2の期待演算子は、order2-positive→product→product→rotationのIID component kernelの合成とする。rotationを最初に乱数選択する元samplerの**操作順**は変更しない。ここでは独立なcomponentの数学的なjoint確率を因数分解して同じproducts→rotationの回路順を評価する。元_make_eventのevent_probability式との浮動小数点差は、両算式の最大16基本演算によるγ16=16u/(1−16u)を超えないことを有限metadataで検査する。K1の数値区間にもqR回分の対応する相対誤差を含める。実samplerの独立性や全law距離の証明ではない。
+
+matrixの非負性を用い、IEEE binary64の単位丸めu=eps/2とgamma_(2d)で長さdのdotを方向丸めし、P/gの区間を合成・二乗法へ伝播する。gammaと除算の分母も有理数/nextafterで外側へ丸める。漸進underflowの絶対誤差も2d×最小subnormalとして含め、非漸進underflow環境はUNKNOWNとする。区間lowerの0は既知の非負量に対する数学的下限であり、central値のclampではない。通常のIEEE演算/BLAS内積誤差モデルを前提とする数値enclosureで、環境の形式検証や物理law保証ではない。γ16のqR回分の乗法誤差も有理数の累乗から方向丸めし、libm指数関数の精度を仮定して幅を狭めない。
+
+K0ではrewardを0にした確率検査だけをR回伝播し、central mass defectが既存MeanKernel.MASS_TOLERANCE=1e−10以下、intervalがunit massを含むことを要求する。同じcentral Pのlongdouble probability powerも区間内にあることを確認する。ここでは実平均Sを評価しない。非負性/finite/閉包/区間が不明ならUNKNOWN。精度のためにmass閾値を緩和しない。
+
+K1では既存MeanKernelと同じ合成・二乗法で元整数rewardを伝播し、prefixとterminalを一回だけ加える。central値と方向丸め区間を4値ごとに保存する。価格モデルの採用精度は今回定義せず、確認した数値精度を区間の幅で明示する。state/source対応誤り・ideal対実sampler・compiler差・全GのsystematicやCIをこの区間へ含めたとは言わない。
+
+## 実行順序・資源・STOP
+
+1. 固定B最新f0c4bb55の公開V2 configurationと前回C requestを照合。
+2. 保存H4 descriptorを元loaderで1回復元し、元hash・全324 component/9 basis/確率・操作順を照合。元2lawの保存数値を再利用する。
+3. native分岐検査後、独立な9wireのK0をaffinityに応じて最大9 task並列で構成・検証。小行列BLASの多重並列を避けるため、この専用processのBLAS/OMPは各1threadとする。共有設定は変更しない。
+4. 全K0 PASSとKERNELS.npz/状態辞書を保存してからK1を呼ぶ。K0 FAIL/UNKNOWNではK1を呼ばない。
+5. m0/m6×cosine/sineのE[S]4値だけを保存しmandatory STOP。FULL_WRAPPER_MEAN_COMPILED_PRICE recordは作らない。
