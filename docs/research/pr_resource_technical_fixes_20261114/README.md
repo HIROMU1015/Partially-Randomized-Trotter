@@ -26,7 +26,8 @@ planのsourceは選択したcommitを指す必要がある。
 - B: 既存S0 passive intakeをそのまま呼ぶ。N/C/Gは取得しない。
 - C: 既存configuration照合と固定C1 contextの実exec scopeを検査する。
   既存S-only loaderの最後のcontext呼出しだけを定義のreturnに置き換え、準備はしない。
-  実descriptor呼出しの引数名を既存API signatureへ束縛する。
+  実descriptor呼出しの引数名を既存API signatureへ束縛し、literal seedは既存の
+  `require_integer_count`だけで検査する。旧SOURCEの`seed=None`も生成前に拒否する。
 - D: 固定C1 loader、Backendのmetadata constructor、既存plan-key抽出、保存inputの
   bytes/hash/binding、既存scalar reader/requestを検査。context/sample/build/compileは呼ばない。
 

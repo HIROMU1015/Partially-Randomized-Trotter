@@ -1,8 +1,10 @@
 """Real-loader positive/negative wiring checks in one isolated SOURCE process."""
 import argparse
+import ast
 from copy import deepcopy
 import importlib.util
 import json
+import linecache
 from pathlib import Path
 import subprocess
 import sys
@@ -69,6 +71,17 @@ try:
         rejects('missing ast in actual fixed context scope',ValueError,lambda:w.check_globals(missing))
         def obsolete_descriptor(tail, time, steps):raise AssertionError('Must never execute')
         rejects('descriptor API mismatch',TypeError,lambda:w.bind_calls(closure.make_law,'make_rte_config',obsolete_descriptor))
+        # The actual historical failure was seed=None (valid keyword, invalid
+        # scalar type). Load that exact definition, then bind/check only.
+        import trotterlib.rte as rte
+        origin='c5e2e5046f674277778b224329301c04a52eec8f:src/trottertracks/h4_pr_physical_closure.py'
+        data=subprocess.check_output(['git','show',origin],cwd=root,text=True)
+        node=next(n for n in ast.parse(data).body if isinstance(n,ast.FunctionDef) and n.name=='diagnostic')
+        scope={};exec(compile(ast.Module(body=[node],type_ignores=[]),origin,'exec'),scope)
+        linecache.cache[origin]=(len(data),None,data.splitlines(True),origin)
+        rejects('historical seed=None with actual integer validator',TypeError,lambda:w.bind_calls(
+            scope['diagnostic'],'make_rte_config',rte.make_rte_config,
+            scalar_checks={'seed':lambda value:rte.require_integer_count(value,name='seed')}))
         original=kernel.B_CONFIGURATION_SOURCE;kernel.B_CONFIGURATION_SOURCE=kernel.B_LATEST
         try:rejects('wrong configuration commit',(subprocess.CalledProcessError,KeyError,ValueError),lambda:kernel.check_inputs(root))
         finally:kernel.B_CONFIGURATION_SOURCE=original
@@ -76,6 +89,9 @@ try:
         from trottertracks import p1_efficient_zz as P
         from trottertracks import ld12_price_requests as L
         raw=P.make_plan(root,'ARTIFICIAL_WIRING_NEGATIVE')
+        # P1's original runner supplies the commit as a string, while newer
+        # adapters use {'commit': SHA}. Both must bind to the same SOURCE.
+        w.preflight(root,'D',args.source,plan=P.execution_plan(raw,args.source,root))
         rejects('missing Backend plan source',ValueError,lambda:w.check_backend_plan(root,raw))
         request=L.request_for(root,'PR-LD2',12,execution_source=dict(commit=args.source))
         bad=deepcopy(request);pc=bad['physical_context']

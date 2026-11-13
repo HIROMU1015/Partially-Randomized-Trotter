@@ -21,6 +21,10 @@ def obsolete_call(context, tail):
     return context.make_rte_config(tail, time=1, steps=2)
 
 
+def none_seed_call(context, tail):
+    return context.make_rte_config(tail, evolution_time=1, rte_steps=2, seed=None)
+
+
 class WiringTests(unittest.TestCase):
     def test_actual_bytecode_scope_includes_nested_function_globals(self):
         scope = {}
@@ -38,6 +42,13 @@ class WiringTests(unittest.TestCase):
     def test_api_disappearance_is_not_a_silent_pass(self):
         with self.assertRaisesRegex(ValueError, 'Expected API call missing'):
             w.bind_calls(compatible_call, 'foreign_api', descriptor_api)
+
+    def test_scalar_validator_checks_values_before_descriptor_call(self):
+        def integer(value):
+            if type(value) is not int: raise TypeError('integer seed required')
+        w.bind_calls(compatible_call, 'make_rte_config', descriptor_api, scalar_checks={'seed':integer})
+        with self.assertRaisesRegex(TypeError, 'integer seed'):
+            w.bind_calls(none_seed_call, 'make_rte_config', descriptor_api, scalar_checks={'seed':integer})
 
     def test_full_fixed_commit_is_required_before_loading(self):
         for source in ('HEAD', '51d324ea', '../source', 'z'*40):

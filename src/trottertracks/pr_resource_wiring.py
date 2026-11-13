@@ -31,7 +31,7 @@ def check_globals(function):
         raise ValueError(function.__qualname__ + ': unsupplied globals: ' + ','.join(sorted(missing)))
 
 
-def bind_calls(caller, attribute, api):
+def bind_calls(caller, attribute, api, *, scalar_checks=None):
     """Bind actual call-site argument names; never invoke the numerical API."""
     tree = ast.parse(textwrap.dedent(inspect.getsource(caller)))
     calls = [n for n in ast.walk(tree) if isinstance(n, ast.Call)
@@ -42,6 +42,10 @@ def bind_calls(caller, attribute, api):
             raise ValueError('Explicit API arguments required: ' + attribute)
         inspect.signature(api).bind(*[object() for _ in call.args],
                                     **{k.arg: object() for k in call.keywords})
+        for name, validate in (scalar_checks or {}).items():
+            node = next((k.value for k in call.keywords if k.arg == name), None)
+            value = inspect.signature(api).parameters[name].default if node is None else ast.literal_eval(node)
+            validate(value)  # existing pure scalar validator; never the descriptor
 
 
 def context_definition(loader, root, plan):
@@ -166,7 +170,8 @@ def preflight(root, series, source, *, request=None, plan=None):
         import trotterlib.rte as rte
         if Path(rte.__file__).read_bytes() != loader.m.blob(root, loader.m.PROVIDER, 'src/trotterlib/rte.py'):
             raise ValueError('Pinned descriptor API SOURCE differs')
-        bind_calls(closure.make_law, 'make_rte_config', rte.make_rte_config)
+        bind_calls(closure.make_law, 'make_rte_config', rte.make_rte_config,
+                   scalar_checks={'seed': lambda value: rte.require_integer_count(value, name='seed')})
         boundary = 'S-only context / preparation / law descriptor / mean S: NOT CALLED'
     elif series == 'D':
         P = module('p1_efficient_zz'); D = module('candidate_price_adapter')
