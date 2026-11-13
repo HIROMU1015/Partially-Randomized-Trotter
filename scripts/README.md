@@ -1,6 +1,6 @@
 # scripts 索引
 
-[run_h4_dp_risk_fixed.py](run_h4_dp_risk_fixed.py)：[固定DP入力](../docs/research/h4_dp_risk_fixed_results_20261114/INPUTS.json)を旧evaluate_one/既存kernelへ渡す各LD1件・計2評価専用caller。科学条件を継承し保持8192/組141,559,036を固定、新規出力だけに保存。自分の2workerのCPU/RSSを観測し、MC/追加配分/価格/G/自動retryなし。
+[run_h4_dp_risk_fixed.py](run_h4_dp_risk_fixed.py)：[固定DP入力](../docs/research/h4_dp_risk_fixed_results_20261114/INPUTS.json)を旧evaluate_one/既存kernelへ渡す各LD1件・計2評価専用caller。科学条件を継承し保持8192/組141,559,036を固定、新規出力だけに保存。自分の2workerのCPU/RSSを観測し、MC/追加配分/価格/G/自動retryなし。[run01完了結果](../docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)、再実行しない。VERIFY_RESULTS.pyは保存値の検算のみ。
 
 [DP有限追跡の人工benchmark](../docs/research/rpe_dp_finite_scope_preparation_20261114/BENCHMARK_SYNTHETIC.py)：固定人工3モデルとcount幾何・整数演算probeだけを既存DPで測る。保存mean/target/resultを読む入口や実H4実行optionはない。[範囲案](../docs/research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)の科学2評価は未実行、別許可待ち。
 

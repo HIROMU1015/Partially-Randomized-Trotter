@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[固定H4 LD1/LD2のDP上界結果](docs/research/h4_dp_risk_fixed_results_20261114/REPORT.md)／[分解正本](docs/research/h4_dp_risk_fixed_results_20261114/DECOMPOSITION.json)／[HANDOFF](docs/research/h4_dp_risk_fixed_results_20261114/HANDOFF.md)：承認済み各1件・計2評価完了。モデルMSE上界約9.0395e−4/9.0324e−4 Ha²へ約99.62%縮小。残余約1e−27、上界は未解決lossが支配。exact検算PASS、十分N/global/G null、MC/追加shot/δE加算なし、公開後STOP。
+
 [実H4 DP部分追跡の有限範囲案](docs/research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[範囲JSON](docs/research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[引渡し](docs/research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：保持8192・遷移141,559,036組/構成、LD1/LD2各1件の未実行案。全round伝播のcount上限と人工3benchmarkで負荷を確認。元kernel/sourceは変更せず、実H4新評価/shot探索/MC/C/G0、別明示許可待ち・公開後STOP。
 
 [状態集約によるRPE MSE上界改善](docs/research/rpe_mse_state_refinement_20261114/REPORT.md)／[証明・API](docs/research/rpe_mse_state_refinement_20261114/HANDOFF.md)／[有限shot計画](docs/research/rpe_mse_state_refinement_20261114/FINITE_PLAN.md)：元count/R3を使う任意DPを既存riskへ追加。解決終端の実loss・未解決loss・追跡残余を分け、旧/新min上界。完全binary64一致のみを集約、新12＋回帰45＝57人工/回帰PASS。実H4再解析/追加shot/MC/C/G0、公開後mandatory STOP。
