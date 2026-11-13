@@ -1,5 +1,7 @@
 # 文書索引
 
+[Bの価格実装guard接続](research/b_price_implementation_guard_20261114/REPORT.md)：B直接compare/cost/selectの迂回点を閉じる最小patch、拒否動作、C経由との23case照合。B本線未適用。
+
 [PR resource I1/I2/E1技術修正](research/pr_resource_technical_fixes_20261114/README.md)：配線preflight、共有moduleの歴史blob照合と現行API互換、SOURCE別candidate ID parse cache。旧科学SOURCE・結果・契約を保全、人工・技術検証のみ。
 
 [H4 DP有限範囲の準備REPORT](research/rpe_dp_finite_scope_preparation_20261114/REPORT.md)／[具体案](research/rpe_dp_finite_scope_preparation_20261114/FINITE_SCOPE.json)／[HANDOFF](research/rpe_dp_finite_scope_preparation_20261114/HANDOFF.md)：K8192、P141,559,036/構成を提案。人工幾何/3benchmark/整数probeのみ、実H4新riskは未計算。科学実行の別明示許可後に各LD1件だけ適用する案。

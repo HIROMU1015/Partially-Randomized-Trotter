@@ -1,0 +1,299 @@
+{
+  "scope": "ARTIFICIAL_FIXTURES_ONLY_NO_REAL_INPUT_PRICE_N_G",
+  "C_checkout": "3a8b37f1a282c0c06ac1a363b070f4376e9ff41a",
+  "B_commit": "3b7b5b4f81c6e8b34e5a5c1de93cb1fb48a2df15",
+  "aligned_scope_labels": {
+    "compare": "OUTSIDE_EXPLICIT_ALLOCATION_MENU",
+    "select": "OUTSIDE_EXPLICIT_CONFIGURATION_MENU"
+  },
+  "cases": [
+    {
+      "case": "VALID_SAME_DOMAIN",
+      "method": "PR",
+      "consistent": true,
+      "G_C": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "G_B": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "checked_cells": 4,
+      "B_cost_calls_C": 2,
+      "B_cost_calls_B": 2
+    },
+    {
+      "case": "VALID_SAME_DOMAIN",
+      "method": "FULL_H_RTE",
+      "consistent": true,
+      "G_C": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "G_B": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "checked_cells": 4,
+      "B_cost_calls_C": 2,
+      "B_cost_calls_B": 2
+    },
+    {
+      "case": "VALID_SAME_DOMAIN",
+      "method": "FULL",
+      "consistent": true,
+      "G_C": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "G_B": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "checked_cells": 4,
+      "B_cost_calls_C": 2,
+      "B_cost_calls_B": 2
+    },
+    {
+      "case": "VALID_SAME_DOMAIN",
+      "method": "B0I",
+      "consistent": true,
+      "G_C": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "G_B": [
+        {
+          "numerator": 1002,
+          "denominator": 1
+        },
+        {
+          "numerator": 216,
+          "denominator": 1
+        }
+      ],
+      "checked_cells": 4,
+      "B_cost_calls_C": 2,
+      "B_cost_calls_B": 2
+    },
+    {
+      "case": "SELECT_ONE_COMMON_POLICY",
+      "consistent": true,
+      "winner": {
+        "configuration_id": "590b9eee44c3f498b3641a169da1ef0b907e9f2e8fa3ade5b32d19f28de909d1",
+        "cost": {
+          "numerator": 216,
+          "denominator": 1
+        },
+        "ties": [
+          "590b9eee44c3f498b3641a169da1ef0b907e9f2e8fa3ade5b32d19f28de909d1",
+          "958bad9313c85b4100edd6e81d7d4ea60ce3110b6fa152efcc0cb930fc8cca98",
+          "c87f6fcb8e044bd7590fd68d1bd50bb8fe9962e732bda0ab5da1e93057a8d431",
+          "e412a4ae43374c153719d034086865e60a4338e9bfb6e39d8b1358213a62134c"
+        ]
+      },
+      "menu_complete": true
+    },
+    {
+      "case": "SELECT_NEW_PR_WITH_OLD_FULLH_POLICY",
+      "consistent": true,
+      "C": "One common SOURCE-bound implementation comparison policy required",
+      "B": "One common SOURCE-bound implementation comparison policy required"
+    },
+    {
+      "case": "OLD_FULLH_RZZ_IN_NEW_POLICY",
+      "method": "FULL_H_RTE",
+      "consistent": true,
+      "C": "Comparison implementation differs: rte_rotation_lowering",
+      "B": "Comparison implementation differs: rte_rotation_lowering",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "ONE_POLICY_DECLARES_OLD_AND_NEW",
+      "method": "PR",
+      "consistent": true,
+      "C": "Mixed RTE lowering domains require separate policies; no cross-domain equivalence adopted",
+      "B": "Mixed RTE lowering domains require separate policies; no cross-domain equivalence adopted",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "UNKNOWN_LOWERING",
+      "method": "PR",
+      "consistent": true,
+      "C": "Comparison implementation differs: rte_rotation_lowering",
+      "B": "Comparison implementation differs: rte_rotation_lowering",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "NEW_ID_ON_OLD_EMITTER",
+      "method": "PR",
+      "consistent": true,
+      "C": "RTE lowering contradicts emitter SOURCE",
+      "B": "RTE lowering contradicts emitter SOURCE",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "MISSING_IMPLEMENTATION",
+      "method": "PR",
+      "consistent": true,
+      "C": "Unknown price native/lowering implementation",
+      "B": "Unknown price native/lowering implementation",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "ALTERED_PINNED_ASSERTION",
+      "method": "PR",
+      "consistent": true,
+      "C": "Pinned implementation evidence contradicts SOURCE/axis/scalar/domain",
+      "B": "Pinned implementation evidence contradicts SOURCE/axis/scalar/domain",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "FOREIGN_PRICE_SOURCE",
+      "method": "PR",
+      "consistent": true,
+      "C": "Price implementation producer SOURCE differs",
+      "B": "Price implementation producer SOURCE differs",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "SCALAR_TAIL_ONLY",
+      "method": "PR",
+      "consistent": true,
+      "C": "Comparison implementation differs: scalar_quantity",
+      "B": "Comparison implementation differs: scalar_quantity",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "SCALAR_TWICE",
+      "method": "B0I",
+      "consistent": true,
+      "C": "Scalar must be applied once at total T",
+      "B": "Scalar must be applied once at total T",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "WRAPPER_WITHOUT_MEASUREMENT",
+      "method": "FULL",
+      "consistent": true,
+      "C": "Implementation compiler/control/wrapper differs",
+      "B": "Implementation compiler/control/wrapper differs",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "AXIS_MEASUREMENT",
+      "method": "PR",
+      "consistent": true,
+      "C": "Implementation measurement/axis differs",
+      "B": "Implementation measurement/axis differs",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "FULLH_PHYSICAL_T",
+      "method": "FULL_H_RTE",
+      "consistent": true,
+      "C": "Implementation physical candidate differs",
+      "B": "Implementation physical candidate differs",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "PR_CANDIDATE_ID",
+      "method": "PR",
+      "consistent": true,
+      "C": "Implementation physical T/id differs",
+      "B": "Implementation physical T/id differs",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "PF_WITH_RTE_SOURCE",
+      "method": "FULL",
+      "consistent": true,
+      "C": "Deterministic PF has no RTE lowering SOURCE",
+      "B": "Deterministic PF has no RTE lowering SOURCE",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "TRUNCATED_WITH_RTE_SOURCE",
+      "method": "B0I",
+      "consistent": true,
+      "C": "Deterministic PF has no RTE lowering SOURCE",
+      "B": "Deterministic PF has no RTE lowering SOURCE",
+      "B_cost_calls_C": 0,
+      "B_cost_calls_B": 0
+    },
+    {
+      "case": "MISSING_PRICE_STAYS_UNKNOWN",
+      "consistent": true,
+      "checked_cells": 3
+    },
+    {
+      "case": "SCIENTIFIC_N_WITHOUT_POLICY_PENDING",
+      "consistent": true,
+      "C_blockers": [
+        "MISSING_PRICE_COMPARISON_IMPLEMENTATION_POLICY"
+      ],
+      "B_pending": [
+        "few_shots",
+        "low_G"
+      ]
+    }
+  ],
+  "all_consistent": true
+}

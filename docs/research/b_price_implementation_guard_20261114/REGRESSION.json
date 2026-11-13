@@ -1,0 +1,613 @@
+{
+  "scope": "SYNTHETIC_AND_PASSIVE_METADATA_TESTS_ONLY; no real H4/H6 input, price, N, MSE or G",
+  "python": "/home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B (existing project venv, unchanged)",
+  "runner": "run_regression.sh (32 parallel test processes; same B list as pr_resource_technical_fixes_20261114 + files touching the changed path)",
+  "implementation_commit": "3b7b5b4f81c6e8b34e5a5c1de93cb1fb48a2df15",
+  "patch": {
+    "file": "B_guard_connection.patch",
+    "base": "3a27f99feef2073341dfd0b980ae6b6a23906e9f",
+    "sha256": "1cff4ee0709c88c995f51d070437238befe53cc7d3bff8ac6dc60d560ea914ee"
+  },
+  "environments": {
+    "branch_3a27f99fe_plus_patch": {
+      "files": 31,
+      "tests": 349,
+      "failed": [],
+      "results": [
+        {
+          "test": "check_abc_d_v2_integration",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 2.95
+        },
+        {
+          "test": "check_bv2_mean_price",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 12.27
+        },
+        {
+          "test": "check_candidate_id_cache",
+          "rc": 0,
+          "tests": 5,
+          "seconds": 1.55
+        },
+        {
+          "test": "check_full_baseline_v2_requests",
+          "rc": 0,
+          "tests": 14,
+          "seconds": 3.45
+        },
+        {
+          "test": "check_h4_df10_price_provider",
+          "rc": 0,
+          "tests": 8,
+          "seconds": 0.44
+        },
+        {
+          "test": "check_h4_df10_rpe_batch",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 8.52
+        },
+        {
+          "test": "check_h4_price_pipeline_integration",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 1.16
+        },
+        {
+          "test": "check_h4_s0_v2_intake",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 3.45
+        },
+        {
+          "test": "check_h6_df19_price_provider",
+          "rc": 0,
+          "tests": 10,
+          "seconds": 4.86
+        },
+        {
+          "test": "check_h6_price_pipeline_coverage",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 1.99
+        },
+        {
+          "test": "check_pf_pr_rpe_pipeline",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 3.95
+        },
+        {
+          "test": "check_pr_r_dependent_n",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 5.1
+        },
+        {
+          "test": "check_pr_resource_wiring",
+          "rc": 0,
+          "tests": 6,
+          "seconds": 0.07
+        },
+        {
+          "test": "check_pr_rpe_method_coverage",
+          "rc": 0,
+          "tests": 14,
+          "seconds": 0.85
+        },
+        {
+          "test": "check_pr_rpe_rmse",
+          "rc": 0,
+          "tests": 17,
+          "seconds": 4.04
+        },
+        {
+          "test": "check_pr_rpe_rmse_controller",
+          "rc": 0,
+          "tests": 17,
+          "seconds": 0.81
+        },
+        {
+          "test": "check_pr_rpe_rmse_evidence",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 1.16
+        },
+        {
+          "test": "check_pr_rpe_rmse_integration",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 2.79
+        },
+        {
+          "test": "check_rpe_decoder_statistics",
+          "rc": 0,
+          "tests": 16,
+          "seconds": 4.78
+        },
+        {
+          "test": "check_rpe_deterministic_refinement",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 4.98
+        },
+        {
+          "test": "check_rpe_deterministic_risk",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 3.88
+        },
+        {
+          "test": "check_rpe_new_evidence_intake",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 16.89
+        },
+        {
+          "test": "check_rpe_price_implementation_guard",
+          "rc": 0,
+          "tests": 9,
+          "seconds": 12.01
+        },
+        {
+          "test": "check_rpe_provider_integration",
+          "rc": 0,
+          "tests": 8,
+          "seconds": 7.06
+        },
+        {
+          "test": "check_rpe_risk_intervals",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 4.27
+        },
+        {
+          "test": "check_rpe_r_price_intake",
+          "rc": 0,
+          "tests": 15,
+          "seconds": 8.69
+        },
+        {
+          "test": "check_rpe_s3_intake",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 5.89
+        },
+        {
+          "test": "check_rpe_shot_allocation",
+          "rc": 0,
+          "tests": 10,
+          "seconds": 4.05
+        },
+        {
+          "test": "check_rpe_shot_evaluation_design",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 3.74
+        },
+        {
+          "test": "check_rpe_signal_statistics_caller",
+          "rc": 0,
+          "tests": 9,
+          "seconds": 6.59
+        },
+        {
+          "test": "check_r_variable_compiled_price",
+          "rc": 0,
+          "tests": 9,
+          "seconds": 0.4
+        }
+      ]
+    },
+    "B_head_ce0517de6_before_patch": {
+      "files": 28,
+      "tests": 317,
+      "failed": [
+        "check_h4_df10_rpe_batch",
+        "check_h4_s0_v2_intake",
+        "check_h6_price_pipeline_coverage",
+        "check_pr_r_dependent_n",
+        "check_r_variable_compiled_price"
+      ],
+      "results": [
+        {
+          "test": "check_abc_d_v2_integration",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 22.72
+        },
+        {
+          "test": "check_bv2_mean_price",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 12.03
+        },
+        {
+          "test": "check_full_baseline_v2_requests",
+          "rc": 0,
+          "tests": 14,
+          "seconds": 2.86
+        },
+        {
+          "test": "check_h4_df10_price_provider",
+          "rc": 0,
+          "tests": 8,
+          "seconds": 0.68
+        },
+        {
+          "test": "check_h4_df10_rpe_batch",
+          "rc": 1,
+          "tests": 13,
+          "seconds": 16.32
+        },
+        {
+          "test": "check_h4_price_pipeline_integration",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 3.58
+        },
+        {
+          "test": "check_h4_s0_v2_intake",
+          "rc": 1,
+          "tests": 0,
+          "seconds": 0.61
+        },
+        {
+          "test": "check_h6_df19_price_provider",
+          "rc": 0,
+          "tests": 10,
+          "seconds": 4.54
+        },
+        {
+          "test": "check_h6_price_pipeline_coverage",
+          "rc": 1,
+          "tests": 7,
+          "seconds": 8.82
+        },
+        {
+          "test": "check_pf_pr_rpe_pipeline",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 9.19
+        },
+        {
+          "test": "check_pr_r_dependent_n",
+          "rc": 1,
+          "tests": 12,
+          "seconds": 29.84
+        },
+        {
+          "test": "check_pr_rpe_method_coverage",
+          "rc": 0,
+          "tests": 14,
+          "seconds": 1.74
+        },
+        {
+          "test": "check_pr_rpe_rmse",
+          "rc": 0,
+          "tests": 17,
+          "seconds": 8.66
+        },
+        {
+          "test": "check_pr_rpe_rmse_controller",
+          "rc": 0,
+          "tests": 17,
+          "seconds": 0.65
+        },
+        {
+          "test": "check_pr_rpe_rmse_evidence",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 2.67
+        },
+        {
+          "test": "check_pr_rpe_rmse_integration",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 29.76
+        },
+        {
+          "test": "check_rpe_decoder_statistics",
+          "rc": 0,
+          "tests": 16,
+          "seconds": 19.99
+        },
+        {
+          "test": "check_rpe_deterministic_refinement",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 4.73
+        },
+        {
+          "test": "check_rpe_deterministic_risk",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 3.89
+        },
+        {
+          "test": "check_rpe_new_evidence_intake",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 70.68
+        },
+        {
+          "test": "check_rpe_provider_integration",
+          "rc": 0,
+          "tests": 8,
+          "seconds": 42.2
+        },
+        {
+          "test": "check_rpe_risk_intervals",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 4.27
+        },
+        {
+          "test": "check_rpe_r_price_intake",
+          "rc": 0,
+          "tests": 15,
+          "seconds": 130.7
+        },
+        {
+          "test": "check_rpe_s3_intake",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 75.6
+        },
+        {
+          "test": "check_rpe_shot_allocation",
+          "rc": 0,
+          "tests": 10,
+          "seconds": 4.2
+        },
+        {
+          "test": "check_rpe_shot_evaluation_design",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 3.47
+        },
+        {
+          "test": "check_rpe_signal_statistics_caller",
+          "rc": 0,
+          "tests": 9,
+          "seconds": 43.78
+        },
+        {
+          "test": "check_r_variable_compiled_price",
+          "rc": 1,
+          "tests": 9,
+          "seconds": 2.26
+        }
+      ]
+    },
+    "B_head_ce0517de6_after_patch": {
+      "files": 29,
+      "tests": 326,
+      "failed": [
+        "check_h4_df10_rpe_batch",
+        "check_h4_s0_v2_intake",
+        "check_h6_price_pipeline_coverage",
+        "check_pr_r_dependent_n",
+        "check_r_variable_compiled_price"
+      ],
+      "results": [
+        {
+          "test": "check_abc_d_v2_integration",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 23.15
+        },
+        {
+          "test": "check_bv2_mean_price",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 12.44
+        },
+        {
+          "test": "check_full_baseline_v2_requests",
+          "rc": 0,
+          "tests": 14,
+          "seconds": 2.89
+        },
+        {
+          "test": "check_h4_df10_price_provider",
+          "rc": 0,
+          "tests": 8,
+          "seconds": 0.5
+        },
+        {
+          "test": "check_h4_df10_rpe_batch",
+          "rc": 1,
+          "tests": 13,
+          "seconds": 16.41
+        },
+        {
+          "test": "check_h4_price_pipeline_integration",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 3.53
+        },
+        {
+          "test": "check_h4_s0_v2_intake",
+          "rc": 1,
+          "tests": 0,
+          "seconds": 0.62
+        },
+        {
+          "test": "check_h6_df19_price_provider",
+          "rc": 0,
+          "tests": 10,
+          "seconds": 4.72
+        },
+        {
+          "test": "check_h6_price_pipeline_coverage",
+          "rc": 1,
+          "tests": 7,
+          "seconds": 8.67
+        },
+        {
+          "test": "check_pf_pr_rpe_pipeline",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 9.18
+        },
+        {
+          "test": "check_pr_r_dependent_n",
+          "rc": 1,
+          "tests": 12,
+          "seconds": 28.47
+        },
+        {
+          "test": "check_pr_rpe_method_coverage",
+          "rc": 0,
+          "tests": 14,
+          "seconds": 1.81
+        },
+        {
+          "test": "check_pr_rpe_rmse",
+          "rc": 0,
+          "tests": 17,
+          "seconds": 8.5
+        },
+        {
+          "test": "check_pr_rpe_rmse_controller",
+          "rc": 0,
+          "tests": 17,
+          "seconds": 0.68
+        },
+        {
+          "test": "check_pr_rpe_rmse_evidence",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 2.69
+        },
+        {
+          "test": "check_pr_rpe_rmse_integration",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 29.65
+        },
+        {
+          "test": "check_rpe_decoder_statistics",
+          "rc": 0,
+          "tests": 16,
+          "seconds": 19.86
+        },
+        {
+          "test": "check_rpe_deterministic_refinement",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 4.93
+        },
+        {
+          "test": "check_rpe_deterministic_risk",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 4.05
+        },
+        {
+          "test": "check_rpe_new_evidence_intake",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 70.07
+        },
+        {
+          "test": "check_rpe_price_implementation_guard",
+          "rc": 0,
+          "tests": 9,
+          "seconds": 10.67
+        },
+        {
+          "test": "check_rpe_provider_integration",
+          "rc": 0,
+          "tests": 8,
+          "seconds": 42.48
+        },
+        {
+          "test": "check_rpe_risk_intervals",
+          "rc": 0,
+          "tests": 12,
+          "seconds": 3.97
+        },
+        {
+          "test": "check_rpe_r_price_intake",
+          "rc": 0,
+          "tests": 15,
+          "seconds": 133.33
+        },
+        {
+          "test": "check_rpe_s3_intake",
+          "rc": 0,
+          "tests": 13,
+          "seconds": 75.85
+        },
+        {
+          "test": "check_rpe_shot_allocation",
+          "rc": 0,
+          "tests": 10,
+          "seconds": 4.33
+        },
+        {
+          "test": "check_rpe_shot_evaluation_design",
+          "rc": 0,
+          "tests": 7,
+          "seconds": 4.09
+        },
+        {
+          "test": "check_rpe_signal_statistics_caller",
+          "rc": 0,
+          "tests": 9,
+          "seconds": 42.86
+        },
+        {
+          "test": "check_r_variable_compiled_price",
+          "rc": 1,
+          "tests": 9,
+          "seconds": 2.26
+        }
+      ]
+    },
+    "C_guard_commit_3a8b37f1a_unchanged": {
+      "files": 4,
+      "tests": 51,
+      "failed": [],
+      "results": [
+        {
+          "test": "check_price_implementation_guard",
+          "rc": 0,
+          "tests": 14
+        },
+        {
+          "test": "check_rpe_d_price_connection",
+          "rc": 0,
+          "tests": 14
+        },
+        {
+          "test": "check_rpe_mean_price_model",
+          "rc": 0,
+          "tests": 11
+        },
+        {
+          "test": "check_rpe_optimization_pipeline",
+          "rc": 0,
+          "tests": 12
+        }
+      ]
+    }
+  },
+  "B_head_failures": {
+    "files": [
+      "check_h4_df10_rpe_batch",
+      "check_h4_s0_v2_intake",
+      "check_h6_price_pipeline_coverage",
+      "check_pr_r_dependent_n",
+      "check_r_variable_compiled_price"
+    ],
+    "cause": "pre-existing I2 byte/AST pins of the live shared pipeline; fixed in 3a27f99fe (pr_resource_technical_fixes_20261114)",
+    "identical_before_and_after_patch": true,
+    "check": "sorted FAIL/ERROR/exception lines have equal md5 before and after the patch for each file"
+  }
+}
