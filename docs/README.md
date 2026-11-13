@@ -1,5 +1,7 @@
 # 文書索引
 
+[Full-H κ2 S-1結果](research/d_full_h_kappa2_s1_results_20261114/REPORT.md)／[実行記録](research/d_full_h_kappa2_s1_results_20261114/EXECUTION.txt)：13round raw/corrected/logB、R448との比較条件。
+
 [D κ2 S-1/P-1と価格接続REPORT](research/d_kappa_s1_price_builders_20261114/REPORT.md)／[次の実行](research/d_kappa_s1_price_builders_20261114/NEXT_EXECUTION.md)／[HANDOFF](research/d_kappa_s1_price_builders_20261114/HANDOFF.md)：固定caller `04bead11`、30人工・metadata PASS、科学実行・compileなし、mandatory STOP。
 
 [Truncated PF T2結果](research/truncated_pf_t2_results_20261114/REPORT.md)／[CELLS.csv](research/truncated_pf_t2_results_20261114/CELLS.csv)／[T3候補](research/truncated_pf_t2_results_20261114/T3_CANDIDATES.json)／[run01](research/truncated_pf_t2_results_20261114/run01/RESULT.json)：切断・PF・合計シフト、分枝・重なり、Full PF比較。T3/T2bは未承認・STOP。

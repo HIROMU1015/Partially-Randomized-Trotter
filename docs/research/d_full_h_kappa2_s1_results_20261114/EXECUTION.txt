@@ -1,0 +1,22 @@
+S-1 kappa2 execution record (approved by user instruction comment(A1109).md, 2026-11-14)
+
+worktree HEAD at execution: 5ccc1dfc341236d3fce2f745e7e9023447a027a7 (descendant of fixed caller SOURCE 04bead115; caller/module bytes identical)
+python: /home/AbeHiromu/projects/Evaluation-of-gate-numbers-for-ground-state-energy-calculations-using-higher-order-product-formulae/venv/bin/python (3.12.3, numpy 1.26.4, scipy 1.14.1; same venv as saved R448)
+
+== pre-run artificial caller tests: tests/check_full_h_kappa2_s1_caller.py
+Ran 7 tests in 3.420s
+OK
+
+== metadata preflight: python -B scripts/run_full_h_kappa2_signals.py
+PREFLIGHT_METADATA_ONLY 54ac3eb38de5f90a77e9921100576c89f6c870f68384f4c7d9efe61b2c80c07e 13 rounds
+
+== execution (once): python -B scripts/run_full_h_kappa2_signals.py --execute-approved-s1  (wrapped by /usr/bin/time -v)
+exit code: 0
+{"status": "BASELINE_SIGNALS_COMPLETE_NOT_RMSE_QUALIFIED", "evaluations": 13, "elapsed_seconds": 3.533534656977281}
+User time (seconds): 11.35
+System time (seconds): 5.84
+Percent of CPU this job got: 416%
+Elapsed (wall clock) time (h:mm:ss or m:ss): 0:04.13
+Maximum resident set size (kbytes): 607244
+
+retry: none; P-1/S-2/N/MSE/G: not run; mandatory STOP
