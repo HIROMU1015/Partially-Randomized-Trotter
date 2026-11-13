@@ -22,7 +22,8 @@
 - Bのbinding（`codex/b-price-implementation-guard-20261114`の`rpe_price_implementation_guard.py`）は、C guardを固定`3a8b37f1a`のblobから実行している。そのため現状では`PR_PAULI_TAIL`を知らず、Pauli tailのPRは`PR`項目で照合される。
   - Pauli D2の価格にZZの発行元を付けても拒否される。
   - 逆に、DF用policyの`PR`項目でPauli価格を受理してしまうことは、Pauli sidecarが新ZZの発行元とIDを偽装しない限り起きない。
-- Pauli routeを比較に含める前に、bindingの固定commitを、本branchの**Pauli bridgeのcommit**（`cfc0fae6`より後。DのLOWERING_IDとcanonical physical IDの検査を含む）へ更新する。その後、Bの`check_rpe_price_implementation_guard.py`と`cross_route_in_C_tree.py`を再実行する。`cfc0fae6`の暫定Pauli ID（`…_9C4006BF`）は廃止した。
+- Pauli routeを比較に含める前に、bindingの固定commitを、本branchの**Pauli bridgeのcommit**（`cfc0fae6`より後。canonical physical IDの検査と、D2・Pauli eventの発行元照合を含む）へ更新する。その後、Bの`check_rpe_price_implementation_guard.py`と`cross_route_in_C_tree.py`を再実行する。
+- lowering ID `PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF`とroute明示の規則は、`cfc0fae6`から変わっていない（Dの`8b28dce0`も同じ規則を使う）。
 - 旧guard（`3a8b37f1a`）の14件のテストは、本branchでも無変更でPASSする。既存4 routeの挙動は同じである。
 
 ## 3. 第1水準（原論文型G）の会計

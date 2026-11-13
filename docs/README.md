@@ -1,6 +1,6 @@
 # 文書索引
 
-[Pauli physical-ID bridge](research/paper_g_price_routes_20261114/PAULI_BRIDGE.md)：Cのplannerに、Pauli canonical physical ID（辞書hash・λ・scalar・round別SOURCE）を接続。guardのloweringをDの`PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD`に整合。実LD1/LD2の26 roundでmetadataが一致。新decoder bridgeの仕様。32＋56＝88 PASS。STOP。
+[Pauli physical-ID bridge](research/paper_g_price_routes_20261114/PAULI_BRIDGE.md)：Cのplannerに、Pauli canonical physical ID（辞書hash・λ・scalar・round別SOURCE）を接続。guardをDの最新sidecar（8b28dce0）と整合させ、旧形式IDは拒否。実LD1/LD2の26 roundでmetadataが一致。新decoder bridgeの仕様。34＋56＝90 PASS。STOP。
 [第1水準G価格経路REPORT](research/paper_g_price_routes_20261114/REPORT.md)／[価格検証計画](research/paper_g_price_routes_20261114/PRICE_VALIDATION_PLAN.md)／[B HANDOFF](research/paper_g_price_routes_20261114/HANDOFF_B.md)／[テスト](research/paper_g_price_routes_20261114/TESTS.txt)：Pauli D2 route・nominal N・G_paper会計・model検査。未承認の取得計画、STOP。
 
 [Truncated PF T2結果](research/truncated_pf_t2_results_20261114/REPORT.md)／[CELLS.csv](research/truncated_pf_t2_results_20261114/CELLS.csv)／[T3候補](research/truncated_pf_t2_results_20261114/T3_CANDIDATES.json)／[run01](research/truncated_pf_t2_results_20261114/run01/RESULT.json)：切断・PF・合計シフト、分枝・重なり、Full PF比較。T3/T2bは未承認・STOP。

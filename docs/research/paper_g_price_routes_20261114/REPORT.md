@@ -9,9 +9,11 @@
 
 **成果物**：本書、[有限価格検証計画](PRICE_VALIDATION_PLAN.md)、[Bへの引渡し](HANDOFF_B.md)、[テスト記録](TESTS.txt)。
 
-**追補（同日）**：[Pauli physical-ID bridge](PAULI_BRIDGE.md)で、Cのplannerへの接続と、guardのDとの整合を行った。本書§2のうち、次の2点はPAULI_BRIDGE§2で置き換えた。
-- Pauli loweringの暫定ID`…_9C4006BF`は、Dの`PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD`に変えた。
-- Pauli sidecarでの`route`明示は必須でなくなった。routeはloweringから導出する。
+**追補（同日）**：[Pauli physical-ID bridge](PAULI_BRIDGE.md)で、Cのplannerへの接続と、guardのDとの整合を行った。
+- 本書§2のroute・lowering ID・route明示の規則は変えていない。Dは`8b28dce0`でこの規則に合わせた。
+- 追加した点は2つ。
+  - Pauliのphysical IDはBのcanonical candidate IDとし、旧形式IDを拒否する。
+  - D2の発行元照合に、`central_control_body`と`append_pauli_event`を加えた。
 
 **変更したcode**
 - `src/trottertracks/price_implementation_guard.py`：route拡張

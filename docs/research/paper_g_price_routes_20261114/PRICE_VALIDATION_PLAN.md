@@ -61,7 +61,7 @@
 - 価格の扱い：単一pathの価格であり、E[C]ではない。
 
 **C側の受入**（[PAULI_BRIDGE](PAULI_BRIDGE.md)§1〜2で更新）
-- `PR_PAULI_TAIL` routeを使う。loweringはDの`PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD`。routeは、Dのfactsのloweringから導出する。
+- `PR_PAULI_TAIL` routeを使う。loweringは`PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF`（Dの`8b28dce0`と同じ）。sidecarにrouteの明示が必要。
 - physical IDはBのcanonical candidate ID。`split.tail_dictionary`（辞書のhash）はphysical contextで照合する。
   - 旧形式のphysical CIDには辞書が含まれず、DFとPauliで衝突し得る。
   - そのため旧形式IDは拒否し、canonicalの辞書identityで区別する。
@@ -112,7 +112,9 @@
   - `profile_extension`
   - 固定JSONの`implementation_evidence`
 - guard（`price_implementation_guard.check`）は、第1水準（`paper_cost`）でも第2水準（`compare`/`R.cost`）でも、価格の算術より前に通す。
-- classification・expectation・cohort・n_pathsを、recordに明記する。
+- classification・expectation・cohort・n_pathsを、recordに明記する。classificationはBの`PRICE_KINDS`の名前を使う。
+  - Dの`8b28dce0`のcallerの記録名（`DIRECT_DETERMINISTIC`／`EXACT_DETERMINISTIC_CIRCUIT`、`DIRECT_SINGLE_PATH_WIRING`）は、G会計で拒否される。
+  - 実行前にDの側でそろえる（[PAULI_BRIDGE](PAULI_BRIDGE.md)§2.2）。Cでは読み替えない。
   - 決定論PFは`DIRECT_COMPILED_DETERMINISTIC`かつ`DETERMINISTIC`。
   - RTEを含む方式の単一path・有限cohortは`DIRECT_COMPILED_FINITE_SAMPLE`かつ`FINITE_COHORT_ONLY`。
   - law期待値として扱えるのは、`QUALIFIED_EXPECTATION`と`ideal_sampler_distance_qualified=True`の両方が外部で示された場合だけ。
@@ -126,7 +128,7 @@
 | Full PF（p10） | 3 template（S2 16h/7、Y4 16h/3、M5 16h）のm4・m5・m6、X/Y。M5 m4は保存directの受入 | `FULL_PF`、lowering `NOT_APPLICABLE_NO_RTE` | (方式・template・軸)ごとに`C=a+b·q`を、m4・m5の2点からexactに解く | m6（同じtemplate・軸） | m7〜m12は`UNQUALIFIED_MODEL` |
 | Truncated p7 | Full PFと同じ3 template・同じround・X/Y。B0/B0Iの同値性確認（p7 S2 m4、X/Y） | `TRUNCATED_PF`、`NOT_APPLICABLE_NO_RTE`、retained Hの束縛 | Full PFと同じdesign | m6 | 同上。m6でのp7/p10の比は直接の観測値として記録 |
 | Full-H κ2 | P-1：配線確認だけで、価格には使わない。P-2：単一group cell（T=0.1、q=1、R∈{566, 4528, 36223}）、κ2 m5/m6のround | `FULL_H_RTE`、新ZZ（`CONTROLLED_ZZ_CX_CRZ_CX_V1`） | group cellをCALIBRATIONとし、`E[C]=a+b·s+c·(q−1)`（featureはone、event_count、outer_boundary_count） | m5/m6の全round（finite cohort平均、n_pathsとlaw付き） | m7〜m12は`UNQUALIFIED_MODEL`の外挿scenario。group i.i.d.・境界の局所性・compilerの非干渉は未検証の仮説 |
-| Pauli pilot（B0） | LD1/m0、normal 1 path、X/Y | `PR_PAULI_TAIL`、Dの`LOWERING_ID`、canonical physical ID、`pauli_requests`との一致 | 行わない（単一pathなので） | 行わない | 第1水準のtierは`FINITE_COHORT_SCENARIO`。平均単価の資格はB1以降（Pauli特有の特徴量はAの記述子が出てから決める） |
+| Pauli pilot（B0） | LD1/m0、normal 1 path、X/Y | `PR_PAULI_TAIL`、`PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF`、canonical physical ID（Dの`legacy_physical_candidate`は置換が必要）、`pauli_requests`との一致 | 行わない（単一pathなので） | 行わない | 第1水準のtierは`FINITE_COHORT_SCENARIO`。平均単価の資格はB1以降（Pauli特有の特徴量はAの記述子が出てから決める） |
 
 **比較の前提**：Full PFとTruncated p7は、同じ3 template・同じround・同じ軸・同じcompiler profileで取得する。片方だけのtemplateやroundは比較に使わない。
 

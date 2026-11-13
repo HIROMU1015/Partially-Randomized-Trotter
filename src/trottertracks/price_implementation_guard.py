@@ -16,10 +16,10 @@ QUANTITY = 'FULL_WRAPPER_MEAN_COMPILED_PRICE'
 SCALAR_ONCE = 'ONCE_AT_TOTAL_T'
 NEW_ZZ = 'CONTROLLED_ZZ_CX_CRZ_CX_V1'
 OLD_ZZ = 'CONTROLLED_ZZ_GENERIC_RZZ_CONTROL1_PROVIDER_C31EF424'
-# Distinct legal route for PR with a collected-Pauli tail: D's DF head + Pauli
-# tail connection (LOWERING_ID of D pauli_tail_price_connection @5ccc1dfc);
-# local basis/parity uncontrolled, only central rotations controlled (P3 D2).
-PAULI_D2 = 'PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD'
+# Distinct legal route for PR with a collected-Pauli tail: local basis/parity
+# uncontrolled, only the central rotation controlled (P3 native 9c4006bf D2).
+# D's Pauli connection (8b28dce0 LOWERING_ID/D2_SOURCE) uses this same ID.
+PAULI_D2 = 'PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF'
 ZZ_FAMILY = (NEW_ZZ, OLD_ZZ)
 PAULI_FAMILY = (PAULI_D2,)
 PAULI_TAIL_KINDS = ('GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL',)
@@ -74,9 +74,9 @@ def _rte_source(root, lowering, commit, path):
                  ('_append_central_application',)),),
         OLD_ZZ:(('c31ef424175c02379eafebe8fc6c7548c1d9aabe','src/trotterlib/df_rte_qiskit.py',
                  ('_append_central_application',)),),
-        PAULI_D2:(('5ccc1dfc341236d3fce2f745e7e9023447a027a7','src/trottertracks/pauli_tail_price_connection.py',
-                   ('controlled_tail','compose')),
-                  ('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/h4_d2_pauli_control.py',
+        # D2 controller (incl. central_control_body, which D's controlled_tail
+        # calls) and the Pauli event emitter it controls, at the same commit.
+        PAULI_D2:(('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/h4_d2_pauli_control.py',
                    ('_rotation','central_control_body','central_control_tokens')),
                   ('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/pauli_signal_adapter.py',
                    ('append_pauli_event',)))}
@@ -207,11 +207,7 @@ def check(root, config, prices, *, cohorts, bindings, policy):
                 # source-route/receipt checks named by implementation_evidence.
                 C.blob(root, src['commit'], src['path'])
             _same(facts.get('method'), method, 'Implementation METHOD differs')
-            # D's facts carry the registered lowering ID; route is derived from
-            # it, and an explicitly declared route must agree.
-            derived = 'PR_PAULI_TAIL' if facts.get('rte_rotation_lowering') in PAULI_FAMILY else method
-            _same(facts.get('route', derived), derived, 'Implementation tail/lowering route differs')
-            _same(derived, key, 'Implementation tail/lowering route differs')
+            _same(facts.get('route', method), key, 'Implementation tail/lowering route differs')
             _same(facts.get('profile'), profile, 'Implementation compiler/control/wrapper differs')
             _same(facts.get('measurement'), B.p.measurement(row, axis), 'Implementation measurement/axis differs')
             for name in ('measurement_axis','observable','outcome_convention','units'):

@@ -14,8 +14,11 @@ from . import rpe_optimization_pipeline as I
 MODULE='src/trottertracks/rpe_d_price_connection.py'
 PATH='PR_CANDIDATE_PAIRED_PATH_PRICE'
 MEAN='FULL_WRAPPER_MEAN_COMPILED_PRICE'
-# D's Pauli-tail price connection (same blob at 04bead11): read-only reuse.
-D_PAULI=dict(commit='5ccc1dfc341236d3fce2f745e7e9023447a027a7',path='src/trottertracks/pauli_tail_price_connection.py')
+# D's Pauli-tail price connection at D's fixed SOURCE (same blob at f2a2c3af):
+# read-only reuse of its pure round_request() and route/SOURCE constants.
+D_PAULI=dict(commit='8b28dce02cc5b5da1a8f4f1718f0b9f855759978',path='src/trottertracks/pauli_tail_price_connection.py')
+D_CONSTANTS=('MODULE','DICTIONARY_KIND','SCALAR_QUANTITY','LOWERING_ID','ROUTE','D2_SOURCE','NATIVE','WRAPPER',
+             'NATIVE_POLICY','QUANTITY')
 
 
 @lru_cache(maxsize=None)
@@ -23,11 +26,14 @@ def _d_pauli(root):
     """D's unchanged pure round_request() and its route constants."""
     from .r_price_phase1_science import functions
     tree=ast.parse(I.C.blob(root,D_PAULI['commit'],D_PAULI['path']))
-    consts={t.id:ast.literal_eval(n.value) for n in tree.body if isinstance(n,ast.Assign)
-            for t in n.targets if isinstance(t,ast.Name) and t.id in ('LOWERING_ID','SCALAR_QUANTITY','DICTIONARY_KIND')}
+    nodes=[n for n in tree.body if isinstance(n,ast.Assign) and len(n.targets)==1
+           and isinstance(n.targets[0],ast.Name) and n.targets[0].id in D_CONSTANTS]
+    consts=dict(dict=dict)  # literal/dict(...) constants only (no I/O, no imports)
+    exec(compile(ast.Module(body=nodes,type_ignores=[]),D_PAULI['commit']+':'+D_PAULI['path'],'exec'),consts)
+    if set(D_CONSTANTS)-set(consts):raise ValueError('D Pauli constants unavailable')
     scope=dict(deepcopy=deepcopy,Fraction=Fraction)
     functions(root,D_PAULI['commit'],D_PAULI['path'],('round_request',),scope)
-    return SimpleNamespace(round_request=scope['round_request'],**consts)
+    return SimpleNamespace(round_request=scope['round_request'],**{k:consts[k] for k in D_CONSTANTS})
 
 
 def pauli_requests(root,request,*,axes=('X','Y')):
@@ -41,7 +47,9 @@ def pauli_requests(root,request,*,axes=('X','Y')):
     I._validate(root,request);api=I.providers(str(root));B=api.B
     if request['provider']!='A_PR_PAULI':raise ValueError('Pauli-tail planner request required')
     d=_d_pauli(str(root));config=request['configuration'];tail=config['spec']['split']['tail_dictionary']
-    if tail.get('kind')!=d.DICTIONARY_KIND:raise ValueError('D Pauli dictionary kind differs')
+    from .price_implementation_guard import PAULI_D2
+    if tail.get('kind')!=d.DICTIONARY_KIND or d.LOWERING_ID!=PAULI_D2 or d.ROUTE!='PR_PAULI_TAIL':
+        raise ValueError('D Pauli dictionary kind/lowering/route differs from the C guard')
     dictionary=request.get('pauli_dictionary')
     if dictionary is None:dictionary=I._pinned_json(str(root),tail['source']['commit'],tail['source']['path'])
     packet=dict(configuration=config,dictionary_identity=tail,rounds=[dict(m=r['m'],candidate_id=r['candidate']['id'],
@@ -54,7 +62,8 @@ def pauli_requests(root,request,*,axes=('X','Y')):
                 or B.a.exact_scalar(r['lambda_P'])!=B.a.exact_scalar(config['spec']['split']['lambda_R'])
                 or not I.C.p.same(r['identity'],row['identity']) or not I.C.p.same(r['law_binding'],row['law_binding'])):
             raise ValueError('D Pauli round request differs from C planner physical context')
-        row.update(expected_lowering_id=d.LOWERING_ID,expected_scalar_quantity=d.SCALAR_QUANTITY,
+        row.update(expected_route=d.ROUTE,expected_lowering_id=d.LOWERING_ID,expected_native_policy=d.NATIVE_POLICY,
+            expected_scalar_quantity=d.SCALAR_QUANTITY,expected_lowering_source=deepcopy(d.D2_SOURCE),
             d_pauli_round=dict(source=dict(D_PAULI,function='round_request'),candidate_id=r['candidate_id'],
                 T=B.a.exact_value(r['T']),q=r['q'],R_outer=r['R'],K=r['K'],prefix=r['prefix'],lambda_P=r['lambda_P']),
             source=dict(module=MODULE,D_PAULI=deepcopy(D_PAULI)))

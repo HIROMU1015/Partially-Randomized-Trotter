@@ -25,13 +25,15 @@ T = GT.T; ROOT = GT.ROOT; I = GT.I; B = GT.B; API = T.API
 R = sys.modules[B.__package__].pr_rpe_rmse
 MOCK = dict(fixture='ARTIFICIAL_PAPER_G_ROUTES_ONLY')
 D = DC._d_pauli(str(ROOT))
-PAULI_CODE = dict(DC.D_PAULI)  # D's emitter module; D2/Pauli-event dependencies at the same commit
+PAULI_CODE = dict(D.D2_SOURCE)  # D's rte_lowering_source: P3 D2 at 9c4006bf (event emitter checked at the same commit)
 DICT_SOURCE = dict(commit='d'*40, path='ARTIFICIAL_PAULI_DICTIONARY.json')
 ROUND_SOURCES = {'0': dict(commit='e'*40, path='ARTIFICIAL_REUSED_ROUND.py'),
                  '1': dict(commit='f'*40, path='ARTIFICIAL_NEW_ROUND.py')}
 FIX = {}
-D_FACTS = dict(deepcopy=deepcopy, LOWERING_ID=D.LOWERING_ID, SCALAR_QUANTITY=D.SCALAR_QUANTITY, MODULE=DC.D_PAULI['path'])
-functions(ROOT, DC.D_PAULI['commit'], DC.D_PAULI['path'], ('implementation_facts',), D_FACTS)
+D_FACTS = dict(deepcopy=deepcopy, **{k: getattr(D, k) for k in DC.D_CONSTANTS})
+functions(ROOT, DC.D_PAULI['commit'], DC.D_PAULI['path'],
+          ('implementation_facts', 'price_records', 'legacy_physical_candidate'), D_FACTS)
+KEEP = object()
 
 
 def fixture(method):
@@ -42,7 +44,7 @@ def fixture(method):
 
 def route_policy():
     pol = GT.policy(); pol['id'] = 'ARTIFICIAL_DF_ZZ_PLUS_PAULI_D2'
-    pol['by_method']['PR_PAULI_TAIL'] = dict(native_policy='NATIVE_DF_HEAD_PLUS_PAULI_D2_TAIL',
+    pol['by_method']['PR_PAULI_TAIL'] = dict(native_policy=D.NATIVE_POLICY,
         rte_rotation_lowering=D.LOWERING_ID, scalar_quantity=D.SCALAR_QUANTITY)
     return pol
 
@@ -106,7 +108,7 @@ def pauli_values():
     v = pauli_fixture(); return v[0], v[4], v[5]['price_bindings'], v[5]['cohorts']
 
 
-def bind_route(req, prices, sides, pol, *, route=None, lowering_source=PAULI_CODE):
+def bind_route(req, prices, sides, pol, *, route=KEEP, lowering_source=PAULI_CODE):
     config = req['configuration']; key = G.route(B, config['spec']); domain = pol['by_method'][key]
     method = B.comparison_method(config['spec']); proofs = {}
     ext = dict(lowering_id=domain['rte_rotation_lowering'], source=MOCK)
@@ -115,9 +117,9 @@ def bind_route(req, prices, sides, pol, *, route=None, lowering_source=PAULI_COD
         row = config['rounds'][price['identity']['m']]; side['profile_extension'] = deepcopy(ext)
         measurement = B.p.measurement(row, price['axis'])
         if key == 'PR_PAULI_TAIL':
-            # D's own sidecar facts; D leaves the emitter commit to the execution receipt.
-            facts = D_FACTS['implementation_facts'](deepcopy(pol['profile']), native_source=GT.CODE, wrapper_source=GT.CODE,
-                scalar_source=GT.CODE, measurement=measurement, scalar=2.25)
+            # D's own sidecar facts (8b28dce0); fictional native/scalar SOURCE blobs.
+            facts = D_FACTS['implementation_facts'](deepcopy(pol['profile']), native_source=GT.CODE,
+                measurement=measurement, scalar=2.25, scalar_source=GT.CODE)
             facts['rte_lowering_source'] = deepcopy(lowering_source)
             if domain['rte_rotation_lowering'] != D.LOWERING_ID:
                 facts.update(rte_rotation_lowering=domain['rte_rotation_lowering'])
@@ -125,7 +127,9 @@ def bind_route(req, prices, sides, pol, *, route=None, lowering_source=PAULI_COD
             facts = dict(domain, method=method, profile=deepcopy(pol['profile']), measurement=measurement,
                 native_source=GT.CODE, wrapper_source=GT.CODE, scalar_source=GT.CODE, scalar_application=G.SCALAR_ONCE,
                 rte_lowering_source=lowering_source)
-        if route is not None:
+        if route is None:
+            facts.pop('route', None)
+        elif route is not KEEP:
             facts['route'] = route
         side['implementation'] = facts
         locator = dict(commit='b'*40, path='ARTIFICIAL_FIXED_METADATA.json', selector=[str(row['m'])+price['axis']])
@@ -163,34 +167,65 @@ class PauliRoute(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'outside the explicit implementation policy'):
             check(req, prices, sides, cohorts, pol, proofs)
 
-    def test_D_facts_route_derived_from_lowering_and_emitter_commit_required(self):
+    def test_D_facts_accepted_route_declared_and_emitter_commit_required(self):
         pol = route_policy(); req, prices, sides, cohorts = pauli_values()
         proofs = bind_route(req, prices, sides, pol)
-        self.assertNotIn('route', sides[0]['implementation'])  # D's facts as published
+        self.assertEqual(sides[0]['implementation']['route'], 'PR_PAULI_TAIL')  # D's facts as published
         self.assertEqual(len(check(req, prices, sides, cohorts, pol, proofs)['checked']), 4)
-        proofs = bind_route(req, prices, sides, pol, route='PR')
-        with self.assertRaisesRegex(ValueError, 'route differs'):
-            check(req, prices, sides, cohorts, pol, proofs)
-        proofs = bind_route(req, prices, sides, pol, lowering_source=dict(commit=None, path=DC.D_PAULI['path']))
+        for route in (None, 'PR'):
+            proofs = bind_route(req, prices, sides, pol, route=route)
+            with self.assertRaisesRegex(ValueError, 'route differs'):
+                check(req, prices, sides, cohorts, pol, proofs)
+        proofs = bind_route(req, prices, sides, pol, lowering_source=dict(commit=None, path=PAULI_CODE['path']))
         with self.assertRaisesRegex(ValueError, 'RTE lowering SOURCE missing'):
             check(req, prices, sides, cohorts, pol, proofs)
 
-    def test_D2_dependency_checked_at_sidecar_commit(self):
-        pol = route_policy(); req, prices, sides, cohorts = pauli_values(); fake = 'c'*40; real = G.C.blob
-        def blob(root, commit, path):
-            if commit != fake:
-                return real(root, commit, path)
-            text = real(root, DC.D_PAULI['commit'], path)
-            if path.endswith('h4_d2_pauli_control.py'):
-                text = text.decode().replace('def central_control_body(body):', 'def central_control_body(body, extra=0):').encode()
-            return text
-        proofs = bind_route(req, prices, sides, pol, lowering_source=dict(commit=fake, path=DC.D_PAULI['path']))
-        with patch.object(G.C, 'blob', side_effect=blob):
-            with self.assertRaisesRegex(ValueError, 'emitter SOURCE'):
-                check(req, prices, sides, cohorts, pol, proofs)
+    def test_D2_and_event_emitter_checked_at_sidecar_commit(self):
+        pol = route_policy(); req, prices, sides, cohorts = pauli_values(); real = G.C.blob
+        edits = {'src/trotterlib/h4_d2_pauli_control.py': ('def central_control_body(body):', 'def central_control_body(body, extra=0):'),
+                 'src/trotterlib/pauli_signal_adapter.py': ('def append_pauli_event(circuit, event, labels):',
+                                                            'def append_pauli_event(circuit, event, labels, extra=0):')}
+        for i, (target, (old, new)) in enumerate(edits.items()):
+            fake = str(i)*40
+            def blob(root, commit, path, fake=fake, target=target, old=old, new=new):
+                if commit != fake:
+                    return real(root, commit, path)
+                text = real(root, PAULI_CODE['commit'], path)
+                return text.decode().replace(old, new).encode() if path == target else text
+            proofs = bind_route(req, prices, sides, pol, lowering_source=dict(PAULI_CODE, commit=fake))
+            with patch.object(G.C, 'blob', side_effect=blob):
+                with self.assertRaisesRegex(ValueError, 'emitter SOURCE'):
+                    check(req, prices, sides, cohorts, pol, proofs)
         proofs = bind_route(req, prices, sides, pol,
-                            lowering_source=dict(commit='04bead115233641233ae1fc409b2c4d89ebc2483', path=DC.D_PAULI['path']))
+                            lowering_source=dict(PAULI_CODE, commit='f2a2c3afd69d9013bc5f2e60973b2820ec8406b3'))
         self.assertEqual(len(check(req, prices, sides, cohorts, pol, proofs)['checked']), 4)
+
+    def test_D_price_records_need_the_canonical_candidate_and_are_not_G_prices(self):
+        """D's own price_records/legacy_physical_candidate (8b28dce0) against the C guard."""
+        pol = route_policy(); v = pauli_fixture(); req = v[0]; config = req['configuration']
+        def d_records(candidate):
+            prices, sides, proofs, cohorts = [], [], {}, {}
+            for row in config['rounds']:
+                p, s, f = D_FACTS['price_records'](config, row['m'], trial_prices=dict(cosine=dict(rz_count=11), sine=dict(rz_count=12)),
+                    scalar=2.25, physical_candidate=candidate(row), native_source=dict(DC.D_PAULI), cohort='D_PAULI_ARTIFICIAL',
+                    price_source=dict(MOCK, m=row['m']), evidence_commit='b'*40, evidence_path='ARTIFICIAL.json', measurement=B.p.measurement)
+                for side in s:  # fictional dictionary SOURCE has no blob; only the scalar SOURCE locator is substituted
+                    side['implementation']['scalar_source'] = GT.CODE; f[side['implementation_evidence']['selector'][0]]['implementation']['scalar_source'] = GT.CODE
+                prices += p; sides += s; proofs.update(f)
+                for axis in B.p.AXES:
+                    cohorts[(row['candidate']['id'], axis)] = 'D_PAULI_ARTIFICIAL'
+            return prices, sides, proofs, cohorts
+        canonical = lambda row: I.price_context(req, row['m'])['physical_candidate']
+        prices, sides, proofs, cohorts = d_records(canonical)
+        self.assertEqual(len(check(req, prices, sides, cohorts, pol, proofs)['checked']), 4)
+        with patch.object(G, '_document', return_value=proofs), self.assertRaisesRegex(ValueError, 'Unknown compiled price kind'):
+            PN.paper_cost(ROOT, config, PN.nominal_packet(ROOT, config, v[1], source=MOCK), prices, cohorts=cohorts,
+                          price_bindings=sides, comparison_policy=pol)  # wiring pilot labels are not B price kinds
+        legacy = lambda row: D_FACTS['legacy_physical_candidate'](dict(T=B.a.exact_scalar(row['T']), prefix=row['candidate']['prefix'],
+            q=row['q_PF'], R=row['R_outer'], K=row['candidate']['K']), candidate_id=I.C.p.candidate_id)
+        prices, sides, proofs, cohorts = d_records(legacy)
+        with self.assertRaisesRegex(ValueError, 'Pauli canonical physical id'):
+            check(req, prices, sides, cohorts, pol, proofs)
 
     def test_zz_and_pauli_lowerings_cannot_be_swapped(self):
         req, prices, sides, cohorts = pauli_values()
@@ -424,6 +459,14 @@ class PaperLevel(unittest.TestCase):
         packet = deepcopy(v[1]); packet['means'][1]['normalization'].pop('log_B')
         out = PN.nominal_packet(ROOT, v[0]['configuration'], packet, source=MOCK)
         self.assertEqual(out['status'], 'NOT_EVALUATED_MISSING_NORMALIZATION'); self.assertIsNone(out['rounds'][1]['nominal_N_X'])
+
+    def test_price_kind_names_must_be_B_enums(self):
+        v, proofs = self.guarded('FULL')
+        for price in v[4]:  # D 8b28dce0 Full PF/Truncated caller labels
+            price.update(classification='DIRECT_DETERMINISTIC', expectation='EXACT_DETERMINISTIC_CIRCUIT',
+                         price_status='UNQUALIFIED_FOR_C_MODEL')
+        with self.assertRaisesRegex(ValueError, 'Unknown compiled price kind'):
+            self.paper(v, proofs)
 
     def test_missing_price_is_unknown_not_zero(self):
         v, proofs = self.guarded('FULL'); v[4].pop()

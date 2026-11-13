@@ -3,7 +3,7 @@
 2026-11-14 JST。Claude Code（主agentのみ。独立レビューではない）。
 
 - branch：`codex/paper-g-price-routes-20261114`。基点は`cfc0fae6`（Pauli route・第1水準の会計・model検査）。
-- 関連：[REPORT](REPORT.md)（§2のguard記述の一部は本書§2で更新）、[有限価格検証計画](PRICE_VALIDATION_PLAN.md)（本件で§6・§7を追加）、[Bへの引渡し](HANDOFF_B.md)（本件で§6〜§8を追加）、[テスト記録](TESTS.txt)。
+- 関連：[REPORT](REPORT.md)（§2のguardに追加した検査は本書§2）、[有限価格検証計画](PRICE_VALIDATION_PLAN.md)（本件で§6・§7を追加）、[Bへの引渡し](HANDOFF_B.md)（本件で§6〜§8を追加）、[テスト記録](TESTS.txt)。
 
 **実施していないこと**
 - 新しいH4/H6の計算、sampling、compile。
@@ -17,11 +17,11 @@
 | file | 変更内容 |
 |---|---|
 | `src/trottertracks/rpe_optimization_pipeline.py` | Pauli bridge（`plan(..., implementation_sources=, pauli_dictionary=)`、provider `A_PR_PAULI`）、`provider_binding_check` |
-| `src/trottertracks/price_implementation_guard.py` | Pauli loweringをDのIDとemitterに整合。Pauliのcanonical physical IDを検査。routeをloweringから導出 |
-| `src/trottertracks/rpe_d_price_connection.py` | `pauli_requests`：Dの`round_request`とCのphysical contextを照合 |
-| `tests/check_paper_g_price_routes.py` | 18件→32件（Pauli bridge・実LD1/LD2のmetadata・D整合・Pauli価格の第1/第2水準） |
+| `src/trottertracks/price_implementation_guard.py` | Pauliのcanonical physical IDを検査。D2の発行元照合に、Dが実際に呼ぶ`central_control_body`と、同じcommitの`append_pauli_event`を追加 |
+| `src/trottertracks/rpe_d_price_connection.py` | `pauli_requests`：Dの`round_request`とCのphysical contextを照合し、Dのroute・lowering・SOURCE定数とCのguardが一致することを確認 |
+| `tests/check_paper_g_price_routes.py` | 18件→34件（Pauli bridge・実LD1/LD2のmetadata・Dの実sidecar関数との整合・Pauli価格の第1/第2水準） |
 
-**テスト**：計88件すべてPASS。内訳は本fileの32件と、既存の回帰56件（guard 14、mean price 11、pipeline 12、D接続14、T2 caller 5）。
+**テスト**：計90件すべてPASS。内訳は本fileの34件と、既存の回帰56件（guard 14、mean price 11、pipeline 12、D接続14、T2 caller 5）。
 
 ## 0. 要旨
 
@@ -35,14 +35,12 @@
    - Cのplannerが作るphysical context（canonical ID、辞書identity、round別のnumerical recipe）は、Aの保存carrier record 26件とすべて完全一致した。
    - round別SOURCEは、m0・m6の再利用4件が`05447d1d`、残り22件が`7084fbc9`。
    - 旧形式IDとcanonical IDは、全26 roundで異なる。
-   - Dの`round_request`（`5ccc1dfc`）の結果（T、q、R、K、prefix、candidate ID、λ_P、identity、law）も、CのLD1/LD2各26行（13 round×X/Y）と一致した。
+   - Dの`round_request`（Dの固定SOURCE `8b28dce0`）の結果（T、q、R、K、prefix、candidate ID、λ_P、identity、law）も、CのLD1/LD2各26行（13 round×X/Y）と一致した。
 3. **guardとDのprice contextの整合**
-   - Pauli loweringのIDを、Dの`LOWERING_ID='PAULI_D2_CENTRAL_ROTATION_CONTROL_WITH_NATIVE_DF_HEAD'`に統一した。
-   - 発行元は、sidecarが指すcommitで次のASTを照合する。
-     - Dの`controlled_tail`・`compose`
-     - 依存するD2の`_rotation`・`central_control_body`・`central_control_tokens`
-     - `append_pauli_event`
-   - Dの`implementation_facts`の出力をそのまま受け付ける（routeはloweringから導出する）。ただし、Dが`rte_lowering_source.commit=None`のまま渡すと拒否する。実行時にcommitを固定する必要がある。
+   - Dは最新の固定SOURCE `8b28dce0`（branch head `f2a2c3af`）で、Cの`cfc0fae6`の規約に合わせた。lowering ID `PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF`、`route=PR_PAULI_TAIL`、`rte_lowering_source=9c4006bf:h4_d2_pauli_control.py`である。Cもこの規約を維持した。
+   - **Dの実関数で確認した**：Dの`implementation_facts`と`price_records`の出力をそのままCのguardに通すと、physical candidateにCのbridgeのcanonical候補を渡した場合だけ受理される。Dの`legacy_physical_candidate`（旧形式ID）では拒否される。
+   - 発行元の照合を強化した。sidecarが指すcommitで、D2の`_rotation`・`central_control_tokens`に加えて、Dの`controlled_tail`が実際に呼ぶ`central_control_body`と、Pauli eventを発行する`append_pauli_event`のASTを、`9c4006bf`と照合する。
+   - Dの単一pathの記録名（`DIRECT_SINGLE_PATH_WIRING`）と、Full PF/Truncated p7の記録名（`DIRECT_DETERMINISTIC`／`EXACT_DETERMINISTIC_CIRCUIT`）は、Bの価格kindではない。そのため、G会計では`Unknown compiled price kind`で拒否される（§2.2）。
 4. **価格recordの扱い（人工価格だけで確認）**
    - Pauli価格の受理、辞書・law・SOURCE不一致の拒否を確認した。
    - nominal Nと十分Nは分離したまま。価格の欠測はUNKNOWNになる。
@@ -98,48 +96,65 @@ Bの受入view（`rpe_pauli_signal_intake.bind_packet`の`signal_packet`）か�
 
 ## 2. 新Pauli guardとDのprice contextの整合
 
-`cfc0fae6`のguardから、次の2点を変更した。**その時点で決めていた暫定ID`PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF`と、Pauliでの`route`明示必須は廃止した。** これらを使う側はまだない（Bのguard bindingは`3a8b37f1a`に固定）。
+**経緯**
+- `5ccc1dfc`の時点では、Dは別のID（`…_WITH_NATIVE_DF_HEAD`）を使い、routeを宣言せず、emitterのcommitを空にしていた。
+- Dは`8b28dce0`で、Cの`cfc0fae6`の規約に合わせた（Dの[HANDOFF](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/f2a2c3afd69d9013bc5f2e60973b2820ec8406b3/docs/research/d_pauli_pilot_full_pf_prices_20261114/HANDOFF.md)「Pauli pilotのSOURCE規約」）。
+- 本件ではこの規約を変えず、physical IDと発行元の照合だけを強めた。
 
-| Dのsidecar facts（`implementation_facts`、`5ccc1dfc`＝`04bead11`と同じblob） | Cのguardの要求 |
+### 2.1 Dのsidecar（`8b28dce0`の`implementation_facts`・`price_records`）とCのguardの対応
+
+| Dの出力 | Cのguardの要求 |
 |---|---|
-| `method='PR'`、`route`なし | routeは、loweringがPauli系なら`PR_PAULI_TAIL`、それ以外ならmethodとして導出する。明示する場合は導出値と一致が必要。configurationのroute（辞書kind）とも一致が必要 |
+| `method='PR'`、`route='PR_PAULI_TAIL'` | configurationのroute（辞書kind）と一致。Pauliではrouteの明示が必須（DF系は省略可） |
 | `native_policy='NATIVE_DF_HEAD_PLUS_PAULI_D2_TAIL'` | policyの`by_method.PR_PAULI_TAIL.native_policy`と一致 |
-| `rte_rotation_lowering=LOWERING_ID` | `G.PAULI_D2`（＝DのLOWERING_ID）、かつpolicyと一致。ZZ系との相互流用は拒否 |
-| `rte_lowering_source=dict(commit=None, path=MODULE)` | **commitの固定が必要**（Noneは`RTE lowering SOURCE missing`で拒否）。指定commitで、`pauli_tail_price_connection.controlled_tail/compose`が`5ccc1dfc`と、`h4_d2_pauli_control._rotation/central_control_body/central_control_tokens`と`pauli_signal_adapter.append_pauli_event`が`9c4006bf`と、それぞれAST一致すること |
-| `scalar_quantity=HAMILTONIAN_CONSTANT_PLUS_SAVED_DF_TAIL_IDENTITY_sR`、`scalar_application='ONCE_AT_TOTAL_T'`、`resolved_scalar == expected_scalar` | policyの`scalar_quantity`と一致。総Tで一回 |
-| `native/wrapper/scalar_source` | commitとpathがあり、blobが存在する |
-| `profile`、`measurement` | specのprofile、`B.p.measurement(row, axis)`と一致 |
+| `rte_rotation_lowering='PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF'` | `G.PAULI_D2`と一致、かつpolicyと一致。ZZ系との相互流用は拒否 |
+| `rte_lowering_source=9c4006bf:src/trotterlib/h4_d2_pauli_control.py` | 指定commit・pathで、`_rotation`・`central_control_body`・`central_control_tokens`が`9c4006bf`とAST一致。同じcommitの`pauli_signal_adapter.append_pauli_event`も`9c4006bf`とAST一致。`central_control_body`と`append_pauli_event`の照合は本件で追加した |
+| `native_source`＝実行commitの`pauli_tail_price_connection.py`、`wrapper_source=af284d85:ax2b_native_df_v5.py`、`scalar_source`＝辞書SOURCE＋`saved_DF_scalar` | commitとpathがあり、blobが存在する |
+| `scalar_quantity=HAMILTONIAN_CONSTANT_PLUS_SAVED_DF_TAIL_IDENTITY_sR`、`ONCE_AT_TOTAL_T`、`resolved_scalar == expected_scalar` | policyの`scalar_quantity`と一致。総Tで一回 |
+| `physical_context`＝binding、profile、`physical_candidate`、structure、split、law | `I.price_context(req, m)`と完全一致。**`physical_candidate`は、Cのbridgeのcanonical候補**（`id`＝Bのcanonical candidate ID、event_countを含む）。Dの`legacy_physical_candidate`（旧形式ID）は`Implementation Pauli canonical physical id`で拒否する |
+| `profile_extension`・`price_profile`の`lowering_id`、`implementation_evidence`（固定JSONのassertion） | 従来どおり |
 
-sidecarの他の項目：
-- `physical_context`：`I.price_context(req, m)`と完全一致。Pauliでは`physical_candidate.id`がBのcanonical IDであること、K・R_outer・structureがB rowと等しいことを追加で検査する（旧形式IDは拒否）。
-- `profile_extension.lowering_id`：LOWERING_IDと一致。
-- `implementation_evidence`：固定JSONのassertionで、内容は`{price_source, identity, law_binding, axis, cohort, physical_context, profile_extension, implementation}`。
+**Dへの依頼**（Dの「bridgeが新しい物理IDを定めた場合は`legacy_physical_candidate`を差し替える一点で接続できる」に対応）
+- `scripts/run_pauli_ld1_m0_pilot.py`で`P.legacy_physical_candidate(...)`を使っている2か所を、`I.price_context(req, m)['physical_candidate']`に置き換える。ここで`req = I.plan(root, config, target=..., signal_source=..., implementation_sources=...)`。
+- seedのkeyは、Dの方針どおりcanonical candidate IDのまま変えない。
 
-**Dと共有する規約**
+### 2.2 価格kindの名前（C側の受入条件）
+
+- Cの第1水準会計と、Bの`assess`・`cost`が受け付けるclassificationは、Bの`PRICE_KINDS`だけである：`DIRECT_COMPILED_DETERMINISTIC`、`DIRECT_COMPILED_FINITE_SAMPLE`、`MODEL_PREDICTION`。
+- expectationは、`DETERMINISTIC`（決定論PF）、`QUALIFIED_EXPECTATION`、`FINITE_COHORT_ONLY`のいずれかで記録する。
+- Dの`8b28dce0`のcallerの記録名は、guardは通るが、G会計では拒否される。
+  - Full PF/Truncated p7：`DIRECT_DETERMINISTIC`／`EXACT_DETERMINISTIC_CIRCUIT`
+  - Pauli pilot：`DIRECT_SINGLE_PATH_WIRING`／`NOT_A_LAW_MEAN`
+- Full PF/Truncated p7をGに使う場合は、実行前にDの記録名を`DIRECT_COMPILED_DETERMINISTIC`／`DETERMINISTIC`にそろえる必要がある。Cで名前を読み替えることはしない（relabelになるため）。
+- Pauli B0は配線確認なので、Gに入れないのが自然である。入れる場合は`DIRECT_COMPILED_FINITE_SAMPLE`／`FINITE_COHORT_ONLY`（tierは`FINITE_COHORT_SCENARIO`）とする。
+- `price_model_validation.record`へは、Dの`fit_inputs`が`DIRECT_COMPILED_DETERMINISTIC`を明示して渡すので、model検査には影響しない。
+
+### 2.3 Dと共有する規約
 
 | 項目 | 内容 |
 |---|---|
 | 辞書 | Aのhash identity（`dictionary_sha256`、固定P0 SOURCE）。λは`split.lambda_R`の有理数（numerator/denominator）。Dの`round_request`はこの形を読む |
-| event | Dの`seed(candidate_id, cohort, index, outer, piece)`。canonical candidate IDを使う。各outer stepで`rte.sample_rte_events`がR個、計q·R個のeventを生成し、Kは有限 |
-| SOURCE | D module `5ccc1dfc:src/trottertracks/pauli_tail_price_connection.py`。emitter commitは実行receiptで固定する |
-| 照合 | `rpe_d_price_connection.pauli_requests(root, req)`。Dの`round_request`（固定blob）を、CのBのrowから作ったpacketに適用し、Cのphysical contextと照合する。結果は価格`NOT_EVALUATED`の行で、`expected_lowering_id`と`d_pauli_round`を付ける。旧DF adapter（`pending_requests`）は従来どおり`OUTSIDE_DOMAIN`を返す |
+| event | Dの`seed`は既存のlong-time `trial_seed`（`af284d85`）に`row={'id': canonical candidate ID}`を渡す。各outer stepで`rte.sample_rte_events`がR個、計q·R個のeventを生成し、Kは有限 |
+| SOURCE | Dの固定SOURCE `8b28dce0:src/trottertracks/pauli_tail_price_connection.py`（`f2a2c3af`と同じblob） |
+| 照合 | `rpe_d_price_connection.pauli_requests(root, req)`。<br>・Dの`round_request`（固定blob）を、BのrowからCが作ったpacketに適用し、Cのphysical contextと照合する。<br>・Dの`LOWERING_ID`・`ROUTE`がCのguardと一致することも確認する。<br>・結果は価格`NOT_EVALUATED`の行で、期待するroute・lowering・native policy・scalar quantity・lowering SOURCEと`d_pauli_round`を付ける。<br>・旧DF adapter（`pending_requests`）は従来どおり`OUTSIDE_DOMAIN`を返す |
 
 ## 3. 追加・変更したテスト（人工の価格・辞書・N。実データはmetadataのみ）
 
 | class | 件数 | 内容 |
 |---|---|---|
-| PauliRoute | 9 | route判定。Pauli D2とDF新ZZを同じpolicyで受理。DF用`PR`へのfallback拒否。Dのfactsからのroute導出とemitter commit必須。D2依存のAST不一致を拒否（同じcommitの差し替えblob）。`04bead11`での受理。ZZ・Pauliの相互流用拒否。ZZ発行元の拒否。旧形式IDの価格を拒否。旧Full-H RZZの拒否 |
+| PauliRoute | 10 | route判定。Pauli D2とDF新ZZを同じpolicyで受理。DF用`PR`へのfallback拒否。Dのfactsの受理と、route欠落・不一致・emitter commit欠落の拒否。D2の`central_control_body`と`append_pauli_event`のAST不一致を拒否（差し替えblob）、D最新`f2a2c3af`での受理。**Dの実`price_records`**：canonical候補なら受理、`legacy_physical_candidate`なら拒否、wiring記録名はG会計で拒否。ZZ・Pauliの相互流用拒否。ZZ発行元の拒否。旧形式IDの価格を拒否。旧Full-H RZZの拒否 |
 | PauliBridge | 6 | canonical ID・辞書・round別SOURCE。`_validate`の再現。`produce_signals`の拒否。旧形式IDの置換拒否。辞書hash・λ・scalar・λのSOURCE・lawの不一致を拒否。round SOURCE mapの欠落・不正を拒否。第2水準`compare`（guard 4 cell、SOURCE入替えと辞書なしcontextの拒否）。Dの`round_request`との一致と、λ不一致の拒否 |
 | PauliPaperLevel | 3 | Pauli価格の受理（nominal N、十分N=None、G_paper exact、第2水準と同じguard結果）。FINITE_COHORT・未資格MODEL・決定論価格の拒否・欠測のUNKNOWN。辞書（split／law）・law binding・固定assertionの不一致を拒否 |
 | RealPauliBridge | 3 | 実LD1/LD2の13 round×2：Aのcarrier recordとphysical context・ID・identityが完全一致。旧形式ID≠canonical ID。Bのintake viewの形でbinding検査に通る。Dの`round_request`と26行×2が一致。実round SOURCEの入替えを拒否 |
-| PaperLevel、ModelValidation | 8＋3 | `cfc0fae6`から変更なし |
+| PaperLevel | 9 | `cfc0fae6`の8件に加え、Dの記録名（`DIRECT_DETERMINISTIC`など）がG会計で拒否されることを確認 |
+| ModelValidation | 3 | `cfc0fae6`から変更なし |
 
 ## 4. Bの新decoder canonical bridgeのinterface仕様（未実装）
 
 **背景（`f3c84aa8` REPORT §5）**
 - decoderは`spec.rmse_policy.error_contract.decoder`にある。新versionを採用すると、configuration ID、round candidate ID、identity、law_bindingが連鎖して変わる。
 - **Pauliでは、physical IDがcanonical candidate IDそのものなので、回路が同じでもphysical IDが変わる**。DF tailの旧形式physical IDはdecoderに依存しない。
-- Dのevent seedはcandidate IDから作るので、新IDで再実行するとseedが変わる。既存のpathは同じlawからの抽出として残るが、seedの来歴は旧IDのままである。
+- Dのevent seedはcandidate IDから作る。Dの方針は「bridge後もseed keyは変えない（変えると別cohortになる）」である。そのため、既存cohortのseed keyは旧canonical IDのまま記録に残し、新IDで引き直したpathは別cohortとして扱う。
 
 **Bが発行する記録（Cは新IDを生成しない）**
 
@@ -176,7 +191,8 @@ claim: SAME_PHYSICAL_CIRCUIT_AND_LAW_DIFFERENT_DECODER
 
 | 項目 | 内容 | 前提 |
 |---|---|---|
-| A6 Pauli B0（更新） | LD1/m0、normal 1 path、X/Yで2 compile。Cの受入側（bridge、guard、D整合）は準備済み | Dのsidecarでemitter commitを固定、`physical_context=price_context`、固定assertion。単一pathなので`FINITE_COHORT_SCENARIO`（E[C]ではない） |
+| A6 Pauli B0（更新） | LD1/m0、normal 1 path、X/Yで2 compile。Cの受入側（bridge、guard、Dとの整合）は準備済み | Dのcallerで`legacy_physical_candidate`を`price_context`の候補に置き換える（§2.1）。固定assertion。配線確認なのでGには入れない（入れる場合は§2.2の記録名で`FINITE_COHORT_SCENARIO`） |
+| A1/A2の前提（追加） | Full PF/Truncated p7の価格をGに使う場合 | Dの記録名をBの価格kindにそろえる（§2.2） |
 | A11 Bのguard再pin | Bのguard bindingを、本件のcommitの`price_implementation_guard.py`へ更新し、Bの照合テストを再実行する | Bのbranchの変更（Bの担当・指示） |
 | A12 Pauli bridgeのB取込み | Bのintake viewの`C_plan_price_bridge='UNKNOWN…'`を、`I.plan(..., implementation_sources=view['implementation_sources'])`へ置き換える | A11 |
 | A13 新decoderのbridge | §4。Bの記録→Cの受入→価格の再束縛 | D1の採用 |
@@ -191,5 +207,6 @@ claim: SAME_PHYSICAL_CIRCUIT_AND_LAW_DIFFERENT_DECODER
   - Bのview形式（B HANDOFFのfield表）は、保存recordから組み立てて検査した。
   - B側で、`I.plan`と`I.compare`を実viewに通す確認を再実行する必要がある（A12）。
 - Dの`round_request`は、S2・`signed_weights=[1.0]`・単一allocationのPR以外を拒否する（Dの仕様）。
+- Dの実sidecar関数の確認では、架空の辞書SOURCEにblobがないため、`scalar_source`のlocatorだけを既存blobに差し替えた。それ以外はDの出力のままである。
 
 **mandatory STOP**：本件の後、価格の取得、compile、G計算、Bのbranchへの適用へは自動で進まない。
