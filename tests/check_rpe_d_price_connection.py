@@ -242,5 +242,34 @@ class DConnectionTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'mutated'):
             P.bind_results(ROOT,req,altered)
 
+    def test_14_corrected_D_total_scalar_provenance_is_forwarded_without_reading_inputs(self):
+        latest='e827367629ca6c2920d9d908fc1631314399db86'
+        # The newer acquisition observer is outside this passive interface.
+        trees=[ast.parse(I.C.blob(ROOT,s,'src/trottertracks/candidate_price_adapter.py'))
+               for s in (I.D_ADAPTER_SOURCE,latest)]
+        for name in ('from_b','from_a_job','check_request'):
+            fns=[next(n for n in t.body if isinstance(n,ast.FunctionDef) and n.name==name) for t in trees]
+            self.assertEqual(ast.dump(fns[0]),ast.dump(fns[1]))
+        inp=dict(INPUT,scalar_binding=dict(
+            hamiltonian_constant=dict(quantity='HAMILTONIAN_CONSTANT',value=.5,source=INPUT),
+            tail_identity=dict(quantity='TAIL_EXTRACTED_IDENTITY_COEFFICIENT',value=.125,source=INPUT),
+            expected_total=dict(quantity='EXPLICIT_TOTAL_SCALAR',value=.625,
+                rule='BINARY64_HAMILTONIAN_CONSTANT_PLUS_TAIL_IDENTITY_ONCE')))
+        req,_,_=T.toy('PR',1);before=deepcopy(inp)
+        with (patch.object(D,'NativeRuntime',side_effect=AssertionError('no preparation/constant reader')),
+              patch.object(D,'Adapter',side_effect=AssertionError('no acquisition'))):
+            rows=I.price_requests(ROOT,req,input_source=inp,execution_source=SOURCE,expected_scalar=.625)
+            d=rows[0]['d_request']
+            self.assertEqual(d['physical_context']['input_source'],inp)
+            self.assertEqual(d,D.from_b(req['configuration'],0,req['pr_physical'][0],
+                input_source=inp,execution_source=SOURCE,expected_scalar=.625))
+            p=path(d);p['resolved_context']['scalar']=.625
+            mapped=P.bind_results(ROOT,req,rows,paths=[p])
+            self.assertTrue(all(c['mean']['rz_count'] is None for c in mapped['prices']))
+            p['resolved_context']['scalar']=.125
+            with self.assertRaisesRegex(ValueError,'Resolved scalar differs'):
+                P.bind_results(ROOT,req,rows,paths=[p])
+        self.assertEqual(inp,before)
+
 
 if __name__=='__main__':unittest.main(verbosity=2)
