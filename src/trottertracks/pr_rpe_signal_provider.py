@@ -83,7 +83,17 @@ def _macros(ctx,c,st):
             factor=ctx.heads[hkey];head.append(factor)
             head_errors.append(float(np.linalg.norm(factor.conj().T@factor-identity,'fro')))
         tau=tail['lambda_R']*dt
-        b=finite_rte_distribution(tau,c['K']).exact_finite_distribution
+        # Optional caller-owned cache lets the same full/sector diagnostic
+        # share a normalizer. Its value depends only on the identical tau/K;
+        # no operator/state/event law is changed or sampled here.
+        cache=getattr(ctx,'normalizers',None);nkey=(tau.hex(),c['K'])
+        if cache is not None and nkey in cache:
+            b=cache[nkey]
+        else:
+            if cache is not None and len(cache)>=getattr(ctx,'normalizer_budget',math.inf):
+                raise NumericalFailure('Finite-normalizer scope exhausted',dict(tau=tau,K=c['K']))
+            b=finite_rte_distribution(tau,c['K']).exact_finite_distribution
+            if cache is not None:cache[nkey]=b
         if not math.isfinite(b) or b<=1:
             raise NumericalFailure('Finite-normalizer precision unresolved',
                 dict(piece_index=len(pieces),signed_time=time,events=count,event_time=dt,tau=tau,
@@ -114,7 +124,21 @@ def evaluate(ctx,job,reference,*,root):
     from .pf_power_stability import power_diagnostics
     from .h4_four_method_screen_mean import allowance_formula
     context=job['physical_context'];c=context['physical_candidate'];st=context['structure']
-    if (not common.same(context['binding'],ctx.binding) or c['id']!=common.candidate_id(c)
+    dictionary=context.get('dictionary_identity')
+    if dictionary is not None:
+        # B owns this canonical ID. Do not reuse the legacy recipe hash for a
+        # Pauli dictionary, even when q/R happen to match a DF candidate.
+        tail=ctx.tails.get(c['prefix'],{})
+        if (dictionary.get('kind')!='GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL'
+                or not dictionary.get('source') or not dictionary.get('dictionary_sha256')
+                or not common.same(dictionary,context['split'].get('tail_dictionary'))
+                or not common.same(dictionary,context['law'].get('tail_dictionary'))
+                or not common.same(dictionary,tail.get('dictionary_identity'))):
+            raise ValueError('Pauli dictionary/SOURCE/law identity mismatch')
+        expected_candidate_id=job['B_candidate_id']
+    else:
+        expected_candidate_id=common.candidate_id(c)
+    if (not common.same(context['binding'],ctx.binding) or c['id']!=expected_candidate_id
             or c['method']!='PR' or c['system']!=ctx.binding['system']
             or not common.same(st,common.structure(c)) or c['formula'] not in ('2nd','4th(m5_best)')
             or c['K'] not in (2,4,6) or c['prefix'] not in ctx.tails):
