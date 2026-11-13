@@ -1,5 +1,7 @@
 # Validation status
 
+[S3 readiness・A/C/D最新受入](docs/research/rpe_s3_readiness_20261113/REPORT.md)：新13＋D13＋統計17＋V2 106＝149技術test PASS。新10round scope/13mean/nominal、旧SOURCEとnorm欠測、K0/K1構造価格、same-path残差/ideal-sampler law不一致、null/G非起動を確認。入力充足は科学的readinessではない。S3/新数値再解析/実C−S/G/8次新接続0、公開後STOP。
+
 [decoder有限shot/RMSE準備](docs/research/rpe_decoder_statistics_20261113/REPORT.md)：123技術test PASS（新16＋元decoder1＋旧V2 106）。人工解析分布の未解決質量/loss/CI、元branch規則、欠測/未資格/巨大整数とD73/0/63を確認。実H4 Monte Carlo・保存数値再解析・十分N/global bound/実Gは未実行、decoderとA coreは不変、公開後STOP。
 
 [新A/C/D証拠V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)：人工/回帰106件＋公開A3e035実packetのmetadata受入PASS。m1新scope/元S0、数値SOURCE/identity/law、SとC、D標準4次係数/κなしlayout/全H、136保存分類の非採択を確認。C K0/K1未受入、十分N/global bound/適格C/Gはnull。新科学計算/8次新接続0、公開後STOP。

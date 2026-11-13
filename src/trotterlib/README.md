@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[S3入力のV2統合](../../docs/research/rpe_s3_readiness_20261113/REPORT.md)：trottertracks.rpe_s3_intakeとrpe_diagnostic_intakeの新10round validatorが既存mean_from_a/prepare/構造受入を再利用。D compiled_residualをbyte一致で取込み、値なし残差・law不一致・未資格sumを分離。149技術test、decoder/controller/統計核は不変。
+
 [有限shot decoder統計](../../docs/research/rpe_decoder_statistics_20261113/REPORT.md)：trottertracks.rpe_decoder_statisticsが元pr_rpe_rmse.decode_supplied_coordinates/reconstruct_rpe_phaseと既存Clopper–Pearsonを再利用。counts→decoder・全loss/未解決・finite-MC区間を技術接続し123人工/回帰test。物理mean/N/RMSE modelやdecoder本体は変更しない。
 
 [A/C/D新証拠受入](../../docs/research/rpe_new_evidence_intake_20261113/REPORT.md)：trottertracks.rpe_diagnostic_intakeがm1新scopeとC構造診断を分離、rpe_d_evidence_intakeが固定D metadata module/for_packetとB既存generator/外部physical mapを再利用。core/S0 validator/C providerは無変更、106技術test。

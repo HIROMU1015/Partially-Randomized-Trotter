@@ -149,3 +149,41 @@ def accept_structural_packet(config, packet):
         mean_S_by_cell={str(r['m'])+'/'+r['axis']:deepcopy(r['mean_S']) for r in packet['rows']},
         complete_four_cell_values=(set(keys)=={(m,axis) for m in (0,6) for axis in p.AXES}
             and all(r['mean_S'] is not None for r in packet['rows'])),scientific_price_qualification=False)
+
+
+def validate_completion_packet(config, packet, previous, *, numerical_source, adapter_source, previous_source):
+    """New ten-round scope, distinct from the immutable S0/m1 validators.
+
+    The caller first accepts the published previous m1 packet. No nominal N,
+    mean, normalization, numerical gate or error bound is calculated here.
+    """
+    same=H.same;B._validate(config)
+    same(config['id'],S0.CONFIGURATION_ID,'COMPLETION_CANONICAL_CONFIGURATION_MISMATCH')
+    for key,value in dict(configuration_id=config['id'],policy=config['spec']['rmse_policy'],
+            source=numerical_source,adapter_source=adapter_source,previous_packet=previous_source,
+            status='UNQUALIFIED',evidence_kind='SCIENTIFIC',technical_identity_verified=True,
+            nominal_promoted_to_sufficient=False,B_previous_scope_validator_applicable=False).items():
+        same(packet[key],value,'COMPLETION_PACKET_SOURCE_OR_QUALIFICATION_MISMATCH:'+key)
+    new=[2,3,4,5,7,8,9,10,11,12]
+    same(packet['diagnostic_scope'],dict(newly_evaluated_rounds=new,saved_mean_rounds=[3,4],
+        new_mean_rounds=[2,5,7,8,9,10,11,12],preserved_rounds=[0,1,6],whole_schedule_RMSE_qualified=False),
+        'COMPLETION_NEW_TEN_ROUND_SCOPE_REQUIRED')
+    if any(k in packet for k in ('pilot_scope','B_S0_only_validator_applicable')):
+        raise ValueError('COMPLETION_MUST_NOT_POSE_AS_S0_OR_M1_SCOPE')
+    same(previous['configuration_id'],config['id'],'COMPLETION_PREVIOUS_CONFIGURATION_MISMATCH')
+    same(packet['rmse_evidence'],dict(previous['rmse_evidence'],source=deepcopy(numerical_source)),
+        'COMPLETION_GLOBAL_RMSE_PROMOTED')
+    same(len(packet['rounds']),13,'COMPLETION_WHOLE_SCHEDULE_REQUIRED')
+    for row,old,request in zip(packet['rounds'],previous['rounds'],config['rounds']):
+        m=request['m']
+        for key,value in dict(m=m,identity=request['identity'],law_binding=request['law_binding'],
+                source_candidate_id=request['physical_candidate']['id'],source_request_id=old['source_request_id'],
+                N_X=None,N_Y=None,model_status='UNQUALIFIED_MODEL_ASSUMPTIONS',
+                diagnostic_source=numerical_source if m in new else old['diagnostic_source']).items():
+            same(row[key],value,'COMPLETION_ROUND_IDENTITY_LAW_SOURCE_OR_QUALIFICATION:'+key)
+        if m in (0,1,6):
+            same(row,old,'COMPLETION_PREVIOUS_ROUND_CHANGED')
+        for axis in p.AXES:
+            if type(row['nominal_N_'+axis]) is not int or row['nominal_N_'+axis]<1:
+                raise ValueError('COMPLETION_NOMINAL_POSITIVE_EXACT_INTEGER_REQUIRED')
+    return True

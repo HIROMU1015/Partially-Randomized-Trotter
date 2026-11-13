@@ -1,5 +1,7 @@
 # 文書索引
 
+[S3 readiness REPORT](research/rpe_s3_readiness_20261113/REPORT.md)／[A/C/D interface](research/rpe_s3_readiness_20261113/HANDOFF.md)／[未採択条件](research/rpe_s3_readiness_20261113/S3_DECISIONS.md)／[保存readiness](research/rpe_s3_readiness_20261113/metadata01/S3_READINESS.json)：A13round・C構造4値・D残差欠測を分離。149技術test、実S3/価格/G0。
+
 [decoder shot統計REPORT](research/rpe_decoder_statistics_20261113/REPORT.md)／[A mean I/O](research/rpe_decoder_statistics_20261113/HANDOFF.md)／[loss・trial数・信頼水準の有限計画](research/rpe_decoder_statistics_20261113/SCIENTIFIC_PLAN.md)：123技術test、実H4 Monte Carlo/十分N/実G0。元branch/prior規則と未解決trialを保全し、D新receipt coverageを取込み。
 
 [新A/C/D証拠REPORT](research/rpe_new_evidence_intake_20261113/REPORT.md)／[正式受入HANDOFF](research/rpe_new_evidence_intake_20261113/HANDOFF.md)／[最終metadata](research/rpe_new_evidence_intake_20261113/run02/PUBLISHED_EVIDENCE.json)／[4方式不足](research/rpe_new_evidence_intake_20261113/run02/METHOD_GAPS.json)：A m1 nominal60、C構造診断、D物理SOURCE/保存coverageを分離し、実N/C/Gを作らず接続。106技術test。

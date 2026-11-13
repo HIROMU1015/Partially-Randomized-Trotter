@@ -1,5 +1,7 @@
 # scripts 索引
 
+[`prepare_rpe_s3_intake.py`](prepare_rpe_s3_intake.py)：A169d/bba物理packet、C83d K0/K1、Daf6残差interfaceと受入済みFull PF coverageを[metadata接続](../docs/research/rpe_s3_readiness_20261113/HANDOFF.md)。新規出力専用、S3/確率生成/実C−S/Gの実行optionなし。
+
 [`prepare_rpe_decoder_statistics.py`](prepare_rpe_decoder_statistics.py)：固定V2/nominal metadataとD e7dca5fのCOVERAGE_V2/RECEIPTSだけを受入れる[準備CLI](../docs/research/rpe_decoder_statistics_20261113/HANDOFF.md)。実meanをdecoder/Monte Carloへ渡さず、科学実行optionなし。新規出力directory専用。
 
 [`intake_rpe_new_evidence.py`](intake_rpe_new_evidence.py)：[新証拠metadata受入](../docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)。公開A m1 packet/result、C診断、D physical/request/136保存coverageを扱う。Git commit/path明示、新規出力directoryのみ、科学計算・価格provider・実G起動optionなし。

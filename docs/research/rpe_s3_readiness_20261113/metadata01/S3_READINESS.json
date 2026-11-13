@@ -1,0 +1,183 @@
+{
+  "configuration_id": "587d20f7ed906d25841615dc9746674af872675b895bd438c06d3e74abf0e911",
+  "M": 12,
+  "h": {
+    "numerator": 3602879701896397,
+    "denominator": 36028797018963968
+  },
+  "decoder": "consecutive_dyadic_nearest_branch_principal_energy_v1",
+  "prior": [
+    -4.994249624417489,
+    -2.0985459369977186
+  ],
+  "input_complete": true,
+  "physical_qualification_complete": false,
+  "S3_conditions": {
+    "count_caller": {
+      "status": "NOT_ADOPTED",
+      "available": "EXACT_SIGNED_INTEGER_SUM_THEN_BINARY64_RATIO_V1"
+    },
+    "independent_binomial": {
+      "status": "CONDITIONAL_IDEAL_LAW_ASSUMPTION",
+      "evidence": {
+        "X": {
+          "axis": "cosine",
+          "observable": "Re(z_raw)"
+        },
+        "Y": {
+          "axis": "sine",
+          "observable": "Im(z_raw)"
+        },
+        "outcome_plus_one": "ancilla bit 0",
+        "probability_plus_one": {
+          "X": "(1 + Re(raw))/2",
+          "Y": "(1 + Im(raw))/2"
+        },
+        "probabilities_evaluated": false,
+        "raw_is_unscaled_mean": true,
+        "corrected_relation": "corrected = B * raw (ideal mean, numerical closure saved)",
+        "normalization": "B is the positive whole-interrogation finite-K normalizer; do not apply attenuation twice",
+        "sampling_assumption": "fresh independent ideal-law trajectory and Born outcome per shot; axes and rounds independent",
+        "actual_sampler_qualified": false
+      }
+    },
+    "unresolved_loss": {
+      "status": "UNDECIDED",
+      "energy_fallback": null
+    },
+    "target": {
+      "status": "UNDECIDED_SAVED_SOLVER_PROXY_GROUND_UNQUALIFIED",
+      "source": {
+        "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+        "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+        "selector": [
+          "records",
+          5,
+          "diagnostics"
+        ]
+      }
+    },
+    "PF_finite_K_state_law_errors": {
+      "status": "EMPIRICAL_LOCAL_ONLY_NO_GLOBAL_L2_TRANSFER",
+      "common_effective_H_qualified": false
+    },
+    "Minkowski": {
+      "status": "L2_COMPARISON_COUPLING_TARGET_LOSS_UNDECIDED"
+    },
+    "MSE_precision": null,
+    "confidence": null,
+    "loss_support": null,
+    "simulation_repetitions": null
+  },
+  "physical_contract_source": {
+    "commit": "bba150834ca30bdb186fbfd58c55a8d51177b855",
+    "path": "docs/research/h4_pr_physical_error_contract_20261113/PHYSICAL_INPUTS.json"
+  },
+  "scientific_execution_ready": false,
+  "probabilities_evaluated": false,
+  "statistics_executed": false,
+  "S3_executed": false,
+  "sufficient_N": null,
+  "global_RMSE_bound": null,
+  "empirical_H4_RMSE": null,
+  "G": null,
+  "whole_schedule_nominal": [
+    64,
+    60,
+    56,
+    52,
+    47,
+    43,
+    38,
+    34,
+    30,
+    25,
+    21,
+    17,
+    12
+  ],
+  "raw_mean_rounds": 13,
+  "nominal_axis_cells": 26,
+  "target": {
+    "binding": {
+      "T": 0.8,
+      "basis": "STO-3G",
+      "compiler": "1239304c14c65cde2e66ac783646abae19455ad8af6ce0cafd157557eeabb33b",
+      "control": "symmetric_directional",
+      "geometry": "linear_1Angstrom",
+      "hamiltonian": "c1a6c4281f11bba90df2fd18a998bdec96bed00379116537d22faf548c525ea0",
+      "profile": "4e32bb9ba57c38280562390100ebf916e9858218534504ead1519625a609bd75",
+      "profile_is_reference_only": true,
+      "rank": 10,
+      "rank_is_saved_observation_not_generation_argument": true,
+      "rank_policy": "tol_only_1e-8",
+      "series": "H4_TOL_ONLY_DF10",
+      "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+      "state": "9bcc0b0ecf44440c4411bcb76d652d78ff0595f036144580660c56c47c78e80b",
+      "system": "H4",
+      "source": {
+        "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+        "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+      },
+      "decomposition": {
+        "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+        "contract": {
+          "completion": "saved_weighted_Hermitian_completion",
+          "fragment_order": "saved_snapshot_order",
+          "preparation_binding": {
+            "snapshot": "12219b7d14dc2a275853314269e5e8628005ed72b42d16bc4d3831c8ea515c96",
+            "provider_source": "c31ef424175c02379eafebe8fc6c7548c1d9aabe",
+            "qualification": "UPSTREAM_SAVED_RECEIPT_CANDIDATE_BINDING"
+          },
+          "state_preparation_cost": 0,
+          "input_source": {
+            "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+            "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+          }
+        },
+        "source": {
+          "commit": "cefc01622a3cd75dd16d30de7b9fb68274f3eddd",
+          "path": "docs/research/h4_df10_rpe_d1_20261110/result.json"
+        }
+      }
+    },
+    "quantity": "ORIGINAL_DF_H_TARGET_ENERGY",
+    "energy_shift_ha": 0,
+    "source": {
+      "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+      "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+      "selector": [
+        "records",
+        5,
+        "diagnostics"
+      ]
+    },
+    "energy_ha": null,
+    "saved_truth_proxy": {
+      "energy_target": "ground energy of saved DF-H in sector (2,2)",
+      "reference_signal": "saved-state <psi|exp(-i H_DF T)|psi>, not automatically exp(-i E_ground T)",
+      "truth_proxy_source": {
+        "commit": "89c91c692e1d35de94d2e7afbe890aabe6d80b7e",
+        "path": "docs/research/h4_df10_rpe_batch_results_20261110/run01/result.json",
+        "selector": [
+          "records",
+          5,
+          "diagnostics"
+        ]
+      },
+      "reference_solver_energy_ha": -2.1663874486347634,
+      "state_residual_ha": 1.9513566490707353e-15,
+      "ground_state_certified": false,
+      "truth_proxy_adopted_for_new_simulation": false,
+      "energy_shift": 0,
+      "reference_energy_used_for_prior_or_branch": false
+    },
+    "truth_proxy_adopted": false
+  },
+  "technical_data_ready": true,
+  "scientific_conditions_adopted": false,
+  "price_compiled_axes_qualified": 0,
+  "residual_mean_available": false,
+  "minimum_next_scope": "One fixed configuration, all 13 rounds/26 nominal axes; loss/law/caller/target/precision/trials still require decisions",
+  "mandatory_stop": true
+}

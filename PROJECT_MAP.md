@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[全13round/K1/C−SのV2受入とS3準備](docs/research/rpe_s3_readiness_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_s3_readiness_20261113/HANDOFF.md)／[S3判断表](docs/research/rpe_s3_readiness_20261113/S3_DECISIONS.md)：A169d全13nominal/meanと追加bba物理inputをcopy受入、m3/m4 norm欠測と旧3round SOURCEを保全。C83d K0 PASS/K1構造4値、Daf6残差interfaceを接続。149技術test PASS、input_complete=true/scientific_ready=false、C/G/十分N/global bound null、S3未実行・公開後STOP。
+
 [RPE decoder有限shot・RMSE技術基盤](docs/research/rpe_decoder_statistics_20261113/REPORT.md)／[A/B interface](docs/research/rpe_decoder_statistics_20261113/HANDOFF.md)／[有限科学実行案](docs/research/rpe_decoder_statistics_20261113/SCIENTIFIC_PLAN.md)：B3216から専用branchを分離。元decoderを直接再利用しcounts/独立binomial/未解決loss/条件付きRMSE/全risk区間を区別。新16＋元decoder1＋既存106＝123技術test PASS。実H4統計0、D e7dca5fの73/0/63をmetadata受入、旧56/17/63保全。十分N/global bound/G未資格、公開後STOP。
 
 [A/C/D新証拠の正式V2受入](docs/research/rpe_new_evidence_intake_20261113/REPORT.md)／[HANDOFF](docs/research/rpe_new_evidence_intake_20261113/HANDOFF.md)：A公開3e035のm1 nominal60を新scopeで受入れ、S0 m0/m6=64/38を保全。C局所kernel診断・構造Sはcompiled Cへ供給せず、D053物理request/92ff保存136候補をsource付き外部mapへ接続。106技術testと公開A fixture PASS、十分N/global bound/C/G未資格、実科学計算0、公開後STOP。
