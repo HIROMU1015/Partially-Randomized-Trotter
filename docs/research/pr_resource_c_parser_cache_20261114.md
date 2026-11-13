@@ -19,3 +19,10 @@
 `codex/pr-resource-technical-fixes-20261114` の
 `docs/research/pr_resource_technical_fixes_20261114/` に保存する。
 科学計算・保存数値再解析・sampling・実回路build/compile・正式G評価は行わずmandatory STOP。
+
+2026-11-14の最終検証では、C専用8file/69件の人工・metadata回帰が全PASS。
+対象はcandidate cache、実published namespace、BV2 mean price、H4 S0 price plan、
+H6 saved coverage、R-variable prices、D price connection、baseline signal pipeline。
+元private candidate_idのcode/SOURCE・ID・例外・標準astを保持した。
+実測はprivate経路6.931→0.198 ms/回（35.0倍）、H4 S0 planの参考wall time81.39→6.07秒。
+統合された[最終報告](https://github.com/HIROMU1015/Partially-Randomized-Trotter/blob/codex/pr-resource-technical-fixes-20261114/docs/research/pr_resource_technical_fixes_20261114/REPORT.md)と同directoryのJSONに、条件・範囲・結果を保存した。
