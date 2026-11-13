@@ -1,5 +1,7 @@
 # 文書索引
 
+[決定論的RPE risk](research/rpe_deterministic_risk_20261113/REPORT.md)／[HANDOFF](research/rpe_deterministic_risk_20261113/HANDOFF.md)／[次の有限適用](research/rpe_deterministic_risk_20261113/NEXT_SCIENCE_PLAN.md)：主評価からMCを省き、元decoderの有限support条件とexact二項確率を使う。45技術test PASS、科学的十分N/global bound/実G未取得。
+
 [RPE risk・RMSE区間](research/rpe_risk_intervals_20261113/REPORT.md)／[RISK_INTERVAL_HANDOFF](research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)／[次の有限科学案](research/rpe_risk_intervals_20261113/NEXT_SCIENCE_PLAN.md)：条件付きp-v比率と有限familyの明示failure配分。59技術test PASS、元energy資格/N/GはUNKNOWN/null、新科学実行なし。
 
 [LD1/LD2統計caller・signal binding](research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)／[HANDOFF](research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)／[次の科学条件](research/pr_ld1_ld2_statistical_caller_20261113/NEXT_SCIENCE_PLAN.md)：明示targetと既存whole-shot/R3/C入力を接続。47技術test PASS、新科学実行なし。

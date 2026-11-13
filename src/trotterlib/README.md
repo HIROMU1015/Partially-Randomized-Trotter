@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[決定論的RPE risk](../../docs/research/rpe_deterministic_risk_20261113/REPORT.md)：trottertracks.rpe_deterministic_riskが元count変換/R3/whole-shot/cost-selectを再利用。確率・MSEは有理数、branch閉包は有限support検査、科学的資格は別。MCなし45技術test PASS。
+
 [RPE risk interval](../../docs/research/rpe_risk_intervals_20261113/REPORT.md)：trottertracks.rpe_risk_intervalsが既存summary/CP/bounded-lossを再利用。p_L=0/support不足はUNKNOWN、同時budgetをwhole-shotの固定callへ結合。59技術test PASS、N資格producer/optimizerなし。
 
 [LD1/LD2統計caller](../../docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)：trottertracks.rpe_signal_statistics_callerが既存W/S/R3とC APIを再利用。evaluation_targetを元targetと分離し、受入viewと実消費signal_inputを保全。元decoder/資格gateは不変、47技術test PASS、実H4科学実行なし。

@@ -1,0 +1,73 @@
+2026-11-13 JST. Primary-agent technical checks; no independent science review.
+Base: c26d09ad8f23a47bedba22580177507fa5dcf840
+Branch: codex/rpe-decoder-statistics-20261113
+Worktree: r-variable-rpe-cost-pipeline-20261111
+Python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B
+Version: 3.11.0rc1
+
+New tests:
+python -B -m unittest discover -s tests -p 'check_rpe_deterministic_risk.py'
+  Ran 13 tests in 2.805s, OK (exit 0), final implementation.
+
+Regression: 32 PASS in 3.917s (exit 0), using the exact selection below.
+Run from this worktree with the Python above:
+
+python -B - <<'PY'
+import sys,unittest
+from unittest.mock import patch
+sys.path[:0]=['src','tests']
+from check_pr_rpe_rmse_controller import ControllerTests
+from check_rpe_shot_allocation import AllocationTests
+from check_rpe_decoder_fast import FastDecoderTests
+from trottertracks import rpe_decoder_statistics as S, rpe_shot_allocation as W, rpe_signal_statistics_caller as K
+loader=unittest.TestLoader(); suite=unittest.TestSuite()
+suite.addTests(loader.loadTestsFromTestCase(ControllerTests))
+for name in loader.getTestCaseNames(AllocationTests):
+ if name not in ('test_02_prepare_MC_batch_and_diagnostic_not_qualified_N','test_10_missing_partial_inputs_ties_and_duplicate_allocations'):
+  suite.addTest(AllocationTests(name))
+for name in ('test_small_q_exhaustive_phase_grid','test_exact_ties_preserve_both_different_reference_rules',
+ 'test_latest_published_B_statistics_blob_is_identical','test_wrap_midpoint_and_1e12_tie_neighbourhood',
+ 'test_extreme_phases_signed_zero_and_rounding_boundaries','test_scalar_rule_does_not_enumerate_q_branches',
+ 'test_invalid_inputs_and_missing_measurement_remain_rejected'):
+ suite.addTest(FastDecoderTests(name))
+with patch.object(S,'simulate',side_effect=AssertionError('MC forbidden')), \
+ patch.object(S,'simulate_prepared',side_effect=AssertionError('MC forbidden')), \
+ patch.object(W,'diagnose',side_effect=AssertionError('MC caller forbidden')), \
+ patch.object(K,'diagnose',side_effect=AssertionError('MC caller forbidden')):
+ result=unittest.TextTestRunner(verbosity=1).run(suite)
+print('NO_MC_REGRESSION_COUNT',result.testsRun)
+sys.exit(not result.wasSuccessful())
+PY
+
+Total: 13 new + 17 controller + 8 allocation + 7 deterministic decoder = 45 PASS.
+Old tests that execute MC or create random phase/count samples were not rerun.
+No old MC/risk interval implementation or historical result was removed/changed.
+
+New coverage:
+1 exact binomial mass, probability 2^-2000 retained although float underflows,
+  log diagnostic, exact giant N endpoint law and public whole-vector acceptance;
+2 explicit exact-affine vs legacy binary64-affine probability semantics;
+3 zero, actual conditional tie, oracle mismatch and count-dependent phase;
+4 all-good bound matches small full-count enumeration;
+5 unsafe/unresolved bound covers full-count loss envelope, exact first-failure
+  partition and deterministic unresolved-probability bounds;
+6 pi/3 requires actual finite-support verification; bad good-set closure UNKNOWN;
+7 count/pair scope, undefined/unadopted loss and missing raw remain UNKNOWN;
+8 all 13 rounds, unequal X/Y, original input immutability, scientific nulls;
+9 corrected/logB metadata never multiplied into shot probability or price;
+10 noncircular energy alias loss, unqualified drift refinement, tiny MSE sqrt;
+11 artificial G minimum differs from shot minimum (existing exact W accounting);
+12 missing N/C and insufficient model upper bound never filled with zero;
+13 candidate/SOURCE/law/qualification binding mismatch rejected.
+
+Reference enumeration uses S.exact_counts/summarize on tiny ARTIFICIAL laws only.
+All new tests patch RPE MC and physical-provider entries to fail if invoked.
+No real H4 signal/old S3 values were read for numerical evaluation, and no new
+MC (including artificial MC), real N/RMSE/C/G, compile, fit or sampling was run.
+Existing invalid-escape DeprecationWarnings in Almost_optimal_grouping.py remain
+unchanged; no shared runtime/library settings were modified.
+
+Final source/metadata checks PASS: original MC/statistics/risk interval/caller/
+scalar/R3/controller/whole-shot/accounting bytes equal Bc26d09ad8; prior manifest
+entries unchanged; new module AST contains no MC/physical-producer calls; direct
+document links resolve; git diff --check clean.

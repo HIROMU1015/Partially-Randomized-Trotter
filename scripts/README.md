@@ -1,5 +1,7 @@
 # scripts 索引
 
+[決定論的RPE API](../docs/research/rpe_deterministic_risk_20261113/HANDOFF.md)：rpe_deterministic_risk.evaluate/compareを明示呼出しする。K.prepareと既存W/B会計を再利用し、MCを起動しない。実入力の適用は別明示許可の有限scopeのみ。新科学runner/CLIは追加しない。
+
 [RPE risk interval API](../docs/research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)：既存K.diagnoseの任意risk_optionsから固定family区間を付加する。confidence_familyは受動metadata、実入力のdiagnose/区間再解析は別許可の有限scopeのみ。新CLI/自動実行なし。
 
 [LD1/LD2明示target caller API](../docs/research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)：rpe_signal_statistics_caller.accept_saved/prepareは受動metadata、diagnoseは別許可が必要な明示科学入口。新CLIや自動MCは追加せず、target/loss/反復等の採択を要求する。

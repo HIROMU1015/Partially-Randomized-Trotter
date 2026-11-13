@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[MCを使わないRPE risk・whole-shot基盤](docs/research/rpe_deterministic_risk_20261113/REPORT.md)／[条件とAPI](docs/research/rpe_deterministic_risk_20261113/HANDOFF.md)：exact二項確率、元count/R3の有限遷移検査、最終寄与＋初回unsafe上界を追加。旧MC資産保全、資格不足/範囲外はUNKNOWN。新13＋MCなし回帰32＝45技術test PASS、実H4/保存再解析/実N/C/G0、公開後mandatory STOP。
+
 [RPE conditional risk区間](docs/research/rpe_risk_intervals_20261113/REPORT.md)／[API・同時confidence](docs/research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)：元caller/summary/CP/Hoeffdingを再利用しp-v同時区間と有限familyを追加。p_L=0/support不足はUNKNOWN、全loss未採択/元energy資格/十分N/Gは未取得。新12＋回帰47＝59技術test PASS、実H4 MC/保存科学再解析0、公開後mandatory STOP。
 
 [LD1/LD2明示target付き統計caller](docs/research/pr_ld1_ld2_statistical_caller_20261113/REPORT.md)／[HANDOFF](docs/research/pr_ld1_ld2_statistical_caller_20261113/HANDOFF.md)：既存whole-shot/MC/R3/summaryとC plan/signal_inputを再利用。元target・UNQUALIFIEDを保つ受入view、実消費signal binding、MC前の明示evaluation_target検査を実装。新9＋既存38＝47技術test PASS、実H4 MC/保存再解析/N/RMSE/G0、公開後mandatory STOP。
