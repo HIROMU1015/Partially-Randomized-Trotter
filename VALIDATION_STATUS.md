@@ -1,5 +1,7 @@
 # Validation status
 
+[S1/V1価格整合のD引渡し](docs/research/d_s1_v1_price_alignment_20261114/REPORT.md)：監査51d324のSOURCE調査、旧Full-H汎用control/新PR CX–CRZ–CXとPFのRTE非該当を10固定SOURCE assertionで確認。A3ae/Cd7cの完成済みFull PF coverage/receiptを再利用、Bce0517は固定DP診断inputで適格Nではない。C案のS2/.2 m5 XY最大2 compile、現C Full-H m0 q1/R448/K2 normal1 path XY最大2 compileを独立の未承認案として具体化。比較guardはCへの改善案で未実装、production・新prepare/sampling/build/compile/価格集計/fit/G0。旧価格・raw・STOPは保全、長時間model誤差/正式G UNKNOWN、公開照合後mandatory STOP。
+
 [C価格モデル用direct証拠の整合準備](docs/research/d_c_compiled_evidence_alignment_20261113/REPORT.md)：C1914公開HEAD・未資格モデル計画を確認し、scalar修正済みD e827 selectorと既存C forwardingの互換を確認。既存29人工・metadata回帰PASS（39.70秒）、C380→1914転送2 module不変、P2 LD1 m0/m6 physical metadata一致のみで新identity bridge未資格。初回LD2/m0 normal1 path/X,Y/最大2 compileを未承認案として全seed固定、m4は別保留。保存constant member読取・2 request metadataだけで、実H4 restore/prepare/sample/event/build/compile/保存数値再解析/mean/CI/Gは0。m12とモデル精度・law/rareはUNKNOWN、公開照合後mandatory STOP。
 
 [T2 scalar metadata修正](docs/research/d_t2_scalar_binding_fix_20261113/REPORT.md)：新17＋既存12＝29項目PASS。source-bound saved constantと元tail identityのbinary64和をexpected totalへ渡す。0D/1-element/zero/nonzero・source欠測拒否、元Runtimeの誤結合/1 ULP拒否、scalar一回・X/Y、C380/D748 constructor互換と旧record保全を人工・metadataで確認。保存constant memberの読取と選択metadata1件のみ、実H4 prepare/sampling/build/compile/新価格/mean/CI/fit/G/T2 retry0。元runtime/compiler/wrapper/guardと科学原本は不変。技術PASSはT2許可ではなく、公開後mandatory STOP。
