@@ -16,6 +16,13 @@ QUANTITY = 'FULL_WRAPPER_MEAN_COMPILED_PRICE'
 SCALAR_ONCE = 'ONCE_AT_TOTAL_T'
 NEW_ZZ = 'CONTROLLED_ZZ_CX_CRZ_CX_V1'
 OLD_ZZ = 'CONTROLLED_ZZ_GENERIC_RZZ_CONTROL1_PROVIDER_C31EF424'
+# Distinct legal route for PR with a collected-Pauli tail: local basis/parity
+# uncontrolled, only the central rotation controlled (P3 native 9c4006bf D2).
+PAULI_D2 = 'PAULI_D2_CENTRAL_ROTATION_CONTROL_9C4006BF'
+ZZ_FAMILY = (NEW_ZZ, OLD_ZZ)
+PAULI_FAMILY = (PAULI_D2,)
+PAULI_TAIL_KINDS = ('GLOBAL_COLLECTED_JW_PAULI_OF_SAVED_DF_TAIL',)
+RTE_ROUTES = ('PR', 'PR_PAULI_TAIL', 'FULL_H_RTE')
 
 
 @lru_cache(maxsize=128)
@@ -39,24 +46,44 @@ def _same(a, b, message):
         raise ValueError(message)
 
 
+def route(B, spec):
+    """Comparison method plus legal tail representation; never inferred from price."""
+    method = B.comparison_method(spec)
+    tail = (spec.get('split') or {}).get('tail_dictionary')
+    if tail is None:
+        return method
+    if method != 'PR':
+        raise ValueError('A tail dictionary route is defined only for PR')
+    if tail.get('kind') in PAULI_TAIL_KINDS:
+        return 'PR_PAULI_TAIL'
+    raise ValueError('Unknown PR tail representation route')
+
+
 @lru_cache(maxsize=32)
 def _rte_source(root, lowering, commit, path):
-    """Reuse D S1's two known SOURCE routes; unknown routes need new evidence.
+    """Reuse D S1's two ZZ routes and P3's Pauli D2; unknown routes need evidence.
 
     Matching the emitter is necessary, not proof it was activated: the pinned
     execution/receipt assertion must also bind this route to the actual price.
     """
     references={
-        NEW_ZZ:('01e068af7e06d9f1f5621a5b3800c30eb32ecb06','src/trottertracks/efficient_controlled_zz.py'),
-        OLD_ZZ:('c31ef424175c02379eafebe8fc6c7548c1d9aabe','src/trotterlib/df_rte_qiskit.py')}
+        NEW_ZZ:('01e068af7e06d9f1f5621a5b3800c30eb32ecb06','src/trottertracks/efficient_controlled_zz.py',
+                ('_append_central_application',)),
+        OLD_ZZ:('c31ef424175c02379eafebe8fc6c7548c1d9aabe','src/trotterlib/df_rte_qiskit.py',
+                ('_append_central_application',)),
+        PAULI_D2:('9c4006bff3e76ea2ba7fbe4a10e679a8693c3a5c','src/trotterlib/h4_d2_pauli_control.py',
+                  ('_rotation','central_control_tokens'))}
     if lowering not in references:
         raise ValueError('Unknown RTE lowering SOURCE route')
+    names=references[lowering][2]
     def central(c,p):
-        tree=ast.parse(C.blob(root,c,p))
-        nodes=[n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name=='_append_central_application']
-        if len(nodes)!=1:raise ValueError('RTE emitter SOURCE unresolved')
-        return ast.dump(nodes[0],include_attributes=False)
-    _same(central(commit,path),central(*references[lowering]),'RTE lowering contradicts emitter SOURCE')
+        tree=ast.parse(C.blob(root,c,p)); dumps=[]
+        for name in names:
+            nodes=[n for n in ast.walk(tree) if isinstance(n,ast.FunctionDef) and n.name==name]
+            if len(nodes)!=1:raise ValueError('RTE emitter SOURCE unresolved')
+            dumps.append(ast.dump(nodes[0],include_attributes=False))
+        return dumps
+    _same(central(commit,path),central(*references[lowering][:2]),'RTE lowering contradicts emitter SOURCE')
 
 
 def check(root, config, prices, *, cohorts, bindings, policy):
@@ -73,19 +100,22 @@ def check(root, config, prices, *, cohorts, bindings, policy):
     api = C.published_api(str(root)); B = api.B
     B._validate(config)
     method = B.comparison_method(config['spec'])
-    required = policy['by_method'].get(method)
+    key = route(B, config['spec'])
+    required = policy['by_method'].get(key)  # a Pauli-tail PR never falls back to the DF 'PR' entry
     if not required:
-        raise ValueError('Method outside the explicit implementation policy')
-    rte_domains={policy['by_method'][m].get('rte_rotation_lowering') for m in ('PR','FULL_H_RTE')
-                 if m in policy['by_method']}
+        raise ValueError('Method/route outside the explicit implementation policy')
+    lowerings={m:(policy['by_method'][m] or {}).get('rte_rotation_lowering') for m in policy['by_method']}
+    rte_domains={lowerings[m] for m in ('PR','FULL_H_RTE') if m in lowerings}
     if len(rte_domains)>1:
         raise ValueError('Mixed RTE lowering domains require separate policies; no cross-domain equivalence adopted')
+    if rte_domains & set(PAULI_FAMILY) or ('PR_PAULI_TAIL' in lowerings and lowerings['PR_PAULI_TAIL'] not in PAULI_FAMILY):
+        raise ValueError('DF controlled-ZZ and Pauli-tail routes keep separate registered lowerings')
     profile = config['spec']['profile']
     _same(profile, policy['profile'], 'Comparison compiler/control/wrapper/P0 profile differs')
     if (profile.get('P') != 0 or profile.get('wrapper') != 'full_Hadamard_with_measurement'
             or profile.get('scope') != 'single_hadamard_interrogation_without_state_preparation'):
         raise ValueError('Full measured wrapper and P0 required')
-    rte = method in ('PR', 'FULL_H_RTE')
+    rte = key in RTE_ROUTES
     if (not required.get('native_policy') or not required.get('scalar_quantity')
             or not required.get('rte_rotation_lowering')
             or (required['rte_rotation_lowering'] == NO_RTE) == rte):
@@ -159,6 +189,7 @@ def check(root, config, prices, *, cohorts, bindings, policy):
                 # source-route/receipt checks named by implementation_evidence.
                 C.blob(root, src['commit'], src['path'])
             _same(facts.get('method'), method, 'Implementation METHOD differs')
+            _same(facts.get('route', method), key, 'Implementation tail/lowering route differs')
             _same(facts.get('profile'), profile, 'Implementation compiler/control/wrapper differs')
             _same(facts.get('measurement'), B.p.measurement(row, axis), 'Implementation measurement/axis differs')
             for name in ('measurement_axis','observable','outcome_convention','units'):
