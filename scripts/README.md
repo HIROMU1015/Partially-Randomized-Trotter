@@ -1,5 +1,7 @@
 # scripts 索引
 
+[LD1/LD2 metadata publisher](../docs/research/d_ld12_price_requests_20261113/PREPARE_PRICE_REQUESTS.py)：既存ld12_price_requests.prepareで26 paired requestの索引と52軸coverageを生成するだけ。科学runnerは追加せず、context/sample/acquireを呼ばない。[再現手順](../docs/research/d_ld12_price_requests_20261113/SOURCES.md)。
+
 [候補依存価格取得API](../docs/research/d_candidate_price_adapter_20261113/HANDOFF.md)：新launcherは追加しない。candidate_price_adapterの受動request生成と明示context/sample/acquireを分離し、既存pinned carrier関数を再利用。実H4実行は別途固定SOURCE/有限scopeの明示承認後のみ。
 
 [RPE候補の価格取得設計](../docs/research/d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)：新runnerは追加しない。既存C1/P2は固定contextのまま、候補生成/N担当の外部menuを受けるadapter条件だけを定義。今回は `tests/test_rpe_price_search_design.py` と既存回帰の人工検証のみ。

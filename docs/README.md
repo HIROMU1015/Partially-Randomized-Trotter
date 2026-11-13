@@ -1,5 +1,7 @@
 # 文書索引
 
+[PR-LD1/LD2 REPORT](research/d_ld12_price_requests_20261113/REPORT.md)／[PRICE_REQUEST_COVERAGE](research/d_ld12_price_requests_20261113/PRICE_REQUEST_COVERAGE.json)／[HANDOFF](research/d_ld12_price_requests_20261113/HANDOFF.md)／[NEXT_SCIENCE_PLAN](research/d_ld12_price_requests_20261113/NEXT_SCIENCE_PLAN.md)：固定menu全52軸のmetadata準備、単独round/axis選択、新科学実行0。
+
 [PR候補価格adapter REPORT](research/d_candidate_price_adapter_20261113/REPORT.md)／[HANDOFF](research/d_candidate_price_adapter_20261113/HANDOFF.md)／[初回有限取得計画](research/d_candidate_price_adapter_20261113/FIRST_ACQUISITION_PLAN.md)／[SOURCE・49技術test](research/d_candidate_price_adapter_20261113/SOURCES.md)：外部A/B候補から元prepare/compose/wrapper/compilerへの最小接続。path S/Cと平均価格資格を区別。
 
 [RPE候補価格のREPORT](research/d_rpe_price_search_design_20261113/REPORT.md)／[HANDOFF](research/d_rpe_price_search_design_20261113/HANDOFF.md)／[段階的探索・有限科学案](research/d_rpe_price_search_design_20261113/MINIMAL_SCIENCE_PLAN.md)／[SOURCE・54技術test](research/d_rpe_price_search_design_20261113/SOURCES.md)：L_D1高精度化を先行要件にせず、compiled区間での候補選別と精密化の成立条件を定義。

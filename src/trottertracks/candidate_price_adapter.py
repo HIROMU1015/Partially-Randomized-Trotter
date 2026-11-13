@@ -35,7 +35,7 @@ def _real(value):
     return f
 
 
-def from_b(config, m, physical, *, input_source, execution_source, axes=('X', 'Y'), preparation_hash=None):
+def from_b(config, m, physical, *, input_source, execution_source, axes=('X', 'Y'), preparation_hash=None, expected_scalar=None):
     """Bind an existing B configuration to its supplied physical row; no science.
 
     input_source identifies the restored inputs/loader; execution_source identifies
@@ -90,6 +90,8 @@ def from_b(config, m, physical, *, input_source, execution_source, axes=('X', 'Y
         split=deepcopy(s['split']), one_body_policy=one_body, law=deepcopy(row['law_binding']), price_profile=profile,
         preparation_hash=preparation_hash, input_source=deepcopy(input_source),
         execution_source=deepcopy(execution_source), implementation=deepcopy(IMPLEMENTATION))
+    if expected_scalar is not None:
+        context['expected_scalar'] = _real(expected_scalar)
     result = dict(schema='PR_CANDIDATE_PRICE_REQUEST_V1', configuration_id=config['id'], m=m,
         identity=deepcopy(row['identity']), law_binding=deepcopy(row['law_binding']),
         axes=list(axes), physical_context=context, context_key=_key(context))
@@ -202,6 +204,9 @@ class NativeRuntime:
         if (lam <= 0 or float(p.accounting.exact_scalar(pc['split']['lambda_R'])).hex() != float(lam).hex()
                 or pc['preparation_hash'] not in (None, prep.preparation_hash)):
             raise ValueError('Preparation hash or exact tail lambda differs; empty tail outside domain')
+        scalar = self.ham.constant + prep.extracted_identity_coefficient
+        if pc.get('expected_scalar') is not None and float(scalar).hex() != float(pc['expected_scalar']).hex():
+            raise ValueError('Prepared scalar differs from the requested total scalar')
         blocks = []
         for w in pc['structure']['signed_weights']:
             bs = []
@@ -214,7 +219,7 @@ class NativeRuntime:
                          for o, q in b.runtime_basis_operations]
                 bs.append(dict(basis=basis, diagonal=diag))
             blocks.append(bs)
-        ctx = SimpleNamespace(prep=prep, blocks=blocks, scalar=self.ham.constant + prep.extracted_identity_coefficient,
+        ctx = SimpleNamespace(prep=prep, blocks=blocks, scalar=scalar,
             h=t.h, Accounting=t.Accounting, native=t.native, compile=t.compile,
             CompilerSettings=t.CompilerSettings, fingerprint_context=t.fingerprint_context, context_key=key)
         self.contexts[key] = ctx

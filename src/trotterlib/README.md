@@ -1,5 +1,7 @@
 # trotterlib モジュール索引
 
+[固定LD1/LD2価格requestの接続](../../docs/research/d_ld12_price_requests_20261113/HANDOFF.md)：trottertracks.ld12_price_requestsはpinned A/B metadataを既存D.from_bへ渡す。回路・preparation・N生成はしない。元candidate adapterへexpected_scalarの任意照合を追加。
+
 [PR候補価格adapter](../../docs/research/d_candidate_price_adapter_20261113/HANDOFF.md)：trottertracks.candidate_price_adapterが既存prepare/DFPartialS2StepRequest/compose/native/compilerを再利用。H4 S2/m5・even Kの候補contextを分離し、signal/N/平均価格推定器を追加しない。
 
 [RPE候補価格の再利用条件](../../docs/research/d_rpe_price_search_design_20261113/HANDOFF.md)：元prepare/compose/wrapper/compilerを使うcandidate-context adapterと、構造S・compiled mean・区間sidecarの接続仕様。新production実装・科学実行なし、人工/既存回帰54 PASS。

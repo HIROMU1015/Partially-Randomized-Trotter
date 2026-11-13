@@ -1,5 +1,7 @@
 # 研究別SOURCE
 
+[ld12_price_requests](../../docs/research/d_ld12_price_requests_20261113/HANDOFF.md)：prepare / request_forでA a9abのPR-LD1/LD2を既存candidate_price_adapterへ接続。52軸metadataと未選択・不足を保持。実価格mean/区間はnull、scientific entryは呼ばない。
+
 [candidate_price_adapter](../../docs/research/d_candidate_price_adapter_20261113/HANDOFF.md)：from_b/from_a_jobのmetadata binding、NativeRuntime.context/sample、Adapter.acquire、mean=nullのpending_price_records。compiled_price_fast.make_backend_classへ明示axes指定を追加し、元両軸defaultを維持。人工・回帰49 PASS。
 
 [RPE候補探索の価格設計](../../docs/research/d_rpe_price_search_design_20261113/REPORT.md)：既存V2 assess/evidence.plan/exact会計を再利用し、部分下界・差分・bound-only接続を仕様化。新探索器・N solver・価格providerは追加せず、人工12＋既存42項目を検証。

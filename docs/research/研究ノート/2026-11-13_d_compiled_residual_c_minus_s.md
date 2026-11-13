@@ -53,3 +53,7 @@
 ## 追補：候補依存contextと価格取得adapterの技術実装（2026-11-13）
 
 [REPORT](../d_candidate_price_adapter_20261113/REPORT.md)／[HANDOFF](../d_candidate_price_adapter_20261113/HANDOFF.md)／[初回取得計画](../d_candidate_price_adapter_20261113/FIRST_ACQUISITION_PLAN.md)。基点24b0a6eb1から同D branchを継続し、A/B metadata request→候補prepare/head/tail/signed piece→既存fast取得へ接続した。H4 S2/m5、非空ordered split、even K、指定axisを扱い、旧C1 system-only contextを他L_Dへ使わない。fastはaxesの小拡張、compile/cache/fingerprint/Accounting/new ZZは既存を再利用。新20＋fast10/P2 metadata6/残差13＝49技術項目PASS。実H4新build/compile、保存値再解析、fit/E[C]/G0。path価格を平均へ昇格せず、初回対象/round/n/精度/confidenceは未採択。過去SOURCE/raw/STOPを保持し、公開後mandatory STOP。
+
+## 追補：A固定PR-LD1/LD2 menuの価格request接続（2026-11-13）
+
+[REPORT](../d_ld12_price_requests_20261113/REPORT.md)／[52軸coverage](../d_ld12_price_requests_20261113/PRICE_REQUEST_COVERAGE.json)／[HANDOFF](../d_ld12_price_requests_20261113/HANDOFF.md)。D0c6を基点に同branchを継続し、A a9abの二構成・全13roundを既存from_bへ接続。26 paired selectorとX/Y別52軸をmetadata生成し、prefix λ/scalar/source・exactκ由来q/R/配分・binary64 time・lowering/wrapper/profileを保持した。expected_scalarの任意検査だけを既存adapterへ追加。新12＋回帰26＝38 PASS、実H4 preparation/sampling/build/compile、保存科学値再解析、fit/E[C]/G0。旧LD1価格/E[S]は参照のみ、LD2への移植なし。必要requestの科学取得はA/B成果とユーザーの有限scope承認後のみ。旧SOURCE/raw/STOPを保全し、公開照合後mandatory STOP。

@@ -1,5 +1,7 @@
 # Validation status
 
+[固定LD1/LD2価格request](docs/research/d_ld12_price_requests_20261113/REPORT.md)：新metadata/mock12＋既存回帰26＝38 PASS。52軸のcanonical/physical/law・exactκ配分/binary64時間・prefix scalar/source/key分離を確認。実H4 preparation/sampling/build/compile、保存科学値再解析、E[C]/Gは0。coverageはREQUEST_READY/NOT_BUILT/全未選択、価格資格を付けず公開後mandatory STOP。
+
 [candidate-context/price-request adapter](docs/research/d_candidate_price_adapter_20261113/REPORT.md)：新20＋既存fast10/P2 metadata6＋別process残差13＝49項目PASS。任意8-wire人工行列・明示event・新adapterのmock compilerと既存小人工Qiskit回帰。旧C1 head/S/fingerprint/6指標、別L_D・signed/K・単軸/逆順・cache非流用を確認。実H4価格/mean/CI/N/G未評価、初回科学scope未採択、公開後mandatory STOP。
 
 [RPE候補価格の探索設計](docs/research/d_rpe_price_search_design_20261113/REPORT.md)：新12＋既存42＝54人工・回帰項目PASS。部分下界・差分区間・N集合/巨大整数と既存V2 identity/quantity/lowering拒否を確認。production code変更なし、bound-only選別/候補adapterは設計仕様。新H4/保存値再解析/fit/E[C]/Gなし、未確定価格はUNKNOWN、公開後mandatory STOP。
