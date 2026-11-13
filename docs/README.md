@@ -1,5 +1,7 @@
 # 文書索引
 
+[LD1/LD2決定論的risk適用準備](research/pr_ld1_ld2_deterministic_application_preparation_20261113/REPORT.md)／[未採択条件・有限適用案](research/pr_ld1_ld2_deterministic_application_preparation_20261113/CONDITIONS_AND_FINITE_PLAN.md)／[SOURCE・各round](research/pr_ld1_ld2_deterministic_application_preparation_20261113/SOURCE_AND_CONDITIONS.json)／[HANDOFF](research/pr_ld1_ld2_deterministic_application_preparation_20261113/HANDOFF.md)：保存metadata照合と既存fixture2件PASS。条件選択・科学実行許可は別途必要、新確率/MSE/N/C/G計算なし。
+
 [決定論的RPE risk](research/rpe_deterministic_risk_20261113/REPORT.md)／[HANDOFF](research/rpe_deterministic_risk_20261113/HANDOFF.md)／[次の有限適用](research/rpe_deterministic_risk_20261113/NEXT_SCIENCE_PLAN.md)：主評価からMCを省き、元decoderの有限support条件とexact二項確率を使う。45技術test PASS、科学的十分N/global bound/実G未取得。
 
 [RPE risk・RMSE区間](research/rpe_risk_intervals_20261113/REPORT.md)／[RISK_INTERVAL_HANDOFF](research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)／[次の有限科学案](research/rpe_risk_intervals_20261113/NEXT_SCIENCE_PLAN.md)：条件付きp-v比率と有限familyの明示failure配分。59技術test PASS、元energy資格/N/GはUNKNOWN/null、新科学実行なし。

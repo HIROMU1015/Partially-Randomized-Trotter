@@ -1,5 +1,7 @@
 # Validation status
 
+[保存LD1/LD2の決定論的risk適用準備](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/REPORT.md)：既存保存fixture2件PASS、両13roundのSOURCE/physical identity/law/C binding/targetと原UNQUALIFIED/nullをmetadata確認。数値入口をmockで禁止し、保存rawの確率/phase/MSE/N/C/G・MC未実行。target/loss等の選択と科学実行は別許可待ち、production code・旧検証記録は変更なし。
+
 [決定論的risk・shot接続](docs/research/rpe_deterministic_risk_20261113/REPORT.md)：新13＋MCなし回帰32＝45技術test PASS。小count全列挙、極小確率、zero/tie/誤branch/alias、有限条件、13round、人工価格G選択を確認。実H4/保存科学値再解析/新MC/実N/C/G0。旧MC/risk_intervals・SOURCE/STOPを保全し、科学的energy資格はUNKNOWN。
 
 [RPE risk区間の技術検証](docs/research/rpe_risk_intervals_20261113/REPORT.md)：新12＋既存47＝59人工・回帰PASS。conditional p-v比率、有限人工lawの被覆、p_L=0/未解決/support不足、全loss/energy資格の区別、同時failure budgetとLD/SOURCE/law/MC範囲の拒否を確認。実H4 MC/保存科学再解析/実RMSE/N/G0。

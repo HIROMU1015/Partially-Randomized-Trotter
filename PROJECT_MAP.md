@@ -1,5 +1,7 @@
 # プロジェクト案内
 
+[保存LD1/LD2への決定論的risk適用準備](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/REPORT.md)／[条件一覧・有限2評価案](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/CONDITIONS_AND_FINITE_PLAN.md)／[HANDOFF](docs/research/pr_ld1_ld2_deterministic_application_preparation_20261113/HANDOFF.md)：A91349の各13roundを元configuration/carrier/lawへmetadata照合。既存fixture2件PASS、実装追加なし。target/loss/配分等は未採択、AのδE二重計上を避ける診断scopeを提示。保存rawの確率/MSE/N再解析・MC/C/G0、公開後mandatory STOP。
+
 [MCを使わないRPE risk・whole-shot基盤](docs/research/rpe_deterministic_risk_20261113/REPORT.md)／[条件とAPI](docs/research/rpe_deterministic_risk_20261113/HANDOFF.md)：exact二項確率、元count/R3の有限遷移検査、最終寄与＋初回unsafe上界を追加。旧MC資産保全、資格不足/範囲外はUNKNOWN。新13＋MCなし回帰32＝45技術test PASS、実H4/保存再解析/実N/C/G0、公開後mandatory STOP。
 
 [RPE conditional risk区間](docs/research/rpe_risk_intervals_20261113/REPORT.md)／[API・同時confidence](docs/research/rpe_risk_intervals_20261113/RISK_INTERVAL_HANDOFF.md)：元caller/summary/CP/Hoeffdingを再利用しp-v同時区間と有限familyを追加。p_L=0/support不足はUNKNOWN、全loss未採択/元energy資格/十分N/Gは未取得。新12＋回帰47＝59技術test PASS、実H4 MC/保存科学再解析0、公開後mandatory STOP。

@@ -1,0 +1,56 @@
+2026-11-13 JST. Metadata preparation only; primary-agent checks, not an independent review.
+Base: d71721f30c7b7fc13ba0789eefffd6238aca3ebc
+Worktree: r-variable-rpe-cost-pipeline-20261111
+Branch: codex/rpe-decoder-statistics-20261113
+Python: /home/AbeHiromu/projects/h6-environments/20261011/venv/bin/python -B
+
+Existing fixture tests reused:
+check_rpe_signal_statistics_caller.SavedMetadataTests.
+  test_07_both_original_A_bundles_preserved_and_C_provenance
+  test_09_LD_configuration_law_SOURCE_and_carrier_mismatch
+Ran 2 tests in 15.393s, OK (exit 0).
+
+Both tests ran under explicit mocks forbidding:
+D.evaluate, compare, binomial_axis, round_distribution, verify_good_transitions,
+_bound; S.simulate, simulate_prepared, exact_counts, decode_counts, summarize;
+K.diagnose; B.cost; common.run_missing.
+The existing C metadata-only fixture loads unmodified pinned plan/context/input
+functions. No full scientific provider graph or real-data backend was invoked.
+
+Additional metadata checks PASS:
+- pinned A LD1/LD2 canonical configurations validate and have distinct IDs;
+- 13 ordered means/configuration and all 26 mean/carrier/law/source matches;
+- shared H/state/snapshot/h/M/S2/delta/K/kappa/profile/original policy unchanged;
+- raw real/imag are finite binary64 JSON floats in the valid format/range;
+  no phase, norm, probability, allowance or scientific numerical gate recomputed;
+- target source agrees with saved PHYSICAL_INPUTS.target solver reference and
+  original truth_proxy_source; energy_ha absent, proxy-adopted/ground flags false;
+- K.accept_saved preserves the original mean/target values and qualification;
+- S.prepare with no shots reports missing X/Y N and physical UNQUALIFIED;
+- original shots/sufficient_N/global_RMSE_bound/G/winner remain null;
+- prior nominal N vector copied as an unselected control proposal only, with its
+  different original configuration ID. No old N qualification or RMSE moved.
+
+Synthetic I/O check PASS:
+json.loads(json.dumps({'numerator':1,'denominator':2**20000})) roundtrips exactly
+(6054 bytes) on fixed Python 3.11.0rc1. Its integer decimal limit API is absent.
+No global/runtime setting, codec or serializer was changed. This is a synthetic
+integer formatting check; no real risk numerator/denominator was evaluated.
+
+The earlier d717 45 risk/accounting tests were not rerun. Production modules,
+decoder/count rules, old MC/risk functions and historical science outputs were
+not changed. No new risk controller, N qualifier, optimizer, science runner or
+approval-proof artifact was added.
+
+No probabilities/MSE/required-N/unsafe/zero/tie calculations on saved raw,
+no saved S3 reanalysis, MC, signal/reference evaluation, compiled price or G.
+
+Final artifact checks PASS (metadata-only; no scientific modules imported):
+- SOURCE_AND_CONDITIONS.json agrees with pinned bundle/configuration IDs,
+  26 ordered candidate/physical ID, mean source, qualification and law locators;
+- all selected_inputs and results null; two proposed evaluations unselected;
+- original proxy/ground flags false; original target has no energy_ha;
+- every previous validation_manifest entry unchanged; exactly one entry added;
+- all src/tests/scripts bytes unchanged relative to base d71721f30;
+- all local Markdown links in the new documentation resolve;
+- git diff --check PASS.
